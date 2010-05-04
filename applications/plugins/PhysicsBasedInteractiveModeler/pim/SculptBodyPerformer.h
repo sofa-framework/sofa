@@ -25,27 +25,23 @@
 #ifndef PLUGINS_PIM_SCULPTBODYPERFORMER_H
 #define PLUGINS_PIM_SCULPTBODYPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
-#include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/misc/MeshTetraStuffing.h>
-#include <sofa/simulation/common/Node.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/mass/DiagonalMass.h>
 #include <sofa/component/constraint/FixedConstraint.h>
-#include <sofa/component/topology/PointSubset.h>
-#include "../../CGALPlugin/MeshGenerationFromPolyhedron.h"
-#include "../../TriangularMeshRefiner/TriangularMeshRefiner.h"
+#include <plugins/CGALPlugin/MeshGenerationFromPolyhedron.h>
 #include <sofa/gui/PickHandler.h>
 #include <set>
-#include <map>
-#include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/simulation/tree/GNode.h>
+//#include "EventManager.h"
+#include "ComputeMeshIntersection.h"
+#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/visualmodel/OglModel.h>
 
 namespace plugins
 {
@@ -66,12 +62,20 @@ public:
     SculptBodyPerformerConfiguration() {}
     void setForce(double f) {force=f;}
     void setScale(double s) {scale=s;}
+    void setMass(double m) {mass=m;}
+    void setStiffness(double s) {stiffness=s;}
+    void setDamping(double d) {damping=d;}
     void setCheckedFix(bool b) {checkedFix = b;}
+    void setCheckedInflate(bool b) {checkedInflate = b;}
+    void setCheckedDeflate(bool b) {checkedDeflate = b;}
 
 protected:
     SReal force;
     SReal scale;
-    bool checkedFix;
+    SReal mass;
+    SReal stiffness;
+    SReal damping;
+    bool checkedFix, checkedInflate, checkedDeflate;
 };
 
 template <class DataTypes>
@@ -86,51 +90,43 @@ public:
     SculptBodyPerformer(BaseMouseInteractor *i);
     ~SculptBodyPerformer() {};
 
-    void start() {};
+    void start();
     void execute();
     void end();
     void draw();
-    void animate(bool checked);
+    void animate();
 
 protected:
 
-    void createMatterNode();
-
-    BodyPicked findCollisionUsingPipeline(const Vector3 origin, const Vector3 direction, const double maxLength);
-
-    std::set<unsigned int> vertexNeighborhood, vertexInInfluenceZone, alreadyCheckedVertex, fixedPoints, drawFacets, fixedFacets;
-    BodyPicked picked;
     void computeNeighborhood();
+    void inflate();
+    unsigned int computeNearestVertexFromPickedPoint();
+    Coord computeNormal(const unsigned int& index);
+    void updatePosition(const unsigned int& index, const Coord& normal, const double& W);
+    void createTetraVolume(BaseMeshTopology* mesh);
+    void stopSimulation();
+    void saveCurrentStateAndMesh();
+    void ComputeIntersectonLayer();
+    void CreateNewMechanicalState(MechanicalState<DataTypes>* fatmstate, BaseMeshTopology* fatMesh);
+    void UpdateNewMechanicalState(MechanicalState<DataTypes>* fatmstate, BaseMeshTopology* fatMesh);
+
+    sofa::simulation::tree::GNode* createCollisionNode(sofa::simulation::tree::GNode* parentNode);
+    void createVisualNode(sofa::simulation::tree::GNode* parentNode);
+    sofa::simulation::tree::GNode* createSubsetMapping(sofa::simulation::tree::GNode* parentNode, MechanicalState<DataTypes>* subsetState,
+            BaseMeshTopology* subsetTopology, double m, double ymodulus, double damping);
+    void resetForce(core::objectmodel::BaseNode* node,  int index);
+
+    std::set<unsigned int> vertexNeighborhood, vertexInInfluenceZone, alreadyCheckedVertex, drawTriangles;
+    BodyPicked picked;
     core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision;
-
-    unsigned int vertexIndex;
-    sofa::component::topology::MeshTopology* fatMesh;
-    std::set<unsigned int> modifiedVertex, triangleChecked, modified;
-    misc::MeshTetraStuffing* meshStuffed;
-    cgal::MeshGenerationFromPolyhedron<DataTypes>* CGALmeshStuffed;
-    sofa::core::componentmodel::topology::BaseMeshTopology* matterMesh;
-//        sofa::component::topology::TetrahedronSetTopologyContainer* matterMesh;
-//        vector<defaulttype::Vec<3,SReal> > seqPoints;
-    VecCoord seqPoints;
-    simulation::Node *addedMateriaNode, *root, *collisionNode, *SubsetNode, *springNode, *mergeNode, *fixedMateria, *visualFat, *subsetPoints, *matterNode, *dynamicMatterNode, *staticMatterNode, *sculptedPointsNode, *bodyNode, *sculptedPointsNode2;
-    std::multimap<unsigned int, unsigned int> vertexMap;
-    core::componentmodel::behavior::MechanicalState<DataTypes>* matterMstate;
-    forcefield::TetrahedralCorotationalFEMForceField<defaulttype::Vec3Types>* matterFem;
-    odesolver::EulerImplicitSolver* ei;
-    linearsolver::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* cgls;
-    mass::UniformMass<defaulttype::Vec3dTypes,double>* matterMass;
-
-    VecCoord surfacePoint;
-
-    TriangularMeshRefiner *tmr;
-
-    std::map<unsigned int, unsigned int> surfacePointMap;
-
-    bool is_connected(unsigned int pointIndex);
-
-    MouseCollisionModel *mouseCollision;
-    sofa::component::topology::TriangleSetGeometryAlgorithms< DataTypes >* m_triangleGeo;
-    bool first;
+//        EventManager<DataTypes> eventManager;
+    MechanicalState<DataTypes>* createContactSurfaceMapping(sofa::simulation::tree::GNode* parentNode);
+    simulation::Node* root, *visualRoot;
+    sofa::helper::vector<sofa::core::componentmodel::behavior::OdeSolver*> solvers;
+    sofa::helper::vector<sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix,sofa::component::linearsolver::GraphScatteredVector>*> linear;
+    core::objectmodel::BaseContext* bc;
+    ComputeMeshIntersection<DataTypes>* cmi;
+    bool startSculpt;
 };
 
 

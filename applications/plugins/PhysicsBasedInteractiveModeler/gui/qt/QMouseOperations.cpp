@@ -63,11 +63,13 @@ QSculptOperation::QSculptOperation()
 
 
     QHBoxLayout *HLayout = new QHBoxLayout();
-    sculptRadioButton = new QRadioButton(QString("Sculpt"), options);
-    sculptRadioButton->setChecked(true);
+    inflateRadioButton = new QRadioButton(QString("Inflate"), options);
+    inflateRadioButton->setChecked(true);
+    deflateRadioButton = new QRadioButton(QString("Deflate"), options);
     fixRadioButton = new QRadioButton(QString("Fix"), options);
 
-    HLayout->addWidget(sculptRadioButton);
+    HLayout->addWidget(inflateRadioButton);
+    HLayout->addWidget(deflateRadioButton);
     HLayout->addWidget(fixRadioButton);
     VLayout->addLayout(HLayout);
 
@@ -93,15 +95,27 @@ QSculptOperation::QSculptOperation()
     HLayout2->addWidget(forceValue);
     VLayout->addLayout(HLayout2);
 
+    HLayout3 = new QHBoxLayout();
+    massLabel=new QLabel(QString("Mass"), this);
+    massValue=new QLineEdit(this);
+    stiffnessLabel=new QLabel(QString("Stiffness"), this);
+    stiffnessValue=new QLineEdit(this);
+    dampingLabel=new QLabel(QString("Damping"), this);
+    dampingValue=new QLineEdit(this);
+
+    HLayout3->addWidget(massLabel);
+    HLayout3->addWidget(massValue);
+    HLayout3->addWidget(stiffnessLabel);
+    HLayout3->addWidget(stiffnessValue);
+    HLayout3->addWidget(dampingLabel);
+    HLayout3->addWidget(dampingValue);
+
+    VLayout->addLayout(HLayout3);
+
     QHBoxLayout *HLayout3 = new QHBoxLayout();
     animatePushButton = new QPushButton(QString("Animate"), options);
     animatePushButton->setMaximumSize(75,30);
 
-#ifdef SOFA_QT4
-    animatePushButton->setCheckable(true);
-#else
-    animatePushButton->setToggleButton(true);
-#endif
     HLayout3->addWidget(animatePushButton);
     VLayout->addLayout(HLayout3);
 
@@ -112,12 +126,16 @@ QSculptOperation::QSculptOperation()
 
     connect(scaleSlider,SIGNAL(valueChanged(int)), this, SLOT(setScale()));
     /* Add solver, mass and forcefield to simulate added materia */
-    connect(animatePushButton,SIGNAL(toggled(bool)), this, SLOT(animate(bool)));
+    connect(animatePushButton,SIGNAL(clicked()), this, SLOT(animate()));
 
     connect(fixRadioButton,SIGNAL(toggled(bool)), this, SLOT(updateInterface(bool)));
 
-    forceSlider->setValue(10);
+    forceSlider->setValue(60);
     scaleSlider->setValue(70);
+
+    massValue->insert("10");
+    stiffnessValue->insert("100");
+    dampingValue->insert("0.2");
 }
 
 void QSculptOperation::updateInterface(bool checked)
@@ -148,6 +166,31 @@ double QSculptOperation::getScale() const
     return scaleValue->value();
 }
 
+double QSculptOperation::getMass() const
+{
+    return (massValue->text()).toDouble();
+}
+
+double QSculptOperation::getStiffness() const
+{
+    return (stiffnessValue->text()).toDouble();
+}
+
+double QSculptOperation::getDamping() const
+{
+    return (dampingValue->text()).toDouble();
+}
+
+bool QSculptOperation::isCheckedInflate() const
+{
+    return inflateRadioButton->isChecked();
+}
+
+bool QSculptOperation::isCheckedDeflate() const
+{
+    return deflateRadioButton->isChecked();
+}
+
 bool QSculptOperation::isCheckedFix() const
 {
     return fixRadioButton->isChecked();
@@ -164,14 +207,12 @@ void QSculptOperation::setScale()
     performerConfiguration->setScale(getScale());
 }
 
-void QSculptOperation::animate(bool checked)
+void QSculptOperation::animate()
 {
-    animated = checked;
-
     if (performer == NULL) return;
 
     SculptBodyPerformer<Vec3Types>* sculptPerformer=dynamic_cast<SculptBodyPerformer<Vec3Types>*>(performer);
-    sculptPerformer->animate(checked);
+    sculptPerformer->animate();
 }
 
 } // namespace qt

@@ -57,6 +57,7 @@ ComputeMeshIntersection<DataTypes>::ComputeMeshIntersection():
     , d_intersectionQuads(initData(&d_intersectionQuads, "intersectionQuads", "Intersection Quads") )
     , d_print_log(initData(&d_print_log, false,"print_log", "Print log") )
     , d_epsilon(initData(&d_epsilon, 0.0, "epsilon", "min dsitance betbeen the fat and the muscle") )
+    , d_index(initData(&d_index, "index", "") )
 {
 }
 
@@ -85,6 +86,8 @@ void ComputeMeshIntersection<DataTypes>::computeIntersectionLayerVertex()
     unsigned int vertexIndex = 0;
     const VecCoord& XF = d_fatLayerVertex.getValue();
     const VecCoord& XM = d_muscleLayerVertex.getValue();
+    vector<unsigned int>& index = *d_index.beginEdit();
+
     for (unsigned int i=0; i<XF.size(); ++i)
     {
 
@@ -97,12 +100,14 @@ void ComputeMeshIntersection<DataTypes>::computeIntersectionLayerVertex()
 //     if (d_print_log.getValue())
 //         std::cout << "(XF[i]-XM[i]).norm() > d_epsilon.getValue()" << std::endl;
 
-            topology.addPoint(XF[i].x(), XF[i].y(), XF[i].z());
             topology.addPoint(XM[i].x(), XM[i].y(), XM[i].z());
+            topology.addPoint(XF[i].x(), XF[i].y(), XF[i].z());
+            index.push_back(i);
             intersectionIndices.insert(std::make_pair(i, vertexIndex*2));
             vertexIndex++;
         }
     }
+    d_index.endEdit();
 }
 
 template <class DataTypes>

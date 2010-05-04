@@ -39,7 +39,7 @@ namespace gui
 class SOFA_SOFAGUI_API SculptOperation : public sofa::gui::Operation
 {
 public:
-    SculptOperation():force(1), scale(20), checkedFix(false), animated(false) {}
+    SculptOperation():force(1), scale(20), checkedFix(false), checkedInflate(false), checkedDeflate(false), animated(false) {}
     virtual ~SculptOperation();
     virtual void start() ;
     virtual void execution() {};
@@ -50,14 +50,25 @@ public:
     virtual double getForce() const { return force;}
     void setScale(double s) {scale = s;}
     virtual double getScale() const {return scale;}
+    void setMass(double m) {mass = m;}
+    virtual double getMass() const { return mass;}
+    void setStiffness(double s) {stiffness = s;}
+    virtual double getStiffness() const { return stiffness;}
+    void setDamping(double d) {damping = d;}
+    virtual double getDamping() const { return damping;}
+
     virtual bool isCheckedFix() const {return checkedFix;};
     void setCheckedFix(bool b) {checkedFix = b;};
+    virtual bool isCheckedInflate() const {return checkedInflate;};
+    void setCheckedInflate(bool b) {checkedInflate = b;};
+    virtual bool isCheckedDeflate() const {return checkedDeflate;};
+    void setCheckedDeflate(bool b) {checkedDeflate = b;};
     virtual bool isAnimated() const {return animated;};
 
     static std::string getDescription() {return "Sculpt an object using the Mouse";}
 protected:
-    double force, scale;
-    bool checkedFix, animated;
+    double force, scale, mass, stiffness, damping;
+    bool checkedFix, checkedInflate, checkedDeflate, animated;
 };
 
 } // namespace gui

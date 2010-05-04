@@ -41,6 +41,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QLabel>
+#include <QLineEdit>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
@@ -50,6 +51,7 @@
 #include <qpushbutton.h>
 #include <qgroupbox>
 #include <qlabel.h>
+#include <qlineedit.h>
 #endif
 #include <iostream>
 
@@ -76,11 +78,16 @@ public:
 
     double getForce() const;
     double getScale() const;
+    double getMass() const;
+    double getStiffness() const;
+    double getDamping() const;
     bool isCheckedFix() const;
+    bool isCheckedInflate() const;
+    bool isCheckedDeflate() const;
 
 public slots:
     void setScale();
-    void animate(bool checked);
+    void animate();
     void updateInterface(bool);
 
 protected:
@@ -93,16 +100,25 @@ protected:
     QSlider  *scaleSlider;
     QSpinBox *scaleValue;
 
-    QRadioButton *sculptRadioButton;
+    QLineEdit *massValue;
+    QLineEdit *stiffnessValue;
+    QLineEdit *dampingValue;
+
+    QRadioButton *inflateRadioButton;
+    QRadioButton *deflateRadioButton;
     QRadioButton *fixRadioButton;
 
     QPushButton *animatePushButton;
 
     QHBoxLayout *HLayout1;
     QHBoxLayout *HLayout2;
+    QHBoxLayout *HLayout3;
     QVBoxLayout *VLayout;
 
     QLabel *forceLabel;
+    QLabel *massLabel;
+    QLabel *stiffnessLabel;
+    QLabel *dampingLabel;
 };
 
 } // namespace qt
