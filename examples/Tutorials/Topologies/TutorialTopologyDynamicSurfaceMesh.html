@@ -4,10 +4,10 @@
 </head>
 <body>
 	<div id="contenu">		
-	        <center><img src="TutorialTopologyDynamicSurfaceMesh.scn_0001.png" width="500" name="TutorialTopologyDynamicSurfaceMesh" align="middle">
+	        <center><img src="TutorialTopologyDynamicSurfaceMesh.scn_0001.png" width="300" name="TutorialTopologyDynamicSurfaceMesh" align="middle">
 		  <h3><div id="orangeText">Tutorial Topology Dynamic Surface Mesh </div></h3></center>
 	<br>	
-	<div id="orangeText">Goal</div>
+	<div id="orangeText">Description</div>
 	<br>
 	The aim of this tutorial is to show the interest of using a topological mapping between 3D volume mesh and 2D surface mesh. In this tutorial, a cube is represented , implying:
 	<ul>
@@ -31,6 +31,7 @@
 	<br>
 	To create this mapping, the component <b>Hexa2QuadTopologicalMapping</b> is used. This component take an input topology (Data Object1) which is the container of the "upper" topology (hexahedron here) and has an output topology (Data Object2) which is the container of the above topology (quad here).
 	<br>
+	<br>
 	<div id="orangeText">Results</div>
 	<br>
 	As explain the visual model use the output topology (quads) to render the surface model.
@@ -40,9 +41,11 @@
 	<br>
 	Finally try to remove the <b>HexahedronFEMForceField</b> or <b>QuadularBendingSprings</b> component. The result will be a bad behavior of the cube.
 	<br>
-	<div id="orangeText">Additional results</div>
-	<br>
-	When deleting quads, the topological mapping is updated. Thus, hexahedron behind selected quad will be deleted as well. Then, the list of quads on border will be updated and the surface rendering also.
+	<ul>
+	  <li><div id="orangeText">Additional results</div></li>	
+	  <br>
+	  When deleting quads, the topological mapping is updated. Thus, hexahedron behind selected quad will be deleted as well. Then, the list of quads on border will be updated and the surface rendering also.
+	</ul>
 </div>
 </body>
 </html>

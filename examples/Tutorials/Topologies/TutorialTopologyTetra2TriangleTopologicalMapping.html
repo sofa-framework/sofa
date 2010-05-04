@@ -4,10 +4,10 @@
 </head>
 <body>
 	<div id="contenu">		
-	        <center><img src="TutorialTopologyTetra2TriangleTopologicalMapping.scn_0001.png" width="500" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
+	        <center><img src="TutorialTopologyTetra2TriangleTopologicalMapping.scn_0001.png" width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
 		  <h3><div id="orangeText">Tutorial Topology Tetra2TriangleTopologicalMapping</div></h3></center>
 	<br>	
-	<div id="orangeText">Goal</div>
+	<div id="orangeText">Description</div>
 	<br>
 	The aim of this tutorial is to show the interest of using a topological mapping between 3D volume mesh and 2D surface mesh. In this tutorial, a cylinder is represented , implying:
 	<ul>
@@ -31,6 +31,7 @@
 	<br>
 	To create this mapping, the component <b>Tetra2TriangleTopologicalMapping</b> is used. This component take an input topology (Data Object1) which is the container of the "upper" topology (tetrahedron here) and has an output topology (Data Object2) which is the container of the above topology (triangle here).
 	<br>
+	<br>
 	<div id="orangeText">Results</div>
 	<br>
 	As explain the visual model use the output topology (triangles) to render the surface model.
@@ -43,9 +44,11 @@
 	<center><img src="TutorialTopologyTetra2TriangleTopologicalMapping.scn_0002.png" width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
 	</center>
 	<br>
-	<div id="orangeText">Additional results</div>
+	<ul>
+	  <li><div id="orangeText">Additional results</div></li>	
 	<br>
 	When deleting triangles, the topological mapping is updated. Thus, tetrahedron behind selected triangle will be deleted as well. Then, the list of triangles on border will be updated and the surface rendering also.
+	</ul>
 </div>
 </body>
 </html>
