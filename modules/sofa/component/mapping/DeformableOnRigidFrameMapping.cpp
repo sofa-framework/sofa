@@ -25,9 +25,9 @@
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP
 #include <sofa/component/mapping/DeformableOnRigidFrameMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
 
 namespace sofa
@@ -43,7 +43,7 @@ SOFA_DECL_CLASS(DeformableOnRigidFrameMapping)
 
 using namespace defaulttype;
 using namespace core;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 
 // Register in the Factory

@@ -28,7 +28,7 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_BICGSTABIMPLICITSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_BICGSTABIMPLICITSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
@@ -45,7 +45,7 @@ class SOFA_COMPONENT_ODESOLVER_API BiCGStabImplicitSolver : public sofa::compone
 {
 public:
     SOFA_CLASS(BiCGStabImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
-    typedef core::componentmodel::behavior::OdeSolver Inherited;
+    typedef core::behavior::OdeSolver Inherited;
 
     BiCGStabImplicitSolver();
     void solve (double dt);

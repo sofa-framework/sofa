@@ -36,7 +36,7 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 using namespace core;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 
 SOFA_DECL_CLASS(VoidMapping)

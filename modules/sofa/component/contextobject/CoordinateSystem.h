@@ -42,10 +42,6 @@ namespace objectmodel
 class Context;
 }
 
-namespace componentmodel
-{
-class Topology;
-}
 }
 namespace simulation
 {

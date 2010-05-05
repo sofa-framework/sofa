@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -81,8 +81,8 @@ public:
     Data<sofa::helper::vector<unsigned int> >  repartition;
     Data< bool > globalToLocalCoords;
 
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
 
     RigidMapping ( In* from, Out* to )
@@ -97,10 +97,10 @@ public:
     {
         this->addAlias(&fileRigidMapping,"filename");
         maskFrom = NULL;
-        if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
+        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from))
             maskFrom = &stateFrom->forceMask;
         maskTo = NULL;
-        if (core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to))
+        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to))
             maskTo = &stateTo->forceMask;
     }
 
@@ -136,10 +136,10 @@ protected:
 };
 
 using core::Mapping;
-using core::componentmodel::behavior::MechanicalMapping;
-using core::componentmodel::behavior::MappedModel;
-using core::componentmodel::behavior::State;
-using core::componentmodel::behavior::MechanicalState;
+using core::behavior::MechanicalMapping;
+using core::behavior::MappedModel;
+using core::behavior::State;
+using core::behavior::MechanicalState;
 
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;

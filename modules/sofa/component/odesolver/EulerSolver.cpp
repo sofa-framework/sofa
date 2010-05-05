@@ -45,7 +45,7 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 int EulerSolverClass = core::RegisterObject("A simple explicit time integrator")
         .add< EulerSolver >()
@@ -115,7 +115,7 @@ void EulerSolver::solve(double dt)
     }
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         // change order of operations depending on the symplectic flag

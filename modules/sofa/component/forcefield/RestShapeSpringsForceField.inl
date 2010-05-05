@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include "RestShapeSpringsForceField.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -59,7 +59,7 @@ template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::init()
 {
 
-    core::componentmodel::behavior::ForceField<DataTypes>::init();
+    core::behavior::ForceField<DataTypes>::init();
 
     if (points.getValue().size()==0)
     {

@@ -29,7 +29,7 @@
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
 {
@@ -42,7 +42,7 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 
 

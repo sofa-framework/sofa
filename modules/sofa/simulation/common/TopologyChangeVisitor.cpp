@@ -25,7 +25,7 @@
 
 #include <sofa/simulation/common/TopologyChangeVisitor.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
 namespace sofa
 {
@@ -35,9 +35,9 @@ namespace simulation
 
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 using namespace sofa::core;
 
@@ -70,7 +70,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 #endif
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
+        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(*it);
         if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
 
@@ -107,7 +107,7 @@ void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
+        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(*it);
         if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
 

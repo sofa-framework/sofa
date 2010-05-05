@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_LINEARVELOCITYCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_LINEARVELOCITYCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -49,10 +49,10 @@ namespace constraint
 	The motion between 2 key times is linearly interpolated
 */
 template <class DataTypes>
-class LinearVelocityConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class LinearVelocityConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LinearVelocityConstraint,DataTypes),SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(LinearVelocityConstraint,DataTypes),SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -112,7 +112,7 @@ public :
 
 protected:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* topology;
 
     /// Define TestNewPointFunction (for topology changes)
     static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );

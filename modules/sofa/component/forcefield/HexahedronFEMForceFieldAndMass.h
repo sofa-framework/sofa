@@ -27,7 +27,7 @@
 
 
 #include "HexahedronFEMForceField.h"
-#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/behavior/Mass.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/helper/gl/template.h>
 namespace sofa
@@ -41,7 +41,7 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
-using sofa::core::componentmodel::behavior::Mass;
+using sofa::core::behavior::Mass;
 
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
  */

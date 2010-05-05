@@ -38,8 +38,8 @@ using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
 
-sofa::core::componentmodel::collision::DetectionOutput::ContactId Identifier::cpt=0;
-std::list<sofa::core::componentmodel::collision::DetectionOutput::ContactId> Identifier::availableId;
+sofa::core::collision::DetectionOutput::ContactId Identifier::cpt=0;
+std::list<sofa::core::collision::DetectionOutput::ContactId> Identifier::availableId;
 
 SOFA_DECL_CLASS(FrictionContact)
 

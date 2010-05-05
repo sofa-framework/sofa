@@ -118,11 +118,11 @@ protected:
 
     std::set<unsigned int> vertexNeighborhood, vertexInInfluenceZone, alreadyCheckedVertex, drawTriangles;
     BodyPicked picked;
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision;
+    core::behavior::MechanicalState<DataTypes>* mstateCollision;
 //        EventManager<DataTypes> eventManager;
     MechanicalState<DataTypes>* createContactSurfaceMapping(sofa::simulation::tree::GNode* parentNode);
     simulation::Node* root, *visualRoot;
-    sofa::helper::vector<sofa::core::componentmodel::behavior::OdeSolver*> solvers;
+    sofa::helper::vector<sofa::core::behavior::OdeSolver*> solvers;
     sofa::helper::vector<sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix,sofa::component::linearsolver::GraphScatteredVector>*> linear;
     core::objectmodel::BaseContext* bc;
     ComputeMeshIntersection<DataTypes>* cmi;

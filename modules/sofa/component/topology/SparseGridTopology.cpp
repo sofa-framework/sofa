@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/fixed_array.h>
@@ -505,16 +505,16 @@ void SparseGridTopology::updateMesh()
     //Creating if needed collision models and visual models
     // 	    using sofa::simulation::Node;
 
-    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > list_meshf;
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
     sofa::helper::vector< sofa::helper::vector< Vec3f >* > list_Xf;
-    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > list_meshd;
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
     sofa::helper::vector< sofa::helper::vector< Vec3d >* > list_Xd;
 
     //Get Collision Model
-    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology* > m_temp;
-    this->getContext()->get< sofa::core::componentmodel::topology::BaseMeshTopology >(&m_temp, sofa::core::objectmodel::BaseContext::SearchDown);
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
+    this->getContext()->get< sofa::core::topology::BaseMeshTopology >(&m_temp, sofa::core::objectmodel::BaseContext::SearchDown);
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* collisionTopology=NULL;
+    sofa::core::topology::BaseMeshTopology* collisionTopology=NULL;
     for (unsigned int i=0; i<m_temp.size(); ++i)
     {
         if (m_temp[i] != this) {collisionTopology = m_temp[i]; break;}
@@ -524,7 +524,7 @@ void SparseGridTopology::updateMesh()
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
 #ifndef SOFA_FLOAT
-        core::componentmodel::behavior::MechanicalState< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< core::componentmodel::behavior::MechanicalState< Vec3dTypes > >();
+        core::behavior::MechanicalState< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3dTypes > >();
         if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
@@ -533,7 +533,7 @@ void SparseGridTopology::updateMesh()
         }
 #endif
 #ifndef SOFA_DOUBLE
-        core::componentmodel::behavior::MechanicalState< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< core::componentmodel::behavior::MechanicalState< Vec3fTypes > >();
+        core::behavior::MechanicalState< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< core::behavior::MechanicalState< Vec3fTypes > >();
         if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
@@ -574,7 +574,7 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 
 
 template< class T >
-void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
+void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
         const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* > &list_X)
 {
     sofa::helper::vector< unsigned int>	triangles;

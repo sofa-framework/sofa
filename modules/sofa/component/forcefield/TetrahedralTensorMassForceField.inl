@@ -28,7 +28,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TetrahedronData.inl>
 #include <sofa/component/topology/EdgeData.inl>
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
 {
@@ -41,13 +41,13 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 
 
 
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::Tetra				Tetra;
 typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;

@@ -26,7 +26,7 @@
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
 
@@ -40,9 +40,9 @@
 #include <vector>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/collision/Intersection.inl>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/simulation/common/Simulation.h>
 
@@ -56,7 +56,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 using namespace helper;
 
 SOFA_DECL_CLASS(Point)
@@ -86,7 +86,7 @@ void PointModel::resize(int size)
 void PointModel::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
     if (mstate==NULL)
     {
@@ -203,7 +203,7 @@ bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int in
         if (index==index2)
             return false;
 
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getMeshTopology();
+        sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
 
 
 
@@ -310,15 +310,15 @@ void PointModel::updateNormals()
     {
         normals[i].clear();
     }
-    core::componentmodel::topology::BaseMeshTopology* mesh = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology* mesh = getContext()->getMeshTopology();
     if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
     {
         if (mesh->getNbTetrahedra()>0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
+            const core::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
             for (unsigned int i=0; i < elems.size(); ++i)
             {
-                const core::componentmodel::topology::BaseMeshTopology::Tetra &e = elems[i];
+                const core::topology::BaseMeshTopology::Tetra &e = elems[i];
                 const Coord& p1 = x[e[0]];
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
@@ -352,10 +352,10 @@ void PointModel::updateNormals()
     {
         if (mesh->getNbTriangles()>0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
+            const core::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
             for (unsigned int i=0; i < elems.size(); ++i)
             {
-                const core::componentmodel::topology::BaseMeshTopology::Triangle &e = elems[i];
+                const core::topology::BaseMeshTopology::Triangle &e = elems[i];
                 const Coord& p1 = x[e[0]];
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
@@ -371,10 +371,10 @@ void PointModel::updateNormals()
         }
         if (mesh->getNbQuads()>0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
+            const core::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
             for (unsigned int i=0; i < elems.size(); ++i)
             {
-                const core::componentmodel::topology::BaseMeshTopology::Quad &e = elems[i];
+                const core::topology::BaseMeshTopology::Quad &e = elems[i];
                 const Coord& p1 = x[e[0]];
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
@@ -408,7 +408,7 @@ bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension
 
     Vector3 pt = p();
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* mesh = model->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* mesh = model->getMeshTopology();
     helper::vector<Vector3> x = (*model->mstate->getX());
 
     const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(index);

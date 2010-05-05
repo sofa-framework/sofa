@@ -25,7 +25,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
@@ -56,7 +56,7 @@ namespace forcefield
 {
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 
 

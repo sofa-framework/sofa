@@ -39,7 +39,7 @@ namespace contextobject
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 Gravity::Gravity()
     : f_gravity( initData(&f_gravity,Vector3(0,0,0),"gravity","Gravity in the world coordinate system") )

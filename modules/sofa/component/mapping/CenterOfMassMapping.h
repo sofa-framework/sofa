@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/component.h>
 
@@ -40,7 +40,7 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 /** mapping computing the center of mass of an object.
 	the output of the mapping has to be a single dof.

@@ -29,7 +29,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_INL
 
 #include <sofa/component/forcefield/FrameSpringForceField2.h>
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>

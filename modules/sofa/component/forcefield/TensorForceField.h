@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TENSORFORCEFIELD_H
 
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/container/MechanicalObject.h>
 
 
@@ -48,10 +48,10 @@ namespace forcefield
  * and edges.
  */
 template <class DataTypes>
-class TensorForceField : public core::componentmodel::behavior::BaseForceField
+class TensorForceField : public core::behavior::BaseForceField
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TensorForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::BaseForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TensorForceField, DataTypes), SOFA_TEMPLATE(core::behavior::BaseForceField, DataTypes));
 
     TensorForceField (const char *filename);
 

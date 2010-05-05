@@ -59,7 +59,7 @@ CudaSphereModel::CudaSphereModel()
 void CudaSphereModel::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<InDataTypes>*> (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<InDataTypes>*> (getContext()->getMechanicalState());
 
     if (mstate==NULL)
     {

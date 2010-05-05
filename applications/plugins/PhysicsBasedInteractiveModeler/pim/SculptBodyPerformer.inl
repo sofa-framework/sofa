@@ -43,7 +43,7 @@ using namespace sofa::component::forcefield;
 using namespace sofa::component::constraint;
 using namespace sofa::component::container;
 using namespace sofa::component::visualmodel;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::core;
 
 
@@ -51,7 +51,7 @@ using namespace sofa::core;
 template <class DataTypes>
 void SculptBodyPerformer<DataTypes>::computeNeighborhood()
 {
-    sofa::core::componentmodel::topology::BaseMeshTopology::VerticesAroundVertex vav;
+    sofa::core::topology::BaseMeshTopology::VerticesAroundVertex vav;
     vertexNeighborhood.clear();
 
     for( std::set<unsigned int>::const_iterator iter = vertexInInfluenceZone.begin(); iter != vertexInInfluenceZone.end(); ++iter )
@@ -170,7 +170,7 @@ void SculptBodyPerformer<DataTypes>::inflate()
 template <class DataTypes>
 void SculptBodyPerformer<DataTypes>::stopSimulation()
 {
-    root->getTreeObjects<sofa::core::componentmodel::behavior::OdeSolver>(&solvers);
+    root->getTreeObjects<sofa::core::behavior::OdeSolver>(&solvers);
     root->getTreeObjects<sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix,sofa::component::linearsolver::GraphScatteredVector> >(&linear);
 
     for (unsigned int i=0; i<solvers.size(); ++i)
@@ -198,7 +198,7 @@ void SculptBodyPerformer<DataTypes>::start()
     picked=this->interactor->getBodyPicked();
     if (picked.body)
     {
-        mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
+        mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
         if (!mstateCollision)
         {
             std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
@@ -227,7 +227,7 @@ void SculptBodyPerformer<DataTypes>::execute()
     picked=this->interactor->getBodyPicked();
     if (picked.body)
     {
-        mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
+        mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
         if (!mstateCollision)
         {
             std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
@@ -549,7 +549,7 @@ void SculptBodyPerformer<DataTypes>::animate()
     picked=this->interactor->getBodyPicked();
     if (picked.body)
     {
-        mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
+        mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
         if (!mstateCollision)
         {
             std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;

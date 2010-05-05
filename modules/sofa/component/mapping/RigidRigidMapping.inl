@@ -32,8 +32,8 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/gl/Axis.h>
 #include <string.h>
 #include <iostream>
@@ -341,7 +341,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childVeloc
     else
     {
 
-        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it=indices.begin();
@@ -510,7 +510,7 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
     }
     else
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it=indices.begin();

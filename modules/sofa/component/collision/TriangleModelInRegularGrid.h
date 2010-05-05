@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
 
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -38,7 +38,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 class TriangleModelInRegularGrid : public TriangleModel
 {
@@ -51,9 +51,9 @@ public:
     virtual void init();
     virtual void computeBoundingTree ( int maxDepth=0 );
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
     BaseMeshTopology* _higher_topo;
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* _higher_mstate;
+    core::behavior::MechanicalState<Vec3Types>* _higher_mstate;
 };
 
 }

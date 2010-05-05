@@ -12,7 +12,7 @@
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
 
@@ -25,7 +25,7 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS ( TriangleInRegularGrid );
 
@@ -51,7 +51,7 @@ void TriangleModelInRegularGrid::init()
     TriangleModel::init();
 
     _topology = this->getContext()->getMeshTopology();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
     if( !mstate) { serr << "TriangleModelInRegularGrid requires a Vec3 Mechanical Model" << sendl; return;}
     if (!_topology) { serr << "TriangleModelInRegularGrid requires a BaseMeshTopology" << sendl; return;}
@@ -75,7 +75,7 @@ void TriangleModelInRegularGrid::init()
                 _higher_topo = _topoMapping->getFrom();
                 if ( !_higher_topo ) break;
                 sofa::simulation::Node* node = static_cast< sofa::simulation::Node* > ( _higher_topo->getContext() );
-                _higher_mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > ( node->getMechanicalState() );
+                _higher_mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > ( node->getMechanicalState() );
             }
         }
     }

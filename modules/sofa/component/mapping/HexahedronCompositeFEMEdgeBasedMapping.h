@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMEdgeBasedMapping_H
 #define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMEdgeBasedMapping_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 
 #include <sofa/defaulttype/Mat.h>
@@ -45,7 +45,7 @@ namespace mapping
 
 
 
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::defaulttype;
 
 template <class BasicMapping>

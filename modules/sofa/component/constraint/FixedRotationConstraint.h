@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_FixedRotationConstraint_H
 #define SOFA_COMPONENT_CONSTRAINT_FixedRotationConstraint_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/Constraint.h>
 #include <sofa/defaulttype/Quat.h>
 
 namespace sofa
@@ -45,10 +45,10 @@ using namespace sofa::defaulttype;
 /** Prevents rotation around X or Y or Z axis
 */
 template <class DataTypes>
-class FixedRotationConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class FixedRotationConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedRotationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FixedRotationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

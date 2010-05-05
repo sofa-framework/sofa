@@ -44,7 +44,7 @@ namespace odesolver
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 StaticSolver::StaticSolver()
     : massCoef( initData(&massCoef,(double)0.0,"massCoef","coefficient associated with the mass matrix in the equation system") )

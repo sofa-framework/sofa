@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_INL
 
 #include "CenterPointMechanicalMapping.h"
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 
 namespace sofa
@@ -63,7 +63,7 @@ void CenterPointMechanicalMapping<BaseMapping>::init()
 template <class BaseMapping>
 void CenterPointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
+    const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     if(out.size() < hexahedra.size())
         out.resize(hexahedra.size());
@@ -84,7 +84,7 @@ void CenterPointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& o
 template <class BaseMapping>
 void CenterPointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
+    const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     if(out.size() < hexahedra.size())
         out.resize(hexahedra.size());
@@ -105,7 +105,7 @@ void CenterPointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& 
 template <class BaseMapping>
 void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
+    const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     for(unsigned int i = 0; i <hexahedra.size(); ++i)
     {

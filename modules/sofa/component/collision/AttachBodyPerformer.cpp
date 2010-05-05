@@ -59,10 +59,10 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPer
 template <>
 bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked)
 {
-    core::componentmodel::behavior::MechanicalState<Rigid3fTypes>* mstateCollision=NULL;
+    core::behavior::MechanicalState<Rigid3fTypes>* mstateCollision=NULL;
 
     double restLength = picked.dist;
-    mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<Rigid3fTypes>*  >(picked.mstate);
+    mstateCollision = dynamic_cast< core::behavior::MechanicalState<Rigid3fTypes>*  >(picked.mstate);
     std::string name = "contactMouse";
     sofa::component::forcefield::JointSpring<Rigid3fTypes> spring;
 
@@ -91,10 +91,10 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPer
 template <>
 bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked)
 {
-    core::componentmodel::behavior::MechanicalState<Rigid3dTypes>* mstateCollision=NULL;
+    core::behavior::MechanicalState<Rigid3dTypes>* mstateCollision=NULL;
 
     double restLength = picked.dist;
-    mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<Rigid3dTypes>*  >(picked.mstate);
+    mstateCollision = dynamic_cast< core::behavior::MechanicalState<Rigid3dTypes>*  >(picked.mstate);
     std::string name = "contactMouse";
     sofa::component::forcefield::JointSpring<Rigid3dTypes> spring;
 

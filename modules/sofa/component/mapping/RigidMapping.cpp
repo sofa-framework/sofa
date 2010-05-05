@@ -25,9 +25,9 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP
 #include <sofa/component/mapping/RigidMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
 
 namespace sofa
@@ -43,7 +43,7 @@ SOFA_DECL_CLASS(RigidMapping)
 
 using namespace defaulttype;
 using namespace core;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 
 // Register in the Factory
@@ -80,7 +80,7 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
 #ifndef SOFA_FLOAT
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -95,7 +95,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 }
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -111,7 +111,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 }
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
 {
     out.resize(in.size());
     /// \TODO !!!
@@ -120,7 +120,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 
 #ifndef SOFA_DOUBLE
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -137,7 +137,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -153,7 +153,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 }
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
 {
     out.resize(in.size());
     /// \TODO !!!
@@ -165,7 +165,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -181,7 +181,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -197,14 +197,14 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 }
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
 {
     out.resize(in.size());
     /// \TODO !!!
 }
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -221,7 +221,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     const VecCoord& pts = this->getPoints();
     Deriv v;
@@ -238,7 +238,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 
 
 template<>
-void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
+void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
 {
     out.resize(in.size());
     /// \TODO !!!

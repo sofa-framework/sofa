@@ -56,7 +56,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef typename Inherit::Spring Spring;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
 
     typedef defaulttype::Vec<6,Real> Vec6;

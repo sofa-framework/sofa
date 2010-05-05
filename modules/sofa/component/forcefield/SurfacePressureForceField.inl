@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/forcefield/SurfacePressureForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>
@@ -39,7 +39,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 
 template <class DataTypes>
@@ -70,7 +70,7 @@ SurfacePressureForceField<DataTypes>::~SurfacePressureForceField()
 template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
     m_topology = this->getContext()->getMeshTopology();
 
     state = ( m_pressure.getValue() > 0 ) ? INCREASE : DECREASE;

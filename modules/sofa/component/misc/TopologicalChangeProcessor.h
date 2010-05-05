@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
 #define SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 
@@ -70,7 +70,7 @@ public:
 
 
 protected:
-    core::componentmodel::topology::BaseMeshTopology* m_topology;
+    core::topology::BaseMeshTopology* m_topology;
 
     std::ifstream* infile;
 #ifdef SOFA_HAVE_ZLIB
@@ -107,7 +107,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(context->getMeshTopology()) == NULL)
+        if (dynamic_cast<core::topology::BaseMeshTopology*>(context->getMeshTopology()) == NULL)
             return false;
 
         return BaseObject::canCreate(obj, context, arg);

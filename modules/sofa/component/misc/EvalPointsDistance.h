@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_H
 #define SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -94,12 +94,12 @@ public:
     virtual void doDraw(const VecCoord& x1, const VecCoord& x2);
 
     /// Retrieve the associated MechanicalState (First model)
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return mstate1; }
+    core::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1; }
+    core::behavior::BaseMechanicalState* getMechModel1() { return mstate1; }
 
     /// Retrieve the associated MechanicalState (Second model)
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getMState2() { return mstate2; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
+    core::behavior::MechanicalState<DataTypes>* getMState2() { return mstate2; }
+    core::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -109,14 +109,14 @@ public:
     {
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
-            if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
                 return false;
-            if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
                 return false;
         }
         else
         {
-            if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
                 return false;
         }
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
@@ -129,14 +129,14 @@ public:
         core::objectmodel::BaseObject::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
-            obj->mstate1 = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
+            obj->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
+            obj->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
         }
         else if (context)
         {
             obj->mstate1 =
                 obj->mstate2 =
-                        dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
+                        dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
         }
     }
 
@@ -152,9 +152,9 @@ public:
 
 protected:
     /// First model mechanical state
-    core::componentmodel::behavior::MechanicalState<DataTypes> *mstate1;
+    core::behavior::MechanicalState<DataTypes> *mstate1;
     /// Second model mechanical state
-    core::componentmodel::behavior::MechanicalState<DataTypes> *mstate2;
+    core::behavior::MechanicalState<DataTypes> *mstate2;
     /// output file
     std::ofstream* outfile;
     /// time value for the distance computations

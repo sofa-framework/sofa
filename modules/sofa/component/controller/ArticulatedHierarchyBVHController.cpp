@@ -117,19 +117,19 @@ void ArticulatedHierarchyBVHController::applyController(void)
             ArtVecIt itEnd = (*artCenterIt)->articulations.end();
             while (it != itEnd)
             {
-                std::vector< core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* > articulatedObjects;
+                std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* > articulatedObjects;
 
                 sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
                 if (curNode)
-                    curNode->getTreeObjects<core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>, std::vector< core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* > >(&articulatedObjects);
+                    curNode->getTreeObjects<core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>, std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* > >(&articulatedObjects);
 
                 if (!articulatedObjects.empty())
                 {
                     // Reference potential initial articulations value for interaction springs
                     // and Current articulation value at the coresponding artculation
 
-                    std::vector< core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjIt = articulatedObjects.begin();
-                    std::vector< core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
+                    std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjIt = articulatedObjects.begin();
+                    std::vector< core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>* >::iterator articulatedObjItEnd = articulatedObjects.end();
 
                     //	while (articulatedObjIt != articulatedObjItEnd)
                     if ((*it)->translation.getValue())

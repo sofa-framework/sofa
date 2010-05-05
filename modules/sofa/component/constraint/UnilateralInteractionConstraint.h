@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>
@@ -42,7 +42,7 @@ namespace component
 namespace constraint
 {
 #ifdef SOFA_DEV
-class UnilateralConstraintResolution : public core::componentmodel::behavior::ConstraintResolution
+class UnilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
     virtual void resolution(int line, double** w, double* d, double* force)
@@ -55,7 +55,7 @@ public:
     }
 };
 
-class UnilateralConstraintResolutionWithFriction : public core::componentmodel::behavior::ConstraintResolution
+class UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
     UnilateralConstraintResolutionWithFriction(double mu, std::deque<double>* vec=NULL) : _mu(mu), _vec(vec) { nbLines=3; }
@@ -82,10 +82,10 @@ protected:
 #endif // SOFA_DEV	
 
 template<class DataTypes>
-class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
+class UnilateralInteractionConstraint : public core::behavior::InteractionConstraint
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UnilateralInteractionConstraint,DataTypes), core::componentmodel::behavior::InteractionConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(UnilateralInteractionConstraint,DataTypes), core::behavior::InteractionConstraint);
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -94,19 +94,19 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef core::componentmodel::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstDeriv ConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstArea ConstArea;
+    typedef core::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::behavior::BaseConstraint::ConstDeriv ConstDeriv;
+    typedef core::behavior::BaseConstraint::ConstArea ConstArea;
 
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstArea VecConstArea;
+    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
+    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
 protected:
     MechanicalState* object1;
@@ -164,8 +164,8 @@ public:
 
     MechanicalState* getObject1() { return object1; }
     MechanicalState* getObject2() { return object2; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
+    core::behavior::BaseMechanicalState* getMechModel1() { return object1; }
+    core::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     void clear(int reserve = 0)
     {
@@ -194,7 +194,7 @@ public:
     virtual void getConstraintInfo(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas);
 
 #ifdef SOFA_DEV
-    virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif
     // Previous Constraint Interface
     virtual void projectResponse() {}
@@ -219,14 +219,14 @@ public:
             if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
                 return false;
         }
-        return core::componentmodel::behavior::InteractionConstraint::canCreate(obj, context, arg);
+        return core::behavior::InteractionConstraint::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::componentmodel::behavior::InteractionConstraint::create(obj, context, arg);
+        core::behavior::InteractionConstraint::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));

@@ -28,7 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/collision/PointModel.h>
 
@@ -128,7 +128,7 @@ public:
 
     bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
     //virtual const char* getTypeName() const { return "Line"; }
 
@@ -150,7 +150,7 @@ public:
 
 protected:
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<Vec3Types>* mstate;
     Topology* topology;
     PointModel* mpoints;
     int meshRevision;

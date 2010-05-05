@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_TREE_STATECHANGEACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa
 {
@@ -38,7 +38,7 @@ class SOFA_SIMULATION_COMMON_API StateChangeVisitor : public Visitor
 {
 
 public:
-    StateChangeVisitor(core::componentmodel::topology::Topology* source);
+    StateChangeVisitor(core::topology::Topology* source);
 
     virtual void processStateChange(core::objectmodel::BaseObject* obj);
 
@@ -54,7 +54,7 @@ public:
 
 protected:
     bool root;
-    core::componentmodel::topology::Topology* source;
+    core::topology::Topology* source;
 };
 
 

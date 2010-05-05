@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/behavior/Mass.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
 #ifdef SOFA_SMP
@@ -426,8 +426,6 @@ struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord > : publi
 
 namespace core
 {
-namespace componentmodel
-{
 namespace behavior
 {
 /// Specialization of the inertia force for defaulttype::RigidTypes
@@ -456,8 +454,6 @@ defaulttype::LaparoscopicRigid3Types::Coord,
 }
 
 } // namespace behavoir
-
-} // namespace componentmodel
 
 } // namespace core
 

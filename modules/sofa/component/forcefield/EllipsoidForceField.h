@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
@@ -46,12 +46,12 @@ public:
 };
 
 template<class DataTypes>
-class EllipsoidForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class EllipsoidForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(EllipsoidForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(EllipsoidForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

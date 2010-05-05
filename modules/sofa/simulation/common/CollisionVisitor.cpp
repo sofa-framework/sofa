@@ -42,7 +42,7 @@ void CollisionVisitor::processCollisionPipeline(simulation::Node*
 #ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
-        , core::componentmodel::collision::Pipeline* obj)
+        , core::collision::Pipeline* obj)
 {
     //std::cerr<<"CollisionVisitor::processCollisionPipeline"<<std::endl;
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -77,7 +77,7 @@ void CollisionResetVisitor::processCollisionPipeline(simulation::Node*
 #ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
-        , core::componentmodel::collision::Pipeline* obj)
+        , core::collision::Pipeline* obj)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionReset");
@@ -93,7 +93,7 @@ void CollisionDetectionVisitor::processCollisionPipeline(simulation::Node*
 #ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
-        , core::componentmodel::collision::Pipeline* obj)
+        , core::collision::Pipeline* obj)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionDetection");
@@ -109,7 +109,7 @@ void CollisionResponseVisitor::processCollisionPipeline(simulation::Node*
 #ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
-        , core::componentmodel::collision::Pipeline* obj)
+        , core::collision::Pipeline* obj)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionResponse");
@@ -123,13 +123,13 @@ void CollisionResponseVisitor::processCollisionPipeline(simulation::Node*
 
 #ifdef SOFA_SMP
 
-void ParallelCollisionVisitor::processCollisionPipeline(simulation::Node*, core::componentmodel::collision::ParallelPipeline* obj)
+void ParallelCollisionVisitor::processCollisionPipeline(simulation::Node*, core::collision::ParallelPipeline* obj)
 {
     obj->parallelComputeCollisions();
 }
-void ParallelCollisionVisitor::processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj)
+void ParallelCollisionVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
 {
-    core::componentmodel::collision::ParallelPipeline* p = dynamic_cast<core::componentmodel::collision::ParallelPipeline*>(obj);
+    core::collision::ParallelPipeline* p = dynamic_cast<core::collision::ParallelPipeline*>(obj);
     if (p)
         processCollisionPipeline(node, p);
 }

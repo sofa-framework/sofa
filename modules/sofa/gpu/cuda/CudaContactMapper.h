@@ -62,7 +62,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using sofa::core::componentmodel::collision::GPUDetectionOutputVector;
+using sofa::core::collision::GPUDetectionOutputVector;
 
 
 /// Mapper for CudaRigidDistanceGridCollisionModel

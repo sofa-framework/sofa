@@ -37,7 +37,7 @@ namespace topology
 {
 class QuadSetTopologyContainer;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::QuadID QuadID;
 typedef BaseMeshTopology::Quad Quad;
 typedef BaseMeshTopology::SeqQuads SeqQuads;

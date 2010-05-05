@@ -160,7 +160,7 @@ double Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
 }
 
 
-void Visitor::printVector(core::componentmodel::behavior::BaseMechanicalState *mm, core::VecId id)
+void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::VecId id)
 {
     if (id.type != core::VecId::V_COORD && id.type != core::VecId::V_DERIV) return;
     std::ostringstream infoStream;
@@ -270,7 +270,7 @@ void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
     using std::endl;
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     cerr<<"Visitor "<<getClassName()<<" enter component "<<obj->getName();
-    using core::componentmodel::behavior::BaseMechanicalState;
+    using core::behavior::BaseMechanicalState;
     if( BaseMechanicalState* dof = dynamic_cast<BaseMechanicalState*> ( obj->getContext()->getMechanicalState() ) )
     {
         cerr<<", state:\nx= "; dof->writeX(cerr);
@@ -287,7 +287,7 @@ void Visitor::debug_write_state_after( core::objectmodel::BaseObject* obj )
     using std::endl;
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     cerr<<"Visitor "<<getClassName()<<" leave component "<<obj->getName();
-    using core::componentmodel::behavior::BaseMechanicalState;
+    using core::behavior::BaseMechanicalState;
     if( BaseMechanicalState* dof = dynamic_cast<BaseMechanicalState*> ( obj->getContext()->getMechanicalState() ) )
     {
         cerr<<", state:\nx= "; dof->writeX(cerr);

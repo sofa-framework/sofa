@@ -25,9 +25,9 @@
 #include <sofa/component/mapping/ImplicitSurfaceMapping.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
 
 namespace sofa
 {
@@ -39,7 +39,7 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 SOFA_DECL_CLASS(ImplicitSurfaceMapping)
 

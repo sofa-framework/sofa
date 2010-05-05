@@ -287,8 +287,8 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
             {
             typedefFile << "\
             //Default files needed to create a Mapping\n\
-#include <sofa/core/componentmodel/behavior/State.h>\n\
-#include <sofa/core/componentmodel/behavior/MappedModel.h>\n\
+#include <sofa/core/behavior/State.h>\n\
+#include <sofa/core/behavior/MappedModel.h>\n\
 #include <sofa/core/Mapping.h>\n\
 ";
 }
@@ -296,8 +296,8 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
 {
     typedefFile << "\
 //Default files needed to create a Mechanical Mapping\n\
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>\n\
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>\n\
+#include <sofa/core/behavior/MechanicalState.h>\n\
+#include <sofa/core/behavior/MechanicalMapping.h>\n\
 ";
 }
     typedefFile << "\n\n";

@@ -117,7 +117,7 @@ template <class DataTypes>
 bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 {
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
+    core::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
     int index;
     if (picked.body)
     {
@@ -143,7 +143,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 
             simulation::Node *mappedNode=(simulation::Node *) mstateCollision->getContext();
             simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
-            core::componentmodel::behavior::BaseMechanicalState *mainDof=dynamic_cast<core::componentmodel::behavior::BaseMechanicalState *>(mainNode->getMechanicalState());
+            core::behavior::BaseMechanicalState *mainDof=dynamic_cast<core::behavior::BaseMechanicalState *>(mainNode->getMechanicalState());
             const core::objectmodel::TagSet &tags=mainDof->getTags();
             for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
             {
@@ -156,7 +156,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
     }
     else
     {
-        mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
+        mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
         index = picked.indexCollisionElement;
         if (!mstateCollision)
         {

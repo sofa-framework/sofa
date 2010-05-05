@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/component.h>
@@ -48,11 +48,11 @@ public:
 };
 
 template<class DataTypes>
-class PlaneForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class PlaneForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PlaneForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE(PlaneForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -101,7 +101,7 @@ public:
         planeD.setValue( d / n );
     }
 
-    void setMState(  core::componentmodel::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
+    void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 
     void setStiffness(Real stiff)
     {

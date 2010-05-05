@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MISC_WRITESTATE_H
 #define SOFA_COMPONENT_MISC_WRITESTATE_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -74,7 +74,7 @@ public:
     Data < double > f_keperiod;
 
 protected:
-    core::componentmodel::behavior::BaseMechanicalState* mmodel;
+    core::behavior::BaseMechanicalState* mmodel;
     std::ofstream* outfile;
 #ifdef SOFA_HAVE_ZLIB
     gzFile gzfile;
@@ -102,7 +102,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::BaseMechanicalState*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -131,7 +131,7 @@ protected:
 
     int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
 
-    void addWriteState(sofa::core::componentmodel::behavior::BaseMechanicalState*ms, simulation::Node* gnode);
+    void addWriteState(sofa::core::behavior::BaseMechanicalState*ms, simulation::Node* gnode);
 
 };
 

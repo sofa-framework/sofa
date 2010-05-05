@@ -46,7 +46,7 @@ template <>
 void RestShapeSpringsForceField<Rigid3dTypes>::init()
 {
 
-    core::componentmodel::behavior::ForceField<Rigid3dTypes>::init();
+    core::behavior::ForceField<Rigid3dTypes>::init();
 
     if (points.getValue().size()==0)
     {
@@ -278,7 +278,7 @@ template <>
 void RestShapeSpringsForceField<Rigid3fTypes>::init()
 {
 
-    core::componentmodel::behavior::ForceField<Rigid3fTypes>::init();
+    core::behavior::ForceField<Rigid3fTypes>::init();
 
     if (points.getValue().size()==0)
     {

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_PCGLinearSolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_PCGLinearSolver_H
 
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
 
@@ -51,7 +51,7 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
@@ -60,7 +60,7 @@ public:
     Data<bool> use_precond;
     Data< helper::vector< std::string > > f_preconditioners;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
-    std::vector<sofa::core::componentmodel::behavior::LinearSolver*> preconditioners;
+    std::vector<sofa::core::behavior::LinearSolver*> preconditioners;
 
     PCGLinearSolver();
 

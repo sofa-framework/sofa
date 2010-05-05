@@ -28,8 +28,8 @@
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/topology/PointData.inl>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/Topology.h>
 
 #include <sofa/simulation/common/Node.h>
 
@@ -50,7 +50,7 @@ void PointInfo::buildFilter(unsigned int p_index)
 {
     using sofa::simulation::Node;
     using sofa::helper::vector;
-    using sofa::core::componentmodel::topology::BaseMeshTopology;
+    using sofa::core::topology::BaseMeshTopology;
 
 
     bool debug=false;
@@ -209,7 +209,7 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 
 void PointLocalMinDistanceFilter::init()
 {
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
 
     if (bmt != 0)
     {
@@ -226,12 +226,12 @@ void PointLocalMinDistanceFilter::init()
 
 void PointLocalMinDistanceFilter::handleTopologyChange()
 {
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
 
     assert(bmt != 0);
 
-    std::list< const core::componentmodel::topology::TopologyChange * >::const_iterator itBegin = bmt->firstChange();
-    std::list< const core::componentmodel::topology::TopologyChange * >::const_iterator itEnd = bmt->lastChange();
+    std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->firstChange();
+    std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->lastChange();
 
     m_pointInfo.handleTopologyEvents(itBegin, itEnd);
 }
@@ -245,7 +245,7 @@ void PointLocalMinDistanceFilter::LMDFilterPointCreationFunction(int /*pointInde
     const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
     pInfo.setLMDFilters(pLMDFilter);
 
-    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());

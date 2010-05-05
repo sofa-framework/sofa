@@ -24,12 +24,12 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/LocalMinDistance.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/collision/Intersection.inl>
 //#include <sofa/component/collision/RayPickInteractor.h>
 #include <iostream>
 #include <algorithm>
@@ -53,10 +53,10 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 using namespace helper;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID			PointID;
 
 SOFA_DECL_CLASS(LocalMinDistance)
@@ -173,14 +173,14 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
         else
         {
             /*
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e1_cfa != 0)
             {
             	if (!e1_cfa->validate(e1, PQ))
             		return false;
             }
 
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e2_cfa != 0)
             {
             	Vector3 QP = -PQ;
@@ -290,11 +290,11 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     else
     {
         /*
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e1_cfa != 0)
         {
 
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e2_cfa != 0)
         {
         	Vector3 QP = -PQ;
@@ -399,14 +399,14 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
         else
         {
             /*
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e1_cfa != 0)
             {
             	if (!e1_cfa->validate(e1, PQ))
             		return false;
             }
 
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e2_cfa != 0)
             {
             	Vector3 QP = -PQ;
@@ -481,14 +481,14 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     else
     {
         /*
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e1_cfa != 0)
         {
         	if (!e1_cfa->validate(e1, PQ))
         		return 0;
         }
 
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e2_cfa != 0)
         {
         	if (!e2_cfa->validate(e2, QP))
@@ -573,14 +573,14 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
         else
         {
             /*
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e1_cfa != 0)
             {
             	if (!e1_cfa->validate(e1, PQ))
             		return false;
             }
 
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e2_cfa != 0)
             {
             	Vector3 QP = -PQ;
@@ -650,14 +650,14 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     else
     {
         /*
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e1_cfa != 0)
         {
         	if (!e1_cfa->validate(e1, PQ))
         		return 0;
         }
 
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e2_cfa != 0)
         {
         	if (!e2_cfa->validate(e2, QP))
@@ -723,14 +723,14 @@ bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
         else
         {
             /*
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e1_cfa != 0)
             {
             	if (!e1_cfa->validate(e1, PQ))
             		return false;
             }
 
-            core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+            core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
             if (e2_cfa != 0)
             {
             	Vector3 QP = -PQ;
@@ -783,14 +783,14 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     else
     {
         /*
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e1_cfa != 0)
         {
         	if (!e1_cfa->validate(e1, PQ))
         		return 0;
         }
 
-        core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
+        core::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e2_cfa != 0)
         {
         	Vector3 QP = -PQ;

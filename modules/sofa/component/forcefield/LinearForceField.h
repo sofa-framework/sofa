@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_LINEARFORCEFIELD_H
 #define SOFA_COMPONENT_LINEARFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-// #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+// #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/topology/PointSubset.h>
 
 namespace sofa
@@ -40,12 +40,12 @@ namespace forcefield
 /** Apply forces changing to given degres of freedom. Some keyTimes are given
  * and the force to be applied is linearly interpolated between keyTimes. */
 template<class DataTypes>
-class LinearForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class LinearForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LinearForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(LinearForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

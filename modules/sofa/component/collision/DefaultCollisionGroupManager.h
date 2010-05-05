@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 #define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 
-#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
+#include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/component.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
@@ -40,10 +40,10 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
+class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::collision::CollisionGroupManager
 {
 public:
-    SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::componentmodel::collision::CollisionGroupManager);
+    SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
     typedef std::set<simulation::Node*> GroupSet;
     GroupSet groupSet;
@@ -52,7 +52,7 @@ public:
 
     virtual ~DefaultCollisionGroupManager();
 
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
+    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact*>& contacts);
 
     virtual void clearGroups(core::objectmodel::BaseContext* scene)=0;
 
@@ -71,7 +71,7 @@ protected:
 
     virtual void changeInstance(Instance inst)
     {
-        core::componentmodel::collision::CollisionGroupManager::changeInstance(inst);
+        core::collision::CollisionGroupManager::changeInstance(inst);
         storedGroupSet[instance].swap(groupSet);
         groupSet.swap(storedGroupSet[inst]);
     }

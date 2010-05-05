@@ -30,7 +30,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/misc/DevMonitor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa
 {
@@ -64,12 +64,12 @@ public:
     {
         if (arg->getAttribute("object"))
         {
-            if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object",".."))) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object",".."))) == NULL)
                 return false;
         }
         else
         {
-            if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
                 return false;
         }
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
@@ -82,7 +82,7 @@ public:
         core::objectmodel::BaseObject::create(obj, context, arg);
         if (arg && (arg->getAttribute("object")))
         {
-            obj->mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object","..")));
+            obj->mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object","..")));
         }
     }
 
@@ -97,7 +97,7 @@ public:
     }
 protected:
 
-    core::componentmodel::behavior::MechanicalState<DataTypes> *mstate;
+    core::behavior::MechanicalState<DataTypes> *mstate;
 
 };
 

@@ -40,7 +40,7 @@ namespace component
 namespace odesolver
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace sofa::defaulttype;
 
 int RungeKutta2SolverClass = core::RegisterObject("A popular explicit time integrator")
@@ -78,7 +78,7 @@ void RungeKutta2Solver::solve(double dt)
 #else // single-operation optimization
     {
 
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newX;
@@ -104,7 +104,7 @@ void RungeKutta2Solver::solve(double dt)
     solveConstraint(dt,VecId::velocity());
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)pos;

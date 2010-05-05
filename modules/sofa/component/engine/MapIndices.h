@@ -27,7 +27,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -42,8 +42,8 @@ namespace component
 namespace engine
 {
 
-using namespace core::componentmodel::behavior;
-using namespace core::componentmodel::topology;
+using namespace core::behavior;
+using namespace core::topology;
 using namespace core::objectmodel;
 
 /**

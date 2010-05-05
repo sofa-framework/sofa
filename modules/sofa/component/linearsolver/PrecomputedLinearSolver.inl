@@ -36,7 +36,7 @@
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
@@ -44,7 +44,7 @@
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/container/RotationFinder.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>

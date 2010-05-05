@@ -84,8 +84,8 @@ protected:
     int _nbPlanesOld;
 
 
-    core::componentmodel::topology::BaseMeshTopology*	_topology;
-    core::componentmodel::behavior::BaseMechanicalState* _mstate;
+    core::topology::BaseMeshTopology*	_topology;
+    core::behavior::BaseMechanicalState* _mstate;
 
     unsigned char *texture_data;
     float r,g,b;
@@ -104,7 +104,7 @@ protected:
     Real _planeSeparations;
     void computePlaneSeparations();
 
-    typedef core::componentmodel::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef std::pair< Coord , Coord > Intersection; // position, texture coord
     typedef std::map< Edge, Intersection > EdgesMap;
 

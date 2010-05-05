@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERATTACHCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERATTACHCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
+#include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/component/constraint/LagrangianMultiplierConstraint.h>
 #include <vector>
 
@@ -40,12 +40,12 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierAttachConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
+class LagrangianMultiplierAttachConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::behavior::PairInteractionForceField<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(LagrangianMultiplierAttachConstraint,DataTypes),SOFA_TEMPLATE(LagrangianMultiplierConstraint, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(LagrangianMultiplierAttachConstraint,DataTypes),SOFA_TEMPLATE(LagrangianMultiplierConstraint, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
 
-    typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
+    typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -54,7 +54,7 @@ public:
     typedef defaulttype::StdVectorTypes<Real, Real, Real> LMTypes;
     typedef typename LMTypes::VecCoord LMVecCoord;
     typedef typename LMTypes::VecDeriv LMVecDeriv;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
     struct ConstraintData

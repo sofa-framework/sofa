@@ -32,7 +32,7 @@
 #include <sofa/component/collision/Line.h>
 #include <sofa/component/collision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/core/componentmodel/collision/DetectionOutput.h>
+#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/RayTraceDetection.h>
 #include <sofa/simulation/common/Node.h>
@@ -54,7 +54,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 using namespace collision;
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
@@ -104,14 +104,14 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
 
     /* get the output vector for a TriangleOctreeModel, TriangleOctreeModel Collision*/
     /*Get the cube representing the bounding box of both Models */
-    sofa::core::componentmodel::collision::DetectionOutputVector *& contacts=outputsMap[std::make_pair(tm1, tm2)];
+    sofa::core::collision::DetectionOutputVector *& contacts=outputsMap[std::make_pair(tm1, tm2)];
 
 
 
     if (contacts == NULL)
     {
         contacts = new
-        sofa::core::componentmodel::collision::TDetectionOutputVector <
+        sofa::core::collision::TDetectionOutputVector <
         TriangleOctreeModel, TriangleOctreeModel >;
 
     }
@@ -263,7 +263,7 @@ void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
             continue;
 
         bool swapModels = false;
-        core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
+        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
         if (intersector == NULL)
             continue;
 
@@ -324,7 +324,7 @@ void RayTraceDetection::draw ()
         TDetectionOutputVector < TriangleOctreeModel,
                                TriangleOctreeModel > *outputs =
                                        static_cast <
-                                       sofa::core::componentmodel::collision::TDetectionOutputVector <
+                                       sofa::core::collision::TDetectionOutputVector <
                                        TriangleOctreeModel, TriangleOctreeModel > *>(it->second);
         for (TDetectionOutputVector < TriangleOctreeModel,
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();

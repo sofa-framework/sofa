@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_HERMITESPLINECONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_HERMITESPLINECONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointSubset.h>
 
@@ -52,10 +52,10 @@ using namespace sofa::defaulttype;
 	  - acceleration curve on the trajectory
 	*/
 template <class DataTypes>
-class HermiteSplineConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class HermiteSplineConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HermiteSplineConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(HermiteSplineConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -95,7 +95,7 @@ public:
 public:
     HermiteSplineConstraint();
 
-    HermiteSplineConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
+    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
 
     ~HermiteSplineConstraint();
 

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_H
 
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/component.h>
 
 namespace sofa { namespace core { namespace componentmodel { namespace topology { class BaseMeshTopology; } } } }
@@ -51,10 +51,10 @@ using namespace sofa::defaulttype;
  * Each surfel receives a pressure in the direction of its normal.
  */
 template<class DataTypes>
-class SurfacePressureForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class SurfacePressureForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SurfacePressureForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(SurfacePressureForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -66,7 +66,7 @@ public:
 
 protected:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     Data< Real >	m_pressure;					///< Scalar pressure value applied on the surfaces.
     Data< Coord >	m_min;						///< Lower bound of the pressured box.

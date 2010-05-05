@@ -45,7 +45,7 @@ namespace component
 namespace engine
 {
 
-//  using namespace sofa::core::componentmodel::topology;
+//  using namespace sofa::core::topology;
 using namespace sofa::defaulttype;
 
 /**

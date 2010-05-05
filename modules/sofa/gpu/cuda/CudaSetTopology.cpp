@@ -68,7 +68,7 @@ namespace topology
 using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::gpu::cuda;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 SOFA_DECL_CLASS(CudaSetTopology)
 

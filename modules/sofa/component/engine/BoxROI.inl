@@ -45,7 +45,7 @@ namespace engine
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace core::objectmodel;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
@@ -94,7 +94,7 @@ void BoxROI<DataTypes>::init()
         }
         else
         {
-            core::componentmodel::loader::MeshLoader* loader = NULL;
+            core::loader::MeshLoader* loader = NULL;
             this->getContext()->get(loader);
             if (loader)
             {

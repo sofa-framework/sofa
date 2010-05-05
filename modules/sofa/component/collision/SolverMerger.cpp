@@ -49,9 +49,9 @@ namespace component
 
 namespace collision
 {
-using sofa::core::componentmodel::behavior::OdeSolver;
-using sofa::core::componentmodel::behavior::LinearSolver;
-using sofa::core::componentmodel::behavior::ConstraintSolver;
+using sofa::core::behavior::OdeSolver;
+using sofa::core::behavior::LinearSolver;
+using sofa::core::behavior::ConstraintSolver;
 
 namespace solvermergers
 {
@@ -293,7 +293,7 @@ SolverSet createSolverEulerImplicitCGImplicit(odesolver::EulerImplicitSolver& so
 
 using namespace solvermergers;
 
-SolverSet SolverMerger::merge(core::componentmodel::behavior::OdeSolver* solver1, core::componentmodel::behavior::OdeSolver* solver2)
+SolverSet SolverMerger::merge(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2)
 {
     static SolverMerger instance;
     SolverSet obj=instance.solverDispatcher.go(*solver1, *solver2);

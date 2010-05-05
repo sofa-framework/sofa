@@ -67,10 +67,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
-    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<typename IdentityContactMapper::DataTypes> MMechanicalState;
+    typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::behavior::MechanicalState<typename IdentityContactMapper::DataTypes> MMechanicalState;
     typedef component::container::MechanicalObject<typename IdentityContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::IdentityMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    typedef mapping::IdentityMapping< core::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     MMapping* mapping;
 
@@ -124,8 +124,8 @@ public:
     typedef typename MCollisionModel::InDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MMechanicalState;
     MCollisionModel* model;
 
     IdentityContactMapper()

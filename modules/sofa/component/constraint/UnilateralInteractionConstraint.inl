@@ -400,7 +400,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(VecConstraint
 
 #ifdef SOFA_DEV
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(unsigned int i=0; i<contacts.size(); i++)
     {

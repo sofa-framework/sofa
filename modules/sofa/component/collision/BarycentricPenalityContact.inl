@@ -37,7 +37,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::collision;
+using namespace core::collision;
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)

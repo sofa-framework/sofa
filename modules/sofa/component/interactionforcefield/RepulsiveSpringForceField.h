@@ -54,7 +54,7 @@ public:
     enum { N = Inherit::N };
 public:
 
-    RepulsiveSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
+    RepulsiveSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
         : forcefield::StiffSpringForceField<DataTypes>(object1, object2)
     {
     }

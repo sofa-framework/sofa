@@ -125,7 +125,7 @@ protected:
     Data< int > nz;
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
+    core::behavior::MechanicalState<RigidTypes>* rigid;
 
     void updateGrid();
 public:
@@ -140,8 +140,8 @@ public:
 
     ~RigidDistanceGridCollisionModel();
 
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
     void init();
 
@@ -421,8 +421,8 @@ protected:
     Data< int > nz;
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* ffd;
-    core::componentmodel::topology::BaseMeshTopology* ffdMesh;
+    core::behavior::MechanicalState<Vec3Types>* ffd;
+    core::topology::BaseMeshTopology* ffdMesh;
     //topology::RegularGridTopology* ffdGrid;
     topology::RegularGridTopology* ffdRGrid;
     topology::SparseGridTopology* ffdSGrid;
@@ -441,13 +441,13 @@ public:
 
     ~FFDDistanceGridCollisionModel();
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
-    core::componentmodel::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
+    core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
+    core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
 
     // alias used by ContactMapper
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::componentmodel::topology::BaseMeshTopology* getMeshTopology() { return ffdMesh; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
+    core::topology::BaseMeshTopology* getMeshTopology() { return ffdMesh; }
 
     void init();
 

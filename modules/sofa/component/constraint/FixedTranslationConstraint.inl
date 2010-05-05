@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDTRANSLATIONCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDTRANSLATIONCONSTRAINT_INL
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/constraint/FixedTranslationConstraint.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/behavior/Constraint.inl>
 
 namespace sofa
 {
@@ -40,10 +40,10 @@ namespace constraint
 {
 
 using namespace sofa::core::objectmodel;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::helper;
 
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 // Define TestNewPointFunction
 template< class DataTypes>
@@ -74,7 +74,7 @@ void FixedTranslationConstraint<DataTypes>::FCRemovalFunction(int pointIndex, vo
 
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
-    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    : core::behavior::Constraint<DataTypes>(NULL)
     , f_indices( BaseObject::initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( BaseObject::initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , _drawSize( BaseObject::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
@@ -126,7 +126,7 @@ void FixedTranslationConstraint<DataTypes>::removeIndex(unsigned int index)
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 

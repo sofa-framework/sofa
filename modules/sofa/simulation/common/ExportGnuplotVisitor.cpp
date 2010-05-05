@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 
 namespace sofa

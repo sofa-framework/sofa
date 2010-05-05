@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGSPRINGS_INL
 
 #include <sofa/component/forcefield/QuadBendingSprings.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 
 namespace sofa
@@ -38,7 +38,7 @@ namespace component
 namespace forcefield
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
@@ -102,14 +102,14 @@ void QuadBendingSprings<DataTypes>::init()
     std::map< IndexPair, IndexPair > edgeMap;
     std::set< IndexPair > springSet;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );
 
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
     //sout<<"==================================QuadBendingSprings<DataTypes>::init(), quads size = "<<quads.size()<<sendl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& face = quads[i];
+        const sofa::core::topology::BaseMeshTopology::Quad& face = quads[i];
         {
             registerEdge( std::make_pair(face[0], face[1]), std::make_pair(face[3], face[2]), edgeMap, springSet );
             registerEdge( std::make_pair(face[1], face[2]), std::make_pair(face[0], face[3]), edgeMap, springSet );

@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_H
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -44,12 +44,12 @@ namespace mass
 using namespace sofa::defaulttype;
 
 template <class DataTypes, class TMassType>
-class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>
+class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType), SOFA_TEMPLATE(core::componentmodel::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
-    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
+    typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MasterSolverImpl.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 
@@ -52,7 +52,7 @@ using namespace helper::system::thread;
 class SOFA_COMPONENT_MASTERSOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::MechanicalVisitor
 {
 public:
-    MechanicalGetConstraintResolutionVisitor(std::vector<core::componentmodel::behavior::ConstraintResolution*>& res, unsigned int offset = 0)
+    MechanicalGetConstraintResolutionVisitor(std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset = 0)
         : _res(res),_offset(offset)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -61,7 +61,7 @@ public:
         //serr<<"creation of the visitor"<<sendl;
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
     {
         //serr<<"fwdConstraint called on "<<c->getName()<<sendl;
 
@@ -77,7 +77,7 @@ public:
     }
 #endif
 private:
-    std::vector<core::componentmodel::behavior::ConstraintResolution*>& _res;
+    std::vector<core::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;
 };
 
@@ -92,7 +92,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
     {
         ctime_t t0 = begin(node, c);
 //		  unsigned int temp = contactId;
@@ -131,7 +131,7 @@ public:
 #endif
     }
 
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(simulation::Node* node, core::behavior::BaseMechanicalMapping* map)
     {
         ctime_t t0 = begin(node, map);
         map->accumulateConstraint();
@@ -160,7 +160,7 @@ class SOFA_COMPONENT_MASTERSOLVER_API ConstraintProblem
 private:
     LPtrFullMatrix<double> _W;
     FullVector<double> _dFree, _force, _d, _df;              // cf. These Duriez + _df for scheme correction
-    std::vector<core::componentmodel::behavior::ConstraintResolution*> _constraintsResolutions;
+    std::vector<core::behavior::ConstraintResolution*> _constraintsResolutions;
     double _tol;
     int _dim;
     CTime *_timer;
@@ -176,7 +176,7 @@ public:
     inline FullVector<double>* getD(void) {return &_d;};
     inline FullVector<double>* getF(void) {return &_force;};
     inline FullVector<double>* getdF(void) {return &_df;};
-    inline std::vector<core::componentmodel::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;};
+    inline std::vector<core::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;};
     inline double *getTolerance(void) {return &_tol;};
 
     void gaussSeidelConstraintTimed(double &timeout, int numItMax);
@@ -236,13 +236,13 @@ private:
 
 
     /// method for predictive scheme:
-    void computePredictiveForce(int dim, double* force, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res);
+    void computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res);
 
 
 
-    void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res, double* df);
+    void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::behavior::ConstraintResolution*>& res, double* df);
 
-    std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> constraintCorrections;
+    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 
 
     bool bufCP1;

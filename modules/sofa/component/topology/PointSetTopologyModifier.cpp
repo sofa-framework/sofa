@@ -44,12 +44,12 @@ int PointSetTopologyModifierClass = core::RegisterObject("Point set topology mod
 
 using namespace std;
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 void PointSetTopologyModifier::init()
 {
-    core::componentmodel::topology::TopologyModifier::init();
+    core::topology::TopologyModifier::init();
     this->getContext()->get(m_container);
 }
 
@@ -183,7 +183,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     sofa::simulation::TopologyChangeVisitor a(m_container);
 
 // std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
-// for( std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator it = m_container->firstChange(); it != m_container->lastChange(); it++)
+// for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->firstChange(); it != m_container->lastChange(); it++)
 // std:: cout << (*it)->getChangeType() << std::endl;
 
     getContext()->executeVisitor(&a);
@@ -203,7 +203,7 @@ void PointSetTopologyModifier::propagateStateChanges()
 
 void PointSetTopologyModifier::notifyEndingEvent()
 {
-    sofa::core::componentmodel::topology::EndingEvent *e=new sofa::core::componentmodel::topology::EndingEvent();
+    sofa::core::topology::EndingEvent *e=new sofa::core::topology::EndingEvent();
     m_container->addTopologyChange(e);
 }
 

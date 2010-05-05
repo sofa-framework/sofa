@@ -29,7 +29,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>

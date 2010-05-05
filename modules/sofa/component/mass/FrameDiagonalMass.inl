@@ -47,7 +47,7 @@ namespace mass
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 template <class DataTypes, class MassType>
@@ -360,7 +360,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
     for ( unsigned int i=0; i<masses.size(); i++ )
     {
         Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
-        f[i] += theGravity*masses[i] + fDamping; //  + core::componentmodel::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
+        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
     }
 }
 

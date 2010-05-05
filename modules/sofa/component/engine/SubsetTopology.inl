@@ -45,7 +45,7 @@ namespace engine
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace core::objectmodel;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 template <class DataTypes>
 SubsetTopology<DataTypes>::SubsetTopology()
@@ -100,7 +100,7 @@ void SubsetTopology<DataTypes>::init()
             }
             else
             {
-                core::componentmodel::loader::MeshLoader* loader = NULL;
+                core::loader::MeshLoader* loader = NULL;
                 this->getContext()->get(loader);
                 if (loader)
                 {

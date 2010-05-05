@@ -108,7 +108,7 @@ public:
     virtual void reinit();
 
     // handle topological changes
-    virtual void handleTopologyChange(core::componentmodel::topology::Topology*);
+    virtual void handleTopologyChange(core::topology::Topology*);
 
 protected:
     /// condensate matrice from finest level to the actual mechanical level

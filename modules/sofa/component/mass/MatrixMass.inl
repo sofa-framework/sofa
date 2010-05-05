@@ -42,9 +42,9 @@ namespace mass
 {
 
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 
@@ -174,7 +174,7 @@ void MatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, c
     // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        f[i] += masses[i]*theGravity + core::componentmodel::behavior::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
+        f[i] += masses[i]*theGravity + core::behavior::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
     }
 }
 

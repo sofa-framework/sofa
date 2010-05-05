@@ -28,8 +28,8 @@
 #include <sofa/component/mapping/TubularMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MechanicalState.h>
 
 
 namespace sofa

@@ -31,13 +31,13 @@
 
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/Constraint.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
@@ -64,7 +64,7 @@ The default behavior of the fwd* and bwd* is to do nothing. Derived actions typi
 class SOFA_SIMULATION_COMMON_API MechanicalMatrixVisitor : public Visitor
 {
 public:
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -82,56 +82,56 @@ public:
     virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Process the OdeSolver
-    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_PRUNE;
     }
 
     /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* /*mass*/)
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* /*mass*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process all the BaseForceField
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* /*ff*/)
     {
         return RESULT_CONTINUE;
     }
 
 
     /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::componentmodel::behavior::InteractionForceField* ff)
+    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::InteractionForceField* ff)
     {
         return fwdForceField(node, ff);
     }
 
     /// Process all the BaseConstraint
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(simulation::Node* node, core::componentmodel::behavior::InteractionConstraint* c)
+    virtual Result fwdInteractionConstraint(simulation::Node* node, core::behavior::InteractionConstraint* c)
     {
         return fwdConstraint(node, c);
     }
@@ -151,19 +151,19 @@ public:
     virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {}
 
     /// Process the OdeSolver
-    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
     {}
 
     ///@}
@@ -190,7 +190,7 @@ public:
         : nbRow(_nbRow), nbCol(_nbCol)
     {}
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         ms->contributeToMatrixDimension(nbRow, nbCol);
         return RESULT_CONTINUE;
@@ -221,13 +221,13 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddMBK_ToMatrixVisitor"; }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         ms->setOffset(offsetOnExit);
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
     {
         if ((mat != NULL)&&(k!=0.0))
         {
@@ -240,7 +240,7 @@ public:
 
     //Masses are now added in the addMBKToMatrix call for all ForceFields
     /*
-    virtual Result fwdMass(simulation::Node*, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(simulation::Node*, core::behavior::BaseMass* mass)
     {
     if ((mat != NULL)&&(m!=0.0))
       {
@@ -252,7 +252,7 @@ public:
          }
          */
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
     {
         if (mat != NULL)
         {
@@ -281,7 +281,7 @@ public:
         offsetOnExit = _offset;
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
         mm->setOffset(offsetOnExit);
 
@@ -290,7 +290,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
     {
         if ((vect != NULL)&&(k != 0.0))
         {
@@ -301,7 +301,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
     {
         if ((vect != NULL)&&(m != 0.0))
         {
@@ -317,7 +317,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
     {
         if (vect != NULL)
         {
@@ -346,7 +346,7 @@ public:
     {
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
         if (vect!= NULL)
         {
@@ -373,7 +373,7 @@ public:
     {
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
         if (src!= NULL)
         {

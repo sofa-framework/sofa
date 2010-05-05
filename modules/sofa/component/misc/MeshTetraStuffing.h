@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/component.h>
 
 #include <sofa/helper/map.h>
@@ -57,13 +57,13 @@ public:
 
     typedef defaulttype::Vec3Types::Real Real;
     typedef defaulttype::Vec3Types::Coord Point;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Tetra Tetra;
 
     typedef defaulttype::Vec3Types::VecCoord SeqPoints;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads SeqQuads;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 
     MeshTetraStuffing();
 

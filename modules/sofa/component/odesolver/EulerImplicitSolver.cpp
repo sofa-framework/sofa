@@ -46,7 +46,7 @@ namespace odesolver
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 EulerImplicitSolver::EulerImplicitSolver()
     : f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
@@ -70,7 +70,7 @@ void EulerImplicitSolver::init()
     sofa::component::odesolver::OdeSolverImpl::init();
 }
 
-void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult)
+void EulerImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
@@ -190,7 +190,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         if (firstOrder)
         {

@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 
 #include <sofa/component/mass/UniformMass.h>
-#include <sofa/core/componentmodel/behavior/Mass.inl>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/behavior/Mass.inl>
+#include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/gl/template.h>
@@ -109,7 +109,7 @@ void UniformMass<DataTypes, MassType>::init()
 {
     loadRigidMass ( filenameMass.getFullPath() );
     if ( filenameMass.getValue().empty() ) filenameMass.setDisplayed ( false );
-    this->core::componentmodel::behavior::Mass<DataTypes>::init();
+    this->core::behavior::Mass<DataTypes>::init();
     reinit();
 }
 
@@ -117,9 +117,9 @@ void UniformMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::handleTopologyChange()
 {
-    using core::componentmodel::topology::TopologyChange;
+    using core::topology::TopologyChange;
 
-    core::componentmodel::topology::BaseMeshTopology *bmt = this->getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = this->getContext()->getMeshTopology();
 
     if ( bmt != 0 )
     {
@@ -130,7 +130,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
         {
             switch ( ( *it )->getChangeType() )
             {
-            case core::componentmodel::topology::POINTSADDED:
+            case core::topology::POINTSADDED:
                 if ( m_handleTopoChange.getValue() )
                 {
                     MassType* m = this->mass.beginEdit();
@@ -139,7 +139,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 }
                 break;
 
-            case core::componentmodel::topology::POINTSREMOVED:
+            case core::topology::POINTSREMOVED:
                 if ( m_handleTopoChange.getValue() )
                 {
                     this->totalMass.setValue ( this->mstate->getX()->size() * this->mass.getValue() );
@@ -290,7 +290,7 @@ void UniformMass<DataTypes, MassType>::addForce ( VecDeriv& vf, const VecCoord& 
     for ( unsigned int i=ibegin; i<iend; i++ )
     {
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
-        f[i] += mg + core::componentmodel::behavior::inertiaForce ( vframe,aframe,m,x[i],v[i] );
+        f[i] += mg + core::behavior::inertiaForce ( vframe,aframe,m,x[i],v[i] );
 #else
         f[i] += mg;
 #endif

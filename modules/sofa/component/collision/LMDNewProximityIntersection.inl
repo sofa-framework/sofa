@@ -30,7 +30,7 @@
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
 
@@ -45,7 +45,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 using namespace helper;
 
 template< class TFilter1, class TFilter2 >
@@ -523,7 +523,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Sphere& e2, O
 
 
     // verify the edge ordering //
-    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    sofa::core::topology::BaseMeshTopology::Edge edge[3];
     //std::cout<<"E1 & E2 verif: ";
     for (int i=0; i<3; i++)
     {

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/HexahedronFEMForceField.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
@@ -80,14 +80,14 @@ void HexahedronFEMForceField<DataTypes>::init()
     if(_alreadyInit)return;
     else _alreadyInit=true;
 
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
     if( this->getContext()->getMeshTopology()==NULL )
     {
         serr << "ERROR(HexahedronFEMForceField): object must have a Topology."<<sendl;
         return;
     }
 
-    _mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
+    _mesh = dynamic_cast<sofa::core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
     if ( _mesh==NULL)
     {
         serr << "ERROR(HexahedronFEMForceField): object must have a MeshTopology."<<sendl;

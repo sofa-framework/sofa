@@ -37,8 +37,8 @@
 #include <sofa/defaulttype/Mat.h>
 
 //Default files needed to create a Mechanical Mapping
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
 
 
 #include <sofa/component/mapping/ArticulatedSystemMapping.h>
@@ -62,111 +62,111 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ArticulatedSystemMapping
-typedef sofa::component::mapping::ArticulatedSystemMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > ArticulatedSystemMechanicalMapping2f_to_Rigid3f;
+typedef sofa::component::mapping::ArticulatedSystemMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > ArticulatedSystemMechanicalMapping2f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BarycentricMapping
-typedef sofa::component::mapping::BarycentricMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > BarycentricMechanicalMapping3f_to_Rigid3f;
-typedef sofa::component::mapping::BarycentricMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > BarycentricMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::BarycentricMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > BarycentricMechanicalMapping3f_to_Rigid3f;
+typedef sofa::component::mapping::BarycentricMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > BarycentricMechanicalMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BeamLinearMapping
-typedef sofa::component::mapping::BeamLinearMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > BeamLinearMechanicalMappingRigid3f_to_3f;
+typedef sofa::component::mapping::BeamLinearMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > BeamLinearMechanicalMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CenterOfMassMapping
-typedef sofa::component::mapping::CenterOfMassMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > CenterOfMassMechanicalMappingRigid3f_to_3f;
-typedef sofa::component::mapping::CenterOfMassMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > CenterOfMassMechanicalMappingRigid2f_to_1f;
+typedef sofa::component::mapping::CenterOfMassMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > CenterOfMassMechanicalMappingRigid3f_to_3f;
+typedef sofa::component::mapping::CenterOfMassMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > CenterOfMassMechanicalMappingRigid2f_to_1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CenterPointMechanicalMapping
-typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > CenterPointMechanicalMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > CenterPointMechanicalMechanicalMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for CurveMapping
-typedef sofa::component::mapping::CurveMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > CurveMechanicalMapping3f_to_Rigid3f;
+typedef sofa::component::mapping::CurveMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > CurveMechanicalMapping3f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ExternalInterpolationMapping
-typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > ExternalInterpolationMechanicalMapping3f_to_3f;
-typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > ExternalInterpolationMechanicalMapping1f_to_1f;
-typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > ExternalInterpolationMechanicalMapping2f_to_2f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > ExternalInterpolationMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > ExternalInterpolationMechanicalMapping1f_to_1f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > ExternalInterpolationMechanicalMapping2f_to_2f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for IdentityMapping
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > IdentityMechanicalMapping3f_to_3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > IdentityMechanicalMapping1f_to_1f;
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > IdentityMechanicalMapping2f_to_2f;
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > > > IdentityMechanicalMapping6f_to_6f;
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > IdentityMechanicalMappingRigid3f_to_Rigid3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> > > > IdentityMechanicalMappingRigid2f_to_Rigid2f;
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > IdentityMechanicalMappingRigid3f_to_3f;
-typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > IdentityMechanicalMappingRigid2f_to_1f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > IdentityMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > IdentityMechanicalMapping1f_to_1f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > IdentityMechanicalMapping2f_to_2f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > > > IdentityMechanicalMapping6f_to_6f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > IdentityMechanicalMappingRigid3f_to_Rigid3f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> > > > IdentityMechanicalMappingRigid2f_to_Rigid2f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > IdentityMechanicalMappingRigid3f_to_3f;
+typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > IdentityMechanicalMappingRigid2f_to_1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LineSetSkinningMapping
-typedef sofa::component::mapping::LineSetSkinningMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > LineSetSkinningMechanicalMappingRigid3f_to_3f;
+typedef sofa::component::mapping::LineSetSkinningMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > LineSetSkinningMechanicalMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for Mesh2PointMechanicalMapping
-typedef sofa::component::mapping::Mesh2PointMechanicalMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > Mesh2PointMechanicalMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::Mesh2PointMechanicalMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > Mesh2PointMechanicalMechanicalMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RigidMapping
-typedef sofa::component::mapping::RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > RigidMechanicalMappingRigid3f_to_3f;
-typedef sofa::component::mapping::RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > RigidMechanicalMappingRigid2f_to_1f;
+typedef sofa::component::mapping::RigidMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > RigidMechanicalMappingRigid3f_to_3f;
+typedef sofa::component::mapping::RigidMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<2, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > RigidMechanicalMappingRigid2f_to_1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RigidRigidMapping
-typedef sofa::component::mapping::RigidRigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > RigidRigidMechanicalMappingRigid3f_to_Rigid3f;
+typedef sofa::component::mapping::RigidRigidMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > RigidRigidMechanicalMappingRigid3f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SimpleTesselatedTetraMechanicalMapping
-typedef sofa::component::mapping::SimpleTesselatedTetraMechanicalMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > SimpleTesselatedTetraMechanicalMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::SimpleTesselatedTetraMechanicalMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > SimpleTesselatedTetraMechanicalMechanicalMapping3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SkinningMapping
-typedef sofa::component::mapping::SkinningMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > SkinningMechanicalMappingRigid3f_to_3f;
+typedef sofa::component::mapping::SkinningMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > SkinningMechanicalMappingRigid3f_to_3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SubsetMapping
-typedef sofa::component::mapping::SubsetMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > SubsetMechanicalMapping3f_to_3f;
-typedef sofa::component::mapping::SubsetMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > SubsetMechanicalMapping2f_to_2f;
-typedef sofa::component::mapping::SubsetMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > SubsetMechanicalMappingRigid3f_to_Rigid3f;
+typedef sofa::component::mapping::SubsetMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > SubsetMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::SubsetMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > SubsetMechanicalMapping2f_to_2f;
+typedef sofa::component::mapping::SubsetMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > SubsetMechanicalMappingRigid3f_to_Rigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TubularMapping
-typedef sofa::component::mapping::TubularMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > TubularMechanicalMappingRigid3f_to_3f;
+typedef sofa::component::mapping::TubularMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > TubularMechanicalMappingRigid3f_to_3f;
 
 
 

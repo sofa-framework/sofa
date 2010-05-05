@@ -24,9 +24,9 @@
 ******************************************************************************/
 #include <sofa/component/mapping/TubularMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -45,7 +45,7 @@ SOFA_DECL_CLASS(TubularMapping)
 
 using namespace defaulttype;
 using namespace core;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 
 // Register in the Factory

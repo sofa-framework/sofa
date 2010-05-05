@@ -84,7 +84,7 @@ protected:
 
     Data<ResizableExtVector<DataTypes> > value;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 };
 
 

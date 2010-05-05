@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_INL
 
 #include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -191,7 +191,7 @@ void IdentityMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const t
     }
     else
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
         ParticleMask::InternalStorage::const_iterator it;
         for (it=indices.begin(); it!=indices.end(); it++)
@@ -219,7 +219,7 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
     }
     else
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
         ParticleMask::InternalStorage::const_iterator it;
         for (it=indices.begin(); it!=indices.end(); it++)

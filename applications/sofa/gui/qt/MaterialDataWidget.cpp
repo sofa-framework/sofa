@@ -224,7 +224,7 @@ bool MaterialDataWidget::createWidgets()
 
 void MaterialDataWidget::readFromData()
 {
-    using namespace sofa::core::componentmodel::loader;
+    using namespace sofa::core::loader;
     const Material& material = getData()->virtualGetValue();
     _nameEdit->setText( QString( material.name.c_str() ) );
     _ambientCheckBox->setChecked( material.useAmbient );
@@ -250,7 +250,7 @@ void MaterialDataWidget::readFromData()
 }
 void MaterialDataWidget::writeToData()
 {
-    using namespace sofa::core::componentmodel::loader;
+    using namespace sofa::core::loader;
     Material* material = getData()->virtualBeginEdit();
 
     material->name      = _nameEdit->text().ascii();
@@ -315,7 +315,7 @@ void VectorMaterialDataWidget::readFromData()
 
 void VectorMaterialDataWidget::changeMaterial( int index )
 {
-    using namespace sofa::core::componentmodel::loader;
+    using namespace sofa::core::loader;
 
     _materialDataWidget->updateDataValue();
 
@@ -337,7 +337,7 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 
 void VectorMaterialDataWidget::writeToData()
 {
-    using namespace sofa::core::componentmodel::loader;
+    using namespace sofa::core::loader;
 
     _materialDataWidget->updateDataValue();
     Material mat(_currentMaterial.virtualGetValue() );

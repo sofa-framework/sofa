@@ -59,7 +59,7 @@ namespace controller
 {
 
 using namespace sofa::helper;
-using sofa::core::componentmodel::behavior::MechanicalState;
+using sofa::core::behavior::MechanicalState;
 using sofa::component::controller::ArticulatedHierarchyContainer;
 
 

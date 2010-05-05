@@ -43,7 +43,7 @@ class SOFA_CORE_API ParallelCollisionModel : public CollisionModel
 public:
 
     typedef CollisionElementIterator Iterator;
-    typedef componentmodel::topology::BaseMeshTopology Topology;
+    typedef topology::BaseMeshTopology Topology;
 
     /// Constructor
     ParallelCollisionModel()

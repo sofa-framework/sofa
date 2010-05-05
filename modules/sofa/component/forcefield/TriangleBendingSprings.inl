@@ -37,7 +37,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
 
 #include <sofa/component/forcefield/TriangleBendingSprings.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 
 namespace sofa
@@ -49,7 +49,7 @@ namespace component
 namespace forcefield
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
@@ -127,31 +127,31 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
-    this->mstate1 = this->mstate2 = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
+    this->mstate1 = this->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
     StiffSpringForceField<DataTypes>::clear();
 
     // Set the bending springs
 
     std::map< IndexPair, unsigned > edgeMap;
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );
 
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
     //sout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<sendl;
     for( unsigned i= 0; i<triangles.size(); ++i )
     {
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& face = triangles[i];
+        const sofa::core::topology::BaseMeshTopology::Triangle& face = triangles[i];
         {
             registerTriangle( face[0], face[1], face[2], edgeMap );
         }
 
     }
 
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
     //sout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<sendl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& face = quads[i];
+        const sofa::core::topology::BaseMeshTopology::Quad& face = quads[i];
         {
             registerTriangle( face[0], face[1], face[2], edgeMap );
             registerTriangle( face[0], face[2], face[3], edgeMap );

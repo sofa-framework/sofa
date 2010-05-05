@@ -45,23 +45,23 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/VisualManager.h>
 #include <sofa/core/Shader.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
-#include <sofa/core/componentmodel/behavior/MasterSolver.h>
-#include <sofa/core/componentmodel/collision/Pipeline.h>
-#include <sofa/core/componentmodel/loader/BaseLoader.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/common/common.h>
@@ -308,24 +308,24 @@ public:
     Sequence<core::objectmodel::BaseObject> object;
     typedef Sequence<core::objectmodel::BaseObject>::iterator ObjectIterator;
 
-    Single<core::componentmodel::behavior::MasterSolver> masterSolver;
-    Sequence<core::componentmodel::behavior::OdeSolver> solver;
-    Sequence<core::componentmodel::behavior::ConstraintSolver> constraintSolver;
-    Sequence<core::componentmodel::behavior::LinearSolver> linearSolver;
-    Single<core::componentmodel::behavior::BaseMechanicalState> mechanicalState;
-    Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
-    Single<core::componentmodel::behavior::BaseMass> mass;
-    Single<core::componentmodel::topology::Topology> topology;
-    Single<core::componentmodel::topology::BaseMeshTopology> meshTopology;
+    Single<core::behavior::MasterSolver> masterSolver;
+    Sequence<core::behavior::OdeSolver> solver;
+    Sequence<core::behavior::ConstraintSolver> constraintSolver;
+    Sequence<core::behavior::LinearSolver> linearSolver;
+    Single<core::behavior::BaseMechanicalState> mechanicalState;
+    Single<core::behavior::BaseMechanicalMapping> mechanicalMapping;
+    Single<core::behavior::BaseMass> mass;
+    Single<core::topology::Topology> topology;
+    Single<core::topology::BaseMeshTopology> meshTopology;
     Single<sofa::core::Shader> shader;
 
     //warning : basic topology are not yet used in the release version
-    Sequence<core::componentmodel::topology::BaseTopology> basicTopology;
+    Sequence<core::topology::BaseTopology> basicTopology;
 
-    Sequence<core::componentmodel::behavior::BaseForceField> forceField;
-    Sequence<core::componentmodel::behavior::InteractionForceField> interactionForceField;
-    Sequence<core::componentmodel::behavior::BaseConstraint> constraint;
-    Sequence<core::componentmodel::behavior::BaseLMConstraint> LMConstraint;
+    Sequence<core::behavior::BaseForceField> forceField;
+    Sequence<core::behavior::InteractionForceField> interactionForceField;
+    Sequence<core::behavior::BaseConstraint> constraint;
+    Sequence<core::behavior::BaseLMConstraint> LMConstraint;
     Sequence<core::objectmodel::ContextObject> contextObject;
 
     Sequence<core::BaseMapping> mapping;
@@ -334,7 +334,7 @@ public:
     Sequence<core::VisualManager> visualManager;
     Sequence<core::CollisionModel> collisionModel;
 
-    Single<core::componentmodel::collision::Pipeline> collisionPipeline;
+    Single<core::collision::Pipeline> collisionPipeline;
     Sequence<core::objectmodel::BaseObject> unsorted;
 
     Single<Node>                nodeInVisualGraph;
@@ -440,10 +440,10 @@ public:
     }
 
     /// Topology
-    virtual core::componentmodel::topology::Topology* getTopology() const;
+    virtual core::topology::Topology* getTopology() const;
 
     /// Mesh Topology (unified interface for both static and dynamic topologies)
-    virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
+    virtual core::topology::BaseMeshTopology* getMeshTopology() const;
 
     /// Mechanical Degrees-of-Freedom
     virtual core::objectmodel::BaseObject* getMechanicalState() const;

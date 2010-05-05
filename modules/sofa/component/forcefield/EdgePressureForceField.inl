@@ -44,7 +44,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 
 
@@ -65,7 +65,7 @@ template <class DataTypes> void  EdgePressureForceField<DataTypes>::handleTopolo
 }
 template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
     _completeTopology = NULL;

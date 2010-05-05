@@ -873,7 +873,7 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
             std::cout << endl;
         }
         {
-            using namespace sofa::core::componentmodel::behavior;
+            using namespace sofa::core::behavior;
             m->BaseMechanicalState::vMultiOp(ops);
         }
     }

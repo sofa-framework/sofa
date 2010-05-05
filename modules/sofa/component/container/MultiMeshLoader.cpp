@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/container/MultiMeshLoader.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/topology/Topology.h>
 #include <iostream>
 
 namespace sofa

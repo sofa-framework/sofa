@@ -42,7 +42,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 
 SOFA_DECL_CLASS(MeshTopology)
 

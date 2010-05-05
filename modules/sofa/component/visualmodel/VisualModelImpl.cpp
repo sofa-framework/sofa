@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
@@ -62,8 +62,8 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
-using namespace sofa::core::componentmodel::loader;
+using namespace sofa::core::topology;
+using namespace sofa::core::loader;
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
@@ -1014,7 +1014,7 @@ void VisualModelImpl::updateVisual()
             /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
 
-            sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+            sofa::core::topology::TopologyModifier* topoMod;
             this->getContext()->get(topoMod);
 
             if (topoMod)   // dynamic topology
@@ -1109,7 +1109,7 @@ void VisualModelImpl::computeMesh()
         }
         else
         {
-            core::componentmodel::behavior::BaseMechanicalState* mstate = dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(_topology->getContext()->getMechanicalState());
+            core::behavior::BaseMechanicalState* mstate = dynamic_cast<core::behavior::BaseMechanicalState*>(_topology->getContext()->getMechanicalState());
             if (mstate)
             {
                 if (this->f_printLog.getValue())
@@ -1128,7 +1128,7 @@ void VisualModelImpl::computeMesh()
     }
 
     lastMeshRev = _topology->getRevision();
-    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Triangle>& inputTriangles = _topology->getTriangles();
+    const vector<sofa::core::topology::BaseMeshTopology::Triangle>& inputTriangles = _topology->getTriangles();
     if (this->f_printLog.getValue())
         sout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<sendl;
     ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
@@ -1140,7 +1140,7 @@ void VisualModelImpl::computeMesh()
     }
     field_triangles.endEdit();
 
-    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Quad>& inputQuads = _topology->getQuads();
+    const vector<sofa::core::topology::BaseMeshTopology::Quad>& inputQuads = _topology->getQuads();
     if (this->f_printLog.getValue())
         sout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<sendl;
     ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
@@ -1163,18 +1163,18 @@ void VisualModelImpl::handleTopologyChange()
 
     while( itBegin != itEnd )
     {
-        core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+        core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
         switch( changeType )
         {
-        case core::componentmodel::topology::ENDING_EVENT:
+        case core::topology::ENDING_EVENT:
         {
             //sout << "INFO_print : Vis - ENDING_EVENT" << sendl;
             updateVisual();
             break;
         }
 
-        case core::componentmodel::topology::TRIANGLESADDED:
+        case core::topology::TRIANGLESADDED:
         {
             if (!groups.getValue().empty())
             {
@@ -1198,7 +1198,7 @@ void VisualModelImpl::handleTopologyChange()
             break;
         }
 
-        case core::componentmodel::topology::QUADSADDED:
+        case core::topology::QUADSADDED:
         {
             if (!groups.getValue().empty())
             {
@@ -1224,7 +1224,7 @@ void VisualModelImpl::handleTopologyChange()
             break;
         }
 
-        case core::componentmodel::topology::TRIANGLESREMOVED:
+        case core::topology::TRIANGLESREMOVED:
         {
             if (!groups.getValue().empty())
             {
@@ -1269,7 +1269,7 @@ void VisualModelImpl::handleTopologyChange()
             break;
         }
 
-        case core::componentmodel::topology::QUADSREMOVED:
+        case core::topology::QUADSREMOVED:
         {
             if (!groups.getValue().empty())
             {
@@ -1318,7 +1318,7 @@ void VisualModelImpl::handleTopologyChange()
 
         // Case "POINTSREMOVED" added to propagate the treatment to the Visual Model
 
-        case core::componentmodel::topology::POINTSREMOVED:
+        case core::topology::POINTSREMOVED:
         {
             //sout << "INFO_print : Vis - POINTSREMOVED" << sendl;
 
@@ -1512,7 +1512,7 @@ void VisualModelImpl::handleTopologyChange()
 
         // Case "POINTSRENUMBERING" added to propagate the treatment to the Visual Model
 
-        case core::componentmodel::topology::POINTSRENUMBERING:
+        case core::topology::POINTSRENUMBERING:
         {
             //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
 
@@ -1556,7 +1556,7 @@ void VisualModelImpl::handleTopologyChange()
 
         }
 
-        case core::componentmodel::topology::POINTSMOVED:
+        case core::topology::POINTSMOVED:
         {
             updateVisual();
             break;

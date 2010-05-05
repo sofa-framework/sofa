@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 #include <vector>
 
@@ -39,14 +39,14 @@ namespace component
 namespace mapping
 {
 
-class VoidMapping : public sofa::core::componentmodel::behavior::BaseMechanicalMapping, public sofa::core::BaseMapping
+class VoidMapping : public sofa::core::behavior::BaseMechanicalMapping, public sofa::core::BaseMapping
 {
 public:
-    SOFA_CLASS2(VoidMapping, sofa::core::componentmodel::behavior::BaseMechanicalMapping, sofa::core::BaseMapping);
+    SOFA_CLASS2(VoidMapping, sofa::core::behavior::BaseMechanicalMapping, sofa::core::BaseMapping);
 
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalMapping Inherit;
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState In;
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState Out;
+    typedef sofa::core::behavior::BaseMechanicalMapping Inherit;
+    typedef sofa::core::behavior::BaseMechanicalState In;
+    typedef sofa::core::behavior::BaseMechanicalState Out;
 
     Data<bool> f_isMechanical;
 
@@ -89,13 +89,13 @@ public:
     }
 
     /// Get the source (upper) model.
-    virtual sofa::core::componentmodel::behavior::BaseMechanicalState* getMechFrom()
+    virtual sofa::core::behavior::BaseMechanicalState* getMechFrom()
     {
         return fromModel;
     }
 
     /// Get the destination (lower, mapped) model.
-    virtual sofa::core::componentmodel::behavior::BaseMechanicalState* getMechTo()
+    virtual sofa::core::behavior::BaseMechanicalState* getMechTo()
     {
         return toModel;
     }

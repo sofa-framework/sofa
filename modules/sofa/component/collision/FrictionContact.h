@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_H
 #define SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_H
 
-#include <sofa/core/componentmodel/collision/Contact.h>
-#include <sofa/core/componentmodel/collision/Intersection.h>
+#include <sofa/core/collision/Contact.h>
+#include <sofa/core/collision/Intersection.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/constraint/UnilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
@@ -66,27 +66,27 @@ public:
     }
 
 protected:
-    static sofa::core::componentmodel::collision::DetectionOutput::ContactId cpt;
-    sofa::core::componentmodel::collision::DetectionOutput::ContactId id;
-    static std::list<sofa::core::componentmodel::collision::DetectionOutput::ContactId> availableId;
+    static sofa::core::collision::DetectionOutput::ContactId cpt;
+    sofa::core::collision::DetectionOutput::ContactId id;
+    static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
 };
 
 
 template <class TCollisionModel1, class TCollisionModel2>
-class FrictionContact : public core::componentmodel::collision::Contact, public Identifier
+class FrictionContact : public core::collision::Contact, public Identifier
 {
 public:
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
-    typedef core::componentmodel::collision::Intersection Intersection;
+    typedef core::collision::Intersection Intersection;
     typedef typename CollisionModel1::DataTypes DataTypes1;
     typedef typename CollisionModel2::DataTypes DataTypes2;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes1> MechanicalState1;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes2> MechanicalState2;
+    typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
+    typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-    typedef core::componentmodel::collision::DetectionOutputVector OutputVector;
-    typedef core::componentmodel::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> TOutputVector;
+    typedef core::collision::DetectionOutputVector OutputVector;
+    typedef core::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> TOutputVector;
 
 protected:
     CollisionModel1* model1;
@@ -117,7 +117,7 @@ public:
     void removeResponse();
 };
 
-long cantorPolynomia(sofa::core::componentmodel::collision::DetectionOutput::ContactId x, sofa::core::componentmodel::collision::DetectionOutput::ContactId y)
+long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
 {
     // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
     return (long)(((x+y)*(x+y)+3*x+y)/2);

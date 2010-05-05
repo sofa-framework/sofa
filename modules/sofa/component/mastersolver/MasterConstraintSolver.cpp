@@ -54,7 +54,7 @@ namespace mastersolver
 using namespace sofa::component::odesolver;
 using namespace sofa::defaulttype;
 using namespace helper::system::thread;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 
 ConstraintProblem::ConstraintProblem()
@@ -252,7 +252,7 @@ void MasterConstraintSolver::init()
         constraintCorrections.clear();
     }
 
-    getContext()->get<core::componentmodel::behavior::BaseConstraintCorrection> ( &constraintCorrections, core::objectmodel::BaseContext::SearchDown );
+    getContext()->get<core::behavior::BaseConstraintCorrection> ( &constraintCorrections, core::objectmodel::BaseContext::SearchDown );
 }
 
 
@@ -294,7 +294,7 @@ void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt)
     {
         for (unsigned int i=0; i<constraintCorrections.size(); i++ )
         {
-            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if (doubleBuffer.getValue() && bufCP1)
                 cc->applyPredictiveConstraintForce(CP2.getF());
             else
@@ -310,7 +310,7 @@ void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt)
     //////// TODO : propagate velocity !!
 
     ////////propagate acceleration ? //////
-    core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
+    core::behavior::BaseMechanicalState::VecId dx_id = core::behavior::BaseMechanicalState::VecId::dx();
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
     simulation::MechanicalPropagateDxVisitor(dx_id,true).execute(context); //ignore mask here (is it necessary?)
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
@@ -328,7 +328,7 @@ void MasterConstraintSolver::setConstraintEquations(simulation::Node *context)
 {
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
 
@@ -428,7 +428,7 @@ void MasterConstraintSolver::computeComplianceInConstraintSpace()
     sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         if (doubleBuffer.getValue() && bufCP1)
             cc->getCompliance(CP2.getW());
         else
@@ -452,7 +452,7 @@ void MasterConstraintSolver::correctiveMotion(simulation::Node *context)
         // IF SCHEME CORRECTIVE=> correct the motion using dF
         for (unsigned int i=0; i<constraintCorrections.size(); i++)
         {
-            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if (doubleBuffer.getValue() && bufCP1)
                 cc->applyContactForce(CP2.getdF());
             else
@@ -464,7 +464,7 @@ void MasterConstraintSolver::correctiveMotion(simulation::Node *context)
         // ELSE => only correct the motion using F
         for (unsigned int i=0; i<constraintCorrections.size(); i++)
         {
-            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if (doubleBuffer.getValue() && bufCP1)
                 cc->applyContactForce(CP2.getF());
             else
@@ -480,7 +480,7 @@ void MasterConstraintSolver::correctiveMotion(simulation::Node *context)
     {
         for (unsigned int i=0; i<constraintCorrections.size(); i++)
         {
-            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->resetContactForce();
         }
     }
@@ -671,7 +671,7 @@ void MasterConstraintSolver::step ( double dt )
 
 }
 
-void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res)
+void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)
 {
     for(int i=0; i<dim; )
     {

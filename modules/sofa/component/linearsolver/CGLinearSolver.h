@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
 #include <math.h>

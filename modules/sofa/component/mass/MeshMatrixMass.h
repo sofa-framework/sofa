@@ -30,8 +30,8 @@
 #endif
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/EdgeData.h>
@@ -58,12 +58,12 @@ using namespace sofa::component::topology;
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 template <class DataTypes, class TMassType>
-class MeshMatrixMass : public core::componentmodel::behavior::Mass<DataTypes>
+class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes,TMassType), SOFA_TEMPLATE(core::componentmodel::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
-    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
+    typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord                    VecCoord;
     typedef typename DataTypes::VecDeriv                    VecDeriv;
     typedef typename DataTypes::Coord                       Coord;
@@ -109,7 +109,7 @@ protected:
 
 public:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
     sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;

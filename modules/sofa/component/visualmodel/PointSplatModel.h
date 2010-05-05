@@ -79,8 +79,8 @@ private:
     Data<float>		alpha;
     Data<std::string>	color;
 
-    core::componentmodel::topology::BaseMeshTopology*	_topology;
-    core::componentmodel::behavior::BaseMechanicalState* _mstate;
+    core::topology::BaseMeshTopology*	_topology;
+    core::behavior::BaseMechanicalState* _mstate;
 
     unsigned char *texture_data;
     float r,g,b,a;

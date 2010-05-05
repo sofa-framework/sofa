@@ -29,8 +29,8 @@
 #pragma once
 #endif
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TriangleData.h>
@@ -65,12 +65,12 @@ using namespace sofa::component::topology;
  * }
  */
 template<class DataTypes>
-class TriangularFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
+    typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -79,10 +79,10 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::index_type Index;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Element;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles VecElement;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
+    typedef sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
 
     typedef sofa::helper::Quater<Real> Quat;
 
@@ -184,7 +184,7 @@ protected:
     PointData<VertexInformation> vertexInfo;
     EdgeData<EdgeInformation> edgeInfo;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
     //const VecElement *_indexedElements;
     //Data< VecCoord > _initialPoints; ///< the intial positions of the points
     VecCoord* _initialPoints;

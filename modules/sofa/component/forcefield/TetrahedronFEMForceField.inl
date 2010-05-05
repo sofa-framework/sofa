@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -1155,7 +1155,7 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
     _mesh = this->getContext()->getMeshTopology();
     if (_mesh==NULL)
     {
@@ -1180,7 +1180,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 #ifdef SOFA_DEV
         _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
 #endif // SOFA_DEV
-        core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra;
+        core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
 #ifdef SOFA_NEW_HEXA
         int nbcubes = _mesh->getNbHexahedra();
 #else
@@ -1206,7 +1206,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         {
             // if (flags && !flags->isCubeActive(i)) continue;
 #ifdef SOFA_NEW_HEXA
-            core::componentmodel::topology::BaseMeshTopology::Hexa c = _mesh->getHexahedron(i);
+            core::topology::BaseMeshTopology::Hexa c = _mesh->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
             if (!((i%nx)&1))
             {
@@ -1233,7 +1233,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
                 swap(c[3],c[7]);
             }
 #undef swap
-            typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+            typedef core::topology::BaseMeshTopology::Tetra Tetra;
             tetrahedra->push_back(Tetra(c[0],c[5],c[1],c[6]));
             tetrahedra->push_back(Tetra(c[0],c[1],c[3],c[6]));
             tetrahedra->push_back(Tetra(c[1],c[3],c[6],c[2]));
@@ -1241,12 +1241,12 @@ void TetrahedronFEMForceField<DataTypes>::init()
             tetrahedra->push_back(Tetra(c[6],c[7],c[0],c[5]));
             tetrahedra->push_back(Tetra(c[7],c[5],c[4],c[0]));
 #else
-            core::componentmodel::topology::BaseMeshTopology::Cube c = _mesh->getCube(i);
+            core::topology::BaseMeshTopology::Cube c = _mesh->getCube(i);
             int sym = 0;
             if (!((i%nx)&1)) sym+=1;
             if (((i/nx)%ny)&1) sym+=2;
             if ((i/(nx*ny))&1) sym+=4;
-            typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+            typedef core::topology::BaseMeshTopology::Tetra Tetra;
             tetrahedra->push_back(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
             tetrahedra->push_back(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
             tetrahedra->push_back(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));

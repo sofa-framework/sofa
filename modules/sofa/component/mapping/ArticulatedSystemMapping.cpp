@@ -24,9 +24,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP
 #include <sofa/component/mapping/ArticulatedSystemMapping.inl>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -40,7 +40,7 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 using namespace core;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 SOFA_DECL_CLASS(ArticulatedSystemMapping)
 

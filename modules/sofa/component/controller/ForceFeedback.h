@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
 
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/component/component.h>
 
@@ -44,11 +44,11 @@ namespace controller
 /**
 * Omni driver force field
 */
-class SOFA_COMPONENT_CONTROLLER_API ForceFeedback : public core::componentmodel::behavior::BaseController
+class SOFA_COMPONENT_CONTROLLER_API ForceFeedback : public core::behavior::BaseController
 {
 
 public:
-    SOFA_CLASS(ForceFeedback,core::componentmodel::behavior::BaseController);
+    SOFA_CLASS(ForceFeedback,core::behavior::BaseController);
     Data<bool> f_activate;
 
     simulation::Node *context;

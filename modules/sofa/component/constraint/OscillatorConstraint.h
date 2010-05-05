@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_OSCILLATORCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_OSCILLATORCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 
 
@@ -43,10 +43,10 @@ namespace constraint
 	where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
 	*/
 template <class DataTypes>
-class OscillatorConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class OscillatorConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OscillatorConstraint,DataTypes),SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(OscillatorConstraint,DataTypes),SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -87,7 +87,7 @@ protected:
 public:
     OscillatorConstraint();
 
-    OscillatorConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
+    OscillatorConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
 
     ~OscillatorConstraint();
 

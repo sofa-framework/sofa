@@ -27,9 +27,9 @@
 
 #include "OpenCLTypes.h"
 #include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
 
 namespace sofa
 {
@@ -42,37 +42,37 @@ namespace mapping
 
 
 template <>
-void IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
 
 template <>
-void IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 
 template <>
-void IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
 
 template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
 
 template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3fTypes>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 
 
 //////// OpenCLVec3f1
 
 template <>
-void IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
 
 template <>
-void IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 
 template <>
-void IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::componentmodel::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+void IdentityMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::opencl::OpenCLVec3f1Types> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
 
 template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::componentmodel::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
 
 template <>
-void IdentityMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::componentmodel::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+void IdentityMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::opencl::OpenCLVec3f1Types>, sofa::core::behavior::MappedModel<gpu::opencl::OpenCLVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 
 
 } // namespace mapping

@@ -27,7 +27,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/collision/Intersection.inl>
 //#include <sofa/component/collision/ProximityIntersection.h>
 #include <sofa/helper/proximity.h>
 #include <iostream>
@@ -44,7 +44,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 
 template<class Sphere>
 bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)

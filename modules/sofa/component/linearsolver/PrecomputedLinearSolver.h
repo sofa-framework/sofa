@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
 
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -43,10 +43,9 @@ namespace linearsolver
 {
 
 using namespace sofa::core;
-using namespace sofa::core::componentmodel;
 using namespace sofa::defaulttype;
 
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
@@ -76,7 +75,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(PrecomputedLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 

@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTCORRECTION_H
-#define SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTCORRECTION_H
+#ifndef SOFA_CORE_COLLISION_CONTACTCORRECTION_H
+#define SOFA_CORE_COLLISION_CONTACTCORRECTION_H
 
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
@@ -45,19 +45,18 @@ namespace constraint
 {
 
 using namespace sofa::core;
-using namespace sofa::core::componentmodel;
 using namespace sofa::defaulttype;
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class PrecomputedConstraintCorrection : public componentmodel::behavior::BaseConstraintCorrection
+class PrecomputedConstraintCorrection : public behavior::BaseConstraintCorrection
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedConstraintCorrection,TDataTypes),componentmodel::behavior::BaseConstraintCorrection);
+    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedConstraintCorrection,TDataTypes),behavior::BaseConstraintCorrection);
 
     typedef TDataTypes DataTypes;
-    typedef typename componentmodel::behavior::BaseConstraintCorrection Inherit;
+    typedef typename behavior::BaseConstraintCorrection Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;

@@ -28,7 +28,7 @@
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/common/MechanicalVPrintVisitor.h>
 #include <sofa/simulation/common/VelocityThresholdVisitor.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -42,7 +42,7 @@ namespace component
 namespace linearsolver
 {
 
-using sofa::core::componentmodel::behavior::LinearSolver;
+using sofa::core::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
 
 void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector& x)

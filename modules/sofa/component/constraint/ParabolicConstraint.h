@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_PARABOLICCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_PARABOLICCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointSubset.h>
 
@@ -48,10 +48,10 @@ using namespace sofa::defaulttype;
 	The DOFs set in the "indices" list follow the computed parabol from "tBegin" to "tEnd".
 	*/
 template <class DataTypes>
-class ParabolicConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class ParabolicConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ParabolicConstraint,DataTypes),SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ParabolicConstraint,DataTypes),SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -89,7 +89,7 @@ protected:
 public:
     ParabolicConstraint();
 
-    ParabolicConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
+    ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
 
     ~ParabolicConstraint();
 

@@ -32,9 +32,9 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/loader/MeshLoader.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/component/topology/PointSubset.h>
 
 namespace sofa
@@ -46,7 +46,7 @@ namespace component
 namespace engine
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace core::objectmodel;
 
 /**
@@ -66,9 +66,9 @@ public:
 
     typedef defaulttype::Vec<3,Real> Point;
     typedef unsigned int PointID;
-    typedef core::componentmodel::topology::BaseMeshTopology::Edge Edge;
-    typedef core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
 
 protected:
     bool isPointInBox(const CPos& p, const Vec6& b);

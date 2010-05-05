@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA4SOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA4SOLVER_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
@@ -45,7 +45,7 @@ public:
 
     void solve (double dt);
 
-    void solve (double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult);
+    void solve (double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult);
 
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),

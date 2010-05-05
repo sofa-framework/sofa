@@ -37,7 +37,7 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/container/MechanicalObject.h>
 
 #include <math.h>
@@ -58,7 +58,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS(Edge2QuadTopologicalMapping)
 
@@ -80,8 +80,8 @@ void Edge2QuadTopologicalMapping::init()
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 
-    core::componentmodel::behavior::MechanicalState<Rigid3Types>* from_mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* to_mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<Vec3Types>*>(toModel->getContext()->getMechanicalState());
+    core::behavior::MechanicalState<Rigid3Types>* from_mstate = dynamic_cast<core::behavior::MechanicalState<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
+    core::behavior::MechanicalState<Vec3Types>* to_mstate = dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(toModel->getContext()->getMechanicalState());
 
     if (fromModel)
     {
@@ -274,7 +274,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 switch( changeType )
                 {
 
-                case core::componentmodel::topology::ENDING_EVENT:
+                case core::topology::ENDING_EVENT:
                 {
                     //sout << "INFO_print : TopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
@@ -283,7 +283,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::EDGESADDED:
+                case core::topology::EDGESADDED:
                 {
                     //sout << "INFO_print : TopologicalMapping - EDGESADDED" << sendl;
                     if (fromModel)
@@ -340,7 +340,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     }
                     break;
                 }
-                case core::componentmodel::topology::EDGESREMOVED:
+                case core::topology::EDGESREMOVED:
                 {
                     //sout << "INFO_print : TopologicalMapping - EDGESREMOVED" << sendl;
 
@@ -465,7 +465,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::POINTSRENUMBERING:
+                case core::topology::POINTSRENUMBERING:
                 {
                     //sout << "INFO_print : Edge2QuadTopologicalMapping - POINTSRENUMBERING" << sendl;
 
@@ -497,7 +497,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::POINTSADDED:
+                case core::topology::POINTSADDED:
                 {
                     //sout << "INFO_print : Edge2QuadTopologicalMapping - POINTSADDED" << sendl;
 

@@ -922,7 +922,7 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 {
     unsigned int i0 = size;
     resizeMap(i0+1,2);
-    core::componentmodel::topology::BaseMeshTopology::Line e = topology->getLine(lineIndex);
+    core::topology::BaseMeshTopology::Line e = topology->getLine(lineIndex);
     setMap(i0,0,e[0],(Real)(1-baryCoords[0]));
     setMap(i0,1,e[1],(Real)(baryCoords[0]));
     return i0;
@@ -933,7 +933,7 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 {
     unsigned int i0 = size;
     resizeMap(i0+1,3);
-    core::componentmodel::topology::BaseMeshTopology::Triangle e = topology->getTriangle(triangleIndex);
+    core::topology::BaseMeshTopology::Triangle e = topology->getTriangle(triangleIndex);
     setMap(i0,0,e[0],(Real)(1-baryCoords[0]-baryCoords[1]));
     setMap(i0,1,e[1],(Real)(baryCoords[0]));
     setMap(i0,2,e[2],(Real)(baryCoords[1]));
@@ -945,7 +945,7 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 {
     unsigned int i0 = size;
     resizeMap(i0+1,4);
-    core::componentmodel::topology::BaseMeshTopology::Quad e = topology->getQuad(quadIndex);
+    core::topology::BaseMeshTopology::Quad e = topology->getQuad(quadIndex);
     setMap(i0,0,e[0],(Real)((1-baryCoords[0])*(1-baryCoords[1])));
     setMap(i0,1,e[1],(Real)((  baryCoords[0])*(1-baryCoords[1])));
     setMap(i0,2,e[3],(Real)((1-baryCoords[0])*(  baryCoords[1])));
@@ -958,7 +958,7 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 {
     unsigned int i0 = size;
     resizeMap(i0+1,4);
-    core::componentmodel::topology::BaseMeshTopology::Tetra e = topology->getTetrahedron(tetraIndex);
+    core::topology::BaseMeshTopology::Tetra e = topology->getTetrahedron(tetraIndex);
     setMap(i0,0,e[0],(Real)(1-baryCoords[0]-baryCoords[1]-baryCoords[2]));
     setMap(i0,1,e[1],(Real)(baryCoords[0]));
     setMap(i0,2,e[2],(Real)(baryCoords[1]));
@@ -972,7 +972,7 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
     unsigned int i0 = size;
     resizeMap(i0+1,8);
 #ifdef SOFA_NEW_HEXA
-    core::componentmodel::topology::BaseMeshTopology::Hexa e = topology->getHexahedron(cubeIndex);
+    core::topology::BaseMeshTopology::Hexa e = topology->getHexahedron(cubeIndex);
     setMap(i0,0,e[0],(Real)((1-baryCoords[0])*(1-baryCoords[1])*(1-baryCoords[2])));
     setMap(i0,1,e[1],(Real)((  baryCoords[0])*(1-baryCoords[1])*(1-baryCoords[2])));
     setMap(i0,2,e[3],(Real)((1-baryCoords[0])*(  baryCoords[1])*(1-baryCoords[2])));
@@ -982,7 +982,7 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
     setMap(i0,6,e[7],(Real)((1-baryCoords[0])*(  baryCoords[1])*(  baryCoords[2])));
     setMap(i0,7,e[6],(Real)((  baryCoords[0])*(  baryCoords[1])*(  baryCoords[2])));
 #else
-    core::componentmodel::topology::BaseMeshTopology::Cube e = topology->getCube(cubeIndex);
+    core::topology::BaseMeshTopology::Cube e = topology->getCube(cubeIndex);
     setMap(i0,0,e[0],(Real)((1-baryCoords[0])*(1-baryCoords[1])*(1-baryCoords[2])));
     setMap(i0,1,e[1],(Real)((  baryCoords[0])*(1-baryCoords[1])*(1-baryCoords[2])));
     setMap(i0,2,e[2],(Real)((1-baryCoords[0])*(  baryCoords[1])*(1-baryCoords[2])));

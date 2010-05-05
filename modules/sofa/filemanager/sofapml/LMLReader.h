@@ -45,7 +45,7 @@
 #include <Loads.h>
 #include <map>
 
-#include "sofa/core/componentmodel/behavior/MechanicalState.h"
+#include "sofa/core/behavior/MechanicalState.h"
 #include "sofa/defaulttype/Vec3Types.h"
 #include <sofa/simulation/tree/GNode.h>
 #include "sofapml.h"

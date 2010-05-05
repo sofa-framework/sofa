@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
 
-#include <sofa/core/componentmodel/collision/Intersection.h>
+#include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/PointModel.h>
@@ -45,34 +45,34 @@ namespace component
 
 namespace collision
 {
-class SOFA_COMPONENT_COLLISION_API DiscreteIntersection : public core::componentmodel::collision::Intersection
+class SOFA_COMPONENT_COLLISION_API DiscreteIntersection : public core::collision::Intersection
 {
 public:
-    SOFA_CLASS(DiscreteIntersection,sofa::core::componentmodel::collision::Intersection);
+    SOFA_CLASS(DiscreteIntersection,sofa::core::collision::Intersection);
 
     DiscreteIntersection();
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
     /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.
-    virtual core::componentmodel::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels);
+    virtual core::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels);
 
 protected:
-    core::componentmodel::collision::IntersectorMap intersectors;
+    core::collision::IntersectorMap intersectors;
 
 public:
     template<class Model1, class Model2>
-    sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>* createOutputVector(Model1*, Model2*)
+    sofa::core::collision::TDetectionOutputVector<Model1,Model2>* createOutputVector(Model1*, Model2*)
     {
-        return new sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>;
+        return new sofa::core::collision::TDetectionOutputVector<Model1,Model2>;
     }
 
     template<class Model1, class Model2>
-    sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>* getOutputVector(Model1*, Model2*, sofa::core::componentmodel::collision::DetectionOutputVector* contacts)
+    sofa::core::collision::TDetectionOutputVector<Model1,Model2>* getOutputVector(Model1*, Model2*, sofa::core::collision::DetectionOutputVector* contacts)
     {
-        return static_cast<sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>*>(contacts);
+        return static_cast<sofa::core::collision::TDetectionOutputVector<Model1,Model2>*>(contacts);
     }
 
-    typedef sofa::helper::vector<sofa::core::componentmodel::collision::DetectionOutput> OutputVector;
+    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
     int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
     {

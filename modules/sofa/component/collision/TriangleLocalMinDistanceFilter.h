@@ -50,7 +50,7 @@ namespace collision
  */
 class TriangleInfo : public InfoFilter //< Triangle >
 {
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 public:
     /**
      * @brief Default constructor.

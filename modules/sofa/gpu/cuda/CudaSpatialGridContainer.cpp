@@ -36,7 +36,7 @@ namespace container
 
 using namespace sofa::defaulttype;
 using namespace sofa::gpu::cuda;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 
 SOFA_DECL_CLASS(CudaSpatialGridContainer)

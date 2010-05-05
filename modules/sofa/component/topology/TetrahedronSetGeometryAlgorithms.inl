@@ -292,7 +292,7 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& c, Real r,
         sofa::helper::vector<unsigned int> &indices) const
 {
-    TetraID ind_ta = core::componentmodel::topology::BaseMeshTopology::InvalidID;
+    TetraID ind_ta = core::topology::BaseMeshTopology::InvalidID;
     Vec<3,Real> pa;
     pa[0] = (Real) (c[0]);
     pa[1] = (Real) (c[1]);
@@ -305,7 +305,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
             break;
         }
     }
-    if(ind_ta == core::componentmodel::topology::BaseMeshTopology::InvalidID)
+    if(ind_ta == core::topology::BaseMeshTopology::InvalidID)
         std::cout << "ERROR: Can't find the seed" << std::endl;
     Real d = r;
 //		const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);

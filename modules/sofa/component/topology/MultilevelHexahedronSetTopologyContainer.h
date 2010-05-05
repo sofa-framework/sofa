@@ -27,7 +27,7 @@
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronData.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/topology/Topology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
 
@@ -52,7 +52,7 @@ namespace topology
 class MultilevelHexahedronSetTopologyModifier;
 
 using sofa::defaulttype::Vec;
-using sofa::core::componentmodel::topology::TopologyChange;
+using sofa::core::topology::TopologyChange;
 
 class SOFA_COMPONENT_CONTAINER_API MultilevelHexahedronSetTopologyContainer : public HexahedronSetTopologyContainer
 {
@@ -209,16 +209,16 @@ private:
 };
 
 /** notifies change in the multilevel structure other than adding or removing coarse hexahedra */
-class MultilevelModification : public core::componentmodel::topology::TopologyChange
+class MultilevelModification : public core::topology::TopologyChange
 {
 public:
-    static const int MULTILEVEL_MODIFICATION = core::componentmodel::topology::TOPOLOGYCHANGE_LASTID + 1;
+    static const int MULTILEVEL_MODIFICATION = core::topology::TOPOLOGYCHANGE_LASTID + 1;
 
     typedef Vec<3,int>	Vec3i;
 
     MultilevelModification(const sofa::helper::vector<unsigned int>& _tArray,
             const std::map<unsigned int, std::list<Vec3i> >& removedVoxels)
-        : core::componentmodel::topology::TopologyChange((core::componentmodel::topology::TopologyChangeType) MULTILEVEL_MODIFICATION)
+        : core::topology::TopologyChange((core::topology::TopologyChangeType) MULTILEVEL_MODIFICATION)
         , _modifiedHexahedraArray(_tArray)
         , _removedFineVoxels(removedVoxels)
     {}

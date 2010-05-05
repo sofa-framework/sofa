@@ -27,7 +27,7 @@
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
 
 namespace sofa
 {
@@ -41,7 +41,7 @@ class SOFA_SIMULATION_COMMON_API UpdateMappingVisitor : public Visitor
 public:
 
     void processMapping(simulation::Node* node, core::BaseMapping* obj);
-    void processMechanicalMapping(simulation::Node*, core::componentmodel::behavior::BaseMechanicalMapping* obj);
+    void processMechanicalMapping(simulation::Node*, core::behavior::BaseMechanicalMapping* obj);
 
     virtual Result processNodeTopDown(simulation::Node* node);
 

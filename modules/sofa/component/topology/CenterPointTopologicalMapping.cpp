@@ -42,7 +42,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS ( CenterPointTopologicalMapping )
 
@@ -94,7 +94,7 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
 
             switch( changeType )
             {
-            case core::componentmodel::topology::HEXAHEDRAADDED:
+            case core::topology::HEXAHEDRAADDED:
             {
                 const unsigned int nbHexaAdded = ( static_cast< const HexahedraAdded *>( *changeIt ) )->getNbAddedHexahedra();
                 to_pstm->addPointsProcess(nbHexaAdded);
@@ -102,7 +102,7 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
                 to_pstm->propagateTopologicalChanges();
                 break;
             }
-            case core::componentmodel::topology::HEXAHEDRAREMOVED:
+            case core::topology::HEXAHEDRAREMOVED:
             {
                 sofa::helper::vector<unsigned int> tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
                 to_pstm->removePointsWarning(tab, true);

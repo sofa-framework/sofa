@@ -28,7 +28,7 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 
 

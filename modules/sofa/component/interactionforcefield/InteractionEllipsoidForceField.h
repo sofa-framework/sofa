@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_INTERACTION_ELLIPSOIDFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_INTERACTION_ELLIPSOIDFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/MixedInteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MixedInteractionForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -50,12 +50,12 @@ public:
 };
 
 template<class DataTypes1, class DataTypes2>
-class InteractionEllipsoidForceField : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>
+class InteractionEllipsoidForceField : public core::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(InteractionEllipsoidForceField, DataTypes1, DataTypes2), SOFA_TEMPLATE2(core::componentmodel::behavior::MixedInteractionForceField, DataTypes1, DataTypes2));
+    SOFA_CLASS(SOFA_TEMPLATE2(InteractionEllipsoidForceField, DataTypes1, DataTypes2), SOFA_TEMPLATE2(core::behavior::MixedInteractionForceField, DataTypes1, DataTypes2));
 
-    typedef core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
+    typedef core::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
     typedef typename DataTypes1::VecCoord VecCoord1;
     typedef typename DataTypes1::VecDeriv VecDeriv1;
     typedef typename DataTypes1::Coord Coord1;

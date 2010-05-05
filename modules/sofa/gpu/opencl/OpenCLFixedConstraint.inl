@@ -83,7 +83,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
     data.minIndex = -1;
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
-    m->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    m->core::behavior::Constraint<DataTypes>::init();
     const SetIndex& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
@@ -212,7 +212,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::init
     data.minIndex = -1;
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
-    m->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    m->core::behavior::Constraint<DataTypes>::init();
     const SetIndex& indices = m->f_indices.getValue();
     if (!indices.empty())
     {

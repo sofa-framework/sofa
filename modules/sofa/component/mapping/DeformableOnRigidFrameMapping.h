@@ -25,15 +25,15 @@
 #ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <vector>
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseMass.h>
 
 namespace sofa
 {
@@ -73,14 +73,14 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Vec<N,Real> Vector ;
 
-    typedef sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes> InRoot;
+    typedef sofa::core::behavior::MechanicalState<defaulttype::Rigid3dTypes> InRoot;
     typedef typename InRoot::Coord InRootCoord;
     typedef typename InRoot::VecCoord InRootVecCoord;
     typedef typename InRoot::Deriv InRootDeriv;
     typedef typename InRoot::VecDeriv InRootVecDeriv;
     typedef typename InRoot::VecConst InRootVecConst;
 
-    typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
 
     InRoot* rootModel;
     Data<std::string> m_rootModelName;
@@ -95,8 +95,8 @@ public:
     Data<sofa::helper::vector<unsigned int> >  repartition;
     Data< bool > globalToLocalCoords;
 
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
 
     DeformableOnRigidFrameMapping ( In* from, Out* to );
@@ -203,10 +203,10 @@ protected:
 };
 
 using core::Mapping;
-using core::componentmodel::behavior::MechanicalMapping;
-using core::componentmodel::behavior::MappedModel;
-using core::componentmodel::behavior::State;
-using core::componentmodel::behavior::MechanicalState;
+using core::behavior::MechanicalMapping;
+using core::behavior::MappedModel;
+using core::behavior::State;
+using core::behavior::MechanicalState;
 
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;

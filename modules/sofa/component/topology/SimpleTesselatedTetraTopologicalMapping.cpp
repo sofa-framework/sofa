@@ -45,7 +45,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS ( SimpleTesselatedTetraTopologicalMapping )
 
@@ -183,7 +183,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
 
             switch( changeType )
             {
-            case core::componentmodel::topology::POINTSINDICESSWAP:
+            case core::topology::POINTSINDICESSWAP:
             {
                 unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
                 unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
@@ -192,38 +192,38 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
                 swapOutputPoints(i1,i2);
                 break;
             }
-            case core::componentmodel::topology::POINTSADDED:
+            case core::topology::POINTSADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::POINTSREMOVED:
+            case core::topology::POINTSREMOVED:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
 //				 sout << "OUTPUT REMOVE POINTS "<<tab << sendl;
                 removeOutputPoints( tab );
                 break;
             }
-            case core::componentmodel::topology::POINTSRENUMBERING:
+            case core::topology::POINTSRENUMBERING:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
 //				 sout << "OUTPUT RENUMBER POINTS "<<tab << sendl;
                 renumberOutputPoints( tab );
                 break;
             }
-            case core::componentmodel::topology::TETRAHEDRAADDED:
+            case core::topology::TETRAHEDRAADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::TETRAHEDRAREMOVED:
+            case core::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
 //				sout << "OUTPUT REMOVE TETRAHEDRA "<<tab << sendl;
                 removeOutputTetrahedra( tab );
                 break;
             }
-            case core::componentmodel::topology::ENDING_EVENT:
+            case core::topology::ENDING_EVENT:
             {
                 //sout << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
                 //sout << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
@@ -401,7 +401,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
 
             switch( changeType )
             {
-            case core::componentmodel::topology::POINTSINDICESSWAP:
+            case core::topology::POINTSINDICESSWAP:
             {
                 unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
                 unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
@@ -410,50 +410,50 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
                 swapInputPoints(i1,i2);
                 break;
             }
-            case core::componentmodel::topology::POINTSADDED:
+            case core::topology::POINTSADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::POINTSREMOVED:
+            case core::topology::POINTSREMOVED:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
 //				 sout << "INPUT REMOVE POINTS "<<tab << sendl;
                 removeInputPoints( tab );
                 break;
             }
-            case core::componentmodel::topology::POINTSRENUMBERING:
+            case core::topology::POINTSRENUMBERING:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
 //				 sout << "INPUT RENUMBER POINTS "<<tab << sendl;
                 renumberInputPoints( tab );
                 break;
             }
-            case core::componentmodel::topology::EDGESADDED:
+            case core::topology::EDGESADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::EDGESREMOVED:
+            case core::topology::EDGESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *changeIt ) )->getArray();
 //				sout << "INPUT REMOVE EDGES "<<tab << sendl;
                 removeInputEdges( tab );
                 break;
             }
-            case core::componentmodel::topology::TETRAHEDRAADDED:
+            case core::topology::TETRAHEDRAADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::TETRAHEDRAREMOVED:
+            case core::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
 //				sout << "INPUT REMOVE TETRAHEDRA "<<tab << sendl;
                 removeInputTetrahedra( tab );
                 break;
             }
-            case core::componentmodel::topology::ENDING_EVENT:
+            case core::topology::ENDING_EVENT:
             {
                 //sout << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
                 //sout << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;

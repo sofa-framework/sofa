@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_LAGRANGEMULTIPLIERINTERACTION_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LAGRANGEMULTIPLIERINTERACTION_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/core/behavior/InteractionForceField.h>
 #include "LagrangeMultiplierInteraction.h"
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
@@ -37,12 +37,12 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/ObjectFactory.h>
-/*#include <sofa/core/componentmodel/collision/DetectionOutput.h>
+/*#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/helper/gl/template.h>
 */
 
@@ -67,7 +67,7 @@ using namespace sofa::component::linearsolver;
 template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 {
-    core::componentmodel::behavior::InteractionForceField::init();
+    core::behavior::InteractionForceField::init();
 
     core::objectmodel::BaseContext* test = this->getContext();
 
@@ -76,7 +76,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
 
     // nouveau mécanisme: plusieurs contraintes
-    simulation::FindByTypeVisitor< core::componentmodel::behavior::BaseConstraint > findConstraint;
+    simulation::FindByTypeVisitor< core::behavior::BaseConstraint > findConstraint;
     findConstraint.execute(this->getContext());
     list_base_constraint = findConstraint.found;
 

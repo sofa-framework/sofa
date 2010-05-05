@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
 #include <sofa/component/topology/GridTopology.h>
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
@@ -53,7 +53,7 @@ using std::set;
 
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 template< class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunction (int tetrahedronIndex, void* param,
@@ -103,7 +103,7 @@ template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
 
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
 
@@ -1348,7 +1348,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::default
     Rot[0][1]=Rot[0][2]=0;
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = _topology->getTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetras = _topology->getTetrahedra();
     for(int IT=0 ; IT != (int)tetras.size() ; ++IT)
     {
         if (method == SMALL)

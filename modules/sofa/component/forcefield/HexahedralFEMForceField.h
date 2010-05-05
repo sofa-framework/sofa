@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -74,10 +74,10 @@ using namespace sofa::component::topology;
 *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedralFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>
+class HexahedralFEMForceField : virtual public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HexahedralFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedralFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -86,9 +86,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
-    typedef core::componentmodel::topology::BaseMeshTopology::Hexa Element;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqHexahedra VecElement;
+    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Hexa Element;
+    typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
     static const int LARGE = 0;   ///< Symbol of large displacements hexahedron solver
     static const int POLAR = 1;   ///< Symbol of polar displacements hexahedron solver

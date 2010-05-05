@@ -80,7 +80,7 @@ void InciseAlongPathPerformer::execute()
 
         if (firstBody.body == NULL || secondBody.body == NULL) return;
 
-        sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
+        sofa::core::topology::TopologyModifier* topologyModifier;
         firstBody.body->getContext()->get(topologyModifier);
 
         // Handle Removing of topological element (from any type of topology)
@@ -104,7 +104,7 @@ void InciseAlongPathPerformer::execute()
 
         if (currentBody.indexCollisionElement == startBody.indexCollisionElement) return;
 
-        sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
+        sofa::core::topology::TopologyModifier* topologyModifier;
         startBody.body->getContext()->get(topologyModifier);
 
         // Handle Removing of topological element (from any type of topology)
@@ -185,7 +185,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
         return;
     }
 
-    sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
+    sofa::core::topology::TopologyModifier* topologyModifier;
     startBody.body->getContext()->get(topologyModifier);
     // Handle Removing of topological element (from any type of topology)
     if(topologyModifier)
@@ -237,7 +237,7 @@ void InciseAlongPathPerformer::draw()
         return;
 
     // Output declarations
-    sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType> topoPath_list;
+    sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
     sofa::helper::vector<unsigned int> indices_list;
     sofa::helper::vector< Vec<3, double> > coords2_list;
     sofa::defaulttype::Vec<3,double> pointA = firstBody.point;
@@ -256,19 +256,19 @@ void InciseAlongPathPerformer::draw()
 
     for (unsigned int i=0; i<topoPath_list.size(); ++i)
     {
-        if (topoPath_list[i] == sofa::core::componentmodel::topology::POINT)
+        if (topoPath_list[i] == sofa::core::topology::POINT)
         {
             positions[i] = topoGeo->getPointPosition(indices_list[i]);
         }
-        else if (topoPath_list[i] == sofa::core::componentmodel::topology::EDGE)
+        else if (topoPath_list[i] == sofa::core::topology::EDGE)
         {
-            sofa::core::componentmodel::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
+            sofa::core::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
             const Vec<3, double> AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
             positions[i] = topoGeo->getPointPosition(theEdge[0]) + AB *coords2_list[i][0];
         }
-        else if(topoPath_list[i] == sofa::core::componentmodel::topology::TRIANGLE)
+        else if(topoPath_list[i] == sofa::core::topology::TRIANGLE)
         {
-            sofa::core::componentmodel::topology::BaseMeshTopology::Triangle theTriangle = topoCon->getTriangle(indices_list[i]);
+            sofa::core::topology::BaseMeshTopology::Triangle theTriangle = topoCon->getTriangle(indices_list[i]);
 
             for (unsigned int j=0; j<3; ++j)
                 positions[i] += topoGeo->getPointPosition(theTriangle[j])*coords2_list[i][j];

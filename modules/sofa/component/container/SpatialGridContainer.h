@@ -41,7 +41,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/component/component.h>
 #include <list>
@@ -322,7 +322,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
@@ -347,7 +347,7 @@ public:
         //grid->end();
     }
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
 
     template<class NeighborListener>
     void findNeighbors(NeighborListener* listener, Real r)
@@ -366,7 +366,7 @@ public:
         return DataTypes::Name();
     }
 protected:
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
+    core::behavior::MechanicalState<DataTypes>* mstate;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP)

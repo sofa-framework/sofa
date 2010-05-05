@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-//#include <sofa/core/componentmodel/behavior/Mass.h>
+//#include <sofa/core/behavior/Mass.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -1350,8 +1350,6 @@ template<> struct DataTypeName< defaulttype::Rigid3dMass > { static const char* 
 
 namespace core
 {
-namespace componentmodel
-{
 namespace behavior
 {
 
@@ -1417,8 +1415,6 @@ defaulttype::RigidCoord<3, float>,
 }
 
 } // namespace behavoir
-
-} // namespace componentmodel
 
 } // namespace core
 

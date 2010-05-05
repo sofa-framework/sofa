@@ -40,7 +40,7 @@
 #include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -116,12 +116,12 @@ public:
     /**
      * @brief Return the controlled MechanicalState.
      */
-    core::componentmodel::behavior::MechanicalState<DataTypes> *getMechanicalState(void) const;
+    core::behavior::MechanicalState<DataTypes> *getMechanicalState(void) const;
 
     /**
      * @brief Set a MechanicalState to the controller.
      */
-    void setMechanicalState(core::componentmodel::behavior::MechanicalState<DataTypes> *);
+    void setMechanicalState(core::behavior::MechanicalState<DataTypes> *);
 
     /**
      * @brief Return the index of the controlled DOF of the MechanicalState.
@@ -164,7 +164,7 @@ protected:
     Data< unsigned int > index; ///< Controlled DOF index.
     Data< bool > onlyTranslation; ///< Controlling the DOF only in translation
 
-    core::componentmodel::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
+    core::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 
     sofa::defaulttype::Vec<3,Real> mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.
     DataPtr< sofa::defaulttype::Vec<3,Real> > mainDirectionPtr; ///< Warning ! Only 3d Rigid DOFs can use this mainDirection.

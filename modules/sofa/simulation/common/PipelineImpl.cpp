@@ -37,8 +37,8 @@ namespace simulation
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
-using namespace sofa::core::componentmodel::behavior;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::behavior;
+using namespace sofa::core::collision;
 
 PipelineImpl::PipelineImpl()
 {

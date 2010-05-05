@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LOADER_MeshVTKLoader_H
 #define SOFA_COMPONENT_LOADER_MeshVTKLoader_H
 
-#include <sofa/core/componentmodel/loader/MeshLoader.h>
+#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/component/component.h>
 #include <tinyxml.h>
@@ -45,7 +45,7 @@ namespace loader
 
 // Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
 // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
-class SOFA_COMPONENT_LOADER_API MeshVTKLoader : public sofa::core::componentmodel::loader::MeshLoader
+class SOFA_COMPONENT_LOADER_API MeshVTKLoader : public sofa::core::loader::MeshLoader
 {
 protected:
 
@@ -399,7 +399,7 @@ protected:
     };
 
 public:
-    SOFA_CLASS(MeshVTKLoader,sofa::core::componentmodel::loader::MeshLoader);
+    SOFA_CLASS(MeshVTKLoader,sofa::core::loader::MeshLoader);
 
     enum VTKFileType { NONE, LEGACY, XML };
     enum VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS, STRUCTURED_GRID, RECTILINEAR_GRID, POLYDATA, UNSTRUCTURED_GRID };

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD_INL
 
 #include <sofa/component/forcefield/FrameSpringForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Cylinder.h>

@@ -35,7 +35,7 @@ namespace topology
 {
 class ManifoldTriangleSetTopologyContainer;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
 typedef BaseMeshTopology::SeqTriangles SeqTriangles;

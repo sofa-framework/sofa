@@ -31,8 +31,8 @@
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/BehaviorModel.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 namespace sofa
 {

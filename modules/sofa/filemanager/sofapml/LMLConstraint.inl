@@ -25,7 +25,7 @@
 #ifndef LMLCONSTRAINT_INL
 #define LMLCONSTRAINT_INL
 
-#include "sofa/core/componentmodel/behavior/Constraint.inl"
+#include "sofa/core/behavior/Constraint.inl"
 #include "LMLConstraint.h"
 #include "sofa/helper/gl/template.h"
 
@@ -40,8 +40,8 @@ namespace pml
 
 
 template<class DataTypes>
-LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *mm)
-    : sofa::core::componentmodel::behavior::Constraint<DataTypes>(mm), atomToDOFIndexes(atomIndexToDOFIndex)
+LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::behavior::MechanicalState<DataTypes> *mm)
+    : sofa::core::behavior::Constraint<DataTypes>(mm), atomToDOFIndexes(atomIndexToDOFIndex)
 {
     mmodel = mm;
     loads = new Loads();

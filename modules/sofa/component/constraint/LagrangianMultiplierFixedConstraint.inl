@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_INL
 
 #include <sofa/component/constraint/LagrangianMultiplierFixedConstraint.h>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/behavior/Constraint.inl>
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
@@ -59,8 +59,8 @@ void LagrangianMultiplierFixedConstraint<DataTypes>::addConstraint(int indice, c
 template<class DataTypes>
 void LagrangianMultiplierFixedConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    //this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
+    //this->core::behavior::Constraint<DataTypes>::init();
 }
 
 template<class DataTypes>

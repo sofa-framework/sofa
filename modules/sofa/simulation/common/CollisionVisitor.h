@@ -26,9 +26,9 @@
 #define SOFA_SIMULATION_COLLISIONACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/core/collision/Pipeline.h>
 #ifdef SOFA_SMP
-#include <sofa/core/componentmodel/collision/ParallelPipeline.h>
+#include <sofa/core/collision/ParallelPipeline.h>
 #endif
 
 namespace sofa
@@ -42,7 +42,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API CollisionVisitor : public Visitor
 {
 public:
-    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
 
     virtual Result processNodeTopDown(simulation::Node* node);
 
@@ -56,7 +56,7 @@ public:
 class SOFA_SIMULATION_COMMON_API CollisionResetVisitor : public CollisionVisitor
 {
 public:
-    void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
     virtual const char* getClassName() const { return "CollisionResetVisitor"; }
 };
 
@@ -64,7 +64,7 @@ public:
 class SOFA_SIMULATION_COMMON_API CollisionDetectionVisitor : public CollisionVisitor
 {
 public:
-    void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
     virtual const char* getClassName() const { return "CollisionDetectionVisitor"; }
 };
 
@@ -72,7 +72,7 @@ public:
 class SOFA_SIMULATION_COMMON_API CollisionResponseVisitor : public CollisionVisitor
 {
 public:
-    void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
     virtual const char* getClassName() const { return "CollisionResponseVisitor"; }
 };
 
@@ -81,8 +81,8 @@ public:
 class SOFA_SIMULATION_COMMON_API ParallelCollisionVisitor : public CollisionVisitor
 {
 public:
-    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::ParallelPipeline* obj);
-    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    virtual void processCollisionPipeline(simulation::Node* node, core::collision::ParallelPipeline* obj);
+    virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
 
     virtual const char* getClassName() const { return "ParallelCollisionVisitor"; }
 };

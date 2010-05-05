@@ -48,15 +48,12 @@ namespace core
 {
 
 // forward declaration of classes accessible from the context
-namespace componentmodel
-{
 namespace topology
 {
 class Topology;
 class BaseTopology;
 class BaseMeshTopology;
-}
-}
+} // namespace topology
 
 namespace objectmodel
 {
@@ -217,10 +214,10 @@ public:
     virtual BaseObject* getMechanicalState() const;
 
     /// Topology
-    virtual core::componentmodel::topology::Topology* getTopology() const;
+    virtual core::topology::Topology* getTopology() const;
 
     /// Mesh Topology (unified interface for both static and dynamic topologies)
-    virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
+    virtual core::topology::BaseMeshTopology* getMeshTopology() const;
 
     /// Mass
     virtual BaseObject* getMass() const;

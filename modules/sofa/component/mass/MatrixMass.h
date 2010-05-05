@@ -28,7 +28,7 @@
 
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/behavior/Mass.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/helper/vector.h>
@@ -51,12 +51,12 @@ It is possible to use lumped matrices.
 */
 
 template <class DataTypes, class MassType>
-class MatrixMass : public core::componentmodel::behavior::Mass<DataTypes>
+class MatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MatrixMass,DataTypes,MassType), SOFA_TEMPLATE(core::componentmodel::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(MatrixMass,DataTypes,MassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
-    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
+    typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

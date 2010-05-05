@@ -26,7 +26,7 @@
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
 
@@ -38,7 +38,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
@@ -51,7 +51,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 using namespace helper;
 
 SOFA_DECL_CLASS(Sphere)
@@ -92,7 +92,7 @@ void SphereModel::resize(int size)
 void SphereModel::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     if (mstate==NULL)
     {
         serr<<"SphereModel requires a Vec3 Mechanical Model" << sendl;

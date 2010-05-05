@@ -53,7 +53,7 @@ namespace
 using namespace
         sofa::defaulttype;
 using namespace
-        core::componentmodel::behavior;
+        core::behavior;
 
 int
 EulerKaapiSolverClass =

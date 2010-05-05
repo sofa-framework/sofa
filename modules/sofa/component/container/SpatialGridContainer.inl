@@ -698,7 +698,7 @@ SpatialGridContainer<DataTypes>::~SpatialGridContainer()
 template<class DataTypes>
 void SpatialGridContainer<DataTypes>::init()
 {
-    mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+    mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
     grid = new Grid(d_cellWidth.getValue());
 }
 

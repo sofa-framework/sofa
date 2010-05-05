@@ -27,7 +27,7 @@
 
 #include <sofa/component/forcefield/MeshSpringForceField.h>
 #include <sofa/component/forcefield/StiffSpringForceField.inl>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 
 
@@ -85,11 +85,11 @@ void MeshSpringForceField<DataTypes>::init()
 {
     this->StiffSpringForceField<DataTypes>::clear();
     if(!(this->mstate1) || !(this->mstate2))
-        this->mstate2 = this->mstate1 = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
+        this->mstate2 = this->mstate1 = dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
     if (this->mstate1==this->mstate2)
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+        sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
 
         if (topology != NULL)
         {
@@ -103,7 +103,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbLines();
                 for (int i=0; i<n; ++i)
                 {
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Line e = topology->getLine(i);
+                    sofa::core::topology::BaseMeshTopology::Line e = topology->getLine(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                 }
             }
@@ -114,7 +114,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbTriangles();
                 for (int i=0; i<n; ++i)
                 {
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Triangle e = topology->getTriangle(i);
+                    sofa::core::topology::BaseMeshTopology::Triangle e = topology->getTriangle(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[1], e[2], s, d);
@@ -127,7 +127,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbQuads();
                 for (int i=0; i<n; ++i)
                 {
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Quad e = topology->getQuad(i);
+                    sofa::core::topology::BaseMeshTopology::Quad e = topology->getQuad(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[0], e[3], s, d);
@@ -143,7 +143,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbTetrahedra();
                 for (int i=0; i<n; ++i)
                 {
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Tetra e = topology->getTetrahedron(i);
+                    sofa::core::topology::BaseMeshTopology::Tetra e = topology->getTetrahedron(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[0], e[3], s, d);
@@ -162,13 +162,13 @@ void MeshSpringForceField<DataTypes>::init()
                 for (int i=0; i<n; ++i)
                 {
                     if (!topology->isCubeActive(i)) continue;
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Hexa e = topology->getHexahedron(i);
+                    sofa::core::topology::BaseMeshTopology::Hexa e = topology->getHexahedron(i);
 #else
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)
                 {
                     if (!topology->isCubeActive(i)) continue;
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Cube e = topology->getCube(i);
+                    sofa::core::topology::BaseMeshTopology::Cube e = topology->getCube(i);
 #endif
                     for (int i=0; i<8; i++)
                         for (int j=i+1; j<8; j++)

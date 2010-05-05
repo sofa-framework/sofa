@@ -101,7 +101,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*
     pen.push_back(0);
 }
 
-void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::componentmodel::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm)
+void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm)
 {
 #if 1
     int n = outputs->size();
@@ -110,7 +110,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
     if (!n) return;
     for (int i=0; i<n; i++)
     {
-        const sofa::core::componentmodel::collision::GPUContact* o = outputs->get(i);
+        const sofa::core::collision::GPUContact* o = outputs->get(i);
         Real distance = (useDistance) ? d0 + o->distance : d0;
         Real ks = (distance > 1.0e-10) ? stiffness / distance : stiffness;
         Coord n = (normXForm)?(*normXForm)*o->normal : o->normal;

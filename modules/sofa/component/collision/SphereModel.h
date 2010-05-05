@@ -27,7 +27,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -95,7 +95,7 @@ public:
 
     void draw();
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
     virtual bool load(const char* filename);
 
@@ -108,7 +108,7 @@ public:
 
 protected:
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<Vec3Types>* mstate;
 
     Data< VecReal > radius;
     Data< SReal > defaultRadius;

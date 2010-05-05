@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYMODIFIER_H
 
 #include <sofa/helper/vector.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -39,16 +39,16 @@ namespace topology
 {
 class PointSetTopologyContainer;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID PointID;
 
 /**
 * A class that can apply basic topology transformations on a set of points.
 */
-class SOFA_COMPONENT_CONTAINER_API PointSetTopologyModifier : public core::componentmodel::topology::TopologyModifier
+class SOFA_COMPONENT_CONTAINER_API PointSetTopologyModifier : public core::topology::TopologyModifier
 {
 public:
-    SOFA_CLASS(PointSetTopologyModifier,core::componentmodel::topology::TopologyModifier);
+    SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
 
     PointSetTopologyModifier()
         : TopologyModifier()

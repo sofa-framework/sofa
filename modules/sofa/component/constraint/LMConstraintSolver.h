@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_LMCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINT_LMCONSTRAINTSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
-#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/component.h>
@@ -45,21 +45,21 @@ namespace component
 namespace constraint
 {
 
-using core::componentmodel::behavior::BaseLMConstraint;
-class SOFA_COMPONENT_CONSTRAINT_API LMConstraintSolver : public sofa::core::componentmodel::behavior::ConstraintSolver
+using core::behavior::BaseLMConstraint;
+class SOFA_COMPONENT_CONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
     typedef sofa::core::VecId VecId;
-    typedef sofa::core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef sofa::core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
     typedef Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
     typedef Matrix<SReal, Eigen::Dynamic, 1>              VectorEigen;
     typedef Eigen::SparseMatrix<SReal,Eigen::RowMajor>    SparseMatrixEigen;
 
-    typedef helper::set< sofa::core::componentmodel::behavior::BaseMechanicalState* > SetDof;
-    typedef std::map< const sofa::core::componentmodel::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
-    typedef std::map< const sofa::core::componentmodel::behavior::BaseMechanicalState *, helper::set<unsigned int> > DofToMask;
-    typedef std::map< const sofa::core::componentmodel::behavior::BaseMechanicalState *, core::componentmodel::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
+    typedef helper::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
+    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
+    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, helper::set<unsigned int> > DofToMask;
+    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
 public:
-    SOFA_CLASS(LMConstraintSolver, sofa::core::componentmodel::behavior::ConstraintSolver);
+    SOFA_CLASS(LMConstraintSolver, sofa::core::behavior::ConstraintSolver);
     LMConstraintSolver();
     ~LMConstraintSolver();
 
@@ -90,20 +90,20 @@ protected:
     bool needPriorStatePropagation();
 
     /// Construct the Right hand term of the system
-    void buildRightHandTerm      ( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints,
+    void buildRightHandTerm      ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             VectorEigen &c) const;
     /// Construct the Inverse of the mass matrix for a set of Dofs
     void buildInverseMassMatrices( const SetDof &setDofs,
             DofToMatrix& invMassMatrices);
     /// Construct the L matrices: write the constraint equations, and use dofUsed to remember the particles used in order to speed up the constraint correction
-    void buildLMatrices          ( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints,
+    void buildLMatrices          ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             DofToMatrix &LMatrices, DofToMask &dofUsed) const;
     /// Construct the Left Matrix A=sum_i(L_i.M^{-1}_i.L_i^T), store the matrices M^{-1}_i.L_i^T in order to compute later the constraint correction to apply
     void buildLeftMatrix         ( const DofToMatrix& invMassMatrices,
             DofToMatrix& LMatrices, SparseMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
     /// Solve the System using a projective Gauss-Seidel algorithm: compute the Lagrange Multipliers Lambda
     bool solveConstraintSystemUsingGaussSeidel(ConstOrder Order,
-            const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints,
+            const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             MatrixEigen &W,
             VectorEigen &c,
             VectorEigen &Lambda);
@@ -122,21 +122,21 @@ protected:
             const SparseMatrixEigen  &invM_Ltrans,
             const VectorEigen  &Lambda,
             const sofa::helper::set< unsigned int > &dofUsed,
-            sofa::core::componentmodel::behavior::BaseMechanicalState* dof) const;
+            sofa::core::behavior::BaseMechanicalState* dof) const;
 
 
     ///
-    void buildLMatrix          ( const sofa::core::componentmodel::behavior::BaseMechanicalState *dof,
+    void buildLMatrix          ( const sofa::core::behavior::BaseMechanicalState *dof,
             const std::list<unsigned int> &idxEquations,unsigned int constraintOffset,
             SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed ) const;
-    void buildInverseMassMatrix( const sofa::core::componentmodel::behavior::BaseMechanicalState* mstate,
-            const core::componentmodel::behavior::BaseConstraintCorrection* constraintCorrection,
+    void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
+            const core::behavior::BaseConstraintCorrection* constraintCorrection,
             SparseMatrixEigen& matrix) const;
-    void buildInverseMassMatrix( const sofa::core::componentmodel::behavior::BaseMechanicalState* mstate,
-            const core::componentmodel::behavior::BaseMass* mass,
+    void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
+            const core::behavior::BaseMass* mass,
             SparseMatrixEigen& matrix) const;
 
-    core::componentmodel::behavior::BaseLMConstraint::ConstOrder orderState;
+    core::behavior::BaseLMConstraint::ConstOrder orderState;
     unsigned int numConstraint;
 
     //Variables used to do the computation

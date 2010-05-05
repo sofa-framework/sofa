@@ -36,7 +36,7 @@
 #ifndef SOFA_COMPONENT_CONTEXTOBJECT_GUIDEDCOORDINATESYSTEM_H
 #define SOFA_COMPONENT_CONTEXTOBJECT_GUIDEDCOORDINATESYSTEM_H
 
-//#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+//#include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 
 namespace sofa

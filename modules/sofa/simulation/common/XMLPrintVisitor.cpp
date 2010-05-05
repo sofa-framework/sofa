@@ -25,8 +25,8 @@
 #include <sofa/simulation/common/XMLPrintVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
 
 namespace sofa
 {
@@ -119,9 +119,9 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = *it;
-        if (   dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj) == NULL
-                && dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*> (obj) == NULL
-                && dynamic_cast<sofa::core::componentmodel::behavior::BaseLMConstraint*> (obj) == NULL)
+        if (   dynamic_cast<sofa::core::behavior::InteractionForceField*> (obj) == NULL
+                && dynamic_cast<sofa::core::behavior::InteractionConstraint*> (obj) == NULL
+                && dynamic_cast<sofa::core::behavior::BaseLMConstraint*> (obj) == NULL)
             this->processObject(obj);
     }
     for (simulation::Node::ObjectIterator it = node->componentInVisualGraph.begin(); it != node->componentInVisualGraph.end(); ++it)
@@ -137,9 +137,9 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = *it;
-        if (   dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj) != NULL
-                || dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*> (obj) != NULL
-                || dynamic_cast<sofa::core::componentmodel::behavior::BaseLMConstraint*> (obj) != NULL   )
+        if (   dynamic_cast<sofa::core::behavior::InteractionForceField*> (obj) != NULL
+                || dynamic_cast<sofa::core::behavior::InteractionConstraint*> (obj) != NULL
+                || dynamic_cast<sofa::core::behavior::BaseLMConstraint*> (obj) != NULL   )
             this->processObject(obj);
     }
 

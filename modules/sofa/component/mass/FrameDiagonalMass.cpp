@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_CPP
 #include <sofa/component/mass/FrameDiagonalMass.inl>
-#include <sofa/core/componentmodel/behavior/Mass.inl>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/Axis.h>
 

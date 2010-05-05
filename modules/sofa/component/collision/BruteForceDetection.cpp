@@ -99,7 +99,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     if (boxModel)
     {
         bool swapModels = false;
-        core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, boxModel, swapModels);
+        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, boxModel, swapModels);
         if (intersector)
         {
             core::CollisionModel* cm1 = (swapModels?boxModel:cm);
@@ -116,7 +116,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
         // self collision
         //sout << "Test broad phase Self "<<cm->getLast()->getName()<<sendl;
         bool swapModels = false;
-        core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
+        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
         if (intersector != NULL)
             if (intersector->canIntersect(cm->begin(), cm->begin()))
             {
@@ -151,7 +151,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
         }
         //sout<<" - Yes !"<<sendl;
         bool swapModels = false;
-        core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
+        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
         if (intersector == NULL)
             continue;
 
@@ -189,10 +189,10 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     collisionModels.push_back(cm);
 }
 
-class MirrorIntersector : public core::componentmodel::collision::ElementIntersector
+class MirrorIntersector : public core::collision::ElementIntersector
 {
 public:
-    core::componentmodel::collision::ElementIntersector* intersector;
+    core::collision::ElementIntersector* intersector;
 
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
     virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
@@ -202,19 +202,19 @@ public:
 
     /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     /// If the given contacts vector is NULL, then this method should allocate it.
-    virtual int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::componentmodel::collision::DetectionOutputVector*& contacts)
+    virtual int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector*& contacts)
     {
         return intersector->beginIntersect(model2, model1, contacts);
     }
 
     /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector.
-    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::componentmodel::collision::DetectionOutputVector* contacts)
+    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts)
     {
         return intersector->intersect(elem2, elem1, contacts);
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    virtual int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::componentmodel::collision::DetectionOutputVector* contacts)
+    virtual int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector* contacts)
     {
         return intersector->endIntersect(model2, model1, contacts);
     }
@@ -246,7 +246,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     core::CollisionModel *finalcm2 = cm2->getLast();
     //sout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<sendl;
     bool swapModels = false;
-    core::componentmodel::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);
+    core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);
     if (finalintersector == NULL)
         return;
     if (swapModels)
@@ -260,7 +260,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //if (self)
     //    sout << "SELF: Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<sendl;
 
-    sofa::core::componentmodel::collision::DetectionOutputVector*& outputs = outputsMap[std::make_pair(finalcm1, finalcm2)];
+    sofa::core::collision::DetectionOutputVector*& outputs = outputsMap[std::make_pair(finalcm1, finalcm2)];
 
     finalintersector->beginIntersect(finalcm1, finalcm2, outputs);
 
@@ -298,8 +298,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     }
     //externalCells.push(std::make_pair(std::make_pair(cm1->begin(),cm1->end()),std::make_pair(cm2->begin(),cm2->end())));
 
-    //core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm1, cm2);
-    core::componentmodel::collision::ElementIntersector* intersector = NULL;
+    //core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm1, cm2);
+    core::collision::ElementIntersector* intersector = NULL;
     MirrorIntersector mirror;
     cm1 = NULL; // force later init of intersector
     cm2 = NULL;
@@ -490,8 +490,8 @@ void BruteForceDetection::draw()
 
         for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
         {
-            core::componentmodel::collision::DetectionOutputVector& outputs = it->second;
-            for (core::componentmodel::collision::DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
+            core::collision::DetectionOutputVector& outputs = it->second;
+            for (core::collision::DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
             {
                 it2->elem.first.draw();
                 it2->elem.second.draw();

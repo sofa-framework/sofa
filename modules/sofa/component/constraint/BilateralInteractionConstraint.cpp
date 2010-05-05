@@ -59,7 +59,7 @@ int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralIn
 
 #ifdef SOFA_DEV
 template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
 //	resTab[offset] = new BilateralConstraintResolution3Dof();
 //	offset += 3;
@@ -265,7 +265,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintValue(defaulttyp
 
 #ifdef SOFA_DEV
 template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
 //	resTab[offset] = new BilateralConstraintResolution3Dof();
 //	offset += 3;

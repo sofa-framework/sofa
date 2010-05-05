@@ -26,9 +26,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_H
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
@@ -75,12 +75,12 @@ public:
     typedef typename In::Real Real;
     typedef typename OutCoord::value_type OutReal;
 
-    typedef sofa::core::componentmodel::behavior::MechanicalState<typename Out::DataTypes> InRoot;
+    typedef sofa::core::behavior::MechanicalState<typename Out::DataTypes> InRoot;
     typedef typename InRoot::VecCoord InRootVecCoord;
     typedef typename InRoot::VecDeriv InRootVecDeriv;
     typedef typename InRoot::VecConst InRootVecConst;
 
-    typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
 
     InRoot* rootModel;
 

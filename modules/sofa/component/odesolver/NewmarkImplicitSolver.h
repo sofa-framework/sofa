@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_NEWMARKIMPLICITSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_NEWMARKIMPLICITSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
@@ -71,7 +71,7 @@ public:
 
     NewmarkImplicitSolver();
 
-    void solve (double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult);
+    void solve (double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult);
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     virtual double getVelocityIntegrationFactor() const

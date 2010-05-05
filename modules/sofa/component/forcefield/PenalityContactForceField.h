@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/PairInteractionForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/component.h>
@@ -43,12 +43,12 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class PenalityContactForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
+class PenalityContactForceField : public core::behavior::PairInteractionForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PenalityContactForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PenalityContactForceField, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
 
-    typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
+    typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef DataTypes DataTypes1;
     typedef DataTypes DataTypes2;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -56,7 +56,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 protected:
 
     class Contact
@@ -119,7 +119,7 @@ public:
     virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const;
 
     // -- tool grabing utility
-    void grabPoint( const core::componentmodel::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
+    void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
             const helper::vector< unsigned int > &index,
             helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
             helper::vector< unsigned int > &triangle,

@@ -104,7 +104,7 @@ public:
      */
     void setLMDFilters(const LocalMinDistanceFilter *lmdFilters) {m_lmdFilters = lmdFilters;};
 
-    void setBaseMeshTopology( core::componentmodel::topology::BaseMeshTopology *bmt) {base_mesh_topology = bmt;};
+    void setBaseMeshTopology( core::topology::BaseMeshTopology *bmt) {base_mesh_topology = bmt;};
 
     void setPositionFiltering(sofa::helper::vector< sofa::defaulttype::Vector3 > *x) {position_filtering = x;};
 
@@ -122,7 +122,7 @@ protected:
     bool m_rigid; ///< True if the CollisionElement is mapped to a rigid mechanical state.
     const LocalMinDistanceFilter	*m_lmdFilters; ///< The LocalMinDistanceFilters object that contains this InfoFilter.
 
-    core::componentmodel::topology::BaseMeshTopology* base_mesh_topology;
+    core::topology::BaseMeshTopology* base_mesh_topology;
     sofa::helper::vector< sofa::defaulttype::Vector3 > *position_filtering;
 };
 

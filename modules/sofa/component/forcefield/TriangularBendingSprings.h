@@ -43,8 +43,8 @@
 //#include <sofa/component/forcefield/StiffSpringForceField.h>
 #include <map>
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
@@ -71,12 +71,12 @@ The springs connect the vertices not belonging to the common edge. It compresses
 	@author The SOFA team </www.sofa-framework.org>
 */
 template<class DataTypes>
-class TriangularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>
+class TriangularBendingSprings : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularBendingSprings, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularBendingSprings, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
+    typedef core::behavior::ForceField<DataTypes> Inherited;
     //typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 
@@ -85,7 +85,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    //typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    //typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
@@ -145,7 +145,7 @@ protected:
 
     EdgeData<EdgeInformation> edgeInfo;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     bool updateMatrix;
 

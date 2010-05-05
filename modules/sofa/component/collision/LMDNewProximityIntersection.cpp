@@ -31,7 +31,7 @@
 #include <sofa/component/collision/LMDNewProximityIntersection.inl>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/collision/Intersection.inl>
 
 
 #include <sofa/defaulttype/Mat.h>
@@ -53,15 +53,15 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 using namespace helper;
 
 
 void GetPosOfEdgeVertexOnTriangle(Vector3& pv1, Vector3& pv2, int edge_number, Triangle &t)
 {
-    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge = t.getCollisionModel()->getTopology()->getEdge(edge_number);
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mState= t.getCollisionModel()->getMechanicalState();
-    //core::componentmodel::behavior::MechanicalState<Vec3Types>::VecCoord* x =
+    sofa::core::topology::BaseMeshTopology::Edge edge = t.getCollisionModel()->getTopology()->getEdge(edge_number);
+    core::behavior::MechanicalState<Vec3Types>* mState= t.getCollisionModel()->getMechanicalState();
+    //core::behavior::MechanicalState<Vec3Types>::VecCoord* x =
     pv1= (*mState->getX())[edge[0]];
     pv2= (*mState->getX())[edge[1]];
 }
@@ -239,7 +239,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Ou
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
     // verify the edge ordering //
-    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    sofa::core::topology::BaseMeshTopology::Edge edge[3];
     //std::cout<<"E1 & E2 verif: ";
     for (int i=0; i<3; i++)
     {
@@ -303,7 +303,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
     // verify the edge ordering //
-    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    sofa::core::topology::BaseMeshTopology::Edge edge[3];
     //std::cout<<"E1 & E2 verif: ";
     for (int i=0; i<3; i++)
     {
@@ -430,7 +430,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
 
 
     // verify the edge ordering //
-    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    sofa::core::topology::BaseMeshTopology::Edge edge[3];
     //std::cout<<"E1 & E2 verif: ";
     for (int i=0; i<3; i++)
     {

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
 
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/TriangleSubsetData.h>
 
 
@@ -44,10 +44,10 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 
 template<class DataTypes>
-class TrianglePressureForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class TrianglePressureForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TrianglePressureForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TrianglePressureForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -71,7 +71,7 @@ protected:
 
     TriangleSubsetData<TrianglePressureInformation> trianglePressureMap;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     Data<Deriv> pressure;
 

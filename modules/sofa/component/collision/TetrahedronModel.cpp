@@ -68,7 +68,7 @@ void TetrahedronModel::init()
     _topology = this->getContext()->getMeshTopology();
 
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
     if (mstate==NULL)
     {

@@ -41,7 +41,7 @@ namespace core
  *  This Interface is used by "black-box" objects (such as some fluid algorithms)
  *  that are present in a SOFA simulation but which do not use the internal
  *  behavior components (MechanicalState, ForceField, etc) defined in the
- *  sofa::core::componentmodel::behavior namespace.
+ *  sofa::core::behavior namespace.
  *
  *  A BehaviorModel simply has to implement the updatePosition method
  *  to compute a new simulation step.

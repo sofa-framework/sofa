@@ -53,7 +53,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     else this->_alreadyInit=true;
 
 
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
 
 
     if( this->getContext()->getMeshTopology()==NULL )

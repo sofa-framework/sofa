@@ -47,7 +47,7 @@
 #include "sofapml.h"
 
 #include <StructuralComponent.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/forcefield/MeshSpringForceField.h>

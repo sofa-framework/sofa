@@ -25,7 +25,7 @@
 
 #include <sofa/simulation/common/StateChangeVisitor.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
 namespace sofa
 {
@@ -33,7 +33,7 @@ namespace sofa
 namespace simulation
 {
 
-StateChangeVisitor::StateChangeVisitor(core::componentmodel::topology::Topology* source)
+StateChangeVisitor::StateChangeVisitor(core::topology::Topology* source)
     : root(true), source(source)
 {
 }

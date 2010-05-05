@@ -80,7 +80,7 @@ void TTriangleModel<DataTypes>::init()
     _topology = this->getContext()->getMeshTopology();
 
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>* > (this->getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (this->getContext()->getMechanicalState());
 
     this->getContext()->get(mpoints);
 
@@ -243,26 +243,26 @@ template<class DataTypes>
 int TTriangleModel<DataTypes>::getTriangleFlags(int i)
 {
     int f = 0;
-    sofa::core::componentmodel::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
+    sofa::core::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
 
     if (i < _topology->getNbTriangles())
     {
-        if (_topology->getTrianglesAroundVertex(t[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundVertex(t[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_P1;
-        if (_topology->getTrianglesAroundVertex(t[1])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundVertex(t[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_P2;
-        if (_topology->getTrianglesAroundVertex(t[2])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundVertex(t[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_P3;
 
-        const sofa::core::componentmodel::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
+        const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
 
 
 
-        if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_E12;
-        if (_topology->getTrianglesAroundEdge(e[1])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundEdge(e[1])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_E23;
-        if (_topology->getTrianglesAroundEdge(e[2])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundEdge(e[2])[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_E31;
     }
     else
@@ -281,19 +281,19 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
     {
         // We use the same triangle array as the topology -> only resize and recompute flags
 
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
         //elems.handleTopologyEvents(itBegin,itEnd);
 
         while( itBegin != itEnd )
         {
-            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
             switch( changeType )
             {
 
 
-            case core::componentmodel::topology::ENDING_EVENT:
+            case core::topology::ENDING_EVENT:
             {
                 sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
                 resize(_topology->getNbTriangles());
@@ -304,7 +304,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                 break;
             }
             /*
-            	case core::componentmodel::topology::TRIANGLESADDED:
+            	case core::topology::TRIANGLESADDED:
             	{
             			//sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
             		const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
@@ -325,25 +325,25 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
         return;
     }
 #if 0
-    sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+    sofa::core::topology::TopologyModifier* topoMod;
     this->getContext()->get(topoMod);
 
     if (topoMod)   // dynamic topology
     {
 
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
 
         while( itBegin != itEnd )
         {
-            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
             switch( changeType )
             {
 
 
-            case core::componentmodel::topology::ENDING_EVENT:
+            case core::topology::ENDING_EVENT:
             {
                 //sout << "INFO_print : Col - ENDING_EVENT" << sendl;
                 needsUpdate=true;
@@ -351,7 +351,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
             }
 
 
-            case core::componentmodel::topology::TRIANGLESADDED:
+            case core::topology::TRIANGLESADDED:
             {
                 //sout << "INFO_print : Col - TRIANGLESADDED" << sendl;
                 TriangleInfo t;
@@ -366,7 +366,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                 break;
             }
 
-            case core::componentmodel::topology::TRIANGLESREMOVED:
+            case core::topology::TRIANGLESREMOVED:
             {
                 //sout << "INFO_print : Col - TRIANGLESREMOVED" << sendl;
                 unsigned int last;
@@ -418,7 +418,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
             }
 
 
-            case core::componentmodel::topology::POINTSREMOVED:
+            case core::topology::POINTSREMOVED:
             {
                 //sout << "INFO_print : Col - POINTSREMOVED" << sendl;
                 if (_topology->getNbTriangles()>0)
@@ -533,7 +533,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
 
             // Case "POINTSRENUMBERING" added to propagate the treatment to the Visual Model
 
-            case core::componentmodel::topology::POINTSRENUMBERING:
+            case core::topology::POINTSRENUMBERING:
             {
                 //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
 

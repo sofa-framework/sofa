@@ -68,10 +68,10 @@ public:
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef typename MCollisionModel::Topology InTopology;
-    typedef core::componentmodel::behavior::MechanicalState< InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<  typename BarycentricContactMapper::DataTypes> MMechanicalState;
+    typedef core::behavior::MechanicalState< InDataTypes> InMechanicalState;
+    typedef core::behavior::MechanicalState<  typename BarycentricContactMapper::DataTypes> MMechanicalState;
     typedef component::container::MechanicalObject<typename BarycentricContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::BarycentricMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    typedef mapping::BarycentricMapping< core::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     typedef mapping::TopologyBarycentricMapper<InDataTypes, typename BarycentricContactMapper::DataTypes> MMapper;
     MCollisionModel* model;
     MMapping* mapping;

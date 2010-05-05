@@ -39,7 +39,7 @@ void TransformationVisitor::processVisualModel(simulation::Node* // node
 }
 
 void TransformationVisitor::processMechanicalState(simulation::Node* // node
-        , core::componentmodel::behavior::BaseMechanicalState* m)
+        , core::behavior::BaseMechanicalState* m)
 {
     m->applyScale ( scale[0], scale[1], scale[2]  );
     m->applyRotation(rotation[0],rotation[1],rotation[2]);

@@ -26,8 +26,8 @@
 #define SOFA_GPU_CUDA_CUDAVISUALMODEL_H
 
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/State.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/State.h>
 #include "CudaTypes.h"
 
 namespace sofa
@@ -66,18 +66,18 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    typedef core::componentmodel::topology::BaseMeshTopology::PointID Index;
-    typedef core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef core::componentmodel::topology::BaseMeshTopology::Quad Quad;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqQuads SeqQuads;
+    typedef core::topology::BaseMeshTopology::PointID Index;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef core::topology::BaseMeshTopology::SeqQuads SeqQuads;
 
-    typedef core::componentmodel::behavior::State<DataTypes> TState;
+    typedef core::behavior::State<DataTypes> TState;
 
     typedef gpu::cuda::CudaKernelsCudaVisualModel<DataTypes> Kernels;
 
     TState* state;
-    core::componentmodel::topology::BaseMeshTopology* topology;
+    core::topology::BaseMeshTopology* topology;
     bool needUpdateTopology;
     gpu::cuda::CudaVector<Triangle> triangles;
     gpu::cuda::CudaVector<Quad> quads;

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include "EllipsoidForceField.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>

@@ -93,17 +93,17 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
     *color = COLOR[OBJECT];
     bool show = false;
     bool hide = false;
-    if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(obj))
+    if (dynamic_cast<core::behavior::BaseMechanicalState*>(obj))
     {
         if (showMechanicalState) { show = true; *color = COLOR[MMODEL]; }
         else hide = true;
     }
-    if (dynamic_cast<core::componentmodel::behavior::BaseMass*>(obj))
+    if (dynamic_cast<core::behavior::BaseMass*>(obj))
     {
         if (showMass) { show = true; *color = COLOR[MASS]; }
         else hide = true;
     }
-    if (dynamic_cast<core::componentmodel::topology::Topology *>(obj))
+    if (dynamic_cast<core::topology::Topology *>(obj))
     {
         if (showTopology) { show = true; *color = COLOR[TOPOLOGY]; }
         else hide = true;
@@ -113,7 +113,7 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
         if (showCollisionModel) { show = true; *color = COLOR[CMODEL]; }
         else hide = true;
     }
-    if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+    if (dynamic_cast<core::behavior::BaseMechanicalMapping*>(obj))
     {
         if (showMechanicalMapping) { show = true; *color = COLOR[MMAPPING]; }
         else hide = true;
@@ -128,32 +128,32 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
         if (showContext) { show = true; *color = COLOR[CONTEXT]; }
         else hide = true;
     }
-    if (dynamic_cast<core::componentmodel::collision::Pipeline*>(obj)
-        || dynamic_cast<core::componentmodel::collision::Intersection*>(obj)
-        || dynamic_cast<core::componentmodel::collision::Detection*>(obj)
-        || dynamic_cast<core::componentmodel::collision::ContactManager*>(obj)
-        || dynamic_cast<core::componentmodel::collision::CollisionGroupManager*>(obj))
+    if (dynamic_cast<core::collision::Pipeline*>(obj)
+        || dynamic_cast<core::collision::Intersection*>(obj)
+        || dynamic_cast<core::collision::Detection*>(obj)
+        || dynamic_cast<core::collision::ContactManager*>(obj)
+        || dynamic_cast<core::collision::CollisionGroupManager*>(obj))
     {
         if (showCollisionPipeline) { show = true; *color = COLOR[COLLISION]; }
         else hide = true;
     }
-    if (dynamic_cast<core::componentmodel::behavior::OdeSolver*>(obj))
+    if (dynamic_cast<core::behavior::OdeSolver*>(obj))
     {
         if (showSolver) { show = true; *color = COLOR[SOLVER]; }
         else hide = true;
     }
-    if (dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj) &&
-        dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel2())
+    if (dynamic_cast<core::behavior::InteractionForceField*>(obj) &&
+        dynamic_cast<core::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::behavior::InteractionForceField*>(obj)->getMechModel2())
     {
         if (showInteractionForceField) { show = true; *color = COLOR[IFFIELD]; }
         else hide = true;
     }
-    else if (dynamic_cast<core::componentmodel::behavior::BaseForceField*>(obj))
+    else if (dynamic_cast<core::behavior::BaseForceField*>(obj))
     {
         if (showForceField) { show = true; *color = COLOR[FFIELD]; }
         else hide = true;
     }
-    if (dynamic_cast<core::componentmodel::behavior::BaseConstraint*>(obj))
+    if (dynamic_cast<core::behavior::BaseConstraint*>(obj))
     {
         if (showConstraint) { show = true; *color = COLOR[CONSTRAINT]; }
         else hide = true;
@@ -185,10 +185,10 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
     if (dynamic_cast<core::BaseMapping*>(obj))
         return "";
     if (!node->collisionPipeline.empty() && display(node->collisionPipeline) &&
-        (dynamic_cast<core::componentmodel::collision::Intersection*>(obj) ||
-                dynamic_cast<core::componentmodel::collision::Detection*>(obj) ||
-                dynamic_cast<core::componentmodel::collision::ContactManager*>(obj) ||
-                dynamic_cast<core::componentmodel::collision::CollisionGroupManager*>(obj)))
+        (dynamic_cast<core::collision::Intersection*>(obj) ||
+                dynamic_cast<core::collision::Detection*>(obj) ||
+                dynamic_cast<core::collision::ContactManager*>(obj) ||
+                dynamic_cast<core::collision::CollisionGroupManager*>(obj)))
         return getName(node->collisionPipeline);
     /// \todo consider all solvers instead of the first one (FF)
     if (node->mechanicalState!=obj && node->solver[0]!=obj  && node->masterSolver!=obj && display(node->mechanicalState))
@@ -278,11 +278,11 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
                 *out << "[constraint=false]";
             *out << ";" << std::endl;
         }
-        core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj);
+        core::behavior::InteractionForceField* iff = dynamic_cast<core::behavior::InteractionForceField*>(obj);
         if (iff!=NULL)
         {
-            core::componentmodel::behavior::BaseMechanicalState* model1 = iff->getMechModel1();
-            core::componentmodel::behavior::BaseMechanicalState* model2 = iff->getMechModel2();
+            core::behavior::BaseMechanicalState* model1 = iff->getMechModel1();
+            core::behavior::BaseMechanicalState* model2 = iff->getMechModel2();
             if (model1 != model2)
             {
                 if (display(model1))
@@ -299,7 +299,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
             if (display(model1))
             {
                 *out << getName(model1) << " -> " << name << " [style=\"dashed\",arrowhead=\"none\"";
-                if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+                if (dynamic_cast<core::behavior::BaseMechanicalMapping*>(obj))
                     *out << ",arrowtail=\"open\"";
                 *out << "];" << std::endl;
             }

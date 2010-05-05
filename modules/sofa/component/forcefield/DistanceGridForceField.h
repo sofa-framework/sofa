@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/container/DistanceGrid.h>
@@ -49,12 +49,12 @@ public:
 };
 
 template<class DataTypes>
-class DistanceGridForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class DistanceGridForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DistanceGridForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DistanceGridForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -198,7 +198,7 @@ public:
 
     virtual bool canPrefetch() const { return false; }
 
-    void setMState(  core::componentmodel::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
+    void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 
     void setStiffness(Real stiffIn, Real stiffOut)
     {

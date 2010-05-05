@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_H
 
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -59,7 +59,7 @@ public:
     typedef TVector Vector;
     typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     Data<bool> f_verbose;
     Data<double> f_omega;

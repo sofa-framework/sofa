@@ -42,7 +42,7 @@ using namespace sofa::helper;
 
 template <class DataTypes>
 ParabolicConstraint<DataTypes>::ParabolicConstraint()
-    :core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    :core::behavior::Constraint<DataTypes>(NULL)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_P1(initData(&m_P1,"P1","first point of the parabol") )
     , m_P2(initData(&m_P2,"P2","second point of the parabol") )
@@ -54,8 +54,8 @@ ParabolicConstraint<DataTypes>::ParabolicConstraint()
 
 
 template <class DataTypes>
-ParabolicConstraint<DataTypes>::ParabolicConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
-    : core::componentmodel::behavior::Constraint<DataTypes>(mstate)
+ParabolicConstraint<DataTypes>::ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
+    : core::behavior::Constraint<DataTypes>(mstate)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_P1(initData(&m_P1,"P1","first point of the parabol") )
     , m_P2(initData(&m_P2,"P2","second point of the parabol") )
@@ -81,7 +81,7 @@ void  ParabolicConstraint<DataTypes>::addConstraint(unsigned index)
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 
     Vec3R P1 = m_P1.getValue();
     Vec3R P2 = m_P2.getValue();

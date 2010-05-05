@@ -85,7 +85,7 @@ public:
     void draw(int index);
     void draw();
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------
     int addRay(const Vector3& origin, const Vector3& direction, SReal length);
     Ray getRay(int index) { return Ray(this, index); }
@@ -107,7 +107,7 @@ protected:
     Data<SReal> defaultLength;
 
     std::set<BaseRayContact*> contacts;
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<Vec3Types>* mstate;
 
 };
 

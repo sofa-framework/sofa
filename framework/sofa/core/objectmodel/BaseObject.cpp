@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/topology/Topology.h>
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
 
@@ -345,7 +345,7 @@ void BaseObject::handleEvent( Event* /*e*/ )
 }
 
 /// Handle topological Changes from a given Topology
-void BaseObject::handleTopologyChange(core::componentmodel::topology::Topology* t)
+void BaseObject::handleTopologyChange(core::topology::Topology* t)
 {
     if (t == this->getContext()->getTopology())
     {
@@ -355,7 +355,7 @@ void BaseObject::handleTopologyChange(core::componentmodel::topology::Topology* 
 }
 
 /// Handle state Changes from a given Topology
-void BaseObject::handleStateChange(core::componentmodel::topology::Topology* t)
+void BaseObject::handleStateChange(core::topology::Topology* t)
 {
     if (t == this->getContext()->getTopology())
         handleStateChange();

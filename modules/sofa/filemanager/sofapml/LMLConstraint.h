@@ -43,8 +43,8 @@
 #define LMLCONSTRAINT_H
 
 
-#include "sofa/core/componentmodel/behavior/Constraint.h"
-#include "sofa/core/componentmodel/behavior/MechanicalState.h"
+#include "sofa/core/behavior/Constraint.h"
+#include "sofa/core/behavior/MechanicalState.h"
 #include "sofa/core/VisualModel.h"
 #include "sofapml.h"
 
@@ -64,11 +64,11 @@ namespace pml
 {
 
 //using namespace sofa::core;
-//using namespace sofa::core::componentmodel::behavior;
+//using namespace sofa::core::behavior;
 //using namespace std;
 
 template<class DataTypes>
-class LMLConstraint : public sofa::core::componentmodel::behavior::Constraint<DataTypes> //, public sofa::core::VisualModel
+class LMLConstraint : public sofa::core::behavior::Constraint<DataTypes> //, public sofa::core::VisualModel
 {
 public :
     ///template types
@@ -80,7 +80,7 @@ public :
     typedef typename DataTypes::Deriv Deriv;
 
     ///constructor
-    LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *mm);
+    LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::behavior::MechanicalState<DataTypes> *mm);
 
     ~LMLConstraint() { /*delete loads;*/}
 
@@ -108,7 +108,7 @@ private:
     /// fix a point on the axe specified (0=x, 1=y, 2=z)
     void fixDOF(int index, int axe);
 
-    sofa::core::componentmodel::behavior::MechanicalState<DataTypes> * mmodel;
+    sofa::core::behavior::MechanicalState<DataTypes> * mmodel;
     /// the set of vertex targets
     std::vector<unsigned int> targets;
     /// list of translations

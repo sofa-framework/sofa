@@ -50,7 +50,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MMechanicalState;
     virtual ~BaseContactMapper() {}
     virtual MMechanicalState* createMapping(const char* name = "contactPoints") = 0;
     virtual void cleanup() = 0;

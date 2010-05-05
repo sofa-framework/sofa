@@ -32,26 +32,26 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/componentmodel/collision/CollisionAlgorithm.h>
-#include <sofa/core/componentmodel/collision/Pipeline.h>
-#include <sofa/core/componentmodel/collision/Intersection.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-#include <sofa/core/componentmodel/behavior/BaseForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/componentmodel/behavior/BaseController.h>
-#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/core/componentmodel/behavior/MasterSolver.h>
-#include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
-#include <sofa/core/componentmodel/loader/BaseLoader.h>
+#include <sofa/core/collision/CollisionAlgorithm.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/collision/Intersection.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/loader/BaseLoader.h>
 
 // Uncomment to output a warning in the console each time a class is registered without corresponding SOFA_CLASS
 #define LOG_MISSING_CLASS
@@ -367,49 +367,49 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("BehaviorModel");
     if (mclass->hasParent(CollisionModel::GetClass()))
         entry.baseClasses.insert("CollisionModel");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseMechanicalState::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseMechanicalState::GetClass()))
         entry.baseClasses.insert("MechanicalState");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseForceField::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseForceField::GetClass()))
         entry.baseClasses.insert("ForceField");
-    if (mclass->hasParent(core::componentmodel::behavior::InteractionForceField::GetClass()))
+    if (mclass->hasParent(core::behavior::InteractionForceField::GetClass()))
         entry.baseClasses.insert("InteractionForceField");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseLMConstraint::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseLMConstraint::GetClass()))
         entry.baseClasses.insert("Constraint");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseConstraint::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseConstraint::GetClass()))
         entry.baseClasses.insert("Constraint");
     if (mclass->hasParent(core::BaseMapping::GetClass()))
         entry.baseClasses.insert("Mapping");
     if (mclass->hasParent(core::DataEngine::GetClass()))
         entry.baseClasses.insert("Engine");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseMechanicalMapping::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseMechanicalMapping::GetClass()))
         entry.baseClasses.insert("MechanicalMapping");
-    if (mclass->hasParent(core::componentmodel::topology::TopologicalMapping::GetClass()))
+    if (mclass->hasParent(core::topology::TopologicalMapping::GetClass()))
         entry.baseClasses.insert("TopologicalMapping");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseMass::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseMass::GetClass()))
         entry.baseClasses.insert("Mass");
-    if (mclass->hasParent(core::componentmodel::behavior::OdeSolver::GetClass()))
+    if (mclass->hasParent(core::behavior::OdeSolver::GetClass()))
         entry.baseClasses.insert("OdeSolver");
-    if (mclass->hasParent(core::componentmodel::behavior::ConstraintSolver::GetClass()))
+    if (mclass->hasParent(core::behavior::ConstraintSolver::GetClass()))
         entry.baseClasses.insert("ConstraintSolver");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseConstraintCorrection::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseConstraintCorrection::GetClass()))
         entry.baseClasses.insert("ConstraintSolver");
-    if (mclass->hasParent(core::componentmodel::behavior::LinearSolver::GetClass()))
+    if (mclass->hasParent(core::behavior::LinearSolver::GetClass()))
         entry.baseClasses.insert("LinearSolver");
-    if (mclass->hasParent(core::componentmodel::behavior::MasterSolver::GetClass()))
+    if (mclass->hasParent(core::behavior::MasterSolver::GetClass()))
         entry.baseClasses.insert("MasterSolver");
-    if (mclass->hasParent(core::componentmodel::topology::Topology::GetClass()))
+    if (mclass->hasParent(core::topology::Topology::GetClass()))
         entry.baseClasses.insert("Topology");
-    if (mclass->hasParent(core::componentmodel::topology::BaseTopologyObject::GetClass()))
+    if (mclass->hasParent(core::topology::BaseTopologyObject::GetClass()))
         entry.baseClasses.insert("TopologyObject");
-    if (mclass->hasParent(core::componentmodel::behavior::BaseController::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseController::GetClass()))
         entry.baseClasses.insert("Controller");
-    if (mclass->hasParent(core::componentmodel::loader::BaseLoader::GetClass()))
+    if (mclass->hasParent(core::loader::BaseLoader::GetClass()))
         entry.baseClasses.insert("Loader");
-    if (mclass->hasParent(core::componentmodel::collision::CollisionAlgorithm::GetClass()))
+    if (mclass->hasParent(core::collision::CollisionAlgorithm::GetClass()))
         entry.baseClasses.insert("CollisionAlgorithm");
-    if (mclass->hasParent(core::componentmodel::collision::Pipeline::GetClass()))
+    if (mclass->hasParent(core::collision::Pipeline::GetClass()))
         entry.baseClasses.insert("CollisionAlgorithm");
-    if (mclass->hasParent(core::componentmodel::collision::Intersection::GetClass()))
+    if (mclass->hasParent(core::collision::Intersection::GetClass()))
         entry.baseClasses.insert("CollisionAlgorithm");
     return *this;
 }

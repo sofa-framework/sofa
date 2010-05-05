@@ -42,7 +42,7 @@ namespace odesolver
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
     : f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
@@ -117,7 +117,7 @@ void CentralDifferenceSolver::solve(double dt)
 
 #else // single-operation optimization
 
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         // vel += dx * dt
@@ -139,7 +139,7 @@ void CentralDifferenceSolver::solve(double dt)
         vel.peq( dx, 1/(1/dt + r/2) );     // vel = \frac{\frac{1}{dt} - \frac{r}{2}}{\frac{1}{dt} + \frac{r}{2}} vel + \frac{1}{\frac{1}{dt} + \frac{r}{2}} M^{-1} ( P_n - K u_n )
         pos.peq( vel, dt );                    // pos = pos + h vel
 #else // single-operation optimization
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         // vel += dx * dt

@@ -114,10 +114,10 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
     detection->endNarrowPhase();
 
     /// gets the pairs Triangle-Line detected in a radius lower than maxDist
-    const core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = detection->getDetectionOutputs();
+    const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = detection->getDetectionOutputs();
 
-    core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin();
-    core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator itend = detectionOutputs.end();
+    core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin();
+    core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator itend = detectionOutputs.end();
 
     xproj = x1;
     sofa::helper::vector<Real> dmin(xproj.size());

@@ -31,7 +31,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa
 {
@@ -42,7 +42,7 @@ namespace component
 namespace engine
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 /**
  * This class gets as inputs the vertices, texCoords, normals and facets of any mesh and returns as output a rigid position

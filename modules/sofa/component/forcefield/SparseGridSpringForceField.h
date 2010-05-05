@@ -66,7 +66,7 @@ protected:
 
 
 public:
-    SparseGridSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
+    SparseGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
         : StiffSpringForceField<DataTypes>(object1, object2),
           linesStiffness  (dataField(&linesStiffness,Real(100),"linesStiffness","Lines Stiffness"))
           , linesDamping  (dataField(&linesDamping  ,Real(5),"linesDamping"  ,"Lines Damping"))

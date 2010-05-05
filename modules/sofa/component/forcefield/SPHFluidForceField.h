@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_H
 
 #include <sofa/helper/system/config.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/container/SpatialGridContainer.h>
 #include <sofa/helper/rmath.h>
 #include <vector>
@@ -54,12 +54,12 @@ public:
 };
 
 template<class DataTypes>
-class SPHFluidForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>
+class SPHFluidForceField : public sofa::core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SPHFluidForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(SPHFluidForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef sofa::core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef sofa::core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

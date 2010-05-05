@@ -48,7 +48,7 @@ namespace collision
 
 using namespace core;
 using namespace core::objectmodel;
-using namespace core::componentmodel::collision;
+using namespace core::collision;
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(DefaultPipeline)

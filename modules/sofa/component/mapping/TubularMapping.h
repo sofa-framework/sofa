@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/container/RadiusContainer.h>
 #include <vector>

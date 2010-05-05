@@ -44,7 +44,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/InitVisitor.h>
@@ -490,12 +490,12 @@ public:
 
             BaseObject* mmodel = getContext()->getMechanicalState();
 #ifndef SOFA_FLOAT
-            sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>* mmodel3d;
-            if ((mmodel3d = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>*>(mmodel))!=NULL)
+            sofa::core::behavior::MechanicalState<Vec3dTypes>* mmodel3d;
+            if ((mmodel3d = dynamic_cast<sofa::core::behavior::MechanicalState<Vec3dTypes>*>(mmodel))!=NULL)
             {
                 bool doComputeV = (computeV.getValue() && newPoints != NULL && motionLastTime != -1000);
 
-                sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>* mm;
+                sofa::core::behavior::MechanicalState<Vec3dTypes>* mm;
                 if (doComputeV)
                 {
                     //std::cout << "Copying "<<nbv<<" vertices and estimate velocity"<<std::endl;
@@ -553,16 +553,16 @@ public:
                         //detection->addCollisionPair(std::make_pair(cm2, newPointsCM));
                     }
                     {
-                        sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputMap& contactMap = detection->getDetectionOutputs();
+                        sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap& contactMap = detection->getDetectionOutputs();
                         int ncollisions = 0;
-                        for (sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputMap::iterator it1 = contactMap.begin(); it1 != contactMap.end(); ++it1)
+                        for (sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap::iterator it1 = contactMap.begin(); it1 != contactMap.end(); ++it1)
                         {
-                            sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputVector& contacts = it1->second;
+                            sofa::core::collision::NarrowPhaseDetection::DetectionOutputVector& contacts = it1->second;
                             if (contacts.empty()) continue;
                             int newPointsCMIndex = (contacts[0].elem.second.getCollisionModel()==newPointsCM)?1:0;
-                            for (sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputVector::iterator it2 = contacts.begin(); it2 != contacts.end(); ++it2)
+                            for (sofa::core::collision::NarrowPhaseDetection::DetectionOutputVector::iterator it2 = contacts.begin(); it2 != contacts.end(); ++it2)
                             {
-                                sofa::core::componentmodel::collision::DetectionOutput* detection = &*it2;
+                                sofa::core::collision::DetectionOutput* detection = &*it2;
                                 ++ncollisions;
                                 int index = (&(detection->elem.first))[newPointsCMIndex].getIndex();
                                 double d = detection->distance;
@@ -596,9 +596,9 @@ public:
 
 #endif
 #ifndef SOFA_DOUBLE
-            sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>* mmodel3f;
+            sofa::core::behavior::MechanicalState<Vec3fTypes>* mmodel3f;
 
-            if ((mmodel3f = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>*>(mmodel))!=NULL)
+            if ((mmodel3f = dynamic_cast<sofa::core::behavior::MechanicalState<Vec3fTypes>*>(mmodel))!=NULL)
             {
                 //std::cout << "Copying "<<nbv<<" vertices to mmodel3f"<<std::endl;
                 mmodel3f->resize(nbv);
@@ -645,8 +645,8 @@ public:
                 }
             }
             BaseObject* topology = getContext()->getTopology();
-            sofa::core::componentmodel::topology::BaseMeshTopology* mesh;
-            if ((mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology))!=NULL)
+            sofa::core::topology::BaseMeshTopology* mesh;
+            if ((mesh = dynamic_cast<sofa::core::topology::BaseMeshTopology*>(topology))!=NULL)
             {
                 mesh->clear();
                 if (valid)
@@ -725,7 +725,7 @@ public:
     //flowvr::Message curDistance, lastDistance;
 
     DistanceGridModel* grid;
-    //sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
+    //sofa::core::behavior::MechanicalState<RigidTypes>* rigid;
 
     FlowVRInputDistanceGrid()
         : pInDistance(createInputPort("distance")), pInMatrix(createInputPort("matrix"))
@@ -1342,7 +1342,7 @@ public:
         //normModified = true;
     }
 
-    void computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* /*topology*/)
+    void computeMesh(sofa::core::topology::BaseMeshTopology* /*topology*/)
     {
         Inherit::computeMesh();
         meshModified = true;

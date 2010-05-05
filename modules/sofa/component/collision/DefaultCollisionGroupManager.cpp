@@ -37,7 +37,7 @@ namespace component
 namespace collision
 {
 
-using core::componentmodel::collision::Contact;
+using core::collision::Contact;
 
 
 DefaultCollisionGroupManager::DefaultCollisionGroupManager()
@@ -168,19 +168,19 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 }
                 if (!group->solver.empty())
                 {
-                    core::componentmodel::behavior::OdeSolver* solver2 = group->solver[0];
+                    core::behavior::OdeSolver* solver2 = group->solver[0];
                     group->removeObject(solver2);
                     delete solver2;
                 }
                 if (!group->linearSolver.empty())
                 {
-                    core::componentmodel::behavior::LinearSolver* solver2 = group->linearSolver[0];
+                    core::behavior::LinearSolver* solver2 = group->linearSolver[0];
                     group->removeObject(solver2);
                     delete solver2;
                 }
                 if (!group->constraintSolver.empty())
                 {
-                    core::componentmodel::behavior::ConstraintSolver* solver2 = group->constraintSolver[0];
+                    core::behavior::ConstraintSolver* solver2 = group->constraintSolver[0];
                     group->removeObject(solver2);
                     delete solver2;
                 }
@@ -228,15 +228,15 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)
 {
     simulation::Node* node = static_cast<simulation::Node*>(model->getContext());
-    helper::vector< core::componentmodel::behavior::OdeSolver *> listSolver;
-    node->get< core::componentmodel::behavior::OdeSolver >(&listSolver);
+    helper::vector< core::behavior::OdeSolver *> listSolver;
+    node->get< core::behavior::OdeSolver >(&listSolver);
 
     if (listSolver.empty())
         return NULL;
     simulation::Node* solvernode = static_cast<simulation::Node*>(listSolver.back()->getContext());
     if (solvernode->linearSolver.empty())
         return solvernode; // no linearsolver
-    core::componentmodel::behavior::LinearSolver * linearSolver = solvernode->linearSolver[0];
+    core::behavior::LinearSolver * linearSolver = solvernode->linearSolver[0];
     if (!linearSolver->isMultiGroup())
     {
         //std::cout << "Linear solver " << linearSolver->getName() << " of CM " << model->getName() << " is not multi-group" << std::endl;

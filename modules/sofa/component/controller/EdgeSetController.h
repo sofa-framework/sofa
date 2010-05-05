@@ -155,7 +155,7 @@ protected:
     Data<int>  startingIndex;   ///< index of the edge where a topological change occurs
     Real depl;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
     sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
     Coord refPos;

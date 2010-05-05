@@ -2,8 +2,8 @@
 #define SOFA_GUI_QT_QENERGYSTATWIDGET_H
 
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/componentmodel/behavior/BaseForceField.h>
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseMass.h>
 
 #ifdef SOFA_QT4
 #include <QWidget>

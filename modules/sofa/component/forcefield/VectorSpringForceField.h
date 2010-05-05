@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_H
 
 #include <sofa/component/forcefield/SpringForceField.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/EdgeData.h>
@@ -52,19 +52,19 @@ using sofa::core::objectmodel::Event;
 
 template<class DataTypes>
 class VectorSpringForceField
-    : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
-//: public core::componentmodel::behavior::ForceField<DataTypes>
+    : public core::behavior::PairInteractionForceField<DataTypes>
+//: public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(VectorSpringForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(VectorSpringForceField, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
 
-    typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
+    typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
 
     struct Spring
@@ -121,7 +121,7 @@ protected:
     bool usingMask;
 public:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
     sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
@@ -132,8 +132,8 @@ public:
 
     bool load(const char *filename);
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
+    core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
+    core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
     virtual void init();
     virtual void bwdInit();

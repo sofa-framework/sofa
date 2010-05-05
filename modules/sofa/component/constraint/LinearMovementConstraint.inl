@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_CONSTRAINT_LINEARMOVEMENTCONSTRAINT_INL
 
 #include <sofa/component/constraint/LinearMovementConstraint.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/Constraint.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -45,11 +45,11 @@ namespace component
 namespace constraint
 {
 
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 // Define TestNewPointFunction
@@ -81,7 +81,7 @@ void LinearMovementConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void
 
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
-    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    : core::behavior::Constraint<DataTypes>(NULL)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
@@ -158,7 +158,7 @@ void LinearMovementConstraint<DataTypes>::addKeyMovement(Real time, Deriv moveme
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 

@@ -27,9 +27,9 @@
 #define SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
 
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/FnDispatcher.h>
 
 
@@ -43,23 +43,23 @@ namespace collision
 {
 struct SolverSet
 {
-    SolverSet(core::componentmodel::behavior::OdeSolver* o=NULL,core::componentmodel::behavior::LinearSolver* l=NULL,core::componentmodel::behavior::ConstraintSolver* c=NULL):
+    SolverSet(core::behavior::OdeSolver* o=NULL,core::behavior::LinearSolver* l=NULL,core::behavior::ConstraintSolver* c=NULL):
         odeSolver(o),linearSolver(l),constraintSolver(c)
     {}
 
-    core::componentmodel::behavior::OdeSolver* odeSolver;
-    core::componentmodel::behavior::LinearSolver* linearSolver;
-    core::componentmodel::behavior::ConstraintSolver* constraintSolver;
+    core::behavior::OdeSolver* odeSolver;
+    core::behavior::LinearSolver* linearSolver;
+    core::behavior::ConstraintSolver* constraintSolver;
 };
 
 class SolverMerger
 {
 public:
-    static SolverSet merge(core::componentmodel::behavior::OdeSolver* solver1, core::componentmodel::behavior::OdeSolver* solver2);
+    static SolverSet merge(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2);
 
 protected:
 
-    helper::FnDispatcher<core::componentmodel::behavior::OdeSolver, SolverSet> solverDispatcher;
+    helper::FnDispatcher<core::behavior::OdeSolver, SolverSet> solverDispatcher;
 
     SolverMerger ();
 };

@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/PairInteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/PairInteractionConstraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -59,10 +59,10 @@ class AttachConstraintInternalData
 /** Attach given pair of particles, projecting the positions of the second particles to the first ones.
 */
 template <class DataTypes>
-class AttachConstraint : public core::componentmodel::behavior::PairInteractionConstraint<DataTypes>
+class AttachConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(AttachConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::PairInteractionConstraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(AttachConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::PairInteractionConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -76,7 +76,7 @@ public:
 protected:
     AttachConstraintInternalData<DataTypes> data;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* topology;
 
 public:
     Data<SetIndex> f_indices1;
@@ -96,7 +96,7 @@ public:
     helper::vector<Real> lastDist;
     helper::vector<defaulttype::Quat> restRotations;
 
-    AttachConstraint(core::componentmodel::behavior::MechanicalState<DataTypes> *mm1, core::componentmodel::behavior::MechanicalState<DataTypes> *mm2);
+    AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     AttachConstraint();
     virtual ~AttachConstraint();
 

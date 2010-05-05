@@ -62,7 +62,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(context->getMeshTopology()) == NULL)
+        if (dynamic_cast<core::topology::BaseMeshTopology*>(context->getMeshTopology()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -103,7 +103,7 @@ public:
     virtual const char* getClassName() const { return "CompareTopologyCreator"; }
 
 protected:
-    void addCompareTopology(core::componentmodel::topology::BaseMeshTopology* topology, simulation::Node* gnode);
+    void addCompareTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode);
     std::string sceneName;
     std::string extension;
     bool createInMapping;

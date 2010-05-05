@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 namespace sofa
 {
@@ -46,7 +46,7 @@ class SOFA_SIMULATION_COMMON_API SolveVisitor : public Visitor
 
 public:
     SolveVisitor(double _dt, bool free = false):dt(_dt), freeMotion(free) {}
-    virtual void processSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* b);
+    virtual void processSolver(simulation::Node* node, core::behavior::OdeSolver* b);
     virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.

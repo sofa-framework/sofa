@@ -44,7 +44,7 @@ namespace topology
 template<class DataTypes>
 void PointSetTopologyAlgorithms< DataTypes >::init()
 {
-    core::componentmodel::topology::TopologyAlgorithms::init();
+    core::topology::TopologyAlgorithms::init();
     this->getContext()->get(m_container);
     this->getContext()->get(m_modifier);
     this->getContext()->get(m_geometryAlgorithms);

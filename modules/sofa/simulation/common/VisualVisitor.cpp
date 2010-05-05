@@ -193,7 +193,7 @@ VisualComputeBBoxVisitor::VisualComputeBBoxVisitor()
     maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;
 }
 
-void VisualComputeBBoxVisitor::processMechanicalState(simulation::Node*, core::componentmodel::behavior::BaseMechanicalState* vm)
+void VisualComputeBBoxVisitor::processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm)
 {
     vm->addBBox(minBBox, maxBBox);
 }

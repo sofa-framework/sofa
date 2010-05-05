@@ -51,12 +51,12 @@ namespace forcefield
 using sofa::gpu::cuda::CudaVec3fTypes;
 
 template<>
-class PenalityContactForceField<CudaVec3fTypes> : public core::componentmodel::behavior::PairInteractionForceField<CudaVec3fTypes>
+class PenalityContactForceField<CudaVec3fTypes> : public core::behavior::PairInteractionForceField<CudaVec3fTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PenalityContactForceField,CudaVec3fTypes),SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField,CudaVec3fTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PenalityContactForceField,CudaVec3fTypes),SOFA_TEMPLATE(core::behavior::PairInteractionForceField,CudaVec3fTypes));
     typedef CudaVec3fTypes DataTypes;
-    typedef core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
+    typedef core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef DataTypes DataTypes1;
     typedef DataTypes DataTypes2;
     typedef DataTypes::VecCoord VecCoord;
@@ -64,7 +64,7 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Coord::value_type Real;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 //protected:
     /*
@@ -101,7 +101,7 @@ public:
 
     void addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
 
-    void setContacts(Real distance, Real ks, sofa::core::componentmodel::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm = NULL);
+    void setContacts(Real distance, Real ks, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm = NULL);
 
     virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 

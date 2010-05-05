@@ -29,7 +29,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sstream>
 #include <string.h>
 
@@ -44,7 +44,7 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::loader;
+using namespace sofa::core::loader;
 
 SOFA_DECL_CLASS(OglModel)
 

@@ -46,14 +46,14 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 
 
 
 
-using namespace core::componentmodel::behavior;
-using core::componentmodel::topology::BaseMeshTopology;
+using namespace core::behavior;
+using core::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::Quad				Quad;
 typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
@@ -341,9 +341,9 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
 
     while( itBegin != itEnd )
     {
-        core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+        core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
-        if(changeType == core::componentmodel::topology::POINTSREMOVED)
+        if(changeType == core::topology::POINTSREMOVED)
         {
 
             unsigned int last = _topology->getNbPoints() -1;
@@ -477,7 +477,7 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
         }
         else
         {
-            if(changeType == core::componentmodel::topology::POINTSRENUMBERING)
+            if(changeType == core::topology::POINTSRENUMBERING)
             {
 
                 const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
@@ -551,7 +551,7 @@ void QuadularBendingSprings<DataTypes>::init()
     std::map< IndexPair, IndexPair > edgeMap;
     std::set< IndexPair > springSet;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );
 
     const topology::MeshTopology::SeqQuads& quads = topology->getQuads();

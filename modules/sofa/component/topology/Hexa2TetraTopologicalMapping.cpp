@@ -53,7 +53,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS(Hexa2TetraTopologicalMapping)
 
@@ -129,7 +129,7 @@ void Hexa2TetraTopologicalMapping::init()
             for (int i=0; i<nbcubes; i++)
             {
 #ifdef SOFA_NEW_HEXA
-                core::componentmodel::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
+                core::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
                 // TODO : swap indexes where needed (currently crash in TriangleSetContainer)
 // 				if (!((i%nx)&1))
@@ -154,7 +154,7 @@ void Hexa2TetraTopologicalMapping::init()
 // 					swap(c[3],c[7]);
 // 				}
 #undef swap
-                typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+                typedef core::topology::BaseMeshTopology::Tetra Tetra;
                 to_tstm->addTetrahedronProcess(Tetra(c[0],c[5],c[1],c[6]));
                 to_tstm->addTetrahedronProcess(Tetra(c[0],c[1],c[3],c[6]));
                 to_tstm->addTetrahedronProcess(Tetra(c[1],c[3],c[6],c[2]));
@@ -162,12 +162,12 @@ void Hexa2TetraTopologicalMapping::init()
                 to_tstm->addTetrahedronProcess(Tetra(c[6],c[7],c[0],c[5]));
                 to_tstm->addTetrahedronProcess(Tetra(c[7],c[5],c[4],c[0]));
 #else
-                core::componentmodel::topology::BaseMeshTopology::Cube c = fromModel->getCube(i);
+                core::topology::BaseMeshTopology::Cube c = fromModel->getCube(i);
                 int sym = 0;
                 if (!((i%nx)&1)) sym+=1;
                 if (((i/nx)%ny)&1) sym+=2;
                 if ((i/(nx*ny))&1) sym+=4;
-                typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+                typedef core::topology::BaseMeshTopology::Tetra Tetra;
                 to_tstm->addTetrahedronProcess(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
                 to_tstm->addTetrahedronProcess(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
                 to_tstm->addTetrahedronProcess(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));

@@ -30,7 +30,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/core/componentmodel/loader/PrimitiveGroup.h>
+#include <sofa/core/loader/PrimitiveGroup.h>
 //#include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/helper.h>
 
@@ -44,8 +44,8 @@ namespace io
 {
 
 using sofa::helper::vector;
-using sofa::core::componentmodel::loader::Material;
-using sofa::core::componentmodel::loader::PrimitiveGroup;
+using sofa::core::loader::Material;
+using sofa::core::loader::PrimitiveGroup;
 using sofa::defaulttype::Vector3;
 
 using sofa::defaulttype::Vec4f;

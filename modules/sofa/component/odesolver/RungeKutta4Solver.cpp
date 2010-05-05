@@ -37,7 +37,7 @@ namespace component
 namespace odesolver
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace sofa::defaulttype;
 
 int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integrator")
@@ -49,7 +49,7 @@ SOFA_DECL_CLASS(RungeKutta4);
 
 
 
-void RungeKutta4Solver::solve (double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult)
+void RungeKutta4Solver::solve (double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult)
 {
     //sout << "RK4 Init"<<sendl;
     MultiVector pos(this, VecId::position());
@@ -93,7 +93,7 @@ void RungeKutta4Solver::solve (double dt, sofa::core::componentmodel::behavior::
     k2v.peq(k1a, stepBy2);
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newX;
@@ -118,7 +118,7 @@ void RungeKutta4Solver::solve (double dt, sofa::core::componentmodel::behavior::
     k3v.peq(k2a, stepBy2);
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newX;
@@ -143,7 +143,7 @@ void RungeKutta4Solver::solve (double dt, sofa::core::componentmodel::behavior::
     k4v.peq(k3a, dt);
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newX;
@@ -178,7 +178,7 @@ void RungeKutta4Solver::solve (double dt, sofa::core::componentmodel::behavior::
     solveConstraint(dt, vResult);
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newPos;
@@ -254,7 +254,7 @@ void RungeKutta4Solver::solve(double dt)
 #else // single-operation optimization
     {
 
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newX;
@@ -279,7 +279,7 @@ void RungeKutta4Solver::solve(double dt)
     k3v.peq(k2a, stepBy2);
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newX;
@@ -304,7 +304,7 @@ void RungeKutta4Solver::solve(double dt)
     k4v.peq(k3a, dt);
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)newX;
@@ -334,7 +334,7 @@ void RungeKutta4Solver::solve(double dt)
     solveConstraint(dt,VecId::velocity());
 #else // single-operation optimization
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         ops[0].first = (VecId)pos;

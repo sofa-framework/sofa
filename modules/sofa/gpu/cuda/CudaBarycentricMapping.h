@@ -27,9 +27,9 @@
 
 #include "CudaTypes.h"
 #include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
 
 namespace sofa
 {
@@ -57,12 +57,12 @@ protected:
     topology::RegularGridTopology* topology;
     void calcMapT();
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::behavior::BaseMechanicalState::ParticleMask *, core::behavior::BaseMechanicalState::ParticleMask *)
         : Inherit(fromTopology, toTopology)
         , maxNOut(0), topology(fromTopology)
     {}
-    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
-    void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskTo  (core::behavior::BaseMechanicalState::ParticleMask *) {}
 
     void clear(int reserve=0);
 
@@ -116,12 +116,12 @@ protected:
     void buildTranslate(unsigned outsize);
 
 public:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::behavior::BaseMechanicalState::ParticleMask *, core::behavior::BaseMechanicalState::ParticleMask *)
         : Inherit(fromTopology, toTopology)
         , topology(fromTopology), bHexa(true), bTrans(true)
     {}
-    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
-    void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskTo  (core::behavior::BaseMechanicalState::ParticleMask *) {}
 
     void clear(int reserve=0);
 
@@ -178,22 +178,22 @@ protected:
     int insize,size;
     gpu::cuda::CudaVector< MapData > map;
     gpu::cuda::CudaVector< MapData > mapT;
-    core::componentmodel::topology::BaseMeshTopology* topology;
+    core::topology::BaseMeshTopology* topology;
     void resizeMap(int size2, int maxNIn2);
     void setMap(int outIndex, int j, int inIndex, Real val);
     float getMapValue(int outIndex, int j);
     int getMapIndex(int outIndex, int j);
     void calcMapT();
 public:
-    BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
+    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::behavior::BaseMechanicalState::ParticleMask *, core::behavior::BaseMechanicalState::ParticleMask *)
         : Inherit(fromTopology, toTopology)
         , maxNIn(0), maxNOut(0), insize(0), size(0), topology(fromTopology)
     {
         if (topology==NULL || topology->getNbHexahedra()==0) maxNIn = 4;
         else maxNIn = 8;
     }
-    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
-    void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskTo  (core::behavior::BaseMechanicalState::ParticleMask *) {}
 
     void clear(int reserve=0);
 

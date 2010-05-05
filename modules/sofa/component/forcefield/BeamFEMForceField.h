@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 
 #include <sofa/component/topology/EdgeData.inl>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -52,10 +52,10 @@ using sofa::helper::vector;
 /** Compute Finite Element forces based on 6D beam elements.
 */
 template<class DataTypes>
-class BeamFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class BeamFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BeamFEMForceField,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(BeamFEMForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -170,7 +170,7 @@ protected:
         helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
         return bd[i].quat;
     }
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
 public:
     BeamFEMForceField()

@@ -42,7 +42,7 @@ namespace odesolver
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 NewmarkImplicitSolver::NewmarkImplicitSolver()
     : f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
@@ -54,7 +54,7 @@ NewmarkImplicitSolver::NewmarkImplicitSolver()
 {
 }
 
-void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult)
+void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult)
 {
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
@@ -159,7 +159,7 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     solveConstraint(dt,VecId::velocity());
 
 #else // single-operation optimization
-    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp ops;
     ops.resize(3);
     ops[0].first = (VecId)b;

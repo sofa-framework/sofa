@@ -117,7 +117,7 @@ public:
     VisualComputeBBoxVisitor();
 
     virtual void processBehaviorModel(simulation::Node*, core::BehaviorModel* vm);
-    virtual void processMechanicalState(simulation::Node*, core::componentmodel::behavior::BaseMechanicalState* vm);
+    virtual void processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm);
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
 
     virtual Result processNodeTopDown(simulation::Node* node)
