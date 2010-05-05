@@ -1,5 +1,5 @@
   <Category name="ForceFields">
-    <Tutorial name="Springs"         scene="Tutorials/ForceFields/TutorialForceFieldLiverSprings.scn" html="Tutorials/ForceFields/TutorialForceFieldLiverSprings.html"/>
+    <Tutorial name="Springs"         scene="Tutorials/ForceFields/TutorialForceFieldLiverSprings.scn" html="Tutorials/ForceFields/TutorialForceFieldSprings.html"/>
     <Tutorial name="Tetrahedron FEM" scene="Tutorials/ForceFields/TutorialForceFieldLiverFEM.scn"/>
     <Tutorial name="Triangle FEM"    scene="Tutorials/ForceFields/TutorialForceFieldLiverTriangleFEM.scn"/>
     <Tutorial name="Hexahedron FEM"  scene="Tutorials/ForceFields/TutorialForceFieldLiverHexaFEM.scn"/>

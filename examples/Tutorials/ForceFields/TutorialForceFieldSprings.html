@@ -3,7 +3,7 @@
 <body>
 	<div id="contenu">
 		
-		<center><h3>ForceFields based on Springs</h3></center>
+		<center><h3>ForceField based on springs</h3></center>
 		
 		<center><img src="TutorialForceFieldLiverSprings_0001.png" align="middle" width="300"></center>
 
@@ -22,7 +22,7 @@
 			<li> Finally the internal parameters of each spring, like the rest length, the stiffness, damping factor... </li>
 			</ul>
 			</p>
-		<div id="orangeText">Use:</div>
+		<div id="orangeText">Key Points:</div>
             <ul>
 			<li>If you have a limited number of particles that you want to connect with springs, you can use JointSpringForceField (for rigid bodies) 
 			or StiffSpringForceField (for deformable bodies) and specify manually the indices and spring parameters.</li>
@@ -31,12 +31,12 @@
 			if you wish to.</li>
             </ul>
 
-		<div id="orangeText">Limitations:</div><br>
+		<div id="orangeText">Results:</div><br>
 		At each time step, the force computed by the SpringForceField is added to the mechanical objects in interaction. When the spring network 
 		become large this can result in some instability particularly if you wish to interact with your object using the mouse. 
 		You can tweak springs parameters or the simulation parameters to resolve that issue (like the vdamping factor if you use an implicit integration scheme) 
 		but this can be a fastidious operation. <br>
-		As a general rule, if you want to handle deformations, FEM ForceField methods provide a neater way to achieve that goal.
+		As a general rule, FEM ForceField methods provide a neater way to handle deformations.
 		
 		<center><img src="TutorialForceFieldLiverSprings_0002.png" width="300" name="TutorialSolverImplicitEuler" align="middle">
 	    A MeshSpringForceField getting instable</center>
