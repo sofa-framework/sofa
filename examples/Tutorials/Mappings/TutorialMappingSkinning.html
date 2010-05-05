@@ -16,32 +16,36 @@
                   <li>we set a weight to each simulated node</li>
                   <li>by computing the influence of each node on a particule of the skin, we are able to model its deformation</li>
                 </ul>
-                <p>We implemented lots of different algorithms to let the user configure its skinning mapping the way he desires, adjusting the tradeoff between performance and quality.
+                <p>We implemented lots of different algorithms to let the user configure its skinning mapping the way he desires, adjusting the tradeoff between performance and quality.</p>
 
-		<div id="orangeText">Weighting algorithms:</div>   <br>    
-                The diffusion of the weights through the structure can be done using the inverse of the square distance, linear, hermitian, spline.
-                <ul>
+		<div id="orangeText">Key points:</div>   <br>  
+            <ul>
+			<li>
+			Weighting algorithms. The diffusion of the weights through the structure can be done using : 
+			  <ul>
                   <li>Inverse of the square distance</li>
                   <li>Linear along the distance</li>
                   <li>Hermite</li>
                   <li>Spline</li>
                 </ul>
-
-		<div id="orangeText">Distance algorithms:</div><br>
-                To know this influence, we can use the distance of the particule of the skin to each simulated node. This distance can be
-                <ul>
+			</li>
+			<li>
+			Distance algorithms. To know this influence, we can use the distance of the particule of the skin to each simulated node. This distance can be
+			   <ul>
                   <li>Euclidian</li>
                   <li>Geodesic</li>
                   <li>Harmonic</li>
                 </ul>
-
-		<div id="orangeText">Interpolating algorithms:</div><br>             
-                We implemented two methods to interpolate the deformation of the particules: 
-                <ul>
+			</li>
+			<li>
+			Interpolating algorithms. We implemented two methods to interpolate the deformation of the particules:
+			<ul>
                   <li>Linear Interpolation: the fastest, but can result in some nasty visual artifacts</li>
                   <li>Dual Quaternion: it gives much nicer results, but is slightly slower</li>
-                </ul>                
+            </ul>                
 
+			</li>
+			</ul>			
 	</div>
 </body>
 </html>
