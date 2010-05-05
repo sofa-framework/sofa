@@ -22,12 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_MATERIAL_BASEMATERIAL_H
-#define SOFA_COMPONENT_FEM_MATERIAL_BASEMATERIAL_H
+#ifndef SOFA_CORE_FEM_BASEMATERIAL_H
+#define SOFA_CORE_FEM_BASEMATERIAL_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
@@ -58,7 +55,6 @@ public:
     //virtual VecN computeStress (VecN & strain,int idElement,int id_QP){return stress in the i-th quadrature point}
     //So here needed the shapefunctionvalue *  ,  quadratureformular*  (verifie if shapfunctionvalue compute with the local method)
     // The same principe for computing the strain given the displacement
-    //BaseMaterial must be moved to framwork::core::sofa::fem
     virtual void computeStress (Vector3 & ,Vector3 &,unsigned int &) {}
     virtual void computeDStress (Vector3 & ,Vector3 &) {}
 };
