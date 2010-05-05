@@ -29,7 +29,7 @@
 #include "UncoupledConstraintCorrection.h"
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
@@ -90,9 +90,9 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 template< class DataTypes >
 void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 {
-    using sofa::core::componentmodel::topology::TopologyChange;
-    using sofa::core::componentmodel::topology::TopologyChangeType;
-    using sofa::core::componentmodel::topology::BaseMeshTopology;
+    using sofa::core::topology::TopologyChange;
+    using sofa::core::topology::TopologyChangeType;
+    using sofa::core::topology::BaseMeshTopology;
 
     BaseMeshTopology *topology = this->getContext()->getMeshTopology();
     if (!topology)
@@ -109,7 +109,7 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 
         switch ( changeType )
         {
-        case core::componentmodel::topology::POINTSADDED :
+        case core::topology::POINTSADDED :
         {
             using sofa::component::topology::PointsAdded;
 
@@ -140,7 +140,7 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 
             break;
         }
-        case core::componentmodel::topology::POINTSREMOVED :
+        case core::topology::POINTSREMOVED :
         {
             using sofa::component::topology::PointsRemoved;
             using sofa::helper::vector;

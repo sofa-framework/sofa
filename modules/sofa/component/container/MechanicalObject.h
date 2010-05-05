@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_H
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/XDataPtr.h>
 #include <sofa/core/objectmodel/VDataPtr.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -50,7 +50,7 @@ namespace component
 namespace container
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace core::objectmodel;
 using sofa::defaulttype::Vector3;
 
@@ -80,7 +80,7 @@ public:
     typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
     typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
     typedef typename DataTypes::SparseVecDeriv::const_data_iterator SparseVecDerivIterator;
-    typedef typename core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
+    typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
 protected:
     VecCoord* x;
@@ -408,10 +408,10 @@ public:
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
     virtual bool pickParticles(double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-            std::multimap< double, std::pair<sofa::core::componentmodel::behavior::BaseMechanicalState*, int> >& particles);
+            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
 
 protected:
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
     sofa::core::VecId _forceId;
 
 };

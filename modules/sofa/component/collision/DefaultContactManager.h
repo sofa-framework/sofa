@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
 #define SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
 
-#include <sofa/core/componentmodel/collision/ContactManager.h>
+#include <sofa/core/collision/ContactManager.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/component.h>
 #include <vector>
@@ -40,13 +40,13 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API DefaultContactManager : public core::componentmodel::collision::ContactManager
+class SOFA_COMPONENT_COLLISION_API DefaultContactManager : public core::collision::ContactManager
 {
 public :
-    SOFA_CLASS(DefaultContactManager,sofa::core::componentmodel::collision::ContactManager);
+    SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
 
 protected:
-    typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::componentmodel::collision::Contact*> ContactMap;
+    typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact*> ContactMap;
     ContactMap contactMap;
 
     void cleanup();
@@ -76,7 +76,7 @@ protected:
 
     virtual void changeInstance(Instance inst)
     {
-        core::componentmodel::collision::ContactManager::changeInstance(inst);
+        core::collision::ContactManager::changeInstance(inst);
         storedContactMap[instance].swap(contactMap);
         contactMap.swap(storedContactMap[inst]);
     }

@@ -45,7 +45,7 @@ namespace controller
 {
 using namespace std;
 using namespace helper::system::thread;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace core;
 
 /**
@@ -118,7 +118,7 @@ public:
 
 protected:
     component::constraint::LCP* lcp, *next_lcp;
-    core::componentmodel::behavior::MechanicalState<DataTypes> *mState; ///< The omni try to follow this mechanical state.
+    core::behavior::MechanicalState<DataTypes> *mState; ///< The omni try to follow this mechanical state.
     VecCoord mVal[3];
     typename DataTypes::VecConst mConstraints[3];
     std::vector<int> mId_buf[3];
@@ -131,7 +131,7 @@ protected:
     bool mIsCuBufferInUse; // Is current buffer currently in use right now
 
 
-    //core::componentmodel::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.
+    //core::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.
     sofa::component::constraint::LCPConstraintSolver* lcpconstraintSolver;
     // timer: verifies the time rates of the haptic loop
     CTime *_timer;

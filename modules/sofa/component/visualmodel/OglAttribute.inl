@@ -42,7 +42,7 @@ namespace component
 namespace visualmodel
 {
 
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 using namespace sofa::component::topology;
 
 template < int size, unsigned int type, class DataTypes>
@@ -197,11 +197,11 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
 
         while( itBegin != itEnd )
         {
-            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
             switch( changeType )
             {
-            case core::componentmodel::topology::ENDING_EVENT:
+            case core::topology::ENDING_EVENT:
             {
                 //sout << "INFO_print : Vis - ENDING_EVENT" << sendl;
                 updateVisual();
@@ -209,31 +209,31 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
                 break;
             }
 
-            case core::componentmodel::topology::TRIANGLESADDED:
+            case core::topology::TRIANGLESADDED:
             {
                 //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
                 break;
             }
 
-            case core::componentmodel::topology::QUADSADDED:
+            case core::topology::QUADSADDED:
             {
                 //sout << "INFO_print : Vis - QUADSADDED" << sendl;
                 break;
             }
 
-            case core::componentmodel::topology::TRIANGLESREMOVED:
+            case core::topology::TRIANGLESREMOVED:
             {
                 //sout << "INFO_print : Vis - TRIANGLESREMOVED" << sendl;
                 break;
             }
 
-            case core::componentmodel::topology::QUADSREMOVED:
+            case core::topology::QUADSREMOVED:
             {
                 //sout << "INFO_print : Vis - QUADSREMOVED" << sendl;
                 break;
             }
 
-            case core::componentmodel::topology::POINTSADDED:
+            case core::topology::POINTSADDED:
             {
                 //sout << "INFO_print : Vis - POINTSADDED" << sendl;
 
@@ -246,7 +246,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
 
             // Case "POINTSREMOVED" added to propagate the treatment to the Visual Model
 
-            case core::componentmodel::topology::POINTSREMOVED:
+            case core::topology::POINTSREMOVED:
             {
                 //sout << "INFO_print : Vis - POINTSREMOVED" << sendl;
 
@@ -267,7 +267,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
 
             // Case "POINTSRENUMBERING" added to propagate the treatment to the Visual Model
 
-            case core::componentmodel::topology::POINTSRENUMBERING:
+            case core::topology::POINTSRENUMBERING:
             {
                 //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
 

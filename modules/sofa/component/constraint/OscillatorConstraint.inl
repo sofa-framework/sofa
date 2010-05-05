@@ -42,15 +42,15 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes>
 OscillatorConstraint<DataTypes>::OscillatorConstraint()
-    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    : core::behavior::Constraint<DataTypes>(NULL)
     , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, mean, amplitude, pulsation, phase]"))
 {
 }
 
 
 template <class DataTypes>
-OscillatorConstraint<DataTypes>::OscillatorConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
-    : core::componentmodel::behavior::Constraint<DataTypes>(mstate)
+OscillatorConstraint<DataTypes>::OscillatorConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
+    : core::behavior::Constraint<DataTypes>(mstate)
     , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
 {
 }

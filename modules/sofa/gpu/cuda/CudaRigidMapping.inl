@@ -61,7 +61,7 @@ namespace mapping
 using namespace gpu::cuda;
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     const VecCoord& points = this->points.getValue();
     Coord translation;
@@ -82,7 +82,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -99,7 +99,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -118,7 +118,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void RigidMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaRigid3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     const VecCoord& points = this->points.getValue();
     Coord translation;
@@ -139,7 +139,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 }
 
 template <>
-void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaRigid3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -158,7 +158,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 //////// Rigid3d ////////
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     const VecCoord& points = this->points.getValue();
     Coord translation;
@@ -179,7 +179,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -196,7 +196,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -215,7 +215,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void RigidMapping<sofa::core::Mapping< sofa::core::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     const VecCoord& points = this->points.getValue();
     Coord translation;
@@ -236,7 +236,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 }
 
 template <>
-void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping<sofa::core::Mapping< sofa::core::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -256,7 +256,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 //////// Rigid3f ////////
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     const VecCoord& points = this->points.getValue();
     Coord translation;
@@ -277,7 +277,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -294,7 +294,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void RigidMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
@@ -313,7 +313,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 }
 
 template <>
-void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+void RigidMapping<sofa::core::Mapping< sofa::core::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     const VecCoord& points = this->points.getValue();
     Coord translation;
@@ -334,7 +334,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 }
 
 template <>
-void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void RigidMapping<sofa::core::Mapping< sofa::core::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;

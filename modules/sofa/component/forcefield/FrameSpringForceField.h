@@ -26,8 +26,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/PairInteractionForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 #include <vector>
 #include <sofa/defaulttype/Mat.h>
@@ -53,18 +53,18 @@ public:
   Use stiffnessRot vector to specify the rotational stiffnesses (on each local axis)
 */
 template<class DataTypes>
-class FrameSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
+class FrameSpringForceField : public core::behavior::PairInteractionForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FrameSpringForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FrameSpringForceField, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
 
-    typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
+    typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef Vec<N,Real> VecN;
@@ -183,8 +183,8 @@ public:
     FrameSpringForceField ( MechanicalState* object1, MechanicalState* object2 );
     FrameSpringForceField();
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
+    core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
+    core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
     virtual void init();
 

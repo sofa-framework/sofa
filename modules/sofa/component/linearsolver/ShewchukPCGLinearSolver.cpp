@@ -26,7 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/ShewchukPCGLinearSolver.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
@@ -48,7 +48,7 @@ namespace linearsolver
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 using sofa::helper::system::thread::CTime;
@@ -75,19 +75,19 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
 {
-    std::vector<sofa::core::componentmodel::behavior::LinearSolver*> solvers;
+    std::vector<sofa::core::behavior::LinearSolver*> solvers;
     BaseContext * c = this->getContext();
 
     const helper::vector<std::string>& precondNames = f_preconditioners.getValue();
     if (precondNames.empty() || !use_precond.getValue())
     {
-        c->get<sofa::core::componentmodel::behavior::LinearSolver>(&solvers,BaseContext::SearchDown);
+        c->get<sofa::core::behavior::LinearSolver>(&solvers,BaseContext::SearchDown);
     }
     else
     {
         for (unsigned int i=0; i<precondNames.size(); ++i)
         {
-            sofa::core::componentmodel::behavior::LinearSolver* s = NULL;
+            sofa::core::behavior::LinearSolver* s = NULL;
             c->get(s, precondNames[i]);
             if (s) solvers.push_back(s);
             else serr << "Solver \"" << precondNames[i] << "\" not found." << sendl;

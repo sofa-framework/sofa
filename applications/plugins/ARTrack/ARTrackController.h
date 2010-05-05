@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
 
 #include <sofa/component/controller/Controller.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/container/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <ARTrackEvent.h>
@@ -133,7 +133,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -145,12 +145,12 @@ public:
         sofa::core::objectmodel::BaseObject::create(obj, context, arg);
         if (context)
         {
-            obj->mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
+            obj->mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
         }
     }
 
 protected:
-    core::componentmodel::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
+    core::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
     vector<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations;
     bool leftPressed, rightPressed, wheel;
     Vec3d beginLocalPosition,endLocalPosition;

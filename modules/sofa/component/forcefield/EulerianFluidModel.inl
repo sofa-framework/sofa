@@ -108,7 +108,7 @@ void EulerianFluidModel<DataTypes>::init()
 {
     if (this->m_mstate == NULL)
     {
-        this->m_mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
+        this->m_mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
     }
     assert(this->m_mstate != NULL);
 
@@ -1516,7 +1516,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
 template<class DataTypes>
 unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForTriMesh(const Coord & pt, PointID startDualFace) const
 {
-    if(startDualFace == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID || startDualFace >= m_nbPoints)
+    if(startDualFace == sofa::core::topology::BaseMeshTopology::InvalidID || startDualFace >= m_nbPoints)
         startDualFace = 0;
 
     sofa::helper::vector<bool> flag((int)m_nbPoints, false);
@@ -1559,14 +1559,14 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForTriMesh(const Coord
         }
     }
 
-    return sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
+    return sofa::core::topology::BaseMeshTopology::InvalidID;
 }
 
 
 template<class DataTypes>
 unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coord & pt, PointID startDualFace) const
 {
-    if(startDualFace == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID || startDualFace >= m_nbPoints)
+    if(startDualFace == sofa::core::topology::BaseMeshTopology::InvalidID || startDualFace >= m_nbPoints)
         startDualFace = 0;
 
     sofa::helper::vector<bool> flag((int)m_nbPoints, false);
@@ -1622,7 +1622,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coor
 
     }
 
-    return sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
+    return sofa::core::topology::BaseMeshTopology::InvalidID;
 }
 
 template<class DataTypes>
@@ -1649,13 +1649,13 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
         ind_p = searchDualFaceForQuadMesh(pt, start);
         break;
     default:
-        ind_p = sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
+        ind_p = sofa::core::topology::BaseMeshTopology::InvalidID;
     }
 
     endTime1 = CTime::getTime();
     m_dTime1 += endTime1-startTime1;
 
-    if(ind_p == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID)
+    if(ind_p == sofa::core::topology::BaseMeshTopology::InvalidID)
         //pt is out of boundary
     {
         return vel;

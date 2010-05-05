@@ -37,7 +37,7 @@ namespace topology
 {
 class TetrahedronSetTopologyContainer;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TetraID TetraID;
 typedef BaseMeshTopology::Tetra Tetra;
 typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
 
 #include "SubsetMapping.h"
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -75,12 +75,12 @@ int SubsetMapping<BaseMapping>::addPoint(int index)
 
 // Handle topological changes
 template <class BaseMapping>
-void SubsetMapping<BaseMapping>::handleTopologyChange(core::componentmodel::topology::Topology* t)
+void SubsetMapping<BaseMapping>::handleTopologyChange(core::topology::Topology* t)
 {
-    core::componentmodel::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
     if (t != topoFrom) return;
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topoFrom->firstChange();
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topoFrom->lastChange();
+    std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->firstChange();
+    std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->lastChange();
     f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getX()->size());
     f_indices.endEdit();
 }

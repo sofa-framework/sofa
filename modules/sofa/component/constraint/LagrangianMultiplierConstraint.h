@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERCONSTRAINT_H
 
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/Constraint.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
@@ -41,10 +41,10 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierConstraint : public core::componentmodel::behavior::BaseConstraint
+class LagrangianMultiplierConstraint : public core::behavior::BaseConstraint
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LagrangianMultiplierConstraint,DataTypes),core::componentmodel::behavior::BaseConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(LagrangianMultiplierConstraint,DataTypes),core::behavior::BaseConstraint);
 
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -162,7 +162,7 @@ public:
     virtual void projectFreeVelocity() {} ///< project vFree to constrained space (vFree models a velocity)
     virtual void projectFreePosition() {} ///< project xFree to constrained space (xFree models a position)
 
-    virtual core::componentmodel::behavior::BaseMechanicalState* getDOFs()
+    virtual core::behavior::BaseMechanicalState* getDOFs()
     {
         return lambda;
     }

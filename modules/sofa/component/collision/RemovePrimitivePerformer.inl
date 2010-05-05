@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/RemovePrimitivePerformer.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/glut.h>
 
@@ -39,7 +39,7 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 template <class DataTypes>
 RemovePrimitivePerformer<DataTypes>::RemovePrimitivePerformer(BaseMouseInteractor *i)
@@ -74,7 +74,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
     picked=this->interactor->getBodyPicked();
     if (!picked.body) return;
 
-    mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*    >(picked.body->getContext()->getMechanicalState());
+    mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*    >(picked.body->getContext()->getMechanicalState());
     if (!mstateCollision)
     {
         std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
@@ -87,7 +87,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
         core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
         core::CollisionModel* model = collisionElement.getCollisionModel();
 
-        sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
+        sofa::core::topology::TopologyModifier* topologyModifier;
         picked.body->getContext()->get(topologyModifier);
 
         // Handle Removing of topological element (from any type of topology)
@@ -111,7 +111,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
 
             core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
 
-            sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
+            sofa::core::topology::TopologyModifier* topologyModifier;
             picked.body->getContext()->get(topologyModifier);
 
             // Problem of type takeng by functions called: Converting selectedElem <unsigned int> in <int>
@@ -184,7 +184,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
     if (!volumicMesh) // Surfacique case
     {
         volumeOnSurface = false;
-        sofa::core::componentmodel::topology::TopologyObjectType topoTypeTmp = topoType;
+        sofa::core::topology::TopologyObjectType topoTypeTmp = topoType;
 
         // - STEP 3: Looking for tricky case
         if (topoType == TETRAHEDRON || topoType == HEXAHEDRON) // special case: removing a surface volume on the mesh (tetra only for the moment)
@@ -196,7 +196,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
             for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping
             {
-                sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(listObject[i]);
+                sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
                 if (topoMap)
                 {
                     // Mapping found: 1- looking for volume, 2- looking for surface element on border, 3- looking for correspondant ID element in surfacique mesh
@@ -374,7 +374,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
             for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping (only tetra for the moment)
             {
-                sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(listObject[i]);
+                sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
                 if (topoMap)
                 {
                     // Mapping found: 1- get surface element ID in volumique topology, 2- get volume element ID behind surface element, 3- switching all variables to volumique case
@@ -651,7 +651,7 @@ void RemovePrimitivePerformer<DataTypes>::draw()
 
 
     typename DataTypes::VecCoord& X = *mstateCollision->getX();
-    //core::componentmodel::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
+    //core::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
 
     glDisable(GL_LIGHTING);
     glColor3f(0.3,0.8,0.3);

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/constraint/LagrangianMultiplierConstraint.h>
 #include <vector>
 
@@ -40,10 +40,10 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::ForceField<DataTypes>
+class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(LagrangianMultiplierFixedConstraint,DataTypes),SOFA_TEMPLATE(LagrangianMultiplierContactConstraint,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(LagrangianMultiplierFixedConstraint,DataTypes),SOFA_TEMPLATE(LagrangianMultiplierContactConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

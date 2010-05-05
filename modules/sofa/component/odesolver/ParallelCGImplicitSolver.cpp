@@ -48,7 +48,7 @@ namespace odesolver
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 ParallelCGImplicitSolver::ParallelCGImplicitSolver()
     : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )

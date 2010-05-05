@@ -27,7 +27,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ARTRACKDRIVER_H
 #define SOFA_COMPONENT_CONTROLLER_ARTRACKDRIVER_H
 
-#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseController.h>
 #include <dtracklib.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/system/config.h>
@@ -55,7 +55,7 @@ using namespace sofa::defaulttype;
 #define MAX_NMARKER 100
 #define MAX_NGLOVE 2
 
-class ARTrackDriver : public core::componentmodel::behavior::BaseController
+class ARTrackDriver : public core::behavior::BaseController
 {
 
 public:

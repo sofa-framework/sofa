@@ -27,8 +27,8 @@
 
 #include <sofa/component/component.h>
 
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 
 #include <sofa/defaulttype/Mat.h>
@@ -47,7 +47,7 @@ namespace component
 namespace constraint
 {
 
-class BilateralConstraintResolution : public core::componentmodel::behavior::ConstraintResolution
+class BilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
     BilateralConstraintResolution(std::deque<double>* vec=NULL) : _vec(vec) {}
@@ -75,7 +75,7 @@ protected:
     std::deque<double>* _vec;
 };
 
-class BilateralConstraintResolution3Dof : public core::componentmodel::behavior::ConstraintResolution
+class BilateralConstraintResolution3Dof : public core::behavior::ConstraintResolution
 {
 public:
 
@@ -147,10 +147,10 @@ protected:
 };
 
 template<class DataTypes>
-class BilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
+class BilateralInteractionConstraint : public core::behavior::InteractionConstraint
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes),sofa::core::componentmodel::behavior::InteractionConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes),sofa::core::behavior::InteractionConstraint);
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -159,7 +159,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
     MechanicalState* object1;
@@ -212,8 +212,8 @@ public:
 
     MechanicalState* getObject1() { return object1; }
     MechanicalState* getObject2() { return object2; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
+    core::behavior::BaseMechanicalState* getMechModel1() { return object1; }
+    core::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     virtual void init();
     virtual void reinit() {init();}
@@ -225,7 +225,7 @@ public:
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 
-    virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 
     // Previous Constraint Interface
     virtual void projectResponse() {}
@@ -250,14 +250,14 @@ public:
             if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
                 return false;
         }
-        return core::componentmodel::behavior::InteractionConstraint::canCreate(obj, context, arg);
+        return core::behavior::InteractionConstraint::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::componentmodel::behavior::InteractionConstraint::create(obj, context, arg);
+        core::behavior::InteractionConstraint::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));

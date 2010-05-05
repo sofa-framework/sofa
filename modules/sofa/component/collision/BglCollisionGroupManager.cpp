@@ -43,7 +43,7 @@ namespace component
 namespace collision
 {
 
-using core::componentmodel::collision::Contact;
+using core::collision::Contact;
 
 SOFA_DECL_CLASS(BglCollisionGroupManager);
 

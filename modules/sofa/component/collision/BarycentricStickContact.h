@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_H
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_H
 
-#include <sofa/core/componentmodel/collision/Contact.h>
-#include <sofa/core/componentmodel/collision/Intersection.h>
+#include <sofa/core/collision/Contact.h>
+#include <sofa/core/collision/Intersection.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/forcefield/VectorSpringForceField.h>
 #include <sofa/helper/Factory.h>
@@ -47,18 +47,18 @@ namespace collision
 using namespace sofa::defaulttype;
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-class BarycentricStickContact : public core::componentmodel::collision::Contact
+class BarycentricStickContact : public core::collision::Contact
 {
 public:
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
-    typedef core::componentmodel::collision::Intersection Intersection;
-    typedef core::componentmodel::collision::DetectionOutputVector OutputVector;
-    typedef core::componentmodel::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> TOutputVector;
+    typedef core::collision::Intersection Intersection;
+    typedef core::collision::DetectionOutputVector OutputVector;
+    typedef core::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> TOutputVector;
     typedef ResponseDataTypes DataTypes1;
     typedef ResponseDataTypes DataTypes2;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes1> MechanicalState1;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes2> MechanicalState2;
+    typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
+    typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
     typedef forcefield::VectorSpringForceField<ResponseDataTypes> ResponseForceField;
@@ -74,7 +74,7 @@ protected:
     ResponseForceField* ff;
     core::objectmodel::BaseContext* parent;
 
-    typedef std::map<core::componentmodel::collision::DetectionOutput::ContactId,int> ContactIndexMap;
+    typedef std::map<core::collision::DetectionOutput::ContactId,int> ContactIndexMap;
     /// Mapping of contactids to force element (+1, so that 0 means not active).
     /// This allows to ignore duplicate contacts, and preserve information associated with each contact point over time
     ContactIndexMap contactIndex;

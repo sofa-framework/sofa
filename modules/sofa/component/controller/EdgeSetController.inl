@@ -38,7 +38,7 @@
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_INL
 
 #include <sofa/component/controller/EdgeSetController.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -390,8 +390,8 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
             // we keep the edge with the next point and not the previous point
             int e0 = baseEdge[0];
             int e1 = baseEdge[1];
-            core::componentmodel::topology::BaseMeshTopology::Edge ei0 = _topology->getEdge(e0);
-            core::componentmodel::topology::BaseMeshTopology::Edge ei1 = _topology->getEdge(e1);
+            core::topology::BaseMeshTopology::Edge ei0 = _topology->getEdge(e0);
+            core::topology::BaseMeshTopology::Edge ei1 = _topology->getEdge(e1);
             baseEdge.resize(1);
             if (ei0[0]+ei0[1] > ei1[0]+ei1[1])
                 baseEdge[0] = e0;

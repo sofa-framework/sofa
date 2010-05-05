@@ -95,10 +95,10 @@ void LineSetSkinningMapping<BasicMapping>::init()
 
     for(unsigned int line1Index=0; line1Index< (unsigned) t->getNbLines(); line1Index++)
     {
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line1 = t->getLine(line1Index);
+        const sofa::core::topology::BaseMeshTopology::Line& line1 = t->getLine(line1Index);
         for(unsigned int line2Index=0; line2Index< (unsigned) t->getNbLines(); line2Index++)
         {
-            const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line2 = t->getLine(line2Index);
+            const sofa::core::topology::BaseMeshTopology::Line& line2 = t->getLine(line2Index);
             if ((line1[0] == line2[0]) || (line1[0] == line2[1]) || (line1[1] == line2[0]))
             {
                 neighborhoodLinesSet[line1Index].insert(line2Index);
@@ -132,7 +132,7 @@ void LineSetSkinningMapping<BasicMapping>::init()
 
         for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
         {
-            const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = t->getLine(lineIndex);
+            const sofa::core::topology::BaseMeshTopology::Line& line = t->getLine(lineIndex);
             double _weight = convolutionSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
 
             for(unsigned int lineInfluencedIndex=0; lineInfluencedIndex<lines.size(); lineInfluencedIndex++)
@@ -215,7 +215,7 @@ void LineSetSkinningMapping<BasicMapping>::draw()
 
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
             //Vec<3,Real> v = xfrom[t->getLine(iline.lineIndex)[0]].getCenter() + xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
-            const sofa::core::componentmodel::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
+            const sofa::core::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
             Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
 
@@ -230,7 +230,7 @@ void LineSetSkinningMapping<BasicMapping>::draw()
     /*
     for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
-    	const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = t->getLine(linesInfluencedByVertice[verticeIndex][0].lineIndex);
+    	const sofa::core::topology::BaseMeshTopology::Line& line = t->getLine(linesInfluencedByVertice[verticeIndex][0].lineIndex);
     	Vec<3,Real> v = projectToSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
 
     	glColor3f (1,0,0);
@@ -239,7 +239,7 @@ void LineSetSkinningMapping<BasicMapping>::draw()
 
     	for(unsigned int i=1; i<linesInfluencedByVertice[verticeIndex].size(); i++)
     	{
-    		const sofa::core::componentmodel::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][i].lineIndex);
+    		const sofa::core::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][i].lineIndex);
     		Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
     		glColor3f (0,0,1);

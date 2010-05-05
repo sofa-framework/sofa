@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_INL
 
 #include <sofa/component/constraint/BilateralInteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/behavior/Constraint.inl>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
@@ -127,7 +127,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsign
 }
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces);
     offset += 3;

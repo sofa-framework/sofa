@@ -111,7 +111,7 @@ double PointSetTopologyContainer::getPZ(int i) const
 
 void PointSetTopologyContainer::init()
 {
-    core::componentmodel::topology::TopologyContainer::init();
+    core::topology::TopologyContainer::init();
 
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if (nbPoints.getValue() == 0 && !initPoints.empty())

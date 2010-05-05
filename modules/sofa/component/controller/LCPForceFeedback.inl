@@ -136,7 +136,7 @@ void LCPForceFeedback<DataTypes>::init()
         return;
     }
 
-    mState = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes> *> (c->getMechanicalState());
+    mState = dynamic_cast<core::behavior::MechanicalState<DataTypes> *> (c->getMechanicalState());
     if (!mState)
     {
         serr << "LCPForceFeedback has no binding MechanicalState. Initialisation failed." << sendl;

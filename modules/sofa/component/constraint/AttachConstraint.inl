@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_INL
 
-#include <sofa/core/componentmodel/behavior/PairInteractionConstraint.inl>
+#include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/component/constraint/AttachConstraint.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -45,11 +45,11 @@ namespace component
 namespace constraint
 {
 
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 template<>
 inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
@@ -380,8 +380,8 @@ AttachConstraint<DataTypes>::AttachConstraint()
 }
 
 template <class DataTypes>
-AttachConstraint<DataTypes>::AttachConstraint(core::componentmodel::behavior::MechanicalState<DataTypes> *mm1, core::componentmodel::behavior::MechanicalState<DataTypes> *mm2)
-    : core::componentmodel::behavior::PairInteractionConstraint<DataTypes>(mm1,mm2)
+AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2)
+    : core::behavior::PairInteractionConstraint<DataTypes>(mm1,mm2)
     ,f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the fixed points on the second model") )
     , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
@@ -441,7 +441,7 @@ void AttachConstraint<DataTypes>::addConstraint(unsigned int index1, unsigned in
 template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::PairInteractionConstraint<DataTypes>::init();
+    this->core::behavior::PairInteractionConstraint<DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 

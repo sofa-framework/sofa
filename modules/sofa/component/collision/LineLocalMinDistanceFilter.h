@@ -48,8 +48,8 @@ namespace collision
  */
 class LineInfo : public InfoFilter //< topology::Edge >
 {
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Edge Edge;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 
 public:
     /**
@@ -173,7 +173,7 @@ private:
     topology::PointData< PointInfo > m_pointInfo;
     topology::EdgeData< LineInfo > m_lineInfo;
 
-    core::componentmodel::topology::BaseMeshTopology *bmt;
+    core::topology::BaseMeshTopology *bmt;
 };
 
 

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/forcefield/TriangleFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -96,12 +96,12 @@ void TriangleFEMForceField<DataTypes>::init()
     }
     else
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles;
+        sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
         int nbcubes = _mesh->getNbQuads();
         trias->reserve(nbcubes*2);
         for (int i=0; i<nbcubes; i++)
         {
-            sofa::core::componentmodel::topology::BaseMeshTopology::Quad q = _mesh->getQuad(i);
+            sofa::core::topology::BaseMeshTopology::Quad q = _mesh->getQuad(i);
             trias->push_back(Element(q[0],q[1],q[2]));
             trias->push_back(Element(q[0],q[2],q[3]));
         }

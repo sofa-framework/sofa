@@ -44,7 +44,7 @@
 #include <sofa/simulation/bgl/bgl.h>
 #include <sofa/simulation/common/Node.h>
 #include <boost/graph/adjacency_list.hpp>
-#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/core/collision/Pipeline.h>
 
 namespace sofa
 {

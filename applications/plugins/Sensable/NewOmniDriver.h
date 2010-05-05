@@ -30,7 +30,7 @@
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 
-#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseController.h>
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/controller/Controller.h>
 

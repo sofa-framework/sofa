@@ -50,7 +50,7 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
 
     if (node != NULL)
     {
-        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        //		core::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
         if (forceField == NULL)
         {
@@ -323,7 +323,7 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
 
     if (node != NULL)
     {
-        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        //		core::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
         if (forceField == NULL)
         {

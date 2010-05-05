@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include "DistanceGridForceField.h"
 #include <sofa/helper/system/config.h>
@@ -67,10 +67,10 @@ void DistanceGridForceField<DataTypes>::init()
 
     if (this->stiffnessArea.getValue() != 0 && this->mstate)
     {
-        core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+        core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
         if (topology && topology->getNbTriangles() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
+            const core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
             Real sumArea = 0;
             Real sumSArea = 0;
             const VecCoord& p1 = *this->mstate->getX0();
@@ -101,10 +101,10 @@ void DistanceGridForceField<DataTypes>::init()
 
     if (this->stiffnessVolume.getValue() != 0 && this->mstate)
     {
-        core::componentmodel::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
+        core::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
         if (topology && topology->getNbTetrahedra() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = topology->getTetrahedra();
+            const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = topology->getTetrahedra();
             Real sumVolume = 0;
             const VecCoord& p1 = *this->mstate->getX0();
             for (unsigned int ti = 0; ti < tetrahedra.size(); ++ti)
@@ -192,10 +192,10 @@ void DistanceGridForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
     const Real minA = minArea.getValue();
     if (stiffA != 0)
     {
-        core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+        core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
         if (topology && topology->getNbTriangles() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
+            const core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
             for (unsigned int ti = 0; ti < triangles.size(); ++ti)
             {
                 helper::fixed_array<unsigned int,3> t = triangles[ti];
@@ -247,10 +247,10 @@ void DistanceGridForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
     const Real minV = minVolume.getValue();
     if (stiffV != 0)
     {
-        core::componentmodel::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
+        core::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
         if (topology && topology->getNbTetrahedra() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = topology->getTetrahedra();
+            const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = topology->getTetrahedra();
             const Real v1_6 = (Real)(1.0/6.0);
             for (unsigned int ti = 0; ti < tetrahedra.size(); ++ti)
             {

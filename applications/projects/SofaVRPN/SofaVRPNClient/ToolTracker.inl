@@ -11,7 +11,7 @@
 #include <ToolTracker.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 
 namespace sofavrpn
@@ -22,7 +22,7 @@ namespace client
 
 using namespace sofa;
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 template<class Datatypes>
 ToolTracker<Datatypes>::ToolTracker()

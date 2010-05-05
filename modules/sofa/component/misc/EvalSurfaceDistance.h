@@ -90,7 +90,7 @@ protected:
 
     sofa::component::collision::NewProximityIntersection * intersection;
     sofa::component::collision::BruteForceDetection* detection;
-    typedef core::componentmodel::collision::TDetectionOutputVector< sofa::component::collision::TriangleModel, sofa::component::collision::PointModel> ContactVector;
+    typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleModel, sofa::component::collision::PointModel> ContactVector;
 
 };
 

@@ -27,7 +27,7 @@
 
 
 #include <sofa/component/forcefield/HexahedralFEMForceField.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/behavior/Mass.h>
 
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/HexahedronData.h>
@@ -43,7 +43,7 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
-using sofa::core::componentmodel::behavior::Mass;
+using sofa::core::behavior::Mass;
 
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
 */
@@ -68,7 +68,7 @@ public:
     typedef typename HexahedralFEMForceFieldT::VecElement VecElement;
     typedef typename HexahedralFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementMass;
-    typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::index_type Index;
     typedef typename HexahedralFEMForceFieldT::HexahedronInformation HexahedronInformation;
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementStiffness;
     typedef typename HexahedralFEMForceFieldT::Element Element;
@@ -81,7 +81,7 @@ public:
     virtual void reinit( );
 
     // handle topological changes
-    virtual void handleTopologyChange(core::componentmodel::topology::Topology*);
+    virtual void handleTopologyChange(core::topology::Topology*);
 
     // -- Mass interface
     virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);

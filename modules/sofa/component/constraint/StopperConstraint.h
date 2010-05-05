@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_STOPPERCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_STOPPERCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <iostream>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
@@ -45,7 +45,7 @@ namespace constraint
 
 #ifdef SOFA_DEV
 /*
-class StopperConstraintResolution : public core::componentmodel::behavior::ConstraintResolution
+class StopperConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
 
@@ -56,7 +56,7 @@ public:
 };
 */
 
-class StopperConstraintResolution1Dof : public core::componentmodel::behavior::ConstraintResolution
+class StopperConstraintResolution1Dof : public core::behavior::ConstraintResolution
 {
 protected:
     double _invW, _w, _min, _max ;
@@ -94,10 +94,10 @@ public:
 };
 #endif
 template<class DataTypes>
-class StopperConstraint : public core::componentmodel::behavior::BaseConstraint
+class StopperConstraint : public core::behavior::BaseConstraint
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(StopperConstraint,DataTypes), core::componentmodel::behavior::BaseConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(StopperConstraint,DataTypes), core::behavior::BaseConstraint);
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -108,7 +108,7 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
     typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
     MechanicalState* object;
@@ -124,7 +124,7 @@ protected:
 
 
 
-    sofa::core::componentmodel::behavior::OdeSolver* ode_integrator;
+    sofa::core::behavior::OdeSolver* ode_integrator;
 
 public:
 
@@ -153,7 +153,7 @@ public:
     }
 
     MechanicalState* getObject() { return object; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel() { return object; }
+    core::behavior::BaseMechanicalState* getMechModel() { return object; }
 
     virtual void init();
 
@@ -179,7 +179,7 @@ public:
     }
 
 #ifdef SOFA_DEV
-    virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif
     // Previous Constraint Interface
     virtual void projectResponse() {}
@@ -202,14 +202,14 @@ public:
             if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
                 return false;
         }
-        return core::componentmodel::behavior::BaseConstraint::canCreate(obj, context, arg);
+        return core::behavior::BaseConstraint::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::componentmodel::behavior::BaseConstraint::create(obj, context, arg);
+        core::behavior::BaseConstraint::create(obj, context, arg);
         if (arg && (arg->getAttribute("object") ))
         {
             obj->object = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object","..")));

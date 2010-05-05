@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_VOXELGRID_H
 #define SOFA_COMPONENT_COLLISION_VOXELGRID_H
 
-#include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/component/collision/NarrowPhaseDetection.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Node.h>

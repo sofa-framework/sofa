@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_INL
 
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/behavior/Constraint.inl>
 #include <sofa/component/constraint/FixedPlaneConstraint.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -40,7 +40,7 @@ namespace component
 
 namespace constraint
 {
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
@@ -133,7 +133,7 @@ void FixedPlaneConstraint<DataTypes>::selectVerticesAlongPlane()
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 

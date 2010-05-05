@@ -29,7 +29,7 @@
 #include <sofa/core/CollisionElement.h>
 
 #include <sofa/core/BehaviorModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/component/collision/TriangleModel.h>
 
@@ -62,7 +62,7 @@ namespace component
 namespace collision
 {
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
 class TopologicalChangeManager

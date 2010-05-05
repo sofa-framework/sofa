@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -53,12 +53,12 @@ using namespace sofa::component::topology;
 
 
 template<class DataTypes>
-class TetrahedralTensorMassForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class TetrahedralTensorMassForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TetrahedralTensorMassForceField,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TetrahedralTensorMassForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
+    typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord    Coord   ;
@@ -106,7 +106,7 @@ protected:
 
     EdgeData<EdgeRestInformation> edgeInfo;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;

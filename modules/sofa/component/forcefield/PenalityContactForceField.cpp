@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP
 #include <sofa/component/forcefield/PenalityContactForceField.inl>
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

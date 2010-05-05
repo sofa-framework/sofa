@@ -28,8 +28,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_H
 #define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/mapping/DualQuatStorage.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
@@ -63,19 +63,19 @@ public:
 /// Set of simple springs between particles
 template<class DataTypes>
 
-class FrameSpringForceField2 : public core::componentmodel::behavior::ForceField<DataTypes>
+class FrameSpringForceField2 : public core::behavior::ForceField<DataTypes>
 {
 
 public:
-    SOFA_CLASS ( SOFA_TEMPLATE ( FrameSpringForceField2, DataTypes ), SOFA_TEMPLATE ( core::componentmodel::behavior::ForceField, DataTypes ) );
+    SOFA_CLASS ( SOFA_TEMPLATE ( FrameSpringForceField2, DataTypes ), SOFA_TEMPLATE ( core::behavior::ForceField, DataTypes ) );
 
-    typedef typename core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef typename core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MState;
 
     enum { N = Coord::static_size };
     typedef defaulttype::Mat<N, N, Real> Mat;

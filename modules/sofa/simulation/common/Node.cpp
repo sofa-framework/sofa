@@ -222,32 +222,32 @@ void Node::doAddObject(BaseObject* obj)
     obj->setContext(this);
     object.add(obj);
     int inserted=0;
-    inserted+= masterSolver.add(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
-    inserted+= solver.add(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
-    inserted+= linearSolver.add(dynamic_cast< core::componentmodel::behavior::LinearSolver* >(obj));
-    inserted+= constraintSolver.add(dynamic_cast< core::componentmodel::behavior::ConstraintSolver* >(obj));
-    inserted+= mechanicalState.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
-    bool isMechanicalMapping = mechanicalMapping.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
+    inserted+= masterSolver.add(dynamic_cast< core::behavior::MasterSolver* >(obj));
+    inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
+    inserted+= linearSolver.add(dynamic_cast< core::behavior::LinearSolver* >(obj));
+    inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
+    inserted+= mechanicalState.add(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
+    bool isMechanicalMapping = mechanicalMapping.add(dynamic_cast< core::behavior::BaseMechanicalMapping* >(obj));
     inserted+= isMechanicalMapping;
     if (!isMechanicalMapping)
         inserted+= mapping.add(dynamic_cast< core::BaseMapping* >(obj));
-    inserted+= mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
-    inserted+= topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-    inserted+= meshTopology.add(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
+    inserted+= mass.add(dynamic_cast< core::behavior::BaseMass* >(obj));
+    inserted+= topology.add(dynamic_cast< core::topology::Topology* >(obj));
+    inserted+= meshTopology.add(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
     inserted+= shader.add(dynamic_cast< sofa::core::Shader* >(obj));
 
-    bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj));
+    bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::InteractionForceField* >(obj));
     inserted+= isInteractionForceField;
     if (!isInteractionForceField)
-        forceField.add(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
-    inserted+= constraint.add(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
-    inserted+= LMConstraint.add(dynamic_cast< core::componentmodel::behavior::BaseLMConstraint* >(obj));
+        forceField.add(dynamic_cast< core::behavior::BaseForceField* >(obj));
+    inserted+= constraint.add(dynamic_cast< core::behavior::BaseConstraint* >(obj));
+    inserted+= LMConstraint.add(dynamic_cast< core::behavior::BaseLMConstraint* >(obj));
     inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
     inserted+= visualModel.add(dynamic_cast< core::VisualModel* >(obj));
     inserted+= visualManager.add(dynamic_cast< core::VisualManager* >(obj));
     inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
     inserted+= contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
-    inserted+= collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
+    inserted+= collisionPipeline.add(dynamic_cast< core::collision::Pipeline* >(obj));
     inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
 
     if ( inserted==0 )
@@ -266,28 +266,28 @@ void Node::doRemoveObject(BaseObject* obj)
         obj->setContext(NULL);
     }
     object.remove(obj);
-    masterSolver.remove(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
-    solver.remove(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
-    linearSolver.remove(dynamic_cast< core::componentmodel::behavior::LinearSolver* >(obj));
-    constraintSolver.remove(dynamic_cast< core::componentmodel::behavior::ConstraintSolver* >(obj));
-    mechanicalState.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
-    mechanicalMapping.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
-    mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
-    topology.remove(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-    meshTopology.remove(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
+    masterSolver.remove(dynamic_cast< core::behavior::MasterSolver* >(obj));
+    solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
+    linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
+    constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
+    mechanicalState.remove(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
+    mechanicalMapping.remove(dynamic_cast< core::behavior::BaseMechanicalMapping* >(obj));
+    mass.remove(dynamic_cast< core::behavior::BaseMass* >(obj));
+    topology.remove(dynamic_cast< core::topology::Topology* >(obj));
+    meshTopology.remove(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
     shader.remove(dynamic_cast<sofa::core::Shader* >(obj));
 
-    forceField.remove(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
-    interactionForceField.remove(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj));
-    constraint.remove(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
-    LMConstraint.remove(dynamic_cast< core::componentmodel::behavior::BaseLMConstraint* >(obj));
+    forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
+    interactionForceField.remove(dynamic_cast< core::behavior::InteractionForceField* >(obj));
+    constraint.remove(dynamic_cast< core::behavior::BaseConstraint* >(obj));
+    LMConstraint.remove(dynamic_cast< core::behavior::BaseLMConstraint* >(obj));
     mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
     behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< core::VisualModel* >(obj));
     visualManager.remove(dynamic_cast< core::VisualManager* >(obj));
     collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
-    collisionPipeline.remove(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
+    collisionPipeline.remove(dynamic_cast< core::collision::Pipeline* >(obj));
 
     actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
 
@@ -304,22 +304,22 @@ void Node::doRemoveObject(BaseObject* obj)
 
 
 /// Topology
-core::componentmodel::topology::Topology* Node::getTopology() const
+core::topology::Topology* Node::getTopology() const
 {
     // return this->topology;
     if (this->topology)
         return this->topology;
     else
-        return get<core::componentmodel::topology::Topology>();
+        return get<core::topology::Topology>();
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
-core::componentmodel::topology::BaseMeshTopology* Node::getMeshTopology() const
+core::topology::BaseMeshTopology* Node::getMeshTopology() const
 {
     if (this->meshTopology)
         return this->meshTopology;
     else
-        return get<core::componentmodel::topology::BaseMeshTopology>();
+        return get<core::topology::BaseMeshTopology>();
 }
 
 /// Shader
@@ -338,7 +338,7 @@ core::objectmodel::BaseObject* Node::getMechanicalState() const
     if (this->mechanicalState)
         return this->mechanicalState;
     else
-        return get<core::componentmodel::behavior::BaseMechanicalState>();
+        return get<core::behavior::BaseMechanicalState>();
 }
 
 
@@ -454,7 +454,7 @@ bool Node::getDebug() const
 void Node::removeControllers()
 {
     removeObject(masterSolver);
-    typedef Sequence<core::componentmodel::behavior::OdeSolver> Solvers;
+    typedef Sequence<core::behavior::OdeSolver> Solvers;
     Solvers solverRemove = solver;
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; i++ )
         removeObject( *i );
@@ -504,7 +504,7 @@ void Node::initialize()
 //     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
 //     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
 //     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
-//     for ( ; i!=iend && dynamic_cast<core::componentmodel::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
+//     for ( ; i!=iend && dynamic_cast<core::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
 //         {}
 //     if ( i!=iend && !object.empty() ) // found
 //     {
@@ -630,17 +630,17 @@ void Node::propagateEvent( core::objectmodel::Event* event )
 
 void Node::printComponents()
 {
-    using namespace sofa::core::componentmodel::behavior;
+    using namespace sofa::core::behavior;
     using core::BaseMapping;
-    using core::componentmodel::topology::Topology;
-    using core::componentmodel::topology::BaseTopology;
-    using core::componentmodel::topology::BaseMeshTopology;
+    using core::topology::Topology;
+    using core::topology::BaseTopology;
+    using core::topology::BaseMeshTopology;
     using core::Shader;
     using core::BehaviorModel;
     using core::VisualModel;
     using core::CollisionModel;
     using core::objectmodel::ContextObject;
-    using core::componentmodel::collision::Pipeline;
+    using core::collision::Pipeline;
 
     cerr<<"MasterSolver: ";
     for ( Single<MasterSolver>::iterator i=masterSolver.begin(), iend=masterSolver.end(); i!=iend; i++ )

@@ -29,8 +29,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_INL
 
 #include <sofa/component/forcefield/SpringForceField.h>
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/io/MassSpringLoader.h>
@@ -280,24 +280,24 @@ void SpringForceField<DataTypes>::draw()
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::handleTopologyChange(core::componentmodel::topology::Topology *topo)
+void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology *topo)
 {
     if(this->mstate1->getContext()->getTopology() == topo)
     {
-        core::componentmodel::topology::BaseMeshTopology*	_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*> (topo);
+        core::topology::BaseMeshTopology*	_topology = dynamic_cast<core::topology::BaseMeshTopology*> (topo);
 
         if(_topology != NULL)
         {
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+            std::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
             while( itBegin != itEnd )
             {
-                core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+                core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
                 switch( changeType )
                 {
-                case core::componentmodel::topology::POINTSREMOVED:
+                case core::topology::POINTSREMOVED:
                 {
 
                     break;
@@ -314,20 +314,20 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::componentmodel::top
 
     if(this->mstate2->getContext()->getTopology() == topo)
     {
-        core::componentmodel::topology::BaseMeshTopology*	_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*> (topo);
+        core::topology::BaseMeshTopology*	_topology = dynamic_cast<core::topology::BaseMeshTopology*> (topo);
 
         if(_topology != NULL)
         {
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt=_topology->firstChange();
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+            std::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->firstChange();
+            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
             while( changeIt != itEnd )
             {
-                core::componentmodel::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
+                core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
 
                 switch( changeType )
                 {
-                case core::componentmodel::topology::POINTSREMOVED:
+                case core::topology::POINTSREMOVED:
                 {
                     int nbPoints = _topology->getNbPoints();
                     const sofa::helper::vector<unsigned int>& tab = (static_cast<const component::topology::PointsRemoved *>(*changeIt))->getArray();

@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <set>
 #include <sofa/component/topology/PointSubset.h>
 
@@ -48,12 +48,12 @@ class FixedPlaneConstraintInternalData
 };
 
 template <class DataTypes>
-class FixedPlaneConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class FixedPlaneConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedPlaneConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FixedPlaneConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
 
-    typedef core::componentmodel::behavior::Constraint<DataTypes> Inherit;
+    typedef core::behavior::Constraint<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -97,7 +97,7 @@ public:
     void draw();
 protected:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* topology;
 
     // Define TestNewPointFunction
     static bool FPCTestNewPointFunction(int, void*, const helper::vector< unsigned int > &, const helper::vector< double >& );

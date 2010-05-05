@@ -41,8 +41,8 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 
 //Components of the core to detect during the addition of objects in a node
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
 
 
 #include <boost/vector_property_map.hpp>
@@ -90,9 +90,9 @@ unsigned int BglNode::getUniqueId()
 bool BglNode::addObject(core::objectmodel::BaseObject* obj)
 {
     using sofa::core::objectmodel::Tag;
-    if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+    if (sofa::core::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::behavior::BaseMechanicalMapping*>(obj))
     {
-        sofa::core::componentmodel::behavior::BaseMechanicalState
+        sofa::core::behavior::BaseMechanicalState
         *msFrom=mm->getMechFrom(),
          *msTo  =mm->getMechTo();
 
@@ -103,9 +103,9 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
             BglGraphManager::getInstance()->addInteraction( from, to, mm);
         }
     }
-    else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
+    else if (sofa::core::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::behavior::InteractionForceField*>(obj))
     {
-        sofa::core::componentmodel::behavior::BaseMechanicalState
+        sofa::core::behavior::BaseMechanicalState
         *ms1=iff->getMechModel1(),
          *ms2=iff->getMechModel2();
 
@@ -116,9 +116,9 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
             if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
         }
     }
-    else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
+    else if (sofa::core::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::behavior::InteractionConstraint*>(obj))
     {
-        sofa::core::componentmodel::behavior::BaseMechanicalState
+        sofa::core::behavior::BaseMechanicalState
         *ms1=ic->getMechModel1(),
          *ms2=ic->getMechModel2();
 
@@ -134,15 +134,15 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
 
 bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
 {
-    if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+    if (sofa::core::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::behavior::BaseMechanicalMapping*>(obj))
     {
         BglGraphManager::getInstance()->removeInteraction(mm);
     }
-    else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
+    else if (sofa::core::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::behavior::InteractionForceField*>(obj))
     {
         BglGraphManager::getInstance()->removeInteraction(iff);
     }
-    else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
+    else if (sofa::core::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::behavior::InteractionConstraint*>(obj))
     {
         BglGraphManager::getInstance()->removeInteraction(ic);
     }

@@ -33,7 +33,7 @@
 #define FLOWVISUALMODEL_H_
 
 #include <sofa/component/component.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -130,9 +130,9 @@ class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
 public:
     SOFA_CLASS(SOFA_TEMPLATE(FlowVisualModel,DataTypes), core::VisualModel);
 
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> FluidState;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TetraGeometry;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TriangleGeometry;
+    typedef typename core::behavior::MechanicalState<DataTypes> FluidState;
+    typedef typename core::behavior::MechanicalState<DataTypes> TetraGeometry;
+    typedef typename core::behavior::MechanicalState<DataTypes> TriangleGeometry;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -151,7 +151,7 @@ protected:
     TriangleGeometry* triangleGeometry;
     TetraGeometry* tetraGeometry;
     FluidState* tetraCenters;
-    core::componentmodel::behavior::MechanicalState<DataTypes>* surfaceVolume;
+    core::behavior::MechanicalState<DataTypes>* surfaceVolume;
 
     topology::ManifoldTriangleSetTopologyContainer* m_triTopo;
     topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;

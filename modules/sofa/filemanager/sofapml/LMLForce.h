@@ -44,8 +44,8 @@
 
 #include <Loads.h>
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include "sofapml.h"
 
@@ -62,7 +62,7 @@ namespace pml
 {
 
 using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace std;
 
 template<class DataTypes>

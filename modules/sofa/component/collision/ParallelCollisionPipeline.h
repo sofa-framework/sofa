@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_PARALLELCOLLISIONPIPELINE_H
 #define SOFA_COMPONENT_COLLISION_PARALLELCOLLISIONPIPELINE_H
 
-#include <sofa/core/componentmodel/collision/ParallelPipeline.h>
+#include <sofa/core/collision/ParallelPipeline.h>
 #include <sofa/simulation/common/PipelineImpl.h>
 #include <sofa/component/component.h>
 
@@ -38,10 +38,10 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API ParallelCollisionPipeline : public sofa::simulation::PipelineImpl, public sofa::core::componentmodel::collision::ParallelPipeline
+class SOFA_COMPONENT_COLLISION_API ParallelCollisionPipeline : public sofa::simulation::PipelineImpl, public sofa::core::collision::ParallelPipeline
 {
 public:
-    SOFA_CLASS2(ParallelCollisionPipeline,sofa::simulation::PipelineImpl,sofa::core::componentmodel::collision::ParallelPipeline);
+    SOFA_CLASS2(ParallelCollisionPipeline,sofa::simulation::PipelineImpl,sofa::core::collision::ParallelPipeline);
 
     Data<bool> bVerbose;
     Data<bool> bDraw;

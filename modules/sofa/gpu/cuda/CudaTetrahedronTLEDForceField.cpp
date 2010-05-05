@@ -25,7 +25,7 @@
 
 #include "CudaTetrahedronTLEDForceField.h"
 #include "mycuda.h"
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 
@@ -81,7 +81,7 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
 
 void CudaTetrahedronTLEDForceField::init()
 {
-    core::componentmodel::behavior::ForceField<CudaVec3fTypes>::init();
+    core::behavior::ForceField<CudaVec3fTypes>::init();
     reinit();
 }
 
@@ -119,7 +119,7 @@ void CudaTetrahedronTLEDForceField::reinit()
         for (int i=0; i<nbcubes; i++)
         {
             // if (flags && !flags->isCubeActive(i)) continue;
-            core::componentmodel::topology::BaseMeshTopology::Hexa c = topology->getHexahedron(i);
+            core::topology::BaseMeshTopology::Hexa c = topology->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
             if (!((i%nx)&1))
             {
@@ -146,7 +146,7 @@ void CudaTetrahedronTLEDForceField::reinit()
                 swap(c[3],c[7]);
             }
 #undef swap
-            typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+            typedef core::topology::BaseMeshTopology::Tetra Tetra;
             inputElems.push_back(Tetra(c[0],c[5],c[1],c[6]));
             inputElems.push_back(Tetra(c[0],c[1],c[3],c[6]));
             inputElems.push_back(Tetra(c[1],c[3],c[6],c[2]));

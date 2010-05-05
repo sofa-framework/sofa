@@ -49,10 +49,10 @@ namespace topology
 using namespace sofa::defaulttype;
 using helper::vector;
 
-class MultiResSparseGridTopology : public core::componentmodel::topology::Topology
+class MultiResSparseGridTopology : public core::topology::Topology
 {
 public:
-    SOFA_CLASS(MultiResSparseGridTopology,core::componentmodel::topology::Topology);
+    SOFA_CLASS(MultiResSparseGridTopology,core::topology::Topology);
 
     int nbPoints;
 

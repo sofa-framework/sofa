@@ -56,7 +56,7 @@ int LineModelClass = core::RegisterObject("collision model using a linear mesh, 
         .addAlias("LineSet")
         ;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 
 //int LineSetModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
 //.add< LineSetModel >()
@@ -88,7 +88,7 @@ void LineModel::resize(int size)
 void LineModel::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     mpoints = getContext()->get<PointModel>();
 
     if (mstate==NULL)
@@ -103,7 +103,7 @@ void LineModel::init()
         m_lmdFilter = node->getNodeObject< LineLocalMinDistanceFilter >();
     }
 
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (!bmt)
     {
         serr <<"LineModel requires a MeshTopology" << sendl;
@@ -149,7 +149,7 @@ void LineModel::handleTopologyChange()
     //{
     // We use the same edge array as the topology -> only resize and recompute flags
 
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (bmt)
     {
         resize(bmt->getNbEdges());
@@ -168,16 +168,16 @@ void LineModel::handleTopologyChange()
 
     if (bmt)
     {
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = bmt->firstChange();
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = bmt->lastChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->firstChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->lastChange();
 
         while( itBegin != itEnd )
         {
-            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
             switch( changeType )
             {
-            case core::componentmodel::topology::ENDING_EVENT :
+            case core::topology::ENDING_EVENT :
             {
                 //	sout << "INFO_print : Col - ENDING_EVENT" << sendl;
                 needsUpdate = true;
@@ -185,7 +185,7 @@ void LineModel::handleTopologyChange()
             }
 
 
-            case core::componentmodel::topology::EDGESADDED :
+            case core::topology::EDGESADDED :
             {
                 //	sout << "INFO_print : Col - EDGESADDED" << sendl;
                 const sofa::component::topology::EdgesAdded *ta = static_cast< const sofa::component::topology::EdgesAdded * >( *itBegin );
@@ -202,7 +202,7 @@ void LineModel::handleTopologyChange()
                 break;
             }
 
-            case core::componentmodel::topology::EDGESREMOVED :
+            case core::topology::EDGESREMOVED :
             {
                 //sout << "INFO_print : Col - EDGESREMOVED" << sendl;
                 unsigned int last;
@@ -262,7 +262,7 @@ void LineModel::handleTopologyChange()
                 break;
             }
 
-            case core::componentmodel::topology::POINTSREMOVED :
+            case core::topology::POINTSREMOVED :
             {
                 //sout << "INFO_print : Col - POINTSREMOVED" << sendl;
                 if (bmt)
@@ -318,7 +318,7 @@ void LineModel::handleTopologyChange()
                 break;
             }
 
-            case core::componentmodel::topology::POINTSRENUMBERING:
+            case core::topology::POINTSRENUMBERING:
             {
                 //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
                 if (bmt)
@@ -351,7 +351,7 @@ void LineModel::handleTopologyChange()
 
 void LineModel::updateFromTopology()
 {
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (bmt)
     {
         int revision = bmt->getRevision();
@@ -436,7 +436,7 @@ bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int ind
 
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getMeshTopology();
+    sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
     /*
     	TODO : separate 2 case: the model is only composed of lines or is composed of triangles
     	bool NoTriangles = true;

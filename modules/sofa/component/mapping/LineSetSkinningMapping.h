@@ -26,9 +26,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
 #define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -138,7 +138,7 @@ public:
 
 protected:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* t;
+    sofa::core::topology::BaseMeshTopology* t;
 
     /*!
     	Set the neighborhood line level
@@ -157,7 +157,7 @@ protected:
 
     bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
 
-    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
+    bool getShow(const core::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 
 private:
 

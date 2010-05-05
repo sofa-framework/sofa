@@ -43,7 +43,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS ( SimpleTesselatedHexaTopologicalMapping )
 

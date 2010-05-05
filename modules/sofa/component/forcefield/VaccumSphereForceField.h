@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Event.h>
 
@@ -47,12 +47,12 @@ public:
 };
 
 template<class DataTypes>
-class VaccumSphereForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class VaccumSphereForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(VaccumSphereForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(VaccumSphereForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -87,7 +87,7 @@ protected:
 
     Data<sofa::helper::vector<Contact> > contacts;
 
-    core::componentmodel::behavior::MechanicalState<DataTypes> * centerDOF;
+    core::behavior::MechanicalState<DataTypes> * centerDOF;
 
     VaccumSphereForceFieldInternalData<DataTypes> data;
 

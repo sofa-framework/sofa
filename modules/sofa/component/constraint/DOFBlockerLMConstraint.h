@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_DOFBLOCKERLMCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_DOFBLOCKERLMCONSTRAINT_H
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/LMConstraint.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/LMConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/linearsolver/LagrangeMultiplierComputation.h>
 #include <sofa/simulation/common/Node.h>
@@ -41,7 +41,7 @@ namespace component
 namespace constraint
 {
 
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class DOFBlockerLMConstraintInternalData
@@ -54,24 +54,24 @@ class DOFBlockerLMConstraintInternalData
 /** Keep two particules at an initial distance
  */
 template <class DataTypes>
-class DOFBlockerLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
+class DOFBlockerLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DOFBlockerLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DOFBlockerLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
     typedef sofa::component::topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
-    typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
+    typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
     typedef linearsolver::LagrangeMultiplierComputation::VectorEigen  VectorEigen;
 
@@ -81,7 +81,7 @@ protected:
 
 public:
     DOFBlockerLMConstraint( MechanicalState *dof):
-        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
+        core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
         BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain")),
         factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis")),
         f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
@@ -112,7 +112,7 @@ public:
     void writeConstraintEquations(ConstOrder order);
 
     void LagrangeMultiplierEvaluation(const SReal* Wptr, SReal* cptr, SReal* LambdaInitptr,
-            core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup * group)
+            core::behavior::BaseLMConstraint::ConstraintGroup * group)
     {
         const unsigned int numConstraintToProcess=group->getNumConstraint();
         const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,LambdaInitptr,numConstraintToProcess);
@@ -150,7 +150,7 @@ protected :
     Data<SReal> showSizeAxis;
 
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* topology;
 
 
     // Define TestNewPointFunction

@@ -525,8 +525,6 @@ struct DataTypeInfo< sofa::defaulttype::ResizableExtVector<T> > : public VectorT
 
 namespace core
 {
-namespace componentmodel
-{
 namespace behavior
 {
 
@@ -630,8 +628,6 @@ defaulttype::Vec<2, float>,
 }
 
 } // namespace behavoir
-
-} // namespace componentmodel
 
 } // namespace core
 

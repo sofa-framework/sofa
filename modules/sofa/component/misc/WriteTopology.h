@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
 #define SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 
@@ -77,7 +77,7 @@ public:
     //    Data < double > f_keperiod;
 
 protected:
-    core::componentmodel::topology::BaseMeshTopology* m_topology;
+    core::topology::BaseMeshTopology* m_topology;
     std::ofstream* outfile;
 #ifdef SOFA_HAVE_ZLIB
     gzFile gzfile;
@@ -105,7 +105,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(context->getMeshTopology()) == NULL)
+        if (dynamic_cast<core::topology::BaseMeshTopology*>(context->getMeshTopology()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -135,7 +135,7 @@ protected:
 
     int counterWriteTopology; //avoid to have two same files if two Topologies are present with the same name
 
-    void addWriteTopology(core::componentmodel::topology::BaseMeshTopology* topology, simulation::Node* gnode);
+    void addWriteTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode);
 
 };
 

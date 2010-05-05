@@ -26,11 +26,11 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/Shader.h>
 #include <iostream>
 using std::cerr;
@@ -272,25 +272,25 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
 /// Mechanical Degrees-of-Freedom
 BaseObject* BaseContext::getMechanicalState() const
 {
-    return this->get<sofa::core::componentmodel::behavior::BaseMechanicalState>();
+    return this->get<sofa::core::behavior::BaseMechanicalState>();
 }
 
 /// Mass
 BaseObject* BaseContext::getMass() const
 {
-    return this->get<sofa::core::componentmodel::behavior::BaseMass>();
+    return this->get<sofa::core::behavior::BaseMass>();
 }
 
 
 /// Topology
-core::componentmodel::topology::Topology* BaseContext::getTopology() const
+core::topology::Topology* BaseContext::getTopology() const
 {
-    return this->get<sofa::core::componentmodel::topology::Topology>();
+    return this->get<sofa::core::topology::Topology>();
 }
 /// Mesh Topology (unified interface for both static and dynamic topologies)
-core::componentmodel::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
+core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 {
-    return this->get<sofa::core::componentmodel::topology::BaseMeshTopology>();
+    return this->get<sofa::core::topology::BaseMeshTopology>();
 }
 
 /// Shader

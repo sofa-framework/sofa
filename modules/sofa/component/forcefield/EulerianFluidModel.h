@@ -29,7 +29,7 @@
 #include <newmat/newmatap.h>
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BehaviorModel.h>
 
 #include <sofa/helper/fixed_array.h>
@@ -73,7 +73,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename topology::MeshTopology::PointID PointID;
     typedef typename topology::MeshTopology::EdgeID EdgeID;

@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MasterSolverImpl.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/set.h>
@@ -65,13 +65,13 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         ms->resetContactForce();
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         ms->resetForce();
         return RESULT_CONTINUE;
@@ -94,13 +94,13 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         ms->applyContactForce(_f);
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         ms->applyContactForce(_f);
         return RESULT_CONTINUE;
@@ -133,7 +133,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
     {
         //sout << c->getName()<<"->getConstraintValue()"<<sendl;
         c->getConstraintValue(_v /*, _numContacts*/);
@@ -159,7 +159,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node*,core::behavior::BaseConstraint* c)
     {
         c->getConstraintValue(_v);
         return RESULT_CONTINUE;
@@ -176,11 +176,11 @@ private:
 class MechanicalGetConstraintInfoVisitor : public simulation::MechanicalVisitor
 {
 public:
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstArea VecConstArea;
+    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
+    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
     MechanicalGetConstraintInfoVisitor(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
         : _blocks(blocks), _ids(ids), _positions(positions), _directions(directions), _areas(areas)
@@ -190,7 +190,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
     {
         ctime_t t0 = begin(node, c);
         c->getConstraintInfo(_blocks, _ids, _positions, _directions, _areas);
@@ -239,7 +239,7 @@ public:
     //LCP* getLCP(void) {return (lcp == &lcp1) ? &lcp2 : &lcp1;};
 
 private:
-    std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> constraintCorrections;
+    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
     void computeInitialGuess();
     void keepContactForcesValue();
 
@@ -257,17 +257,17 @@ private:
 #endif
 
 
-    typedef core::componentmodel::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstDeriv ConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstArea ConstArea;
+    typedef core::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::behavior::BaseConstraint::ConstDeriv ConstDeriv;
+    typedef core::behavior::BaseConstraint::ConstArea ConstArea;
 
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstArea VecConstArea;
+    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
+    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
     class ConstraintBlockBuf
     {
@@ -276,7 +276,7 @@ private:
         int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
     };
 
-    std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
+    std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
     helper::vector< double > _previousForces;
 
     VecConstraintBlockInfo _constraintBlockInfo;

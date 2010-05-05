@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_H
 
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -50,10 +50,10 @@ class PointSetGeometryAlgorithms;
 *
 */
 template<class DataTypes>
-class PointSetTopologyAlgorithms : public core::componentmodel::topology::TopologyAlgorithms
+class PointSetTopologyAlgorithms : public core::topology::TopologyAlgorithms
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes), core::componentmodel::topology::TopologyAlgorithms);
+    SOFA_CLASS(SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes), core::topology::TopologyAlgorithms);
 
     PointSetTopologyAlgorithms()
         : TopologyAlgorithms()

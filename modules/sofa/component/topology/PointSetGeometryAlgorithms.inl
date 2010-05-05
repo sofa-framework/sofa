@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -46,8 +46,8 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-    object = this->getContext()->core::objectmodel::BaseContext::get< core::componentmodel::behavior::MechanicalState< DataTypes > >();
-    core::componentmodel::topology::GeometryAlgorithms::init();
+    object = this->getContext()->core::objectmodel::BaseContext::get< core::behavior::MechanicalState< DataTypes > >();
+    core::topology::GeometryAlgorithms::init();
     this->m_topology = this->getContext()->getMeshTopology();
 
     // Initialization PointIndicesScale

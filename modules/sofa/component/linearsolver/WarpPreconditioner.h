@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
 
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <math.h>
@@ -55,10 +55,10 @@ public:
 
 /// Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix
 template<class TDataTypes>
-class WarpPreconditioner : public core::componentmodel::behavior::LinearSolver
+class WarpPreconditioner : public core::behavior::LinearSolver
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(WarpPreconditioner,TDataTypes),sofa::core::componentmodel::behavior::LinearSolver);
+    SOFA_CLASS(SOFA_TEMPLATE(WarpPreconditioner,TDataTypes),sofa::core::behavior::LinearSolver);
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -68,7 +68,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
 
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
 
     Data<bool> f_verbose;
@@ -161,7 +161,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -180,8 +180,8 @@ private :
     //CudaBaseVector<cuda_real> CudaR;
     //CudaBaseVector<cuda_real> CudaT;
 
-    core::componentmodel::behavior::LinearSolver* realSolver;
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
+    core::behavior::LinearSolver* realSolver;
+    core::behavior::MechanicalState<DataTypes>* mstate;
     component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField;
 
     VecId systemLHVId;

@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
 #define SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
 
-#include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
-#include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/component/component.h>
 #include <sofa/component/collision/CubeModel.h>
@@ -46,11 +46,11 @@ namespace collision
 using namespace sofa::defaulttype;
 
 class SOFA_COMPONENT_COLLISION_API BruteForceDetection :
-    public core::componentmodel::collision::BroadPhaseDetection,
-    public core::componentmodel::collision::NarrowPhaseDetection
+    public core::collision::BroadPhaseDetection,
+    public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(BruteForceDetection, core::componentmodel::collision::BroadPhaseDetection, core::componentmodel::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
 private:
     sofa::helper::vector<core::CollisionModel*> collisionModels;
@@ -76,7 +76,7 @@ public:
 
     virtual void beginBroadPhase()
     {
-        core::componentmodel::collision::BroadPhaseDetection::beginBroadPhase();
+        core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();
     }
 

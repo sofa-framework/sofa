@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICLAGRANGIANMULTIPLIERCONTACT_H
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICLAGRANGIANMULTIPLIERCONTACT_H
 
-#include <sofa/core/componentmodel/collision/Contact.h>
-#include <sofa/core/componentmodel/collision/Intersection.h>
+#include <sofa/core/collision/Contact.h>
+#include <sofa/core/collision/Intersection.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/component/constraint/LagrangianMultiplierContactConstraint.h>
 #include <sofa/helper/Factory.h>
@@ -45,18 +45,18 @@ namespace collision
 using namespace sofa::defaulttype;
 
 template < class TCollisionModel1, class TCollisionModel2 >
-class BarycentricLagrangianMultiplierContact : public core::componentmodel::collision::Contact
+class BarycentricLagrangianMultiplierContact : public core::collision::Contact
 {
 public:
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
-    typedef core::componentmodel::collision::Intersection Intersection;
-    typedef core::componentmodel::collision::DetectionOutputVector OutputVector;
-    typedef core::componentmodel::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> TOutputVector;
+    typedef core::collision::Intersection Intersection;
+    typedef core::collision::DetectionOutputVector OutputVector;
+    typedef core::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> TOutputVector;
     typedef typename CollisionModel1::DataTypes DataTypes1;
     typedef typename CollisionModel2::DataTypes DataTypes2;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes1> MechanicalState1;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes2> MechanicalState2;
+    typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
+    typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
 protected:

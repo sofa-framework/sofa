@@ -34,7 +34,7 @@
 #include <sofa/helper/accessor.h>
 //#include <sofa/helper/BackTrace.h>
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <iostream>

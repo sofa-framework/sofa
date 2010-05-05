@@ -29,8 +29,8 @@
 #pragma once
 #endif
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
@@ -62,21 +62,21 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes>
-class TriangleFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class TriangleFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangleFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TriangleFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
+    typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::index_type Index;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Element;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles VecElement;
+    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
 
     static const int SMALL = 1;										///< Symbol of small displacements triangle solver
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
@@ -97,7 +97,7 @@ protected:
     typedef Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
 
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _mesh;
+    sofa::core::topology::BaseMeshTopology* _mesh;
     const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 //     int _method; ///< the computation method of the displacements

@@ -28,14 +28,14 @@
 #include <string>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/component/component.h>
-#include <sofa/core/componentmodel/loader/PrimitiveGroup.h>
+#include <sofa/core/loader/PrimitiveGroup.h>
 
 #include <map>
 
@@ -49,10 +49,10 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::loader;
+using namespace sofa::core::loader;
 
 
-class RigidMappedModel : public core::componentmodel::behavior::MappedModel< Rigid3fTypes >
+class RigidMappedModel : public core::behavior::MappedModel< Rigid3fTypes >
 {
 public:
     VecCoord xforms;
@@ -75,7 +75,7 @@ public:
     VecCoord* getRigidX()  { return getX(); }
 };
 
-class ExtVec3fMappedModel : public core::componentmodel::behavior::MappedModel< ExtVec3fTypes >
+class ExtVec3fMappedModel : public core::behavior::MappedModel< ExtVec3fTypes >
 {
 public:
     ResizableExtVector<Coord>* inputVertices;
@@ -145,7 +145,7 @@ protected:
     bool useNormals; ///< True if normals should be read from file
     bool castShadow; ///< True if object cast shadows
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     DataPtr<bool> f_useNormals; ///< True if normals should be read from file
     Data<bool> updateNormals; ///< True if normals should be updated at each iteration
@@ -196,7 +196,7 @@ public:
     Vec3f bbox[2];
     Data< Material > material;
 #ifdef SOFA_SMP
-    sofa::core::componentmodel::loader::Material originalMaterial;
+    sofa::core::loader::Material originalMaterial;
     bool previousProcessorColor;
 #endif
     Data< bool > putOnlyTexCoords;

@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -69,21 +69,21 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
     //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
 
-    core::componentmodel::behavior::BaseMechanicalState *stateFrom;
-    core::componentmodel::behavior::BaseMechanicalState *stateTo;
+    core::behavior::BaseMechanicalState *stateFrom;
+    core::behavior::BaseMechanicalState *stateTo;
 
     IdentityMapping(In* from, Out* to)
         : Inherit(from, to)
     {
         maskFrom = NULL;
-        if ((stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from)))
+        if ((stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from)))
             maskFrom = &stateFrom->forceMask;
         maskTo = NULL;
-        if ((stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to)))
+        if ((stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to)))
             maskTo = &stateTo->forceMask;
     }
 
@@ -109,10 +109,10 @@ public:
 };
 
 using core::Mapping;
-using core::componentmodel::behavior::MechanicalMapping;
-using core::componentmodel::behavior::MappedModel;
-using core::componentmodel::behavior::State;
-using core::componentmodel::behavior::MechanicalState;
+using core::behavior::MechanicalMapping;
+using core::behavior::MappedModel;
+using core::behavior::State;
+using core::behavior::MechanicalState;
 
 using sofa::defaulttype::Vec1dTypes;
 using sofa::defaulttype::Vec2dTypes;

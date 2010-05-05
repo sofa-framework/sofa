@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MISC_READSTATE_H
 #define SOFA_COMPONENT_MISC_READSTATE_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -63,7 +63,7 @@ public:
     Data < bool > f_loop;
 
 protected:
-    core::componentmodel::behavior::BaseMechanicalState* mmodel;
+    core::behavior::BaseMechanicalState* mmodel;
     std::ifstream* infile;
 #ifdef SOFA_HAVE_ZLIB
     gzFile gzfile;
@@ -95,7 +95,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::BaseMechanicalState*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -117,7 +117,7 @@ public:
     void setCreateInMapping(bool b) {createInMapping=b;}
     virtual const char* getClassName() const { return "ReadStateCreator"; }
 protected:
-    void addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
+    void addReadState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     std::string sceneName;
     std::string extension;
     bool createInMapping;

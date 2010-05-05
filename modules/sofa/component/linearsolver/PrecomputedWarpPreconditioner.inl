@@ -36,7 +36,7 @@
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
@@ -44,7 +44,7 @@
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/container/RotationFinder.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
@@ -290,7 +290,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
 
     PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* PCGlinearSolver;
     CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
-    core::componentmodel::behavior::LinearSolver* linearSolver;
+    core::behavior::LinearSolver* linearSolver;
 
     if (solverName.getValue().empty())
     {
@@ -304,7 +304,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
         this->getContext()->get(ptr, solverName.getValue());
         PCGlinearSolver = dynamic_cast<PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
         CGlinearSolver = dynamic_cast<CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
-        linearSolver = dynamic_cast<core::componentmodel::behavior::LinearSolver*>(ptr);
+        linearSolver = dynamic_cast<core::behavior::LinearSolver*>(ptr);
     }
 
     if(EulerSolver && CGlinearSolver)
@@ -322,8 +322,8 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
         serr<<"PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
         return;
     }
-    VecId lhId = core::componentmodel::behavior::BaseMechanicalState::VecId::velocity();
-    VecId rhId = core::componentmodel::behavior::BaseMechanicalState::VecId::force();
+    VecId lhId = core::behavior::BaseMechanicalState::VecId::velocity();
+    VecId rhId = core::behavior::BaseMechanicalState::VecId::force();
 
 
     mstate->vAvail(lhId);

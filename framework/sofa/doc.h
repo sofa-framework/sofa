@@ -99,7 +99,7 @@
  *
  */
 
-/** \namespace sofa::core::componentmodel::behavior
+/** \namespace sofa::core::behavior
  *  \brief Abstract API of components related to the behavior of simulated objects.
  *
  *  Simulated bodies in SOFA are split into components storing the current
@@ -118,11 +118,11 @@
  *
  */
 
-/** \namespace sofa::core::componentmodel::collision
+/** \namespace sofa::core::collision
  *  \brief Abstract API of components related to collision handling.
  */
 
-/** \namespace sofa::core::componentmodel::topology
+/** \namespace sofa::core::topology
  *  \brief Abstract API of components related to topologies.
  */
 

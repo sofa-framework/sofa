@@ -26,7 +26,7 @@
 #define LMLFORCE_INL
 
 #include "LMLForce.h"
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/gl/template.h>
 
 

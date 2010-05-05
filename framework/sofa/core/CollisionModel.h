@@ -66,7 +66,7 @@ public:
     SOFA_CLASS(CollisionModel, objectmodel::BaseObject);
 
     typedef CollisionElementIterator Iterator;
-    typedef componentmodel::topology::BaseMeshTopology Topology;
+    typedef topology::BaseMeshTopology Topology;
 
     /// Constructor
     CollisionModel()
@@ -349,7 +349,7 @@ public:
     virtual Topology* getTopology() { return getContext()->getMeshTopology(); }
 
     /// BaseMeshTopology associated to the collision model
-    virtual sofa::core::componentmodel::topology::BaseMeshTopology* getMeshTopology() { return getContext()->getMeshTopology(); }
+    virtual sofa::core::topology::BaseMeshTopology* getMeshTopology() { return getContext()->getMeshTopology(); }
 
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();

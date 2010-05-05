@@ -27,7 +27,7 @@
 
 #include <sofa/simulation/common/SolverImpl.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/component.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
@@ -51,12 +51,12 @@ public:
 };
 
 template<class Matrix, class Vector>
-class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public sofa::core::componentmodel::behavior::LinearSolver, public sofa::simulation::SolverImpl
+class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public sofa::core::behavior::LinearSolver, public sofa::simulation::SolverImpl
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), sofa::core::componentmodel::behavior::LinearSolver, sofa::simulation::SolverImpl);
+    SOFA_CLASS2(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), sofa::core::behavior::LinearSolver, sofa::simulation::SolverImpl);
 
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
     typedef  std::list<int> ListIndex;
 
     Data<bool> multiGroup;
@@ -625,10 +625,10 @@ public:
 };
 
 
-class SOFA_COMPONENT_LINEARSOLVER_API GraphScatteredVector : public sofa::core::componentmodel::behavior::MultiVector<simulation::SolverImpl>
+class SOFA_COMPONENT_LINEARSOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVector<simulation::SolverImpl>
 {
 public:
-    typedef sofa::core::componentmodel::behavior::MultiVector<simulation::SolverImpl> Inherit;
+    typedef sofa::core::behavior::MultiVector<simulation::SolverImpl> Inherit;
     GraphScatteredVector(simulation::SolverImpl* p, VecId id)
         : Inherit(p, id)
     {

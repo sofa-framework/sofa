@@ -52,7 +52,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS(Hexa2QuadTopologicalMapping)
 
@@ -172,7 +172,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 switch( changeType )
                 {
 
-                case core::componentmodel::topology::ENDING_EVENT:
+                case core::topology::ENDING_EVENT:
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
@@ -181,7 +181,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::QUADSREMOVED:
+                case core::topology::QUADSREMOVED:
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - QUADSREMOVED" << sendl;
 
@@ -268,7 +268,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::HEXAHEDRAREMOVED:
+                case core::topology::HEXAHEDRAREMOVED:
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - HEXAHEDRAREMOVED" << sendl;
 
@@ -417,7 +417,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::POINTSREMOVED:
+                case core::topology::POINTSREMOVED:
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
 
@@ -441,7 +441,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::POINTSRENUMBERING:
+                case core::topology::POINTSRENUMBERING:
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
 

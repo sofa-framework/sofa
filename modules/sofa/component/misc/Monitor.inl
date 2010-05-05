@@ -101,7 +101,7 @@ Monitor<DataTypes>::~Monitor()
 template<class DataTypes>
 void Monitor<DataTypes>::init()
 {
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
+    core::behavior::MechanicalState<DataTypes>* mmodel = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
 
     if(!mmodel)
     {

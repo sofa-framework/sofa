@@ -48,7 +48,7 @@ namespace pml
 using namespace sofa::defaulttype;
 using namespace sofa::component;
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 SOFA_DECL_CLASS(LMLForce)
 

@@ -31,12 +31,12 @@
 
 
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/Constraint.h>
 #include <sofa/defaulttype/SharedTypes.h>
 
 //#include <sofa/defaulttype/BaseMatrix.h>
@@ -87,8 +87,8 @@ public:
         : v(v), a(a),fSh(fSh)
     {}
 
-    virtual Result fwdMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(Node* /*node*/,sofa::core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
+    virtual Result fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(Node* /*node*/,sofa::core::behavior::BaseMechanicalState* /*mm*/);
 
     //virtual void processNodeBottomUp(simulation::Node* node);
 
@@ -123,8 +123,8 @@ public:
         : v(v), a(a), b(b), f(f),fSh(fSh)
     {}
 
-    Result fwdMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* mm);
-    Result fwdMappedMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
+    Result fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);
+    Result fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* /*mm*/);
 
     //virtual void processNodeBottomUp(simulation::Node* node);
 
@@ -154,7 +154,7 @@ public:
     ParallelMechanicalVDotVisitor(Shared<double>* t,VecId a, VecId b) : a(a), b(b), totalSh(t)
     {}
     /// Sequential code
-    Result fwdMechanicalState(simulation::Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* mm);
+    Result fwdMechanicalState(simulation::Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

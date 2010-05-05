@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -45,8 +45,8 @@ namespace component
 namespace engine
 {
 
-using namespace core::componentmodel::behavior;
-using namespace core::componentmodel::topology;
+using namespace core::behavior;
+using namespace core::topology;
 using namespace core::objectmodel;
 
 /**

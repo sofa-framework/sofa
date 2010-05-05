@@ -42,7 +42,7 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 template<class DataTypes>
@@ -312,7 +312,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
 
 template<class DataTypes>
 int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
-        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder)

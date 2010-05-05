@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_LINEARSOLVERCONTACTCORRECTION_INL
-#define SOFA_CORE_COMPONENTMODEL_COLLISION_LINEARSOLVERCONTACTCORRECTION_INL
+#ifndef SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_INL
+#define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_INL
 
 #include "LinearSolverConstraintCorrection.h"
 #include <sofa/defaulttype/RigidTypes.h>

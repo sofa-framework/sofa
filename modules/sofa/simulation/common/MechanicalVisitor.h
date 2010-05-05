@@ -31,13 +31,13 @@
 
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/Constraint.h>
 //#include <sofa/defaulttype/BaseMatrix.h>
 //#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -111,7 +111,7 @@ public:
     //virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch) { Visitor::execute(node, doPrefetch); }
     //virtual void execute(core::objectmodel::BaseContext* node) { Visitor::execute(node, true); }
 
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -133,133 +133,133 @@ public:
     virtual Result processNodeTopDown(simulation::Node* node, LocalStorage* stack);
 
     /// Process the OdeSolver
-    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the OdeSolver
-    virtual Result fwdOdeSolver(VisitorContext* ctx, core::componentmodel::behavior::OdeSolver* solver)
+    virtual Result fwdOdeSolver(VisitorContext* ctx, core::behavior::OdeSolver* solver)
     {
         return fwdOdeSolver(ctx->node, solver);
     }
 
     /// Process the ConstraintSolver
-    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* /*solver*/)
+    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* /*solver*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the ConstraintSolver
-    virtual Result fwdConstraintSolver(VisitorContext* ctx, core::componentmodel::behavior::ConstraintSolver* solver)
+    virtual Result fwdConstraintSolver(VisitorContext* ctx, core::behavior::ConstraintSolver* solver)
     {
         return fwdConstraintSolver(ctx->node, solver);
     }
 
     /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual Result fwdMechanicalMapping(VisitorContext* ctx, core::behavior::BaseMechanicalMapping* map)
     {
         return fwdMechanicalMapping(ctx->node, map);
     }
 
     /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
     {
         return fwdMappedMechanicalState(ctx->node, mm);
     }
 
     /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
     {
         return fwdMechanicalState(ctx->node, mm);
     }
 
     /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* /*mass*/)
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* /*mass*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMass
-    virtual Result fwdMass(VisitorContext* ctx, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(VisitorContext* ctx, core::behavior::BaseMass* mass)
     {
         return fwdMass(ctx->node, mass);
     }
 
     /// Process all the BaseForceField
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* /*ff*/)
     {
         return RESULT_CONTINUE;
     }
 
 
     /// Process all the BaseForceField
-    virtual Result fwdForceField(VisitorContext* ctx, core::componentmodel::behavior::BaseForceField* ff)
+    virtual Result fwdForceField(VisitorContext* ctx, core::behavior::BaseForceField* ff)
     {
         return fwdForceField(ctx->node, ff);
     }
 
     /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::componentmodel::behavior::InteractionForceField* ff)
+    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::InteractionForceField* ff)
     {
         return fwdForceField(node, ff);
     }
 
     /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(VisitorContext* ctx, core::componentmodel::behavior::InteractionForceField* ff)
+    virtual Result fwdInteractionForceField(VisitorContext* ctx, core::behavior::InteractionForceField* ff)
     {
         return fwdInteractionForceField(ctx->node, ff);
     }
 
     /// Process all the BaseConstraint
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process all the BaseConstraint
-    virtual Result fwdConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(VisitorContext* ctx, core::behavior::BaseConstraint* c)
     {
         return fwdConstraint(ctx->node, c);
     }
 
     /// Process all the BaseLMConstraint
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* /*c*/)
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdLMConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseLMConstraint* c)
+    virtual Result fwdLMConstraint(VisitorContext* ctx, core::behavior::BaseLMConstraint* c)
     {
         return fwdLMConstraint(ctx->node, c);
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(simulation::Node* node, core::componentmodel::behavior::InteractionConstraint* c)
+    virtual Result fwdInteractionConstraint(simulation::Node* node, core::behavior::InteractionConstraint* c)
     {
         return fwdConstraint(node, c);
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::componentmodel::behavior::InteractionConstraint* c)
+    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::InteractionConstraint* c)
     {
         return fwdInteractionConstraint(ctx->node, c);
     }
@@ -283,59 +283,59 @@ public:
     virtual void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack);
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual void bwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
     { bwdMechanicalState(ctx->node, mm); }
 
     /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual void bwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
     { bwdMappedMechanicalState(ctx->node, mm); }
 
     /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {}
 
     /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(VisitorContext* ctx, core::behavior::BaseMechanicalMapping* map)
     { bwdMechanicalMapping(ctx->node, map); }
 
     /// Process the OdeSolver
-    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
     {}
 
     /// Process the OdeSolver
-    virtual void bwdOdeSolver(VisitorContext* ctx, core::componentmodel::behavior::OdeSolver* solver)
+    virtual void bwdOdeSolver(VisitorContext* ctx, core::behavior::OdeSolver* solver)
     { bwdOdeSolver(ctx->node, solver); }
 
     /// Process the ConstraintSolver
-    virtual void bwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* /*solver*/)
+    virtual void bwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* /*solver*/)
     {}
 
     /// Process the ConstraintSolver
-    virtual void bwdConstraintSolver(VisitorContext* ctx, core::componentmodel::behavior::ConstraintSolver* solver)
+    virtual void bwdConstraintSolver(VisitorContext* ctx, core::behavior::ConstraintSolver* solver)
     { bwdConstraintSolver(ctx->node, solver); }
 
     /// Process all the BaseConstraint
-    virtual void bwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
+    virtual void bwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* /*c*/)
     {}
 
     /// Process all the BaseConstraint
-    virtual void bwdConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseConstraint* c)
+    virtual void bwdConstraint(VisitorContext* ctx, core::behavior::BaseConstraint* c)
     { bwdConstraint(ctx->node, c); }
 
     /// Process all the BaseLMConstraint
-    virtual void bwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* /*c*/)
+    virtual void bwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* /*c*/)
     {}
 
     /// Process all the BaseLMConstraint
-    virtual void bwdLMConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseLMConstraint* c)
+    virtual void bwdLMConstraint(VisitorContext* ctx, core::behavior::BaseLMConstraint* c)
     { bwdLMConstraint(ctx->node, c); }
 
     ///@}
@@ -348,7 +348,7 @@ public:
         return "animate";
     }
 
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
     {
         return !map->isMechanical();
     }
@@ -363,9 +363,9 @@ public:
     virtual void addReadVector(VecId &id) {readVector.push_back(id);}
     virtual void addWriteVector(VecId &id) {writeVector.push_back(id);}
     virtual void addReadWriteVector(VecId &id) {readVector.push_back(id); writeVector.push_back(id);}
-    void printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm);
+    void printReadVectors(core::behavior::BaseMechanicalState* mm);
     void printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
-    void printWriteVectors(core::componentmodel::behavior::BaseMechanicalState* mm);
+    void printWriteVectors(core::behavior::BaseMechanicalState* mm);
     void printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
 protected:
     sofa::helper::vector< VecId > readVector;
@@ -385,7 +385,7 @@ public:
         rootData = result;
     }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -415,7 +415,7 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -446,7 +446,7 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -476,7 +476,7 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -511,8 +511,8 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
 
     virtual const char* getClassName() const { return "MechanicalVOpVisitor";}
     virtual std::string getInfos() const
@@ -580,7 +580,7 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalVMultiOpVisitor : public MechanicalVisitor
 {
 public:
-    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
 //     MechanicalVMultiOpVisitor()
 //     {}
     MechanicalVMultiOpVisitor(const VMultiOp& o)
@@ -591,8 +591,8 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
 
     //virtual void processNodeBottomUp(simulation::Node* node);
 
@@ -644,7 +644,7 @@ public:
         rootData = t;
     }
 
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -691,12 +691,12 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
     {
         if (ignoreFlag)
             return false;
@@ -738,12 +738,12 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -783,10 +783,10 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -816,12 +816,12 @@ public:
 
     MechanicalPropagateXVisitor(VecId x, bool m) : x(x), ignoreMask(m)
     {}
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -856,10 +856,10 @@ public:
 
     MechanicalPropagateXAndResetForceVisitor(VecId x, VecId f, bool m) : x(x), f(f), ignoreMask(m)
     {}
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -900,12 +900,12 @@ public:
     virtual std::string getInfos() const { std::string name= "["+dx.getName()+"]"; return name; }
 
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -942,8 +942,8 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -951,14 +951,14 @@ public:
     virtual std::string getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
 #else
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
 #endif
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -993,8 +993,8 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1027,13 +1027,13 @@ public:
 
     MechanicalPropagatePositionVisitor(double time=0, VecId x = VecId::position(), bool m=true);
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1082,13 +1082,13 @@ public:
 #endif
     bool ignoreMask;
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1131,7 +1131,7 @@ public:
     MechanicalSetPositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity());
 #endif
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1171,13 +1171,13 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1217,8 +1217,8 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1258,11 +1258,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
 
     /// Return a class name for this visitor
@@ -1304,11 +1304,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1358,11 +1358,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1393,12 +1393,12 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1425,11 +1425,11 @@ class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public Mechan
 {
 public:
     MechanicalExpressJacobianVisitor(simulation::Node* n);
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c);
+    virtual void bwdMechanicalMapping(simulation::Node* node, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdLMConstraint(simulation::Node* node, core::behavior::BaseLMConstraint* c);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1459,9 +1459,9 @@ public:
     };
 
 
-    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* s);
+    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1496,9 +1496,9 @@ public:
 #endif
     };
 
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1509,22 +1509,22 @@ public:
     virtual std::string getInfos() const
     {
         std::string name;
-        if      (order == core::componentmodel::behavior::BaseLMConstraint::ACC)
+        if      (order == core::behavior::BaseLMConstraint::ACC)
             name= "["+VecId::dx().getName()+"]";
-        else if (order == core::componentmodel::behavior::BaseLMConstraint::VEL)
+        else if (order == core::behavior::BaseLMConstraint::VEL)
             name= "["+VecId::velocity().getName()+"]";
-        else if (order == core::componentmodel::behavior::BaseLMConstraint::POS)
+        else if (order == core::behavior::BaseLMConstraint::POS)
             name= "["+VecId::position().getName()+"]";
         return name;
     }
 
 
     virtual void clear() {datasC.clear();}
-    virtual const std::vector< core::componentmodel::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
+    virtual const std::vector< core::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
     virtual unsigned int numConstraint() {return datasC.size();}
 
-    virtual void setOrder(core::componentmodel::behavior::BaseLMConstraint::ConstOrder i) {order=i;}
-    core::componentmodel::behavior::BaseLMConstraint::ConstOrder getOrder() const { return order; }
+    virtual void setOrder(core::behavior::BaseLMConstraint::ConstOrder i) {order=i;}
+    core::behavior::BaseLMConstraint::ConstOrder getOrder() const { return order; }
 
     virtual bool isThreadSafe() const
     {
@@ -1537,8 +1537,8 @@ public:
 #endif
 
 protected:
-    core::componentmodel::behavior::BaseLMConstraint::ConstOrder order;
-    std::vector< core::componentmodel::behavior::BaseLMConstraint *> datasC;
+    core::behavior::BaseLMConstraint::ConstOrder order;
+    std::vector< core::behavior::BaseLMConstraint *> datasC;
 
 };
 
@@ -1555,12 +1555,12 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c);
 
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1594,13 +1594,13 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
         mm->renumberConstraintId(renumbering);
         return RESULT_PRUNE;
     }
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1638,11 +1638,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
-    virtual void bwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
+    virtual void bwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1678,14 +1678,14 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalBeginIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1715,15 +1715,15 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalEndIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1753,9 +1753,9 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* obj);
-    virtual Result fwdInteractionForceField(simulation::Node*, core::componentmodel::behavior::InteractionForceField* obj);
-    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*obj*/)
+    virtual Result fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
+    virtual Result fwdInteractionForceField(simulation::Node*, core::behavior::InteractionForceField* obj);
+    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*obj*/)
     {
     }
 
@@ -1787,10 +1787,10 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1822,9 +1822,9 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1860,7 +1860,7 @@ public:
     }
 
     /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1884,15 +1884,15 @@ class SOFA_SIMULATION_COMMON_API MechanicalPickParticlesVisitor : public Mechani
 public:
     defaulttype::Vec3d rayOrigin, rayDirection;
     double radius0, dRadius;
-    std::multimap< double, std::pair<sofa::core::componentmodel::behavior::BaseMechanicalState*, int> > particles;
+    std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > particles;
     MechanicalPickParticlesVisitor(const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0)
         : rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr)
     {
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

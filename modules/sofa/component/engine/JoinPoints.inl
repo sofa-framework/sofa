@@ -18,7 +18,7 @@ namespace engine
 {
 
 using namespace sofa;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 template <class DataTypes>
 JoinPoints<DataTypes>::JoinPoints()

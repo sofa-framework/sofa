@@ -22,13 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
-#define SOFA_CORE_COMPONENTMODEL_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
+#ifndef SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
+#define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
 
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -44,7 +44,6 @@ namespace constraint
 {
 
 using namespace sofa::core;
-using namespace sofa::core::componentmodel;
 using namespace sofa::defaulttype;
 
 
@@ -61,7 +60,7 @@ extern inline behavior::LinearSolver* getLinearSolver(objectmodel::BaseContext* 
 
 extern inline behavior::LinearSolver* getLinearSolverByName(objectmodel::BaseContext* context,std::string name)
 {
-    std::vector<sofa::core::componentmodel::behavior::LinearSolver*> solvers;
+    std::vector<sofa::core::behavior::LinearSolver*> solvers;
     context->get<behavior::LinearSolver>(&solvers,objectmodel::BaseContext::SearchDown);
 
     for (unsigned int i=0; i<solvers.size(); ++i)
@@ -78,14 +77,14 @@ extern inline behavior::LinearSolver* getLinearSolverByName(objectmodel::BaseCon
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class LinearSolverConstraintCorrection : public componentmodel::behavior::BaseConstraintCorrection
+class LinearSolverConstraintCorrection : public behavior::BaseConstraintCorrection
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LinearSolverConstraintCorrection,TDataTypes),componentmodel::behavior::BaseConstraintCorrection);
+    SOFA_CLASS(SOFA_TEMPLATE(LinearSolverConstraintCorrection,TDataTypes),behavior::BaseConstraintCorrection);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
-    typedef typename componentmodel::behavior::BaseConstraintCorrection Inherit;
+    typedef typename behavior::BaseConstraintCorrection Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;

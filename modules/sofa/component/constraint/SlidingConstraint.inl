@@ -175,7 +175,7 @@ void SlidingConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offse
 }
 #ifdef SOFA_DEV
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(int i=0; i<2; i++)
         resTab[offset++] = new BilateralConstraintResolution();

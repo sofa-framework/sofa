@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_IHPDRIVER_H
 
 
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseController.h>
 #include <sofa/component/visualModel/OglModel.h>
 #include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -132,7 +132,7 @@ public:
     bool operation; // true = right, false = left
 
 private:
-    sofa::core::componentmodel::behavior::MechanicalState<Vec1dTypes> *_mstate;
+    sofa::core::behavior::MechanicalState<Vec1dTypes> *_mstate;
     void handleEvent(core::objectmodel::Event *);
     sofa::component::visualmodel::OglModel *visu_base, *visu_end;
     bool noDevice;

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_CENTERPOINTTOPOLOGICALMAPPING_H
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
 namespace sofa
 {
@@ -36,7 +36,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 using namespace sofa::core;
 
 /**

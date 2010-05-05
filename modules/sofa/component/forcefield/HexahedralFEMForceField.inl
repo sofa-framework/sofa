@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/HexahedralFEMForceField.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
@@ -66,7 +66,7 @@ namespace forcefield
 using std::set;
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 template< class DataTypes>
 void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (int hexahedronIndex, void* param,
@@ -103,7 +103,7 @@ template <class DataTypes> void HexahedralFEMForceField<DataTypes>::handleTopolo
 template <class DataTypes>
 void HexahedralFEMForceField<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
 
     this->getContext()->get(_topology);
 

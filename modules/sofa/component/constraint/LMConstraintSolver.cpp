@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/constraint/LMConstraintSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/FullVector.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -81,11 +81,11 @@ LMConstraintSolver::~LMConstraintSolver()
 
 void LMConstraintSolver::init()
 {
-    helper::vector< core::componentmodel::behavior::BaseConstraintCorrection* > listConstraintCorrection;
-    ((simulation::Node*) getContext())->get<core::componentmodel::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
+    helper::vector< core::behavior::BaseConstraintCorrection* > listConstraintCorrection;
+    ((simulation::Node*) getContext())->get<core::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
     for (unsigned int i=0; i<listConstraintCorrection.size(); ++i)
     {
-        core::componentmodel::behavior::BaseMechanicalState* constrainedDof;
+        core::behavior::BaseMechanicalState* constrainedDof;
         listConstraintCorrection[i]->getContext()->get(constrainedDof);
         if (constrainedDof)
         {
@@ -100,7 +100,7 @@ void LMConstraintSolver::init()
 
 bool LMConstraintSolver::needPriorStatePropagation()
 {
-    using core::componentmodel::behavior::BaseLMConstraint;
+    using core::behavior::BaseLMConstraint;
     bool needPriorPropagation=false;
     {
         helper::vector< BaseLMConstraint* > c;
@@ -129,7 +129,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::TRACE_ARGUMENT arg;
 #endif
-    using core::componentmodel::behavior::BaseLMConstraint ;
+    using core::behavior::BaseLMConstraint ;
     LMConstraintVisitor.clear();
 
     if      (Order==VecId::dx())
@@ -280,7 +280,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id)
     //Init matrices to the good size
     for (SetDof::iterator it=setDofs.begin(); it!=setDofs.end(); ++it)
     {
-        const core::componentmodel::behavior::BaseMechanicalState* dofs=*it;
+        const core::behavior::BaseMechanicalState* dofs=*it;
         SparseMatrixEigen L(numConstraint,dofs->getSize()*dofs->getDerivDimension());
         L.startFill(numConstraint*(1+dofs->getSize()));//TODO: give a better estimation of non-zero coefficients
         LMatrices.insert(std::make_pair(dofs, L));
@@ -359,7 +359,7 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id)
     // get the displacement. deltaState = M^-1.L^T.lambda : lambda being the solution of the system
     for (SetDof::iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
     {
-        sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=*itDofs;
+        sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const VectorEigen &LambdaVector=*Lambda;
         bool updateVelocities=!constraintVel.getValue();
         constraintStateCorrection(id, updateVelocities,invMass_Ltrans[dofs] , LambdaVector, dofUsed[dofs], dofs);
@@ -394,7 +394,7 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
 {
     for (DofToMatrix::const_iterator itDofs=invMassMatrix.begin(); itDofs!=invMassMatrix.end(); itDofs++)
     {
-        const sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=itDofs->first;
+        const sofa::core::behavior::BaseMechanicalState* dofs=itDofs->first;
         const SparseMatrixEigen &invMass=itDofs->second;
 
         SparseMatrixEigen &L=LMatrix[dofs]; L.endFill();
@@ -410,19 +410,19 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
 
 
 void LMConstraintSolver::buildLMatrices( ConstOrder Order,
-        const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints,
+        const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
         DofToMatrix &LMatrices,
         DofToMask &dofUsed) const
 {
-    typedef core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
+    typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
     unsigned constraintOffset=0;
     //We Take one by one the constraint, and write their equations in the corresponding matrix L
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
     {
-        core::componentmodel::behavior::BaseLMConstraint *constraint=LMConstraints[mat];
+        core::behavior::BaseLMConstraint *constraint=LMConstraints[mat];
 
-        const core::componentmodel::behavior::BaseMechanicalState *dof1=constraint->getSimulatedMechModel1();
-        const core::componentmodel::behavior::BaseMechanicalState *dof2=constraint->getSimulatedMechModel2();
+        const core::behavior::BaseMechanicalState *dof1=constraint->getSimulatedMechModel1();
+        const core::behavior::BaseMechanicalState *dof2=constraint->getSimulatedMechModel2();
 
         //Get the entries in the Vector of constraints corresponding to the constraint equations
         std::list< unsigned int > equationsUsed;
@@ -450,7 +450,7 @@ void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToM
 {
     for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
     {
-        const sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=*itDofs;
+        const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const unsigned int dimensionDofs=dofs->getDerivDimension();
 
 
@@ -469,7 +469,7 @@ void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToM
         //************************************************************
         //Building M^-1
         //Called only ONCE!
-        core::componentmodel::behavior::BaseMass *mass=dynamic_cast< core::componentmodel::behavior::BaseMass *>(dofs->getContext()->getMass());
+        core::behavior::BaseMass *mass=dynamic_cast< core::behavior::BaseMass *>(dofs->getContext()->getMass());
 
         if (needToConstructMassMatrix)
         {
@@ -495,7 +495,7 @@ void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToM
     }
 }
 
-void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmodel::behavior::BaseMechanicalState* /*mstate*/, const core::componentmodel::behavior::BaseConstraintCorrection* constraintCorrection, SparseMatrixEigen& invMass) const
+void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* /*mstate*/, const core::behavior::BaseConstraintCorrection* constraintCorrection, SparseMatrixEigen& invMass) const
 {
     //Get the Full Matrix from the constraint correction
     FullMatrix<SReal> computationInvM;
@@ -514,7 +514,7 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmode
     }
 }
 
-void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmodel::behavior::BaseMechanicalState* mstate, const core::componentmodel::behavior::BaseMass* mass, SparseMatrixEigen& invMass) const
+void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate, const core::behavior::BaseMass* mass, SparseMatrixEigen& invMass) const
 {
     const unsigned int dimensionDofs=mstate->getDerivDimension();
     //Build M, using blocks of [ dimensionDofs x dimensionDofs ] given for each particle
@@ -544,12 +544,12 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmode
     }
 }
 
-void LMConstraintSolver::buildLMatrix( const sofa::core::componentmodel::behavior::BaseMechanicalState *dof,
+void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanicalState *dof,
         const std::list<unsigned int> &idxEquations, unsigned int constraintOffset,
         SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed) const
 {
     const unsigned int dimensionDofs=dof->getDerivDimension();
-    typedef core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
+    typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
     //Get blocks of values from the Mechanical States
     std::list< ConstraintBlock > blocks;
     blocks =dof->constraintBlocks( idxEquations );
@@ -583,7 +583,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::componentmodel::behavio
     }
 }
 
-void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, VectorEigen &c) const
+void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints, VectorEigen &c) const
 {
     unsigned int offset=0;
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
@@ -598,7 +598,7 @@ void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vec
 }
 
 
-bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, MatrixEigen &W, VectorEigen &c, VectorEigen &Lambda)
+bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints, MatrixEigen &W, VectorEigen &c, VectorEigen &Lambda)
 {
     if (f_printLog.getValue()) sout << "Using Gauss-Seidel solution"<<sendl;
 
@@ -721,7 +721,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId Order, bool isPositionC
         const SparseMatrixEigen  &invM_Ltrans,
         const VectorEigen  &c,
         const sofa::helper::set< unsigned int > &dofUsed,
-        sofa::core::componentmodel::behavior::BaseMechanicalState* dofs) const
+        sofa::core::behavior::BaseMechanicalState* dofs) const
 {
 
     //Correct Dof
@@ -816,8 +816,8 @@ void LMConstraintSolver::computeKineticEnergy()
     double kineticEnergy=0;
     for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
     {
-        const sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=*itDofs;
-        const core::componentmodel::behavior::BaseMass *mass=dynamic_cast< core::componentmodel::behavior::BaseMass *>(dofs->getContext()->getMass());
+        const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
+        const core::behavior::BaseMass *mass=dynamic_cast< core::behavior::BaseMass *>(dofs->getContext()->getMass());
         if (mass) kineticEnergy += mass->getKineticEnergy();
     }
     vError.push_back(kineticEnergy);

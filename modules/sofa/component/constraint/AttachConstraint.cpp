@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_CPP
 #include <sofa/component/constraint/AttachConstraint.inl>
-#include <sofa/core/componentmodel/behavior/PairInteractionConstraint.inl>
+#include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>

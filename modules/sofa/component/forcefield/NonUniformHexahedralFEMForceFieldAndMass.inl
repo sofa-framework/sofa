@@ -56,7 +56,7 @@ NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForc
 template <class DataTypes>
 void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
 
     this->getContext()->get(this->_topology);
 
@@ -188,7 +188,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::componentmodel::topology::Topology* t)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::topology::Topology* t)
 {
     if(t != this->_topology)
         return;
@@ -213,7 +213,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
             // for added elements:
             // init element
             // add particle masses and lumped masses of adjacent particles
-        case core::componentmodel::topology::HEXAHEDRAADDED:
+        case core::topology::HEXAHEDRAADDED:
         {
             // handle hexa events
             this->hexahedronInfo.handleTopologyEvents(iter, next_iter);
@@ -226,7 +226,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
 
         // for removed elements:
         // subtract particle masses and lumped masses of adjacent particles
-        case core::componentmodel::topology::HEXAHEDRAREMOVED:
+        case core::topology::HEXAHEDRAREMOVED:
         {
             handleHexaRemoved(*(static_cast< const HexahedraRemoved *> (*iter)));
 
@@ -239,7 +239,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
 
         // the structure of the coarse hexahedra has changed
         // subtract the contributions of removed voxels
-        case ((core::componentmodel::topology::TopologyChangeType) component::topology::MultilevelModification::MULTILEVEL_MODIFICATION) :
+        case ((core::topology::TopologyChangeType) component::topology::MultilevelModification::MULTILEVEL_MODIFICATION) :
         {
             handleMultilevelModif(*(static_cast< const MultilevelModification *> (*iter)));
         }

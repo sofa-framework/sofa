@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LOADER_MESHOFFLOADER_H
 #define SOFA_COMPONENT_LOADER_MESHOFFLOADER_H
 
-#include <sofa/core/componentmodel/loader/MeshLoader.h>
+#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -37,10 +37,10 @@ namespace component
 namespace loader
 {
 
-class SOFA_COMPONENT_LOADER_API MeshOffLoader : public sofa::core::componentmodel::loader::MeshLoader
+class SOFA_COMPONENT_LOADER_API MeshOffLoader : public sofa::core::loader::MeshLoader
 {
 public:
-    SOFA_CLASS(MeshOffLoader,sofa::core::componentmodel::loader::MeshLoader);
+    SOFA_CLASS(MeshOffLoader,sofa::core::loader::MeshLoader);
 
     virtual bool load();
 

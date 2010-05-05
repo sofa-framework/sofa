@@ -27,8 +27,8 @@
 #include "Mapping.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MappedModel.h>
 
 namespace sofa
 {
@@ -38,7 +38,7 @@ namespace core
 
 using namespace sofa::defaulttype;
 using namespace core;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 
 template class Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >;

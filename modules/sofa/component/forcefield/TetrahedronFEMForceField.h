@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/TetrahedronData.h>
 #ifdef SOFA_DEV
 #include <sofa/component/topology/FittedRegularGridTopology.h>
@@ -74,10 +74,10 @@ public:
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -87,9 +87,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
-    typedef core::componentmodel::topology::BaseMeshTopology::Tetra Element;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra VecElement;
+    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Tetra Element;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
             LARGE = 1,   ///< Symbol of large displacements tetrahedron solver
@@ -138,7 +138,7 @@ protected:
 
     SReal m_potentialEnergy;
 
-    core::componentmodel::topology::BaseMeshTopology* _mesh;
+    core::topology::BaseMeshTopology* _mesh;
 #ifdef SOFA_DEV
     topology::FittedRegularGridTopology* _trimgrid;
 #endif // SOFA_DEV

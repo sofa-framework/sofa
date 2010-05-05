@@ -26,9 +26,9 @@
 #include "CudaRigidMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
 
 namespace sofa
@@ -42,7 +42,7 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
 template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3fTypes> > >;
@@ -75,7 +75,7 @@ namespace cuda
 {
 using namespace sofa::defaulttype;
 using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
 SOFA_DECL_CLASS(CudaRigidMapping)

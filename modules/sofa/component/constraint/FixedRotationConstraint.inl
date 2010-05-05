@@ -38,14 +38,14 @@ namespace component
 namespace constraint
 {
 
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 using namespace sofa::defaulttype;
 
 
 template <class DataTypes>
 FixedRotationConstraint<DataTypes>::FixedRotationConstraint()
-    : core::componentmodel::behavior::Constraint<DataTypes>(NULL),
+    : core::behavior::Constraint<DataTypes>(NULL),
       FixedXRotation( initData( &FixedXRotation, false, "FixedXRotation", "Prevent Rotation around X axis")),
       FixedYRotation( initData( &FixedYRotation, false, "FixedYRotation", "Prevent Rotation around Y axis")),
       FixedZRotation( initData( &FixedZRotation, false, "FixedZRotation", "Prevent Rotation around Z axis"))
@@ -63,7 +63,7 @@ FixedRotationConstraint<DataTypes>::~FixedRotationConstraint()
 template <class DataTypes>
 void FixedRotationConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 
     // Retrieves mechanical state
     VecCoord x = *this->mstate->getX();

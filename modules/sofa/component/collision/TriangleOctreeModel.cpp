@@ -43,7 +43,7 @@ namespace component
 
 namespace topology
 {
-typedef core::componentmodel::topology::BaseMeshTopology::Triangle	Triangle;
+typedef core::topology::BaseMeshTopology::Triangle	Triangle;
 }
 
 namespace collision

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/PenalityContactForceField.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
@@ -199,7 +199,7 @@ void PenalityContactForceField<DataTypes>::draw()
 
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::grabPoint(
-    const core::componentmodel::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
+    const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
     const helper::vector< unsigned int > &index,
     helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
     helper::vector< unsigned int > &triangle,

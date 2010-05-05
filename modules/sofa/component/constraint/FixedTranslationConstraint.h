@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDTRANSLATIONCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDTRANSLATIONCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/Constraint.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/helper/vector.h>
 
@@ -47,10 +47,10 @@ class FixedTranslationConstraintInternalData
 /** Attach given particles to their initial positions.
 */
 template <class DataTypes>
-class FixedTranslationConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class FixedTranslationConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedTranslationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FixedTranslationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -94,7 +94,7 @@ public:
 
 protected:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* topology;
 
     // Define TestNewPointFunction
     static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MASTERSOLVER_MULTITAGMASTERSOLVER_H
 #define SOFA_COMPONENT_MASTERSOLVER_MULTITAGMASTERSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/MasterSolver.h>
+#include <sofa/core/behavior/MasterSolver.h>
 #include <sofa/simulation/common/MasterSolverImpl.h>
 #include <sofa/component/component.h>
 

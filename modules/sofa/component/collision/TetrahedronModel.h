@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -103,11 +103,11 @@ protected:
     };
 
     sofa::helper::vector<TetrahedronInfo> elems;
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra* tetra;
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra* tetra;
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<Vec3Types>* mstate;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
 public:
 
@@ -129,7 +129,7 @@ public:
 
     virtual void handleTopologyChange();
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
 };
 

@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/QuadData.h>
@@ -57,12 +57,12 @@ Bending springs added between vertices of quads sharing a common edge.
 The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
 */
 template<class DataTypes>
-class QuadularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>
+class QuadularBendingSprings : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(QuadularBendingSprings,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(QuadularBendingSprings,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
+    typedef core::behavior::ForceField<DataTypes> Inherited;
     //typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 
@@ -130,7 +130,7 @@ protected:
 
     EdgeData<EdgeInformation> edgeInfo;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     bool updateMatrix;
 

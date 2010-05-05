@@ -59,7 +59,7 @@ namespace controller
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace sofa::defaulttype;
 
 
@@ -236,7 +236,7 @@ void IHPDriver::bwdInit()
 {
 
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    if (dynamic_cast<core::componentmodel::behavior::MechanicalState<Vec1dTypes>*>(context->getMechanicalState()) == NULL)
+    if (dynamic_cast<core::behavior::MechanicalState<Vec1dTypes>*>(context->getMechanicalState()) == NULL)
     {
         this->f_printLog.setValue(true);
         serr<<"ERROR : no MechanicalState<Vec1dTypes> defined... init of IHPDriver faild "<<sendl;
@@ -245,7 +245,7 @@ void IHPDriver::bwdInit()
     }
     else
     {
-        this->_mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<Vec1dTypes>*> (context->getMechanicalState());
+        this->_mstate = dynamic_cast<core::behavior::MechanicalState<Vec1dTypes>*> (context->getMechanicalState());
 
     }
 

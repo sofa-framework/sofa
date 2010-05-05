@@ -59,7 +59,7 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
 
     this->getContext()->get(this->_topology);
 
@@ -85,7 +85,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::reinit( )
 
 
 template <class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::componentmodel::topology::Topology* t)
+void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topology::Topology* t)
 {
     if(t != this->_topology)
         return;

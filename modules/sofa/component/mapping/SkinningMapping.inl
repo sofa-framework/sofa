@@ -29,8 +29,8 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <string>
 #include <iostream>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
@@ -93,10 +93,10 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeWeights ( true )
 {
     maskFrom = NULL;
-    if ( core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( from ) )
+    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
         maskFrom = &stateFrom->forceMask;
     maskTo = NULL;
-    if ( core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( to ) )
+    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
         maskTo = &stateTo->forceMask;
 
 #ifdef SOFA_DEV
@@ -821,7 +821,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
     }
     else
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;
@@ -939,7 +939,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
     }
     else
     {
-        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;

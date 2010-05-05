@@ -29,7 +29,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 /*THIS STATIC CUBE SIZE MUST BE CHANGE, it represents the size of the occtree cube*/
 #define CUBE_SIZE 800
@@ -55,8 +55,8 @@ class TriangleOctree;
 class SOFA_COMPONENT_COLLISION_API TriangleOctreeRoot
 {
 public:
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Tri;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Tri;
     typedef sofa::defaulttype::Vec3Types::VecCoord VecCoord;
     typedef sofa::defaulttype::Vec3Types::Coord Coord;
     /// the triangles used as input to construct the octree
@@ -72,7 +72,7 @@ public:
     ~TriangleOctreeRoot();
 
     void buildOctree();
-    void buildOctree(const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles* triangles, const sofa::defaulttype::Vec3Types::VecCoord* pos)
+    void buildOctree(const sofa::core::topology::BaseMeshTopology::SeqTriangles* triangles, const sofa::defaulttype::Vec3Types::VecCoord* pos)
     {
         this->octreeTriangles = triangles;
         this->octreePos = pos;

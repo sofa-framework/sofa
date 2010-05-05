@@ -53,7 +53,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS(Tetra2TriangleTopologicalMapping)
 
@@ -190,7 +190,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 switch( changeType )
                 {
 
-                case core::componentmodel::topology::ENDING_EVENT:
+                case core::topology::ENDING_EVENT:
                 {
                     //sout << "INFO_print : Tetra2TriangleTopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
@@ -199,7 +199,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::TRIANGLESREMOVED:
+                case core::topology::TRIANGLESREMOVED:
                 {
 //						cerr << "INFO_print : Tetra2TriangleTopologicalMapping - TRIANGLESREMOVED" << endl;
 
@@ -304,7 +304,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::TRIANGLESADDED:
+                case core::topology::TRIANGLESADDED:
                 {
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesAdded *>( *itBegin ) )->getArray();
 
@@ -382,7 +382,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::TETRAHEDRAADDED:
+                case core::topology::TETRAHEDRAADDED:
                 {
                     if ((fromModel) && (noNewTriangles.getValue()==false))
                     {
@@ -478,7 +478,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::TETRAHEDRAREMOVED:
+                case core::topology::TETRAHEDRAREMOVED:
                 {
                     if ((fromModel) && (noNewTriangles.getValue()==false))
                     {
@@ -625,7 +625,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 }
 
-                /*	case core::componentmodel::topology::EDGESADDED:
+                /*	case core::topology::EDGESADDED:
                 		{
                 			const EdgesAdded *ea=static_cast< const EdgesAdded * >( *itBegin );
                 			to_tstm->addEdgesProcess(ea->edgeArray);
@@ -633,7 +633,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 			break;
                 		}
 
-                	case core::componentmodel::topology::POINTSADDED:
+                	case core::topology::POINTSADDED:
                 		{
 
                 			int nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
@@ -643,7 +643,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 			break;
                 		}*/
 
-                case core::componentmodel::topology::POINTSREMOVED:
+                case core::topology::POINTSREMOVED:
                 {
                     //sout << "INFO_print : Tetra2TriangleTopologicalMapping - POINTSREMOVED" << sendl;
 
@@ -667,7 +667,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
                 }
 
-                case core::componentmodel::topology::POINTSRENUMBERING:
+                case core::topology::POINTSRENUMBERING:
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
 

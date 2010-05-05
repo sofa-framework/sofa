@@ -96,12 +96,12 @@ public:
 
     void draw();
 
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
 
     const VecReal& getR() const { return this->radius.getValue(); }
 
 protected:
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* mstate;
+    core::behavior::MechanicalState<InDataTypes>* mstate;
 
     Data< VecReal > radius;
     Data< SReal > defaultRadius;

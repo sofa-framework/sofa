@@ -40,7 +40,7 @@ namespace odesolver
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 int DampVelocitySolverClass = core::RegisterObject("Reduce the velocities")
         .add< DampVelocitySolver >()

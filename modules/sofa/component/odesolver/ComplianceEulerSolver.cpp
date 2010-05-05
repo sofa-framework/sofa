@@ -41,7 +41,7 @@ namespace odesolver
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 int ComplianceEulerSolverClass = core::RegisterObject("A simple explicit time integrator")
         .add< ComplianceEulerSolver >()

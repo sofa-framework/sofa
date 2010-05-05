@@ -25,12 +25,12 @@
 #ifndef SOFA_SMP_PARALLELODESOLVERIMPL_H
 #define SOFA_SMP_PARALLELODESOLVERIMPL_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 #include <sofa/simulation/common/ParallelSolverImpl.h>
 #ifdef SOFA_SMP
-#include <sofa/core/componentmodel/behavior/ParallelMultivector.h>
+#include <sofa/core/behavior/ParallelMultivector.h>
 using namespace sofa::defaulttype::SharedTypes;
 #endif
 namespace sofa
@@ -42,15 +42,15 @@ namespace odesolver
 {
 
 
-class ParallelOdeSolverImpl : public sofa::core::componentmodel::behavior::OdeSolver, virtual public sofa::simulation::common::ParallelSolverImpl
+class ParallelOdeSolverImpl : public sofa::core::behavior::OdeSolver, virtual public sofa::simulation::common::ParallelSolverImpl
 {
 public:
-    typedef sofa::core::componentmodel::behavior::ParallelMultiVector<ParallelOdeSolverImpl> MultiVector;
+    typedef sofa::core::behavior::ParallelMultiVector<ParallelOdeSolverImpl> MultiVector;
     typedef simulation::common::ParallelSolverImpl::VecId VecId;
     /*
-    // typedef sofa::core::componentmodel::behavior::MultiVector<ParallelOdeSolverImpl> MultiVector;
-    typedef sofa::core::componentmodel::behavior::MultiMatrix<ParallelOdeSolverImpl> MultiMatrix;
-    typedef sofa::core::componentmodel::behavior::MechanicalMatrix MechanicalMatrix;
+    // typedef sofa::core::behavior::MultiVector<ParallelOdeSolverImpl> MultiVector;
+    typedef sofa::core::behavior::MultiMatrix<ParallelOdeSolverImpl> MultiMatrix;
+    typedef sofa::core::behavior::MechanicalMatrix MechanicalMatrix;
 
     ParallelOdeSolverImpl();
     virtual void init();

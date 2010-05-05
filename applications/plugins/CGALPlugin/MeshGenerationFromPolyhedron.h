@@ -12,8 +12,8 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 
 
@@ -35,13 +35,13 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Quad Quad;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
+    typedef sofa::core::topology::BaseMeshTopology::Tetra Tetra;
 
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads SeqQuads;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 
 
 public:

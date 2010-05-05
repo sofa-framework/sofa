@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_MECHANICALVPRINTACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 
 namespace sofa
@@ -40,7 +40,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API MechanicalVPrintVisitor : public Visitor
 {
 public:
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     MechanicalVPrintVisitor( VecId v, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
@@ -55,7 +55,7 @@ protected:
 /** Print a vector with an elapsed time, useful to compare convergence in odeSolver in function of time */
 class SOFA_SIMULATION_COMMON_API MechanicalVPrintWithElapsedTimeVisitor : public Visitor
 {
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 protected:
     VecId v_;
     unsigned count_;

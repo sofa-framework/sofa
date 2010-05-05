@@ -98,7 +98,7 @@ void DOFBlockerLMConstraint<DataTypes>::removeConstraint(unsigned int index)
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::init()
 {
-    core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::init();
+    core::behavior::LMConstraint<DataTypes,DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 
@@ -125,7 +125,7 @@ template <class DataTypes> void DOFBlockerLMConstraint<DataTypes>::handleTopolog
 template<class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::resetConstraint()
 {
-    core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::resetConstraint();
+    core::behavior::LMConstraint<DataTypes,DataTypes>::resetConstraint();
     idxEquations.clear();
 }
 
@@ -157,10 +157,10 @@ template<class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 {
 
-    typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef core::behavior::BaseMechanicalState::VecId VecId;
     //We don't constrain the Position, only the velocities and accelerations
     if (idxEquations.empty() ||
-        Order==core::componentmodel::behavior::BaseLMConstraint::POS) return;
+        Order==core::behavior::BaseLMConstraint::POS) return;
 
 
     const SetIndexArray & indices = f_indices.getValue().getArray();
@@ -172,17 +172,17 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Orde
 
         for (unsigned int i=0; i<idxEquations[index].size(); ++i)
         {
-            core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
+            core::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
             SReal correction=0;
             switch(Order)
             {
-            case core::componentmodel::behavior::BaseLMConstraint::ACC :
+            case core::behavior::BaseLMConstraint::ACC :
             {
                 correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxEquations[index][i],VecId::dx());
 
                 break;
             }
-            case core::componentmodel::behavior::BaseLMConstraint::VEL :
+            case core::behavior::BaseLMConstraint::VEL :
             {
                 correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxEquations[index][i],VecId::velocity());
                 break;

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_H
 
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/TriangleSubsetData.h>
 
 
@@ -46,12 +46,12 @@ using namespace sofa::component::topology;
 
 
 template<class DataTypes>
-class OscillatingTorsionPressureForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class OscillatingTorsionPressureForceField : public core::behavior::ForceField<DataTypes>
 {
 
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE(OscillatingTorsionPressureForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(OscillatingTorsionPressureForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -77,7 +77,7 @@ protected:
 
 public:
     TriangleSubsetData<TrianglePressureInformation> trianglePressureMap;
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     Data<Real> moment;   // total moment/torque applied
     Data<std::string> triangleList;

@@ -144,7 +144,7 @@ void StopperConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offse
 
 #ifdef SOFA_DEV
 template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void StopperConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
 //	resTab[offset] = new BilateralConstraintResolution3Dof();
 //	offset += 3;

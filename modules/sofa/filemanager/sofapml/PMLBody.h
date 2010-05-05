@@ -44,15 +44,15 @@
 
 #include <StructuralComponent.h>
 
-#include "sofa/core/componentmodel/behavior/BaseMechanicalState.h"
+#include "sofa/core/behavior/BaseMechanicalState.h"
 #include "sofa/core/BaseMapping.h"
-#include "sofa/core/componentmodel/topology/Topology.h"
-#include "sofa/core/componentmodel/behavior/BaseMass.h"
-#include "sofa/core/componentmodel/behavior/ForceField.h"
+#include "sofa/core/topology/Topology.h"
+#include "sofa/core/behavior/BaseMass.h"
+#include "sofa/core/behavior/ForceField.h"
 #include "sofa/component/visualmodel/OglModel.h"
 #include "sofa/core/CollisionModel.h"
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
 #include "sofa/defaulttype/Vec3Types.h"
 #include <sofa/simulation/tree/GNode.h>
@@ -72,8 +72,8 @@ namespace filemanager
 namespace pml
 {
 using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::behavior;
+using namespace sofa::core::topology;
 using namespace sofa::component::visualmodel;
 using namespace sofa::component;
 using namespace sofa::defaulttype;

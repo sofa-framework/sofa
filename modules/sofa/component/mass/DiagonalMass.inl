@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_INL
 
 #include <sofa/component/mass/DiagonalMass.h>
-#include <sofa/core/componentmodel/behavior/Mass.inl>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -48,7 +48,7 @@ namespace mass
 
 
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 template<class MassType>
 void MassPointCreationFunction(int ,
@@ -246,7 +246,7 @@ inline void MassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned i
 
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 template <class DataTypes, class MassType>
@@ -598,7 +598,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        f[i] += theGravity*masses[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
+        f[i] += theGravity*masses[i] + core::behavior::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
     }
 }
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
 #define SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
 
-#include <sofa/core/componentmodel/loader/MeshLoader.h>
+#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/SVector.h>
 namespace sofa
@@ -41,12 +41,12 @@ namespace loader
 //  using namespace sofa::helper::io;
 using sofa::defaulttype::Vec4f;
 
-class SOFA_COMPONENT_LOADER_API MeshObjLoader : public sofa::core::componentmodel::loader::MeshLoader
+class SOFA_COMPONENT_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
 {
 public:
     enum FaceType { EDGE, TRIANGLE, QUAD };
 
-    SOFA_CLASS(MeshObjLoader,sofa::core::componentmodel::loader::MeshLoader);
+    SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
 
     MeshObjLoader();
 
@@ -61,16 +61,16 @@ public:
 protected:
 
     bool readOBJ (std::ifstream &file, const char* filename);
-    bool readMTL (const char* filename, helper::vector <sofa::core::componentmodel::loader::Material>& materials);
-    void addGroup (const sofa::core::componentmodel::loader::PrimitiveGroup& g);
+    bool readMTL (const char* filename, helper::vector <sofa::core::loader::Material>& materials);
+    void addGroup (const sofa::core::loader::PrimitiveGroup& g);
 
-    sofa::core::componentmodel::loader::Material material;
+    sofa::core::loader::Material material;
     std::string textureName;
     FaceType faceType;
 
 public:
 
-    Data <helper::vector <sofa::core::componentmodel::loader::Material> > materials;
+    Data <helper::vector <sofa::core::loader::Material> > materials;
 
     Data <helper::SVector <helper::SVector <int> > > texturesList;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;

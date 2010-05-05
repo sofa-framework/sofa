@@ -41,7 +41,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::collision;
+using namespace core::collision;
 using simulation::Node;
 
 

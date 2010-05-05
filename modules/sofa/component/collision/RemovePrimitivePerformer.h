@@ -137,11 +137,11 @@ private:
     /// Class containing removal functions (given collision model)
     sofa::component::collision::TopologicalChangeManager topologyChangeManager;
     /// Point to collision class
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision;
+    core::behavior::MechanicalState<DataTypes>* mstateCollision;
     /// Enum storing the type to current topolgy: TRIANGLE, QUAD, TETRAHEDRON or HEXAHEDRON
-    sofa::core::componentmodel::topology::TopologyObjectType topoType;
+    sofa::core::topology::TopologyObjectType topoType;
     /// Pointer to current topology detect by picking
-    sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
+    sofa::core::topology::BaseMeshTopology* topo_curr;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)

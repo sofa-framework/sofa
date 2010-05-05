@@ -28,8 +28,8 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/component/topology/SparseGridTopology.h>
 
@@ -58,7 +58,7 @@ int SlicedVolumetricModelClass = core::RegisterObject("A simple visualization fo
         ;
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 
 
@@ -88,7 +88,7 @@ void SlicedVolumetricModel::init()
 {
     getContext()->get(_topology);
     if(_topology)
-        _mstate = dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(_topology->getContext()->getMechanicalState());
+        _mstate = dynamic_cast<core::behavior::BaseMechanicalState*>(_topology->getContext()->getMechanicalState());
     else
         getContext()->get(_mstate);
 

@@ -29,7 +29,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_OTHERFAKEEXAMPLE_H
 
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/Constraint.h>
 
 
 #ifndef WIN32
@@ -57,10 +57,10 @@ namespace constraint
 {
 
 template <class DataTypes>
-class  OtherFakeComponent : public core::componentmodel::behavior::Constraint<DataTypes>
+class  OtherFakeComponent : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OtherFakeComponent,DataTypes),SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(OtherFakeComponent,DataTypes),SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
     typedef typename  DataTypes::VecDeriv VecDeriv;
     typedef typename  DataTypes::VecCoord VecCoord;
     OtherFakeComponent();

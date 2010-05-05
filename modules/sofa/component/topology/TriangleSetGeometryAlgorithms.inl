@@ -1721,7 +1721,7 @@ template <typename DataTypes>
 bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point,
         const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
         unsigned int& ind_ta, unsigned int& ind_tb,// A verifier pourquoi la ref!
-        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list,
         sofa::helper::vector< Vec<3, double> >& coords_list) const
 {
@@ -1748,7 +1748,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         // 1 - First point a (for the moment: always a point in a triangle)
         if (last_point != BaseMeshTopology::InvalidID)
         {
-            topoPath_list.push_back (core::componentmodel::topology::POINT);
+            topoPath_list.push_back (core::topology::POINT);
             indices_list.push_back (last_point);
             const typename DataTypes::VecCoord& realC = *(this->object->getX());
             for (unsigned int i = 0; i<3; i++)
@@ -1757,7 +1757,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         else
         {
             sofa::helper::vector< double > coefs_a = computeTriangleBarycoefs (ind_ta, a);
-            topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
+            topoPath_list.push_back (core::topology::TRIANGLE);
             indices_list.push_back (ind_ta);
             for (unsigned int i = 0; i<3; i++)
                 baryCoords[i]=coefs_a[i];
@@ -1769,7 +1769,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         // 2 - All edges intersected (only edges for now)
         for (unsigned int i = 0; i< edges_list.size(); i++)
         {
-            topoPath_list.push_back (core::componentmodel::topology::EDGE);
+            topoPath_list.push_back (core::topology::EDGE);
             indices_list.push_back (edges_list[i]);
 
             baryCoords[0] = coordsEdge_list[i];
@@ -1785,7 +1785,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         for (unsigned int i = 0; i<3; i++)
             if (coefs_b[i] > 0.9999 )
             {
-                topoPath_list.push_back (core::componentmodel::topology::POINT);
+                topoPath_list.push_back (core::topology::POINT);
                 indices_list.push_back (this->m_topology->getTriangle (ind_tb)[i]);
                 isOnPoint = true;
                 break;
@@ -1793,7 +1793,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
         if (!isOnPoint)
         {
-            topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
+            topoPath_list.push_back (core::topology::TRIANGLE);
             indices_list.push_back (ind_tb);
         }
         for (unsigned int i = 0; i<3; i++)

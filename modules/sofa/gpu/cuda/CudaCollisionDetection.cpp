@@ -34,7 +34,7 @@ namespace gpu
 namespace cuda
 {
 
-using namespace sofa::core::componentmodel::collision;
+using namespace sofa::core::collision;
 
 extern "C"
 {
@@ -355,7 +355,7 @@ void CudaCollisionDetection::RigidRigidTest::fillContacts(DetectionOutputVector&
     {
         for (int i=0; i<nresults; i++, gpuc++)
         {
-            core::componentmodel::collision::DetectionOutput& detection = contacts[c0+i];
+            core::collision::DetectionOutput& detection = contacts[c0+i];
             detection.elem = std::make_pair(elem1, elem2);
             detection.distance = gpuc->distance;
             detection.normal = gpuc->normal;
@@ -369,7 +369,7 @@ void CudaCollisionDetection::RigidRigidTest::fillContacts(DetectionOutputVector&
         int id0 = g2.meshPts.size();
         for (int i=0; i<nresults; i++, gpuc++)
         {
-            core::componentmodel::collision::DetectionOutput& detection = contacts[c0+i];
+            core::collision::DetectionOutput& detection = contacts[c0+i];
             detection.elem = std::make_pair(elem2, elem1);
             detection.distance = gpuc->distance;
             detection.normal = -gpuc->normal;
@@ -473,7 +473,7 @@ void CudaCollisionDetection::SphereRigidTest::fillContacts(DetectionOutputVector
                     contacts.resize(c0 + nr);
                     for (int i=0; i<nr; i++, gpuc++)
                     {
-                        core::componentmodel::collision::DetectionOutput& detection = contacts[c0+i];
+                        core::collision::DetectionOutput& detection = contacts[c0+i];
                         detection.elem = std::make_pair(CudaSphere(model1, gpuc->p1), elem2);
                         detection.distance = gpuc->distance;
                         detection.normal = gpuc->normal;

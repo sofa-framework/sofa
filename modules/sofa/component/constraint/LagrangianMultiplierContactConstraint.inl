@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERCONTACTCONSTRAINT_INL
 
 #include <sofa/component/constraint/LagrangianMultiplierContactConstraint.h>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/behavior/Constraint.inl>
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/system/config.h>
 #include <assert.h>

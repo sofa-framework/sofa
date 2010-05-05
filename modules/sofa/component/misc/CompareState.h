@@ -62,7 +62,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::BaseMechanicalState*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -96,7 +96,7 @@ public:
     virtual const char* getClassName() const { return "CompareStateCreator"; }
 
 protected:
-    void addCompareState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
+    void addCompareState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     std::string sceneName;
     std::string extension;
     bool createInMapping;

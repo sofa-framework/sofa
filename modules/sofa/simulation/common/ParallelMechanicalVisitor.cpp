@@ -33,20 +33,20 @@ namespace sofa
 namespace simulation
 {
 
-Visitor::Result ParallelMechanicalVOpVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* mm)
+Visitor::Result ParallelMechanicalVOpVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)
 {
 
     mm->vOp(v,a,b,f,fSh);
     return RESULT_CONTINUE;
 }
-Visitor::Result ParallelMechanicalVOpVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* )
+Visitor::Result ParallelMechanicalVOpVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* )
 {
     //mm->vOp(v,a,b,f);
     return RESULT_CONTINUE;
 }
 
 
-Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* mm)
+Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)
 {
 
     mm->vOpMEq(v,a,fSh);
@@ -56,12 +56,12 @@ Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMechanicalState(Node* /*node
 
 
 
-Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* )
+Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* )
 {
     //mm->vOp(v,a,b,f);
     return RESULT_CONTINUE;
 }
-Visitor::Result ParallelMechanicalVDotVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::componentmodel::behavior::BaseMechanicalState* mm)
+Visitor::Result ParallelMechanicalVDotVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)
 {
     mm->vDot(totalSh,a,b);
     return RESULT_CONTINUE;

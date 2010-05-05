@@ -36,7 +36,7 @@ void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMap
     obj->updateMapping();
 }
 
-void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::componentmodel::behavior::BaseMechanicalMapping* /*obj*/)
+void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::behavior::BaseMechanicalMapping* /*obj*/)
 {
     // mechanical mappings with isMechanical flag not set are now processed by the MechanicalPropagatePositionVisitor visitor
     /*

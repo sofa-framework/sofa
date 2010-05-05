@@ -36,8 +36,8 @@
 #ifndef SOFA_COMPONENT_MISC_PARTICLESOURCE_H
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -60,10 +60,10 @@ namespace misc
 {
 
 template<class TDataTypes>
-class ParticleSource : public core::componentmodel::behavior::Constraint<TDataTypes>
+class ParticleSource : public core::behavior::Constraint<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ParticleSource,TDataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ParticleSource,TDataTypes), SOFA_TEMPLATE(core::behavior::Constraint,TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
@@ -73,7 +73,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef helper::vector<Real> VecDensity;
 
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalModel;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
 
     Data<Coord> f_translation;
     Data<Real> f_scale;
@@ -112,7 +112,7 @@ public:
 
     virtual void init()
     {
-        this->core::componentmodel::behavior::Constraint<TDataTypes>::init();
+        this->core::behavior::Constraint<TDataTypes>::init();
         if (!this->mstate) return;
         N = f_center.getValue().size();
         lasttime = f_start.getValue() - f_delay.getValue();
@@ -231,9 +231,9 @@ public:
     /// Handle topological changes
     void handleTopologyChange()
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
+        sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
         if (itBegin != itEnd)
         {
             if (this->f_printLog.getValue())

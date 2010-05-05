@@ -265,10 +265,10 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         {
             const sofa::helper::vector<int>& pts = facets[i][0];
             if (pts.size() == 4)
-                grid->meshQuads[nbq++] = sofa::core::componentmodel::topology::BaseMeshTopology::Quad(pts[0],pts[1],pts[2],pts[3]);
+                grid->meshQuads[nbq++] = sofa::core::topology::BaseMeshTopology::Quad(pts[0],pts[1],pts[2],pts[3]);
             else if (pts.size() >= 3)
                 for (unsigned int j=2; j<pts.size(); j++)
-                    grid->meshTriangles[nbt++] = sofa::core::componentmodel::topology::BaseMeshTopology::Triangle(pts[0],pts[j-1],pts[j]);
+                    grid->meshTriangles[nbt++] = sofa::core::topology::BaseMeshTopology::Triangle(pts[0],pts[j-1],pts[j]);
         }
         std::cout << "Computing distance field."<<std::endl;
         grid->calcDistance();
@@ -545,7 +545,7 @@ void CudaRigidDistanceGridCollisionModel::init()
 {
     std::cout << "> CudaRigidDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
-    rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
+    rigid = dynamic_cast< core::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
 
     CudaDistanceGrid* grid = NULL;
     if (fileCudaRigidDistanceGrid.getValue().empty())

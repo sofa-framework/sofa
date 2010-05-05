@@ -46,7 +46,7 @@ struct BodyPicked
 {
     BodyPicked():body(NULL), mstate(NULL) {};
     sofa::core::CollisionModel *body;
-    sofa::core::componentmodel::behavior::BaseMechanicalState *mstate;
+    sofa::core::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;
     defaulttype::Vector3 point;
     double dist;
@@ -74,7 +74,7 @@ public:
     void handleEvent(core::objectmodel::Event *e);
 
 
-    virtual core::componentmodel::behavior::BaseMechanicalState *getMouseContainer()=0;
+    virtual core::behavior::BaseMechanicalState *getMouseContainer()=0;
 
     bool isMouseAttached() const { return isAttached;};
     void setMouseAttached(bool b) {isAttached=b;};
@@ -117,7 +117,7 @@ public:
 
     void init();
 
-    core::componentmodel::behavior::BaseMechanicalState *getMouseContainer() {return mouseInSofa;}
+    core::behavior::BaseMechanicalState *getMouseContainer() {return mouseInSofa;}
 
 
     virtual std::string getTemplateName() const

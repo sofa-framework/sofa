@@ -30,8 +30,8 @@
 #endif
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/helper/vector.h>
@@ -54,12 +54,12 @@ using sofa::component::mapping::DualQuatStorage;
 using namespace sofa::defaulttype;
 
 template <class DataTypes, class TMassType>
-class FrameDiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>
+class FrameDiagonalMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(FrameDiagonalMass,DataTypes,TMassType), SOFA_TEMPLATE(core::componentmodel::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(FrameDiagonalMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
-    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
+    typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

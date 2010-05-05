@@ -29,7 +29,7 @@
 #include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/topology/TriangleData.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/collision/PointModel.h>
 #include <map>
@@ -138,9 +138,9 @@ protected:
     //topology::TriangleData<TriangleInfo> elems;
     VecDeriv normals;
 
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles* triangles;
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles* triangles;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles mytriangles;
+    sofa::core::topology::BaseMeshTopology::SeqTriangles mytriangles;
 
     bool needsUpdate;
     virtual void updateFromTopology();
@@ -148,11 +148,11 @@ protected:
     int getTriangleFlags(int i);
     virtual void updateNormals();
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
+    core::behavior::MechanicalState<DataTypes>* mstate;
     Data<bool> computeNormals;
     int meshRevision;
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     PointModel* mpoints;
 
@@ -180,11 +180,11 @@ public:
 
     virtual void handleTopologyChange();
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
-    const core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return mstate; }
 
     const VecCoord& getX() const { return *(getMechanicalState()->getX()); }
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *triangles; }
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *triangles; }
 
     TriangleLocalMinDistanceFilter *getFilter() const;
 
@@ -205,7 +205,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }

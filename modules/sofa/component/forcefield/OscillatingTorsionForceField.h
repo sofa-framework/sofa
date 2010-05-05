@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_OSCILLATINGTORSIONFORCEFIELD_H
 #define SOFA_COMPONENT_OSCILLATINGTORSIONFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/component.h>
@@ -46,12 +46,12 @@ namespace forcefield
 
 /** Apply constant forces to given degrees of freedom.  */
 template<class DataTypes>
-class OscillatingTorsionForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class OscillatingTorsionForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OscillatingTorsionForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(OscillatingTorsionForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -115,8 +115,8 @@ public:
 #ifndef SOFA_COMPONENT_OSCILLATINGTORSIONFORCEFIELD_H
 #define SOFA_COMPONENT_OSCILLATINGTORSIONFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/component.h>
@@ -136,12 +136,12 @@ namespace forcefield
 
 /** Apply constant forces to given degrees of freedom.  */
 template<class DataTypes>
-class OscillatingTorsionForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class OscillatingTorsionForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OscillatingTorsionForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(OscillatingTorsionForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "GraspingManager.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/collision/DetectionOutput.h>
+#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -80,7 +80,7 @@ void GraspingManager::init()
     sout << "GraspingManager: "<<modelTools.size()<<"/"<<models.size()<<" collision models selected."<<sendl;
     mstateTool = getContext()->get<ToolDOFs>(core::objectmodel::BaseContext::SearchDown);
     if (mstateTool) sout << "GraspingManager: tool DOFs found"<<sendl;
-    contactManager = getContext()->get<core::componentmodel::collision::ContactManager>();
+    contactManager = getContext()->get<core::collision::ContactManager>();
     if (contactManager) sout << "GraspingManager: ContactManager found"<<sendl;
     sout << "GraspingManager: init OK." << sendl;
 }
@@ -112,10 +112,10 @@ void GraspingManager::doGrasp()
         // clear existing contacts
         if (contactManager)
         {
-            const core::componentmodel::collision::ContactManager::ContactVector& cv = contactManager->getContacts();
-            for (core::componentmodel::collision::ContactManager::ContactVector::const_iterator it = cv.begin(), itend = cv.end(); it != itend; ++it)
+            const core::collision::ContactManager::ContactVector& cv = contactManager->getContacts();
+            for (core::collision::ContactManager::ContactVector::const_iterator it = cv.begin(), itend = cv.end(); it != itend; ++it)
             {
-                core::componentmodel::collision::Contact* c = *it;
+                core::collision::Contact* c = *it;
                 if (modelTools.count(c->getCollisionModels().first) || modelTools.count(c->getCollisionModels().second))
                     c->setKeepAlive(false);
             }

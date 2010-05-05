@@ -27,7 +27,7 @@
 #define SOFA_CUDA_CUDA_HEXAHEDRON_TLED_FORCEFIELD_H
 
 #include "CudaTypes.h"
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/MeshTopology.h>
 
 // Total Lagrangian Explicit Dynamics algorithm from
@@ -51,10 +51,10 @@ namespace cuda
 
 using namespace sofa::defaulttype;
 
-class CudaHexahedronTLEDForceField : public core::componentmodel::behavior::ForceField<CudaVec3fTypes>
+class CudaHexahedronTLEDForceField : public core::behavior::ForceField<CudaVec3fTypes>
 {
 public:
-    SOFA_CLASS(CudaHexahedronTLEDForceField,SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,CudaVec3fTypes));
+    SOFA_CLASS(CudaHexahedronTLEDForceField,SOFA_TEMPLATE(core::behavior::ForceField,CudaVec3fTypes));
     typedef CudaVec3fTypes::Real Real;
     typedef CudaVec3fTypes::Coord Coord;
     typedef component::topology::MeshTopology::Hexa Element;

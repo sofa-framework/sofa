@@ -63,7 +63,7 @@ void QEnergyStatWidget::step()
 
     //Add Potential Energy
     double potentialEnergy=0;
-    typedef sofa::simulation::Node::Sequence<core::componentmodel::behavior::BaseForceField> SeqFF;
+    typedef sofa::simulation::Node::Sequence<core::behavior::BaseForceField> SeqFF;
     for (SeqFF::iterator it=node->forceField.begin(); it!=node->forceField.end(); ++it)
     {
         potentialEnergy += (*it)->getPotentialEnergy();

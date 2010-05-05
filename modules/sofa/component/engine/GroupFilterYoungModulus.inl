@@ -35,7 +35,7 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::core::componentmodel::loader;
+using namespace sofa::core::loader;
 
 template <class DataTypes>
 GroupFilterYoungModulus<DataTypes>::GroupFilterYoungModulus()

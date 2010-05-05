@@ -88,7 +88,7 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 
 void TopologicalChangeProcessor::init()
 {
-    m_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
+    m_topology = dynamic_cast<core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
     //for (unsigned int i = 0 ; i < 243; i++)
     //std::cout << i << " " ;
 
@@ -394,7 +394,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
             std::istringstream Sin(*it);
 
-            sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+            sofa::core::topology::TopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
 
             helper::vector <unsigned int> vitems;
@@ -426,8 +426,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             Vector3 b;
             unsigned int ind_ta;
             unsigned int ind_tb;
-            unsigned int a_last = core::componentmodel::topology::BaseMeshTopology::InvalidID;
-            unsigned int b_last = core::componentmodel::topology::BaseMeshTopology::InvalidID;
+            unsigned int a_last = core::topology::BaseMeshTopology::InvalidID;
+            unsigned int b_last = core::topology::BaseMeshTopology::InvalidID;
             bool firstCut= true;
 
             str >> nbr;
@@ -447,15 +447,15 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
 
                 // Output declarations
-                sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType> topoPath_list;
+                sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
                 sofa::helper::vector<unsigned int> indices_list;
                 sofa::helper::vector< Vec<3, double> > coords2_list;
 
                 if(firstCut)
-                    a_last = core::componentmodel::topology::BaseMeshTopology::InvalidID;
+                    a_last = core::topology::BaseMeshTopology::InvalidID;
                 else
                 {
-                    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::componentmodel::behavior::MechanicalState<Vec3Types> >();
+                    core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
                     helper::vector<Vector3> &v_coords =  *mstate->getX();
                     a = v_coords[a_last];
                 }

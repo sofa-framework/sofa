@@ -34,7 +34,7 @@
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
@@ -65,7 +65,7 @@ WarpPreconditioner<DataTypes>::WarpPreconditioner()
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::bwdInit()
 {
-    mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+    mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
     this->getContext()->get(realSolver, solverName.getValue());
     this->getContext()->get(forceField);
 }

@@ -29,7 +29,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/LocalStorage.h>
 
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 #include <sofa/helper/set.h>
 #include <iostream>
@@ -275,7 +275,7 @@ public:
     typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
     static void printComment(const std::string &s) ;
     static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() ) ;
-    static void printVector(core::componentmodel::behavior::BaseMechanicalState *mm, core::VecId id);
+    static void printVector(core::behavior::BaseMechanicalState *mm, core::VecId id);
     static void printCloseNode(const std::string &type) ;
     virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
     void setNode(core::objectmodel::Base* c);

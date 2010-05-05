@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_H
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -44,10 +44,9 @@ namespace linearsolver
 {
 
 using namespace sofa::core;
-using namespace sofa::core::componentmodel;
 using namespace sofa::defaulttype;
 
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
@@ -105,7 +104,7 @@ public:
     typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
     typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
 
 

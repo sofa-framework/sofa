@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/LMConstraint.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/LMConstraint.h>
 #include <sofa/component/linearsolver/LagrangeMultiplierComputation.h>
 #include <sofa/simulation/common/Node.h>
 namespace sofa
@@ -55,23 +55,23 @@ class DistanceLMConstraintInternalData
 /** Keep two particules at an initial distance
  */
 template <class DataTypes>
-class DistanceLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
+class DistanceLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DistanceLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DistanceLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef typename sofa::core::componentmodel::topology::BaseMeshTopology::SeqEdges SeqEdges;
-    typedef typename sofa::core::componentmodel::topology::BaseMeshTopology::Edge Edge;
+    typedef typename sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 
 
-    typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
+    typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
     typedef linearsolver::LagrangeMultiplierComputation::VectorEigen  VectorEigen;
 protected:
@@ -80,11 +80,11 @@ protected:
 
 public:
     DistanceLMConstraint( MechanicalState *dof):
-        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
+        core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
     DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2):
-        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2),
+        core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2),
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
     DistanceLMConstraint():
@@ -101,7 +101,7 @@ public:
 
 
     void LagrangeMultiplierEvaluation(const SReal* Wptr, SReal* cptr, SReal* LambdaInitptr,
-            core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup * group)
+            core::behavior::BaseLMConstraint::ConstraintGroup * group)
     {
         const unsigned int numConstraintToProcess=group->getNumConstraint();
         const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,LambdaInitptr,numConstraintToProcess);
@@ -146,7 +146,7 @@ protected :
     void updateRestLength();
 
     // Base Components of the current context
-    core::componentmodel::topology::BaseMeshTopology *topology;
+    core::topology::BaseMeshTopology *topology;
 
     helper::vector<  unsigned int > registeredConstraints;
 

@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_INL
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/BaseLMConstraint.h>
 #include <sofa/component/constraint/DistanceLMConstraint.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
@@ -49,11 +49,11 @@ namespace component
 namespace constraint
 {
 
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 
@@ -146,7 +146,7 @@ void DistanceLMConstraint<DataTypes>::buildJacobian(unsigned int &constraintId)
 template<class DataTypes>
 void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 {
-    typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef core::behavior::BaseMechanicalState::VecId VecId;
     const VecCoord &x1=*(this->constrainedObject1->getX());
     const VecCoord &x2=*(this->constrainedObject2->getX());
     const SeqEdges &edges =  vecConstraint.getValue();
@@ -154,23 +154,23 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
     if (registeredConstraints.empty()) return;
     for (unsigned int i=0; i<edges.size(); ++i)
     {
-        core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
+        core::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
         SReal correction=0;
         switch(Order)
         {
-        case core::componentmodel::behavior::BaseLMConstraint::ACC :
+        case core::behavior::BaseLMConstraint::ACC :
         {
             correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::dx());
             correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::dx());
             break;
         }
-        case core::componentmodel::behavior::BaseLMConstraint::VEL :
+        case core::behavior::BaseLMConstraint::VEL :
         {
             correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::velocity());
             correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::velocity());
             break;
         }
-        case core::componentmodel::behavior::BaseLMConstraint::POS :
+        case core::behavior::BaseLMConstraint::POS :
         {
             SReal length     = lengthEdge(edges[i],x1,x2);
             SReal restLength = this->l0[i];

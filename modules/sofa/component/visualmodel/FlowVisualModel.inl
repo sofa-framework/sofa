@@ -46,7 +46,7 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 template <class DataTypes>
 const double FlowVisualModel<DataTypes>::STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE = 5.0;
@@ -540,14 +540,14 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtTriangleVertices()
     std::fill( velocityAtTriangleVertex.begin(), velocityAtTriangleVertex.end(), Coord() );
     std::fill( normAtTriangleVertex.begin(), normAtTriangleVertex.end(), 0.0 );
 
-    const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles =  m_triTopo->getTriangles();
+    const core::topology::BaseMeshTopology::SeqTriangles& triangles =  m_triTopo->getTriangles();
     if (!m_tetraTopo)
     {
         const VecDeriv& v2d = *this->triangleGeometry->getV();
 
         for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
-            core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
+            core::topology::BaseMeshTopology::Triangle t = (triangles[i]);
             for(unsigned int j=0 ; j<3 ; j++)
             {
                 velocityAtTriangleVertex[t[j]] += v2d[i];
@@ -623,7 +623,7 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtTetraVertices()
     std::fill( velocityAtTetraVertex.begin(), velocityAtTetraVertex.end(), Coord() );
     std::fill( normAtTetraVertex.begin(), normAtTetraVertex.end(), 0.0 );
 
-//	const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles =  m_triTopo->getTriangles();
+//	const core::topology::BaseMeshTopology::SeqTriangles& triangles =  m_triTopo->getTriangles();
 
     const VecDeriv& tetraCentersVelocities = *this->tetraCenters->getV();
     const VecDeriv& tetraCentersPositions = *this->tetraCenters->getX();
@@ -681,7 +681,7 @@ void FlowVisualModel<DataTypes>::drawTetra()
         interpolateVelocityAtTetraVertices();
 
         //draw tetrahedra
-        const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra=  m_tetraTopo->getTetrahedra();
+        const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra=  m_tetraTopo->getTetrahedra();
         /*
         		for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
         		{
@@ -758,7 +758,7 @@ void FlowVisualModel<DataTypes>::drawTetra()
         //		simulation::getSimulation()->DrawUtility.drawTriangles(points[2], colors[2]);
         //		simulation::getSimulation()->DrawUtility.drawTriangles(points[3], colors[3]);
         */
-        core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
+        core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         Coord v;
         unsigned int i;
         for(it = tetrahedra.begin(), i=0; it != tetrahedra.end() ; it++, i++)
@@ -811,7 +811,7 @@ void FlowVisualModel<DataTypes>::draw()
 
     glDepthMask(GL_TRUE);
     glDisable(GL_LIGHTING);
-    const core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+    const core::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
     minimumVelocityAtTriangleVertex =  velocityMin.getValue();
     maximumVelocityAtTriangleVertex =  velocityMax.getValue();
     interpolateVelocityAtTriangleVertices();
@@ -844,7 +844,7 @@ void FlowVisualModel<DataTypes>::draw()
     triangleCenters.resize(0);
     for(unsigned int i=0 ; i<triangles.size() ; i++)
     {
-        const core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
+        const core::topology::BaseMeshTopology::Triangle t = (triangles[i]);
 
         Coord p0 = m_triGeo->getPointPosition(t[0]);
         Coord p1 = m_triGeo->getPointPosition(t[1]);
@@ -936,7 +936,7 @@ void FlowVisualModel<DataTypes>::drawTransparent()
     if (!getContext()->getShowVisualModels()) return;
     glDepthMask(GL_FALSE);
     glDisable(GL_LIGHTING);
-    const core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+    const core::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
     glEnable (GL_BLEND);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -960,7 +960,7 @@ void FlowVisualModel<DataTypes>::drawTransparent()
         glBegin(GL_TRIANGLES);
         for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
-            const core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
+            const core::topology::BaseMeshTopology::Triangle t = (triangles[i]);
 
             Coord p0 = m_triGeo->getPointPosition(t[0]);
             Coord p1 = m_triGeo->getPointPosition(t[1]);

@@ -65,7 +65,7 @@ public:
 
     typedef typename Inherit::Spring Spring;
 
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
 

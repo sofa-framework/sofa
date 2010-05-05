@@ -27,7 +27,7 @@
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/PointData.inl>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -45,7 +45,7 @@ namespace collision
 void LineInfo::buildFilter(unsigned int edge_index)
 {
     using sofa::helper::vector;
-    using sofa::core::componentmodel::topology::BaseMeshTopology;
+    using sofa::core::topology::BaseMeshTopology;
 
     bool debug=false;
 
@@ -234,12 +234,12 @@ void LineLocalMinDistanceFilter::init()
 
 void LineLocalMinDistanceFilter::handleTopologyChange()
 {
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
 
     assert(bmt != 0);
 
-    std::list< const core::componentmodel::topology::TopologyChange * >::const_iterator itBegin = bmt->firstChange();
-    std::list< const core::componentmodel::topology::TopologyChange * >::const_iterator itEnd = bmt->lastChange();
+    std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->firstChange();
+    std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->lastChange();
 
     m_pointInfo.handleTopologyEvents(itBegin, itEnd);
     m_lineInfo.handleTopologyEvents(itBegin, itEnd);
@@ -252,7 +252,7 @@ void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *param
     const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
     pInfo.setLMDFilters(pLMDFilter);
 
-    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());
@@ -275,7 +275,7 @@ void LineLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *param,
     const LineLocalMinDistanceFilter *lLMDFilter = static_cast< const LineLocalMinDistanceFilter * >(param);
     lInfo.setLMDFilters(lLMDFilter);
     //
-    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)lLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = (sofa::core::topology::BaseMeshTopology *)lLMDFilter->getContext()->getTopology();
     lInfo.setBaseMeshTopology(bmt);
 
 

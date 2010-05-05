@@ -28,8 +28,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/PairInteractionForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
@@ -93,12 +93,12 @@ public:
 
 /// Set of simple springs between particles
 template<class DataTypes>
-class SpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
+class SpringForceField : public core::behavior::PairInteractionForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SpringForceField,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(SpringForceField,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField,DataTypes));
 
-    typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
+    typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -110,7 +110,7 @@ public:
     typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
     typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
 
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef LinearSpring<Real> Spring;
 
@@ -140,8 +140,8 @@ public:
 
     bool load(const char *filename);
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
+    core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
+    core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
     sofa::helper::vector< Spring > getSprings() {return springs.getValue();}
 
@@ -195,7 +195,7 @@ public:
         updateMaskStatus();
     }
 
-    virtual void handleTopologyChange(core::componentmodel::topology::Topology *topo);
+    virtual void handleTopologyChange(core::topology::Topology *topo);
 
     virtual bool useMask();
 

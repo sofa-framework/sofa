@@ -44,12 +44,12 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 
 private:
-    core::componentmodel::topology::BaseMeshTopology* topo;
-    core::componentmodel::behavior::MechanicalState<DataTypes>* nodes;
+    core::topology::BaseMeshTopology* topo;
+    core::behavior::MechanicalState<DataTypes>* nodes;
 
     bool needUpdateTopology;
     gpu::cuda::CudaVector<Tetra> tetras;
@@ -82,7 +82,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }

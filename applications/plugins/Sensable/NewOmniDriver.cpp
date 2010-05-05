@@ -57,7 +57,7 @@ namespace controller
 {
 
 using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace sofa::defaulttype;
 
 //static DeviceData gServoDeviceData;

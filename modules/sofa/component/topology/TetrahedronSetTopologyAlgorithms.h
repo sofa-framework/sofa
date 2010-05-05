@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_H
 
 #include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa

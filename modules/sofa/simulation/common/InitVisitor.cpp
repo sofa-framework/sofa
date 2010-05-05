@@ -25,7 +25,7 @@
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/VisualModel.h>
 
@@ -177,8 +177,8 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
         {
             std::list< core::BaseMapping* >::iterator itMapping=it;
             ++it;
-            if (// core::componentmodel::behavior::BaseMechanicalMapping* m=
-                dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>( *itMapping ))
+            if (// core::behavior::BaseMechanicalMapping* m=
+                dynamic_cast<core::behavior::BaseMechanicalMapping*>( *itMapping ))
             {
                 // if (m->isMechanical())
                 mappings.erase(itMapping);

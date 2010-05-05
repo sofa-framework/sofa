@@ -28,7 +28,7 @@
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 //#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 //#endif
@@ -96,7 +96,7 @@ void RigidDistanceGridCollisionModel::init()
 {
     std::cout << "> RigidDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
-    rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
+    rigid = dynamic_cast< core::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
 
     DistanceGrid* grid = NULL;
     if (fileRigidDistanceGrid.getValue().empty())
@@ -444,7 +444,7 @@ void FFDDistanceGridCollisionModel::init()
 {
     std::cout << "> FFDDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
-    ffd = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    ffd = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     ffdMesh = /*dynamic_cast< topology::RegularGridTopology* >*/ (getContext()->getMeshTopology());
     ffdRGrid = dynamic_cast< topology::RegularGridTopology* > (ffdMesh);
     ffdSGrid = dynamic_cast< topology::SparseGridTopology* > (ffdMesh);
@@ -519,11 +519,11 @@ void FFDDistanceGridCollisionModel::init()
                 elems[c].points.swap(elems[e].points); // move the list of points to the new
             elems[c].elem = e;
 #ifdef SOFA_NEW_HEXA
-            core::componentmodel::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
+            core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
             { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
             { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
 #else
-            core::componentmodel::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
+            core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
 #endif
             elems[c].initP0 = GCoord(ffdMesh->getPX(cube[0]), ffdMesh->getPY(cube[0]), ffdMesh->getPZ(cube[0]));
             elems[c].initDP = GCoord(ffdMesh->getPX(cube[7]), ffdMesh->getPY(cube[7]), ffdMesh->getPZ(cube[7]))-elems[c].initP0;
@@ -543,11 +543,11 @@ void FFDDistanceGridCollisionModel::init()
     {
         int e = elems[i].elem;
 #ifdef SOFA_NEW_HEXA
-        core::componentmodel::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
+        core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
         { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
         { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
 #else
-        core::componentmodel::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
+        core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
 #endif
         for (int j=0; j<8; ++j)
             shells[cube[j]].insert(i);
@@ -557,11 +557,11 @@ void FFDDistanceGridCollisionModel::init()
     {
         int e = elems[i].elem;
 #ifdef SOFA_NEW_HEXA
-        core::componentmodel::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
+        core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
         { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
         { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
 #else
-        core::componentmodel::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
+        core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
 #endif
         for (int j=0; j<8; ++j)
             elems[i].neighbors.insert(shells[cube[j]].begin(), shells[cube[j]].end());
@@ -634,20 +634,20 @@ void FFDDistanceGridCollisionModel::updateGrid()
     {
         DeformedCube& cube = getDeformCube( index );
 #ifdef SOFA_NEW_HEXA
-        const sofa::helper::vector<core::componentmodel::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
+        const sofa::helper::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
 #else
-        const sofa::helper::vector<core::componentmodel::topology::BaseMeshTopology::Cube>& cubeCorners = ffdMesh->getCubes();
+        const sofa::helper::vector<core::topology::BaseMeshTopology::Cube>& cubeCorners = ffdMesh->getCubes();
 #endif
         const Vec3Types::VecCoord& x = *ffd->getX();
         {
             int e = cube.elem;
             DistanceGrid::Coord center;
 #ifdef SOFA_NEW_HEXA
-            core::componentmodel::topology::BaseMeshTopology::Hexa c = cubeCorners[e];
+            core::topology::BaseMeshTopology::Hexa c = cubeCorners[e];
             { int t = c[2]; c[2] = c[3]; c[3] = t; }
             { int t = c[6]; c[6] = c[7]; c[7] = t; }
 #else
-            core::componentmodel::topology::BaseMeshTopology::Cube c = cubeCorners[e];
+            core::topology::BaseMeshTopology::Cube c = cubeCorners[e];
 #endif
 
             for (int j=0; j<8; j++)

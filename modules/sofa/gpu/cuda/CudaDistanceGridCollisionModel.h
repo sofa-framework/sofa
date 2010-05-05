@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
@@ -311,8 +311,8 @@ public:
 
     //CudaVector<SamplingPoint> meshPts;
     CudaVector<Coord> meshPts;
-    sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles meshTriangles;
-    sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads meshQuads;
+    sofa::core::topology::BaseMeshTopology::SeqTriangles meshTriangles;
+    sofa::core::topology::BaseMeshTopology::SeqQuads meshQuads;
 
 protected:
     int nbRef;
@@ -483,7 +483,7 @@ protected:
     Data< int > nz;
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
+    core::behavior::MechanicalState<RigidTypes>* rigid;
 
     void updateGrid();
 public:
@@ -497,8 +497,8 @@ public:
 
     ~CudaRigidDistanceGridCollisionModel();
 
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
     void init();
 

@@ -38,7 +38,7 @@
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_INL
 
 #include <sofa/component/controller/MechanicalStateController.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/OmniEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -71,7 +71,7 @@ MechanicalStateController<DataTypes>::MechanicalStateController()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::init()
 {
-    using core::componentmodel::behavior::MechanicalState;
+    using core::behavior::MechanicalState;
     mainDirectionPtr.beginEdit();
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
@@ -213,7 +213,7 @@ void MechanicalStateController<DataTypes>::onBeginAnimationStep(const double /*d
 
 
 template <class DataTypes>
-core::componentmodel::behavior::MechanicalState<DataTypes> *MechanicalStateController<DataTypes>::getMechanicalState() const
+core::behavior::MechanicalState<DataTypes> *MechanicalStateController<DataTypes>::getMechanicalState() const
 {
     return mState;
 }
@@ -221,7 +221,7 @@ core::componentmodel::behavior::MechanicalState<DataTypes> *MechanicalStateContr
 
 
 template <class DataTypes>
-void MechanicalStateController<DataTypes>::setMechanicalState(core::componentmodel::behavior::MechanicalState<DataTypes> *_mState)
+void MechanicalStateController<DataTypes>::setMechanicalState(core::behavior::MechanicalState<DataTypes> *_mState)
 {
     mState = _mState;
 }

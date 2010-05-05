@@ -47,7 +47,7 @@ namespace linearsolver
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::simulation;
 #ifdef DISPLAY_TIME
 using sofa::helper::system::thread::CTime;
@@ -263,7 +263,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q
 #else // single-operation optimization
-    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp ops;
     ops.resize(2);
     ops[0].first = (VecId)x;

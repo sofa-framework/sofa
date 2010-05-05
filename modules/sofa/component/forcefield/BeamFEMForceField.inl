@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/BeamFEMForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
@@ -38,7 +38,7 @@
 #include <iostream>
 #include <set>
 #include <sofa/helper/system/gl.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Node.h>
@@ -57,13 +57,12 @@ namespace forcefield
 
 using std::set;
 using namespace sofa::core;
-using namespace sofa::core::componentmodel;
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::init();
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
     _topology = context->getMeshTopology();
@@ -188,8 +187,8 @@ void BeamFEMForceField<DataTypes>::handleTopologyChange()
 {
     //_beamQuat.resize( _indexedElements->size() );
 
-    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
     beamsData.handleTopologyEvents(itBegin,itEnd);
 }

@@ -37,7 +37,7 @@
 #define SOFA_COMPONENT_MAPPING_CURVEMAPPING_INL
 
 #include <sofa/component/mapping/CurveMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/VecTypes.h>

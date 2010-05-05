@@ -77,9 +77,9 @@ WriteStateCreator::WriteStateCreator(const std::string &n, bool _recordX, bool _
 //Create a Write State component each time a mechanical state is found
 simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::core::componentmodel::behavior::BaseMechanicalState * mstate=gnode->mechanicalState;
+    sofa::core::behavior::BaseMechanicalState * mstate=gnode->mechanicalState;
     if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
-    core::componentmodel::behavior::OdeSolver *isSimulated;
+    core::behavior::OdeSolver *isSimulated;
     mstate->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
 
@@ -89,7 +89,7 @@ simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::N
 }
 
 
-void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
+void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;

@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
 #define SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
 
-#include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
-#include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
@@ -50,18 +50,18 @@ using namespace sofa::defaulttype;
  *    up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
  * colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
-class SOFA_COMPONENT_COLLISION_API RayTraceDetection :public core::componentmodel::collision::BroadPhaseDetection,
-    public core::componentmodel::collision::NarrowPhaseDetection
+class SOFA_COMPONENT_COLLISION_API RayTraceDetection :public core::collision::BroadPhaseDetection,
+    public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(RayTraceDetection, core::componentmodel::collision::BroadPhaseDetection, core::componentmodel::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(RayTraceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
 private:
     sofa::helper::vector < core::CollisionModel * >collisionModels;
     Data < bool > bDraw;
 
 public:
-    typedef sofa::helper::vector<sofa::core::componentmodel::collision::DetectionOutput>    OutputVector;
+    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput>    OutputVector;
     RayTraceDetection ();
 
     void setDraw (bool val)
@@ -78,7 +78,7 @@ public:
 
     virtual void beginBroadPhase()
     {
-        core::componentmodel::collision::BroadPhaseDetection::beginBroadPhase();
+        core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();
     }
 

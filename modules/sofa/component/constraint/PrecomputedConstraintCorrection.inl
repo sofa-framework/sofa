@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTCORRECTION_INL
-#define SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTCORRECTION_INL
+#ifndef SOFA_CORE_COLLISION_CONTACTCORRECTION_INL
+#define SOFA_CORE_COLLISION_CONTACTCORRECTION_INL
 
 #include "PrecomputedConstraintCorrection.h"
 #include <sofa/defaulttype/RigidTypes.h>
@@ -228,7 +228,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         CGImplicitSolver* odeSolver;
         EulerImplicitSolver* eulerSolver;
         CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >* cgLinearSolver;
-        core::componentmodel::behavior::LinearSolver* linearSolver;
+        core::behavior::LinearSolver* linearSolver;
 
         this->getContext()->get(odeSolver);
         this->getContext()->get(eulerSolver);
@@ -320,7 +320,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         /// (avoid to have a line of 0 at the top of the matrix)
         if (eulerSolver)
         {
-            using core::componentmodel::behavior::BaseMechanicalState;
+            using core::behavior::BaseMechanicalState;
             eulerSolver->solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity());
         }
 
@@ -368,7 +368,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 }
                 else if(eulerSolver)
                 {
-                    using core::componentmodel::behavior::BaseMechanicalState;
+                    using core::behavior::BaseMechanicalState;
                     eulerSolver->solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity());
                     if (linearSolver)
                         linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
@@ -381,7 +381,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 /*	if (f*dof_on_node+i < 2)
                 	{
-                		//eulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+                		//eulerSolver->solve(dt, core::behavior::BaseMechanicalState::VecId::position(), core::behavior::BaseMechanicalState::VecId::velocity());
                 		eulerSolver->f_verbose.setValue(false);
                 		eulerSolver->f_printLog.setValue(false);
                 	//	serr<<"getV : "<<velocity<<sendl;
@@ -758,7 +758,7 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::applyContactForc
 
 	if (node != NULL)
 	{
-		core::componentmodel::behavior::BaseMass*_m = node->mass;
+		core::behavior::BaseMass*_m = node->mass;
 		component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
 		massValue = &( m->getMass());
 	}
@@ -940,7 +940,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateConstraints(bool back)
 
     if (node != NULL)
     {
-        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        //		core::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<DataTypes> > ();
         if (forceField == NULL)
         {
@@ -1016,7 +1016,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
     if (node != NULL)
     {
-        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        //		core::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<DataTypes> > ();
         if (forceField == NULL)
         {

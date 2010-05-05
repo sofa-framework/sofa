@@ -28,10 +28,10 @@
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/BehaviorModel.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/MasterSolver.h>
-#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/collision/Pipeline.h>
 
 namespace sofa
 {
@@ -52,11 +52,11 @@ public:
     void setDt(double v) { dt = v; }
     double getDt() const { return dt; }
 
-    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
     virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
-    virtual void fwdInteractionForceField(simulation::Node* node, core::componentmodel::behavior::InteractionForceField* obj);
-    virtual void processMasterSolver(simulation::Node* node, core::componentmodel::behavior::MasterSolver* obj);
-    virtual void processOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* obj);
+    virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::InteractionForceField* obj);
+    virtual void processMasterSolver(simulation::Node* node, core::behavior::MasterSolver* obj);
+    virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 
     virtual Result processNodeTopDown(simulation::Node* node);
     //virtual void processNodeBottomUp(simulation::Node* node);

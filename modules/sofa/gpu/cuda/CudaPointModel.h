@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -90,11 +90,11 @@ public:
 
     void draw();
 
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
 
 protected:
 
-    core::componentmodel::behavior::MechanicalState<InDataTypes>* mstate;
+    core::behavior::MechanicalState<InDataTypes>* mstate;
 };
 
 inline CudaPoint::CudaPoint(CudaPointModel* model, int index)

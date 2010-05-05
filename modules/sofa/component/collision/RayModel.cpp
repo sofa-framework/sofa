@@ -80,7 +80,7 @@ void RayModel::init()
 {
     this->CollisionModel::init();
 
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     if (mstate==NULL)
     {
         serr<<"RayModel requires a Vec3 Mechanical Model" << sendl;

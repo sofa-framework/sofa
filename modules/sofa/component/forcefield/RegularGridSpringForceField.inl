@@ -44,7 +44,7 @@ void RegularGridSpringForceField<DataTypes>::init()
     //this->StiffSpringForceField<DataTypes>::init();
     if (this->mstate1 == NULL)
     {
-        this->mstate1 = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
+        this->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
         this->mstate2 = this->mstate1;
     }
     if (this->mstate1==this->mstate2)

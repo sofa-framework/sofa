@@ -40,7 +40,7 @@ class TriangleSetTopologyModifier;
 template < class DataTypes >
 class TriangleSetGeometryAlgorithms;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
 typedef BaseMeshTopology::SeqTriangles SeqTriangles;
@@ -100,7 +100,7 @@ public:
      * @returns the indice of the end point, or -1 if the incision failed.
      */
     virtual int SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
-            sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
@@ -110,13 +110,13 @@ public:
     /* void SnapAlongPath (sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
       sofa::helper::vector<double>& coords_list, sofa::helper::vector<double>& points2Snap);*/
 
-    void SnapAlongPath (sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+    void SnapAlongPath (sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
             double epsilonSnapPath);
 
     void SnapBorderPath (unsigned int pa, Coord& a, unsigned int pb, Coord& b,
-            sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,

@@ -49,7 +49,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 
 SOFA_DECL_CLASS ( Mesh2PointTopologicalMapping )
 
@@ -284,7 +284,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 
             switch( changeType )
             {
-            case core::componentmodel::topology::POINTSINDICESSWAP:
+            case core::topology::POINTSINDICESSWAP:
             {
                 unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
                 unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
@@ -292,86 +292,86 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                 swapInput(POINT,i1,i2);
                 break;
             }
-            case core::componentmodel::topology::POINTSADDED:
+            case core::topology::POINTSADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::POINTSREMOVED:
+            case core::topology::POINTSREMOVED:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
 //				 sout << "INPUT REMOVE POINTS "<<tab << sendl;
                 removeInput(POINT, tab );
                 break;
             }
-            case core::componentmodel::topology::POINTSRENUMBERING:
+            case core::topology::POINTSRENUMBERING:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
 //				 sout << "INPUT RENUMBER POINTS "<<tab << sendl;
                 renumberInput(POINT, tab );
                 break;
             }
-            case core::componentmodel::topology::EDGESADDED:
+            case core::topology::EDGESADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::EDGESREMOVED:
+            case core::topology::EDGESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *changeIt ) )->getArray();
 //				sout << "INPUT REMOVE EDGES "<<tab << sendl;
                 removeInput(EDGE, tab );
                 break;
             }
-            case core::componentmodel::topology::TRIANGLESADDED:
+            case core::topology::TRIANGLESADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::TRIANGLESREMOVED:
+            case core::topology::TRIANGLESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *changeIt ) )->getArray();
 //				sout << "INPUT REMOVE TRIANGLES "<<tab << sendl;
                 removeInput(TRIANGLE, tab );
                 break;
             }
-            case core::componentmodel::topology::QUADSADDED:
+            case core::topology::QUADSADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::QUADSREMOVED:
+            case core::topology::QUADSREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *changeIt ) )->getArray();
 //				sout << "INPUT REMOVE QUADS "<<tab << sendl;
                 removeInput(QUAD, tab );
                 break;
             }
-            case core::componentmodel::topology::TETRAHEDRAADDED:
+            case core::topology::TETRAHEDRAADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::TETRAHEDRAREMOVED:
+            case core::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
 //				sout << "INPUT REMOVE TETRAHEDRA "<<tab << sendl;
                 removeInput(TETRA, tab );
                 break;
             }
-            case core::componentmodel::topology::HEXAHEDRAADDED:
+            case core::topology::HEXAHEDRAADDED:
             {
                 /// @TODO
                 break;
             }
-            case core::componentmodel::topology::HEXAHEDRAREMOVED:
+            case core::topology::HEXAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
 //				sout << "INPUT REMOVE HEXAHEDRA "<<tab << sendl;
                 removeInput(HEXA, tab );
                 break;
             }
-            case core::componentmodel::topology::ENDING_EVENT:
+            case core::topology::ENDING_EVENT:
             {
                 pointsToRemove.erase(BaseMeshTopology::InvalidID);
                 if (to_pstm != NULL && !pointsToRemove.empty())

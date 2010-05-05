@@ -25,7 +25,7 @@
 
 #include "CudaHexahedronTLEDForceField.h"
 #include "mycuda.h"
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -80,7 +80,7 @@ CudaHexahedronTLEDForceField::~CudaHexahedronTLEDForceField()
 
 void CudaHexahedronTLEDForceField::init()
 {
-    core::componentmodel::behavior::ForceField<CudaVec3fTypes>::init();
+    core::behavior::ForceField<CudaVec3fTypes>::init();
     reinit();
 }
 

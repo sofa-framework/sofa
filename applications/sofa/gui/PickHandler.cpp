@@ -92,7 +92,7 @@ PickHandler::~PickHandler()
 
 void PickHandler::init()
 {
-    core::componentmodel::collision::Pipeline *pipeline;
+    core::collision::Pipeline *pipeline;
     simulation::getSimulation()->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
     useCollisions = (pipeline != NULL);
@@ -264,7 +264,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
     for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
     {
 
-        const sofa::helper::vector<core::componentmodel::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
+        const sofa::helper::vector<core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
         sofa::core::CollisionModel *modelInCollision;
         for (unsigned int i=0; i<output.size(); ++i)
         {
@@ -331,7 +331,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 
     if (!picker.particles.empty())
     {
-        core::componentmodel::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
+        core::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
         result.mstate=mstate;
         result.indexCollisionElement = picker.particles.begin()->second.second;
         result.point[0] = mstate->getPX(result.indexCollisionElement);

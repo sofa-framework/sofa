@@ -36,8 +36,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/PlaneForceField.h>
 #include <vector>
 
@@ -52,12 +52,12 @@ namespace forcefield
 
 /// A box of 6 PlaneForceField that can rotate
 template<class DataTypes>
-class WashingMachineForceField : public core::componentmodel::behavior::ForceField<DataTypes>
+class WashingMachineForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(WashingMachineForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(WashingMachineForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -75,8 +75,8 @@ protected:
     defaulttype::Vec<6,PlaneForceFieldT*> _planes;
 
 public:
-    WashingMachineForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
-        : core::componentmodel::behavior::ForceField<DataTypes>(object)
+    WashingMachineForceField(core::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
+        : core::behavior::ForceField<DataTypes>(object)
         , _center(initData(&_center, Coord(0,0,0), "center", "box center"))
         , _size(initData(&_size, Deriv(1,1,1), "size", "box size"))
         , _speed(initData(&_speed, (Real)0.001, "speed", "rotation speed"))

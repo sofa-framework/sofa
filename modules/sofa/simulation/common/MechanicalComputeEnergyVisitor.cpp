@@ -66,13 +66,13 @@ double MechanicalComputeEnergyVisitor::getPotentialEnergy()
 
 
 /// Process the BaseMass
-Visitor::Result MechanicalComputeEnergyVisitor::fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+Visitor::Result MechanicalComputeEnergyVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
 {
     m_kineticEnergy += (SReal)mass->getKineticEnergy();
     return RESULT_CONTINUE;
 }
 /// Process the BaseForceField
-Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* f)
+Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f)
 {
     m_potentialEnergy += (SReal)f->getPotentialEnergy();
     return RESULT_CONTINUE;

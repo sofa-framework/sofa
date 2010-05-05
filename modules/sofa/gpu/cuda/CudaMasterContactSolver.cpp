@@ -47,7 +47,7 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace helper::system::thread;
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 
 static unsigned MAX_NUM_CONSTRAINTS=2048;
 
@@ -89,7 +89,7 @@ template<class real>
 void CudaMasterContactSolver<real>::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
-    context->get<core::componentmodel::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
+    context->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
 }
 
 template<class real>
@@ -145,7 +145,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(&_W);
     }
 
@@ -181,7 +181,7 @@ void CudaMasterContactSolver<real>::computeInitialGuess()
         const ConstraintBlockInfo& info = _constraintBlockInfo[cg];
         if (!info.hasId) continue;
         //std::cout << "CONST G" << cg << ": from index " << info.const0 << " with " << info.nbGroups << "*" << info.nbLines << " constraints:";
-        typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        typename std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end())
         {
             //std::cout << " NOT FOUND" << std::endl;
@@ -222,7 +222,7 @@ void CudaMasterContactSolver<real>::keepContactForcesValue()
     for (unsigned int c=0; c<_numConstraints; ++c)
         _previousForces[c] = _f[c];
     // clear previous history
-    for (typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
+    for (typename std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
     {
         ConstraintBlockBuf& buf = it->second;
         for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
@@ -268,7 +268,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     context->execute(&freeMotion);
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
 
-    core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
+    core::behavior::BaseMechanicalState::VecId dx_id = core::behavior::BaseMechanicalState::VecId::dx();
     simulation::MechanicalVOpVisitor(dx_id).execute( context);
     simulation::MechanicalPropagateDxVisitor(dx_id,true).execute( context); //ignore the masks (is it necessary?)
     simulation::MechanicalVOpVisitor(dx_id).execute( context);
@@ -288,7 +288,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
 
@@ -400,7 +400,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->applyContactForce(&_f);
     }
 
@@ -414,7 +414,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
 

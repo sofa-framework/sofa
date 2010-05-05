@@ -70,7 +70,7 @@ void LMContactConstraintSolver::bwdInit()
 
 bool LMContactConstraintSolver::needPriorStatePropagation()
 {
-    using core::componentmodel::behavior::BaseLMConstraint;
+    using core::behavior::BaseLMConstraint;
     bool needPriorPropagation=false;
     {
         helper::vector< BaseLMConstraint* > c;
@@ -105,7 +105,7 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
         else                                         listSolver[i]->constraintPos.setValue(true);
     }
 
-    core::componentmodel::behavior::BaseMechanicalState::VecId positionState=core::componentmodel::behavior::BaseMechanicalState::VecId::position();
+    core::behavior::BaseMechanicalState::VecId positionState=core::behavior::BaseMechanicalState::VecId::position();
     simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation, false);
     solveConstraintsPosition.execute(node);
 

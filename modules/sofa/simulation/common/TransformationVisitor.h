@@ -57,7 +57,7 @@ public:
 
 
     void processVisualModel(simulation::Node* node, core::VisualModel* v);
-    void processMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* m);
+    void processMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* m);
     virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.

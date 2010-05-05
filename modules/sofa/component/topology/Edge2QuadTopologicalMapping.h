@@ -25,14 +25,14 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGE2QUADTOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_EDGE2QUADTOPOLOGICALMAPPING_H
 
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 
 namespace sofa
@@ -47,9 +47,9 @@ namespace topology
 using namespace sofa::defaulttype;
 
 using namespace sofa::component::topology;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 /**
  * This class, called Edge2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :

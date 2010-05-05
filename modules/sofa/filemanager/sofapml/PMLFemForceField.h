@@ -46,7 +46,7 @@
 #include "PMLBody.h"
 
 #include <StructuralComponent.h>
-#include "sofa/core/componentmodel/topology/BaseMeshTopology.h"
+#include "sofa/core/topology/BaseMeshTopology.h"
 #include "sofa/component/collision/TriangleModel.h"
 //#include "sofa/component/collision/LineModel.h"
 //#include "sofa/component/collision/PointModel.h"
@@ -66,7 +66,7 @@ namespace filemanager
 namespace pml
 {
 using namespace sofa::component::container;
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 using namespace sofa::component::collision;
 using namespace std;
 

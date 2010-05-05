@@ -9,7 +9,7 @@
 #define VRPNDEVICE_H_
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseController.h>
 
 namespace sofavrpn
 {
@@ -17,7 +17,7 @@ namespace sofavrpn
 namespace client
 {
 
-class VRPNDevice :  public virtual sofa::core::objectmodel::BaseObject, public sofa::core::componentmodel::behavior::BaseController
+class VRPNDevice :  public virtual sofa::core::objectmodel::BaseObject, public sofa::core::behavior::BaseController
 {
 public:
     SOFA_CLASS(VRPNDevice,sofa::core::objectmodel::BaseObject);

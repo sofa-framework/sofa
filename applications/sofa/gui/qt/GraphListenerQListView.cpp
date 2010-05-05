@@ -74,35 +74,35 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             flags |= 1 << BMODEL;
         if (dynamic_cast<core::CollisionModel*>(obj))
             flags |= 1 << CMODEL;
-        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(obj))
+        if (dynamic_cast<core::behavior::BaseMechanicalState*>(obj))
             flags |= 1 << MMODEL;
-        if (dynamic_cast<core::componentmodel::behavior::BaseConstraint*>(obj) ||
-            dynamic_cast<core::componentmodel::behavior::BaseLMConstraint*>(obj))
+        if (dynamic_cast<core::behavior::BaseConstraint*>(obj) ||
+            dynamic_cast<core::behavior::BaseLMConstraint*>(obj))
             flags |= 1 << CONSTRAINT;
-        if (dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj) &&
-            dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel2())
+        if (dynamic_cast<core::behavior::InteractionForceField*>(obj) &&
+            dynamic_cast<core::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::behavior::InteractionForceField*>(obj)->getMechModel2())
             flags |= 1 << IFFIELD;
-        else if (dynamic_cast<core::componentmodel::behavior::BaseForceField*>(obj))
+        else if (dynamic_cast<core::behavior::BaseForceField*>(obj))
             flags |= 1 << FFIELD;
-        if (dynamic_cast<core::componentmodel::behavior::MasterSolver*>(obj)
-            || dynamic_cast<core::componentmodel::behavior::OdeSolver*>(obj))
+        if (dynamic_cast<core::behavior::MasterSolver*>(obj)
+            || dynamic_cast<core::behavior::OdeSolver*>(obj))
             flags |= 1 << SOLVER;
-        if (dynamic_cast<core::componentmodel::collision::Pipeline*>(obj)
-            || dynamic_cast<core::componentmodel::collision::Intersection*>(obj)
-            || dynamic_cast<core::componentmodel::collision::Detection*>(obj)
-            || dynamic_cast<core::componentmodel::collision::ContactManager*>(obj)
-            || dynamic_cast<core::componentmodel::collision::CollisionGroupManager*>(obj))
+        if (dynamic_cast<core::collision::Pipeline*>(obj)
+            || dynamic_cast<core::collision::Intersection*>(obj)
+            || dynamic_cast<core::collision::Detection*>(obj)
+            || dynamic_cast<core::collision::ContactManager*>(obj)
+            || dynamic_cast<core::collision::CollisionGroupManager*>(obj))
             flags |= 1 << COLLISION;
-        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+        if (dynamic_cast<core::behavior::BaseMechanicalMapping*>(obj))
             flags |= 1 << MMAPPING;
         else if (dynamic_cast<core::BaseMapping*>(obj))
             flags |= 1 << MAPPING;
-        if (dynamic_cast<core::componentmodel::behavior::BaseMass*>(obj))
+        if (dynamic_cast<core::behavior::BaseMass*>(obj))
             flags |= 1 << MASS;
-        if (dynamic_cast<core::componentmodel::topology::Topology *>(obj)
-            || dynamic_cast<core::componentmodel::topology::BaseTopologyObject *>(obj) )
+        if (dynamic_cast<core::topology::Topology *>(obj)
+            || dynamic_cast<core::topology::BaseTopologyObject *>(obj) )
             flags |= 1 << TOPOLOGY;
-        if (dynamic_cast<core::componentmodel::loader::BaseLoader*>(obj))
+        if (dynamic_cast<core::loader::BaseLoader*>(obj))
             flags |= 1 << LOADER;
         if (dynamic_cast<core::VisualModel*>(obj) && !flags)
             flags |= 1 << VMODEL;

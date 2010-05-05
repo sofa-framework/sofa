@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointSubset.h>
 
@@ -91,7 +91,7 @@ public:
     void init();
 
     // handle topology changes depending on the topology
-    void handleTopologyChange(core::componentmodel::topology::Topology* t);
+    void handleTopologyChange(core::topology::Topology* t);
 
     virtual ~SubsetMapping();
 

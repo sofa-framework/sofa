@@ -76,7 +76,7 @@ void ReadTopology::init()
 
 void ReadTopology::reset()
 {
-    m_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
+    m_topology = dynamic_cast<core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
     if (infile)
     {
         delete infile;

@@ -29,8 +29,8 @@
 #pragma once
 #endif
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
@@ -71,9 +71,9 @@ public:
     typedef typename Coord::value_type   Real    ;
     typedef typename Inherited::TriangleInformation   TriangleInformation  ;
 
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::index_type Index;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Element;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles VecElement;
+    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
 
     static const int SMALL = 1;
     static const int LARGE = 0;
@@ -98,7 +98,7 @@ public:
 
     virtual void handleTopologyChange();
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _topology;
 
     static void TRQSTriangleCreationFunction (int , void* , TriangleInformation &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 

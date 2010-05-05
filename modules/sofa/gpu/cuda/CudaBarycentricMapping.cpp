@@ -25,7 +25,7 @@
 #include "CudaTypes.h"
 #include "CudaBarycentricMapping.inl"
 //#include <sofa/component/mapping/BarycentricMapping.inl>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -40,7 +40,7 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 #ifndef SOFA_FLOAT
 #endif
@@ -84,7 +84,7 @@ namespace cuda
 {
 using namespace sofa::defaulttype;
 using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
 SOFA_DECL_CLASS(CudaBarycentricMapping)

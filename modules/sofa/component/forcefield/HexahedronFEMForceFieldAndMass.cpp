@@ -24,8 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/forcefield/HexahedronFEMForceFieldAndMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
-#include <sofa/core/componentmodel/behavior/Mass.inl>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

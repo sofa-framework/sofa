@@ -42,7 +42,7 @@ using namespace sofa::helper;
 
 template <class DataTypes>
 HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint()
-    :core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    :core::behavior::Constraint<DataTypes>(NULL)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
     , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
@@ -57,8 +57,8 @@ HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint()
 
 
 template <class DataTypes>
-HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
-    : core::componentmodel::behavior::Constraint<DataTypes>(mstate)
+HermiteSplineConstraint<DataTypes>::HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
+    : core::behavior::Constraint<DataTypes>(mstate)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
     , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
@@ -94,7 +94,7 @@ void  HermiteSplineConstraint<DataTypes>::addConstraint(unsigned index)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 }
 
 template <class DataTypes>

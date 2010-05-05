@@ -140,14 +140,14 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
 
     int outside = 0;
 
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
 #ifdef SOFA_NEW_HEXA
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& cubes = TopoInput->getHexahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = TopoInput->getHexahedra();
 #else
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = TopoInput->getCubes();
+    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = TopoInput->getCubes();
 #endif
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = TopoInput->getQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = TopoInput->getQuads();
     sofa::helper::vector<Matrix3> bases;
     sofa::helper::vector<Vector3> centers;
 
@@ -157,7 +157,7 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
         {
             //no 3D elements, nor 2D elements -> map on 1D elements
 
-            const sofa::core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = TopoInput->getEdges();
+            const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = TopoInput->getEdges();
             if ( edges.empty() ) return;
 
             clear1d ( (*out).size() );
@@ -363,7 +363,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraInde
 
     if(computeLinearInterpolation.getValue())
     {
-        const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
+        const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
 
         if(linearInterpolIndices==NULL|| linearInterpolIndices==NULL || tetrahedra.size()==0 )
             return;

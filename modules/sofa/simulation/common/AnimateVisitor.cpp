@@ -47,7 +47,7 @@ AnimateVisitor::AnimateVisitor(double dt) : dt(dt)
 #endif
 {}
 
-void AnimateVisitor::processMasterSolver(simulation::Node*, core::componentmodel::behavior::MasterSolver* obj)
+void AnimateVisitor::processMasterSolver(simulation::Node*, core::behavior::MasterSolver* obj)
 {
     sofa::helper::AdvancedTimer::stepBegin("MasterSolver",obj);
     obj->step(getDt());
@@ -61,7 +61,7 @@ void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel
     sofa::helper::AdvancedTimer::stepEnd("BehaviorModel",obj);
 }
 
-void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::componentmodel::behavior::InteractionForceField* obj)
+void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior::InteractionForceField* obj)
 {
     //cerr<<"AnimateVisitor::IFF "<<obj->getName()<<endl;
     sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
@@ -69,7 +69,7 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::component
     sofa::helper::AdvancedTimer::stepEnd("InteractionFF",obj);
 }
 
-void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj)
+void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
 {
     sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
     CollisionVisitor act;
@@ -77,7 +77,7 @@ void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::comp
     sofa::helper::AdvancedTimer::stepEnd("Collision",obj);
 }
 
-void AnimateVisitor::processOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* solver)
+void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* solver)
 {
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     /*    MechanicalIntegrationVisitor act(getDt());
@@ -97,7 +97,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     {
         firstNodeVisited=true;
 
-        core::componentmodel::behavior::MasterSolver* presenceMasterSolver;
+        core::behavior::MasterSolver* presenceMasterSolver;
         node->get(presenceMasterSolver, core::objectmodel::BaseContext::SearchDown);
         if (!presenceMasterSolver)
         {
@@ -165,7 +165,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
             end(node, node->solver[i], t0);
         }
 
-        MechanicalPropagatePositionAndVelocityVisitor(nextTime,core::componentmodel::behavior::OdeSolver::VecId::position(),core::componentmodel::behavior::OdeSolver::VecId::velocity()).execute( node );
+        MechanicalPropagatePositionAndVelocityVisitor(nextTime,core::behavior::OdeSolver::VecId::position(),core::behavior::OdeSolver::VecId::velocity()).execute( node );
 
 
         MechanicalEndIntegrationVisitor endVisitor(dt);

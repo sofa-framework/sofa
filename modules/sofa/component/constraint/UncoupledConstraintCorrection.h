@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_H
 #define SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_H
 
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/component/component.h>
 
@@ -44,15 +44,14 @@ namespace constraint
 {
 
 using namespace sofa::core;
-using namespace sofa::core::componentmodel;
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class UncoupledConstraintCorrection : public componentmodel::behavior::BaseConstraintCorrection
+class UncoupledConstraintCorrection : public behavior::BaseConstraintCorrection
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UncoupledConstraintCorrection,TDataTypes), core::componentmodel::behavior::BaseConstraintCorrection);
+    SOFA_CLASS(SOFA_TEMPLATE(UncoupledConstraintCorrection,TDataTypes), core::behavior::BaseConstraintCorrection);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

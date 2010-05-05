@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
 
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 #include <sofa/helper/map.h>
 

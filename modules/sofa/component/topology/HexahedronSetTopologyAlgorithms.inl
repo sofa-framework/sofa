@@ -39,7 +39,7 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 template<class DataTypes>
 void HexahedronSetTopologyAlgorithms< DataTypes >::init()

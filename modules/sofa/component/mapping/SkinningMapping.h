@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MappedModel.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -168,8 +168,8 @@ protected:
     vector<Coord> initPos; // pos: point coord in the world reference frame
     vector<Coord> rotatedPoints;
 
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
     Data<vector<int> > repartition;
     Data<VVD > coefs;
@@ -302,10 +302,10 @@ public:
 };
 
 using core::Mapping;
-using core::componentmodel::behavior::MechanicalMapping;
-using core::componentmodel::behavior::MappedModel;
-using core::componentmodel::behavior::State;
-using core::componentmodel::behavior::MechanicalState;
+using core::behavior::MechanicalMapping;
+using core::behavior::MappedModel;
+using core::behavior::State;
+using core::behavior::MechanicalState;
 
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;

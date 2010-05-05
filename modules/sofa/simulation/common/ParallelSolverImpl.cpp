@@ -27,7 +27,7 @@
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/common/MechanicalVPrintVisitor.h>
 #include <sofa/simulation/common/VelocityThresholdVisitor.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
 
 #include <stdlib.h>

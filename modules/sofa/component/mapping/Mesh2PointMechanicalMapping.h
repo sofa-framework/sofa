@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
 #define SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/topology/Mesh2PointTopologicalMapping.h>
 #include <sofa/helper/vector.h>
 
@@ -77,8 +77,8 @@ public:
 
 protected:
     topology::Mesh2PointTopologicalMapping* topoMap;
-    core::componentmodel::topology::BaseMeshTopology* inputTopo;
-    core::componentmodel::topology::BaseMeshTopology* outputTopo;
+    core::topology::BaseMeshTopology* inputTopo;
+    core::topology::BaseMeshTopology* outputTopo;
 };
 
 } // namespace mapping

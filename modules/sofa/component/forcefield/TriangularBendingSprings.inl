@@ -56,14 +56,14 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 
 
 
 
-using namespace core::componentmodel::behavior;
-using core::componentmodel::topology::BaseMeshTopology;
+using namespace core::behavior;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
@@ -336,9 +336,9 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 
     while( itBegin != itEnd )
     {
-        core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+        core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
 
-        if(changeType == core::componentmodel::topology::POINTSREMOVED)
+        if(changeType == core::topology::POINTSREMOVED)
         {
 
             unsigned int last = _topology->getNbPoints() -1;
@@ -435,7 +435,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
         else
         {
 
-            if(changeType == core::componentmodel::topology::POINTSRENUMBERING)
+            if(changeType == core::topology::POINTSRENUMBERING)
             {
 
                 const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();

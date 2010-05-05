@@ -63,7 +63,7 @@ SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection<defaulttype::Ri
         //void getElementMass(unsigned int index, defaulttype::BaseMatrix *m)
         if (node != NULL)
         {
-            core::componentmodel::behavior::BaseMass*_m = node->mass;
+            core::behavior::BaseMass*_m = node->mass;
             component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
             if(m)
                 massValue = &( m->getMass());

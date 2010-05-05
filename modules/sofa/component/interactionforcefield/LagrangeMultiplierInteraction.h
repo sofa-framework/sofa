@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_INTERACTION_LAGRANGEMULTIPLIERINTERACTION_H
 #define SOFA_COMPONENT_INTERACTION_LAGRANGEMULTIPLIERINTERACTION_H
 
-#include <sofa/core/componentmodel/behavior/MixedInteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MixedInteractionForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/Constraint.h>
 
 namespace sofa
 {
@@ -51,16 +51,16 @@ public:
 };
 
 template<class DataTypes1, class DataTypes2>
-class LagrangeMultiplierInteraction : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>
+class LagrangeMultiplierInteraction : public core::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(LagrangeMultiplierInteraction, DataTypes1, DataTypes2), SOFA_TEMPLATE2(core::componentmodel::behavior::MixedInteractionForceField, DataTypes1, DataTypes2));
+    SOFA_CLASS(SOFA_TEMPLATE2(LagrangeMultiplierInteraction, DataTypes1, DataTypes2), SOFA_TEMPLATE2(core::behavior::MixedInteractionForceField, DataTypes1, DataTypes2));
 
-    typedef core::componentmodel::behavior::BaseConstraint baseConstraint;
-    typedef core::componentmodel::behavior::Constraint<DataTypes2> SimpleConstraint;
-    typedef core::componentmodel::behavior::InteractionConstraint InteractionConstraint;
+    typedef core::behavior::BaseConstraint baseConstraint;
+    typedef core::behavior::Constraint<DataTypes2> SimpleConstraint;
+    typedef core::behavior::InteractionConstraint InteractionConstraint;
 
-    typedef core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
+    typedef core::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
     typedef typename DataTypes1::VecCoord VecCoord1;
     typedef typename DataTypes1::VecDeriv VecDeriv1;
     typedef typename DataTypes1::Coord Coord1;

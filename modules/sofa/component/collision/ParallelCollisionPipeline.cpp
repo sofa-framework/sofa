@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/ParallelCollisionPipeline.h>
 #include <sofa/core/ParallelCollisionModel.h>
-#include <sofa/core/componentmodel/collision/ParallelNarrowPhaseDetection.h>
+#include <sofa/core/collision/ParallelNarrowPhaseDetection.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -45,7 +45,7 @@ namespace collision
 
 using namespace core;
 using namespace core::objectmodel;
-using namespace core::componentmodel::collision;
+using namespace core::collision;
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(ParallelCollisionPipeline)
@@ -97,7 +97,7 @@ void ParallelCollisionPipeline::parallelComputeCollisions()
             }
         }
     }
-    core::componentmodel::collision::ParallelNarrowPhaseDetection* parallelNarrowPhaseDetection = dynamic_cast<core::componentmodel::collision::ParallelNarrowPhaseDetection*>(narrowPhaseDetection);
+    core::collision::ParallelNarrowPhaseDetection* parallelNarrowPhaseDetection = dynamic_cast<core::collision::ParallelNarrowPhaseDetection*>(narrowPhaseDetection);
     if (parallelNarrowPhaseDetection)
     {
         parallelNarrowPhaseDetection->parallelClearOutputs();

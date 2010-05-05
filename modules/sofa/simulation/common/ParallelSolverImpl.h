@@ -25,11 +25,11 @@
 #ifndef SOFA_SMP_PARALLELSOLVERIMPL_H
 #define SOFA_SMP_PARALLELSOLVERIMPL_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/odesolver/OdeSolverImpl.h>
 #ifdef SOFA_SMP
-#include <sofa/core/componentmodel/behavior/ParallelMultivector.h>
+#include <sofa/core/behavior/ParallelMultivector.h>
 using namespace sofa::defaulttype::SharedTypes;
 #endif
 namespace sofa
@@ -48,7 +48,7 @@ namespace common
 class ParallelSolverImpl : public virtual sofa::simulation::SolverImpl
 {
 public:
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     ParallelSolverImpl();
 

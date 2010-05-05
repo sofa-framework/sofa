@@ -12,8 +12,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 #include <fstream>
 
@@ -32,8 +32,8 @@ public:
     SOFA_CLASS(VTKExporter,core::objectmodel::BaseObject);
 
 private:
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
-    sofa::core::componentmodel::behavior::BaseMechanicalState* mstate;
+    sofa::core::topology::BaseMeshTopology* topology;
+    sofa::core::behavior::BaseMechanicalState* mstate;
     unsigned int stepCounter;
 
     std::ofstream* outfile;

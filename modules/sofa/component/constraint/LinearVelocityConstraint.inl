@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_CONSTRAINT_LINEARVELOCITYCONSTRAINT_INL
 
 #include <sofa/component/constraint/LinearVelocityConstraint.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/Constraint.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -44,11 +44,11 @@ namespace component
 namespace constraint
 {
 
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 using namespace sofa::core::objectmodel;
 
 
@@ -81,7 +81,7 @@ void LinearVelocityConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void
 
 template <class DataTypes>
 LinearVelocityConstraint<DataTypes>::LinearVelocityConstraint()
-    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    : core::behavior::Constraint<DataTypes>(NULL)
     , m_indices( BaseObject::initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  BaseObject::initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyVelocities(  BaseObject::initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
@@ -159,7 +159,7 @@ void LinearVelocityConstraint<DataTypes>::addKeyVelocity(Real time, Deriv moveme
 template <class DataTypes>
 void LinearVelocityConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 

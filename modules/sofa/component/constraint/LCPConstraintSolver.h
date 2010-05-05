@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_LCPCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINT_LCPCONSTRAINTSOLVER_H
 
-#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -103,7 +103,7 @@ public:
     {
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
     {
         ctime_t t0 = begin(node, ms);
         ms->resetContactForce();
@@ -111,7 +111,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
     {
         ctime_t t0 = begin(node, ms);
         ms->resetForce();
@@ -120,7 +120,7 @@ public:
     }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -144,7 +144,7 @@ public:
     MechanicalApplyContactForceVisitor(double *f):_f(f)
     {
     }
-    virtual Result fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
     {
         ctime_t t0 = begin(node, ms);
         ms->applyContactForce(_f);
@@ -152,7 +152,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
     {
         ctime_t t0 = begin(node, ms);
         ms->applyContactForce(_f);
@@ -162,7 +162,7 @@ public:
 
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -196,7 +196,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
     {
         //sout << c->getName()<<"->getConstraintValue()"<<sendl;
         ctime_t t0 = begin(node, c);
@@ -207,7 +207,7 @@ public:
 
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -230,11 +230,11 @@ private:
 class MechanicalGetConstraintInfoVisitor : public simulation::MechanicalVisitor
 {
 public:
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstArea VecConstArea;
+    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
+    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
     MechanicalGetConstraintInfoVisitor(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
         : _blocks(blocks), _ids(ids), _positions(positions), _directions(directions), _areas(areas)
@@ -244,7 +244,7 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
     {
         ctime_t t0 = begin(node, c);
         c->getConstraintInfo(_blocks, _ids, _positions, _directions, _areas);
@@ -254,7 +254,7 @@ public:
 
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -277,13 +277,13 @@ private:
 };
 
 
-class SOFA_COMPONENT_CONSTRAINT_API LCPConstraintSolver : public sofa::core::componentmodel::behavior::ConstraintSolver
+class SOFA_COMPONENT_CONSTRAINT_API LCPConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
-    typedef std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> list_cc;
+    typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::VecId VecId;
 public:
-    SOFA_CLASS(LCPConstraintSolver, sofa::core::componentmodel::behavior::ConstraintSolver);
+    SOFA_CLASS(LCPConstraintSolver, sofa::core::behavior::ConstraintSolver);
 
     LCPConstraintSolver();
 
@@ -325,7 +325,7 @@ public:
     void lockLCP(LCP* l1, LCP* l2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
 private:
-    std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> constraintCorrections;
+    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
     void computeInitialGuess();
     void keepContactForcesValue();
 
@@ -376,20 +376,20 @@ private:
 
     SparseMatrix<double> *_Wdiag;
     //std::vector<helper::LocalBlock33 *> _Wdiag;
-    std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> _cclist_elem1;
-    std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> _cclist_elem2;
+    std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
+    std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 
-    typedef core::componentmodel::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstDeriv ConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstArea ConstArea;
+    typedef core::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::behavior::BaseConstraint::ConstDeriv ConstDeriv;
+    typedef core::behavior::BaseConstraint::ConstArea ConstArea;
 
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::componentmodel::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::componentmodel::behavior::BaseConstraint::VecConstArea VecConstArea;
+    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
+    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
     class ConstraintBlockBuf
     {
@@ -398,7 +398,7 @@ private:
         int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
     };
 
-    std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
+    std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
     helper::vector< double > _previousForces;
 
     helper::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;

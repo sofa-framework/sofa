@@ -68,10 +68,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
-    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<typename RigidContactMapper::DataTypes> MMechanicalState;
+    typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::behavior::MechanicalState<typename RigidContactMapper::DataTypes> MMechanicalState;
     typedef component::container::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::RigidMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    typedef mapping::RigidMapping< core::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     simulation::Node* child;
     MMapping* mapping;

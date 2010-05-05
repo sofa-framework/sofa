@@ -35,7 +35,7 @@ namespace topology
 {
 class HexahedronSetTopologyContainer;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 typedef BaseMeshTopology::HexaID HexaID;
 typedef BaseMeshTopology::Hexa Hexa;
 typedef BaseMeshTopology::SeqHexahedra SeqHexahedra;

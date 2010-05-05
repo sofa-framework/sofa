@@ -27,7 +27,7 @@
 
 #include "InteractionPerformer.h"
 #include "BaseContactMapper.h"
-#include <sofa/core/componentmodel/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseForceField.h>
 
 namespace sofa
 {
@@ -61,7 +61,7 @@ class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public Attac
 
     typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
-    typedef sofa::core::componentmodel::behavior::BaseForceField              MouseForceField;
+    typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
 public:
     AttachBodyPerformer(BaseMouseInteractor *i);

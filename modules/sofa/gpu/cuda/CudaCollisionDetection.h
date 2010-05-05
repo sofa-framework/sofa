@@ -25,7 +25,7 @@
 #ifndef SOFA_GPU_CUDA_CUDACOLLISIONDETECTION_H
 #define SOFA_GPU_CUDA_CUDACOLLISIONDETECTION_H
 
-#include <sofa/core/componentmodel/collision/DetectionOutput.h>
+#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/component/collision/BruteForceDetection.h>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaSphereModel.h>
@@ -36,9 +36,6 @@ namespace sofa
 {
 
 namespace core
-{
-
-namespace componentmodel
 {
 
 namespace collision
@@ -200,8 +197,6 @@ class TDetectionOutputVector<sofa::gpu::cuda::CudaPointModel,sofa::gpu::cuda::Cu
 
 } // namespace collision
 
-} // namespace componentmodel
-
 } // namespace core
 
 namespace gpu
@@ -241,13 +236,13 @@ public:
         float distance;
         Vec3f normal;
     };*/
-    //typedef sofa::core::componentmodel::collision::GPUDetectionOutput GPUContact;
-    typedef sofa::core::componentmodel::collision::GPUDetectionOutputVector GPUOutputVector;
+    //typedef sofa::core::collision::GPUDetectionOutput GPUContact;
+    typedef sofa::core::collision::GPUDetectionOutputVector GPUOutputVector;
 
     CudaVector<GPUTest> gputests;
     CudaVector<int> gpuresults; ///< number of contact detected on each test
 
-    typedef sofa::core::componentmodel::collision::DetectionOutputVector DetectionOutputVector;
+    typedef sofa::core::collision::DetectionOutputVector DetectionOutputVector;
 
     class Test
     {

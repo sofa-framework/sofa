@@ -51,8 +51,8 @@ namespace component
 namespace visualmodel
 {
 
-using namespace sofa::core::componentmodel::topology;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::topology;
+using namespace sofa::core::behavior;
 
 SOFA_DECL_CLASS(OglShaderVisualModel)
 
@@ -189,11 +189,11 @@ void OglShaderVisualModel::handleTopologyChange()
 
         while( itBegin != itEnd )
         {
-            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-            if ((changeType==core::componentmodel::topology::TRIANGLESREMOVED) ||
-                (changeType==core::componentmodel::topology::TRIANGLESADDED) ||
-                (changeType==core::componentmodel::topology::QUADSADDED) ||
-                (changeType==core::componentmodel::topology::QUADSREMOVED))
+            core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            if ((changeType==core::topology::TRIANGLESREMOVED) ||
+                (changeType==core::topology::TRIANGLESADDED) ||
+                (changeType==core::topology::QUADSADDED) ||
+                (changeType==core::topology::QUADSREMOVED))
                 update=true;
             itBegin++;
         }

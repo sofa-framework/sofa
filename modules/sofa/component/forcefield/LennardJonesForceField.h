@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <vector>
 
 namespace sofa
@@ -39,12 +39,12 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class LennardJonesForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class LennardJonesForceField : public sofa::core::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LennardJonesForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(LennardJonesForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef sofa::core::componentmodel::behavior::ForceField<DataTypes> Inherit;
+    typedef sofa::core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

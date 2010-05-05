@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_H
 
 #include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -81,8 +81,8 @@ public:
     Data< bool > indexFromEnd;
     Data< bool > globalToLocalCoords;
 
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
 
     RigidRigidMapping(In* from, Out* to)
@@ -97,10 +97,10 @@ public:
     {
         this->addAlias(&fileRigidRigidMapping,"filename");
         maskFrom = NULL;
-        if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
+        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from))
             maskFrom = &stateFrom->forceMask;
         maskTo = NULL;
-        if (core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to))
+        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to))
             maskTo = &stateTo->forceMask;
     }
 
@@ -135,16 +135,16 @@ protected:
 
     bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
 
-    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
+    bool getShow(const core::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 };
 
 
 
 using core::Mapping;
-using core::componentmodel::behavior::MechanicalMapping;
-using core::componentmodel::behavior::MappedModel;
-using core::componentmodel::behavior::State;
-using core::componentmodel::behavior::MechanicalState;
+using core::behavior::MechanicalMapping;
+using core::behavior::MappedModel;
+using core::behavior::State;
+using core::behavior::MechanicalState;
 
 using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;

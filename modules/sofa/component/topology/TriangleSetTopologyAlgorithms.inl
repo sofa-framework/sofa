@@ -755,7 +755,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
 template<class DataTypes>
 int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
-        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder)
@@ -832,7 +832,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
         switch ( topoPath_list[i] )
         {
 
-        case core::componentmodel::topology::POINT:
+        case core::topology::POINT:
         {
             // qlq chose a faire?
             new_edge_points.push_back(indices_list[i]);
@@ -873,10 +873,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         points2Snap[j].push_back (next_point-1);
                         points2Snap[j].push_back (next_point);
 
-                        if (topoPath_list[i-1] == core::componentmodel::topology::POINT) //second dof has to be moved, first acestor must be pa
+                        if (topoPath_list[i-1] == core::topology::POINT) //second dof has to be moved, first acestor must be pa
                             points2Snap[j][4] = indices_list[i-1];
 
-                        if (topoPath_list[i+1] == core::componentmodel::topology::POINT) //second dof has to be moved, first acestor must be pa
+                        if (topoPath_list[i+1] == core::topology::POINT) //second dof has to be moved, first acestor must be pa
                             points2Snap[j][5] = indices_list[i+1];
 
                         break;
@@ -885,7 +885,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             break;
         }
 
-        case core::componentmodel::topology::EDGE:
+        case core::topology::EDGE:
         {
             Edge theEdge = m_container->getEdge(indices_list[i]);
             ancestors.push_back(theEdge[0]);
@@ -898,7 +898,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             ++next_point;
             break;
         }
-        case core::componentmodel::topology::TRIANGLE:
+        case core::topology::TRIANGLE:
         {
 
             Triangle theTriangle = m_container->getTriangle(indices_list[i]);
@@ -945,13 +945,13 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
         switch ( topoPath_list[i] )
         {
-        case core::componentmodel::topology::POINT:
+        case core::topology::POINT:
         {
             PointID thePointFirst = firstObject;
 
             switch ( topoPath_list[i+1] )
             {
-            case core::componentmodel::topology::POINT: // Triangle to create: 0 / Triangle to remove: 0
+            case core::topology::POINT: // Triangle to create: 0 / Triangle to remove: 0
             {
                 //std::cout << "-- POINT::POINT => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 PointID thePointSecond = indices_list[i+1];
@@ -973,7 +973,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 break;
             }
-            case core::componentmodel::topology::EDGE: // Triangle to create: 2 / Triangle to remove: 1
+            case core::topology::EDGE: // Triangle to create: 2 / Triangle to remove: 1
             {
                 //std::cout << "-- POINT::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 EdgeID edgeIDSecond = indices_list[i+1];
@@ -1020,7 +1020,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 break;
             }
-            case core::componentmodel::topology::TRIANGLE: // Triangle to create: 3 / Triangle to remove: 1
+            case core::topology::TRIANGLE: // Triangle to create: 3 / Triangle to remove: 1
             {
                 //std::cout << "-- POINT::TRIANGLE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 TriangleID triangleIDSecond = indices_list[i+1];
@@ -1053,7 +1053,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             break;
         }
 
-        case core::componentmodel::topology::EDGE:
+        case core::topology::EDGE:
         {
             PointID p1 = new_edge_points[i];
             EdgeID edgeIDFirst = firstObject;
@@ -1063,7 +1063,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             switch ( topoPath_list[i+1] )
             {
 
-            case core::componentmodel::topology::POINT: // Triangle to create: 2 / Triangle to remove: 1
+            case core::topology::POINT: // Triangle to create: 2 / Triangle to remove: 1
             {
                 //std::cout << "-- EDGE::POINT => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 PointID thePointSecond = indices_list[i+1];
@@ -1109,7 +1109,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 break;
             }
-            case core::componentmodel::topology::EDGE: // Triangle to create: 3 / Triangle to remove: 1
+            case core::topology::EDGE: // Triangle to create: 3 / Triangle to remove: 1
             {
                 //std::cout << "-- EDGE::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 PointID p2 = new_edge_points[i+1];
@@ -1191,7 +1191,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 removed_triangles.push_back(triId);
                 break;
             }
-            case core::componentmodel::topology::TRIANGLE: // Triangle to create: 4 / Triangle to remove: 1
+            case core::topology::TRIANGLE: // Triangle to create: 4 / Triangle to remove: 1
             {
                 //std::cout << "-- EDGE::TRIANGLE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 PointID p2 = new_edge_points[i+1];
@@ -1240,7 +1240,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             }
             break;
         }
-        case core::componentmodel::topology::TRIANGLE:
+        case core::topology::TRIANGLE:
         {
             Triangle theTriangleFirst = m_container->getTriangle(firstObject);
             TriangleID triangleIDFirst = indices_list[i];
@@ -1249,7 +1249,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
             switch ( topoPath_list[i+1] )
             {
-            case core::componentmodel::topology::POINT: // Triangle to create: 3 / Triangle to remove: 1
+            case core::topology::POINT: // Triangle to create: 3 / Triangle to remove: 1
             {
                 //std::cout << "-- TRIANGLE::POINT => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 //PointID thePointSecond = indices_list[i+1];
@@ -1274,7 +1274,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 break;
             }
-            case core::componentmodel::topology::EDGE: // Triangle to create: 4 / Triangle to remove: 1
+            case core::topology::EDGE: // Triangle to create: 4 / Triangle to remove: 1
             {
                 //std::cout << "-- TRIANGLE::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 EdgeID edgeIDSecond = indices_list[i+1];
@@ -1319,7 +1319,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 removed_triangles.push_back(triangleIDFirst);
                 break;
             }
-            case core::componentmodel::topology::TRIANGLE: // Triangle to create: 5 / Triangle to remove: 1
+            case core::topology::TRIANGLE: // Triangle to create: 5 / Triangle to remove: 1
             {
                 //std::cout << "-- TRIANGLE::TRIANGLE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
                 TriangleID triangleIDSecond = indices_list[i+1];
@@ -1534,7 +1534,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     //WARNING can produce error TODO: check it
     if ( !points2Snap.empty())
     {
-        /*	  if (topoPath_list[0] == core::componentmodel::topology::POINT)
+        /*	  if (topoPath_list[0] == core::topology::POINT)
         {
           std::cout << "passe la: points2Snap[0][0]" << std::endl;
 
@@ -1542,7 +1542,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             a[j] = (float)points2Snap[0][j+1];
         }
 
-        if (topoPath_list[topoPath_list.size()-1] == core::componentmodel::topology::POINT)
+        if (topoPath_list[topoPath_list.size()-1] == core::topology::POINT)
         {
           std::cout << "passe la: points2Snap[size-1][0]" << std::endl;
           for (unsigned int j = 0; j<3; j++)
@@ -1611,7 +1611,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
 
 template<class DataTypes>
-void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< Vec<3, double> >& coords_list,
         sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
         double epsilonSnapPath)
@@ -1638,7 +1638,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             // New case to handle other topological object can be added.
             // Default: if object is a POINT , nothing has to be done.
 
-        case core::componentmodel::topology::EDGE:
+        case core::topology::EDGE:
         {
             PointID Vertex2Snap;
 
@@ -1669,7 +1669,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
             break;
         }
-        case core::componentmodel::topology::TRIANGLE:
+        case core::topology::TRIANGLE:
         {
             PointID Vertex2Snap;
             Vec<3, double>& barycoord = coords_list[i];
@@ -1722,7 +1722,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
     {
         switch ( topoPath_list[i] )
         {
-        case core::componentmodel::topology::POINT:
+        case core::topology::POINT:
         {
             if ( map_point2snap.find (indices_list[i]) != map_point2snap.end() )
             {
@@ -1733,7 +1733,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             }
             break;
         }
-        case core::componentmodel::topology::EDGE:
+        case core::topology::EDGE:
         {
             Edge theEdge = m_container->getEdge(indices_list[i]);
             bool PointFind = false;
@@ -1759,7 +1759,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             }
             break;
         }
-        case core::componentmodel::topology::TRIANGLE:
+        case core::topology::TRIANGLE:
         {
             Triangle theTriangle = m_container->getTriangleArray()[indices_list[i]];
             bool PointFind = false;
@@ -1842,7 +1842,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         cpt++;
 
         // Change enum of the first object to snap to POINT, change id and label it as snaped
-        topoPath_list[ ((*it).second)[0]] = core::componentmodel::topology::POINT;
+        topoPath_list[ ((*it).second)[0]] = core::topology::POINT;
         indices_list[ ((*it).second)[0]] = (*it).first;
         coords_list[ ((*it).second)[0]][0] = -1.0;
 
@@ -1871,7 +1871,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
 template<class DataTypes>
 void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, Coord& a, unsigned int pb, Coord& b,
-        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
@@ -1901,7 +1901,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
     //std::cout <<"snap_b: " << snap_b << std::endl;
 
     // Test if point need to be snap on an edge
-    if (!snap_a  && topoPath_list[0] == core::componentmodel::topology::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    if (!snap_a  && topoPath_list[0] == core::topology::TRIANGLE) // this means a is not close to a point, but could be close to an edge
     {
         for (unsigned int i = 0; i<3; i++)
         {
@@ -1918,7 +1918,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                         if (coords_list[0][j] > 1-epsilon)
                         {
                             thePoint = m_container->getTriangle ( indices_list[0])[j];
-                            topoPath_list[0] = core::componentmodel::topology::POINT;
+                            topoPath_list[0] = core::topology::POINT;
                             indices_list[0] = thePoint;
                             find = true;
                             break;
@@ -1931,7 +1931,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     {
                         pointDone = true;
                         allDone = true;
-                        if (topoPath_list[1] == core::componentmodel::topology::EDGE) // just remove or need to projection?
+                        if (topoPath_list[1] == core::topology::EDGE) // just remove or need to projection?
                         {
                             const sofa::helper::vector <EdgeID>& shell = m_container->getEdgesAroundVertex (thePoint);
                             for (unsigned int k = 0; k< shell.size(); k++)
@@ -1947,7 +1947,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                                 }
                             }
                         }
-                        else if (topoPath_list[1] == core::componentmodel::topology::POINT)
+                        else if (topoPath_list[1] == core::topology::POINT)
                         {
                             if (indices_list[1] == thePoint)
                             {
@@ -1967,7 +1967,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                 }
 
 
-                if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::componentmodel::topology::EDGE)) // Only keep this one? or need to project?
+                if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::topology::EDGE)) // Only keep this one? or need to project?
                 {
                     std::cout <<"************* Just wonder if it is possible!!" << std::endl;
                     topoPath_list.erase (topoPath_list.begin());
@@ -1984,7 +1984,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     if (!intersected)
                         std::cout << " Error: TriangleSetTopologyAlgorithms::SnapBorderPath orthogonal projection failed" << std::endl;
 
-                    topoPath_list[0] = core::componentmodel::topology::EDGE;
+                    topoPath_list[0] = core::topology::EDGE;
                     //std::cout << "new_coord: " << new_coord << std::endl;
                     //std::cout << "thePoint: " << thePoint << std::endl;
                     //std::cout << "theEdge: " << theEdge << std::endl;
@@ -2009,7 +2009,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
 
 
     // Same for last point
-    if (!snap_b  && topoPath_list.back() == core::componentmodel::topology::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    if (!snap_b  && topoPath_list.back() == core::topology::TRIANGLE) // this means a is not close to a point, but could be close to an edge
     {
         for (unsigned int i = 0; i<3; i++)
         {
@@ -2027,7 +2027,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                         if (coords_list.back()[j] > 1-epsilon)
                         {
                             thePoint = m_container->getTriangle ( indices_list.back())[j];
-                            topoPath_list.back() = core::componentmodel::topology::POINT;
+                            topoPath_list.back() = core::topology::POINT;
                             indices_list.back() = thePoint;
                             find = true;
                             break;
@@ -2041,7 +2041,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                         unsigned int pos = topoPath_list.size()-2;
                         pointDone = true;
                         allDone = true;
-                        if (topoPath_list[pos] == core::componentmodel::topology::EDGE) // just remove or need to projection?
+                        if (topoPath_list[pos] == core::topology::EDGE) // just remove or need to projection?
                         {
                             const sofa::helper::vector <EdgeID> &shell = m_container->getEdgesAroundVertex (thePoint);
                             for (unsigned int k = 0; k< shell.size(); k++)
@@ -2056,7 +2056,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                                 }
                             }
                         }
-                        else if (topoPath_list[pos] == core::componentmodel::topology::POINT)
+                        else if (topoPath_list[pos] == core::topology::POINT)
                         {
                             if (indices_list[pos] == thePoint)
                             {
@@ -2077,7 +2077,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                 }
 
 
-                if ((indices_list[indices_list.size()-2] == theEdge) && (topoPath_list[topoPath_list.size()-2] == core::componentmodel::topology::EDGE)) // Only keep this one? or need to projection?
+                if ((indices_list[indices_list.size()-2] == theEdge) && (topoPath_list[topoPath_list.size()-2] == core::topology::EDGE)) // Only keep this one? or need to projection?
                 {
                     std::cout <<"************* Just wonder if it is possible!!" << std::endl;
                     topoPath_list.pop_back();
@@ -2093,7 +2093,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     if (!intersected)
                         std::cout << " Error: TriangleSetTopologyAlgorithms::SnapBorderPath orthogonal projection failed" << std::endl;
 
-                    topoPath_list.back() = core::componentmodel::topology::EDGE;
+                    topoPath_list.back() = core::topology::EDGE;
                     indices_list.back() = theEdge;
                     coords_list.back()[0] = new_coord[1];
                     coords_list.back()[1] = new_coord[0];
@@ -2235,7 +2235,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
             Triangle t = m_container->getTriangle(tid);
             PointID p2 = getOtherPointInTriangle(t, p0, p1);
             EdgeID e = m_container->getEdgeIndex(p0, p2);
-            const sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundEdge& etri = m_container->getTrianglesAroundEdge(e);
+            const sofa::core::topology::BaseMeshTopology::TrianglesAroundEdge& etri = m_container->getTrianglesAroundEdge(e);
             if (etri.size() != 2) break; // border or non-manifold edge
             if (etri[0] == tid)
                 tid = etri[1];
@@ -2260,7 +2260,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
             if (p2 == pnext) break;
             EdgeID e = m_container->getEdgeIndex(p0, p2);
 
-            const sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundEdge& etri = m_container->getTrianglesAroundEdge(e);
+            const sofa::core::topology::BaseMeshTopology::TrianglesAroundEdge& etri = m_container->getTrianglesAroundEdge(e);
             if (etri.size() < 2) break; // border or non-manifold edge
             if (etri[0] == tid)
                 tid = etri[1];
@@ -2282,7 +2282,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
             Triangle t = m_container->getTriangle(tid);
             PointID p2 = getOtherPointInTriangle(t, p0, p1);
             EdgeID e = m_container->getEdgeIndex(p0, p2);
-            const sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundEdge& etri = m_container->getTrianglesAroundEdge(e);
+            const sofa::core::topology::BaseMeshTopology::TrianglesAroundEdge& etri = m_container->getTrianglesAroundEdge(e);
             if (etri.size() != 2) break; // border or non-manifold edge
             if (etri[0] == tid)
                 tid = etri[1];

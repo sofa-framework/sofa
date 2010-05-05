@@ -37,7 +37,7 @@ namespace topology
 {
 class TriangleSetTopologyModifier;
 
-using core::componentmodel::topology::BaseMeshTopology;
+using core::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::PointID		         	PointID;
 typedef BaseMeshTopology::EdgeID		        	EdgeID;

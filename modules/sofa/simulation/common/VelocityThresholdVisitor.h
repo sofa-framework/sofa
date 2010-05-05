@@ -27,7 +27,7 @@
 
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -40,7 +40,7 @@ using namespace sofa::defaulttype;
 class SOFA_SIMULATION_COMMON_API VelocityThresholdVisitor : public Visitor
 {
 public:
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 

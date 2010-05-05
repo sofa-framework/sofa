@@ -36,21 +36,21 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-#include <sofa/core/componentmodel/behavior/BaseForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
-#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/core/componentmodel/behavior/MasterSolver.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
-#include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
-#include <sofa/core/componentmodel/behavior/BaseController.h>
-#include <sofa/core/componentmodel/loader/BaseLoader.h>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MasterSolver.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
+#include <sofa/core/behavior/BaseController.h>
+#include <sofa/core/loader/BaseLoader.h>
 */
 
 #include <map>
@@ -331,37 +331,37 @@ public:
                     entry.baseClasses.insert("BehaviorModel");
                 if (implements<RealObject,CollisionModel>())
                     entry.baseClasses.insert("CollisionModel");
-                if (implements<RealObject,core::componentmodel::behavior::BaseMechanicalState>())
+                if (implements<RealObject,core::behavior::BaseMechanicalState>())
                     entry.baseClasses.insert("MechanicalState");
-                if (implements<RealObject,core::componentmodel::behavior::BaseForceField>())
+                if (implements<RealObject,core::behavior::BaseForceField>())
                     entry.baseClasses.insert("ForceField");
-                if (implements<RealObject,core::componentmodel::behavior::InteractionForceField>())
+                if (implements<RealObject,core::behavior::InteractionForceField>())
                     entry.baseClasses.insert("InteractionForceField");
-                if (implements<RealObject,core::componentmodel::behavior::BaseLMConstraint>())
+                if (implements<RealObject,core::behavior::BaseLMConstraint>())
                     entry.baseClasses.insert("Constraint");
-                if (implements<RealObject,core::componentmodel::behavior::BaseConstraint>())
+                if (implements<RealObject,core::behavior::BaseConstraint>())
                     entry.baseClasses.insert("Constraint");
                 if (implements<RealObject,core::BaseMapping>())
                     entry.baseClasses.insert("Mapping");
-                if (implements<RealObject,core::componentmodel::behavior::BaseMechanicalMapping>())
+                if (implements<RealObject,core::behavior::BaseMechanicalMapping>())
         	  entry.baseClasses.insert("MechanicalMapping");
-        	if (implements<RealObject,core::componentmodel::topology::TopologicalMapping>())
+        	if (implements<RealObject,core::topology::TopologicalMapping>())
         	  entry.baseClasses.insert("TopologicalMapping");
-                if (implements<RealObject,core::componentmodel::behavior::BaseMass>())
+                if (implements<RealObject,core::behavior::BaseMass>())
                     entry.baseClasses.insert("Mass");
-                if (implements<RealObject,core::componentmodel::behavior::OdeSolver>())
+                if (implements<RealObject,core::behavior::OdeSolver>())
         	  entry.baseClasses.insert("OdeSolver");
-        	if (implements<RealObject,core::componentmodel::behavior::LinearSolver>())
+        	if (implements<RealObject,core::behavior::LinearSolver>())
         	  entry.baseClasses.insert("LinearSolver");
-                if (implements<RealObject,core::componentmodel::behavior::MasterSolver>())
+                if (implements<RealObject,core::behavior::MasterSolver>())
                     entry.baseClasses.insert("MasterSolver");
-                if (implements<RealObject,core::componentmodel::topology::Topology>())
+                if (implements<RealObject,core::topology::Topology>())
         	  entry.baseClasses.insert("Topology");
-                if (implements<RealObject,core::componentmodel::topology::BaseTopologyObject>())
+                if (implements<RealObject,core::topology::BaseTopologyObject>())
         	  entry.baseClasses.insert("TopologyObject");
-        	if (implements<RealObject,core::componentmodel::behavior::BaseController>())
+        	if (implements<RealObject,core::behavior::BaseController>())
         	  entry.baseClasses.insert("Controller");
-        	if (implements<RealObject,core::componentmodel::loader::BaseLoader>())
+        	if (implements<RealObject,core::loader::BaseLoader>())
         	  entry.baseClasses.insert("Loader");
         */
         addBaseClasses(RealObject::GetClass());

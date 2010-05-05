@@ -77,7 +77,7 @@ template<class DataTypes>
 void EvalPointsDistance<DataTypes>::init()
 {
     if (!mstate1 || !mstate2)
-        mstate1 = mstate1 = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+        mstate1 = mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
 
     if (!mstate1 || !mstate2)
         return;

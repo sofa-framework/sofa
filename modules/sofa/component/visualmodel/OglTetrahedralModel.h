@@ -26,8 +26,8 @@
 #define OGLTETRAHEDRALMODEL_H_
 
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -59,8 +59,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
 
 private:
-    core::componentmodel::behavior::MechanicalState<DataTypes>* nodes;
-    core::componentmodel::topology::BaseMeshTopology* topo;
+    core::behavior::MechanicalState<DataTypes>* nodes;
+    core::topology::BaseMeshTopology* topo;
 
     Data<bool> depthTest;
     Data<bool> blending;
@@ -88,7 +88,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }

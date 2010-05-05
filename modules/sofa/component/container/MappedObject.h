@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPEDOBJECT_H
 #define SOFA_COMPONENT_MAPPEDOBJECT_H
 
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/objectmodel/XDataPtr.h>
 #include <sofa/core/objectmodel/VDataPtr.h>
 #include <sofa/component/component.h>
@@ -42,7 +42,7 @@ namespace component
 namespace container
 {
 
-using namespace core::componentmodel::behavior;
+using namespace core::behavior;
 using namespace core::objectmodel;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.

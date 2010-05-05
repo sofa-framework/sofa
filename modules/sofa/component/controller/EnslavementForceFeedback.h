@@ -27,7 +27,7 @@
 
 #include <sofa/component/controller/ForceFeedback.h>
 
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -61,7 +61,7 @@ protected:
     Data<double>	stiffness;
     Data<double>	angular_stiffness;
 
-    core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes> *mState; ///< The haptic interface try to follow this mechanical state.
+    core::behavior::MechanicalState<defaulttype::Rigid3dTypes> *mState; ///< The haptic interface try to follow this mechanical state.
     sofa::helper::vector<core::CollisionModel*> collisionModels;
 };
 

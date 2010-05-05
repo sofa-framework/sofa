@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/helper/vector.h>
 
@@ -73,8 +73,8 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
 protected:
-    core::componentmodel::topology::BaseMeshTopology* inputTopo;
-    core::componentmodel::topology::BaseMeshTopology* outputTopo;
+    core::topology::BaseMeshTopology* inputTopo;
+    core::topology::BaseMeshTopology* outputTopo;
 };
 
 } // namespace mapping

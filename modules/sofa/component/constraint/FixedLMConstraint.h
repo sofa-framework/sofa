@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDLMCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDLMCONSTRAINT_H
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/LMConstraint.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/LMConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/linearsolver/LagrangeMultiplierComputation.h>
 #include <sofa/simulation/common/Node.h>
@@ -41,7 +41,7 @@ namespace component
 namespace constraint
 {
 
-using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::topology;
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class FixedLMConstraintInternalData
@@ -54,24 +54,24 @@ class FixedLMConstraintInternalData
 /** Keep two particules at an initial distance
  */
 template <class DataTypes>
-class FixedLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
+class FixedLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FixedLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FixedLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
     typedef sofa::component::topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
-    typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
+    typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
     typedef linearsolver::LagrangeMultiplierComputation::VectorEigen  VectorEigen;
 
 protected:
@@ -80,7 +80,7 @@ protected:
 
 public:
     FixedLMConstraint( MechanicalState *dof):
-        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
+        core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
         f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
         _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {};
@@ -109,7 +109,7 @@ public:
 
 
     void LagrangeMultiplierEvaluation(const SReal* Wptr, SReal* cptr, SReal* LambdaInitptr,
-            core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup * group)
+            core::behavior::BaseLMConstraint::ConstraintGroup * group)
     {
         const unsigned int numConstraintToProcess=group->getNumConstraint();
         const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,LambdaInitptr,numConstraintToProcess);
@@ -148,7 +148,7 @@ protected :
     Data<double> _drawSize;
 
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* topology;
 
 
     // Define TestNewPointFunction
