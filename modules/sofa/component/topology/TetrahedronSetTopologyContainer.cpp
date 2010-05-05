@@ -84,6 +84,19 @@ void TetrahedronSetTopologyContainer::init()
     }
 
     TriangleSetTopologyContainer::init();
+
+    /*===========  TEST   EDGES IN TETRAHEDRON ARRAY  =================*
+    createEdgesInTetrahedronArray();
+      for (unsigned int i = 0; i < m_tetrahedron.size(); ++i)
+      {
+    	  std::cout<<"tetra : "<<i<<"   edges : ";
+    	  for(int j=0;j<6;j++)
+    	  {
+    		  std::cout<<"  "<<m_edgesInTetrahedron[i][j];
+    	  }
+    	  std::cout<<std::endl;
+      }
+    ===========  TEST   EDGES IN TETRAHEDRON ARRAY  =================*/
 }
 
 void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
