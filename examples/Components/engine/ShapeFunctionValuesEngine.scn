@@ -49,10 +49,17 @@
 		<QuadratureFormular template="Vec3d" name="quadratureOnTetra" QuadraturePointsSet="0.333 0.10 0.20 0.30 
 												   0.333 0.20 0.30 0.10
 												   0.333 0.30 0.10 0.20 "/>-->
+		<!-- QUADRATURE FORMULE 
+		<QuadratureFormular template="Vec3d" name="quadratureOnTetra" QuadraturePointsSet="1. 0.25 0.25 0.25"/> -->
 		<!-- QUADRATURE FORMULE -->
-		<QuadratureFormular template="Vec3d" name="quadratureOnTetra" QuadraturePointsSet="1. 0.25 0.25 0.25"/>
-		<!-- QUADRATURE FORMULE
-		<QuadratureFormular template="Vec3d" name="quadratureOnTetra" QuadraturePointsSet="1. 0.10 0.20 0.30"/>  -->
+			<QuadratureFormular template="Vec3d" name="quadratureOnTetra" 
+		        QuadraturePointsSet=
+			"
+			0.25 0.58541019662496845446137605030968 0.138196601125010515179541316563436 0.138196601125010515179541316563436
+			0.25 0.138196601125010515179541316563436 0.58541019662496845446137605030968 0.138196601125010515179541316563436
+			0.25 0.138196601125010515179541316563436 0.138196601125010515179541316563436 0.58541019662496845446137605030968
+			0.25 0.138196601125010515179541316563436 0.138196601125010515179541316563436 0.138196601125010515179541316563436
+			"/> 
 
 		<!--This shapefunctionvalues compute with the "input local", given by a list of barycentric points for each element-->
 		<ShapeFunctionValuesEngine template="Vec3d" name="ValuesLocalInput" valuesCompute="true" derivativesCompute="true" commputationMethod="Local" 

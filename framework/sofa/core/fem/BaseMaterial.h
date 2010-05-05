@@ -37,14 +37,9 @@
 
 namespace sofa
 {
-
-namespace component
+namespace core
 {
-
 namespace fem
-{
-
-namespace material
 {
 
 using namespace sofa::defaulttype;
@@ -59,15 +54,20 @@ public:
     BaseMaterial() {}
     virtual ~BaseMaterial() {}
 
+
+    //virtual VecN computeStress (VecN & strain,int idElement,int id_QP){return stress in the i-th quadrature point}
+    //So here needed the shapefunctionvalue *  ,  quadratureformular*  (verifie if shapfunctionvalue compute with the local method)
+    // The same principe for computing the strain given the displacement
+    //BaseMaterial must be moved to framwork::core::sofa::fem
     virtual void computeStress (Vector3 & ,Vector3 &,unsigned int &) {}
     virtual void computeDStress (Vector3 & ,Vector3 &) {}
 };
 
-} // namespace material
+
 
 } // namespace fem
 
-} // namespace component
+} // namespace core
 
 } // namespace sofa
 #endif
