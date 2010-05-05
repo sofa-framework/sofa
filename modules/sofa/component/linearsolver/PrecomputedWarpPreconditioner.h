@@ -64,7 +64,30 @@ public :
 
     SparseMatrix<Real> JR;
     FullMatrix<Real> JRMinv;
-    FullMatrix<Real> Minv;
+    FullMatrix<Real>* MinvPtr;
+    bool shared;
+    PrecomputedWarpPreconditionerInternalData()
+        : MinvPtr(new FullMatrix<Real>), shared(false)
+    {
+    }
+
+    ~PrecomputedWarpPreconditionerInternalData()
+    {
+        if (!shared) delete MinvPtr;
+    }
+
+    void setMinv(FullMatrix<Real>* m, bool shared = true)
+    {
+        if (!this->shared) delete this->MinvPtr;
+        this->MinvPtr = m;
+        this->shared = shared;
+    }
+
+    static FullMatrix<Real>* getSharedMatrix(const std::string& name)
+    {
+        static std::map< std::string,FullMatrix<Real> > matrices;
+        return &(matrices[name]);
+    }
 };
 
 /// Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix
@@ -92,6 +115,7 @@ public:
     Data<bool> jmjt_twostep;
     Data<bool> f_verbose;
     Data<bool> use_file;
+    Data<bool> share_matrix;
     Data <std::string> solverName;
     Data<int> init_MaxIter;
     Data<double> init_Tolerance;
@@ -106,7 +130,7 @@ public:
 
     TBaseMatrix * getSystemMatrixInv()
     {
-        return &internalData.Minv;
+        return internalData.MinvPtr;
     }
 
     /// Pre-construction check method called by ObjectFactory.

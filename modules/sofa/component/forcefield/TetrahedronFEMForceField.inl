@@ -1304,7 +1304,7 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
 {
     if (!this->mstate) return;
     setMethod(f_method.getValue() );
-    VecCoord& p = *this->mstate->getX0();
+    const VecCoord& p = *this->mstate->getX0();
     _initialPoints.setValue(p);
     _strainDisplacements.resize( _indexedElements->size() );
     _materialsStiffnesses.resize(_indexedElements->size() );

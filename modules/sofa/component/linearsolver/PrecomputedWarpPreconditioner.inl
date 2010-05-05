@@ -77,6 +77,7 @@ PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::PrecomputedWarpPreco
     : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
+    , share_matrix( initData(&share_matrix,true,"share_matrix","Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
     , init_MaxIter( initData(&init_MaxIter,5000,"init_MaxIter","Max Iter use to precompute the first matrix") )
     , init_Tolerance( initData(&init_Tolerance,1e-20,"init_Tolerance","Tolerance use to precompute the first matrix") )
@@ -114,7 +115,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix&
         unsigned int l = 0;
 
         //Solve z = R^t * b
-        while (l < internalData.Minv.colSize())
+        while (l < internalData.MinvPtr->colSize())
         {
             z[l+0] = R[k + 0] * r[l + 0] + R[k + 3] * r[l + 1] + R[k + 6] * r[l + 2];
             z[l+1] = R[k + 1] * r[l + 0] + R[k + 4] * r[l + 1] + R[k + 7] * r[l + 2];
@@ -124,11 +125,11 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix&
         }
 
         //Solve tmp = M^-1 * z
-        T = internalData.Minv * z;
+        T = (*internalData.MinvPtr) * z;
 
         //Solve z = R * tmp
         k = 0; l = 0;
-        while (l < internalData.Minv.colSize())
+        while (l < internalData.MinvPtr->colSize())
         {
             z[l+0] = R[k + 0] * T[l + 0] + R[k + 1] * T[l + 1] + R[k + 2] * T[l + 2];
             z[l+1] = R[k + 3] * T[l + 0] + R[k + 4] * T[l + 1] + R[k + 5] * T[l + 2];
@@ -144,7 +145,6 @@ template<class TDataTypes,class TMatrix,class TVector>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
 {
     unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
-    internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
     EulerImplicitSolver* EulerSolver;
@@ -153,34 +153,45 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
     std::stringstream ss;
-    ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
-    std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
-
-    if(compFileIn.good() && use_file.getValue())
+    ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
+    std::string fname = ss.str();
+    if (share_matrix.getValue())
+        internalData.setMinv(internalData.getSharedMatrix(fname));
+    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == systemSize)
     {
-        cout << "file open : " << ss.str() << " compliance being loaded" << endl;
-        compFileIn.read((char*) internalData.Minv[0], systemSize * systemSize * sizeof(Real));
-        compFileIn.close();
+        cout << "shared matrix : " << fname << " is already built" << endl;
     }
     else
     {
-        cout << "Precompute : " << ss.str() << " compliance" << endl;
-        if (solverName.getValue().empty()) loadMatrixWithCSparse();
-        else loadMatrixWithSolver();
+        internalData.MinvPtr->resize(systemSize,systemSize);
+        std::ifstream compFileIn(fname.c_str(), std::ifstream::binary);
 
-        if (use_file.getValue())
+        if(compFileIn.good() && use_file.getValue())
         {
-            std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
-            compFileOut.write((char*)internalData.Minv[0], systemSize * systemSize*sizeof(Real));
-            compFileOut.close();
+            cout << "file open : " << fname << " compliance being loaded" << endl;
+            compFileIn.read((char*) (*internalData.MinvPtr)[0], systemSize * systemSize * sizeof(Real));
+            compFileIn.close();
         }
-    }
-
-    for (unsigned int j=0; j<systemSize; j++)
-    {
-        for (unsigned i=0; i<systemSize; i++)
+        else
         {
-            internalData.Minv.set(j,i,internalData.Minv.element(j,i)/factInt);
+            cout << "Precompute : " << fname << " compliance" << endl;
+            if (solverName.getValue().empty()) loadMatrixWithCSparse();
+            else loadMatrixWithSolver();
+
+            if (use_file.getValue())
+            {
+                std::ofstream compFileOut(fname.c_str(), std::fstream::out | std::fstream::binary);
+                compFileOut.write((char*)(*internalData.MinvPtr)[0], systemSize * systemSize*sizeof(Real));
+                compFileOut.close();
+            }
+        }
+
+        for (unsigned int j=0; j<systemSize; j++)
+        {
+            for (unsigned i=0; i<systemSize; i++)
+            {
+                internalData.MinvPtr->set(j,i,internalData.MinvPtr->element(j,i)/factInt);
+            }
         }
     }
 
@@ -234,7 +245,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
         solver.solve(matSolv,r,b);
         for (unsigned int i=0; i<systemSize; i++)
         {
-            internalData.Minv.set(j,i,r.element(i)*factInt);
+            internalData.MinvPtr->set(j,i,r.element(i)*factInt);
         }
     }
     std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
@@ -266,7 +277,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
 
     std::stringstream ss;
     //ss << this->getContext()->getName() << "_CPP.comp";
-    ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
+    ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
     EulerImplicitSolver* EulerSolver;
@@ -400,7 +411,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
             {
                 for (unsigned int j=0; j<dof_on_node; j++)
                 {
-                    internalData.Minv.set(v*dof_on_node+j,f*dof_on_node+i,(Real)(velocity[v][j]*factInt));
+                    internalData.MinvPtr->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(velocity[v][j]*factInt));
                 }
             }
         }
@@ -452,10 +463,10 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::invert(TMatrix&
 template<class TDataTypes,class TMatrix,class TVector>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstraints()
 {
-    unsigned systemSize3 = internalData.Minv.colSize()/3;
+    unsigned systemSize3 = internalData.MinvPtr->colSize()/3;
     if (R.size() != systemSize3*9)
     {
-        T.resize(internalData.Minv.colSize());
+        T.resize(internalData.MinvPtr->colSize());
         R.resize(systemSize3*9);
     }
 
@@ -558,19 +569,19 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::ComputeResult(de
     }
 
     internalData.JRMinv.clear();
-    internalData.JRMinv.resize(nl,internalData.Minv.rowSize());
+    internalData.JRMinv.resize(nl,internalData.MinvPtr->rowSize());
 
     //compute JRMinv = JR * Minv
 
     nl = 0;
     for (typename SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)
     {
-        for (unsigned c = 0; c<internalData.Minv.rowSize(); c++)
+        for (unsigned c = 0; c<internalData.MinvPtr->rowSize(); c++)
         {
             Real v = 0.0;
             for (typename SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
-                v += internalData.Minv.element(i1->first,c) * i1->second;
+                v += internalData.MinvPtr->element(i1->first,c) * i1->second;
             }
             internalData.JRMinv.add(nl,c,v);
         }
