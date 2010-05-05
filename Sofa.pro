@@ -45,6 +45,11 @@ contains(DEFINES,SOFA_EXTLIBS_TAUCS){
 	SUBDIRS += extlibs/taucs
 }
 
+#FFMPEG
+contains(DEFINES,SOFA_EXTLIBS_FFMPEG){
+	SUBDIRS += extlibs/ffmpeg
+}
+
 } # END SOFA_DEV
 
 #QGLViewer
