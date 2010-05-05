@@ -99,10 +99,10 @@ public:
     const VecCoord* getVecX()  const { return getX(); }
     VecCoord* getVecX()  { return getX(); }
 
-    virtual VecCoord* getX0() { return inputRestVertices; };
+    virtual VecCoord* getX0() { return inputRestVertices ? inputRestVertices : inputVertices; };
     virtual VecCoord* getN() { return inputNormals; };
 
-    virtual const VecCoord* getX0() const { return inputRestVertices; };
+    virtual const VecCoord* getX0() const { return inputRestVertices ? inputRestVertices : inputVertices; };
     virtual const VecCoord* getN() const { return inputNormals; };
 
 
