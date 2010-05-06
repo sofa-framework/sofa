@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa
@@ -44,8 +45,13 @@ public:
     BackgroundSetting();
     void setColor(const defaulttype::Vector3& c) {color.setValue(c);}
     const defaulttype::Vector3 &getColor() const {return color.getValue();}
+
+    void setImage(const std::string& f) {image.setValue(f);}
+    const std::string &getImage() const {return image.getFullPath();}
+
 protected:
     Data<defaulttype::Vector3> color;
+    sofa::core::objectmodel::DataFileName image;
 };
 
 }

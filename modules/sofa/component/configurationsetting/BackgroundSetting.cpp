@@ -43,6 +43,7 @@ int BackgroundSettingClass = core::RegisterObject("Background colour setting")
 
 BackgroundSetting::BackgroundSetting():
     color(initData(&color, "color", "Color of the Background of the Viewer"))
+    , image(initData(&image, "image", "Image to be used as background of the viewer"))
 {
 }
 

@@ -166,6 +166,7 @@ public:
     virtual void setDimension(int w, int h);
     virtual void setFullScreen();
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
+    virtual void setBackgroundImage(const std::string& i);
     virtual void setDumpState(bool);
     virtual void setLogTime(bool);
     virtual void setExportState(bool);

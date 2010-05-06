@@ -1186,6 +1186,12 @@ void RealGUI::setBackgroundColor(const defaulttype::Vector3& c)
     updateBackgroundColour();
 }
 
+void RealGUI::setBackgroundImage(const std::string& c)
+{
+    backgroundImage->setText(QString(c.c_str()));
+    updateBackgroundImage();
+}
+
 void RealGUI::setDumpState(bool b)
 {
     dumpStateCheckBox->setChecked(b);
