@@ -68,6 +68,7 @@ public:
     virtual void setDimension(int /* width */, int /* height */) {};
     virtual void setFullScreen() {};
     virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {};
+    virtual void setBackgroundImage(const std::string& /*image*/) {};
     virtual void setDumpState(bool) {};
     virtual void setLogTime(bool) {};
     virtual void setExportState(bool) {};

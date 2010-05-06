@@ -57,7 +57,13 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     //Background
     sofa::component::configurationsetting::BackgroundSetting *background;
     groot->get(background, sofa::core::objectmodel::BaseContext::SearchRoot);
-    if (background) setBackgroundColor(background->getColor());
+    if (background)
+    {
+        if (background->getImage().empty())
+            setBackgroundColor(background->getColor());
+        else
+            setBackgroundImage(background->getImage());
+    }
 
     //Stats
     sofa::component::configurationsetting::StatsSetting *stats;
