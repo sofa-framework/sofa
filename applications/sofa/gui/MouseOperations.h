@@ -29,6 +29,8 @@
 #include <iostream>
 #include <vector>
 
+#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+
 namespace sofa
 {
 namespace component
@@ -74,14 +76,14 @@ public:
     virtual void end() ;
     virtual void endOperation() ;
 
-    void setStiffness(double s) {stiffness = s;}
-    virtual double getStiffness() const { return stiffness;}
-    virtual double getArrowSize() const { return arrowSize;}
+    void setStiffness(double s) {setting.setStiffness(s);}
+    virtual double getStiffness() const { return setting.getStiffness();}
+    void setArrowSize(double s) {setting.setArrowSize(s);}
+    virtual double getArrowSize() const { return setting.getArrowSize();}
 
     static std::string getDescription() {return "Attach an object to the Mouse";}
 protected:
-    double stiffness;
-    double arrowSize;
+    sofa::component::configurationsetting::AttachBodyButtonSetting setting;
 };
 
 class SOFA_SOFAGUI_API InciseOperation : public Operation

@@ -60,27 +60,26 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     dwarg.parent = this;
     dwarg.readOnly = (data_->isReadOnly() && flags.READONLY_FLAG);
 
-    std::string widget = data_->getWidget();
     if( dynamic_cast<core::objectmodel::DataFileName*>(data_) != NULL )
     {
         /*
         a bit of a hack for DataFileName widgets.
         A custom widget is used by default if we run this code from the Modeler
         */
-        if( widget.empty() && !flags.HIDE_FLAG )
+        std::string widgetName=data_->getWidget();
+        if( widgetName.empty() && !flags.HIDE_FLAG )
         {
-            widget = "widget_filename";
+            data_->setWidget("widget_filename");
         }
     }
-    if (widget.empty())
-        datawidget_ = DataWidgetFactory::CreateAnyObject(dwarg);
-    else
-        datawidget_ = DataWidgetFactory::CreateObject(widget, dwarg);
-    if (datawidget_ == NULL)
+
+    datawidget_=DataWidget::CreateDataWidget(dwarg);
+
+    if (datawidget_ == 0)
     {
-        datawidget_ = new QDataSimpleEdit(this,data_->getName().c_str(), data_);
+        datawidget_ = new QDataSimpleEdit(this,dwarg.data->getName().c_str(), dwarg.data);
         datawidget_->createWidgets();
-        datawidget_->setEnabled( !(data_->isReadOnly() && flags.READONLY_FLAG) );
+        datawidget_->setEnabled( !(dwarg.readOnly) );
         assert(datawidget_ != NULL);
     }
 

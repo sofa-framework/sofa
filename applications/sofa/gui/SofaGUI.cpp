@@ -89,6 +89,7 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     }
 
     //TODO Mouse Manager using ConfigurationSetting component...
+
 }
 
 

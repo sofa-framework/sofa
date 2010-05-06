@@ -34,6 +34,8 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 
+
+
 #ifdef SOFA_QT4
 #include <QDialog>
 #include <QLineEdit>
@@ -141,6 +143,7 @@ public:
         baseData = d;
     }
 
+
     /// BaseData pointer accessor function.
     core::objectmodel::BaseData* getBaseData() const { return baseData; }
     void updateVisibility()
@@ -196,6 +199,20 @@ public:
         }
         else instance->updateVisibility();
     }
+
+
+    static DataWidget *CreateDataWidget(const DataWidget::CreatorArgument &dwarg)
+    {
+        typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
+
+        DataWidget *datawidget_=0;
+        const std::string &widgetName=dwarg.data->getWidget();
+        if (widgetName.empty())
+            datawidget_ = DataWidgetFactory::CreateAnyObject(dwarg);
+        else
+            datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
+        return datawidget_;
+    };
 };
 
 

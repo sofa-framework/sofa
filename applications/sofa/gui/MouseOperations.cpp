@@ -62,7 +62,7 @@ namespace gui
 {
 
 
-AttachOperation::AttachOperation():stiffness(1000.0)
+AttachOperation::AttachOperation()
 {
 };
 //*******************************************************************************************
