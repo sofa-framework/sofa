@@ -25,7 +25,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaGUI.h"
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/helper/vector.h>
+
+#include <sofa/component/configurationsetting/BackgroundSetting.h>
+#include <sofa/component/configurationsetting/StatsSetting.h>
+#include <sofa/component/configurationsetting/ViewerDimensionSetting.h>
+
 #include <string.h>
+
 namespace sofa
 {
 
@@ -42,6 +50,39 @@ SofaGUI::SofaGUI()
 SofaGUI::~SofaGUI()
 {
 
+}
+
+void SofaGUI::configureGUI(sofa::simulation::Node *groot)
+{
+    //Background
+    sofa::component::configurationsetting::BackgroundSetting *background;
+    groot->get(background, sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (background) setBackgroundColor(background->getColor());
+
+    //Stats
+    sofa::component::configurationsetting::StatsSetting *stats;
+    groot->get(stats, sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (stats)
+    {
+        setDumpState(stats->getDumpState());
+        setLogTime(stats->getLogTime());
+        setExportState(stats->getExportState());
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setTraceVisitors(stats->getTraceVisitors());
+#endif
+    }
+
+    //Viewer Dimension
+    sofa::component::configurationsetting::ViewerDimensionSetting *dimension;
+    groot->get(dimension, sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (dimension)
+    {
+        const defaulttype::Vec<2,int> &res=dimension->getDimension();
+        if (dimension->getFullscreen()) setFullScreen();
+        else setDimension(res[0], res[1]);
+    }
+
+    //TODO Mouse Manager using ConfigurationSetting component...
 }
 
 

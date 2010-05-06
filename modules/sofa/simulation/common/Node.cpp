@@ -247,6 +247,7 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= visualManager.add(dynamic_cast< core::VisualManager* >(obj));
     inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
     inserted+= contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
+    inserted+= configurationSetting.add(dynamic_cast< core::objectmodel::ConfigurationSetting* >(obj));
     inserted+= collisionPipeline.add(dynamic_cast< core::collision::Pipeline* >(obj));
     inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
 
@@ -287,6 +288,7 @@ void Node::doRemoveObject(BaseObject* obj)
     visualManager.remove(dynamic_cast< core::VisualManager* >(obj));
     collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
+    configurationSetting.remove(dynamic_cast<core::objectmodel::ConfigurationSetting* >(obj));
     collisionPipeline.remove(dynamic_cast< core::collision::Pipeline* >(obj));
 
     actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));

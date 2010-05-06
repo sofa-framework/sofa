@@ -28,6 +28,7 @@
 #define SOFA_GUI_SOFAGUI_H
 
 #include <sofa/simulation/common/Node.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <list>
 //class QWidget;
@@ -58,10 +59,23 @@ public:
     virtual void redraw()=0;
     virtual int closeGUI()=0;
     virtual void setScene(sofa::simulation::Node* groot, const char* filename=NULL, bool temporaryFile=false)=0;
-    virtual void setDimension(int /* width */, int /* height */) {};
-    virtual void setFullScreen() {};
     virtual sofa::simulation::Node* currentSimulation()=0;
     /// @}
+
+    virtual void configureGUI(sofa::simulation::Node* groot);
+
+    /// @name methods to configure the GUI
+    virtual void setDimension(int /* width */, int /* height */) {};
+    virtual void setFullScreen() {};
+    virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {};
+    virtual void setDumpState(bool) {};
+    virtual void setLogTime(bool) {};
+    virtual void setExportState(bool) {};
+#ifdef SOFA_DUMP_VISITOR_INFO
+    virtual void setTraceVisitors(bool) {};
+#endif
+    /// @}
+
 
     static std::string& GetGUIName() { return guiName; }
     static const char* GetProgramName() { return programName; }

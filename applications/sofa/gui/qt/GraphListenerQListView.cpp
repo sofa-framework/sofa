@@ -104,6 +104,8 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             flags |= 1 << TOPOLOGY;
         if (dynamic_cast<core::loader::BaseLoader*>(obj))
             flags |= 1 << LOADER;
+        if (dynamic_cast<core::objectmodel::ConfigurationSetting*>(obj))
+            flags |= 1 << CONFIGURATIONSETTING;
         if (dynamic_cast<core::VisualModel*>(obj) && !flags)
             flags |= 1 << VMODEL;
         if (!flags)
@@ -115,7 +117,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
     if (!pixmaps.count(flags))
     {
         int nc = 0;
-        for (int i=0; i<17; i++)
+        for (int i=0; i<ALLCOLORS; i++)
             if (flags & (1<<i))
                 ++nc;
         int nx = 2+iconWidth*nc+iconMargin;
@@ -130,7 +132,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
         for (int y=0 ; y < iconHeight ; y++)
             img->setPixel(0,y,qRgba(0,0,0,255));
         nc = 0;
-        for (int i=0; i<17; i++)
+        for (int i=0; i<ALLCOLORS; i++)
             if (flags & (1<<i))
             {
                 int x0 = 1+iconWidth*nc;

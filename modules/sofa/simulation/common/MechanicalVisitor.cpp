@@ -1208,7 +1208,7 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdLMConstraint(simulation::No
 
 #ifdef SOFA_HAVE_EIGEN2
 
-MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::Node* n)
+MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::Node* /*n*/)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();

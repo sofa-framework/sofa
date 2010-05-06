@@ -98,8 +98,6 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    std::string dimension="800x600";
-    bool fullScreen = false;
     int nbIterations=0;
 
     std::string gui = "";
@@ -123,8 +121,6 @@ int main(int argc, char** argv)
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
     .option(&plugins,'l',"load","load given plugins")
     .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&dimension,'d',"dimension","width and height of the viewer")
-    .option(&fullScreen,'f',"fullScreen","start in full screen")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
@@ -204,6 +200,9 @@ int main(int argc, char** argv)
     if (int err=sofa::gui::GUIManager::createGUI(NULL))
         return err;
 
+    //To set a specific resolution for the viewer, use the component ViewerDimensionSetting in you scene graph
+    sofa::gui::GUIManager::SetDimension(800,600);
+
     sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
     if (groot==NULL)  groot = sofa::simulation::getSimulation()->newNode("");
 
@@ -216,15 +215,6 @@ int main(int argc, char** argv)
 
     if (startAnim)  groot->setAnimate(true);
 
-    //Dimension Option
-    std::string::size_type separator=dimension.find_first_of('x');
-    if (separator != std::string::npos)
-    {
-        std::string stringWidth=dimension.substr(0,separator);
-        std::string stringHeight=dimension.substr(separator+1);
-        //std::cout << "Setting dimension to " << stringWidth << " x " << stringHeight << std::endl;
-        sofa::gui::GUIManager::SetDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
-    }
 
     if (printFactory)
     {
@@ -233,7 +223,6 @@ int main(int argc, char** argv)
         std::cout << "//////// END FACTORY ////////" << std::endl;
     }
 
-    if (fullScreen) sofa::gui::GUIManager::SetFullScreen();
 
     //=======================================
     // Run the main loop
