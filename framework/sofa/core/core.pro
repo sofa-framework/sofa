@@ -184,12 +184,12 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 HEADERS += \
  fem/BaseMaterial.h \
  fem/BaseShapeFunction.h \
- fem/BaseStrainTensor.h
-
+ fem/BaseStrainTensor.h \
+ fem/BaseFiniteElement.h
+ 
 SOURCES +=  \
-
-# fem/BaseShapeFunction.cpp 
-  
+ fem/BaseFiniteElement.cpp
+ 
 } # END SOFA_DEV
 
 
