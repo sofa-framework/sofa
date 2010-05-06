@@ -1,5 +1,5 @@
 <Node name="Group"> 
-  <Object type="DynamicSparseGridTopologyContainer"  name="Container" />
+  <Object type="DynamicSparseGridTopologyContainer"  name="Container" src=""/>
   <Object type="DynamicSparseGridTopologyModifier"   name="Modifier" />
   <Object type="DynamicSparseGridTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
   <Object type="DynamicSparseGridGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
