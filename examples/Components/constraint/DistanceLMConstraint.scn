@@ -27,7 +27,7 @@
 	<Node 	name="FEM" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<EulerImplicitSolver name="default152"  rayleighStiffness="0.01" />
 		<CGLinearSolver template="GraphScattered" name="default153"  iterations="25"  threshold="1e-08" />
-		<SparseGridTopology name="default154"  fileTopology="/home/sofa-work/sofa-dev/trunk/Sofa/share/mesh/ball.obj"  n="6 6 6" />
+		<SparseGridTopology name="default154"  fileTopology="mesh/ball.obj"  n="6 6 6" />
 		<MechanicalObject template="Vec3d" name="default155"  translation="2 0 5"  rotation="0 0 0"  scale3d="0.2 0.2 0.2"  restScale="1"  position="0 0 0" />
 		<UniformMass template="Vec3d" name="default156"  totalmass="5" />
 		<HexahedronFEMForceField template="Vec3d" name="FEM"  method="polar"  poissonRatio="0.3"  youngModulus="50000" />
