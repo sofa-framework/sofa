@@ -27,6 +27,7 @@
 
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/qt/SofaMouseManager.h>
+#include <sofa/gui/qt/DataWidget.h>
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
@@ -62,15 +63,18 @@ class QAttachOperation : public QWidget, public AttachOperation
 public:
     QAttachOperation();
 
-    double getStiffness() const;
-    double getArrowSize() const;
+//        double getStiffness() const;
+//        double getArrowSize() const;
     void configure(PickHandler *picker, MOUSE_BUTTON b)
     {
         AttachOperation::configure(picker, b);
     }
+public slots:
+    void WidgetDirty(bool);
+
 protected:
-    QLineEdit *value;
-    QLineEdit *size;
+    DataWidget *stiffnessWidget;
+    DataWidget *arrowSizeWidget;
 };
 
 

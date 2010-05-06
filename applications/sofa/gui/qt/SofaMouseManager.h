@@ -63,11 +63,12 @@ public:
         return mapIndexOperation;
     }
 
+    void updateOperation( MOUSE_BUTTON button, const std::string &id);
+
 public slots:
     void selectOperation(int);
 
 protected:
-    void updateOperation( MOUSE_BUTTON button, const std::string &id);
 
     PickHandler *pickHandler;
     std::map< int, std::string > mapIndexOperation;

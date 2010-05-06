@@ -24,11 +24,13 @@
 ******************************************************************************/
 
 #include <sofa/gui/qt/QMouseOperations.h>
+#include <sofa/gui/qt/QDisplayDataWidget.h>
 #ifdef SOFA_QT4
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
+
 /*#include <QRadioButton>
 #include <QPushButton>*/
 #else
@@ -54,26 +56,56 @@ QAttachOperation::QAttachOperation()
     //Building the GUI for the Attach Operation
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label=new QLabel(QString("Stiffness"), this);
-    value=new QLineEdit(QString("1000.0"), this);
+
+    {
+        //Stiffness
+        DataWidget::CreatorArgument argStiffness;
+        argStiffness.data = setting.getDataStiffness();
+        argStiffness.name =  argStiffness.data->getName();
+        argStiffness.parent = this;
+        argStiffness.readOnly = argStiffness.data->isReadOnly();
+        stiffnessWidget = DataWidget::CreateDataWidget(argStiffness);
+        connect(stiffnessWidget, SIGNAL(WidgetDirty(bool)), this, SLOT(WidgetDirty(bool)));
+    }
+
 
     QLabel *labelSize=new QLabel(QString("Arrow Size"), this);
-    size=new QLineEdit(QString("0.0"), this);
+    {
+        //Arrow Size
+        DataWidget::CreatorArgument argArrowSize;
+        argArrowSize.data = setting.getDataArrowSize();
+        argArrowSize.name =  argArrowSize.data->getName();
+        argArrowSize.parent = this;
+        argArrowSize.readOnly = argArrowSize.data->isReadOnly();
+        arrowSizeWidget = DataWidget::CreateDataWidget(argArrowSize);
+        connect(arrowSizeWidget, SIGNAL(WidgetDirty(bool)), this, SLOT(WidgetDirty(bool)));
+    }
 
+    layout->addWidget(stiffnessWidget);
     layout->addWidget(label);
-    layout->addWidget(value);
-    layout->addWidget(labelSize);
-    layout->addWidget(size);
+
+//        layout->addWidget(labelSize);
+//        layout->addWidget(arrowSizeWidget);
 }
 
-double QAttachOperation::getStiffness() const
+void QAttachOperation::WidgetDirty(bool b)
 {
-    return atof(value->displayText().ascii());
+    if (b)
+    {
+        DataWidget *dataW=(DataWidget*) sender();
+        dataW->updateDataValue();
+    }
 }
 
-double QAttachOperation::getArrowSize() const
-{
-    return atof(size->displayText().ascii());
-}
+//      double QAttachOperation::getStiffness() const
+//      {
+//        return atof(value->displayText().ascii());
+//      }
+
+//      double QAttachOperation::getArrowSize() const
+//      {
+//        return atof(size->displayText().ascii());
+//      }
 
 //*******************************************************************************************
 
