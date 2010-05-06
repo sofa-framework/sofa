@@ -133,6 +133,9 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
         linearInterpolIndices = f_interpolationIndices.beginEdit();
         linearInterpolValues = f_interpolationValues.beginEdit();
 
+        linearInterpolIndices->clear();
+        linearInterpolValues->clear();
+
         linearInterpolIndices->resize(out->size());
         linearInterpolValues->resize(out->size());
     }
