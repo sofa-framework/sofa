@@ -39,6 +39,7 @@
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/CollisionModel.h>
@@ -327,6 +328,7 @@ public:
     Sequence<core::behavior::BaseConstraint> constraint;
     Sequence<core::behavior::BaseLMConstraint> LMConstraint;
     Sequence<core::objectmodel::ContextObject> contextObject;
+    Sequence<core::objectmodel::ConfigurationSetting> configurationSetting;
 
     Sequence<core::BaseMapping> mapping;
     Sequence<core::BehaviorModel> behaviorModel;

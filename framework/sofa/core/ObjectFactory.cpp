@@ -27,6 +27,7 @@
 #include "ObjectFactory.h"
 
 #include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
@@ -411,6 +412,8 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("CollisionAlgorithm");
     if (mclass->hasParent(core::collision::Intersection::GetClass()))
         entry.baseClasses.insert("CollisionAlgorithm");
+    if (mclass->hasParent(core::objectmodel::ConfigurationSetting::GetClass()))
+        entry.baseClasses.insert("ConfigurationSetting");
     return *this;
 }
 

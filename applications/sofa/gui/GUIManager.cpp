@@ -230,7 +230,11 @@ sofa::simulation::Node* GUIManager::CurrentSimulation()
 
 void GUIManager::SetScene(sofa::simulation::Node* groot, const char* filename /*=NULL*/, bool temporaryFile /*=false*/ )
 {
-    if (currentGUI) currentGUI->setScene(groot,filename,temporaryFile);
+    if (currentGUI)
+    {
+        currentGUI->setScene(groot,filename,temporaryFile);
+        currentGUI->configureGUI(groot);
+    }
 
 }
 
