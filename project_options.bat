@@ -25,29 +25,30 @@ echo 3 : rebuild tutorials
 echo 4 : rebuild all components
 echo 5 :   - rebuild behaviormodel
 echo 6 :   - rebuild collision
-echo 7 :   - rebuild constraint
-echo 8 :   - rebuild contextobject
-echo 9 :   - rebuild controller
-echo 10:   - rebuild engine
-echo 11 :  - rebuild fem
-echo 12 :  - rebuild forcefield
-echo 13 :  - rebuild interactionforcefield
-echo 14 :  - rebuild linearsolver
-echo 15 :  - rebuild loader
-echo 16 :  - rebuild mapping
-echo 17 :  - rebuild mass
-echo 18 :  - rebuild mastersolver
-echo 19 :  - rebuild misc
-echo 20 :  - rebuild odesolver
-echo 21 :  - rebuild topology
-echo 22 :  - rebuild typedef
-echo 23 :  - rebuild visualmodel
-echo 24 : rebuild gui
-echo 25 : rebuild simulation
-echo 26 : rebuild cuda module
-echo 27 : rebuild core
-echo 28 : rebuild defaulttype
-echo 29 : rebuild helper
+echo 7 :   - rebuild configurationsetting
+echo 8 :   - rebuild constraint
+echo 9 :   - rebuild contextobject
+echo 10 :   - rebuild controller
+echo 11:   - rebuild engine
+echo 12 :  - rebuild fem
+echo 13 :  - rebuild forcefield
+echo 14 :  - rebuild interactionforcefield
+echo 15 :  - rebuild linearsolver
+echo 16 :  - rebuild loader
+echo 17 :  - rebuild mapping
+echo 18 :  - rebuild mass
+echo 19 :  - rebuild mastersolver
+echo 20 :  - rebuild misc
+echo 21 :  - rebuild odesolver
+echo 22 :  - rebuild topology
+echo 23 :  - rebuild typedef
+echo 24 :  - rebuild visualmodel
+echo 25 : rebuild gui
+echo 26 : rebuild simulation
+echo 27 : rebuild cuda module
+echo 28 : rebuild core
+echo 29 : rebuild defaulttype
+echo 30 : rebuild helper
 set /p choix=your choice : 
 if %choix%==0	set mode=Sofa&		set proj=Sofa.sln	 
 if %choix%==1	set mode=projects&	set proj=Sofa.sln&	cd applications\projects
@@ -56,29 +57,30 @@ if %choix%==3 	set mode=tutorials&	set proj=Sofa.sln&	cd applications\plugins
 if %choix%==4 	set mode=component&	set proj=Sofa.sln&	cd modules\sofa\component
 if %choix%==5 	set mode=behaviormodel& 			set proj=sofacomponentbehaviormodel.vcproj&	 cd modules\sofa\component\behaviormodel
 if %choix%==6 	set mode=collision& 				set proj=sofacomponentcollision.vcproj&	 cd modules\sofa\component\collision
-if %choix%==7 	set mode=constraint& 				set proj=sofacomponentconstraint.vcproj&	 cd modules\sofa\component\constraint
-if %choix%==8 	set mode=contextobject& 			set proj=sofacomponentcontextobject.vcproj&	 cd modules\sofa\component\contextobject
-if %choix%==9 	set mode=controller& 				set proj=sofacomponentcontroller.vcproj&	 cd modules\sofa\component\controller
-if %choix%==10	set mode=engine& 					set proj=sofacomponentengine.vcproj&	 cd modules\sofa\component\engine
-if %choix%==11	set mode=fem& 						set proj=sofacomponentfem.vcproj&	cd modules\sofa\component\fem
-if %choix%==12	set mode=forcefield& 				set proj=sofacomponentforcefield.vcproj&	 cd modules\sofa\component\forcefield
-if %choix%==13 	set mode=interactionforcefield& 	set proj=sofacomponentinteractionforcefield.vcproj&	 cd modules\sofa\component\interactionforcefield
-if %choix%==14 	set mode=linearsolver& 				set proj=sofacomponentlinearsolver.vcproj&	 cd modules\sofa\component\linearsolver
-if %choix%==15 	set mode=loader& 					set proj=sofacomponentloader.vcproj&	 cd modules\sofa\component\loader
-if %choix%==16 	set mode=mapping& 					set proj=sofacomponentmapping.vcproj&	 cd modules\sofa\component\mapping
-if %choix%==17 	set mode=mass& 						set proj=sofacomponentmass.vcproj&	 cd modules\sofa\component\mass
-if %choix%==18 	set mode=mastersolver& 				set proj=sofacomponentmastersolver.vcproj&	 cd modules\sofa\component\mastersolver
-if %choix%==19 	set mode=misc& 						set proj=sofacomponentmisc.vcproj&	 cd modules\sofa\component\misc
-if %choix%==20 	set mode=odesolver& 				set proj=sofacomponentodesolver.vcproj&	 cd modules\sofa\component\odesolver
-if %choix%==21 	set mode=topology& 					set proj=sofacomponenttopology.vcproj&	 cd modules\sofa\component\topology
-if %choix%==22 	set mode=typedef& 					set proj=sofacomponenttypedef.vcproj&	 cd modules\sofa\component\typedef
-if %choix%==23 	set mode=visualmodel& 				set proj=sofacomponentvisualmodel.vcproj&	 cd modules\sofa\component\visualmodel
-if %choix%==24 	set mode=gui&			set proj=Sofa.sln&	cd applications\sofa\gui
-if %choix%==25 	set mode=simulation&	set proj=Sofa.sln&	cd modules\sofa\simulation
-if %choix%==26 	set mode=gpu&			set proj=Sofa.sln&	cd modules\sofa\gpu
-if %choix%==27 	set mode=core&			set proj=sofacore.vcproj&	cd framework\sofa\core
-if %choix%==28 	set mode=defaulttype&	set proj=sofadefaulttype.vcproj.sln&	cd framework\sofa\defaulttype
-if %choix%==29 	set mode=helper&		set proj=sofahelper.vcproj&	cd framework\sofa\helper
+if %choix%==7 	set mode=configurationsetting& 			set proj=sofacomponentconfigurationsetting.vcproj&	 cd modules\sofa\component\configurationsetting
+if %choix%==8 	set mode=constraint& 				set proj=sofacomponentconstraint.vcproj&	 cd modules\sofa\component\constraint
+if %choix%==9 	set mode=contextobject& 			set proj=sofacomponentcontextobject.vcproj&	 cd modules\sofa\component\contextobject
+if %choix%==10 	set mode=controller& 				set proj=sofacomponentcontroller.vcproj&	 cd modules\sofa\component\controller
+if %choix%==11	set mode=engine& 					set proj=sofacomponentengine.vcproj&	 cd modules\sofa\component\engine
+if %choix%==12	set mode=fem& 						set proj=sofacomponentfem.vcproj&	cd modules\sofa\component\fem
+if %choix%==13	set mode=forcefield& 				set proj=sofacomponentforcefield.vcproj&	 cd modules\sofa\component\forcefield
+if %choix%==14 	set mode=interactionforcefield& 	set proj=sofacomponentinteractionforcefield.vcproj&	 cd modules\sofa\component\interactionforcefield
+if %choix%==15 	set mode=linearsolver& 				set proj=sofacomponentlinearsolver.vcproj&	 cd modules\sofa\component\linearsolver
+if %choix%==16 	set mode=loader& 					set proj=sofacomponentloader.vcproj&	 cd modules\sofa\component\loader
+if %choix%==17 	set mode=mapping& 					set proj=sofacomponentmapping.vcproj&	 cd modules\sofa\component\mapping
+if %choix%==18 	set mode=mass& 						set proj=sofacomponentmass.vcproj&	 cd modules\sofa\component\mass
+if %choix%==19 	set mode=mastersolver& 				set proj=sofacomponentmastersolver.vcproj&	 cd modules\sofa\component\mastersolver
+if %choix%==20 	set mode=misc& 						set proj=sofacomponentmisc.vcproj&	 cd modules\sofa\component\misc
+if %choix%==21 	set mode=odesolver& 				set proj=sofacomponentodesolver.vcproj&	 cd modules\sofa\component\odesolver
+if %choix%==22 	set mode=topology& 					set proj=sofacomponenttopology.vcproj&	 cd modules\sofa\component\topology
+if %choix%==23 	set mode=typedef& 					set proj=sofacomponenttypedef.vcproj&	 cd modules\sofa\component\typedef
+if %choix%==24 	set mode=visualmodel& 				set proj=sofacomponentvisualmodel.vcproj&	 cd modules\sofa\component\visualmodel
+if %choix%==25 	set mode=gui&			set proj=Sofa.sln&	cd applications\sofa\gui
+if %choix%==26 	set mode=simulation&	set proj=Sofa.sln&	cd modules\sofa\simulation
+if %choix%==27 	set mode=gpu&			set proj=Sofa.sln&	cd modules\sofa\gpu
+if %choix%==28 	set mode=core&			set proj=sofacore.vcproj&	cd framework\sofa\core
+if %choix%==29 	set mode=defaulttype&	set proj=sofadefaulttype.vcproj.sln&	cd framework\sofa\defaulttype
+if %choix%==30 	set mode=helper&		set proj=sofahelper.vcproj&	cd framework\sofa\helper
 echo you chose %mode%
 goto params
 
