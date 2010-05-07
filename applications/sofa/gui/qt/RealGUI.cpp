@@ -1216,6 +1216,12 @@ void RealGUI::setTraceVisitors(bool b)
 
 #endif
 
+void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
+{
+    SofaMouseManager::getInstance()->updateOperation(button);
+//        SofaMouseManager::getInstance()->updateContent();
+}
+
 //--------------------------------------
 void RealGUI::changeInstrument(int id)
 {

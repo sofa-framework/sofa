@@ -88,7 +88,9 @@ public:
         if (it != reg.end())
         {
             const OperationCreator *creator=it->second;
-            return creator->create();
+            Operation* op=creator->create();
+            if (op) op->id=name;
+            return op;
         }
         else return NULL;
     }

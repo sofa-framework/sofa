@@ -86,7 +86,6 @@ public slots:
     /// emit DataOwnerDirty in case the name field has been modified
     void updateDataValue()
     {
-
         if(dirty)
         {
             std::string previousName = baseData->getOwner()->getName();
@@ -141,6 +140,7 @@ public:
     inline virtual void setData( MyData* d)
     {
         baseData = d;
+        readFromData();
     }
 
 

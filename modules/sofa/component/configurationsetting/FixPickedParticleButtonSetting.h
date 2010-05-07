@@ -22,11 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
+#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_FIXPICKEDPARTICLEBUTTON_H
+#define SOFA_COMPONENT_CONFIGURATIONSETTING_FIXPICKEDPARTICLEBUTTON_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -37,17 +38,21 @@ namespace component
 namespace configurationsetting
 {
 
-class MouseButtonSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_COMPONENT_CONFIGURATIONSETTING_API FixPickedParticleButtonSetting: public MouseButtonSetting
 {
 public:
-    SOFA_CLASS(MouseButtonSetting,core::objectmodel::ConfigurationSetting);
-    MouseButtonSetting();
-    virtual std::string getOperationType()=0;
+    SOFA_CLASS(FixPickedParticleButtonSetting,MouseButtonSetting);
+    FixPickedParticleButtonSetting();
 
-    unsigned int getButton() const {return button.getValue().getSelectedId();}
+    std::string getOperationType() {return "Fix";}
 
+    void setStiffness(SReal s) {stiffness.setValue(s);}
+    SReal getStiffness() const {return stiffness.getValue();};
+
+
+    Data<SReal> *getDataStiffness() {return &stiffness;};
 protected:
-    Data<sofa::helper::OptionsGroup> button;
+    Data<SReal> stiffness;
 };
 
 }

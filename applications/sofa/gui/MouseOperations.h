@@ -30,6 +30,7 @@
 #include <vector>
 
 #include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+#include <sofa/component/configurationsetting/FixPickedParticleButtonSetting.h>
 
 namespace sofa
 {
@@ -49,27 +50,44 @@ class PickHandler;
 
 class Operation
 {
+    friend class OperationFactory;
 public:
     Operation(): pickHandle(NULL), performer(NULL),button(NONE) {};
     virtual ~Operation() {};
-    virtual void configure(PickHandler *picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
+    virtual void configure(PickHandler*picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
+    virtual void configure(PickHandler* picker, sofa::component::configurationsetting::MouseButtonSetting* button)
+    {configure(picker,GetMouseId(button->getButton()));};
     virtual void start() =0;                   /// This function is called each time the mouse is clicked.
     virtual void execution() =0;
-    virtual void end()     =0;                 /// This function is called after each mouse click.
+    virtual void end() =0;                     /// This function is called after each mouse click.
     virtual void endOperation() {this->end();}; /// This function is called when shift key is released.
     virtual void wait() {};
+    static MOUSE_BUTTON GetMouseId(unsigned int i)
+    {
+        switch (i)
+        {
+        case LEFT:   return LEFT;
+        case MIDDLE: return MIDDLE;
+        case RIGHT:  return RIGHT;
+        default:     return NONE;
+        }
+    }
 protected:
     PickHandler *pickHandle;
 public:
     sofa::component::collision::InteractionPerformer *performer;
+
+    MOUSE_BUTTON getMouseButton() const {return button;};
+    std::string getId() {return id;};
 protected:
     MOUSE_BUTTON button;
+private:
+    std::string id;
 };
 
 class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
-    AttachOperation();
     virtual ~AttachOperation() {};
     virtual void start() ;
     virtual void execution() ;
@@ -85,6 +103,32 @@ public:
 protected:
     sofa::component::configurationsetting::AttachBodyButtonSetting setting;
 };
+
+class SOFA_SOFAGUI_API FixOperation : public Operation
+{
+public:
+    virtual ~FixOperation() {};
+    virtual void start() ;
+    virtual void execution() ;
+    virtual void end() ;
+
+    void setStiffness(double s) {setting.setStiffness(s);}
+    virtual double getStiffness() const { return setting.getStiffness();}
+
+    static std::string getDescription() {return "Fix Picked particle";}
+protected:
+    sofa::component::configurationsetting::FixPickedParticleButtonSetting setting;
+};
+
+class SOFA_SOFAGUI_API AddFrameOperation : public Operation
+{
+public:
+    virtual void start() ;
+    virtual void execution() {};
+    virtual void end() {};
+    static std::string getDescription() {return "Add a Frame to a Skinned model";}
+};
+
 
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
@@ -148,33 +192,6 @@ protected:
     bool firstClick;
 };
 
-class SOFA_SOFAGUI_API FixOperation : public Operation
-{
-public:
-    FixOperation():stiffness(10000.0) {};
-    virtual ~FixOperation() {};
-    virtual void start() ;
-    virtual void execution() ;
-    virtual void end() ;
-
-    void setStiffness(double s) {stiffness = s;}
-    virtual double getStiffness() const { return stiffness;}
-
-    static std::string getDescription() {return "Fix Picked particle";}
-protected:
-    double stiffness;
-};
-
-
-class SOFA_SOFAGUI_API AddFrameOperation : public Operation
-{
-public:
-    virtual void start() ;
-    virtual void execution() {};
-    virtual void end() {};
-
-    static std::string getDescription() {return "Add a Frame to a Skinned model";}
-};
 
 class SOFA_SOFAGUI_API AddSutureOperation : public Operation
 {

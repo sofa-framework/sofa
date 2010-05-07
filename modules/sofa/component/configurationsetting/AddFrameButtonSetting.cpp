@@ -22,11 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
 
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/configurationsetting/AddFrameButtonSetting.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -37,22 +35,18 @@ namespace component
 namespace configurationsetting
 {
 
-class MouseButtonSetting: public core::objectmodel::ConfigurationSetting
+SOFA_DECL_CLASS(AddFrameButtonSetting)
+int AddFrameButtonSettingClass = core::RegisterObject("Fix a picked particle in space")
+        .add< AddFrameButtonSetting >()
+        .addAlias("AddFrameButton")
+        ;
+
+AddFrameButtonSetting::AddFrameButtonSetting()
 {
-public:
-    SOFA_CLASS(MouseButtonSetting,core::objectmodel::ConfigurationSetting);
-    MouseButtonSetting();
-    virtual std::string getOperationType()=0;
-
-    unsigned int getButton() const {return button.getValue().getSelectedId();}
-
-protected:
-    Data<sofa::helper::OptionsGroup> button;
-};
+}
 
 }
 
 }
 
 }
-#endif

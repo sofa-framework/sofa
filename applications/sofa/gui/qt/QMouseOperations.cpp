@@ -25,6 +25,9 @@
 
 #include <sofa/gui/qt/QMouseOperations.h>
 #include <sofa/gui/qt/QDisplayDataWidget.h>
+
+#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+
 #ifdef SOFA_QT4
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -50,36 +53,40 @@ namespace gui
 
 namespace qt
 {
+
+DataWidget *QMouseOperation::createWidgetFromData(sofa::core::objectmodel::BaseData* data)
+{
+    DataWidget::CreatorArgument arg;
+    arg.data = data;
+    arg.name =  arg.data->getName();
+    arg.parent = this;
+    arg.readOnly = arg.data->isReadOnly();
+    DataWidget *widget = DataWidget::CreateDataWidget(arg);
+    connect(widget, SIGNAL(WidgetDirty(bool)), this, SLOT(WidgetDirty(bool)));
+    return widget;
+}
+
+void QMouseOperation::WidgetDirty(bool b)
+{
+    if (b)
+    {
+        DataWidget *dataW=(DataWidget*) sender();
+
+        dataW->updateDataValue();
+    }
+}
+
+
 //*******************************************************************************************
 QAttachOperation::QAttachOperation()
 {
     //Building the GUI for the Attach Operation
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label=new QLabel(QString("Stiffness"), this);
-
-    {
-        //Stiffness
-        DataWidget::CreatorArgument argStiffness;
-        argStiffness.data = setting.getDataStiffness();
-        argStiffness.name =  argStiffness.data->getName();
-        argStiffness.parent = this;
-        argStiffness.readOnly = argStiffness.data->isReadOnly();
-        stiffnessWidget = DataWidget::CreateDataWidget(argStiffness);
-        connect(stiffnessWidget, SIGNAL(WidgetDirty(bool)), this, SLOT(WidgetDirty(bool)));
-    }
-
+    stiffnessWidget = createWidgetFromData(setting.getDataStiffness());
 
     QLabel *labelSize=new QLabel(QString("Arrow Size"), this);
-    {
-        //Arrow Size
-        DataWidget::CreatorArgument argArrowSize;
-        argArrowSize.data = setting.getDataArrowSize();
-        argArrowSize.name =  argArrowSize.data->getName();
-        argArrowSize.parent = this;
-        argArrowSize.readOnly = argArrowSize.data->isReadOnly();
-        arrowSizeWidget = DataWidget::CreateDataWidget(argArrowSize);
-        connect(arrowSizeWidget, SIGNAL(WidgetDirty(bool)), this, SLOT(WidgetDirty(bool)));
-    }
+    arrowSizeWidget = createWidgetFromData(setting.getDataArrowSize());
 
     layout->addWidget(stiffnessWidget);
     layout->addWidget(label);
@@ -88,27 +95,48 @@ QAttachOperation::QAttachOperation()
 //        layout->addWidget(arrowSizeWidget);
 }
 
-void QAttachOperation::WidgetDirty(bool b)
+
+void QAttachOperation::configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button)
 {
-    if (b)
+    if (sofa::component::configurationsetting::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::component::configurationsetting::AttachBodyButtonSetting*>(button))
     {
-        DataWidget *dataW=(DataWidget*) sender();
-        dataW->updateDataValue();
+        AttachOperation::configure(picker,GetMouseId(button->getButton()));
+        setting.getDataStiffness()->setValue(attachSetting->getStiffness());
+        setting.getDataArrowSize()->setValue(attachSetting->getArrowSize());
+
+        stiffnessWidget->updateWidgetValue();
+        arrowSizeWidget->updateWidgetValue();
     }
+    else AttachOperation::configure(picker,GetMouseId(button->getButton()));
 }
-
-//      double QAttachOperation::getStiffness() const
-//      {
-//        return atof(value->displayText().ascii());
-//      }
-
-//      double QAttachOperation::getArrowSize() const
-//      {
-//        return atof(size->displayText().ascii());
-//      }
-
 //*******************************************************************************************
 
+
+//*******************************************************************************************
+QFixOperation::QFixOperation()
+{
+    //Building the GUI for the Fix Operation
+    QHBoxLayout *layout=new QHBoxLayout(this);
+    QLabel *label=new QLabel(QString("Fixation"), this);
+    stiffnessWidget = createWidgetFromData(setting.getDataStiffness());
+
+    layout->addWidget(stiffnessWidget);
+    layout->addWidget(label);
+}
+
+void QFixOperation::configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button)
+{
+    if (sofa::component::configurationsetting::FixPickedParticleButtonSetting* fixSetting=dynamic_cast<sofa::component::configurationsetting::FixPickedParticleButtonSetting*>(button))
+    {
+        FixOperation::configure(picker,GetMouseId(button->getButton()));
+        setting.getDataStiffness()->setValue(fixSetting->getStiffness());
+
+        stiffnessWidget->updateWidgetValue();
+    }
+    else FixOperation::configure(picker,GetMouseId(button->getButton()));
+}
+
+//*******************************************************************************************
 
 //*******************************************************************************************
 QInciseOperation::QInciseOperation()
@@ -229,25 +257,6 @@ int QInciseOperation::getSnapingValue() const
 
 //*******************************************************************************************
 
-
-//*******************************************************************************************
-QFixOperation::QFixOperation()
-{
-    //Building the GUI for the Fix Operation
-    QHBoxLayout *layout=new QHBoxLayout(this);
-    QLabel *label=new QLabel(QString("Fixation"), this);
-    value=new QLineEdit(QString("10000.0"), this);
-
-    layout->addWidget(label);
-    layout->addWidget(value);
-}
-
-double QFixOperation::getStiffness() const
-{
-    return atof(value->displayText().ascii());
-}
-
-//*******************************************************************************************
 
 
 //*******************************************************************************************

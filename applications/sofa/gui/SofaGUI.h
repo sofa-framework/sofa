@@ -29,6 +29,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/component/configurationsetting/MouseButtonSetting.h>
 
 #include <list>
 //class QWidget;
@@ -75,6 +76,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void setTraceVisitors(bool) {};
 #endif
+    virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
     /// @}
 
 
