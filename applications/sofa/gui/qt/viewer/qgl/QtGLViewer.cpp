@@ -194,6 +194,8 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
 
     visualParameters.zNear = camera()->zNear();
     visualParameters.zFar = camera()->zFar();
+
+    connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
 }
 
 
@@ -929,8 +931,9 @@ void QtGLViewer::draw()
         static int counter = 0;
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
-            screenshot(capture.findFilename(), 2);
-    }
+        }
+
+    SofaViewer::captureEvent();
 
     if (_waitForRender)
         _waitForRender = false;
