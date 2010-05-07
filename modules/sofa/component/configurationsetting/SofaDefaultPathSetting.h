@@ -22,9 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_SOFADEFAULTPATH_H
+#define SOFA_COMPONENT_CONFIGURATIONSETTING_SOFADEFAULTPATH_H
 
-#include <sofa/component/configurationsetting/AddFrameButtonSetting.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -35,18 +37,26 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(AddFrameButtonSetting)
-int AddFrameButtonSettingClass = core::RegisterObject("Add a frame to a skinned model")
-        .add< AddFrameButtonSetting >()
-        .addAlias("AddFrameButton")
-        ;
-
-AddFrameButtonSetting::AddFrameButtonSetting()
+class SOFA_COMPONENT_CONFIGURATIONSETTING_API SofaDefaultPathSetting: public core::objectmodel::ConfigurationSetting
 {
-}
+public:
+    SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting);
+    SofaDefaultPathSetting();
+
+    void setRecordPath(const std::string& f) {recordPath.setValue(f);}
+    const std::string &getRecordPath() const {return recordPath.getValue();}
+
+    void setGnuplotPath(const std::string& f) {gnuplotPath.setValue(f);}
+    const std::string &getGnuplotPath() const {return gnuplotPath.getValue();}
+
+protected:
+    Data<std::string> recordPath;
+    Data<std::string> gnuplotPath;
+};
 
 }
 
 }
 
 }
+#endif

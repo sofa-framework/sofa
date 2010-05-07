@@ -1216,6 +1216,22 @@ void RealGUI::setTraceVisitors(bool b)
 
 #endif
 
+void RealGUI::setRecordPath(const std::string &
+#ifndef SOFA_GUI_QT_NO_RECORDER
+        path
+#endif
+                           )
+{
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    if (recorder) recorder->SetRecordDirectory(path);
+#endif
+}
+
+void RealGUI::setGnuplotPath(const std::string &path)
+{
+    simulation::getSimulation()->gnuplotDirectory.setValue(path);
+}
+
 void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
 {
     SofaMouseManager::getInstance()->updateOperation(button);
