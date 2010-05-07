@@ -46,6 +46,7 @@
 #include <sofa/gui/qt/DisplayFlagWidget.h>
 #include <sofa/gui/qt/SofaPluginManager.h>
 #include <sofa/gui/qt/SofaMouseManager.h>
+#include <sofa/gui/qt/SofaVideoRecorderManager.h>
 
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -195,6 +196,8 @@ public:
     virtual void editGnuplotDirectory();
     virtual void showPluginManager();
     virtual void showMouseManager();
+    virtual void showVideoRecorderManager();
+
 
     void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);

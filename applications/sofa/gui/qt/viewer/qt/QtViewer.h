@@ -181,6 +181,7 @@ public slots:
     virtual void getView(float* pos, float* ori) const;
     virtual void setView(float* pos, float* ori);
     virtual void moveView(float* pos, float* ori);
+    virtual void captureEvent() { SofaViewer::captureEvent(); }
 
 signals:
     void redrawn();
