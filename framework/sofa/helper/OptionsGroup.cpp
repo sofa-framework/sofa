@@ -145,12 +145,12 @@ void OptionsGroup::readFromStream(std::istream & stream)
 ///////////////////////////////////////
 void OptionsGroup::writeToStream(std::ostream & stream) const
 {
-
-    for(unsigned int i=0; i<textItems.size()-1; i++)
-    {
-        std::string tempostring= textItems.operator[](i);
-        stream<< tempostring << " ";
-    }
+    stream << getSelectedItem();
+//	for(unsigned int i=0;i<textItems.size()-1;i++)
+//	{
+//		std::string tempostring= textItems.operator[](i);
+//		stream<< tempostring << " ";
+//	}
 }
 ///////////////////////////////////////
 void OptionsGroup::TestOptionsGroup() const
