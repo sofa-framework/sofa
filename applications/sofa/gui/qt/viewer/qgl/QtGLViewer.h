@@ -232,6 +232,7 @@ public slots:
     void saveView();
     void setSizeW(int);
     void setSizeH(int);
+    virtual void captureEvent() { SofaViewer::captureEvent(); }
 
 signals:
     void redrawn();
