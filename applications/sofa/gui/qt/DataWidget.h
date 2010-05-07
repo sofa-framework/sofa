@@ -197,7 +197,6 @@ public:
             delete instance;
             instance = NULL;
         }
-        else instance->updateVisibility();
     }
 
 
@@ -242,10 +241,6 @@ public:
             {
                 delete obj;
                 obj = NULL;
-            }
-            else
-            {
-                obj->updateVisibility();
             }
         }
 

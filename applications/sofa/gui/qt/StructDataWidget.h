@@ -35,6 +35,12 @@
 /* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
 #include <sofa/helper/io/Mesh.h>
 
+#ifdef SOFA_QT4
+#include <QHBoxLayout>
+#else
+#include <qlayout.h>
+#endif
+
 namespace sofa
 {
 
@@ -87,20 +93,26 @@ public:
     PrevContainer p;
     Container w;
     QCheckBox* check;
+    int current;
 
-    struct_data_widget_container() : check(NULL) {}
+    struct_data_widget_container() : check(NULL),current(struct_data_trait<T>::NVAR) {}
 
-    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * parent, const data_type& d, bool readOnly)
     {
-        if (!p.createWidgets(_widget, parent, d, readOnly))
+        if (!p.createWidgets( parent, d, readOnly))
             return false;
 
+        if( parent->layout() == NULL)
+        {
+            new QHBoxLayout(parent);
+        }
 
         const char* name = vhelper::name();
         bool checkable = vhelper::isCheckable();
         if (checkable)
         {
             check = new QCheckBox(parent);
+            parent->layout()->add(check);
             if (name && *name)
             {
                 check->setText(QString(name));
@@ -108,14 +120,12 @@ public:
         }
         else
         {
-            // hack : empty QLabel for formatting purposes only when T = sofa::core::componentmode:Material
-            new QLabel(parent);
             if (name && *name && N > 1)
             {
-                new QLabel(QString("name"),parent);
+                parent->layout()->add(new QLabel(QString("name"),parent));
             }
         }
-        if (!w.createWidgets(_widget, parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
+        if (!w.createWidgets(parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
             return false;
 
         if (checkable)
@@ -128,15 +138,9 @@ public:
             {
                 if (!isChecked)
                     w.setReadOnly(true);
-                _widget->connect(check, SIGNAL( toggled(bool) ), _widget, SLOT( setWidgetDirty() ));
-                if( w.parent_w)
-                {
-                    _widget->connect(check, SIGNAL( toggled(bool) ), w.parent_w, SLOT( setEnabled(bool) ));
-                }
-                else
-                {
-                    _widget->connect(check, SIGNAL( toggled(bool) ),_widget, SLOT( propagateReadOnly(bool) ));
-                }
+                parent->connect(check, SIGNAL( toggled(bool) ),parent, SLOT( setWidgetDirty() ));
+                parent->connect(check, SIGNAL( toggled(bool) ),parent, SLOT( setReadOnly(bool) ));
+
             }
         }
         return true;
@@ -201,7 +205,7 @@ public:
     typedef T data_type;
     typedef struct_data_trait<data_type> shelper;
     struct_data_widget_container() {}
-    bool createWidgets(DataWidget * /*_widget*/, QWidget* /*parent*/, const data_type& /*d*/, bool /*readOnly*/)
+    bool createWidgets(DataWidget * /*parent*/, const data_type& /*d*/, bool /*readOnly*/)
     {
         return true;
     }

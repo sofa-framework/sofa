@@ -32,6 +32,11 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
 
+#ifdef SOFA_QT4
+#include <QVBoxLayout>
+#else
+#include <qlayout.h>
+#endif
 
 //If a table has higher than MAX_NUM_ELEM, its data won't be loaded at the creation of the window
 //user has to click on the button update to see the content
@@ -358,8 +363,9 @@ public:
         s = getCellText(r,c);
     }
 
-    bool createWidgets(DataWidget *_widget, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
+        QVBoxLayout* layout = new QVBoxLayout(parent);
         rows = 0;
         int dataRows = rhelper::size(d);
 
@@ -376,7 +382,7 @@ public:
         else
             wTable = new QTableUpdater(dataRows, cols, parent);
 
-        widget=_widget;
+        widget=parent;
 
 
 
@@ -393,7 +399,13 @@ public:
             fillTable(d);
             rows = dataRows;
         }
+        layout->add(wSize);
+        layout->add(wTable);
+        layout->add(wDisplay);
+
         wTable->setDisplayed(isDisplayed());
+
+
 
         if (readOnly)
         {
@@ -404,24 +416,24 @@ public:
         {
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
-                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT( setWidgetDirty() ));
+                parent->connect(wSize, SIGNAL( valueChanged(int) ), parent, SLOT( setWidgetDirty() ));
                 //_widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(updateDataValue()) );
 
 
                 if( FLAGS & TABLE_HORIZONTAL)
-                    _widget->connect(wSize, SIGNAL( valueChanged(int) ), wTable, SLOT(resizeTableH(int) ) );
+                    parent->connect(wSize, SIGNAL( valueChanged(int) ), wTable, SLOT(resizeTableH(int) ) );
                 else
-                    _widget->connect(wSize, SIGNAL( valueChanged(int) ), wTable, SLOT(resizeTableV(int) ) );
+                    parent->connect(wSize, SIGNAL( valueChanged(int) ), wTable, SLOT(resizeTableV(int) ) );
             }
             else
             {
                 wSize->setEnabled(false);
             }
-            _widget->connect(wTable, SIGNAL( valueChanged(int,int) ), _widget, SLOT(setWidgetDirty()) );
+            parent->connect(wTable, SIGNAL( valueChanged(int,int) ), parent, SLOT(setWidgetDirty()) );
         }
-        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wTable,   SLOT(setDisplayed(bool)));
-        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
-        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), _widget, SLOT( updateWidgetValue() ));
+        parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTable,   SLOT(setDisplayed(bool)));
+        parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
+        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
         return true;
     }
 
