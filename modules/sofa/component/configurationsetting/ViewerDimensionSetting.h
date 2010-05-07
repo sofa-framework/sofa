@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_VIEWERDIMENSION_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa
@@ -37,7 +38,7 @@ namespace component
 namespace configurationsetting
 {
 
-class ViewerDimensionSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_COMPONENT_CONFIGURATIONSETTING_API ViewerDimensionSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(ViewerDimensionSetting,core::objectmodel::ConfigurationSetting);
