@@ -40,6 +40,14 @@
 #include <sofa/helper/Polynomial_LD.inl>
 #include <sofa/helper/OptionsGroup.h>
 
+#include <functional>
+#ifdef SOFA_QT4
+#include <QLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#else
+#include <qlayout.h>
+#endif
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -88,20 +96,7 @@ public:
 };
 
 
-template<class T>
-class parent_data_widget_trait
-{
-public:
-    typedef T data_type;
-    typedef Q3Grid Widget;
-    Widget* w;
 
-    static Widget* create(QWidget* parent, const data_type& )
-    {
-        return NULL;
-    }
-
-};
 
 
 /// This class is used to create and manage the GUI of a data type,
@@ -113,29 +108,35 @@ public:
     typedef T data_type;
     typedef data_widget_trait<data_type> helper;
     typedef typename helper::Widget Widget;
-    typedef Q3Grid ParentWidget;
     Widget* w;
-    ParentWidget* parent_w;
 
-    data_widget_container() : w(NULL),parent_w(NULL) {  }
+    data_widget_container() : w(NULL) {  }
 
-    bool createWidgets(DataWidget * datawidget, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
-        parent_w = createParentWidget(parent,1);
-        assert(parent_w != NULL);
-        w = helper::create(parent_w,d);
+        w = helper::create(parent,d);
         if (w == NULL) return false;
 
         helper::readFromData(w, d);
         if (readOnly)
             w->setEnabled(false);
         else
-            helper::connectChanged(w, datawidget);
+            helper::connectChanged(w, parent);
+
+        if( parent->layout() != NULL)
+        {
+            parent->layout()->add(w);
+        }
+        else
+        {
+            QHBoxLayout* layout = new QHBoxLayout(parent);
+            layout->add(w);
+        }
         return true;
     }
     void setReadOnly(bool readOnly)
     {
-        parent_w->setEnabled(!readOnly);
+        w->setEnabled(!readOnly);
     }
     void readFromData(const data_type& d)
     {
@@ -144,11 +145,6 @@ public:
     void writeToData(data_type& d)
     {
         helper::writeToData(w, d);
-    }
-
-    ParentWidget* createParentWidget(QWidget* parent, int n )
-    {
-        return new ParentWidget(n,parent);
     }
 };
 
@@ -171,7 +167,7 @@ public:
     virtual bool createWidgets()
     {
         const data_type& d = this->getData()->virtualGetValue();
-        if (!container.createWidgets(this, this->parentWidget(), d, ! (this->isEnabled()) ))
+        if (!container.createWidgets(this, d, ! this->isEnabled() ) )
             return false;
         return true;
     }
@@ -180,13 +176,18 @@ public:
         container.readFromData(this->getData()->virtualGetValue());
     }
 
+    virtual void setReadOnly(bool readOnly)
+    {
+        container.setReadOnly(readOnly);
+    }
+
     virtual void writeToData()
     {
         data_type d = this->getData()->virtualGetValue();
         container.writeToData(d);
         this->getData()->virtualSetValue(d);
     }
-    virtual unsigned int numColumnWidget() { return 3; }
+    virtual unsigned int numColumnWidget() { return 5; }
 };
 
 ////////////////////////////////////////////////////////////////
@@ -278,7 +279,9 @@ public:
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()));
+        datawidget->connect(w, SIGNAL( floatValueChanged(float) ), datawidget, SLOT(setWidgetDirty()));
+        datawidget->connect(w, SIGNAL( valuePercentChanged(int) ), datawidget, SLOT(setWidgetDirty()));
+
     }
 };
 
@@ -385,29 +388,29 @@ public:
     typedef T data_type;
     typedef vector_data_trait<data_type> vhelper;
     typedef typename vhelper::value_type value_type;
-    typedef Q3Grid ParentWidget;
     enum { N = vhelper::SIZE };
     Container w[N];
 
-    ParentWidget* parent_w;
     fixed_vector_data_widget_container() {}
 
-    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
-        parent_w = createParentWidget(parent,N);
-        assert(parent_w != NULL);
+        if( parent->layout() == NULL)
+        {
+            new QHBoxLayout(parent);
+        }
+
         for (int i=0; i<N; ++i)
-            if (!w[i].createWidgets(_widget,
-                    parent_w, *vhelper::get(d,i), readOnly))
+            if (!w[i].createWidgets(parent, *vhelper::get(d,i), readOnly))
                 return false;
 
         return true;
     }
     void setReadOnly(bool readOnly)
     {
-        parent_w->setEnabled(!readOnly);
-        /*for (int i=0; i<N; ++i)
-          w[i].setReadOnly(readOnly);*/
+
+        for (int i=0; i<N; ++i)
+            w[i].setReadOnly(readOnly);
     }
     void readFromData(const data_type& d)
     {
@@ -423,11 +426,6 @@ public:
             vhelper::set(v,d,i);
         }
     }
-
-    ParentWidget* createParentWidget(QWidget* parent, int n = 1)
-    {
-        return new ParentWidget(n,parent);
-    }
 };
 
 template<class T, class Container = data_widget_container< typename vector_data_trait< typename vector_data_trait<T>::value_type >::value_type> >
@@ -439,29 +437,29 @@ public:
     typedef typename rhelper::value_type row_type;
     typedef vector_data_trait<row_type> vhelper;
     typedef typename vhelper::value_type value_type;
-    typedef Q3Grid ParentWidget;
-
     enum { L = rhelper::SIZE };
     enum { C = vhelper::SIZE };
 
-    ParentWidget* parent_w;
     Container w[L][C];
     fixed_grid_data_widget_container() {}
 
-    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
-
-        parent_w = createParentWidget(parent,C);
-        assert(parent_w);
+        if( parent->layout() == NULL )
+        {
+            new QGridLayout(parent,L,C);
+        }
         for (int y=0; y<L; ++y)
             for (int x=0; x<C; ++x)
-                if (!w[y][x].createWidgets(_widget, parent_w, *vhelper::get(*rhelper::get(d,y),x), readOnly))
+                if (!w[y][x].createWidgets( parent, *vhelper::get(*rhelper::get(d,y),x), readOnly))
                     return false;
         return true;
     }
     void setReadOnly(bool readOnly)
     {
-        parent_w->setEnabled(!readOnly);
+        for (int y=0; y<L; ++y)
+            for (int x=0; x<C; ++x)
+                w[y][x].setReadOnly(readOnly);
     }
     void readFromData(const data_type& d)
     {
@@ -482,11 +480,6 @@ public:
             }
             rhelper::set(r,d,y);
         }
-    }
-    ParentWidget* createParentWidget(QWidget* parent, int n = 1)
-    {
-        return new ParentWidget(n,parent);
-
     }
 };
 

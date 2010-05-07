@@ -81,6 +81,7 @@ void QMouseOperation::WidgetDirty(bool b)
 QAttachOperation::QAttachOperation()
 {
     //Building the GUI for the Attach Operation
+
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label=new QLabel(QString("Stiffness"), this);
     stiffnessWidget = createWidgetFromData(setting.getDataStiffness());
@@ -88,11 +89,12 @@ QAttachOperation::QAttachOperation()
     QLabel *labelSize=new QLabel(QString("Arrow Size"), this);
     arrowSizeWidget = createWidgetFromData(setting.getDataArrowSize());
 
-    layout->addWidget(stiffnessWidget);
     layout->addWidget(label);
+    layout->addWidget(stiffnessWidget);
 
-//        layout->addWidget(labelSize);
-//        layout->addWidget(arrowSizeWidget);
+
+    layout->addWidget(labelSize);
+    layout->addWidget(arrowSizeWidget);
 }
 
 
