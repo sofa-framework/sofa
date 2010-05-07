@@ -33,6 +33,7 @@
 #include <qlabel.h>
 #include <qgroupbox.h>
 #include <qlayout.h>
+#include <qradiobutton.h>
 #endif
 
 namespace sofa
@@ -81,7 +82,7 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     layout->addLayout(HLayoutBitrate);
     layout->addLayout(HLayoutFramerate);
 
-    this->setLayout(layout);
+    //this->addLayout(layout);
 }
 
 SofaVideoRecorderManager::SofaVideoRecorderManager()
@@ -91,11 +92,13 @@ SofaVideoRecorderManager::SofaVideoRecorderManager()
     //movieOptionsWidget = new QWidget(this);
 
 #ifndef SOFA_HAVE_FFMPEG
-    MovieRecordingTypeRadioButton->setVisible(false);
+    MovieRecordingTypeRadioButton->setHidden(true);
 #endif
 
     movieOptionsWidget = new MovieOptionsWidget(this);
-    movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
+
+    //movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
+    movieOptionsWidget->setHidden(!currentRecordingType == MOVIE);
 
     internalAddWidget(VideoRecorderOptionGroupBox, movieOptionsWidget);
 }
@@ -133,7 +136,8 @@ unsigned int SofaVideoRecorderManager::getBitrate()
 
 void SofaVideoRecorderManager::updateContent()
 {
-    movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
+    //movieOptionsWidget->setVisible(currentRecordingType == MOVIE);
+    movieOptionsWidget->setHidden(!currentRecordingType == MOVIE);
 }
 
 void SofaVideoRecorderManager::onChangeRecordingType()

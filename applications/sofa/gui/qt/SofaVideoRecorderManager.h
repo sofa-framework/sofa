@@ -31,6 +31,8 @@
 #include "VideoRecorderManager.h"
 #include "SofaGUIQt.h"
 
+#include <vector>
+
 #ifdef SOFA_QT4
 #include <QComboBox>
 #include <QSpinBox>
