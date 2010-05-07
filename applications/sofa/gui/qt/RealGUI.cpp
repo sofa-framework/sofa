@@ -930,8 +930,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     simulation::Node* root = simulation::getSimulation()->load ( filename.c_str() );
     simulation::getSimulation()->init ( root );
 
-    configureGUI(root);
-
     if ( root == NULL )
     {
         qFatal ( "Failed to load %s",filename.c_str() );
@@ -940,6 +938,9 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     }
     this->setWindowFilePath(filename.c_str());
     setScene ( root, filename.c_str(), temporaryFile );
+
+    configureGUI(root);
+
     //need to create again the output streams !!
     simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
