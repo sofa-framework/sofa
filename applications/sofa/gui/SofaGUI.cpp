@@ -32,6 +32,7 @@
 #include <sofa/component/configurationsetting/StatsSetting.h>
 #include <sofa/component/configurationsetting/ViewerDimensionSetting.h>
 
+#include <algorithm>
 #include <string.h>
 
 namespace sofa
@@ -88,7 +89,11 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
         else setDimension(res[0], res[1]);
     }
 
-    //TODO Mouse Manager using ConfigurationSetting component...
+    //Mouse Manager using ConfigurationSetting component...
+    sofa::helper::vector< sofa::component::configurationsetting::MouseButtonSetting*> mouseConfiguration;
+    groot->get<sofa::component::configurationsetting::MouseButtonSetting>(&mouseConfiguration, sofa::core::objectmodel::BaseContext::SearchRoot);
+
+    for (unsigned int i=0; i<mouseConfiguration.size(); ++i) setMouseButtonConfiguration(mouseConfiguration[i]);
 
 }
 

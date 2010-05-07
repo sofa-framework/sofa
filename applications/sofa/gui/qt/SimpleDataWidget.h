@@ -72,7 +72,8 @@ public:
     {
         std::ostringstream o;
         o << d;
-        w->setText(QString(o.str().c_str()));
+        if (o.str() != w->text().ascii())
+            w->setText(QString(o.str().c_str()));
     }
     static void writeToData(Widget* w, data_type& d)
     {
@@ -205,7 +206,8 @@ public:
     }
     static void readFromData(Widget* w, const data_type& d)
     {
-        w->setText(QString(d.c_str()));
+        if (w->text().ascii() != d)
+            w->setText(QString(d.c_str()));
     }
     static void writeToData(Widget* w, data_type& d)
     {
@@ -234,7 +236,8 @@ public:
     }
     static void readFromData(Widget* w, const data_type& d)
     {
-        w->setChecked(d);
+        if (w->isChecked() != d)
+            w->setChecked(d);
     }
     static void writeToData(Widget* w, data_type& d)
     {
@@ -266,11 +269,12 @@ public:
     }
     static void readFromData(Widget* w, const data_type& d)
     {
-        w->setFloatValue(d);
+        if (d != w->getFloatDisplayedValue())
+            w->setFloatValue(d);
     }
     static void writeToData(Widget* w, data_type& d)
     {
-        d = (data_type) w->getFloatValue();
+        d = (data_type) w->getFloatDisplayedValue();
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
@@ -304,7 +308,8 @@ public:
     }
     static void readFromData(Widget* w, const data_type& d)
     {
-        w->setValue((int)d);
+        if ((int)d != w->value())
+            w->setValue((int)d);
     }
     static void writeToData(Widget* w, data_type& d)
     {
@@ -708,8 +713,11 @@ public:
     static void readFromData(Widget* w, const data_type& d)
     {
         unsigned int m_length=d.getString().length();
-        w->setMaxLength(m_length+2); w->setReadOnly(true);
-        w->setText(QString(d.getString().c_str()));
+        if (w->text().ascii() != d.getString())
+        {
+            w->setMaxLength(m_length+2); w->setReadOnly(true);
+            w->setText(QString(d.getString().c_str()));
+        }
     }
     static void writeToData(Widget* , data_type& )
     {

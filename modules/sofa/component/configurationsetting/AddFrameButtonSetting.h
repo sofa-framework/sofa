@@ -22,11 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
+#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_ADDFRAMEBUTTON_H
+#define SOFA_COMPONENT_CONFIGURATIONSETTING_ADDFRAMEBUTTON_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -37,17 +38,13 @@ namespace component
 namespace configurationsetting
 {
 
-class MouseButtonSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_COMPONENT_CONFIGURATIONSETTING_API AddFrameButtonSetting: public MouseButtonSetting
 {
 public:
-    SOFA_CLASS(MouseButtonSetting,core::objectmodel::ConfigurationSetting);
-    MouseButtonSetting();
-    virtual std::string getOperationType()=0;
+    SOFA_CLASS(AddFrameButtonSetting,MouseButtonSetting);
+    AddFrameButtonSetting();
 
-    unsigned int getButton() const {return button.getValue().getSelectedId();}
-
-protected:
-    Data<sofa::helper::OptionsGroup> button;
+    std::string getOperationType() {return "AddFrame";}
 };
 
 }

@@ -80,6 +80,10 @@ public:
 
     int     valuePercent();
 
+    //Return the value displayed: WARNING!! NO VALIDATION IS MADE!
+    float   getFloatDisplayedValue() {return text().toFloat();};
+    int     getIntDisplayedValue() {return static_cast<int>(text().toFloat());};
+
 signals:
 
     void floatValueChanged(float);

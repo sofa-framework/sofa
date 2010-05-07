@@ -61,10 +61,6 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPa
 namespace gui
 {
 
-
-AttachOperation::AttachOperation()
-{
-};
 //*******************************************************************************************
 void AttachOperation::start()
 {

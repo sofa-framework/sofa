@@ -174,6 +174,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void setTraceVisitors(bool);
 #endif
+    virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button);
 
     virtual void setTitle( std::string windowTitle );
 

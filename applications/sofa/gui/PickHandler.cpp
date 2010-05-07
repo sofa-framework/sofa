@@ -81,6 +81,7 @@ PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mous
     interaction = instanceComponents.back();
 }
 
+
 PickHandler::~PickHandler()
 {
     for (unsigned int i=0; i<operations.size(); ++i)
@@ -104,6 +105,34 @@ void PickHandler::reset()
     mouseButton = NONE;
     for (unsigned int i=0; i<instanceComponents.size(); ++i) instanceComponents[i]->reset();
 }
+
+Operation *PickHandler::changeOperation(sofa::component::configurationsetting::MouseButtonSetting* setting)
+{
+    if (operations[setting->getButton()]) delete operations[setting->getButton()];
+    Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
+    mouseOp->configure(this,setting);
+    operations[setting->getButton()]=mouseOp;
+    return mouseOp;
+}
+
+Operation *PickHandler::changeOperation(MOUSE_BUTTON button, const std::string &op)
+{
+    if (operations[button]) delete operations[button];
+    Operation *mouseOp=OperationFactory::Instanciate(op);
+    mouseOp->configure(this,button);
+    operations[button]=mouseOp;
+    return mouseOp;
+}
+
+
+
+
+
+
+
+
+
+
 
 void PickHandler::activateRay(bool act)
 {

@@ -109,19 +109,30 @@ void SofaMouseManager::selectOperation(int operation)
     else if (combo == RightOperationCombo)  updateOperation(RIGHT,  operationName);
 }
 
+void SofaMouseManager::updateOperation(  sofa::component::configurationsetting::MouseButtonSetting* setting)
+{
+    //By changing the operation, we delete the previous operation
+    Operation *operation=pickHandler->changeOperation( setting);
+    updateOperation(operation);
+}
 
 void SofaMouseManager::updateOperation( MOUSE_BUTTON button, const std::string &id)
 {
     //By changing the operation, we delete the previous operation
     Operation *operation=pickHandler->changeOperation( button, id);
+    updateOperation(operation);
+}
+
+
+void SofaMouseManager::updateOperation( Operation* operation)
+{
+    if (!operation || operation->getMouseButton()==NONE ) return;
+    usedOperations[operation->getMouseButton()] = operation->getId();
+
     QWidget* qoperation=dynamic_cast<QWidget*>(operation);
     if (!qoperation) return;
 
-    //TODO: change the text of the ComboBox if it is different from the current operation
-
-    usedOperations[button] = id;
-
-    switch(button)
+    switch(operation->getMouseButton())
     {
     case LEFT:
     {
