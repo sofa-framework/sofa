@@ -147,3 +147,12 @@ contains(DEFINES,SOFA_DEV) { # BEGIN SOFA_DEV
     SOURCES += \
     	DualQuat.cpp 
 }
+
+contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
+    HEADERS += \
+    	gl/VideoRecorder.h 
+
+    SOURCES += \
+    	gl/VideoRecorder.cpp 
+}
+
