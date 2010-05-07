@@ -111,10 +111,12 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
         serr<<"no TopoInput found !!"<<sendl;
         return;
     }
+    /*
     else
-        std::cout<< "topology named "<<TopoInput->getName()<<" found !! "<<path<<std::endl;
+         std::cout<< "topology named "<<TopoInput->getName()<<" found !! "<<path<<std::endl;
 
     std::cout<<"size of InputPositions="<<InputPositions.getValue().size()<<std::endl;
+    */
 
 
     const VecCoord* in = &InputPositions.getValue();
