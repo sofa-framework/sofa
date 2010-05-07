@@ -35,6 +35,7 @@
 
 
 #include <sofa/helper/helper.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
 {
