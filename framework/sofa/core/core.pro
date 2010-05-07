@@ -185,10 +185,12 @@ HEADERS += \
  fem/BaseMaterial.h \
  fem/BaseShapeFunction.h \
  fem/BaseStrainTensor.h \
- fem/BaseFiniteElement.h
+ fem/BaseFiniteElement.h \
+ fem/FiniteElement.h
  
 SOURCES +=  \
- fem/BaseFiniteElement.cpp
+ fem/BaseFiniteElement.cpp \
+ fem/FiniteElement.cpp
  
 } # END SOFA_DEV
 
