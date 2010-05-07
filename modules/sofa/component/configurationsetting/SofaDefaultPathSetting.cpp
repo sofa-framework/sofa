@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/configurationsetting/AddFrameButtonSetting.h>
+#include <sofa/component/configurationsetting/SofaDefaultPathSetting.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,13 +35,15 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(AddFrameButtonSetting)
-int AddFrameButtonSettingClass = core::RegisterObject("Add a frame to a skinned model")
-        .add< AddFrameButtonSetting >()
-        .addAlias("AddFrameButton")
+SOFA_DECL_CLASS(SofaDefaultPathSetting)
+int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa Application")
+        .add< SofaDefaultPathSetting >()
+        .addAlias("SofaDefaultPath")
         ;
 
-AddFrameButtonSetting::AddFrameButtonSetting()
+SofaDefaultPathSetting::SofaDefaultPathSetting():
+    recordPath(initData(&recordPath, "recordPath", "Path where will be saved the data of the recorded simulation"))
+    , gnuplotPath(initData(&gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
 {
 }
 

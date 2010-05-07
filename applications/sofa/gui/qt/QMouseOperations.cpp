@@ -122,8 +122,8 @@ QFixOperation::QFixOperation()
     QLabel *label=new QLabel(QString("Fixation"), this);
     stiffnessWidget = createWidgetFromData(setting.getDataStiffness());
 
-    layout->addWidget(stiffnessWidget);
     layout->addWidget(label);
+    layout->addWidget(stiffnessWidget);
 }
 
 void QFixOperation::configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button)
