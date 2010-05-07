@@ -636,6 +636,7 @@ void RealGUI::init()
     //--------
     SofaPluginManager::getInstance()->hide();
     SofaMouseManager::getInstance()->hide();
+    SofaVideoRecorderManager::getInstance()->hide();
 
 }
 
@@ -1444,6 +1445,11 @@ void RealGUI::showMouseManager()
 {
     SofaMouseManager::getInstance()->updateContent();
     SofaMouseManager::getInstance()->show();
+}
+
+void RealGUI::showVideoRecorderManager()
+{
+    SofaVideoRecorderManager::getInstance()->show();
 }
 
 void RealGUI::editGnuplotDirectory()

@@ -22,8 +22,8 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>246</width>
-            <height>462</height>
+            <width>210</width>
+            <height>481</height>
         </size>
     </property>
     <property name="caption">
@@ -51,10 +51,10 @@
                     <cstring>layout6</cstring>
                 </property>
                 <property name="minimumSize">
-                  <size>
-                    <width>200</width>
-                    <height>400</height>
-                  </size>
+                    <size>
+                        <width>200</width>
+                        <height>400</height>
+                    </size>
                 </property>
                 <vbox>
                     <property name="name">
@@ -236,82 +236,88 @@
                             </property>
                             <attribute name="title">
                                 <string>View</string>
-                            </attribute>                           
-			    <grid>
-                            <widget class="QLayoutWidget" row="2" column="0">
-                              <property name="name">
-                                <cstring>gridLayout1</cstring>
-                              </property>
-                              <grid>
-                                <widget class="QLayoutWidget" row="1" column="0">
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget" row="2" column="0">
                                     <property name="name">
-                                        <cstring>iconSofa</cstring>
+                                        <cstring>gridLayout1</cstring>
                                     </property>
                                     <grid>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
-                                        <spacer row="0" column="2">
+                                        <widget class="QLayoutWidget" row="1" column="0">
                                             <property name="name">
-                                                <cstring>spacer8</cstring>
+                                                <cstring>iconSofa</cstring>
                                             </property>
-                                            <property name="orientation">
-                                                <enum>Horizontal</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Expanding</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>299</width>
-                                                    <height>16</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                        <widget class="QLabel" row="0" column="1">
-                                            <property name="name">
-                                                <cstring>pixmapLabel1</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>0</hsizetype>
-                                                    <vsizetype>0</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap>image0</pixmap>
-                                            </property>
-                                            <property name="scaledContents">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="toolTip" stdset="0">
-                                                <string>http://sofa-framework.org</string>
-                                            </property>
+                                            <grid>
+                                                <property name="name">
+                                                    <cstring>unnamed</cstring>
+                                                </property>
+                                                <spacer row="0" column="2">
+                                                    <property name="name">
+                                                        <cstring>spacer8</cstring>
+                                                    </property>
+                                                    <property name="orientation">
+                                                        <enum>Horizontal</enum>
+                                                    </property>
+                                                    <property name="sizeType">
+                                                        <enum>Expanding</enum>
+                                                    </property>
+                                                    <property name="sizeHint">
+                                                        <size>
+                                                            <width>299</width>
+                                                            <height>16</height>
+                                                        </size>
+                                                    </property>
+                                                </spacer>
+                                                <widget class="QLabel" row="0" column="1">
+                                                    <property name="name">
+                                                        <cstring>pixmapLabel1</cstring>
+                                                    </property>
+                                                    <property name="sizePolicy">
+                                                        <sizepolicy>
+                                                            <hsizetype>0</hsizetype>
+                                                            <vsizetype>0</vsizetype>
+                                                            <horstretch>0</horstretch>
+                                                            <verstretch>0</verstretch>
+                                                        </sizepolicy>
+                                                    </property>
+                                                    <property name="pixmap">
+                                                        <pixmap>image0</pixmap>
+                                                    </property>
+                                                    <property name="scaledContents">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                    <property name="toolTip" stdset="0">
+                                                        <string>http://sofa-framework.org</string>
+                                                    </property>
+                                                </widget>
+                                                <spacer row="0" column="0">
+                                                    <property name="name">
+                                                        <cstring>spacer7</cstring>
+                                                    </property>
+                                                    <property name="orientation">
+                                                        <enum>Horizontal</enum>
+                                                    </property>
+                                                    <property name="sizeType">
+                                                        <enum>Expanding</enum>
+                                                    </property>
+                                                    <property name="sizeHint">
+                                                        <size>
+                                                            <width>299</width>
+                                                            <height>16</height>
+                                                        </size>
+                                                    </property>
+                                                </spacer>
+                                            </grid>
                                         </widget>
-                                        <spacer row="0" column="0">
-                                            <property name="name">
-                                                <cstring>spacer7</cstring>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Horizontal</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Expanding</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>299</width>
-                                                    <height>16</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
                                     </grid>
                                 </widget>
                             </grid>
-                            </widget>
-			    </grid>
                         </widget>
                         <widget class="QWidget">
                             <property name="name">
@@ -591,6 +597,7 @@
         <separator/>
         <action name="PluginManagerAction"/>
         <action name="MouseManagerAction"/>
+        <action name="VideoRecorderManagerAction"/>
     </item>
     <item text="&amp;View" name="View">
         <action name="viewerOpenGLAction"/>
@@ -967,26 +974,26 @@
         </property>
     </action>
     <action>
-      <property name="name">
-        <cstring>PluginManagerAction</cstring>
-      </property>
-      <property name="text">
-        <string>Plugin Manager...</string>
-      </property>
-      <property name="menuText">
-        <string>Plugin Manager...</string>
-      </property>
+        <property name="name">
+            <cstring>PluginManagerAction</cstring>
+        </property>
+        <property name="text">
+            <string>Plugin Manager...</string>
+        </property>
+        <property name="menuText">
+            <string>Plugin Manager...</string>
+        </property>
     </action>
     <action>
-      <property name="name">
-        <cstring>MouseManagerAction</cstring>
-      </property>
-      <property name="text">
-        <string>Mouse Manager...</string>
-      </property>
-      <property name="menuText">
-        <string>Mouse Manager...</string>
-      </property>
+        <property name="name">
+            <cstring>MouseManagerAction</cstring>
+        </property>
+        <property name="text">
+            <string>Mouse Manager...</string>
+        </property>
+        <property name="menuText">
+            <string>Mouse Manager...</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1005,6 +1012,17 @@
         </property>
         <property name="menuText">
             <string>Test</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>VideoRecorderManagerAction</cstring>
+        </property>
+        <property name="text">
+            <string>Video Recorder Manager...</string>
+        </property>
+        <property name="menuText">
+            <string>Video Recorder Manager...</string>
         </property>
     </action>
 </actions>
@@ -1165,16 +1183,16 @@
         <slot>editRecordDirectory()</slot>
     </connection>
     <connection>
-      <sender>PluginManagerAction</sender>
-      <signal>activated()</signal>
-      <receiver>GUI</receiver>
-      <slot>showPluginManager()</slot>
+        <sender>PluginManagerAction</sender>
+        <signal>activated()</signal>
+        <receiver>GUI</receiver>
+        <slot>showPluginManager()</slot>
     </connection>
     <connection>
-      <sender>MouseManagerAction</sender>
-      <signal>activated()</signal>
-      <receiver>GUI</receiver>
-      <slot>showMouseManager()</slot>
+        <sender>MouseManagerAction</sender>
+        <signal>activated()</signal>
+        <receiver>GUI</receiver>
+        <slot>showMouseManager()</slot>
     </connection>
     <connection>
         <sender>editGnuplotDirectoryAction</sender>
@@ -1188,7 +1206,16 @@
         <receiver>GUI</receiver>
         <slot>GUI_usesTextLabelChanged(bool)</slot>
     </connection>
+    <connection>
+        <sender>VideoRecorderManagerAction</sender>
+        <signal>activated()</signal>
+        <receiver>GUI</receiver>
+        <slot>showVideoRecorderManager()</slot>
+    </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">GUI.ui.h</include>
+</includes>
 <slots>
     <slot>fileNew()</slot>
     <slot>fileOpen()</slot>
@@ -1237,6 +1264,7 @@
     <slot>showNormals()</slot>
     <slot>hideNormals()</slot>
     <slot>GUI_usesTextLabelChanged( bool )</slot>
+    <slot>showVideoRecorderManager()</slot>
 </slots>
 <layoutdefaults spacing="2" margin="5"/>
 </UI>

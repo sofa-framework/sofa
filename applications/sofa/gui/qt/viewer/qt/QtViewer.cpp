@@ -220,6 +220,8 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
+
+    connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
 }
 
 
@@ -1088,8 +1090,9 @@ void QtViewer::paintGL()
         static int counter = 0;
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
-            screenshot(capture.findFilename(), 1);
-    }
+        }
+
+    SofaViewer::captureEvent();
 
     if (_waitForRender)
         _waitForRender = false;

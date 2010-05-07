@@ -31,6 +31,7 @@ contains (DEFINES, SOFA_QT4) {
 	  FORMS3 += DialogAddObject.ui
 	  FORMS3 += PluginManager.ui
 	  FORMS3 += MouseManager.ui
+  	  FORMS3 += VideoRecorderManager.ui
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 	  FORMS3 += VisitorGUI.ui
 	}
@@ -45,6 +46,7 @@ else {
 	  FORMS += DialogAddObject.ui
 	  FORMS += PluginManager.ui
 	  FORMS += MouseManager.ui
+  	  FORMS += VideoRecorderManager.ui
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 	  FORMS += VisitorGUI.ui
 }
@@ -70,7 +72,8 @@ HEADERS += viewer/SofaViewer.h \
            WFloatLineEdit.h \ 
            FileManagement.h \
            SofaPluginManager.h \
-           SofaMouseManager.h \	
+           SofaMouseManager.h \
+           SofaVideoRecorderManager.h \	
            QDataDescriptionWidget.h \
 		   QDisplayDataWidget.h \     
            QEnergyStatWidget.h \              
@@ -99,6 +102,7 @@ SOURCES += Main.cpp \
            WFloatLineEdit.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \
+           SofaVideoRecorderManager.cpp \
            SofaMouseManager.cpp \
            QDataDescriptionWidget.cpp \
 		   QDisplayDataWidget.cpp \
