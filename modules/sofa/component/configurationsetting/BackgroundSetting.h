@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -38,7 +39,7 @@ namespace component
 namespace configurationsetting
 {
 
-class BackgroundSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_COMPONENT_CONFIGURATIONSETTING_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);
