@@ -124,7 +124,7 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
-    .option(&nProcs,'n',"nprocs","Number of processor")
+    .option(&nProcs,'c',"nprocs","Number of processor")
 #endif
     (argc,argv);
 #ifdef SOFA_SMP
