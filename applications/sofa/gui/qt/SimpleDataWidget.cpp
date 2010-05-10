@@ -193,12 +193,12 @@ void RadioDataWidget::readFromData()
 #ifdef SOFA_QT4
         buttonList->button(m_radiotrick.getSelectedId())->setChecked(true);
 #else
-        buttonList->find(m_radiotrick.getSelectedId())->setChecked(true);
+        buttonList->find(m_radiotrick.getSelectedId())->setDown(true);
 #endif
     }
     else
     {
-        comboList->setCurrentIndex(m_radiotrick.getSelectedId());
+        comboList->setCurrentItem(m_radiotrick.getSelectedId());
     }
 }
 void RadioDataWidget::writeToData()
@@ -214,7 +214,7 @@ void RadioDataWidget::writeToData()
     }
     else
     {
-        m_radiotrick.setSelectedItem((unsigned int)comboList->currentIndex());
+        m_radiotrick.setSelectedItem((unsigned int)comboList->currentItem());
     }
 
     this->getData()->virtualSetValue(m_radiotrick);
