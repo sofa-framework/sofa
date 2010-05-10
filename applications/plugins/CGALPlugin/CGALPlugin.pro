@@ -29,6 +29,7 @@ SOURCES = initCGALPlugin.cpp \
 		  MeshGenerationFromPolyhedron.cpp \
 		  Optimize2DMesh.cpp \
 		  Refine2DMesh.cpp \
+                  RefineTriangleMesh.cpp \
 		  TriangularConvexHull3D.cpp
 
 HEADERS = \
@@ -38,6 +39,8 @@ HEADERS = \
 		  Optimize2DMesh.inl \
 		  Refine2DMesh.h \
 		  Refine2DMesh.inl \
+                  RefineTriangleMesh.h \
+                  RefineTriangleMesh.inl \
 		  TriangularConvexHull3D.h \
 		  TriangularConvexHull3D.inl
 		  
