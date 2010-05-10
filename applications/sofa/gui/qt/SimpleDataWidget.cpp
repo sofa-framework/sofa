@@ -138,47 +138,85 @@ Creator<DataWidgetFactory,RadioDataWidget> DWClass_OptionsGroup("default",true);
 
 bool RadioDataWidget::createWidgets()
 {
-    buttonList=new QButtonGroup(this);
     QVBoxLayout* layout = new QVBoxLayout(this);
-
     sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
-    for(unsigned int i=0; i<m_radiotrick.size(); i++)
+    const unsigned int LIMIT_NUM_BUTTON=4;
+    buttonMode=m_radiotrick.size() < LIMIT_NUM_BUTTON;
+    if (buttonMode)
     {
-        std::string m_itemstring=m_radiotrick[i];
+        buttonList=new QButtonGroup(this);
 
-        QRadioButton * m_radiobutton=new QRadioButton(QString(m_itemstring.c_str()), this);
-        if (i==m_radiotrick.getSelectedId()) m_radiobutton->setChecked(true);
-        layout->add(m_radiobutton);
+        for(unsigned int i=0; i<m_radiotrick.size(); i++)
+        {
+            std::string m_itemstring=m_radiotrick[i];
+
+            QRadioButton * m_radiobutton=new QRadioButton(QString(m_itemstring.c_str()), this);
+            if (i==m_radiotrick.getSelectedId()) m_radiobutton->setChecked(true);
+            layout->add(m_radiobutton);
 #ifdef SOFA_QT4
-        buttonList->addButton(m_radiobutton,i);
+            buttonList->addButton(m_radiobutton,i);
 #else
-        buttonList->insert(m_radiobutton,i);
+            buttonList->insert(m_radiobutton,i);
+#endif
+        }
+#ifdef SOFA_QT4
+        connect(buttonList, SIGNAL(buttonClicked(int)), this, SLOT(setWidgetDirty())) ;
+#else
+        connect(buttonList, SIGNAL(clicked(int)), this, SLOT(setWidgetDirty())) ;
 #endif
     }
-#ifdef SOFA_QT4
-    connect(buttonList, SIGNAL(buttonClicked(int)), this, SLOT(setbuttonchecked(int))) ;
-#else
-    connect(buttonList, SIGNAL(clicked(int)), this, SLOT(setbuttonchecked(int))) ;
-#endif
+    else
+    {
+        comboList=new QComboBox(this);
+
+        sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
+        QStringList list;
+        for(unsigned int i=0; i<m_radiotrick.size(); i++) list << m_radiotrick[i].c_str();
+
+        comboList->insertStringList(list);
+
+        comboList->setCurrentItem(m_radiotrick.getSelectedId());
+
+        connect(comboList, SIGNAL(activated(int)), this, SLOT(setWidgetDirty()));
+        layout->addWidget(comboList);
+
+    }
+
     return true;
-}
-void RadioDataWidget::setbuttonchecked(int id_checked)
-{
-    sofa::helper::OptionsGroup m_radiotrick = this->getData()->virtualGetValue();
-    m_radiotrick.setSelectedItem((unsigned int)id_checked);
-    this->getData()->virtualSetValue(m_radiotrick);
 }
 void RadioDataWidget::readFromData()
 {
+    sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
+
+    if (buttonMode)
+    {
+#ifdef SOFA_QT4
+        buttonList->button(m_radiotrick.getSelectedId())->setChecked(true);
+#else
+        buttonList->find(m_radiotrick.getSelectedId())->setChecked(true);
+#endif
+    }
+    else
+    {
+        comboList->setCurrentIndex(m_radiotrick.getSelectedId());
+    }
 }
 void RadioDataWidget::writeToData()
 {
-    sofa::helper::OptionsGroup m_radiotrick = this->getData()->virtualGetValue();
+    sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
+    if (buttonMode)
+    {
 #ifdef SOFA_QT4
-    m_radiotrick.setSelectedItem((unsigned int)buttonList->checkedId ());
+        m_radiotrick.setSelectedItem((unsigned int)buttonList->checkedId ());
 #else
-    m_radiotrick.setSelectedItem((unsigned int)buttonList->selectedId ());
+        m_radiotrick.setSelectedItem((unsigned int)buttonList->selectedId ());
 #endif
+    }
+    else
+    {
+        m_radiotrick.setSelectedItem((unsigned int)comboList->currentIndex());
+    }
+
     this->getData()->virtualSetValue(m_radiotrick);
 }
 

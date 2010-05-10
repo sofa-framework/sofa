@@ -45,8 +45,10 @@
 #include <QLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <QComboBox>
 #else
 #include <qlayout.h>
+#include <qcombobox.h>
 #endif
 
 #if !defined(INFINITY)
@@ -773,10 +775,6 @@ public :
     ///In this method we  create the widgets and perform the signal / slots connections.
     virtual bool createWidgets();
 
-protected slots:
-
-    void setbuttonchecked(int id_checked);
-
 protected:
     ///Implements how update the widgets knowing the data value.
     virtual void readFromData();
@@ -785,7 +783,8 @@ protected:
     virtual void writeToData();
 
     QButtonGroup *buttonList;
-
+    QComboBox    *comboList;
+    bool buttonMode;
 };
 
 
