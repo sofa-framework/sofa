@@ -164,7 +164,7 @@ public:
     virtual void setScene(Node* groot, const char* filename=NULL, bool temporaryFile=false);
 
     //Configuration methods
-    virtual void setDimension(int w, int h);
+    virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen();
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
     virtual void setBackgroundImage(const std::string& i);
@@ -176,6 +176,8 @@ public:
 #endif
     virtual void setRecordPath(const std::string & path);
     virtual void setGnuplotPath(const std::string & path);
+
+    virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf);
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button);
 
     virtual void setTitle( std::string windowTitle );

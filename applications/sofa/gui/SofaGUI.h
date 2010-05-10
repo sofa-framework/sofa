@@ -29,6 +29,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/component/configurationsetting/ViewerSetting.h>
 #include <sofa/component/configurationsetting/MouseButtonSetting.h>
 
 #include <list>
@@ -66,7 +67,7 @@ public:
     virtual void configureGUI(sofa::simulation::Node* groot);
 
     /// @name methods to configure the GUI
-    virtual void setDimension(int /* width */, int /* height */) {};
+    virtual void setViewerResolution(int /* width */, int /* height */) {};
     virtual void setFullScreen() {};
     virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {};
     virtual void setBackgroundImage(const std::string& /*image*/) {};
@@ -78,6 +79,8 @@ public:
 #endif
     virtual void setRecordPath(const std::string & /*path*/) {};
     virtual void setGnuplotPath(const std::string & /*path*/) {};
+
+    virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {};
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {};
     /// @}
 

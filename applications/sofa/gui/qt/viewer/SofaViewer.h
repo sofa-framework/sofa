@@ -64,6 +64,8 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/collision/Pipeline.h>
 
+#include <sofa/component/configurationsetting/ViewerSetting.h>
+
 //instruments handling
 #include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
@@ -176,6 +178,9 @@ public:
     virtual void wait()
     {
     }
+
+    //Allow to configure your viewer using the Sofa Component, ViewerSetting
+    virtual void configure(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
 
     //Fonctions needed to take a screenshot
     virtual const std::string screenshotName()
