@@ -171,7 +171,7 @@ public:
 
     void moveRayPickInteractor(int eventX, int eventY);
 
-    // 	static Quaternion _newQuat;
+    void setCameraMode(viewer::CAMERA_MODE mode);
 
 #ifdef SOFA_DEV
 

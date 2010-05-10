@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -49,9 +50,16 @@ public:
 
     void setFullscreen(bool b) {fullscreen.setValue(b);}
     bool getFullscreen() const {return fullscreen.getValue();}
+
+    std::string getCameraMode() const {return cameraMode.getValue().getSelectedItem();};
+    unsigned int getCameraModeId() const {return cameraMode.getValue().getSelectedId();};
+    void setCameraMode(const std::string &mode) {cameraMode.beginEdit()->setSelectedItem(mode); cameraMode.endEdit();}
+
 protected:
     Data<defaulttype::Vec<2,int> > resolution;
     Data<bool> fullscreen;
+    Data<sofa::helper::OptionsGroup> cameraMode;
+
 };
 
 }

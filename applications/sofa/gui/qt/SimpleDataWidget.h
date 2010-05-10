@@ -279,9 +279,7 @@ public:
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        datawidget->connect(w, SIGNAL( floatValueChanged(float) ), datawidget, SLOT(setWidgetDirty()));
-        datawidget->connect(w, SIGNAL( valuePercentChanged(int) ), datawidget, SLOT(setWidgetDirty()));
-
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()));
     }
 };
 
