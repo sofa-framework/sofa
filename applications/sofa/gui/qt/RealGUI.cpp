@@ -1153,7 +1153,7 @@ void RealGUI::Clear()
 
 //----------------------------------
 //Configuration
-void RealGUI::setDimension ( int w, int h )
+void RealGUI::setViewerResolution ( int w, int h )
 {
     QSize winSize = size();
     QSize viewSize = viewer->getQWidget()->size();
@@ -1231,6 +1231,13 @@ void RealGUI::setRecordPath(const std::string &
 void RealGUI::setGnuplotPath(const std::string &path)
 {
     simulation::getSimulation()->gnuplotDirectory.setValue(path);
+}
+void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
+{
+    const defaulttype::Vec<2,int> &res=viewerConf->getResolution();
+    if (viewerConf->getFullscreen()) setFullScreen();
+    else setViewerResolution(res[0], res[1]);
+    viewer->configure(viewerConf);
 }
 
 void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)

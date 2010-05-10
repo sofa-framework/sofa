@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/configurationsetting/ViewerDimensionSetting.h>
+#include <sofa/component/configurationsetting/ViewerSetting.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,14 +35,14 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(ViewerDimensionSetting)
-int ViewerDimensionSettingClass = core::RegisterObject("Dimension of the Viewer")
-        .add< ViewerDimensionSetting >()
-        .addAlias("ViewerDimension")
+SOFA_DECL_CLASS(ViewerSetting)
+int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of your application")
+        .add< ViewerSetting >()
+        .addAlias("Viewer")
         ;
 
-ViewerDimensionSetting::ViewerDimensionSetting():
-    dimension(initData(&dimension, defaulttype::Vec<2,int>(800,600), "dimension", "Dimension of the Viewer"))
+ViewerSetting::ViewerSetting():
+    resolution(initData(&resolution, defaulttype::Vec<2,int>(800,600), "resolution", "resolution of the Viewer"))
     ,fullscreen(initData(&fullscreen, false, "fullscreen", "Fullscreen mode"))
 {
 }

@@ -255,7 +255,7 @@ int GUIManager::MainLoop(sofa::simulation::Node* groot, const char* filename)
 }
 void GUIManager::SetDimension(int  width , int  height )
 {
-    if (currentGUI) currentGUI->setDimension(width,height);
+    if (currentGUI) currentGUI->setViewerResolution(width,height);
 }
 void GUIManager::SetFullScreen()
 {

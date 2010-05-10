@@ -24,7 +24,7 @@
 	</Node>
 	<Node 	name="Settings" gravity="0 -9.81 0"  >
 		<Node 	name="Application" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-			<ViewerDimensionSetting dimension="640 480" />
+			<ViewerSetting resolution="640 480" />
 			<BackgroundSetting color="0.2 0 0.2" />
 			<StatsSetting logTime="1" />
 		</Node>

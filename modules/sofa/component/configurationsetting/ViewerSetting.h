@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_VIEWERDIMENSION_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_VIEWERDIMENSION_H
+#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_VIEWER_H
+#define SOFA_COMPONENT_CONFIGURATIONSETTING_VIEWER_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/component/component.h>
@@ -38,19 +38,19 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API ViewerDimensionSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_COMPONENT_CONFIGURATIONSETTING_API ViewerSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
-    SOFA_CLASS(ViewerDimensionSetting,core::objectmodel::ConfigurationSetting);
-    ViewerDimensionSetting();
+    SOFA_CLASS(ViewerSetting,core::objectmodel::ConfigurationSetting);
+    ViewerSetting();
 
-    void setDimension(const defaulttype::Vec<2,int>& d) {dimension.setValue(d);}
-    const defaulttype::Vec<2,int> &getDimension() const {return dimension.getValue();}
+    void setResolution(const defaulttype::Vec<2,int>& d) {resolution.setValue(d);}
+    const defaulttype::Vec<2,int> &getResolution() const {return resolution.getValue();}
 
     void setFullscreen(bool b) {fullscreen.setValue(b);}
     bool getFullscreen() const {return fullscreen.getValue();}
 protected:
-    Data<defaulttype::Vec<2,int> > dimension;
+    Data<defaulttype::Vec<2,int> > resolution;
     Data<bool> fullscreen;
 };
 

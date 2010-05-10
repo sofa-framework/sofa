@@ -31,7 +31,6 @@
 #include <sofa/component/configurationsetting/SofaDefaultPathSetting.h>
 #include <sofa/component/configurationsetting/BackgroundSetting.h>
 #include <sofa/component/configurationsetting/StatsSetting.h>
-#include <sofa/component/configurationsetting/ViewerDimensionSetting.h>
 
 #include <algorithm>
 #include <string.h>
@@ -94,14 +93,9 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     }
 
     //Viewer Dimension
-    sofa::component::configurationsetting::ViewerDimensionSetting *dimension;
-    groot->get(dimension, sofa::core::objectmodel::BaseContext::SearchRoot);
-    if (dimension)
-    {
-        const defaulttype::Vec<2,int> &res=dimension->getDimension();
-        if (dimension->getFullscreen()) setFullScreen();
-        else setDimension(res[0], res[1]);
-    }
+    sofa::component::configurationsetting::ViewerSetting *viewerConf;
+    groot->get(viewerConf, sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (viewerConf) setViewerConfiguration(viewerConf);
 
     //TODO: Video Recorder Configuration
 
@@ -109,10 +103,7 @@ void SofaGUI::configureGUI(sofa::simulation::Node *groot)
     sofa::helper::vector< sofa::component::configurationsetting::MouseButtonSetting*> mouseConfiguration;
     groot->get<sofa::component::configurationsetting::MouseButtonSetting>(&mouseConfiguration, sofa::core::objectmodel::BaseContext::SearchRoot);
 
-    for (unsigned int i=0; i<mouseConfiguration.size(); ++i)
-    {
-        setMouseButtonConfiguration(mouseConfiguration[i]);
-    }
+    for (unsigned int i=0; i<mouseConfiguration.size(); ++i)  setMouseButtonConfiguration(mouseConfiguration[i]);
 
 }
 

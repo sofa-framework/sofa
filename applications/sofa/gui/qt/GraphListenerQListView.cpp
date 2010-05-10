@@ -27,6 +27,7 @@
 
 #include <sofa/gui/qt/GraphListenerQListView.h>
 #include <sofa/simulation/common/Colors.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include "iconmultinode.xpm"
 #include "iconnode.xpm"
 #include "iconwarning.xpm"
@@ -333,11 +334,11 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
         std::string::size_type pos = name.find('<');
         if (pos != std::string::npos)
             name.erase(pos);
-// 	    if (std::string(object->getName(),0,7) != "default")
-// 	      {
-        name += "  ";
-        name += object->getName();
-// 	      }
+        if (!dynamic_cast<core::objectmodel::ConfigurationSetting*>(object))
+        {
+            name += "  ";
+            name += object->getName();
+        }
         item->setText(0, name.c_str());
 
         if (object->getWarnings().empty())
