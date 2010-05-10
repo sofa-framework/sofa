@@ -119,8 +119,8 @@ int main(int argc, char** argv)
         mycudaVerboseLevel = LOG_TRACE;
 
 
-    std::cerr<<"mycudaInit(0)"<<"\n";
-    std::cerr<<"apres mycudaInit(0)"<<"\n";
+    //std::cerr<<"mycudaInit(0)"<<"\n";
+    //std::cerr<<"apres mycudaInit(0)"<<"\n";
 #ifdef SOFA_SMP
     int ac=0;
     char **av=NULL;
@@ -162,6 +162,7 @@ int main(int argc, char** argv)
 
 
     if (!files.empty()) fileName = files[0];
+    else fileName = "examples/CUDA/quadSpringSphereCUDA.scn";
     //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
 
 

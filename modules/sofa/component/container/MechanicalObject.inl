@@ -1688,7 +1688,7 @@ void MechanicalObject<DataTypes>::vAvail(VecId& v)
 #ifdef SOFA_SMP
             if (vectorsCoord[i] &&   vectorsCoordSharedAllocated[i])
 #else
-            if (vectorsCoord[i])
+            if ((vectorsCoord[i]) && ! vectorsCoord[i]->empty())
 #endif
                 v.index = i+1;
     }
@@ -1698,7 +1698,7 @@ void MechanicalObject<DataTypes>::vAvail(VecId& v)
 #ifdef SOFA_SMP
             if (vectorsDeriv[i] != NULL &&vectorsDerivSharedAllocated[i])
 #else
-            if (vectorsDeriv[i] != NULL)
+            if ((vectorsDeriv[i] != NULL) && ! (*vectorsDeriv[i]).empty())
 #endif
                 v.index = i+1;
     }
