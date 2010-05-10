@@ -101,7 +101,11 @@ int main(int argc, char** argv)
     int nbIterations=0;
 
     std::string gui = "";
+#ifdef SOFA_SMP
+    std::string simulationType = "smp";
+#else
     std::string simulationType = "tree";
+#endif
     std::vector<std::string> plugins;
     std::vector<std::string> files;
 #ifdef SOFA_SMP
@@ -147,21 +151,16 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef SOFA_DEV
-    if (simulationType == "bgl")
-    {
-        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-    }
+    if (simulationType == "bgl")  sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     else
 #endif
-    {
-        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-    }
-    sofa::component::init();
 #ifdef SOFA_SMP
-    sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
-#else
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+        if (simulationType == "smp")  sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
+        else
 #endif
+            sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+
+    sofa::component::init();
     sofa::simulation::xml::initXml();
 
     if (!files.empty()) fileName = files[0];
