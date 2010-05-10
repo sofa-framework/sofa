@@ -44,7 +44,10 @@ int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of y
 ViewerSetting::ViewerSetting():
     resolution(initData(&resolution, defaulttype::Vec<2,int>(800,600), "resolution", "resolution of the Viewer"))
     ,fullscreen(initData(&fullscreen, false, "fullscreen", "Fullscreen mode"))
+    ,cameraMode(initData(&cameraMode, "cameraMode", "Camera mode"))
 {
+    sofa::helper::OptionsGroup mode(2,"Perspective","Orthographic");
+    cameraMode.setValue(mode);
 }
 
 }

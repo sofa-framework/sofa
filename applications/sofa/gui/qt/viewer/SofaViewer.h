@@ -99,10 +99,10 @@ enum
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
 
-enum
+enum CAMERA_MODE
 {
     CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC
-};
+} ;
 
 class SofaViewer
 
@@ -142,6 +142,19 @@ public:
     }
     ;
 
+    virtual void setCameraMode(CAMERA_MODE mode)
+    {
+        switch (mode)
+        {
+        case viewer::CAMERA_ORTHOGRAPHIC:
+            camera_type = CAMERA_ORTHOGRAPHIC;
+            break;
+        case viewer::CAMERA_PERSPECTIVE:
+            camera_type = CAMERA_PERSPECTIVE;
+            break;
+        }
+    }
+
     virtual void setScene(sofa::simulation::Node* scene, const char* filename =
             NULL, bool /*keepParams*/= false)
     {
@@ -180,7 +193,13 @@ public:
     }
 
     //Allow to configure your viewer using the Sofa Component, ViewerSetting
-    virtual void configure(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
+    virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf)
+    {
+        if (viewerConf->getCameraModeId() == CAMERA_ORTHOGRAPHIC)
+            setCameraMode(CAMERA_ORTHOGRAPHIC);
+        else
+            setCameraMode(CAMERA_PERSPECTIVE);
+    }
 
     //Fonctions needed to take a screenshot
     virtual const std::string screenshotName()
@@ -282,9 +301,9 @@ protected:
         case Qt::Key_T:
         {
             if (camera_type == CAMERA_PERSPECTIVE)
-                camera_type = CAMERA_ORTHOGRAPHIC;
+                setCameraMode(CAMERA_ORTHOGRAPHIC);
             else
-                camera_type = CAMERA_PERSPECTIVE;
+                setCameraMode(CAMERA_PERSPECTIVE);
             break;
         }
         case Qt::Key_V:

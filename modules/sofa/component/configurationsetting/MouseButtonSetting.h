@@ -45,6 +45,7 @@ public:
     virtual std::string getOperationType()=0;
 
     unsigned int getButton() const {return button.getValue().getSelectedId();}
+    void setButton(unsigned int id) {button.beginEdit()->setSelectedItem(id); button.endEdit();}
 
 protected:
     Data<sofa::helper::OptionsGroup> button;

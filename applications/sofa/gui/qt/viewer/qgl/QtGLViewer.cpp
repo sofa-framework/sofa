@@ -941,6 +941,21 @@ void QtGLViewer::draw()
     emit( redrawn() );
 }
 
+void QtGLViewer::setCameraMode(viewer::CAMERA_MODE mode)
+{
+    SofaViewer::setCameraMode(mode);
+    switch (mode)
+    {
+    case viewer::CAMERA_ORTHOGRAPHIC:
+        camera()->setType( qglviewer::Camera::ORTHOGRAPHIC );
+        break;
+    case viewer::CAMERA_PERSPECTIVE:
+        camera()->setType( qglviewer::Camera::PERSPECTIVE  );
+        break;
+    }
+}
+
+
 // ----------------------------------------
 // --- Handle events (mouse, keyboard, ...)
 // ----------------------------------------
@@ -966,22 +981,9 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
             QGLViewer::keyPressEvent(e);
             break;
         }
-        case Qt::Key_T:
-        {
-            if (camera()->type() == qglviewer::Camera::ORTHOGRAPHIC)
-                camera()->setType( qglviewer::Camera::PERSPECTIVE  );
-            else
-                camera()->setType( qglviewer::Camera::ORTHOGRAPHIC );
-            break;
-        }
         case Qt::Key_C:
         {
             viewAll();
-            break;
-        }
-        case Qt::Key_Escape:
-        {
-            emit(quit());
             break;
         }
         default:
