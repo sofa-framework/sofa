@@ -483,7 +483,7 @@ protected:
     void mousePressEvent ( QMouseEvent * e)
     {
         //<CAMERA API>
-        sofa::core::objectmodel::MouseEvent* mEvent;
+        sofa::core::objectmodel::MouseEvent* mEvent = NULL;
         if (e->button() == Qt::LeftButton)
             mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, e->x(), e->y());
         else if (e->button() == Qt::RightButton)
@@ -498,7 +498,7 @@ protected:
     void mouseReleaseEvent ( QMouseEvent * e)
     {
         //<CAMERA API>
-        sofa::core::objectmodel::MouseEvent* mEvent;
+        sofa::core::objectmodel::MouseEvent* mEvent = NULL;
         if (e->button() == Qt::LeftButton)
             mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, e->x(), e->y());
         else if (e->button() == Qt::RightButton)
