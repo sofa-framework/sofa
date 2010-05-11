@@ -808,7 +808,6 @@ protected:
     bool _shadow;
     bool _gl_shadow;
     bool _axis;
-    int camera_type;
     int _background;
     bool initTexturesDone;
     bool sceneBBoxIsValid;
