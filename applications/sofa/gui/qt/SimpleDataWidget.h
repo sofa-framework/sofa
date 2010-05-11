@@ -51,6 +51,10 @@
 #include <qcombobox.h>
 #endif
 
+#ifdef SOFA_DEV
+#include <sofa/core/fem/FiniteElement.h>
+#endif
+
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
 #endif
@@ -686,7 +690,51 @@ class data_widget_container < QuadraturePoint<VecN > >
     : public fixed_vector_data_widget_container < QuadraturePoint<VecN > >
 {};
 
+////////////////////////////////////////////////////////////////
+/// sofa::core::fem::FiniteElement::LocalNode support
+////////////////////////////////////////////////////////////////
 
+#ifdef SOFA_DEV
+typedef sofa::core::fem::FiniteElement::LocalNode LocalNode;
+
+template<>
+class vector_data_trait < LocalNode >
+{
+public:
+    typedef LocalNode data_type;
+    typedef unsigned int value_type;
+    enum { NDIM = 1 };
+    enum { SIZE = 3 };
+    static int size(const data_type&) { return SIZE; }
+    static const char* header(const data_type& , int i = 0)
+    {
+        switch(i)
+        {
+        case 0: return "Topo Sub Element";
+        case 1: return "Id Sub Element";
+        case 2: return "Id Node on SubElem";
+        }
+        return NULL;
+    }
+    static const value_type* get(const data_type& d, int i = 0)
+    {
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+    }
+    static void set( const value_type& , data_type& , int )
+    {
+    }
+    static void resize( int , data_type&)
+    {
+    }
+};
+
+
+template<>
+class data_widget_container < LocalNode >
+    : public fixed_vector_data_widget_container < LocalNode >
+{};
+
+#endif
 ////////////////////////////////////////////////////////////////
 /// sofa::helper::Polynomial_LD support
 ////////////////////////////////////////////////////////////////
