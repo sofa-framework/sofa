@@ -5,20 +5,23 @@
 	<!--<Node>
 		<TriangleSetTopologyContainer src="@../meshLoader" />
 		<OglModel />
-	</Node>-->
-	
-	<Optimize2DMesh name="optimizer"
-			inputPoints="@meshLoader.position" inputEdges="@meshLoader.edges"
-			seedPoints="0.01 0.01 0" regionPoints="0.0 0.0 0.0" regionTags="1"
-			refine="true" shapeCriteria="0.125"
-			sizePoints="0.0 0.0 0.0" sizes="5e-3 3.5e-4" kLipschitz="0.25"
-			optimize="true" lloydIteration="50"
-			viewTriangles="true" viewSeedPoints="true" viewRegionPoints="true"/>
+        </Node>-->
+
+        <Optimize2DMesh name="optimizer"
+                        inputPoints="@meshLoader.position" inputEdges="@meshLoader.edges"
+                        seedPoints="0.005 0.0 0.0 -0.005 0.002 0.0 -0.005 -0.005 0.0" regionPoints="0.0 0.0 0.0" regionTags="1"
+                        refine="true" shapeCriteria="0.06"
+                        sizePoints="0.0 0.0 0.0" sizes="4e-3 2e-4" kLipschitz="0.25"
+                        optimize="true" lloydIteration="50"
+                        viewTriangles="true" viewSeedPoints="true" viewRegionPoints="true"/>
+
+
 	
 	<Node>
 		<MechanicalObject position="@../optimizer.outputPoints" />
 		<TriangleSetTopologyContainer position="@../optimizer.outputPoints" triangles="@../optimizer.outputTriangles" />
 		<TriangleSetGeometryAlgorithms drawTriangles="false"/>
+                <VTKExporter exportAtEnd="true" filename="aneurysm" XMLformat="true" position="@../optimizer.outputPoints" edges="0" triangles="1" listening="true"/>
 	</Node>
 	
 </Node>
