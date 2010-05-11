@@ -941,15 +941,16 @@ void QtGLViewer::draw()
     emit( redrawn() );
 }
 
-void QtGLViewer::setCameraMode(viewer::CAMERA_MODE mode)
+void QtGLViewer::setCameraMode(component::visualmodel::Camera::CameraType mode)
 {
     SofaViewer::setCameraMode(mode);
+
     switch (mode)
     {
-    case viewer::CAMERA_ORTHOGRAPHIC:
+    case component::visualmodel::Camera::ORTHOGRAPHIC_TYPE:
         camera()->setType( qglviewer::Camera::ORTHOGRAPHIC );
         break;
-    case viewer::CAMERA_PERSPECTIVE:
+    case component::visualmodel::Camera::PERSPECTIVE_TYPE:
         camera()->setType( qglviewer::Camera::PERSPECTIVE  );
         break;
     }

@@ -171,7 +171,7 @@ public:
 
     void moveRayPickInteractor(int eventX, int eventY);
 
-    void setCameraMode(viewer::CAMERA_MODE mode);
+    void setCameraMode(component::visualmodel::Camera::CameraType mode);
 
 #ifdef SOFA_DEV
 
