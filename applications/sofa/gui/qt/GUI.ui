@@ -584,10 +584,6 @@
         <action name="fileSaveAsAction"/>
         <action name="exportGraphAction"/>
         <separator/>
-        <action name="Action"/>
-        <item text="Recently Opened Files..." name="recentlyOpened" accel="">
-            <action name="TestAction"/>
-        </item>
         <separator/>
         <action name="fileExitAction"/>
     </item>

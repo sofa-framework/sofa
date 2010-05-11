@@ -33,6 +33,7 @@
 #include "GraphModeler.h"
 #include "FilterLibrary.h"
 #include "SofaTutorialManager.h"
+#include <sofa/gui/qt/QMenuFilesRecentlyOpened.h>
 
 #include <sofa/helper/Factory.h>
 
@@ -107,8 +108,6 @@ public :
 
     /// Change the name of the main window
     void changeNameWindow(std::string filename);
-    /// Update the menu Recently Opened Files...
-    void updateRecentlyOpened(std::string fileLoaded);
 
     void changeTabName(GraphModeler *graph, const QString &name, const QString &suffix=QString());
     void setDebugBinary(bool b) {debug=b;};
@@ -221,6 +220,9 @@ protected slots:
     void redirectStdout();
 protected:
     void displayHelpModeler();
+
+    QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
+
     //********************************************
     //Left Part
     /*           QToolBox     *containerLibrary; */

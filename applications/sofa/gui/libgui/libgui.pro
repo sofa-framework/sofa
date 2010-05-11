@@ -23,12 +23,14 @@ SOURCES = \
 	    ../SofaGUI.cpp \
 	    ../BatchGUI.cpp \
             ../MouseOperations.cpp \
-            ../PickHandler.cpp
+            ../PickHandler.cpp \
+            ../FilesRecentlyOpenedManager.cpp
 
 HEADERS = \
 	    ../SofaGUI.h \
 	    ../BatchGUI.h \
             ../OperationFactory.h \
             ../MouseOperations.h \
-            ../PickHandler.h
+            ../PickHandler.h \
+            ../FilesRecentlyOpenedManager.h 
 

@@ -72,8 +72,6 @@
 
 #include <sofa/helper/system/FileRepository.h>
 
-#define MAX_RECENTLY_OPENED 10
-
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QDockWidget>
@@ -334,6 +332,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
       timerStep(NULL),
       backgroundImage(NULL),
       left_stack(NULL),
+      recentlyOpenedFilesManager("config/Sofa.ini"),
       saveReloadFile(false)
 {
 
@@ -342,6 +341,14 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 #ifdef SOFA_QT4
     fileMenu->removeAction(Action);
 #endif
+    //Configure Recently Opened Menu
+    const int indexRecentlyOpened=fileMenu->count()-2;
+    QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
+    fileMenu->insertItem(QPixmap(),recentMenu,indexRecentlyOpened,indexRecentlyOpened);
+    connect(recentMenu, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+
+
+
 
     displayFlag = new DisplayFlagWidget(tabView);
     connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements(int,bool) ));
@@ -359,21 +366,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 #ifdef SOFA_DUMP_VISITOR_INFO
     connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
 #endif
-    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
-    //Recently Opened Files
-    std::string scenes ( "config/Sofa.ini" );
-    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-    {
-        std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
 
-        std::ofstream ofile(fileToBeCreated.c_str());
-        ofile << "";
-        ofile.close();
-    }
+
     pathDumpVisitor = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
-    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
-    initRecentlyOpened();
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
     //Create a Dock Window to receive the Sofa Recorder
@@ -494,69 +490,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
 void RealGUI::fileRecentlyOpened(int id)
 {
-    fileOpen(recentlyOpened->text(id).ascii());
+    fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
 }
 
-void RealGUI::initRecentlyOpened()
-{
-    recentlyOpened->clear();
-    std::vector< std::string > list_files;
-
-
-    std::string scenes ( "config/Sofa.ini" );
-    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
-
-
-    std::ifstream end(scenes.c_str());
-    std::string s;
-    while( std::getline(end,s) )
-    {
-        list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
-        recentlyOpened->insertItem(QString(list_files.back().c_str()));
-    }
-    end.close();
-
-}
-
-void RealGUI::updateRecentlyOpened(std::string fileLoaded)
-{
-#ifdef WIN32
-    for (unsigned int i=0; i<fileLoaded.size(); ++i)
-    {
-        if (fileLoaded[i] == '\\') fileLoaded[i] = '/';
-    }
-#endif
-    std::string scenes ( "config/Sofa.ini" );
-
-    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
-
-    std::ofstream out;
-    out.open(scenes.c_str(),std::ios::out);
-    if (sofa::helper::system::DataRepository.findFile(fileLoaded))
-    {
-        fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded);
-        out << fileLoaded << "\n";
-        recentlyOpened->insertItem(QString(fileLoaded.c_str()),-1,0);
-    }
-
-    for (unsigned int i=1; i<recentlyOpened->count() && i< MAX_RECENTLY_OPENED; ++i)
-    {
-        std::string entry = (recentlyOpened->text(recentlyOpened->idAt(i))).ascii();
-        if (fileLoaded == entry)
-        {
-            recentlyOpened->removeItemAt(i);
-            --i;
-        }
-        else
-        {
-            out << entry << "\n";
-        }
-    }
-
-    while (recentlyOpened->count() > MAX_RECENTLY_OPENED) recentlyOpened->removeItemAt(MAX_RECENTLY_OPENED);
-
-    out.close();
-}
 
 void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
 {
@@ -1001,7 +937,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
 {
     if (filename)
     {
-        if (!temporaryFile) updateRecentlyOpened(filename);
+        if (!temporaryFile) recentlyOpenedFilesManager.openFile(filename);
         setTitle ( filename );
         saveReloadFile=temporaryFile;
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);

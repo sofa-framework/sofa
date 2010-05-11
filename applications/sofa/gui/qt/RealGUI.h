@@ -44,6 +44,7 @@
 #include <sofa/gui/qt/AddObject.h>
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/gui/qt/DisplayFlagWidget.h>
+#include <sofa/gui/qt/QMenuFilesRecentlyOpened.h>
 #include <sofa/gui/qt/SofaPluginManager.h>
 #include <sofa/gui/qt/SofaMouseManager.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
@@ -93,9 +94,6 @@ typedef QTextDrag Q3TextDrag;
 
 namespace sofa
 {
-/*namespace simulation{
-  class Node;
-}*/
 
 namespace gui
 {
@@ -207,7 +205,6 @@ public:
     void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);
 
-    void initRecentlyOpened();
 
 public slots:
     void NewRootNode(sofa::simulation::Node* root, const char* path);
@@ -217,7 +214,6 @@ public slots:
     void LockAnimation(bool);
 
     void fileRecentlyOpened(int id);
-    void updateRecentlyOpened(std::string fileLoaded);
     void playpauseGUI(bool value);
     void step();
     void setDt(double);
@@ -284,6 +280,8 @@ protected:
     WFloatLineEdit *background[3];
     QLineEdit *backgroundImage;
     QWidgetStack* left_stack;
+
+    QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
 
     std::string simulation_name;
     std::string gnuplot_directory;
