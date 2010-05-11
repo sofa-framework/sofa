@@ -3,8 +3,8 @@
     <Node name="extrude">
 	<Mesh name="meshLoader"  filename="mesh/liver.obj"/>
 	<MechanicalObject />
-	<TrianglesInSphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" isVisible="false"/>
-	<ExtrudeSurface template="Vec3d" name="extrusion" surfaceVertices="@meshLoader.points" surfaceTriangles="@surface1.indices" isVisible="true"/>
+	<SphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" isVisible="0"/>
+	<ExtrudeSurface template="Vec3d" name="extrusion" surfaceVertices="@meshLoader.points" surfaceTriangles="@surface1.triangleIndices" isVisible="0"/>
 	<RandomPointDistributionInSurface template="Vec3d" vertices="@extrusion.extrusionVertices" triangles="@extrusion.extrusionTriangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1"/>
     </Node>
     <!--<Node>
