@@ -33,7 +33,7 @@
 #include <QMenu>
 #else
 #include <qpopupmenu.h>
-#typedef QPopupMenu QMenu;
+typedef QPopupMenu QMenu;
 #endif
 namespace sofa
 {
