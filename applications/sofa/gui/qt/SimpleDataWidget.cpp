@@ -220,7 +220,9 @@ void RadioDataWidget::writeToData()
     this->getData()->virtualSetValue(m_radiotrick);
 }
 
-
+#ifdef SOFA_DEV
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::fem::FiniteElement::LocalNode > >DWClass_NodeFE("default",true);
+#endif
 
 
 } // namespace qt
