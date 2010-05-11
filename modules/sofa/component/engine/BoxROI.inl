@@ -50,7 +50,7 @@ using namespace core::topology;
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
     : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
-    , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
+    , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
@@ -72,10 +72,15 @@ BoxROI<DataTypes>::BoxROI()
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and triangles") )
 {
+    //Adding alias to handle old BoxROI input/output
     addAlias(&f_pointsInROI,"pointsInBox");
     addAlias(&f_edgesInROI,"edgesInBox");
     addAlias(&f_trianglesInROI,"f_trianglesInBox");
     addAlias(&f_tetrahedraInROI,"f_tetrahedraInBox");
+    addAlias(&f_X0,"rest_position");
+
+    //Adding alias to handle TrianglesInBoxROI input/output
+    addAlias(&p_drawBoxes,"isVisible");
 
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
     boxes.endEdit();

@@ -49,7 +49,7 @@ using namespace core::objectmodel;
 template <class DataTypes>
 PlaneROI<DataTypes>::PlaneROI()
     : planes( initData(&planes, "plane", "Plane defined by 3 points and a depth distance") )
-    , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
+    , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
@@ -73,6 +73,9 @@ PlaneROI<DataTypes>::PlaneROI()
 {
     planes.beginEdit()->push_back(Vec10(Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
     planes.endEdit();
+
+    addAlias(&f_X0,"rest_position");
+    addAlias(&p_drawBoxes,"isVisible");
 
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
