@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -172,9 +173,11 @@ private:
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API PlaneROI<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API PlaneROI<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API PlaneROI<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API PlaneROI<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

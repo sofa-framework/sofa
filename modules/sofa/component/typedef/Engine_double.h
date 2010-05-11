@@ -39,6 +39,8 @@
 
 
 #include <sofa/component/engine/BoxROI.h>
+#include <sofa/component/engine/PlaneROI.h>
+#include <sofa/component/engine/SphereROI.h>
 #include <sofa/component/engine/ExtrudeSurface.h>
 #include <sofa/component/engine/GroupFilterYoungModulus.h>
 #include <sofa/component/engine/JoinPoints.h>
@@ -46,15 +48,11 @@
 #include <sofa/component/engine/MeshBarycentricMapperEngine.h>
 #include <sofa/component/engine/PlaneROI.h>
 #include <sofa/component/engine/PointsFromIndices.h>
-#include <sofa/component/engine/PrimitivesInSphereROI.h>
 #include <sofa/component/engine/RandomPointDistributionInSurface.h>
 #include <sofa/component/engine/Spiral.h>
 #include <sofa/component/engine/TextureInterpolation.h>
 #include <sofa/component/engine/TransformEngine.h>
 #include <sofa/component/engine/TransformPosition.h>
-#include <sofa/component/engine/TrianglesInBoxROI.h>
-#include <sofa/component/engine/TrianglesInPlaneROI.h>
-#include <sofa/component/engine/TrianglesInSphereROI.h>
 #include <sofa/component/engine/Vertex2Frame.h>
 
 
@@ -63,6 +61,19 @@
 //Typedef for BoxROI
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > BoxROI3d;
 typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdRigidTypes<3, double> > BoxROIRigid3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for PlaneROI
+typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PlaneROI3d;
+typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdRigidTypes<3, double> > PlaneROIRigid3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for SphereROI
+typedef sofa::component::engine::SphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SphereROI3d;
 
 
 
@@ -110,12 +121,6 @@ typedef sofa::component::engine::PointsFromIndices<sofa::defaulttype::StdVectorT
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for PrimitivesInSphereROI
-typedef sofa::component::engine::PrimitivesInSphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PrimitivesInSphereROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for RandomPointDistributionInSurface
 typedef sofa::component::engine::RandomPointDistributionInSurface<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > RandomPointDistributionInSurface3d;
 
@@ -152,24 +157,6 @@ typedef sofa::component::engine::TransformPosition<sofa::defaulttype::StdVectorT
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for TrianglesInBoxROI
-typedef sofa::component::engine::TrianglesInBoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TrianglesInBoxROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TrianglesInPlaneROI
-typedef sofa::component::engine::TrianglesInPlaneROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TrianglesInPlaneROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TrianglesInSphereROI
-typedef sofa::component::engine::TrianglesInSphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TrianglesInSphereROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for Vertex2Frame
 typedef sofa::component::engine::Vertex2Frame<sofa::defaulttype::StdRigidTypes<3, double> > Vertex2FrameRigid3d;
 
@@ -180,6 +167,9 @@ typedef sofa::component::engine::Vertex2Frame<sofa::defaulttype::StdRigidTypes<3
 #ifndef SOFA_FLOAT
 typedef BoxROI3d BoxROI3;
 typedef BoxROIRigid3d BoxROIRigid3;
+typedef PlaneROI3d PlaneROI3;
+typedef PlaneROIRigid3d PlaneROIRigid3;
+typedef SphereROI3d SphereROI3;
 typedef ExtrudeSurface3d ExtrudeSurface3;
 typedef GroupFilterYoungModulus3d GroupFilterYoungModulus3;
 typedef JoinPoints3d JoinPoints3;
@@ -188,7 +178,6 @@ typedef MergePointsRigid3d MergePointsRigid3;
 typedef MeshBarycentricMapperEngine3d MeshBarycentricMapperEngine3;
 typedef PlaneROI3d PlaneROI3;
 typedef PointsFromIndices3d PointsFromIndices3;
-typedef PrimitivesInSphereROI3d PrimitivesInSphereROI3;
 typedef RandomPointDistributionInSurface3d RandomPointDistributionInSurface3;
 typedef Spiral3d Spiral3;
 typedef TextureInterpolation2d TextureInterpolation2;
@@ -200,9 +189,6 @@ typedef TransformEngine3d TransformEngine3;
 typedef TransformEngineRigid2d TransformEngineRigid2;
 typedef TransformEngineRigid3d TransformEngineRigid3;
 typedef TransformPosition3d TransformPosition3;
-typedef TrianglesInBoxROI3d TrianglesInBoxROI3;
-typedef TrianglesInPlaneROI3d TrianglesInPlaneROI3;
-typedef TrianglesInSphereROI3d TrianglesInSphereROI3;
 typedef Vertex2FrameRigid3d Vertex2FrameRigid3;
 #endif
 
