@@ -48,7 +48,7 @@
             </property>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>layout6</cstring>
+                    <cstring>optionTabs</cstring>
                 </property>
                 <property name="minimumSize">
                     <size>
