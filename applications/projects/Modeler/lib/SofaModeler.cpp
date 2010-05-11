@@ -82,7 +82,7 @@ typedef QDockWindow Q3DockWindow;
 #endif
 
 
-SofaModeler::SofaModeler()
+SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
 {
     //index to add in temporary scenes created by the Modeler
     count='0';
@@ -312,20 +312,11 @@ SofaModeler::SofaModeler()
         }
     }
     //----------------------------------------------------------------------
-    //Recently Opened Files: if the init file does not exist, we create one
-    std::string scenes ( "config/Modeler.ini" );
-    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-    {
-        std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
-
-        std::ofstream ofile(fileToBeCreated.c_str());
-        ofile << "";
-        ofile.close();
-    }
-#ifdef SOFA_QT4
-    recentlyOpened->setTearOffEnabled(true);
-#endif
-    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+    //Configure Recently Opened Menu
+    const int indexRecentlyOpened=fileMenu->count()-2;
+    QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
+    fileMenu->insertItem(QPixmap(),recentMenu,indexRecentlyOpened,indexRecentlyOpened);
+    connect(recentMenu, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
 
 
     //----------------------------------------------------------------------
@@ -542,7 +533,7 @@ void SofaModeler::fileOpen(std::string filename)
             changeNameWindow(graph->getFilename());
 
             mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename().c_str()), tabGraph));
-            updateRecentlyOpened(filename);
+            recentlyOpenedFilesManager.openFile(filename);
         }
     }
     displayHelpModeler();
@@ -550,52 +541,8 @@ void SofaModeler::fileOpen(std::string filename)
 
 void SofaModeler::fileRecentlyOpened(int id)
 {
-    fileOpen(recentlyOpened->text(id));
+    fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
 }
-
-void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
-{
-    if (!fileLoaded.empty())
-    {
-        if (sofa::helper::system::DataRepository.findFile(fileLoaded))
-            fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded);
-        else
-            return;
-#ifdef WIN32
-        //Remove all occurences of '\\' in the path
-        std::replace(fileLoaded.begin(), fileLoaded.end(), '\\', '/');
-#endif
-    }
-    //get the file containing the list of recently opened scenes
-    std::string scenes ( "config/Modeler.ini" );
-    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
-
-    //Build the list of files
-    std::vector< std::string > list_files;
-    //Insert the new file at the beginning of the vector
-    if (!fileLoaded.empty()) list_files.push_back(fileLoaded);
-
-    std::ifstream end(scenes.c_str());
-    std::string s;
-    while( std::getline(end,s) )
-        if (s != fileLoaded) list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
-    end.close();
-
-    //recentlyOpened->clear();
-
-    while (recentlyOpened->count()) recentlyOpened->removeItemAt(0);
-
-    std::ofstream out;
-    out.open(scenes.c_str(),std::ios::out);
-    for (unsigned int i=0; i<list_files.size() && i<MAX_RECENTLY_OPENED; ++i)
-    {
-        recentlyOpened->insertItem(QString(list_files[i].c_str()));
-        out << list_files[i] << "\n";
-    }
-
-    out.close();
-}
-
 
 void SofaModeler::pressedGNodeButton()
 {

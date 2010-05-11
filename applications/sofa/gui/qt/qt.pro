@@ -83,6 +83,7 @@ HEADERS += viewer/SofaViewer.h \
 		   QSofaListView.h \
 		   QSofaRecorder.h \
 		   QSofaStatWidget.h \
+           QMenuFilesRecentlyOpened.h \
            ImageQt.h 
 
 SOURCES += Main.cpp \
@@ -113,6 +114,7 @@ SOURCES += Main.cpp \
 		   QSofaListView.cpp \
 		   QSofaRecorder.cpp \
 		   QSofaStatWidget.cpp \
+           QMenuFilesRecentlyOpened.cpp \
            ImageQt.cpp 
 
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
