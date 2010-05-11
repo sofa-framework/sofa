@@ -1177,7 +1177,25 @@ void RealGUI::setViewerResolution ( int w, int h )
 }
 void RealGUI::setFullScreen ()
 {
+
+#ifdef SOFA_QT4
+    QList<int> list;
+#else
+    QValueList<int> list;
+#endif
+    list.push_back ( 0 );
+    list.push_back ( this->width() );
+    QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
+    splitter_ptr->setSizes ( list );
+
     showFullScreen();
+
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    if (recorder) recorder->parentWidget()->hide();
+    statusBar()->addWidget( recorder->getFPSLabel());
+    statusBar()->addWidget( recorder->getTimeLabel());
+#endif
+
 }
 
 void RealGUI::setBackgroundColor(const defaulttype::Vector3& c)
