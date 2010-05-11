@@ -343,6 +343,12 @@ public:
     {
     }
 
+    virtual ~LPtrFullMatrix()
+    {
+        if (lallocsize > 0)
+            delete[] ldata;
+    }
+
     void resize(int nbRow, int nbCol)
     {
         if (nbRow == this->nRow && nbCol == this->nCol)
