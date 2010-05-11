@@ -31,11 +31,13 @@
 
 #include <string>
 
+#include "SofaGUI.h"
+
 namespace sofa
 {
 namespace gui
 {
-class FilesRecentlyOpenedManager
+class SOFA_SOFAGUI_API FilesRecentlyOpenedManager
 {
 public:
     FilesRecentlyOpenedManager(const std::string &configFile);
