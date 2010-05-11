@@ -27,6 +27,7 @@
 
 #include "CudaTetrahedronFEMForceField.h"
 #include <sofa/component/forcefield/TetrahedronFEMForceField.inl>
+#include "CudaDiagonalMatrix.h"
 
 namespace sofa
 {

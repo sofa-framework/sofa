@@ -158,12 +158,7 @@ public:
         data.swap(v.data);
     }
 
-    const SReal& element(int i) const
-    {
-        return data[i];
-    }
-
-    SReal& element(int i)
+    SReal element(int i) const
     {
         return data[i];
     }
@@ -180,6 +175,7 @@ public:
 
     void clear(int i)
     {
+        printf("je clear\n");
         data[i] = (Real)0;
     }
 
@@ -187,8 +183,20 @@ public:
     FullVector<Real2> operator*(const FullVector<Real2>& v) const
     {
         FullVector<Real2> res;
-        for (int i=0; i<rowSize(); i++) res[i] = data[i] * v[i];
+        res.resize(rowSize());
+        for (unsigned i=0; i<rowSize(); i++) res[i] = data[i] * v[i];
         return res;
+    }
+
+    void invert()
+    {
+        for (unsigned i=0; i<rowSize(); i++) data[i] = 1.0 / data[i];
+    }
+
+    template<class Real2>
+    void mult(FullVector<Real2>& z,const FullVector<Real2>& v) const
+    {
+        for (unsigned i=0; i<rowSize(); i++) z[i] = data[i] * v[i];
     }
 
     // methods for MatrixExpr support
