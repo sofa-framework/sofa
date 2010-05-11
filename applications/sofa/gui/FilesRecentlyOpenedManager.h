@@ -41,6 +41,7 @@ class SOFA_SOFAGUI_API FilesRecentlyOpenedManager
 {
 public:
     FilesRecentlyOpenedManager(const std::string &configFile);
+    virtual ~FilesRecentlyOpenedManager() {};
 
     virtual void openFile(const std::string &file);
     virtual std::string getFilename(unsigned int idx) const

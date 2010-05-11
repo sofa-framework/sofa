@@ -45,7 +45,8 @@ namespace qt
 class QMenuFilesRecentlyOpened: public FilesRecentlyOpenedManager
 {
 public:
-    QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile) {};
+    QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(0) {};
+    virtual ~QMenuFilesRecentlyOpened() {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;};
     void openFile(const std::string &file);
 
     QMenu *createWidget(QWidget *parent, const std::string& =std::string("Recently Opened Files ..."));
