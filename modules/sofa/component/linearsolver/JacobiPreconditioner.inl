@@ -63,21 +63,25 @@ JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
 {
 }
 
-/// Solve P^-1 Mx= P^-1 b
-// P[i][j] = M[i][j] ssi i=j
-//P^-1[i][j] = 1/M[i][j]
-template<class TMatrix, class TVector>
-void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
-{
-    for (unsigned i=0; i<z.size(); i++) z.set(i,invDiag[i] * r[i]); //si i==j;
-}
-
 template<class TMatrix, class TVector>
 void JacobiPreconditioner<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
     Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
-    invDiag.resize(this->currentGroup->systemMatrix->colSize());
-    for (unsigned i=0; i<this->currentGroup->systemMatrix->colSize(); i++) invDiag.set(i,1.0 / this->currentGroup->systemMatrix->element(i,i)); //si i==j;
+}
+
+/// Solve P^-1 Mx= P^-1 b
+// P[i][j] = M[i][j] ssi i=j
+//P^-1[i][j] = 1/M[i][j]
+template<class TMatrix, class TVector>
+void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
+{
+    M.mult(z,r);
+}
+
+template<class TMatrix, class TVector>
+void JacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
+{
+    M.invert();
 }
 
 } // namespace linearsolver

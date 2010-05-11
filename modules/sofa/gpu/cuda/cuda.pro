@@ -148,12 +148,14 @@ HEADERS += \
 	   	CudaLCP.h \
 			CudaMathRigid.h \
 	   	CudaMatrixUtils.h \
+	   	CudaDiagonalMatrix.h \
        	CudaMasterContactSolver.h \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
 		CudaBlockJacobiPreconditioner.h \
 	   	CudaPrecomputedWarpPreconditioner.h \		
 		CudaWarpPreconditioner.h \
+		CudaJacobiPreconditioner.h \
         CudaTetrahedronTLEDForceField.h \
        	CudaHexahedronFEMForceField.h \
        	CudaHexahedronFEMForceField.inl \
