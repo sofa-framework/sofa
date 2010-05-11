@@ -49,10 +49,12 @@ void QMenuFilesRecentlyOpened::updateWidget()
 
 QMenu *QMenuFilesRecentlyOpened::createWidget(QWidget *parent, const std::string &name)
 {
-    menuRecentlyOpenedFiles = new QMenu(QString(name.c_str()), parent);
 
 #ifdef SOFA_QT4
+    menuRecentlyOpenedFiles = new QMenu(QString(name.c_str()), parent);
     menuRecentlyOpenedFiles->setTearOffEnabled(true);
+#else
+    menuRecentlyOpenedFiles = new QMenu(parent,QString(name.c_str()));
 #endif
 
     updateWidget();
