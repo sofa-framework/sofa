@@ -65,7 +65,6 @@ SubsetTopology<DataTypes>::SubsetTopology()
     , f_trianglesOutBox( initData(&f_trianglesOutBox,"f_trianglesOutBox","Triangles out of the ROI") )
     , f_tetrahedraInBox( initData(&f_tetrahedraInBox,"f_tetrahedraInBox","Tetrahedra contained in the ROI") )
     , f_tetrahedraOutBox( initData(&f_tetrahedraOutBox,"f_tetrahedraOutBox","Tetrahedra out of the ROI") )
-    , p_subsetTopology( initData(&p_subsetTopology,false,"subsetTopology","Draw Triangles") )
     , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
@@ -83,68 +82,65 @@ template <class DataTypes>
 void SubsetTopology<DataTypes>::init()
 {
 
-    if (!p_subsetTopology.getValue())
+    if (!f_X0.isSet())
     {
-        if (!f_X0.isSet())
+        MechanicalState<DataTypes>* mstate;
+        this->getContext()->get(mstate);
+        if (mstate)
         {
-            MechanicalState<DataTypes>* mstate;
-            this->getContext()->get(mstate);
-            if (mstate)
+            BaseData* parent = mstate->findField("position");
+            if (parent)
             {
-                BaseData* parent = mstate->findField("position");
+                f_X0.setParent(parent);
+                f_X0.setReadOnly(true);
+            }
+        }
+        else
+        {
+            core::loader::MeshLoader* loader = NULL;
+            this->getContext()->get(loader);
+            if (loader)
+            {
+                BaseData* parent = loader->findField("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
                     f_X0.setReadOnly(true);
                 }
             }
-            else
+        }
+    }
+    if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
+    {
+        BaseMeshTopology* topology;
+        this->getContext()->get(topology);
+        if (topology)
+        {
+            if (!f_edges.isSet())
             {
-                core::loader::MeshLoader* loader = NULL;
-                this->getContext()->get(loader);
-                if (loader)
+                BaseData* eparent = topology->findField("edges");
+                if (eparent)
                 {
-                    BaseData* parent = loader->findField("position");
-                    if (parent)
-                    {
-                        f_X0.setParent(parent);
-                        f_X0.setReadOnly(true);
-                    }
+                    f_edges.setParent(eparent);
+                    f_edges.setReadOnly(true);
                 }
             }
-        }
-        if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
-        {
-            BaseMeshTopology* topology;
-            this->getContext()->get(topology);
-            if (topology)
+            if (!f_triangles.isSet())
             {
-                if (!f_edges.isSet())
+                BaseData* tparent = topology->findField("triangles");
+                if (tparent)
                 {
-                    BaseData* eparent = topology->findField("edges");
-                    if (eparent)
-                    {
-                        f_edges.setParent(eparent);
-                        f_edges.setReadOnly(true);
-                    }
+                    f_triangles.setParent(tparent);
+                    f_triangles.setReadOnly(true);
                 }
-                if (!f_triangles.isSet())
+            }
+            if (!f_tetrahedra.isSet())
+            {
+                BaseData* tparent = topology->findField("tetrahedra");
+                if (tparent)
                 {
-                    BaseData* tparent = topology->findField("triangles");
-                    if (tparent)
-                    {
-                        f_triangles.setParent(tparent);
-                        f_triangles.setReadOnly(true);
-                    }
-                }
-                if (!f_tetrahedra.isSet())
-                {
-                    BaseData* tparent = topology->findField("tetrahedra");
-                    if (tparent)
-                    {
-                        f_tetrahedra.setParent(tparent);
-                        f_tetrahedra.setReadOnly(true);
-                    }
+                    f_tetrahedra.setParent(tparent);
+                    f_tetrahedra.setReadOnly(true);
                 }
             }
         }
@@ -285,7 +281,7 @@ void SubsetTopology<DataTypes>::update()
             }
         }
 
-        if (!inside && p_subsetTopology.getValue())
+        if (!inside)
             pointsOutBox.push_back((*x0)[i]);
     }
 
@@ -315,10 +311,7 @@ void SubsetTopology<DataTypes>::update()
                 break;
             }
             else
-            {
-                if (p_subsetTopology.getValue())
-                    trianglesOutBox.push_back(t);
-            }
+                trianglesOutBox.push_back(t);
         }
     }
 
@@ -334,10 +327,7 @@ void SubsetTopology<DataTypes>::update()
                 break;
             }
             else
-            {
-                if (p_subsetTopology.getValue())
-                    tetrahedraOutBox.push_back(t);
-            }
+                tetrahedraOutBox.push_back(t);
         }
     }
 
