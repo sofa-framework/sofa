@@ -238,10 +238,17 @@ MasterConstraintSolver::MasterConstraintSolver()
 
     CP1.clear(0,_tol.getValue());
     CP2.clear(0,_tol.getValue());
+
+    timer = 0;
 }
 
 MasterConstraintSolver::~MasterConstraintSolver()
 {
+    if (timer != 0)
+    {
+        delete timer;
+        timer = 0;
+    }
 }
 
 void MasterConstraintSolver::init()
@@ -494,7 +501,9 @@ void MasterConstraintSolver::step ( double dt )
     timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
     if ( displayTime.getValue() )
     {
-        timer = new CTime();
+        if (timer == 0)
+            timer = new CTime();
+
         time = (double) timer->getTime();
         totaltime = time;
         sout<<sendl;
