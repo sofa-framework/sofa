@@ -54,7 +54,7 @@ SphereROI<DataTypes>::SphereROI()
     , normal( initData(&normal, "normal", "Normal direction of the triangles (if triAngle > 0)") )
     , edgeAngle( initData(&edgeAngle, (Real)0, "edgeAngle", "Max angle between the direction of the selected edges and the specified direction") )
     , triAngle( initData(&triAngle, (Real)0, "triAngle", "Max angle between the normal of the selected triangle and the specified normal direction") )
-    , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
+    , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
@@ -76,7 +76,12 @@ SphereROI<DataTypes>::SphereROI()
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and triangles") )
 {
+    //Adding alias to handle TrianglesInSphereROI input/output
+    addAlias(&p_drawSphere,"isVisible");
     addAlias(&triAngle,"angle");
+    addAlias(&f_indices,"pointIndices");
+    addAlias(&f_X0,"rest_position");
+
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 }
