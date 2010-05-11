@@ -73,6 +73,8 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/component/visualmodel/Camera.h>
+
 #ifdef SOFA_QT4
 #include <QEvent>
 #include <QMouseEvent>
@@ -99,10 +101,6 @@ enum
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
 
-enum CAMERA_MODE
-{
-    CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC
-} ;
 
 class SofaViewer
 
@@ -114,12 +112,16 @@ class SofaViewer
 {
 
 public:
-    SofaViewer() :
-        groot(NULL), m_isControlPressed(false), _video(false), _shadow(false),
-        _gl_shadow(false), _axis(false),
-        camera_type(CAMERA_PERSPECTIVE), backgroundColour(Vector3()),
-        backgroundImage("textures/SOFA_logo.bmp"), ambientColour(
-            Vector3())
+    SofaViewer()
+        : groot(NULL)
+        , m_isControlPressed(false)
+        , _video(false)
+        , _shadow(false)
+        ,_gl_shadow(false)
+        ,_axis(false)
+        ,backgroundColour(Vector3())
+        ,backgroundImage("textures/SOFA_logo.bmp"), ambientColour(Vector3())
+        ,currentCamera(NULL)
     {
     }
     virtual ~SofaViewer()
@@ -142,17 +144,9 @@ public:
     }
     ;
 
-    virtual void setCameraMode(CAMERA_MODE mode)
+    virtual void setCameraMode(component::visualmodel::Camera::CameraType mode)
     {
-        switch (mode)
-        {
-        case viewer::CAMERA_ORTHOGRAPHIC:
-            camera_type = CAMERA_ORTHOGRAPHIC;
-            break;
-        case viewer::CAMERA_PERSPECTIVE:
-            camera_type = CAMERA_PERSPECTIVE;
-            break;
-        }
+        currentCamera->setCameraType(mode);
     }
 
     virtual void setScene(sofa::simulation::Node* scene, const char* filename =
@@ -172,17 +166,29 @@ public:
 #ifdef SOFA_HAVE_FFMPEG
         videoRecorder.setPrefix(screenshotPrefix);
 #endif //SOFA_HAVE_FFMPEG
-
         sceneFileName = filename ? filename : std::string("default.scn");
         groot = scene;
         initTexturesDone = false;
         sceneBBoxIsValid = false;
 
+
+        //Camera initialization
+        if (groot)
+        {
+            groot->get(currentCamera);
+            if (!currentCamera)
+            {
+                currentCamera = new component::visualmodel::Camera();
+                //std::cout << "Create Default Camera" << std::endl;
+            }
+            //else std::cout << "Find a Camera" << std::endl;
+
+        }
+
         pick.init();
         //if (!keepParams) resetView();
     }
 
-    virtual void resetView()=0;
     virtual QString helpString()=0;
     virtual bool ready()
     {
@@ -195,10 +201,10 @@ public:
     //Allow to configure your viewer using the Sofa Component, ViewerSetting
     virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf)
     {
-        if (viewerConf->getCameraModeId() == CAMERA_ORTHOGRAPHIC)
-            setCameraMode(CAMERA_ORTHOGRAPHIC);
+        if (viewerConf->getCameraModeId() == component::visualmodel::Camera::ORTHOGRAPHIC_TYPE)
+            setCameraMode(component::visualmodel::Camera::ORTHOGRAPHIC_TYPE);
         else
-            setCameraMode(CAMERA_PERSPECTIVE);
+            setCameraMode(component::visualmodel::Camera::PERSPECTIVE_TYPE);
     }
 
     //Fonctions needed to take a screenshot
@@ -218,18 +224,55 @@ public:
         capture.saveScreen(filename, compression_level);
     }
 
-    virtual void getView(float* /*pos*/, float* /*ori*/) const
+    virtual void getView(Vec3d& pos, Quat& ori) const
     {
+        if (!currentCamera)
+            return;
+
+        const Vec3d& lookat = currentCamera->getLookAt();
+        const Quat& camOrientation = currentCamera->getOrientation();
+
+        pos[0] = lookat[0];
+        pos[1] = lookat[1];
+        pos[2] = lookat[2];
+
+        ori[0] = camOrientation[0];
+        ori[1] = camOrientation[1];
+        ori[2] = camOrientation[2];
+        ori[3] = camOrientation[3];
     }
     ;
-    virtual void setView(float* /*pos*/, float* /*ori*/)
+    virtual void setView(const Vec3d& pos, const Quat &ori)
     {
+        Vec3d position;
+        Quat orientation;
+        for (unsigned int i=0 ; i<3 ; i++)
+        {
+            position[i] = pos[i];
+            orientation[i] = ori[i];
+        }
+        orientation[3] = ori[3];
+
+        if (currentCamera)
+            currentCamera->setView(position, orientation);
+
+        getQWidget()->update();
+
     }
-    ;
-    virtual void moveView(float* /*pos*/, float* /*ori*/)
+
+    virtual void moveView(const Vec3d& pos, const Quat &ori)
     {
+        if (!currentCamera)
+            return;
+
+        currentCamera->moveCamera(pos, ori);
+        getQWidget()->update();
     }
-    ;
+
+    virtual void resetView()
+    {
+        getQWidget()->update();
+    }
 
     virtual void removeViewerTab(QTabWidget *)
     {
@@ -268,9 +311,19 @@ protected:
     // ---------------------- Here are the Keyboard controls   ----------------------
     void keyPressEvent(QKeyEvent * e)
     {
+        sofa::core::objectmodel::KeypressedEvent kpe(e->key());
+        currentCamera->manageEvent(&kpe);
 
         switch (e->key())
         {
+        case Qt::Key_T:
+        {
+            if (currentCamera->getCameraType() == component::visualmodel::Camera::ORTHOGRAPHIC_TYPE)
+                setCameraMode(component::visualmodel::Camera::PERSPECTIVE_TYPE);
+            else
+                setCameraMode(component::visualmodel::Camera::ORTHOGRAPHIC_TYPE);
+            break;
+        }
         case Qt::Key_Shift:
             pick.activateRay(true);
             break;
@@ -298,27 +351,16 @@ protected:
             screenshot(capture.findFilename());
             break;
         }
-        case Qt::Key_T:
-        {
-            if (camera_type == CAMERA_PERSPECTIVE)
-                setCameraMode(CAMERA_ORTHOGRAPHIC);
-            else
-                setCameraMode(CAMERA_PERSPECTIVE);
-            break;
-        }
         case Qt::Key_V:
             // --- save video
         {
-            if (!_video)
+            if(!_video)
             {
                 switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
                 {
-                case SofaVideoRecorderManager::SCREENSHOTS:
-                {
-                    capture.setCounter();
+                case SofaVideoRecorderManager::SCREENSHOTS :
                     break;
-                }
-                case SofaVideoRecorderManager::MOVIE:
+                case SofaVideoRecorderManager::MOVIE :
                 {
 #ifdef SOFA_HAVE_FFMPEG
                     SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
@@ -332,7 +374,7 @@ protected:
 
                     break;
                 }
-                default:
+                default :
                     break;
                 }
 
@@ -341,12 +383,9 @@ protected:
             {
                 switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
                 {
-                case SofaVideoRecorderManager::SCREENSHOTS:
-                {
-                    capture.setCounter();
+                case SofaVideoRecorderManager::SCREENSHOTS :
                     break;
-                }
-                case SofaVideoRecorderManager::MOVIE:
+                case SofaVideoRecorderManager::MOVIE :
                 {
                     captureTimer.stop();
 #ifdef SOFA_HAVE_FFMPEG
@@ -354,12 +393,13 @@ protected:
 #endif //SOFA_HAVE_FFMPEG
                     break;
                 }
-                default:
+                default :
                     break;
                 }
             }
 
             _video = !_video;
+            //capture.setCounter();
 
             break;
         }
@@ -384,6 +424,9 @@ protected:
 
     void keyReleaseEvent(QKeyEvent * e)
     {
+        sofa::core::objectmodel::KeyreleasedEvent kre(e->key());
+        currentCamera->manageEvent(&kre);
+
         switch (e->key())
         {
         case Qt::Key_Shift:
@@ -419,6 +462,53 @@ protected:
     }
 
     // ---------------------- Here are the Mouse controls   ----------------------
+    void wheelEvent(QWheelEvent *e)
+    {
+        //<CAMERA API>
+        sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
+        currentCamera->manageEvent(&me);
+
+        getQWidget()->update();
+    }
+
+    void mouseMoveEvent ( QMouseEvent *e )
+    {
+        //<CAMERA API>
+        sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Move,e->x(), e->y());
+        currentCamera->manageEvent(&me);
+
+        getQWidget()->update();
+    }
+
+    void mousePressEvent ( QMouseEvent * e)
+    {
+        //<CAMERA API>
+        sofa::core::objectmodel::MouseEvent* mEvent;
+        if (e->button() == Qt::LeftButton)
+            mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, e->x(), e->y());
+        else if (e->button() == Qt::RightButton)
+            mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, e->x(), e->y());
+        else if (e->button() == Qt::MidButton)
+            mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, e->x(), e->y());
+        currentCamera->manageEvent(mEvent);
+
+        getQWidget()->update();
+    }
+
+    void mouseReleaseEvent ( QMouseEvent * e)
+    {
+        //<CAMERA API>
+        sofa::core::objectmodel::MouseEvent* mEvent;
+        if (e->button() == Qt::LeftButton)
+            mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, e->x(), e->y());
+        else if (e->button() == Qt::RightButton)
+            mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, e->x(), e->y());
+        else if (e->button() == Qt::MidButton)
+            mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, e->x(), e->y());
+        currentCamera->manageEvent(mEvent);
+
+        getQWidget()->update();
+    }
 
     void mouseEvent(QMouseEvent *e)
     {
@@ -476,35 +566,23 @@ protected:
 
     // ---------------------- Here are the controls for instruments  ----------------------
 
-    void moveLaparoscopic(QMouseEvent *e)
+    void moveLaparoscopic( QMouseEvent *e)
     {
-        int index_instrument =
-            simulation::getSimulation()->instrumentInUse.getValue();
-        if (index_instrument < 0 || index_instrument
-            > (int) simulation::getSimulation()->instruments.size())
-            return;
+        int index_instrument = simulation::getSimulation()->instrumentInUse.getValue();
+        if (index_instrument < 0 || index_instrument > (int)simulation::getSimulation()->instruments.size()) return;
 
-        simulation::Node *instrument =
-            simulation::getSimulation()->instruments[index_instrument];
-        if (instrument == NULL)
-            return;
+        simulation::Node *instrument = simulation::getSimulation()->instruments[index_instrument];
+        if (instrument == NULL) return;
 
         int eventX = e->x();
         int eventY = e->y();
 
-        std::vector<sofa::core::behavior::MechanicalState<
-        sofa::defaulttype::LaparoscopicRigidTypes>*> instruments;
-        instrument->getTreeObjects<sofa::core::behavior::MechanicalState<
-        sofa::defaulttype::LaparoscopicRigidTypes>, std::vector<
-        sofa::core::behavior::MechanicalState<
-        sofa::defaulttype::LaparoscopicRigidTypes>*> > (
-            &instruments);
+        std::vector< sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > instruments;
+        instrument->getTreeObjects<sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
 
         if (!instruments.empty())
         {
-            sofa::core::behavior::MechanicalState<
-            sofa::defaulttype::LaparoscopicRigidTypes>* instrument =
-                instruments[0];
+            sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* instrument = instruments[0];
             switch (e->type())
             {
             case QEvent::MouseButtonPress:
@@ -576,10 +654,7 @@ protected:
                 int dy = eventY - _mouseInteractorSavedPosY;
                 if (dx || dy)
                 {
-                    (*instrument->getX())[0].getOrientation()
-                        = (*instrument->getX())[0].getOrientation() * Quat(
-                                Vector3(0, 1, 0), dx * 0.001) * Quat(
-                                        Vector3(0, 0, 1), dy * 0.001);
+                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
                     _mouseInteractorSavedPosX = eventX;
                     _mouseInteractorSavedPosY = eventY;
                 }
@@ -600,26 +675,21 @@ protected:
                 int dy = eventY - _mouseInteractorSavedPosY;
                 if (dx || dy)
                 {
-                    (*instrument->getX())[0].getTranslation() += (dy) * 0.01;
-                    (*instrument->getX())[0].getOrientation()
-                        = (*instrument->getX())[0].getOrientation() * Quat(
-                                Vector3(1, 0, 0), dx * 0.001);
+                    (*instrument->getX())[0].getTranslation() += (dy)*0.01;
+                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
                     _mouseInteractorSavedPosX = eventX;
                     _mouseInteractorSavedPosY = eventY;
                 }
             }
 
-            static_cast<sofa::simulation::Node*> (instrument->getContext())->execute<
-            sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor> ();
-            static_cast<sofa::simulation::Node*> (instrument->getContext())->execute<
-            sofa::simulation::UpdateMappingVisitor> ();
+            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
             getQWidget()->update();
         }
         else
         {
-            std::vector<component::controller::Controller*> bc;
-            instrument->getTreeObjects<component::controller::Controller,
-                       std::vector<component::controller::Controller*> > (&bc);
+            std::vector< component::controller::Controller* > bc;
+            instrument->getTreeObjects<component::controller::Controller, std::vector< component::controller::Controller* > >(&bc);
 
             if (!bc.empty())
             {
@@ -629,30 +699,21 @@ protected:
                     // Mouse left button is pushed
                     if (e->button() == Qt::LeftButton)
                     {
-                        sofa::core::objectmodel::MouseEvent
-                        mouseEvent(
-                            sofa::core::objectmodel::MouseEvent::LeftPressed,
-                            eventX, eventY);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, eventX, eventY);
                         if (groot)
                             groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse right button is pushed
                     else if (e->button() == Qt::RightButton)
                     {
-                        sofa::core::objectmodel::MouseEvent
-                        mouseEvent(
-                            sofa::core::objectmodel::MouseEvent::RightPressed,
-                            eventX, eventY);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, eventX, eventY);
                         if (groot)
                             groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse middle button is pushed
                     else if (e->button() == Qt::MidButton)
                     {
-                        sofa::core::objectmodel::MouseEvent
-                        mouseEvent(
-                            sofa::core::objectmodel::MouseEvent::MiddlePressed,
-                            eventX, eventY);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, eventX, eventY);
                         if (groot)
                             groot->propagateEvent(&mouseEvent);
                     }
@@ -660,12 +721,9 @@ protected:
 
                 case QEvent::MouseMove:
                 {
-                    if (e->state() & (Qt::LeftButton | Qt::RightButton
-                            | Qt::MidButton))
+                    if (e->state()&(Qt::LeftButton|Qt::RightButton|Qt::MidButton))
                     {
-                        sofa::core::objectmodel::MouseEvent mouseEvent(
-                            sofa::core::objectmodel::MouseEvent::Move,
-                            eventX, eventY);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move, eventX, eventY);
                         if (groot)
                             groot->propagateEvent(&mouseEvent);
                     }
@@ -676,30 +734,21 @@ protected:
                     // Mouse left button is released
                     if (e->button() == Qt::LeftButton)
                     {
-                        sofa::core::objectmodel::MouseEvent
-                        mouseEvent(
-                            sofa::core::objectmodel::MouseEvent::LeftReleased,
-                            eventX, eventY);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, eventX, eventY);
                         if (groot)
                             groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse right button is released
                     else if (e->button() == Qt::RightButton)
                     {
-                        sofa::core::objectmodel::MouseEvent
-                        mouseEvent(
-                            sofa::core::objectmodel::MouseEvent::RightReleased,
-                            eventX, eventY);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, eventX, eventY);
                         if (groot)
                             groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse middle button is released
                     else if (e->button() == Qt::MidButton)
                     {
-                        sofa::core::objectmodel::MouseEvent
-                        mouseEvent(
-                            sofa::core::objectmodel::MouseEvent::MiddleReleased,
-                            eventX, eventY);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, eventX, eventY);
                         if (groot)
                             groot->propagateEvent(&mouseEvent);
                     }
@@ -789,23 +838,19 @@ protected:
         {
             switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
             {
-            case SofaVideoRecorderManager::SCREENSHOTS:
-            {
-                if (!captureTimer.isActive())
+            case SofaVideoRecorderManager::SCREENSHOTS :
+                if(!captureTimer.isActive())
                     screenshot(capture.findFilename(), 1);
                 break;
-            }
-            case SofaVideoRecorderManager::MOVIE:
-            {
-                if (captureTimer.isActive())
+            case SofaVideoRecorderManager::MOVIE :
+                if(captureTimer.isActive())
                 {
 #ifdef SOFA_HAVE_FFMPEG
                     videoRecorder.addFrame();
 #endif //SOFA_HAVE_FFMPEG
                 }
                 break;
-            }
-            default:
+            default :
                 break;
             }
         }
@@ -815,6 +860,9 @@ protected:
     virtual void redrawn()=0;
     virtual void resizeW(int)=0;
     virtual void resizeH(int)=0;
+
+protected:
+    sofa::component::visualmodel::Camera* currentCamera;
 
 };
 }
