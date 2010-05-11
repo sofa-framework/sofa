@@ -22,14 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_BOXROI_INL
-#define SOFA_COMPONENT_ENGINE_BOXROI_INL
+#ifndef SOFA_COMPONENT_ENGINE_SPHEREROI_INL
+#define SOFA_COMPONENT_ENGINE_SPHEREROI_INL
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-#include <sofa/component/engine/BoxROI.h>
+#include <sofa/component/engine/SphereROI.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -45,11 +45,15 @@ namespace engine
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace core::objectmodel;
-using namespace core::topology;
 
 template <class DataTypes>
-BoxROI<DataTypes>::BoxROI()
-    : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+SphereROI<DataTypes>::SphereROI()
+    : centers( initData(&centers, "centers", "Center(s) of the sphere(s)") )
+    , radii( initData(&radii, "radii", "Radius(i) of the sphere(s)") )
+    , direction( initData(&direction, "direction", "Edge direction(if edgeAngle > 0)") )
+    , normal( initData(&normal, "normal", "Normal direction of the triangles (if triAngle > 0)") )
+    , edgeAngle( initData(&edgeAngle, (Real)0, "edgeAngle", "Max angle between the direction of the selected edges and the specified direction") )
+    , triAngle( initData(&triAngle, (Real)0, "triAngle", "Max angle between the normal of the selected triangle and the specified normal direction") )
     , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
@@ -65,27 +69,20 @@ BoxROI<DataTypes>::BoxROI()
     , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
     , f_trianglesInROI( initData(&f_trianglesInROI,"f_trianglesInROI","Triangles contained in the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"f_tetrahedraInROI","Tetrahedra contained in the ROI") )
-    , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
+    , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw shpere(s)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
     , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangle","Draw Triangles") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and triangles") )
 {
-    addAlias(&f_pointsInROI,"pointsInBox");
-    addAlias(&f_edgesInROI,"edgesInBox");
-    addAlias(&f_trianglesInROI,"f_trianglesInBox");
-    addAlias(&f_tetrahedraInROI,"f_tetrahedraInBox");
-
-    boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
-    boxes.endEdit();
-
+    addAlias(&triAngle,"angle");
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::init()
+void SphereROI<DataTypes>::init()
 {
     if (!f_X0.isSet())
     {
@@ -156,6 +153,13 @@ void BoxROI<DataTypes>::init()
     addInput(&f_triangles);
     addInput(&f_tetrahedra);
 
+    addInput(&centers);
+    addInput(&radii);
+    addInput(&direction);
+    addInput(&normal);
+    addInput(&edgeAngle);
+    addInput(&triAngle);
+
     addOutput(&f_indices);
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
@@ -164,99 +168,117 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
     addOutput(&f_tetrahedraInROI);
+
     setDirtyValue();
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::reinit()
+void SphereROI<DataTypes>::reinit()
 {
     update();
 }
 
+
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInBox(const typename DataTypes::CPos& p, const Vec6& b)
+bool SphereROI<DataTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p)
 {
-    return ( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] );
+    if((p-c).norm() > r)
+        return false;
+    else
+        return true;
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
-{
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p =  DataTypes::getCPos((*x0)[pid]);
-    return ( isPointInBox(p,b) );
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
+bool SphereROI<DataTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p)
 {
     const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[e[1]]);
-    CPos c = (p1+p0)*0.5;
-
-    return isPointInBox(c,b);
+    CPos c =  DataTypes::getCPos((*x0)[pid]);
+    return ( isPointInSphere(c, r, p) );
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
+bool SphereROI<DataTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge)
 {
     const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos c = (p2+p1+p0)/3.0;
+    for (unsigned int i=0; i<2; ++i)
+    {
+        Coord p = (*x0)[edge[i]];
 
-    return (isPointInBox(c,b));
+        if((p-c).norm() > r)
+            return false;
+    }
+    return true;
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isTetrahedronInBox(const Tetra &t, const Vec6 &b)
+bool SphereROI<DataTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle)
 {
     const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
-    CPos c = (p3+p2+p1+p0)/4.0;
+    for (unsigned int i=0; i<3; ++i)
+    {
+        Coord p = (*x0)[triangle[i]];
 
-    return (isPointInBox(c,b));
+        if((p-c).norm() > r)
+            return false;
+    }
+    return true;
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::update()
+bool SphereROI<DataTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+    for (unsigned int i=0; i<4; ++i)
+    {
+        Coord p = (*x0)[tetrahedron[i]];
+
+        if((p-c).norm() > r)
+            return false;
+    }
+    return true;
+}
+
+
+template <class DataTypes>
+void SphereROI<DataTypes>::update()
 {
     cleanDirty();
 
-    helper::vector<Vec6>& vb = *(boxes.beginEdit());
+    const helper::vector<Vec3>& cen = (centers.getValue());
+    const helper::vector<Real>& rad = (radii.getValue());
 
-    if (vb.empty())
+    if (cen.empty())
+        return;
+
+    if (cen.size() != rad.size())
     {
-        boxes.endEdit();
+        serr << "WARNING: number of sphere centers and radius doesn't match." <<sendl;
         return;
     }
 
-    for (unsigned int bi=0; bi<vb.size(); ++bi)
-    {
-        if (vb[bi][0] > vb[bi][3]) std::swap(vb[bi][0],vb[bi][3]);
-        if (vb[bi][1] > vb[bi][4]) std::swap(vb[bi][1],vb[bi][4]);
-        if (vb[bi][2] > vb[bi][5]) std::swap(vb[bi][2],vb[bi][5]);
-    }
+    Real eAngle = edgeAngle.getValue();
+    Real tAngle = triAngle.getValue();
+    Coord dir = direction.getValue();
+    Coord norm = normal.getValue();
 
-    boxes.endEdit();
+    if (eAngle>0)
+        dir.normalize();
+
+    if (tAngle>0)
+        norm.normalize();
 
     // Read accessor for input topology
     helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
     helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
-    // Write accessor for topological element indices in BOX
-    SetIndex& indices = *f_indices.beginEdit();
-    SetIndex& edgeIndices = *f_edgeIndices.beginEdit();
-    SetIndex& triangleIndices = *f_triangleIndices.beginEdit();
+    // Write accessor for topological element indices in SPHERE
+    SetIndex& indices = *(f_indices.beginEdit());
+    SetIndex& edgeIndices = *(f_edgeIndices.beginEdit());
+    SetIndex& triangleIndices = *(f_triangleIndices.beginEdit());
     SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
 
-    // Write accessor for toplogical element in BOX
+    // Write accessor for toplogical element in SPHERE
     helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
     helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
     helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
@@ -273,15 +295,14 @@ void BoxROI<DataTypes>::update()
     trianglesInROI.clear();
     tetrahedraInROI.clear();
 
-
     const VecCoord* x0 = &f_X0.getValue();
 
     //Points
     for( unsigned i=0; i<x0->size(); ++i )
     {
-        for (unsigned int bi=0; bi<vb.size(); ++bi)
+        for (unsigned int j=0; j<cen.size(); ++j)
         {
-            if (isPointInBox(i, vb[bi]))
+            if (isPointInSphere(cen[j], rad[j], (*x0)[i]))
             {
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
@@ -295,13 +316,19 @@ void BoxROI<DataTypes>::update()
     {
         for(unsigned int i=0 ; i<edges.size() ; i++)
         {
-            Edge e = edges[i];
-            for (unsigned int bi=0; bi<vb.size(); ++bi)
+            Edge edge = edges[i];
+            for (unsigned int j=0; j<cen.size(); ++j)
             {
-                if (isEdgeInBox(e, vb[bi]))
+                if (isEdgeInSphere(cen[j], rad[j], edge))
                 {
+                    if (eAngle > 0)
+                    {
+                        Coord n = (*x0)[edge[1]]-(*x0)[edge[0]];
+                        n.normalize();
+                        if (fabs(dot(n,dir)) < fabs(cos(eAngle*M_PI/180.0))) continue;
+                    }
                     edgeIndices.push_back(i);
-                    edgesInROI.push_back(e);
+                    edgesInROI.push_back(edge);
                     break;
                 }
             }
@@ -313,13 +340,19 @@ void BoxROI<DataTypes>::update()
     {
         for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
-            Triangle t = triangles[i];
-            for (unsigned int bi=0; bi<vb.size(); ++bi)
+            Triangle tri = triangles[i];
+            for (unsigned int j=0; j<cen.size(); ++j)
             {
-                if (isTriangleInBox(t, vb[bi]))
+                if (isTriangleInSphere(cen[j], rad[j], tri))
                 {
+                    if (tAngle > 0)
+                    {
+                        Coord n = cross((*x0)[tri[2]]-(*x0)[tri[0]], (*x0)[tri[1]]-(*x0)[tri[0]]);
+                        n.normalize();
+                        if (dot(n,norm) < cos(tAngle*M_PI/180.0)) continue;
+                    }
                     triangleIndices.push_back(i);
-                    trianglesInROI.push_back(t);
+                    trianglesInROI.push_back(tri);
                     break;
                 }
             }
@@ -332,10 +365,11 @@ void BoxROI<DataTypes>::update()
         for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
         {
             Tetra t = tetrahedra[i];
-            for (unsigned int bi=0; bi<vb.size(); ++bi)
+            for (unsigned int j=0; j<cen.size(); ++j)
             {
-                if (isTetrahedronInBox(t, vb[bi]))
+                if (isTetrahedronInSphere(cen[j], rad[j], t))
                 {
+                    //tAngle > 0 ??
                     tetrahedronIndices.push_back(i);
                     tetrahedraInROI.push_back(t);
                     break;
@@ -351,7 +385,7 @@ void BoxROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::draw()
+void SphereROI<DataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;
@@ -359,47 +393,26 @@ void BoxROI<DataTypes>::draw()
     const VecCoord* x0 = &f_X0.getValue();
     glColor3f(0.0, 1.0, 1.0);
 
-    ///draw the boxes
-    if( p_drawBoxes.getValue())
+    if(p_drawSphere.getValue()) // old classical drawing by points
     {
-        glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);
-        const helper::vector<Vec6>& vb=boxes.getValue();
-        for (unsigned int bi=0; bi<vb.size(); ++bi)
+        ///draw the boxes
+        const helper::vector<Vec3>& c=centers.getValue();
+        const helper::vector<Real>& r=radii.getValue();
+
+        for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
         {
-            const Vec6& b=vb[bi];
-            const Real& Xmin=b[0];
-            const Real& Xmax=b[3];
-            const Real& Ymin=b[1];
-            const Real& Ymax=b[4];
-            const Real& Zmin=b[2];
-            const Real& Zmax=b[5];
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymax,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmax,Ymax,Zmax);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmax,Ymax,Zmax);
+            helper::gl::drawWireSphere(c[i], (float)(r[i]/2.0));
+
+            if (edgeAngle.getValue() > 0)
+            {
+                helper::gl::drawCone(c[i], c[i] + direction.getValue()*(cos(edgeAngle.getValue()*M_PI/180.0)*r[i]), 0, (float)sin(edgeAngle.getValue()*M_PI/180.0)*((float)r[i]));
+            }
+
+            if (triAngle.getValue() > 0)
+            {
+                helper::gl::drawCone(c[i], c[i] + normal.getValue()*(cos(triAngle.getValue()*M_PI/180.0)*r[i]), 0, (float)sin(triAngle.getValue()*M_PI/180.0)*((float)r[i]));
+            }
         }
-        glEnd();
     }
 
     ///draw points in ROI
@@ -484,24 +497,6 @@ void BoxROI<DataTypes>::draw()
         }
         glEnd();
     }
-}
-
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::addBBox(double* minBBox, double* maxBBox)
-{
-    const helper::vector<Vec6>& vb=boxes.getValue();
-    for (unsigned int bi=0; bi<vb.size(); ++bi)
-    {
-        const Vec6& b=vb[bi];
-        if (b[0] < minBBox[0]) minBBox[0] = b[0];
-        if (b[1] < minBBox[1]) minBBox[1] = b[1];
-        if (b[2] < minBBox[2]) minBBox[2] = b[2];
-        if (b[3] > maxBBox[0]) maxBBox[0] = b[3];
-        if (b[4] > maxBBox[1]) maxBBox[1] = b[4];
-        if (b[5] > maxBBox[2]) maxBBox[2] = b[5];
-    }
-    return true;
 }
 
 } // namespace engine

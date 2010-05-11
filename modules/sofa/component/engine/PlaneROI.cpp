@@ -40,20 +40,24 @@ namespace engine
 
 SOFA_DECL_CLASS(PlaneROI)
 
-int PlaneROIClass = core::RegisterObject("Find the points inside a given plane")
+int PlaneROIClass = core::RegisterObject("Find the primitives inside a given plane")
 #ifndef SOFA_FLOAT
         .add< PlaneROI<Vec3dTypes> >()
+        .add< PlaneROI<Rigid3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< PlaneROI<Vec3fTypes> >()
+        .add< PlaneROI<Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API PlaneROI<Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API PlaneROI<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API PlaneROI<Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API PlaneROI<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSubset.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/loader/MeshLoader.h>
 
 namespace sofa
 {
@@ -61,8 +61,17 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<3,Real> Vec3;
+    typedef defaulttype::Vec<6,Real> Vec6;
     typedef defaulttype::Vec<10,Real> Vec10;
     typedef topology::PointSubset SetIndex;
+
+    typedef typename DataTypes::CPos CPos;
+
+    typedef defaulttype::Vec<3,Real> Point;
+    typedef unsigned int PointID;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
 
 public:
 
@@ -86,8 +95,13 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        //if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-        //    return false;
+        if (!arg->getAttribute("template"))
+        {
+            // only check if this template is correct if no template was given
+            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+                return false; // this template is not the same as the existing MechanicalState
+        }
+
         return BaseObject::canCreate(obj, context, arg);
     }
 
@@ -108,10 +122,50 @@ public:
         return DataTypes::Name();
     }
 
+
+protected:
+    bool isPointInPlane(const CPos& p);
+    bool isPointInPlane(const PointID& pid);
+    bool isEdgeInPlane(const Edge& e);
+    bool isTriangleInPlane(const Triangle& t);
+    bool isTetrahedronInPlane(const Tetra& t);
+
+    void computePlane(unsigned int planeIndex);
+
+
+public:
+    //Input
     Data< helper::vector<Vec10> > planes;
     Data<VecCoord> f_X0;
+    Data<helper::vector<Edge> > f_edges;
+    Data<helper::vector<Triangle> > f_triangles;
+    Data<helper::vector<Tetra> > f_tetrahedra; // NOT YET
+    Data<bool> f_computeEdges;
+    Data<bool> f_computeTriangles;
+    Data<bool> f_computeTetrahedra;
+
+    //Output
     Data<SetIndex> f_indices;
+    Data<SetIndex> f_edgeIndices;
+    Data<SetIndex> f_triangleIndices;
+    Data<SetIndex> f_tetrahedronIndices;
+    Data<VecCoord > f_pointsInROI;
+    Data<helper::vector<Edge> > f_edgesInROI;
+    Data<helper::vector<Triangle> > f_trianglesInROI;
+    Data<helper::vector<Tetra> > f_tetrahedraInROI;
+
+    //Parameter
+    Data<bool> p_drawBoxes;
+    Data<bool> p_drawPoints;
+    Data<bool> p_drawEdges;
+    Data<bool> p_drawTriangles;
+    Data<bool> p_drawTetrahedra;
     Data<double> _drawSize;
+
+private:
+
+    Vec3 p0, p1, p2, p3, p4, p5, p6, p7, plane0, plane1, plane2, plane3, vdepth;
+    Real width, length, depth;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)

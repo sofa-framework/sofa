@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_PRIMITIVESINSPHEREROI_CPP
-#include <sofa/component/engine/PrimitivesInSphereROI.inl>
+#define SOFA_COMPONENT_ENGINE_SPHEREROI_CPP
+#include <sofa/component/engine/SphereROI.inl>
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -38,22 +38,26 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(PrimitivesInSphereROI)
+SOFA_DECL_CLASS(SphereROI)
 
-int PrimitivesInSphereROIClass = core::RegisterObject("Find the primitives inside a given sphere")
+int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
 #ifndef SOFA_FLOAT
-        .add< PrimitivesInSphereROI<Vec3dTypes> >()
+        .add< SphereROI<Vec3dTypes> >()
+//.add< SphereROI<Rigid3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< PrimitivesInSphereROI<Vec3fTypes> >()
+        .add< SphereROI<Vec3fTypes> >()
+//.add< SphereROI<Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API PrimitivesInSphereROI<Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API SphereROI<Vec3dTypes>;
+//template class SOFA_COMPONENT_ENGINE_API SphereROI<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API PrimitivesInSphereROI<Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API SphereROI<Vec3fTypes>;
+//template class SOFA_COMPONENT_ENGINE_API SphereROI<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

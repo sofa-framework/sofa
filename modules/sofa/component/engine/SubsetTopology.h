@@ -148,7 +148,6 @@ public:
     Data<helper::vector<Tetra> > f_tetrahedraOutBox;
 
     //Parameter
-    Data<bool> p_subsetTopology;
     Data<bool> p_drawBoxes;
     Data<bool> p_drawPoints;
     Data<bool> p_drawEdges;

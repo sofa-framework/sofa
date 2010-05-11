@@ -40,7 +40,7 @@ namespace engine
 
 SOFA_DECL_CLASS(BoxROI)
 
-int BoxROIClass = core::RegisterObject("Find the points inside a given box")
+int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
 #ifndef SOFA_FLOAT
         .add< BoxROI<Vec3dTypes> >()
         .add< BoxROI<Rigid3dTypes> >()
