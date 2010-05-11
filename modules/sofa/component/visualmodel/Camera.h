@@ -31,8 +31,8 @@
  *      Author: froy
  */
 
-#ifndef FRAMEBUFFEROBJECT_H_
-#define FRAMEBUFFEROBJECT_H_
+#ifndef SOFA_COMPONENT_VISUALMODEL_CAMERA_H
+#define SOFA_COMPONENT_VISUALMODEL_CAMERA_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/component.h>
@@ -178,4 +178,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif //SOFA_COMPONENT_VISUALMODEL_CAMERA_H
