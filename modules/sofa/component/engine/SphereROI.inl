@@ -67,14 +67,14 @@ SphereROI<DataTypes>::SphereROI()
     , f_tetrahedronIndices( initData(&f_tetrahedronIndices,"tetrahedronIndices","Indices of the tetrahedra contained in the ROI") )
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
     , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
-    , f_trianglesInROI( initData(&f_trianglesInROI,"f_trianglesInROI","Triangles contained in the ROI") )
-    , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"f_tetrahedraInROI","Tetrahedra contained in the ROI") )
+    , f_trianglesInROI( initData(&f_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
+    , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
     , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw shpere(s)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
-    , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangle","Draw Triangles") )
+    , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and triangles") )
+    , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
 {
     //Adding alias to handle TrianglesInSphereROI input/output
     addAlias(&p_drawSphere,"isVisible");
