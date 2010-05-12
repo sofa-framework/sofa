@@ -29,4 +29,13 @@
       <Tutorial name="Other mesh"                 scene="Tutorials/StepByStep/TopologicalMapping/5_TopoMapping.scn"/>
       <Tutorial name="Same pipeline"              scene="Tutorials/StepByStep/TopologicalMapping/6_TopoMapping.scn"/>
     </Group>
+    <Group name="Visualization">
+      <Tutorial name="Mesh Loading and Rendering 1" scene="Tutorials/StepByStep/Visual/0_Visual.scn"/>  
+      <Tutorial name="Mesh Loading and Rendering 2" scene="Tutorials/StepByStep/Visual/1_Visual.scn"/>
+      <Tutorial name="Mesh Loading and Rendering 3" scene="Tutorials/StepByStep/Visual/2_Visual.scn"/>
+      <Tutorial name="Lighting" 					scene="Tutorials/StepByStep/Visual/3_Visual.scn"/>
+      <Tutorial name="Shadowing" 					scene="Tutorials/StepByStep/Visual/4_Visual.scn"/>       
+      <Tutorial name="Simple Shader" 				scene="Tutorials/StepByStep/Visual/5_Visual.scn"/>
+      <Tutorial name="Advanced Shader"				scene="Tutorials/StepByStep/Visual/6_Visual.scn"/>      
+    </Group>
 </Category>
