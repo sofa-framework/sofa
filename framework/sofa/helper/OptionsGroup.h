@@ -57,7 +57,7 @@ class SOFA_HELPER_API OptionsGroup //: public std::vector<std::string>
 {
 public :
 //	typedef
-    std::vector<std::string> textItems;
+    helper::vector<std::string> textItems;
 
     OptionsGroup();
 
@@ -74,7 +74,7 @@ public :
     void setSelectedItem(unsigned int id_item);
     void setSelectedItem(const std::string &);
     unsigned int getSelectedId() const;
-    std::string getSelectedItem() const;
+    const std::string &getSelectedItem() const;
     std::string & operator[](unsigned int i) {return textItems[i];}
     unsigned int size() {return textItems.size();}
 
@@ -85,7 +85,6 @@ public :
     void readFromStream(std::istream & stream);
     void writeToStream(std::ostream & stream) const;
 
-    void TestOptionsGroup() const;
 
 protected:
 

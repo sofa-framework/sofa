@@ -121,17 +121,17 @@ unsigned int OptionsGroup::getSelectedId() const
     return selectedItem;
 }
 ///////////////////////////////////////
-std::string  OptionsGroup::getSelectedItem() const
+const std::string  &OptionsGroup::getSelectedItem() const
 {
-    std::string checkedString;
-    checkedString = textItems.operator[](selectedItem);
-    return checkedString;
+    return textItems[selectedItem];
 }
 ///////////////////////////////////////
 void OptionsGroup::readFromStream(std::istream & stream)
 {
     std::string tempostring;
+
     stream >> tempostring;
+
     int id_stringinButtonList = isInButtonList(tempostring);
     if (id_stringinButtonList == -1)
     {
@@ -149,19 +149,6 @@ void OptionsGroup::readFromStream(std::istream & stream)
 void OptionsGroup::writeToStream(std::ostream & stream) const
 {
     stream << getSelectedItem();
-//	for(unsigned int i=0;i<textItems.size()-1;i++)
-//	{
-//		std::string tempostring= textItems.operator[](i);
-//		stream<< tempostring << " ";
-//	}
-}
-///////////////////////////////////////
-void OptionsGroup::TestOptionsGroup() const
-{
-    sofa::helper::OptionsGroup m_radiotrick; m_radiotrick.setNames(3,"hello1","hello2","hello3");
-    std::cout<<"Radio button :"<<m_radiotrick<<"    selectedId :"<<m_radiotrick.getSelectedId()<<"   getSelectedItem() :"<<m_radiotrick.getSelectedItem()<<std::endl;
-    std::cin>>m_radiotrick;
-    std::cout<<"Radio button :"<<m_radiotrick<<"    selectedId :"<<m_radiotrick.getSelectedId()<<"   getSelectedItem() :"<<m_radiotrick.getSelectedItem()<<std::endl;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////

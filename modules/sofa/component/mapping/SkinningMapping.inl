@@ -105,10 +105,9 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     geoDist = NULL;
 #endif
 
-    sofa::helper::OptionsGroup wheightingTypeOptions(5,"None","Inverse Distance Square","Linear", "Hermite", "Spline");
+    sofa::helper::OptionsGroup wheightingTypeOptions(5,"None","InvDistSquare","Linear", "Hermite", "Spline");
     wheightingTypeOptions.setSelectedItem(WEIGHT_INVDIST_SQUARE);
     wheightingType.setValue(wheightingTypeOptions);
-
 
     sofa::helper::OptionsGroup interpolationTypeOptions(2,"Linear","Dual Quaternion");
     interpolationTypeOptions.setSelectedItem(INTERPOLATION_DUAL_QUATERNION);
