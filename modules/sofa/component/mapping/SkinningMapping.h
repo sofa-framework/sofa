@@ -37,6 +37,7 @@
 #include <vector>
 
 #include <sofa/component/component.h>
+#include <sofa/helper/OptionsGroup.h>
 
 #ifdef SOFA_DEV
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
@@ -202,9 +203,9 @@ public:
 #endif
 
 protected:
-    Data<int /* = WeightingType*/> wheightingType;
-    Data<int /* = InterpolationType*/> interpolationType;
-    Data<int /* = DistanceType*/> distanceType;
+    Data<sofa::helper::OptionsGroup> wheightingType;
+    Data<sofa::helper::OptionsGroup> interpolationType;
+    Data<sofa::helper::OptionsGroup> distanceType;
     bool computeWeights;
     VVD distances;
 #ifdef SOFA_DEV
