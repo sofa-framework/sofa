@@ -10,15 +10,15 @@
 
 		<br><div id="orangeText">Description</div><br>
 		
-                The objective of this small step by step tutorial is to discover the basic components used with SOFA, how they interact, and how you can configure them. We will create a pendulum made of two objects, and two different springs. We will not go into details on the template used for the mechanical states, or the forcefields used.<br>
+                The objective of this small step by step tutorial is to discover the basic components used with SOFA, how they interact, and how you can configure them. We will create a pendulum made of two objects, and two different springs. We will not go into the details about the template parameter of the mechanical states, nor the forcefields used.<br>
                 
 
 		<br><div id="orangeText">Key points</div><br>
                 We used 3 components:
                 <ul>
-                  <li> A <b>Node</b> "FirstObject" to store the components describing our object we want to simulate. It is important that the hierarchy of your nodes in the scene graph reflects the scene you want to model.</li>
+                  <li> A <b>Node</b> "FirstObject" to store the components describing the object we want to simulate. It is important that the hierarchy of the nodes in the scene graph reflects the scene you want to model.</li>
                   <li> The shape is modeled using a <b>MechanicalObject</b> which desribes the particle states. </li>
-                  <li> A <b>UniformMass</b> is added for each particle, giving for each particle of the MechanicalObject a mass. </li>
+                  <li> A <b>UniformMass</b> is added for the MechanicalObject, giving  the same mass for each particle of the MechanicalObject. </li>
                 </ul>
 
 		<br><div id="orangeText">Results</div><br>

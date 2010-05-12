@@ -11,13 +11,13 @@
                 We add an ODE solver in the Root node of the Simulation. We provide several ODE solvers, with different integration scheme: take a look to our tutorials on Solvers, and see also all the components available in the section OdeSolver of the Modeler.
 
 		<br><div id="orangeText">Key points</div><br>		                
-                We will use the classic explicit euler solver <b>EulerSolver</b> to update particle positions and velocities at each time step: In Sofa, a solver acts on all the objects placed below. <br>
+                We will use the classic explicit euler solver <b>EulerSolver</b> to update particle positions and velocities at each time step: In Sofa, a solver acts on all the objects placed below in the hierarchy. <br>
             
 
 		<br><div id="orangeText">Results</div><br>	
                 This time, when you animate the scene, the particule falls along the direction of the gravity.<br>
-                The gravity is specified in the root node of the simulation. We use a default value of (0, 0, -9.81). Changing the gravity on child nodes of the simulation won't do anything as at each time step, the gravity, and other parameters (time, dt...) is overwritten using the root value.<br>
-                If you want to specify a specific gravity for a node and all its children below, use the component <b>Gravity</b>. Using the Modeler, find the component in the list, select it: an example is available.
+                The gravity is specified in the root node of the simulation. We use a default value of (0, 0, -9.81). Changing the gravity on child nodes of the simulation will not do anything as at each time step, the gravity, and other parameters (time, dt...) is overwritten using the value specified in the root node.<br>
+                The component <b>Gravity</b> lets you specify a particular gravity for a node and all its children. There is an example available in the Modeler when you select the Gravity component in the list of components.
 
                 <br><center><h3><a href="0_Pendulum.scn">Previous</a> ____________  <a href="2_Pendulum.scn">Next</a></center></h3>
 	</div>
