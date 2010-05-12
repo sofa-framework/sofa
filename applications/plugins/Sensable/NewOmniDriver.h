@@ -90,14 +90,14 @@ class NewOmniDriver : public Controller
 {
 
 public:
-    Data<double> Scale;
+    Data<double> scale;
     Data<double> forceScale;
     Data<Vec3d> positionBase;
     Data<Quat> orientationBase;
     Data<Vec3d> positionTool;
     Data<Quat> orientationTool;
     Data<bool> permanent;
-    Data<bool> OmniVisu;
+    Data<bool> omniVisu;
 
     OmniData	data;
 
