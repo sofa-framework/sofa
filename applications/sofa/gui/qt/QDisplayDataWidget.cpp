@@ -73,7 +73,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         }
     }
 
-    datawidget_=DataWidget::CreateDataWidget(dwarg);
+    datawidget_= DataWidget::CreateDataWidget(dwarg);
 
     if (datawidget_ == 0)
     {

@@ -93,12 +93,12 @@ public:
     PrevContainer p;
     Container w;
     QCheckBox* check;
-    int current;
 
-    struct_data_widget_container() : check(NULL),current(struct_data_trait<T>::NVAR) {}
+    struct_data_widget_container() : check(NULL) {}
 
     bool createWidgets(DataWidget * parent, const data_type& d, bool readOnly)
     {
+
         if (!p.createWidgets( parent, d, readOnly))
             return false;
 
@@ -106,6 +106,7 @@ public:
         {
             new QHBoxLayout(parent);
         }
+
 
         const char* name = vhelper::name();
         bool checkable = vhelper::isCheckable();
