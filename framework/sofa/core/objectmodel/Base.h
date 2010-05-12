@@ -278,8 +278,13 @@ protected:
         res.helpMsg = help;
         res.isDisplayed = isDisplayed;
         res.isReadOnly = isReadOnly;
-        const std::string prefix=std::string(name).substr(0,4);
-        if (prefix=="show" || prefix=="draw") res.group = "Visualization";
+
+        std::string nameStr(name);
+        if (nameStr.size() >= 4)
+        {
+            const std::string prefix=nameStr.substr(0,4);
+            if (prefix=="show" || prefix=="draw") res.group = "Visualization";
+        }
     }
 
     template<class T>
