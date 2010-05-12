@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "OptionsGroup.h"
-
+#include <cstdlib>
 
 namespace sofa
 {
@@ -135,7 +135,10 @@ void OptionsGroup::readFromStream(std::istream & stream)
     int id_stringinButtonList = isInButtonList(tempostring);
     if (id_stringinButtonList == -1)
     {
-        std::cout<<"WARNING(OptionsGroup) : \""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
+        int idx=atoi(tempostring.c_str());
+        if (idx >=0 && idx < (int)size()) setSelectedItem(idx);
+        else
+            std::cerr<<"WARNING(OptionsGroup) : \""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
     }
     else
     {
