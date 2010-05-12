@@ -20,7 +20,6 @@ DEFINES += SOFA_BUILD_SENSABLEPLUGIN
 
 LIBS += $$SOFA_LIBS
 LIBS += $$SOFA_EXT_LIBS
-INCLUDEPATH += $$SOFA_DIR/extlibs/Sensable
 
 SOURCES = \
 initSensable.cpp \

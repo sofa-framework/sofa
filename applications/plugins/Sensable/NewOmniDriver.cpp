@@ -297,14 +297,14 @@ int initDevice(OmniData& data)
 }
 
 NewOmniDriver::NewOmniDriver()
-    : Scale(initData(&Scale, 0.1, "Scale","Default scale applied to the Phantom Coordinates. "))
+    : scale(initData(&scale, 0.1, "scale","Default scale applied to the Phantom Coordinates. "))
     , forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
     , positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
     , positionTool(initData(&positionTool, Vec3d(0,0,0), "positionTool","Position of the tool in the omni end effector frame"))
     , orientationTool(initData(&orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool in the omni end effector frame"))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
-    , OmniVisu(initData(&OmniVisu, false, "OmniVisu", "Visualize the position of the interface in the virtual scene"))
+    , omniVisu(initData(&omniVisu, false, "omniVisu", "Visualize the position of the interface in the virtual scene"))
     , visu_base(NULL)
 {
 
@@ -374,7 +374,7 @@ void NewOmniDriver::bwdInit()
 
 void NewOmniDriver::setDataValue()
 {
-    data.scale = Scale.getValue();
+    data.scale = scale.getValue();
     data.forceScale = forceScale.getValue();
     Quat q = orientationBase.getValue();
     q.normalize();
@@ -399,7 +399,7 @@ void NewOmniDriver::reinitVisual()
         delete(visu_base);
         visu_base = new sofa::component::visualmodel::OglModel();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->scale.setValue(defaulttype::Vector3(Scale.getValue(),Scale.getValue(),Scale.getValue()));
+        visu_base->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
@@ -415,7 +415,7 @@ void NewOmniDriver::reinitVisual()
         delete(visu_end);
         visu_end = new sofa::component::visualmodel::OglModel();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->scale.setValue(defaulttype::Vector3(Scale.getValue(),Scale.getValue(),Scale.getValue()));
+        visu_end->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();
@@ -451,7 +451,7 @@ void NewOmniDriver::draw()
 
 
 
-    if(OmniVisu.getValue())
+    if(omniVisu.getValue())
     {
         if (visu_base == NULL)
         {
@@ -459,7 +459,7 @@ void NewOmniDriver::draw()
             //serr<<"create visual model for NewOmniDriver base"<<sendl;
             visu_base = new sofa::component::visualmodel::OglModel();
             visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-            visu_base->scale.setValue(defaulttype::Vector3(Scale.getValue(),Scale.getValue(),Scale.getValue()));
+            visu_base->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
             visu_base->init();
             visu_base->initVisual();
             visu_base->updateVisual();
@@ -474,7 +474,7 @@ void NewOmniDriver::draw()
             //serr<<"create visual model for NewOmniDriver end"<<sendl;
             visu_end = new sofa::component::visualmodel::OglModel();
             visu_end->fileMesh.setValue("mesh/stylus.obj");
-            visu_end->scale.setValue(defaulttype::Vector3(Scale.getValue(),Scale.getValue(),Scale.getValue()));
+            visu_end->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
             visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
             visu_end->init();
             visu_end->initVisual();
@@ -510,7 +510,7 @@ void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 void NewOmniDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
 {
 
-    //OmniVisu.setValue(false);
+    //omniVisu.setValue(false);
 
 }
 
@@ -566,7 +566,7 @@ void NewOmniDriver::handleEvent(core::objectmodel::Event *event)
         {
             moveOmniBase = !moveOmniBase;
             std::cout<<"key z detected "<<std::endl;
-            OmniVisu.setValue(moveOmniBase);
+            omniVisu.setValue(moveOmniBase);
 
 
             if(moveOmniBase)
