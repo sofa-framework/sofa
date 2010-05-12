@@ -28,7 +28,7 @@
 #define SOFA_GUI_VIEWER_QT_QMENUFILESRECENTLYOPENED_H
 
 #include <sofa/gui/FilesRecentlyOpenedManager.h>
-
+#include <sofa/gui/qt/SofaGUIQt.h>
 #ifdef SOFA_QT4
 #include <QMenu>
 #else
@@ -42,7 +42,7 @@ namespace gui
 namespace qt
 {
 
-class QMenuFilesRecentlyOpened: public FilesRecentlyOpenedManager
+class SOFA_SOFAGUIQT_API QMenuFilesRecentlyOpened: public FilesRecentlyOpenedManager
 {
 public:
     QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(0) {};
