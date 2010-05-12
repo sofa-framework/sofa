@@ -107,7 +107,7 @@ public:
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool /*readOnly*/)
     {
-        if (Q3GroupBox* box = dynamic_cast<Q3GroupBox*>(parent)) box->setColumns(1);
+        QVBoxLayout* layout = new QVBoxLayout(parent);
 #ifdef SOFA_QT4
         w = new Widget(QwtText(""), parent);
 #else
@@ -116,6 +116,8 @@ public:
         w->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
         w->setAxisScaleEngine(Widget::yLeft, new QwtLog10ScaleEngine);
         readFromData(d);
+
+        layout->addWidget(w);
         return true;
     }
     void setReadOnly(bool /*readOnly*/)
