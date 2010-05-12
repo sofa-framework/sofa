@@ -152,7 +152,7 @@ void Camera::computeZ()
         zFar = distanceCamToCenter + zClippingCoeff*sceneRadius ;
         zNear = distanceCamToCenter- zClippingCoeff*sceneRadius;
 
-        float zMin = zNearCoeff * zClippingCoeff * sceneRadius;
+        double zMin = zNearCoeff * zClippingCoeff * sceneRadius;
         if (zNear < zMin)
             zNear = zMin;
 
