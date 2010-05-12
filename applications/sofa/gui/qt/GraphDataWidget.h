@@ -107,7 +107,6 @@ public:
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool /*readOnly*/)
     {
-        QVBoxLayout* layout = new QVBoxLayout(parent);
 #ifdef SOFA_QT4
         w = new Widget(QwtText(""), parent);
 #else
@@ -115,9 +114,9 @@ public:
 #endif
         w->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
         w->setAxisScaleEngine(Widget::yLeft, new QwtLog10ScaleEngine);
+        QHBoxLayout* layout = new QHBoxLayout(parent);
+        layout->add(w);
         readFromData(d);
-
-        layout->addWidget(w);
         return true;
     }
     void setReadOnly(bool /*readOnly*/)
