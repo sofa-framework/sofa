@@ -1,4 +1,3 @@
-#ifndef SOFA_GUI_QT_DATAWIDGET_CPP
 #define SOFA_GUI_QT_DATAWIDGET_CPP
 
 #include "DataWidget.h"
@@ -162,5 +161,3 @@ void QPushButtonUpdater::setDisplayed(bool b)
 }//qt
 }//gui
 }//sofa
-
-#endif // SOFA_GUI_QT_DATAWIDGET_CPP
