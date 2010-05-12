@@ -64,18 +64,12 @@ public:
     typedef topology::PointSubset SetIndex;
     typedef typename DataTypes::CPos CPos;
 
-    typedef defaulttype::Vec<3,Real> Point;
+    typedef defaulttype::Vec<3,Real> Vec3;
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
 
-protected:
-    bool isPointInBox(const CPos& p, const Vec6& b);
-    bool isPointInBox(const PointID& pid, const Vec6& b);
-    bool isEdgeInBox(const Edge& e, const Vec6& b);
-    bool isTriangleInBox(const Triangle& t, const Vec6& b);
-    bool isTetrahedronInBox(const Tetra& t, const Vec6& b);
 public:
 
     SubsetTopology();
@@ -127,8 +121,34 @@ public:
         return DataTypes::Name();
     }
 
+protected:
+    bool isPointInROI(const CPos& p, unsigned int idROI);
+    bool isPointInROI(const PointID& pid, unsigned int idROI);
+    bool isEdgeInROI(const Edge& e, unsigned int idROI);
+    bool isTriangleInROI(const Triangle& t, unsigned int idROI);
+    bool isTetrahedronInROI(const Tetra& t, unsigned int idROI);
+
+public:
+    enum ROIType
+    {
+        //boxROI
+        BOX = 0,
+        //sphereROI
+        SPHERE = 1
+    };
+
     //Input
+    //For cube
     Data< helper::vector<Vec6> > boxes;
+
+    //For sphere
+    Data< helper::vector<Vec3> > centers;
+    Data< helper::vector<Real> > radii;
+    Data< Vec3 > direction;
+    Data< Vec3 > normal;
+    Data< Real > edgeAngle;
+    Data< Real > triAngle;
+
     Data<VecCoord> f_X0;
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
@@ -139,20 +159,25 @@ public:
     Data<SetIndex> f_edgeIndices;
     Data<SetIndex> f_triangleIndices;
     Data<SetIndex> f_tetrahedronIndices;
-    Data<VecCoord > f_pointsInBox;
-    Data<VecCoord > f_pointsOutBox;
-    Data<helper::vector<Edge> > f_edgesInBox;
-    Data<helper::vector<Triangle> > f_trianglesInBox;
-    Data<helper::vector<Triangle> > f_trianglesOutBox;
-    Data<helper::vector<Tetra> > f_tetrahedraInBox;
-    Data<helper::vector<Tetra> > f_tetrahedraOutBox;
+    Data<VecCoord > f_pointsInROI;
+    Data<VecCoord > f_pointsOutROI;
+    Data<helper::vector<Edge> > f_edgesInROI;
+    Data<helper::vector<Edge> > f_edgesOutROI;
+    Data<helper::vector<Triangle> > f_trianglesInROI;
+    Data<helper::vector<Triangle> > f_trianglesOutROI;
+    Data<helper::vector<Tetra> > f_tetrahedraInROI;
+    Data<helper::vector<Tetra> > f_tetrahedraOutROI;
 
     //Parameter
-    Data<bool> p_drawBoxes;
+    Data<bool> p_drawROI;
     Data<bool> p_drawPoints;
     Data<bool> p_drawEdges;
     Data<bool> p_drawTriangles;
     Data<bool> p_drawTetrahedra;
+    Data<double> _drawSize;
+
+    ROIType typeROI;
+
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
