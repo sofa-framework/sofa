@@ -182,15 +182,17 @@ SOURCES +=  \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
- fem/BaseMaterial.h \
- fem/BaseShapeFunction.h \
- fem/BaseStrainTensor.h \
- fem/BaseFiniteElement.h \
- fem/FiniteElement.h
+	 fem/BaseMaterial.h \
+	 fem/BaseShapeFunction.h \
+	 fem/BaseStrainTensor.h \
+	 fem/BaseFiniteElement.h \
+	 fem/FiniteElement.h \
+	 fem/DofContainer.h 
  
 SOURCES +=  \
- fem/BaseFiniteElement.cpp \
- fem/FiniteElement.cpp
+	 fem/BaseFiniteElement.cpp \
+	 fem/FiniteElement.cpp \
+	 fem/DofContainer.cpp 
  
 } # END SOFA_DEV
 
