@@ -27,7 +27,7 @@
 
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/qt/SofaMouseManager.h>
-#include <sofa/gui/qt/DataWidget.h>
+
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
@@ -55,6 +55,7 @@ namespace gui
 
 namespace qt
 {
+class DataWidget;
 
 class QMouseOperation : public QWidget
 {
