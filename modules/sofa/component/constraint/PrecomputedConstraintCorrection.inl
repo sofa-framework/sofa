@@ -326,11 +326,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         for (unsigned int f = 0; f < nbNodes; f++)
         {
-            std::streamsize toto = std::cout.precision();
+            std::streamsize prevPrecision = std::cout.precision();
             std::cout.precision(2);
             std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
             std::cout.flush();
-            std::cout.precision(toto);
+            std::cout.precision(prevPrecision);
             //  serr << "inverse cols node : " << f << sendl;
             Deriv unitary_force;
 
@@ -500,8 +500,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix* W)
 {
-
-    VecConst& constraints = *mstate->getC();
+    const VecConst& constraints = *mstate->getC();
 
     unsigned int numConstraints = constraints.size();
 
@@ -517,18 +516,31 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 
     /////////// Which node are involved with the contact ?/////
     //std::list<int> activeDof;
-    for (unsigned int i=0; i<_indexNodeSparseCompliance.size(); ++i)
+
+    unsigned int noSparseComplianceSize = _indexNodeSparseCompliance.size();
+
+    for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
+    {
         _indexNodeSparseCompliance[i] = -1;
+    }
+
+    int nActiveDof = 0;
+
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         ConstConstraintIterator itConstraint;
-        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c1].data();
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter = constraints[c1].data();
 
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        for (itConstraint = iter.first; itConstraint != iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             //activeDof.push_back(dof);
-            _indexNodeSparseCompliance[dof]=0;
+
+            if (_indexNodeSparseCompliance[dof] != 0)
+            {
+                ++nActiveDof;
+                _indexNodeSparseCompliance[dof] = 0;
+            }
         }
     }
     //unsigned int numNodes1 = activeDof.size();
@@ -537,9 +549,16 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
     //activeDof.unique();
     //	unsigned int numNodes = activeDof.size();
     //sout<< " apres = "<<numNodes<<sendl;
+
+    // Commented by PJ
+    /*
     int nActiveDof = 0;
-    for (unsigned int i=0; i<_indexNodeSparseCompliance.size(); ++i)
-        if (_indexNodeSparseCompliance[i]==0) ++nActiveDof;
+    for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
+    {
+    	if (_indexNodeSparseCompliance[i] == 0)
+    		++nActiveDof;
+    }
+    */
 
     ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
@@ -550,33 +569,39 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 
     //////////////////////////////////////////
     //std::vector<Deriv> sparseCompliance;
-    _sparseCompliance.resize(nActiveDof*numConstraints);
+    _sparseCompliance.resize(nActiveDof * numConstraints);
+
     //std::list<int>::iterator IterateurListe;
     //for(IterateurListe=activeDof.begin();IterateurListe!=activeDof.end();IterateurListe++)
     //  {
     //  int NodeIdx = (*IterateurListe);
-    for (int NodeIdx = 0; NodeIdx < (int)_indexNodeSparseCompliance.size(); ++NodeIdx)
+
+    for (int NodeIdx = 0; NodeIdx < (int)noSparseComplianceSize; ++NodeIdx)
     {
-        if (_indexNodeSparseCompliance[NodeIdx] == -1) continue;
-        _indexNodeSparseCompliance[NodeIdx]=it;
-        for(curColConst = 0; curColConst < numConstraints; curColConst++)
+        if (_indexNodeSparseCompliance[NodeIdx] == -1)
+            continue;
+
+        _indexNodeSparseCompliance[NodeIdx] = it;
+
+        for (curColConst = 0; curColConst < numConstraints; curColConst++)
         {
             indexCurColConst = mstate->getConstraintId()[curColConst];
 
             Vbuf.clear();
             ConstConstraintIterator itConstraint;
 
-            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curColConst].data();
-            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter = constraints[curColConst].data();
+
+            for (itConstraint = iter.first; itConstraint != iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 const Deriv n2 = itConstraint->second;
                 offset = dof_on_node*(NodeIdx * nbCols +  dof);
 
-                for (ii=0; ii<dof_on_node; ii++)
+                for (ii = 0; ii < dof_on_node; ii++)
                 {
                     offset2 = offset+ii*nbCols;
-                    for (jj=0; jj<dof_on_node; jj++)
+                    for (jj = 0; jj < dof_on_node; jj++)
                     {
                         Vbuf[ii] += appCompliance[offset2 + jj] * n2[jj];
                     }
@@ -629,16 +654,16 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
     VecDeriv& force = *mstate->getF();
-    VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
-
     VecDeriv& dx = *mstate->getDx();
     VecCoord& x = *mstate->getX();
     VecDeriv& v = *mstate->getV();
-    VecDeriv v_free = *mstate->getVfree();
-    VecCoord x_free = *mstate->getXfree();
-    double dt = this->getContext()->getDt();
 
+    const VecDeriv& v_free = *mstate->getVfree();
+    const VecCoord& x_free = *mstate->getXfree();
+    const VecConst& constraints = *mstate->getC();
+
+    double dt = this->getContext()->getDt();
+    unsigned int numConstraints = constraints.size();
 
     // ici on fait comme avant
     // Euler integration... will be done in the "integrator" as soon as it exists !
@@ -660,11 +685,11 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
         if (fC1 != 0.0)
         {
-
             ConstConstraintIterator itConstraint;
 
-            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c1].data();
-            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter = constraints[c1].data();
+
+            for (itConstraint = iter.first; itConstraint != iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 const Deriv n = itConstraint->second;
@@ -686,7 +711,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     std::list<int>::iterator IterateurListe;
     unsigned int i;
     unsigned int offset, offset2;
-    for(IterateurListe=activeDof.begin(); IterateurListe!=activeDof.end(); IterateurListe++)
+    for (IterateurListe = activeDof.begin(); IterateurListe != activeDof.end(); IterateurListe++)
     {
         int f = (*IterateurListe);
 
@@ -694,6 +719,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
         {
             Fbuf[i] = force[f][i];
         }
+
         for(unsigned int v = 0 ; v < dx.size() ; v++)
         {
             offset =  v * dof_on_node * nbCols + f*dof_on_node;
@@ -701,7 +727,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
             {
                 offset2 = offset+ j*nbCols;
                 DXbuf=0.0;
-                for (i=0; i< dof_on_node; i++)
+                for (i = 0; i < dof_on_node; i++)
                 {
                     DXbuf += appCompliance[ offset2 + i ] * Fbuf[i];
                 }
@@ -710,36 +736,33 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
         }
     }
 
-
     force.clear();
     force.resize(x_free.size());
 
     if(_rotations)
         rotateResponse();
 
-
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        //sout << "dx("<<i<<")="<<dx[i]<<sendl;
         x[i] = x_free[i];
         v[i] = v_free[i];
 
         x[i] += dx[i];
-        v[i] += dx[i]*(1/dt);
+        v[i] += dx[i] * (1/dt);
     }
 }
-
 
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* m) const
 {
     m->resize(dimensionAppCompliance,dimensionAppCompliance);
-    for (unsigned int l=0; l<dimensionAppCompliance; ++l)
+
+    for (unsigned int l = 0; l < dimensionAppCompliance; ++l)
     {
-        for (unsigned int c=0; c<dimensionAppCompliance; ++c)
+        for (unsigned int c = 0; c < dimensionAppCompliance; ++c)
         {
-            m->set(l,c,appCompliance[l*dimensionAppCompliance+c]);
+            m->set(l, c, appCompliance[l * dimensionAppCompliance + c]);
         }
     }
 }
@@ -866,6 +889,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
 {
     VecDeriv& force = *mstate->getExternalForces();
+//	VecDeriv& force = *mstate->getF();
 
     const unsigned int numDOFs = mstate->getSize();
 
@@ -1152,7 +1176,6 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
         if (fC != 0.0)
         {
-
             if(error_message_not_displayed)
             {
                 serr<<"Initial_guess not supported yet in unbuilt mode with NEW_METHOD_UNBUILT!=> PUT F to 0"<<sendl;
@@ -1277,9 +1300,6 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
 
     const VecConst& constraints = *mstate->getC();
 
-
-
-
     for (int id_=begin; id_<=end; id_++)
     {
         int c = id_to_localIndex[id_];
@@ -1295,8 +1315,6 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
         }
         d[id_] = dc;
     }
-
-
 
 #else
     unsigned int numConstraints = localConstraintId->size();
