@@ -169,6 +169,7 @@ public:
     Data<helper::vector<Tetra> > f_tetrahedraOutROI;
 
     //Parameter
+    Data<bool> p_localIndices;
     Data<bool> p_drawROI;
     Data<bool> p_drawPoints;
     Data<bool> p_drawEdges;
@@ -177,6 +178,7 @@ public:
     Data<double> _drawSize;
 
     ROIType typeROI;
+    sofa::helper::vector<unsigned int> localIndices;
 
 };
 

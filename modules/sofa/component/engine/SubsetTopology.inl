@@ -72,6 +72,7 @@ SubsetTopology<DataTypes>::SubsetTopology()
     , f_trianglesOutROI( initData(&f_trianglesOutROI,"trianglesOutROI","Triangles out of the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
     , f_tetrahedraOutROI( initData(&f_tetrahedraOutROI,"tetrahedraOutROI","Tetrahedra out of the ROI") )
+    , p_localIndices( initData(&p_localIndices,false,"localIndices","If true, will compute local dof indices in topological elements") )
     , p_drawROI( initData(&p_drawROI,false,"drawROI","Draw ROI") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
@@ -329,6 +330,12 @@ void SubsetTopology<DataTypes>::update()
 
     const VecCoord* x0 = &f_X0.getValue();
 
+    const bool local = p_localIndices.getValue();
+    unsigned int cpt_in = 0, cpt_out = 0;
+
+    if (local)
+        localIndices.resize(x0->size());
+
     //Points
     for( unsigned i=0; i<x0->size(); ++i )
     {
@@ -340,12 +347,26 @@ void SubsetTopology<DataTypes>::update()
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
                 inside = true;
+
+                if (local)
+                {
+                    localIndices[i] = cpt_in;
+                    cpt_in++;
+                }
+
                 break;
             }
         }
 
         if (!inside)
+        {
             pointsOutROI.push_back((*x0)[i]);
+            if (local)
+            {
+                localIndices[i] = cpt_out;
+                cpt_out++;
+            }
+        }
     }
 
     //Edges
@@ -357,6 +378,7 @@ void SubsetTopology<DataTypes>::update()
         {
             if (isEdgeInROI(e, bi))
             {
+                if (local) { e[0] = localIndices[e[0]]; e[1] = localIndices[e[1]]; }
                 edgeIndices.push_back(i);
                 edgesInROI.push_back(e);
                 inside = true;
@@ -365,7 +387,10 @@ void SubsetTopology<DataTypes>::update()
         }
 
         if (!inside)
+        {
+            if (local) { e[0] = localIndices[e[0]]; e[1] = localIndices[e[1]]; }
             edgesOutROI.push_back(e);
+        }
     }
 
     //Triangles
@@ -377,6 +402,7 @@ void SubsetTopology<DataTypes>::update()
         {
             if (isTriangleInROI(t, bi))
             {
+                if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]];}
                 triangleIndices.push_back(i);
                 trianglesInROI.push_back(t);
                 inside = true;
@@ -385,7 +411,10 @@ void SubsetTopology<DataTypes>::update()
         }
 
         if (!inside)
+        {
+            if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]];}
             trianglesOutROI.push_back(t);
+        }
     }
 
     //Tetrahedra
@@ -397,6 +426,7 @@ void SubsetTopology<DataTypes>::update()
         {
             if (isTetrahedronInROI(t, bi))
             {
+                if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]]; t[3] = localIndices[t[3]];}
                 tetrahedronIndices.push_back(i);
                 tetrahedraInROI.push_back(t);
                 inside = true;
@@ -405,7 +435,10 @@ void SubsetTopology<DataTypes>::update()
         }
 
         if (!inside)
+        {
+            if (local) { t[0] = localIndices[t[0]]; t[1] = localIndices[t[1]]; t[2] = localIndices[t[2]]; t[3] = localIndices[t[3]];}
             tetrahedraOutROI.push_back(t);
+        }
     }
 
     f_indices.endEdit();
