@@ -1,4 +1,4 @@
-<Node 	name="root" gravity="0 0 0" dt="0.05" showBehaviorModels="1"
+<Node 	name="root" gravity="0 -5 0" dt="0.05" showBehaviorModels="0"
 	showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="0"  >
 	<DefaultPipeline name="default0"  verbose="0" />
 	<BruteForceDetection name="N2" />
@@ -8,33 +8,14 @@
 	<Node 	name="SquareGravity" gravity="0 -9.81 0"  >
 	  <MeshGmshLoader name="meshLoader"  filename="mesh/square3.msh" />
 
-	  <SubsetTopology template="Vec3d" box="0.3 0.3 0 0.6 0.6 1" triangles="@meshLoader.triangles"
-		  drawTriangle="1" drawBoxes="1" rest_position="@meshLoader.position"
-		  name="Subset" subsetTopology="1"/>
-		
-<!--	  <MechanicalObject template="Vec3d" name="mecaObj"  scale3d="10 10
-	  10"  restScale="1" />
-
-	  <TriangleSetTopologyContainer name="Container" />
-	  <TriangleSetTopologyModifier name="Modifier" />
-	  <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-	  <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
--->
-<!--	  
-
-
-	  <DiagonalMass template="Vec3d" name="default5"  massDensity="0.15" />
-	  <FixedConstraint template="Vec3d" name="default6"  indices="0 1" />
-	  <TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
-	  <TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
-	  <TTriangleModel template="Vec3d" name="default7" />
-
--->
+	  <SubsetTopology template="Vec3d" box="0.3 0 -0.1 0.6 1 0.1" 
+		  drawTriangle="0" drawROI="1" src="@meshLoader" rest_position="@meshLoader.position"
+		  name="Subset" />
 
 		<Node name="in">
 		  <MechanicalObject template="Vec3d" name="mecaObj2" position="@../meshLoader.position" />
 		  <TriangleSetTopologyContainer name="Container"
-		  position="@mecaObj2.position" triangles="@../Subset.f_trianglesInBox"/>
+		  position="@mecaObj2.position" triangles="@../Subset.trianglesInROI"/>
 
 		  <TriangleSetTopologyModifier name="Modifier" />
 		  <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
@@ -57,7 +38,7 @@
 		<Node name="Out">
 		  <MechanicalObject template="Vec3d" name="mecaObj2" position="@../meshLoader.position" />
 		  <TriangleSetTopologyContainer name="Container"
-		  position="@mecaObj2.position" triangles="@../Subset.f_trianglesOutBox"/>
+		  position="@mecaObj2.position" triangles="@../Subset.trianglesOutROI"/>
 
 		  <TriangleSetTopologyModifier name="Modifier" />
 		  <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
@@ -76,10 +57,7 @@
 
 		</Node>
 
-<!--
 
-	<OglModel template="ExtVec3f" name="Visual" 
-	material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
-	<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8"  object1=".."  object2="Visual" />-->
+
 	</Node>
 </Node>
