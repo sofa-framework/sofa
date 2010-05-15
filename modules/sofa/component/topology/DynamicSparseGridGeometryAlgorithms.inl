@@ -27,7 +27,7 @@
 
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/component/topology/CommonAlgorithms.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.inl>
 
 namespace sofa
 {
@@ -47,6 +47,12 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
     {
         serr << "buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << sendl;
         exit(0);
+    }
+    this->getContext()->get( dof);
+    if( !dof)
+    {
+        serr << "Can not find the dof" << sendl;
+        return;
     }
 }
 
@@ -76,7 +82,8 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     distance = 1e10;
 
     Vec3i resolution = topoContainer->resolution.getValue();
-    Vec3i currentIndex = Vec3i( (int)(pos[0] / topoContainer->voxelSize.getValue()[0]), (int)(pos[1] / topoContainer->voxelSize.getValue()[1]), (int)(pos[2] / topoContainer->voxelSize.getValue()[2]));
+    const Vec3d& translation = dof->getTranslation();
+    Vec3i currentIndex = Vec3i( (int)((pos[0] - translation[0]) / topoContainer->voxelSize.getValue()[0]), (int)((pos[1] - translation[1]) / topoContainer->voxelSize.getValue()[1]), (int)((pos[2] - translation[2]) / topoContainer->voxelSize.getValue()[2]));
 
 //        std::cout << "Find Nearest : " << pos << " ; " << baryC << " distance " << distance << " : " << resolution << " : resolution " << currentIndex << " : currentIndex\n";
     // Projection sur la bbox si l'element est en dehors.
@@ -118,8 +125,8 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( index == -1)
     {
         // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexahedra, il faut alors tous les parcourrir.
-        serr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found" << sendl;
-        //sout << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found => Search in all the hexahedra ! SLOW." << sendl;
+        serr << "findNearestElementInRestPos(). Index not found" << sendl;
+        //sout << "findNearestElementInRestPos(). Index not found => Search in all the hexahedra ! SLOW." << sendl;
         //sout << "pos: " << pos << ", currentIndex: " << currentIndex << ", et regular index: " << regularGridIndex << sendl;
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);
     }
