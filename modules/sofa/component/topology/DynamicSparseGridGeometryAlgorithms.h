@@ -27,6 +27,7 @@
 
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
+#include <sofa/component/container/MechanicalObject.h>
 
 namespace sofa
 {
@@ -46,6 +47,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+    typedef sofa::component::container::MechanicalObject<DataTypes> MObject;
 
     DynamicSparseGridGeometryAlgorithms()
         : HexahedronSetGeometryAlgorithms<DataTypes>()
@@ -63,6 +65,7 @@ public:
 
 protected:
     DynamicSparseGridTopologyContainer* topoContainer;
+    MObject* dof;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP)

@@ -167,7 +167,10 @@ public:
     void findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const;
 
     /// Set the offset to add to each new vertex index in the triangles array.
-    void setVerticesOffset( unsigned int verticesOffset);
+    void setVerticesIndexOffset( unsigned int verticesIndexOffset);
+
+    /// Set the translation to add to each new vertex in the triangles array.
+    void setVerticesTranslation( Vector3 verticesTranslation);
 
 private:
 
@@ -230,7 +233,8 @@ private:
     Vector3     dataVoxelSize;
     BoundingBox bbox; //bbox used to remesh
     BoundingBox roi; // Set value to 0 on this limit to always obtain manifold mesh. (Set to dataResolution by default but can be changed for ROI)
-    unsigned int verticesOffset;
+    unsigned int verticesIndexOffset;
+    Vector3 verticesTranslation;
 };
 
 extern SOFA_HELPER_API const int MarchingCubeEdgeTable[256];

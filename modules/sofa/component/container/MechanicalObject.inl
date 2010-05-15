@@ -1330,9 +1330,11 @@ void MechanicalObject<DataTypes>::reinit()
 
     if (grid) grid->setP0(p0);
 
+    /*
     translation.setValue(Vector3());
     rotation.setValue(Vector3());
     scale.setValue(Vector3(1.0,1.0,1.0));
+    */
 }
 template <class DataTypes>
 void MechanicalObject<DataTypes>::storeResetState()

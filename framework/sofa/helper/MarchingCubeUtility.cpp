@@ -377,7 +377,7 @@ const int MarchingCubeTriTable[256][16] =
 MarchingCubeUtility::MarchingCubeUtility()
     : cubeStep ( 1 ), convolutionSize ( 1 ),
       dataResolution ( 0,0,0 ), dataVoxelSize ( 1.0f,1.0f,1.0f ),
-      verticesOffset( 0)
+      verticesIndexOffset( 0), verticesTranslation( 0,0,0)
 {
 // // Computes non trivial faces.
 // int nonTrivialFaces[256];
@@ -421,6 +421,7 @@ void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
     p[0] = ( int ) helper::round( p[0]*PRECISION ) /PRECISION;
     p[1] = ( int ) helper::round( p[1]*PRECISION ) /PRECISION;
     p[2] = ( int ) helper::round( p[2]*PRECISION ) /PRECISION;
+    p += verticesTranslation;
 }
 
 
@@ -544,7 +545,7 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
             else
             {
                 //Add new Vertex in map
-                current_ID = map_indices.size() + verticesOffset;
+                current_ID = map_indices.size() + verticesIndexOffset;
                 map_indices.push_back ( current_P );
                 map_vertices.insert ( std::make_pair ( current_P, current_ID ) );
             }
@@ -839,9 +840,16 @@ void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, 
 
 
 
-void MarchingCubeUtility::setVerticesOffset( unsigned int verticesOffset)
+void MarchingCubeUtility::setVerticesIndexOffset( unsigned int verticesIndexOffset)
 {
-    this->verticesOffset = verticesOffset;
+    this->verticesIndexOffset = verticesIndexOffset;
+}
+
+
+
+void MarchingCubeUtility::setVerticesTranslation( Vector3 verticesTranslation)
+{
+    this->verticesTranslation = verticesTranslation;
 }
 
 
