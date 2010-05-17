@@ -131,46 +131,7 @@ void  VRPN_CALLBACK handle_end_of_frame(void *userData,const struct _vrpn_IMAGER
     }
 }
 
-/*template<>
-void VRPNTracker<RigidTypes>::update()
-{
-sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
-//std::cout << "read tracker " << this->getName() << std::endl;
 
-if (tkr)
-{
-	//get infos
-	trackerData.modified = false;
-	tkr->mainloop();
-	VRPNTrackerData copyTrackerData(trackerData);
-
-	if(copyTrackerData.modified)
-	{
-		points.clear();
-		//if (points.size() < trackerData.data.size())
-		points.resize(copyTrackerData.data.size());
-
-		for (unsigned int i=0 ; i<copyTrackerData.data.size() ;i++)
-		{
-			RigidTypes::Coord::Pos pos;
-			RigidTypes::Coord::Rot rot;
-
-			pos[0] = (copyTrackerData.data[i].pos[0])*p_scale.getValue() + p_dx.getValue();
-			pos[1] = (copyTrackerData.data[i].pos[1])*p_scale.getValue() + p_dy.getValue();
-			pos[2] = (copyTrackerData.data[i].pos[2])*p_scale.getValue() + p_dz.getValue();
-
-			//TODO: modify quat too
-			for (unsigned int j=0 ; j<4 ;j++)
-				rot[j] = copyTrackerData.data[i].quat[j];
-
-			Coord p;
-			p.getCenter() = pos;
-			p.getOrientation() = rot;
-			points[i] = p;
-		}
-	}
-       }
-}*/
 
 using namespace sofa::defaulttype;
 using namespace sofavrpn::client;
