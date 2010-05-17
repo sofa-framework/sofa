@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDCONSTRAINT_INL
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/Constraint.inl>
 #include <sofa/component/constraint/PartialFixedConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -49,11 +49,11 @@ namespace component
 namespace constraint
 {
 
-using namespace core::componentmodel::topology;
+using namespace core::topology;
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::behavior;
 
 
 // Define TestNewPointFunction
@@ -85,7 +85,7 @@ void PartialFixedConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* 
 
 template <class DataTypes>
 PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
-    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    : core::behavior::Constraint<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
@@ -143,7 +143,7 @@ void PartialFixedConstraint<DataTypes>::removeConstraint(unsigned int index)
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+    this->core::behavior::Constraint<DataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 
@@ -180,7 +180,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res)
     //serr<<"PartialFixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )    // fix everyting
     {
-        for( unsigned i=0; i<topology->getNbPoint(); i++ )
+        for( int i=0; i<topology->getNbPoints(); i++ )
         {
             for( unsigned j=0; j<NumDimensions; j++ )
                 if( blockedDirection[j] ) res[i][j] = (Real) 0.0;

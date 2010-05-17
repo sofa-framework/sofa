@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_PARTIALFIXEDCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_PARTIALFIXEDCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -60,10 +60,10 @@ class PartialFixedConstraintInternalData
 The fixed and free directioons are the same for all the particles, defined  in the fixedDirections attribute.
 */
 template <class DataTypes>
-class PartialFixedConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
+class PartialFixedConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PartialFixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PartialFixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -119,7 +119,7 @@ public:
 
 protected :
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::topology::BaseMeshTopology* topology;
 
     // Define TestNewPointFunction
     static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
