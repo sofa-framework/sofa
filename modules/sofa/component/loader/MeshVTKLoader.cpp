@@ -479,8 +479,8 @@ bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
     hVTKDocRoot = TiXmlHandle(pElem);
 
     //Endianness
-    //const char* endiannessStrTemp = pElem->Attribute("byte_order");
-    // ??
+    const char* endiannessStrTemp = pElem->Attribute("byte_order");
+    isLittleEndian = (std::string(endiannessStrTemp).compare("LittleEndian") == 0) ;
 
     //read VTK data format type
     const char* datasetFormatStrTemp = pElem->Attribute("type");
@@ -555,16 +555,18 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
     else
         typeStrTemp = type.c_str();
 
-
     //Format
-    const char* formatStrTemp = dataArrayElement->Attribute("Format");
+    const char* formatStrTemp = dataArrayElement->Attribute("format");
 
     checkError(formatStrTemp);
+
     int binary = 0;
     if (std::string(formatStrTemp).compare("ascii") == 0)
         binary = 0;
-    else
+    else if (isLittleEndian)
         binary = 1;
+    else
+        binary = 2;
 
     //NumberOfComponents
     int numberOfComponents;
@@ -613,6 +615,9 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
         for ( ; node ; node = node->NextSibling())
         {
             std::string currentNodeName = std::string(node->Value());
+
+            //std::cout << currentNodeName << std::endl;
+
             if (currentNodeName.compare("Points") == 0)
             {
                 /* Points */
@@ -666,7 +671,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
 
                     std::string currentDataArrayName = std::string(dataArrayElement->Attribute("Name"));
 
-                    BaseVTKDataIO* pointdata = loadDataArray(dataArrayElement);
+                    BaseVTKDataIO* pointdata = loadDataArray(dataArrayElement, numberOfPoints);
                     checkError(pointdata);
                     pointdata->name = currentDataArrayName;
                     inputPointDataVector.push_back(pointdata);
@@ -681,7 +686,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
                     checkError(dataArrayElement);
                     std::string currentDataArrayName = std::string(dataArrayElement->Attribute("Name"));
 
-                    BaseVTKDataIO* celldata = loadDataArray(dataArrayElement);
+                    BaseVTKDataIO* celldata = loadDataArray(dataArrayElement, numberOfCells);
                     checkError(celldata);
                     celldata->name = currentDataArrayName;
                     inputCellDataVector.push_back(celldata);

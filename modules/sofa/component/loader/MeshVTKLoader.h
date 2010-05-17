@@ -172,7 +172,7 @@ protected:
                 resize(n);
                 if (binary)
                 {
-                    in.read((char*)data, n * sizeof(T));
+                    in.read((char*)data, n *sizeof(T));
                     if (in.eof() || in.bad())
                     {
                         resize(0);
@@ -354,6 +354,7 @@ protected:
         BaseVTKDataIO* inputCellTypes;
         helper::vector<BaseVTKDataIO*> inputPointDataVector;
         helper::vector<BaseVTKDataIO*> inputCellDataVector;
+        bool isLittleEndian;
 
         int numberOfPoints, numberOfCells;
 
