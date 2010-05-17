@@ -83,7 +83,7 @@ static const char* COLOR[ALLCOLORS]=
     /*Topology              =*/ "#ffed6f", // color 12
     /*VisualModel           =*/ "#eefdea", // color 11 (brighter)
     /*Loader                =*/ "#00daff", // cyan
-    /*ConfigurationSetting  =*/ "#ffc581", // pale pink
+    /*ConfigurationSetting  =*/ "#aaaaaa", // pale pink
 };
 
 inline const char* getColor(const char* classname)

@@ -122,8 +122,8 @@ void ParabolicConstraint<DataTypes>::reinit()
 }
 
 
-template <class DataTypes>
-void ParabolicConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+template <class DataTypes> template <class DataDeriv>
+void ParabolicConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 {
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
@@ -132,6 +132,18 @@ void ParabolicConstraint<DataTypes>::projectResponse(VecDeriv& dx)
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             dx[*it] = Deriv();
     }
+}
+
+template <class DataTypes>
+void ParabolicConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+{
+    projectResponseT(dx);
+}
+
+template <class DataTypes>
+void ParabolicConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+{
+    projectResponseT(dx);
 }
 
 template <class DataTypes>

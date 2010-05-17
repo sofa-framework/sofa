@@ -55,7 +55,7 @@ LMConstraintSolver::LMConstraintSolver():
     numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints")),
     maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints")),
     graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") ),
-    traceKineticEnergy( initData( &traceKineticEnergy, false, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system")),
+    traceKineticEnergy( initData( &traceKineticEnergy, true, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system")),
     graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the kinetic energy of the system") ),
     W(NULL), c(NULL), Lambda(NULL)
 {
@@ -100,6 +100,8 @@ void LMConstraintSolver::init()
 
 bool LMConstraintSolver::needPriorStatePropagation()
 {
+    return true;
+
     using core::behavior::BaseLMConstraint;
     bool needPriorPropagation=false;
     {
@@ -158,11 +160,17 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
             simulation::MechanicalPropagateVVisitor propagateState(Order,false);
             propagateState.execute(this->getContext());
         }
-
+        else
+        {
+            simulation::MechanicalProjectVelocityVisitor projectVel(this->getContext()->getTime());
+            projectVel.execute(this->getContext());
+        }
 
         // calling writeConstraintEquations
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
+
+
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         arg.push_back(std::make_pair("Order", "Velocity"));
@@ -178,6 +186,11 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
         {
             simulation::MechanicalPropagateXVisitor propagateState(Order,false);
             propagateState.execute(this->getContext());
+        }
+        else
+        {
+            simulation::MechanicalProjectPositionVisitor projectPos(this->getContext()->getTime());
+            projectPos.execute(this->getContext());
         }
         // calling writeConstraintEquations
         LMConstraintVisitor.setOrder(orderState);

@@ -97,8 +97,10 @@ FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::removeConstra
 }
 
 // -- Mass interface
-template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectResponse(VecDeriv& res)
+
+
+template <class DataTypes> template <class DataDeriv>
+void FixedPlaneConstraint<DataTypes>::projectResponseT(DataDeriv& res)
 {
     Coord dir=direction.getValue();
 
@@ -108,6 +110,19 @@ void FixedPlaneConstraint<DataTypes>::projectResponse(VecDeriv& res)
         res[*it]-= dir*dot(res[*it],dir);
     }
 }
+
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+{
+    projectResponseT<VecDeriv>(dx);
+}
+
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+{
+    projectResponseT<SparseVecDeriv>(dx);
+}
+
 
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::setDirection(Coord dir)
@@ -182,16 +197,16 @@ void FixedPlaneConstraint<DataTypes>::draw()
 }
 
 #ifndef SOFA_FLOAT
-template <>
-void FixedPlaneConstraint<Rigid3dTypes>::projectResponse(Rigid3dTypes::VecDeriv& /*res*/);
+template <> template <class DataDeriv>
+void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(DataDeriv& /*res*/);
 
 template <>
-bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord /*p*/);
+bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Coord /*p*/);
 #endif
 
 #ifndef SOFA_DOUBLE
-template <>
-void FixedPlaneConstraint<Rigid3fTypes>::projectResponse(VecDeriv& /*res*/);
+template <> template <class DataDeriv>
+void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(DataDeriv& /*res*/);
 
 template <>
 bool FixedPlaneConstraint<Rigid3fTypes>::isPointInPlane(Coord /*p*/);

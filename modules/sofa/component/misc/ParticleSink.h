@@ -74,6 +74,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef helper::vector<Real> VecDensity;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
@@ -176,13 +177,22 @@ public:
         }
     }
 
-    virtual void projectResponse(VecDeriv& res) ///< project dx to constrained space
+    template <class DataDeriv>
+    void projectResponseT(DataDeriv& res) ///< project dx to constrained space
     {
         if (!this->mstate) return;
         if (fixed.empty()) return;
         // constraint the last value
         for (unsigned int s=0; s<fixed.size(); s++)
             res[fixed[s]] = Deriv();
+    }
+    virtual void projectResponse(VecDeriv& res) ///< project dx to constrained space
+    {
+        projectResponseT(res);
+    }
+    virtual void projectResponse(SparseVecDeriv& res) ///< project dx to constrained space
+    {
+        projectResponseT(res);
     }
 
     virtual void projectVelocity(VecDeriv&) ///< project dx to constrained space (dx models a velocity)

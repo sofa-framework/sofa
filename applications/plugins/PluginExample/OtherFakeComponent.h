@@ -62,6 +62,7 @@ class  OtherFakeComponent : public core::behavior::Constraint<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(OtherFakeComponent,DataTypes),SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
     typedef typename  DataTypes::VecDeriv VecDeriv;
+    typedef typename  DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename  DataTypes::VecCoord VecCoord;
     OtherFakeComponent();
     ~OtherFakeComponent();
@@ -70,6 +71,7 @@ public:
 
     virtual void reinit();
 
+    void projectResponse(SparseVecDeriv& /*dx*/) {}
     void projectResponse(VecDeriv& /*dx*/) {}
     virtual void projectVelocity(VecDeriv& /*dx*/) {}
     virtual void projectPosition(VecCoord& /*x*/) {}

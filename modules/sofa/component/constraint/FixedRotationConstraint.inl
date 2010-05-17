@@ -83,6 +83,12 @@ void FixedRotationConstraint<DataTypes>::projectResponse(VecDeriv& /*res*/)
 }
 
 template <class DataTypes>
+void FixedRotationConstraint<DataTypes>::projectResponse(SparseVecDeriv& /*res*/)
+{
+
+}
+
+template <class DataTypes>
 void FixedRotationConstraint<DataTypes>::projectVelocity(VecDeriv& /*dx*/)
 {
 

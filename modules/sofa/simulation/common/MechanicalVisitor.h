@@ -1015,6 +1015,78 @@ public:
 #endif
 };
 
+class SOFA_SIMULATION_COMMON_API MechanicalProjectVelocityVisitor : public MechanicalVisitor
+{
+public:
+    double t;
+    VecId vel;
+    MechanicalProjectVelocityVisitor(double time=0, VecId v = VecId::velocity()) : t(time),vel(v)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalProjectVelocityVisitor"; }
+    virtual std::string getInfos() const
+    {
+        std::string name="["+vel.getName()+"]"; return name;
+    }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(vel);
+    }
+#endif
+};
+
+class SOFA_SIMULATION_COMMON_API MechanicalProjectPositionVisitor : public MechanicalVisitor
+{
+public:
+    double t;
+    VecId pos;
+    MechanicalProjectPositionVisitor(double time=0, VecId x = VecId::position()) : t(time), pos(x)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalProjectPositionVisitor"; }
+    virtual std::string getInfos() const
+    {
+        std::string name="["+pos.getName()+"]"; return name;
+    }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(pos);
+    }
+#endif
+};
+
 /** Propagate positions  to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
  */
