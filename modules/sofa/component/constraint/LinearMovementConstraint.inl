@@ -190,8 +190,8 @@ void LinearMovementConstraint<DataTypes>::reset()
 }
 
 
-template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+template <class DataTypes> template <class DataDeriv>
+void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
     if ((cT != currentTime) || !finished)
@@ -209,6 +209,18 @@ void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
             dx[*it] = Deriv();
         }
     }
+}
+
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+{
+    projectResponseT(dx);
+}
+
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+{
+    projectResponseT(dx);
 }
 
 template <class DataTypes>

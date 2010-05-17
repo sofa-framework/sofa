@@ -68,8 +68,8 @@ OscillatorConstraint<DataTypes>*  OscillatorConstraint<DataTypes>::addConstraint
 }
 
 
-template <class DataTypes>
-void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
+template <class DataTypes> template <class DataDeriv>
+void OscillatorConstraint<DataTypes>::projectResponseT(DataDeriv& res)
 {
     const helper::vector< Oscillator > &oscillators = constraints.getValue();
     //Real t = (Real) this->getContext()->getTime();
@@ -83,6 +83,17 @@ void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
         //res[index] = a*(-w)*w*sin(w*t+p);
         res[index] = Deriv();
     }
+}
+
+template <class DataTypes>
+void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
+{
+    projectResponseT(res);
+}
+template <class DataTypes>
+void OscillatorConstraint<DataTypes>::projectResponse(SparseVecDeriv& res)
+{
+    projectResponseT(res);
 }
 
 template <class DataTypes>

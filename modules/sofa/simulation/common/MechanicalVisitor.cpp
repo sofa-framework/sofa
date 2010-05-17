@@ -1001,6 +1001,27 @@ Visitor::Result MechanicalAddMDxVisitor::fwdMappedMechanicalState(simulation::No
 
 #endif // SOFA_SUPPORT_MAPPED_MASS
 
+Visitor::Result MechanicalProjectVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
+{
+    return RESULT_PRUNE;
+}
+Visitor::Result MechanicalProjectVelocityVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+{
+    c->projectVelocity();
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalProjectPositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
+{
+    return RESULT_PRUNE;
+}
+Visitor::Result MechanicalProjectPositionVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+{
+    c->projectPosition();
+    return RESULT_CONTINUE;
+}
+
+
 Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->setX(x);
@@ -1022,6 +1043,8 @@ Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalMapping(simulat
     }
     return RESULT_CONTINUE;
 }
+
+
 
 void MechanicalPropagatePositionVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {

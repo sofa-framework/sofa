@@ -142,14 +142,14 @@ void FixedTranslationConstraint<DataTypes>::init()
 }// FixedTranslationConstraint::init
 
 
-template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectResponse(VecDeriv& res)
+template <class DataTypes> template <class DataDeriv>
+void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& res)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
     if (f_fixAll.getValue() == true)
     {
-        for( unsigned i = 0; i<res.size(); i++)
+        for( int i=0; i<topology->getNbPoints(); ++i )
         {
             res[i].getVCenter() -= res[i].getVCenter();
         }
@@ -162,6 +162,18 @@ void FixedTranslationConstraint<DataTypes>::projectResponse(VecDeriv& res)
         }
     }
 }// FixedTranslationConstraint::projectResponse
+
+template <class DataTypes>
+void FixedTranslationConstraint<DataTypes>::projectResponse(VecDeriv& res)
+{
+    projectResponseT(res);
+}
+template <class DataTypes>
+void FixedTranslationConstraint<DataTypes>::projectResponse(SparseVecDeriv& res)
+{
+    projectResponseT(res);
+}
+
 
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::draw()

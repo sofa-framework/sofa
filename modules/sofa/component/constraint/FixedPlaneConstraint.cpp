@@ -65,8 +65,8 @@ template class SOFA_COMPONENT_CONSTRAINT_API FixedPlaneConstraint<Vec3fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT
-template <>
-void FixedPlaneConstraint<Rigid3dTypes>::projectResponse(Rigid3dTypes::VecDeriv& res)
+template <> template <class DataDeriv>
+void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(DataDeriv& res)
 {
     const int N=Coord::static_size;
     Vec<N,Real> dir=direction.getValue().getCenter();
@@ -91,8 +91,8 @@ bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord p)
 #endif
 
 #ifndef SOFA_DOUBLE
-template <>
-void FixedPlaneConstraint<Rigid3fTypes>::projectResponse(VecDeriv& res)
+template <> template <class DataDeriv>
+void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(DataDeriv& res)
 {
     const int N=Coord::static_size;
     Vec<N,Real> dir=direction.getValue().getCenter();

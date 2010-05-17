@@ -63,6 +63,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecConst VecConst;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
 
     Constraint(MechanicalState<DataTypes> *mm = NULL);
 
@@ -114,11 +115,14 @@ public:
     /// the component.
     virtual void projectFreePosition();
 
+
     /// Project dx to constrained space (dx models an acceleration).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic Constraint::projectResponse() method.
     virtual void projectResponse(VecDeriv& dx) = 0;
+    /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
+    virtual void projectResponse(SparseVecDeriv& dx) = 0;
 
     /// Project v to constrained space (v models a velocity).
     ///

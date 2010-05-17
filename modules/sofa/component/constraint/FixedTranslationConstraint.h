@@ -54,6 +54,7 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef topology::PointSubset SetIndex;
@@ -80,7 +81,11 @@ public:
 
     // -- Constraint interface
     void init();
-    virtual void projectResponse(VecDeriv& dx);
+    template <class DataDeriv>
+    void projectResponseT(DataDeriv& dx);
+
+    void projectResponse(VecDeriv& dx);
+    void projectResponse(SparseVecDeriv& dx);
     virtual void projectVelocity(VecDeriv& /*v*/) {}; ///< project v to constrained space (v models a velocity)
     virtual void projectPosition(VecCoord& /*x*/) {}; ///< project x to constrained space (x models a position)
 
