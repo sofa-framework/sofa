@@ -172,15 +172,15 @@ void PartialFixedConstraint<DataTypes>::init()
 
 }
 
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
+template <class DataTypes> template <class DataDeriv>
+void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     Vec6Bool blockedDirection = fixedDirections.getValue();
     //serr<<"PartialFixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )    // fix everyting
     {
-        for( unsigned i=0; i<res.size(); i++ )
+        for( unsigned i=0; i<topology->getNbPoint(); i++ )
         {
             for( unsigned j=0; j<NumDimensions; j++ )
                 if( blockedDirection[j] ) res[i][j] = (Real) 0.0;
@@ -198,6 +198,17 @@ void PartialFixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
         }
     }
 }
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
+{
+    projectResponseT(res);
+}
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::projectResponse(SparseVecDeriv& res)
+{
+    projectResponseT(res);
+}
+
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
