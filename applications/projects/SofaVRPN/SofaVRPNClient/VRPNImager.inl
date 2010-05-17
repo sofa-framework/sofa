@@ -2,7 +2,7 @@
  * VRPNImager.cpp
  *
  *  Created on: 14 May 2010
- *      Author: peterlik
+ *      Author: peterlik, olsak
  */
 #ifndef SOFAVRPNCLIENT_VRPNIMAGER_INL_
 #define SOFAVRPNCLIENT_VRPNIMAGER_INL_
@@ -26,11 +26,6 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 VRPNImager<DataTypes>::VRPNImager()
-/*: f_points(initData(&f_points, "points", "Points from Sensors"))
-, p_dx(initData(&p_dx, (Real) 0.0, "dx", "Translation along X axis"))
-, p_dy(initData(&p_dy, (Real) 0.0, "dy", "Translation along Y axis"))
-, p_dz(initData(&p_dz, (Real) 0.0, "dz", "Translation along Z axis"))
-, p_scale(initData(&p_scale, (Real) 1.0, "scale", "Scale (3 axis)"))*/
 {
     // TODO Auto-generated constructor stub
     /*trackerData.data.resize(1);
@@ -48,11 +43,6 @@ VRPNImager<DataTypes>::~VRPNImager()
 template<class DataTypes>
 bool VRPNImager<DataTypes>::connectToServer()
 {
-    /*tkr = new vrpn_Tracker_Remote(deviceURL.c_str());
-    tkr->register_change_handler((void*) &trackerData, handle_tracker);
-    tkr->reset_origin();
-    tkr->mainloop();*/
-
     std::cout << "Connecting to imager server..." << std::endl;
     g_imager = new vrpn_Imager_Remote(deviceURL.c_str());
     imagerData.remote_imager = g_imager;
@@ -68,6 +58,21 @@ bool VRPNImager<DataTypes>::connectToServer()
         vrpn_SleepMsecs(1);
     }
     std::cout << "Connection established, dimensions " << imagerData.Xdim << " " << imagerData.Ydim << std::endl;
+    g_imager->connectionPtr()->Jane_stop_this_crazy_thing(50);
+
+    // Allocate memory for the image and clear it, so that things that don't get filled in will be black.
+    if ( (imagerData.image = new unsigned char[imagerData.Xdim * imagerData.Ydim * 3]) == NULL)
+    {
+        std::cout << "Out of memory when allocating image!" << std::endl;
+        return -1;
+    }
+    for (unsigned int i = 0; i < imagerData.Xdim * imagerData.Ydim * 3; i++)
+    {
+        imagerData.image[i] = 0;
+    }
+    imagerData.ready_for_region = true;
+
+    glGenTextures(1, &imageTextureID);
 
     return true;
 }
@@ -75,75 +80,110 @@ bool VRPNImager<DataTypes>::connectToServer()
 template<class DataTypes>
 void VRPNImager<DataTypes>::update()
 {
+    g_imager->mainloop();
+
     /*sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
     std::cout << "read tracker " << this->getName() << std::endl;
 
     if (tkr)
     {
-    	//get infos
-    	trackerData.modified = false;
-    	tkr->mainloop();
-    	VRPNTrackerData copyTrackerData(trackerData);
+        //get infos
+        trackerData.modified = false;
+        tkr->mainloop();
+        VRPNTrackerData copyTrackerData(trackerData);
 
-    	if(copyTrackerData.modified)
-    	{
-    		points.clear();
-    		//if (points.size() < trackerData.data.size())
-    		points.resize(copyTrackerData.data.size());
+        if(copyTrackerData.modified)
+        {
+                points.clear();
+                //if (points.size() < trackerData.data.size())
+                points.resize(copyTrackerData.data.size());
 
-    		for (unsigned int i=0 ; i<copyTrackerData.data.size() ;i++)
-    		{
-    			Coord pos;
-    			pos[0] = (copyTrackerData.data[i].pos[0])*p_scale.getValue() + p_dx.getValue();
-    			pos[1] = (copyTrackerData.data[i].pos[1])*p_scale.getValue() + p_dy.getValue();
-    			pos[2] = (copyTrackerData.data[i].pos[2])*p_scale.getValue() + p_dz.getValue();
+                for (unsigned int i=0 ; i<copyTrackerData.data.size() ;i++)
+                {
+                        Coord pos;
+                        pos[0] = (copyTrackerData.data[i].pos[0])*p_scale.getValue() + p_dx.getValue();
+                        pos[1] = (copyTrackerData.data[i].pos[1])*p_scale.getValue() + p_dy.getValue();
+                        pos[2] = (copyTrackerData.data[i].pos[2])*p_scale.getValue() + p_dz.getValue();
 
-    			Coord p(pos);
-    			points[i] = p;
-    		}
-    	}
-           }*/
+                        Coord p(pos);
+                        points[i] = p;
+                }
+        }
+    }*/
+}
+
+template<class DataTypes>
+void VRPNImager<DataTypes>::draw()
+{
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, imageTextureID);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, g_imager->nCols(), g_imager->nRows(), 0, GL_BGR, GL_UNSIGNED_BYTE, imagerData.image);
+
+    glBegin(GL_QUADS);
+    glTexCoord2i(0,1);
+    glVertex3f(0,0,0);
+    glTexCoord2i(1,1);
+    glVertex3f(1,0,0);
+    glTexCoord2i(1,0);
+    glVertex3f(1,1,0);
+    glTexCoord2i(0,0);
+    glVertex3f(0,1, 0);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
 }
 
 template<class DataTypes>
 void VRPNImager<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    std::cout << "handle event" << std::endl;
-    /*update();
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+
+    update();
+
+    /*if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
 
-    	double nb = 10.0;
-    	switch(ev->getKey())
-    	{
+        double nb = 10.0;
+        switch(ev->getKey())
+        {
 
-    		case 'A':
-    		case 'a':
-    			angleX -= M_PI/nb;
-    			break;
-    		case 'Q':
-    		case 'q':
-    			angleX += M_PI/nb;
-    			break;
-    		case 'Z':
-    		case 'z':
-    			angleY -= M_PI/nb;
-    			break;
-    		case 'S':
-    		case 's':
-    			angleY += M_PI/nb;
-    			break;
-    		case 'E':
-    		case 'e':
-    			angleZ -= M_PI/nb;
-    			break;
-    		case 'D':
-    		case 'd':
-    			angleZ += M_PI/nb;
-    			break;
+                case 'A':
+                case 'a':
+            angleX -= M_PI/nb;
+            break;
+                case 'Q':
+                case 'q':
+            angleX += M_PI/nb;
+            break;
+                case 'Z':
+                case 'z':
+            angleY -= M_PI/nb;
+            break;
+                case 'S':
+                case 's':
+            angleY += M_PI/nb;
+            break;
+                case 'E':
+                case 'e':
+            angleZ -= M_PI/nb;
+            break;
+                case 'D':
+                case 'd':
+            angleZ += M_PI/nb;
+            break;
 
-    	}
-           }*/
+        }
+    }*/
 
 }
 
