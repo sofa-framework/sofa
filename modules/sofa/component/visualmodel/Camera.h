@@ -57,6 +57,7 @@ namespace visualmodel
 class SOFA_COMPONENT_VISUALMODEL_API Camera : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(Camera, core::objectmodel::BaseObject);
 
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  CameraType { PERSPECTIVE_TYPE =0,	ORTHOGRAPHIC_TYPE =1};
