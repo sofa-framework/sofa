@@ -229,11 +229,11 @@ MasterConstraintSolver::MasterConstraintSolver()
     bufCP1 = false;
 
     _graphErrors.setWidget("graph");
-    _graphErrors.setReadOnly(true);
+//	_graphErrors.setReadOnly(true);
     _graphErrors.setGroup("Graph");
 
     _graphConstraints.setWidget("graph");
-    _graphConstraints.setReadOnly(true);
+//	_graphConstraints.setReadOnly(true);
     _graphConstraints.setGroup("Graph");
 
     CP1.clear(0,_tol.getValue());

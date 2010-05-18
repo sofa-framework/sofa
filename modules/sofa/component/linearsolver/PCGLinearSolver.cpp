@@ -68,7 +68,7 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
+//    f_graph.setReadOnly(true);
     iteration = 0;
     usePrecond = true;
 }

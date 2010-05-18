@@ -28,12 +28,19 @@
 #define SOFA_GUI_QT_GRAPHDATAWIDGET_H
 
 #include <sofa/gui/qt/TableDataWidget.h>
+#include <sofa/gui/qt/FileManagement.h>
+
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/helper/system/SetDirectory.h>
+
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_legend.h>
 #include <qwt_scale_engine.h>
+
+#include <fstream>
 
 namespace sofa
 {
@@ -86,45 +93,97 @@ public:
     }
 };
 
-template<class T>
-class graph_data_widget_container
+class GraphSetting
 {
 public:
-    typedef T data_type;
-    typedef vector_data_trait<T> trait;
+    virtual void exportGNUPlot(const std::string &baseFileName)=0;
+};
+
+class GraphOptionWidget: public QWidget
+{
+    Q_OBJECT
+public:
+
+    GraphOptionWidget(const std::string &dataName, GraphSetting *graphConf):graph(graphConf)
+    {
+        QHBoxLayout* optionsLayout = new QHBoxLayout(this);
+        exportButton = new QPushButton(QString("Export"), this);
+
+        //Create field to enter the base name of the gnuplot files
+        fileLineEdit = new QLineEdit(this);
+        findFile = new QPushButton(QString("..."), this);
+
+        std::string gnuplotDirectory=simulation::getSimulation()->gnuplotDirectory.getValue();
+        if (gnuplotDirectory.empty())
+            gnuplotDirectory=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/";
+        gnuplotDirectory += dataName + std::string("_");
+        fileLineEdit->setText(QString(gnuplotDirectory.c_str()));
+
+        optionsLayout->add(exportButton);
+        optionsLayout->add(fileLineEdit);
+        optionsLayout->add(findFile);
+
+        connect(exportButton, SIGNAL(clicked()), this, SLOT(exportGNUPlot()));
+        connect(findFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
+    }
+public slots:
+
+    void openFindFileDialog()
+    {
+        std::string filename(this->windowFilePath().ascii());
+        std::string record_directory;
+        QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
+        if (s.length() > 0)
+        {
+            record_directory = s.ascii();
+            if (record_directory.at(record_directory.size()-1) != '/') record_directory+="/";
+            fileLineEdit->setText(record_directory.c_str());
+        }
+    }
+    void exportGNUPlot()
+    {
+        graph->exportGNUPlot(fileLineEdit->text().ascii());
+    }
+
+protected:
+    QPushButton* exportButton;
+    GraphSetting *graph;
+
+    QPushButton* findFile;
+    QLineEdit *fileLineEdit;
+};
+
+
+
+
+template <class DataType>
+class GraphWidget: public GraphSetting
+{
+public:
+    typedef DataType data_type;
+    typedef vector_data_trait<DataType> trait;
     typedef typename trait::value_type curve_type;
     typedef QwtPlot Widget;
     typedef QwtPlotCurve Curve;
     typedef QwtDataAccess<curve_type> CurveData;
 
-    Widget* w;
-    helper::vector<Curve*> curve;
-    helper::vector<CurveData*> cdata;
-    data_type currentData;
-    QwtDoubleRect rect;
-    graph_data_widget_container() : w(NULL) {}
-
-
-    bool createWidgets(DataWidget* parent, const data_type& d, bool /*readOnly*/)
+    GraphWidget(QWidget *parent)
     {
 #ifdef SOFA_QT4
         w = new Widget(QwtText(""), parent);
 #else
         w = new Widget(parent, "Graph");
 #endif
+
         w->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
         w->setAxisScaleEngine(Widget::yLeft, new QwtLog10ScaleEngine);
-        QHBoxLayout* layout = new QHBoxLayout(parent);
-        layout->add(w);
-        readFromData(d);
-        return true;
     }
-    void setReadOnly(bool /*readOnly*/)
-    {
-    }
+
+    QWidget *getWidget() {return w;}
+
     void readFromData(const data_type& d0)
     {
-        currentData = d0;
+        currentData=d0;
         const data_type& d = currentData;
         int s = curve.size();
         int n = trait::size(d);
@@ -189,14 +248,72 @@ public:
         }
         w->replot();
     }
-    void writeToData(data_type& /*d*/)
+
+    void exportGNUPlot(const std::string &baseFileName)
+    {
+        int n = trait::size(currentData);
+        for (int i=0; i<n; ++i)
+        {
+            const curve_type& v = *(trait::get(currentData,i));
+            std::string name(trait::header(currentData,i));
+            std::replace(name.begin(),name.end(),' ', '_');
+            const std::string filename=baseFileName+name+std::string(".txt");
+            std::cerr << "Export: " << filename << std::endl;
+            std::ofstream gnuplotFile(filename.c_str());
+            for (unsigned int idx=0; idx<v.size(); ++idx)
+                gnuplotFile << idx << " " << v[idx] << "\n";
+            gnuplotFile.close();
+        }
+    }
+
+    //TODO
+    //This shouldn't be public
+protected:
+    Widget* w;
+
+    helper::vector<Curve*> curve;
+    helper::vector<CurveData*> cdata;
+    data_type currentData;
+    QwtDoubleRect rect;
+
+};
+
+
+
+template<class T>
+class graph_data_widget_container
+{
+public:
+    typedef T data_type;
+    typedef GraphWidget<T> Widget;
+
+    Widget* w;
+    GraphOptionWidget *options;
+    graph_data_widget_container() : w(NULL), options(NULL) {}
+
+
+    bool createWidgets(DataWidget* parent, const data_type& d, bool /*readOnly*/)
+    {
+        QVBoxLayout* layout = new QVBoxLayout(parent);
+
+        w = new Widget(parent);
+
+        options = new GraphOptionWidget(parent->getBaseData()->getName(),w);
+
+        layout->add(w->getWidget());
+        layout->add(options);
+        w->readFromData(d);
+        return true;
+    }
+    void setReadOnly(bool /*readOnly*/)
     {
     }
-    bool processChange(const QObject* sender)
+    void readFromData(const data_type& d0)
     {
-        if (sender == w)
-            return true;
-        return false;
+        w->readFromData(d0);
+    }
+    void writeToData(data_type& /*d*/)
+    {
     }
 };
 

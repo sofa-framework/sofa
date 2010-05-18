@@ -62,7 +62,7 @@ TextureInterpolation<DataTypes>::TextureInterpolation()
     ,f_graph( initData(&f_graph,"graph","Vertex state value per iteration") )
 {
     f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
+//     f_graph.setReadOnly(true);
 }
 
 
