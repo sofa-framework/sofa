@@ -73,12 +73,20 @@ void Constraint<DataTypes>::projectResponse()
     {
         mstate->forceMask.setInUse(this->useMask());
         projectResponse(*mstate->getDx());
+    }
+}
+
+template<class DataTypes>
+void Constraint<DataTypes>::projectJacobianMatrix()
+{
+    if( !isActive() ) return;
+    if (mstate)
+    {
         VecConst *C=mstate->getC();
         typedef typename VecConst::iterator VecConstIterator;
         for (VecConstIterator it=C->begin(); it!=C->end(); ++it) projectResponse(*it);
     }
 }
-
 
 template<class DataTypes>
 void Constraint<DataTypes>::projectVelocity()

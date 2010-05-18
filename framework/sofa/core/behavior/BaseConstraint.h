@@ -110,6 +110,9 @@ public:
     /// Project dx to constrained space (dx models an acceleration).
     virtual void projectResponse() = 0;
 
+    /// Project the L matrix of the Lagrange Multiplier equation system.
+    virtual void projectJacobianMatrix() = 0;
+
     /// Project v to constrained space (v models a velocity).
     virtual void projectVelocity() = 0;
 

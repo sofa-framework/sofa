@@ -84,6 +84,11 @@ void PairInteractionConstraint<DataTypes>::projectResponse()
         projectResponse(*mstate1->getDx(), *mstate2->getDx());
     }
 }
+template<class DataTypes>
+void PairInteractionConstraint<DataTypes>::projectJacobianMatrix()
+{
+    serr << "NOT IMPLEMENTED YET" << sendl;
+}
 
 template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::projectVelocity()

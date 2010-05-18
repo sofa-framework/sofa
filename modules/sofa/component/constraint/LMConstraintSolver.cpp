@@ -147,6 +147,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
 
+        simulation::MechanicalProjectJacobianMatrixVisitor().execute(this->getContext());
 #ifdef SOFA_DUMP_VISITOR_INFO
         arg.push_back(std::make_pair("Order", "Acceleration"));
 #endif
@@ -170,7 +171,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
 
-
+        simulation::MechanicalProjectJacobianMatrixVisitor().execute(this->getContext());
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         arg.push_back(std::make_pair("Order", "Velocity"));

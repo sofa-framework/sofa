@@ -64,7 +64,7 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
+//    f_graph.setReadOnly(true);
 #ifdef DISPLAY_TIME
     timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
 #endif

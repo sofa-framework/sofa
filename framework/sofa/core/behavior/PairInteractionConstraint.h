@@ -90,6 +90,13 @@ public:
     /// the component.
     virtual void projectResponse();
 
+    /// Project the L matrix of the Lagrange Multiplier equation system.
+    ///
+    /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
+    /// the internal projectResponse(SparseVecDeriv&) method implemented by
+    /// the component.
+    virtual void projectJacobianMatrix();
+
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the v vector from the MechanicalState and call
