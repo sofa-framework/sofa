@@ -246,7 +246,18 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
-    const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*_youngModulus.getValue();
+    Real youngModulusElement;
+    if (_youngModulus.getValue().size() == _indexedElements->size())
+    {
+        youngModulusElement = _youngModulus.getValue()[i];
+    }
+    else if (_youngModulus.getValue().size() > 0) youngModulusElement = _youngModulus.getValue()[0];
+    else
+    {
+        setYoungModulus(500.0f);
+        youngModulusElement = _youngModulus.getValue()[0];
+    }
+    const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
     const Real poissonRatio = _poissonRatio.getValue();
 
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
@@ -294,9 +305,8 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d)
 {
-
     //const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
-    const Real youngModulus = _youngModulus.getValue();
+    const Real youngModulus = _youngModulus.getValue()[0];
     const Real poissonRatio = _poissonRatio.getValue();
 
     materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
