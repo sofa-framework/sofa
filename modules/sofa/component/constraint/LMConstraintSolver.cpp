@@ -300,6 +300,19 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id)
     }
     buildLMatrices(orderState, LMConstraints, LMatrices, dofUsed);
 
+    //Remove empty L Matrices
+    for (DofToMatrix::iterator it=LMatrices.begin(); it!=LMatrices.end();)
+    {
+        SparseMatrixEigen& matrix= it->second;
+        DofToMatrix::iterator itCurrent=it;
+        ++it;
+        if (!matrix.nonZeros()) //Empty Matrix: act as an obstacle
+        {
+            LMatrices.erase(itCurrent);
+            invMassMatrix.erase(itCurrent->first);
+            setDofs.erase(const_cast<sofa::core::behavior::BaseMechanicalState*>(itCurrent->first));
+        }
+    }
 
     //************************************************************
     // Building W=L0.M0^-1.L0^T + L1.M1^-1.L1^T + ... and M^-1.L^T
@@ -454,7 +467,6 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
         }
         constraintOffset += equationsUsed.size();
     }
-
 }
 
 
