@@ -195,8 +195,8 @@ void PartialLinearMovementConstraint<DataTypes>::reset()
 }
 
 
-template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+template <class DataTypes> template <class DataDeriv>
+void PartialLinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
     Vec6Bool movedDirection = movedDirections.getValue();
@@ -216,6 +216,18 @@ void PartialLinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
                 if(movedDirection[j]) dx[*it][j] = (Real) 0.0;
         }
     }
+}
+
+template <class DataTypes>
+void PartialLinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& res)
+{
+    projectResponseT(res);
+}
+
+template <class DataTypes>
+void PartialLinearMovementConstraint<DataTypes>::projectResponse(SparseVecDeriv& res)
+{
+    projectResponseT(res);
 }
 
 template <class DataTypes>
