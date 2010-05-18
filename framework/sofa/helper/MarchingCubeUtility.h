@@ -87,8 +87,8 @@ public:
         Vector3 gridSize = dataVoxelSize * cubeStep;
         gridSize = Vector3 ( 1.0 / gridSize[0], 1.0 / gridSize[1], 1.0 / gridSize[2] );
 
-        Vec3i bbMin = ( min - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
-        Vec3i bbMax = ( max - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        Vec3i bbMin = ( min - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        Vec3i bbMax = ( max - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
         setBoundingBox( min, max);
     }
 
