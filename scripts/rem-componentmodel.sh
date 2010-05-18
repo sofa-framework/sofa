@@ -1,6 +1,13 @@
+#!/bin/bash
+DIR0=$PWD
+cd "${0%/*}"
+SCRIPTS=$PWD
+cd -
+#echo $SCRIPTS
+
 size=0
 
-for g in $(find $1 -name *.h -o -name *.cpp -o -name *.inl) 
+for g in $(find ${1:-.} -name '*.h' -o -name '*.cpp' -o -name '*.inl') 
 do
 	size=$(($size+1))
 done
@@ -8,10 +15,10 @@ done
 echo "$size"
 
 current=0
-for g in $(find $1 -name *.h -o -name *.cpp -o -name *.inl) 
+for g in $(find ${1:-.} -name '*.h' -o -name '*.cpp' -o -name '*.inl') 
 do
 	#echo "$g"
-	awk -f rem-componentmodel.awk "$g" > buff
+	awk -f "$SCRIPTS/rem-componentmodel.awk" "$g" > buff
  
 	if [ -s buff ]
 	then
