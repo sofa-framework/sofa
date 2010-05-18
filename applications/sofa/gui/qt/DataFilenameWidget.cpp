@@ -41,13 +41,15 @@ bool DataFileNameWidget::createWidgets()
 void DataFileNameWidget::readFromData()
 {
     const std::string& filepath = this->getData()->virtualGetValue();
-    openFilePath->setText(QString(filepath.c_str()) );
+    if (openFilePath->text().ascii() != filepath)
+        openFilePath->setText(QString(filepath.c_str()) );
 }
 
 void DataFileNameWidget::writeToData()
 {
     std::string fileName( openFilePath->text().ascii() );
-    this->getData()->virtualSetValue(fileName);
+    if (this->getData()->getValueString() != fileName)
+        this->getData()->virtualSetValue(fileName);
 
 }
 

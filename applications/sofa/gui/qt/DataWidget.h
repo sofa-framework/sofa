@@ -130,10 +130,12 @@ public slots:
     {
         if(dirty)
         {
-            std::string previousName = baseData->getOwner()->getName();
+            const bool hasOwner = baseData->getOwner();
+            std::string previousName;
+            if ( hasOwner ) previousName = baseData->getOwner()->getName();
             writeToData();
             updateVisibility();
-            if(baseData->getOwner()->getName() != previousName)
+            if(hasOwner && baseData->getOwner()->getName() != previousName)
             {
                 emit DataOwnerDirty(true);
             }

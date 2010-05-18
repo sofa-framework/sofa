@@ -61,11 +61,11 @@ LMConstraintSolver::LMConstraintSolver():
 {
     graphGSError.setGroup("Statistics");
     graphGSError.setWidget("graph");
-    graphGSError.setReadOnly(true);
+//          graphGSError.setReadOnly(true);
 
     graphKineticEnergy.setGroup("Statistics");
     graphKineticEnergy.setWidget("graph");
-    graphKineticEnergy.setReadOnly(true);
+//          graphKineticEnergy.setReadOnly(true);
 
     traceKineticEnergy.setGroup("Statistics");
     this->f_listening.setValue(true);
