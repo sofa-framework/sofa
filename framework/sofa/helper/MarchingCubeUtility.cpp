@@ -418,10 +418,10 @@ void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
     float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
     p = p1 + ( p2 - p1 ) * mu;
     p = ( ( p + Vector3 ( 1.0f, 1.0f, 1.0f ) ) *0.5f ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2.0;
+    p += verticesTranslation;
     p[0] = ( int ) helper::round( p[0]*PRECISION ) /PRECISION;
     p[1] = ( int ) helper::round( p[1]*PRECISION ) /PRECISION;
     p[2] = ( int ) helper::round( p[2]*PRECISION ) /PRECISION;
-    p += verticesTranslation;
 }
 
 
@@ -827,7 +827,7 @@ void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, 
 
     for ( vector<Vector3>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++ )
     {
-        Vec3i seed = ( ( *it ) - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        Vec3i seed = ( ( *it ) - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
         mCubeCoords.push_back ( seed );
         assert ( seed[0] >= 0 );
         assert ( seed[1] >= 0 );
