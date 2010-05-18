@@ -81,6 +81,12 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectResponse()
 }
 
 template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectJacobianMatrix()
+{
+    serr << "NOT IMPLEMENTED YET" << sendl;
+}
+
+template<class DataTypes1, class DataTypes2>
 void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectVelocity()
 {
     if( !isActive() ) return;

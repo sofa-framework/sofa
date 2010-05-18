@@ -1001,6 +1001,16 @@ Visitor::Result MechanicalAddMDxVisitor::fwdMappedMechanicalState(simulation::No
 
 #endif // SOFA_SUPPORT_MAPPED_MASS
 
+Visitor::Result MechanicalProjectJacobianMatrixVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+{
+    return RESULT_PRUNE;
+}
+Visitor::Result MechanicalProjectJacobianMatrixVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+{
+    c->projectJacobianMatrix();
+    return RESULT_CONTINUE;
+}
+
 Visitor::Result MechanicalProjectVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
 {
     return RESULT_PRUNE;

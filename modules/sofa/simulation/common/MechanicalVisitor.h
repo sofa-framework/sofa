@@ -1015,6 +1015,36 @@ public:
 #endif
 };
 
+class SOFA_SIMULATION_COMMON_API MechanicalProjectJacobianMatrixVisitor : public MechanicalVisitor
+{
+public:
+    double t;
+    MechanicalProjectJacobianMatrixVisitor(double time=0) : t(time)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalProjectJacobianMatrixVisitor"; }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
+};
+
 class SOFA_SIMULATION_COMMON_API MechanicalProjectVelocityVisitor : public MechanicalVisitor
 {
 public:

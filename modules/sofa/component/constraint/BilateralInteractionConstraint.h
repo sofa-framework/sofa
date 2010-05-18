@@ -229,6 +229,7 @@ public:
 
     // Previous Constraint Interface
     virtual void projectResponse() {}
+    virtual void projectJacobianMatrix() {}
     virtual void projectVelocity() {}
     virtual void projectPosition() {}
     virtual void projectFreeVelocity() {}
