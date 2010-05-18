@@ -39,6 +39,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_legend.h>
 #include <qwt_scale_engine.h>
+#include <qwt_plot_printfilter.h>
 
 #include <fstream>
 
@@ -96,7 +97,10 @@ public:
 class GraphSetting
 {
 public:
-    virtual void exportGNUPlot(const std::string &baseFileName)=0;
+    virtual void exportGNUPlot(const std::string &baseFileName) const=0;
+#ifdef SOFA_QT4
+    virtual void exportImage(const std::string &baseFileName) const=0;
+#endif
 };
 
 class GraphOptionWidget: public QWidget
@@ -104,53 +108,25 @@ class GraphOptionWidget: public QWidget
     Q_OBJECT
 public:
 
-    GraphOptionWidget(const std::string &dataName, GraphSetting *graphConf):graph(graphConf)
-    {
-        QHBoxLayout* optionsLayout = new QHBoxLayout(this);
-        exportButton = new QPushButton(QString("Export"), this);
-
-        //Create field to enter the base name of the gnuplot files
-        fileLineEdit = new QLineEdit(this);
-        findFile = new QPushButton(QString("..."), this);
-
-        std::string gnuplotDirectory=simulation::getSimulation()->gnuplotDirectory.getValue();
-        if (gnuplotDirectory.empty())
-            gnuplotDirectory=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/";
-        gnuplotDirectory += dataName + std::string("_");
-        fileLineEdit->setText(QString(gnuplotDirectory.c_str()));
-
-        optionsLayout->add(exportButton);
-        optionsLayout->add(fileLineEdit);
-        optionsLayout->add(findFile);
-
-        connect(exportButton, SIGNAL(clicked()), this, SLOT(exportGNUPlot()));
-        connect(findFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
-    }
+    GraphOptionWidget(const std::string &dataName, GraphSetting *graphConf);
 public slots:
 
-    void openFindFileDialog()
-    {
-        std::string filename(this->windowFilePath().ascii());
-        std::string record_directory;
-        QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
-        if (s.length() > 0)
-        {
-            record_directory = s.ascii();
-            if (record_directory.at(record_directory.size()-1) != '/') record_directory+="/";
-            fileLineEdit->setText(record_directory.c_str());
-        }
-    }
-    void exportGNUPlot()
-    {
-        graph->exportGNUPlot(fileLineEdit->text().ascii());
-    }
+    void openFindFileDialog();
+    void exportGNUPlot();
+#ifdef SOFA_QT4
+    void exportImage();
+#endif
 
 protected:
-    QPushButton* exportButton;
+    QPushButton* exportGNUPLOTButton;
+    QLineEdit *fileGNUPLOTLineEdit;
+    QPushButton* findGNUPLOTFile;
+#ifdef SOFA_QT4
+    QPushButton* exportImageButton;
+    QLineEdit *fileImageLineEdit;
+    QPushButton* findImageFile;
+#endif
     GraphSetting *graph;
-
-    QPushButton* findFile;
-    QLineEdit *fileLineEdit;
 };
 
 
@@ -249,26 +225,41 @@ public:
         w->replot();
     }
 
-    void exportGNUPlot(const std::string &baseFileName)
+    void exportGNUPlot(const std::string &baseFileName) const
     {
         int n = trait::size(currentData);
         for (int i=0; i<n; ++i)
         {
             const curve_type& v = *(trait::get(currentData,i));
-            std::string name(trait::header(currentData,i));
-            std::replace(name.begin(),name.end(),' ', '_');
-            const std::string filename=baseFileName+name+std::string(".txt");
-            std::cerr << "Export: " << filename << std::endl;
+            const std::string filename=baseFileName + std::string("_") + getCurveFilename(i) + std::string(".txt");
+            std::cerr << "Export GNUPLOT file: " + filename << std::endl;
             std::ofstream gnuplotFile(filename.c_str());
             for (unsigned int idx=0; idx<v.size(); ++idx)
                 gnuplotFile << idx << " " << v[idx] << "\n";
             gnuplotFile.close();
         }
     }
-
-    //TODO
-    //This shouldn't be public
+#ifdef SOFA_QT4
+    void exportImage(const std::string &baseFileName) const
+    {
+        const std::string filename=baseFileName+".png";
+        QwtPlotPrintFilter filter;
+        filter.setOptions(QwtPlotPrintFilter::PrintAll);
+        QImage image(w->width(), w->height(),QImage::Format_RGB32);
+        image.fill(0xffffffff); //white image
+        w->print(image,filter);
+        std::cerr << "Export Image: " << filename << std::endl;
+        image.save(filename.c_str());
+    }
+#endif
 protected:
+    std::string getCurveFilename(unsigned int idx) const
+    {
+        std::string name(trait::header(currentData,idx));
+        std::replace(name.begin(),name.end(),' ', '_');
+        return name;
+    }
+
     Widget* w;
 
     helper::vector<Curve*> curve;
