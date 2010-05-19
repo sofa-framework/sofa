@@ -39,6 +39,7 @@
 //  Z
 //
 // Hexahedron quads are ordered as {BACK, FRONT, BOTTOM, RIGHT, TOP, LEFT}
+// const unsigned int quadsInHexahedronArray[6][4]={{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}}
 // The quads orientation is clockwise
 //
 
@@ -205,6 +206,12 @@ public:
      *
      */
     virtual Edge getLocalEdgesInHexahedron (const unsigned int i) const;
+
+
+    /** \brief Returns for each index (between 0 and 6) the four vertices indices that are adjacent to that quad
+     *
+     */
+    virtual Quad getLocalQuadsInHexahedron (const PointID i) const;
 
     /// @}
 
