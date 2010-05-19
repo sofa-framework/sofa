@@ -42,9 +42,11 @@ extern "C"
 {
     void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
     void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+    void TetrahedronFEMForceFieldCuda3f_addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor);
 
     void TetrahedronFEMForceFieldCuda3f1_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
     void TetrahedronFEMForceFieldCuda3f1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+    void TetrahedronFEMForceFieldCuda3f1_addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor);
 
     void TetrahedronFEMForceFieldCuda3f_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
 
@@ -82,9 +84,11 @@ extern "C"
 
     void TetrahedronFEMForceFieldCuda3d_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
     void TetrahedronFEMForceFieldCuda3d_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+    void TetrahedronFEMForceFieldCuda3d_addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor);
 
     void TetrahedronFEMForceFieldCuda3d1_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
     void TetrahedronFEMForceFieldCuda3d1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+    void TetrahedronFEMForceFieldCuda3d1_addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor);
 
     void TetrahedronFEMForceFieldCuda3d_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
 
@@ -100,6 +104,9 @@ public:
     {   TetrahedronFEMForceFieldCuda3f_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
     static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
     {   TetrahedronFEMForceFieldCuda3f_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
+    static void addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor)
+    {   TetrahedronFEMForceFieldCuda3f_addKToMatrix(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, factor); }
+
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3f_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
 
@@ -119,6 +126,9 @@ public:
     {   TetrahedronFEMForceFieldCuda3f1_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
     static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
     {   TetrahedronFEMForceFieldCuda3f1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
+    static void addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor)
+    {   TetrahedronFEMForceFieldCuda3f1_addKToMatrix(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, factor); }
+
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3f_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
 
@@ -140,6 +150,9 @@ public:
     {   TetrahedronFEMForceFieldCuda3d_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
     static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
     {   TetrahedronFEMForceFieldCuda3d_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
+    static void addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor)
+    {   TetrahedronFEMForceFieldCuda3d_addKToMatrix(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, factor); }
+
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3d_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
 
@@ -159,6 +172,9 @@ public:
     {   TetrahedronFEMForceFieldCuda3d1_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
     static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
     {   TetrahedronFEMForceFieldCuda3d1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
+    static void addKToMatrix(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, double factor)
+    {   TetrahedronFEMForceFieldCuda3d1_addKToMatrix(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, factor); }
+
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3d_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
 
@@ -451,55 +467,70 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
 {
     Data& data = m->data;
-
-    const VecElement& elems = *m->_indexedElements;
-
-    helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
-
-    // Build Matrix Block for this ForceField
-    int i,j,n1, n2, row, column, ROW, COLUMN;
-
-    typename Main::Transformation Rot;
-    typename Main::StiffnessMatrix JKJt,tmp;
-
-    Index noeud1, noeud2;
-
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
-
-    for (int ei=0; ei<data.nbElement; ++ei)
+    if (CudaDiagonalMatrix<Real> * diag = dynamic_cast<CudaDiagonalMatrix<Real> * >(mat))
     {
-        const Element& e = elems[ei];
+        Kernels::addKToMatrix(
+            data.size(),
+            data.nbVertex,
+            data.nbElementPerVertex,
+            data.elems.deviceRead(),
+            data.state.deviceRead(),
+            data.eforce.deviceWrite(),
+            data.velems.deviceRead(),
+            diag->getCudaMatrix().deviceWriteAt(offset),
+            k);
+    }
+    else
+    {
+        const VecElement& elems = *m->_indexedElements;
 
-        int blockIdx = ei / BSIZE;
-        int threadIdx = ei % BSIZE;
-        for(i=0; i<3; i++)
-            for (j=0; j<3; j++)
-                Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
+        helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
 
-        m->computeStiffnessMatrix(JKJt, tmp, m->_materialsStiffnesses[ei], m->_strainDisplacements[ei], Rot);
+        // Build Matrix Block for this ForceField
+        int i,j,n1, n2, row, column, ROW, COLUMN;
 
-        // find index of node 1
-        for (n1=0; n1<4; n1++)
+        typename Main::Transformation Rot;
+        typename Main::StiffnessMatrix JKJt,tmp;
+
+        Index noeud1, noeud2;
+
+        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+        Rot[0][1]=Rot[0][2]=0;
+        Rot[1][0]=Rot[1][2]=0;
+        Rot[2][0]=Rot[2][1]=0;
+
+        for (int ei=0; ei<data.nbElement; ++ei)
         {
-            noeud1 = e[n1];
+            const Element& e = elems[ei];
 
+            int blockIdx = ei / BSIZE;
+            int threadIdx = ei % BSIZE;
             for(i=0; i<3; i++)
-            {
-                ROW = offset+3*noeud1+i;
-                row = 3*n1+i;
-                // find index of node 2
-                for (n2=0; n2<4; n2++)
-                {
-                    noeud2 = e[n2];
+                for (j=0; j<3; j++)
+                    Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
-                    for (j=0; j<3; j++)
+            m->computeStiffnessMatrix(JKJt, tmp, m->_materialsStiffnesses[ei], m->_strainDisplacements[ei], Rot);
+
+            // find index of node 1
+            for (n1=0; n1<4; n1++)
+            {
+                noeud1 = e[n1];
+
+                for(i=0; i<3; i++)
+                {
+                    ROW = offset+3*noeud1+i;
+                    row = 3*n1+i;
+                    // find index of node 2
+                    for (n2=0; n2<4; n2++)
                     {
-                        COLUMN = offset+3*noeud2+j;
-                        column = 3*n2+j;
-                        mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                        noeud2 = e[n2];
+
+                        for (j=0; j<3; j++)
+                        {
+                            COLUMN = offset+3*noeud2+j;
+                            column = 3*n2+j;
+                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                        }
                     }
                 }
             }
