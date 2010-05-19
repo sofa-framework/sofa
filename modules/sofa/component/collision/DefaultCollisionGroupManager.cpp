@@ -244,8 +244,8 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
     }
     // This solver handles multiple groups, we have to find which group contains this collision model
     // First move up to the node of the initial mechanical object
-    while (node->mechanicalMapping && node->mechanicalMapping->getMechFrom())
-        node = static_cast<simulation::Node*>(node->mechanicalMapping->getMechFrom()->getContext());
+    while (node->mechanicalMapping && node->mechanicalMapping->getMechFrom()[0])
+        node = static_cast<simulation::Node*>(node->mechanicalMapping->getMechFrom()[0]->getContext());
     // Then check if it is one of the child nodes of the solver node
     for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
         if (*it == node)

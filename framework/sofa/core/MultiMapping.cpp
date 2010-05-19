@@ -24,15 +24,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BASEMAPPING_H
-#define SOFA_CORE_BASEMAPPING_H
 
-#include <stdlib.h>
-#include <string>
-#include <iostream>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/helper/vector.h>
+
+#include <sofa/core/MultiMapping.inl>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
 
 namespace sofa
 {
@@ -40,38 +39,29 @@ namespace sofa
 namespace core
 {
 
-/**
- *  \brief An interface to convert a model to an other model
- *
- *  This Interface is used for the Mappings. A Mapping can convert one model to an other.
- *  For example, we can have a mapping from a BehaviorModel to a VisualModel.
- *
- */
-class BaseMapping : public virtual objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(BaseMapping, objectmodel::BaseObject);
-    /// Destructor
-    virtual ~BaseMapping() { }
+using namespace sofa::defaulttype;
+using namespace core::behavior;
 
 
-    /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void updateMapping() = 0;
+template class MultiMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >;
+template class MultiMapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
 
-    /// Accessor to the input model of this mapping
-    virtual helper::vector<objectmodel::BaseObject*> getFrom() = 0;
-
-    /// Accessor to the output model of this mapping
-    virtual helper::vector<objectmodel::BaseObject*> getTo() = 0;
-
-    /// Disable the mapping to get the original coordinates of the mapped model.
-    virtual void disable()=0;
+template class MultiMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
+template class MultiMapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3fTypes> >;
 
 
-};
+template class MultiMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> >;
+template class MultiMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > ;
+template class MultiMapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3fTypes> >;
+template class MultiMapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3dTypes> >;
 
-} // namespace core
 
-} // namespace sofa
+//  template class MultiMapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+//  template class MultiMapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+//  template class MultiMapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+//  template class MultiMapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+//  template class MultiMapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+//  template class MultiMapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
+}
 
-#endif
+}

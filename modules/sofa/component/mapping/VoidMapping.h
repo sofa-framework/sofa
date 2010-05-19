@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -72,15 +72,17 @@ public:
     }
 
     /// Accessor to the input model of this mapping
-    virtual sofa::core::objectmodel::BaseObject* getFrom()
+    virtual  helper::vector<sofa::core::objectmodel::BaseObject*> getFrom()
     {
-        return fromModel;
+        helper::vector<sofa::core::objectmodel::BaseObject*> vec(1,fromModel);
+        return vec;
     }
 
     /// Accessor to the output model of this mapping
-    virtual sofa::core::objectmodel::BaseObject* getTo()
+    virtual helper::vector<sofa::core::objectmodel::BaseObject*> getTo()
     {
-        return toModel;
+        helper::vector<sofa::core::objectmodel::BaseObject*> vec(1,toModel);
+        return vec;
     }
 
     /// Disable the mapping to get the original coordinates of the mapped model.
@@ -89,15 +91,17 @@ public:
     }
 
     /// Get the source (upper) model.
-    virtual sofa::core::behavior::BaseMechanicalState* getMechFrom()
+    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechFrom()
     {
-        return fromModel;
+        helper::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, fromModel);
+        return vec;
     }
 
     /// Get the destination (lower, mapped) model.
-    virtual sofa::core::behavior::BaseMechanicalState* getMechTo()
+    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechTo()
     {
-        return toModel;
+        helper::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, toModel);
+        return vec;
     }
 
     /// Return false if this mapping should only be used as a regular mapping instead of a mechanical mapping.

@@ -43,6 +43,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/map.h>
 #include <iostream>
+#include <functional>
 
 namespace sofa
 {
@@ -81,6 +82,14 @@ protected:
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
 
+    struct forceMaskActivator : public std::binary_function<core::behavior::BaseMechanicalState*, bool , void >
+    {
+        void operator()( core::behavior::BaseMechanicalState* m, bool activate ) const
+        {
+            m->forceMask.activate(activate);
+        }
+    };
+
 public:
 
     MechanicalVisitor() : prefetching(false), root(NULL), rootData(NULL), nodeMap(NULL) {}
@@ -106,6 +115,16 @@ public:
     {
         if (parentData)
             *parentData += *nodeData;
+    }
+
+    static inline void ForceMaskActivate( const helper::vector<core::behavior::BaseMechanicalState*>& v )
+    {
+        std::for_each( v.begin(), v.end(), std::bind2nd( forceMaskActivator(), true ) );
+    }
+
+    static inline void ForceMaskDeactivate( const helper::vector<core::behavior::BaseMechanicalState*>& v)
+    {
+        std::for_each( v.begin(), v.end(), std::bind2nd( forceMaskActivator(), false ) );
     }
 
     //virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch) { Visitor::execute(node, doPrefetch); }

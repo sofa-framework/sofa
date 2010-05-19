@@ -86,9 +86,9 @@ public:
     Out* getToModel();
 
     /// Return the pointer to the input model.
-    objectmodel::BaseObject* getFrom();
+    helper::vector<objectmodel::BaseObject*> getFrom();
     /// Return the pointer to the output model.
-    objectmodel::BaseObject* getTo();
+    helper::vector<objectmodel::BaseObject*> getTo();
 
     /// Apply the mapping on position vectors.
     ///

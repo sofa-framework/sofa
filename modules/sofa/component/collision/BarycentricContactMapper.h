@@ -96,7 +96,7 @@ public:
         if (mapping!=NULL)
         {
             mapper->clear();
-            mapping->getMechTo()->resize(size);
+            mapping->getMechTo()[0]->resize(size);
         }
     }
 

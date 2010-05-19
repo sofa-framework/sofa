@@ -62,15 +62,17 @@ Out* Mapping<In,Out>::getToModel()
 }
 
 template <class In, class Out>
-objectmodel::BaseObject* Mapping<In,Out>::getFrom()
+helper::vector<objectmodel::BaseObject*> Mapping<In,Out>::getFrom()
 {
-    return this->fromModel;
+    helper::vector<objectmodel::BaseObject*> vec(1,this->fromModel);
+    return  vec;
 }
 
 template <class In, class Out>
-objectmodel::BaseObject* Mapping<In,Out>::getTo()
+helper::vector<objectmodel::BaseObject*> Mapping<In,Out>::getTo()
 {
-    return this->toModel;
+    helper::vector<objectmodel::BaseObject*> vec(1,this->toModel);
+    return vec;
 }
 
 template <class In, class Out>
