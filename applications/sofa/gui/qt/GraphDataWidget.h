@@ -97,6 +97,7 @@ public:
 class GraphSetting
 {
 public:
+    virtual ~GraphSetting() {};
     virtual void exportGNUPlot(const std::string &baseFileName) const=0;
 #ifdef SOFA_QT4
     virtual void exportImage(const std::string &baseFileName) const=0;
@@ -154,6 +155,8 @@ public:
         w->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
         w->setAxisScaleEngine(Widget::yLeft, new QwtLog10ScaleEngine);
     }
+
+    virtual ~GraphWidget() {};
 
     QWidget *getWidget() {return w;}
 
