@@ -12,14 +12,18 @@ DESTDIR = $$SOFA_DIR/lib/sofa-plugins
 contains (DEFINES, SOFA_QT4) {	
 
 	  CONFIG += $$CONFIGLIBRARIES qt
-	  CONFIG -= staticlib
+	  !contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
           CONFIG += dll
+}
 	  QT += opengl qt3support xml
 }
 else {
 	  CONFIG += $$CONFIGLIBRARIES qt
-	  CONFIG -= staticlib
+	  !contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
           CONFIG += dll
+}
 	  QT += opengl	
 }
 

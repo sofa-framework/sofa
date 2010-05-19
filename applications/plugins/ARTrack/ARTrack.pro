@@ -12,8 +12,10 @@ DESTDIR = $$SOFA_DIR/lib/sofa-plugins
 
 #set configuration to dynamic library
 CONFIG += $$CONFIGLIBRARIES
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 

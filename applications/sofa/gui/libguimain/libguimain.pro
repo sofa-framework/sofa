@@ -14,8 +14,10 @@ contains (DEFINES, SOFA_QT4) {
 else{
 	CONFIG += $$CONFIGLIBRARIRES qt
 }
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 LIBS += $$SOFA_FRAMEWORK_LIBS $$SOFA_MODULES_LIBS $$SOFA_GUI_LIBS
 LIBS -= -lsofaguimain$$LIBSUFFIX # remove ourself from the list of libs

@@ -9,8 +9,10 @@ include($${SOFA_DIR}/sofa.cfg)
 DEFINES += SOFA_BUILD_SOFAGUIGLUT
 
 CONFIG += $$CONFIGLIBRARIES
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 LIBS += -lsofagui$$LIBSUFFIX
 LIBS += $$SOFA_FRAMEWORK_LIBS $$SOFA_MODULES_LIBS 

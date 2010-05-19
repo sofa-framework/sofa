@@ -20,8 +20,10 @@ else{
 	CONFIG += $$CONFIGLIBRARIES qt
 	QT += opengl
 }
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 

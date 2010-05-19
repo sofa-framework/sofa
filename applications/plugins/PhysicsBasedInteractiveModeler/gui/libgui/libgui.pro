@@ -9,8 +9,10 @@ DEFINES += SOFA_BUILD_PIMGUI
 TARGET = pimgui$$LIBSUFFIX
 
 CONFIG += $$CONFIGLIBRARIES
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 SOFA_CGAL_PATH = $$SOFA_DIR/extlibs/CGAL
 INCLUDEPATH += $$SOFA_CGAL_PATH/include

@@ -127,8 +127,10 @@ SOURCES +=  \
 
 CONFIG += $$CONFIGLIBRARIES
 
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 DEFINES += SOFA_BUILD_SIMULATION_COMMON
 

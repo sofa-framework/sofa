@@ -6,10 +6,18 @@ include($${SOFA_DIR}/sofa.cfg)
 
 CONFIG += $$CONFIGLIBRARIES
 # LIBS += -lsofasimulation$$LIBSUFFIX 
+contains(CONFIGSTATIC, static) {
+#LIBS -= $${SOFA_EXT_LIBS}
+LIBS += $${SOFA_MODULES_LIBS}
+LIBS += $${SOFA_FRAMEWORK_LIBS}
+}
+else {
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
 LIBS += $$SOFA_EXT_LIBS
+
 INCLUDEPATH += $$SOFA_DIR/extlibs
+}
 
 SOURCES = SofaModeler.cpp \
           GraphModeler.cpp \
@@ -42,7 +50,7 @@ contains (DEFINES, SOFA_QT4) {
 	  QT += qt3support xml
 	  FORMS3 += Modeler.ui 
 	  FORMS3 += DialogAddPreset.ui
-        FORMS3 += ../../../sofa/gui/qt/PluginManager.ui                    
+        FORMS3 += ../../../sofa/gui/qt/PluginManager.ui
 }
 else {
 

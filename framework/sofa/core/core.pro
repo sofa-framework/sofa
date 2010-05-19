@@ -11,8 +11,10 @@ include($${SOFA_DIR}/sofa.cfg)
 
 CONFIG += $$CONFIGLIBRARIES
 
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
