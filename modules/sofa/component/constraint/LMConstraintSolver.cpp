@@ -309,9 +309,9 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id)
         ++it;
         if (!matrix.nonZeros()) //Empty Matrix: act as an obstacle
         {
-            LMatrices.erase(itCurrent);
             invMassMatrix.erase(itCurrent->first);
             setDofs.erase(const_cast<sofa::core::behavior::BaseMechanicalState*>(itCurrent->first));
+            LMatrices.erase(itCurrent);
         }
     }
 
