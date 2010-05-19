@@ -46,6 +46,7 @@
 #include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 
+#include <sofa/simulation/common/xml/NodeElement.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>
@@ -450,7 +451,8 @@ Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 #endif
 
     // 				std::cout << "Initializing objects"<<std::endl;
-    if ( !xml->init() )
+    sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
+    if( nodeElt==NULL||!(nodeElt->init()))
     {
         std::cerr << "Objects initialization failed."<<std::endl;
     }
