@@ -1,4 +1,4 @@
-<Node 	name="root" gravity="0 0 -9.81" dt="0.01" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
+<Node 	name="root" gravity="0 0 -9.81" dt="0.001" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 	<OglModel template="ExtVec3f" name="Objective"  fileMesh="mesh/dragon.obj" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />
