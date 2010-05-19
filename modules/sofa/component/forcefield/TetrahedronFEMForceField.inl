@@ -247,10 +247,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
 {
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
     Real youngModulusElement;
-    if (_youngModulus.getValue().size() == _indexedElements->size())
-    {
-        youngModulusElement = _youngModulus.getValue()[i];
-    }
+    if (_youngModulus.getValue().size() == _indexedElements->size()) youngModulusElement = _youngModulus.getValue()[i];
     else if (_youngModulus.getValue().size() > 0) youngModulusElement = _youngModulus.getValue()[0];
     else
     {
