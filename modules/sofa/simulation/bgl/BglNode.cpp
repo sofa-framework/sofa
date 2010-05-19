@@ -93,8 +93,8 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
     if (sofa::core::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::behavior::BaseMechanicalMapping*>(obj))
     {
         sofa::core::behavior::BaseMechanicalState
-        *msFrom=mm->getMechFrom(),
-         *msTo  =mm->getMechTo();
+        *msFrom=mm->getMechFrom()[0],
+         *msTo  =mm->getMechTo()[0];
 
         if (msFrom && msTo)
         {
@@ -216,8 +216,12 @@ void BglNode::moveChild(core::objectmodel::BaseNode* node)
 
 void BglNode::detachFromGraph()
 {
-    Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end();
-    for (; it!=it_end; ++it) (*it)->removeChild(this);
+    //Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end();
+    //for (;it!=it_end;++it) (*it)->removeChild(this);
+    for ( unsigned int i = 0; i < parents.size() ; i++)
+    {
+        parents[i]->removeChild(this);
+    }
 }
 
 
