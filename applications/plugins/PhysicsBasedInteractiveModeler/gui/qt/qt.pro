@@ -9,8 +9,10 @@ DEFINES += SOFA_BUILD_PIMGUIQT
 TARGET = pimguiqt$$LIBSUFFIX
 
 CONFIG += $$CONFIGLIBRARIES qt
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 QT += opengl qt3support xml
 
 SOFA_CGAL_PATH = $$SOFA_DIR/extlibs/CGAL

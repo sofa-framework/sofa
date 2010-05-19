@@ -51,6 +51,11 @@ contains( QT_VERSION, "^4.*" ) {
   QT *= xml opengl
 }
 
+contains(CONFIGSTATIC, static) {
+	CONFIG -= shared
+	QGLVIEWER_STATIC = qglviewer_static
+}
+
 !isEmpty( QGLVIEWER_STATIC ) {
   CONFIG *= staticlib
 }

@@ -23,8 +23,10 @@ LIBS += $$SOFA_EXT_LIBS
 contains (DEFINES, SOFA_QT4) {	
 
 	  CONFIG += $$CONFIGLIBRARIES qt uic uic3
-	  CONFIG -= staticlib
+	  !contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
       CONFIG += dll
+}
 	  QT += opengl qt3support xml
 	  FORMS3 += GUI.ui
 	  FORMS3 += BaseGenGraphForm.ui
@@ -38,8 +40,10 @@ contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 }
 else {
 	  CONFIG += $$CONFIGLIBRARIES qt
-	  CONFIG -= staticlib
+	  !contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
       CONFIG += dll
+}
 	  QT += opengl	
 	  FORMS += GUI.ui
 	  FORMS += BaseGenGraphForm.ui

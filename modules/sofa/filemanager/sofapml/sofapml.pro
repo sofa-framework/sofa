@@ -7,8 +7,10 @@ include($${SOFA_DIR}/sofa.cfg)
 
 CONFIG += $$CONFIGLIBRARIES
 
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 DEFINES += SOFA_BUILD_FILEMANAGER_PML
 

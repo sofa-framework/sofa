@@ -5,8 +5,10 @@ TARGET = sofagpuopencl
 DEFINES += SOFA_BUILD_GPU_OPENCL
 include($${SOFA_DIR}/sofa.cfg)
 CONFIG += $$CONFIGLIBRARIES
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofatree$$LIBSUFFIX

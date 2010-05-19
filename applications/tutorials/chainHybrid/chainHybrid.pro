@@ -7,9 +7,19 @@ include($${SOFA_DIR}/sofa.cfg)
 
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI
+contains(CONFIGSTATIC, static) {
+	LIBS += -Wl,--start-group
+}
 LIBS += $$SOFA_GUI_LIBS
+contains(CONFIGSTATIC, static) {
+	LIBS += -Wl,--end-group
+	LIBS += -Wl,--start-group
+}
 LIBS += $$SOFA_LIBS
 LIBS += -lsofaobjectcreator$$LIBSUFFIX
+contains(CONFIGSTATIC, static) {
+	LIBS += -Wl,--end-group
+}
 
 contains( DEFINES,SOFA_HAS_BOOST_KERNEL) { 
 LIBS += -lsofaBoostKernel$$LIBSUFFIX

@@ -40,7 +40,9 @@ win32 {
 # it will be a static library.
 ######################################################################
 
-CONFIG           += QwtDll
+!contains(CONFIGSTATIC, static) {
+	CONFIG           += QwtDll
+}
 
 ######################################################################
 # QwtPlot enables all classes, that are needed to use the QwtPlot 

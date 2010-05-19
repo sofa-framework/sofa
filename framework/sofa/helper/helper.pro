@@ -4,8 +4,10 @@ TEMPLATE = lib
 TARGET = sofahelper
 include($${SOFA_DIR}/sofa.cfg)
 CONFIG += $$CONFIGLIBRARIES
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 LIBS += $$SOFA_EXT_LIBS
 INCLUDEPATH += /usr/include/libxml2
 DEFINES += SOFA_BUILD_HELPER

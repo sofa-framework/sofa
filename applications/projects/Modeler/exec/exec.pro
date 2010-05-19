@@ -6,9 +6,23 @@ include($${SOFA_DIR}/sofa.cfg)
 
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
+
+contains(CONFIGSTATIC, static) {
+	LIBS += -Wl,--start-group
+}
 LIBS += $$SOFA_GUI_LIBS
-LIBS += $$SOFA_LIBS
 LIBS += -lsofamodeler$$LIBSUFFIX
+contains(CONFIGSTATIC, static) {
+	LIBS += -Wl,--end-group
+	LIBS += -Wl,--start-group
+	LIBS += -Wl,--whole-archive
+}
+LIBS += $$SOFA_LIBS
+contains(CONFIGSTATIC, static) {
+	LIBS += -Wl,--no-whole-archive
+	LIBS += -Wl,--end-group
+}
+
 
 macx : {
 	CONFIG +=app_bundle

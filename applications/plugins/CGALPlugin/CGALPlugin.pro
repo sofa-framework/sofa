@@ -12,8 +12,10 @@ DESTDIR = $$SOFA_DIR/lib/sofa-plugins
 
 #set configuration to dynamic library
 CONFIG += $$CONFIGLIBRARIES
-CONFIG -= staticlib
+!contains(CONFIGSTATIC, static) {
+	CONFIG -= staticlib
 CONFIG += dll
+}
 
 #DEFINES += SOFA_NEW_CGAL_MESH
 
