@@ -113,7 +113,7 @@ void GraphOptionWidget::openFindFileDialog()
 #ifdef SOFA_QT4
     else if (button == exportImageButton) fileLineEdit = fileImageLineEdit;
 #endif
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()));
     std::string directory;
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
