@@ -128,6 +128,9 @@ protected:
     bool isTriangleInROI(const Triangle& t, unsigned int idROI);
     bool isTetrahedronInROI(const Tetra& t, unsigned int idROI);
 
+    void findVertexOnBorder(const Triangle& t, unsigned int idROI);
+    void findVertexOnBorder(const Tetra& t, unsigned int idROI);
+
 public:
     enum ROIType
     {
@@ -179,6 +182,7 @@ public:
 
     ROIType typeROI;
     sofa::helper::vector<unsigned int> localIndices;
+    sofa::helper::vector<unsigned int> listOnBorder;
 
 };
 

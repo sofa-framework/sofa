@@ -260,6 +260,89 @@ bool SubsetTopology<DataTypes>::isTetrahedronInROI(const Tetra &t, unsigned int 
 }
 
 template <class DataTypes>
+void SubsetTopology<DataTypes>::findVertexOnBorder(const Triangle &t, unsigned int idROI)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+
+    sofa::helper::vector<unsigned int> onborder;
+    bool findIn = false;
+    bool findOut = false;
+
+    for (unsigned int i = 0; i<3; ++i)
+    {
+        CPos p =  DataTypes::getCPos((*x0)[t[i]]);
+        if (isPointInROI(p, idROI))
+        {
+            findIn = true;
+            onborder.push_back(t[i]);
+        }
+        else
+            findOut = true;
+    }
+
+    if (findIn && findOut) // triangle on the border
+    {
+        bool find;
+        for (unsigned int j=0; j<onborder.size(); ++j)
+        {
+            find = false;
+            for (unsigned int i = 0; i<listOnBorder.size(); ++i)
+                if (onborder[j] == listOnBorder[i])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+                listOnBorder.push_back(onborder[j]);
+        }
+    }
+}
+
+
+
+template <class DataTypes>
+void SubsetTopology<DataTypes>::findVertexOnBorder(const Tetra &t, unsigned int idROI)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+
+    sofa::helper::vector<unsigned int> onborder;
+    bool findIn = false;
+    bool findOut = false;
+
+    for (unsigned int i = 0; i<4; ++i)
+    {
+        CPos p =  DataTypes::getCPos((*x0)[t[i]]);
+        if (isPointInROI(p, idROI))
+        {
+            findIn = true;
+            onborder.push_back(t[i]);
+        }
+        else
+            findOut = true;
+    }
+
+    if (findIn && findOut) // tetrahedron on the border
+    {
+        bool find;
+        for (unsigned int j=0; j<onborder.size(); ++j)
+        {
+            find = false;
+            for (unsigned int i = 0; i<listOnBorder.size(); ++i)
+                if (onborder[j] == listOnBorder[i])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+                listOnBorder.push_back(onborder[j]);
+        }
+    }
+}
+
+
+template <class DataTypes>
 void SubsetTopology<DataTypes>::update()
 {
     cleanDirty();
@@ -331,14 +414,69 @@ void SubsetTopology<DataTypes>::update()
     const VecCoord* x0 = &f_X0.getValue();
 
     const bool local = p_localIndices.getValue();
-    unsigned int cpt_in = 0, cpt_out = 0;
+    unsigned int cpt_in = 0, cpt_out = 0, cpt_border = 0;
+    unsigned int nbrBorder;
 
     if (local)
+    {
+        if ((f_tetrahedra.getValue().empty()) )
+        {
+            for(unsigned int i=0 ; i<triangles.size() ; i++)
+            {
+                Triangle t = triangles[i];
+                this->findVertexOnBorder(t, 0);
+            }
+        }
+        else
+        {
+            for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
+            {
+                Tetra t = tetrahedra[i];
+                this->findVertexOnBorder(t, 0);
+            }
+        }
+
         localIndices.resize(x0->size());
+        nbrBorder = listOnBorder.size();
+        pointsInROI.resize(nbrBorder);
+        pointsOutROI.resize(nbrBorder);
+        indices.resize(nbrBorder);
+
+        cpt_in = cpt_out = nbrBorder;
+
+        // reverse sort listOnBorder
+        std::sort(listOnBorder.begin(), listOnBorder.end());
+        std::reverse (listOnBorder.begin(), listOnBorder.end());
+    }
 
     //Points
     for( unsigned i=0; i<x0->size(); ++i )
     {
+        // local reorder
+        if (local)
+        {
+            bool find = false;
+            for (int j = listOnBorder.size()-1; j>=0; j--)
+            {
+                if (listOnBorder[j] == i)
+                {
+                    localIndices[i] = cpt_border;
+                    indices[cpt_border] = i;
+                    pointsInROI[cpt_border] = (*x0)[i];
+                    pointsOutROI[cpt_border] = (*x0)[i];
+                    cpt_border++;
+                    find = true;
+                    break;
+                }
+            }
+
+            if (find)
+            {
+                listOnBorder.pop_back();
+                continue;
+            }
+        }
+
         bool inside = false;
         for (unsigned int bi=0; bi<ROInum; ++bi)
         {
