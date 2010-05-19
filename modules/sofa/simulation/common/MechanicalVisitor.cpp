@@ -708,10 +708,10 @@ Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalMapping(simulation::N
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom());
+        ForceMaskActivate(map->getMechTo());
         map->propagateDx();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate(map->getMechTo());
     }
     else map->propagateDx();
 
@@ -736,10 +736,10 @@ Visitor::Result MechanicalPropagateVVisitor::fwdMechanicalMapping(simulation::No
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateV();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate(map->getMechTo() );
     }
     else map->propagateV();
 
@@ -765,10 +765,10 @@ Visitor::Result MechanicalPropagateXVisitor::fwdMechanicalMapping(simulation::No
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateX();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate(map->getMechTo() );
     }
     else map->propagateX();
 
@@ -795,10 +795,10 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalMapping(
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateDx();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate(map->getMechTo() );
     }
     else map->propagateDx();
 
@@ -832,10 +832,10 @@ Visitor::Result MechanicalPropagateXAndResetForceVisitor::fwdMechanicalMapping(s
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateX();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate(map->getMechTo() );
     }
     else map->propagateX();
 
@@ -860,11 +860,11 @@ Visitor::Result MechanicalPropagateAndAddDxVisitor::fwdMechanicalMapping(simulat
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateDx();
         map->propagateV();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate(map->getMechTo() );
     }
     else
     {
@@ -956,10 +956,10 @@ Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalMapping(simulation::Node* 
 {
     if (!dx.isNull())
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateDx();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate( map->getMechTo() );
     }
     return RESULT_CONTINUE;
 }
@@ -974,10 +974,10 @@ Visitor::Result MechanicalAddMDxVisitor::fwdMappedMechanicalState(simulation::No
 
 void MechanicalAddMDxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
 {
-    map->getMechFrom()->forceMask.activate(true);
-    map->getMechTo()->forceMask.activate(true);
+    ForceMaskActivate(map->getMechFrom() );
+    ForceMaskActivate(map->getMechTo() );
     map->accumulateForce();
-    map->getMechTo()->forceMask.activate(false);
+    ForceMaskDeactivate( map->getMechTo() );
 }
 
 
@@ -1042,10 +1042,10 @@ Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalMapping(simulat
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateX();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate( map->getMechTo() );
     }
     else
     {
@@ -1083,14 +1083,14 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapp
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateX();
         map->propagateV();
 #ifdef SOFA_SUPPORT_MAPPED_MASS
         map->propagateA();
 #endif
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate( map->getMechTo() );
     }
     else
     {
@@ -1162,10 +1162,10 @@ Visitor::Result MechanicalPropagateFreePositionVisitor::fwdMechanicalMapping(sim
 {
     if (!ignoreMask)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->propagateXfree();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate( map->getMechTo() );
     }
     else
     {
@@ -1230,10 +1230,10 @@ void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* /*nod
     //       cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
     if (accumulate)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->accumulateForce();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate( map->getMechTo() );
     }
 }
 
@@ -1273,10 +1273,10 @@ void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/
 {
     if (accumulate)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->accumulateDf();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate( map->getMechTo() );
     }
 }
 
@@ -1316,10 +1316,10 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 {
     if (accumulate)
     {
-        map->getMechFrom()->forceMask.activate(true);
-        map->getMechTo()->forceMask.activate(true);
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
         map->accumulateDf();
-        map->getMechTo()->forceMask.activate(false);
+        ForceMaskDeactivate( map->getMechTo() );
     }
 }
 
@@ -1500,10 +1500,10 @@ Visitor::Result MechanicalComputeContactForceVisitor::fwdMappedMechanicalState(s
 
 void MechanicalComputeContactForceVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
 {
-    map->getMechFrom()->forceMask.activate(true);
-    map->getMechTo()->forceMask.activate(true);
+    ForceMaskActivate(map->getMechFrom() );
+    ForceMaskActivate(map->getMechTo() );
     map->accumulateForce();
-    map->getMechTo()->forceMask.activate(false);
+    ForceMaskDeactivate(map->getMechTo() );
 }
 
 

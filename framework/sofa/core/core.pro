@@ -65,6 +65,10 @@ HEADERS += \
           behavior/MasterSolver.h \
           behavior/MechanicalMapping.h \
           behavior/MechanicalMapping.inl \
+		  behavior/MechanicalMultiMapping.h \
+		  behavior/MechanicalMultiMapping.inl \
+		  behavior/MechanicalMulti2Mapping.h \
+		  behavior/MechanicalMulti2Mapping.inl \
           behavior/MechanicalState.h \
           behavior/MultiVector.h \
           behavior/MultiMatrix.h \
@@ -93,6 +97,10 @@ HEADERS += \
           loader/PrimitiveGroup.h \
           Mapping.h \
           Mapping.inl \
+          MultiMapping.h \
+          MultiMapping.inl \
+          Multi2Mapping.h \
+          Multi2Mapping.inl \
           objectmodel/Base.h \
           objectmodel/BaseClass.h \
           objectmodel/BaseContext.h \
@@ -153,6 +161,8 @@ SOURCES +=  \
           CategoryLibrary.cpp \
           ComponentLibrary.cpp \
           Mapping.cpp \	   
+          MultiMapping.cpp \
+          Multi2Mapping.cpp \
           CollisionModel.cpp \
           DataEngine.cpp \
           behavior/LinearSolver.cpp \
@@ -173,6 +183,8 @@ SOURCES +=  \
           behavior/Mass.cpp \
           behavior/Constraint.cpp \
           behavior/MechanicalMapping.cpp \
+		  behavior/MechanicalMultiMapping.cpp \
+		  behavior/MechanicalMulti2Mapping.cpp \
           behavior/PairInteractionForceField.cpp \
           behavior/MixedInteractionForceField.cpp \
           behavior/PairInteractionConstraint.cpp \

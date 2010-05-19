@@ -36,7 +36,6 @@ namespace sofa
 
 namespace core
 {
-
 namespace behavior
 {
 
@@ -100,7 +99,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             core::behavior::BaseMechanicalMapping* mapping;
             simulatedObject1->getContext()->get(mapping);
             if (!mapping) break;
-            simulatedObject1 = mapping->getMechFrom();
+            simulatedObject1 = mapping->getMechFrom()[0];
         }
 
         simulatedObject2=constrainedObject2;
@@ -109,7 +108,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             core::behavior::BaseMechanicalMapping* mapping;
             simulatedObject2->getContext()->get(mapping);
             if (!mapping) break;
-            simulatedObject2 = mapping->getMechFrom();
+            simulatedObject2 = mapping->getMechFrom()[0];
         }
     }
 }

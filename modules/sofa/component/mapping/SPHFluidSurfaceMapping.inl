@@ -55,7 +55,7 @@ template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::init()
 {
     this->Inherit::init();
-    simulation::Node* node = dynamic_cast<simulation::Node*>(this->getFrom()->getContext());
+    simulation::Node* node = dynamic_cast<simulation::Node*>(this->getFrom()[0]->getContext());
     if (node)
     {
         //the following line produces a compilation error with GCC 3.3 :(

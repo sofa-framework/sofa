@@ -294,8 +294,8 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
         core::BaseMapping* map = dynamic_cast<core::BaseMapping*>(obj);
         if (map!=NULL)
         {
-            core::objectmodel::BaseObject* model1 = map->getFrom();
-            core::objectmodel::BaseObject* model2 = map->getTo();
+            core::objectmodel::BaseObject* model1 = map->getFrom()[0];
+            core::objectmodel::BaseObject* model2 = map->getTo()[0];
             if (display(model1))
             {
                 *out << getName(model1) << " -> " << name << " [style=\"dashed\",arrowhead=\"none\"";
