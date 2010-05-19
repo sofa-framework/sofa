@@ -12,27 +12,28 @@
                 
 		<div id="orangeText">Description:</div>
 			<p>
-               Unlike RigidMapping, Barycentric Mapping can be used to attach points to a deformable body.  The attached body coordinates are defined 
+               Unlike <b>RigidMapping</b>, <b>Barycentric Mapping</b> can be used to attach points to a deformable body.  The attached body coordinates are defined 
                using the barycentric coordinates with respect to the parent cells. The parent cells are defined by the topology associated with the body points. 
-			   Many topologies components exist in Sofa to describe the organisation of a point set, like TetrahedronSetTopologyContainer, HexahedronSetTopologyContainer,  
-			   RegularGridTopology.	The most common use of Barycentric Mapping in Sofa is to attach a visual model or a collision model to an underlying behaviour model.
+			   Many topologies components exist in SOFA to describe the organisation of point sets, like <b>TetrahedronSetTopologyContainer</b>, <b>HexahedronSetTopologyContainer</b>,  
+			   <b>RegularGridTopology</b>...
+			<br>The most common use of Barycentric Mapping in SOFA is to attach a visual model or a collision model to an underlying behaviour model.
 			</p>
 			<p>
 				In the TutorialMappingLiverBarycentric scene, you get the following elements : 
 				<ul>
-				<li>A node "Liver" containing the behavior model of a liver loaded through a MeshLoader component with a TetrahedronTopology and a TetrahedralCorotationalFEMForceField to handle the deformations.</li>
-				<li>A node "Visual" which is mapped to the "Liver" node by a barycentric mapping, which contains the visual representation of our liver</li>
+				<li>A node "Liver" containing the behavior model of a liver loaded through a <b>MeshLoader</b> component with a <b>TetrahedronSetTopology</b> and a <b>TetrahedralCorotationalFEMForceField</b> to handle the deformations.</li>
+				<li>A node "Visual" which is mapped to the "Liver" node by a barycentric mapping, which contains the visual representation of our liver.</li>
 				<li>A node "Surf" mapped to the "Liver" node by a barycentric mapping, containing the collision model of the liver.
 				</ul>
 			</p>
 		
-			   
+		<br>	   
 		<div id="orangeText">Key points</div>
 		<p>
-			In the scene you actually have two kinds of barycentric mappings. A visual barycentric mapping, and a mechanical barycentric mapping.
+			In this scene you actually have two kinds of barycentric mappings. A visual barycentric mapping, and a mechanical barycentric mapping.
 			<ul>
 			<li>
-		    The visual barycentric mapping concerns the "Visual" node (child) and the "Liver" node (parent). Here the communication between the parent and the child is one way only. At each time step, the positions of the child are updated knowing the positions and the velocities of the parent and according to the barycentric weights.
+		    <u>The visual barycentric mapping</u> concerns the "Visual" node (child) and the "Liver" node (parent). Here the communication between the parent and the child is only one way. At each time step, the positions of the child are updated knowing the positions and the velocities of the parent and according to the barycentric weights.
 		<center>
 		<table border="0">
 		  <tr>
@@ -41,11 +42,14 @@
 		  <tr>
 			<td align="center">Mapping of a visual model to a behaviour model with a barycentric mapping.</td>
 		  </tr>
+		  <tr>
+			<td align="center"></td>
+		  </tr>
 		</table> 
         </center>				
             </li>
 			<li>
-			The mechanical barycentric mapping concerns the "Surf" node (child) and the "Liver" node (parent). It is this mapping which actually allows you to interact with the object using the mouse. Here the communication works in both ways. Like in a visual mapping, the child positions and velocities are updated knowing their barycentring weights and the parent state vector. On top of that, the interactions (or forces) computed at the level of the child are propagated back to the parent according to the barycentric weights. 
+			<u>The mechanical barycentric mapping</u> concerns the "Surf" node (child) and the "Liver" node (parent). It is this mapping which actually allows you to interact with the object using the mouse. Here the communication works in both ways. Like in a visual mapping, the child positions and velocities are updated knowing their barycentring weights and the parent state vector. On top of that, the interactions (or forces) computed at the level of the child are propagated back to the parent according to the barycentric weights. 
 				<center>
 		<table border="0">
 		  <tr>
@@ -60,7 +64,7 @@
 			</ul>
 		
 		</p>
-
+<br>
 		<div id="orangeText">Results</div><br>
              
 		You can interact with the mouse to see how the two barycentric mappings work together in the scene.
@@ -69,7 +73,7 @@
 		With the mouse interaction you can accumlate forces at the level of the collision mechanical object in the "Surf" node. These forces are propagated back at the level of the "Liver" node using the barycentric mechanical mapping. 
 		</li>
 		<li>
-		The forces computed at the level of the behaviour model - the "Liver" node - create a motion, our liver object now moves. In the "Visual" node the visual model now moves in a consistent way with respect to the behaviour model position and velocities, thanks to the barycentric mapping.
+		The forces computed at the level of the behaviour model - the "Liver" node - create a motion, our liver object now moves. In the "Visual" node the visual model now moves in a consistent way with respect to the behaviour model positions and velocities, thanks to the barycentric mapping.
 		</li>
 		</ul>
 

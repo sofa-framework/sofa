@@ -1,4 +1,4 @@
-<Node 	name="root" gravity="0 0 -9.81" dt="0.01" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="1" showForceFields="0" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
+<Node 	name="root" gravity="0 0 -9.81" dt="0.005" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="1" showForceFields="0" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />
 	<MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
