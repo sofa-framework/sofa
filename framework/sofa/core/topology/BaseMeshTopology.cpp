@@ -469,7 +469,7 @@ BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointI
     return empty;
 }
 
-BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID i)  const
+BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID)  const
 {
     static BaseMeshTopology::Quad empty;
     serr<<"getLocalQuadsInHexahedron() not supported." << sendl;

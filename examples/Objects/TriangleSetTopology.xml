@@ -1,9 +1,9 @@
 <Node name="Group"> 
   <!--<Object type="TriangleSetTopologyContainer"  name="Container" fileTopology="" tags=""/>-->
-  <Object type="TriangleSetTopologyContainer"  name="Container" tags="" fileTopology=""/>
-  <Object type="TriangleSetTopologyModifier"   name="Modifier" />
-  <Object type="TriangleSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
-  <Object type="TriangleSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
+  <TriangleSetTopologyContainer  name="Container"/>
+  <TriangleSetTopologyModifier   name="Modifier" />
+  <TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+  <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 </Node>
 <!-- 
      Template List 
