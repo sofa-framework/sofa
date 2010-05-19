@@ -114,9 +114,11 @@ public slots:
 
     void openFindFileDialog();
     void exportGNUPlot();
+//MOC_SKIP_BEGIN
 #ifdef SOFA_QT4
     void exportImage();
 #endif
+//MOC_SKIP_END
 
 protected:
     QPushButton* exportGNUPLOTButton;
