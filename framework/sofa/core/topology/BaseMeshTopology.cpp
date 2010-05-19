@@ -455,10 +455,24 @@ BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const Point
     return empty;
 }
 
+BaseMeshTopology::Triangle BaseMeshTopology::getLocalTrianglesInTetrahedron (const PointID) const
+{
+    static BaseMeshTopology::Triangle empty;
+    serr<<"getLocalTrianglesInTetrahedron() not supported." << sendl;
+    return empty;
+}
+
 BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
 {
     static BaseMeshTopology::Edge empty;
     serr<<"getLocalEdgesInHexahedron() not supported." << sendl;
+    return empty;
+}
+
+BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointID i)  const
+{
+    static BaseMeshTopology::Quad empty;
+    serr<<"getLocalQuadsInHexahedron() not supported." << sendl;
     return empty;
 }
 

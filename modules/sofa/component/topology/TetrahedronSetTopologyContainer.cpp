@@ -46,6 +46,8 @@ int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set
         ;
 
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
+///convention triangles in tetra (orientation interior)
+const unsigned int trianglesInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0},{0,2,1}};
 
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
@@ -514,6 +516,14 @@ Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const unsigned
 {
     assert(i<6);
     return Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
+}
+
+Triangle TetrahedronSetTopologyContainer::getLocalTrianglesInTetrahedron (const unsigned int i) const
+{
+    assert(i<4);
+    return Triangle (trianglesInTetrahedronArray[i][0],
+            trianglesInTetrahedronArray[i][1],
+            trianglesInTetrahedronArray[i][2]);
 }
 
 const sofa::helper::vector< TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()

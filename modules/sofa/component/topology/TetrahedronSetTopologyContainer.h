@@ -192,6 +192,12 @@ public:
      */
     virtual Edge getLocalEdgesInTetrahedron (const unsigned int i) const;
 
+
+    /** \brief Returns for each index (between 0 and 3) the three local vertices indices that are adjacent to that triangle
+     *
+     */
+    virtual Triangle getLocalTrianglesInTetrahedron (const PointID i) const;
+
     /// @}
 
 

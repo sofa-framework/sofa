@@ -245,11 +245,15 @@ public:
     /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the quad whose global index is quadIndex. Returns -1 if none */
     virtual int getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID quadIndex) const;
 
-    /** returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge */
+    /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge */
     virtual Edge getLocalEdgesInTetrahedron (const PointID i) const;
+    /** \brief Returns for each index (between 0 and 3) the three local vertices indices that are adjacent to that triangle */
+    virtual Triangle getLocalTrianglesInTetrahedron (const PointID i) const;
 
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
     virtual Edge getLocalEdgesInHexahedron (const PointID i) const;
+    /** \brief Returns for each index (between 0 and 6) the four vertices indices that are adjacent to that quad */
+    virtual Quad getLocalQuadsInHexahedron (const PointID i) const;
 
     /// @name Deprecated names, for backward-compatibility
     /// @{
