@@ -469,6 +469,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
     connect(visualGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ) , this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
     connect(visualGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
+    connect(visualGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
 #endif
     //connect(simulationGraph, SIGNAL( currentActivated(bool) ), viewer->getQWidget(), SLOT( resetView() ) );
     //connect(simulationGraph, SIGNAL( currentActivated(bool) ), this, SLOT( Update() ) );
