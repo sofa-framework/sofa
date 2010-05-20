@@ -46,6 +46,7 @@ typedef BaseMeshTopology::SeqQuads			SeqQuads;
 typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 typedef BaseMeshTopology::QuadsAroundVertex		QuadsAroundVertex;
 typedef BaseMeshTopology::QuadsAroundEdge		QuadsAroundEdge;
+typedef sofa::helper::vector<QuadID>                  VecQuadID;
 
 /** Object that stores a set of quads and provides access
 to each quad and its edges and vertices */
@@ -160,6 +161,27 @@ public:
     * @see m_quadsAroundEdge
     */
     virtual bool checkTopology() const;
+
+
+    /// Get information about connexity of the mesh
+    /// @{
+    /** \brief Checks if the topology has only one connected component
+      *
+      * @return true if only one connected component
+      */
+    virtual bool checkConnexity();
+
+    /// Returns the number of connected component.
+    virtual unsigned int getNumberOfConnectedComponent();
+
+    /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
+    virtual const VecQuadID getConnectedElement(QuadID elem);
+
+    /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
+    virtual const VecQuadID getElementAroundElement(QuadID elem);
+    /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
+    virtual const VecQuadID getElementAroundElements(VecQuadID elems);
+    /// @}
 
 
     /** \brief Returns the number of quads in this topology.

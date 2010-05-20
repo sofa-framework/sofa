@@ -37,11 +37,12 @@ namespace topology
 {
 using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID			PointID;
-typedef BaseMeshTopology::EdgeID			EdgeID;
-typedef BaseMeshTopology::Edge				Edge;
-typedef BaseMeshTopology::SeqEdges			SeqEdges;
-typedef BaseMeshTopology::EdgesAroundVertex		EdgesAroundVertex;
+typedef BaseMeshTopology::PointID		   	PointID;
+typedef BaseMeshTopology::EdgeID			      EdgeID;
+typedef BaseMeshTopology::Edge				   Edge;
+typedef BaseMeshTopology::SeqEdges			   SeqEdges;
+typedef BaseMeshTopology::EdgesAroundVertex	EdgesAroundVertex;
+typedef sofa::helper::vector<EdgeID>         VecEdgeID;
 
 /** a class that stores a set of edges  and provides access to the adjacency between points and edges */
 class SOFA_COMPONENT_CONTAINER_API EdgeSetTopologyContainer : public PointSetTopologyContainer
@@ -120,13 +121,6 @@ public:
     virtual bool checkTopology() const;
 
 
-    /** \brief Checks if the topology has only one connex component
-      *
-      * @return true if only one connex component
-      */
-    virtual bool checkConnexity();
-
-
     /** \brief Returns the number of edges in this topology.
      *
      * The difference to getNbEdges() is that this method does not generate the edge array if it does not exist.
@@ -161,6 +155,28 @@ public:
     bool hasEdgesAroundVertex() const;
 
     /// @}
+
+
+    /// Get information about connexity of the mesh
+    /// @{
+    /** \brief Checks if the topology has only one connected component
+      *
+      * @return true if only one connected component
+      */
+    virtual bool checkConnexity();
+
+    /// Returns the number of connected component.
+    virtual unsigned int getNumberOfConnectedComponent();
+
+    /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
+    virtual const VecEdgeID getConnectedElement(EdgeID elem);
+
+    /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
+    virtual const VecEdgeID getElementAroundElement(EdgeID elem);
+    /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
+    virtual const VecEdgeID getElementAroundElements(VecEdgeID elems);
+    /// @}
+
 
 
 protected:

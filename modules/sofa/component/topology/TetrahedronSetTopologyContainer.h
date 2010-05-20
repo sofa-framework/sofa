@@ -39,23 +39,24 @@ class TetrahedronSetTopologyModifier;
 
 using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID			PointID;
-typedef BaseMeshTopology::EdgeID			EdgeID;
-typedef BaseMeshTopology::TriangleID		        TriangleID;
-typedef BaseMeshTopology::TetraID			TetraID;
-typedef BaseMeshTopology::Edge				Edge;
-typedef BaseMeshTopology::Triangle			Triangle;
-typedef BaseMeshTopology::Tetra				Tetra;
-typedef BaseMeshTopology::SeqTetrahedra			SeqTetrahedra;
+typedef BaseMeshTopology::PointID			         PointID;
+typedef BaseMeshTopology::EdgeID			            EdgeID;
+typedef BaseMeshTopology::TriangleID		         TriangleID;
+typedef BaseMeshTopology::TetraID			         TetraID;
+typedef BaseMeshTopology::Edge				         Edge;
+typedef BaseMeshTopology::Triangle			         Triangle;
+typedef BaseMeshTopology::Tetra				         Tetra;
+typedef BaseMeshTopology::SeqTetrahedra			   SeqTetrahedra;
 typedef BaseMeshTopology::TetrahedraAroundVertex	TetrahedraAroundVertex;
 typedef BaseMeshTopology::TetrahedraAroundEdge		TetrahedraAroundEdge;
 typedef BaseMeshTopology::TetrahedraAroundTriangle	TetrahedraAroundTriangle;
-typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
+typedef BaseMeshTopology::EdgesInTetrahedron		   EdgesInTetrahedron;
 typedef BaseMeshTopology::TrianglesInTetrahedron	TrianglesInTetrahedron;
 
 typedef Tetra			Tetrahedron;
 typedef EdgesInTetrahedron		EdgesInTetrahedron;
 typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
+typedef sofa::helper::vector<TetraID>         VecTetraID;
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
 class SOFA_COMPONENT_CONTAINER_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
@@ -218,11 +219,26 @@ public:
     virtual bool checkTopology() const;
 
 
-    /** \brief Checks if the topology has only one connex component
+    /// Get information about connexity of the mesh
+    /// @{
+    /** \brief Checks if the topology has only one connected component
       *
-      * @return true if only one connex component
+      * @return true if only one connected component
       */
     virtual bool checkConnexity();
+
+    /// Returns the number of connected component.
+    virtual unsigned int getNumberOfConnectedComponent();
+
+    /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
+    virtual const VecTetraID getConnectedElement(TetraID elem);
+
+    /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
+    virtual const VecTetraID getElementAroundElement(TetraID elem);
+    /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
+    virtual const VecTetraID getElementAroundElements(VecTetraID elems);
+    /// @}
+
 
 
     /** \brief Returns the number of tetrahedra in this topology.

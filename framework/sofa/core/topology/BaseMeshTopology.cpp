@@ -211,6 +211,29 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
 }
 
 
+/// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
+const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElement(index_type elem)
+{
+    static vector<index_type> empty;
+    return empty;
+}
+
+
+/// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
+const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>elems)
+{
+    static vector<index_type> empty;
+    return empty;
+}
+
+/// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
+const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement(index_type elem)
+{
+    static vector<index_type> empty;
+    return empty;
+}
+
+
 /// Returns the set of triangles on the border of the triangulation
 const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {

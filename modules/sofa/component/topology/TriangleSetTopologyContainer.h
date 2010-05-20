@@ -39,15 +39,16 @@ class TriangleSetTopologyModifier;
 
 using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID		         	PointID;
-typedef BaseMeshTopology::EdgeID		        	EdgeID;
-typedef BaseMeshTopology::TriangleID	                TriangleID;
-typedef BaseMeshTopology::Edge		        	Edge;
-typedef BaseMeshTopology::Triangle	        	Triangle;
-typedef BaseMeshTopology::SeqTriangles	        	SeqTriangles;
+typedef BaseMeshTopology::PointID		            	PointID;
+typedef BaseMeshTopology::EdgeID		               	EdgeID;
+typedef BaseMeshTopology::TriangleID	               TriangleID;
+typedef BaseMeshTopology::Edge		        	         Edge;
+typedef BaseMeshTopology::Triangle	        	         Triangle;
+typedef BaseMeshTopology::SeqTriangles	        	      SeqTriangles;
 typedef BaseMeshTopology::EdgesInTriangle	         	EdgesInTriangle;
 typedef BaseMeshTopology::TrianglesAroundVertex    	TrianglesAroundVertex;
 typedef BaseMeshTopology::TrianglesAroundEdge        	TrianglesAroundEdge;
+typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
 
 /*! \class TriangleSetTopologyContainer
 \brief: Object that stores a set of triangles and provides access
@@ -162,11 +163,6 @@ public:
      */
     virtual bool checkTopology() const;
 
-    /** \brief Checks if the topology has only one connex component
-      *
-      * @return true if only one connex component
-      */
-    virtual bool checkConnexity();
 
     /** \brief Returns the number of triangles in this topology.
      *	The difference to getNbTriangles() is that this method does not generate the triangle array if it does not exist.
@@ -207,6 +203,26 @@ public:
      */
     const sofa::helper::vector <PointID>& getPointsOnBorder();
 
+
+    /// Get information about connexity of the mesh
+    /// @{
+    /** \brief Checks if the topology has only one connected component
+      *
+      * @return true if only one connected component
+      */
+    virtual bool checkConnexity();
+
+    /// Returns the number of connected component.
+    virtual unsigned int getNumberOfConnectedComponent();
+
+    /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
+    virtual const VecTriangleID getConnectedElement(TriangleID elem);
+
+    /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
+    virtual const VecTriangleID getElementAroundElement(TriangleID elem);
+    /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
+    virtual const VecTriangleID getElementAroundElements(VecTriangleID elems);
+    /// @}
 
     bool hasTriangles() const;
 

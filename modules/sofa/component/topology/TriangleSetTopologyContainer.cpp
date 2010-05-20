@@ -756,117 +756,25 @@ bool TriangleSetTopologyContainer::checkTopology() const
 }
 
 
+/// Get information about connexity of the mesh
+/// @{
+
 bool TriangleSetTopologyContainer::checkConnexity()
 {
-    if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
+
+    unsigned int nbr = this->getNbTriangles();
+
+    if (nbr == 0)
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::checkConnexity] TrianglesAroundEdge shell array is empty." << endl;
+        serr << "Warning. [TriangleSetTopologyContainer::checkConnexity] Can't compute connexity as there are no triangles" << endl;
 #endif
-        createTrianglesAroundEdgeArray();
+        return false;
     }
 
-    bool end = false;
-    int cpt = 0;
+    VecTriangleID elemAll = this->getConnectedElement(0);
 
-    sofa::helper::vector <TriangleID> tri_T0;
-    sofa::helper::vector <TriangleID> tri_T1;
-    sofa::helper::vector <TriangleID> tri_T2;
-    sofa::helper::vector <TriangleID> tri_Tmp;
-
-    tri_T1.push_back(0);
-    cpt = 1;
-
-    while (!end && cpt < this->getNbTriangles())
-    {
-        // First Step - Create new region
-        for (unsigned int i = 0; i<tri_T1.size(); ++i)
-        {
-            TriangleID triIndex = tri_T1[i];
-            EdgesInTriangle edgesTri = m_edgesInTriangle[ triIndex ];
-
-            for (unsigned int j = 0; j<3; ++j)
-            {
-                sofa::helper::vector<unsigned int> triAEdge = m_trianglesAroundEdge[ edgesTri[j] ];
-                sofa::helper::vector<TriangleID> nextTri;
-
-                if (triAEdge.size() == 1) // reach border
-                    continue;
-                else
-                {
-                    for (unsigned int k = 0; k<triAEdge.size(); ++k)
-                    {
-                        if (triAEdge[k] != triIndex) //not himself
-                            nextTri.push_back(triAEdge[k]);
-                    }
-                }
-
-                // avoid redundancy
-                for (unsigned int k = 0; k<nextTri.size(); ++k)
-                {
-                    bool triFound = false;
-                    TriangleID elem = nextTri[k];
-
-                    for (unsigned int l = 0; l<tri_Tmp.size(); ++l)
-                        if (tri_Tmp[l] == elem)
-                        {
-                            triFound = true;
-                            break;
-                        }
-
-                    if (!triFound)
-                        tri_Tmp.push_back(elem);
-
-                }
-            }
-        }
-
-        // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<tri_Tmp.size(); ++i)
-        {
-            bool triFound = false;
-            TriangleID elem = tri_Tmp[i];
-
-            for (unsigned int j = 0; j<tri_T0.size(); ++j)
-                if (tri_T0[j] == elem)
-                {
-                    triFound = true;
-                    break;
-                }
-
-            if (!triFound)
-            {
-                for (unsigned int j = 0; j<tri_T1.size(); ++j)
-                    if (tri_T1[j] == elem)
-                    {
-                        triFound = true;
-                        break;
-                    }
-            }
-
-            if (!triFound)
-                tri_T2.push_back(elem);
-        }
-
-        // cpt for connexity
-        cpt +=tri_T2.size();
-
-        if (tri_T2.size() == 0) // reach end
-        {
-            end = true;
-#ifndef NDEBUG
-            sout << "Loop for computing connexity has reach end." << sendl;
-#endif
-        }
-
-        // iterate
-        tri_T0 = tri_T1;
-        tri_T1 = tri_T2;
-        tri_T2.clear();
-        tri_Tmp.clear();
-    }
-
-    if (cpt != this->getNbTriangles())
+    if (elemAll.size() != nbr)
     {
         serr << "Warning: in computing connexity, triangles are missings. There is more than one connexe component." << sendl;
         return false;
@@ -875,6 +783,203 @@ bool TriangleSetTopologyContainer::checkConnexity()
     return true;
 }
 
+
+unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
+{
+    unsigned int nbr = this->getNbTriangles();
+
+    if (nbr == 0)
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TriangleSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no triangles" << endl;
+#endif
+        return 0;
+    }
+
+    VecTriangleID elemAll = this->getConnectedElement(0);
+    unsigned int cpt = 1;
+
+    while (elemAll.size() < nbr)
+    {
+        std::sort(elemAll.begin(), elemAll.end());
+        unsigned int other_triangleID = elemAll.size();
+
+        for (unsigned int i = 0; i<elemAll.size(); ++i)
+            if (elemAll[i] != i)
+            {
+                other_triangleID = i;
+                break;
+            }
+
+        VecTriangleID elemTmp = this->getConnectedElement(other_triangleID);
+        cpt++;
+
+        elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
+    }
+
+    return cpt;
+}
+
+
+const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID elem)
+{
+    if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TriangleSetTopologyContainer::getConnectedElement] triangle vertex shell array is empty." << endl;
+#endif
+        createTrianglesAroundVertexArray();
+    }
+
+    VecTriangleID elemAll;
+    VecTriangleID elemOnFront, elemPreviousFront, elemNextFront;
+    bool end = false;
+    unsigned int cpt = 0;
+    unsigned int nbr = this->getNbTriangles();
+
+    // init algo
+    elemAll.push_back(elem);
+    elemOnFront.push_back(elem);
+    elemPreviousFront.clear();
+
+    while (!end || cpt < nbr)
+    {
+        // First Step - Create new region
+        elemNextFront = this->getElementAroundElements(elemOnFront); // for each triangleID on the propagation front
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        {
+            bool find = false;
+            TriangleID id = elemNextFront[i];
+
+            for (unsigned int j = 0; j<elemAll.size(); ++j)
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+            {
+                elemAll.push_back(id);
+                elemPreviousFront.push_back(id);
+            }
+        }
+
+        // cpt for connexity
+        cpt +=elemPreviousFront.size();
+
+        if (elemPreviousFront.empty())
+        {
+            end = true;
+#ifndef NDEBUG
+            serr << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        elemOnFront = elemPreviousFront;
+        elemPreviousFront.clear();
+    }
+
+    return elemAll;
+}
+
+
+const VecTriangleID TriangleSetTopologyContainer::getElementAroundElement(TriangleID elem)
+{
+    VecTriangleID elems;
+
+    if (!hasTrianglesAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElement] triangle vertex shell array is empty." << endl;
+#endif
+        createTrianglesAroundVertexArray();
+    }
+
+    Triangle the_tri = this->getTriangle(elem);
+
+    for(unsigned int i = 0; i<3; ++i) // for each node of the triangle
+    {
+        TrianglesAroundVertex triAV = this->getTrianglesAroundVertex(the_tri[i]);
+
+        for (unsigned int j = 0; j<triAV.size(); ++j) // for each triangle around the node
+        {
+            bool find = false;
+            TriangleID id = triAV[j];
+
+            if (id == elem)
+                continue;
+
+            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+                if (id == elems[k])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+                elems.push_back(id);
+        }
+    }
+
+    return elems;
+}
+
+
+const VecTriangleID TriangleSetTopologyContainer::getElementAroundElements(VecTriangleID elems)
+{
+    VecTriangleID elemAll;
+    VecTriangleID elemTmp;
+
+    if (!hasTrianglesAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TriangleSetTopologyContainer::getElementAroundElements] triangle vertex shell array is empty." << endl;
+#endif
+        createTrianglesAroundVertexArray();
+    }
+
+    for (unsigned int i = 0; i <elems.size(); ++i) // for each triangleId of input vector
+    {
+        VecTriangleID elemTmp2 = this->getElementAroundElement(elems[i]);
+
+        elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
+    }
+
+    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each Triangle Id found
+    {
+        bool find = false;
+        TriangleID id = elemTmp[i];
+
+        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+            if (id == elems[j])
+            {
+                find = true;
+                break;
+            }
+
+        if (!find)
+        {
+            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+        }
+
+        if (!find)
+            elemAll.push_back(id);
+    }
+
+
+    return elemAll;
+}
+
+/// @}
 
 bool TriangleSetTopologyContainer::hasTriangles() const
 {
