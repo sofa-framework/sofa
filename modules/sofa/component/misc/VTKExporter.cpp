@@ -293,7 +293,7 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
             *outfile << "        <DataArray type=\""<< type << "\" Name=\"" << names[i];
             if(sizeSeg > 1)
                 *outfile << "\" NumberOfComponents=\"" << sizeSeg;
-            *outfile << "\" Format=\"ascii\">" << std::endl;
+            *outfile << "\" format=\"ascii\">" << std::endl;
             *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
             *outfile << "        </DataArray>" << std::endl;
         }
@@ -543,7 +543,7 @@ void VTKExporter::writeVTKXML()
 
     //write points
     *outfile << "      <Points>" << std::endl;
-    *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" Format=\"ascii\">" << std::endl;
+    *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
     if (mstate && mstate->getSize() == nbp)
     {
         for (int i = 0; i < mstate->getSize(); i++)
@@ -559,7 +559,7 @@ void VTKExporter::writeVTKXML()
     //write cells
     *outfile << "      <Cells>" << std::endl;
     //write connectivity
-    *outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" Format=\"ascii\">" << std::endl;
+    *outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << std::endl;
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
@@ -589,7 +589,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "        </DataArray>" << std::endl;
     //write offsets
     int num = 0;
-    *outfile << "        <DataArray type=\"Int32\" Name=\"offsets\" Format=\"ascii\">" << std::endl;
+    *outfile << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">" << std::endl;
     *outfile << "          ";
     if (writeEdges.getValue())
     {
@@ -634,7 +634,7 @@ void VTKExporter::writeVTKXML()
     *outfile << std::endl;
     *outfile << "        </DataArray>" << std::endl;
     //write types
-    *outfile << "        <DataArray type=\"UInt8\" Name=\"types\" Format=\"ascii\">" << std::endl;
+    *outfile << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">" << std::endl;
     *outfile << "          ";
     if (writeEdges.getValue())
     {
