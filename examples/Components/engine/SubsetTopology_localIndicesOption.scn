@@ -21,8 +21,9 @@
 		  <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		  <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 
-		  <CGImplicitSolver name="default3"  iterations="40"  tolerance="1e-06"
-		  threshold="1e-10" />
+		  <EulerImplicitSolver name="cg_odesolver"/>
+		  <CGLinearSolver iterations="100"/>
+
 		  <DiagonalMass template="Vec3d" name="default5"  massDensity="1.15" />
 		  <TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
 		  <TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
@@ -43,9 +44,10 @@
 		  <TriangleSetTopologyModifier name="Modifier" />
 		  <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		  <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+		  
+		  <EulerImplicitSolver name="cg_odesolver"/>
+		  <CGLinearSolver iterations="100"/>
 
-		  <CGImplicitSolver name="default3"  iterations="40"  tolerance="1e-06"
-		  threshold="1e-10" />
 		  <DiagonalMass template="Vec3d" name="default5"  massDensity="1.15" />
 		  <TTriangleModel template="Vec3d" name="default7" />
 		  <TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
