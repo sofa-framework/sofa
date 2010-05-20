@@ -170,6 +170,7 @@ public:
     Data<helper::vector<Triangle> > f_trianglesOutROI;
     Data<helper::vector<Tetra> > f_tetrahedraInROI;
     Data<helper::vector<Tetra> > f_tetrahedraOutROI;
+    Data<unsigned int> f_nbrborder;
 
     //Parameter
     Data<bool> p_localIndices;
