@@ -28,6 +28,7 @@
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/component.h>
+#include <sofa/helper/OptionsGroup.h>
 #include <vector>
 
 
@@ -51,7 +52,7 @@ protected:
 
     void cleanup();
 public:
-    Data<std::string> response;
+    Data<sofa::helper::OptionsGroup> response;
 
     DefaultContactManager();
     ~DefaultContactManager();
@@ -59,6 +60,28 @@ public:
     void createContacts(DetectionOutputMap& outputs);
 
     void draw();
+
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        obj = new T;
+
+        if (context)
+        {
+            context->addObject(obj);
+            core::collision::Pipeline *pipeline=static_cast<simulation::Node*>(context)->collisionPipeline;
+            if (pipeline)
+            {
+                helper::set<std::string> listResponse=pipeline->getResponseList();
+                sofa::helper::OptionsGroup responseOptions(listResponse);
+                if (listResponse.find("default") != listResponse.end())
+                    responseOptions.setSelectedItem("default");
+                obj->response.setValue(responseOptions);
+            }
+        }
+        if (arg) obj->parse(arg);
+
+    }
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
 
