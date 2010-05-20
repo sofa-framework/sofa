@@ -129,9 +129,7 @@ const std::string  &OptionsGroup::getSelectedItem() const
 void OptionsGroup::readFromStream(std::istream & stream)
 {
     std::string tempostring;
-
-    stream >> tempostring;
-
+    std::getline(stream,tempostring);
     int id_stringinButtonList = isInButtonList(tempostring);
     if (id_stringinButtonList == -1)
     {
