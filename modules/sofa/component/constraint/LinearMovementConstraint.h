@@ -77,6 +77,11 @@ public :
     /// the motions corresponding to the key frames
     Data<VecDeriv > m_keyMovements;
 
+    /// attributes to precise display
+    /// if showMovement is true we display the expected movement
+    /// otherwise we show which are the fixed dofs
+    Data< bool > showMovement;
+
     /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
     ///the motions corresponding to the surrouding key times

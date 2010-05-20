@@ -49,21 +49,39 @@ using namespace sofa::helper;
 template <>
 void LinearMovementConstraint<Rigid3dTypes>::draw()
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_LINES);
-    for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
+    if (showMovement.getValue())
     {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+        if (!getContext()->getShowBehaviorModels()) return;
+        glDisable (GL_LIGHTING);
+        glPointSize(10);
+        glColor4f (1,0.5,0.5,1);
+        glBegin (GL_LINES);
+        for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i].getVCenter());
+                gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i+1].getVCenter());
+            }
+        }
+        glEnd();
+    }
+    else
+    {
+        const VecCoord& x = *this->mstate->getX();
+
+        sofa::helper::vector< Vector3 > points;
+        Vector3 point;
+        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
+        const SetIndexArray & indices = m_indices.getValue().getArray();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i].getVCenter());
-            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i+1].getVCenter());
+            for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+            points.push_back(point);
         }
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
-    glEnd();
 }
 
 template <>
@@ -110,21 +128,39 @@ void LinearMovementConstraint<Rigid3dTypes>::projectPosition(VecCoord& x)
 template <>
 void LinearMovementConstraint<Rigid3fTypes>::draw()
 {
-    const SetIndexArray & indices = m_indices.getValue().getArray();
-    if (!getContext()->getShowBehaviorModels()) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_LINES);
-    for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
+    if (showMovement.getValue())
     {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+        if (!getContext()->getShowBehaviorModels()) return;
+        glDisable (GL_LIGHTING);
+        glPointSize(10);
+        glColor4f (1,0.5,0.5,1);
+        glBegin (GL_LINES);
+        for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i].getVCenter());
+                gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i+1].getVCenter());
+            }
+        }
+        glEnd();
+    }
+    else
+    {
+        const VecCoord& x = *this->mstate->getX();
+
+        sofa::helper::vector< Vector3 > points;
+        Vector3 point;
+        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
+        const SetIndexArray & indices = m_indices.getValue().getArray();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i].getVCenter());
-            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i+1].getVCenter());
+            for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+            points.push_back(point);
         }
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
-    glEnd();
 }
 
 template <>
