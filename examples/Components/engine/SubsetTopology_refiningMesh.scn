@@ -1,5 +1,5 @@
 <Node 	name="root" gravity="0 0 0" dt="0.005" showBehaviorModels="1"
-	showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="0"  >
+	showCollisionModels="0" showMappings="0" showForceFields="1" showWireFrame="0"  >
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />
 	<MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
@@ -10,7 +10,7 @@
 	  <MeshGmshLoader name="meshLoader"  filename="mesh/truthcylinder1.msh"/>
 
 	  <SubsetTopology template="Vec3d" box="-5 -20 -5 5 -10 5"
-		  drawROI="1" src="@meshLoader" rest_position="@meshLoader.position"
+		  drawROI="0" src="@meshLoader" rest_position="@meshLoader.position"
 		  name="Subset" localIndices="1"/>
 
 		<Node name="in">
@@ -41,46 +41,44 @@
 
 
 		<Node name="Out">
-		  <MechanicalObject template="Vec3d" name="mecaObj2" position="@../Subset.pointsOutROI" />
-		  <SparseGridTopology	n="5 10 5" 		  vertices="@mecaObj2.position"
-		   name="name" drawHexahedra="1"/>
+		  <MechanicalObject template="Vec3d" name="mecaObj2" />
+		  <SparseGridTopology	n="4 7 4"  vertices="@../Subset.pointsOutROI"
+					name="name" drawHexahedra="0"/>
 		  <UniformMass totalmass="15" />		  
-		  <TetrahedronFEMForceField name="FEM" youngModulus="110" 
-  			  poissonRatio="0.49"  />
-
-		  <Node name="grid">
-		  
+		  <HexahedronFEMForceField template="Vec3d" name="FEM"  youngModulus="200" />
+		  <Node name="tetra">
+		    
 		    <TetrahedronSetTopologyContainer name="Container"
-						   position="@../mecaObj2.position" tetrahedra="@../../Subset.tetrahedraOutROI"/>
-		  
+						   position="@../../Subset.pointsOutROI" tetrahedra="@../../Subset.tetrahedraOutROI"/>
+		    
 		    <TetrahedronSetTopologyModifier name="Modifier" />
 		    <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		    <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"
 						      drawTetrahedra="0"/> 
 		    
-		    <MechanicalObject name="collisionVertices"/>
+		    <MechanicalObject name="mecaObj3"/>
 		    <BarycentricMapping object1="../.." object2=".."/>
-
-
+		    
+		    
 		    <TriangleModel template="Vec3d" name="default7" />
-		  </Node>
-                  <Node>
-		    <TriangleSetTopologyContainer name="ContainerTri"/>
-		    <TriangleSetTopologyModifier name="Modifier"/>
-		    <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-		    <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-		    <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../grid/Container" object2="ContainerTri" />
-
-		    <OglModel name="Visual"  color="blue" dx="60" />
-		    <IdentityMapping object1=".." object2="Visual" />
-		  </Node>
+		    
+                    <Node>
+		      <TriangleSetTopologyContainer name="ContainerTri"/>
+		      <TriangleSetTopologyModifier name="Modifier"/>
+		      <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
+		      <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
+		      <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="ContainerTri" />
+		      
+		      <OglModel name="Visual"  color="blue" dx="60" />
+		      <IdentityMapping object1=".." object2="Visual" />
+		    </Node>
+		  </Node>		  
 		  
-
 		</Node>
-
+		
 		
 		<StiffSpringForceField name="Spring" object1="../in/mecaObj1"
-		object2="../Out/mecaObj2" tags="extraSpring" 
+				       object2="../Out/tetra/mecaObj3" tags="extraSpring" 
 				       spring="0 0 10000 0 0
 					       1 1 10000 0 0
 					       2 2 10000 0 0
@@ -103,9 +101,7 @@
 					       19 19 10000 0 0
 					       20 20 10000 0 0
 					       21 21 10000 0 0
-					       22 22 10000 0 0"
-					       
-/>
+					       22 22 10000 0 0"/>
 	</Node>
 
 </Node>

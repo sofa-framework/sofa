@@ -72,6 +72,7 @@ SubsetTopology<DataTypes>::SubsetTopology()
     , f_trianglesOutROI( initData(&f_trianglesOutROI,"trianglesOutROI","Triangles out of the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
     , f_tetrahedraOutROI( initData(&f_tetrahedraOutROI,"tetrahedraOutROI","Tetrahedra out of the ROI") )
+    , f_nbrborder( initData(&f_nbrborder,(unsigned int)0,"nbrborder","If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology). ") )
     , p_localIndices( initData(&p_localIndices,false,"localIndices","If true, will compute local dof indices in topological elements") )
     , p_drawROI( initData(&p_drawROI,false,"drawROI","Draw ROI") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
@@ -415,7 +416,8 @@ void SubsetTopology<DataTypes>::update()
 
     const bool local = p_localIndices.getValue();
     unsigned int cpt_in = 0, cpt_out = 0, cpt_border = 0;
-    unsigned int nbrBorder;
+    unsigned int& nbrBorder = *f_nbrborder.beginEdit();
+    nbrBorder = 0;
 
     if (local)
     {
@@ -583,6 +585,7 @@ void SubsetTopology<DataTypes>::update()
     f_edgeIndices.endEdit();
     f_triangleIndices.endEdit();
     f_tetrahedronIndices.endEdit();
+    f_nbrborder.endEdit();
 }
 
 template <class DataTypes>
