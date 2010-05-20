@@ -739,117 +739,27 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
 }
 
 
+
+
+
+/// Get information about connexity of the mesh
+/// @{
 bool TetrahedronSetTopologyContainer::checkConnexity()
 {
-    if(!hasTetrahedraAroundTriangle())	// this method should only be called when the shell array exists
+
+    unsigned int nbr = this->getNbTetrahedra();
+
+    if (nbr == 0)
     {
 #ifndef NDEBUG
-        sout << "Warning. [TetrahedronSetTopologyContainer::checkConnexity] TetrahedraAroundTriangle shell array is empty." << endl;
+        serr << "Warning. [TetrahedronSetTopologyContainer::checkConnexity] Can't compute connexity as there are no tetrahedra" << endl;
 #endif
-        createTetrahedraAroundTriangleArray();
+        return false;
     }
 
-    bool end = false;
-    int cpt = 0;
+    VecTetraID elemAll = this->getConnectedElement(0);
 
-    sofa::helper::vector <TetraID> tetra_T0;
-    sofa::helper::vector <TetraID> tetra_T1;
-    sofa::helper::vector <TetraID> tetra_T2;
-    sofa::helper::vector <TetraID> tetra_Tmp;
-
-    tetra_T1.push_back(0);
-    cpt = 1;
-
-    while (!end && cpt < this->getNbTetrahedra())
-    {
-        // First Step - Create new region
-        for (unsigned int i = 0; i<tetra_T1.size(); ++i)
-        {
-            TetraID tetraIndex = tetra_T1[i];
-            TrianglesInTetrahedron triTetra = m_trianglesInTetrahedron[ tetraIndex ];
-
-            for (unsigned int j = 0; j<4; ++j)
-            {
-                sofa::helper::vector<unsigned int> tetraATri = m_tetrahedraAroundTriangle[ triTetra[j] ];
-                sofa::helper::vector<TetraID> nextTetra;
-
-                if (tetraATri.size() == 1) // reach border
-                    continue;
-                else
-                {
-                    for (unsigned int k = 0; k<tetraATri.size(); ++k)
-                    {
-                        if (tetraATri[k] != tetraIndex) //not himself
-                            nextTetra.push_back(tetraATri[k]);
-                    }
-                }
-
-                // avoid redundancy
-                for (unsigned int k = 0; k<nextTetra.size(); ++k)
-                {
-                    bool tetraFound = false;
-                    TetraID elem = nextTetra[k];
-
-                    for (unsigned int l = 0; l<tetra_Tmp.size(); ++l)
-                        if (tetra_Tmp[l] == elem)
-                        {
-                            tetraFound = true;
-                            break;
-                        }
-
-                    if (!tetraFound)
-                        tetra_Tmp.push_back(elem);
-
-                }
-            }
-        }
-
-        // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<tetra_Tmp.size(); ++i)
-        {
-            bool tetraFound = false;
-            TetraID elem = tetra_Tmp[i];
-
-            for (unsigned int j = 0; j<tetra_T0.size(); ++j)
-                if (tetra_T0[j] == elem)
-                {
-                    tetraFound = true;
-                    break;
-                }
-
-            if (!tetraFound)
-            {
-                for (unsigned int j = 0; j<tetra_T1.size(); ++j)
-                    if (tetra_T1[j] == elem)
-                    {
-                        tetraFound = true;
-                        break;
-                    }
-            }
-
-            if (!tetraFound)
-                tetra_T2.push_back(elem);
-        }
-
-        // cpt for connexity
-        cpt +=tetra_T2.size();
-
-        if (tetra_T2.size() == 0) // reach end
-        {
-            end = true;
-#ifndef NDEBUG
-            sout << "Loop for computing connexity has reach end." << sendl;
-#endif
-        }
-
-        // iterate
-        tetra_T0 = tetra_T1;
-        tetra_T1 = tetra_T2;
-        tetra_T2.clear();
-        tetra_Tmp.clear();
-    }
-
-    if (cpt != this->getNbTetrahedra())
+    if (elemAll.size() != nbr)
     {
         serr << "Warning: in computing connexity, tetrahedra are missings. There is more than one connexe component." << sendl;
         return false;
@@ -857,6 +767,205 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 
     return true;
 }
+
+
+unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
+{
+    unsigned int nbr = this->getNbTetrahedra();
+
+    if (nbr == 0)
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TetrahedronSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no tetrahedra" << endl;
+#endif
+        return 0;
+    }
+
+    VecTetraID elemAll = this->getConnectedElement(0);
+    unsigned int cpt = 1;
+
+    while (elemAll.size() < nbr)
+    {
+        std::sort(elemAll.begin(), elemAll.end());
+        unsigned int other_tetraID = elemAll.size();
+
+        for (unsigned int i = 0; i<elemAll.size(); ++i)
+            if (elemAll[i] != i)
+            {
+                other_tetraID = i;
+                break;
+            }
+
+        VecTetraID elemTmp = this->getConnectedElement(other_tetraID);
+        cpt++;
+
+        elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
+    }
+
+    return cpt;
+}
+
+
+const VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID elem)
+{
+    if(!hasTetrahedraAroundVertex())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TetrahedronSetTopologyContainer::getConnectedElement] tetrahedra vertex shell array is empty." << endl;
+#endif
+        createTetrahedraAroundVertexArray();
+    }
+
+    VecTetraID elemAll;
+    VecTetraID elemOnFront, elemPreviousFront, elemNextFront;
+    bool end = false;
+    unsigned int cpt = 0;
+    unsigned int nbr = this->getNbTetrahedra();
+
+    // init algo
+    elemAll.push_back(elem);
+    elemOnFront.push_back(elem);
+    elemPreviousFront.clear();
+
+    while (!end || cpt < nbr)
+    {
+        // First Step - Create new region
+        elemNextFront = this->getElementAroundElements(elemOnFront); // for each TetraID on the propagation front
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        {
+            bool find = false;
+            TetraID id = elemNextFront[i];
+
+            for (unsigned int j = 0; j<elemAll.size(); ++j)
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+            {
+                elemAll.push_back(id);
+                elemPreviousFront.push_back(id);
+            }
+        }
+
+        // cpt for connexity
+        cpt +=elemPreviousFront.size();
+
+        if (elemPreviousFront.empty())
+        {
+            end = true;
+#ifndef NDEBUG
+            serr << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        elemOnFront = elemPreviousFront;
+        elemPreviousFront.clear();
+    }
+
+    return elemAll;
+}
+
+
+const VecTetraID TetrahedronSetTopologyContainer::getElementAroundElement(TetraID elem)
+{
+    VecTetraID elems;
+
+    if (!hasTetrahedraAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TetrahedronSetTopologyContainer::getElementAroundElement] tetrahedra vertex shell array is empty." << endl;
+#endif
+        createTetrahedraAroundVertexArray();
+    }
+
+    Tetra the_tetra = this->getTetra(elem);
+
+    for(unsigned int i = 0; i<4; ++i) // for each node of the tetra
+    {
+        TetrahedraAroundVertex tetraAV = this->getTetrahedraAroundVertex(the_tetra[i]);
+
+        for (unsigned int j = 0; j<tetraAV.size(); ++j) // for each tetra around the node
+        {
+            bool find = false;
+            TetraID id = tetraAV[j];
+
+            if (id == elem)
+                continue;
+
+            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+                if (id == elems[k])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+                elems.push_back(id);
+        }
+    }
+
+    return elems;
+}
+
+
+const VecTetraID TetrahedronSetTopologyContainer::getElementAroundElements(VecTetraID elems)
+{
+    VecTetraID elemAll;
+    VecTetraID elemTmp;
+
+    if (!hasTetrahedraAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [TetrahedronSetTopologyContainer::getElementAroundElements] tetrahedra vertex shell array is empty." << endl;
+#endif
+        createTetrahedraAroundVertexArray();
+    }
+
+    for (unsigned int i = 0; i <elems.size(); ++i) // for each TetraID of input vector
+    {
+        VecTetraID elemTmp2 = this->getElementAroundElement(elems[i]);
+
+        elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
+    }
+
+    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each tetra Id found
+    {
+        bool find = false;
+        TetraID id = elemTmp[i];
+
+        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+            if (id == elems[j])
+            {
+                find = true;
+                break;
+            }
+
+        if (!find)
+        {
+            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+        }
+
+        if (!find)
+            elemAll.push_back(id);
+    }
+
+
+    return elemAll;
+}
+
+/// @}
+
 
 bool TetrahedronSetTopologyContainer::hasTetrahedra() const
 {

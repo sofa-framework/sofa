@@ -248,116 +248,24 @@ bool EdgeSetTopologyContainer::checkTopology() const
 }
 
 
+/// Get information about connexity of the mesh
+/// @{
 bool EdgeSetTopologyContainer::checkConnexity()
 {
-    if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
+
+    unsigned int nbr = this->getNbEdges();
+
+    if (nbr == 0)
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::checkConnexity] EdgesAroundVertex shell array is empty." << endl;
+        serr << "Warning. [EdgeSetTopologyContainer::checkConnexity] Can't compute connexity as there are no edges" << endl;
 #endif
-        createEdgesAroundVertexArray();
+        return false;
     }
 
-    bool end = false;
-    int cpt = 0;
+    VecEdgeID elemAll = this->getConnectedElement(0);
 
-    sofa::helper::vector <EdgeID> edge_T0;
-    sofa::helper::vector <EdgeID> edge_T1;
-    sofa::helper::vector <EdgeID> edge_T2;
-    sofa::helper::vector <EdgeID> edge_Tmp;
-
-    edge_T1.push_back(0);
-    cpt = 1;
-
-    while (!end && cpt < this->getNbEdges())
-    {
-        // First Step - Create new region
-        for (unsigned int i = 0; i<edge_T1.size(); ++i)
-        {
-            EdgeID edgeIndex = edge_T1[i];
-            Edge edge = this->getEdge(edgeIndex);
-
-            for (unsigned int j = 0; j<2; ++j)
-            {
-                sofa::helper::vector<unsigned int> edgeAVertex = m_edgesAroundVertex[ edge[j] ];
-                sofa::helper::vector<EdgeID> nextEdges;
-
-                if (edgeAVertex.size() == 1) // reach border
-                    continue;
-                else
-                {
-                    for (unsigned int k = 0; k<edgeAVertex.size(); ++k)
-                    {
-                        if (edgeAVertex[k] != edgeIndex) //not himself
-                            nextEdges.push_back(edgeAVertex[k]);
-                    }
-                }
-
-                // avoid redundancy
-                for (unsigned int k = 0; k<nextEdges.size(); ++k)
-                {
-                    bool edgeFound = false;
-                    EdgeID elem = nextEdges[k];
-
-                    for (unsigned int l = 0; l<edge_Tmp.size(); ++l)
-                        if ( elem == edge_Tmp[l])
-                        {
-                            edgeFound = true;
-                            break;
-                        }
-
-                    if (!edgeFound)
-                        edge_Tmp.push_back (elem);
-                }
-            }
-        }
-
-        // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<edge_Tmp.size(); ++i)
-        {
-            bool edgeFound = false;
-            EdgeID elem = edge_Tmp[i];
-
-            for (unsigned int j = 0; j<edge_T0.size(); ++j)
-                if (edge_T0[j] == elem)
-                {
-                    edgeFound = true;
-                    break;
-                }
-
-            if (!edgeFound)
-            {
-                for (unsigned int j = 0; j<edge_T1.size(); ++j)
-                    if (edge_T1[j] == elem)
-                    {
-                        edgeFound = true;
-                        break;
-                    }
-            }
-
-            if (!edgeFound)
-                edge_T2.push_back(elem);
-        }
-
-        // cpt for connexity
-        cpt +=edge_T2.size();
-
-        if (edge_T2.size() == 0) // reach end
-        {
-            end = true;
-#ifndef NDEBUG
-            sout << "Loop for computing connexity has reach end." << sendl;
-#endif
-        }
-
-        // iterate
-        edge_T0 = edge_T1;
-        edge_T1 = edge_T2;
-        edge_T2.clear();
-        edge_Tmp.clear();
-    }
-
-    if (cpt != this->getNbEdges())
+    if (elemAll.size() != nbr)
     {
         serr << "Warning: in computing connexity, edges are missings. There is more than one connexe component." << sendl;
         return false;
@@ -365,6 +273,206 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     return true;
 }
+
+
+unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
+{
+    unsigned int nbr = this->getNbEdges();
+
+    if (nbr == 0)
+    {
+#ifndef NDEBUG
+        serr << "Warning. [EdgeSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no edges" << endl;
+#endif
+        return 0;
+    }
+
+    VecEdgeID elemAll = this->getConnectedElement(0);
+    unsigned int cpt = 1;
+
+    while (elemAll.size() < nbr)
+    {
+        std::sort(elemAll.begin(), elemAll.end());
+        unsigned int other_edgeID = elemAll.size();
+
+        for (unsigned int i = 0; i<elemAll.size(); ++i)
+            if (elemAll[i] != i)
+            {
+                other_edgeID = i;
+                break;
+            }
+
+        VecEdgeID elemTmp = this->getConnectedElement(other_edgeID);
+        cpt++;
+
+        elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
+    }
+
+    return cpt;
+}
+
+
+const VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
+{
+    if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        serr << "Warning. [EdgeSetTopologyContainer::getConnectedElement] EdgesAroundVertex shell array is empty." << endl;
+#endif
+        createEdgesAroundVertexArray();
+    }
+
+    VecEdgeID elemAll;
+    VecEdgeID elemOnFront, elemPreviousFront, elemNextFront;
+    bool end = false;
+    unsigned int cpt = 0;
+    unsigned int nbr = this->getNbEdges();
+
+    // init algo
+    elemAll.push_back(elem);
+    elemOnFront.push_back(elem);
+    elemPreviousFront.clear();
+
+    while (!end || cpt < nbr)
+    {
+        // First Step - Create new region
+        elemNextFront = this->getElementAroundElements(elemOnFront); // for each edgeId on the propagation front
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        {
+            bool find = false;
+            EdgeID id = elemNextFront[i];
+
+            for (unsigned int j = 0; j<elemAll.size(); ++j)
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+            {
+                elemAll.push_back(id);
+                elemPreviousFront.push_back(id);
+            }
+        }
+
+        // cpt for connexity
+        cpt +=elemPreviousFront.size();
+
+        if (elemPreviousFront.empty())
+        {
+            end = true;
+#ifndef NDEBUG
+            serr << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        elemOnFront = elemPreviousFront;
+        elemPreviousFront.clear();
+    }
+
+    return elemAll;
+}
+
+
+const VecEdgeID EdgeSetTopologyContainer::getElementAroundElement(EdgeID elem)
+{
+    VecEdgeID elems;
+
+    if (!hasEdgesAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElement] edge vertex shell array is empty." << endl;
+#endif
+        createEdgesAroundVertexArray();
+    }
+
+    Edge the_edge = this->getEdge(elem);
+
+    for(unsigned int i = 0; i<2; ++i) // for each node of the edge
+    {
+        EdgesAroundVertex edgeAV = this->getEdgesAroundVertex(the_edge[i]);
+
+        for (unsigned int j = 0; j<edgeAV.size(); ++j) // for each edge around the node
+        {
+            bool find = false;
+            EdgeID id = edgeAV[j];
+
+            if (id == elem)
+                continue;
+
+            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+                if (id == elems[k])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+                elems.push_back(id);
+        }
+    }
+
+    return elems;
+}
+
+
+const VecEdgeID EdgeSetTopologyContainer::getElementAroundElements(VecEdgeID elems)
+{
+    VecEdgeID elemAll;
+    VecEdgeID elemTmp;
+
+    if (!hasEdgesAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElements] edge vertex shell array is empty." << endl;
+#endif
+        createEdgesAroundVertexArray();
+    }
+
+    for (unsigned int i = 0; i <elems.size(); ++i) // for each edgeId of input vector
+    {
+        VecEdgeID elemTmp2 = this->getElementAroundElement(elems[i]);
+
+        elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
+    }
+
+    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each edge Id found
+    {
+        bool find = false;
+        EdgeID id = elemTmp[i];
+
+        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+            if (id == elems[j])
+            {
+                find = true;
+                break;
+            }
+
+        if (!find)
+        {
+            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+        }
+
+        if (!find)
+            elemAll.push_back(id);
+    }
+
+
+    return elemAll;
+}
+
+/// @}
+
+
 
 
 unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const

@@ -525,6 +525,236 @@ bool QuadSetTopologyContainer::checkTopology() const
 #endif
 }
 
+
+
+/// Get information about connexity of the mesh
+/// @{
+
+bool QuadSetTopologyContainer::checkConnexity()
+{
+
+    unsigned int nbr = this->getNbQuads();
+
+    if (nbr == 0)
+    {
+#ifndef NDEBUG
+        serr << "Warning. [QuadSetTopologyContainer::checkConnexity] Can't compute connexity as there are no Quads" << endl;
+#endif
+        return false;
+    }
+
+    VecQuadID elemAll = this->getConnectedElement(0);
+
+    if (elemAll.size() != nbr)
+    {
+        serr << "Warning: in computing connexity, Quads are missings. There is more than one connexe component." << sendl;
+        return false;
+    }
+
+    return true;
+}
+
+
+unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
+{
+    unsigned int nbr = this->getNbQuads();
+
+    if (nbr == 0)
+    {
+#ifndef NDEBUG
+        serr << "Warning. [QuadSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no Quads" << endl;
+#endif
+        return 0;
+    }
+
+    VecQuadID elemAll = this->getConnectedElement(0);
+    unsigned int cpt = 1;
+
+    while (elemAll.size() < nbr)
+    {
+        std::sort(elemAll.begin(), elemAll.end());
+        unsigned int other_QuadID = elemAll.size();
+
+        for (unsigned int i = 0; i<elemAll.size(); ++i)
+            if (elemAll[i] != i)
+            {
+                other_QuadID = i;
+                break;
+            }
+
+        VecQuadID elemTmp = this->getConnectedElement(other_QuadID);
+        cpt++;
+
+        elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
+    }
+
+    return cpt;
+}
+
+
+const VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
+{
+    if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        serr << "Warning. [QuadSetTopologyContainer::getConnectedElement] Quad vertex shell array is empty." << endl;
+#endif
+        createQuadsAroundVertexArray();
+    }
+
+    VecQuadID elemAll;
+    VecQuadID elemOnFront, elemPreviousFront, elemNextFront;
+    bool end = false;
+    unsigned int cpt = 0;
+    unsigned int nbr = this->getNbQuads();
+
+    // init algo
+    elemAll.push_back(elem);
+    elemOnFront.push_back(elem);
+    elemPreviousFront.clear();
+
+    while (!end || cpt < nbr)
+    {
+        // First Step - Create new region
+        elemNextFront = this->getElementAroundElements(elemOnFront); // for each QuadID on the propagation front
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        {
+            bool find = false;
+            QuadID id = elemNextFront[i];
+
+            for (unsigned int j = 0; j<elemAll.size(); ++j)
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+            {
+                elemAll.push_back(id);
+                elemPreviousFront.push_back(id);
+            }
+        }
+
+        // cpt for connexity
+        cpt +=elemPreviousFront.size();
+
+        if (elemPreviousFront.empty())
+        {
+            end = true;
+#ifndef NDEBUG
+            serr << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        elemOnFront = elemPreviousFront;
+        elemPreviousFront.clear();
+    }
+
+    return elemAll;
+}
+
+
+const VecQuadID QuadSetTopologyContainer::getElementAroundElement(QuadID elem)
+{
+    VecQuadID elems;
+
+    if (!hasQuadsAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [QuadSetTopologyContainer::getElementAroundElement] Quad vertex shell array is empty." << endl;
+#endif
+        createQuadsAroundVertexArray();
+    }
+
+    Quad the_quad = this->getQuad(elem);
+
+    for(unsigned int i = 0; i<4; ++i) // for each node of the Quad
+    {
+        QuadsAroundVertex quadAV = this->getQuadsAroundVertex(the_quad[i]);
+
+        for (unsigned int j = 0; j<quadAV.size(); ++j) // for each Quad around the node
+        {
+            bool find = false;
+            QuadID id = quadAV[j];
+
+            if (id == elem)
+                continue;
+
+            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+                if (id == elems[k])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+                elems.push_back(id);
+        }
+    }
+
+    return elems;
+}
+
+
+const VecQuadID QuadSetTopologyContainer::getElementAroundElements(VecQuadID elems)
+{
+    VecQuadID elemAll;
+    VecQuadID elemTmp;
+
+    if (!hasQuadsAroundVertex())
+    {
+#ifndef NDEBUG
+        serr << "Warning. [QuadSetTopologyContainer::getElementAroundElements] Quad vertex shell array is empty." << endl;
+#endif
+        createQuadsAroundVertexArray();
+    }
+
+    for (unsigned int i = 0; i <elems.size(); ++i) // for each QuadId of input vector
+    {
+        VecQuadID elemTmp2 = this->getElementAroundElement(elems[i]);
+
+        elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
+    }
+
+    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each Quad Id found
+    {
+        bool find = false;
+        QuadID id = elemTmp[i];
+
+        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+            if (id == elems[j])
+            {
+                find = true;
+                break;
+            }
+
+        if (!find)
+        {
+            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+        }
+
+        if (!find)
+            elemAll.push_back(id);
+    }
+
+
+    return elemAll;
+}
+
+/// @}
+
+
+
+
 bool QuadSetTopologyContainer::hasQuads() const
 {
     d_quad.updateIfDirty();
