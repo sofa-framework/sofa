@@ -59,15 +59,14 @@
 		    <MechanicalObject name="mecaObj3"/>
 		    <BarycentricMapping object1="../.." object2=".."/>
 		    
-		    
-		    <TriangleModel template="Vec3d" name="default7" />
-		    
                     <Node>
 		      <TriangleSetTopologyContainer name="ContainerTri"/>
 		      <TriangleSetTopologyModifier name="Modifier"/>
 		      <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 		      <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 		      <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="ContainerTri" />
+		      <TriangleModel template="Vec3d" name="default7" />
+
 		      
 		      <OglModel name="Visual"  color="blue" dx="60" />
 		      <IdentityMapping object1=".." object2="Visual" />
