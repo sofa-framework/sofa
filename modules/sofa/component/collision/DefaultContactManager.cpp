@@ -45,9 +45,8 @@ int DefaultContactManagerClass = core::RegisterObject("Default class to create r
         ;
 
 DefaultContactManager::DefaultContactManager()
-    : response(initData(&response, std::string("default"), "response", "contact response class"))
-{
-}
+    : response(initData(&response, "response", "contact response class"))
+{}
 
 DefaultContactManager::~DefaultContactManager()
 {
@@ -166,7 +165,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
 
 std::string DefaultContactManager::getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)
 {
-    std::string responseUsed = response.getValue();
+    std::string responseUsed = response.getValue().getSelectedItem();
     std::string response1 = model1->getContactResponse();
     std::string response2 = model2->getContactResponse();
 

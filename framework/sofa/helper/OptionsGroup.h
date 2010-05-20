@@ -64,6 +64,13 @@ public :
     ///Example OptionsGroup(4,"button0","button1","button2","button3");
     OptionsGroup(int nbofRadioButton,...);
 
+    template <class T>
+    OptionsGroup(const T &list)
+    {
+        for (typename T::const_iterator it=list.begin(); it!=list.end(); ++it) textItems.push_back(*it);
+        selectedItem=0;
+    }
+
     ///Copy
     OptionsGroup(const OptionsGroup & m_radiotrick);
 

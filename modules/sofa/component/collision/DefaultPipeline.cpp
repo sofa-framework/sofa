@@ -240,6 +240,17 @@ void DefaultPipeline::doCollisionResponse()
     }
 }
 
+helper::set< std::string > DefaultPipeline::getResponseList() const
+{
+    helper::set< std::string > listResponse;
+    core::collision::Contact::Factory::iterator it;
+    for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
+    {
+        listResponse.insert(it->first);
+    }
+    return listResponse;
+}
+
 void DefaultPipeline::draw()
 {
     if (!bDraw.getValue()) return;

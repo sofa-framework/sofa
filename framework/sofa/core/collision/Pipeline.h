@@ -36,7 +36,9 @@
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
 
-#include <vector>
+#include <sofa/helper/set.h>
+#include <sofa/helper/vector.h>
+
 
 namespace sofa
 {
@@ -103,6 +105,8 @@ public:
     /// Narrow phase collision detection method accessor.
     const NarrowPhaseDetection *getNarrowPhaseDetection() const;
 
+    /// get the set of response available with the current collision pipeline
+    virtual helper::set< std::string > getResponseList() const=0;
 protected:
     /// Remove collision response from last step
     virtual void doCollisionReset() = 0;
