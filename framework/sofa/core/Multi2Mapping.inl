@@ -140,18 +140,6 @@ void Multi2Mapping<In1,In2,Out>::getVecIn1Deriv(const VecId &id, helper::vector<
     for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecDeriv(id.index));
 }
 
-template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::getConstVecIn1Coord(const VecId &id, helper::vector<const typename In1::VecCoord*> &v) const
-{
-    for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecCoord(id.index));
-}
-
-template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::getConstVecIn1Deriv(const VecId &id, helper::vector<const typename In1::VecDeriv*> &v) const
-{
-    for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecDeriv(id.index));
-}
-
 
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::getVecIn2Coord(const VecId &id, helper::vector<typename In2::VecCoord*> &v) const
@@ -159,17 +147,13 @@ void Multi2Mapping<In1,In2,Out>::getVecIn2Coord(const VecId &id, helper::vector<
     for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecCoord(id.index));
 }
 
+
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::getVecIn2Deriv(const VecId &id, helper::vector<typename In2::VecDeriv*> &v) const
 {
     for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecDeriv(id.index));
 }
 
-template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::getConstVecIn2Coord(const VecId &id, helper::vector<const typename In2::VecCoord*> &v) const
-{
-    for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecCoord(id.index));
-}
 
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::getConstVecIn2Deriv(const VecId &id, helper::vector<const typename In2::VecDeriv*> &v) const
@@ -179,11 +163,7 @@ void Multi2Mapping<In1,In2,Out>::getConstVecIn2Deriv(const VecId &id, helper::ve
 
 
 
-template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::getVecOutCoord(const VecId &id, helper::vector<typename Out::VecCoord*> &v) const
-{
-    for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));
-}
+
 
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::getVecOutDeriv(const VecId &id, helper::vector<typename Out::VecDeriv*> &v) const

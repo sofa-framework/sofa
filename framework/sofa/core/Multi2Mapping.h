@@ -129,16 +129,23 @@ public:
 
 protected:
     void getVecIn1Coord     (const VecId &id, helper::vector<      typename In1::VecCoord*> &v) const;
-    void getConstVecIn1Coord(const VecId &id, helper::vector<const typename In1::VecCoord*> &v) const;
+    void getConstVecIn1Coord(const VecId &id, helper::vector<const typename In1::VecCoord*> &v) const
+    { for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecCoord(id.index));}
+
     void getVecIn1Deriv     (const VecId &id, helper::vector<      typename In1::VecDeriv*> &v) const;
-    void getConstVecIn1Deriv(const VecId &id, helper::vector<const typename In1::VecDeriv*> &v) const;
+    void getConstVecIn1Deriv(const VecId &id, helper::vector<const typename In1::VecDeriv*> &v) const
+    {for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecCoord(id.index));}
 
     void getVecIn2Coord     (const VecId &id, helper::vector<      typename In2::VecCoord*> &v) const;
-    void getConstVecIn2Coord(const VecId &id, helper::vector<const typename In2::VecCoord*> &v) const;
+    void getConstVecIn2Coord(const VecId &id, helper::vector<const typename In2::VecCoord*> &v) const
+    {for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecCoord(id.index));}
+
     void getVecIn2Deriv     (const VecId &id, helper::vector<      typename In2::VecDeriv*> &v) const;
     void getConstVecIn2Deriv(const VecId &id, helper::vector<const typename In2::VecDeriv*> &v) const;
 
-    void getVecOutCoord     (const VecId &id, helper::vector<      typename Out::VecCoord*> &v) const;
+    void getVecOutCoord     (const VecId &id, helper::vector<      typename Out::VecCoord*> &v) const
+    {for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));}
+
     void getConstVecOutCoord(const VecId &id, helper::vector<const typename Out::VecCoord*> &v) const;
     void getVecOutDeriv     (const VecId &id, helper::vector<      typename Out::VecDeriv*> &v) const;
     void getConstVecOutDeriv(const VecId &id, helper::vector<const typename Out::VecDeriv*> &v) const;
