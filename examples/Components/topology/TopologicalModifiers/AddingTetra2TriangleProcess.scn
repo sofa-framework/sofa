@@ -16,7 +16,7 @@
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1"/>
 		<TopologicalChangeProcessor listening="1" filename="AddingTetrahedraProcess.txt"/>
 
-        	<Object type="DiagonalMass" massDensity="0.5" />
+		<UniformMass totalmass="1" />
 		<Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
 		<Object type="FixedConstraint" indices="0" />		
 <!--        	<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />-->
