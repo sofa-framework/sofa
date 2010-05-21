@@ -127,6 +127,28 @@ public:
     virtual const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i);
     /// @}
 
+
+    /// Get information about connexity of the mesh
+    /// @{
+    /** \brief Checks if the topology has only one connected component
+      *
+      * @return true if only one connected component
+      */
+    virtual bool checkConnexity();
+
+    /// Returns the number of connected component.
+    virtual unsigned int getNumberOfConnectedComponent();
+
+    /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
+    virtual const sofa::helper::vector<unsigned int> getConnectedElement(unsigned int elem);
+
+    /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
+    virtual const sofa::helper::vector<unsigned int> getElementAroundElement(unsigned int elem);
+    /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
+    virtual const sofa::helper::vector<unsigned int> getElementAroundElements(sofa::helper::vector<unsigned int> elems);
+    /// @}
+
+
     // Points accessors (not always available)
 
     virtual bool hasPos() const;
@@ -573,6 +595,7 @@ public:
 
 protected:
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
+    sofa::core::topology::TopologyObjectType UpperTopology;
 };
 
 } // namespace topology
