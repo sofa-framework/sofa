@@ -59,6 +59,7 @@ int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology cont
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
+    , m_checkConnexity(initData(&m_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
 }
 
@@ -124,6 +125,17 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         m_edgesAroundVertex[ m_edge[edge][0] ].push_back(edge);
         m_edgesAroundVertex[ m_edge[edge][1] ].push_back(edge);
     }
+
+    if (m_checkConnexity.getValue())
+        this->checkConnexity();
+}
+
+void EdgeSetTopologyContainer::reinit()
+{
+    PointSetTopologyContainer::reinit();
+
+    if (m_checkConnexity.getValue())
+        this->checkConnexity();
 }
 
 void EdgeSetTopologyContainer::createEdgeSetArray()
@@ -332,8 +344,9 @@ const VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
     elemAll.push_back(elem);
     elemOnFront.push_back(elem);
     elemPreviousFront.clear();
+    cpt++;
 
-    while (!end || cpt < nbr)
+    while (!end && cpt < nbr)
     {
         // First Step - Create new region
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each edgeId on the propagation front

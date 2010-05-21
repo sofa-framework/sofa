@@ -612,8 +612,9 @@ const VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
     elemAll.push_back(elem);
     elemOnFront.push_back(elem);
     elemPreviousFront.clear();
+    cpt++;
 
-    while (!end || cpt < nbr)
+    while (!end && cpt < nbr)
     {
         // First Step - Create new region
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each QuadID on the propagation front
