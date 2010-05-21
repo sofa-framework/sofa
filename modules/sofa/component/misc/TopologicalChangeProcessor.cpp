@@ -35,7 +35,7 @@
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
-
+#include <sofa/component/topology/EdgeSetTopologyModifier.h>
 
 namespace sofa
 {
@@ -59,9 +59,16 @@ int TopologicalChangeProcessorClass = core::RegisterObject("Read topological Cha
 TopologicalChangeProcessor::TopologicalChangeProcessor()
     : m_filename( initData(&m_filename, "filename", "input file name for topological changes."))
     , m_listChanges (initData (&m_listChanges, "listChanges", "0 for adding, 1 for removing, 2 for cutting and associated indices."))
-    , m_interval( initData(&m_interval, 0.0, "interval", "time duration between outputs"))
+    , m_interval( initData(&m_interval, 0.0, "interval", "time duration between 2 actions"))
     , m_shift( initData(&m_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , m_loop( initData(&m_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
+    , m_useDataInputs( initData(&m_useDataInputs, false, "useDataInputs", "If true, will perform operation using Data input lists rather than text file."))
+    , m_timeToRemove( initData(&m_timeToRemove, 0.0, "timeToRemove", "If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also."))
+    , m_edgesToRemove (initData (&m_edgesToRemove, "edgesToRemove", "List of edge IDs to be removed."))
+    , m_trianglesToRemove (initData (&m_trianglesToRemove, "trianglesToRemove", "List of triangle IDs to be removed."))
+    , m_quadsToRemove (initData (&m_quadsToRemove, "quadsToRemove", "List of quad IDs to be removed."))
+    , m_tetrahedraToRemove (initData (&m_tetrahedraToRemove, "tetrahedraToRemove", "List of tetrahedron IDs to be removed."))
+    , m_hexahedraToRemove (initData (&m_hexahedraToRemove, "hexahedraToRemove", "List of hexahedron IDs to be removed."))
     , m_topology(NULL)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
@@ -89,15 +96,15 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 void TopologicalChangeProcessor::init()
 {
     m_topology = dynamic_cast<core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
-    //for (unsigned int i = 0 ; i < 243; i++)
-    //std::cout << i << " " ;
 
-    reset();
+    if (!m_useDataInputs.getValue())
+        reset();
 }
 
 void TopologicalChangeProcessor::reinit()
 {
-    reset();
+    if (!m_useDataInputs.getValue())
+        reset();
 }
 
 
@@ -158,7 +165,10 @@ void TopologicalChangeProcessor::handleEvent(sofa::core::objectmodel::Event* eve
 {
     if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
     {
-        processTopologicalChanges();
+        if (m_useDataInputs.getValue())
+            processTopologicalChanges(this->getTime());
+        else
+            processTopologicalChanges();
     }
     if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
@@ -169,9 +179,97 @@ void TopologicalChangeProcessor::handleEvent(sofa::core::objectmodel::Event* eve
 
 void TopologicalChangeProcessor::processTopologicalChanges(double time)
 {
-    if (time == lastTime) return;
-    setTime(time);
-    processTopologicalChanges();
+    if (!m_useDataInputs.getValue())
+    {
+        if (time == lastTime) return;
+        setTime(time);
+        processTopologicalChanges();
+    }
+    else
+    {
+        if (m_timeToRemove.getValue() >= time)
+            return;
+
+        // process topological changes
+        helper::ReadAccessor< Data<helper::vector<unsigned int> > > edges = m_edgesToRemove;
+        helper::ReadAccessor< Data<helper::vector<unsigned int> > > triangles = m_trianglesToRemove;
+        helper::ReadAccessor< Data<helper::vector<unsigned int> > > quads = m_quadsToRemove;
+        helper::ReadAccessor< Data<helper::vector<unsigned int> > > tetrahedra = m_tetrahedraToRemove;
+        helper::ReadAccessor< Data<helper::vector<unsigned int> > > hexahedra = m_hexahedraToRemove;
+
+        if (!hexahedra.empty())
+        {
+            sofa::component::topology::HexahedronSetTopologyModifier* topoMod;
+            m_topology->getContext()->get(topoMod);
+            helper::vector <unsigned int> vitems;
+            vitems.assign(hexahedra.begin(), hexahedra.end());
+
+            if (topoMod)
+                topoMod->removeItems(vitems);
+            else
+                serr<< "TopologicalChangeProcessor: Error: No HexahedraTopology available" << sendl;
+        }
+
+        if (!tetrahedra.empty())
+        {
+            sofa::component::topology::TetrahedronSetTopologyModifier* topoMod;
+            m_topology->getContext()->get(topoMod);
+            helper::vector <unsigned int> vitems;
+            vitems.assign(tetrahedra.begin(), tetrahedra.end());
+
+            if (topoMod)
+                topoMod->removeItems(vitems);
+            else
+                serr<< "TopologicalChangeProcessor: Error: No TetrahedraTopology available" << sendl;
+        }
+
+        if (!quads.empty())
+        {
+            sofa::component::topology::QuadSetTopologyModifier* topoMod;
+            m_topology->getContext()->get(topoMod);
+            helper::vector <unsigned int> vitems;
+            vitems.assign(quads.begin(), quads.end());
+
+            if (topoMod)
+                topoMod->removeItems(vitems);
+            else
+                serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+        }
+
+        if (!triangles.empty())
+        {
+            sofa::component::topology::TriangleSetTopologyModifier* topoMod;
+            m_topology->getContext()->get(topoMod);
+            sofa::helper::vector <unsigned int> vitems;
+            vitems.assign(triangles.begin(), triangles.end());
+
+            if (topoMod)
+                topoMod->removeItems(vitems);
+            else
+                serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
+        }
+
+        if (!edges.empty())
+        {
+            sofa::component::topology::EdgeSetTopologyModifier* topoMod;
+            m_topology->getContext()->get(topoMod);
+            helper::vector <unsigned int> vitems;
+            vitems.assign(edges.begin(), edges.end());
+
+            if (topoMod)
+                topoMod->removeItems(vitems);
+            else
+                serr<< "TopologicalChangeProcessor: Error: No EdgeTopology available" << sendl;
+        }
+
+        // iterate, time set to infini if no interval.
+        double& newTime = *m_timeToRemove.beginEdit();
+        if (m_interval.getValue() != 0.0)
+            newTime += m_interval.getValue();
+        else
+            newTime = (unsigned int)-1;
+        m_timeToRemove.endEdit();
+    }
 }
 
 
@@ -256,7 +354,6 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
 
 void TopologicalChangeProcessor::processTopologicalChanges()
 {
-
     double time = getContext()->getTime() + m_shift.getValue();
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;

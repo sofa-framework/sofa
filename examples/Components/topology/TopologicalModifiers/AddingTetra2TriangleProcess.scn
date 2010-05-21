@@ -6,10 +6,10 @@
 	<Object type="CollisionGroup" />
 
 	<Node name="TT">
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MeshLoader" name="meshLoader" filename="mesh/cubeDof.msh" />
-		<Object type="MechanicalObject" name="Volume" />
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<MeshLoader name="meshLoader" filename="mesh/cubeDof.msh" />
+		<MechanicalObject name="Volume" />
 		<TetrahedronSetTopologyContainer name="Container" listening="1"/>
 		<TetrahedronSetTopologyModifier name="Modifier" />
 		<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
@@ -17,8 +17,8 @@
 		<TopologicalChangeProcessor listening="1" filename="AddingTetrahedraProcess.txt"/>
 
 		<UniformMass totalmass="1" />
-		<Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
-		<Object type="FixedConstraint" indices="0" />		
+		<FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1"/>
+		<FixedConstraint indices="0" />		
 <!--        	<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />-->
 
 		<Node name="T">
@@ -26,7 +26,7 @@
 		  <TriangleSetTopologyModifier name="Modifier" />
 		  <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		  <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1"/>
-		  <Object type="Tetra2TriangleTopologicalMapping" object1="../../Container" object2="Container" listening="1"/>
+		  <Tetra2TriangleTopologicalMapping object1="../../Container" object2="Container" listening="1"/>
 		  
             	  <!--<Object type="TriangularFEMForceField" name="FEM" youngModulus="10" poissonRatio="0.3" method="large" /> 
 		  			<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>		    
