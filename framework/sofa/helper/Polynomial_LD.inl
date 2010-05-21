@@ -274,6 +274,84 @@ Polynomial_LD<Real,N>::Polynomial_LD(const Monomial_LD<Real,N> & a)
     nbOfMonomial=1;
 }
 ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////
+template<typename Real, unsigned int N>
+Monomial_LD<Real,N>::Monomial_LD(const Real & m_coef, ...)
+{
+    coef=m_coef;
+    va_list vl;
+    va_start(vl,m_coef);
+    for(unsigned int i=0; i<N; i++)
+    {
+        powers[i]=va_arg(vl,int);
+        ostringstream oss; oss << 'l' << i ;
+        variables[i]=oss.str();
+    }
+    va_end(vl);
+}
+
+template<typename Real, unsigned int N>
+Polynomial_LD<Real,N>::Polynomial_LD(const unsigned  int nbofTerm,...)
+{
+    nbOfMonomial=nbofTerm;
+
+    va_list vl;
+    va_start(vl,nbofTerm);
+
+    for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
+    {
+        Monomial_LD<Real,N> mi;
+        Real coefi=va_arg(vl,Real); mi.SetCoef(coefi);
+
+        for(unsigned int jvar=0; jvar<N; jvar++)
+        {
+            int m_power=va_arg(vl,int); mi.SetPower(jvar,m_power);
+        }
+
+        listOfMonoMial.push_back(mi);
+    }
+    va_end(vl);
+    this->sort();
+}
+////////////////////////////////
+template<typename Real, unsigned int N>
+void Polynomial_LD<Real,N>::Set(const unsigned  int nbofTerm,...)
+{
+    nbOfMonomial=nbofTerm;
+    if(nbOfMonomial!=nbofTerm)
+    {
+        nbOfMonomial=nbofTerm  ;  listOfMonoMial.resize(nbOfMonomial);
+    }
+
+    va_list vl;
+    va_start(vl,nbofTerm);
+
+    for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
+    {
+
+        Monomial_LD<Real,N> mi;
+        Real coefi=va_arg(vl,Real); mi.SetCoef(coefi);
+
+        for(unsigned int jvar=0; jvar<N; jvar++)
+        {
+            int m_power=va_arg(vl,int); mi.SetPower(jvar,m_power);
+        }
+
+        listOfMonoMial[iterm]=mi;
+    }
+    va_end(vl);
+    this->sort();
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+////////////////////////////////
 template<typename Real, unsigned int N>
 int Polynomial_LD<Real,N>::degree()
 {
@@ -383,18 +461,20 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<R
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<Real,N> & b)
 {
-    MonomialIterator ita=listOfMonoMial.begin();
-    while(ita != listOfMonoMial.end())
+
+    Polynomial_LD<Real,N> old(*this);
+    listOfMonoMial.resize(this->nbOfMonomial*(b.nbOfMonomial));
+
+    for(int ita=0; ita<old.nbOfMonomial; ita++)
     {
-        for(MonomialConstIterator itb=b.listOfMonoMial.begin(); itb != b.listOfMonoMial.end(); ++itb)
+        for(int itb=0; itb<b.nbOfMonomial; itb++)
         {
-            Monomial_LD<Real,N> multipSimple=(*ita)*(*itb);
-            listOfMonoMial.insert(ita,multipSimple); nbOfMonomial++;
+            listOfMonoMial[ita+itb]=old.listOfMonoMial[ita]*b.listOfMonoMial[itb];
         }
-        ita=listOfMonoMial.erase(ita);
-        //++ita;
+
     }
-    sort();
+
+    this->sort();
     return *this;
 }
 ////////////////////////////////

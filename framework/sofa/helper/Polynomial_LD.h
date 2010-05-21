@@ -77,13 +77,14 @@ class Monomial_LD
 public :
 
     typedef sofa::defaulttype::Vec<N,Real> RNpoint;
-    ///to define the derivative operator m_mono.d(x), m_mono.d(y)...
+    ///to define the derivative operator m_mono.d(x), m_mono.d(y)
     enum {x,y,z,xy,yz,zx};
 
     Real coef;
     sofa::defaulttype::Vec<N,int>  powers;
 
     Monomial_LD();
+    Monomial_LD(const Real &,...);
     Monomial_LD(const Monomial_LD<Real,N> & a);
     Monomial_LD<Real,N>& operator=(const Monomial_LD<Real,N> & b);
 
@@ -155,12 +156,13 @@ class Polynomial_LD
 public :
 
     typedef sofa::helper::vector< Monomial_LD<Real,N> > MonomialsList;
+    //typedef std::vector< Monomial_LD<Real,N> > MonomialsList;
     typedef typename MonomialsList::const_iterator MonomialConstIterator;
     typedef typename MonomialsList::iterator MonomialIterator;
     typedef sofa::defaulttype::Vec<N,Real> RNpoint;
 
     int nbOfMonomial;
-    sofa::helper::vector< Monomial_LD<Real,N> > listOfMonoMial;
+    MonomialsList listOfMonoMial;
 
     ///Default constructor
     Polynomial_LD();
@@ -172,6 +174,10 @@ public :
     ///Assign operator
     Polynomial_LD<Real,N> & operator=(const Polynomial_LD<Real,N> & b)
     {listOfMonoMial=b.listOfMonoMial; nbOfMonomial=b.nbOfMonomial; return *this;}
+
+    ///setting of Polynomial
+    Polynomial_LD(const unsigned  int nbofTerm,...);
+    void Set(const unsigned  int nbofTerm,...);
 
     int degree();
 
