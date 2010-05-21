@@ -236,6 +236,7 @@ const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAccelerationInWorld(
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*dir*/) const
 {
+    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
     return NULL;
 }
 
@@ -244,6 +245,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
+    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
     return NULL;
 }
 
@@ -252,6 +254,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*ta
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string& /*path*/) const
 {
+    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
     return NULL;
 }
 
@@ -260,6 +263,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string&
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, SearchDirection /*dir*/) const
 {
+    std::cerr << "BaseContext: calling unimplemented getObjects method" << std::endl;
 }
 
 /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
@@ -267,6 +271,7 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
+    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
 }
 
 /// Mechanical Degrees-of-Freedom
