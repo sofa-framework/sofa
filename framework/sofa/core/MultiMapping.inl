@@ -91,56 +91,56 @@ void MultiMapping<In,Out>::updateMapping()
     }
 
     const VecId &idCoord = VecId::position();
-    helper::vector<typename Out::VecCoord*> vecOutPos;
+    helper::vector<OutVecCoord*> vecOutPos;
     getVecOutCoord(idCoord, vecOutPos);
-    helper::vector<const typename In::VecCoord*> vecInPos;
+    helper::vector<const InVecCoord*> vecInPos;
     getConstVecInCoord(idCoord, vecInPos);
     apply ( vecOutPos, vecInPos);
 
 
     const VecId &idDeriv = VecId::velocity();
-    helper::vector<typename Out::VecDeriv*> vecOutVel;
+    helper::vector<OutVecDeriv*> vecOutVel;
     getVecOutDeriv(idDeriv, vecOutVel);
-    helper::vector<const typename In::VecDeriv*> vecInVel;
+    helper::vector<const InVecDeriv*> vecInVel;
     getConstVecInDeriv(idDeriv, vecInVel);
     applyJ( vecOutVel, vecInVel);
 }
 
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getVecInCoord(const VecId &id, helper::vector<typename In::VecCoord*> &v) const
+void MultiMapping<In,Out>::getVecInCoord(const VecId &id, helper::vector<InVecCoord*> &v) const
 {
     for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecCoord(id.index));
 }
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getVecInDeriv(const VecId &id, helper::vector<typename In::VecDeriv*> &v) const
+void MultiMapping<In,Out>::getVecInDeriv(const VecId &id, helper::vector<InVecDeriv*> &v) const
 {
     for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecDeriv(id.index));
 }
 
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getConstVecInDeriv(const VecId &id, helper::vector<const typename In::VecDeriv*> &v) const
+void MultiMapping<In,Out>::getConstVecInDeriv(const VecId &id, helper::vector<const InVecDeriv*> &v) const
 {
     for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecDeriv(id.index));
 }
 
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getVecOutDeriv(const VecId &id, helper::vector<typename Out::VecDeriv*> &v) const
+void MultiMapping<In,Out>::getVecOutDeriv(const VecId &id, helper::vector<OutVecDeriv*> &v) const
 {
     for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecDeriv(id.index));
 }
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getConstVecOutCoord(const VecId &id, helper::vector<const typename Out::VecCoord*> &v) const
+void MultiMapping<In,Out>::getConstVecOutCoord(const VecId &id, helper::vector<const OutVecCoord*> &v) const
 {
     for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));
 }
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getConstVecOutDeriv(const VecId &id, helper::vector<const typename Out::VecDeriv*> &v) const
+void MultiMapping<In,Out>::getConstVecOutDeriv(const VecId &id, helper::vector<const OutVecDeriv*> &v) const
 {
     for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecDeriv(id.index));
 }

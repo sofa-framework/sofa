@@ -85,9 +85,9 @@ public:
     void addPoint(const In* fromModel, int index);
 
 
-    virtual void apply(const helper::vector<typename Out::VecCoord*>& OutPos, const helper::vector<const typename In::VecCoord*>& InPos );
-    virtual void applyJ(const helper::vector< typename Out::VecDeriv*>& OutDeriv, const helper::vector<const typename In::VecDeriv*>& InDeriv);
-    virtual void applyJT( const helper::vector<typename In::VecDeriv*>& OutDeriv , const helper::vector<const typename Out::VecDeriv*>& InDeriv );
+    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos );
+    virtual void applyJ (const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
+    virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
 
 protected :
     typedef topology::PointSubset IndexArray;
@@ -120,4 +120,4 @@ extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping<MultiMapping
 
 } // namespace sofa
 
-#endif
+#endif //SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H

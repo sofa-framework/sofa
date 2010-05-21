@@ -12,8 +12,10 @@
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace mapping
 {
 
@@ -28,18 +30,22 @@ public :
     typedef typename Inherit::Out Out;
     typedef typename In::Coord    InCoord;
     typedef typename In::Deriv    InDeriv;
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::DataTypes InDataTypes;
     typedef typename Out::Coord   OutCoord;
     typedef typename Out::Deriv   OutDeriv;
     typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
+    typedef typename Out::DataTypes OutDataTypes;
     typedef typename OutCoord::value_type Real;
 
-    CenterOfMassMultiMapping():Inherit() {};
+    CenterOfMassMultiMapping() {}
+    virtual ~CenterOfMassMultiMapping() {}
 
-    virtual ~CenterOfMassMultiMapping()
-    {};
-    virtual void apply(const helper::vector<typename Out::VecCoord*>& OutPos, const helper::vector<const typename In::VecCoord*>& InPos );
-    virtual void applyJ(const helper::vector< typename Out::VecDeriv*>& OutDeriv, const helper::vector<const typename In::VecDeriv*>& InDeriv);
-    virtual void applyJT( const helper::vector<typename In::VecDeriv*>& OutDeriv , const helper::vector<const typename Out::VecDeriv*>& InDeriv );
+    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos );
+    virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv);
+    virtual void applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv );
 
     virtual void init();
     void draw();
@@ -49,8 +55,8 @@ public :
 protected:
 
     helper::vector<const core::behavior::BaseMass*> inputBaseMass;
-    helper::vector<typename In::Coord> inputWeightedCOM;
-    helper::vector<typename In::Deriv> inputWeightedForce;
+    InVecCoord inputWeightedCOM;
+    InVecDeriv inputWeightedForce;
     helper::vector<double> inputTotalMass;
     double invTotalMass;
 
@@ -91,8 +97,11 @@ MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes>
 
 #endif
 #endif
-}
-}
-}
+
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa
 
 #endif //SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_H

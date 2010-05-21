@@ -1,3 +1,6 @@
+#ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_INL
+#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_INL
+
 #include <sofa/component/mapping/CenterOfMassMulti2Mapping.h>
 #include <sofa/defaulttype/Vec.h>
 //#include <sofa/helper/gl/template.h>
@@ -7,8 +10,10 @@
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace mapping
 {
 
@@ -65,23 +70,23 @@ public :
 };
 
 template< class BasicMulti2Mapping  >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const helper::vector<typename Out::VecCoord*>& OutPos, const helper::vector<const typename In1::VecCoord*>& InPos1 , const helper::vector<const typename In2::VecCoord*>& InPos2 )
+void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const In1VecCoord*>& inPos1 , const helper::vector<const In2VecCoord*>& inPos2 )
 {
-    assert( OutPos.size() == 1); // we are dealing with a many to one mapping.
-    typedef typename helper::vector<typename In1::Coord>::iterator iter_coord1;
-    typedef typename helper::vector<typename In2::Coord>::iterator iter_coord2;
+    assert( outPos.size() == 1); // we are dealing with a many to one mapping.
+    typedef typename helper::vector<In1Coord>::iterator iter_coord1;
+    typedef typename helper::vector<In2Coord>::iterator iter_coord2;
 
     SReal px=0,py=0,pz=0;
 
     {
         In1Coord COM;
-        std::transform(InPos1.begin(), InPos1.end(), inputBaseMass1.begin(), inputWeightedCOM1.begin(), Operation<In1>::WeightedCoord );
+        std::transform(inPos1.begin(), inPos1.end(), inputBaseMass1.begin(), inputWeightedCOM1.begin(), Operation<In1>::WeightedCoord );
 
         for( iter_coord1 iter = inputWeightedCOM1.begin() ; iter != inputWeightedCOM1.end(); ++iter ) COM += *iter;
         COM *= invTotalMass;
 
         SReal x,y,z;
-        In1::DataTypes::get(x,y,z,COM);
+        In1DataTypes::get(x,y,z,COM);
         px += x;
         py += y;
         pz += z;
@@ -89,91 +94,91 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const helper::vector
 
     {
         In2Coord COM;
-        std::transform(InPos2.begin(), InPos2.end(), inputBaseMass2.begin(), inputWeightedCOM2.begin(), Operation<In2>::WeightedCoord );
+        std::transform(inPos2.begin(), inPos2.end(), inputBaseMass2.begin(), inputWeightedCOM2.begin(), Operation<In2>::WeightedCoord );
 
         for( iter_coord2 iter = inputWeightedCOM2.begin() ; iter != inputWeightedCOM2.end(); ++iter ) COM += *iter;
         COM *= invTotalMass;
 
         SReal x,y,z;
-        In2::DataTypes::get(x,y,z,COM);
+        In2DataTypes::get(x,y,z,COM);
         px += x;
         py += y;
         pz += z;
     }
 
-    typename Out::VecCoord* outVecCoord = OutPos[0];
+    OutVecCoord* outVecCoord = outPos[0];
 
-    Out::DataTypes::set((*outVecCoord)[0], px,py,pz);
+    OutDataTypes::set((*outVecCoord)[0], px,py,pz);
 }
 
 template< class BasicMulti2Mapping >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJ(const helper::vector< typename Out::VecDeriv*>& OutDeriv, const helper::vector<const typename In1::VecDeriv*>& InDeriv1, const helper::vector<const typename In2::VecDeriv*>& InDeriv2)
+void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2)
 {
-    assert( OutDeriv.size() == 1 );
-    typedef typename helper::vector<typename In1::Deriv>::iterator                     iter_deriv1;
-    typedef typename helper::vector<typename In2::Deriv>::iterator                     iter_deriv2;
+    assert( outDeriv.size() == 1 );
+    typedef typename helper::vector<In1Deriv>::iterator                     iter_deriv1;
+    typedef typename helper::vector<In2Deriv>::iterator                     iter_deriv2;
 
     SReal px=0,py=0,pz=0;
 
     {
-        typename In1::Deriv Velocity;
-        std::transform(InDeriv1.begin(), InDeriv1.end(), inputBaseMass1.begin(), inputWeightedForce1.begin(), Operation<In1>::WeightedDeriv );
+        In1Deriv Velocity;
+        std::transform(inDeriv1.begin(), inDeriv1.end(), inputBaseMass1.begin(), inputWeightedForce1.begin(), Operation<In1>::WeightedDeriv );
 
         for ( iter_deriv1 iter = inputWeightedForce1.begin() ; iter != inputWeightedForce1.end() ; ++iter ) Velocity += *iter;
         Velocity *= invTotalMass;
 
         SReal x,y,z;
-        In1::DataTypes::get(x,y,z,Velocity);
+        In1DataTypes::get(x,y,z,Velocity);
         px += x;
         py += y;
         pz += z;
     }
 
     {
-        typename In2::Deriv Velocity;
-        std::transform(InDeriv2.begin(), InDeriv2.end(), inputBaseMass2.begin(), inputWeightedForce2.begin(), Operation<In2>::WeightedDeriv );
+        In2Deriv Velocity;
+        std::transform(inDeriv2.begin(), inDeriv2.end(), inputBaseMass2.begin(), inputWeightedForce2.begin(), Operation<In2>::WeightedDeriv );
 
         for ( iter_deriv2 iter = inputWeightedForce2.begin() ; iter != inputWeightedForce2.end() ; ++iter ) Velocity += *iter;
         Velocity *= invTotalMass;
 
         SReal x,y,z;
-        In2::DataTypes::get(x,y,z,Velocity);
+        In2DataTypes::get(x,y,z,Velocity);
         px += x;
         py += y;
         pz += z;
     }
 
-    typename Out::VecDeriv* outVecDeriv =  OutDeriv[0];
+    OutVecDeriv* outVecDeriv =  outDeriv[0];
 
-    Out::DataTypes::set((*outVecDeriv)[0], px,py,pz);
+    OutDataTypes::set((*outVecDeriv)[0], px,py,pz);
 }
 
 
 
 template < class BasicMulti2Mapping >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJT( const helper::vector<typename In1::VecDeriv*>& OutDeriv1 ,const helper::vector<typename In2::VecDeriv*>& OutDeriv2 , const helper::vector<const typename Out::VecDeriv*>& InDeriv )
+void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )
 {
-    assert( InDeriv.size() == 1 );
+    assert( inDeriv.size() == 1 );
     typedef helper::vector<const BaseMass*>::iterator iter_mass;
 
 
     typename Out::Deriv gravityCenterForce;
-    const typename Out::VecDeriv* inForce = InDeriv[0];
+    const typename Out::VecDeriv* inForce = inDeriv[0];
     if( !inForce->empty() )
     {
         gravityCenterForce = (* inForce) [0];
         gravityCenterForce *= invTotalMass;
 
         SReal x,y,z;
-        Out::DataTypes::get(x,y,z,gravityCenterForce);
+        OutDataTypes::get(x,y,z,gravityCenterForce);
 
         {
             typename In1::Deriv f;
-            In1::DataTypes::set(f,x,y,z);
+            In1DataTypes::set(f,x,y,z);
 
-            for (unsigned int i=0; i<OutDeriv1.size(); ++i)
+            for (unsigned int i=0; i<outDeriv1.size(); ++i)
             {
-                typename In1::VecDeriv& v=*(OutDeriv1[i]);
+                typename In1::VecDeriv& v=*(outDeriv1[i]);
                 const core::behavior::BaseMass* m=inputBaseMass1[i];
                 for (unsigned int p=0; p<v.size(); ++p)
                 {
@@ -184,11 +189,11 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJT( const helper::vec
 
         {
             typename In2::Deriv f;
-            In2::DataTypes::set(f,x,y,z);
+            In2DataTypes::set(f,x,y,z);
 
-            for (unsigned int i=0; i<OutDeriv2.size(); ++i)
+            for (unsigned int i=0; i<outDeriv2.size(); ++i)
             {
-                typename In2::VecDeriv& v=*(OutDeriv2[i]);
+                typename In2::VecDeriv& v=*(outDeriv2[i]);
                 const core::behavior::BaseMass* m=inputBaseMass2[i];
                 for (unsigned int p=0; p<v.size(); ++p)
                 {
@@ -254,6 +259,10 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::draw()
 }
 
 
-}
-}
-}
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa
+
+#endif //SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_INL

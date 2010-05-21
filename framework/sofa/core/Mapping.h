@@ -54,6 +54,12 @@ public:
     /// Output Model Type
     typedef TOut Out;
 
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
+
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
+
 protected:
     /// Input Model
     In* fromModel;
@@ -96,7 +102,7 @@ public:
     /// $ out = J in $
     ///
     /// This method must be reimplemented by all mappings.
-    virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
+    virtual void apply( OutVecCoord& out, const InVecCoord& in ) = 0;
 
     /// Apply the mapping on derived (velocity, displacement) vectors.
     ///
@@ -104,7 +110,7 @@ public:
     /// $ out = J in $
     ///
     /// This method must be reimplemented by all mappings.
-    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
+    virtual void applyJ( OutVecDeriv& out, const InVecDeriv& in ) = 0;
 
     virtual void init();
 
