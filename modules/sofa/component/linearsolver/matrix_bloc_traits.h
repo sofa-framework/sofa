@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXBLOCTRAITS_H
 
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
 {
@@ -115,6 +116,7 @@ public:
     static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
+    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real>::getElementType(); }
     static const char* Name();
 };
 
@@ -156,6 +158,8 @@ public:
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
     static const char* Name() { return "f"; }
+    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_FLOAT; }
+    static unsigned int getElementSize() { return sizeof(Real); }
 };
 
 template <>
@@ -178,7 +182,32 @@ public:
     static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
+    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_FLOAT; }
     static const char* Name() { return "d"; }
+};
+
+template <>
+class matrix_bloc_traits < int >
+{
+public:
+    typedef float Bloc;
+    typedef float Real;
+    enum { NL = 1 };
+    enum { NC = 1 };
+    static Real& v(Bloc& b, int, int) { return b; }
+    static const Real& v(const Bloc& b, int, int) { return b; }
+    static void clear(Bloc& b) { b = 0; }
+    static bool empty(const Bloc& b)
+    {
+        return b == 0;
+    }
+    static void invert(Bloc& result, const Bloc& b) { result = 1.0f/b; }
+
+    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL>::split(index, modulo); }
+    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC>::split(index, modulo); }
+
+    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_INT; }
+    static const char* Name() { return "f"; }
 };
 
 } // namespace linearsolver
