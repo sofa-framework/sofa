@@ -29,6 +29,7 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/HexahedronData.h>
 #include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalMapping.h>
 #include <sofa/core/behavior/MappedModel.h>
@@ -106,6 +107,7 @@ class BarycentricMapper
 {
 public:
     typedef typename In::Real Real;
+    typedef typename In::Real InReal;
     typedef typename Out::Real OutReal;
 
     typedef typename In::VecDeriv InVecDeriv;
@@ -118,9 +120,20 @@ public:
     typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
     typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
-
+    enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
+    enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
+    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
 protected:
+
+    void addMatrixContrib(MatrixType* m, int row, int col, Real value)
+    {
+        MBloc* b = m->wbloc(row, col, true); // get write access to a matrix bloc, creating it if not found
+        for (int i=0; i < ((int)NIn < (int)NOut ? (int)NIn : (int)NOut); ++i)
+            (*b)[i][i] += value;
+    }
+
     template< int NC,  int NP>
     class MappingData
     {
@@ -160,6 +173,11 @@ public:
     virtual ~BarycentricMapper() {}
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int /*outSize*/, int /*inSize*/)
+    {
+        std::cerr << "BaseMechanicalMapping::getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::Base::decodeClassName(typeid(*this)) << std::endl;
+        return NULL;
+    }
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) = 0;
@@ -240,7 +258,18 @@ public:
     typedef typename Inherit::MappingData1D MappingData1D;
     typedef typename Inherit::MappingData2D MappingData2D;
     typedef typename Inherit::MappingData3D MappingData3D;
+
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
 protected:
+    void addMatrixContrib(MatrixType* m, int row, int col, Real value)
+    {
+        Inherit::addMatrixContrib(m, row, col, value);
+    }
+
     sofa::helper::vector< MappingData1D >  map1d;
     sofa::helper::vector< MappingData2D >  map2d;
     sofa::helper::vector< MappingData3D >  map3d;
@@ -248,16 +277,22 @@ protected:
     core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
     core::behavior::BaseMechanicalState::ParticleMask *maskTo;
 
+    MatrixType* matrixJ;
+    bool updateJ;
 public:
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
             topology::PointSetTopologyContainer* toTopology,
             core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
             core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
-        : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
-          maskFrom(_maskFrom), maskTo(_maskTo)
-    {}
+        : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology)
+        , maskFrom(_maskFrom), maskTo(_maskTo), matrixJ(NULL), updateJ(true)
+    {
+    }
 
-    virtual ~BarycentricMapperMeshTopology() {}
+    virtual ~BarycentricMapperMeshTopology()
+    {
+        if (matrixJ) delete matrixJ;
+    }
 
     void clear(int reserve=0);
 
@@ -277,6 +312,7 @@ public:
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
@@ -1051,6 +1087,8 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+
+    virtual const sofa::defaulttype::BaseMatrix* getJ();
 
     void draw();
 
