@@ -126,11 +126,15 @@ public:
 protected:
 
     void getVecInCoord     (const VecId &id, helper::vector<      typename In::VecCoord*> &v) const;
-    void getConstVecInCoord(const VecId &id, helper::vector<const typename In::VecCoord*> &v) const;
+    void getConstVecInCoord(const VecId &id, helper::vector<const typename In::VecCoord*> &v) const
+    {for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecCoord(id.index));}
+
     void getVecInDeriv     (const VecId &id, helper::vector<      typename In::VecDeriv*> &v) const;
     void getConstVecInDeriv(const VecId &id, helper::vector<const typename In::VecDeriv*> &v) const;
 
-    void getVecOutCoord     (const VecId &id, helper::vector<      typename Out::VecCoord*> &v) const;
+    void getVecOutCoord     (const VecId &id, helper::vector<      typename Out::VecCoord*> &v) const
+    {for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));}
+
     void getConstVecOutCoord(const VecId &id, helper::vector<const typename Out::VecCoord*> &v) const;
     void getVecOutDeriv     (const VecId &id, helper::vector<      typename Out::VecDeriv*> &v) const;
     void getConstVecOutDeriv(const VecId &id, helper::vector<const typename Out::VecDeriv*> &v) const;
