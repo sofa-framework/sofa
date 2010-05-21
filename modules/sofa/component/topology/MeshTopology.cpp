@@ -61,6 +61,7 @@ MeshTopology::MeshTopology()
     , seqHexahedra(initData(&seqHexahedra,"hexahedra","List of hexahedron indices")), validHexahedra(false)
     , revision(0)
     , _draw(initData(&_draw, false, "drawHexahedra","if true, draw the topology hexahedra"))
+    , UpperTopology(sofa::core::topology::EDGE)
 {
     addAlias(&seqPoints,"points");
     addAlias(&seqEdges,"lines");
@@ -80,6 +81,18 @@ void MeshTopology::init()
         {
             loadFromMeshLoader(loader);
         }
+
+        // looking for upper topology
+        if (seqHexahedra.isSet())
+            UpperTopology = sofa::core::topology::HEXAHEDRON;
+        else if (seqTetrahedra.isSet())
+            UpperTopology = sofa::core::topology::TETRAHEDRON;
+        else if (seqQuads.isSet())
+            UpperTopology = sofa::core::topology::QUAD;
+        else if (seqTriangles.isSet())
+            UpperTopology = sofa::core::topology::TRIANGLE;
+        else
+            UpperTopology = sofa::core::topology::EDGE;
     }
 
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
@@ -2176,6 +2189,317 @@ void MeshTopology::updateTetrahedra()
     if (!seqTetrahedra.getValue().empty()) return; // tetrahedra already defined
     // No 4D elements yet! ;)
 }
+
+
+
+/// Get information about connexity of the mesh
+/// @{
+
+bool MeshTopology::checkConnexity()
+{
+    unsigned int nbr = 0;
+
+    if (UpperTopology == core::topology::HEXAHEDRON)
+        nbr = this->getNbHexahedra();
+    else if (UpperTopology == core::topology::TETRAHEDRON)
+        nbr = this->getNbTetrahedra();
+    else if (UpperTopology == core::topology::QUAD)
+        nbr = this->getNbQuads();
+    else if (UpperTopology == core::topology::TRIANGLE)
+        nbr = this->getNbTriangles();
+    else
+        nbr = this->getNbEdges();
+
+    if (nbr == 0)
+    {
+#ifndef NDEBUG
+        serr << "Warning. [MeshTopology::checkConnexity] Can't compute connexity as some element are missing" << endl;
+#endif
+        return false;
+    }
+
+    sofa::helper::vector <unsigned int> elemAll = this->getConnectedElement(0);
+
+    if (elemAll.size() != nbr)
+    {
+        serr << "Warning: in computing connexity, elements are missings. There is more than one connexe component." << sendl;
+        return false;
+    }
+
+    return true;
+}
+
+
+unsigned int MeshTopology::getNumberOfConnectedComponent()
+{
+    unsigned int nbr = 0;
+
+    if (UpperTopology == core::topology::HEXAHEDRON)
+        nbr = this->getNbHexahedra();
+    else if (UpperTopology == core::topology::TETRAHEDRON)
+        nbr = this->getNbTetrahedra();
+    else if (UpperTopology == core::topology::QUAD)
+        nbr = this->getNbQuads();
+    else if (UpperTopology == core::topology::TRIANGLE)
+        nbr = this->getNbTriangles();
+    else
+        nbr = this->getNbEdges();
+
+    if (nbr == 0)
+    {
+#ifndef NDEBUG
+        serr << "Warning. [MeshTopology::getNumberOfConnectedComponent] Can't compute connexity as there are no elements" << endl;
+#endif
+        return 0;
+    }
+
+    sofa::helper::vector <unsigned int> elemAll = this->getConnectedElement(0);
+    unsigned int cpt = 1;
+
+    while (elemAll.size() < nbr)
+    {
+        std::sort(elemAll.begin(), elemAll.end());
+        unsigned int other_ID = elemAll.size();
+
+        for (unsigned int i = 0; i<elemAll.size(); ++i)
+            if (elemAll[i] != i)
+            {
+                other_ID = i;
+                break;
+            }
+
+        sofa::helper::vector <unsigned int> elemTmp = this->getConnectedElement(other_ID);
+        cpt++;
+
+        elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
+    }
+
+    return cpt;
+}
+
+
+const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsigned int elem)
+{
+    unsigned int nbr = 0;
+
+    if (UpperTopology == core::topology::HEXAHEDRON)
+        nbr = this->getNbHexahedra();
+    else if (UpperTopology == core::topology::TETRAHEDRON)
+        nbr = this->getNbTetrahedra();
+    else if (UpperTopology == core::topology::QUAD)
+        nbr = this->getNbQuads();
+    else if (UpperTopology == core::topology::TRIANGLE)
+        nbr = this->getNbTriangles();
+    else
+        nbr = this->getNbEdges();
+
+    sofa::helper::vector <unsigned int> elemAll;
+    sofa::helper::vector <unsigned int> elemOnFront, elemPreviousFront, elemNextFront;
+    bool end = false;
+    unsigned int cpt = 0;
+
+    // init algo
+    elemAll.push_back(elem);
+    elemOnFront.push_back(elem);
+    elemPreviousFront.clear();
+
+    while (!end || cpt < nbr)
+    {
+        // First Step - Create new region
+        elemNextFront = this->getElementAroundElements(elemOnFront); // for each elementID on the propagation front
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        {
+            bool find = false;
+            unsigned int id = elemNextFront[i];
+
+            for (unsigned int j = 0; j<elemAll.size(); ++j)
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+            {
+                elemAll.push_back(id);
+                elemPreviousFront.push_back(id);
+            }
+        }
+
+        // cpt for connexity
+        cpt +=elemPreviousFront.size();
+
+        if (elemPreviousFront.empty())
+        {
+            end = true;
+#ifndef NDEBUG
+            serr << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        elemOnFront = elemPreviousFront;
+        elemPreviousFront.clear();
+    }
+
+    return elemAll;
+}
+
+
+const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElement(unsigned int elem)
+{
+    sofa::helper::vector <unsigned int> elems;
+    unsigned int nbr = 0;
+
+    if (UpperTopology == core::topology::HEXAHEDRON)
+    {
+        nbr = 8;
+        if(!this->m_hexahedraAroundVertex.empty())
+            createHexahedraAroundVertexArray();
+    }
+    else if (UpperTopology == core::topology::TETRAHEDRON)
+    {
+        nbr = 4;
+        if(!this->m_tetrahedraAroundVertex.empty())
+            createTetrahedraAroundVertexArray();
+    }
+    else if (UpperTopology == core::topology::QUAD)
+    {
+        nbr = 4;
+        if(!this->m_quadsAroundVertex.empty())
+            createQuadsAroundVertexArray();
+    }
+    else if (UpperTopology == core::topology::TRIANGLE)
+    {
+        nbr = 3;
+        if(!this->m_trianglesAroundVertex.empty())
+            createTrianglesAroundVertexArray();
+    }
+    else
+    {
+        nbr = 2;
+        if(!this->m_edgesAroundVertex.empty())
+            createEdgesAroundVertexArray();
+    }
+
+
+    Triangle the_tri = this->getTriangle(elem);
+
+    for(unsigned int i = 0; i<nbr; ++i) // for each node of the triangle
+    {
+        sofa::helper::vector <unsigned int> elemAV;
+
+        if (UpperTopology == core::topology::HEXAHEDRON)
+            elemAV = this->getHexahedraAroundVertex(getHexahedron(elem)[i]);
+        else if (UpperTopology == core::topology::TETRAHEDRON)
+            elemAV = this->getTetrahedraAroundVertex(getTetrahedron(elem)[i]);
+        else if (UpperTopology == core::topology::QUAD)
+            elemAV = this->getQuadsAroundVertex(getQuad(elem)[i]);
+        else if (UpperTopology == core::topology::TRIANGLE)
+            elemAV = this->getTrianglesAroundVertex(getTriangle(elem)[i]);
+        else
+            elemAV = this->getEdgesAroundVertex(getEdge(elem)[i]);
+
+
+        for (unsigned int j = 0; j<elemAV.size(); ++j) // for each element around the node
+        {
+            bool find = false;
+            unsigned int id = elemAV[j];
+
+            if (id == elem)
+                continue;
+
+            for (unsigned int k = 0; k<elems.size(); ++k) // check no redundancy
+                if (id == elems[k])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (!find)
+                elems.push_back(id);
+        }
+    }
+
+    return elems;
+}
+
+
+const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements(sofa::helper::vector <unsigned int> elems)
+{
+    sofa::helper::vector <unsigned int> elemAll;
+    sofa::helper::vector <unsigned int> elemTmp;
+
+    if (UpperTopology == core::topology::HEXAHEDRON)
+    {
+        if(!this->m_hexahedraAroundVertex.empty())
+            createHexahedraAroundVertexArray();
+    }
+    else if (UpperTopology == core::topology::TETRAHEDRON)
+    {
+        if(!this->m_tetrahedraAroundVertex.empty())
+            createTetrahedraAroundVertexArray();
+    }
+    else if (UpperTopology == core::topology::QUAD)
+    {
+        if(!this->m_quadsAroundVertex.empty())
+            createQuadsAroundVertexArray();
+    }
+    else if (UpperTopology == core::topology::TRIANGLE)
+    {
+        if(!this->m_trianglesAroundVertex.empty())
+            createTrianglesAroundVertexArray();
+    }
+    else
+    {
+        if(!this->m_edgesAroundVertex.empty())
+            createEdgesAroundVertexArray();
+    }
+
+
+    for (unsigned int i = 0; i <elems.size(); ++i) // for each elementID of input vector
+    {
+        sofa::helper::vector <unsigned int> elemTmp2 = this->getElementAroundElement(elems[i]);
+
+        elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
+    }
+
+    for (unsigned int i = 0; i<elemTmp.size(); ++i) // for each elementID found
+    {
+        bool find = false;
+        unsigned int id = elemTmp[i];
+
+        for (unsigned int j = 0; j<elems.size(); ++j) // check no redundancy with input vector
+            if (id == elems[j])
+            {
+                find = true;
+                break;
+            }
+
+        if (!find)
+        {
+            for (unsigned int j = 0; j<elemAll.size(); ++j) // check no redundancy in output vector
+                if (id == elemAll[j])
+                {
+                    find = true;
+                    break;
+                }
+        }
+
+        if (!find)
+            elemAll.push_back(id);
+    }
+
+
+    return elemAll;
+}
+
+/// @}
+
+
+
 
 void MeshTopology::draw()
 {
