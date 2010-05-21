@@ -2302,8 +2302,9 @@ const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsi
     elemAll.push_back(elem);
     elemOnFront.push_back(elem);
     elemPreviousFront.clear();
+    cpt++;
 
-    while (!end || cpt < nbr)
+    while (!end && cpt < nbr)
     {
         // First Step - Create new region
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each elementID on the propagation front

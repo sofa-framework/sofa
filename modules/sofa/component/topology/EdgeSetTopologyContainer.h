@@ -59,6 +59,8 @@ public:
 
     virtual void init();
 
+    virtual void reinit();
+
 
 
     /// Procedural creation methods
@@ -222,6 +224,13 @@ protected:
 
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
+
+
+public:
+
+    Data <bool> m_checkConnexity;
+
+
 };
 
 } // namespace topology

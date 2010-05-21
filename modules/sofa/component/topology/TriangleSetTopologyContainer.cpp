@@ -761,7 +761,6 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
 bool TriangleSetTopologyContainer::checkConnexity()
 {
-
     unsigned int nbr = this->getNbTriangles();
 
     if (nbr == 0)
@@ -779,7 +778,6 @@ bool TriangleSetTopologyContainer::checkConnexity()
         serr << "Warning: in computing connexity, triangles are missings. There is more than one connexe component." << sendl;
         return false;
     }
-
     return true;
 }
 
@@ -816,7 +814,6 @@ unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 
         elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
     }
-
     return cpt;
 }
 
@@ -841,12 +838,12 @@ const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID
     elemAll.push_back(elem);
     elemOnFront.push_back(elem);
     elemPreviousFront.clear();
+    cpt++;
 
-    while (!end || cpt < nbr)
+    while (!end && cpt < nbr)
     {
         // First Step - Create new region
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each triangleID on the propagation front
-
         // Second Step - Avoid backward direction
         for (unsigned int i = 0; i<elemNextFront.size(); ++i)
         {
@@ -866,7 +863,6 @@ const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID
                 elemPreviousFront.push_back(id);
             }
         }
-
         // cpt for connexity
         cpt +=elemPreviousFront.size();
 
@@ -882,7 +878,6 @@ const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID
         elemOnFront = elemPreviousFront;
         elemPreviousFront.clear();
     }
-
     return elemAll;
 }
 
@@ -924,7 +919,6 @@ const VecTriangleID TriangleSetTopologyContainer::getElementAroundElement(Triang
                 elems.push_back(id);
         }
     }
-
     return elems;
 }
 
@@ -974,7 +968,6 @@ const VecTriangleID TriangleSetTopologyContainer::getElementAroundElements(VecTr
         if (!find)
             elemAll.push_back(id);
     }
-
 
     return elemAll;
 }
