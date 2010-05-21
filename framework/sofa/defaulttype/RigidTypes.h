@@ -196,6 +196,7 @@ public:
     }
 
     enum { static_size = 3 };
+    enum { total_size = 6 };
 
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
@@ -450,6 +451,7 @@ public:
         return 3;
     }
     enum { static_size = 3 };
+    enum { total_size = 7 };
 
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
@@ -834,6 +836,7 @@ public:
     }
 
     enum { static_size = 2 };
+    enum { total_size = 3 };
 
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
@@ -1066,6 +1069,7 @@ public:
     }
 
     enum { static_size = 2 };
+    enum { total_size = 3 };
 
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
@@ -1318,12 +1322,16 @@ typedef Rigid2dMass Rigid2Mass;
 template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real> >
 {
+    // static_size is currently defined as the number of translation DOFs, while here we want all dofs
+    enum { Size = sofa::defaulttype::RigidDeriv<N,real>::total_size };
     static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
 template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real> >
 {
+    // static_size is currently defined as the number of translation DOFs, while here we want all dofs
+    enum { Size = sofa::defaulttype::RigidCoord<N,real>::total_size };
     static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
