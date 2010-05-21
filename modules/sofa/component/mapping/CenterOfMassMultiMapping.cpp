@@ -5,10 +5,13 @@
 #include <sofa/core/behavior/MechanicalMultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MechanicalState.h>
+
 namespace sofa
 {
+
 namespace component
 {
+
 namespace mapping
 {
 
@@ -45,6 +48,8 @@ template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< MechanicalMu
 template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< MechanicalMultiMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > ;
 #endif
 
-}
-}
-}
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa

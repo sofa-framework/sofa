@@ -1,3 +1,6 @@
+#ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_INL
+
 #include <sofa/component/mapping/CenterOfMassMultiMapping.h>
 #include <sofa/defaulttype/Vec.h>
 //#include <sofa/helper/gl/template.h>
@@ -7,14 +10,15 @@
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace mapping
 {
 
 using namespace core;
 using namespace core::behavior;
-
 
 template < typename Model >
 struct Operation
@@ -66,68 +70,66 @@ public :
 };
 
 template< class BasicMultiMapping  >
-void CenterOfMassMultiMapping< BasicMultiMapping >::apply(const helper::vector<typename Out::VecCoord*>& OutPos, const helper::vector<const typename In::VecCoord*>& InPos )
+void CenterOfMassMultiMapping< BasicMultiMapping >::apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos )
 {
-    typedef typename helper::vector<typename In::Coord>::iterator iter_coord;
-    assert( OutPos.size() == 1); // we are dealing with a many to one mapping.
+    typedef typename InVecCoord::iterator iter_coord;
+    assert( outPos.size() == 1); // we are dealing with a many to one mapping.
     InCoord COM;
-    std::transform(InPos.begin(), InPos.end(), inputBaseMass.begin(), inputWeightedCOM.begin(), Operation<In>::WeightedCoord );
+    std::transform(inPos.begin(), inPos.end(), inputBaseMass.begin(), inputWeightedCOM.begin(), Operation<In>::WeightedCoord );
 
     for( iter_coord iter = inputWeightedCOM.begin() ; iter != inputWeightedCOM.end(); ++iter ) COM += *iter;
     COM *= invTotalMass;
 
-    typename Out::VecCoord* outVecCoord = OutPos[0];
+    OutVecCoord* outVecCoord = outPos[0];
 
     SReal x,y,z;
-    In::DataTypes::get(x,y,z,COM);
-    Out::DataTypes::set((*outVecCoord)[0], x,y,z);
+    InDataTypes::get(x,y,z,COM);
+    OutDataTypes::set((*outVecCoord)[0], x,y,z);
 }
 
 template< class BasicMultiMapping >
-void CenterOfMassMultiMapping< BasicMultiMapping >::applyJ(const helper::vector< typename Out::VecDeriv*>& OutDeriv, const helper::vector<const typename In::VecDeriv*>& InDeriv)
+void CenterOfMassMultiMapping< BasicMultiMapping >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
 {
-    typedef typename helper::vector<typename In::Deriv>::iterator                     iter_deriv;
-    assert( OutDeriv.size() == 1 );
+    typedef typename InVecDeriv::iterator iter_deriv;
+    assert( outDeriv.size() == 1 );
 
-    typename In::Deriv Velocity;
-    std::transform(InDeriv.begin(), InDeriv.end(), inputBaseMass.begin(), inputWeightedForce.begin(), Operation<In>::WeightedDeriv );
+    InDeriv Velocity;
+    std::transform(inDeriv.begin(), inDeriv.end(), inputBaseMass.begin(), inputWeightedForce.begin(), Operation<In>::WeightedDeriv );
 
     for ( iter_deriv iter = inputWeightedForce.begin() ; iter != inputWeightedForce.end() ; ++iter ) Velocity += *iter;
     Velocity *= invTotalMass;
 
-    typename Out::VecDeriv* outVecDeriv =  OutDeriv[0];
+    OutVecDeriv* outVecDeriv =  outDeriv[0];
 
     SReal x,y,z;
-    In::DataTypes::get(x,y,z,Velocity);
-    Out::DataTypes::set((*outVecDeriv)[0], x,y,z);
+    InDataTypes::get(x,y,z,Velocity);
+    OutDataTypes::set((*outVecDeriv)[0], x,y,z);
 }
 
 
 
 template < class BasicMultiMapping >
-void CenterOfMassMultiMapping< BasicMultiMapping >::applyJT( const helper::vector<typename In::VecDeriv*>& OutDeriv , const helper::vector<const typename Out::VecDeriv*>& InDeriv )
+void CenterOfMassMultiMapping< BasicMultiMapping >::applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv )
 {
-    typedef typename helper::vector<typename In::VecDeriv>::iterator iter_vecDeriv;
-    typedef helper::vector<const BaseMass*>::iterator iter_mass;
-    assert( InDeriv.size() == 1 );
+    assert( inDeriv.size() == 1 );
 
 
-    typename Out::Deriv gravityCenterForce;
-    const typename Out::VecDeriv* inForce = InDeriv[0];
+    OutDeriv gravityCenterForce;
+    const OutVecDeriv* inForce = inDeriv[0];
     if( !inForce->empty() )
     {
         gravityCenterForce = (* inForce) [0];
         gravityCenterForce *= invTotalMass;
 
         SReal x,y,z;
-        Out::DataTypes::get(x,y,z,gravityCenterForce);
+        OutDataTypes::get(x,y,z,gravityCenterForce);
 
-        typename In::Deriv f;
-        In::DataTypes::set(f,x,y,z);
+        InDeriv f;
+        InDataTypes::set(f,x,y,z);
 
-        for (unsigned int i=0; i<OutDeriv.size(); ++i)
+        for (unsigned int i=0; i<outDeriv.size(); ++i)
         {
-            typename In::VecDeriv& v=*(OutDeriv[i]);
+            InVecDeriv& v=*(outDeriv[i]);
             const core::behavior::BaseMass* m=inputBaseMass[i];
             for (unsigned int p=0; p<v.size(); ++p)
             {
@@ -140,7 +142,7 @@ void CenterOfMassMultiMapping< BasicMultiMapping >::applyJT( const helper::vecto
 template< class BasicMultiMapping >
 void CenterOfMassMultiMapping< BasicMultiMapping>::init()
 {
-    typedef helper::vector<double>::iterator                        iter_double;
+    typedef helper::vector<double>::iterator iter_double;
 
     inputBaseMass.resize ( this->getFromModels().size()  );
     inputTotalMass.resize( this->getFromModels().size()  );
@@ -189,6 +191,10 @@ void CenterOfMassMultiMapping< BasicMultiMapping >::draw()
 }
 
 
-}
-}
-}
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa
+
+#endif //SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_INL

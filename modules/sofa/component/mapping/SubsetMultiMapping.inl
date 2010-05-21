@@ -1,14 +1,20 @@
+#ifndef SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL
+
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 
 
-using namespace sofa::core;
-
 namespace sofa
 {
+
 namespace component
 {
+
 namespace mapping
 {
+
+using namespace sofa::core;
+
 
 template < class BasicMapping>
 void SubsetMultiMapping<BasicMapping>::init()
@@ -38,19 +44,19 @@ void SubsetMultiMapping<BasicMapping>::addPoint( const In* fromModel, int index)
 
 
 template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::apply(const helper::vector<typename Out::VecCoord*>& OutPos, const helper::vector<const typename In::VecCoord*>& InPos )
+void SubsetMultiMapping<BasicMapping>::apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos )
 {
     typename std::map<const In* , IndexArray >::iterator iterMap;
     Out* output = this->toModels[0];
     unsigned int total = computeTotalInputPoints();
     output->resize(total);
 
-    OutVecCoord* outVecCoord = OutPos[0];
+    OutVecCoord* outVecCoord = outPos[0];
     unsigned int size = 0;
-    for( unsigned int i = 0; i < InPos.size() ; i++)
+    for( unsigned int i = 0; i < inPos.size() ; i++)
     {
         In* current = this->fromModels[i];
-        const InVecCoord* currentVecCoord = InPos[i];
+        const InVecCoord* currentVecCoord = inPos[i];
         iterMap = _indices.find( current );
         if ( iterMap != _indices.end() )
         {
@@ -66,20 +72,20 @@ void SubsetMultiMapping<BasicMapping>::apply(const helper::vector<typename Out::
 }
 
 template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::applyJ(const helper::vector< typename Out::VecDeriv*>& OutDeriv, const helper::vector<const typename In::VecDeriv*>& InDeriv)
+void SubsetMultiMapping<BasicMapping>::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
 {
     Out* output = this->toModels[0];
     unsigned int total = computeTotalInputPoints();
     output->resize(total);
 
     typename std::map<const In* , IndexArray >::iterator iterMap;
-    OutVecDeriv* outVecDeriv = OutDeriv[0];
+    OutVecDeriv* outVecDeriv = outDeriv[0];
     unsigned int size = 0;
 
-    for( unsigned int i = 0; i < InDeriv.size() ; i++)
+    for( unsigned int i = 0; i < inDeriv.size() ; i++)
     {
         In* current = this->fromModels[i];
-        const InVecDeriv* currentVecDeriv = InDeriv[i];
+        const InVecDeriv* currentVecDeriv = inDeriv[i];
         iterMap = _indices.find( current );
         if ( iterMap != _indices.end() )
         {
@@ -95,16 +101,16 @@ void SubsetMultiMapping<BasicMapping>::applyJ(const helper::vector< typename Out
 }
 
 template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::applyJT(const helper::vector<typename In::VecDeriv*>& OutDeriv , const helper::vector<const typename Out::VecDeriv*>& InDeriv )
+void SubsetMultiMapping<BasicMapping>::applyJT(const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv )
 {
     typename std::map<const In* , IndexArray >::iterator iterMap;
-    const OutVecDeriv* mappedVecDeriv = InDeriv[0];
+    const OutVecDeriv* mappedVecDeriv = inDeriv[0];
 
     unsigned int size = 0;
-    for( unsigned int i = 0; i < OutDeriv.size() ; i++)
+    for( unsigned int i = 0; i < outDeriv.size() ; i++)
     {
         In* current = this->fromModels[i];
-        InVecDeriv* currentVecDeriv = OutDeriv[i];
+        InVecDeriv* currentVecDeriv = outDeriv[i];
         iterMap = _indices.find( current );
         if ( iterMap != _indices.end() )
         {
@@ -118,6 +124,10 @@ void SubsetMultiMapping<BasicMapping>::applyJT(const helper::vector<typename In:
     }
 }
 
-}
-}
-}
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa
+
+#endif //SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL

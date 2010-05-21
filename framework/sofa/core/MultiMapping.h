@@ -54,6 +54,12 @@ public:
     /// Output Model Type
     typedef TOut Out;
 
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
+
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
+
 protected:
     /// Input Models container. New inputs are added through addInputModel(In* ).
     helper::vector<In*> fromModels;
@@ -87,7 +93,7 @@ public:
     /// InPos and OutPos by default contains VecIds of type V_COORD.
     /// The size of InPos vector is the same as the number of fromModels.
     /// The size of OutPos vector is the same as the number of OutModels.
-    virtual void apply(const helper::vector<typename Out::VecCoord*>& OutPos, const helper::vector<const typename In::VecCoord*>& InPos ) = 0;
+    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos ) = 0;
 
     /// Apply the mapping on derived (velocity, displacement) vectors.
     ///
@@ -98,7 +104,7 @@ public:
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJ(const helper::vector< typename Out::VecDeriv*>& OutDeriv, const helper::vector<const typename In::VecDeriv*>& InDeriv) = 0;
+    virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv) = 0;
 
     virtual void init();
 
@@ -125,19 +131,19 @@ public:
 
 protected:
 
-    void getVecInCoord     (const VecId &id, helper::vector<      typename In::VecCoord*> &v) const;
-    void getConstVecInCoord(const VecId &id, helper::vector<const typename In::VecCoord*> &v) const
+    void getVecInCoord     (const VecId &id, helper::vector<      InVecCoord*> &v) const;
+    void getConstVecInCoord(const VecId &id, helper::vector<const InVecCoord*> &v) const
     {for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecCoord(id.index));}
 
-    void getVecInDeriv     (const VecId &id, helper::vector<      typename In::VecDeriv*> &v) const;
-    void getConstVecInDeriv(const VecId &id, helper::vector<const typename In::VecDeriv*> &v) const;
+    void getVecInDeriv     (const VecId &id, helper::vector<      InVecDeriv*> &v) const;
+    void getConstVecInDeriv(const VecId &id, helper::vector<const InVecDeriv*> &v) const;
 
-    void getVecOutCoord     (const VecId &id, helper::vector<      typename Out::VecCoord*> &v) const
+    void getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const
     {for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));}
 
-    void getConstVecOutCoord(const VecId &id, helper::vector<const typename Out::VecCoord*> &v) const;
-    void getVecOutDeriv     (const VecId &id, helper::vector<      typename Out::VecDeriv*> &v) const;
-    void getConstVecOutDeriv(const VecId &id, helper::vector<const typename Out::VecDeriv*> &v) const;
+    void getConstVecOutCoord(const VecId &id, helper::vector<const OutVecCoord*> &v) const;
+    void getVecOutDeriv     (const VecId &id, helper::vector<      OutVecDeriv*> &v) const;
+    void getConstVecOutDeriv(const VecId &id, helper::vector<const OutVecDeriv*> &v) const;
 
 
     /// If true, display the mapping
