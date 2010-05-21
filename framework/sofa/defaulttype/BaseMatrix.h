@@ -156,69 +156,133 @@ public:
 
     /// @}
 
+    /// @name Internal data structures for iterators (should only be used by classes deriving from BaseMatrix)
+    /// @{
+
+    class InternalBlockAccessor
+    {
+    public:
+        int row;
+        int col;
+        union
+        {
+            void* ptr;
+            int data;
+        };
+
+        InternalBlockAccessor()
+            : row(-1), col(-1)
+        {
+            ptr = NULL;
+            data = 0;
+        }
+
+        InternalBlockAccessor(int row, int col, void* internalPtr)
+            : row(row), col(col)
+        {
+            data = 0;
+            ptr = internalPtr;
+        }
+
+        InternalBlockAccessor(int row, int col, int internalData)
+            : row(row), col(col)
+        {
+            ptr = NULL;
+            data = internalData;
+        }
+    };
+    class InternalColBlockIterator
+    {
+    public:
+        int row;
+        union
+        {
+            void* ptr;
+            int data;
+        };
+
+        InternalColBlockIterator()
+            : row(-1)
+        {
+            ptr = NULL;
+            data = 0;
+        }
+
+        InternalColBlockIterator(int row, void* internalPtr)
+            : row(row)
+        {
+            data = 0;
+            ptr = internalPtr;
+        }
+
+        InternalColBlockIterator(int row, int internalData)
+            : row(row)
+        {
+            ptr = NULL;
+            data = internalData;
+        }
+    };
+
+    class InternalRowBlockIterator
+    {
+    public:
+        union
+        {
+            void* ptr;
+            int data[2];
+        };
+
+        InternalRowBlockIterator()
+        {
+            ptr = NULL;
+            data[0] = 0;
+            data[1] = 0;
+        }
+
+        InternalRowBlockIterator(void* internalPtr)
+        {
+            data[0] = 0;
+            data[1] = 0;
+            ptr = internalPtr;
+        }
+
+        InternalRowBlockIterator(int internalData0, int internalData1)
+        {
+            ptr = NULL;
+            data[0] = internalData0;
+            data[1] = internalData1;
+        }
+    };
+
+    /// @}
 
     /// @name Virtual iterator classes and methods
     /// @{
 
-    class BaseBlockAccessor;
+public:
     class BlockAccessor;
     class BlockConstAccessor;
     class ColBlockConstIterator;
+    class RowBlockConstIterator;
 
-    class BaseBlockAccessor
-    {
-    protected:
-        int row;
-        int col;
-        void* internalData;
-
-        BaseBlockAccessor()
-            : row(-1), col(-1), internalData(NULL)
-        {
-        }
-
-        BaseBlockAccessor(int row, int col, void* internalData)
-            : row(row), col(col), internalData(internalData)
-        {
-        }
-
-    public:
-
-        int getRow() const { return row; }
-
-        int getCol() const { return col; }
-
-        friend class BaseMatrix;
-        friend class ColBlockConstIterator;
-    };
-
-    virtual void bAccessorDelete(const BaseBlockAccessor* /*b*/) const {}
-    virtual void bAccessorCopy(BaseBlockAccessor* /*b*/) const {}
-    virtual SReal bAccessorElement(const BaseBlockAccessor* b, int i, int j) const
-    {
-        return element(b->getRow() * getBlockRows() + i, b->getCol() * getBlockCols() + j);
-    }
-    virtual void bAccessorSet(BaseBlockAccessor* b, int i, int j, double v)
-    {
-        set(b->getRow() * getBlockRows() + i, b->getCol() * getBlockCols() + j, v);
-    }
-    virtual void bAccessorAdd(BaseBlockAccessor* b, int i, int j, double v)
-    {
-        add(b->getRow() * getBlockRows() + i, b->getCol() * getBlockCols() + j, v);
-    }
-
-    class BlockAccessor : public BaseBlockAccessor
+    class BlockAccessor
     {
     protected:
         BaseMatrix* matrix;
+        InternalBlockAccessor internal;
 
         BlockAccessor()
             : matrix(NULL)
         {
         }
 
-        BlockAccessor(BaseMatrix* matrix, int row, int col, void* internalData)
-            : BaseBlockAccessor(row, col, internalData), matrix(matrix)
+        BlockAccessor(BaseMatrix* matrix, int row, int col, void* internalPtr)
+            : matrix(matrix), internal(row, col, internalPtr)
+        {
+        }
+
+        BlockAccessor(BaseMatrix* matrix, int row, int col, int internalData)
+            : matrix(matrix), internal(row, col, internalData)
         {
         }
 
@@ -226,24 +290,28 @@ public:
         ~BlockAccessor()
         {
             if (matrix)
-                matrix->bAccessorDelete(this);
+                matrix->bAccessorDelete(&internal);
         }
 
         BlockAccessor(const BlockAccessor& b)
-            : BaseBlockAccessor(b.row, b.col, b.internalData), matrix(b.matrix)
+            : matrix(b.matrix), internal(b.internal)
         {
             if (matrix)
-                matrix->bAccessorCopy(this);
+                matrix->bAccessorCopy(&internal);
         }
 
         void operator=(const BlockAccessor& b)
         {
             if (matrix)
-                matrix->bAccessorDelete(this);
-            matrix = b.matrix; row = b.row; col = b.col; internalData = b.internalData;
+                matrix->bAccessorDelete(&internal);
+            matrix = b.matrix; internal = b.internal;
             if (matrix)
-                matrix->bAccessorCopy(this);
+                matrix->bAccessorCopy(&internal);
         }
+
+        int getRow() const { return internal.row; }
+
+        int getCol() const { return internal.col; }
 
         const BaseMatrix* getMatrix() const { return matrix; }
 
@@ -251,25 +319,25 @@ public:
 
         bool isValid() const
         {
-            return matrix && (unsigned) row < matrix->rowSize() && (unsigned) col < matrix->colSize();
+            return matrix && (unsigned) internal.row < matrix->rowSize() && (unsigned) internal.col < matrix->colSize();
         }
 
         /// Read the value of the element at row i, column j within this block (using 0-based indices)
         SReal element(int i, int j) const
         {
-            return matrix->bAccessorElement(this, i, j);
+            return matrix->bAccessorElement(&internal, i, j);
         }
 
         /// Write the value of the element at row i, column j within this block (using 0-based indices)
         void set(int i, int j, double v)
         {
-            matrix->bAccessorSet(this, i, j, v);
+            matrix->bAccessorSet(&internal, i, j, v);
         }
 
         /// Add v to the existing value of the element at row i, column j within this block (using 0-based indices)
         void add(int i, int j, double v)
         {
-            matrix->bAccessorAdd(this, i, j, v);
+            matrix->bAccessorAdd(&internal, i, j, v);
         }
 
         friend class BaseMatrix;
@@ -277,18 +345,24 @@ public:
         friend class ColBlockConstIterator;
     };
 
-    class BlockConstAccessor : public BaseBlockAccessor
+    class BlockConstAccessor
     {
     protected:
         const BaseMatrix* matrix;
+        InternalBlockAccessor internal;
 
         BlockConstAccessor()
             : matrix(NULL)
         {
         }
 
-        BlockConstAccessor(const BaseMatrix* matrix, int row, int col, void* internalData)
-            : BaseBlockAccessor(row, col, internalData), matrix(matrix)
+        BlockConstAccessor(const BaseMatrix* matrix, int row, int col, void* internalPtr)
+            : matrix(matrix), internal(row, col, internalPtr)
+        {
+        }
+
+        BlockConstAccessor(const BaseMatrix* matrix, int row, int col, int internalData)
+            : matrix(matrix), internal(row, col, internalData)
         {
         }
 
@@ -296,94 +370,160 @@ public:
         ~BlockConstAccessor()
         {
             if (matrix)
-                matrix->bAccessorDelete(this);
+                matrix->bAccessorDelete(&internal);
         }
 
         BlockConstAccessor(const BlockConstAccessor& b)
-            : BaseBlockAccessor(b.row, b.col, b.internalData), matrix(b.matrix)
+            : matrix(b.matrix), internal(b.internal)
         {
             if (matrix)
-                matrix->bAccessorCopy(this);
+                matrix->bAccessorCopy(&internal);
         }
 
         BlockConstAccessor(const BlockAccessor& b)
-            : BaseBlockAccessor(b.row, b.col, b.internalData), matrix(b.matrix)
+            : matrix(b.matrix), internal(b.internal)
         {
             if (matrix)
-                matrix->bAccessorCopy(this);
+                matrix->bAccessorCopy(&internal);
         }
 
         void operator=(const BlockConstAccessor& b)
         {
             if (matrix)
-                matrix->bAccessorDelete(this);
-            matrix = b.matrix; row = b.row; col = b.col; internalData = b.internalData;
+                matrix->bAccessorDelete(&internal);
+            matrix = b.matrix; internal = b.internal;
             if (matrix)
-                matrix->bAccessorCopy(this);
+                matrix->bAccessorCopy(&internal);
         }
 
         void operator=(const BlockAccessor& b)
         {
             if (matrix)
-                matrix->bAccessorDelete(this);
-            matrix = b.matrix; row = b.row; col = b.col; internalData = b.internalData;
+                matrix->bAccessorDelete(&internal);
+            matrix = b.matrix; internal = b.internal;
             if (matrix)
-                matrix->bAccessorCopy(this);
+                matrix->bAccessorCopy(&internal);
         }
+
+        int getRow() const { return internal.row; }
+
+        int getCol() const { return internal.col; }
 
         const BaseMatrix* getMatrix() const { return matrix; }
 
         bool isValid() const
         {
-            return matrix && (unsigned) row < matrix->rowSize() && (unsigned) col < matrix->colSize();
+            return matrix && (unsigned) internal.row < matrix->rowSize() && (unsigned) internal.col < matrix->colSize();
         }
 
         /// Read the value of the element at row i, column j within this block (using 0-based indices)
         SReal element(int i, int j) const
         {
-            return matrix->bAccessorElement(this, i, j);
+            return matrix->bAccessorElement(&internal, i, j);
         }
 
         friend class BaseMatrix;
         friend class ColBlockConstIterator;
     };
 
+protected:
+
+    virtual void bAccessorDelete(const InternalBlockAccessor* /*b*/) const {}
+    virtual void bAccessorCopy(InternalBlockAccessor* /*b*/) const {}
+    virtual SReal bAccessorElement(const InternalBlockAccessor* b, int i, int j) const
+    {
+        return element(b->row * getBlockRows() + i, b->col * getBlockCols() + j);
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, int i, int j, double v)
+    {
+        set(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, int i, int j, double v)
+    {
+        add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
+    }
+
+
+    BlockAccessor createBlockAccessor(int row, int col, void* internalPtr)
+    {
+        return BlockAccessor(this, row, col, internalPtr);
+    }
+
+    BlockAccessor createBlockAccessor(int row, int col, int internalData)
+    {
+        return BlockAccessor(this, row, col, internalData);
+    }
+
+    BlockConstAccessor createBlockConstAccessor(int row, int col, void* internalPtr) const
+    {
+        return BlockConstAccessor(this, row, col, internalPtr);
+    }
+
+    BlockConstAccessor createBlockConstAccessor(int row, int col, int internalData) const
+    {
+        return BlockConstAccessor(this, row, col, internalData);
+    }
+
+    void setMatrix(BlockAccessor* b) { b->matrix = this; }
+    void setMatrix(BlockConstAccessor* b) const { b->matrix = this; }
+
+    static InternalBlockAccessor* getInternal(BlockConstAccessor* b) { return &(b->internal); }
+    static const InternalBlockAccessor* getInternal(const BlockConstAccessor* b) { return &(b->internal); }
+
+    static InternalBlockAccessor* getInternal(BlockAccessor* b) { return &(b->internal); }
+    static const InternalBlockAccessor* getInternal(const BlockAccessor* b) { return &(b->internal); }
+
+public:
+
     class ColBlockConstIterator
     {
     protected:
         const BaseMatrix* matrix;
-        int row;
-        void* internalData;
+        InternalColBlockIterator internal;
         BlockConstAccessor b;
 
-        ColBlockConstIterator(const BaseMatrix* matrix, int row, void* internalData)
-            : matrix(matrix), row(row), internalData(internalData)
+        ColBlockConstIterator(const BaseMatrix* matrix, int row, void* internalPtr)
+            : matrix(matrix), internal(row, internalPtr)
+        {
+        }
+
+        ColBlockConstIterator(const BaseMatrix* matrix, int row, int internalData)
+            : matrix(matrix), internal(row, internalData)
         {
         }
 
     public:
 
         ColBlockConstIterator()
-            : matrix(NULL), row(-1), internalData(NULL)
+            : matrix(NULL)
         {
         }
 
         ColBlockConstIterator(const ColBlockConstIterator& it2)
-            : matrix(it2.matrix), row(it2.row), internalData(it2.internalData), b(it2.b)
+            : matrix(it2.matrix), internal(it2.internal), b(it2.b)
         {
             if (matrix)
-                matrix->itCopyColBlockConstIterator(this);
+                matrix->itCopyColBlock(&internal);
         }
 
         ~ColBlockConstIterator()
         {
             if (matrix)
-                matrix->itDeleteColBlockConstIterator(this);
+                matrix->itDeleteColBlock(&internal);
+        }
+
+        void operator=(const ColBlockConstIterator& it2)
+        {
+            if (matrix)
+                matrix->itDeleteColBlock(&internal);
+            matrix = it2.matrix; internal = it2.internal;
+            if (matrix)
+                matrix->itCopyColBlock(&internal);
         }
 
         const BlockConstAccessor& bloc()
         {
-            matrix->itAccessColBlockConstIterator(this, &b);
+            matrix->itAccessColBlock(&internal, &b);
             return b;
         }
 
@@ -397,104 +537,298 @@ public:
         }
         void operator++() // prefix
         {
-            matrix->itIncColBlockConstIterator(this);
+            matrix->itIncColBlock(&internal);
         }
         void operator++(int) // postfix
         {
-            matrix->itIncColBlockConstIterator(this);
+            matrix->itIncColBlock(&internal);
         }
         void operator--() // prefix
         {
-            matrix->itIncColBlockConstIterator(this);
+            matrix->itDecColBlock(&internal);
         }
         void operator--(int) // postfix
         {
-            matrix->itDecColBlockConstIterator(this);
+            matrix->itDecColBlock(&internal);
         }
         bool operator==(const ColBlockConstIterator& it2) const
         {
-            return matrix->itEqColBlockConstIterator(this, &it2);
+            return matrix->itEqColBlock(&internal, &it2.internal);
         }
         bool operator!=(const ColBlockConstIterator& it2) const
         {
-            return ! matrix->itEqColBlockConstIterator(this, &it2);
+            return ! matrix->itEqColBlock(&internal, &it2.internal);
         }
         bool operator<(const ColBlockConstIterator& it2) const
         {
-            return matrix->itLessColBlockConstIterator(this, &it2);
+            return matrix->itLessColBlock(&internal, &it2.internal);
         }
         bool operator>(const ColBlockConstIterator& it2) const
         {
-            return matrix->itLessColBlockConstIterator(&it2, this);
+            return matrix->itLessColBlock(&it2.internal, &internal);
         }
 
         friend class BaseMatrix;
 
     };
 
-    virtual void itCopyColBlockConstIterator(ColBlockConstIterator* /*it*/) const {}
-    virtual void itDeleteColBlockConstIterator(const ColBlockConstIterator* /*it*/) const {}
-    virtual void itAccessColBlockConstIterator(ColBlockConstIterator* it, BlockConstAccessor* b) const
+protected:
+
+    static InternalColBlockIterator* getInternal(ColBlockConstIterator* b) { return &(b->internal); }
+    static const InternalColBlockIterator* getInternal(const ColBlockConstIterator* b) { return &(b->internal); }
+
+    virtual void itCopyColBlock(InternalColBlockIterator* /*it*/) const {}
+    virtual void itDeleteColBlock(const InternalColBlockIterator* /*it*/) const {}
+    virtual void itAccessColBlock(InternalColBlockIterator* it, BlockConstAccessor* b) const
     {
-        b->matrix = this;
-        b->row = it->row;
-        b->col = (int)(long)(it->internalData);
-        b->internalData = NULL;
+        setMatrix(b);
+        getInternal(b)->row = it->row;
+        getInternal(b)->col = it->data;
+        getInternal(b)->ptr = NULL;
     }
-    virtual void itIncColBlockConstIterator(ColBlockConstIterator* it) const
+    virtual void itIncColBlock(InternalColBlockIterator* it) const
     {
-        int col = (int)(long)(it->internalData);
+        int col = it->data;
         ++col;
-        it->internalData = (void*)(long)col;
+        it->data = col;
     }
-    virtual void itDecColBlockConstIterator(ColBlockConstIterator* it) const
+    virtual void itDecColBlock(InternalColBlockIterator* it) const
     {
-        int col = (int)(long)(it->internalData);
-        ++col;
-        it->internalData = (void*)(long)col;
+        int col = it->data;
+        --col;
+        it->data = col;
     }
-    virtual bool itEqColBlockConstIterator(const ColBlockConstIterator* it, const ColBlockConstIterator* it2) const
+    virtual bool itEqColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
     {
-        int col = (int)(long)(it->internalData);
-        int col2 = (int)(long)(it2->internalData);
+        int col = it->data;
+        int col2 = it2->data;
         return col == col2;
     }
-    virtual bool itLessColBlockConstIterator(const ColBlockConstIterator* it, const ColBlockConstIterator* it2) const
+    virtual bool itLessColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
     {
-        int col = (int)(long)(it->internalData);
-        int col2 = (int)(long)(it2->internalData);
+        int col = it->data;
+        int col2 = it2->data;
         return col < col2;
     }
 
-    /// Get the iterator corresponding to the beginning of the given row of blocks
-    virtual ColBlockConstIterator bRowBegin(int bi)
+    ColBlockConstIterator createColBlockConstIterator(int row, void* internalPtr) const
     {
-        return ColBlockConstIterator(this, bi, (void*)(long)(0));
+        return ColBlockConstIterator(this, row, internalPtr);
+    }
+    ColBlockConstIterator createColBlockConstIterator(int row, int internalData) const
+    {
+        return ColBlockConstIterator(this, row, internalData);
+    }
+
+public:
+    /// Get the iterator corresponding to the beginning of the given row of blocks
+    virtual ColBlockConstIterator bRowBegin(int ib) const
+    {
+        return createColBlockConstIterator(ib, (int)(0));
     }
 
     /// Get the iterator corresponding to the end of the given row of blocks
-    virtual ColBlockConstIterator bRowEnd(int bi)
+    virtual ColBlockConstIterator bRowEnd(int ib) const
     {
-        return ColBlockConstIterator(this, bi, (void*)(long)(bColSize()));
+        return createColBlockConstIterator(ib, (int)(bColSize()));
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(int bi)
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(int ib) const
     {
-        return std::make_pair(bRowBegin(bi), bRowEnd(bi));
+        return std::make_pair(bRowBegin(ib), bRowEnd(ib));
     }
 
-    /*
-        class RowBlockConstIterator
-        {
-        public:
 
-        };
-        class BlockConstIterator
+    class RowBlockConstIterator
+    {
+    protected:
+        const BaseMatrix* matrix;
+        InternalRowBlockIterator internal;
+
+        RowBlockConstIterator(const BaseMatrix* matrix, void* internalPtr)
+            : matrix(matrix), internal(internalPtr)
         {
-        public:
-        };
-    */
+        }
+
+        RowBlockConstIterator(const BaseMatrix* matrix, int internalData0, int internalData1)
+            : matrix(matrix), internal(internalData0, internalData1)
+        {
+        }
+
+    public:
+
+        RowBlockConstIterator()
+            : matrix(NULL)
+        {
+        }
+
+        RowBlockConstIterator(const RowBlockConstIterator& it2)
+            : matrix(it2.matrix), internal(it2.internal)
+        {
+            if (matrix)
+                matrix->itCopyRowBlock(&internal);
+        }
+
+        ~RowBlockConstIterator()
+        {
+            if (matrix)
+                matrix->itDeleteRowBlock(&internal);
+        }
+
+        void operator=(const RowBlockConstIterator& it2)
+        {
+            if (matrix)
+                matrix->itDeleteRowBlock(&internal);
+            matrix = it2.matrix; internal = it2.internal;
+            if (matrix)
+                matrix->itCopyRowBlock(&internal);
+        }
+
+        int row()
+        {
+            return matrix->itAccessRowBlock(&internal);
+        }
+        int operator*()
+        {
+            return row();
+        }
+
+        ColBlockConstIterator begin()
+        {
+            return matrix->itBeginRowBlock(&internal);
+        }
+
+        ColBlockConstIterator end()
+        {
+            return matrix->itEndRowBlock(&internal);
+        }
+
+        std::pair<ColBlockConstIterator,ColBlockConstIterator> range()
+        {
+            return matrix->itRangeRowBlock(&internal);
+        }
+        std::pair<ColBlockConstIterator,ColBlockConstIterator> operator->()
+        {
+            return range();
+        }
+
+        void operator++() // prefix
+        {
+            matrix->itIncRowBlock(&internal);
+        }
+        void operator++(int) // postfix
+        {
+            matrix->itIncRowBlock(&internal);
+        }
+        void operator--() // prefix
+        {
+            matrix->itDecRowBlock(&internal);
+        }
+        void operator--(int) // postfix
+        {
+            matrix->itDecRowBlock(&internal);
+        }
+        bool operator==(const RowBlockConstIterator& it2) const
+        {
+            return matrix->itEqRowBlock(&internal, &it2.internal);
+        }
+        bool operator!=(const RowBlockConstIterator& it2) const
+        {
+            return ! matrix->itEqRowBlock(&internal, &it2.internal);
+        }
+        bool operator<(const RowBlockConstIterator& it2) const
+        {
+            return matrix->itLessRowBlock(&internal, &it2.internal);
+        }
+        bool operator>(const RowBlockConstIterator& it2) const
+        {
+            return matrix->itLessRowBlock(&it2.internal, &internal);
+        }
+
+        friend class BaseMatrix;
+    };
+
+protected:
+
+    static InternalRowBlockIterator* getInternal(RowBlockConstIterator* b) { return &(b->internal); }
+    static const InternalRowBlockIterator* getInternal(const RowBlockConstIterator* b) { return &(b->internal); }
+
+    virtual void itCopyRowBlock(InternalRowBlockIterator* /*it*/) const {}
+    virtual void itDeleteRowBlock(const InternalRowBlockIterator* /*it*/) const {}
+    virtual int itAccessRowBlock(InternalRowBlockIterator* it) const
+    {
+        int row = (it->data[0]);
+        return row;
+    }
+    virtual ColBlockConstIterator itBeginRowBlock(InternalRowBlockIterator* it) const
+    {
+        int row = (it->data[0]);
+        return bRowBegin(row);
+    }
+    virtual ColBlockConstIterator itEndRowBlock(InternalRowBlockIterator* it) const
+    {
+        int row = (it->data[0]);
+        return bRowEnd(row);
+    }
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
+    {
+        int row = (it->data[0]);
+        return bRowRange(row);
+    }
+
+    virtual void itIncRowBlock(InternalRowBlockIterator* it) const
+    {
+        int row = (it->data[0]);
+        ++row;
+        it->data[0] = row;
+    }
+    virtual void itDecRowBlock(InternalRowBlockIterator* it) const
+    {
+        int row = (it->data[0]);
+        --row;
+        it->data[0] = row;
+    }
+    virtual bool itEqRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
+    {
+        int row = (it->data[0]);
+        int row2 = (it2->data[0]);
+        return row == row2;
+    }
+    virtual bool itLessRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
+    {
+        int row = (it->data[0]);
+        int row2 = (it2->data[0]);
+        return row < row2;
+    }
+
+    RowBlockConstIterator createRowBlockConstIterator(void* internalPtr) const
+    {
+        return RowBlockConstIterator(this, internalPtr);
+    }
+    RowBlockConstIterator createRowBlockConstIterator(int internalData0, int internalData1) const
+    {
+        return RowBlockConstIterator(this, internalData0, internalData1);
+    }
+
+public:
+    /// Get the iterator corresponding to the beginning of the rows of blocks
+    virtual RowBlockConstIterator bRowsBegin()
+    {
+        return createRowBlockConstIterator(0, 0);
+    }
+
+    /// Get the iterator corresponding to the end of the rows of blocks
+    virtual RowBlockConstIterator bRowsEnd()
+    {
+        return createRowBlockConstIterator(bRowSize(), 0);
+    }
+
+    /// Get the iterators corresponding to the beginning and end of the given row of blocks
+    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange()
+    {
+        return std::make_pair(bRowsBegin(), bRowsEnd());
+    }
 
     /// @}
 

@@ -869,6 +869,224 @@ public:
         btemp.clear();
     }
 
+    /// @name Get information about the content and structure of this matrix (diagonal, band, sparse, full, block size, ...)
+    /// @{
+
+    /// @return type of elements stored in this matrix
+    virtual ElementType getElementType() const { return traits::getElementType(); }
+
+    /// @return size of elements stored in this matrix
+    virtual unsigned int getElementSize() const { return sizeof(Real); }
+
+    /// @return the category of this matrix
+    virtual MatrixCategory getCategory() const { return MATRIX_SPARSE; }
+
+    /// @return the number of rows in each block, or 1 of there are no fixed block size
+    virtual int getBlockRows() const { return NL; }
+
+    /// @return the number of columns in each block, or 1 of there are no fixed block size
+    virtual int getBlockCols() const { return NC; }
+
+    /// @return the number of rows of blocks
+    virtual int bRowSize() const { return rowBSize(); }
+
+    /// @return the number of columns of blocks
+    virtual int bColSize() const { return colBSize(); }
+
+    /// @return the width of the band on each side of the diagonal (only for band matrices)
+    virtual int getBandWidth() const { return NC-1; }
+
+    /// @}
+
+    /// @name Virtual iterator classes and methods
+    /// @{
+
+protected:
+    virtual void bAccessorDelete(const InternalBlockAccessor* /*b*/) const {}
+    virtual void bAccessorCopy(InternalBlockAccessor* /*b*/) const {}
+    virtual SReal bAccessorElement(const InternalBlockAccessor* b, int i, int j) const
+    {
+        //return element(b->row * getBlockRows() + i, b->col * getBlockCols() + j);
+        int index = b->data;
+        const Bloc& data = colsValue[index];
+        return (SReal)traits::v(data, i, j);
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, int i, int j, double v)
+    {
+        //set(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
+        int index = b->data;
+        Bloc& data = colsValue[index];
+        traits::v(data, i, j) = (Real)v;
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, int i, int j, double v)
+    {
+        add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
+        int index = b->data;
+        Bloc& data = colsValue[index];
+        traits::v(data, i, j) += (Real)v;
+    }
+
+protected:
+    virtual void itCopyColBlock(InternalColBlockIterator* /*it*/) const {}
+    virtual void itDeleteColBlock(const InternalColBlockIterator* /*it*/) const {}
+    virtual void itAccessColBlock(InternalColBlockIterator* it, BlockConstAccessor* b) const
+    {
+        int index = it->data;
+        setMatrix(b);
+        getInternal(b)->row = it->row;
+        getInternal(b)->data = index;
+        getInternal(b)->col = colsIndex[index];
+    }
+    virtual void itIncColBlock(InternalColBlockIterator* it) const
+    {
+        int index = it->data;
+        ++index;
+        it->data = index;
+    }
+    virtual void itDecColBlock(InternalColBlockIterator* it) const
+    {
+        int index = it->data;
+        --index;
+        it->data = index;
+    }
+    virtual bool itEqColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
+    {
+        int index = it->data;
+        int index2 = it2->data;
+        return index == index2;
+    }
+    virtual bool itLessColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
+    {
+        int index = it->data;
+        int index2 = it2->data;
+        return index < index2;
+    }
+
+public:
+    /// Get the iterator corresponding to the beginning of the given row of blocks
+    virtual ColBlockConstIterator bRowBegin(int ib) const
+    {
+        ((Matrix*)this)->compress();
+        int rowId = ib * rowIndex.size() / nBlocRow;
+        int index = 0;
+        if (sortedFind(rowIndex, ib, rowId))
+        {
+            index = rowBegin[rowId];
+        }
+        return createColBlockConstIterator(ib, index);
+    }
+
+    /// Get the iterator corresponding to the end of the given row of blocks
+    virtual ColBlockConstIterator bRowEnd(int ib) const
+    {
+        ((Matrix*)this)->compress();
+        int rowId = ib * rowIndex.size() / nBlocRow;
+        int index2 = 0;
+        if (sortedFind(rowIndex, ib, rowId))
+        {
+            index2 = rowBegin[rowId+1];
+        }
+        return createColBlockConstIterator(ib, index2);
+    }
+
+    /// Get the iterators corresponding to the beginning and end of the given row of blocks
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(int ib) const
+    {
+        ((Matrix*)this)->compress();
+        int rowId = ib * rowIndex.size() / nBlocRow;
+        int index = 0, index2 = 0;
+        if (sortedFind(rowIndex, ib, rowId))
+        {
+            index = rowBegin[rowId];
+            index2 = rowBegin[rowId+1];
+        }
+        return std::make_pair(createColBlockConstIterator(ib, index ),
+                createColBlockConstIterator(ib, index2));
+    }
+
+
+protected:
+    virtual void itCopyRowBlock(InternalRowBlockIterator* /*it*/) const {}
+    virtual void itDeleteRowBlock(const InternalRowBlockIterator* /*it*/) const {}
+    virtual int itAccessRowBlock(InternalRowBlockIterator* it) const
+    {
+        int rowId = it->data[0];
+        return rowIndex[rowId];
+    }
+    virtual ColBlockConstIterator itBeginRowBlock(InternalRowBlockIterator* it) const
+    {
+        int rowId = it->data[0];
+        int row = rowIndex[rowId];
+        int index = rowBegin[rowId];
+        return createColBlockConstIterator(row, index);
+    }
+    virtual ColBlockConstIterator itEndRowBlock(InternalRowBlockIterator* it) const
+    {
+        int rowId = it->data[0];
+        int row = rowIndex[rowId];
+        int index2 = rowBegin[rowId+1];
+        return createColBlockConstIterator(row, index2);
+    }
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
+    {
+        int rowId = it->data[0];
+        int row = rowIndex[rowId];
+        int index = rowBegin[rowId];
+        int index2 = rowBegin[rowId+1];
+        return std::make_pair(createColBlockConstIterator(row, index ),
+                createColBlockConstIterator(row, index2));
+    }
+
+    virtual void itIncRowBlock(InternalRowBlockIterator* it) const
+    {
+        int rowId = it->data[0];
+        ++rowId;
+        it->data[0] = rowId;
+    }
+    virtual void itDecRowBlock(InternalRowBlockIterator* it) const
+    {
+        int rowId = it->data[0];
+        --rowId;
+        it->data[0] = rowId;
+    }
+    virtual bool itEqRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
+    {
+        int rowId = it->data[0];
+        int rowId2 = it2->data[0];
+        return rowId == rowId2;
+    }
+    virtual bool itLessRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
+    {
+        int rowId = it->data[0];
+        int rowId2 = it2->data[0];
+        return rowId < rowId2;
+    }
+
+public:
+    /// Get the iterator corresponding to the beginning of the rows of blocks
+    virtual RowBlockConstIterator bRowsBegin()
+    {
+        ((Matrix*)this)->compress();
+        return createRowBlockConstIterator(0, 0);
+    }
+
+    /// Get the iterator corresponding to the end of the rows of blocks
+    virtual RowBlockConstIterator bRowsEnd()
+    {
+        ((Matrix*)this)->compress();
+        return createRowBlockConstIterator(rowIndex.size(), 0);
+    }
+
+    /// Get the iterators corresponding to the beginning and end of the given row of blocks
+    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange()
+    {
+        ((Matrix*)this)->compress();
+        return std::make_pair(createRowBlockConstIterator(0, 0),
+                createRowBlockConstIterator(rowIndex.size(), 0));
+    }
+
+    /// @}
+
 protected:
     template<class Real2>
     static Real vget(const defaulttype::BaseVector& vec, int i) { return vec.element(i); }
@@ -1166,7 +1384,7 @@ public:
         // check ap, size m beecause ther is at least the diagonal value wich is different of 0
         if (a_p[0]!=0)
         {
-            std::cerr << "CompressedRowSparseMatrix:First value of row indices (a_p) should be 0" << std::endl;
+            std::cerr << "CompressedRowSparseMatrix: First value of row indices (a_p) should be 0" << std::endl;
             return false;
         }
 
@@ -1174,7 +1392,7 @@ public:
         {
             if (a_p[i]<=a_p[i-1])
             {
-                std::cerr << "CompressedRowSparseMatrix:Row (a_p) indices are not sorted indice " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                std::cerr << "CompressedRowSparseMatrix: Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] << std::endl;
                 return false;
             }
         }
@@ -1184,7 +1402,7 @@ public:
         }
         else if (a_p[m]!=nzmax)
         {
-            std::cerr << "CompressedRowSparseMatrix:Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] << std::endl;
+            std::cerr << "CompressedRowSparseMatrix: Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] << std::endl;
             return false;
         }
 
@@ -1197,12 +1415,12 @@ public:
             {
                 if (a_i[i] <= a_i[i-1])
                 {
-                    std::cerr << "CompressedRowSparseMatrix:Column (a_i) indices are not sorted indice " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                    std::cerr << "CompressedRowSparseMatrix: Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] << std::endl;
                     return false;
                 }
                 if (a_i[i]<0 || a_i[i]>=n)
                 {
-                    std::cerr << "CompressedRowSparseMatrix:Column (a_i) indices are not correct " << i << " : " << a_i[i] << std::endl;
+                    std::cerr << "CompressedRowSparseMatrix: Column (a_i) indices are not correct " << i << " : " << a_i[i] << std::endl;
                     return false;
                 }
             }
@@ -1213,14 +1431,14 @@ public:
         {
             if (a_x[i]==0)
             {
-                std::cerr << "CompressedRowSparseMatrix:Warning , matrix contains 0 , indice " << i << std::endl;
+                std::cerr << "CompressedRowSparseMatrix: Warning , matrix contains 0 , index " << i << std::endl;
                 return false;
             }
         }
 
         if (n!=m)
         {
-            std::cerr << "CompressedRowSparseMatrix:the matrix is not square" << std::endl;
+            std::cerr << "CompressedRowSparseMatrix: the matrix is not square" << std::endl;
             return false;
         }
 
