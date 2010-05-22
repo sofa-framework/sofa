@@ -23,6 +23,7 @@ LIBS += -lsofaautomatescheduler$$LIBSUFFIX
 } # END SOFA_DEV
 LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentmastersolver$$LIBSUFFIX
+LIBS += -lsofacomponentfemfetype$$LIBSUFFIX
 LIBS += -lsofacomponentfem$$LIBSUFFIX
 LIBS += -lsofacomponentinteractionforcefield$$LIBSUFFIX
 LIBS += -lsofacomponentcontextobject$$LIBSUFFIX
