@@ -136,24 +136,20 @@ public:
 
 protected:
     void getVecIn1Coord     (const VecId &id, helper::vector<      In1VecCoord*> &v) const;
-    void getConstVecIn1Coord(const VecId &id, helper::vector<const In1VecCoord*> &v) const
-    { for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecCoord(id.index));}
+    void getConstVecIn1Coord(const VecId &id, helper::vector<const In1VecCoord*> &v) const;
 
     void getVecIn1Deriv     (const VecId &id, helper::vector<      In1VecDeriv*> &v) const;
-    void getConstVecIn1Deriv(const VecId &id, helper::vector<const In1VecDeriv*> &v) const
-    {for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecCoord(id.index));}
+    void getConstVecIn1Deriv(const VecId &id, helper::vector<const In1VecDeriv*> &v) const;
 
     void getVecIn2Coord     (const VecId &id, helper::vector<      In2VecCoord*> &v) const;
-    void getConstVecIn2Coord(const VecId &id, helper::vector<const In2VecCoord*> &v) const
-    {for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecCoord(id.index));}
+    void getConstVecIn2Coord(const VecId &id, helper::vector<const In2VecCoord*> &v) const;
 
     void getVecIn2Deriv     (const VecId &id, helper::vector<      In2VecDeriv*> &v) const;
     void getConstVecIn2Deriv(const VecId &id, helper::vector<const In2VecDeriv*> &v) const;
 
-    void getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const
-    {for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));}
-
+    void getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const;
     void getConstVecOutCoord(const VecId &id, helper::vector<const OutVecCoord*> &v) const;
+
     void getVecOutDeriv     (const VecId &id, helper::vector<      OutVecDeriv*> &v) const;
     void getConstVecOutDeriv(const VecId &id, helper::vector<const OutVecDeriv*> &v) const;
 

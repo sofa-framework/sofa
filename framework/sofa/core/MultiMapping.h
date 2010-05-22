@@ -132,15 +132,11 @@ public:
 protected:
 
     void getVecInCoord     (const VecId &id, helper::vector<      InVecCoord*> &v) const;
-    void getConstVecInCoord(const VecId &id, helper::vector<const InVecCoord*> &v) const
-    {for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecCoord(id.index));}
-
+    void getConstVecInCoord(const VecId &id, helper::vector<const InVecCoord*> &v) const;
     void getVecInDeriv     (const VecId &id, helper::vector<      InVecDeriv*> &v) const;
     void getConstVecInDeriv(const VecId &id, helper::vector<const InVecDeriv*> &v) const;
 
-    void getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const
-    {for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));}
-
+    void getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const;
     void getConstVecOutCoord(const VecId &id, helper::vector<const OutVecCoord*> &v) const;
     void getVecOutDeriv     (const VecId &id, helper::vector<      OutVecDeriv*> &v) const;
     void getConstVecOutDeriv(const VecId &id, helper::vector<const OutVecDeriv*> &v) const;

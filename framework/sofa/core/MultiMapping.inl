@@ -35,8 +35,6 @@ namespace sofa
 namespace core
 {
 
-
-
 template < class In, class Out >
 void MultiMapping<In,Out>::addInputModel(In* from)
 {
@@ -108,17 +106,22 @@ void MultiMapping<In,Out>::updateMapping()
 
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getVecInCoord(const VecId &id, helper::vector<InVecCoord*> &v) const
+void MultiMapping<In,Out>::getVecInCoord     (const VecId &id, helper::vector<      InVecCoord*> &v) const
 {
     for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecCoord(id.index));
 }
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getVecInDeriv(const VecId &id, helper::vector<InVecDeriv*> &v) const
+void MultiMapping<In,Out>::getConstVecInCoord(const VecId &id, helper::vector<const InVecCoord*> &v) const
+{
+    for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecCoord(id.index));
+}
+
+template <class In, class Out>
+void MultiMapping<In,Out>::getVecInDeriv     (const VecId &id, helper::vector<      InVecDeriv*> &v) const
 {
     for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(fromModels[i]->getVecDeriv(id.index));
 }
-
 
 template <class In, class Out>
 void MultiMapping<In,Out>::getConstVecInDeriv(const VecId &id, helper::vector<const InVecDeriv*> &v) const
@@ -128,15 +131,21 @@ void MultiMapping<In,Out>::getConstVecInDeriv(const VecId &id, helper::vector<co
 
 
 template <class In, class Out>
-void MultiMapping<In,Out>::getVecOutDeriv(const VecId &id, helper::vector<OutVecDeriv*> &v) const
+void MultiMapping<In,Out>::getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const
 {
-    for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecDeriv(id.index));
+    for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));
 }
 
 template <class In, class Out>
 void MultiMapping<In,Out>::getConstVecOutCoord(const VecId &id, helper::vector<const OutVecCoord*> &v) const
 {
     for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));
+}
+
+template <class In, class Out>
+void MultiMapping<In,Out>::getVecOutDeriv     (const VecId &id, helper::vector<      OutVecDeriv*> &v) const
+{
+    for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecDeriv(id.index));
 }
 
 template <class In, class Out>
@@ -159,7 +168,8 @@ void MultiMapping<In,Out>::disable()
 }
 
 
-} //core
-} //sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif
