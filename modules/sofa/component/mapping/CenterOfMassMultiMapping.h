@@ -40,10 +40,13 @@ public :
     typedef typename Out::DataTypes OutDataTypes;
     typedef typename OutCoord::value_type Real;
 
+    typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+    typedef typename helper::vector<const InVecCoord*> vecConstInVecCoord;
+
     CenterOfMassMultiMapping() {}
     virtual ~CenterOfMassMultiMapping() {}
 
-    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos );
+    virtual void apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos );
     virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv);
     virtual void applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv );
 

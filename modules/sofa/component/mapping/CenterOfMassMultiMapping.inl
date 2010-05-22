@@ -70,7 +70,7 @@ public :
 };
 
 template< class BasicMultiMapping  >
-void CenterOfMassMultiMapping< BasicMultiMapping >::apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos )
+void CenterOfMassMultiMapping< BasicMultiMapping >::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos )
 {
     typedef typename InVecCoord::iterator iter_coord;
     assert( outPos.size() == 1); // we are dealing with a many to one mapping.

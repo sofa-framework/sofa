@@ -1,4 +1,4 @@
-#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMulti2Mapping_CPP
+#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_CPP
 
 #include <sofa/component/mapping/CenterOfMassMulti2Mapping.inl>
 #include <sofa/core/Multi2Mapping.inl>
