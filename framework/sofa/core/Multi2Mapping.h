@@ -135,23 +135,35 @@ public:
     static std::string templateName(const Multi2Mapping<TIn1,TIn2, TOut>* = NULL);
 
 protected:
-    void getVecIn1Coord     (const VecId &id, helper::vector<      In1VecCoord*> &v) const;
-    void getConstVecIn1Coord(const VecId &id, helper::vector<const In1VecCoord*> &v) const;
+    void getVecIn1Coord     (const VecId &id, helper::vector<      In1VecCoord*> &v) const
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecCoord(id.index));    }
+    void getConstVecIn1Coord(const VecId &id, helper::vector<const In1VecCoord*> &v) const
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecCoord(id.index));    }
 
-    void getVecIn1Deriv     (const VecId &id, helper::vector<      In1VecDeriv*> &v) const;
-    void getConstVecIn1Deriv(const VecId &id, helper::vector<const In1VecDeriv*> &v) const;
+    void getVecIn1Deriv     (const VecId &id, helper::vector<      In1VecDeriv*> &v) const
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecDeriv(id.index));    }
+    void getConstVecIn1Deriv(const VecId &id, helper::vector<const In1VecDeriv*> &v) const
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(fromModels1[i]->getVecDeriv(id.index));    }
 
-    void getVecIn2Coord     (const VecId &id, helper::vector<      In2VecCoord*> &v) const;
-    void getConstVecIn2Coord(const VecId &id, helper::vector<const In2VecCoord*> &v) const;
+    void getVecIn2Coord     (const VecId &id, helper::vector<      In2VecCoord*> &v) const
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecCoord(id.index));    }
+    void getConstVecIn2Coord(const VecId &id, helper::vector<const In2VecCoord*> &v) const
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecCoord(id.index));    }
 
-    void getVecIn2Deriv     (const VecId &id, helper::vector<      In2VecDeriv*> &v) const;
-    void getConstVecIn2Deriv(const VecId &id, helper::vector<const In2VecDeriv*> &v) const;
+    void getVecIn2Deriv     (const VecId &id, helper::vector<      In2VecDeriv*> &v) const
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecDeriv(id.index));    }
+    void getConstVecIn2Deriv(const VecId &id, helper::vector<const In2VecDeriv*> &v) const
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(fromModels2[i]->getVecDeriv(id.index));    }
 
-    void getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const;
-    void getConstVecOutCoord(const VecId &id, helper::vector<const OutVecCoord*> &v) const;
+    void getVecOutCoord     (const VecId &id, helper::vector<      OutVecCoord*> &v) const
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));    }
+    void getConstVecOutCoord(const VecId &id, helper::vector<const OutVecCoord*> &v) const
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecCoord(id.index));    }
 
-    void getVecOutDeriv     (const VecId &id, helper::vector<      OutVecDeriv*> &v) const;
-    void getConstVecOutDeriv(const VecId &id, helper::vector<const OutVecDeriv*> &v) const;
+    void getVecOutDeriv     (const VecId &id, helper::vector<      OutVecDeriv*> &v) const
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecDeriv(id.index));    }
+    void getConstVecOutDeriv(const VecId &id, helper::vector<const OutVecDeriv*> &v) const
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(toModels[i]->getVecDeriv(id.index));    }
 
 
     /// If true, display the mapping
