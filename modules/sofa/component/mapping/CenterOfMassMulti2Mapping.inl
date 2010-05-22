@@ -70,7 +70,7 @@ public :
 };
 
 template< class BasicMulti2Mapping  >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const In1VecCoord*>& inPos1 , const helper::vector<const In2VecCoord*>& inPos2 )
+void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 )
 {
     assert( outPos.size() == 1); // we are dealing with a many to one mapping.
     typedef typename helper::vector<In1Coord>::iterator iter_coord1;

@@ -44,7 +44,7 @@ void SubsetMultiMapping<BasicMapping>::addPoint( const In* fromModel, int index)
 
 
 template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos )
+void SubsetMultiMapping<BasicMapping>::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
 {
     typename std::map<const In* , IndexArray >::iterator iterMap;
     Out* output = this->toModels[0];

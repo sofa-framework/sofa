@@ -64,7 +64,8 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
-
+    typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
+    typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
     /// Correspondance array
     //typedef helper::vector<unsigned int> IndexArray;
     inline unsigned int computeTotalInputPoints() const
@@ -85,7 +86,7 @@ public:
     void addPoint(const In* fromModel, int index);
 
 
-    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const helper::vector<const InVecCoord*>& inPos );
+    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ (const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
 
