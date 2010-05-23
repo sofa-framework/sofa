@@ -58,7 +58,6 @@ WarpPreconditioner<DataTypes>::WarpPreconditioner()
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
     , realSolver(NULL), mstate(NULL), forceField(NULL)
 {
-    first = true;
 }
 
 
@@ -88,25 +87,20 @@ void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(double mFact, double bFac
         sout << "Allocated RH vector " << rotatedRHVId << sendl;
     }
 
-    if (forceField) getRotations();
-
-    if (first && realSolver)
-    {
-        realSolver->setSystemMBKMatrix(mFact, bFact, kFact);
-        first=false;
-    }
+    getRotations(Rinv);
+    realSolver->setSystemMBKMatrix(mFact, bFact, kFact);
 }
 
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::resetSystem()
 {
-    if (first && realSolver) realSolver->resetSystem();
+    if (realSolver) realSolver->resetSystem();
 }
 
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::invertSystem()
 {
-    if (first && realSolver) realSolver->invertSystem();
+    if (realSolver) realSolver->invertSystem();
 }
 
 /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
@@ -135,32 +129,106 @@ void WarpPreconditioner<DataTypes>::solveSystem()
     if (!realSolver || !mstate) return;
     //std::cout << ">SOLVE" << std::endl;
 
+    unsigned int size = mstate->getSize();
+    if (this->frozen)
+    {
+        getRotations(Rcurr);
+        Real tmp[9];
+        //Rcurr * Rinv_i
+        for (unsigned i=0; i<size*9; i+=9)
+        {
+            tmp[0] = Rinv[i+0] * Rcurr[i+0] + Rinv[i+3] * Rcurr[i+3] + Rinv[i+6] * Rcurr[i+6];
+            tmp[1] = Rinv[i+0] * Rcurr[i+1] + Rinv[i+3] * Rcurr[i+4] + Rinv[i+6] * Rcurr[i+7];
+            tmp[2] = Rinv[i+0] * Rcurr[i+2] + Rinv[i+3] * Rcurr[i+5] + Rinv[i+6] * Rcurr[i+8];
+
+            tmp[3] = Rinv[i+1] * Rcurr[i+0] + Rinv[i+4] * Rcurr[i+3] + Rinv[i+7] * Rcurr[i+6];
+            tmp[4] = Rinv[i+1] * Rcurr[i+1] + Rinv[i+4] * Rcurr[i+4] + Rinv[i+7] * Rcurr[i+7];
+            tmp[5] = Rinv[i+1] * Rcurr[i+2] + Rinv[i+4] * Rcurr[i+5] + Rinv[i+7] * Rcurr[i+8];
+
+            tmp[6] = Rinv[i+2] * Rcurr[i+0] + Rinv[i+5] * Rcurr[i+3] + Rinv[i+8] * Rcurr[i+6];
+            tmp[7] = Rinv[i+2] * Rcurr[i+1] + Rinv[i+5] * Rcurr[i+4] + Rinv[i+8] * Rcurr[i+7];
+            tmp[8] = Rinv[i+2] * Rcurr[i+2] + Rinv[i+5] * Rcurr[i+5] + Rinv[i+8] * Rcurr[i+8];
+
+            Rcurr[i+0] = tmp[0]; Rcurr[i+1] = tmp[1]; Rcurr[i+2] = tmp[2];
+            Rcurr[i+3] = tmp[3]; Rcurr[i+4] = tmp[4]; Rcurr[i+5] = tmp[5];
+            Rcurr[i+6] = tmp[6]; Rcurr[i+7] = tmp[7]; Rcurr[i+8] = tmp[8];
+        }
+        //int element = 50;printf("%f %f %f\n%f %f %f\n%f %f %f\n----------------------\n",Rcurr[element*9],Rcurr[element*9+1],Rcurr[element*9+2],Rcurr[element*9+3],Rcurr[element*9+4],Rcurr[element*9+5],Rcurr[element*9+6],Rcurr[element*9+7],Rcurr[element*9+8]);
+    }
+
     if (forceField)
     {
+        //Solve lv = R * M-1 * R^t * rv
+
         helper::ReadAccessor <VecDeriv> rv = *mstate->getVecDeriv(systemRHVId.index);
         helper::WriteAccessor<VecDeriv> rvR = *mstate->getVecDeriv(rotatedRHVId.index);
-        unsigned int size = rv.size();
-        for (unsigned int i=0; i<size; ++i) rvR[i] = data.R[i].multTranspose(rv[i]);            // rotatedRH = R^t * systemRH
 
-        realSolver->setSystemRHVector(rotatedRHVId);
+        //Solve rvR = Rcur^t * rv
+        unsigned int k = 0,l = 0;
+        while (l < size)
+        {
+            rvR[l][0] = Rcurr[k + 0] * rv[l][0] + Rcurr[k + 3] * rv[l][1] + Rcurr[k + 6] * rv[l][2];
+            rvR[l][1] = Rcurr[k + 1] * rv[l][0] + Rcurr[k + 4] * rv[l][1] + Rcurr[k + 7] * rv[l][2];
+            rvR[l][2] = Rcurr[k + 2] * rv[l][0] + Rcurr[k + 5] * rv[l][1] + Rcurr[k + 8] * rv[l][2];
+            l++;
+            k+=9;
+        }
+
+        //Solve lvR = M-1 * rvR
+        realSolver->setSystemRHVector(systemRHVId);
         realSolver->setSystemLHVector(rotatedLHVId);
-        realSolver->solveSystem();                     // rotatedLH = M^-1 * rotatedRH
+        realSolver->solveSystem();
 
         helper::WriteAccessor<VecDeriv> lv = *mstate->getVecDeriv(systemLHVId.index);
         helper::ReadAccessor <VecDeriv> lvR = *mstate->getVecDeriv(rotatedLHVId.index);
-        for (unsigned int i=0; i<size; ++i) lv[i] = data.R[i] * (lvR[i]); // systemLH = R * rotatedLH
+
+        //Solve lv = R * lvR
+        k = 0; l = 0;
+        while (l < size)
+        {
+            lv[l][0] = Rcurr[k + 0] * lvR[l][0] + Rcurr[k + 1] * lvR[l][1] + Rcurr[k + 2] * lvR[l][2];
+            lv[l][1] = Rcurr[k + 3] * lvR[l][0] + Rcurr[k + 4] * lvR[l][1] + Rcurr[k + 5] * lvR[l][2];
+            lv[l][2] = Rcurr[k + 6] * lvR[l][0] + Rcurr[k + 7] * lvR[l][1] + Rcurr[k + 8] * lvR[l][2];
+            l++;
+            k+=9;
+        }
+
+
     }
     else mstate->vOp(systemLHVId, systemRHVId);     // systemLH = rotatedLH
 }
 
 template<class TDataTypes>
-void WarpPreconditioner<TDataTypes>::getRotations()
+void WarpPreconditioner<TDataTypes>::getRotations(TBaseVector & R)
 {
-    if (!forceField || !mstate) return;
+    if (!mstate) return;
     unsigned int size = mstate->getSize();
-    data.R.resize(size);
-    for (unsigned int i=0; i<size; ++i)
-        forceField->getRotation(data.R[i], i);
+    R.resize(size*9);
+
+    if (forceField != NULL)
+    {
+        Transformation Rotation;
+        for(unsigned int k = 0; k < size; k++)
+        {
+            forceField->getRotation(Rotation, k);
+            for (int j=0; j<3; j++)
+            {
+                for (int i=0; i<3; i++)
+                {
+                    R[k*9+j*3+i] = (Real)Rotation[j][i];
+                }
+            }
+        }
+    }
+    else
+    {
+        serr << "No rotation defined : use Identity !!";
+        for(unsigned int k = 0; k < size; k++)
+        {
+            R[k*9] = R[k*9+4] = R[k*9+8] = 1.0f;
+            R[k*9+1] = R[k*9+2] = R[k*9+3] = R[k*9+5] = R[k*9+6] = R[k*9+7] = 0.0f;
+        }
+    }
 }
 
 } // namespace linearsolver

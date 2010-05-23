@@ -98,65 +98,6 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
     ldl_numeric (n, &A_p[0], &A_i[0], &A_x[0], &Lp[0], &Parent[0], &Lnz[0], &Li[0], &Lx[0], &D[0], &Y[0], &Pattern[0], &Flag[0], NULL, NULL) ;
 }
 
-template<class TMatrix, class TVector>
-bool SparseLDLSolver<TMatrix,TVector>::readFile(std::istream& in)
-{
-    std::cout << "Read SparseLDLSolver" << std::endl;
-
-    std::string s;
-
-    in >> s;
-
-    if (! s.compare("SparseLDLSolver"))
-    {
-        std::cout << "File not contain a SparseLDLSolver" << std::endl;
-        return false;
-    }
-
-    in >> n;
-
-    A_x.read(in);
-    A_i.read(in);
-    A_p.read(in);
-    D.read(in);
-    Y.read(in);
-    Parent.read(in);
-    Lnz.read(in);
-    Flag.read(in);
-    Pattern.read(in);
-    Lp.read(in);
-    Lx.read(in);
-    Li.read(in);
-
-    return true;
-}
-
-template<class TMatrix, class TVector>
-bool SparseLDLSolver<TMatrix,TVector>::writeFile(std::ostream& out)
-{
-    std::cout << "Write SparseLDLSolver" << std::endl;
-
-    std::string s = "SparseLDLSolver";
-
-    out << s << endl;
-
-    out << n << endl;
-
-    A_x.write(out);
-    A_i.write(out);
-    A_p.write(out);
-    D.write(out);
-    Y.write(out);
-    Parent.write(out);
-    Lnz.write(out);
-    Flag.write(out);
-    Pattern.write(out);
-    Lp.write(out);
-    Lx.write(out);
-    Li.write(out);
-
-    return true;
-}
 
 SOFA_DECL_CLASS(SparseLDLSolver)
 
