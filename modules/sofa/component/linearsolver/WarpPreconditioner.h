@@ -29,6 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/component/linearsolver/FullVector.h>
 #include <math.h>
 
 #include <map>
@@ -48,9 +49,9 @@ class WarpPreconditionerInternalData
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::MatNoInit<3, 3, Real> Rotation;
-    typedef helper::vector<Rotation> VecRotation;
-    VecRotation R;
+    typedef FullVector<Real> TBaseVector ;
+
+
 };
 
 /// Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix
@@ -67,6 +68,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
+    typedef typename WarpPreconditionerInternalData<DataTypes>::TBaseVector TBaseVector;
+    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::core::behavior::LinearSolver Inherit;
 
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
@@ -145,11 +149,17 @@ public:
 
     /// Ask the solver to no longer update the system matrix
     virtual void freezeSystemMatrix()
-    { if (realSolver) realSolver->freezeSystemMatrix(); }
+    {
+        Inherit::freezeSystemMatrix();
+        if (realSolver) realSolver->freezeSystemMatrix();
+    }
 
     /// Ask the solver to no update the system matrix at the next iteration
     virtual void updateSystemMatrix()
-    { if (realSolver) realSolver->updateSystemMatrix(); }
+    {
+        Inherit::updateSystemMatrix();
+        if (realSolver) realSolver->updateSystemMatrix();
+    }
 
 
     //template<class JMatrix>
@@ -193,13 +203,10 @@ private :
 
     //CudaMatrixUtils Utils;
 
-    void getRotations();
+    void getRotations(TBaseVector & R);
 
-    bool first;
-    bool _rotate;
-    unsigned systemSize;
-    bool usePrecond;
-
+    TBaseVector Rcurr;
+    TBaseVector Rinv;
 };
 
 
