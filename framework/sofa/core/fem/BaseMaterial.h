@@ -43,7 +43,7 @@ using namespace sofa::defaulttype;
 /**
  * Generic material class
  */
-class BaseMaterial : public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseMaterial : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
