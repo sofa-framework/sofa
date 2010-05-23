@@ -36,8 +36,9 @@
 #include <sofa/component/fem/fetype/initFEType.h>
 #include <sofa/component/fem/straintensor/initStrainTensor.h>
 #include <sofa/component/fem/material/initMaterial.h>
-#include <sofa/component/fem/forcefield/initFEMForceField.h>
 #include <sofa/component/fem/initFEM.h>
+#include <sofa/component/fem/forcefield/initFEMForceField.h>
+
 
 #include <sofa/component/forcefield/initForceField.h>
 #include <sofa/component/interactionforcefield/initInteractionForceField.h>
@@ -76,8 +77,8 @@ void init()
         initFEType();
         initStrainTensor();
         initMaterial();
-        initFEMForceField();
         initFEM();
+        initFEMForceField();
 
         initForceField();
         initInteractionForceField();
