@@ -28,6 +28,8 @@
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
 #include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/defaulttype/BaseVector.h>
 #include <utility> // for std::pair
 
 namespace sofa
@@ -40,10 +42,10 @@ namespace defaulttype
 ///
 /// Note that accessing values using this class is rather slow and should only be used in codes where the
 /// provided genericity is necessary.
-class BaseMatrix
+class SOFA_DEFAULTTYPE_API BaseMatrix
 {
 public:
-    virtual ~BaseMatrix() {}
+    virtual ~BaseMatrix();
 
     /// Number of rows
     virtual unsigned int rowSize(void) const = 0;
@@ -87,7 +89,7 @@ public:
     virtual ElementType getElementType() const { return ELEMENT_FLOAT; }
 
     /// @return size of elements stored in this matrix
-    virtual unsigned int getElementSize() const { return sizeof(double); }
+    virtual unsigned int getElementSize() const { return sizeof(SReal); }
 
     enum MatrixCategory
     {
@@ -191,6 +193,7 @@ public:
             data = internalData;
         }
     };
+
     class InternalColBlockIterator
     {
     public:
@@ -340,6 +343,108 @@ public:
             matrix->bAccessorAdd(&internal, i, j, v);
         }
 
+        /// Read all values from this bloc into given float buffer, or return the pointer to the data if the in-memory format is compatible
+        const float* elements(float* dest) const
+        {
+            return matrix->bAccessorElements(&internal, dest);
+        }
+
+        /// Read all values from this bloc into given double buffer, or return the pointer to the data if the in-memory format is compatible
+        const double* elements(double* dest) const
+        {
+            return matrix->bAccessorElements(&internal, dest);
+        }
+
+        /// Read all values from this bloc into given int buffer, or return the pointer to the data if the in-memory format is compatible
+        const int* elements(int* dest) const
+        {
+            return matrix->bAccessorElements(&internal, dest);
+        }
+
+        /// Set all values of this bloc from the given float buffer
+        const void set(const float* src)
+        {
+            matrix->bAccessorSet(&internal, src);
+        }
+
+        /// Set all values of this bloc from the given double buffer
+        const void set(const double* src)
+        {
+            matrix->bAccessorSet(&internal, src);
+        }
+
+        /// Set all values of this bloc from the given int buffer
+        const void set(const int* src)
+        {
+            matrix->bAccessorSet(&internal, src);
+        }
+
+        /// Add to all values of this bloc from the given float buffer
+        const void add(const float* src)
+        {
+            matrix->bAccessorAdd(&internal, src);
+        }
+
+        /// Add to all values of this bloc from the given double buffer
+        const void add(const double* src)
+        {
+            matrix->bAccessorAdd(&internal, src);
+        }
+
+        /// Add to all values of this bloc from the given int buffer
+        const void add(const int* src)
+        {
+            matrix->bAccessorAdd(&internal, src);
+        }
+
+        /// Prepare the addition of float values to this bloc.
+        /// Return a pointer to a float buffer where values can be added.
+        /// If the in-memory format of the matrix is incompatible, the provided buffer can be used,
+        /// but the method must clear it before returning.
+        const float* prepareAdd(float* buffer)
+        {
+            return matrix->bAccessorPrepareAdd(&internal, buffer);
+        }
+
+        /// Finalize an addition of float values to this bloc.
+        /// The buffer must be the one returned by calling the prepareAdd method.
+        const void finishAdd(const float* buffer)
+        {
+            matrix->bAccessorFinishAdd(&internal, buffer);
+        }
+
+        /// Prepare the addition of double values to this bloc.
+        /// Return a pointer to a double buffer where values can be added.
+        /// If the in-memory format of the matrix is incompatible, the provided buffer can be used,
+        /// but the method must clear it before returning.
+        const double* prepareAdd(double* buffer)
+        {
+            return matrix->bAccessorPrepareAdd(&internal, buffer);
+        }
+
+        /// Finalize an addition of double values to this bloc.
+        /// The buffer must be the one returned by calling the prepareAdd method.
+        const void finishAdd(const double* buffer)
+        {
+            matrix->bAccessorFinishAdd(&internal, buffer);
+        }
+
+        /// Prepare the addition of int values to this bloc.
+        /// Return a pointer to a int buffer where values can be added.
+        /// If the in-memory format of the matrix is incompatible, the provided buffer can be used,
+        /// but the method must clear it before returning.
+        const int* prepareAdd(int* buffer)
+        {
+            return matrix->bAccessorPrepareAdd(&internal, buffer);
+        }
+
+        /// Finalize an addition of int values to this bloc.
+        /// The buffer must be the one returned by calling the prepareAdd method.
+        const void finishAdd(const int* buffer)
+        {
+            matrix->bAccessorFinishAdd(&internal, buffer);
+        }
+
         friend class BaseMatrix;
         friend class BlockConstAccessor;
         friend class ColBlockConstIterator;
@@ -422,6 +527,24 @@ public:
             return matrix->bAccessorElement(&internal, i, j);
         }
 
+        /// Read all values from this bloc into given float buffer, or return the pointer to the buffer data if the in-memory format is compatible
+        const float* elements(float* dest) const
+        {
+            return matrix->bAccessorElements(&internal, dest);
+        }
+
+        /// Read all values from this bloc into given double buffer, or return the pointer to the buffer data if the in-memory format is compatible
+        const double* elements(double* dest) const
+        {
+            return matrix->bAccessorElements(&internal, dest);
+        }
+
+        /// Read all values from this bloc into given int buffer, or return the pointer to the buffer data if the in-memory format is compatible
+        const int* elements(int* dest) const
+        {
+            return matrix->bAccessorElements(&internal, dest);
+        }
+
         friend class BaseMatrix;
         friend class ColBlockConstIterator;
     };
@@ -443,6 +566,108 @@ protected:
         add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
     }
 
+    template<class T>
+    const T* bAccessorElementsDefaultImpl(const InternalBlockAccessor* b, T* buffer) const
+    {
+        const int NL = getBlockRows();
+        const int NC = getBlockCols();
+        for (int l=0; l<NL; ++l)
+            for (int c=0; c<NC; ++c)
+                buffer[l*NC+c] = (T)bAccessorElement(b, l, c);
+        return buffer;
+    }
+    virtual const float* bAccessorElements(const InternalBlockAccessor* b, float* buffer) const
+    {
+        return bAccessorElementsDefaultImpl<float>(b, buffer);
+    }
+    virtual const double* bAccessorElements(const InternalBlockAccessor* b, double* buffer) const
+    {
+        return bAccessorElementsDefaultImpl<double>(b, buffer);
+    }
+    virtual const int* bAccessorElements(const InternalBlockAccessor* b, int* buffer) const
+    {
+        return bAccessorElementsDefaultImpl<int>(b, buffer);
+    }
+
+    template<class T>
+    void bAccessorSetDefaultImpl(InternalBlockAccessor* b, const T* buffer)
+    {
+        const int NL = getBlockRows();
+        const int NC = getBlockCols();
+        for (int l=0; l<NL; ++l)
+            for (int c=0; c<NC; ++c)
+                bAccessorSet(b, l, c, (double)buffer[l*NC+c]);
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, const float* buffer)
+    {
+        bAccessorSetDefaultImpl<float>(b, buffer);
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, const double* buffer)
+    {
+        bAccessorSetDefaultImpl<double>(b, buffer);
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, const int* buffer)
+    {
+        bAccessorSetDefaultImpl<int>(b, buffer);
+    }
+
+    template<class T>
+    void bAccessorAddDefaultImpl(InternalBlockAccessor* b, const T* buffer)
+    {
+        const int NL = getBlockRows();
+        const int NC = getBlockCols();
+        for (int l=0; l<NL; ++l)
+            for (int c=0; c<NC; ++c)
+                bAccessorAdd(b, l, c, (double)buffer[l*NC+c]);
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const float* buffer)
+    {
+        bAccessorAddDefaultImpl<float>(b, buffer);
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const double* buffer)
+    {
+        bAccessorAddDefaultImpl<double>(b, buffer);
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const int* buffer)
+    {
+        bAccessorAddDefaultImpl<int>(b, buffer);
+    }
+
+    template<class T>
+    T* bAccessorPrepareAddDefaultImpl(InternalBlockAccessor* /*b*/, T* buffer)
+    {
+        const int NL = getBlockRows();
+        const int NC = getBlockCols();
+        const int N = NL*NC;
+        for (int i=0; i<N; ++i)
+            buffer[i] = (T)0;
+        return buffer;
+    }
+    virtual float* bAccessorPrepareAdd(InternalBlockAccessor* b, float* buffer)
+    {
+        return bAccessorPrepareAddDefaultImpl<float>(b, buffer);
+    }
+    virtual double* bAccessorPrepareAdd(InternalBlockAccessor* b, double* buffer)
+    {
+        return bAccessorPrepareAddDefaultImpl<double>(b, buffer);
+    }
+    virtual int* bAccessorPrepareAdd(InternalBlockAccessor* b, int* buffer)
+    {
+        return bAccessorPrepareAddDefaultImpl<int>(b, buffer);
+    }
+
+    virtual void bAccessorFinishAdd(InternalBlockAccessor* b, const float* buffer)
+    {
+        bAccessorAdd(b, buffer);
+    }
+    virtual void bAccessorFinishAdd(InternalBlockAccessor* b, const double* buffer)
+    {
+        bAccessorAdd(b, buffer);
+    }
+    virtual void bAccessorFinishAdd(InternalBlockAccessor* b, const int* buffer)
+    {
+        bAccessorAdd(b, buffer);
+    }
 
     BlockAccessor createBlockAccessor(int row, int col, void* internalPtr)
     {
@@ -474,6 +699,46 @@ protected:
     static const InternalBlockAccessor* getInternal(const BlockAccessor* b) { return &(b->internal); }
 
 public:
+
+
+    /// Get read access to a bloc
+    virtual BlockConstAccessor blocGet(int i, int j) const
+    {
+        return createBlockConstAccessor(i, j, NULL);
+    }
+
+    /// Get write access to a bloc
+    virtual BlockAccessor blocGetW(int i, int j)
+    {
+        return createBlockAccessor(i, j, NULL);
+    }
+
+    /// Get write access to a bloc, possibly creating it
+    virtual BlockAccessor blocCreate(int i, int j)
+    {
+        return createBlockAccessor(i, j, NULL);
+    }
+
+    /// Shortcut for blocGet(i,j).elements(buffer)
+    template<class T>
+    const T* blocElements(int i, int j, T* buffer) const
+    {
+        blocGet(i,j).elements(buffer);
+    }
+
+    /// Shortcut for blocCreate(i,j).set(buffer)
+    template<class T>
+    void blocSet(int i, int j, const T* buffer)
+    {
+        blocCreate(i,j).set(buffer);
+    }
+
+    /// Shortcut for blocCreate(i,j).add(buffer)
+    template<class T>
+    void blocAdd(int i, int j, const T* buffer)
+    {
+        blocCreate(i,j).add(buffer);
+    }
 
     class ColBlockConstIterator
     {
@@ -621,6 +886,9 @@ protected:
     }
 
 public:
+
+
+
     /// Get the iterator corresponding to the beginning of the given row of blocks
     virtual ColBlockConstIterator bRowBegin(int ib) const
     {
@@ -812,26 +1080,70 @@ protected:
     }
 
 public:
+
     /// Get the iterator corresponding to the beginning of the rows of blocks
-    virtual RowBlockConstIterator bRowsBegin()
+    virtual RowBlockConstIterator bRowsBegin() const
     {
         return createRowBlockConstIterator(0, 0);
     }
 
     /// Get the iterator corresponding to the end of the rows of blocks
-    virtual RowBlockConstIterator bRowsEnd()
+    virtual RowBlockConstIterator bRowsEnd() const
     {
         return createRowBlockConstIterator(bRowSize(), 0);
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange()
+    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const
     {
         return std::make_pair(bRowsBegin(), bRowsEnd());
     }
 
     /// @}
 
+    /// @name basic linear operations
+    /// @{
+
+public:
+
+    /// Multiply the matrix by vector v and put the result in vector result
+    virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+
+    /// Multiply the matrix by float vector v and put the result in vector result
+    virtual void opMulV(float* result, const float* v) const;
+
+    /// Multiply the matrix by double vector v and put the result in vector result
+    virtual void opMulV(double* result, const double* v) const;
+
+    /// Multiply the matrix by vector v and add the result in vector result
+    virtual void opPMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+
+    /// Multiply the matrix by float vector v and add the result in vector result
+    virtual void opPMulV(float* result, const float* v) const;
+
+    /// Multiply the matrix by double vector v and add the result in vector result
+    virtual void opPMulV(double* result, const double* v) const;
+
+
+    /// Multiply the transposed matrix by vector v and put the result in vector result
+    virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+
+    /// Multiply the transposed matrix by float vector v and put the result in vector result
+    virtual void opMulTV(float* result, const float* v) const;
+
+    /// Multiply the transposed matrix by double vector v and put the result in vector result
+    virtual void opMulTV(double* result, const double* v) const;
+
+    /// Multiply the transposed matrix by vector v and add the result in vector result
+    virtual void opPMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+
+    /// Multiply the transposed matrix by float vector v and add the result in vector result
+    virtual void opPMulTV(float* result, const float* v) const;
+
+    /// Multiply the transposed matrix by double vector v and add the result in vector result
+    virtual void opPMulTV(double* result, const double* v) const;
+
+    /// @}
 };
 
 

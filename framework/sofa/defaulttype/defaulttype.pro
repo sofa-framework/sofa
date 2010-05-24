@@ -40,6 +40,7 @@ HEADERS += \
           Vec3Types.h
 
 SOURCES += \
+          BaseMatrix.cpp \
           Frame.cpp \
           SolidTypes.cpp
 

@@ -203,6 +203,8 @@ public:
 #ifdef SPARSEMATRIX_VERBOSE
             std::cout << /* this->Name()  <<  */": resize("<<nbBRow<<"*"<<NL<<","<<nbBCol<<"*"<<NC<<")"<<std::endl;
 #endif
+            nRow = nbBRow*NL;
+            nCol = nbBCol*NC;
             nBlocRow = nbBRow;
             nBlocCol = nbBCol;
             rowIndex.clear();
@@ -674,9 +676,9 @@ public:
         if (nbRow != (int)rowSize() || nbCol != (int)colSize())
             std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
 #endif
+        resizeBloc((nRow + NL-1) / NL, (nCol + NC-1) / NC);
         nRow = nbRow;
         nCol = nbCol;
-        resizeBloc((nRow + NL-1) / NL, (nCol + NC-1) / NC);
     }
 
     SReal element(int i, int j) const
@@ -908,22 +910,157 @@ protected:
     {
         //return element(b->row * getBlockRows() + i, b->col * getBlockCols() + j);
         int index = b->data;
-        const Bloc& data = colsValue[index];
+        const Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         return (SReal)traits::v(data, i, j);
     }
     virtual void bAccessorSet(InternalBlockAccessor* b, int i, int j, double v)
     {
         //set(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
         int index = b->data;
-        Bloc& data = colsValue[index];
+        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         traits::v(data, i, j) = (Real)v;
     }
     virtual void bAccessorAdd(InternalBlockAccessor* b, int i, int j, double v)
     {
-        add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
+        //add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
         int index = b->data;
-        Bloc& data = colsValue[index];
+        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         traits::v(data, i, j) += (Real)v;
+    }
+
+    template<class T>
+    const T* bAccessorElementsCSRImpl(const InternalBlockAccessor* b, T* buffer) const
+    {
+        int index = b->data;
+        const Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        for (int l=0; l<NL; ++l)
+            for (int c=0; c<NC; ++c)
+                buffer[l*NC+c] = (T)traits::v(data, l, c);
+        return buffer;
+    }
+    virtual const float* bAccessorElements(const InternalBlockAccessor* b, float* buffer) const
+    {
+        return bAccessorElementsCSRImpl<float>(b, buffer);
+    }
+    virtual const double* bAccessorElements(const InternalBlockAccessor* b, double* buffer) const
+    {
+        return bAccessorElementsCSRImpl<double>(b, buffer);
+    }
+    virtual const int* bAccessorElements(const InternalBlockAccessor* b, int* buffer) const
+    {
+        return bAccessorElementsCSRImpl<int>(b, buffer);
+    }
+
+    template<class T>
+    void bAccessorSetCSRImpl(InternalBlockAccessor* b, const T* buffer)
+    {
+        int index = b->data;
+        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        for (int l=0; l<NL; ++l)
+            for (int c=0; c<NC; ++c)
+                traits::v(data, l, c) = (Real)buffer[l*NC+c];
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, const float* buffer)
+    {
+        bAccessorSetCSRImpl<float>(b, buffer);
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, const double* buffer)
+    {
+        bAccessorSetCSRImpl<double>(b, buffer);
+    }
+    virtual void bAccessorSet(InternalBlockAccessor* b, const int* buffer)
+    {
+        bAccessorSetCSRImpl<int>(b, buffer);
+    }
+
+    template<class T>
+    void bAccessorAddCSRImpl(InternalBlockAccessor* b, const T* buffer)
+    {
+        int index = b->data;
+        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        for (int l=0; l<NL; ++l)
+            for (int c=0; c<NC; ++c)
+                traits::v(data, l, c) += (Real)buffer[l*NC+c];
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const float* buffer)
+    {
+        bAccessorAddCSRImpl<float>(b, buffer);
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const double* buffer)
+    {
+        bAccessorAddCSRImpl<double>(b, buffer);
+    }
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const int* buffer)
+    {
+        bAccessorAddCSRImpl<int>(b, buffer);
+    }
+
+public:
+
+    /// Get read access to a bloc
+    virtual BlockConstAccessor blocGet(int i, int j) const
+    {
+        ((Matrix*)this)->compress();
+
+        int rowId = i * rowIndex.size() / nBlocRow;
+        if (sortedFind(rowIndex, i, rowId))
+        {
+            Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            if (sortedFind(colsIndex, rowRange, j, colId))
+            {
+                return createBlockConstAccessor(i, j, colId);
+            }
+        }
+        return createBlockConstAccessor(-1-i, -1-j, 0);
+    }
+
+    /// Get write access to a bloc
+    virtual BlockAccessor blocGetW(int i, int j)
+    {
+        ((Matrix*)this)->compress();
+
+        int rowId = i * rowIndex.size() / nBlocRow;
+        if (sortedFind(rowIndex, i, rowId))
+        {
+            Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            if (sortedFind(colsIndex, rowRange, j, colId))
+            {
+                return createBlockAccessor(i, j, colId);
+            }
+        }
+        return createBlockAccessor(-1-i, -1-j, 0);
+    }
+
+    /// Get write access to a bloc, possibly creating it
+    virtual BlockAccessor blocCreate(int i, int j)
+    {
+        int rowId = i * rowIndex.size() / nBlocRow;
+        if (sortedFind(rowIndex, i, rowId))
+        {
+            Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
+            int colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            if (sortedFind(colsIndex, rowRange, j, colId))
+            {
+#ifdef SPARSEMATRIX_VERBOSE
+                std::cout << /* this->Name()  <<  */"("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")."<<std::endl;
+#endif
+                return createBlockAccessor(i, j, colId);
+            }
+        }
+        //if (create)
+        {
+            if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
+            {
+#ifdef SPARSEMATRIX_VERBOSE
+                std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): new temp bloc ("<<i<<","<<j<<")"<<std::endl;
+#endif
+                btemp.push_back(IndexedBloc(i,j));
+                traits::clear(btemp.back().value);
+            }
+            return createBlockAccessor(i, j, -btemp.size());
+        }
     }
 
 protected:
@@ -1064,21 +1201,21 @@ protected:
 
 public:
     /// Get the iterator corresponding to the beginning of the rows of blocks
-    virtual RowBlockConstIterator bRowsBegin()
+    virtual RowBlockConstIterator bRowsBegin() const
     {
         ((Matrix*)this)->compress();
         return createRowBlockConstIterator(0, 0);
     }
 
     /// Get the iterator corresponding to the end of the rows of blocks
-    virtual RowBlockConstIterator bRowsEnd()
+    virtual RowBlockConstIterator bRowsEnd() const
     {
         ((Matrix*)this)->compress();
         return createRowBlockConstIterator(rowIndex.size(), 0);
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange()
+    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const
     {
         ((Matrix*)this)->compress();
         return std::make_pair(createRowBlockConstIterator(0, 0),
@@ -1182,7 +1319,7 @@ public:
     }
 
     template<class Real2>
-    void mulTranspose(defaulttype::BaseVector*& res, const FullVector<Real2>& v) const
+    void mulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
     {
         tmulTranspose< Real2, defaulttype::BaseVector, FullVector<Real2> >(*res, v);
     }
