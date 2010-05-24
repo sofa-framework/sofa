@@ -670,7 +670,7 @@ protected:
         bAccessorAdd(b, buffer);
     }
 
-    BlockAccessor createBlockAccessor(int row, int col, void* internalPtr)
+    BlockAccessor createBlockAccessor(int row, int col, void* internalPtr = NULL)
     {
         return BlockAccessor(this, row, col, internalPtr);
     }
@@ -680,7 +680,7 @@ protected:
         return BlockAccessor(this, row, col, internalData);
     }
 
-    BlockConstAccessor createBlockConstAccessor(int row, int col, void* internalPtr) const
+    BlockConstAccessor createBlockConstAccessor(int row, int col, void* internalPtr = NULL) const
     {
         return BlockConstAccessor(this, row, col, internalPtr);
     }
@@ -705,19 +705,19 @@ public:
     /// Get read access to a bloc
     virtual BlockConstAccessor blocGet(int i, int j) const
     {
-        return createBlockConstAccessor(i, j, NULL);
+        return createBlockConstAccessor(i, j);
     }
 
     /// Get write access to a bloc
     virtual BlockAccessor blocGetW(int i, int j)
     {
-        return createBlockAccessor(i, j, NULL);
+        return createBlockAccessor(i, j);
     }
 
     /// Get write access to a bloc, possibly creating it
     virtual BlockAccessor blocCreate(int i, int j)
     {
-        return createBlockAccessor(i, j, NULL);
+        return createBlockAccessor(i, j);
     }
 
     /// Shortcut for blocGet(i,j).elements(buffer)
@@ -887,8 +887,6 @@ protected:
     }
 
 public:
-
-
 
     /// Get the iterator corresponding to the beginning of the given row of blocks
     virtual ColBlockConstIterator bRowBegin(int ib) const
