@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/defaulttype.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <utility> // for std::pair
+#include <cstddef> // for NULL
 
 namespace sofa
 {
