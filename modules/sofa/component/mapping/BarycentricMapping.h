@@ -100,6 +100,7 @@ namespace component
 
 namespace mapping
 {
+
 /// Base class for barycentric mapping topology-specific mappers
 using sofa::defaulttype::Matrix3;
 template<class In, class Out>
@@ -284,8 +285,9 @@ public:
             topology::PointSetTopologyContainer* toTopology,
             core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
             core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
-        : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology)
-        , maskFrom(_maskFrom), maskTo(_maskTo), matrixJ(NULL), updateJ(true)
+        : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
+          maskFrom(_maskFrom), maskTo(_maskTo),
+          matrixJ(NULL), updateJ(true)
     {
     }
 
@@ -312,10 +314,10 @@ public:
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
@@ -374,6 +376,7 @@ private:
     void clear3d(int reserve=0);
 
 };
+
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
 class BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In,Out>
@@ -389,21 +392,41 @@ public:
     typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
     typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::CubeData CubeData;
+
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
 protected:
+    void addMatrixContrib(MatrixType* m, int row, int col, Real value)
+    {
+        Inherit::addMatrixContrib(m, row, col, value);
+    }
+
     sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* fromTopology;
     core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
     core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+
+    MatrixType* matrixJ;
+    bool updateJ;
+
 public:
     BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology,
             topology::PointSetTopologyContainer* toTopology,
             core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
             core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : Inherit(fromTopology, toTopology),fromTopology(fromTopology),
-          maskFrom(_maskFrom), maskTo(_maskTo)
-    {}
+          maskFrom(_maskFrom), maskTo(_maskTo),
+          matrixJ(NULL), updateJ(true)
+    {
+    }
 
-    virtual ~BarycentricMapperRegularGridTopology() {}
+    virtual ~BarycentricMapperRegularGridTopology()
+    {
+        if (matrixJ) delete matrixJ;
+    }
 
     void clear(int reserve=0);
 
@@ -420,6 +443,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
@@ -453,11 +477,25 @@ public:
     typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
 
     typedef typename Inherit::CubeData CubeData;
+
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
 protected:
+    void addMatrixContrib(MatrixType* m, int row, int col, Real value)
+    {
+        Inherit::addMatrixContrib(m, row, col, value);
+    }
+
     sofa::helper::vector<CubeData> map;
     topology::SparseGridTopology* fromTopology;
     core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
     core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+
+    MatrixType* matrixJ;
+    bool updateJ;
 public:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
             topology::PointSetTopologyContainer* _toTopology,
@@ -465,10 +503,15 @@ public:
             core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           fromTopology(fromTopology),
-          maskFrom(_maskFrom), maskTo(_maskTo)
-    {}
+          maskFrom(_maskFrom), maskTo(_maskTo),
+          matrixJ(NULL), updateJ(true)
+    {
+    }
 
-    virtual ~BarycentricMapperSparseGridTopology() {}
+    virtual ~BarycentricMapperSparseGridTopology()
+    {
+        if (matrixJ) delete matrixJ;
+    }
 
     void clear(int reserve=0);
 
@@ -480,6 +523,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
