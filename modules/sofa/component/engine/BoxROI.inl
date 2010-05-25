@@ -98,7 +98,7 @@ void BoxROI<DataTypes>::init()
         this->getContext()->get(mstate);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("position");
+            BaseData* parent = mstate->findField("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);

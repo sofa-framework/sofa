@@ -115,7 +115,7 @@ void SubsetTopology<DataTypes>::init()
             this->getContext()->get(loader);
             if (loader)
             {
-                BaseData* parent = loader->findField("position");
+                BaseData* parent = loader->findField("rest_position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
