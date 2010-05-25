@@ -70,14 +70,23 @@ public:
         {
             context->addObject(obj);
             core::collision::Pipeline *pipeline=static_cast<simulation::Node*>(context)->collisionPipeline;
-            if (pipeline)
+
+            helper::set<std::string> listResponse;
+            if (pipeline) listResponse=pipeline->getResponseList();
+            else
             {
-                helper::set<std::string> listResponse=pipeline->getResponseList();
-                sofa::helper::OptionsGroup responseOptions(listResponse);
-                if (listResponse.find("default") != listResponse.end())
-                    responseOptions.setSelectedItem("default");
-                obj->response.setValue(responseOptions);
+                obj->serr << "No collision pipeline found: using default options for collision response" << obj->sendl;
+
+                core::collision::Contact::Factory::iterator it;
+                for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
+                {
+                    listResponse.insert(it->first);
+                }
             }
+            sofa::helper::OptionsGroup responseOptions(listResponse);
+            if (listResponse.find("default") != listResponse.end())
+                responseOptions.setSelectedItem("default");
+            obj->response.setValue(responseOptions);
         }
         if (arg) obj->parse(arg);
 
