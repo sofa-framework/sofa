@@ -421,10 +421,13 @@ void QSofaRecorder::slot_sliderValue(int value, bool updateTime)
         double time = init_time + value/((float)timeSlider->maxValue())*(final_time-init_time);
         setCurrentTime(time);
     }
-    timeSlider->setValue(value);
-    timeSlider->update();
-    if(! this->record->isOn())
-        loadSimulation();
+    if (timeSlider->value() != value)
+    {
+        timeSlider->setValue(value);
+        timeSlider->update();
+        if(! this->record->isOn())
+            loadSimulation();
+    }
 }
 
 void QSofaRecorder::addReadState(const std::string& writeSceneName, bool init)
