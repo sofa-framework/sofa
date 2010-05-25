@@ -134,7 +134,7 @@ void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
 
 void ReadState::setTime(double time)
 {
-    if (time < nextTime) {reset(); nextTime=0.0; loopTime=0.0; }
+    if (time+getContext()->getDt()*0.5 < lastTime) {reset();}
 }
 
 void ReadState::processReadState(double time)
@@ -213,7 +213,6 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
             if (nextTime <= time)
                 validLines.clear();
         }
-
         if (nextTime <= time)
             validLines.push_back(line);
     }
