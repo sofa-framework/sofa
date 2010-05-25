@@ -220,12 +220,32 @@ void PointLocalMinDistanceFilter::init()
         m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
         m_pointInfo.setCreateParameter((void *) this);
     }
+    if(this->isRigid())
+    {
+        // Precomputation of the filters in the rigid case
+        //points:
+        helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
+        for(unsigned int p=0; p<pInfo.size(); p++)
+        {
+            pInfo[p].buildFilter(p);
+
+        }
+        m_pointInfo.endEdit();
+
+    }
+
 }
 
 
 
 void PointLocalMinDistanceFilter::handleTopologyChange()
 {
+    if(this->isRigid())
+    {
+        serr<<"WARNING: filters optimization needed for topological change on rigid collision model"<<sendl;
+        this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
+    }
+
     core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
 
     assert(bmt != 0);
@@ -249,9 +269,22 @@ void PointLocalMinDistanceFilter::LMDFilterPointCreationFunction(int /*pointInde
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());
-    if(mstateVec3d != NULL)
+    if(pLMDFilter->isRigid())
     {
-        pInfo.setPositionFiltering(mstateVec3d->getX());
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            pInfo.setPositionFiltering(mstateVec3d->getX0());
+        }
+
+    }
+    else
+    {
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            pInfo.setPositionFiltering(mstateVec3d->getX());
+        }
     }
 
 }

@@ -34,6 +34,7 @@
 #include <sofa/component/topology/TriangleData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -43,7 +44,7 @@ namespace component
 
 namespace collision
 {
-
+using sofa::helper::AdvancedTimer;
 
 /**
  * @brief LocalMinDistance cone information class for a Triangle collision primitive.
@@ -95,12 +96,14 @@ public:
         return in;
     }
 
-protected:
     /**
      * @brief Computes the region of interest cone of the Triangle primitive.
      */
     //virtual void buildFilter(const Triangle & /*t*/);
     virtual void buildFilter(unsigned int /*t*/);
+
+protected:
+
 
     Vector3 m_normal; ///< Stored normal of the triangle.
 };
@@ -138,8 +141,24 @@ public:
      */
     bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
     {
-        //sstd::cout<<"validPoint "<<pointIndex<<" is called with PQ="<<PQ<<std::endl;
+        // AdvancedTimer::StepVar("Filters");
+
         PointInfo & Pi = m_pointInfo[pointIndex];
+        if(&Pi==NULL)
+        {
+            serr<<"Pi == NULL"<<sendl;
+            return true;
+        }
+
+        if(this->isRigid())
+        {
+            // filter is precomputed in the rest position
+            defaulttype::Vector3 PQtest;
+            PQtest = pos->getOrientation().inverseRotate(PQ);
+            return Pi.validate(pointIndex,PQtest);
+        }
+        //else
+
         return Pi.validate(pointIndex,PQ);
     }
 
@@ -148,8 +167,23 @@ public:
      */
     bool validLine(const int lineIndex, const defaulttype::Vector3 &PQ)
     {
+        //AdvancedTimer::StepVar("Filters");
+
+        LineInfo &Li = m_lineInfo[lineIndex];  // filter is precomputed
+        if(&Li==NULL)
+        {
+            serr<<"Li == NULL"<<sendl;
+            return true;
+        }
+
+        if(this->isRigid())
+        {
+            defaulttype::Vector3 PQtest;
+            PQtest = pos->getOrientation().inverseRotate(PQ);
+            return Li.validate(lineIndex,PQtest);
+        }
+
         //std::cout<<"validLine "<<lineIndex<<" is called with PQ="<<PQ<<std::endl;
-        LineInfo &Li = m_lineInfo[lineIndex];
         return Li.validate(lineIndex, PQ);
     }
 
@@ -158,14 +192,22 @@ public:
      */
     bool validTriangle(const int triangleIndex, const defaulttype::Vector3 &PQ)
     {
+        //AdvancedTimer::StepVar("Filters");
         //std::cout<<"validTriangle "<<triangleIndex<<" is called with PQ="<<PQ<<std::endl;
         TriangleInfo &Ti = m_triangleInfo[triangleIndex];
+
         if(&Ti==NULL)
         {
             serr<<"Ti == NULL"<<sendl;
             return true;
         }
 
+        if(this->isRigid())
+        {
+            defaulttype::Vector3 PQtest;
+            PQtest = pos->getOrientation().inverseRotate(PQ);
+            return Ti.validate(triangleIndex,PQtest);
+        }
 
 
         return Ti.validate(triangleIndex,PQ);

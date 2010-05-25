@@ -58,7 +58,7 @@ public:
     LineInfo()
         : InfoFilter(NULL)
     {
-
+        todo=false;
     }
 
     /**
@@ -67,7 +67,7 @@ public:
     LineInfo(LocalMinDistanceFilter *lmdFilters)
         : InfoFilter(lmdFilters)
     {
-
+        todo=false;
     }
 
     /**
@@ -96,11 +96,14 @@ public:
         return in;
     }
 
-protected:
+
     /**
      * @brief Computes the region of interest cone of the Line primitive.
      */
     virtual void buildFilter(unsigned int /*e*/);
+
+protected:
+
 
     Vector3 m_nMean; ///<
     Vector3 m_triangleRight; ///<
@@ -109,6 +112,7 @@ protected:
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<
+    bool todo;
 };
 
 
@@ -138,14 +142,33 @@ public:
      */
     //@{
 
+
     /**
      * @brief Point Collision Primitive validation method.
      */
     bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
     {
-        PointInfo & Li = m_pointInfo[pointIndex];
-        return Li.validate(pointIndex,PQ);
+
+        PointInfo & Pi = m_pointInfo[pointIndex];
+        if(&Pi==NULL)
+        {
+            serr<<"Pi == NULL"<<sendl;
+            return true;
+        }
+
+        if(this->isRigid())
+        {
+            // filter is precomputed in the rest position
+            defaulttype::Vector3 PQtest;
+            PQtest = pos->getOrientation().inverseRotate(PQ);
+            return Pi.validate(pointIndex,PQtest);
+        }
+        //else
+
+        return Pi.validate(pointIndex,PQ);
     }
+
+
 
     /**
      * @brief Line Collision Primitive validation method.
@@ -174,6 +197,8 @@ private:
     topology::EdgeData< LineInfo > m_lineInfo;
 
     core::topology::BaseMeshTopology *bmt;
+
+
 };
 
 

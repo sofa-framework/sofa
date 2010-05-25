@@ -42,6 +42,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -100,6 +101,7 @@ void LMDNewProximityIntersection::init()
 
 bool LMDNewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
 {
+//     sofa::helper::AdvancedTimer::StepVar("testIntersectionCubeCube");
     const Vector3& minVect1 = cube1.minVect();
     const Vector3& minVect2 = cube2.minVect();
     const Vector3& maxVect1 = cube1.maxVect();
@@ -400,6 +402,8 @@ bool LMDNewProximityIntersection::testIntersection(Triangle&, Triangle&)
 
 int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
 {
+    //sofa::helper::AdvancedTimer::StepVar("ComputeIntersectionOnTri");
+
 
     //std::cout<<"computeIntersection(Triangle "<<e1.getIndex()<<", Triangle"<< e2.getIndex()<<" ... is called"<<std::endl;
 

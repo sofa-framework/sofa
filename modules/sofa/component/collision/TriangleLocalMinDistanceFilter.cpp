@@ -42,23 +42,17 @@ namespace collision
 
 void TriangleInfo::buildFilter(unsigned int tri_index)
 {
-    if (isRigid())
-    {
-        std::cout<<"TODO in TriangleInfo::buildFilter"<<std::endl;
-        // TODO : supprimer ! : a priori, on ne passe plus dans cette fonction quand on a un objet rigide !
-    }
-    else
-    {
 
-        sofa::core::topology::BaseMeshTopology* bmt = this->base_mesh_topology;
-        const Triangle &t =  bmt->getTriangle(tri_index);
 
-        const Vector3 &pt1 = (*this->position_filtering)[t[0]];
-        const Vector3 &pt2 = (*this->position_filtering)[t[1]];
-        const Vector3 &pt3 = (*this->position_filtering)[t[2]];
+    sofa::core::topology::BaseMeshTopology* bmt = this->base_mesh_topology;
+    const Triangle &t =  bmt->getTriangle(tri_index);
 
-        m_normal = cross(pt2-pt1, pt3-pt1);
-    }
+    const Vector3 &pt1 = (*this->position_filtering)[t[0]];
+    const Vector3 &pt2 = (*this->position_filtering)[t[1]];
+    const Vector3 &pt3 = (*this->position_filtering)[t[2]];
+
+    m_normal = cross(pt2-pt1, pt3-pt1);
+
 
     setValid();
 }
@@ -144,12 +138,52 @@ void TriangleLocalMinDistanceFilter::init()
         m_triangleInfo.endEdit();
         std::cout<<"create m_pointInfo, m_lineInfo, m_triangleInfo" <<std::endl;
     }
+
+    if(this->isRigid())
+    {
+        std::cout<<"++++++ Is rigid Found in init "<<std::endl;
+        // Precomputation of the filters in the rigid case
+        //triangles:
+        helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
+        for(unsigned int t=0; t<tInfo.size(); t++)
+        {
+            tInfo[t].buildFilter(t);
+
+        }
+        m_triangleInfo.endEdit();
+
+        //lines:
+        helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
+        for(unsigned int l=0; l<lInfo.size(); l++)
+        {
+            lInfo[l].buildFilter(l);
+
+        }
+        m_lineInfo.endEdit();
+
+        //points:
+        helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
+        for(unsigned int p=0; p<pInfo.size(); p++)
+        {
+            pInfo[p].buildFilter(p);
+
+        }
+        m_pointInfo.endEdit();
+
+    }
+
 }
 
 
 
 void TriangleLocalMinDistanceFilter::handleTopologyChange()
 {
+    if(this->isRigid())
+    {
+        serr<<"WARNING: filters optimization needed for topological change on rigid collision model"<<sendl;
+        this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
+    }
+
     core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
 
     assert(bmt != 0);
@@ -173,9 +207,22 @@ void TriangleLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *p
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());
-    if(mstateVec3d != NULL)
+    if(pLMDFilter->isRigid())
     {
-        pInfo.setPositionFiltering(mstateVec3d->getX());
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            pInfo.setPositionFiltering(mstateVec3d->getX0());
+        }
+
+    }
+    else
+    {
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            pInfo.setPositionFiltering(mstateVec3d->getX());
+        }
     }
 
 }
@@ -191,9 +238,22 @@ void TriangleLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *pa
     lInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(lLMDFilter->getContext()->getMechanicalState());
-    if(mstateVec3d != NULL)
+    if(lLMDFilter->isRigid())
     {
-        lInfo.setPositionFiltering(mstateVec3d->getX());
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            lInfo.setPositionFiltering(mstateVec3d->getX0());
+        }
+
+    }
+    else
+    {
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            lInfo.setPositionFiltering(mstateVec3d->getX());
+        }
     }
 }
 
@@ -209,9 +269,22 @@ void TriangleLocalMinDistanceFilter::LMDFilterTriangleCreationFunction(int, void
     tInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(tLMDFilter->getContext()->getMechanicalState());
-    if(mstateVec3d != NULL)
+    if(tLMDFilter->isRigid())
     {
-        tInfo.setPositionFiltering(mstateVec3d->getX());
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            tInfo.setPositionFiltering(mstateVec3d->getX0());
+        }
+
+    }
+    else
+    {
+        /////// TODO : template de la classe
+        if(mstateVec3d != NULL)
+        {
+            tInfo.setPositionFiltering(mstateVec3d->getX());
+        }
     }
 }
 

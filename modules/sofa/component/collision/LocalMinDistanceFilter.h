@@ -26,10 +26,9 @@
 #define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCEFILTER_H
 
 #include <sofa/component/component.h>
-
 #include <sofa/core/objectmodel/BaseObject.h>
-
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -39,6 +38,7 @@ namespace component
 
 namespace collision
 {
+using namespace defaulttype;
 
 class LocalMinDistanceFilter;
 
@@ -53,12 +53,10 @@ public:
      * @brief Default constructor.
      *
      * @param m_revision Cone information is up to date.
-     * @param m_rigid Cone information is related to a rigid CollisionModel.
      * @param m_lmdFilters The localMinDistance filtration class that contains this InfoFilter.
      */
     InfoFilter(LocalMinDistanceFilter *lmdFilters)
         :	m_revision(-1),
-            m_rigid(false),
             m_lmdFilters(lmdFilters)
     {};
 
@@ -82,17 +80,6 @@ public:
      * @brief Sets cone information validity.
      */
     virtual void setValid();
-
-
-    /**
-     * @brief Returns true if the CollisionElement is mapped to a rigid mechanical state.
-     */
-    bool isRigid(void) const {return m_rigid;};
-
-    /**
-     * @brief Sets the rigid property, true if the CollisionElement is mapped to a rigid mechanical state.
-     */
-    void setRigid(const bool rigid) {m_rigid = rigid;};
 
     /**
      * @brief Returns the LocalMinDistanceFilters object that contains this InfoFilter.
@@ -119,7 +106,7 @@ protected:
     virtual void buildFilter( unsigned int /*edge_index*/) = 0;
 
     int m_revision; ///< Last filter update revision.
-    bool m_rigid; ///< True if the CollisionElement is mapped to a rigid mechanical state.
+
     const LocalMinDistanceFilter	*m_lmdFilters; ///< The LocalMinDistanceFilters object that contains this InfoFilter.
 
     core::topology::BaseMeshTopology* base_mesh_topology;
@@ -142,6 +129,7 @@ public:
 
     /**
      * @brief Default constructor.
+         * @param m_rigid Cone information is called on a rigid CollisionModel.
      */
     LocalMinDistanceFilter();
 
@@ -149,6 +137,18 @@ public:
      * @brief Default destructor.
      */
     virtual ~LocalMinDistanceFilter();
+
+    //virtual void init(){}
+
+    void reinit() { init(); bwdInit();}
+
+    void reset() {reinit();}
+
+    /**
+      * @brief Scene graph backward initialization method
+      */
+    void bwdInit();
+
 
     /**
      * @brief Get filtering cone extension angle.
@@ -181,16 +181,30 @@ public:
     void setRevision(const int revision) {m_revision = revision;};
 
     /**
+     * @brief Returns true if the CollisionElement is mapped to a rigid mechanical state.
+     */
+    bool isRigid(void) const {return m_rigid.getValue();};
+
+    /**
+     * @brief Sets the rigid property, true if the CollisionElement is mapped to a rigid mechanical state.
+     */
+    void setRigid(bool rigid) {m_rigid.setValue(rigid);};
+
+    /**
      * @brief Increases LMDFilter revision number to notify a CollisionModel modification.
      * Corresponding filtrations data should be rebuilt or updated.
      */
     void invalidate();
+protected:
+    Rigid3dTypes::Coord *pos;
+
 
 private:
 
     Data< double >	m_coneExtension;	///< Filtering cone extension angle.
     Data< double >	m_coneMinAngle;		///< Minimal filtering cone angle value, independent from geometry.
     unsigned int	m_revision;			///< Simulation step index (CollisionModel revision).
+    Data< bool >    m_rigid; ///< True if the CollisionElement is mapped to a rigid mechanical state.
 };
 
 
