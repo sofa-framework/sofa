@@ -206,7 +206,8 @@ HEADERS += \
 SOURCES +=  \
 	 fem/BaseFiniteElement.cpp \
 	 fem/FiniteElement.cpp \
-	 fem/DofContainer.cpp 
+	 fem/DofContainer.cpp \
+ 	 fem/BaseStrainTensor.cpp 
  
 } # END SOFA_DEV
 
