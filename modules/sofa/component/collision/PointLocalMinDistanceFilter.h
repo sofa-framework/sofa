@@ -94,12 +94,14 @@ public:
         return in;
     }
 
-protected:
     /**
      * @brief Computes the region of interest cone of the Point primitive.
      */
     //virtual void buildFilter(const Point & /*p*/);
     virtual void buildFilter(unsigned int /*p*/);
+
+protected:
+
 
     bool m_noLineModel; ///< Flag indicating if the Point CollisionModel is not associated to a Line CollisionModel.
     TDataContainer m_computedData; ///< Cone stored data.
