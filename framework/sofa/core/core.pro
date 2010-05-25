@@ -204,6 +204,7 @@ HEADERS += \
 	 fem/DofContainer.h 
  
 SOURCES +=  \
+	 fem/BaseMaterial.cpp \
 	 fem/BaseFiniteElement.cpp \
 	 fem/FiniteElement.cpp \
 	 fem/DofContainer.cpp \
