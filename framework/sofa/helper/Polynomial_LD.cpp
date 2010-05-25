@@ -35,8 +35,7 @@ namespace helper
 using namespace sofa::defaulttype;
 using namespace std;
 
-
-#ifdef SOFA_DOUBLE
+#ifndef SOFA_FLOAT
 template class Monomial_LD<double,1>;
 template class Monomial_LD<double,2>;
 template class Monomial_LD<double,3>;
@@ -50,7 +49,8 @@ template class SOFA_HELPER_API Polynomial_LD<double,4>;
 template class SOFA_HELPER_API Polynomial_LD<double,5>;
 #endif
 
-#ifdef SOFA_FLOAT
+
+#ifndef SOFA_DOUBLE
 template class Monomial_LD<float,1>;
 template class Monomial_LD<float,2>;
 template class Monomial_LD<float,3>;

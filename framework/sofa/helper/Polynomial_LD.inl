@@ -304,7 +304,7 @@ Polynomial_LD<Real,N>::Polynomial_LD(const unsigned  int nbofTerm,...)
     for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
     {
         Monomial_LD<Real,N> mi;
-        Real coefi=va_arg(vl,Real); mi.SetCoef(coefi);
+        Real coefi=va_arg(vl, Real ); mi.SetCoef(coefi);
 
         for(unsigned int jvar=0; jvar<N; jvar++)
         {
