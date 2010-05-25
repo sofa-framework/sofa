@@ -123,6 +123,9 @@ class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::VisualModel,
 public:
     SOFA_CLASS3(VisualModelImpl, core::VisualModel, ExtVec3fMappedModel, RigidMappedModel);
 
+    typedef Vec<2, float> TexCoord;
+    typedef helper::fixed_array<int, 3> Triangle;
+    typedef helper::fixed_array<int, 4> Quad;
 protected:
     // use types from ExtVec3fTypes
 
@@ -133,9 +136,6 @@ protected:
     typedef ExtVec3fTypes::VecDeriv VecDeriv;
 
 
-    typedef Vec<2, float> TexCoord;
-    typedef helper::fixed_array<int, 3> Triangle;
-    typedef helper::fixed_array<int, 4> Quad;
     //typedef helper::fixed_array<int, 4> Tetrahedron;
 
     //ResizableExtVector<Coord>* inputVertices;
