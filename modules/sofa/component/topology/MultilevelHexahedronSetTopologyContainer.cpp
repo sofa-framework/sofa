@@ -104,7 +104,7 @@ void MultilevelHexahedronSetTopologyContainer::loadFromMeshLoader(sofa::componen
 
             Vec3i pos(i,j,k);
             std::set<Vec3i> voxels;
-            voxels.insert(pos);
+            voxels.insert(&pos, 1+&pos); // Using this insert method avoid the 39390 bug of gcc-4.4
 
             MultilevelHexahedronSetTopologyContainer::Component *comp = new MultilevelHexahedronSetTopologyContainer::Component(pos, voxels);
             _fineComponents.beginEdit()->push_back(comp);
