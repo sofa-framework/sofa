@@ -363,37 +363,37 @@ public:
         }
 
         /// Set all values of this bloc from the given float buffer
-        const void set(const float* src)
+        void set(const float* src)
         {
             matrix->bAccessorSet(&internal, src);
         }
 
         /// Set all values of this bloc from the given double buffer
-        const void set(const double* src)
+        void set(const double* src)
         {
             matrix->bAccessorSet(&internal, src);
         }
 
         /// Set all values of this bloc from the given int buffer
-        const void set(const int* src)
+        void set(const int* src)
         {
             matrix->bAccessorSet(&internal, src);
         }
 
         /// Add to all values of this bloc from the given float buffer
-        const void add(const float* src)
+        void add(const float* src)
         {
             matrix->bAccessorAdd(&internal, src);
         }
 
         /// Add to all values of this bloc from the given double buffer
-        const void add(const double* src)
+        void add(const double* src)
         {
             matrix->bAccessorAdd(&internal, src);
         }
 
         /// Add to all values of this bloc from the given int buffer
-        const void add(const int* src)
+        void add(const int* src)
         {
             matrix->bAccessorAdd(&internal, src);
         }
@@ -409,7 +409,7 @@ public:
 
         /// Finalize an addition of float values to this bloc.
         /// The buffer must be the one returned by calling the prepareAdd method.
-        const void finishAdd(const float* buffer)
+        void finishAdd(const float* buffer)
         {
             matrix->bAccessorFinishAdd(&internal, buffer);
         }
@@ -425,7 +425,7 @@ public:
 
         /// Finalize an addition of double values to this bloc.
         /// The buffer must be the one returned by calling the prepareAdd method.
-        const void finishAdd(const double* buffer)
+        void finishAdd(const double* buffer)
         {
             matrix->bAccessorFinishAdd(&internal, buffer);
         }
@@ -441,7 +441,7 @@ public:
 
         /// Finalize an addition of int values to this bloc.
         /// The buffer must be the one returned by calling the prepareAdd method.
-        const void finishAdd(const int* buffer)
+        void finishAdd(const int* buffer)
         {
             matrix->bAccessorFinishAdd(&internal, buffer);
         }
