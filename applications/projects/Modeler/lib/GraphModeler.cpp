@@ -48,6 +48,7 @@
 #include <Q3Header>
 #include <Q3PopupMenu>
 #include <QMessageBox>
+#include <Q3PtrList>
 #else
 #include <qheader.h>
 #include <qpopupmenu.h>
@@ -75,7 +76,7 @@ GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f):Q3L
     addColumn("Graph");
     header()->hide();
     setSorting ( -1 );
-
+    setSelectionMode(Q3ListView::Extended);
 
     historyManager=new GraphHistoryManager(this);
     //Make the connections
@@ -351,8 +352,10 @@ GNode *GraphModeler::getGNode(Q3ListViewItem *item)
 
 void GraphModeler::openModifyObject()
 {
-    Q3ListViewItem *item = currentItem();
-    openModifyObject(item);
+    helper::vector<Q3ListViewItem*> selection;
+    getSelectedItems(selection);
+    for (unsigned int i=0; i<selection.size(); ++i)
+        openModifyObject(selection[i]);
 }
 
 void GraphModeler::openModifyObject(Q3ListViewItem *item)
@@ -430,30 +433,45 @@ void GraphModeler::doubleClick(Q3ListViewItem *item)
 void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int index)
 {
     if (!item) return;
-    bool isNode=getObject(item)==NULL;
+    bool isNode=true;
+    helper::vector<Q3ListViewItem*> selection; getSelectedItems(selection);
+    bool isSingleSelection= (selection.size() == 1);
+    for (unsigned int i=0; i<selection.size(); ++i)
+    {
+        if (getObject(item)!=NULL)
+        {
+            isNode = false;
+            break;
+        }
+    }
 
     Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
     if (isNode)
     {
         contextMenu->insertItem("Collapse", this, SLOT( collapseNode()));
         contextMenu->insertItem("Expand"  , this, SLOT( expandNode()));
-        contextMenu->insertSeparator ();
-        contextMenu->insertItem("Load"  , this, SLOT( loadNode()));
-        contextMenu->insertItem(QIconSet(), tr( "Preset"), preset);
-        contextMenu->insertItem("Save"  , this, SLOT( saveNode()));
+        if (isSingleSelection)
+        {
+            contextMenu->insertSeparator ();
+            contextMenu->insertItem("Load"  , this, SLOT( loadNode()));
+            contextMenu->insertItem(QIconSet(), tr( "Preset"), preset);
+        }
     }
-    int index_menu = contextMenu->insertItem("Delete"  , this, SLOT( deleteComponent()));
+    contextMenu->insertItem("Save"  , this, SLOT( saveComponents()));
 
-    if (isNode)
-    {
-        if ( !isNodeErasable ( getGNode(item) ) )
-            contextMenu->setItemEnabled ( index_menu,false );
-    }
-    else
-    {
-        if ( !isObjectErasable ( getObject(item) ))
-            contextMenu->setItemEnabled ( index_menu,false );
-    }
+    /*int index_menu = */contextMenu->insertItem("Delete"  , this, SLOT( deleteComponent()));
+
+    //If the node/component is not erasable, clicking on Delete won't do anything.
+//        if (isNode)
+//        {
+//          if ( !isNodeErasable ( getGNode(item) ) )
+//            contextMenu->setItemEnabled ( index_menu,false );
+//        }
+//        else
+//        {
+//          if ( !isObjectErasable ( getObject(item) ))
+//            contextMenu->setItemEnabled ( index_menu,false );
+//        }
 
     contextMenu->insertItem("Modify"  , this, SLOT( openModifyObject()));
     contextMenu->popup ( point, index );
@@ -463,7 +481,10 @@ void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int ind
 
 void GraphModeler::collapseNode()
 {
-    collapseNode(currentItem());
+    helper::vector<Q3ListViewItem*> selection;
+    getSelectedItems(selection);
+    for (unsigned int i=0; i<selection.size(); ++i)
+        collapseNode(selection[i]);
 }
 
 void GraphModeler::collapseNode(Q3ListViewItem* item)
@@ -482,7 +503,10 @@ void GraphModeler::collapseNode(Q3ListViewItem* item)
 
 void GraphModeler::expandNode()
 {
-    expandNode(currentItem());
+    helper::vector<Q3ListViewItem*> selection;
+    getSelectedItems(selection);
+    for (unsigned int i=0; i<selection.size(); ++i)
+        expandNode(selection[i]);
 }
 
 void GraphModeler::expandNode(Q3ListViewItem* item)
@@ -751,44 +775,49 @@ void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile
     if (elem.presenceAttribute(std::string("scale3d")))      elem.setAttribute(std::string("scale3d"),     scale.c_str());
 }
 
-void GraphModeler::save(const std::string &filename)
+bool GraphModeler::getSaveFilename(std::string &filename)
 {
-    saveNode(getRoot(), filename);
-    emit graphClean();
-}
-
-void GraphModeler::saveNode()
-{
-    saveNode(currentItem());
-}
-
-void GraphModeler::saveNode(Q3ListViewItem* item)
-{
-    if (!item) return;
-    GNode *node = getGNode(item);
-    if (!node)  return;
-
     QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.ascii());
         if (extension.empty()) s+=QString(".scn");
-        saveNode(node, s.ascii());
+        filename = s.ascii();
+        return true;
     }
+    return false;
 }
 
-
-void GraphModeler::saveNode(GNode* node, const std::string &file)
+void GraphModeler::save(const std::string &filename)
 {
-    simulation::getSimulation()->exportXML(node, file.c_str(),true);
+    GNode *node = getGNode(this->firstChild());
+    simulation::getSimulation()->exportXML(node, filename.c_str(),true);
+    emit graphClean();
 }
 
-void GraphModeler::saveComponent(BaseObject* object, const std::string &file)
+void GraphModeler::saveComponents()
+{
+    helper::vector<Q3ListViewItem*> selection;
+    getSelectedItems(selection);
+    if (selection.empty()) return;
+    std::string filename;
+    if ( getSaveFilename(filename) )  saveComponents(selection, filename);
+
+}
+
+void GraphModeler::saveComponents(helper::vector<Q3ListViewItem*> items, const std::string &file)
 {
     std::ofstream out(file.c_str());
-    simulation::XMLPrintVisitor print(out);
+    simulation::XMLPrintVisitor print(out,true);
+    print.setLevel(1);
     out << "<Node name=\"Group\">\n";
-    print.processBaseObject(object);
+    for (unsigned int i=0; i<items.size(); ++i)
+    {
+        if (BaseObject* object=getObject(items[i]))
+            print.processBaseObject(object);
+        else if (GNode *node=getGNode(items[i]))
+            print.execute(node);
+    }
     out << "</Node>\n";
 }
 
@@ -855,9 +884,10 @@ Base *GraphModeler::getComponentAbove(Q3ListViewItem *item)
 
 void GraphModeler::deleteComponent()
 {
-    Q3ListViewItem *item = currentItem();
-    if (!item) item = selectedItem();
-    deleteComponent(item);
+    helper::vector<Q3ListViewItem*> selection;
+    getSelectedItems(selection);
+    for (unsigned int i=0; i<selection.size(); ++i)
+        deleteComponent(selection[i]);
 }
 
 void GraphModeler::modifyUnlock ( void *Id )
@@ -1040,47 +1070,44 @@ void GraphModeler::closeDialogs()
 //TODO: not use the factory to create the elements!
 bool GraphModeler::editCut(std::string path)
 {
-    if (selectedItem())
+    bool resultCopy=editCopy(path);
+    if (resultCopy)
     {
-        editCopy(path);
-        deleteComponent(selectedItem(), true);
+        deleteComponent();
         return true;
     }
     return false;
 }
+
 bool GraphModeler::editCopy(std::string path)
 {
-    if (selectedItem())
+    helper::vector< Q3ListViewItem*> items; getSelectedItems(items);
+
+    if (!items.empty())
     {
-        BaseObject *object = getObject(selectedItem());
-        if (!object)
-        {
-            GNode *node = getGNode(selectedItem());
-            saveNode(node, path);
-        }
-        else
-        {
-            saveComponent(object,path);
-        }
+        saveComponents(items,path);
         return true;
     }
     return false;
 }
+
 bool GraphModeler::editPaste(std::string path)
 {
-    if (selectedItem())
+    helper::vector< Q3ListViewItem*> items; getSelectedItems(items);
+    if (!items.empty())
     {
-        Q3ListViewItem *last=selectedItem();
+        Q3ListViewItem *last=items.front();
         while(last->nextSibling()) last=last->nextSibling();
-        GNode *node = getGNode(selectedItem());
+        GNode *node = getGNode(items.front());
         loadNode(node, path);
-        Q3ListViewItem *pasteItem=selectedItem();
-        Q3ListViewItem *insertedItem=selectedItem();
+        Q3ListViewItem *pasteItem=items.front();
+        Q3ListViewItem *insertedItem=items.front();
         while(insertedItem->nextSibling()) insertedItem=insertedItem->nextSibling();
         //Something has been add to the graph
         if (insertedItem != last)  initItem(insertedItem, pasteItem);
     }
-    return selectedItem();
+
+    return !items.empty();
 }
 }
 }

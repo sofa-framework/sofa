@@ -52,6 +52,7 @@
 #include <qlistview.h>
 #include <qdragobject.h>
 #include <qpopupmenu.h>
+typedef QListViewItemIterator Q3ListViewItemIterator;
 #endif
 
 #include <iostream>
@@ -112,6 +113,17 @@ public:
     /// Keyboard Management
     void keyPressEvent ( QKeyEvent * e );
 
+    template <class T>
+    void getSelectedItems(T& selection)
+    {
+        Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
+        while ( it.current() )
+        {
+            selection.push_back(it.current());
+            ++it;
+        }
+    }
+
     /// Says if there is something to undo
     bool isUndoEnabled() {return historyManager->isUndoEnabled();}
     /// Says if there is something to redo
@@ -130,12 +142,8 @@ public:
     GNode *loadNode(Q3ListViewItem* item, std::string filename="", bool saveHistory=true);
     /// Save the whole graphe
     void save(const std::string &fileName);
-    /// Save a node: call the GUI to get the file name
-    void saveNode(Q3ListViewItem* item);
-    /// Directly save a node
-    void saveNode(GNode* node, const std::string &file);
-    /// Save a component
-    void saveComponent(BaseObject* object, const std::string &file);
+    /// Save components
+    void saveComponents(helper::vector<Q3ListViewItem*> items, const std::string &file);
     /// Open the window to configure a component
     void openModifyObject(Q3ListViewItem *);
     /// Delete a componnent
@@ -189,8 +197,8 @@ public slots:
     void loadPreset(std::string presetName);
     /// Context Menu Operation: loading a preset: actually creating the node, given its parameters (path to files, and initial position)
     void loadPreset(GNode*,std::string,std::string*, std::string,std::string,std::string);
-    /// Context Menu Operation: Saving a node
-    void saveNode();
+    /// Context Menu Operation: Saving the selection
+    void saveComponents();
     /// Context Menu Operation: Open the window to configure a component
     void openModifyObject();
     /// Context Menu Operation: Deleting a componnent
@@ -202,6 +210,8 @@ public slots:
     void modifyUnlock ( void *Id );
 
 protected:
+
+    bool getSaveFilename(std::string &filename);
     /// Given a position, get the GNode corresponding (if the point is on a component, it returns the GNode parent)
     GNode      *getGNode(const QPoint &pos);
 
