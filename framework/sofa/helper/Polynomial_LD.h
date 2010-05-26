@@ -124,7 +124,7 @@ public :
     Real operator()(const RNpoint & x,unsigned int idvar) const;
 
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
-    Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
+//	Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
     ///Derivative operator alowing to write p1=p2.d(x);
     Monomial_LD<Real,N> d(const unsigned int & ideriv) const;
@@ -208,7 +208,7 @@ public :
     Real operator()(const RNpoint & x,unsigned int idvar) const;
 
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
-    Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
+//	Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
     ///Derivative operator alowing to write p1=p2.d(x);
     Polynomial_LD<Real,N>  d(const unsigned int & ideriv) const;
@@ -229,7 +229,7 @@ public :
     friend Polynomial_LD<FReal,FN> & operator*(const Monomial_LD<FReal,FN>   & a, Polynomial_LD<FReal,FN> & r);
 
     void sort();
-    void testPolynomial_LD();
+//	void testPolynomial_LD();
 protected :
 
     ///The sort must be done after each constructor and each operation where monomials are inserted
