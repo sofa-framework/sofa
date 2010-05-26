@@ -123,7 +123,7 @@ public:
         {
             if (name && *name && N > 1)
             {
-                parent->layout()->add(new QLabel(QString("name"),parent));
+                parent->layout()->add(new QLabel(QString(name),parent));
             }
         }
         if (!w.createWidgets(parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
