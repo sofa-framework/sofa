@@ -304,8 +304,10 @@ Polynomial_LD<Real,N>::Polynomial_LD(const unsigned  int nbofTerm,...)
     for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
     {
         Monomial_LD<Real,N> mi;
-        Real coefi=va_arg(vl, Real ); mi.SetCoef(coefi);
-
+        //Real coefi=va_arg(vl, Real );
+        double coefindouble=va_arg(vl, double );
+        Real coefi=(Real)coefindouble;
+        mi.SetCoef(coefi);
         for(unsigned int jvar=0; jvar<N; jvar++)
         {
             int m_power=va_arg(vl,int); mi.SetPower(jvar,m_power);
@@ -318,9 +320,9 @@ Polynomial_LD<Real,N>::Polynomial_LD(const unsigned  int nbofTerm,...)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-void Polynomial_LD<Real,N>::Set(const unsigned  int nbofTerm,...)
+void Polynomial_LD<Real,N>::Set(const unsigned int nbofTerm,...)
 {
-    nbOfMonomial= (int)nbofTerm;
+    nbOfMonomial= nbofTerm;
     if(nbOfMonomial!=nbofTerm)
     {
         nbOfMonomial=nbofTerm  ;  listOfMonoMial.resize(nbOfMonomial);
@@ -333,7 +335,10 @@ void Polynomial_LD<Real,N>::Set(const unsigned  int nbofTerm,...)
     {
 
         Monomial_LD<Real,N> mi;
-        Real coefi=va_arg(vl,Real); mi.SetCoef(coefi);
+        //Real coefi=va_arg(vl,Real);
+        double coefindouble=va_arg(vl, double );
+        Real coefi=(Real)coefindouble;
+        mi.SetCoef(coefi); mi.SetCoef(coefi);
 
         for(unsigned int jvar=0; jvar<N; jvar++)
         {
@@ -465,9 +470,9 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<R
     Polynomial_LD<Real,N> old(*this);
     listOfMonoMial.resize(this->nbOfMonomial*(b.nbOfMonomial));
 
-    for(int ita=0; ita<old.nbOfMonomial; ita++)
+    for(unsigned int ita=0; ita<old.nbOfMonomial; ita++)
     {
-        for(int itb=0; itb<b.nbOfMonomial; itb++)
+        for(unsigned int itb=0; itb<b.nbOfMonomial; itb++)
         {
             listOfMonoMial[ita+itb]=old.listOfMonoMial[ita]*b.listOfMonoMial[itb];
         }
@@ -553,7 +558,7 @@ void Polynomial_LD<Real,N>::setnbOfMonomial(int m_nbofmonomial)
     listOfMonoMial.clear();
     nbOfMonomial=m_nbofmonomial;
     Monomial_LD<Real,N> monomialNULL;
-    for(int i=0; i<nbOfMonomial; i++)
+    for(unsigned int i=0; i<nbOfMonomial; i++)
     {
         listOfMonoMial.push_back(monomialNULL);
     }
@@ -581,7 +586,7 @@ void Polynomial_LD<Real,N>::readFromStream(std::istream & stream)
 
     listOfMonoMial.resize(nbOfMonomial);
     MonomialIterator it=listOfMonoMial.begin();
-    for(int monomialcounter=0; monomialcounter<nbOfMonomial; ++monomialcounter)
+    for(unsigned int monomialcounter=0; monomialcounter<nbOfMonomial; ++monomialcounter)
     {
         Monomial_LD<Real,N> tempo;
         if (stream >> tempo) (*it)=tempo;
