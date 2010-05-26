@@ -190,6 +190,12 @@ public:
     unsigned int getNumberOfQuads() const;
 
 
+    /** \brief Returns the number of topological element of the current topology.
+     * This function avoids to know which topological container is in used.
+     */
+    virtual unsigned int getNumberOfElements() const;
+
+
     /** \brief Returns the Quad array. */
     const sofa::helper::vector<Quad> &getQuadArray();
 

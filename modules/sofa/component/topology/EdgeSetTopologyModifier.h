@@ -249,10 +249,40 @@ public:
      * @moveDOF bool allowing the move (default true)
      */
     virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< unsigned              int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
             const bool moveDOF = true);
 
+
+
+    /** \brief Given an element indice, it will remove all the connected component in which this element belongs to.
+    *  Warning: if there is only one connected component in the model. All the object will be removed.
+    *
+    * @param elemID, ID of the input element.
+    * @return false if something goes wrong during the process.
+    */
+    virtual bool removeConnectedComponents(unsigned int elemID);
+
+    /** \brief Given an element indice, it will remove all elements directly connected to the input one.
+    *
+    * @param elemID, ID of the input element.
+    * @return false if something goes wrong during the process.
+    */
+    virtual bool removeConnectedElements(unsigned int elemID);
+
+    /** \brief If several connected components are detected, it will keep only the biggest one and remove all the rest.
+    * Warning: if two connected components have the same number of element and are the biggest. It will keep the first one.
+    *
+    * @return false if something goes wrong during the process.
+    */
+    virtual bool removeIsolatedElements();
+
+    /** \brief If several connected components are detected, it will remove all connected component with less than a given number of elements.
+    *
+    * @param scaleElem: threshold number size under which connected component will be removed.
+    * @return false if something goes wrong during the process.
+    */
+    virtual bool removeIsolatedElements(unsigned int scaleElem);
 
 private:
     EdgeSetTopologyContainer* 	m_container;

@@ -795,6 +795,94 @@ void EdgeSetTopologyModifier::movePointsProcess (const sofa::helper::vector <uns
 
 
 
+bool EdgeSetTopologyModifier::removeConnectedComponents(unsigned int elemID)
+{
+    if(!m_container)
+    {
+        serr << "TopologyContainer pointer is empty." << sendl;
+        return false;
+    }
+
+    sofa::helper::vector <unsigned int> elems = m_container->getConnectedElement(elemID);
+    this->removeItems(elems);
+    return true;
+}
+
+
+bool EdgeSetTopologyModifier::removeConnectedElements(unsigned int elemID)
+{
+    if(!m_container)
+    {
+        serr << "TopologyContainer pointer is empty." << sendl;
+        return false;
+    }
+
+    sofa::helper::vector <unsigned int> elems = m_container->getElementAroundElement(elemID);
+    this->removeItems(elems);
+    return true;
+}
+
+
+bool EdgeSetTopologyModifier::removeIsolatedElements()
+{
+    return this->removeIsolatedElements(0);
+}
+
+
+bool EdgeSetTopologyModifier::removeIsolatedElements(unsigned int scaleElem)
+{
+    if(!m_container)
+    {
+        serr << "TopologyContainer pointer is empty." << sendl;
+        return false;
+    }
+
+    unsigned int nbr = this->m_container->getNumberOfElements();
+    sofa::helper::vector <unsigned int> elemAll = m_container->getConnectedElement(0);
+    sofa::helper::vector <unsigned int> elem, elemMax, elemToRemove;
+
+    if (nbr == elemAll.size()) // nothing to do
+        return true;
+
+    elemMax = elemAll;
+
+    if (scaleElem == 0) //remove all isolated elements
+        scaleElem = nbr;
+
+    while (elemAll.size() < nbr)
+    {
+        std::sort(elemAll.begin(), elemAll.end());
+        unsigned int other_edgeID = elemAll.size();
+
+        for (unsigned int i = 0; i<elemAll.size(); ++i)
+            if (elemAll[i] != i)
+            {
+                other_edgeID = i;
+                break;
+            }
+
+        elem = this->m_container->getConnectedElement(other_edgeID);
+        elemAll.insert(elemAll.begin(), elem.begin(), elem.end());
+
+        if (elemMax.size() < elem.size())
+        {
+            if (elemMax.size() <= scaleElem)
+                elemToRemove.insert(elemToRemove.begin(), elemMax.begin(), elemMax.end());
+
+            elemMax = elem;
+        }
+        else
+        {
+            if (elem.size() <= scaleElem)
+                elemToRemove.insert(elemToRemove.begin(), elem.begin(), elem.end());
+        }
+    }
+
+    this->removeItems(elemToRemove);
+
+    return true;
+}
+
 } // namespace topology
 
 } // namespace component
