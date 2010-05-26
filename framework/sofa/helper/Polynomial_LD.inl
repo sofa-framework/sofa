@@ -320,7 +320,7 @@ Polynomial_LD<Real,N>::Polynomial_LD(const unsigned  int nbofTerm,...)
 template<typename Real, unsigned int N>
 void Polynomial_LD<Real,N>::Set(const unsigned  int nbofTerm,...)
 {
-    nbOfMonomial=nbofTerm;
+    nbOfMonomial= (int)nbofTerm;
     if(nbOfMonomial!=nbofTerm)
     {
         nbOfMonomial=nbofTerm  ;  listOfMonoMial.resize(nbOfMonomial);

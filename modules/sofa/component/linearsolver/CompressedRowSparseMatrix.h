@@ -1059,7 +1059,7 @@ public:
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
-            return createBlockAccessor(i, j, -btemp.size());
+            return createBlockAccessor(i, j, -(int)btemp.size());
         }
     }
 
