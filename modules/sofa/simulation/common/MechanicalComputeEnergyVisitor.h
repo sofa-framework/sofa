@@ -74,6 +74,12 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalComputeEnergyVisitor"; }
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    virtual void setReadWriteVectors()
+    {
+    }
+#endif
+
 };
 
 }
