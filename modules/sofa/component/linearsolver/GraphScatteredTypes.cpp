@@ -22,19 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_H
-
-#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/component/linearsolver/GraphScatteredTypes.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/helper/map.h>
-#include <math.h>
-#include <ldl.h>
+#include <sofa/simulation/common/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/common/MechanicalVPrintVisitor.h>
+#include <sofa/simulation/common/VelocityThresholdVisitor.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
+#include <stdlib.h>
+#include <math.h>
 
 namespace sofa
 {
@@ -45,41 +41,45 @@ namespace component
 namespace linearsolver
 {
 
-/// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
-template<class TMatrix, class TVector>
+using sofa::core::behavior::LinearSolver;
+using sofa::core::objectmodel::BaseContext;
 
-class SparseLDLSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
+void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector& x)
 {
-public :
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseLDLSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
+    // matrix-vector product
+#if 1
+    // new more powerful visitors
+    parent->propagateDxAndResetDf(x,res);
+    parent->addMBKdx(res,mFact,bFact,kFact, false); // df = (m M + b B + k K) dx
 
-public:
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
+#else
+    parent->propagateDx(x);          // dx = p
+    parent->computeDf(res);            // q = K p
 
-    Data<bool> f_verbose;
+    if (kFact != 1.0)
+        res *= kFact; // q = k K p
 
-    SparseLDLSolver();
-    ~SparseLDLSolver();
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+    // apply global Rayleigh damping
+    if (mFact == 1.0)
+    {
+        parent->addMdx(res); // no need to propagate p as dx again
+    }
+    else if (mFact != 0.0)
+    {
+        parent->addMdx(res,simulation::SolverImpl::VecId(),mFact); // no need to propagate p as dx again
+    }
+    // q = (m M + k K) p
 
-private :
-    int n;
-    helper::vector<double> A_x,Lx,D,Y;
-    helper::vector<int> A_i,A_p, Li,Lp,Parent,Lnz,Flag,Pattern;
-};
-
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_LINEARSOLVER)
-extern template class SOFA_COMPONENT_LINEARSOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+    /// @TODO: non-rayleigh damping (i.e. the B factor)
 #endif
+
+    // filter the product to take the constraints into account
+    //
+    parent->projectResponse(res);     // q is projected to the constrained space
+}
 
 } // namespace linearsolver
 
 } // namespace component
 
 } // namespace sofa
-
-#endif
