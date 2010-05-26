@@ -55,8 +55,10 @@ public:
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<bool> f_verbose;
-    Data<int> f_refresh;
-    Data<bool> use_precond;
+    Data<unsigned> f_update_iteration;
+    Data<unsigned> f_min_update_iteration;
+    Data<unsigned> f_update_step;
+    Data<bool> f_use_precond;
     Data< helper::vector< std::string > > f_preconditioners;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     std::vector<sofa::core::behavior::LinearSolver*> preconditioners;
@@ -70,7 +72,9 @@ public:
     //void setSystemLHVector(VecId v);
 
 private :
-    int iteration;
+    unsigned next_refresh_iteration;
+    unsigned next_refresh_step;
+
     bool usePrecond;
     bool first;
 
