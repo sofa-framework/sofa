@@ -161,7 +161,7 @@ public :
     typedef typename MonomialsList::iterator MonomialIterator;
     typedef sofa::defaulttype::Vec<N,Real> RNpoint;
 
-    int nbOfMonomial;
+    unsigned int nbOfMonomial;
     MonomialsList listOfMonoMial;
 
     ///Default constructor
@@ -177,7 +177,7 @@ public :
 
     ///setting of Polynomial
     Polynomial_LD(const unsigned  int nbofTerm,...);
-    void Set(const unsigned  int nbofTerm,...);
+    void Set(const unsigned int nbofTerm,...);
 
     int degree();
 

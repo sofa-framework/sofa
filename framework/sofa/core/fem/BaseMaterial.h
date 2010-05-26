@@ -63,6 +63,7 @@ public:
     virtual void computeDStress (Vector3 & ,Vector3 &) {}
 
     virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
+    virtual void handleTopologyChange();
 };
 
 
