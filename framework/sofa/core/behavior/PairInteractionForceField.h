@@ -80,6 +80,15 @@ public:
     MechanicalState<DataTypes>* getMState2() { return mstate2; }
     BaseMechanicalState* getMechModel2() { return mstate2; }
 
+    /// Set the Object1 path
+    void setPathObject1(const std::string & path) { _object1.setValue(path); }
+    /// Set the Object2 path
+    void setPathObject2(const std::string & path) { _object2.setValue(path); }
+    /// Retrieve the Object1 path
+    std::string getPathObject1() const { return _object1.getValue(); }
+    /// Retrieve the Object2 path
+    std::string getPathObject2() const { return _object2.getValue(); }
+
 
 
 
