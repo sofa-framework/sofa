@@ -58,6 +58,8 @@ public:
 
 //	virtual void reinit();
 
+    virtual void handleEvent( core::objectmodel::Event* ev );
+
     ///create gnuplot files
     virtual void initGnuplot ( const std::string path );
 
