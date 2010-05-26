@@ -77,6 +77,11 @@ public:
     /** \brief Returns the number of vertices in this topology. */
     int getNbPoints() const { return (int)nbPoints.getValue(); }
 
+    /** \brief Returns the number of topological element of the current topology.
+     * This function avoids to know which topological container is in used.
+     */
+    virtual unsigned int getNumberOfElements() const;
+
 
     /** \brief Set the number of vertices in this topology. */
     void setNbPoints(int n);

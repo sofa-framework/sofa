@@ -314,6 +314,13 @@ unsigned int QuadSetTopologyContainer::getNumberOfQuads() const
     return m_quad.size();
 }
 
+
+unsigned int QuadSetTopologyContainer::getNumberOfElements() const
+{
+    return this->getNumberOfQuads();
+}
+
+
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopologyContainer::getQuadsAroundVertexArray()
 {
     if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists

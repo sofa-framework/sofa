@@ -261,6 +261,12 @@ public:
     unsigned int getNumberOfHexahedra() const;
 
 
+    /** \brief Returns the number of topological element of the current topology.
+     * This function avoids to know which topological container is in used.
+     */
+    virtual unsigned int getNumberOfElements() const;
+
+
     /** \brief Returns the Hexahedron array. */
     const sofa::helper::vector<Hexahedron> &getHexahedronArray();
 

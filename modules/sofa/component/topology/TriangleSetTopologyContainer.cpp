@@ -472,6 +472,11 @@ unsigned int TriangleSetTopologyContainer::getNumberOfTriangles() const
     return (d_triangle.getValue()).size();
 }
 
+unsigned int TriangleSetTopologyContainer::getNumberOfElements() const
+{
+    return this->getNumberOfTriangles();
+}
+
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
 {
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists

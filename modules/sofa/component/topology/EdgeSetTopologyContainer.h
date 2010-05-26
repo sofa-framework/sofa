@@ -130,6 +130,11 @@ public:
      */
     unsigned int getNumberOfEdges() const;
 
+    /** \brief Returns the number of topological element of the current topology.
+     * This function avoids to know which topological container is in used.
+     */
+    virtual unsigned int getNumberOfElements() const;
+
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
      *

@@ -56,6 +56,11 @@ void PointSetTopologyContainer::setNbPoints(int n)
     nbPoints.setValue(n);
 }
 
+unsigned int PointSetTopologyContainer::getNumberOfElements() const
+{
+    return nbPoints.getValue();
+}
+
 bool PointSetTopologyContainer::checkTopology() const
 {
     return true;

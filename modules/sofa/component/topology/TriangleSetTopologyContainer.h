@@ -169,6 +169,10 @@ public:
      */
     unsigned int getNumberOfTriangles() const;
 
+    /** \brief Returns the number of topological element of the current topology.
+     * This function avoids to know which topological container is in used.
+     */
+    virtual unsigned int getNumberOfElements() const;
 
     /** \brief Returns the Triangle array. */
     const sofa::helper::vector<Triangle> &getTriangleArray();
