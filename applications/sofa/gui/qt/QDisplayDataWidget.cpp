@@ -113,16 +113,15 @@ bool QDataSimpleEdit::createWidgets()
     if( str.length() > TEXTSIZE_THRESHOLD )
     {
         innerWidget_.type = TEXTEDIT;
-        innerWidget_.widget.textEdit = new QTextEdit(this->parentWidget());
+        innerWidget_.widget.textEdit = new QTextEdit(this->parentWidget()); innerWidget_.widget.textEdit->setText(str);
         connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT ( setWidgetDirty() ) );
-        innerWidget_.widget.textEdit->setText(str);
     }
     else
     {
         innerWidget_.type = LINEEDIT;
         innerWidget_.widget.lineEdit  = new QLineEdit(this->parentWidget());
-        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( setWidgetDirty() ) );
         innerWidget_.widget.lineEdit->setText(str);
+        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( setWidgetDirty() ) );
     }
 
     return true;
@@ -139,7 +138,6 @@ void QDataSimpleEdit::readFromData()
     {
         innerWidget_.widget.lineEdit->setText(str);
     }
-
 }
 
 void QDataSimpleEdit::writeToData()

@@ -306,15 +306,17 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         {
             const PrimitiveGroup& g0 = objLoader.getGroups()[ig];
             FaceGroup& g = groups[ig];
-            g.materialName = g0.materialName;
-            g.groupName = g0.groupName;
+            if (g0.materialName.empty()) g.materialName = "defaultMaterial";
+            else                         g.materialName = g0.materialName;
+            if (g0.groupName.empty())    g.groupName = "defaultGroup";
+            else                         g.groupName = g0.groupName;
             g.materialId = g0.materialId;
             g.t0 = facet2tq[g0.p0].first;
             g.nbt = facet2tq[g0.p0+g0.nbp].first - g.t0;
             g.q0 = facet2tq[g0.p0].second;
             g.nbq = facet2tq[g0.p0+g0.nbp].second - g.q0;
-            if (g.materialId == -1 && !g.materialName.empty())
-                serr << "face group " << ig << " name " << g.materialName << " uses missing material " << g.materialName << sendl;
+            if (g.materialId == -1 && !g0.materialName.empty())
+                serr << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << sendl;
 
         }
     }
