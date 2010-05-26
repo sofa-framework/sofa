@@ -135,12 +135,18 @@ int main(int, char** argv)
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
     RigidMechanicalMappingRigid3_to_3* rigidMapping = new RigidMechanicalMappingRigid3_to_3(rigidDOF,rigidParticleDOF);
+    std::string pathobject1(rigidBody->getName()+"/"+rigidDOF->getName());
+    std::string pathobject2(rigidParticles->getName()+"/"+rigidParticleDOF->getName());
+    rigidMapping->setPathObject1(pathobject1);
+    rigidMapping->setPathObject2(pathobject2);
     rigidParticles->addObject( rigidMapping );
     rigidMapping->setName("Map23");
 
 
     // ---------------- Interaction force between the deformable and the rigid body
     StiffSpringForceField3* iff = new StiffSpringForceField3( DOF, rigidParticleDOF );
+    iff->setPathObject1(deformableBody->getName()+"/"+DOF->getName());
+    iff->setPathObject2(rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     groot->addObject(iff);
     iff->setName("F13");
     iff->addSpring( 1,0, 100., 1., splength );
