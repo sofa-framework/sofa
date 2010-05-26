@@ -28,6 +28,7 @@
 #include <sofa/component/misc/ExtraMonitor.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/MechanicalComputeEnergyVisitor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -166,10 +167,48 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
             }
         }
 
+        if ( this->saveWcinToGnuplot.getValue() )
+        {
+            if ( this->saveGnuplotWcin != NULL ) delete this->saveGnuplotWcin;
+            this->saveGnuplotWcin = new std::ofstream ( ( path + this->getName() + "_wcin.txt" ).c_str() );
+            ( *this->saveGnuplotWcin ) << "# Gnuplot File : kinetic energy of the system "<<endl;
+            ( *this->saveGnuplotWcin ) << "# 1st Column : time, 2nd : kinetic energy"<< endl;
+        }// saveWcinToGnuplot
+
+        if ( this->saveWextToGnuplot.getValue() )
+        {
+            if ( this->saveGnuplotWext != NULL ) delete this->saveGnuplotWext;
+            this->saveGnuplotWext = new std::ofstream ( ( path + this->getName() + "_wext.txt" ).c_str() );
+            ( *this->saveGnuplotWext ) << "# Gnuplot File : external energy of the system "<<endl;
+            ( *this->saveGnuplotWext ) << "# 1st Column : time, 2nd : external energy"<< endl;
+        }// saveWextToGnuplot
     }
 }
 ////////////////////////// end initGnuplot () /////////////////////////////
 
+template<class DataTypes>
+void ExtraMonitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
+{
+    if (dynamic_cast<sofa::simulation::AnimateEndEvent*>(ev))
+    {
+        if ( this->saveXToGnuplot.getValue() || this->saveVToGnuplot.getValue() || this->saveFToGnuplot.getValue() || saveWcinToGnuplot.getValue() || saveWextToGnuplot.getValue() )
+            exportGnuplot ( (Real) this ->getTime() );
+
+        if (this->showTrajectories.getValue())
+        {
+            this->internalDt += this -> getContext()->getDt();
+
+            if (this->trajectoriesPrecision.getValue() <= this->internalDt)
+            {
+                this->internalDt = 0.0;
+                for (unsigned int i=0; i < this->indices.getValue().size(); ++i)
+                {
+                    this->savedPos[i].push_back( (*this->X)[this->indices.getValue()[i]] );
+                }
+            }
+        }
+    }
+}
 
 
 ///////////////////////// exportGnuplot () ////////////////////////////////
@@ -245,6 +284,23 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
             (*this->saveGnuplotF ) << resultant << endl;
         }
     }
+
+    if ( this->saveWcinToGnuplot.getValue() )
+    {
+        sofa::simulation::MechanicalComputeEnergyVisitor *kineticEnergy = new sofa::simulation::MechanicalComputeEnergyVisitor();;
+        kineticEnergy->execute( this->getContext() );
+        ( *this->saveGnuplotWcin ) << time <<"\t";
+        ( *this->saveGnuplotWcin ) << kineticEnergy->getKineticEnergy() << endl;
+    }// export kinetic energy
+
+    if ( this->saveWextToGnuplot.getValue() )
+    {
+        sofa::simulation::MechanicalComputeEnergyVisitor *potentialEnergy= new sofa::simulation::MechanicalComputeEnergyVisitor();;
+        potentialEnergy->execute( this->getContext() );
+        ( *this->saveGnuplotWext ) << time <<"\t";
+        ( *this->saveGnuplotWext ) << potentialEnergy->getPotentialEnergy() << endl;
+    }// export external energy
+
 }
 ///////////////////////////////////////////////////////////////////////////
 
