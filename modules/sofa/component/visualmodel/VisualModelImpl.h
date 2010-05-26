@@ -210,7 +210,7 @@ public:
         std::string materialName;
         std::string groupName;
         int materialId;
-        FaceGroup() : t0(0), nbt(0), q0(0), nbq(0), materialId(-1) {}
+        FaceGroup() : t0(0), nbt(0), q0(0), nbq(0), materialName("defaultMaterial"), groupName("defaultGroup"), materialId(-1) {}
         inline friend std::ostream& operator << (std::ostream& out, const FaceGroup &g)
         {
             out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.t0 << " " << g.nbt << " " << g.q0 << " " << g.nbq;
@@ -218,6 +218,7 @@ public:
         }
         inline friend std::istream& operator >> (std::istream& in, FaceGroup &g)
         {
+
             in >> g.groupName >> g.materialName >> g.materialId >> g.t0 >> g.nbt >> g.q0 >> g.nbq;
             return in;
         }
