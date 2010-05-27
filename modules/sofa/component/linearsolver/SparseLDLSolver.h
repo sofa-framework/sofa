@@ -34,7 +34,7 @@
 #include <math.h>
 #include <ldl.h>
 
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
 
 namespace sofa
 {
