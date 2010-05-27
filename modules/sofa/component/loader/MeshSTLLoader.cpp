@@ -50,6 +50,8 @@ int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file
 
 //Base VTK Loader
 MeshSTLLoader::MeshSTLLoader() : MeshLoader()
+    , _headerSize(initData(&_headerSize, (unsigned int)80, "headerSize","Size of the header binary file (just before the number of facet)."))
+    , _forceBinary(initData(&_forceBinary, (bool)false, "forceBinary","Force reading in binary mode. Even in first keyword of the file is solid."))
 {
 }
 
@@ -73,10 +75,10 @@ bool MeshSTLLoader::load()
     std::string test;
     file >> test;
 
-    if (test != "solid")
-        fileRead = this->readBinarySTL(filename); // -- Reading binary file
-    else
+    if (test == "solid" && !_forceBinary.getValue())
         fileRead = this->readSTL(filename);
+    else
+        fileRead = this->readBinarySTL(filename); // -- Reading binary file
 
 
     file.close();
@@ -86,10 +88,6 @@ bool MeshSTLLoader::load()
 
 bool MeshSTLLoader::readBinarySTL(const char *filename)
 {
-    /*
-      The header record consists of 84 bytes, the first eighty are used for information about the file,   author's name and other miscellaneous comments, the last 4 bytes represent the number of triangular facets.  Next, for each facet, 50 bytes are used to represent the x, y and z components of the normal to the facets, then the x, y and z coordinates of each vertex of the triangle.  4 bytes are used for each coordinate, resulting is 48 bytes per facet.  The last two bytes are not used.
-      */
-
     std::cout << "reading binary STL file" << std::endl;
     std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
 
@@ -97,78 +95,77 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
     helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
 
-    // get length of file:
+    // get length of file
     dataFile.seekg(0, std::ios::end);
     int length = dataFile.tellg();
     dataFile.seekg(0, std::ios::beg);
 
-    std::cout << "length: " << length << std::endl;
-    std::cout << "sizeof(char)" << sizeof(char) <<std::endl;
 
-    //dataFile >> length;
-    //std::cout << "length2: " << length << std::endl;
-    int position = 0;
-    /*while (position < 6400)
-    {
-       std::cout <<"pos: " << dataFile.tellg() << std::endl;
-       char buffer[80];
-       dataFile >> buffer;
-
-       std::cout << buffer << std::endl;
-       position = dataFile.tellg();
-       std::cout <<"pos: " << dataFile.tellg() << std::endl;
-    }*/
-
-    dataFile.seekg(0, std::ios::beg);
-    char buffer[80];
-
-    dataFile.read(buffer, sizeof(buffer));
-    //dataFile >> buffer;
-    std::cout << "buffer new: "<< buffer << std::endl;
+    // Skipping header file
+    char buffer[256];
+    dataFile.read(buffer, _headerSize.getValue());
+    sout << "Header binary file: "<< buffer << sendl;
 
     unsigned long int nbrFacet;
-    dataFile >> nbrFacet;
-    std::cout << "nbrFacet: " << nbrFacet << std::endl;
+    dataFile.read((char*)&nbrFacet, 4);
 
+
+    // Parsing facets
+    std::cout << "Reading file...";
     for (unsigned int i = 0; i<nbrFacet; ++i)
     {
-        float normals[3];
-        dataFile >> normals[0] >> normals[1] >> normals[2];
-        std::cout << "normals: " << normals[0] << " " <<  normals[1] << " " << normals[2] << std::endl;
+        helper::fixed_array <unsigned int,3> the_tri;
+        sofa::defaulttype::Vec3f vertex, normals;
 
-        sofa::defaulttype::Vector3 v1, v2, v3;
+        // Normal:
+        dataFile.read((char*)&normals[0], 4);
+        dataFile.read((char*)&normals[1], 4);
+        dataFile.read((char*)&normals[2], 4);
+        my_normals.push_back(normals);
 
-        dataFile >> v1[0] >> v1[1] >> v1[2];
-        dataFile >> v2[0] >> v2[1] >> v2[2];
-        dataFile >> v3[0] >> v3[1] >> v3[2];
+        // Vertices:
+        for (unsigned int j = 0; j<3; ++j)
+        {
+            dataFile.read((char*)&vertex[0], 4);
+            dataFile.read((char*)&vertex[1], 4);
+            dataFile.read((char*)&vertex[2], 4);
 
-        std::cout << "positions: " << v1 << " -- " << v2 << " -- "<< v3 << std::endl;
-        unsigned short int value;
-        dataFile >> value;
-        std::cout << "value: " << value << std::endl;
+            bool find = false;
+            for (unsigned int k=0; k<my_positions.size(); ++k)
+                if ( (vertex[0] == my_positions[k][0]) && (vertex[1] == my_positions[k][1])  && (vertex[2] == my_positions[k][2]))
+                {
+                    find = true;
+                    the_tri[j] = k;
+                    break;
+                }
+
+            if (!find)
+            {
+                my_positions.push_back(vertex);
+                the_tri[j] = my_positions.size()-1;
+            }
+        }
+
+        // Triangle:
+        my_triangles.push_back(the_tri);
+
+        // Atribute byte count
+        unsigned int count;
+        dataFile.read((char*)&count, 2);
+
+        // Security:
+        if (dataFile.tellg() == length)
+            break;
     }
-    /*std::cout << "nbrFacet: " << nbrFacet << std::endl;
-    std::cout << "nbrFacet: " << nbrFacet << std::endl;
-    std::cout << "nbrFacet: " << nbrFacet << std::endl;
-    /*
-    // allocate memory:
-    char * buffer = new char [length];
+    std::cout << "done!" << std::endl;
 
-    // read data as a block:
-    dataFile.read (buffer,length);
-    dataFile.close();
-
-    //std::cout.write (buffer,length);
-
-    delete[] buffer;
-    */
     positions.endEdit();
     triangles.endEdit();
     normals.endEdit();
 
     return true;
-
 }
+
 
 bool MeshSTLLoader::readSTL(const char *filename)
 {
@@ -196,6 +193,7 @@ bool MeshSTLLoader::readSTL(const char *filename)
     unsigned int cpt = 0;
     int position = 0;
 
+    // Parsing facets
     while (position < length)
     {
         sofa::defaulttype::Vector3 normal, vertex;

@@ -66,6 +66,8 @@ protected:
 
 public:
     //Add Data here
+    Data <unsigned int> _headerSize;
+    Data <bool> _forceBinary;
 
 };
 
