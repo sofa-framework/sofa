@@ -81,8 +81,10 @@ class BaseMechanicalState : public virtual objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseMechanicalState, objectmodel::BaseObject);
 
-    BaseMechanicalState():useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
-    {}
+    BaseMechanicalState():useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings")), forceMask(ParticleMask(useMask.beginEdit()))
+    {
+        useMask.endEdit();
+    }
     virtual ~BaseMechanicalState()
     { }
 
@@ -175,7 +177,7 @@ public:
     {
     public:
         typedef std::set< unsigned int > InternalStorage;
-        ParticleMask():inUse(true), activated(true) {};
+        ParticleMask(const bool *activator):inUse(activator), activated(true) {};
 
         /// Insert an entry in the mask
         void insertEntry(unsigned int index)
@@ -187,16 +189,13 @@ public:
         const InternalStorage &getEntries() const {return indices;};
         InternalStorage &getEntries() {return indices;};
 
-        /// Activate the mask. By default, the mask state is set to "DEFAULT".
-        /// It means that if no component change the current state, the mask will be used.
-        /// If one component deactivate the filter, it won't be used at all during the time step, even if other components desire to use it.
+        /// To activate the use of the mask. External components like forcefields and constraints have to use this method if they want to get benefit of the mask mechanism
+        /// A mask deactivated previously will remain deactivated until explicit activation using activate method.
         void setInUse(bool use)
         {
-            if (inUse) inUse=use;
-            else if (!use)     inUse=false; //Deactivate if one component is not using it
+            activated = use && activated;
         }
-        /// Allows to deactivate the usage of the mask. Typically, it is used when it is needed to propagate at the end of the integration, the position and velocity.
-        /// Different from inUse, because a mask deactivated can be re-activated.
+        /// Explicit activation
         void activate(bool a)
         {
             activated = a;
@@ -205,26 +204,22 @@ public:
         /// Test if the mask can be used
         bool isInUse() const
         {
-            return activated && inUse;
+            return *inUse && activated;
         }
 
-        /// Test if the mask is active.
-        bool isActive() const
-        {
-            return activated;
-        }
-        void clear() {indices.clear(); inUse=true; activated=true;}
+        void clear() {indices.clear(); activated=true;}
 
     protected:
         InternalStorage indices;
-        bool inUse;
+        // Act as a switch, to enable or not the mask.
+        const bool *inUse;
         bool activated;
     };
 
+    Data<bool> useMask;
     /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
     ParticleMask forceMask;
 
-    Data<bool> useMask;
 
     /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(VecId& v) = 0;
