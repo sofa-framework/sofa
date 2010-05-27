@@ -109,7 +109,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     unsigned long int nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
 
-
+    int position = 0;
     // Parsing facets
     std::cout << "Reading file...";
     for (unsigned int i = 0; i<nbrFacet; ++i)
@@ -154,7 +154,8 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         dataFile.read((char*)&count, 2);
 
         // Security:
-        if (dataFile.tellg() == length)
+        position = dataFile.tellg();
+        if (position == length)
             break;
     }
     std::cout << "done!" << std::endl;
