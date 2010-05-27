@@ -72,6 +72,13 @@ bool PairInteractionConstraint<DataTypes>::isActive() const
     if( endTime.getValue()<0 ) return true;
     return endTime.getValue()>getContext()->getTime();
 }
+
+template<class DataTypes>
+void PairInteractionConstraint<DataTypes>::projectJacobianMatrix()
+{
+    serr << "NOT IMPLEMENTED YET" << sendl;
+}
+
 #ifndef SOFA_SMP
 template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::projectResponse()
@@ -83,11 +90,6 @@ void PairInteractionConstraint<DataTypes>::projectResponse()
         this->mask2 = &mstate2->forceMask;
         projectResponse(*mstate1->getDx(), *mstate2->getDx());
     }
-}
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectJacobianMatrix()
-{
-    serr << "NOT IMPLEMENTED YET" << sendl;
 }
 
 template<class DataTypes>

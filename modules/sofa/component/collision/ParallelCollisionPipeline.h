@@ -59,6 +59,8 @@ public:
     sofa::helper::vector< a1::Shared<bool>* > parallelBoundingTreeDone;
     a1::Shared<int> parallelBoundingTreeDoneAll;
 
+    /// get the set of response available with the current collision pipeline
+    helper::set< std::string > getResponseList() const;
 protected:
     // -- Pipeline interface
 

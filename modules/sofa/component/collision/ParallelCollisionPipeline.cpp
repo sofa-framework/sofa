@@ -289,6 +289,17 @@ void ParallelCollisionPipeline::doCollisionResponse()
     }
 }
 
+helper::set< std::string > ParallelCollisionPipeline::getResponseList() const
+{
+    helper::set< std::string > listResponse;
+    core::collision::Contact::Factory::iterator it;
+    for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
+    {
+        listResponse.insert(it->first);
+    }
+    return listResponse;
+}
+
 void ParallelCollisionPipeline::draw()
 {
     if (!bDraw.getValue()) return;
