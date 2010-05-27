@@ -35,7 +35,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/component.h>
-
+#include <sofa/component/misc/BaseRotationFinder.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -74,7 +74,7 @@ public:
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>
+class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::component::misc::BaseRotationFinder<typename DataTypes::Real>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
