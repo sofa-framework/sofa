@@ -123,12 +123,12 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
 
     //----------------------------------------------------------------------
     //Create a Dock Window to receive the Sofa Library
-    Q3DockWindow *dockRecorder=new Q3DockWindow(this);
-    dockRecorder->setResizeEnabled(true);
-    this->moveDockWindow( dockRecorder, Qt::DockLeft);
-    dockRecorder->setFixedExtentWidth(400);
+    Q3DockWindow *dockLibrary=new Q3DockWindow(this);
+    dockLibrary->setResizeEnabled(true);
+    this->moveDockWindow( dockLibrary, Qt::DockLeft);
+    dockLibrary->setFixedExtentWidth(this->width()*0.45);
 
-    QWidget *leftPartWidget = new QWidget( dockRecorder, "LibraryLayout");
+    QWidget *leftPartWidget = new QWidget( dockLibrary, "LibraryLayout");
     QVBoxLayout *leftPartLayout = new QVBoxLayout(leftPartWidget);
 
     //----------------------------------------------------------------------
@@ -137,13 +137,14 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     QHBoxLayout *filterLayout = new QHBoxLayout(filterContainer);
     leftPartLayout->addWidget(filterContainer);
     //--> Label
-    QLabel *filterLabel = new QLabel(filterContainer, "filterLabel");
-    filterLabel->setText( "Filter: " );
+    QPushButton *filterLabel= new QPushButton(QString("Filter: "),filterContainer);
     filterLayout->addWidget(filterLabel);
     //--> Filter
     filterLibrary = new FilterLibrary(filterContainer);
     filterLayout->addWidget(filterLibrary);
+
     connect(filterLibrary, SIGNAL( filterList( const FilterQuery &) ), this, SLOT(searchText( const FilterQuery &)) );
+    connect(filterLabel, SIGNAL( clicked()), filterLibrary, SLOT(clearText()));
 
     //----------------------------------------------------------------------
     //Add the Sofa Library
@@ -162,7 +163,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     leftPartLayout->addWidget(GNodeButton);
     connect( GNodeButton, SIGNAL( pressed() ),  this, SLOT( pressedGNodeButton() ) );
 
-    dockRecorder->setWidget(leftPartWidget);
+    dockLibrary->setWidget(leftPartWidget);
 
 
 
@@ -181,7 +182,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     //----------------------------------------------------------------------
     //Create the information widget
     infoItem = new QTextBrowser(this->centralWidget());
-    infoItem->setMaximumHeight(175);
+    infoItem->setMaximumHeight(195);
 #ifdef SOFA_QT4
     connect( infoItem, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(fileOpen(const QUrl&)));
 #ifndef WIN32
@@ -212,7 +213,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     SofaPluginManager::getInstance()->hide();
     this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
 
-    library->build(exampleFiles);
+    rebuildLibrary();
 
     //----------------------------------------------------------------------
     // Create the Menus
@@ -336,6 +337,7 @@ void SofaModeler::rebuildLibrary()
 {
     library->clear();
     library->build(exampleFiles);
+
 }
 
 void SofaModeler::closeEvent( QCloseEvent *e)
@@ -432,10 +434,10 @@ bool SofaModeler::closeTab(int i)
     return closeTab(sceneTab->page(i));
 }
 
-bool SofaModeler::closeTab(QWidget *curTab)
+bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
 {
     GraphModeler *mod = mapGraph[curTab];
-    if (mod->isUndoEnabled()) //means modifications have been performed
+    if (!forceClose && mod->isUndoEnabled()) //means modifications have been performed
     {
 
         const QString caption("Unsaved Modifications Notification");
@@ -582,6 +584,18 @@ void SofaModeler::fileSaveAs()
         examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
 //  	      }
 
+    }
+}
+
+void SofaModeler::fileReload()
+{
+    if (sceneTab->count() == 0) return;
+    if (graph->getFilename().empty()) return;
+    else
+    {
+        const std::string filename=graph->getFilename();
+        closeTab(tabGraph,true);
+        fileOpen(filename);
     }
 }
 

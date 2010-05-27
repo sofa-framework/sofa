@@ -79,6 +79,7 @@ public:
 
 public slots:
     void searchText(const QString&);
+    void clearText();
 protected:
     std::string help;
 signals:
