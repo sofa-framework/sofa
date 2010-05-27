@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/mastersolver/MultiTagMasterSolver.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <math.h>
 #include <iostream>
 
@@ -73,6 +74,9 @@ void MultiTagMasterSolver::step(double dt)
     {
         this->addTag (*it);
 
+        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin constraints reset" << sendl;
+        sofa::simulation::MechanicalResetConstraintVisitor().execute(this->getContext());
+        if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end constraints reset" << sendl;
         if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, begin collision for tag: "<< *it << sendl;
         computeCollision();
         if (this->f_printLog.getValue()) sout << "MultiTagMasterSolver::step, end collision" << sendl;
