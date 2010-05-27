@@ -153,6 +153,12 @@ void FilterLibrary::searchText(const QString &text)
     FilterQuery query(textString);
     emit( filterList(query) );
 }
+
+void FilterLibrary::clearText()
+{
+    setText(QString());
+}
+
 }
 }
 }

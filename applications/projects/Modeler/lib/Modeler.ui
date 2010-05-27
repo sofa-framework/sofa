@@ -48,6 +48,7 @@
       <action name="fileOpenAction"/>
       <action name="fileSaveAction"/>
       <action name="fileSaveAsAction"/>
+      <action name="fileReloadAction"/>
       <separator/>
       <separator/>
       <action name="fileExitAction"/>
@@ -211,6 +212,21 @@
       </property>
       <property name="menuText">
         <string>Save &amp;As...</string>
+      </property>
+      <property name="accel">
+        <string></string>
+      </property>
+    </action>
+
+    <action>
+      <property name="name">
+        <cstring>fileReloadAction</cstring>
+      </property>
+      <property name="text">
+        <string>Reload</string>
+      </property>
+      <property name="menuText">
+        <string>Reload</string>
       </property>
       <property name="accel">
         <string></string>
@@ -480,6 +496,12 @@
       <slot>fileSaveAs()</slot>
     </connection>
     <connection>
+      <sender>fileReloadAction</sender>
+      <signal>activated()</signal>
+      <receiver>Modeler</receiver>
+      <slot>fileReload()</slot>
+    </connection>
+    <connection>
       <sender>openTutorialAction</sender>
       <signal>activated()</signal>
       <receiver>Modeler</receiver>
@@ -547,6 +569,7 @@
     <slot>fileOpen()</slot>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>
+    <slot>fileReload()</slot>
     <slot>openTutorial()</slot>
     <slot>runInSofa()</slot>
     <slot>fileExit()</slot>

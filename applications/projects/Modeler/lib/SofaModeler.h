@@ -101,7 +101,7 @@ public :
 
     /// Create a new empty Tab
     void createTab();
-    bool closeTab(QWidget *tab);
+    bool closeTab(QWidget *tab, bool forceClose=false);
     /// Change the content of the description box. Happens when the user has clicked on a component
     void changeComponent(const std::string &description);
     void fileOpen(std::string filename);
@@ -157,6 +157,7 @@ public slots:
     /// Save the current simulation
     void fileSave();
     void fileSaveAs();
+    void fileReload();
 
     /// Remove all components of the current simulation
     void clearTab();
