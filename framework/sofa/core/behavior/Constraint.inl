@@ -64,18 +64,6 @@ void Constraint<DataTypes>::init()
     mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
-#ifndef SOFA_SMP
-template<class DataTypes>
-void Constraint<DataTypes>::projectResponse()
-{
-    if( !isActive() ) return;
-    if (mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        projectResponse(*mstate->getDx());
-    }
-}
-
 template<class DataTypes>
 void Constraint<DataTypes>::projectJacobianMatrix()
 {
@@ -85,6 +73,18 @@ void Constraint<DataTypes>::projectJacobianMatrix()
         VecConst *C=mstate->getC();
         typedef typename VecConst::iterator VecConstIterator;
         for (VecConstIterator it=C->begin(); it!=C->end(); ++it) projectResponse(*it);
+    }
+}
+
+#ifndef SOFA_SMP
+template<class DataTypes>
+void Constraint<DataTypes>::projectResponse()
+{
+    if( !isActive() ) return;
+    if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
+        projectResponse(*mstate->getDx());
     }
 }
 
