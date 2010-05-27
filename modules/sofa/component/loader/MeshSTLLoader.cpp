@@ -1,0 +1,263 @@
+/******************************************************************************
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/loader/MeshSTLLoader.h>
+
+#include <iostream>
+//#include <fstream> // we can't use iostream because the windows implementation gets confused by the mix of text and binary
+#include <stdio.h>
+#include <sstream>
+#include <string>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace loader
+{
+
+using namespace sofa::defaulttype;
+
+SOFA_DECL_CLASS(MeshSTLLoader)
+
+int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
+        .add< MeshSTLLoader >()
+        ;
+
+//Base VTK Loader
+MeshSTLLoader::MeshSTLLoader() : MeshLoader()
+{
+}
+
+
+
+bool MeshSTLLoader::load()
+{
+    bool fileRead = false;
+
+    // -- Loading file
+    const char* filename = m_filename.getFullPath().c_str();
+    std::ifstream file(filename);
+
+
+    if (!file.good())
+    {
+        serr << "Error: MeshSTLLoader: Cannot read file '" << m_filename << "'." << sendl;
+        return false;
+    }
+
+    std::string test;
+    file >> test;
+
+    if (test != "solid")
+        fileRead = this->readBinarySTL(filename); // -- Reading binary file
+    else
+        fileRead = this->readSTL(filename);
+
+
+    file.close();
+    return fileRead;
+}
+
+
+bool MeshSTLLoader::readBinarySTL(const char *filename)
+{
+    /*
+      The header record consists of 84 bytes, the first eighty are used for information about the file,   author's name and other miscellaneous comments, the last 4 bytes represent the number of triangular facets.  Next, for each facet, 50 bytes are used to represent the x, y and z components of the normal to the facets, then the x, y and z coordinates of each vertex of the triangle.  4 bytes are used for each coordinate, resulting is 48 bytes per facet.  The last two bytes are not used.
+      */
+
+    std::cout << "reading binary STL file" << std::endl;
+    std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
+
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
+    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
+
+    // get length of file:
+    dataFile.seekg(0, std::ios::end);
+    int length = dataFile.tellg();
+    dataFile.seekg(0, std::ios::beg);
+
+    std::cout << "length: " << length << std::endl;
+    std::cout << "sizeof(char)" << sizeof(char) <<std::endl;
+
+    //dataFile >> length;
+    //std::cout << "length2: " << length << std::endl;
+    int position = 0;
+    /*while (position < 6400)
+    {
+       std::cout <<"pos: " << dataFile.tellg() << std::endl;
+       char buffer[80];
+       dataFile >> buffer;
+
+       std::cout << buffer << std::endl;
+       position = dataFile.tellg();
+       std::cout <<"pos: " << dataFile.tellg() << std::endl;
+    }*/
+
+    dataFile.seekg(0, std::ios::beg);
+    char buffer[80];
+
+    dataFile.read(buffer, sizeof(buffer));
+    //dataFile >> buffer;
+    std::cout << "buffer new: "<< buffer << std::endl;
+
+    unsigned long int nbrFacet;
+    dataFile >> nbrFacet;
+    std::cout << "nbrFacet: " << nbrFacet << std::endl;
+
+    for (unsigned int i = 0; i<nbrFacet; ++i)
+    {
+        float normals[3];
+        dataFile >> normals[0] >> normals[1] >> normals[2];
+        std::cout << "normals: " << normals[0] << " " <<  normals[1] << " " << normals[2] << std::endl;
+
+        sofa::defaulttype::Vector3 v1, v2, v3;
+
+        dataFile >> v1[0] >> v1[1] >> v1[2];
+        dataFile >> v2[0] >> v2[1] >> v2[2];
+        dataFile >> v3[0] >> v3[1] >> v3[2];
+
+        std::cout << "positions: " << v1 << " -- " << v2 << " -- "<< v3 << std::endl;
+        unsigned short int value;
+        dataFile >> value;
+        std::cout << "value: " << value << std::endl;
+    }
+    /*std::cout << "nbrFacet: " << nbrFacet << std::endl;
+    std::cout << "nbrFacet: " << nbrFacet << std::endl;
+    std::cout << "nbrFacet: " << nbrFacet << std::endl;
+    /*
+    // allocate memory:
+    char * buffer = new char [length];
+
+    // read data as a block:
+    dataFile.read (buffer,length);
+    dataFile.close();
+
+    //std::cout.write (buffer,length);
+
+    delete[] buffer;
+    */
+    positions.endEdit();
+    triangles.endEdit();
+    normals.endEdit();
+
+    return true;
+
+}
+
+bool MeshSTLLoader::readSTL(const char *filename)
+{
+    std::cout << "reading STL file" << std::endl;
+
+    // Init
+    std::ifstream dataFile (filename);
+    std::string buffer;
+    std::string name; // name of the solid, needed?
+
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
+    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
+
+
+    // get length of file:
+    dataFile.seekg(0, std::ios::end);
+    int length = dataFile.tellg();
+    dataFile.seekg(0, std::ios::beg);
+
+    // Reading header
+    dataFile >> buffer >> name;
+
+    helper::fixed_array <unsigned int,3> the_tri;
+    unsigned int cpt = 0;
+    int position = 0;
+
+    while (position < length)
+    {
+        sofa::defaulttype::Vector3 normal, vertex;
+
+        std::getline(dataFile, buffer);
+        std::stringstream line;
+        line << buffer;
+
+        std::string bufferWord;
+        line >> bufferWord;
+
+        if (bufferWord == "facet")
+        {
+            line >> bufferWord >> normal[0] >> normal[1] >> normal[2];
+            my_normals.push_back(normal);
+        }
+        else if (bufferWord == "vertex")
+        {
+            line >> vertex[0] >> vertex[1] >> vertex[2];
+
+            bool find = false;
+            for (unsigned int i=0; i<my_positions.size(); ++i)
+                if ( (vertex[0] == my_positions[i][0]) && (vertex[1] == my_positions[i][1])  && (vertex[2] == my_positions[i][2]))
+                {
+                    find = true;
+                    the_tri[cpt] = i;
+                    break;
+                }
+
+            if (!find)
+            {
+                my_positions.push_back(vertex);
+                the_tri[cpt] = my_positions.size()-1;
+            }
+            cpt++;
+        }
+        else if (bufferWord == "endfacet")
+        {
+            my_triangles.push_back(the_tri);
+            cpt = 0;
+        }
+        else if (bufferWord == "endsolid" || bufferWord == "end")
+        {
+            break;
+        }
+
+        position = dataFile.tellg();
+    }
+
+    positions.endEdit();
+    triangles.endEdit();
+    normals.endEdit();
+
+    return true;
+}
+
+
+
+
+} // namespace loader
+
+} // namespace component
+
+} // namespace sofa
+
