@@ -419,7 +419,7 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id)
 
 void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofToMatrix& LMatrix, SparseMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const
 {
-    for (SetDof::iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
+    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
     {
         const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const SparseMatrixEigen &invMass=invMassMatrix.find(dofs)->second;
@@ -431,10 +431,6 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
         const SparseMatrixEigen &invM_LTrans=invMass.marked<Eigen::SelfAdjoint|Eigen::UpperTriangular>()*L.transpose();
         invMass_Ltrans.insert( std::make_pair(dofs,invM_LTrans) );
         LeftMatrix += L*invM_LTrans;
-    }
-
-    for (DofToMatrix::const_iterator itDofs=invMassMatrix.begin(); itDofs!=invMassMatrix.end(); itDofs++)
-    {
     }
 }
 
