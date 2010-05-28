@@ -2346,6 +2346,7 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firs
         if (getVecCoord(v.index))
         {
             const VecCoord& x= *getVecCoord(v.index);
+            if (x.empty()) return;
             for( unsigned i=first; i<max; ++i )
             {
                 out<<x[i];
@@ -2358,6 +2359,7 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firs
         if (getVecDeriv(v.index))
         {
             const VecDeriv& x= *getVecDeriv(v.index);
+            if (x.empty()) return;
             for( unsigned i=first; i<max; ++i )
             {
                 out<<x[i];
