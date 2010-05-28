@@ -77,6 +77,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunct
         case SMALL :
             ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
             ff->initSmall(tetrahedronIndex,a,b,c,d);
+            ff->printStiffnessMatrix(tetrahedronIndex);////////////////////////////////////////////////////////
             break;
         case LARGE :
             ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
@@ -1382,6 +1383,60 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::default
         }
     }
 }
+
+
+
+
+
+template<class DataTypes>
+void TetrahedralCorotationalFEMForceField<DataTypes>::printStiffnessMatrix(int idTetra)
+{
+
+    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+
+    Transformation Rot;
+    StiffnessMatrix JKJt,tmp;
+
+    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    Rot[0][1]=Rot[0][2]=0;
+    Rot[1][0]=Rot[1][2]=0;
+    Rot[2][0]=Rot[2][1]=0;
+
+    computeStiffnessMatrix(JKJt,tmp,tetrahedronInf[idTetra].materialMatrix,tetrahedronInf[idTetra].strainDisplacementMatrix,Rot);
+
+    std::cout<<"TetrahedralCorotationalFEMForceField<DataTypes>::  Element "<<idTetra <<"   ===STIFNESSMATRIX===="<<std::endl;
+    for(int inode=0; inode<4; inode++)
+    {
+        for(int icomp=0; icomp<3; icomp++)
+        {
+            int imatrix=inode*3+icomp;
+
+            for(int jnode=0; jnode<4; jnode++)
+            {
+                std::cout<<"| ";
+                for(int jcomp=0; jcomp<3; jcomp++)
+                {
+                    int jmatrix=jnode*3+jcomp;
+                    std::cout<<JKJt[imatrix][jmatrix]<<" ";
+                }
+            }
+            std::cout<<" |"<<std::endl;
+        }
+    }
+
+    //<<JKJt<<std::endl
+    std::cout<<"==============================================================="<<std::endl;
+}
+
+
+
+
+
+
+
+
+
+
 
 } // namespace forcefield
 
