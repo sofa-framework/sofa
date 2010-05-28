@@ -467,7 +467,6 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
 {
     Data& data = m->data;
-
     if (CudaDiagonalMatrix<Real> * diag = dynamic_cast<CudaDiagonalMatrix<Real> * >(mat))
     {
         Kernels::addKToMatrix(
@@ -577,6 +576,26 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
             rotations.deviceWrite());
 }
 
+template<class TCoord, class TDeriv, class TReal>
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getBaseRotations(Main* m,defaulttype::BaseVector * rotations, bool prefetch)
+{
+    Data& data = m->data;
+    if (CudaBaseVector<TReal> * diagd = dynamic_cast<CudaBaseVector<TReal> * >(rotations))
+    {
+        data.getRotations(m,diagd->getCudaVector(),prefetch);
+    }
+    else
+    {
+        CudaVector<TReal> vecTmp;
+        vecTmp.resize(rotations->size());
+
+        data.getRotations(m,vecTmp,prefetch);
+
+        for (unsigned i=0; i<vecTmp.size(); i++) rotations->set(i,vecTmp[i]);
+    }
+}
+
+
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_ImplMethods(T) \
     template<> bool TetrahedronFEMForceField< T >::canPrefetch() const \
@@ -585,8 +604,10 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     { data.reinit(this); } \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) \
     { data.addForce(this, f, x, v, this->isPrefetching()); }		\
-	template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& rotations) \
-	{ data.getRotations(this, rotations, this->isPrefetching()); } \
+    template<> void TetrahedronFEMForceField< T >::getRotations(VecReal & rotations) \
+    { data.getRotations(this, rotations, this->isPrefetching()); } \
+    template<> void TetrahedronFEMForceField< T >::getRotations(sofa::defaulttype::BaseVector * rotations) \
+    { data.getBaseRotations(this, rotations, this->isPrefetching()); } \
     template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor) \
     { data.addDForce(this, df, dx, kFactor, bFactor, this->isPrefetching()); } \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \

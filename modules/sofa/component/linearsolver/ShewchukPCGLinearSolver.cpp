@@ -71,6 +71,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
     usePrecond = true;
+    first = true;
 }
 
 template<class TMatrix, class TVector>
@@ -80,7 +81,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
     BaseContext * c = this->getContext();
 
     const helper::vector<std::string>& precondNames = f_preconditioners.getValue();
-    if (precondNames.empty() || !f_use_precond.getValue())
+    if (precondNames.empty() && f_use_precond.getValue())
     {
         c->get<sofa::core::behavior::LinearSolver>(&solvers,BaseContext::SearchDown);
     }
@@ -118,21 +119,20 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
 
     sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix(Precond)");
 
-    usePrecond = f_use_precond.getValue();
     if (preconditioners.size()==0) return;
 
     if (first)   //We initialize all the preconditioners for the first step
     {
-        first = false;
         for (unsigned int i=0; i<this->preconditioners.size(); ++i)
         {
             preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);
+            preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);//dont know why the first setmbk doesn't wotk???
         }
-
+        first = false;
         next_refresh_iteration = 1;
         next_refresh_step = 1;
     }
-    else if (usePrecond )     // We use only the first precond in the list
+    else if (f_use_precond.getValue())     // We use only the first precond in the list
     {
         sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
         sofa::helper::AdvancedTimer::stepBegin("PCG::PrecondSetSystemMBKMatrix");

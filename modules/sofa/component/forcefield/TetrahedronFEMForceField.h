@@ -74,7 +74,7 @@ public:
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::component::misc::BaseRotationFinder<typename DataTypes::Real>
+class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::component::misc::BaseRotationFinder
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
@@ -157,6 +157,27 @@ public:
         vecR.resize(_indexedElements->size()*9);
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
             getRotation(*(Transformation*)&(vecR[i*9]),i);
+    }
+
+    void getRotations(defaulttype::BaseVector * vecR)
+    {
+        vecR->resize(_indexedElements->size()*9);
+        for (unsigned int i=0; i<_indexedElements->size(); ++i)
+        {
+            Transformation t;
+            getRotation(t,i);
+            vecR->set(i*9  ,t[0][0]);
+            vecR->set(i*9+1,t[0][1]);
+            vecR->set(i*9+2,t[0][2]);
+
+            vecR->set(i*9+3,t[1][0]);
+            vecR->set(i*9+4,t[1][1]);
+            vecR->set(i*9+5,t[1][2]);
+
+            vecR->set(i*9+6,t[2][0]);
+            vecR->set(i*9+7,t[2][1]);
+            vecR->set(i*9+8,t[2][2]);
+        }
     }
 
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
