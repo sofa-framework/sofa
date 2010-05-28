@@ -333,11 +333,11 @@ LCPConstraintSolver::LCPConstraintSolver()
     , lcp2(MAX_NUM_CONSTRAINTS)
     , lcp3(MAX_NUM_CONSTRAINTS)
     , _W(&lcp1.W)
-    , _Wdiag(NULL)
     , lcp(&lcp1)
     , last_lcp(0)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
+    , _Wdiag(NULL)
 {
     _numConstraints = 0;
     _mu = 0.0;
