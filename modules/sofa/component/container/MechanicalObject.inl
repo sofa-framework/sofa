@@ -1741,32 +1741,119 @@ void MechanicalObject<DataTypes>::vAlloc(VecId v)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vFree(VecId v)
+void MechanicalObject<DataTypes>::vFree(VecId vId)
 {
-    if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
+    if (vId.type == VecId::V_COORD && vId.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
-        VecCoord* vec = getVecCoord(v.index);
-//	  vec->resize(0);
+        VecCoord* vec = getVecCoord(vId.index);
         vec->resize(0);
+
+        // Check X is not pointing on the deleted Dynamic Vector
+        if (vec == x)
+        {
+            //	if (this->f_printLog.getValue())
+            {
+                serr << "Warning! MechanicalObject " << this->getName() << " x vector is pointing on a deleted dynamic vector." << sendl;
+                serr << "Restoring X" << sendl;
+            }
+
+            setX(VecId::position());
+        }
+
+        // Check XFree is not pointing on the deleted Dynamic Vector
+        if (vec == xfree)
+        {
+            //	if (this->f_printLog.getValue())
+            {
+                serr << "Warning! MechanicalObject " << this->getName() << " xfree vector is pointing on a deleted dynamic vector." << sendl;
+                serr << "Restoring XFree" << sendl;
+            }
+
+            setXfree(VecId::freePosition());
+        }
+
 #ifdef SOFA_SMP
-        vectorsCoordSharedAllocated[v.index]=false;
+        vectorsCoordSharedAllocated[vId.index]=false;
 #endif
     }
-    else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
+    else if (vId.type == VecId::V_DERIV && vId.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
-        VecDeriv* vec = getVecDeriv(v.index);
-#ifdef SOFA_SMP
-        vectorsDerivSharedAllocated[v.index]=false;
-#endif
-        //  vec->resize(0);
+        VecDeriv* vec = getVecDeriv(vId.index);
         vec->resize(0);
+
+        // Check V is not pointing on the deleted Dynamic Vector
+        if (vec == v)
+        {
+            //	if (this->f_printLog.getValue())
+            {
+                serr << "Warning! MechanicalObject " << this->getName() << " v vector is pointing on a deleted dynamic vector." << sendl;
+                serr << "Restoring V" << sendl;
+            }
+
+            setV(VecId::velocity());
+        }
+
+        // Check VFree is not pointing on the deleted Dynamic Vector
+        if (vec == vfree)
+        {
+            //	if (this->f_printLog.getValue())
+            {
+                serr << "Warning! MechanicalObject " << this->getName() << " vfree vector is pointing on a deleted dynamic vector." << sendl;
+                serr << "Restoring VFree" << sendl;
+            }
+
+            setVfree(VecId::freeVelocity());
+        }
+
+        // Check F is not pointing on the deleted Dynamic Vector
+        if (vec == getF())
+        {
+            //	if (this->f_printLog.getValue())
+            {
+                serr << "Warning! MechanicalObject " << this->getName() << " f vector is pointing on a deleted dynamic vector with vecId = " << vId.index << "." << sendl;
+                serr << "Restoring F" << sendl;
+            }
+
+            setF(VecId::force());
+        }
+
+        // Check InternalForces is not pointing on the deleted Dynamic Vector
+        if (vec == internalForces)
+        {
+            //	if (this->f_printLog.getValue())
+            {
+                serr << "Warning! MechanicalObject " << this->getName() << " internalForces vector is pointing on a deleted dynamic vector." << sendl;
+                serr << "Restoring InternalForces" << sendl;
+            }
+
+            setF(VecId::internalForce());
+        }
+
+        // Check ExternalForces is not pointing on the deleted Dynamic Vector
+        if (vec == externalForces)
+        {
+            //	if (this->f_printLog.getValue())
+            {
+                serr << "Warning! MechanicalObject " << this->getName() << " externalForces vector is pointing on a deleted dynamic vector." << sendl;
+                serr << "Restoring ExternalForces" << sendl;
+            }
+
+            setF(VecId::externalForce());
+        }
+
+
+#ifdef SOFA_SMP
+        vectorsDerivSharedAllocated[vId.index]=false;
+#endif
     }
     else
     {
-        std::cerr << "Invalid free operation ("<<v<<")\n";
+        std::cerr << "Invalid free operation (" << vId << ")\n";
         return;
     }
 }
+
+
 #ifndef SOFA_SMP
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
@@ -2298,6 +2385,7 @@ void MechanicalObject<DataTypes>::setF(VecId v)
 {
     if (v.type == VecId::V_DERIV)
     {
+        //	std::cout << "setF("<< v.index << ")\n";
         this->_forceId = v;
     }
     else
