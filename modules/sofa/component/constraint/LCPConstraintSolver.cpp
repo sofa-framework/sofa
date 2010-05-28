@@ -333,8 +333,9 @@ LCPConstraintSolver::LCPConstraintSolver()
     , lcp2(MAX_NUM_CONSTRAINTS)
     , lcp3(MAX_NUM_CONSTRAINTS)
     , _W(&lcp1.W)
+    , _Wdiag(NULL)
     , lcp(&lcp1)
-    ,last_lcp(0)
+    , last_lcp(0)
     , _dFree(&lcp1.dFree)
     , _result(&lcp1.f)
 {
@@ -352,6 +353,12 @@ LCPConstraintSolver::LCPConstraintSolver()
 
     _Wdiag = new SparseMatrix<double>();
 
+}
+
+LCPConstraintSolver::~LCPConstraintSolver()
+{
+    if (_Wdiag != 0)
+        delete _Wdiag;
 }
 
 void LCPConstraintSolver::init()

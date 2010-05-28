@@ -285,7 +285,16 @@ class SOFA_COMPONENT_CONSTRAINT_API LCPConstraintSolver : public sofa::core::beh
 public:
     SOFA_CLASS(LCPConstraintSolver, sofa::core::behavior::ConstraintSolver);
 
+
+    /**
+    * @brief Default Constructor
+    */
     LCPConstraintSolver();
+
+    /**
+    * @brief Default Destructor
+    */
+    virtual ~LCPConstraintSolver();
 
     void init();
 
