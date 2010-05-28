@@ -46,7 +46,8 @@ int DefaultContactManagerClass = core::RegisterObject("Default class to create r
 
 DefaultContactManager::DefaultContactManager()
     : response(initData(&response, "response", "contact response class"))
-{}
+{
+}
 
 DefaultContactManager::~DefaultContactManager()
 {
@@ -56,6 +57,29 @@ DefaultContactManager::~DefaultContactManager()
     //clear();
 }
 
+sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(core::collision::Pipeline *pipeline)
+{
+    helper::set<std::string> listResponse;
+    if (pipeline) listResponse=pipeline->getResponseList();
+    else
+    {
+        core::collision::Contact::Factory::iterator it;
+        for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
+        {
+            listResponse.insert(it->first);
+        }
+    }
+    sofa::helper::OptionsGroup responseOptions(listResponse);
+    if (listResponse.find("default") != listResponse.end())
+        responseOptions.setSelectedItem("default");
+    return responseOptions;
+}
+
+void DefaultContactManager::init()
+{
+    core::collision::Pipeline *pipeline=static_cast<simulation::Node*>(getContext())->collisionPipeline;
+    response.setValue(initializeResponseOptions(pipeline));
+}
 void DefaultContactManager::cleanup()
 {
     for (sofa::helper::vector<core::collision::Contact*>::iterator it=contacts.begin(); it!=contacts.end(); ++it)

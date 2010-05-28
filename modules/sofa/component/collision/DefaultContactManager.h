@@ -59,37 +59,21 @@ public:
 
     void createContacts(DetectionOutputMap& outputs);
 
+    void init();
     void draw();
 
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         obj = new T;
-
         if (context)
         {
             context->addObject(obj);
             core::collision::Pipeline *pipeline=static_cast<simulation::Node*>(context)->collisionPipeline;
-
-            helper::set<std::string> listResponse;
-            if (pipeline) listResponse=pipeline->getResponseList();
-            else
-            {
-                obj->serr << "No collision pipeline found: using default options for collision response" << obj->sendl;
-
-                core::collision::Contact::Factory::iterator it;
-                for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
-                {
-                    listResponse.insert(it->first);
-                }
-            }
-            sofa::helper::OptionsGroup responseOptions(listResponse);
-            if (listResponse.find("default") != listResponse.end())
-                responseOptions.setSelectedItem("default");
-            obj->response.setValue(responseOptions);
+            sofa::helper::OptionsGroup options=initializeResponseOptions(pipeline);
+            obj->response.setValue(options);
         }
         if (arg) obj->parse(arg);
-
     }
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
@@ -103,6 +87,7 @@ public:
 
 
 protected:
+    static sofa::helper::OptionsGroup initializeResponseOptions(core::collision::Pipeline *pipeline);
 
     std::map<Instance,ContactMap> storedContactMap;
 
