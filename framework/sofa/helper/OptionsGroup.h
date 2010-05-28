@@ -83,7 +83,7 @@ public :
     unsigned int getSelectedId() const;
     const std::string &getSelectedItem() const;
     std::string & operator[](unsigned int i) {return textItems[i];}
-    unsigned int size() {return textItems.size();}
+    unsigned int size() const {return textItems.size();}
 
 
     ///An other way to do the setSelectedItem() using a string for input
