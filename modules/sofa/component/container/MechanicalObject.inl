@@ -1730,14 +1730,13 @@ void MechanicalObject<DataTypes>::vAlloc(VecId v)
         vectorsDerivSharedAllocated[v.index]=true;
         BaseObject::Task < VecInitResize < VecDeriv > >(this,**vec, this->vsize);
 #endif
-
     }
     else
     {
         std::cerr << "Invalid alloc operation ("<<v<<")\n";
         return;
     }
-    //vOp(v); // clear vector
+//vOp(v); // clear vector
 }
 
 template <class DataTypes>
@@ -1751,7 +1750,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         // Check X is not pointing on the deleted Dynamic Vector
         if (vec == x)
         {
-            //	if (this->f_printLog.getValue())
+            if (this->f_printLog.getValue())
             {
                 serr << "Warning! MechanicalObject " << this->getName() << " x vector is pointing on a deleted dynamic vector." << sendl;
                 serr << "Restoring X" << sendl;
@@ -1763,7 +1762,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         // Check XFree is not pointing on the deleted Dynamic Vector
         if (vec == xfree)
         {
-            //	if (this->f_printLog.getValue())
+            if (this->f_printLog.getValue())
             {
                 serr << "Warning! MechanicalObject " << this->getName() << " xfree vector is pointing on a deleted dynamic vector." << sendl;
                 serr << "Restoring XFree" << sendl;
@@ -1784,7 +1783,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         // Check V is not pointing on the deleted Dynamic Vector
         if (vec == v)
         {
-            //	if (this->f_printLog.getValue())
+            if (this->f_printLog.getValue())
             {
                 serr << "Warning! MechanicalObject " << this->getName() << " v vector is pointing on a deleted dynamic vector." << sendl;
                 serr << "Restoring V" << sendl;
@@ -1796,7 +1795,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         // Check VFree is not pointing on the deleted Dynamic Vector
         if (vec == vfree)
         {
-            //	if (this->f_printLog.getValue())
+            if (this->f_printLog.getValue())
             {
                 serr << "Warning! MechanicalObject " << this->getName() << " vfree vector is pointing on a deleted dynamic vector." << sendl;
                 serr << "Restoring VFree" << sendl;
@@ -1808,7 +1807,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         // Check F is not pointing on the deleted Dynamic Vector
         if (vec == getF())
         {
-            //	if (this->f_printLog.getValue())
+            if (this->f_printLog.getValue())
             {
                 serr << "Warning! MechanicalObject " << this->getName() << " f vector is pointing on a deleted dynamic vector with vecId = " << vId.index << "." << sendl;
                 serr << "Restoring F" << sendl;
@@ -1820,7 +1819,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         // Check InternalForces is not pointing on the deleted Dynamic Vector
         if (vec == internalForces)
         {
-            //	if (this->f_printLog.getValue())
+            if (this->f_printLog.getValue())
             {
                 serr << "Warning! MechanicalObject " << this->getName() << " internalForces vector is pointing on a deleted dynamic vector." << sendl;
                 serr << "Restoring InternalForces" << sendl;
@@ -1832,7 +1831,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         // Check ExternalForces is not pointing on the deleted Dynamic Vector
         if (vec == externalForces)
         {
-            //	if (this->f_printLog.getValue())
+            if (this->f_printLog.getValue())
             {
                 serr << "Warning! MechanicalObject " << this->getName() << " externalForces vector is pointing on a deleted dynamic vector." << sendl;
                 serr << "Restoring ExternalForces" << sendl;
