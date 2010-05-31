@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/component.h>
 #include <sofa/component/misc/BaseRotationFinder.h>
+#include <sofa/component/linearsolver/RotationMatrix.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -159,24 +160,33 @@ public:
             getRotation(*(Transformation*)&(vecR[i*9]),i);
     }
 
-    void getRotations(defaulttype::BaseVector * vecR)
+    void getRotations(defaulttype::BaseMatrix * vecR,int offset = 0)
     {
-        vecR->resize(_indexedElements->size()*9);
-        for (unsigned int i=0; i<_indexedElements->size(); ++i)
+        vecR->resize(_indexedElements->size()*3,_indexedElements->size()*3);
+        if (component::linearsolver::RotationMatrix<DataTypes> * diag = dynamic_cast<component::linearsolver::RotationMatrix<DataTypes> *>(vecR))
         {
-            Transformation t;
-            getRotation(t,i);
-            vecR->set(i*9  ,t[0][0]);
-            vecR->set(i*9+1,t[0][1]);
-            vecR->set(i*9+2,t[0][2]);
+            for (unsigned int i=0; i<_indexedElements->size(); ++i) getRotation(*((Transformation*)&diag[offset+i]),i);
+        }
+        else
+        {
+            for (unsigned int i=0; i<_indexedElements->size(); ++i)
+            {
+                Transformation t;
+                getRotation(t,i);
+                int e = offset+i*3;
+                vecR->set(e+0,e+0,t[0][0]);
+                vecR->set(e+0,e+1,t[0][1]);
+                vecR->set(e+0,e+2,t[0][2]);
 
-            vecR->set(i*9+3,t[1][0]);
-            vecR->set(i*9+4,t[1][1]);
-            vecR->set(i*9+5,t[1][2]);
+                vecR->set(e+1,e+0,t[0][0]);
+                vecR->set(e+1,e+1,t[0][1]);
+                vecR->set(e+1,e+2,t[0][2]);
 
-            vecR->set(i*9+6,t[2][0]);
-            vecR->set(i*9+7,t[2][1]);
-            vecR->set(i*9+8,t[2][2]);
+                vecR->set(e+2,e+0,t[0][0]);
+                vecR->set(e+2,e+1,t[0][1]);
+                vecR->set(e+2,e+2,t[0][2]);
+
+            }
         }
     }
 

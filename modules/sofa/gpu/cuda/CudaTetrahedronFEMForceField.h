@@ -302,7 +302,7 @@ public:
     static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor, bool prefetch);
     static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, double kFactor, unsigned int& offset);
     static void getRotations(Main* m, VecReal& rotations, bool prefetch);
-    static void getBaseRotations(Main* m, sofa::defaulttype::BaseVector * rotations, bool prefetch);
+    static void getRotations(Main* m, defaulttype::BaseMatrix * rotations,int offset, bool prefetch);
 
     typedef gpu::cuda::TetraFEMForceOp ForceOp;
     int preForceOpID;
@@ -335,7 +335,7 @@ public:
     template<> void TetrahedronFEMForceField< T >::reinit(); \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v); \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
-    template<> void TetrahedronFEMForceField< T >::getRotations(sofa::defaulttype::BaseVector * vecR); \
+    template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * vecR,int offset); \
     template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor); \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset);
 
