@@ -666,11 +666,11 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 //-------------------------------------
                 //Initialize the variables, and store X^(k-1) in previousIteration
                 unsigned int numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
+                if (c.block(idxConstraint, 0,numConstraintToProcess,1).isZero()) continue;
 
                 LambdaPreviousIteration = Lambda.block(idxConstraint,0,numConstraintToProcess,1);
-                //TODO CHANGE by reference
-                const MatrixEigen Wblock=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
 
+                const MatrixEigen &Wblock=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
                 constraint->LagrangeMultiplierEvaluation(Wblock.data(),c.data()+idxConstraint, Lambda.data()+idxConstraint,
                         constraintOrder[constraintEntry]);
 
