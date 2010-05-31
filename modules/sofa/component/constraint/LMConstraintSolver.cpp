@@ -647,6 +647,11 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
     unsigned int iteration=0;
     double error=0;
 
+    //Store the invalid block of the W matrix
+    helper::set< int > emptyBlock;
+
+
+
     for (; iteration < numIterations.getValue() && continueIteration; ++iteration)
     {
         unsigned int idxConstraint=0;
@@ -661,16 +666,25 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
             //Get the vector containing all the constraint stored in one component
             const std::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
-            for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry)
+            unsigned int numConstraintToProcess=0;
+            for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess)
             {
                 //-------------------------------------
                 //Initialize the variables, and store X^(k-1) in previousIteration
-                unsigned int numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
-                if (c.block(idxConstraint, 0,numConstraintToProcess,1).isZero()) continue;
+                numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
 
                 LambdaPreviousIteration = Lambda.block(idxConstraint,0,numConstraintToProcess,1);
 
+                //Invalid constraints: due to projective constraints, or constraint expressed for Obstacle objects: we just ignore them
+                if (emptyBlock.find(idxConstraint) != emptyBlock.end()) continue;
+
                 const MatrixEigen &Wblock=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
+                if (Wblock.isZero(1e-25))
+                {
+                    emptyBlock.insert(idxConstraint);
+                    continue;
+                }
+
                 constraint->LagrangeMultiplierEvaluation(Wblock.data(),c.data()+idxConstraint, Lambda.data()+idxConstraint,
                         constraintOrder[constraintEntry]);
 
@@ -685,8 +699,6 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 else
                 {
                     Lambda.block(idxConstraint,0,numConstraintToProcess,1).setZero();
-//                      Lambda.block(idxConstraint,0,numConstraintToProcess,1)=LambdaPreviousIteration;
-                    idxConstraint+=numConstraintToProcess;
                     continue;
                 }
                 //****************************************************************
@@ -702,8 +714,6 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                     Lambda.block(idxConstraint,0,numConstraintToProcess,1)=LambdaPreviousIteration;
                 }
                 else continueIteration=true;
-
-                idxConstraint+=numConstraintToProcess;
             }
         }
 
@@ -737,6 +747,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
 
     if (f_printLog.getValue())
         sout << "Gauss-Seidel done in " << iteration << " iterations "<<sendl;
+
 
     if (Order == BaseLMConstraint::VEL && traceKineticEnergy.getValue()) return false;
     return true;
