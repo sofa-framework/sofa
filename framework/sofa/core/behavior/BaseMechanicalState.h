@@ -177,7 +177,7 @@ public:
     {
     public:
         typedef std::set< unsigned int > InternalStorage;
-        ParticleMask(const bool *activator):inUse(activator), activated(true) {};
+        ParticleMask(const bool *activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {};
 
         /// Insert an entry in the mask
         void insertEntry(unsigned int index)
@@ -193,27 +193,32 @@ public:
         /// A mask deactivated previously will remain deactivated until explicit activation using activate method.
         void setInUse(bool use)
         {
-            activated = use && activated;
+            allComponentsAreUsingMask = use && allComponentsAreUsingMask;
         }
-        /// Explicit activation
+
+        /// Explicit activation: when during some process we need the mask, we activate it
         void activate(bool a)
         {
             activated = a;
         }
 
-        /// Test if the mask can be used
+        /// Test if the mask can be used:
+        ///    * the parameter of the BaseMechanicalState useMask must be active
+        ///    * we must be inside a process using the mask
+        ///    * all the components of the node must use the mask. If a single one has deactivated its mask, we can't use the mask for the whole node.
         bool isInUse() const
         {
-            return *inUse && activated;
+            return *inUse && activated && allComponentsAreUsingMask;
         }
 
-        void clear() {indices.clear(); activated=true;}
+        void clear() {indices.clear(); activated=true; allComponentsAreUsingMask=true;}
 
     protected:
         InternalStorage indices;
         // Act as a switch, to enable or not the mask.
         const bool *inUse;
         bool activated;
+        bool allComponentsAreUsingMask;
     };
 
     Data<bool> useMask;
