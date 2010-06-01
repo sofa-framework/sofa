@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = Sofa_framework
+PROJECT_NAME           = Sofa
 PROJECT_NUMBER         = SVN
-OUTPUT_DIRECTORY       = doc/doxygen/framework
+OUTPUT_DIRECTORY       = doc/doxygen
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -82,15 +82,15 @@ WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           = doc/doxygen/doxygen_framework.log
+WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = framework
+INPUT                  = framework modules
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          =
 RECURSIVE              = YES
-EXCLUDE                =
+EXCLUDE                = modules/sofa/gpu
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */.svn*
 EXCLUDE_SYMBOLS        =
@@ -107,8 +107,8 @@ FILTER_SOURCE_FILES    = NO
 SOURCE_BROWSER         = YES
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
-REFERENCED_BY_RELATION = NO
-REFERENCES_RELATION    = NO
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
 REFERENCES_LINK_SOURCE = YES
 USE_HTAGS              = NO
 VERBATIM_HEADERS       = YES
@@ -223,9 +223,9 @@ SKIP_FUNCTION_MACROS   = YES
 # Configuration::additions related to external references
 #---------------------------------------------------------------------------
 TAGFILES               =
-GENERATE_TAGFILE       = doc/doxygen/sofa_framework.tag
+GENERATE_TAGFILE       =
 ALLEXTERNALS           = NO
-EXTERNAL_GROUPS        = YES
+EXTERNAL_GROUPS        = NO
 PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
@@ -241,7 +241,7 @@ CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
 GROUP_GRAPHS           = YES
 UML_LOOK               = NO
-TEMPLATE_RELATIONS     = NO
+TEMPLATE_RELATIONS     = YES
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 CALL_GRAPH             = NO
@@ -252,7 +252,7 @@ DOT_IMAGE_FORMAT       = png
 DOT_PATH               =
 DOTFILE_DIRS           =
 DOT_GRAPH_MAX_NODES    = 50
-MAX_DOT_GRAPH_DEPTH    = 1000
+MAX_DOT_GRAPH_DEPTH    = 5
 DOT_TRANSPARENT        = NO
 DOT_MULTI_TARGETS      = YES
 GENERATE_LEGEND        = YES
