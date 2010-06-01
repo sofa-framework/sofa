@@ -31,13 +31,16 @@ namespace sofa
 
 namespace defaulttype
 {
-#ifdef SOFA_FLOAT
-template class SolidTypes<float>
-;
-#else
+#ifndef SOFA_FLOAT
 template class SolidTypes<double>
 ;
 #endif
+#ifndef SOFA_DOUBLE
+template class SolidTypes<float>
+;
+#endif
+
+
 
 }// defaulttype
 
