@@ -124,6 +124,7 @@ void myopenclCreateBuffer(int /*device*/,cl_mem* dptr,int n)
     DEBUG_TEXT("myopenclCreateBuffer ");
     *dptr = clCreateBuffer(_context,CL_MEM_READ_WRITE,n,NULL,&_error);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclCreateBuffer ");
 }
 
 void myopenclReleaseBuffer(int /*device*/,cl_mem p)
@@ -131,15 +132,15 @@ void myopenclReleaseBuffer(int /*device*/,cl_mem p)
     DEBUG_TEXT("myopenclReleaseBuffer ");
     _error = clReleaseMemObject((cl_mem) p);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclReleaseBuffer ");
 }
 
 void myopenclEnqueueWriteBuffer(int device,cl_mem ddest,size_t offset,const void* hsrc,size_t n)
 {
     DEBUG_TEXT("myopenclEnqueueWriteBuffer");
-
-
     _error = clEnqueueWriteBuffer(_queues[device], ddest, CL_TRUE, offset, n, hsrc,0,NULL,NULL);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclEnqueueWriteBuffer");
 }
 
 
@@ -148,6 +149,7 @@ void myopenclEnqueueReadBuffer(int device,void* hdest,const cl_mem dsrc,size_t o
     DEBUG_TEXT("myopenclEnqueueReadBuffer");
     _error = clEnqueueReadBuffer(_queues[device],  dsrc, CL_TRUE, offset, n,hdest,0,NULL,NULL);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclEnqueueReadBuffer");
 }
 
 void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset,const cl_mem dsrc,size_t srcOffset, size_t n)
@@ -155,6 +157,7 @@ void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset,const 
     DEBUG_TEXT("myopenclEnqueueCopyBuffer");
     _error = clEnqueueCopyBuffer(_queues[device],dsrc,ddest,srcOffset,destOffset, n,0,NULL,NULL);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclEnqueueCopyBuffer");
 }
 
 cl_program myopenclProgramWithSource(const char * s,const size_t size)
@@ -162,6 +165,7 @@ cl_program myopenclProgramWithSource(const char * s,const size_t size)
     DEBUG_TEXT("myopenclProgramWithSource");
     return clCreateProgramWithSource(_context, 1, &s, &size, &_error);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclProgramWithSource");
 }
 
 cl_kernel myopenclCreateKernel(void* p,const char * kernel_name)
@@ -169,6 +173,7 @@ cl_kernel myopenclCreateKernel(void* p,const char * kernel_name)
     DEBUG_TEXT("myopenclCreateKernel");
     return clCreateKernel((cl_program)p, kernel_name, &_error);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclCreateKernel");
 }
 
 void myopenclSetKernelArg(cl_kernel kernel,int num_arg,int size,void* arg)
@@ -176,6 +181,7 @@ void myopenclSetKernelArg(cl_kernel kernel,int num_arg,int size,void* arg)
     DEBUG_TEXT("myopenclSetKernelArg");
     _error = clSetKernelArg(kernel, num_arg,size, arg);
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclSetKernelArg");
 }
 
 
@@ -185,6 +191,7 @@ void myopenclBuildProgram(void * program)
     _error = clBuildProgram((cl_program)program,0,NULL,NULL,NULL,NULL);
 
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclBuildProgram");
 }
 
 void myopenclBuildProgramWithFlags(void * program, char * flags)
@@ -193,14 +200,16 @@ void myopenclBuildProgramWithFlags(void * program, char * flags)
     _error = clBuildProgram((cl_program)program,0,NULL,flags,NULL,NULL);
 
     myopenclShowError(__FILE__, __LINE__);
+    DEBUG_TEXT("~myopenclBuildProgram");
 }
 
 void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size)
 {
     DEBUG_TEXT("myopenclExecKernel");
-    myopenclShowError(__FILE__, __LINE__);
+
     _error = clEnqueueNDRangeKernel(_queues[device],kernel,work_dim,global_work_offset,global_work_size,local_work_size,0,NULL,NULL);
-    myopenclShowError(__FILE__, __LINE__);
+
+    DEBUG_TEXT("~myopenclExecKernel");
 }
 
 // information public functions
@@ -243,6 +252,20 @@ std::string myopenclPath()
 {
     return _mainPath;
 }
+
+void myopenclBarrier(_device_pointer m, std::string file, int line)
+{
+    std::cout << file << " " << line << "\n";
+    std::cout << "myopenclbarrier-------------------------------------------------\n";
+    char p[1];
+    myopenclEnqueueReadBuffer(0,p,m.m,0, 1);
+    std::cout <<"~myopenclbarrier-------------------------------------------------\n";
+}
+
+
+
+
+
 
 
 

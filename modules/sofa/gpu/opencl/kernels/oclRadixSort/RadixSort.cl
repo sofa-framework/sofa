@@ -1,3 +1,5 @@
+
+
 /*
 * Copyright 1993-2009 NVIDIA Corporation.  All rights reserved.
 *
@@ -308,19 +310,40 @@ __kernel void scanNaive(__global uint *g_odata,
 // for large sorts (and the threshold is higher on compute version 1.1 and earlier
 // GPUs than it is on compute version 1.2 GPUs.
 //----------------------------------------------------------------------------
-__kernel void reorderDataKeysOnly(__global uint  *outKeys,
+typedef struct
+{
+    Real x;
+    Real y;
+    Real z;
+} Real3;
+
+typedef struct
+{
+    Real a;
+    Real b;
+    Real c;
+    Real d;
+    Real e;
+    Real f
+} Real6;
+
+
+__kernel void reorderDataKeysOnly(	__global uint  *outKeys,
         __global uint2  *keys,
+        __global Real6  *values,
         __global uint  *blockOffsets,
         __global uint  *offsets,
         __global uint  *sizes,
         uint startbit,
         uint numElements,
         uint totalBlocks,
-        __local uint2* sKeys2)
+        __local uint2* sKeys2,
+        __local Real6* svalues6
+                                 )
 {
     __local uint sOffsets[16];
     __local uint sBlockOffsets[16];
-
+    __local Real3 *svalues3 = (__local Real3*)svalues6;
     __local uint *sKeys1 = (__local uint*)sKeys2;
 
     uint groupId = get_group_id(0);
@@ -330,6 +353,12 @@ __kernel void reorderDataKeysOnly(__global uint  *outKeys,
     uint groupSize = get_local_size(0);
 
     sKeys2[localId]   = keys[globalId];
+    svalues6[localId].a = values[globalId].a;
+    svalues6[localId].b = values[globalId].b;
+    svalues6[localId].c = values[globalId].c;
+    svalues6[localId].d = values[globalId].d;
+    svalues6[localId].e = values[globalId].e;
+    svalues6[localId].f = values[globalId].f;
 
     if(localId < 16)
     {
@@ -344,6 +373,10 @@ __kernel void reorderDataKeysOnly(__global uint  *outKeys,
     if (globalOffset < numElements)
     {
         outKeys[globalOffset]   = sKeys1[localId];
+        //	((Real3*)values)[globalOffset] = svalues3[localId];
+        ((Real3*)values)[globalOffset].x = svalues3[localId].x;
+        ((Real3*)values)[globalOffset].y = svalues3[localId].y;
+        ((Real3*)values)[globalOffset].z = svalues3[localId].z;
     }
 
     radix = (sKeys1[localId + groupSize] >> startbit) & 0xF;
@@ -352,7 +385,9 @@ __kernel void reorderDataKeysOnly(__global uint  *outKeys,
     if (globalOffset < numElements)
     {
         outKeys[globalOffset]   = sKeys1[localId + groupSize];
+        //	((Real3*)values)[globalOffset] = svalues3[localId + groupSize];
+        ((Real3*)values)[globalOffset].x = svalues3[localId + groupSize].x;
+        ((Real3*)values)[globalOffset].y = svalues3[localId + groupSize].y;
+        ((Real3*)values)[globalOffset].z = svalues3[localId + groupSize].z;
     }
-
-
 }

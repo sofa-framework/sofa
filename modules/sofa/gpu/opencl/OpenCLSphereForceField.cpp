@@ -29,7 +29,7 @@
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 
-#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
 {
@@ -127,6 +127,7 @@ void SphereForceFieldOpenCL3f_addForce(unsigned int size, GPUSphere* sphere, _de
 {
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT( "SphereForceFieldOpenCL3f_addForce");
+    BARRIER(f,__FILE__,__LINE__);
     float4 sc(sphere->center.x(),sphere->center.y(),sphere->center.z(),0.0);
     float4 sd(sphere->r ,sphere->stiffness,sphere->damping,0.0);
 
@@ -147,6 +148,7 @@ void SphereForceFieldOpenCL3f_addForce(unsigned int size, GPUSphere* sphere, _de
 
     SphereForceFieldOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
+    BARRIER(f,__FILE__,__LINE__);
 }
 
 
@@ -154,6 +156,7 @@ void SphereForceFieldOpenCL3f_addDForce(unsigned int size, GPUSphere* sphere, co
 {
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT( "SphereForceFieldOpenCL3f_addDForce");
+    BARRIER(penetration,__FILE__,__LINE__);
     float4 sc(sphere->center.x(),sphere->center.y(),sphere->center.z(),0.0);
 
     SphereForceField_CreateProgramWithFloat();
@@ -171,7 +174,7 @@ void SphereForceFieldOpenCL3f_addDForce(unsigned int size, GPUSphere* sphere, co
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
     SphereForceFieldOpenCL3f_addDForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
-
+    BARRIER(penetration,__FILE__,__LINE__);
 }
 
 

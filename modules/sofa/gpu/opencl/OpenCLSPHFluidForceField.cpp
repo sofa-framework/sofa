@@ -26,6 +26,9 @@
 #include "OpenCLSPHFluidForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+
+
 namespace sofa
 {
 
@@ -44,8 +47,100 @@ int SPHFluidForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side comp
 
 
 
-void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer pos4, const _device_pointer x) {NOT_IMPLEMENTED();}
-void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v) {NOT_IMPLEMENTED();}
+/////////////////////////////
+
+sofa::helper::OpenCLProgram* SPHFluidForceFieldOpenCLFloat_program;
+
+
+void SPHFluidForceField_CreateProgramWithFloat()
+{
+    if(SPHFluidForceFieldOpenCLFloat_program==NULL)
+    {
+        std::map<std::string, std::string> types;
+        types["Real"]="float";
+        types["Real4"]="float4";
+
+        SPHFluidForceFieldOpenCLFloat_program
+            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLSPHFluidForceField.cl"),&types);
+
+        SPHFluidForceFieldOpenCLFloat_program->buildProgram();
+
+        std::cout << SPHFluidForceFieldOpenCLFloat_program->buildLog(0);
+        sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
+    }
+}
+
+sofa::helper::OpenCLKernel *SPHFluidForceFieldOpenCL3f_computeDensity_kernel;
+void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer pos4, const _device_pointer x)
+{
+    DEBUG_TEXT("SPHFluidForceFieldOpenCL3f_computeDensity");
+    BARRIER(cells,__FILE__,__LINE__);
+    std::cout << "size:"<<size<<"\n";
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
+    SPHFluidForceField_CreateProgramWithFloat();
+
+    if(SPHFluidForceFieldOpenCL3f_computeDensity_kernel==NULL)SPHFluidForceFieldOpenCL3f_computeDensity_kernel
+            = new sofa::helper::OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_computeDensity");
+
+
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<unsigned int>(0,&size);
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(1,&cells);
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(2,&cellGhost);
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<GPUSPHFluid3f>(3,params);
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(4,&pos4);
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(5,&x);
+
+    size_t local_size[1];
+    local_size[0]=BSIZE;
+
+    size_t work_size[1];
+    work_size[0]=60*BSIZE;
+
+    //std::cout << __LINE__ << __FILE__ << " " << size << " " << nbSpringPerVertex << " " << springs.offset << " " << f.offset << " " <<  x.offset << " " <<  v.offset<< " " << dfdx.offset << "\n";
+    //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
+
+    SPHFluidForceFieldOpenCL3f_computeDensity_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+
+    DEBUG_TEXT("~SPHFluidForceFieldOpenCL3f_computeDensity");
+    BARRIER(cells,__FILE__,__LINE__);
+}
+
+sofa::helper::OpenCLKernel *SPHFluidForceFieldOpenCL3f_addForce_kernel;
+void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v)
+{
+    DEBUG_TEXT("SPHFluidForceFieldOpenCL3f_addForce");
+    BARRIER(cells,__FILE__,__LINE__);
+
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
+    SPHFluidForceField_CreateProgramWithFloat();
+
+    if(SPHFluidForceFieldOpenCL3f_addForce_kernel==NULL)SPHFluidForceFieldOpenCL3f_addForce_kernel
+            = new sofa::helper::OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_addForce");
+
+
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<unsigned int>(0,&size);
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(1,&cells);
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(2,&cellGhost);
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<GPUSPHFluid3f>(3,params);
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(4,&f);
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(5,&pos4);
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(6,&v);
+
+    size_t local_size[1];
+    local_size[0]=BSIZE;
+
+    size_t work_size[1];
+    work_size[0]=60*BSIZE;
+
+    //std::cout << __LINE__ << __FILE__ << " " << size << " " << nbSpringPerVertex << " " << springs.offset << " " << f.offset << " " <<  x.offset << " " <<  v.offset<< " " << dfdx.offset << "\n";
+    //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
+
+    SPHFluidForceFieldOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+
+    DEBUG_TEXT("~SPHFluidForceFieldOpenCL3f_addForce");
+    BARRIER(cells,__FILE__,__LINE__);
+}
+
 void SPHFluidForceFieldOpenCL3f_addDForce(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v, const _device_pointer dx) {NOT_IMPLEMENTED();}
 
 

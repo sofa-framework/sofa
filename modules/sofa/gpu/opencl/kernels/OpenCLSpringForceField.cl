@@ -110,8 +110,8 @@ __kernel void StiffSpringForceField3t_addForce(
     unsigned int nbSpringPerVertex,
     __global GPUSpring* springs,
     __global Real* f,
-    __global const Real* x,
-    __global const Real* v,
+    __global Real* x,
+    __global Real* v,
     __global Real* dfdx)
 {
     Real4 u, relativeVelocity,pos1,vel1,force,force2;
@@ -159,7 +159,7 @@ __kernel void StiffSpringForceField3t_addForce(
         long i = springs->index;
         spring2.initpos = *((Real*)&i);
         springs+=BSIZE;
-        if ( spring.index != -1)
+        if ( spring.index > -1)
         {
 
             int spring_index3 = spring.index*3;
@@ -167,9 +167,9 @@ __kernel void StiffSpringForceField3t_addForce(
             if (spring.index >= index0 && spring.index < index0+BSIZE)
             {
                 // 'local' point
-                i = spring.index - index0;
-                u = (Real4)(temp[3*i  ], temp[3*i+1], temp[3*i+2],0);
-                relativeVelocity = (Real4)(temp[3*i  +3*BSIZE], temp[3*i+1+3*BSIZE], temp[3*i+2+3*BSIZE],0);
+                int j = spring.index - index0;
+                u = (Real4)(temp[3*j  ], temp[3*j+1], temp[3*j+2],0);
+                relativeVelocity = (Real4)(temp[3*j  +3*BSIZE], temp[3*j+1+3*BSIZE], temp[3*j+2+3*BSIZE],0);
             }
             else
             {
@@ -189,13 +189,14 @@ __kernel void StiffSpringForceField3t_addForce(
             elongationVelocity = dot(u,relativeVelocity);
             //Real kd = ;
             forceIntensity = spring.ks*elongation+elongationVelocity*spring2.kd;
-
             force2 += u*forceIntensity;
 
             *dfdx = forceIntensity*inverseLength;
 
         }
         dfdx+=BSIZE;
+
+
     }
     force=(Real4)force2;
 

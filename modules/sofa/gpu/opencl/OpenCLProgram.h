@@ -3,6 +3,7 @@
 
 #include <string>
 #include <cstdio>
+#include <stdlib.h>
 #include "OpenCLProgramParser.h"
 #include "myopencl.h"
 #include <CL/cl.h>
@@ -135,6 +136,7 @@ public:
     /// fonction qui permet de copier le fichier vers un tableau de caractère
     static std::string* loadSource(const char *file_source)
     {
+        std::cout << __FILE__ << " " << __LINE__ << " nom du source:" << file_source << "\n";
         std::string file_name = sofa::gpu::opencl::myopenclPath();
         file_name+= file_source;
 

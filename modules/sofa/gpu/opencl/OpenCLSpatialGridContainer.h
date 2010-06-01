@@ -40,6 +40,7 @@
 #include <sofa/component/container/SpatialGridContainer.h>
 #include <sofa/gpu/opencl/OpenCLTypes.h>
 #include <sofa/defaulttype/Vec.h>
+#include "oclRadixSort/RadixSort.h"
 
 namespace sofa
 {
@@ -71,6 +72,8 @@ public:
         HASH_PY = 19349663,
         HASH_PZ = 83492791,
     };
+
+    RadixSort *radixsort;
 
 public:
     SpatialGrid(Real cellWidth);
@@ -118,7 +121,7 @@ protected:
     sofa::gpu::opencl::OpenCLVector< sofa::gpu::opencl::Vec3f1 > sortedPos;
     const VecCoord* lastX;
 
-    static void kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, gpu::opencl::_device_pointer particleIndex, gpu::opencl::_device_pointer particleHash, gpu::opencl::_device_pointer sortTmp, gpu::opencl::_device_pointer cells, gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x);
+    static void kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, gpu::opencl::_device_pointer particleIndex, gpu::opencl::_device_pointer particleHash, gpu::opencl::_device_pointer sortTmp, gpu::opencl::_device_pointer cells, gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x,RadixSort *rs);
     //static void kernel_reorderData(int nbPoints, const gpu::opencl::_device_pointer particleIndex, const gpu::opencl::_device_pointer particleHash, gpu::opencl::_device_pointer sorted, const gpu::opencl::_device_pointer x);
 
 };

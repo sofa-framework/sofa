@@ -29,7 +29,7 @@
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 
-#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
 {
@@ -116,6 +116,7 @@ void UniformMassOpenCL3f_addForce(unsigned int size, const float* mg, _device_po
 
     UniformMassOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
+    DEBUG_TEXT("~UniformMassOpenCL3f_addForce");
 }
 
 void UniformMassOpenCL3f_addMDx(unsigned int size, float mass, _device_pointer res, const _device_pointer dx)
@@ -141,11 +142,12 @@ void UniformMassOpenCL3f_addMDx(unsigned int size, float mass, _device_pointer r
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
     UniformMassOpenCL3f_addMDX_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
-
+    DEBUG_TEXT("~UniformMassOpenCL3f_addMDx");
 }
 
 void UniformMassOpenCL3f_accFromF(unsigned int size, float mass, _device_pointer a, const _device_pointer f)
 {
+
     DEBUG_TEXT("UniformMassOpenCL3f_accFromF");
     ERROR_OFFSET(a)
     ERROR_OFFSET(f)
@@ -168,6 +170,11 @@ void UniformMassOpenCL3f_accFromF(unsigned int size, float mass, _device_pointer
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
     UniformMassOpenCL3f_accFromF_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+
+
+
+
+    DEBUG_TEXT("~UniformMassOpenCL3f_accFromF");
 }
 
 void UniformMassOpenCL3f1_addMDx(unsigned int /*size*/, float /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
