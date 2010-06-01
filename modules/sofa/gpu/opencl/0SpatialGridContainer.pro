@@ -4,4 +4,4 @@ HEADERS += OpenCLSpatialGridContainer.h \
 
 SOURCES += OpenCLSpatialGridContainer.cpp \
 
-OTHER_FILES += kernels/OpenCLSpatialGridForce.cl
+OTHER_FILES += kernels/OpenCLSpatialGridContainer.cl

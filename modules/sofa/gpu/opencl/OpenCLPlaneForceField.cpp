@@ -28,7 +28,7 @@
 #include "OpenCLPlaneForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
-#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 
 namespace sofa

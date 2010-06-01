@@ -30,7 +30,7 @@
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 
-#define DEBUG_TEXT(t)// printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
 {
@@ -173,9 +173,14 @@ void SpringForceField_CreateProgramWithDouble()
 sofa::helper::OpenCLKernel * StiffSpringForceFieldOpenCL3f_addForce_kernel;
 void StiffSpringForceFieldOpenCL3f_addForce(unsigned int size, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx)
 {
+    std::cout << "read: force synchro\n" << f.offset << " " << x.offset << " " << v.offset << " " << dfdx.offset << "\n";
+    float toto[1];
+    myopenclEnqueueReadBuffer(0,toto,springs.m,0, 1);
+    std::cout << "~read: force synchro\n";
+
     int BSIZE = component::forcefield::SpringForceFieldInternalData<sofa::gpu::opencl::OpenCLVec3fTypes>::BSIZE;
     DEBUG_TEXT("StiffSpringForceFieldOpenCL3f_addForce");
-
+    std::cout << "size: " << size << " " << BSIZE << "\n";
     SpringForceField_CreateProgramWithFloat();
     if(StiffSpringForceFieldOpenCL3f_addForce_kernel==NULL)StiffSpringForceFieldOpenCL3f_addForce_kernel
             = new sofa::helper::OpenCLKernel(SpringForceFieldOpenCLFloat_program,"StiffSpringForceField3t_addForce");
@@ -199,7 +204,9 @@ void StiffSpringForceFieldOpenCL3f_addForce(unsigned int size, unsigned int nbSp
 
     StiffSpringForceFieldOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
-
+    std::cout << __FILE__ << __LINE__ <<"\nread: force synchro2\n";
+    myopenclEnqueueReadBuffer(0,toto,springs.m,0, 1);
+    std::cout << "~read: force synchro2\n";
 }
 
 

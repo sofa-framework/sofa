@@ -36,8 +36,9 @@
 #include <string>
 
 
-#define ERROR_OFFSET(t) //{if(t.offset!=0){printf("Error Offset %s %d: %d\n",__FILE__,__LINE__,(int)t.offset);exit(-1);}}
+#define ERROR_OFFSET(t) {if(t.offset!=0){printf("Error Offset %s %d: %d\n",__FILE__,__LINE__,(int)t.offset);exit(-1);}}
 #define NOT_IMPLEMENTED() {printf("Not implemented %s %d\n",__FILE__,__LINE__);exit(-1);}
+#define BARRIER(x,y,z) myopenclBarrier(x,y,z);
 
 
 #if defined(__cplusplus)
@@ -81,7 +82,7 @@ extern "C" {
     extern cl_program myopenclProgramWithSource(const char * s,const size_t size);
     extern cl_kernel myopenclCreateKernel(void* p,const char * kernel_name);
     extern void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size);
-
+    extern void myopenclBarrier(_device_pointer d,std::string file, int line);
 
     extern void myopenclMemsetDevice(int d, _device_pointer dDestPointer, int value, size_t n);
     extern void* myopencldevice(int device);

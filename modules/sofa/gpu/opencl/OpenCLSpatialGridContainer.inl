@@ -53,23 +53,22 @@ namespace gpu
 namespace opencl
 {
 
-extern "C"
-{
-    extern int SpatialGridContainer_RadixSortTempStorage(unsigned int numElements);
+extern int SpatialGridContainer_RadixSortTempStorage(unsigned int numElements);
 
-    extern void SpatialGridContainer_RadixSort(sofa::gpu::opencl::_device_pointer keys,
-            sofa::gpu::opencl::_device_pointer values,
-            sofa::gpu::opencl::_device_pointer temp,
-            unsigned int numElements,
-            unsigned int keyBits = 32,
-            bool         flipBits = false);
+extern void SpatialGridContainer_RadixSort(sofa::gpu::opencl::_device_pointer keys,
+        sofa::gpu::opencl::_device_pointer values,
+        sofa::gpu::opencl::_device_pointer temp,
+        unsigned int numElements,
+        unsigned int keyBits = 32,
+        bool         flipBits = false);
 
-    extern void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex8,gpu::opencl::_device_pointer particleHash8, const gpu::opencl::_device_pointer x);
-    extern void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex8,gpu::opencl::_device_pointer particleHash8, const gpu::opencl::_device_pointer x);
-    extern void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidth, int nbPoints, const gpu::opencl::_device_pointer particleHash8,gpu::opencl::_device_pointer cellRange,gpu::opencl::_device_pointer cellGhost);
+extern void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex8,gpu::opencl::_device_pointer particleHash8, const gpu::opencl::_device_pointer x);
+extern void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex8,gpu::opencl::_device_pointer particleHash8, const gpu::opencl::_device_pointer x);
+extern void SpatialGridContainer_findCellRange(int /*cellBits*/, int /*index0*/, float /*cellWidth*/, int /*nbPoints*/, const gpu::opencl::_device_pointer /*particleHash8*/,gpu::opencl::_device_pointer /*cellRange*/,gpu::opencl::_device_pointer /*cellGhost*/);
+
 //extern void SpatialGridContainer3f_reorderData(int nbPoints, const gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sorted, const gpu::opencl::_device_pointer x);
 //extern void SpatialGridContainer3f1_reorderData(int nbPoints, const gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sorted, const gpu::opencl::_device_pointer x);
-}
+
 
 } // namespace opencl
 
@@ -92,6 +91,7 @@ SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TRe
 {
     cellBits = 15;
     nbCells = 1<<cellBits;
+    radixsort = NULL;
 }
 
 template<class TCoord, class TDeriv, class TReal> template<class NeighborListener>
@@ -113,24 +113,31 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeri
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3fTypes > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sortTmp,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x)
+void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3fTypes > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sortTmp,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x,RadixSort */*rs*/)
 {
     gpu::opencl::SpatialGridContainer3f_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 
     int nbbits = 8;
     while (nbbits < cellBits + 1) ++nbbits;
+
+//	gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
+//	rs->sort(particleIndex,particleIndex,nbPoints*8,nbbits);
+
     gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
 
     gpu::opencl::SpatialGridContainer_findCellRange(cellBits, index0, cellWidth, nbPoints, particleHash, cells, cellGhost);
+
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3f1Types > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sortTmp,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x)
+void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3f1Types > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sortTmp,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x,RadixSort */*rs*/)
 {
     gpu::opencl::SpatialGridContainer3f1_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 
     int nbbits = 8;
     while (nbbits < cellBits + 1) ++nbbits;
+//	gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
+//	rs->sort(particleIndex,particleIndex,nbPoints*8,nbbits);
     gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
 
     gpu::opencl::SpatialGridContainer_findCellRange(cellBits, index0, cellWidth, nbPoints, particleHash, cells, cellGhost);
@@ -139,7 +146,7 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3f1Types > >::kernel_
 
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3dTypes > >::kernel_updateGrid(int /*cellBits*/, int /*index0*/, Real /*cellWidth*/, int /*nbPoints*/,gpu::opencl::_device_pointer /*particleIndex*/,gpu::opencl::_device_pointer /*particleHash*/,gpu::opencl::_device_pointer /*sortTmp*/,gpu::opencl::_device_pointer /*cells*/,gpu::opencl::_device_pointer /*cellGhost*/, const gpu::opencl::_device_pointer /*x*/)
+void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3dTypes > >::kernel_updateGrid(int /*cellBits*/, int /*index0*/, Real /*cellWidth*/, int /*nbPoints*/,gpu::opencl::_device_pointer /*particleIndex*/,gpu::opencl::_device_pointer /*particleHash*/,gpu::opencl::_device_pointer /*sortTmp*/,gpu::opencl::_device_pointer /*cells*/,gpu::opencl::_device_pointer /*cellGhost*/, const gpu::opencl::_device_pointer /*x*/,RadixSort */*rs*/)
 {
     std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3dTypes > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints,gpu::opencl::_device_pointer particleIndex,gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sortTmp,gpu::opencl::_device_pointer cells,gpu::opencl::_device_pointer cellGhost, const gpu::opencl::_device_pointer x)"<<std::endl;
 }
@@ -169,23 +176,26 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeri
     /*particleIndex*/ cells.recreate(index0+nbPoints*8,8*BSIZE);
     particleHash.recreate(nbPoints*8,8*BSIZE);
 
-    sortTmp.recreate(gpu::opencl::SpatialGridContainer_RadixSortTempStorage(nbPoints*8));
+//	sortTmp.recreate(gpu::opencl::SpatialGridContainer_RadixSortTempStorage(nbPoints*8));
+//	if(radixsort!=NULL){delete(radixsort);};
+//	radixsort = new RadixSort(nbPoints*8, BSIZE, true);
 
     //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
     //sortedPos.recreate(nbPoints);
 
-    kernel_updateGrid(cellBits, index0, cellWidth*2, nbPoints, cells.deviceWriteAt(index0), particleHash.deviceWrite(), sortTmp.deviceWrite(), cells.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead());
+    kernel_updateGrid(cellBits, index0, cellWidth*2, nbPoints, cells.deviceWriteAt(index0), particleHash.deviceWrite(), sortTmp.deviceWrite(), cells.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead(),radixsort);
+
     /*
-    	std::cout << nbPoints*8 << " entries in " << nbCells << " cells." << std::endl;
-    	int nfill = 0;
-    	for (int c=0;c<nbCells;++c)
-    	{
-    		if (cells[c] <= 0) continue;
-    		std::cout << "Cell " << c << ": range = " << cells[c]-index0 << " - " << cells[c+1]-index0 << "     ghost = " << cellGhost[c] << std::endl;
-    		++nfill;
-    	}
-    	std::cout << ((1000*nfill)/nbCells) * 0.1 << " % cells with particles." << std::endl;
+    std::cout << nbPoints*8 << " entries in " << nbCells << " cells." << std::endl;
+    int nfill = 0;
+    for (int c=0;c<nbCells;++c)
+    {
+    	if (cells[c] <= 0) continue;
+    	std::cout << "Cell " << c << ": range = " << cells[c]-index0 << " - " << cells[c+1]-index0 << "     ghost = " << cellGhost[c] << std::endl;
+    	++nfill;
+    }
+    std::cout << ((1000*nfill)/nbCells) * 0.1 << " % cells with particles." << std::endl;
     */
     //kernel_reorderData(nbPoints, particleHash.deviceRead(), sortedPos.deviceWrite(), x.deviceRead());
 }

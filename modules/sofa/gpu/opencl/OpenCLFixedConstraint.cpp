@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-
+#include "myopencl.h"
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 
@@ -114,7 +114,7 @@ sofa::helper::OpenCLKernel * FixedConstraintOpenCL3f_addForce_kernel;
 void FixedConstraintOpenCL3f_projectResponseIndexed(unsigned int size, const _device_pointer indices, _device_pointer dx)
 {
     DEBUG_TEXT("FixedConstraintOpenCL3f_projectResponseIndexed");
-
+    BARRIER(dx,__FILE__,__LINE__);
 
     FixedConstraint_CreateProgramWithFloat();
     if(FixedConstraintOpenCL3f_addForce_kernel==NULL)FixedConstraintOpenCL3f_addForce_kernel
@@ -137,11 +137,25 @@ void FixedConstraintOpenCL3f_projectResponseIndexed(unsigned int size, const _de
 
     FixedConstraintOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
-
+    BARRIER(dx,__FILE__,__LINE__);
+    DEBUG_TEXT("~FixedConstraintOpenCL3f_projectResponseIndexed");
 }
 
 
-void FixedConstraintOpenCL3f_projectResponseContiguous(unsigned int /*size*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED()}
+void FixedConstraintOpenCL3f_projectResponseContiguous(unsigned int size, _device_pointer dx)
+{
+    DEBUG_TEXT("FixedConstraintOpenCL3f_projectResponseContiguous");
+    BARRIER(dx,__FILE__,__LINE__);
+
+    OpenCLMemoryManager<float>::memsetDevice(0,dx,0,size*3*sizeof(float));
+//	NOT_IMPLEMENTED()
+
+    BARRIER(dx,__FILE__,__LINE__);
+    DEBUG_TEXT("~FixedConstraintOpenCL3f_projectResponseContiguous");
+}
+
+
+
 void FixedConstraintOpenCL3f1_projectResponseContiguous(unsigned int /*size*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 void FixedConstraintOpenCL3f1_projectResponseIndexed(unsigned int /*size*/, const _device_pointer /*indices*/, _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 #ifdef SOFA_DEV

@@ -16,9 +16,9 @@
 #define _RADIXSORT_H_
 
 #if defined (__APPLE__) || defined(MACOSX)
-#include <OpenCL/opencl.h>
+//#include <OpenCL/opencl.h>
 #else
-#include <CL/opencl.h>
+//#include <CL/opencl.h>
 #endif
 #include "Scan.h"
 #include "OpenCLProgram.h"
@@ -38,7 +38,7 @@ public:
     ~RadixSort();
 
     void sort(sofa::gpu::opencl::_device_pointer d_keys,
-            unsigned int *values,
+            sofa::gpu::opencl::_device_pointer values,
             unsigned int  numElements,
             unsigned int  keyBits);
 
@@ -61,11 +61,11 @@ private:
 
     Scan scan;
 
-    void radixSortKeysOnly(_device_pointer d_keys, unsigned int numElements, unsigned int keyBits);
-    void radixSortStepKeysOnly(_device_pointer d_keys, unsigned int nbits, unsigned int startbit, unsigned int numElements);
-    void radixSortBlocksKeysOnlyOCL(_device_pointer d_keys, unsigned int nbits, unsigned int startbit, unsigned int numElements);
+    void radixSortKeysOnly(_device_pointer d_keys,_device_pointer v, unsigned int numElements, unsigned int keyBits);
+    void radixSortStepKeysOnly(_device_pointer d_keys,_device_pointer v, unsigned int nbits, unsigned int startbit, unsigned int numElements);
+    void radixSortBlocksKeysOnlyOCL(_device_pointer d_keys,unsigned int nbits, unsigned int startbit, unsigned int numElements);
     void findRadixOffsetsOCL(unsigned int startbit, unsigned int numElements);
     void scanNaiveOCL(unsigned int numElements);
-    void reorderDataKeysOnlyOCL(_device_pointer d_keys, unsigned int startbit, unsigned int numElements);
+    void reorderDataKeysOnlyOCL(_device_pointer d_keys,_device_pointer d_elements, unsigned int startbit, unsigned int numElements);
 };
 #endif

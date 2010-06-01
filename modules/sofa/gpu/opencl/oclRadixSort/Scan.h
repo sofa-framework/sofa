@@ -18,9 +18,9 @@
 #define SCAN2
 
 #if defined (__APPLE__) || defined(MACOSX)
-#include <OpenCL/opencl.h>
+//#include <OpenCL/opencl.h>
 #else
-#include <CL/opencl.h>
+//#include <CL/opencl.h>
 #endif
 
 #define MAX_WORKGROUP_INCLUSIVE_SCAN_SIZE 1024

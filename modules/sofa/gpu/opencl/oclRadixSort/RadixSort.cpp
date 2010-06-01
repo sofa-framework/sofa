@@ -16,6 +16,7 @@
 //#include <oclUtils.h>
 #include "RadixSort.h"
 #include "OpenCLMemoryManager.h"
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 extern double time1, time2, time3, time4;
 
@@ -24,7 +25,8 @@ RadixSort::RadixSort(
     const int ctaSize,
     bool /*keysOnly = true*/) :
     mNumElements(0),
-    CTA_SIZE(ctaSize)
+    CTA_SIZE(ctaSize),
+    scan(maxElements/2/CTA_SIZE*16)
 
 {
 
@@ -34,6 +36,9 @@ RadixSort::RadixSort(
             (maxElements / (CTA_SIZE * 2)) : (maxElements / (CTA_SIZE * 2) + 1);
     */
     //cl_int ciErrNum;
+    int sizeCounter = WARP_SIZE * numBlocks * sizeof(unsigned int);
+
+
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&d_tempKeys, sizeof(unsigned int) * maxElements);
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&mCounters,WARP_SIZE * numBlocks * sizeof(unsigned int));
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&mCountersSum, WARP_SIZE * numBlocks * sizeof(unsigned int));
@@ -45,8 +50,16 @@ RadixSort::RadixSort(
     char flags[] = {"-cl-fast-relaxed-math"};
 #endif
 
-    cpProgram = new OpenCLProgram(OpenCLProgram::loadSource("oclRadixSort/RadixSort.cl"));
+    std::map<std::string, std::string> types;
+    types["Real"]="float";
+    types["Real4"]="float4";
+
+    cpProgram = new OpenCLProgram();
+    cpProgram->setSource(*OpenCLProgram::loadSource("oclRadixSort/RadixSort.cl"));
+    cpProgram->setTypes(types);
+    cpProgram->createProgram();
     cpProgram->buildProgram(flags);
+    std::cout << cpProgram->buildLog(0);
 
 
     ckRadixSortBlocksKeysOnly = new sofa::helper::OpenCLKernel(cpProgram,"radixSortBlocksKeysOnly");
@@ -79,14 +92,11 @@ RadixSort::~RadixSort()
 // @param keyBits     The number of bits in each key to use for ordering
 //------------------------------------------------------------------------
 void RadixSort::sort(sofa::gpu::opencl::_device_pointer d_keys,
-        unsigned int *values,
+        sofa::gpu::opencl::_device_pointer values,
         unsigned int  numElements,
         unsigned int  keyBits)
 {
-    if (values == 0)
-    {
-        radixSortKeysOnly(d_keys, numElements, keyBits);
-    }
+    radixSortKeysOnly(d_keys,values, numElements, keyBits);
 }
 
 //----------------------------------------------------------------------------
@@ -95,12 +105,12 @@ void RadixSort::sort(sofa::gpu::opencl::_device_pointer d_keys,
 // parameters are device pointers.  Uses cudppScan() for the prefix sum of
 // radix counters.
 //----------------------------------------------------------------------------
-void RadixSort::radixSortKeysOnly(sofa::gpu::opencl::_device_pointer d_keys, unsigned int numElements, unsigned int keyBits)
+void RadixSort::radixSortKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,sofa::gpu::opencl::_device_pointer values,  unsigned int numElements, unsigned int keyBits)
 {
     int i = 0;
     while (keyBits > i*bitStep)
     {
-        radixSortStepKeysOnly(d_keys, bitStep, i*bitStep, numElements);
+        radixSortStepKeysOnly(d_keys,values, bitStep, i*bitStep, numElements);
         i++;
     }
 }
@@ -109,8 +119,12 @@ void RadixSort::radixSortKeysOnly(sofa::gpu::opencl::_device_pointer d_keys, uns
 // Perform one step of the radix sort.  Sorts by nbits key bits per step,
 // starting at startbit.
 //----------------------------------------------------------------------------
-void RadixSort::radixSortStepKeysOnly(sofa::gpu::opencl::_device_pointer d_keys, unsigned int nbits, unsigned int startbit, unsigned int numElements)
+void RadixSort::radixSortStepKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,sofa::gpu::opencl::_device_pointer values,  unsigned int nbits, unsigned int startbit, unsigned int numElements)
 {
+    int n=1;
+    while(n<numElements)n*=2;
+    numElements=n;
+
     // Four step algorithms from Satish, Harris & Garland
     radixSortBlocksKeysOnlyOCL(d_keys, nbits, startbit, numElements);
 
@@ -118,7 +132,7 @@ void RadixSort::radixSortStepKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,
 
     scan.scanExclusiveLarge(mCountersSum, mCounters, 1, numElements/2/CTA_SIZE*16);
 
-    reorderDataKeysOnlyOCL(d_keys, startbit, numElements);
+    reorderDataKeysOnlyOCL(d_keys,values, startbit, numElements);
 }
 
 //----------------------------------------------------------------------------
@@ -126,6 +140,8 @@ void RadixSort::radixSortStepKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,
 //----------------------------------------------------------------------------
 void RadixSort::radixSortBlocksKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys, unsigned int nbits, unsigned int startbit, unsigned int numElements)
 {
+    DEBUG_TEXT("radixSortBlocksKeysOnlyOCL")
+    BARRIER(d_keys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/4/CTA_SIZE;
     size_t globalWorkSize[1] = {CTA_SIZE*totalBlocks};
     size_t localWorkSize[1] = {CTA_SIZE};
@@ -138,11 +154,14 @@ void RadixSort::radixSortBlocksKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_
     ckRadixSortBlocksKeysOnly->setArg<unsigned int>(5, &totalBlocks);
     ckRadixSortBlocksKeysOnly->setArg(6, 4*CTA_SIZE*sizeof(unsigned int), NULL);
     ckRadixSortBlocksKeysOnly->execute(0,1,NULL,globalWorkSize,localWorkSize);
-
+    BARRIER(d_keys,__FILE__,__LINE__);
+    DEBUG_TEXT("~radixSortBlocksKeysOnlyOCL")
 }
 
 void RadixSort::findRadixOffsetsOCL(unsigned int startbit, unsigned int numElements)
 {
+    DEBUG_TEXT("findRadixOffsetsOCL")
+    BARRIER(d_tempKeys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/2/CTA_SIZE;
     size_t globalWorkSize[1] = {CTA_SIZE*totalBlocks};
     size_t localWorkSize[1] = {CTA_SIZE};
@@ -156,11 +175,16 @@ void RadixSort::findRadixOffsetsOCL(unsigned int startbit, unsigned int numEleme
     ckFindRadixOffsets->setArg<unsigned int>(5, &totalBlocks);
     ckFindRadixOffsets->setArg(6,2 * CTA_SIZE *sizeof(unsigned int), NULL);
     ckFindRadixOffsets->execute(0,1,NULL,globalWorkSize,localWorkSize);
+    BARRIER(d_tempKeys,__FILE__,__LINE__);
+    DEBUG_TEXT("~findRadixOffsetsOCL")
 }
 
 #define NUM_BANKS 16
 void RadixSort::scanNaiveOCL(unsigned int numElements)
 {
+    DEBUG_TEXT("scanNaiveOCL")
+    BARRIER(mCountersSum,__FILE__,__LINE__);
+
     unsigned int nHist = numElements/2/CTA_SIZE*16;
     size_t globalWorkSize[1] = {nHist};
     size_t localWorkSize[1] = {nHist};
@@ -172,23 +196,31 @@ void RadixSort::scanNaiveOCL(unsigned int numElements)
     ckScanNaive->setArg<unsigned int>(2,&nHist);
     ckScanNaive->setArg(3,2 * shared_mem_size, NULL);
     ckScanNaive->execute(0,1,NULL, globalWorkSize, localWorkSize);
+
+    BARRIER(mCountersSum,__FILE__,__LINE__);
+    DEBUG_TEXT("~scanNaiveOCL")
 }
 
-void RadixSort::reorderDataKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys, unsigned int startbit, unsigned int numElements)
+void RadixSort::reorderDataKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys,sofa::gpu::opencl::_device_pointer d_elements, unsigned int startbit, unsigned int numElements)
 {
+    DEBUG_TEXT("reorderDataKeysOnlyOCL")
+    BARRIER(d_keys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/2/CTA_SIZE;
     size_t globalWorkSize[1] = {CTA_SIZE*totalBlocks};
     size_t localWorkSize[1] = {CTA_SIZE};
 
     ckReorderDataKeysOnly->setArg<cl_mem>(0,&d_keys.m);
     ckReorderDataKeysOnly->setArg<cl_mem>(1,&d_tempKeys.m);
-    ckReorderDataKeysOnly->setArg<cl_mem>(2,&mBlockOffsets.m);
-    ckReorderDataKeysOnly->setArg<cl_mem>(3,&mCountersSum.m);
-    ckReorderDataKeysOnly->setArg<cl_mem>(4,&mCounters.m);
-    ckReorderDataKeysOnly->setArg<unsigned int>(5,&startbit);
-    ckReorderDataKeysOnly->setArg<unsigned int>(6,&numElements);
-    ckReorderDataKeysOnly->setArg<unsigned int>(7,&totalBlocks);
-    ckReorderDataKeysOnly->setArg(8, 2 * CTA_SIZE * sizeof(unsigned int), NULL);
-    ckReorderDataKeysOnly->execute(0, 1, NULL, globalWorkSize, localWorkSize);
+    ckReorderDataKeysOnly->setArg<cl_mem>(2,&d_elements.m);
+    ckReorderDataKeysOnly->setArg<cl_mem>(3,&mBlockOffsets.m);
+    ckReorderDataKeysOnly->setArg<cl_mem>(4,&mCountersSum.m);
+    ckReorderDataKeysOnly->setArg<cl_mem>(5,&mCounters.m);
+    ckReorderDataKeysOnly->setArg<unsigned int>(6,&startbit);
+    ckReorderDataKeysOnly->setArg<unsigned int>(7,&numElements);
+    ckReorderDataKeysOnly->setArg<unsigned int>(8,&totalBlocks);
+    ckReorderDataKeysOnly->setArg(9, 2 * CTA_SIZE * sizeof(unsigned int), NULL);
 
+    ckReorderDataKeysOnly->execute(0, 1, NULL, globalWorkSize, localWorkSize);
+    BARRIER(d_keys,__FILE__,__LINE__);
+    DEBUG_TEXT("~reorderDataKeysOnlyOCL")
 }

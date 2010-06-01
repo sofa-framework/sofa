@@ -35,7 +35,7 @@
 //#include "tools/top.h"
 
 
-#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
 {
@@ -166,6 +166,8 @@ void MechanicalObject_CreateProgramWithFloat()
 void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f)
 {
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3f_vOp\t");
+    BARRIER(a,__FILE__,__LINE__);
+
     ERROR_OFFSET(res)
     ERROR_OFFSET(a)
     ERROR_OFFSET(b)
@@ -188,8 +190,8 @@ void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _de
     size_t work_size[1];
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
+    BARRIER(a,__FILE__,__LINE__);
     MechanicalObjectOpenCLVec3f_vOp_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
-
 }
 
 
@@ -200,6 +202,7 @@ void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _de
 void MechanicalObjectOpenCLVec3f_vMEq(size_t size, _device_pointer res, float f)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vMEq");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res)
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
@@ -219,8 +222,8 @@ void MechanicalObjectOpenCLVec3f_vMEq(size_t size, _device_pointer res, float f)
     size_t work_size[1];
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
+    BARRIER(res,__FILE__,__LINE__);
     MechanicalObjectOpenCLVec3f_vMEq_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
-
 }
 
 // vClear (4/4)
@@ -228,6 +231,7 @@ void MechanicalObjectOpenCLVec3f_vMEq(size_t size, _device_pointer res, float f)
 void MechanicalObjectOpenCLVec3f_vClear(size_t size, _device_pointer res)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vClear");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res)
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
@@ -248,14 +252,17 @@ void MechanicalObjectOpenCLVec3f_vClear(size_t size, _device_pointer res)
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
     MechanicalObjectOpenCLVec3f_vClear_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0*/
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 void MechanicalObjectOpenCLVec3d_vClear(size_t size, _device_pointer res)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3d_vClear");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res)
 
     OpenCLMemoryManager<double>::memsetDevice(0,res, 0, size*3*sizeof(double));
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 void MechanicalObjectOpenCLVec3f1_vClear(size_t size, _device_pointer res)
@@ -279,9 +286,11 @@ void MechanicalObjectOpenCLVec3d1_vClear(size_t size, _device_pointer res)
 void MechanicalObjectOpenCLVec3f_vAssign(size_t size, _device_pointer res, const _device_pointer a)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vAssign");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res)
 
     OpenCLMemoryManager<float>::memcpyDeviceToDevice(0,res,a,size*3*sizeof(float));
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 void MechanicalObjectOpenCLVec3f1_vAssign(size_t size, _device_pointer res, const _device_pointer a)
@@ -313,6 +322,7 @@ void MechanicalObjectOpenCLVec3d1_vAssign(size_t size, _device_pointer res, cons
 void MechanicalObjectOpenCLVec3f_vEqBF(size_t size, _device_pointer res, const _device_pointer b, float f)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vEqBF");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res);
     ERROR_OFFSET(b)
 
@@ -328,7 +338,7 @@ void MechanicalObjectOpenCLVec3f_vEqBF(size_t size, _device_pointer res, const _
     work_size[0]=size;
 
     MechanicalObjectOpenCLVec3f_vEqBF_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
-
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 // vPEqBF
@@ -338,6 +348,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const 
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEqBF");
     ERROR_OFFSET(res);
     ERROR_OFFSET(b);
+    BARRIER(res,__FILE__,__LINE__);
 
 //	size*=3;
 
@@ -353,7 +364,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const 
     work_size[0]=size;
 
     MechanicalObjectOpenCLVec3f_vPEqBF_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
-
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 
@@ -363,9 +374,11 @@ void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const 
 void MechanicalObjectOpenCLVec3f_vDot(size_t size, float* res, const _device_pointer a, const _device_pointer b, _device_pointer tmp, float* cputmp)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vDot");
+    BARRIER(a,__FILE__,__LINE__);
     ERROR_OFFSET(a);
     ERROR_OFFSET(b);
     ERROR_OFFSET(tmp);
+    std::cout << size << "\n";
 
     size*=3;
     MechanicalObject_CreateProgramWithFloat();
@@ -386,7 +399,7 @@ void MechanicalObjectOpenCLVec3f_vDot(size_t size, float* res, const _device_poi
 
     *res=0;
     for(unsigned int i=0; i< work_size[0]/RED_SIZE; i++)*res+=cputmp[i];
-
+    BARRIER(a,__FILE__,__LINE__);
 }
 
 // vDotTmpSize (1/4)
@@ -395,10 +408,12 @@ int MechanicalObjectOpenCLVec3f_vDotTmpSize(size_t size)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vDotTmpSize");
 
+
     size *= 3;
     int nblocs = (size+RED_SIZE-1)/RED_SIZE;
     if (nblocs > 256) nblocs = 256;
     return nblocs;
+
 }
 
 // vAdd Vec1t_vAdd
@@ -407,6 +422,7 @@ int MechanicalObjectOpenCLVec3f_vDotTmpSize(size_t size)
 void MechanicalObjectOpenCLVec3f_vAdd(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vAdd");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res);
     ERROR_OFFSET(a);
     ERROR_OFFSET(b);
@@ -424,13 +440,14 @@ void MechanicalObjectOpenCLVec3f_vAdd(size_t size, _device_pointer res, const _d
     work_size[0]=size;
 
     MechanicalObjectOpenCLVec3f_vAdd_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
-
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 
 void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _device_pointer a)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEq") ;
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res);
     ERROR_OFFSET(a);
 
@@ -447,7 +464,7 @@ void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _d
     work_size[0]=size;
 
     MechanicalObjectOpenCLVec3f_vPEq_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0*/
-
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 
@@ -455,6 +472,7 @@ void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _d
 void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer b2, float f2)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEqBF2");
+    BARRIER(res1,__FILE__,__LINE__);
     ERROR_OFFSET(res1);
     ERROR_OFFSET(b1);
     ERROR_OFFSET(res2);
@@ -485,12 +503,13 @@ void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, cons
 
     MechanicalObjectOpenCLVec3f_vPEqBF2_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
-
+    BARRIER(res1,__FILE__,__LINE__);
 }
 
 void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a, _device_pointer v, _device_pointer x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vIntegrate");
+    BARRIER(a,__FILE__,__LINE__);
     ERROR_OFFSET(a);
     ERROR_OFFSET(v);
     ERROR_OFFSET(x);
@@ -516,7 +535,7 @@ void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
     MechanicalObjectOpenCLVec3f_vIntegrate_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
-
+    BARRIER(a,__FILE__,__LINE__);
 }
 
 
@@ -524,6 +543,7 @@ void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a
 void MechanicalObjectOpenCLVec3f_vOp2(size_t size, _device_pointer res1, const _device_pointer a1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer a2, const _device_pointer b2, float f2)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vOp2");
+    BARRIER(res1,__FILE__,__LINE__);
     ERROR_OFFSET(res1);
     ERROR_OFFSET(a1);
     ERROR_OFFSET(b2);
@@ -552,6 +572,9 @@ void MechanicalObjectOpenCLVec3f_vOp2(size_t size, _device_pointer res1, const _
     size_t work_size[1];
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
     MechanicalObjectOpenCLVec3f_vOp2_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+
+    BARRIER(res1,__FILE__,__LINE__);
+    DEBUG_TEXT("~MechanicalObjectOpenCLVec3f_vOp2");
 }
 
 //MechanicalObjectOpenCLVec3f_vPEq4BF2_kernel
@@ -559,6 +582,7 @@ void MechanicalObjectOpenCLVec3f_vPEq4BF2(size_t size, _device_pointer res1, con
         _device_pointer res2, const _device_pointer b21, float f21, const _device_pointer b22, float f22, const _device_pointer b23, float f23, const _device_pointer b24, float f24)
 {
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEq4BF2");
+    BARRIER(res1,__FILE__,__LINE__);
     ERROR_OFFSET(res1);
     ERROR_OFFSET(b11);
     ERROR_OFFSET(b12);
@@ -599,8 +623,11 @@ void MechanicalObjectOpenCLVec3f_vPEq4BF2(size_t size, _device_pointer res1, con
 
     size_t work_size[1];
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+
     MechanicalObjectOpenCLVec3f_vPEq4BF2_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
+    BARRIER(res1,__FILE__,__LINE__);
 }
 
 
@@ -639,6 +666,7 @@ void MechanicalObjectOpenCLVec3d_vOp(size_t size, _device_pointer res, const _de
 {
     NOT_IMPLEMENTED();
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3d_vOp\t");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res)
     ERROR_OFFSET(a)
     ERROR_OFFSET(b)
@@ -661,6 +689,7 @@ void MechanicalObjectOpenCLVec3d_vOp(size_t size, _device_pointer res, const _de
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
     MechanicalObjectOpenCLVec3d_vOp_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 
@@ -669,6 +698,7 @@ void MechanicalObjectOpenCLVec3d_vMEq(size_t size, _device_pointer res, double f
 {
     NOT_IMPLEMENTED();
     DEBUG_TEXT("MechanicalObjectOpenCLVec3d_vMEq");
+    BARRIER(res,__FILE__,__LINE__);
     ERROR_OFFSET(res)
 
     size*=3;
@@ -682,7 +712,7 @@ void MechanicalObjectOpenCLVec3d_vMEq(size_t size, _device_pointer res, double f
     work_size[0]=size;
 
     MechanicalObjectOpenCLVec3d_vMEq_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
-
+    BARRIER(res,__FILE__,__LINE__);
 }
 
 

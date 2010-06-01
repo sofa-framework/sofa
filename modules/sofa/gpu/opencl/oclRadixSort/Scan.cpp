@@ -13,8 +13,11 @@
 *
 */
 
+
 #include "../OpenCLMemoryManager.h"
 #include "Scan.h"
+
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 Scan::Scan(
     unsigned int numElements
@@ -32,12 +35,12 @@ Scan::Scan(
 //	size_t szKernelLength; // Byte size of kernel code
 
     cpProgram = new OpenCLProgram(OpenCLProgram::loadSource("oclRadixSort/Scan_b.cl"));
+    std::cout << "\n-/--/--/--/-\n" << cpProgram->buildLog(0) << "\n/-//-//-//-/\n";
     cpProgram->buildProgram();
 
     ckScanExclusiveLocal1 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal1");
     ckScanExclusiveLocal2 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal2");
     ckUniformUpdate =  new sofa::helper::OpenCLKernel(cpProgram,"uniformUpdate");
-
 }
 
 Scan::~Scan()
@@ -67,14 +70,13 @@ void Scan::scanExclusiveLarge(
     unsigned int log2L;
     unsigned int factorizationRemainder = factorRadix2(log2L, arrayLength);
 
-    if(factorizationRemainder == 1)printf("Error: %s %d\n",__FILE__,__LINE__);
+    if(!(factorizationRemainder == 1)) {printf("Error: %s %d\n",__FILE__,__LINE__); exit(-1);}
 
     //Check supported size range
-    if((arrayLength >= MIN_LARGE_ARRAY_SIZE) && (arrayLength <= MAX_LARGE_ARRAY_SIZE))printf("Error: %s %d\n",__FILE__,__LINE__);
-
+    if(!((arrayLength >= MIN_LARGE_ARRAY_SIZE) && (arrayLength <= MAX_LARGE_ARRAY_SIZE))) {printf("Error: %s %d -> (%d>=%d)&&(%d<=%d)\n",__FILE__,__LINE__,arrayLength,MIN_LARGE_ARRAY_SIZE,arrayLength,MAX_LARGE_ARRAY_SIZE); exit(-1);}
 
     //Check total batch size limit
-    if( (batchSize * arrayLength) <= MAX_BATCH_ELEMENTS)printf("Error: %s %d\n",__FILE__,__LINE__);
+    if(!((batchSize * arrayLength) <= MAX_BATCH_ELEMENTS))printf("Error: %s %d -> (%d*%d)<=%d\n",__FILE__,__LINE__,batchSize,arrayLength,MAX_BATCH_ELEMENTS);
 
     scanExclusiveLocal1(
         d_Dst,
@@ -96,6 +98,7 @@ void Scan::scanExclusiveLarge(
         d_Buffer,
         (batchSize * arrayLength) / (4 * WORKGROUP_SIZE)
     );
+
 }
 
 
@@ -106,19 +109,29 @@ void Scan::scanExclusiveLocal1(
     unsigned int size
 )
 {
+    DEBUG_TEXT("scanExclusiveLocal1");
+    BARRIER(d_Dst,__FILE__,__LINE__);
+
 //   cl_int ciErrNum;
     size_t localWorkSize, globalWorkSize;
 
     ckScanExclusiveLocal1->setArg<cl_mem>(0,&d_Dst.m);
-    ckScanExclusiveLocal1->setArg<cl_mem>( 1, &d_Src.m);
+
+    ckScanExclusiveLocal1->setArg<_device_pointer>( 1, &d_Src);
+
     ckScanExclusiveLocal1->setArg(2, 2 * WORKGROUP_SIZE * sizeof(unsigned int), NULL);
+
     ckScanExclusiveLocal1->setArg<unsigned int>( 3 , &size);
 
     localWorkSize = WORKGROUP_SIZE;
     globalWorkSize = (n * size) / 4;
 
     ckScanExclusiveLocal1->execute(0, 1, NULL, &globalWorkSize, &localWorkSize);
+
 //   oclCheckError(ciErrNum, CL_SUCCESS);
+
+    BARRIER(d_Dst,__FILE__,__LINE__);
+    DEBUG_TEXT("~scanExclusiveLocal1");
 }
 
 void Scan::scanExclusiveLocal2(
@@ -129,13 +142,15 @@ void Scan::scanExclusiveLocal2(
     unsigned int size
 )
 {
+    DEBUG_TEXT("scanExclusiveLocal2");
+    BARRIER(d_Dst,__FILE__,__LINE__);
 
     size_t localWorkSize, globalWorkSize;
 
     unsigned int elements = n * size;
-    ckScanExclusiveLocal2->setArg<cl_mem>(0,&d_Buffer.m);
-    ckScanExclusiveLocal2->setArg<cl_mem>(1,&d_Dst.m);
-    ckScanExclusiveLocal2->setArg<cl_mem>(2,&d_Src.m);
+    ckScanExclusiveLocal2->setArg<_device_pointer>(0,&d_Buffer);
+    ckScanExclusiveLocal2->setArg<_device_pointer>(1,&d_Dst);
+    ckScanExclusiveLocal2->setArg<_device_pointer>(2,&d_Src);
     ckScanExclusiveLocal2->setArg( 3, 2 * WORKGROUP_SIZE * sizeof(unsigned int), NULL);
     ckScanExclusiveLocal2->setArg<unsigned int>(4,&elements);
     ckScanExclusiveLocal2->setArg<unsigned int>(5,&size);
@@ -144,6 +159,9 @@ void Scan::scanExclusiveLocal2(
     globalWorkSize = iSnapUp(elements, WORKGROUP_SIZE);
 
     ckScanExclusiveLocal2->execute(0, 1, NULL, &globalWorkSize, &localWorkSize);
+
+    BARRIER(d_Dst,__FILE__,__LINE__);
+    DEBUG_TEXT("~scanExclusiveLocal2");
 }
 
 void Scan::uniformUpdate(
@@ -152,6 +170,8 @@ void Scan::uniformUpdate(
     unsigned int n
 )
 {
+    DEBUG_TEXT("uniformUpdate");
+    BARRIER(d_Dst,__FILE__,__LINE__);
     size_t localWorkSize, globalWorkSize;
 
     ckUniformUpdate->setArg<cl_mem>(0,&d_Dst.m);
@@ -161,4 +181,7 @@ void Scan::uniformUpdate(
     globalWorkSize = n * WORKGROUP_SIZE;
 
     ckUniformUpdate->execute(0, 1, NULL, &globalWorkSize, &localWorkSize);
+
+    BARRIER(d_Dst,__FILE__,__LINE__);
+    DEBUG_TEXT("~uniformUpdate");
 }
