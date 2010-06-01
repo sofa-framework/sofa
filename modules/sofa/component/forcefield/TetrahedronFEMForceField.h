@@ -160,12 +160,12 @@ public:
             getRotation(*(Transformation*)&(vecR[i*9]),i);
     }
 
-    void getRotations(defaulttype::BaseMatrix * vecR,int offset = 0)
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
     {
-        vecR->resize(_indexedElements->size()*3,_indexedElements->size()*3);
-        if (component::linearsolver::RotationMatrix<DataTypes> * diag = dynamic_cast<component::linearsolver::RotationMatrix<DataTypes> *>(vecR))
+        rotations->resize(_indexedElements->size()*3,_indexedElements->size()*3);
+        if (component::linearsolver::RotationMatrix<Real> * diag = dynamic_cast<component::linearsolver::RotationMatrix<Real> *>(rotations))
         {
-            for (unsigned int i=0; i<_indexedElements->size(); ++i) getRotation(*((Transformation*)&diag[offset+i]),i);
+            for (unsigned int i=0; i<_indexedElements->size(); ++i) getRotation(*(Transformation*)&(diag->getVector()[i*9]),i);
         }
         else
         {
@@ -174,18 +174,9 @@ public:
                 Transformation t;
                 getRotation(t,i);
                 int e = offset+i*3;
-                vecR->set(e+0,e+0,t[0][0]);
-                vecR->set(e+0,e+1,t[0][1]);
-                vecR->set(e+0,e+2,t[0][2]);
-
-                vecR->set(e+1,e+0,t[0][0]);
-                vecR->set(e+1,e+1,t[0][1]);
-                vecR->set(e+1,e+2,t[0][2]);
-
-                vecR->set(e+2,e+0,t[0][0]);
-                vecR->set(e+2,e+1,t[0][1]);
-                vecR->set(e+2,e+2,t[0][2]);
-
+                rotations->set(e+0,e+0,t[0][0]); rotations->set(e+0,e+1,t[0][1]); rotations->set(e+0,e+2,t[0][2]);
+                rotations->set(e+1,e+0,t[1][0]); rotations->set(e+1,e+1,t[1][1]); rotations->set(e+1,e+2,t[1][2]);
+                rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
             }
         }
     }

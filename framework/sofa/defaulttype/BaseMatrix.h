@@ -1142,6 +1142,9 @@ public:
     /// Multiply the transposed matrix by double vector v and add the result in vector result
     virtual void opPMulTV(double* result, const double* v) const;
 
+    /// Multiply the transposed matrix by matrix m and store the result in matrix result
+    virtual void opMulTM(BaseMatrix * result,BaseMatrix * m) const;
+
     /// @}
 };
 

@@ -446,6 +446,12 @@ void BaseMatrix::opPMulTV(double* result, const double* v) const
     BaseMatrixLinearOpPMulTV::opDynamic(this, result, v);
 }
 
+/// Multiply the transposed matrix by matrix m and store the result in matrix result
+void BaseMatrix::opMulTM(BaseMatrix * /*result*/,BaseMatrix * /*m*/) const
+{
+    std::cerr <<"WARNING : BASEMATRIX::opMulTM not yet implemented"<<std::endl;
+}
+
 
 } // nampespace defaulttype
 
