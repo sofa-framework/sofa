@@ -143,7 +143,7 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
-    sofa::helper::vector< Spring > getSprings() {return springs.getValue();}
+    const sofa::helper::vector< Spring >& getSprings() const {return springs.getValue();}
 
     virtual void reinit();
     virtual void init();
@@ -191,6 +191,13 @@ public:
     void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initlen)
     {
         springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
+        springs.endEdit();
+        updateMaskStatus();
+    }
+
+    void addSpring(const Spring & spring)
+    {
+        springs.beginEdit()->push_back(spring);
         springs.endEdit();
         updateMaskStatus();
     }
