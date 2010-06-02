@@ -197,9 +197,9 @@ public:
 
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
+//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
+//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
+//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<LineModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<TriangleModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<TetrahedronModel>;
