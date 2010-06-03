@@ -33,6 +33,10 @@
 #include <sofa/component/visualmodel/Camera.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/helper/gl/Axis.h>
+
 namespace sofa
 {
 
@@ -62,7 +66,7 @@ Camera::Camera()
     ,p_heightViewport(initData(&p_heightViewport,(unsigned int) 600 , "heightViewport", "heightViewport"))
     ,p_type(initData(&p_type, (int) Camera::PERSPECTIVE_TYPE, "type", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_zoomSpeed(initData(&p_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))
-    ,p_panSpeed(initData(&p_panSpeed, (double) 25.0 , "panSpeed", "Pan Speed"))
+    ,p_panSpeed(initData(&p_panSpeed, (double) 0.1 , "panSpeed", "Pan Speed"))
     ,currentMode(Camera::NONE_MODE)
     ,isMoving(false)
 {
@@ -73,36 +77,234 @@ Camera::~Camera()
 {
 
 }
+Camera::Vec3 Camera::cameraToWorldCoordinates(const Vec3& p)
+{
+    return p_orientation.getValue().rotate(p) + p_position.getValue();
+}
+
+Camera::Vec3 Camera::worldToCameraCoordinates(const Vec3& p)
+{
+    return p_orientation.getValue().inverseRotate(p - p_position.getValue());
+}
+
+Camera::Vec3 Camera::cameraToWorldTransform(const Vec3& v)
+{
+    Quat q = p_orientation.getValue();
+    return q.rotate(v) ;
+}
+
+Camera::Vec3 Camera::worldToCameraTransform(const Vec3& v)
+{
+    return p_orientation.getValue().inverseRotate(v);
+}
+
+void Camera::getOpenGLMatrix(double mat[16])
+{
+    defaulttype::SolidTypes<double>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    world_H_cam.inversed().writeOpenGlMatrix(mat);
+}
 
 void Camera::init()
 {
     currentTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
 
-    if(p_position.isSet() && p_orientation.isSet())
+    if(p_position.isSet())
     {
-        Vec3 newLookAt = computeLookAt(p_position.getValue(), p_orientation.getValue());
-        p_lookAt.setValue(newLookAt);
-    }
-    else if (p_lookAt.isSet() && p_orientation.isSet())
-    {
-        Vec3 newPos = computePosition(p_lookAt.getValue(), p_orientation.getValue());
-        p_position.setValue(newPos);
+        if(!p_orientation.isSet())
+        {
+            p_distance.setValue((p_lookAt.getValue() - p_position.getValue()).norm());
+
+            Quat q  = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+            p_orientation.setValue(q);
+        }
+        else if(!p_lookAt.isSet())
+        {
+            //distance assumed to be set
+            if(!p_distance.isSet())
+                sout << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" << sendl;
+
+            Vec3 lookat = getLookAtFromOrientation(p_position.getValue(), p_distance.getValue(), p_orientation.getValue());
+            p_lookAt.setValue(lookat);
+        }
+        else
+        {
+            serr << "Too many missing parameters ; taking default ..." << sendl;
+        }
     }
     else
     {
-        serr << "Not enough parameters, putting default ..." << sendl;
+        if(p_lookAt.isSet() && p_orientation.isSet())
+        {
+            //distance assumed to be set
+            if(!p_distance.isSet())
+                sout << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" << sendl;
+
+            Vec3 pos = getPositionFromOrientation(p_lookAt.getValue(), p_distance.getValue(), p_orientation.getValue());
+            p_position.setValue(pos);
+        }
+        else
+        {
+            serr << "Too many missing parameters ; taking default ..." << sendl;
+        }
+    }
+
+    currentLookAt = p_lookAt.getValue();
+    currentDistance = p_distance.getValue();
+
+}
+
+void Camera::reinit()
+{
+    //Data "LookAt" has changed
+    //-> Orientation needs to be updated
+    if(currentLookAt !=  p_lookAt.getValue())
+    {
+        Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+        p_orientation.setValue(newOrientation);
+
+        currentLookAt = p_lookAt.getValue();
     }
 }
 
-Camera::Vec3 Camera::computeLookAt(const Camera::Vec3 &pos, const Camera::Quat& orientation)
+Camera::Quat Camera::getOrientationFromLookAt(const Camera::Vec3 &pos, const Camera::Vec3& lookat)
 {
-    Vec3 dirVec = orientation.rotate(Vec3(0,0,1));
-    return dirVec - pos;
+    Vec3 zAxis = -(lookat - pos);
+    zAxis.normalize();
+
+    Vec3 yAxis = cameraToWorldTransform(Vec3(0,1,0));
+
+    Vec3 xAxis = yAxis.cross(zAxis) ;
+    xAxis.normalize();
+
+    //std::cout << xAxis.norm2() << std::endl;
+    if (xAxis.norm2() < 0.00001)
+        xAxis = cameraToWorldTransform(Vec3(1.0, 0.0, 0.0));
+    xAxis.normalize();
+
+    yAxis = zAxis.cross(xAxis);
+
+    Quat q;
+    q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+    q.normalize();
+    return q;
 }
 
-Camera::Vec3 Camera::computePosition(const Camera::Vec3 &lookAt, const Camera::Quat& orientation)
+
+Camera::Vec3 Camera::getLookAtFromOrientation(const Camera::Vec3 &pos, const double &distance, const Camera::Quat & orientation)
 {
-    return orientation.rotate(-lookAt);
+    Vec3 zWorld = orientation.rotate(Vec3(0,0,-1*distance));
+    return zWorld+pos;
+}
+
+Camera::Vec3 Camera::getPositionFromOrientation(const Camera::Vec3 &lookAt, const double &distance, const Camera::Quat& orientation)
+{
+    Vec3 zWorld = orientation.rotate(Vec3(0,0,-1*distance));
+    return zWorld-lookAt;
+}
+
+void Camera::rotateCameraAroundPoint(Quat& rotation, const Vec3& point)
+{
+    Vec3 tempAxis;
+    double tempAngle;
+    Quat orientation = this->getOrientation();
+    Vec3& position = *p_position.beginEdit();
+    double distance = (point - p_position.getValue()).norm();
+
+    rotation.quatToAxis(tempAxis, tempAngle);
+    //std::cout << tempAxis << " " << tempAngle << std::endl;
+    Quat tempQuat (orientation.inverse().rotate(-tempAxis ), tempAngle);
+    orientation = orientation*tempQuat;
+
+    Vec3 trans = point + orientation.rotate(Vec3(0,0,-distance)) - position;
+    position = position + trans;
+
+    p_orientation.setValue(orientation);
+    p_position.endEdit();
+}
+
+void Camera::rotateWorldAroundPoint(Quat& rotation, const Vec3&  point )
+{
+    Vec3 tempAxis;
+    double tempAngle;
+    Quat orientationCam = this->getOrientation();
+    Vec3& positionCam = *p_position.beginEdit();
+
+    rotation.quatToAxis(tempAxis, tempAngle);
+    Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
+
+    defaulttype::SolidTypes<double>::Transform world_H_cam(positionCam, orientationCam);
+    defaulttype::SolidTypes<double>::Transform world_H_pivot(point, Quat());
+    defaulttype::SolidTypes<double>::Transform pivotBefore_R_pivotAfter(Vec3(0.0,0.0,0.0), tempQuat);
+    defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
+    //defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = worldBefore_H_cam.inversed()*worldBefore_R_worldAfter;
+
+    positionCam = camera_H_WorldAfter.inversed().getOrigin();
+    orientationCam = camera_H_WorldAfter.inversed().getOrientation();
+
+    p_lookAt.setValue(getLookAtFromOrientation(positionCam, p_distance.getValue(), orientationCam));
+    currentLookAt = p_lookAt.getValue();
+
+    p_orientation.setValue(orientationCam);
+    p_position.endEdit();
+}
+
+void Camera::moveCamera(int x, int y)
+{
+    float x1, x2, y1, y2;
+    Quat newQuat;
+    const unsigned int widthViewport = p_widthViewport.getValue();
+    const unsigned int heightViewport = p_heightViewport.getValue();
+
+    if (isMoving)
+    {
+        if (currentMode == TRACKBALL_MODE)
+        {
+            x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
+            y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
+            x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
+            y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
+
+            currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
+            //fetch rotation
+            newQuat = currentTrackball.GetQuaternion();
+
+            Vec3 pivot = Vec3(0.0, 0.0, 0.0);
+            //pivot = p_lookAt.getValue();
+            pivot = sceneCenter;
+            //pivot = (Vec3(x,y, p_distance.getValue()));
+            //std::cout << "Pivot : " <<  pivot << std::endl;
+            //rotateCameraAroundPoint(newQuat, pivot);
+            rotateWorldAroundPoint(newQuat, pivot);
+        }
+        else if (currentMode == ZOOM_MODE)
+        {
+            Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y - lastMousePosY) / heightViewport);
+            trans = cameraToWorldTransform(trans);
+            translate(trans);
+            translateLookAt(trans);
+        }
+        else if (currentMode == PAN_MODE)
+        {
+            Vec3 trans(lastMousePosX - x,  y-lastMousePosY, 0.0);
+            trans = cameraToWorldTransform(trans)*p_panSpeed.getValue();
+            translate(trans);
+            translateLookAt(trans);
+        }
+        //must call update afterwards
+
+        lastMousePosX = x;
+        lastMousePosY = y;
+    }
+    else if (currentMode == WHEEL_ZOOM_MODE)
+    {
+        Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y*0.5) / heightViewport);
+        trans = cameraToWorldTransform(trans);
+        translate((trans));
+        translateLookAt(trans);
+        currentMode = NONE_MODE;
+    }
+
+    computeZ();
 }
 
 void Camera::computeZ()
@@ -115,10 +317,10 @@ void Camera::computeZ()
         double zFarTemp = zFar;
 
         const Vec3& currentPosition = getPosition();
-        Quat currentOrientation = p_orientation.getValue();
+        Quat currentOrientation = this->getOrientation();
 
-        double &zoomSpeed = *p_zoomSpeed.beginEdit();
-        double &panSpeed = *p_panSpeed.beginEdit();
+        //double &zoomSpeed = *p_zoomSpeed.beginEdit();
+        //double &panSpeed = *p_panSpeed.beginEdit();
         const Vec3 & minBBox = p_minBBox.getValue();
         const Vec3 & maxBBox = p_maxBBox.getValue();
 
@@ -142,9 +344,9 @@ void Camera::computeZ()
         }
 
         //get the same zFar and zNear calculations as QGLViewer
-        Vec3 center = (minBBox + maxBBox)*0.5;
+        sceneCenter = (minBBox + maxBBox)*0.5;
 
-        double distanceCamToCenter = (currentPosition - center).norm();
+        double distanceCamToCenter = (currentPosition - sceneCenter).norm();
         double zClippingCoeff = 3.5;
         double zNearCoeff = 0.005;
         double sceneRadius = (fabs(zFarTemp-zNearTemp))*0.5;
@@ -156,89 +358,17 @@ void Camera::computeZ()
         if (zNear < zMin)
             zNear = zMin;
 
+        zNear = 0.1;
+        zFar = 1000.0;
         //update Speeds
-        zoomSpeed = sceneRadius;
-        panSpeed = sceneRadius;
+        //zoomSpeed = sceneRadius;
+        //panSpeed = sceneRadius;
 
         p_zNear.setValue(zNear);
         p_zFar.setValue(zFar);
-        p_zoomSpeed.endEdit();
-        p_panSpeed.endEdit();
+        //p_zoomSpeed.endEdit();
+        //p_panSpeed.endEdit();
     }
-}
-
-void Camera::moveCamera(int x, int y)
-{
-    float x1, x2, y1, y2;
-    float xshift, yshift, zshift;
-    Quat currentQuat = p_orientation.getValue();
-    Quat newQuat;
-    Vec3 &camPosition = *p_position.beginEdit();
-    Vec3 &lookAtPosition = *p_lookAt.beginEdit();
-    const unsigned int widthViewport = p_widthViewport.getValue();
-    const unsigned int heightViewport = p_heightViewport.getValue();
-
-    //std::cout << "moveCamera(int x, int y)" << x << " " << y << std::endl;
-
-    if (isMoving)
-    {
-        if (currentMode == TRACKBALL_MODE)
-        {
-            x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
-            y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
-            x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
-            y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
-
-            currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
-            //fetch rotation
-            newQuat = currentTrackball.GetQuaternion();
-
-            currentQuat =  newQuat + currentQuat;
-            camPosition =  currentQuat.rotate(-lookAtPosition);
-            p_orientation.setValue(currentQuat);
-        }
-        else if (currentMode == ZOOM_MODE)
-        {
-            zshift = (2.0f * y - widthViewport) / widthViewport - (2.0f * lastMousePosY - widthViewport) / widthViewport;
-            lookAtPosition[2] = lookAtPosition[2]+ p_zoomSpeed.getValue() * zshift;
-        }
-        else if (currentMode == PAN_MODE)
-        {
-            xshift = (2.0f * x - widthViewport) / widthViewport - (2.0f * lastMousePosX - widthViewport) / widthViewport;
-            yshift = (2.0f * y - widthViewport) / widthViewport - (2.0f * lastMousePosY - widthViewport) / widthViewport;
-
-            lookAtPosition[0] = lookAtPosition[0] + p_panSpeed.getValue() * xshift;
-            lookAtPosition[1] = lookAtPosition[1] - p_panSpeed.getValue() * yshift;
-        }
-        //must call update afterwards
-
-        lastMousePosX = x;
-        lastMousePosY = y;
-    }
-    else if (currentMode == WHEEL_ZOOM_MODE)
-    {
-        zshift = (2.0f * y / widthViewport);
-        lookAtPosition[2] = lookAtPosition[2]+ p_zoomSpeed.getValue() * zshift;
-        currentMode = NONE_MODE;
-    }
-
-    computeZ();
-    p_position.endEdit();
-    p_lookAt.endEdit();
-}
-
-void Camera::moveCamera(const Vec3 &translation, const Quat &rotation)
-{
-    Quat &currentQuat = *p_orientation.beginEdit();
-    Vec3 &lookAtPosition = *p_lookAt.beginEdit();
-    Quat tempQuat = rotation;
-    tempQuat.normalize();
-
-    lookAtPosition += translation;
-    currentQuat += tempQuat;
-
-    p_lookAt.endEdit();
-    p_orientation.endEdit();
 }
 
 void Camera::manageEvent(core::objectmodel::Event* e)
@@ -325,23 +455,25 @@ void Camera::processMouseEvent(core::objectmodel::MouseEvent* me)
 
 void Camera::processKeyPressedEvent(core::objectmodel::KeypressedEvent*  /* kpe */)
 {
-    /*	char keyPressed = kpe->getKey();
+    /*char keyPressed = kpe->getKey();
 
-    	switch(keyPressed)
+    switch(keyPressed)
+    {
+    	case 'a':
+    	case 'A':
     	{
-    		case 't':
-    		case 'T':
-    		{
-    			int type = (p_type.getValue() == PERSPECTIVE_TYPE) ? ORTHOGRAPHIC_TYPE : PERSPECTIVE_TYPE;
-    			p_type.setValue(type);
-    			break;
-    		}
-    		default:
-    		{
-    			break;
-    		}
-    	}*/
-
+    		glPushMatrix();
+    		//glLoadIdentity();
+    		//helper::gl::Axis(p_position.getValue(), p_orientation.getValue(), 10.0);
+    		glPopMatrix();
+    		break;
+    	}
+    	default:
+    	{
+    		break;
+    	}
+    }
+    */
 }
 
 void Camera::processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* /* kre */)
@@ -354,3 +486,4 @@ void Camera::processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* /* kre
 } //namespace component
 
 } //namespace sofa
+
