@@ -65,12 +65,13 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 
     if (x.size() != compliance.getValue().size())
     {
-        serr<<"Warning compliance size is not the size of the mstate"<<sendl;
+        serr << "Warning compliance size is not the size of the mstate" << sendl;
         VecReal UsedComp;
         if (compliance.getValue().size()>0)
         {
             for (unsigned int i=0; i<x.size(); i++)
             {
+                //	std::cout << "--> " << compliance.getValue()[0] << std::endl;
                 UsedComp.push_back(compliance.getValue()[0]);
             }
         }
@@ -82,7 +83,12 @@ void UncoupledConstraintCorrection<DataTypes>::init()
                 UsedComp.push_back(random_value);
             }
         }
-        compliance.setValue(UsedComp);
+
+        // Keeps user specified compliance even if the initial MState size is null.
+        if (!UsedComp.empty())
+        {
+            compliance.setValue(UsedComp);
+        }
     }
 }
 
@@ -123,6 +129,7 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 
                 for (unsigned int i = 0; i < nbPoints; i++)
                 {
+                    //	std::cout << "addedCompliance --> " << compliance.getValue()[0] << std::endl;
                     addedCompliance.push_back(c);
                 }
             }
