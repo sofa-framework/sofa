@@ -37,6 +37,8 @@
 
 #ifdef SOFA_QT4
 #include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLayout>
 #else
 #include <qlayout.h>
 #endif
@@ -90,30 +92,69 @@ public:
     typedef typename vhelper::value_type value_type;
     typedef data_widget_container<value_type> Container;
     typedef struct_data_widget_container<data_type,N-1> PrevContainer;
+    typedef QVBoxLayout MasterLayout;
+    typedef QHBoxLayout Layout;
     PrevContainer p;
     Container w;
     QCheckBox* check;
+    std::vector<QWidget*> qwidgetList;
+    MasterLayout* master_layout;
+    Layout* container_layout;
+    QLabel* label;
+    struct_data_widget_container() : check(NULL),label(NULL),container_layout(NULL),master_layout(NULL) {}
 
-    struct_data_widget_container() : check(NULL) {}
+    void setMasterLayout(MasterLayout* layout)
+    {
+        p.setMasterLayout(layout);
+        master_layout = layout;
+    }
 
-    bool createWidgets(DataWidget * parent, const data_type& d, bool readOnly)
+    bool createLayout( DataWidget* parent )
+    {
+        if( parent->layout() != NULL )
+        {
+            return false;
+        }
+        master_layout = new QVBoxLayout(parent);
+        setMasterLayout(master_layout);
+        return true;
+    }
+
+    bool createLayout( QLayout* layout)
+    {
+        container_layout = new QHBoxLayout(layout);
+        return true;
+    }
+
+    void insertWidgets()
+    {
+        p.insertWidgets();
+        createLayout(master_layout);
+
+        if(check)
+        {
+            container_layout->add(check);
+        }
+        if(label)
+        {
+            container_layout->add(label);
+        }
+        w.createLayout(container_layout); // create the layout for the rest of the widgets
+        w.insertWidgets(); // insert them accordingly
+
+    }
+
+    bool createWidgets(DataWidget * parent, const data_type& d, bool readOnly )
     {
 
         if (!p.createWidgets( parent, d, readOnly))
             return false;
-
-        if( parent->layout() == NULL)
-        {
-            new QHBoxLayout(parent);
-        }
-
 
         const char* name = vhelper::name();
         bool checkable = vhelper::isCheckable();
         if (checkable)
         {
             check = new QCheckBox(parent);
-            parent->layout()->add(check);
             if (name && *name)
             {
                 check->setText(QString(name));
@@ -123,7 +164,7 @@ public:
         {
             if (name && *name && N > 1)
             {
-                parent->layout()->add(new QLabel(QString(name),parent));
+                label = new QLabel(QString(name),parent);
             }
         }
         if (!w.createWidgets(parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
@@ -205,7 +246,24 @@ class struct_data_widget_container< T, 0 >
 public:
     typedef T data_type;
     typedef struct_data_trait<data_type> shelper;
-    struct_data_widget_container() {}
+    typedef QVBoxLayout MasterLayout;
+    typedef QHBoxLayout Layout ;
+    MasterLayout* master_layout;
+    Layout* container_layout;
+    struct_data_widget_container():master_layout(NULL),container_layout(NULL) {}
+
+    void setMasterLayout(MasterLayout* /*layout*/)
+    {
+    }
+
+    bool createLayout( DataWidget* /*parent*/ )
+    {
+    }
+
+    bool createLayout( QLayout* /*layout*/)
+    {
+    }
+
     bool createWidgets(DataWidget * /*parent*/, const data_type& /*d*/, bool /*readOnly*/)
     {
         return true;
@@ -220,6 +278,10 @@ public:
     {
     }
     void writeToData(data_type& /*d*/)
+    {
+    }
+
+    void insertWidgets()
     {
     }
 

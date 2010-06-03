@@ -114,9 +114,24 @@ public:
     typedef T data_type;
     typedef data_widget_trait<data_type> helper;
     typedef typename helper::Widget Widget;
+    typedef QHBoxLayout Layout;
     Widget* w;
+    Layout* container_layout;
+    data_widget_container() : w(NULL),container_layout(NULL) {  }
 
-    data_widget_container() : w(NULL) {  }
+    bool createLayout(DataWidget* parent)
+    {
+        if(parent->layout() != NULL) return false;
+        container_layout = new QHBoxLayout(parent);
+        return true;
+    }
+
+    bool createLayout(QLayout* layout)
+    {
+        if(container_layout) return false;
+        container_layout = new QHBoxLayout(layout);
+        return true;
+    }
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
@@ -128,16 +143,6 @@ public:
             w->setEnabled(false);
         else
             helper::connectChanged(w, parent);
-
-        if( parent->layout() != NULL)
-        {
-            parent->layout()->add(w);
-        }
-        else
-        {
-            QHBoxLayout* layout = new QHBoxLayout(parent);
-            layout->add(w);
-        }
         return true;
     }
     void setReadOnly(bool readOnly)
@@ -151,6 +156,12 @@ public:
     void writeToData(data_type& d)
     {
         helper::writeToData(w, d);
+    }
+
+    void insertWidgets()
+    {
+        assert(w);
+        container_layout->add(w);
     }
 };
 
@@ -175,6 +186,9 @@ public:
         const data_type& d = this->getData()->virtualGetValue();
         if (!container.createWidgets(this, d, ! this->isEnabled() ) )
             return false;
+
+        container.createLayout(this);
+        container.insertWidgets();
         return true;
     }
     virtual void readFromData()
@@ -392,18 +406,29 @@ public:
     typedef T data_type;
     typedef vector_data_trait<data_type> vhelper;
     typedef typename vhelper::value_type value_type;
+    typedef QHBoxLayout Layout;
     enum { N = vhelper::SIZE };
     Container w[N];
+    Layout* container_layout;
 
-    fixed_vector_data_widget_container() {}
+    fixed_vector_data_widget_container():container_layout(NULL) {}
+
+    bool createLayout(DataWidget* parent)
+    {
+        if(parent->layout() != NULL) return false;
+        container_layout = new QHBoxLayout(parent);
+        return true;
+    }
+
+    bool createLayout(QLayout* layout)
+    {
+        if(container_layout) return false;
+        container_layout = new QHBoxLayout(layout);
+        return true;
+    }
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
-        if( parent->layout() == NULL)
-        {
-            new QHBoxLayout(parent);
-        }
-
         for (int i=0; i<N; ++i)
             if (!w[i].createWidgets(parent, *vhelper::get(d,i), readOnly))
                 return false;
@@ -430,12 +455,22 @@ public:
             vhelper::set(v,d,i);
         }
     }
+
+    void insertWidgets()
+    {
+        for (int i=0; i<N; ++i)
+        {
+            assert(w[i].w != NULL);
+            container_layout->add(w[i].w);
+        }
+    }
 };
 
 template<class T, class Container = data_widget_container< typename vector_data_trait< typename vector_data_trait<T>::value_type >::value_type> >
 class fixed_grid_data_widget_container
 {
 public:
+
     typedef T data_type;
     typedef vector_data_trait<data_type> rhelper;
     typedef typename rhelper::value_type row_type;
@@ -443,16 +478,26 @@ public:
     typedef typename vhelper::value_type value_type;
     enum { L = rhelper::SIZE };
     enum { C = vhelper::SIZE };
-
+    typedef QGridLayout Layout;
     Container w[L][C];
-    fixed_grid_data_widget_container() {}
+    Layout* container_layout;
+    fixed_grid_data_widget_container():container_layout(NULL) {}
+
+    bool createLayout(QWidget* parent)
+    {
+        if( parent->layout() != NULL ) return false;
+        container_layout = new Layout(parent,L,C);
+        return true;
+    }
+    bool createLayout(QLayout* layout)
+    {
+        if(container_layout != NULL ) return false;
+        container_layout = new Layout(layout,L,C);
+        return true;
+    }
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
-        if( parent->layout() == NULL )
-        {
-            new QGridLayout(parent,L,C);
-        }
         for (int y=0; y<L; ++y)
             for (int x=0; x<C; ++x)
                 if (!w[y][x].createWidgets( parent, *vhelper::get(*rhelper::get(d,y),x), readOnly))
@@ -483,6 +528,18 @@ public:
                 vhelper::set(v,r,x);
             }
             rhelper::set(r,d,y);
+        }
+    }
+
+    void insertWidgets()
+    {
+        assert(container_layout);
+        for (int y=0; y<L; ++y)
+        {
+            for (int x=0; x<C; ++x)
+            {
+                container_layout->addWidget(w[y][x].w,y,x);
+            }
         }
     }
 };
