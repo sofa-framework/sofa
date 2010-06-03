@@ -286,7 +286,9 @@ public:
     Widget* w;
     GraphOptionWidget *options;
     Layout* container_layout;
-    graph_data_widget_container() : w(NULL), container_layout(NULL),options(NULL) {}
+
+
+    graph_data_widget_container() : w(NULL), options(NULL), container_layout(NULL) {}
 
 
     bool createLayout( DataWidget* parent )
