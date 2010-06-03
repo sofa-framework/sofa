@@ -78,7 +78,8 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
     M.compress();
 
     //remplir A avec M
-    n = M.colBSize();					// number of columns
+    n = M.colBSize();// number of columns
+
     A_p = M.getRowBegin();
     A_i = M.getColsIndex();
     A_x = M.getColsValue();
@@ -96,6 +97,7 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
     Lx.resize(Lp[n]);
     Li.resize(Lp[n]);
     ldl_numeric (n, &A_p[0], &A_i[0], &A_x[0], &Lp[0], &Parent[0], &Lnz[0], &Li[0], &Lx[0], &D[0], &Y[0], &Pattern[0], &Flag[0], NULL, NULL) ;
+
 }
 
 
