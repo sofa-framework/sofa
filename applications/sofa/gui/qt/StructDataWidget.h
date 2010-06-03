@@ -97,10 +97,9 @@ public:
     PrevContainer p;
     Container w;
     QCheckBox* check;
-    std::vector<QWidget*> qwidgetList;
-    MasterLayout* master_layout;
-    Layout* container_layout;
     QLabel* label;
+    Layout* container_layout;
+    MasterLayout* master_layout;
     struct_data_widget_container() : check(NULL),label(NULL),container_layout(NULL),master_layout(NULL) {}
 
     void setMasterLayout(MasterLayout* layout)
@@ -258,10 +257,12 @@ public:
 
     bool createLayout( DataWidget* /*parent*/ )
     {
+        return true;
     }
 
     bool createLayout( QLayout* /*layout*/)
     {
+        return true;
     }
 
     bool createWidgets(DataWidget * /*parent*/, const data_type& /*d*/, bool /*readOnly*/)

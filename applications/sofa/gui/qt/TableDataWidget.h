@@ -299,11 +299,12 @@ public:
     typedef typename vhelper::value_type value_type;
     typedef QVBoxLayout Layout;
 
-    Layout* container_layout;
     QSpinBox* wSize;
     QTableUpdater* wTable;
     QPushButtonUpdater* wDisplay;
     DataWidget * widget;
+    Layout* container_layout;
+
     int rows;
     int cols;
 
@@ -321,7 +322,7 @@ public:
     {
         if ( container_layout != NULL ) return false;
         container_layout = new Layout(layout);
-
+        return true;
     }
 
 
