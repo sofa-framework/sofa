@@ -282,22 +282,34 @@ class graph_data_widget_container
 public:
     typedef T data_type;
     typedef GraphWidget<T> Widget;
-
+    typedef QHBoxLayout Layout;
     Widget* w;
     GraphOptionWidget *options;
-    graph_data_widget_container() : w(NULL), options(NULL) {}
+    Layout* container_layout;
+    graph_data_widget_container() : w(NULL), container_layout(NULL),options(NULL) {}
 
+
+    bool createLayout( DataWidget* parent )
+    {
+        if( parent->layout() != NULL || container_layout != NULL )
+        {
+            return false;
+        }
+        container_layout = new QHBoxLayout(parent);
+        return true;
+    }
+
+    bool createLayout( QLayout* layout)
+    {
+        if ( container_layout != NULL ) return false;
+        container_layout = new QHBoxLayout(layout);
+        return true;
+    }
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool /*readOnly*/)
     {
-        QVBoxLayout* layout = new QVBoxLayout(parent);
-
         w = new Widget(parent);
-
         options = new GraphOptionWidget(parent->getBaseData()->getName(),w);
-
-        layout->add(w->getWidget());
-        layout->add(options);
         w->readFromData(d);
         return true;
     }
@@ -310,6 +322,13 @@ public:
     }
     void writeToData(data_type& /*d*/)
     {
+    }
+
+    void insertWidgets()
+    {
+        assert(container_layout);
+        container_layout->add(w->getWidget());
+        container_layout->add(options);
     }
 };
 
