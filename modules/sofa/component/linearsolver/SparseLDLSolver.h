@@ -35,6 +35,7 @@
 #include <ldl.h>
 
 #include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
 {
@@ -45,9 +46,17 @@ namespace component
 namespace linearsolver
 {
 
+class SparseLDLSolverInvertData : public defaulttype::MatrixInvertData
+{
+public :
+    int n;
+    helper::vector<double> A_x,Lx,D,Y;
+    helper::vector<int> A_i,A_p, Li,Lp,Parent,Lnz,Flag,Pattern;
+};
+
+
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector>
-
 class SparseLDLSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
 {
 public :
@@ -65,11 +74,6 @@ public:
     ~SparseLDLSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
-
-private :
-    int n;
-    helper::vector<double> A_x,Lx,D,Y;
-    helper::vector<int> A_i,A_p, Li,Lp,Parent,Lnz,Flag,Pattern;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_LINEARSOLVER)

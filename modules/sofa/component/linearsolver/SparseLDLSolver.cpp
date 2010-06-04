@@ -63,12 +63,16 @@ SparseLDLSolver<TMatrix,TVector>::~SparseLDLSolver() {}
 
 
 template<class TMatrix, class TVector>
-void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
+void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
     z = r;
-    ldl_lsolve (n, z.ptr(), &Lp[0], &Li[0], &Lx[0]) ;
-    ldl_dsolve (n, z.ptr(), &D[0]) ;
-    ldl_ltsolve (n, z.ptr(), &Lp[0], &Li[0], &Lx[0]) ;
+
+    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
+    if (data==NULL) return;
+
+    ldl_lsolve (data->n, z.ptr(), &data->Lp[0], &data->Li[0], &data->Lx[0]) ;
+    ldl_dsolve (data->n, z.ptr(), &data->D[0]) ;
+    ldl_ltsolve (data->n, z.ptr(), &data->Lp[0], &data->Li[0], &data->Lx[0]) ;
 
 }
 
@@ -77,26 +81,33 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     M.compress();
 
+    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
+    if (data==NULL)
+    {
+        M.setMatrixInvertData(new SparseLDLSolverInvertData());
+        data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
+    }
+
     //remplir A avec M
-    n = M.colBSize();// number of columns
+    data->n = M.colBSize();// number of columns
 
-    A_p = M.getRowBegin();
-    A_i = M.getColsIndex();
-    A_x = M.getColsValue();
+    data->A_p = M.getRowBegin();
+    data->A_i = M.getColsIndex();
+    data->A_x = M.getColsValue();
 
-    D.resize(n);
-    Y.resize(n);
-    Lp.resize(n+1);
-    Parent.resize(n);
-    Lnz.resize(n);
-    Flag.resize(n);
-    Pattern.resize(n);
+    data->D.resize(data->n);
+    data->Y.resize(data->n);
+    data->Lp.resize(data->n+1);
+    data->Parent.resize(data->n);
+    data->Lnz.resize(data->n);
+    data->Flag.resize(data->n);
+    data->Pattern.resize(data->n);
 
-    ldl_symbolic (n, &A_p[0], &A_i[0], &Lp[0], &Parent[0], &Lnz[0], &Flag[0], NULL, NULL) ;
+    ldl_symbolic (data->n, &data->A_p[0], &data->A_i[0], &data->Lp[0], &data->Parent[0], &data->Lnz[0], &data->Flag[0], NULL, NULL) ;
 
-    Lx.resize(Lp[n]);
-    Li.resize(Lp[n]);
-    ldl_numeric (n, &A_p[0], &A_i[0], &A_x[0], &Lp[0], &Parent[0], &Lnz[0], &Li[0], &Lx[0], &D[0], &Y[0], &Pattern[0], &Flag[0], NULL, NULL) ;
+    data->Lx.resize(data->Lp[data->n]);
+    data->Li.resize(data->Lp[data->n]);
+    ldl_numeric (data->n, &data->A_p[0], &data->A_i[0], &data->A_x[0], &data->Lp[0], &data->Parent[0], &data->Lnz[0], &data->Li[0], &data->Lx[0], &data->D[0], &data->Y[0], &data->Pattern[0], &data->Flag[0], NULL, NULL) ;
 
 }
 
