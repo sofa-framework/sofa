@@ -180,6 +180,7 @@ public:
     void endEdit()
     {
         updatePath();
+        Inherit::endEdit();
     }
 
     void setValue(const std::string& v)
