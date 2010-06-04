@@ -167,14 +167,18 @@ contains( DEFINES, SOFA_GUI_QGLVIEWER){
 contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
 
         SOURCES += viewer/qtogre/DotSceneLoader.cpp \
+                   viewer/qtogre/HelperLogics.cpp \
                    viewer/qtogre/QtOgreViewer.cpp\ 
                    viewer/qtogre/QtOgreViewer_slots.cpp\ 
                    viewer/qtogre/OgreVisualModel.cpp \
+                   viewer/qtogre/OgreShaderParameter.cpp \
                    viewer/qtogre/QOgreLightWidget.cpp
 			   
 	HEADERS += viewer/qtogre/DotSceneLoader.h \
-                   viewer/qtogre/QtOgreViewer.h \
-                   viewer/qtogre/OgreVisualModel.h \
-                   viewer/qtogre/QOgreLightWidget.h
+               viewer/qtogre/HelperLogics.h \
+               viewer/qtogre/QtOgreViewer.h \
+               viewer/qtogre/OgreVisualModel.h \
+               viewer/qtogre/OgreShaderParameter.h \
+               viewer/qtogre/QOgreLightWidget.h
                
 }
