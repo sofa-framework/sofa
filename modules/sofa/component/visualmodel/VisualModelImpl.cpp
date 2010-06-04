@@ -510,8 +510,9 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             }
             else
             {
-                setMesh(*objLoader,tex);
-                //setMesh(*objLoader,true);
+                //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
+                //setMesh(*objLoader,tex);
+                setMesh(*objLoader,true);
                 //sout << "VisualModel::load, vertices.size = "<< vertices.size() <<sendl;
             }
         }
