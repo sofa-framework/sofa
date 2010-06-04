@@ -93,6 +93,7 @@ public:
     void endEdit()
     {
         updatePath();
+        Inherit::endEdit();
     }
 
     void setValue(const std::string& v)
@@ -109,8 +110,22 @@ public:
     }
 
     virtual const std::string& getRelativePath() const { return getValue(); }
-    virtual const std::string& getFullPath() const { return fullpath; }
-    virtual const std::string& getAbsolutePath() const { return fullpath; }
+    virtual const std::string& getFullPath() const
+    {
+        this->updateIfDirty();
+        return fullpath;
+    }
+    virtual const std::string& getAbsolutePath() const
+    {
+        this->updateIfDirty();
+        return fullpath;
+    }
+
+    virtual void update()
+    {
+        this->Inherit::update();
+        this->updatePath();
+    }
 
 protected:
     void updatePath();
@@ -181,8 +196,22 @@ public:
     }
 
     virtual const std::string& getRelativePath(unsigned int i) { return getValue()[i]; }
-    virtual const std::string& getFullPath(unsigned int i) { return fullpath[i]; }
-    virtual const std::string& getAbsolutePath(unsigned int i) { return fullpath[i]; }
+    virtual const std::string& getFullPath(unsigned int i) const
+    {
+        this->updateIfDirty();
+        return fullpath[i];
+    }
+    virtual const std::string& getAbsolutePath(unsigned int i) const
+    {
+        this->updateIfDirty();
+        return fullpath[i];
+    }
+
+    virtual void update()
+    {
+        this->Inherit::update();
+        this->updatePath();
+    }
 
 protected:
     void updatePath();
