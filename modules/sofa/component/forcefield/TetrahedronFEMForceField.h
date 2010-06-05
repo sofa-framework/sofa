@@ -162,14 +162,16 @@ public:
 
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
     {
-        rotations->resize(_indexedElements->size()*3,_indexedElements->size()*3);
+        unsigned int nbdof = this->mstate->getX()->size();
+
+        rotations->resize(nbdof*3,nbdof*3);
         if (component::linearsolver::RotationMatrix<Real> * diag = dynamic_cast<component::linearsolver::RotationMatrix<Real> *>(rotations))
         {
-            for (unsigned int i=0; i<_indexedElements->size(); ++i) getRotation(*(Transformation*)&(diag->getVector()[i*9]),i);
+            for (unsigned int i=0; i<nbdof; ++i) getRotation(*(Transformation*)&(diag->getVector()[i*9]),i);
         }
         else
         {
-            for (unsigned int i=0; i<_indexedElements->size(); ++i)
+            for (unsigned int i=0; i<nbdof; ++i)
             {
                 Transformation t;
                 getRotation(t,i);

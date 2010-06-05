@@ -25,14 +25,8 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/SparseLDLSolver.h>
+#include <sofa/component/linearsolver/SparseLDLSolver.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <math.h>
-#include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa
 {
@@ -42,75 +36,6 @@ namespace component
 
 namespace linearsolver
 {
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
-
-template<class TMatrix, class TVector>
-SparseLDLSolver<TMatrix,TVector>::SparseLDLSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-{
-}
-
-template<class TMatrix, class TVector>
-SparseLDLSolver<TMatrix,TVector>::~SparseLDLSolver() {}
-
-
-template<class TMatrix, class TVector>
-void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
-{
-    z = r;
-
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL) return;
-
-    ldl_lsolve (data->n, z.ptr(), &data->Lp[0], &data->Li[0], &data->Lx[0]) ;
-    ldl_dsolve (data->n, z.ptr(), &data->D[0]) ;
-    ldl_ltsolve (data->n, z.ptr(), &data->Lp[0], &data->Li[0], &data->Lx[0]) ;
-
-}
-
-template<class TMatrix, class TVector>
-void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
-{
-    M.compress();
-
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        M.setMatrixInvertData(new SparseLDLSolverInvertData());
-        data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
-    }
-
-    //remplir A avec M
-    data->n = M.colBSize();// number of columns
-
-    data->A_p = M.getRowBegin();
-    data->A_i = M.getColsIndex();
-    data->A_x = M.getColsValue();
-
-    data->D.resize(data->n);
-    data->Y.resize(data->n);
-    data->Lp.resize(data->n+1);
-    data->Parent.resize(data->n);
-    data->Lnz.resize(data->n);
-    data->Flag.resize(data->n);
-    data->Pattern.resize(data->n);
-
-    ldl_symbolic (data->n, &data->A_p[0], &data->A_i[0], &data->Lp[0], &data->Parent[0], &data->Lnz[0], &data->Flag[0], NULL, NULL) ;
-
-    data->Lx.resize(data->Lp[data->n]);
-    data->Li.resize(data->Lp[data->n]);
-    ldl_numeric (data->n, &data->A_p[0], &data->A_i[0], &data->A_x[0], &data->Lp[0], &data->Parent[0], &data->Lnz[0], &data->Li[0], &data->Lx[0], &data->D[0], &data->Y[0], &data->Pattern[0], &data->Flag[0], NULL, NULL) ;
-
-}
-
 
 SOFA_DECL_CLASS(SparseLDLSolver)
 

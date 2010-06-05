@@ -74,6 +74,24 @@ public:
     ~SparseLDLSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
+
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const SparseLDLSolver<TMatrix,TVector>* = NULL)
+    {
+        return TVector::Name();
+    }
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_LINEARSOLVER)

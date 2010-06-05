@@ -162,6 +162,7 @@ HEADERS += \
 	   	CudaUnilateralInteractionConstraint.h \
 		CudaBlockJacobiPreconditioner.h \
 	   	CudaPrecomputedWarpPreconditioner.h \		
+	        CudaParallelMatrixLinearSolver.h \
 		CudaWarpPreconditioner.h \
 		CudaJacobiPreconditioner.h \
         CudaTetrahedronTLEDForceField.h \
@@ -235,7 +236,8 @@ contains(DEFINES,SOFA_HAVE_CSPARSE){
 	HEADERS += \
 		  CudaPrecomputedLinearSolver.h			
 	SOURCES += \	
-		  CudaPrecomputedLinearSolver.cpp
+		  CudaPrecomputedLinearSolver.cpp \
+		  CudaSparseLDLSolver.cpp
 
 	contains(DEFINES,SOFA_HAVE_BOOST){
 		  HEADERS += \
