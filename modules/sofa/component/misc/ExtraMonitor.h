@@ -71,15 +71,19 @@ public:
     Data< bool > saveWextToGnuplot;
 
     /// to compute the forces resultant on the monitored dof
-    /// used only if saveFToGnuplot is set to true
+    /// used only if saveFToGnuplot is set to true (ExportForces)
     Data< bool > resultantF;
 
     /// to get the minimum displacement of the monitored dof on a given coordinate
-    /// used only if savePToGnuplot is set to true
+    /// used only if savePToGnuplot is set to true (ExportPositions)
     Data< int > minX;
     /// to get the maximum displacement of the monitored dof on a given coordinate
-    /// used only if savePToGnuplot is set to true
+    /// used only if savePToGnuplot is set to true (ExportPositions)
     Data< int > maxX;
+
+    /// to get the displacement of the set of dofs on a given coordinate
+    /// used only if savePToGnuplot is set to true (ExportPositions)
+    Data< int > disp;
 
 protected:
     std::ofstream* saveGnuplotWcin;
@@ -91,6 +95,8 @@ protected:
     /// the two versions are for the case we set minX != maxX
     sofa::helper::vector< Real > initialMaxPos;
 
+    /// store the initial position on the considered coordinate for the monitored dofs
+    sofa::helper::vector< Real > initialPos;
 };
 
 } // namespace misc

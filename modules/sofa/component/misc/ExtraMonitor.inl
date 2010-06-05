@@ -62,6 +62,7 @@ ExtraMonitor<DataTypes>::ExtraMonitor()
     , resultantF( initData( &resultantF, true, "resultantF", "export force resultant of the monitored dofs as gnuplot file instead of all dofs") )
     , minX( initData( &minX, -1, "minCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
     , maxX( initData( &maxX, -1, "maxCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
+    , disp( initData( &disp, -1, "dispCoord", "export displacement on the given coordinate as gnuplot file" ) )
 {
 }
 /////////////////////////// end Monitor ///////////////////////////////////
@@ -83,8 +84,12 @@ void ExtraMonitor<DataTypes>::init()
         for(unsigned i=0; i<this->indices.getValue().size(); i++)
             initialMaxPos[i] = (*this->X)[this->indices.getValue()[i]][maxX.getValue()];
     }
-    std::cout<<"maxX.getValue() = "<<maxX.getValue()<<std::endl;
-    std::cout<<"minX.getValue() = "<<minX.getValue()<<std::endl;
+    if (disp.getValue() != -1)
+    {
+        initialPos.resize(this->indices.getValue().size());
+        for(unsigned i=0; i<this->indices.getValue().size(); i++)
+            initialPos[i] = (*this->X)[this->indices.getValue()[i]][disp.getValue()];
+    }
 }
 ///////////////////////////// end init () /////////////////////////////////
 
@@ -100,8 +105,15 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
             this->saveGnuplotX = new std::ofstream ( ( path + this->getName() +"_x.txt" ).c_str() );
             if (minX.getValue() == -1 && maxX.getValue() == -1)
             {
-                ( *this->saveGnuplotX ) << "# Gnuplot File : positions of "
-                        << this->indices.getValue().size() << " particle(s) Monitored"
+                if (disp.getValue() == -1)
+                {
+                    ( *this->saveGnuplotX ) << "# Gnuplot File : positions of ";
+                }
+                else
+                {
+                    ( *this->saveGnuplotX ) << "# Gnuplot File : displacement of ";
+                }
+                ( *this->saveGnuplotX )<< this->indices.getValue().size() << " particle(s) Monitored"
                         <<  endl;
                 ( *this->saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
 
@@ -221,8 +233,16 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
 
         if ((minX.getValue() == -1) && (maxX.getValue() == -1))
         {
-            for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                ( *this->saveGnuplotX ) << (*this->X)[this->indices.getValue()[i]] << "\t";
+            if (disp.getValue() == -1)
+            {
+                for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
+                    ( *this->saveGnuplotX ) << (*this->X)[this->indices.getValue()[i]] << "\t";
+            }
+            else
+            {
+                for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
+                    ( *this->saveGnuplotX ) << (*this->X)[this->indices.getValue()[i]][disp.getValue()] - initialPos[i]<< "\t";
+            }
             ( *this->saveGnuplotX ) << endl;
         }
         else
