@@ -172,6 +172,7 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
                    viewer/qtogre/QtOgreViewer_slots.cpp\ 
                    viewer/qtogre/OgreVisualModel.cpp \
                    viewer/qtogre/OgreShaderParameter.cpp \
+                   viewer/qtogre/OgreShaderTextureUnit.cpp \
                    viewer/qtogre/QOgreLightWidget.cpp
 			   
 	HEADERS += viewer/qtogre/DotSceneLoader.h \
@@ -179,6 +180,7 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
                viewer/qtogre/QtOgreViewer.h \
                viewer/qtogre/OgreVisualModel.h \
                viewer/qtogre/OgreShaderParameter.h \
+               viewer/qtogre/OgreShaderTextureUnit.h \
                viewer/qtogre/QOgreLightWidget.h
                
 }
