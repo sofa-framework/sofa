@@ -75,6 +75,13 @@ template<>
 void SPHFluidForceFieldInternalData<gpu::opencl::OpenCLVec3fTypes>::Kernels_addForce(int gsize, const _device_pointer cells, const _device_pointer cellGhost,_device_pointer f, const _device_pointer pos4, const _device_pointer v)
 {
     SPHFluidForceFieldOpenCL3f_addForce (gsize, cells, cellGhost, &params, f, pos4, v);
+
+    /*	float posx[3000];
+    	gpu::opencl::myopenclEnqueueReadBuffer(0,posx,f.m,f.offset,3000*sizeof(float));
+    	std::cout << "\n###" << gsize << "\n";
+    	for(int i=0;i<3000;i++){std::cout << posx[i];if(i%1024==1023)std::cout<<"\n";else std::cout<<";";}
+    	std::cout << "\n\n";
+    	exit(0);*/
 }
 
 template<>
