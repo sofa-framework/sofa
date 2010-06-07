@@ -323,6 +323,7 @@ public:
     }
 
 
+    VecReal vecTmpRotation;
 };
 
 //
