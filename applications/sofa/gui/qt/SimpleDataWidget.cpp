@@ -92,6 +92,19 @@ Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<unsigned int,6> > > DWC
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<int,8> > > DWClass_fixed_array8i("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<unsigned int,8> > > DWClass_fixed_array8u("default",true);
 
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,1> > > DWClass_fixed_array1f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,1> > > DWClass_fixed_array1d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,2> > > DWClass_fixed_array2f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,2> > > DWClass_fixed_array2d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,3> > > DWClass_fixed_array3f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,3> > > DWClass_fixed_array3d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,4> > > DWClass_fixed_array4f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,4> > > DWClass_fixed_array4d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,6> > > DWClass_fixed_array6f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,6> > > DWClass_fixed_array6d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,8> > > DWClass_fixed_array8f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,8> > > DWClass_fixed_array8d("default",true);
+
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<float> > > DWClass_Quatf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DWClass_Quatd("default",true);
 
