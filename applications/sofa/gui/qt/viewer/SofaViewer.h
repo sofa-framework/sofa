@@ -73,7 +73,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/visualmodel/Camera.h>
+#include <sofa/component/visualmodel/InteractiveCamera.h>
 
 #ifdef SOFA_QT4
 #include <QEvent>
@@ -144,7 +144,7 @@ public:
     }
     ;
 
-    virtual void setCameraMode(component::visualmodel::Camera::CameraType mode)
+    virtual void setCameraMode(component::visualmodel::BaseCamera::CameraType mode)
     {
         currentCamera->setCameraType(mode);
     }
@@ -178,7 +178,7 @@ public:
             groot->get(currentCamera);
             if (!currentCamera)
             {
-                currentCamera = new component::visualmodel::Camera();
+                currentCamera = new component::visualmodel::InteractiveCamera();
                 //std::cout << "Create Default Camera" << std::endl;
             }
             //else std::cout << "Find a Camera" << std::endl;
@@ -201,10 +201,10 @@ public:
     //Allow to configure your viewer using the Sofa Component, ViewerSetting
     virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf)
     {
-        if (viewerConf->getCameraModeId() == component::visualmodel::Camera::ORTHOGRAPHIC_TYPE)
-            setCameraMode(component::visualmodel::Camera::ORTHOGRAPHIC_TYPE);
+        if (viewerConf->getCameraModeId() == component::visualmodel::BaseCamera::ORTHOGRAPHIC_TYPE)
+            setCameraMode(component::visualmodel::BaseCamera::ORTHOGRAPHIC_TYPE);
         else
-            setCameraMode(component::visualmodel::Camera::PERSPECTIVE_TYPE);
+            setCameraMode(component::visualmodel::BaseCamera::PERSPECTIVE_TYPE);
     }
 
     //Fonctions needed to take a screenshot
@@ -229,12 +229,12 @@ public:
         if (!currentCamera)
             return;
 
-        const Vec3d& lookat = currentCamera->getLookAt();
+        const Vec3d& camPosition = currentCamera->getPosition();
         const Quat& camOrientation = currentCamera->getOrientation();
 
-        pos[0] = lookat[0];
-        pos[1] = lookat[1];
-        pos[2] = lookat[2];
+        pos[0] = camPosition[0];
+        pos[1] = camPosition[1];
+        pos[2] = camPosition[2];
 
         ori[0] = camOrientation[0];
         ori[1] = camOrientation[1];
@@ -257,7 +257,6 @@ public:
             currentCamera->setView(position, orientation);
 
         getQWidget()->update();
-
     }
 
     virtual void moveView(const Vec3d& pos, const Quat &ori)
@@ -318,10 +317,10 @@ protected:
         {
         case Qt::Key_T:
         {
-            if (currentCamera->getCameraType() == component::visualmodel::Camera::ORTHOGRAPHIC_TYPE)
-                setCameraMode(component::visualmodel::Camera::PERSPECTIVE_TYPE);
+            if (currentCamera->getCameraType() == component::visualmodel::BaseCamera::ORTHOGRAPHIC_TYPE)
+                setCameraMode(component::visualmodel::BaseCamera::PERSPECTIVE_TYPE);
             else
-                setCameraMode(component::visualmodel::Camera::ORTHOGRAPHIC_TYPE);
+                setCameraMode(component::visualmodel::BaseCamera::ORTHOGRAPHIC_TYPE);
             break;
         }
         case Qt::Key_Shift:
@@ -861,7 +860,7 @@ protected:
     virtual void resizeH(int)=0;
 
 protected:
-    sofa::component::visualmodel::Camera* currentCamera;
+    sofa::component::visualmodel::BaseCamera* currentCamera;
 
 };
 }

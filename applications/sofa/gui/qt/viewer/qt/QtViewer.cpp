@@ -758,9 +758,24 @@ void QtViewer::DrawScene(void)
         DrawLogo();
 
     glLoadIdentity();
-    visualParameters.sceneTransform.Apply();
+
+    //visualParameters.sceneTransform.Apply();
+    GLdouble mat[16];
+    //currentCamera->getOpenGLModelViewMatrix(mat);
+    currentCamera->getOpenGLMatrix(mat);
+    glMultMatrixd(mat);
 
     glGetDoublev(GL_MODELVIEW_MATRIX, lastModelviewMatrix);
+
+    //for(int i=0 ; i<16 ;i++)
+    //	std::cout << lastModelviewMatrix[i] << " ";
+//
+//	std::cout << std::endl;
+
+    //Vec position() const { return inverseCoordinatesOf(Vec(0.0,0.0,0.0)); };
+
+    //std::cout << "P " << currentCamera->getPosition() << std::endl;
+
 
     if(currentCamera)
     {
@@ -852,16 +867,18 @@ void QtViewer::calcProjection()
     /// Camera part
     if (!currentCamera)
         return;
+    /*
+    	const Vec3d& camPosition = currentCamera->getPosition();
+    	const Quat& camOrientation = currentCamera->getOrientation();
 
-    const Vec3d& camPosition = currentCamera->getLookAt();
-    const Quat& camOrientation = currentCamera->getOrientation();
+    	//std::cout << camPosition << std::endl;
 
-    visualParameters.sceneTransform.translation[0] = camPosition[0];
-    visualParameters.sceneTransform.translation[1] = camPosition[1];
-    visualParameters.sceneTransform.translation[2] = camPosition[2];
+    	visualParameters.sceneTransform.translation[0] = -camPosition[0];
+    	visualParameters.sceneTransform.translation[1] = -camPosition[1];
+    	visualParameters.sceneTransform.translation[2] = -camPosition[2];
 
-    camOrientation.buildRotationMatrix(visualParameters.sceneTransform.rotation);
-
+    	camOrientation.buildRotationMatrix(visualParameters.sceneTransform.rotation);
+    */
     if (groot && (!sceneBBoxIsValid || _axis))
     {
         getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(),
@@ -918,7 +935,7 @@ void QtViewer::calcProjection()
     zForeground = -visualParameters.zNear - offset;
     zBackground = -visualParameters.zFar + offset;
 
-    if (currentCamera->getCameraType() == component::visualmodel::Camera::PERSPECTIVE_TYPE)
+    if (currentCamera->getCameraType() == component::visualmodel::BaseCamera::PERSPECTIVE_TYPE)
         gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, visualParameters.zNear, visualParameters.zFar);
     else
     {
