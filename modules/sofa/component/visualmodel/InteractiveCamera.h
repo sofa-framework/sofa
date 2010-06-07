@@ -12,7 +12,7 @@ namespace component
 namespace visualmodel
 {
 
-class InteractiveCamera : public BaseCamera
+class SOFA_COMPONENT_VISUALMODEL_API InteractiveCamera : public BaseCamera
 {
 public:
     SOFA_CLASS(InteractiveCamera, BaseCamera);
