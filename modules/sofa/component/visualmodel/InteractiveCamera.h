@@ -18,9 +18,11 @@ public:
     SOFA_CLASS(InteractiveCamera, BaseCamera);
 
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
+    enum  { SCENE_CENTER_PIVOT = 0, WORLD_CENTER_PIVOT = 1};
 
     Data<double> p_zoomSpeed;
     Data<double> p_panSpeed;
+    Data<int> p_pivot;
 
     InteractiveCamera();
     virtual ~InteractiveCamera();

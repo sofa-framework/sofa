@@ -21,6 +21,7 @@ int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
 InteractiveCamera::InteractiveCamera()
     :p_zoomSpeed(initData(&p_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))
     ,p_panSpeed(initData(&p_panSpeed, (double) 0.1 , "panSpeed", "Pan Speed"))
+    ,p_pivot(initData(&p_pivot, 0 , "pivot", "Pivot (0 => Scene center, 1 => World Center"))
     ,currentMode(InteractiveCamera::NONE_MODE)
     ,isMoving(false)
 {
@@ -54,10 +55,18 @@ void InteractiveCamera::moveCamera(int x, int y)
             currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
             //fetch rotation
             newQuat = currentTrackball.GetQuaternion();
-
-            Vec3 pivot = Vec3(0.0, 0.0, 0.0);
+            Vec3 pivot;
+            switch (p_pivot.getValue())
+            {
+            case WORLD_CENTER_PIVOT:
+                pivot = Vec3(0.0, 0.0, 0.0);
+                break;
+            case SCENE_CENTER_PIVOT :
+            default:
+                pivot = sceneCenter;
+                break;
+            }
             //pivot = p_lookAt.getValue();
-            pivot = sceneCenter;
             //pivot = (Vec3(x,y, p_distance.getValue()));
             //std::cout << "Pivot : " <<  pivot << std::endl;
             //rotateCameraAroundPoint(newQuat, pivot);
