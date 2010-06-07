@@ -49,6 +49,16 @@ FrameBufferObject::FrameBufferObject()
 
 }
 
+FrameBufferObject::FrameBufferObject(const FrameBufferObjectFormat& FboFormat)
+    :width(0)
+    ,height(0)
+    ,depthTexture(0)
+    ,initialized(false)
+    ,fboFormat(FboFormat)
+{
+}
+
+
 FrameBufferObject::~FrameBufferObject()
 {
     destroy();
@@ -180,7 +190,7 @@ void FrameBufferObject::initDepthBuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0,GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, fboFormat.depthInternalformat , width, height, 0,GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -193,12 +203,10 @@ void FrameBufferObject::initColorBuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,  width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, fboFormat.colorInternalformat,  width, height, 0, fboFormat.colorFormat, fboFormat.colorType, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
 }
-
-
 
 } //gl
 

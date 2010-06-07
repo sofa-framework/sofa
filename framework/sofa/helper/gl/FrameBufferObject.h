@@ -44,6 +44,22 @@ namespace helper
 namespace gl
 {
 
+struct SOFA_HELPER_API FrameBufferObjectFormat
+{
+    GLint  depthInternalformat; // GL_DEPTHCOMPONENT16 GL_DEPTHCOMPONENT24...
+    GLint  colorInternalformat; // GL_RGB8, GL_RGB16...
+    GLenum colorFormat; // GL_RGB, GL_RGBA, GL_BGR...
+    GLenum colorType; // GL_UNSIGNED_BYTE GL_UNSIGNED_INT...
+
+    FrameBufferObjectFormat()
+    {
+        depthInternalformat = GL_DEPTH_COMPONENT24;
+        colorInternalformat = GL_RGBA8;
+        colorFormat = GL_RGBA;
+        colorType = GL_UNSIGNED_BYTE;
+    }
+};
+
 class SOFA_HELPER_API FrameBufferObject
 {
 
@@ -52,8 +68,10 @@ private:
     GLuint id;
     GLuint depthTexture, colorTexture;
     bool initialized;
+    FrameBufferObjectFormat fboFormat;
 public:
     FrameBufferObject();
+    FrameBufferObject(const FrameBufferObjectFormat& FboFormat);
     virtual ~FrameBufferObject();
 
     void init(unsigned int width, unsigned height);
