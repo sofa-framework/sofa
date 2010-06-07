@@ -1,14 +1,14 @@
-#ifndef CPUSORTWITHOPENCL_H
-#define CPUSORTWITHOPENCL_H
+#ifndef CPUSORTWITHCUDA_H
+#define CPUSORTWITHCUDA_H
 
-#include "../myopencl.h"
+#include "../../cuda/mycuda.h"
 #include <vector>
 
 
 
 
 template <class T>
-class CPUSortWithOpenCL
+class CPUSortWithCuda
 {
 private:
 
@@ -21,16 +21,14 @@ private:
     typedef std::vector< Element > Vectorsort;
 
 public:
-    static void sort(_device_pointer &keys,_device_pointer &values,int numElements)
+    static void sort(void * keys,void * values,int numElements)
     {
         T* valueVector = new T[numElements];
         int *keyVector = new int[numElements];
         Vectorsort vecsort;
 
-        std::cout << "CPUSort values:" <<values.offset << "\nkeys"<< keys.offset <<"\n";
-
-        sofa::gpu::opencl::myopenclEnqueueReadBuffer(0,valueVector,values.m,values.offset,numElements*sizeof(T));
-        sofa::gpu::opencl::myopenclEnqueueReadBuffer(0,keyVector,keys.m,keys.offset,numElements*sizeof(int));
+        sofa::gpu::cuda::mycudaMemcpyDeviceToHost(valueVector,values,numElements*sizeof(T),0);
+        sofa::gpu::cuda::mycudaMemcpyDeviceToHost(keyVector,keys,numElements*sizeof(int),0);
 
         for(int i=0; i<numElements; i++)
         {
@@ -53,12 +51,12 @@ public:
             valueVector[j] = vecsort[j].value;
         }
 
-        sofa::gpu::opencl::myopenclEnqueueWriteBuffer(0,values.m,values.offset,valueVector,numElements*sizeof(T));
-        sofa::gpu::opencl::myopenclEnqueueWriteBuffer(0,keys.m,keys.offset,keyVector,numElements*sizeof(int));
+        sofa::gpu::cuda::mycudaMemcpyHostToDevice(values,valueVector,numElements*sizeof(T),0);
+        sofa::gpu::cuda::mycudaMemcpyHostToDevice(keys,keyVector,numElements*sizeof(int),0);
     }
 
 private:
     static bool compare(Element e1,Element e2) {return (e1.key<e2.key);}
 };
 
-#endif // CPUSORTWITHOPENCL_H
+#endif // CPUSORTWITHCUDA_H

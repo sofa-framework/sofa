@@ -240,7 +240,7 @@ inline Real SPHFluidCalcDensity(Real4 x1, Real4 x2, Real density, GPUSPHFluid* p
 {
     Real4 n = x2-x1;
 //	Real d2;
-    Real d2 = native_sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+    Real d2 = n.x*n.x+n.y*n.y+n.z*n.z;
     if (d2 < params->h2)
     {
         //Real r_h = rsqrtf(params->h2/d2);
@@ -275,6 +275,8 @@ __kernel void SPHFluidForceField_computeDensity(
     __local int range_x, range_y;
     __local int ghost;
     __local Real temp_x[BSIZE*3];
+
+    float test0=0,test1=0,test2=0,test3=0;
 
     int tx3 = get_local_id(0)*3;
 
@@ -336,10 +338,15 @@ __kernel void SPHFluidForceField_computeDensity(
             {
                 if (py0 == px0) continue;
                 int py = py0 + get_local_id(0);
+
                 if (py < range_y)
                 {
                     int index2 = cells[py];
-                    Real4 xj = (Real4)(x[3*index2],x[3*index2+1],x[3*index2+1],0);
+
+                    Real4 xj = (Real4)(x[3*index2],x[3*index2+1],x[3*index2+2],0);
+//test0+=xj.x;
+//test1+=xj.y;
+//test2+=xj.z;
                     temp_x[tx3  ] = xj.x;
                     temp_x[tx3+1] = xj.y;
                     temp_x[tx3+2] = xj.z;
@@ -351,6 +358,7 @@ __kernel void SPHFluidForceField_computeDensity(
                 {
                     // actual particle -> compute interactions
                     int np = min(range_y-py0,BSIZE);
+
                     for (int i=0; i < np; ++i)
                     {
                         Real4 tempx = (Real4)(temp_x[i*3],temp_x[i*3+1],temp_x[i*3+2],0);
@@ -359,11 +367,13 @@ __kernel void SPHFluidForceField_computeDensity(
                 }
                 barrier(CLK_LOCAL_MEM_FENCE);
             }
+
             if (px < ghost)
             {
                 // actual particle -> write computed density
                 density = SPHFluidFinalDensity(xi, density, &params);
                 Real4 res = (Real4)(xi.x,xi.y,xi.z,density);
+//Real4 res = (Real4)(test0,test1,test2,test3);
                 pos4[index] = res;
             }
         }
@@ -377,7 +387,7 @@ __kernel void SPHFluidForceField_computeDensity(
 inline Real4 SPHFluidCalcForce(Real4 x1, Real4 v1, Real4 x2, Real4 v2, __private Real4 force, GPUSPHFluid* params)
 {
     Real4 n = (Real4)(x2.x-x1.x,x2.y-x1.y,x2.z-x1.z,0);
-    Real d2 = native_sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+    Real d2 = n.x*n.x+n.y*n.y+n.z*n.z;
     if (d2 < params->h2)
     {
         //Real r_h = rsqrtf(params->h2/d2);
@@ -393,16 +403,11 @@ inline Real4 SPHFluidCalcForce(Real4 x1, Real4 v1, Real4 x2, Real4 v2, __private
         Real4 f1 = gradWp(n, r_h, params->CgradWp) * ( params->mass2 * (pressure1 / (density1*density1) + pressure2 / (density2*density2) ));
 
         // Viscosity
-        Real4 f2 = ( v2 - v1 ) * ( (params->mass2 * params->viscosity * laplacianWv(r_h,params->ClaplacianWv)) / (density1 * density2) );
+        Real4 f2 = ( v2 - v1 ) * (params->mass2 * params->viscosity * laplacianWv(r_h,params->ClaplacianWv) / (density1 * density2) );
 
-        Real f1x = f1.x;
-        Real f2x = f2.x;
-
-        params->CgradWp += f1.x+f2.x;
-        //(*force).x += f1.x;
-        return f1+f2;
+        return f1+f2+force;
     }
-    return (Real4)(0,0,0,0);
+    return force; //(Real4)(0,0,0,0);
 }
 
 __kernel void SPHFluidForceField_addForce(
@@ -462,7 +467,9 @@ __kernel void SPHFluidForceField_addForce(
                 for (int i=0; i < np; ++i)
                 {
                     if (i != get_local_id(0))
-                        force += SPHFluidCalcForce(xi, vi, temp_x[i], temp_v[i], force, &params);	//template: surface
+                    {
+                        force = SPHFluidCalcForce(xi, vi, temp_x[i], temp_v[i], force, &params);	//template: surface
+                    }
                 }
             }
 
@@ -490,7 +497,7 @@ __kernel void SPHFluidForceField_addForce(
                     int np = min(range_y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
-                        force += SPHFluidCalcForce(xi, vi, temp_x[i], temp_v[i], force, &params);
+                        force = SPHFluidCalcForce(xi, vi, temp_x[i], temp_v[i], force, &params);
                     }
                 }
 
@@ -499,9 +506,9 @@ __kernel void SPHFluidForceField_addForce(
             if (px < ghost)
             {
                 // actual particle -> write computed force
-                f[index*3]   += force.x/100;
-                f[index*3+1] += force.y/100;
-                f[index*3+2] += force.z/100;
+                f[index*3]   += force.x;
+                f[index*3+1] += force.y;
+                f[index*3+2] += force.z;
             }
         }
     }

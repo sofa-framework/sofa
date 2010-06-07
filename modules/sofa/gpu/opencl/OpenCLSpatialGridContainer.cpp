@@ -162,6 +162,14 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     SpatialGridContainer_CreateProgramWithFloat();
 
+    /*	float posx[nbPoints*3];
+    	opencl::myopenclEnqueueReadBuffer(0,posx,x.m,0,nbPoints*3*sizeof(float));
+    	std::cout << "\n###" << nbPoints << "\n";
+    	for(int i=0;i<nbPoints*3;i++)std::cout << posx[i] << ";";
+    	std::cout << "\n\n";*/
+
+//	exit(0);
+
     GridParams p;
     p.cellWidth = cellWidth;
     p.invCellWidth = 1.0f/cellWidth;
@@ -169,12 +177,12 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
     p.halfCellWidth = cellWidth*0.5f;
     p.invHalfCellWidth = 2.0f/cellWidth;
 
-    std::cout << "p.cellWidth:" << p.cellWidth << "\tp.invCellWidth:" << p.invCellWidth << "\tp.cellMask:" << p.cellMask << "\tp.halfCellWidth:" << p.halfCellWidth << "\tp.invHalfCellWidth:" << p.invHalfCellWidth << "\n";
-    float d1[30];
-    opencl::myopenclEnqueueReadBuffer(0,d1,x.m,x.offset,30*sizeof(float));
-    std::cout << "x =(";
-    for(int i=0; i<30; i++) {if(i%3==0 && i)std::cout<<")    ( "; std::cout << d1[i] << " ";}
-    std::cout << ")\n";
+    /*	std::cout << "p.cellWidth:" << p.cellWidth << "\tp.invCellWidth:" << p.invCellWidth << "\tp.cellMask:" << p.cellMask << "\tp.halfCellWidth:" << p.halfCellWidth << "\tp.invHalfCellWidth:" << p.invHalfCellWidth << "\n";
+    	float d1[30];
+    	opencl::myopenclEnqueueReadBuffer(0,d1,x.m,x.offset,30*sizeof(float));
+    	std::cout << "x =(";
+    	for(int i=0;i<30;i++){if(i%3==0 && i)std::cout<<")    ( "; std::cout << d1[i] << " ";}
+    	std::cout << ")\n";*/
 
 
     if(SpatialGridContainer3f_computeHash_kernel==NULL)SpatialGridContainer3f_computeHash_kernel
@@ -197,13 +205,25 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
 
     SpatialGridContainer3f_computeHash_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
+    /*	float pos[nbPoints*3];
+    	opencl::myopenclEnqueueReadBuffer(0,pos,x.m,0,nbPoints*3*sizeof(float));
+    	std::cout << "\n###" << nbPoints << "\n";
+    	for(int i=0;i<nbPoints*3;i++){std::cout << pos[i];if(i%1024==1023)std::cout<<"\n";else std::cout<<";";}
+    	std::cout << "\n\n";
+
+    	int posx[nbPoints*8];
+    	opencl::myopenclEnqueueReadBuffer(0,posx,particleIndex8.m,particleIndex8.offset,nbPoints*8*sizeof(int));
+    	std::cout << "\n###" << nbPoints << "\n";
+    	for(int i=0;i<nbPoints*8;i++){std::cout << posx[i];if(i%1024==1023)std::cout<<"\n";else std::cout<<";";}
+    	std::cout << "\n\n";
+    	exit(0);*/
 
 
 
-    opencl::myopenclEnqueueReadBuffer(0,d1,x.m,x.offset,30*sizeof(float));
-    std::cout << "x =(";
-    for(int i=0; i<30; i++) {if(i%3==0 && i)std::cout<<")    ( "; std::cout << d1[i] << " ";}
-    std::cout << ")\n";
+    /*	opencl::myopenclEnqueueReadBuffer(0,d1,x.m,x.offset,30*sizeof(float));
+    	std::cout << "x =(";
+    	for(int i=0;i<30;i++){if(i%3==0 && i)std::cout<<")    ( "; std::cout << d1[i] << " ";}
+    	std::cout << ")\n";*/
 
 
 
@@ -220,6 +240,7 @@ void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidt
     std::cout << index0;
 
     opencl::myopenclMemsetDevice(0,cellRange, 0, ((1<<cellBits)+1)*sizeof(int));
+    opencl::myopenclMemsetDevice(0,cellGhost, 0, ((1<<cellBits))*sizeof(int));
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     SpatialGridContainer_CreateProgramWithFloat();
