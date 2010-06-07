@@ -20,7 +20,7 @@ SOFA_DECL_CLASS(IndexValueMapper)
 
 int IndexValueMapperClass = core::RegisterObject("?")
 #ifndef SOFA_FLOAT
-        .add< IndexValueMapper<Vec3dTypes> >()
+        .add< IndexValueMapper<Vec3dTypes> >(true)
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< IndexValueMapper<Vec3fTypes> >()
