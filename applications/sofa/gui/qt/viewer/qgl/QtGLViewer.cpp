@@ -764,7 +764,16 @@ void QtGLViewer::DrawScene(void)
 
 
     camera()->getModelViewMatrix( lastModelviewMatrix );
+    //camera()->frame()->getMatrix( lastModelviewMatrix );
 
+    //for(int i=0 ; i<16 ;i++)
+    //	std::cout << lastModelviewMatrix[i] << " ";
+//
+    //std::cout << std::endl;
+    //std::cout << "P " << camera()->position().x << " " << camera()->position().y << " " << camera()->position().z << " " << std::endl;
+    //std::cout << "T " << camera()->frame()->translation().x << " " << camera()->frame()->translation().y << " " << camera()->frame()->translation().z << " " << std::endl;
+    //std::cout << "Q " << camera()->orientation() << std::endl;
+    //std::cout << "R " << camera()->frame()->rotation() << " " << std::endl;
 
     if (_renderingMode == GL_RENDER)
     {
@@ -941,16 +950,16 @@ void QtGLViewer::draw()
     emit( redrawn() );
 }
 
-void QtGLViewer::setCameraMode(component::visualmodel::Camera::CameraType mode)
+void QtGLViewer::setCameraMode(component::visualmodel::BaseCamera::CameraType mode)
 {
     SofaViewer::setCameraMode(mode);
 
     switch (mode)
     {
-    case component::visualmodel::Camera::ORTHOGRAPHIC_TYPE:
+    case component::visualmodel::BaseCamera::ORTHOGRAPHIC_TYPE:
         camera()->setType( qglviewer::Camera::ORTHOGRAPHIC );
         break;
-    case component::visualmodel::Camera::PERSPECTIVE_TYPE:
+    case component::visualmodel::BaseCamera::PERSPECTIVE_TYPE:
         camera()->setType( qglviewer::Camera::PERSPECTIVE  );
         break;
     }
