@@ -258,7 +258,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
                     if (displ < min)
                         min = displ;
                 }
-                ( *this->saveGnuplotX ) << displ << "\t";
+                ( *this->saveGnuplotX ) << min << "\t";
             }
             if (maxX.getValue() != -1)
             {
@@ -271,7 +271,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
                     if (displ > max)
                         max = displ;
                 }
-                ( *this->saveGnuplotX ) << displ;
+                ( *this->saveGnuplotX ) << max;
             }
             ( *this->saveGnuplotX ) << endl;
         }
