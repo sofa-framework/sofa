@@ -407,36 +407,36 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     //ADD GUI for Background
     //------------------------------------------------------------------------
     //Informations
-    Q3GroupBox *groupInfo = new Q3GroupBox(QString("Background"), TabPage);
-    groupInfo->setColumns(4);
-    QWidget     *global    = new QWidget(groupInfo);
-    QGridLayout *globalLayout = new QGridLayout(global);
+    QWidget *colour = new QWidget(TabPage);
+    QHBoxLayout *colourLayout = new QHBoxLayout(colour);
+    colourLayout->addWidget(new QLabel(QString("Colour "),colour));
 
 
-    globalLayout->addWidget(new QLabel(QString("Colour "),global),1,0);
+
     for (unsigned int i=0; i<3; ++i)
     {
         std::ostringstream s;
         s<<"background" <<i;
-        background[i] = new WFloatLineEdit(global,s.str().c_str());
+        background[i] = new WFloatLineEdit(colour,s.str().c_str());
         background[i]->setMinFloatValue( 0.0f);
         background[i]->setMaxFloatValue( 1.0f);
         background[i]->setFloatValue( 1.0f);
-        globalLayout->addWidget(background[i],1,i+1);
+
+        colourLayout->addWidget(background[i]);
         connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateBackgroundColour() ) );
     }
 
-    QWidget     *global2    = new QWidget(groupInfo);
-    groupInfo->setColumns(1);
-    QGridLayout *globalLayout2 = new QGridLayout(global2);
-    globalLayout2->addWidget(new QLabel(QString("Image "),global2),2,0);
-    backgroundImage = new QLineEdit(global2,"backgroundImage");
-    backgroundImage->setMinimumWidth( 200 );
+    QWidget *image = new QWidget(TabPage);
+    QHBoxLayout *imageLayout = new QHBoxLayout(image);
+    imageLayout->addWidget(new QLabel(QString("Image "),image));
+
+    backgroundImage = new QLineEdit(image,"backgroundImage");
     backgroundImage->setText( QString(viewer->getBackgroundImage().c_str()) );
-    globalLayout2->addWidget(backgroundImage,2,1);
+    imageLayout->addWidget(backgroundImage);
     connect( backgroundImage, SIGNAL( returnPressed() ), this, SLOT( updateBackgroundImage() ) );
 
-    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(1,groupInfo);
+    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(1,colour);
+    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(2,image);
 
     //---------------------------------------------------------------------------------------------------
 #ifdef SOFA_PML
@@ -652,7 +652,6 @@ void RealGUI::addViewer()
 
 //            viewer->setup();
     viewer->configureViewerTab(tabs);
-
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( saveView() ) );
