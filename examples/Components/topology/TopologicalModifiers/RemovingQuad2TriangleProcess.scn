@@ -1,34 +1,34 @@
 <Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 -9.81 0">
-	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="CollisionResponse" response="default" />
-	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-	<Object type="CollisionGroup" />
+	<CollisionPipeline verbose="0" />
+	<BruteForceDetection name="N2" />
+	<CollisionResponse response="default" />
+	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+	<CollisionGroup />
 
 	<Node name="Q">
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="MeshLoader" name="meshLoader" filename="mesh/nine_quads.msh"/>
-		<Object type="MechanicalObject" name="Quads" />
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<MeshLoader name="meshLoader" filename="mesh/nine_quads.msh"/>
+		<MechanicalObject name="Quads" />
 		<include href="Objects/QuadSetTopology.xml" />
 		
 		<TopologicalChangeProcessor listening="1" filename="RemovingQuad2TriangleProcess.txt"/>
-		<Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/> 
-		<Object type="DiagonalMass" massDensity="0.5" />
-		<!--<Object type="FixedConstraint" indices="12 15" />-->
+		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/> 
+		<DiagonalMass massDensity="0.5" />
+		<!--<FixedConstraint indices="12 15" />-->
 		<BoxConstraint box="0 3 0 0 3 0 3 3 0 3 3 0" />
 
 		<Node name="T">
 			<include href="Objects/TriangleSetTopology.xml" />
-			<Object type="Quad2TriangleTopologicalMapping" object1="../../Container" object2="Container"/>            
+			<Quad2TriangleTopologicalMapping object1="../../Container" object2="Container"/>            
 
-          		<Object type="TriangularFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-			<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/>		
-			<Object type="TriangleSet"/>							
+          		<TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>		
+			<TriangleSet/>							
 	
 			<Node name="Visu">
-				<Object type="OglModel" name="Visual" color="red" />
-				<Object type="IdentityMapping" object1="../../../Quads" object2="Visual" />
+				<OglModel name="Visual" color="red" />
+				<IdentityMapping object1="../../../Quads" object2="Visual" />
 			</Node>	
 		</Node>
 	</Node>

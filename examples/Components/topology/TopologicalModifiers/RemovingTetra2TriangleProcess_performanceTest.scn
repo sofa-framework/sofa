@@ -8,10 +8,14 @@
 	<Node name="TT">
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshLoader name="meshLoader" filename="mesh/cylinder.msh" />
-		<MechanicalObject name="Volume" />
-		<include href="Objects/TetrahedronSetTopology.xml" />
-		<TopologicalChangeProcessor listening="1" filename="RemovingTetra2TriangleProcess.txt"/>
+		<MeshVTKLoader name="meshLoader" filename="mesh/HeartTetra_200k.vtk" />
+		<MechanicalObject name="Volume" src="@meshLoader"/>
+		<TetrahedronSetTopologyContainer name="Container" tetrahedra="@meshLoader.tetrahedra"/>
+		<TetrahedronSetTopologyModifier name="Modifier" />
+		<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+
+		<TopologicalChangeProcessor listening="1" filename="RemovingTetra2TriangleProcess_performanceTest.txt"/>
 
         	<DiagonalMass massDensity="0.5" />
 		<FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1"/>
@@ -25,7 +29,7 @@
             		<TriangularFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" /> 
 			<TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0"/>		    
 			<TrianglePressureForceField normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0.4 0 0"/> 
-			<TriangleSet/>
+			<TriangleSet />
 
 			<Node name="Visu">
 				<OglModel name="Visual" color="blue" />
