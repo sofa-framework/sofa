@@ -32,7 +32,8 @@ SOURCES = initCGALPlugin.cpp \
 		  Optimize2DMesh.cpp \
 		  Refine2DMesh.cpp \
                   RefineTriangleMesh.cpp \
-		  TriangularConvexHull3D.cpp
+		  TriangularConvexHull3D.cpp \
+          DecimateMesh.cpp
 
 HEADERS = \
 		  MeshGenerationFromPolyhedron.h \
@@ -44,7 +45,9 @@ HEADERS = \
                   RefineTriangleMesh.h \
                   RefineTriangleMesh.inl \
 		  TriangularConvexHull3D.h \
-		  TriangularConvexHull3D.inl
+		  TriangularConvexHull3D.inl \
+          DecimateMesh.h \
+          DecimateMesh.inl
 		  
 README_FILE = CGALPlugin.txt
 
