@@ -14,6 +14,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vrpnclient_config.h>
 
+
+
 namespace sofavrpn
 {
 
@@ -89,22 +91,24 @@ void  VRPN_CALLBACK handle_region_change(void *userData, const vrpn_IMAGERREGION
     }
     else
     {
-        // This uses a repeat count of three to put the data into all channels.
-        // NOTE: This copies each channel into all buffers, rather
-        // than just a specific one (overwriting all with the last one written).  A real
-        // application will probably want to provide a selector to choose which
-        // is drawn.  It can check region->d_chanIndex to determine which channel
-        // is being reported for each callback.
         region->decode_unscaled_region_using_base_pointer(imagerData->image, 3, 3*imagerData->Xdim, 0, imagerData->Ydim, true, 3);
     }
 
-    // If we're logging, save to disk.  This is needed to keep up with
-    // logging and because the program is killed to exit.
-    //if (g_connection) { g_connection->save_log_so_far(); }
+    unsigned char myOffset = sizeof(uint32_t);
+    uint32_t numData;
+    unsigned char line[imagerData->Xdim];
 
-    // We do not post a redisplay here, because we want to do that only
-    // when we've gotten the end of a frame.  It is done in the
-    // end_of_frame message handler.*/
+    for (unsigned i = 0; i < imagerData->Xdim; i++)
+        line[i] = imagerData->image[3*i];
+
+    memcpy(&numData, line, myOffset);
+    //fprintf(stderr, "Amount of data = %d\n", numData);
+    float *data  = (float *) calloc(numData, sizeof(float));
+    memcpy(data, line+myOffset, numData*sizeof(float));
+
+    //for (unsigned i =  0; i < numData; i++)
+    //    fprintf(stderr,"[%d] = %f\n", i, data[i]);
+
 }
 
 void  VRPN_CALLBACK handle_end_of_frame(void *userData,const struct _vrpn_IMAGERENDFRAMECB)
