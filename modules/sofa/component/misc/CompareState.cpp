@@ -132,7 +132,7 @@ CompareStateCreator::CompareStateCreator(const std::string &n, bool i, int c)
 simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
     using namespace sofa::defaulttype;
-    sofa::core::behavior::BaseMechanicalState * mstate = dynamic_cast<sofa::core::behavior::BaseMechanicalState *>( gnode->getMechanicalState());
+    sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState;
     if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
     //We have a mechanical state
     addCompareState(mstate, gnode);
@@ -143,7 +143,6 @@ simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation:
 
 void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
-
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== NULL)
