@@ -134,6 +134,10 @@ simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation:
     using namespace sofa::defaulttype;
     sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState;
     if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
+    core::behavior::OdeSolver *isSimulated;
+    mstate->getContext()->get(isSimulated);
+    if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
+
     //We have a mechanical state
     addCompareState(mstate, gnode);
     return simulation::Visitor::RESULT_CONTINUE;
