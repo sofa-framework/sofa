@@ -166,10 +166,10 @@ public:
     }
 
     CompressedRowSparseMatrix(int nbRow, int nbCol)
-        : nRow(nbRow), nCol(nbCol), compressed(true)
+        : nRow(nbRow), nCol(nbCol),
+          nBlocRow((nbRow + NL-1) / NL), nBlocCol((nbCol + NC-1) / NC),
+          compressed(true)
     {
-        nBlocRow = (nRow + NL-1) / NL;
-        nBlocCol = (nCol + NC-1) / NC;
     }
 
     unsigned int rowBSize() const
@@ -676,7 +676,7 @@ public:
         if (nbRow != (int)rowSize() || nbCol != (int)colSize())
             std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
 #endif
-        resizeBloc((nRow + NL-1) / NL, (nCol + NC-1) / NC);
+        resizeBloc((nbRow + NL-1) / NL, (nbCol + NC-1) / NC);
         nRow = nbRow;
         nCol = nbCol;
     }
