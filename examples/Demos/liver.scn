@@ -8,7 +8,7 @@
 	<Node name="Liver" depend="topo dofs">
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<EulerImplicit name="cg_odesolver" printLog="false"  />
-		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
+		<SparseCholeskySolver name="linear solver" />
         	<MeshLoader name="meshLoader" filename="mesh/liver.msh"/>
 		<!-- Container for the tetrahedra-->
 		<TetrahedronSetTopologyContainer name="topo" />

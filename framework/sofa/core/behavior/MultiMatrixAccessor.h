@@ -24,11 +24,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
+#ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
+#define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalMapping.h>
 
 namespace sofa
 {
@@ -39,34 +40,48 @@ namespace core
 namespace behavior
 {
 
-/**
- *  \brief InteractionForceField is a force field linking several bodies (MechanicalState) together.
- *
- *  An interaction force field computes forces applied to several simulated
- *  bodies given their current positions and velocities.
- *
- *  For implicit integration schemes, it must also compute the derivative
- *  ( df, given a displacement dx ).
- */
-class SOFA_CORE_API InteractionForceField : public BaseForceField
+/// Abstract class allowing to find the part of the mechanical matrix
+/// associated with a given MechanicalState or pair of MechanicalState
+/// (for interaction forces and mappings).
+///
+class SOFA_CORE_API MultiMatrixAccessor
 {
 public:
-    SOFA_CLASS(InteractionForceField, BaseForceField);
+    virtual ~MultiMatrixAccessor();
 
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState1()
-    /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel1() = 0;
-
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState2()
-    /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel2() = 0;
-
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/)
+    /// Simple structure holding a reference to the submatrix related to one MechanicalState
+    class MatrixRef
     {
-        serr << "addKToMatrix not implemented by " << this->getClassName() << sendl;
-    }
+    public:
+        defaulttype::BaseMatrix* matrix;
+        unsigned int offset;
+        MatrixRef() : matrix(NULL), offset(0) {}
+        defaulttype::BaseMatrix* operator->() const { return matrix; }
+        bool operator!() const { return matrix == NULL; }
+        operator bool() const { return matrix != NULL; }
+    };
+
+    /// Simple structure holding a reference to the submatrix related to the interactions between two MechanicalStates
+    class InteractionMatrixRef
+    {
+    public:
+        defaulttype::BaseMatrix* matrix;
+        unsigned int offRow, offCol;
+        InteractionMatrixRef() : matrix(NULL), offRow(0), offCol(0) {}
+        defaulttype::BaseMatrix* operator->() const { return matrix; }
+        bool operator!() const { return matrix == NULL; }
+        operator bool() const { return matrix != NULL; }
+    };
+
+    virtual void addMechanicalState(const BaseMechanicalState* mstate);
+    virtual void addMechanicalMapping(const BaseMechanicalMapping* mapping);
+    virtual void addMappedMechanicalState(const BaseMechanicalState* mstate);
+
+    virtual int getGlobalDimension() const = 0;
+    virtual int getGlobalOffset(const BaseMechanicalState* mstate) const = 0;
+
+    virtual MatrixRef getMatrix(const BaseMechanicalState* mstate) const = 0;
+    virtual InteractionMatrixRef getMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2) const = 0;
 
 };
 

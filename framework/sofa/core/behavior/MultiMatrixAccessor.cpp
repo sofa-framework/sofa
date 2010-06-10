@@ -24,11 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
-
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa
 {
@@ -39,41 +35,25 @@ namespace core
 namespace behavior
 {
 
-/**
- *  \brief InteractionForceField is a force field linking several bodies (MechanicalState) together.
- *
- *  An interaction force field computes forces applied to several simulated
- *  bodies given their current positions and velocities.
- *
- *  For implicit integration schemes, it must also compute the derivative
- *  ( df, given a displacement dx ).
- */
-class SOFA_CORE_API InteractionForceField : public BaseForceField
+MultiMatrixAccessor::~MultiMatrixAccessor()
 {
-public:
-    SOFA_CLASS(InteractionForceField, BaseForceField);
+}
 
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState1()
-    /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel1() = 0;
 
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState2()
-    /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel2() = 0;
+void MultiMatrixAccessor::addMechanicalState(const BaseMechanicalState* /*mstate*/)
+{
+}
 
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/)
-    {
-        serr << "addKToMatrix not implemented by " << this->getClassName() << sendl;
-    }
+void MultiMatrixAccessor::addMechanicalMapping(const BaseMechanicalMapping* /*mapping*/)
+{
+}
 
-};
+void MultiMatrixAccessor::addMappedMechanicalState(const BaseMechanicalState* /*mstate*/)
+{
+}
 
 } // namespace behavior
 
 } // namespace core
 
 } // namespace sofa
-
-#endif

@@ -99,11 +99,8 @@ public:
     typedef BaseMechanicalState::VecId VecId;
 
 protected:
-    /// Solver who is using this vector
+    /// Solver who is using this matrix
     Parent* parent;
-
-    /// Identifier of this vector
-    VecId v;
 
     /// Copy-constructor is forbidden
     MultiMatrix(const MultiMatrix<Parent>&);

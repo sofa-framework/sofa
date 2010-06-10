@@ -350,8 +350,13 @@ public:
 
     virtual void addDxToCollisionModel(void) = 0; //{}
 
-    /// Add the Mechanical State Dimension [DOF number * DOF dimension] to the global matrix dimension
-    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) = 0;
+    /// Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
+    /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
+    virtual unsigned int getMatrixBlockSize() const { return getDerivDimension(); }
+
+    /// Get the number of rows necessary to build mechanical matrices and vectors.
+    /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
+    virtual unsigned int getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
     /// Load local mechanical data stored in the state in a global BaseVector basically stored in solvers
     virtual void loadInBaseVector(defaulttype::BaseVector *, VecId , unsigned int &) = 0;
@@ -364,9 +369,6 @@ public:
 
     /// Add data stored in a Vector (whose size is smaller or equal to the State vector)  to a local mechanical vector of the MechanicalState
     virtual void addVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
-
-    /// Update offset index during the subgraph traversal
-    virtual void setOffset(unsigned int &) = 0;
 
     /// @}
 

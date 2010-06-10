@@ -28,6 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_BASEMASS_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -72,16 +73,26 @@ public:
     /// dx = M^-1 f
     virtual void accFromF() = 0;
 
+    /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
+    virtual void addGravityToV(double dt)=0;
+
     /// vMv/2
     virtual double getKineticEnergy() const = 0 ;
+
+    /// @}
+
+    /// @name Matrix operations
+    /// @{
 
     /// Add Mass contribution to global Matrix assembling
     ///
     /// This method must be implemented by the component.
     /// \param matrix matrix to add the result to
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// \param offset current row/column offset
-    virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset) = 0;
+    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact) = 0;
+    //virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset) = 0;
+
+    /// @}
 
     /// initialization to export kinetic and potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path)=0;
@@ -89,15 +100,11 @@ public:
     /// export kinetic and potential energy state at "time" to a gnuplot file
     virtual void exportGnuplot(double time)=0;
 
-    /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
-    virtual void addGravityToV(double dt)=0;
-
     /// return the mass relative to the DOF #index
     virtual double getElementMass(unsigned int index)const =0;
     /// return the matrix relative to the DOF #index
     virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m)const =0;
 
-    /// @}
     virtual bool isDiagonal() {return false;}
 
     /// Member specifying if the gravity is added separately to the DOFs velocities (in solve method),

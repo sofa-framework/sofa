@@ -54,11 +54,11 @@ using std::endl;
 using namespace sofa::defaulttype;
 /** Base class for easily creating new actions for mechanical matrix manipulation
 
-During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
+	During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
 
-During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
+	During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
 
-The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
+	The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
 
 */
 class SOFA_SIMULATION_COMMON_API MechanicalMatrixVisitor : public Visitor
@@ -176,25 +176,43 @@ public:
         return "animate";
     }
 
-    unsigned int offsetOnEnter, offsetOnExit;
 };
 
 
-/** Compute the size of a dynamics matrix (mass or stiffness) of the whole scene */
+/** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
 class SOFA_SIMULATION_COMMON_API MechanicalGetMatrixDimensionVisitor : public MechanicalMatrixVisitor
 {
 public:
     unsigned int * const nbRow;
     unsigned int * const nbCol;
-    MechanicalGetMatrixDimensionVisitor(unsigned int * const _nbRow, unsigned int * const _nbCol)
-        : nbRow(_nbRow), nbCol(_nbCol)
+    sofa::core::behavior::MultiMatrixAccessor* matrix;
+
+    MechanicalGetMatrixDimensionVisitor(unsigned int * const _nbRow, unsigned int * const _nbCol, sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        : nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
-        ms->contributeToMatrixDimension(nbRow, nbCol);
+        //ms->contributeToMatrixDimension(nbRow, nbCol);
+        const unsigned int n = ms->getMatrixSize();
+        if (nbRow) *nbRow += n;
+        if (nbCol) *nbCol += n;
+        if (matrix) matrix->addMechanicalState(ms);
         return RESULT_CONTINUE;
     }
+
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* mm)
+    {
+        if (matrix) matrix->addMechanicalMapping(mm);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
+    {
+        if (matrix) matrix->addMappedMechanicalState(ms);
+        return RESULT_CONTINUE;
+    }
+
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalGetMatrixDimensionVisitor"; }
@@ -202,157 +220,78 @@ public:
 };
 
 
-/** Accumulate the entries of a dynamics matrix (mass or stiffness) of the whole scene */
+/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
 class SOFA_SIMULATION_COMMON_API MechanicalAddMBK_ToMatrixVisitor : public MechanicalMatrixVisitor
 {
 public:
-    BaseMatrix *mat;
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
     double m, b, k;
-    //    unsigned int offset, offsetBckUp;
 
-    MechanicalAddMBK_ToMatrixVisitor(BaseMatrix *_mat, double _m=0.0, double _b=0.0, double _k=0.0, unsigned int _offset=0)
-        : mat(_mat),m(_m),b(_b),k(_k)
+    MechanicalAddMBK_ToMatrixVisitor(const sofa::core::behavior::MultiMatrixAccessor* _matrix, double _m=0.0, double _b=0.0, double _k=0.0)
+        : matrix(_matrix),m(_m),b(_b),k(_k)
     {
-        offsetOnEnter = _offset;
-        offsetOnExit = _offset;
     }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddMBK_ToMatrixVisitor"; }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/)
     {
-        ms->setOffset(offsetOnExit);
+        //ms->setOffset(offsetOnExit);
         return RESULT_CONTINUE;
     }
 
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
     {
-        if ((mat != NULL)&&(k!=0.0))
+        if (matrix != NULL)
         {
-            //offsetOnExit = offsetOnEnter;
-            ff->addMBKToMatrix(mat,m,b,k,offsetOnEnter);
+            ff->addMBKToMatrix(matrix,m,b,k);
         }
 
         return RESULT_CONTINUE;
     }
 
     //Masses are now added in the addMBKToMatrix call for all ForceFields
-    /*
-    virtual Result fwdMass(simulation::Node*, core::behavior::BaseMass* mass)
-    {
-    if ((mat != NULL)&&(m!=0.0))
-      {
-        //offsetOnExit = offsetOnEnter;
-        mass->addMToMatrix(mat,m,offsetOnEnter);
-      }
-
-           return RESULT_CONTINUE;
-         }
-         */
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
     {
-        if (mat != NULL)
+        if (matrix != NULL)
         {
-            //offsetOnExit = offsetOnEnter;
-            c->applyConstraint(mat, offsetOnEnter);
+            c->applyConstraint(matrix);
         }
 
         return RESULT_CONTINUE;
     }
 };
-
-#if 0 // deprecated: as dx is stored in MechanicalState, compute df there and then convert to BaseVector using MechanicalMultiVector2BaseVectorVisitor
-/** Accumulate the entries of a dynamics vector (e.g. force) of the whole scene */
-class SOFA_SIMULATION_COMMON_API MechanicalAddMBKdx_ToVectorVisitor : public MechanicalMatrixVisitor
-{
-public:
-    BaseVector *vect;
-    VecId dx;
-    double m, b, k;
-    //    unsigned int offset, offsetBckUp;
-
-    MechanicalAddMBKdx_ToVectorVisitor(BaseVector *_vect, VecId _dx, double _m=0.0, double _b=0.0, double _k=0.0, unsigned int _offset=0)
-        : vect(_vect), dx(_dx), m(_m),b(_b),k(_k)
-    {
-        offsetOnEnter = _offset;
-        offsetOnExit = _offset;
-    }
-
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->setOffset(offsetOnExit);
-
-        if (!dx.isNull())
-            mm->setDx(dx);
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
-    {
-        if ((vect != NULL)&&(k != 0.0))
-        {
-            //	offsetOnExit = offsetOnEnter;
-            ff->addKDxToVector(vect,k,offsetOnEnter);
-        }
-
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
-    {
-        if ((vect != NULL)&&(m != 0.0))
-        {
-            //	offsetOnExit = offsetOnEnter;
-            if (dx.isNull())
-                std::cout << "Dx Null\n";
-            else
-                std::cout << "Dx Not Null\n";
-
-            mass->addMDxToVector(vect,m,offsetOnEnter,dx.isNull());
-        }
-
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
-    {
-        if (vect != NULL)
-        {
-            //	offsetOnExit = offsetOnEnter;
-            c->applyConstraint(vect, offsetOnEnter);
-        }
-
-        return RESULT_CONTINUE;
-    }
-};
-#endif
 
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVector2BaseVectorVisitor : public MechanicalMatrixVisitor
 {
 public:
     VecId src;
     BaseVector *vect;
-    unsigned int offset;
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    int offset;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalMultiVector2BaseVectorVisitor"; }
 
-    MechanicalMultiVector2BaseVectorVisitor(VecId _src, defaulttype::BaseVector * _vect, unsigned int _offset=0)
-        : src(_src),vect(_vect),offset(_offset)
+    MechanicalMultiVector2BaseVectorVisitor(VecId _src, defaulttype::BaseVector * _vect, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        : src(_src), vect(_vect), matrix(_matrix), offset(0)
     {
     }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
-        if (vect!= NULL)
+        if (matrix) offset = matrix->getGlobalOffset(mm);
+        if (vect != NULL && offset >= 0)
         {
-            mm->loadInBaseVector(vect, src, offset);
+            unsigned int o = (unsigned int)offset;
+            mm->loadInBaseVector(vect, src, o);
+            offset = (int)o;
         }
-
+        //if (!matrix) offset += mm->getMatrixSize();
         return RESULT_CONTINUE;
     }
 };
@@ -362,23 +301,28 @@ class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorPeqBaseVectorVisitor : pub
 public:
     BaseVector *src;
     VecId dest;
-    unsigned int offset;
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    int offset;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
 
-    MechanicalMultiVectorPeqBaseVectorVisitor(VecId _dest, defaulttype::BaseVector * _src, unsigned int _offset=0)
-        : src(_src),dest(_dest),offset(_offset)
+    MechanicalMultiVectorPeqBaseVectorVisitor(VecId _dest, defaulttype::BaseVector * _src, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        : src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
     }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
-        if (src!= NULL)
+        if (matrix) offset = matrix->getGlobalOffset(mm);
+        if (src!= NULL && offset >= 0)
         {
-            mm->addBaseVectorToState(dest, src, offset);
+            unsigned int o = (unsigned int)offset;
+            mm->addBaseVectorToState(dest, src, o);
+            offset = (int)o;
         }
+        //if (!matrix) offset += mm->getMatrixSize();
 
         return RESULT_CONTINUE;
     }

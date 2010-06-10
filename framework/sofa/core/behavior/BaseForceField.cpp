@@ -47,22 +47,16 @@ void BaseForceField::addMBKv(double /*mFactor*/, double bFactor, double kFactor)
         addDForceV(kFactor, bFactor);
 }
 
-void BaseForceField::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
+void BaseForceField::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*bFact*/)
 {
-
 }
 
-void BaseForceField::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
-{
-
-}
-
-void BaseForceField::addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double /*mFact*/, double bFact, double kFact, unsigned int &offset)
+void BaseForceField::addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double /*mFact*/, double bFact, double kFact)
 {
     if (kFact != 0.0)
-        addKToMatrix(matrix, kFact, offset);
+        addKToMatrix(matrix, kFact);
     if (bFact != 0.0)
-        addBToMatrix(matrix, bFact, offset);
+        addBToMatrix(matrix, bFact);
 }
 
 } // namespace behavior

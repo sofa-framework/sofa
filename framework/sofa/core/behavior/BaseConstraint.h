@@ -29,6 +29,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -137,10 +138,13 @@ public:
     virtual void applyConstraint(unsigned int&);
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int & /*offset*/);
+
+    virtual void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    //virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int & /*offset*/);
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
+    virtual void applyConstraint(defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    //virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
 
     /// Set the violation of each constraint
     virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true ) {}

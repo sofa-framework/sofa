@@ -96,11 +96,22 @@ void Mass<DataTypes>::addMBKv(double mFactor, double bFactor, double kFactor)
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset)
+void Mass<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
 {
-    this->ForceField<DataTypes>::addMBKToMatrix(matrix, mFact, bFact, kFact, offset);
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/)
+{
+    serr << "addMToMatrix not implemented by " << this->getClassName() << sendl;
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact)
+{
+    this->ForceField<DataTypes>::addMBKToMatrix(matrix, mFact, bFact, kFact);
     if (mFact != 0.0)
-        addMToMatrix(matrix, mFact, offset);
+        addMToMatrix(matrix, mFact);
 }
 
 template<class DataTypes>
@@ -181,7 +192,7 @@ void Mass< DataTypes >::accFromF()
 template <class DataTypes>
 double Mass<DataTypes>::getElementMass(unsigned int ) const
 {
-    serr<<"getElementMass with Scalar not yet implemented"<<sendl;
+    serr<<"getElementMass with Scalar not implemented"<<sendl;
     return 0.0;
 }
 //TODO: special case for Rigid Mass
@@ -192,7 +203,7 @@ void Mass<DataTypes>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) 
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    serr<<"getElementMass with Matrix not yet implemented"<<sendl;
+    serr<<"getElementMass with Matrix not implemented"<<sendl;
 }
 
 

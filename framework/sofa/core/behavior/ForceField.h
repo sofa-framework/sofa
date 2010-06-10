@@ -184,6 +184,31 @@ public:
 
     /// @}
 
+    /// @name Matrix operations
+    /// @{
+
+    /// @deprecated
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
+
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact)
+    {
+        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+        if (r)
+            addKToMatrix(r.matrix, kFact, r.offset);
+    }
+
+    /// @deprecated
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
+
+    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double bFact)
+    {
+        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+        if (r)
+            addBToMatrix(r.matrix, bFact, r.offset);
+    }
+
+    /// @}
+
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
