@@ -48,6 +48,7 @@ namespace constraint
 using core::behavior::BaseLMConstraint;
 class SOFA_COMPONENT_CONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
+protected:
     typedef sofa::core::VecId VecId;
     typedef sofa::core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
     typedef Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
