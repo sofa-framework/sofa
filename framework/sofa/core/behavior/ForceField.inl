@@ -119,6 +119,18 @@ double ForceField<DataTypes>::getPotentialEnergy() const
     else return 0;
 }
 
+template<class DataTypes>
+void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
+{
+    serr << "addKToMatrix not implemented by " << this->getClassName() << sendl;
+}
+
+template<class DataTypes>
+void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
+{
+
+}
+
 #ifdef SOFA_SMP
 template<class DataTypes>
 struct ParallelForceFieldAddForceCPU

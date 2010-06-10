@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/component.h>
+#include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/GraphScatteredTypes.h>
@@ -138,7 +139,7 @@ public:
 
     /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
-    /// TODO : put this implementation in MatrixLinearSolver class - fix problems mith Scattered Matrix
+    /// TODO : put this implementation in MatrixLinearSolver class - fix problems with Scattered Matrix
 
     template<class RMatrix, class JMatrix>
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact)
@@ -332,6 +333,7 @@ protected:
         Vector* systemRHVector;
         Vector* systemLHVector;
         VecId solutionVecId;
+        DefaultMultiMatrixAccessor matrixAccessor;
         GroupData()
             : systemSize(0), needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL)
         {}
@@ -464,14 +466,21 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(double mFact, double 
         if (!isMultiSolve()) setGroup(g);
         if (!this->frozen)
         {
-            unsigned int nbRow=0, nbCol=0;
+            if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
+            currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
+            currentGroup->matrixAccessor.clear();
+            //unsigned int nbRow=0, nbCol=0;
             //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
-            this->getMatrixDimension(&nbRow, &nbCol);
-            resizeSystem(nbRow);
+            //this->getMatrixDimension(&nbRow, &nbCol);
+            //resizeSystem(nbRow);
+            this->getMatrixDimension(&(currentGroup->matrixAccessor));
+            currentGroup->matrixAccessor.setupMatrices();
+            resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
             currentGroup->systemMatrix->clear();
-            unsigned int offset = 0;
+            //unsigned int offset = 0;
             //MechanicalAddMBK_ToMatrixVisitor(currentGroup->systemMatrix, mFact, bFact, kFact, offset).execute( getContext() );
-            this->addMBK_ToMatrix(currentGroup->systemMatrix, mFact, bFact, kFact, offset);
+            this->addMBK_ToMatrix(&(currentGroup->matrixAccessor), mFact, bFact, kFact);
+            currentGroup->matrixAccessor.computeGlobalMatrix();
         }
     }
 }
@@ -482,9 +491,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(VecId v)
     for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
         if (!isMultiSolve()) setGroup(g);
-        unsigned int offset = 0;
-        //MechanicalMultiVector2BaseVectorVisitor(v, systemRHVector, offset).execute( getContext() );
-        this->multiVector2BaseVector(v, currentGroup->systemRHVector, offset);
+        this->multiVector2BaseVector(v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor));
     }
 }
 
@@ -495,9 +502,9 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(VecId v)
     {
         if (!isMultiSolve()) setGroup(g);
         currentGroup->solutionVecId = v;
-        unsigned int offset = 0;
+        //unsigned int offset = 0;
         //MechanicalMultiVector2BaseVectorVisitor(v, systemLHVector, offset).execute( getContext() );
-        this->multiVector2BaseVector(v, currentGroup->systemLHVector, offset);
+        this->multiVector2BaseVector(v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
     }
 }
 
@@ -515,9 +522,9 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
         this->solve(*currentGroup->systemMatrix, *currentGroup->systemLHVector, *currentGroup->systemRHVector);
         if (!currentGroup->solutionVecId.isNull())
         {
-            unsigned int offset = 0;
+            //unsigned int offset = 0;
             v_clear(currentGroup->solutionVecId);
-            multiVectorPeqBaseVector(currentGroup->solutionVecId, currentGroup->systemLHVector, offset);
+            multiVectorPeqBaseVector(currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
         }
     }
 }

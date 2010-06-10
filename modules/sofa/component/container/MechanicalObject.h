@@ -280,9 +280,6 @@ public:
     /// @Base Matrices and Vectors Interface
     /// @{
 
-    /// Add the Mechanical State Dimension [DOF number * DOF dimension] to the global matrix dimension
-    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const);
-
     /// Load local mechanical data stored in the state in a (possibly smaller) vector
     virtual void loadInVector(defaulttype::BaseVector *, VecId , unsigned int);
 
@@ -294,9 +291,6 @@ public:
 
     /// Add data stored in a Vector (whose size is smaller or equal to the State vector)  to a local mechanical vector of the MechanicalState
     virtual void addVectorToState(VecId , defaulttype::BaseVector *, unsigned int &);
-
-    /// Update offset index during the subgraph traversal
-    virtual void setOffset(unsigned int &);
 
     /// @}
 

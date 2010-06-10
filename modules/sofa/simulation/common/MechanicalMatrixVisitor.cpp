@@ -94,7 +94,7 @@ Visitor::Result MechanicalMatrixVisitor::processNodeTopDown(simulation::Node* no
         res = for_each_r(this, node, node->constraint, &MechanicalMatrixVisitor::fwdConstraint);
     }
 
-    offsetOnEnter = offsetOnExit;
+    //offsetOnEnter = offsetOnExit;
     return res;
 }
 

@@ -86,6 +86,11 @@ public:
 
     virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
 
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+    {
+        HexahedronFEMForceFieldT::addKToMatrix(mat, k, offset);
+    }
+
     virtual  void accFromF(VecDeriv& a, const VecDeriv& f);
 
     virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);

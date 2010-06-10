@@ -100,19 +100,6 @@ public:
     virtual void addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/, double /*kFactor*/, double /*bFactor*/)
     {}
 
-    /// vMv/2 using dof->getV()
-    ///
-    /// This method retrieves the velocity vector and call the internal
-    /// getKineticEnergy(const VecDeriv&) method implemented by the component.
-    virtual double getKineticEnergy() const;
-
-    //virtual double getPotentialEnergy();
-
-    /// vMv/2
-    ///
-    /// This method must be implemented by the component.
-    virtual double getKineticEnergy( const VecDeriv& v ) const=0;
-
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
     ///
@@ -137,14 +124,47 @@ public:
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     virtual void addMBKv(double mFactor, double bFactor, double kFactor);
 
+    /// vMv/2 using dof->getV()
+    ///
+    /// This method retrieves the velocity vector and call the internal
+    /// getKineticEnergy(const VecDeriv&) method implemented by the component.
+    virtual double getKineticEnergy() const;
+
+    //virtual double getPotentialEnergy();
+
+    /// vMv/2
+    ///
+    /// This method must be implemented by the component.
+    virtual double getKineticEnergy( const VecDeriv& v ) const=0;
+
+    /// @}
+
+    /// @name Matrix operations
+    /// @{
+
+    /// @deprecated
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
+
+    /// @deprecated
+    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
+
+    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact)
+    {
+        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+        if (r)
+            addMToMatrix(r.matrix, mFact, r.offset);
+    }
+
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
     /// \param matrix matrix to add the result to
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    /// \param offset current row/column offset
-    virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
+    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact);
+    //virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
+
+    /// @}
 
     /// initialization to export kinetic and potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path);

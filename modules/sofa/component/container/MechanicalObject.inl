@@ -951,26 +951,6 @@ void MechanicalObject<DataTypes>::forcePointPosition( const unsigned int i, cons
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
-{
-    if (v->size() != 0)
-    {
-        (*nbRow) += v->size() * DataTypeInfo<Deriv>::size();
-        (*nbCol) = *nbRow;
-    }
-}
-
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setOffset(unsigned int &offset)
-{
-    if (v->size() != 0)
-    {
-        offset += v->size() * DataTypeInfo<Deriv>::size();
-    }
-}
-
-template <class DataTypes>
 void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, VecId src, unsigned int offset)
 {
     if (src.type == VecId::V_COORD)

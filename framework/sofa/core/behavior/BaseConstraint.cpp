@@ -43,11 +43,11 @@ void BaseConstraint::applyConstraint(unsigned int&)
 {
 }
 
-void BaseConstraint::applyConstraint(defaulttype::BaseMatrix *, unsigned int &)
+void BaseConstraint::applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
 }
 
-void BaseConstraint::applyConstraint(defaulttype::BaseVector *, unsigned int &)
+void BaseConstraint::applyConstraint(defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
 }
 

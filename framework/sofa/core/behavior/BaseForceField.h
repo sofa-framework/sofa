@@ -28,6 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_BASEFORCEFIELD_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -132,15 +133,15 @@ public:
     ///
     /// \param matrix matrix to add the result to
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    /// \param offset current row/column offset
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact) = 0;
+    //virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to b B
     ///
     /// \param matrix matrix to add the result to
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    /// \param offset current row/column offset
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
+    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double bFact);
+    //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -148,14 +149,14 @@ public:
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    /// \param offset current row/column offset
-    virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
+    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact);
+    //virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
 
     /// @}
 
     // TEMPORARY there... allow to get from the ForceField the fractured Edge index
     // When its computation is in the forcefield itself
-    virtual int getFracturedEdge() {return -1;};
+    virtual int getFracturedEdge() {return -1;}
 
     /// If the forcefield is applied only on a subset of particles.
     /// That way, we can optimize the time spent to transfer forces through the mechanical mappings

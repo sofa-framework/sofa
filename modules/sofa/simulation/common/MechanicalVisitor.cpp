@@ -558,9 +558,8 @@ void MechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseObjec
 
 Visitor::Result MechanicalGetDimensionVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
-    unsigned int row = 0, col = 0;
-    mm->contributeToMatrixDimension(&row, &col);
-    *ctx->nodeData += (double)row;
+    const unsigned int n = mm->getMatrixSize();
+    *ctx->nodeData += (double)n;
     return RESULT_CONTINUE;
 }
 
