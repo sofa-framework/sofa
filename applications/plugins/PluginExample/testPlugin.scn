@@ -1,0 +1,7 @@
+<Node 	name="Root"  >
+        <Node 	name="myTestingNode"   >
+        <MechanicalObject template="Vec3d" useMask="1"  restScale="1" />
+        <MyFakeComponent name="aFakeComponent" />
+        <OtherFakeComponent name="anOtherFakeComponent" />
+        </Node>
+</Node>
