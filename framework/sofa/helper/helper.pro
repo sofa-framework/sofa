@@ -59,6 +59,7 @@ HEADERS += helper.h \
     LCPSolver.h \
     LCPSolver.inl \
     map.h \
+    list.h \
     MarchingCubeUtility.h \
     MemoryManager.h \
     PolarDecompose.h \
