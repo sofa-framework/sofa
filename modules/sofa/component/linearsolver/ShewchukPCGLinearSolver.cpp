@@ -140,7 +140,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
         {
             if (next_refresh_iteration>=f_update_iteration.getValue())
             {
-                printf("Update with iterations\n");
+// 			printf("Update with iterations\n");
                 preconditioners[0]->setSystemMBKMatrix(mFact,bFact,kFact);
                 next_refresh_iteration=1;
             }
@@ -149,7 +149,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
         {
             if (next_refresh_step>=f_update_step.getValue())
             {
-                printf("Update with steps\n");
+// 			printf("Update with steps\n");
                 preconditioners[0]->setSystemMBKMatrix(mFact,bFact,kFact);
                 next_refresh_step=1;
             }
@@ -175,123 +175,6 @@ inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatri
 {
     x.peq(p,alpha);                 // x = x + alpha p
 }
-
-/*
-template<class TMatrix, class TVector>
-void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b) {
-	using std::cerr;
-	using std::endl;
-
-	Vector& p = *this->createVector();
-	Vector& q = *this->createVector();
-	Vector& r = *this->createVector();
-	Vector& z = *this->createVector();
-
-	const bool printLog =  this->f_printLog.getValue();
-	const bool verbose  = f_verbose.getValue();
-
-	// -- solve the system using a conjugate gradient solution
-	double rho, rho_1=0, alpha, beta;
-
-	if( verbose ) cerr<<"PCGLinearSolver, b = "<< b <<endl;
-
-	x.clear();
-	r = b; // initial residual
-
-	double normb2 = b.dot(b);
-	double normb = sqrt(normb2);
-	std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-	sofa::helper::vector<double>& graph_error = graph["Error"];
-	graph_error.clear();
-	sofa::helper::vector<double>& graph_den = graph["Denominator"];
-	graph_den.clear();
-	graph_error.push_back(1);
-	unsigned nb_iter;
-	const char* endcond = "iterations";
-
-	for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ ) {
-		if (this->preconditioners.size()>0 && usePrecond) {
-			sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
-
-// 			for (unsigned int i=0;i<this->preconditioners.size();i++) {
-// 				preconditioners[i]->setSystemLHVector(z);
-// 				preconditioners[i]->setSystemRHVector(r);
-// 				preconditioners[i]->solveSystem();
-// 			}
-
-			preconditioners[0]->setSystemLHVector(z);
-			preconditioners[0]->setSystemRHVector(r);
-			preconditioners[0]->solveSystem();
-
-			sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
-		} else {
-			z = r;
-		}
-
-		sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
-
-		rho = r.dot(z);
-
-		if (nb_iter>1) {
-			double normr = sqrt(r.dot(r));
-			double err = normr/normb;
-			graph_error.push_back(err);
-			if (err <= f_tolerance.getValue()) {
-				endcond = "tolerance";
-				break;
-			}
-		}
-
-		if( nb_iter==1 ) p = z;
-		else {
-			beta = rho / rho_1;
-			//p = p*beta + z;
-			cgstep_beta(p,z,beta);
-		}
-
-		if( verbose ) cerr<<"p : "<<p<<endl;
-
-		// matrix-vector product
-		q = M*p;
-
-		if( verbose ) cerr<<"q = M p : "<<q<<endl;
-
-		double den = p.dot(q);
-
-		graph_den.push_back(den);
-
-		alpha = rho/den;
-		//x.peq(p,alpha);                 // x = x + alpha p
-		//r.peq(q,-alpha);                // r = r - alpha q
-		cgstep_alpha(x,p,alpha);
-		cgstep_alpha(r,q,-alpha);
-
-		if( verbose ) {
-			cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
-			cerr<<"x : "<<x<<endl;
-			cerr<<"r : "<<r<<endl;
-		}
-
-		rho_1 = rho;
-
-		sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
-	}
-
-	sofa::helper::AdvancedTimer::valSet("PCG iterations", nb_iter);
-
-	f_graph.endEdit();
-	// x is the solution of the system
-
-	if( printLog ) cerr<<"PCGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
-
-	if( verbose ) cerr<<"PCGLinearSolver::solve, solution = "<<x<<endl;
-
-	this->deleteVector(&p);
-	this->deleteVector(&q);
-	this->deleteVector(&r);
-	this->deleteVector(&z);
-}
-*/
 
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)

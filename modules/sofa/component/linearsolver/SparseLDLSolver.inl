@@ -91,6 +91,14 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
         data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
     }
 
+// 	  printf("element\n");
+// 	  for (int j=0;j<12;j++) {
+// 	    for (int i=0;i<12;i++) {
+// 		printf("%f ",M.element(j,i));
+// 	    }
+// 	    printf("\n");
+// 	  }
+
     //remplir A avec M
     data->n = M.colBSize();// number of columns
 
