@@ -28,8 +28,9 @@ DecimateMesh<DataTypes>::DecimateMesh()
     , m_inTriangles(initData(&m_inTriangles, "inputTriangles", "List of triangles"))
     , m_edgesTarget(initData(&m_edgesTarget, "targetedNumberOfEdges", "Desired number of edges after simplification"))
     , m_edgesRatio(initData(&m_edgesRatio, "targetedRatioOfEdges", "Ratio between the number of edges and number of initial edges"))
-    , m_outVertices(initData (&m_outVertices, "outputPoints", "New vertices after simplification") )
-    , m_outTriangles(initData (&m_outTriangles, "outputTriangles", "New triangles after simplification") )
+    , m_outVertices(initData (&m_outVertices, "outputPoints", "New vertices after decimation") )
+    , m_outTriangles(initData (&m_outTriangles, "outputTriangles", "New triangles after decimation") )
+    , m_outNormals(initData (&m_outNormals, "outputNormals", "New normals after decimation") )
 {
 }
 
@@ -48,6 +49,7 @@ void DecimateMesh<DataTypes>::init()
     //Output
     addOutput(&m_outVertices);
     addOutput(&m_outTriangles);
+    addOutput(&m_outNormals);
 
     setDirtyValue();
 
@@ -91,6 +93,9 @@ void DecimateMesh<DataTypes>::update()
     // Writes results from CGAL to SOFA
     surface_to_geometry(surface);
 
+    // Computes normals
+    computeNormals();
+
     std::cout << "Decimated mesh has " << m_outVertices.getValue().size() << " vertices and " << m_outTriangles.getValue().size() << " triangles." << std::endl;
 }
 
@@ -115,6 +120,40 @@ void DecimateMesh<DataTypes>::writeObj()
 
     std::cout << "Decimated mesh written in decimatedMesh.obj" << std::endl;
 
+}
+
+template <class DataTypes>
+void DecimateMesh<DataTypes>::computeNormals()
+{
+    helper::ReadAccessor< Data< VecCoord > > outVertices = m_outVertices;
+    helper::ReadAccessor< Data< SeqTriangles > > outTriangles = m_outTriangles;
+
+    helper::WriteAccessor< Data< helper::vector<Vec3> > > outNormals = m_outNormals;
+
+
+    for (unsigned int i=0; i<outVertices.size(); i++)
+    {
+        outNormals.push_back(Vec3(0, 0, 0));
+    }
+
+    for (unsigned int t=0; t<outTriangles.size(); t++)
+    {
+        Vec3 a = outVertices[ outTriangles[t][0] ];
+        Vec3 b = outVertices[ outTriangles[t][1] ];
+        Vec3 c = outVertices[ outTriangles[t][2] ];
+
+        Vec3 z = cross(b-a, c-a);
+        z.normalize();
+
+        outNormals[ outTriangles[t][0] ] += z;
+        outNormals[ outTriangles[t][1] ] += z;
+        outNormals[ outTriangles[t][2] ] += z;
+    }
+
+    for (unsigned int i=0; i<outNormals.size(); i++)
+    {
+        outNormals[i].normalize();
+    }
 }
 
 template <class DataTypes>

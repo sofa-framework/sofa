@@ -73,6 +73,7 @@ public:
     void update();
     void draw();
     void writeObj();
+    void computeNormals();
 
     virtual std::string getTemplateName() const
     {
@@ -100,6 +101,7 @@ public:
     // Outputs
     Data<VecCoord> m_outVertices;
     Data<SeqTriangles> m_outTriangles;
+    Data< helper::vector<Vec3> > m_outNormals;
 
 
 };
