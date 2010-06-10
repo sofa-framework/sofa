@@ -61,18 +61,18 @@ class SOFA_COMPONENT_CONSTRAINT_API LMConstraintSolver : public sofa::core::beha
 public:
     SOFA_CLASS(LMConstraintSolver, sofa::core::behavior::ConstraintSolver);
     LMConstraintSolver();
-    ~LMConstraintSolver();
+    virtual ~LMConstraintSolver();
 
-    void init();
-    void reinit() {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
+    virtual void init();
+    virtual void reinit() {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
 
 
-    bool prepareStates(double dt, VecId);
-    bool buildSystem(double dt, VecId);
-    bool solveSystem(double dt, VecId);
-    bool applyCorrection(double dt, VecId);
+    virtual bool prepareStates(double dt, VecId);
+    virtual bool buildSystem(double dt, VecId);
+    virtual bool solveSystem(double dt, VecId);
+    virtual bool applyCorrection(double dt, VecId);
 
-    void handleEvent( core::objectmodel::Event *e);
+    virtual void handleEvent( core::objectmodel::Event *e);
 
 
 
@@ -87,29 +87,29 @@ public:
 
 protected:
     /// Explore the graph, looking for LMConstraints: each LMConstraint can tell if they need State Propagation in order to compute the right hand term of the system
-    bool needPriorStatePropagation();
+    virtual bool needPriorStatePropagation();
 
     /// Construct the Right hand term of the system
-    void buildRightHandTerm      ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
+    virtual void buildRightHandTerm      ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             VectorEigen &c) const;
     /// Construct the Inverse of the mass matrix for a set of Dofs
-    void buildInverseMassMatrices( const SetDof &setDofs,
+    virtual void buildInverseMassMatrices( const SetDof &setDofs,
             DofToMatrix& invMassMatrices);
     /// Construct the L matrices: write the constraint equations, and use dofUsed to remember the particles used in order to speed up the constraint correction
-    void buildLMatrices          ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
+    virtual void buildLMatrices          ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             DofToMatrix &LMatrices, DofToMask &dofUsed) const;
     /// Construct the Left Matrix A=sum_i(L_i.M^{-1}_i.L_i^T), store the matrices M^{-1}_i.L_i^T in order to compute later the constraint correction to apply
-    void buildLeftMatrix         ( const DofToMatrix& invMassMatrices,
+    virtual void buildLeftMatrix         ( const DofToMatrix& invMassMatrices,
             DofToMatrix& LMatrices, SparseMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
     /// Solve the System using a projective Gauss-Seidel algorithm: compute the Lagrange Multipliers Lambda
-    bool solveConstraintSystemUsingGaussSeidel(ConstOrder Order,
+    virtual bool solveConstraintSystemUsingGaussSeidel(ConstOrder Order,
             const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             MatrixEigen &W,
             VectorEigen &c,
             VectorEigen &Lambda);
 
     /// Compute Kinetic Energy
-    void computeKineticEnergy();
+    virtual void computeKineticEnergy();
 
     /** Apply the correction to the state corresponding
      * @param id nature of the constraint, and correction to apply
@@ -118,7 +118,7 @@ protected:
      * @param c correction vector
      * @param propageVelocityChange need to propagate the correction done to the velocity for the position
      **/
-    void constraintStateCorrection(VecId id, bool isPositionChangesUpdateVelocity,
+    virtual void constraintStateCorrection(VecId id, bool isPositionChangesUpdateVelocity,
             const SparseMatrixEigen  &invM_Ltrans,
             const VectorEigen  &Lambda,
             const sofa::helper::set< unsigned int > &dofUsed,
@@ -126,13 +126,13 @@ protected:
 
 
     ///
-    void buildLMatrix          ( const sofa::core::behavior::BaseMechanicalState *dof,
+    virtual void buildLMatrix          ( const sofa::core::behavior::BaseMechanicalState *dof,
             const std::list<unsigned int> &idxEquations,unsigned int constraintOffset,
             SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed ) const;
-    void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
+    virtual void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
             const core::behavior::BaseConstraintCorrection* constraintCorrection,
             SparseMatrixEigen& matrix) const;
-    void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
+    virtual void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
             const core::behavior::BaseMass* mass,
             SparseMatrixEigen& matrix) const;
 
