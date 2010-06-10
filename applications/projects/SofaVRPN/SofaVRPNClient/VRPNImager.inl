@@ -26,7 +26,12 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 VRPNImager<DataTypes>::VRPNImager()
+//: f_positions( initData (&f_positions, "positions", "Positions (Vector of 3)") )
+//, f_orientations( initData (&f_orientations, "orientations", "Orientations (Quaternion)") )
+    : f_rigidPoint( initData (&f_rigidPoint, "rigid point", "RigidPoint"))
+
 {
+    addAlias(&f_rigidPoint,"rigidPosition");
     // TODO Auto-generated constructor stub
     /*trackerData.data.resize(1);
     rg.initSeed( (long int) this );*/
@@ -82,6 +87,14 @@ void VRPNImager<DataTypes>::update()
 {
     g_imager->mainloop();
 
+    Point x;
+
+    for (unsigned i=0; i < 7; i++)
+        x[i] = imagerData.rigidPointData[i];
+
+    std::cout << "PointData = " <<  f_rigidPoint.getValue() << std::endl;
+    f_rigidPoint.setValue(x);
+
     /*sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
     std::cout << "read tracker " << this->getName() << std::endl;
 
@@ -117,6 +130,7 @@ void VRPNImager<DataTypes>::draw()
 {
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
+    glDisable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, imageTextureID);
@@ -130,18 +144,32 @@ void VRPNImager<DataTypes>::draw()
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, g_imager->nCols(), g_imager->nRows(), 0, GL_BGR, GL_UNSIGNED_BYTE, imagerData.image);
 
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
     glBegin(GL_QUADS);
-    glTexCoord2i(0,1);
-    glVertex3f(0,0,0);
-    glTexCoord2i(1,1);
-    glVertex3f(1,0,0);
-    glTexCoord2i(1,0);
-    glVertex3f(1,1,0);
-    glTexCoord2i(0,0);
-    glVertex3f(0,1, 0);
+    glTexCoord2i(0, 1);
+    glVertex4f(-1, -1, 0, 1);
+    glTexCoord2i(1, 1);
+    glVertex4f(1, -1, 0, 1);
+    glTexCoord2i(1, 0);
+    glVertex4f(1, 1, 0, 1);
+    glTexCoord2i(0, 0);
+    glVertex4f(-1, 1, 0, 1);
     glEnd();
 
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
     glDisable(GL_TEXTURE_2D);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
 }
 
 template<class DataTypes>
