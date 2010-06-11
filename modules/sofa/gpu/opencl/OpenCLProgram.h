@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include "OpenCLProgramParser.h"
 #include "myopencl.h"
-#include <CL/cl.h>
-
 
 namespace sofa
 {
