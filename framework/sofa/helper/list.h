@@ -101,7 +101,7 @@ public:
         this->clear();
         while(in>>t)
         {
-            this->insert(t);
+            this->push_back(t);
         }
         if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
         return in;
@@ -113,11 +113,13 @@ public:
         return vec.write(os);
     }
 
+
     /// Input stream
     inline friend std::istream& operator>> ( std::istream& in, list<T,Alloc>& vec )
     {
         return vec.read(in);
     }
+
 };
 
 
