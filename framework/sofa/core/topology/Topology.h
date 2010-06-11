@@ -115,6 +115,19 @@ public:
     /** \brief Returns the code of this TopologyChange. */
     TopologyChangeType getChangeType() const { return m_changeType;}
 
+
+    /// Output empty stream
+    inline friend std::ostream& operator<< ( std::ostream& os, const TopologyChange* /*t*/ )
+    {
+        return os;
+    }
+
+    /// Input empty stream
+    inline friend std::istream& operator>> ( std::istream& in, const TopologyChange* /*t*/ )
+    {
+        return in;
+    }
+
 protected:
     TopologyChange( TopologyChangeType changeType = BASE )
         : m_changeType(changeType)

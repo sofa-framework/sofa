@@ -28,13 +28,13 @@
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
 #include <stdlib.h>
-#include <list>
 #include <string>
 #include <iostream>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/list.h>
 
 #include <sofa/core/core.h>
 
@@ -314,19 +314,19 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    virtual std::list<const TopologyChange *>::const_iterator firstChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator firstChange() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    virtual std::list<const TopologyChange *>::const_iterator lastChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator lastChange() const;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
      */
-    virtual std::list<const TopologyChange *>::const_iterator firstStateChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator firstStateChange() const;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
      */
-    virtual std::list<const TopologyChange *>::const_iterator lastStateChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator lastStateChange() const;
 
     /// @}
 

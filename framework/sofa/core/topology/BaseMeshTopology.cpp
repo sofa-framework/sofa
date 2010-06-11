@@ -353,31 +353,31 @@ void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
     serr<<"addHexa() not supported." << sendl;
 }
 
-std::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstChange() const
 {
     serr << "firstChange() not supported." << sendl;
-    std::list<const TopologyChange *>::const_iterator l;
+    sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-std::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastChange() const
 {
     serr<<"lastChange() not supported." << sendl;
-    std::list<const TopologyChange *>::const_iterator l;
+    sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-std::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstStateChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstStateChange() const
 {
     serr<<"firstStateChange() not supported." << sendl;
-    std::list<const TopologyChange *>::const_iterator l;
+    sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-std::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastStateChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastStateChange() const
 {
     serr<<"lastStateChange() not supported." << sendl;
-    std::list<const TopologyChange *>::const_iterator l;
+    sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
