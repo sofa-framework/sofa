@@ -26,7 +26,7 @@
 #include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
-#define MULTIMATRIX_VERBOSE
+//#define MULTIMATRIX_VERBOSE
 
 namespace sofa
 {
@@ -76,11 +76,14 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(const sofa::core::behavior
     /// @TODO support for mapped matrices
 }
 
+#ifdef MULTIMATRIX_VERBOSE
 void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate)
 {
     /// @TODO support for mapped matrices
-#ifdef MULTIMATRIX_VERBOSE
     std::cout << "DefaultMultiMatrixAccessor: Mapped state " << mstate->getName() << " ignored. It will not contribute to the final mechanical matrix." << std::endl;
+#else
+void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* )
+{
 #endif
 }
 

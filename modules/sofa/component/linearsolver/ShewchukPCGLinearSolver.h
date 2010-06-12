@@ -56,7 +56,6 @@ public:
     Data<double> f_tolerance;
     Data<bool> f_verbose;
     Data<unsigned> f_update_iteration;
-    Data<unsigned> f_min_update_iteration;
     Data<unsigned> f_update_step;
     Data<bool> f_use_precond;
     Data< helper::vector< std::string > > f_preconditioners;
