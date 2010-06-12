@@ -58,14 +58,8 @@ SparseTAUCSSolver<TMatrix,TVector>::SparseTAUCSSolver()
     : f_options( initData(&f_options,"options","TAUCS unified solver list of space-separated options") )
     , f_symmetric( initData(&f_symmetric,true,"symmetric","Consider the system matrix as symmetric") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , factorization(NULL)
-{
-}
 
-template<class TMatrix, class TVector>
-SparseTAUCSSolver<TMatrix,TVector>::~SparseTAUCSSolver()
 {
-    if (factorization) taucs_linsolve(NULL, &factorization, 0, NULL, NULL, NULL, NULL);
 }
 
 template<class T>
@@ -81,28 +75,36 @@ template<class TMatrix, class TVector>
 void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     M.compress();
+
+    SparseTAUCSSolverInvertData * data = (SparseTAUCSSolverInvertData *) M.getMatrixInvertData();
+    if (data==NULL)
+    {
+        M.setMatrixInvertData(new SparseTAUCSSolverInvertData());
+        data = (SparseTAUCSSolverInvertData *) M.getMatrixInvertData();
+    }
+
     if (f_symmetric.getValue())
     {
-        Mfiltered.copyUpperNonZeros(M);
-        sout << "Filtered upper part of M, nnz = " << Mfiltered.getRowBegin().back() << sendl;
+        data->Mfiltered.copyUpperNonZeros(M);
+        sout << "Filtered upper part of M, nnz = " << data->Mfiltered.getRowBegin().back() << sendl;
     }
     else
     {
-        Mfiltered.copyNonZeros(M);
-        sout << "Filtered M, nnz = " << Mfiltered.getRowBegin().back() << sendl;
+        data->Mfiltered.copyNonZeros(M);
+        sout << "Filtered M, nnz = " << data->Mfiltered.getRowBegin().back() << sendl;
     }
-    Mfiltered.fullRows();
-    matrix_taucs.n = Mfiltered.rowSize();
-    matrix_taucs.m = Mfiltered.colSize();
-    matrix_taucs.flags = get_taucs_flags<Real>();
+    data->Mfiltered.fullRows();
+    data->matrix_taucs.n = data->Mfiltered.rowSize();
+    data->matrix_taucs.m = data->Mfiltered.colSize();
+    data->matrix_taucs.flags = get_taucs_flags<Real>();
     if (f_symmetric.getValue())
     {
-        matrix_taucs.flags |= TAUCS_SYMMETRIC;
-        matrix_taucs.flags |= TAUCS_LOWER; // Upper on row-major is actually lower on column-major transposed matrix
+        data->matrix_taucs.flags |= TAUCS_SYMMETRIC;
+        data->matrix_taucs.flags |= TAUCS_LOWER; // Upper on row-major is actually lower on column-major transposed matrix
     }
-    matrix_taucs.colptr = (int *) &(Mfiltered.getRowBegin()[0]);
-    matrix_taucs.rowind = (int *) &(Mfiltered.getColsIndex()[0]);
-    matrix_taucs.values.d = (double*) &(Mfiltered.getColsValue()[0]);
+    data->matrix_taucs.colptr = (int *) &(data->Mfiltered.getRowBegin()[0]);
+    data->matrix_taucs.rowind = (int *) &(data->Mfiltered.getColsIndex()[0]);
+    data->matrix_taucs.values.d = (double*) &(data->Mfiltered.getColsValue()[0]);
     helper::vector<char*> opts;
     const helper::vector<std::string>& options = f_options.getValue();
     for (unsigned int i=0; i<options.size(); ++i)
@@ -110,8 +112,8 @@ void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
     opts.push_back(NULL);
     if (this->f_printLog.getValue())
         taucs_logfile((char*)"stdout");
-    if (factorization) taucs_linsolve(NULL, &factorization, 0, NULL, NULL, NULL, NULL);
-    int rc = taucs_linsolve(&matrix_taucs, &factorization, 0, NULL, NULL, &(opts[0]), NULL);
+    if (data->factorization) taucs_linsolve(NULL, &data->factorization, 0, NULL, NULL, NULL, NULL);
+    int rc = taucs_linsolve(&data->matrix_taucs, &data->factorization, 0, NULL, NULL, &(opts[0]), NULL);
     if (this->f_printLog.getValue())
         taucs_logfile((char*)"none");
     if (rc != TAUCS_SUCCESS)
@@ -132,8 +134,15 @@ void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 }
 
 template<class TMatrix, class TVector>
-void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
+void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
+    SparseTAUCSSolverInvertData * data = (SparseTAUCSSolverInvertData *) M.getMatrixInvertData();
+    if (data==NULL)
+    {
+        z = r;
+        return;
+    }
+
     helper::vector<char*> opts;
     const helper::vector<std::string>& options = f_options.getValue();
     for (unsigned int i=0; i<options.size(); ++i)
@@ -144,7 +153,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector
     opts.push_back(NULL);
     if (this->f_printLog.getValue())
         taucs_logfile((char*)"stdout");
-    int rc = taucs_linsolve(&matrix_taucs, &factorization, 1, z.ptr(), r.ptr(), &(opts[0]), NULL);
+    int rc = taucs_linsolve(&data->matrix_taucs, &data->factorization, 1, z.ptr(), r.ptr(), &(opts[0]), NULL);
     if (this->f_printLog.getValue())
         taucs_logfile((char*)"none");
     if (rc != TAUCS_SUCCESS)

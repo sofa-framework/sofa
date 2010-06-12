@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparseTAUCSSolver_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
@@ -55,33 +55,47 @@ namespace component
 namespace linearsolver
 {
 
+
+
 /// Direct linear solvers implemented with the TAUCS library
 template<class TMatrix, class TVector>
-class SparseTAUCSSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class SparseTAUCSSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseTAUCSSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE2(SparseTAUCSSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     Data< helper::vector<std::string> > f_options;
     Data<bool> f_symmetric;
-
     Data<bool> f_verbose;
 
     SparseTAUCSSolver();
-    ~SparseTAUCSSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
 protected:
-    Matrix Mfiltered;
-    void* factorization;
-    taucs_ccs_matrix matrix_taucs;
+    class SparseTAUCSSolverInvertData : public defaulttype::MatrixInvertData
+    {
+    public :
+        Matrix Mfiltered;
+        void* factorization;
+        taucs_ccs_matrix matrix_taucs;
+
+        SparseTAUCSSolverInvertData()
+        {
+            factorization = NULL;
+        }
+
+        ~SparseTAUCSSolverInvertData()
+        {
+            if (factorization) taucs_linsolve(NULL, &factorization, 0, NULL, NULL, NULL, NULL);
+        }
+    };
 };
 
 } // namespace linearsolver
