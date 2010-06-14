@@ -88,6 +88,7 @@ extern "C" {
     extern void* myopencldevice(int device);
     extern int myopenclNumDevices();
     extern int & myopenclError();
+    extern std::string myopenclErrorMsg(cl_int err);
     extern void myopenclShowError(std::string file, int line);
     extern std::string myopenclPath();
 

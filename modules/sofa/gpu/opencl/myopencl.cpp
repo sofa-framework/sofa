@@ -1,10 +1,12 @@
 #include "myopencl.h"
 
 #include <iostream>
+#include <sstream>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sofa/helper/BackTrace.h>
 
 #define DEBUG_TEXT(t) //printf("\t  %s\n",t);
 #define CL_KERNEL_PATH "/modules/sofa/gpu/opencl/kernels/"
@@ -233,18 +235,75 @@ cl_int & myopenclError()
     return _error;
 }
 
+std::string myopenclErrorMsg(cl_int err)
+{
+    switch(err)
+    {
+#define SOFA_CL_ERR(e) case e: return #e
+        SOFA_CL_ERR(CL_SUCCESS);
+        SOFA_CL_ERR(CL_DEVICE_NOT_FOUND);
+        SOFA_CL_ERR(CL_DEVICE_NOT_AVAILABLE);
+        SOFA_CL_ERR(CL_COMPILER_NOT_AVAILABLE);
+        SOFA_CL_ERR(CL_MEM_OBJECT_ALLOCATION_FAILURE);
+        SOFA_CL_ERR(CL_OUT_OF_RESOURCES);
+        SOFA_CL_ERR(CL_OUT_OF_HOST_MEMORY);
+        SOFA_CL_ERR(CL_PROFILING_INFO_NOT_AVAILABLE);
+        SOFA_CL_ERR(CL_MEM_COPY_OVERLAP);
+        SOFA_CL_ERR(CL_IMAGE_FORMAT_MISMATCH);
+        SOFA_CL_ERR(CL_IMAGE_FORMAT_NOT_SUPPORTED);
+        SOFA_CL_ERR(CL_BUILD_PROGRAM_FAILURE);
+        SOFA_CL_ERR(CL_MAP_FAILURE);
+        SOFA_CL_ERR(CL_INVALID_VALUE);
+        SOFA_CL_ERR(CL_INVALID_DEVICE_TYPE);
+        SOFA_CL_ERR(CL_INVALID_PLATFORM);
+        SOFA_CL_ERR(CL_INVALID_DEVICE);
+        SOFA_CL_ERR(CL_INVALID_CONTEXT);
+        SOFA_CL_ERR(CL_INVALID_QUEUE_PROPERTIES);
+        SOFA_CL_ERR(CL_INVALID_COMMAND_QUEUE);
+        SOFA_CL_ERR(CL_INVALID_HOST_PTR);
+        SOFA_CL_ERR(CL_INVALID_MEM_OBJECT);
+        SOFA_CL_ERR(CL_INVALID_IMAGE_FORMAT_DESCRIPTOR);
+        SOFA_CL_ERR(CL_INVALID_IMAGE_SIZE);
+        SOFA_CL_ERR(CL_INVALID_SAMPLER);
+        SOFA_CL_ERR(CL_INVALID_BINARY);
+        SOFA_CL_ERR(CL_INVALID_BUILD_OPTIONS);
+        SOFA_CL_ERR(CL_INVALID_PROGRAM);
+        SOFA_CL_ERR(CL_INVALID_PROGRAM_EXECUTABLE);
+        SOFA_CL_ERR(CL_INVALID_KERNEL_NAME);
+        SOFA_CL_ERR(CL_INVALID_KERNEL_DEFINITION);
+        SOFA_CL_ERR(CL_INVALID_KERNEL);
+        SOFA_CL_ERR(CL_INVALID_ARG_INDEX);
+        SOFA_CL_ERR(CL_INVALID_ARG_VALUE);
+        SOFA_CL_ERR(CL_INVALID_ARG_SIZE);
+        SOFA_CL_ERR(CL_INVALID_KERNEL_ARGS);
+        SOFA_CL_ERR(CL_INVALID_WORK_DIMENSION);
+        SOFA_CL_ERR(CL_INVALID_WORK_GROUP_SIZE);
+        SOFA_CL_ERR(CL_INVALID_WORK_ITEM_SIZE);
+        SOFA_CL_ERR(CL_INVALID_GLOBAL_OFFSET);
+        SOFA_CL_ERR(CL_INVALID_EVENT_WAIT_LIST);
+        SOFA_CL_ERR(CL_INVALID_EVENT);
+        SOFA_CL_ERR(CL_INVALID_OPERATION);
+        SOFA_CL_ERR(CL_INVALID_GL_OBJECT);
+        SOFA_CL_ERR(CL_INVALID_BUFFER_SIZE);
+        SOFA_CL_ERR(CL_INVALID_MIP_LEVEL);
+        SOFA_CL_ERR(CL_INVALID_GLOBAL_WORK_SIZE);
+#undef SOFA_CL_ERR
+    default:
+    {
+        std::ostringstream o;
+        o << err;
+        return o.str();
+    }
+    }
+}
+
 void myopenclShowError(std::string file, int line)
 {
     if(_error!=CL_SUCCESS && _error!=1)
     {
-        std::cout << "Error (file '" << file << "' line " << line << "): " << _error << std::endl;
-        if(_error==CL_INVALID_CONTEXT)std::cout << "\t\t-> CL_INVALID_CONTEXT\n";
-        if(_error==CL_INVALID_PROGRAM)std::cout << "\t\t-> CL_INVALID_PROGRAM\n";
-        if(_error==CL_INVALID_PROGRAM_EXECUTABLE)std::cout << "\t\t-> CL_INVALID_PROGRAM_EXECUTABLE\n";
-        if(_error==CL_INVALID_KERNEL)std::cout << "\t\tCL_INVALID_KERNEL\n";
-        if(_error==CL_INVALID_VALUE)std::cout << "\tCL_INVALID_VALUE\n";
-        if(_error==CL_INVALID_KERNEL_ARGS)std::cout << "\tCL_INVALID_KERNEL_ARGS\n";
-        exit(0);
+        std::cout << "Error (file '" << file << "' line " << line << "): " << myopenclErrorMsg(_error) << std::endl;
+        sofa::helper::BackTrace::dump();
+        exit(1);
     }
 }
 
