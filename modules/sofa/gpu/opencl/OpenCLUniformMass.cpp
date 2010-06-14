@@ -29,7 +29,7 @@
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 
-#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
 {
@@ -74,8 +74,12 @@ void UniformMass_CreateProgramWithFloat()
         types["Real"]="float";
         types["Real4"]="float4";
 
+        std::string source = *sofa::helper::OpenCLProgram::loadSource("OpenCLUniformMass.cl");
+        source = stringBSIZE + source;
+
+
         UniformMassOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLUniformMass.cl"),&types);
+            = new sofa::helper::OpenCLProgram(&source,&types);
 
         UniformMassOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);

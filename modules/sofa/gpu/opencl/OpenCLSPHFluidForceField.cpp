@@ -26,7 +26,7 @@
 #include "OpenCLSPHFluidForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
-#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 
 namespace sofa
@@ -60,8 +60,11 @@ void SPHFluidForceField_CreateProgramWithFloat()
         types["Real"]="float";
         types["Real4"]="float4";
 
+        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLSPHFluidForceField.cl");
+        source = stringBSIZE + source;
+
         SPHFluidForceFieldOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLSPHFluidForceField.cl"),&types);
+            = new sofa::helper::OpenCLProgram(&source,&types);
 
         SPHFluidForceFieldOpenCLFloat_program->buildProgram();
 
@@ -75,7 +78,7 @@ void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_
 {
     DEBUG_TEXT("SPHFluidForceFieldOpenCL3f_computeDensity");
     BARRIER(cells,__FILE__,__LINE__);
-    std::cout << "size:"<<size<<"\n";
+
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     SPHFluidForceField_CreateProgramWithFloat();
 
@@ -96,6 +99,7 @@ void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_
     size_t work_size[1];
     work_size[0]=60*BSIZE;
 
+    std::cout << "COMPUTE DENSITY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     //std::cout << __LINE__ << __FILE__ << " " << size << " " << nbSpringPerVertex << " " << springs.offset << " " << f.offset << " " <<  x.offset << " " <<  v.offset<< " " << dfdx.offset << "\n";
     //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
 
@@ -110,6 +114,27 @@ void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_point
 {
     DEBUG_TEXT("SPHFluidForceFieldOpenCL3f_addForce");
     BARRIER(cells,__FILE__,__LINE__);
+
+    std::cout <<
+            params->h<<" "<<         ///< particles radius
+            params->h2<<" "<<       ///< particles radius squared
+            params->stiffness<<" "<< ///< pressure stiffness
+            params->mass<<" "<<      ///< particles mass
+            params->mass2<<" "<<     ///< particles mass squared
+            params->density0<<" "<<  ///< 1000 kg/m3 for water
+            params->viscosity<<" "<<
+            params->surfaceTension<<" "<<
+
+            // Precomputed constants for smoothing kernels
+            params->CWd<<" "<<          ///< = constWd(h)
+            params->CgradWd<<" "<<      ///< = constGradWd(h)
+            params->CgradWp<<" "<<      ///< = constGradWp(h)
+            params->ClaplacianWv<<" "<< ///< = constLaplacianWv(h)
+            params->CgradWc<<" "<<      ///< = constGradWc(h)
+            params->ClaplacianWc<<"\n"; ///< = constLaplacianWc(h)
+
+
+
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     SPHFluidForceField_CreateProgramWithFloat();

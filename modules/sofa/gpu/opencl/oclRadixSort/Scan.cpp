@@ -17,7 +17,7 @@
 #include "../OpenCLMemoryManager.h"
 #include "Scan.h"
 
-#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 Scan::Scan(
     unsigned int numElements

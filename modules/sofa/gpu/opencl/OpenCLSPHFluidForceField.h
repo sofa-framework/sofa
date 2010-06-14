@@ -108,10 +108,10 @@ public:
     void Kernels_addDForce(int gsize, const gpu::opencl::_device_pointer cells, const gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer f, const gpu::opencl::_device_pointer pos4, const gpu::opencl::_device_pointer dx, const gpu::opencl::_device_pointer vel);
 };
 
-
+/*
 template <>
 void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
+*/
 template <>
 void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 

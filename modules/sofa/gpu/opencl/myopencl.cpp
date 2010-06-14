@@ -47,6 +47,111 @@ void releaseContext()
     myopenclShowError(__FILE__, __LINE__);
 }
 
+void listDevices(cl_device_type type,cl_platform_id platform)
+{
+    //number of devices on the platform
+    cl_uint size_device;
+    clGetDeviceIDs(platform,type,0,NULL,&size_device);
+    cl_device_id *device = new cl_device_id[size_device];
+    clGetDeviceIDs(platform,type,size_device,device,NULL);
+
+    //for each device, display info
+    for(cl_uint i=0; i<size_device; i++)
+    {
+        std::cout << "----------\n";
+        size_t size;
+        clGetDeviceInfo(device[i],CL_DEVICE_NAME,0,NULL,&size);
+        char * data = new char[size];
+        clGetDeviceInfo(device[i],CL_DEVICE_NAME,size,data,NULL);
+        std::cout << "  DEVICE NAME:    " << data << std::endl;
+        delete(data);
+
+        clGetDeviceInfo(device[i],CL_DEVICE_VERSION,0,NULL,&size);
+        data = new char[size];
+        clGetDeviceInfo(device[i],CL_DEVICE_VERSION,size,data,NULL);
+        std::cout << "  DEVICE VERSION: " << data << std::endl;
+        delete(data);
+
+        cl_ulong l;
+        clGetDeviceInfo(device[i],CL_DEVICE_GLOBAL_MEM_SIZE,sizeof(cl_ulong),&l,NULL);
+        std::cout << "  GLOBAL MEM SIZE: " << l << std::endl;
+
+        clGetDeviceInfo(device[i],CL_DEVICE_GLOBAL_MEM_CACHE_SIZE,sizeof(cl_ulong),&l,NULL);
+        std::cout << "  GLOBAL MEM CACHE SIZE: " << l << std::endl;
+
+        clGetDeviceInfo(device[i],CL_DEVICE_LOCAL_MEM_SIZE,sizeof(cl_ulong),&l,NULL);
+        std::cout << "  LOCAL MEM SIZE: " << l << std::endl;
+
+        cl_uint ui;
+        clGetDeviceInfo(device[i],CL_DEVICE_MAX_CLOCK_FREQUENCY,sizeof(cl_ulong),&ui,NULL);
+        std::cout << "  MAX CLOCK FREQUENCY: " << ui << std::endl;
+
+        clGetDeviceInfo(device[i],CL_DEVICE_MAX_COMPUTE_UNITS,sizeof(cl_ulong),&ui,NULL);
+        std::cout << "  MAX COMPUTE UNITS: " << ui << std::endl;
+    }
+    delete(device);
+}
+
+void listPlatform()
+{
+    //number of platforms in the computer
+    cl_uint size_platform;
+    clGetPlatformIDs(0,NULL,&size_platform);
+    cl_platform_id * platform = new cl_platform_id();
+    clGetPlatformIDs(size_platform,platform,NULL);
+
+    std::cout << std::endl << std::endl << "=======================================" << std::endl << "PLATFORMS LIST"<< std::endl;
+
+    //for each platform, display info and search devices
+    for(cl_uint i=0; i<size_platform; i++)
+    {
+        //display info
+        std::cout << "=======================================" << std::endl;
+        size_t size;
+        // name
+        clGetPlatformInfo(platform[i],CL_PLATFORM_NAME,0,NULL,&size);
+        char * data = new char[size];
+        clGetPlatformInfo(platform[i],CL_PLATFORM_NAME,size,data,NULL);
+        std::cout << "PLATFORM NAME:    " << data << std::endl;
+        delete(data);
+        // version
+        clGetPlatformInfo(platform[i],CL_PLATFORM_VERSION,0,NULL,&size);
+        data = new char[size];
+        clGetPlatformInfo(platform[i],CL_PLATFORM_VERSION,size,data,NULL);
+        std::cout << "PLATFORM VERSION: " << data << std::endl;
+        delete(data);
+        // profile
+        clGetPlatformInfo(platform[i],CL_PLATFORM_PROFILE,0,NULL,&size);
+        data = new char[size];
+        clGetPlatformInfo(platform[i],CL_PLATFORM_PROFILE,size,data,NULL);
+        std::cout << "PLATFORM PROFILE: " << data << std::endl;
+        delete(data);
+        // vendor
+        clGetPlatformInfo(platform[i],CL_PLATFORM_VENDOR,0,NULL,&size);
+        data = new char[size];
+        clGetPlatformInfo(platform[i],CL_PLATFORM_VENDOR,size,data,NULL);
+        std::cout << "PLATFORM VENDOR:  " << data << std::endl;
+        delete(data);
+        // extensions
+        clGetPlatformInfo(platform[i],CL_PLATFORM_EXTENSIONS,0,NULL,&size);
+        data = new char[size];
+        clGetPlatformInfo(platform[i],CL_PLATFORM_EXTENSIONS,size,data,NULL);
+        std::cout << "PLATFORM EXTENSI: " << data << std::endl;
+        delete(data);
+
+        std::cout << "------------\n CPU\n";
+        listDevices(CL_DEVICE_TYPE_CPU,platform[i]);
+
+        std::cout << "------------\n GPU\n";
+        listDevices(CL_DEVICE_TYPE_GPU,platform[i]);
+
+        std::cout << "------------\n ACCELERATOR\n";
+        listDevices(CL_DEVICE_TYPE_ACCELERATOR,platform[i]);
+    }
+    std::cout << std::endl << "=======================================" << std::endl;
+
+    delete(platform);
+}
 
 void releaseQueues()
 {
@@ -66,6 +171,7 @@ void releaseDevices()
 
 cl_context createContext(cl_device_type type)
 {
+    listPlatform();
     if(_context)clReleaseContext(_context);
     myopenclShowError(__FILE__, __LINE__);
     return (_context = clCreateContextFromType(0, type, NULL, NULL, &_error));

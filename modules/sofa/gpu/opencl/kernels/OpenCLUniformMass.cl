@@ -1,4 +1,4 @@
-#define BSIZE 32
+//#define BSIZE 32
 
 
 __kernel void UniformMass_addForce(

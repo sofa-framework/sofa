@@ -36,9 +36,9 @@
 #include <string>
 
 
-#define ERROR_OFFSET(t) {if(t.offset!=0){printf("Error Offset %s %d: %d\n",__FILE__,__LINE__,(int)t.offset);exit(-1);}}
-#define NOT_IMPLEMENTED() {printf("Not implemented %s %d\n",__FILE__,__LINE__);exit(-1);}
-#define BARRIER(x,y,z) myopenclBarrier(x,y,z);
+#define ERROR_OFFSET(t) //{if(t.offset!=0){printf("Error Offset %s %d: %d\n",__FILE__,__LINE__,(int)t.offset);exit(-1);}}
+#define NOT_IMPLEMENTED() //{printf("Not implemented %s %d\n",__FILE__,__LINE__);exit(-1);}
+#define BARRIER(x,y,z) //myopenclBarrier(x,y,z);
 
 
 #if defined(__cplusplus)

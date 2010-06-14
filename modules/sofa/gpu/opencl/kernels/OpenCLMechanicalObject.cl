@@ -1,4 +1,4 @@
-#define BSIZE 32
+//#define BSIZE 32
 
 __kernel void MechanicalObject_Vec3t_vMEq(
     __global Real* res,
