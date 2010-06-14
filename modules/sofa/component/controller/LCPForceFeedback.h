@@ -117,7 +117,7 @@ public:
 
 
 protected:
-    component::constraint::LCP* lcp, *next_lcp;
+    //component::constraint::LCP* lcp, *next_lcp;
     core::behavior::MechanicalState<DataTypes> *mState; ///< The omni try to follow this mechanical state.
     VecCoord mVal[3];
     typename DataTypes::VecConst mConstraints[3];

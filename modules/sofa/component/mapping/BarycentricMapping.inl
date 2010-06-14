@@ -76,6 +76,8 @@ using namespace sofa::defaulttype;
 template <class BasicMapping>
 BarycentricMapping<BasicMapping>::BarycentricMapping ( In* from, Out* to, BaseMeshTopology * topology )
     : Inherit ( from, to ), mapper ( NULL )
+    , f_grid(0)
+    , f_hexaMapper(0)
 #ifdef SOFA_DEV
     , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
@@ -869,106 +871,119 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopology * topology )
 {
+    using sofa::core::behavior::BaseMechanicalState;
+
     mapper = NULL;
 
     topology::PointSetTopologyContainer* toTopoCont;
-    this->toModel->getContext()->get ( toTopoCont );
+    this->toModel->getContext()->get(toTopoCont);
 
     core::topology::TopologyContainer* topoCont2;
-    this->fromModel->getContext()->get ( topoCont2 );
+    this->fromModel->getContext()->get(topoCont2);
 
-    core::behavior::BaseMechanicalState *dofFrom=static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
-    core::behavior::BaseMechanicalState *dofTo  =static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom = &dofFrom->forceMask;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo=NULL;
-    if (dofTo)  maskTo = &dofTo->forceMask;
+    BaseMechanicalState *dofFrom = static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
+    BaseMechanicalState *dofTo = static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
+    BaseMechanicalState::ParticleMask *maskFrom = &dofFrom->forceMask;
+    BaseMechanicalState::ParticleMask *maskTo = NULL;
 
-    if ( topoCont2!=NULL )
+    if (dofTo)
+        maskTo = &dofTo->forceMask;
+
+    if (topoCont2 != NULL)
     {
-
-        topology::HexahedronSetTopologyContainer* t1 = dynamic_cast<topology::HexahedronSetTopologyContainer*> ( topoCont2 );
-        if ( t1 != NULL )
+        topology::HexahedronSetTopologyContainer* t1 = dynamic_cast< topology::HexahedronSetTopologyContainer* >(topoCont2);
+        if (t1 != NULL)
         {
             typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            f_hexaMapper->beginEdit()->setTopology ( t1 );
-            f_hexaMapper->beginEdit()->setToTopology( toTopoCont );
-            f_hexaMapper->beginEdit()->setMaskFrom ( maskFrom );
-            f_hexaMapper->beginEdit()->setMaskTo ( maskTo );
-            mapper = f_hexaMapper->beginEdit();
+            f_hexaMapper->setTopology(t1);
+            f_hexaMapper->setToTopology(toTopoCont);
+            f_hexaMapper->setMaskFrom(maskFrom);
+            f_hexaMapper->setMaskTo(maskTo);
+            mapper = f_hexaMapper;
         }
         else
         {
-            topology::TetrahedronSetTopologyContainer* t2 = dynamic_cast<topology::TetrahedronSetTopologyContainer*> ( topoCont2 );
-            if ( t2 != NULL )
+            topology::TetrahedronSetTopologyContainer* t2 = dynamic_cast<topology::TetrahedronSetTopologyContainer*>(topoCont2);
+            if (t2 != NULL)
             {
                 typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                mapper = new TetrahedronSetMapper ( t2, toTopoCont, maskFrom, maskTo); //, this->fromModel->getContext());
+                mapper = new TetrahedronSetMapper(t2, toTopoCont, maskFrom, maskTo);
             }
             else
             {
-                topology::QuadSetTopologyContainer* t3 = dynamic_cast<topology::QuadSetTopologyContainer*> ( topoCont2 );
-                if ( t3 != NULL )
+                topology::QuadSetTopologyContainer* t3 = dynamic_cast<topology::QuadSetTopologyContainer*>(topoCont2);
+                if (t3 != NULL)
                 {
                     typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
-                    mapper = new QuadSetMapper ( t3, toTopoCont, maskFrom, maskTo );
+                    mapper = new QuadSetMapper(t3, toTopoCont, maskFrom, maskTo);
                 }
                 else
                 {
-                    topology::TriangleSetTopologyContainer* t4 = dynamic_cast<topology::TriangleSetTopologyContainer*> ( topoCont2 );
-                    if ( t4 != NULL )
+                    topology::TriangleSetTopologyContainer* t4 = dynamic_cast<topology::TriangleSetTopologyContainer*>(topoCont2);
+                    if (t4 != NULL)
                     {
                         typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
-                        mapper = new TriangleSetMapper ( t4, toTopoCont, maskFrom, maskTo );
+                        mapper = new TriangleSetMapper(t4, toTopoCont, maskFrom, maskTo);
                     }
                     else
                     {
-                        topology::EdgeSetTopologyContainer* t5 = dynamic_cast<topology::EdgeSetTopologyContainer*> ( topoCont2 );
+                        topology::EdgeSetTopologyContainer* t5 = dynamic_cast<topology::EdgeSetTopologyContainer*>(topoCont2);
                         if ( t5 != NULL )
                         {
                             typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
-                            mapper = new EdgeSetMapper ( t5, toTopoCont, maskFrom, maskTo );
+                            mapper = new EdgeSetMapper(t5, toTopoCont, maskFrom, maskTo);
                         }
                     }
                 }
             }
         }
-        if(mapper != NULL)
-            dynamicMapper = dynamic_cast<BarycentricMapperDynamicTopology*> ( mapper );
+
+        if (mapper != NULL)
+            dynamicMapper = dynamic_cast< BarycentricMapperDynamicTopology* > ( mapper );
     }
     else
     {
+        using sofa::component::topology::RegularGridTopology;
 
-        topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*> ( topology );
-        if ( t2!=NULL && t2->isVolume() )
+        RegularGridTopology* rgt = dynamic_cast< RegularGridTopology* >(topology);
+
+        if (rgt != NULL && rgt->isVolume())
         {
-            typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
-            if ( f_grid->beginEdit()->isEmpty() )
-            {
-                f_grid->setValue ( RegularGridMapper ( t2, toTopoCont, maskFrom, maskTo) );
-                mapper = f_grid->beginEdit();
-            }
-            else
-            {
-                f_grid->beginEdit()->setTopology ( t2 );
-                f_grid->beginEdit()->setMaskFrom ( maskFrom );
-                f_grid->beginEdit()->setMaskTo ( maskTo );
-                mapper = f_grid->beginEdit();
-            }
+            typedef BarycentricMapperRegularGridTopology< InDataTypes, OutDataTypes > RegularGridMapper;
 
+            if (f_grid)
+            {
+                if (f_grid->isEmpty())
+                {
+                    *f_grid = RegularGridMapper(rgt, toTopoCont, maskFrom, maskTo);
+                    mapper = f_grid;
+                }
+                else
+                {
+                    f_grid->setTopology(rgt);
+                    f_grid->setMaskFrom(maskFrom);
+                    f_grid->setMaskTo(maskTo);
+                    mapper = f_grid;
+                }
+            }
         }
         else
         {
-            topology::SparseGridTopology* t4 = dynamic_cast<topology::SparseGridTopology*> ( topology );
-            if ( t4!=NULL && t4->isVolume() )
+            using sofa::component::topology::SparseGridTopology;
+
+            SparseGridTopology* sgt = dynamic_cast< SparseGridTopology* >(topology);
+            if (sgt != NULL && sgt->isVolume())
             {
-                typedef BarycentricMapperSparseGridTopology<InDataTypes, OutDataTypes> SparseGridMapper;
-                mapper = new SparseGridMapper ( t4, toTopoCont, maskFrom, maskTo);
+                typedef BarycentricMapperSparseGridTopology< InDataTypes, OutDataTypes > SparseGridMapper;
+                mapper = new SparseGridMapper(sgt, toTopoCont, maskFrom, maskTo);
             }
             else // generic MeshTopology
             {
-                typedef BarycentricMapperMeshTopology<InDataTypes, OutDataTypes> MeshMapper;
-                topology::BaseMeshTopology* t3 = dynamic_cast<topology::BaseMeshTopology*> ( topology );
-                mapper = new MeshMapper ( t3, toTopoCont, maskFrom, maskTo );
+                using sofa::core::topology::BaseMeshTopology;
+
+                typedef BarycentricMapperMeshTopology< InDataTypes, OutDataTypes > MeshMapper;
+                BaseMeshTopology* bmt = dynamic_cast< BaseMeshTopology* >(topology);
+                mapper = new MeshMapper(bmt, toTopoCont, maskFrom, maskTo);
             }
         }
     }
@@ -986,7 +1001,6 @@ void BarycentricMapping<BasicMapping>::init()
     //serr << "!!!!!!!!!!!! getDT = " <<  this->fromModel->getContext()->getDt() << sendl;
     //IPE
 
-    f_grid->beginEdit();
     if ( mapper == NULL ) // try to create a mapper according to the topology of the In model
     {
         if ( topology_from!=NULL )

@@ -1065,50 +1065,47 @@ public:
 
 protected:
 
-
-    Mapper* mapper;
-    DataPtr< RegularGridMapper >* f_grid;
-    DataPtr< HexaMapper >* f_hexaMapper;
+    Mapper *mapper;
+    RegularGridMapper *f_grid;
+    HexaMapper *f_hexaMapper;
 
     BarycentricMapperDynamicTopology* dynamicMapper;
 
 public:
 
-    Data<bool> useRestPosition;
+    Data< bool > useRestPosition;
 
 #ifdef SOFA_DEV
     //--- partial mapping test
-    Data<bool> sleeping;
+    Data< bool > sleeping;
 #endif
 
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
-        , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL,NULL,NULL,NULL ),"Regular Grid Mapping"))
-        , f_hexaMapper (new DataPtr< HexaMapper >( new HexaMapper(  ),"Hexahedron Mapper"))
+        , f_grid(new RegularGridMapper(NULL, NULL, NULL, NULL))
+        , f_hexaMapper(new HexaMapper())
         , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
 #ifdef SOFA_DEV
         , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
     {
-        this->addField( f_grid, "gridmap");	f_grid->beginEdit();
-        this->addField( f_hexaMapper, "hexamap");	f_hexaMapper->beginEdit();
     }
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
+        , f_grid(0)
+        , f_hexaMapper(0)
 #ifdef SOFA_DEV
         , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
     {
         if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
         {
-            f_grid = new DataPtr< RegularGridMapper >( m,"Regular Grid Mapping");
-            this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+            f_grid = m;
         }
         else if (HexaMapper* m = dynamic_cast< HexaMapper* >(mapper))
         {
-            f_hexaMapper = new DataPtr< HexaMapper >( m,"Hexahedron Mapper");
-            this->addField( f_hexaMapper, "hexamap");	f_hexaMapper->beginEdit();
+            f_hexaMapper = m;
         }
     }
 
@@ -1116,7 +1113,7 @@ public:
 
     virtual ~BarycentricMapping()
     {
-        if (mapper!=NULL)
+        if (mapper != NULL)
             delete mapper;
     }
 
