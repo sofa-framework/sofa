@@ -32,6 +32,7 @@
 #include <sofa/component/misc/ReadTopology.h>
 #include <sofa/component/misc/WriteTopology.h>
 #include <sofa/component/misc/CompareTopology.h>
+#include <sofa/component/init.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/ArgumentParser.h>
@@ -52,6 +53,8 @@ using sofa::simulation::tree::GNode;
 void apply(const std::string& directory, std::vector<std::string>& files,
         unsigned int iterations, bool reinit, bool useTopology)
 {
+
+    sofa::component::init(); // ensures all components are initialized, also introduce a dependency to all libraries, avoiding problems with -Wl,--as-needed flag
 
     sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
@@ -264,10 +267,6 @@ int main(int argc, char** argv)
     {
         std::cout << "  " << sceneFiles[i] << '\n';
     }
-    std::cout
-            << "*********************************************************************\n"
-                    << "*********************************************************************"
-                    << std::endl;
 
     apply(directory, sceneFiles, iterations, reinit, topology);
 
