@@ -179,6 +179,7 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
                viewer/qtogre/HelperLogics.h \
                viewer/qtogre/QtOgreViewer.h \
                viewer/qtogre/OgreVisualModel.h \
+               viewer/qtogre/OgreShaderEntryPoint.h \
                viewer/qtogre/OgreShaderParameter.h \
                viewer/qtogre/OgreShaderTextureUnit.h \
                viewer/qtogre/QOgreLightWidget.h
