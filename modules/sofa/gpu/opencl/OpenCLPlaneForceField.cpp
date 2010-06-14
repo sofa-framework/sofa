@@ -28,7 +28,7 @@
 #include "OpenCLPlaneForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
-#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 
 namespace sofa
@@ -67,7 +67,10 @@ void PlaneForceField_CreateProgramWithFloat()
         PlaneForceFieldOpenCLFloat_program
             = new sofa::helper::OpenCLProgram();
 
-        PlaneForceFieldOpenCLFloat_program->setSource(*sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField.cl"));
+        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField.cl");
+        source = stringBSIZE + source;
+
+        PlaneForceFieldOpenCLFloat_program->setSource(source);
         std::string macros = *sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField_Plane.macrocl");
         PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"all");
         PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"float");

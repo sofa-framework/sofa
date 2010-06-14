@@ -27,7 +27,7 @@
 #include <vector>
 #include "oclRadixSort/CPUSortWithOpenCL.h"
 
-#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 struct GridParams
 {
@@ -115,7 +115,6 @@ void SpatialGridContainer_RadixSort(sofa::gpu::opencl::_device_pointer keys,
     	sofa::gpu::opencl::myopenclCreateBuffer(0,&v.m,8*sizeof(Vec3f));
     	sofa::gpu::opencl::myopenclEnqueueWriteBuffer(0,v.m,0,value3,8*sizeof(Vec3f));*/
 
-    std::cout << "radixsort\n";
     CPUSortWithOpenCL<int>::sort(keys,values,numElements);
     /*
     	sofa::gpu::opencl::myopenclEnqueueReadBuffer(0,value3,v.m,0,8*sizeof(Vec3f));
@@ -139,8 +138,12 @@ void SpatialGridContainer_CreateProgramWithFloat()
         types["Real"]="float";
         types["Real4"]="float4";
 
+        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLSpatialGridContainer.cl");
+        source = stringBSIZE + source;
+
+
         SpatialGridContainerOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLSpatialGridContainer.cl"),&types);
+            = new sofa::helper::OpenCLProgram(&source,&types);
 
         SpatialGridContainerOpenCLFloat_program->buildProgram();
 
@@ -156,8 +159,6 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
     DEBUG_TEXT("SpatialGridContainer3f_computeHash");
     BARRIER(x,__FILE__,__LINE__);
 
-    std::cout << "particleHash8:" << particleHash8.offset << "\tparticleIndex8:" << particleIndex8.offset << "\tx" << x.offset << "\n";
-//exit(0);
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     SpatialGridContainer_CreateProgramWithFloat();
@@ -237,7 +238,6 @@ void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidt
 {
     DEBUG_TEXT("SpatialGridContainer_findCellRange");
     BARRIER(particleHash8,__FILE__,__LINE__);
-    std::cout << index0;
 
     opencl::myopenclMemsetDevice(0,cellRange, 0, ((1<<cellBits)+1)*sizeof(int));
     opencl::myopenclMemsetDevice(0,cellGhost, 0, ((1<<cellBits))*sizeof(int));

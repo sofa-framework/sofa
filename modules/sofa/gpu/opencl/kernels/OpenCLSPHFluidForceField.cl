@@ -23,7 +23,7 @@ typedef struct
 typedef Real4 Deriv;
 
 #define R_PI 3.141592654
-#define BSIZE 32
+//#define BSIZE 32
 
 
 //////////////////////////////////////////////////
@@ -195,7 +195,7 @@ inline Real constLaplacianWv(Real h)
     //return 75/(R_PI*h*h*h*h*h);
 }
 
-inline Real laplacianWv(Real r_h, Real C)
+/*inline*/ Real laplacianWv(Real r_h, Real C)
 {
     return C*(1-r_h);
 }
@@ -400,14 +400,12 @@ inline Real4 SPHFluidCalcForce(Real4 x1, Real4 v1, Real4 x2, Real4 v2, __private
         // Pressure
         Real pressure1 = params->stiffness * (density1 - params->density0);
         Real pressure2 = params->stiffness * (density2 - params->density0);
-        Real4 f1 = gradWp(n, r_h, params->CgradWp) * ( params->mass2 * (pressure1 / (density1*density1) + pressure2 / (density2*density2) ));
-
+        force += gradWp(n, r_h, params->CgradWp) * ( params->mass2 * (pressure1 / (density1*density1) + pressure2 / (density2*density2) ));
         // Viscosity
-        Real4 f2 = ( v2 - v1 ) * (params->mass2 * params->viscosity * laplacianWv(r_h,params->ClaplacianWv) / (density1 * density2) );
+        force += (( v2 - v1 ) * (params->mass2 * params->viscosity * laplacianWv(r_h,params->ClaplacianWv) / (density1 * density2) ) );
 
-        return f1+f2+force;
     }
-    return force; //(Real4)(0,0,0,0);
+    return force;
 }
 
 __kernel void SPHFluidForceField_addForce(

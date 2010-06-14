@@ -29,7 +29,7 @@
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 
-#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
 {
@@ -90,7 +90,10 @@ void SphereForceField_CreateProgramWithFloat()
         SphereForceFieldOpenCLFloat_program
             = new sofa::helper::OpenCLProgram();
 
-        SphereForceFieldOpenCLFloat_program->setSource(*sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField.cl"));
+        std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField.cl");
+        source = stringBSIZE + source;
+
+        SphereForceFieldOpenCLFloat_program->setSource(source);
         std::string macros = *sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField_Sphere.macrocl");
         SphereForceFieldOpenCLFloat_program->addMacros(&macros,"all");
         SphereForceFieldOpenCLFloat_program->addMacros(&macros,"float");

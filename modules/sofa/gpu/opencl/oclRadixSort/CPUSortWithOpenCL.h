@@ -27,7 +27,7 @@ public:
         int *keyVector = new int[numElements];
         Vectorsort vecsort;
 
-        std::cout << "CPUSort values:" <<values.offset << "\nkeys"<< keys.offset <<"\n";
+//		std::cout << "CPUSort values:" <<values.offset << "\nkeys"<< keys.offset <<"\n";
 
         sofa::gpu::opencl::myopenclEnqueueReadBuffer(0,valueVector,values.m,values.offset,numElements*sizeof(T));
         sofa::gpu::opencl::myopenclEnqueueReadBuffer(0,keyVector,keys.m,keys.offset,numElements*sizeof(int));

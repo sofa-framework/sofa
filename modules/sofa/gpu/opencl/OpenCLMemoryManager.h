@@ -5,6 +5,7 @@
 #include <sofa/helper/MemoryManager.h>
 #include <iostream>
 #include <stdlib.h>
+#include "OpenCLCommon.h"
 
 namespace sofa
 {
@@ -35,7 +36,7 @@ public :
     typedef GLuint gl_buffer;
 
     enum { MAX_DEVICES = 8 };
-//	enum { BSIZE = 32 };
+    enum { BSIZE = intBSIZE };
     enum { SUPPORT_GL_BUFFER = 0 };
 
     static int numDevices()

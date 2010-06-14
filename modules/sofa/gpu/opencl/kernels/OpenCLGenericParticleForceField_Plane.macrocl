@@ -24,7 +24,7 @@ _TYPES_()
 <MACRO all>
 _DEF_()
 {
-	#define BSIZE 32
+//	#define BSIZE 32
 }
 </MACRO>
 
