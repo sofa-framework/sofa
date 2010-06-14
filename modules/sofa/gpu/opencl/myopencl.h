@@ -77,6 +77,7 @@ extern "C" {
     extern void myopenclEnqueueReadBuffer(int device,void * hdest,const cl_mem dsrc,size_t offset, size_t n);
     extern void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset, const cl_mem dsrc,size_t srcOffset, size_t n);
     extern void myopenclSetKernelArg(cl_kernel kernel, int num_arg,int size,void* arg);
+
     extern void myopenclBuildProgram(void* p);
     extern void myopenclBuildProgramWithFlags(void * program, char * flags);
     extern cl_program myopenclProgramWithSource(const char * s,const size_t size);
@@ -95,6 +96,17 @@ extern "C" {
     extern int myopenclMultiOpMax;
 }
 
+template<class T>
+void myopenclSetKernelArg(cl_kernel kernel, int num_arg, const T* arg);
+
+template<class T>
+extern inline void myopenclSetKernelArg(cl_kernel kernel, int num_arg, const T* arg)
+{
+    myopenclSetKernelArg(kernel, num_arg, sizeof(T), (void*)arg);
+}
+
+template<>
+extern void myopenclSetKernelArg<_device_pointer>(cl_kernel kernel, int num_arg, const _device_pointer* arg);
 
 #if defined(__cplusplus)
 } // namespace cuda

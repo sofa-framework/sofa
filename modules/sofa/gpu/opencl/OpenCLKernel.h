@@ -29,7 +29,8 @@ public:
     template <typename T>
     void setArg(int numArg,const T* arg)
     {
-        sofa::gpu::opencl::myopenclSetKernelArg(_kernel,numArg,sizeof(T),(void *)arg);
+        //sofa::gpu::opencl::myopenclSetKernelArg(_kernel,numArg,sizeof(T),(void *)arg);
+        sofa::gpu::opencl::myopenclSetKernelArg(_kernel,numArg,arg);
     }
 
     void setArg(int numArg,int size,void* arg)

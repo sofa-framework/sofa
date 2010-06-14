@@ -183,6 +183,7 @@ void createDevices()
     size_t devices_size;
     clGetContextInfo(_context, CL_CONTEXT_DEVICES,0,NULL, &devices_size);		//compter le nombre de matériel
     _numDevices = devices_size/sizeof(cl_device_id);
+    std::cout << "OpenCL: " << _numDevices  << " devices." << std::endl;
     _devices = new cl_device_id[_numDevices];					//allouer un espace mémoire pour recueillir les matériels
     clGetContextInfo(_context, CL_CONTEXT_DEVICES,devices_size,_devices, NULL);	//créer une liste de matériel
     myopenclShowError(__FILE__, __LINE__);
@@ -246,6 +247,7 @@ void myopenclReleaseBuffer(int /*device*/,cl_mem p)
 void myopenclEnqueueWriteBuffer(int device,cl_mem ddest,size_t offset,const void* hsrc,size_t n)
 {
     DEBUG_TEXT("myopenclEnqueueWriteBuffer");
+    std::cout << "clEnqueueWriteBuffer(" << device << ", " << ddest << ", " << offset << ", " << hsrc << ", " << n << ")" << std::endl;
     _error = clEnqueueWriteBuffer(_queues[device], ddest, CL_TRUE, offset, n, hsrc,0,NULL,NULL);
     myopenclShowError(__FILE__, __LINE__);
     DEBUG_TEXT("~myopenclEnqueueWriteBuffer");
@@ -279,14 +281,23 @@ cl_program myopenclProgramWithSource(const char * s,const size_t size)
 cl_kernel myopenclCreateKernel(void* p,const char * kernel_name)
 {
     DEBUG_TEXT("myopenclCreateKernel");
+    std::cout << "clCreateKernel(p, " << kernel_name << ");" << std::endl;
     return clCreateKernel((cl_program)p, kernel_name, &_error);
     myopenclShowError(__FILE__, __LINE__);
     DEBUG_TEXT("~myopenclCreateKernel");
 }
 
+template<>
+void myopenclSetKernelArg<_device_pointer>(cl_kernel kernel, int num_arg, const _device_pointer* arg)
+{
+    if (arg->offset) std::cerr << "OpenCL ERROR: non-zero offset " << arg->offset << std::endl;
+    myopenclSetKernelArg(kernel, num_arg, sizeof(cl_mem), (void*)&arg->m);
+}
+
 void myopenclSetKernelArg(cl_kernel kernel,int num_arg,int size,void* arg)
 {
     DEBUG_TEXT("myopenclSetKernelArg");
+    std::cout << "clSetKernelArg(kernel, " << num_arg << ", " << size << ", " << arg << ");" << std::endl;
     _error = clSetKernelArg(kernel, num_arg,size, arg);
     myopenclShowError(__FILE__, __LINE__);
     DEBUG_TEXT("~myopenclSetKernelArg");
