@@ -89,7 +89,7 @@ void RestShapeSpringsForceField<DataTypes>::init()
     if (path.size()>0)
     {
         this->getContext()->get(restMState ,path  );
-        std::cout<< "for RestShapeSpringFF named "<<this->getName()<<", path = "<<path<<std::endl;
+        //std::cout<< "for RestShapeSpringFF named "<<this->getName()<<", path = "<<path<<std::endl;
     }
     else
         restMState = NULL;
@@ -99,7 +99,8 @@ void RestShapeSpringsForceField<DataTypes>::init()
     VecIndex indices;
     if(restMState == NULL)
     {
-        std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
+        if(!external_rest_shape.getValue().empty())
+            std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
         useRestMState = false;
 
         for (unsigned int i=0; i<points.getValue().size(); i++)
@@ -111,7 +112,7 @@ void RestShapeSpringsForceField<DataTypes>::init()
     }
     else
     {
-        std::cout<<"Mechanical state named "<<restMState->getName()<< " founded for RestShapeSpringFF named "<<this->getName()<<std::endl;
+        std::cout<<"Mechanical state named "<<restMState->getName()<< " found for RestShapeSpringFF named "<<this->getName()<<std::endl;
         useRestMState = true;
         if (external_points.getValue().size()==0)
         {

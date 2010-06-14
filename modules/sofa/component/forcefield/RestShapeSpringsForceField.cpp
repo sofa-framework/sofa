@@ -106,17 +106,24 @@ void RestShapeSpringsForceField<Rigid3dTypes>::init()
 
 
     const std::string path = external_rest_shape.getValue();
-    this->getContext()->get(restMState ,path  );
+    if (path.size()>0)
+    {
+        this->getContext()->get(restMState ,path  );
+    }
+    else
+        restMState = NULL;
+    //this->getContext()->get(restMState ,path  );
 
     if(restMState == NULL)
     {
-        std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
+        if(!external_rest_shape.getValue().empty())
+            std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
         useRestMState = false;
         external_points.setValue(points.getValue());
     }
     else
     {
-        std::cout<<"Mechanical state named "<<restMState->getName()<< " founded"<<std::endl;
+        std::cout<<"Mechanical state named "<<restMState->getName()<< " found"<<std::endl;
         useRestMState = true;
         if (external_points.getValue().size()==0)
         {
@@ -342,7 +349,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::init()
     }
     else
     {
-        std::cout<<"Mechanical state named "<<restMState->getName()<< " founded"<<std::endl;
+        std::cout<<"Mechanical state named "<<restMState->getName()<< " found"<<std::endl;
         useRestMState = true;
         if (external_points.getValue().size()==0)
         {
