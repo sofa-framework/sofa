@@ -245,7 +245,8 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
 
     //xmlSubstituteEntitiesDefault(1);
 
-    if (!(doc.Parse(data)))
+    doc.Parse(data);
+    if (doc.Error())
     {
         std::cerr << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() << std::endl;
         return NULL;
