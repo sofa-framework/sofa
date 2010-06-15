@@ -25,14 +25,14 @@
 #ifndef SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_H
 #define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/vector.h>
-
-#include <sofa/defaulttype/Mat.h>
+//#include <sofa/core/behavior/MechanicalMapping.h>
+//#include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
+
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Mat.h>
 
 namespace sofa
 {

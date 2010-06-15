@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMEdgeBasedMapping_H
 #define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMEdgeBasedMapping_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+//#include <sofa/core/behavior/MechanicalMapping.h>
+//#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 
-#include <sofa/defaulttype/Mat.h>
+//#include <sofa/defaulttype/Mat.h>
 
 #include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
 

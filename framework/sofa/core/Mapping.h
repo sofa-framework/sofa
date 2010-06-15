@@ -28,6 +28,11 @@
 #define SOFA_CORE_MAPPING_H
 
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MappedModel.h>
+
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -194,8 +199,46 @@ protected:
     bool getShow() const { return this->getContext()->getShowMappings(); }
 };
 
+#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::behavior;
+
+extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >;
+extern template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
+extern template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+// extern template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
+extern template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+
+extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
+extern template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3fTypes> >;
+extern template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+extern template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+// extern template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+
+extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> >;
+extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > ;
+extern template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3fTypes> >;
+extern template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3dTypes> >;
+extern template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+extern template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
+
+// Mech -> Mapped
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> >;
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+
+// Mech -> ExtMapped
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+//extern template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+
+#endif
+
 } // namespace core
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_MAPPING_H
