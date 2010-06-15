@@ -13,7 +13,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/Event.h>
 
-#include <sofa/helper/RandomGenerator.h>
+//#include <sofa/helper/RandomGenerator.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/Quater.h>
+
 
 #include <VRPNDevice.h>
 
@@ -37,8 +41,10 @@ struct VRPNImagerData
     bool already_posted;          //< Posted redisplay since the last display?
     int Xdim, Ydim;               //< Dimensions in X and Y
     vrpn_Imager_Remote *remote_imager;
+    float rigidPointData[7];
 
     unsigned char *image;        //< Pointer to the storage for the image
+
 
 
     VRPNImagerData() :
@@ -63,6 +69,9 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
+    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::helper::Quater<Real> Quat;
+
 
     typedef typename DataTypes::VecCoord VecCoord;
 
@@ -82,10 +91,16 @@ public:
         return DataTypes::Name();
     }
 
+    //Data<Point> rigidPoint;
+    //Data<sofa::helper::vector<Vec3 > > f_positions;
+    //Data<sofa::helper::vector<Quat> > f_orientations;
+    Data<Point> f_rigidPoint;
+
 private:
     vrpn_Imager_Remote      *g_imager;      //< Imager client object
     VRPNImagerData  imagerData;
     unsigned int imageTextureID;
+
 
     bool connectToServer();
     void update();

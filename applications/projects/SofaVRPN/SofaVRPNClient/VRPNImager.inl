@@ -91,9 +91,40 @@ void VRPNImager<DataTypes>::update()
 
     for (unsigned i=0; i < 7; i++)
         x[i] = imagerData.rigidPointData[i];
+    float temp = x[1];
+    x[1]=-x[1];
+    x[2]=-x[2];
+
+    x[0] *= 0.001;
+    x[1] *= 0.001;
+    x[2] *= 0.001;
+    //x[2]; x[2]=temp;
+    /*temp=x[5];
+    x[5]=x[6];
+    x[6]=temp;*/
+    /*x[3] = 0;
+    x[4] = 0;
+    x[5] = 0;
+    x[6] = 1;*/
+    //x[3] = imagerData.rigidPointData[
 
     std::cout << "PointData = " <<  f_rigidPoint.getValue() << std::endl;
+    Quat qt(x[3], x[4], x[5], x[6]);
+    Vec3 currentAxisRotation;
+    Real currentAngleRotation;
+    qt.quatToAxis(currentAxisRotation, currentAngleRotation);
+
+    Quat qt2(currentAxisRotation*(-1), currentAngleRotation);
+
+    x[3] = qt2[0];
+    x[4] = qt2[1];
+    x[5] = qt2[2];
+    x[6] = qt2[3];
+
+    std::cout << "Quat = " << qt << std::endl;
+    std::cout << "Euler = " << qt.toEulerVector() << std::endl;
     f_rigidPoint.setValue(x);
+
 
     /*sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
     std::cout << "read tracker " << this->getName() << std::endl;
@@ -152,13 +183,13 @@ void VRPNImager<DataTypes>::draw()
     glLoadIdentity();
 
     glBegin(GL_QUADS);
-    glTexCoord2i(0, 1);
-    glVertex4f(-1, -1, 0, 1);
-    glTexCoord2i(1, 1);
-    glVertex4f(1, -1, 0, 1);
-    glTexCoord2i(1, 0);
-    glVertex4f(1, 1, 0, 1);
     glTexCoord2i(0, 0);
+    glVertex4f(-1, -1, 0, 1);
+    glTexCoord2i(1, 0);
+    glVertex4f(1, -1, 0, 1);
+    glTexCoord2i(1, 1);
+    glVertex4f(1, 1, 0, 1);
+    glTexCoord2i(0, 1);
     glVertex4f(-1, 1, 0, 1);
     glEnd();
 
