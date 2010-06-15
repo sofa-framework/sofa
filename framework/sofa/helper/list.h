@@ -97,7 +97,7 @@ public:
 
     std::istream& read(std::istream& in)
     {
-        T t;
+        T t = T();
         this->clear();
         while(in>>t)
         {
