@@ -30,6 +30,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/Data.h>
 
 
 
@@ -268,6 +269,10 @@ private:
 
     /// Array of state modifications that have already occured (addition) or will occur next (deletion).
     Data <sofa::helper::list<const TopologyChange *> >m_stateChangeList;
+
+protected:
+    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
+    TopologyEngine *m_topologyEngine;
 };
 
 
@@ -276,15 +281,28 @@ class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
 {
 public:
     SOFA_CLASS(TopologyEngine, DataEngine);
+    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *> _topologicalDataList;
+    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *>::iterator _iterator;
 
     virtual ~TopologyEngine() {}
 
     virtual void init();
 
+    virtual void handleTopologyChange() {};
+
 protected:
     TopologyEngine() {};
 
+    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
+    _topologicalDataList m_topologicalData;
+
+public:
+    unsigned int getNumberOfTopologicalDataLinked() {return m_topologicalData.size();}
+
+    void addTopologicalData(sofa::core::objectmodel::BaseData& topologicalData);
+
+    void removeTopoligicalData(sofa::core::objectmodel::BaseData& topologicalData);
 
 };
 

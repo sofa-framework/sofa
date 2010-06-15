@@ -151,6 +151,16 @@ void TopologyEngine::init()
     DataEngine::init();
 }
 
+void TopologyEngine::addTopologicalData(sofa::core::objectmodel::BaseData& topologicalData)
+{
+    m_topologicalData.push_back(&topologicalData);
+}
+
+void TopologyEngine::removeTopoligicalData(sofa::core::objectmodel::BaseData& topologicalData)
+{
+    m_topologicalData.remove(&topologicalData);
+}
+
 
 } // namespace topology
 
