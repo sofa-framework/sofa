@@ -86,7 +86,7 @@ void StaticSolver::solve(double dt)
         serr<<"StaticSolver, solution = "<< x <<sendl;
     pos.peq( x );
 
-    solveConstraint(dt,VecId::position());
+    solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
 
 
     /*    serr<<"StaticSolver::solve, new pos = "<<pos<<sendl;*/

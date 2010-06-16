@@ -103,14 +103,14 @@ protected:
     virtual void buildLeftMatrix         ( const DofToMatrix& invMassMatrices,
             DofToMatrix& LMatrices, SparseMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
     /// Solve the System using a projective Gauss-Seidel algorithm: compute the Lagrange Multipliers Lambda
-    virtual bool solveConstraintSystemUsingGaussSeidel(ConstOrder Order,
+    virtual bool solveConstraintSystemUsingGaussSeidel(VecId id, ConstOrder Order,
             const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             MatrixEigen &W,
             VectorEigen &c,
             VectorEigen &Lambda);
 
     /// Compute Kinetic Energy
-    virtual void computeKineticEnergy();
+    virtual void computeKineticEnergy(VecId id);
 
     /** Apply the correction to the state corresponding
      * @param id nature of the constraint, and correction to apply
@@ -119,7 +119,8 @@ protected:
      * @param c correction vector
      * @param propageVelocityChange need to propagate the correction done to the velocity for the position
      **/
-    virtual void constraintStateCorrection(VecId id, bool isPositionChangesUpdateVelocity,
+    virtual void constraintStateCorrection(VecId id, core::behavior::BaseConstraintSet::ConstOrder order,
+            bool isPositionChangesUpdateVelocity,
             const SparseMatrixEigen  &invM_Ltrans,
             const VectorEigen  &Lambda,
             const sofa::helper::set< unsigned int > &dofUsed,
@@ -137,7 +138,7 @@ protected:
             const core::behavior::BaseMass* mass,
             SparseMatrixEigen& matrix) const;
 
-    core::behavior::BaseLMConstraint::ConstOrder orderState;
+    core::behavior::BaseConstraintSet::ConstOrder orderState;
     unsigned int numConstraint;
 
     //Variables used to do the computation

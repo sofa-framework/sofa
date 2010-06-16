@@ -173,9 +173,9 @@ void RungeKutta4Solver::solve (double dt, sofa::core::behavior::BaseMechanicalSt
     pos.peq(k3v,stepBy3);
     vel.peq(k3a,stepBy3);
     pos.peq(k4v,stepBy6);
-    solveConstraint(dt, xResult);
+    solveConstraint(dt, xResult, core::behavior::BaseConstraintSet::POS);
     vel.peq(k4a,stepBy6);
-    solveConstraint(dt, vResult);
+    solveConstraint(dt, vResult, core::behavior::BaseConstraintSet::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -196,8 +196,8 @@ void RungeKutta4Solver::solve (double dt, sofa::core::behavior::BaseMechanicalSt
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
 
-        solveConstraint(dt, VecId::position());
-        solveConstraint(dt, VecId::velocity());
+        solveConstraint(dt, pos, core::behavior::BaseConstraintSet::POS);
+        solveConstraint(dt, vel, core::behavior::BaseConstraintSet::VEL);
     }
 #endif
 
@@ -329,9 +329,9 @@ void RungeKutta4Solver::solve(double dt)
     pos.peq(k3v,stepBy3);
     vel.peq(k3a,stepBy3);
     pos.peq(k4v,stepBy6);
-    solveConstraint(dt,VecId::position());
+    solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
     vel.peq(k4a,stepBy6);
-    solveConstraint(dt,VecId::velocity());
+    solveConstraint(dt,vel,core::behavior::BaseConstraintSet::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -352,8 +352,8 @@ void RungeKutta4Solver::solve(double dt)
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
 
-        solveConstraint(dt,VecId::velocity());
-        solveConstraint(dt,VecId::position());
+        solveConstraint(dt,vel,core::behavior::BaseConstraintSet::VEL);
+        solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
     }
 #endif
 

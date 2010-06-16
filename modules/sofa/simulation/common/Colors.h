@@ -40,24 +40,25 @@ namespace Colors
 
 enum
 {
-    NODE = 0,
-    OBJECT = 1,
-    CONTEXT = 2,
-    BMODEL = 3,
-    CMODEL = 4,
-    MMODEL = 5,
-    CONSTRAINT = 6,
-    IFFIELD = 7,
-    FFIELD = 8,
-    SOLVER = 9,
-    COLLISION = 10,
-    MMAPPING = 11,
-    MAPPING = 12,
-    MASS = 13,
-    TOPOLOGY = 14,
-    VMODEL = 15,
-    LOADER = 16,
-    CONFIGURATIONSETTING = 17,
+    NODE,
+    OBJECT,
+    CONTEXT,
+    BMODEL,
+    CMODEL,
+    MMODEL,
+    PROJECTIVECONSTRAINTSET,
+    CONSTRAINTSET,
+    IFFIELD,
+    FFIELD,
+    SOLVER,
+    COLLISION,
+    MMAPPING,
+    MAPPING,
+    MASS,
+    TOPOLOGY,
+    VMODEL,
+    LOADER ,
+    CONFIGURATIONSETTING,
     ALLCOLORS
 };
 
@@ -72,7 +73,8 @@ static const char* COLOR[ALLCOLORS]=
     /*BehaviorModel         =*/ "#93ff49", // color 7 (brighter)
     /*CollisionModel        =*/ "#fccde5", // color 8
     /*MechanicalState       =*/ "#8dd3c7", // color 1
-    /*Constraint            =*/ "#fdb462", // color 6
+    /*ProjectiveConstraintSet  =*/ "#fdb462", // color 6
+    /*ConstraintSet         =*/ "#f98912", // color 6
     /*InteractionForceField =*/ "#fb8072", // color 4
     /*ForceField            =*/ "#bebada", // color 3
     /*Solver                =*/ "#b3de69", // color 7
@@ -94,7 +96,8 @@ inline const char* getColor(const char* classname)
     if (!strcmp(classname,"BehaviorModel")) return COLOR[BMODEL];
     if (!strcmp(classname,"CollisionModel")) return COLOR[CMODEL];
     if (!strcmp(classname,"MechanicalState")) return COLOR[MMODEL];
-    if (!strcmp(classname,"Constraint")) return COLOR[CONSTRAINT];
+    if (!strcmp(classname,"ProjectiveConstraintSet")) return COLOR[PROJECTIVECONSTRAINTSET];
+    if (!strcmp(classname,"ConstraintSet")) return COLOR[CONSTRAINTSET];
     if (!strcmp(classname,"InteractionForceField")) return COLOR[IFFIELD];
     if (!strcmp(classname,"ForceField")) return COLOR[FFIELD];
     if (!strcmp(classname,"MasterSolver")) return COLOR[SOLVER];

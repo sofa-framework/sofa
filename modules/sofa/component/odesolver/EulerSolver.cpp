@@ -94,24 +94,24 @@ void EulerSolver::solve(double dt)
 // 	  }
 
 
-    solveConstraint(dt,VecId::dx());
+    solveConstraint(dt,acc,core::behavior::BaseConstraintSet::ACC);
 
     // update state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if( symplectic.getValue() )
     {
         vel.peq(acc,dt);
-        solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,vel,core::behavior::BaseConstraintSet::VEL);
         pos.peq(vel,dt);
-        solveConstraint(dt,VecId::position());
+        solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
 
     }
     else
     {
         pos.peq(vel,dt);
-        solveConstraint(dt,VecId::position());
+        solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
         vel.peq(acc,dt);
-        solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,vel,core::behavior::BaseConstraintSet::VEL);
     }
 #else // single-operation optimization
     {
@@ -130,8 +130,8 @@ void EulerSolver::solve(double dt)
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
 
-        solveConstraint(dt,VecId::velocity());
-        solveConstraint(dt,VecId::position());
+        solveConstraint(dt,vel,core::behavior::BaseConstraintSet::VEL);
+        solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
     }
 #endif
 
