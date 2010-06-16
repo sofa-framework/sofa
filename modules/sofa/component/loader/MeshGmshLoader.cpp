@@ -63,40 +63,44 @@ bool MeshGmshLoader::load()
 
 
     // -- Looking for Gmsh version of this file.
-    file >> cmd;
-    if (cmd == "$MeshFormat") // Reading gmsh 2.0 file
+    std::getline(file, cmd); //Version
+    std::istringstream versionReader(cmd);
+    std::string version;
+    versionReader >> version;
+    if (version == "$MeshFormat") // Reading gmsh 2.0 file
     {
         gmshFormat = 2;
-        // 		std::cout << "Gmsh format 2.0" << std::endl;
+//      sout << "Gmsh format 2.0" << sendl;
         std::string line;
         std::getline(file, line); // we don't care about this line (2 0 8)
-        // modifiacation of Phuoc
-        if(line.empty())
-        {
-            file >> cmd;
-            std::getline(file, line); // we don't care about this line (0 8)
-        }
-        // end of modification of Phuoc
+        std::getline(file, cmd); // end Version
+        std::istringstream endMeshReader(cmd);
+        std::string endMesh;
+        endMeshReader >> endMesh;
 
-        file >> cmd;
-        if (cmd != "$EndMeshFormat") // it should end with $EndMeshFormat
+        if (endMesh != std::string("$EndMeshFormat") ) // it should end with $EndMeshFormat
         {
+            serr << "Closing File" << sendl;
             file.close();
             return false;
         }
         else
         {
-            file >> cmd;
+            std::getline(file, cmd); // First Command
         }
     }
     else
     {
+        //sout << "Gmsh format 1.0" << sendl;
         gmshFormat = 1;
-        //std::cout << "Gmsh format 1.0" << std::endl;
     }
 
+
+    std::istringstream nodeReader(cmd);
+    std::string node;
+    nodeReader >> node;
     // -- Reading file
-    if (cmd == "$NOD" || cmd == "$Nodes") // Gmsh format
+    if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
         fileRead = readGmsh(file, gmshFormat);
     }
