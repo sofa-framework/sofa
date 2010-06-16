@@ -971,9 +971,17 @@ void SofaModeler::removeTemporaryFiles(const std::string &f)
     std::string copyBuffer(presetPath+"copyBuffer.scn");
     //Delete Temporary file
     ::remove(filename.c_str());
-    filename += "." + std::string(sofa::gui::GUIManager::GetCurrentGUIName()) + ".view";
-    //Remove eventual .view file
-    ::remove(filename.c_str());
+
+    for (unsigned int i=0; i<listActionGUI.size(); ++i)
+    {
+        const std::string viewerName=listActionGUI[i]->text().ascii();
+        if (viewerName != "default" && viewerName != "batch")
+        {
+            std::string viewFilename=filename + std::string(".") + viewerName + std::string(".view");
+            //Remove eventual .view file
+            ::remove(viewFilename.c_str());
+        }
+    }
     //Remove eventual copy buffer
     ::remove(copyBuffer.c_str());
 }
