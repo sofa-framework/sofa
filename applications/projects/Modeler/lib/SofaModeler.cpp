@@ -133,14 +133,19 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     QHBoxLayout *filterLayout = new QHBoxLayout(filterContainer);
     leftPartLayout->addWidget(filterContainer);
     //--> Label
-    QPushButton *filterLabel= new QPushButton(QString("Filter: "),filterContainer);
+    QLabel *filterLabel= new QLabel(QString("Filter: "),filterContainer);
     filterLayout->addWidget(filterLabel);
     //--> Filter
     filterLibrary = new FilterLibrary(filterContainer);
     filterLayout->addWidget(filterLibrary);
+    //--> Clear Button
+    QPushButton *clearButton= new QPushButton(QString("X"),filterContainer);
+    filterLayout->addWidget(clearButton);
+    clearButton->setMaximumHeight(16);
+    clearButton->setMaximumWidth(16);
 
     connect(filterLibrary, SIGNAL( filterList( const FilterQuery &) ), this, SLOT(searchText( const FilterQuery &)) );
-    connect(filterLabel, SIGNAL( clicked()), filterLibrary, SLOT(clearText()));
+    connect(clearButton, SIGNAL( clicked()), filterLibrary, SLOT(clearText()));
 
     //----------------------------------------------------------------------
     //Add the Sofa Library
@@ -972,6 +977,8 @@ void SofaModeler::removeTemporaryFiles(const std::string &f)
     //Delete Temporary file
     ::remove(filename.c_str());
 
+    //Delete View files
+    std::string viewFilename=filename + std::string(".view");
     for (unsigned int i=0; i<listActionGUI.size(); ++i)
     {
         const std::string viewerName=listActionGUI[i]->text().ascii();
@@ -982,6 +989,7 @@ void SofaModeler::removeTemporaryFiles(const std::string &f)
             ::remove(viewFilename.c_str());
         }
     }
+
     //Remove eventual copy buffer
     ::remove(copyBuffer.c_str());
 }
