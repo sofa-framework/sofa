@@ -188,9 +188,9 @@ void BiCGStabImplicitSolver::solve(double dt)
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
-    solveConstraint(dt,VecId::velocity());
+    solveConstraint(dt,vel, core::behavior::BaseConstraintSet::VEL);
     pos.peq( vel, h );                  // pos = pos + h vel
-    solveConstraint(dt,VecId::position());
+    solveConstraint(dt,pos, core::behavior::BaseConstraintSet::POS);
 
     if( getDebug() )
     {

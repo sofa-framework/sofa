@@ -152,11 +152,11 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
-    solveConstraint(dt,VecId::position());
+    solveConstraint(dt,xResult,core::behavior::BaseConstraintSet::POS);
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
-    solveConstraint(dt,VecId::velocity());
+    solveConstraint(dt,vResult,core::behavior::BaseConstraintSet::VEL);
 
 #else // single-operation optimization
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -176,8 +176,8 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
     simulation::MechanicalVMultiOpVisitor vmop(ops);
     vmop.execute(this->getContext());
 
-    solveConstraint(dt,VecId::velocity());
-    solveConstraint(dt,VecId::position());
+    solveConstraint(dt,vResult,core::behavior::BaseConstraintSet::VEL);
+    solveConstraint(dt,xResult,core::behavior::BaseConstraintSet::POS);
 
 #endif
 

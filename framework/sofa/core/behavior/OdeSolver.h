@@ -88,7 +88,7 @@ public:
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
      **/
-    virtual void solveConstraint(double /*dt*/, VecId) {};
+    virtual void solveConstraint(double /*dt*/, VecId, core::behavior::BaseConstraintSet::ConstOrder) {};
 
     /// Propagate the given state (time, position and velocity) through all mappings
     ///

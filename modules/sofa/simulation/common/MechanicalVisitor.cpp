@@ -1410,7 +1410,6 @@ Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* 
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {
-    c->serr << "buildConstraintMatrix " << contactId << c->sendl;
     c->buildConstraintMatrix(contactId, position);
     return RESULT_CONTINUE;
 }

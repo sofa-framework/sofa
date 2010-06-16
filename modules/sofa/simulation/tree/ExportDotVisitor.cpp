@@ -155,12 +155,12 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
     }
     if (dynamic_cast<core::behavior::BaseProjectiveConstraintSet*>(obj))
     {
-        if (showConstraint) { show = true; *color = COLOR[CONSTRAINT]; }
+        if (showConstraint) { show = true; *color = COLOR[PROJECTIVECONSTRAINTSET]; }
         else hide = true;
     }
     if (dynamic_cast<core::behavior::BaseConstraintSet*>(obj))
     {
-        if (showConstraint) { show = true; *color = COLOR[CONSTRAINT]; }
+        if (showConstraint) { show = true; *color = COLOR[CONSTRAINTSET]; }
         else hide = true;
     }
     if (dynamic_cast<core::BehaviorModel*>(obj))
