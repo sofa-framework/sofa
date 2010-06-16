@@ -27,7 +27,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASECONSTRAINT_H
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINT_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
@@ -87,15 +87,10 @@ public:
  *  see the InteractionConstraint class).
  *
  */
-class SOFA_CORE_API BaseConstraint : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseConstraint : public BaseConstraintSet
 {
 public:
-    SOFA_CLASS(BaseConstraint, objectmodel::BaseObject);
-
-    BaseConstraint()
-        : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
-    {
-    }
+    SOFA_CLASS(BaseConstraint, BaseConstraintSet);
 
     virtual ~BaseConstraint() { }
 
@@ -105,46 +100,11 @@ public:
     /// Set the ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
     void setGroup(int g) { group.setValue(g); }
 
-    /// @name Vector operations
-    /// @{
-
-    /// Project dx to constrained space (dx models an acceleration).
-    virtual void projectResponse() = 0;
-
-    /// Project the L matrix of the Lagrange Multiplier equation system.
-    virtual void projectJacobianMatrix() = 0;
-
-    /// Project v to constrained space (v models a velocity).
-    virtual void projectVelocity() = 0;
-
-    /// Project x to constrained space (x models a position).
-    virtual void projectPosition() = 0;
-
-    /// Project vFree to constrained space (vFree models a velocity).
-    virtual void projectFreeVelocity() = 0;
-
-    /// Project xFree to constrained space (xFree models a position).
-    virtual void projectFreePosition() = 0;
-
-    /// @}
-
     /// @name Matrix operations
     /// @{
 
     /// Project the compliance Matrix to constrained space.
     virtual void projectResponse(double **);
-
-    /// Project to constrained space using offset parameter
-    virtual void applyConstraint(unsigned int&);
-
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-
-    virtual void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    //virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int & /*offset*/);
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    //virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
 
     /// Set the violation of each constraint
     virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true ) {}
@@ -189,6 +149,11 @@ public:
     virtual void getConstraintResolution(std::vector<ConstraintResolution*>& /*resTab*/, unsigned int& /*offset*/) {};
 #endif //SOFA_DEV
 
+
+
+//    virtual void buildConstraintMatrix(unsigned int &, core::VecId =core::VecId::position())=0;
+
+
     /// says if the constraint is holonomic or not
     /// holonomic constraints can be processed using different methods such as :
     /// projection - reducing the degrees of freedom - simple lagrange multiplier process
@@ -203,8 +168,6 @@ public:
     /// Deactivated by default. The constraints using only a subset of particles should activate the mask,
     /// and during projectResponse(), insert the indices of the particles modified
     virtual bool useMask() {return false;}
-protected:
-    Data<int> group;
 };
 
 } // namespace behavior

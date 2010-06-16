@@ -28,6 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_CONSTRAINTSOLVER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
@@ -45,6 +46,7 @@ namespace behavior
  */
 class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject
 {
+    typedef BaseConstraintSet::ConstOrder ConstOrder;
 public:
     SOFA_CLASS(ConstraintSolver, objectmodel::BaseObject);
 
@@ -55,29 +57,29 @@ public:
      * @param Id order of the constraint to be solved
      * @param isPositionChangesUpdateVelocity boolean indication if we need to propagate the change of position to a modification of velocity dv=dx/dt
      **/
-    virtual void solveConstraint(double /*dt*/, VecId);
+    virtual void solveConstraint(double /*dt*/, VecId, ConstOrder order=BaseConstraintSet::POS);
 
 
 
     /**
      * Do the precomputation: compute free state, or propagate the states to the mapped mechanical states, where the constraint can be expressed
      */
-    virtual bool prepareStates(double /*dt*/, VecId)=0;
+    virtual bool prepareStates(double /*dt*/, VecId, ConstOrder order=BaseConstraintSet::POS)=0;
 
     /**
      * Create the system corresponding to the constraints
      */
-    virtual bool buildSystem(double /*dt*/, VecId)=0;
+    virtual bool buildSystem(double /*dt*/, VecId, ConstOrder order=BaseConstraintSet::POS)=0;
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
      */
-    virtual bool solveSystem(double /*dt*/, VecId)=0;
+    virtual bool solveSystem(double /*dt*/, VecId, ConstOrder order=BaseConstraintSet::POS)=0;
 
     /**
      * Correct the Mechanical State with the solution found
      */
-    virtual bool applyCorrection(double /*dt*/, VecId)=0;
+    virtual bool applyCorrection(double /*dt*/, VecId, ConstOrder order=BaseConstraintSet::POS)=0;
 };
 
 } // namespace behavior

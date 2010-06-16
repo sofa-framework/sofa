@@ -25,7 +25,6 @@
 #include "CudaTypes.h"
 #include "CudaParticleSource.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/Constraint.inl>
 
 
 namespace sofa
@@ -35,7 +34,7 @@ namespace core
 {
 namespace behavior
 {
-template class Constraint<gpu::cuda::CudaVec3fTypes>;
+template class ProjectiveConstraintSet<gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class Constraint<gpu::cuda::CudaVec3dTypes>;
 #endif

@@ -4,7 +4,7 @@
 
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/constraint/LCPConstraintSolver.h>
+#include <sofa/component/constraintset/LCPConstraintSolver.h>
 
 #include <sofa/core/objectmodel/BaseContext.h>
 
@@ -177,7 +177,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
     typename DataTypes::VecConst& constraints = mConstraints[mCurBufferId];
     std::vector<int> &id_buf = mId_buf[mCurBufferId];
     VecCoord &val = mVal[mCurBufferId];
-    component::constraint::LCP* lcp = mLcp[mCurBufferId];
+    component::constraintset::LCP* lcp = mLcp[mCurBufferId];
 
     if(!lcp)
     {
@@ -260,7 +260,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
         return;
     if(!mState)
         return;
-    component::constraint::LCP* new_lcp = lcpconstraintSolver->getLCP();
+    component::constraintset::LCP* new_lcp = lcpconstraintSolver->getLCP();
     if(!new_lcp)
         return;
 

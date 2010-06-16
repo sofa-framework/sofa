@@ -282,7 +282,7 @@ class graph_data_widget_container
 public:
     typedef T data_type;
     typedef GraphWidget<T> Widget;
-    typedef QHBoxLayout Layout;
+    typedef QVBoxLayout Layout;
     Widget* w;
     GraphOptionWidget *options;
     Layout* container_layout;
@@ -297,14 +297,14 @@ public:
         {
             return false;
         }
-        container_layout = new QHBoxLayout(parent);
+        container_layout = new Layout(parent);
         return true;
     }
 
     bool createLayout( QLayout* layout)
     {
         if ( container_layout != NULL ) return false;
-        container_layout = new QHBoxLayout(layout);
+        container_layout = new Layout(layout);
         return true;
     }
 

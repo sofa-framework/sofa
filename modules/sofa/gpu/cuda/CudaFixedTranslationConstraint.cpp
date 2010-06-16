@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <sofa/component/constraint/FixedTranslationConstraint.h>
-#include <sofa/component/constraint/FixedTranslationConstraint.inl>
+#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.inl>
 
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,12 +35,12 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 template class FixedTranslationConstraint<gpu::cuda::CudaRigid3fTypes>;
 
-}// namespace constraint
+}// namespace projectiveconstraintset
 
 }// namespace component
 
@@ -54,13 +54,13 @@ namespace cuda
 SOFA_DECL_CLASS(CudaFixedTranslationConstraint)
 
 int FixedTranslationConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-// .add< component::constraint::FixedTranslationConstraint<CudaVec3fTypes> >()
-// .add< component::constraint::FixedTranslationConstraint<CudaVec3f1Types> >()
-        .add< component::constraint::FixedTranslationConstraint<CudaRigid3fTypes> >()
+// .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaVec3fTypes> >()
+// .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaVec3f1Types> >()
+        .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< component::constraint::FixedTranslationConstraint<CudaVec3dTypes> >()
-// .add< component::constraint::FixedTranslationConstraint<CudaVec3d1Types> >()
-        .add< component::constraint::FixedTranslationConstraint<CudaRigid3dTypes> >()
+// .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaVec3dTypes> >()
+// .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaVec3d1Types> >()
+        .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

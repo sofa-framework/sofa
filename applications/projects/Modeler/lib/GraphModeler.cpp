@@ -1096,15 +1096,27 @@ bool GraphModeler::editPaste(std::string path)
     helper::vector< Q3ListViewItem*> items; getSelectedItems(items);
     if (!items.empty())
     {
+        //Get the last item of the node: the new items will be inserted AFTER this last item.
         Q3ListViewItem *last=items.front();
         while(last->nextSibling()) last=last->nextSibling();
+
+
         GNode *node = getGNode(items.front());
+        //Load the paste buffer
         loadNode(node, path);
         Q3ListViewItem *pasteItem=items.front();
-        Q3ListViewItem *insertedItem=items.front();
-        while(insertedItem->nextSibling()) insertedItem=insertedItem->nextSibling();
-        //Something has been add to the graph
-        if (insertedItem != last)  initItem(insertedItem, pasteItem);
+
+        //Find all the QListViewItem inserted
+        helper::vector< Q3ListViewItem* > insertedItems;
+        Q3ListViewItem *insertedItem=last;
+        while(insertedItem->nextSibling())
+        {
+            insertedItem=insertedItem->nextSibling();
+            insertedItems.push_back(insertedItem);
+        }
+
+        //Initialize their position in the node
+        for (unsigned int i=0; i<insertedItems.size(); ++i) initItem(insertedItems[i], pasteItem);
     }
 
     return !items.empty();

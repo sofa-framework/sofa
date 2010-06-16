@@ -43,6 +43,7 @@
 //Components of the core to detect during the addition of objects in a node
 #include <sofa/core/behavior/InteractionForceField.h>
 #include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
 
 
 #include <boost/vector_property_map.hpp>
@@ -114,6 +115,19 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
             Node *m1=(Node*)ms1->getContext();
             Node *m2=(Node*)ms2->getContext();
             if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
+        }
+    }
+    else if (sofa::core::behavior::InteractionProjectiveConstraintSet* ic = dynamic_cast<sofa::core::behavior::InteractionProjectiveConstraintSet*>(obj))
+    {
+        sofa::core::behavior::BaseMechanicalState
+        *ms1=ic->getMechModel1(),
+         *ms2=ic->getMechModel2();
+
+        if (ms1 && ms2)
+        {
+            Node *m1=(Node*)ms1->getContext();
+            Node *m2=(Node*)ms2->getContext();
+            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
         }
     }
     else if (sofa::core::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::behavior::InteractionConstraint*>(obj))

@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <sofa/component/constraint/LinearMovementConstraint.h>
-#include <sofa/component/constraint/LinearMovementConstraint.inl>
+#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
+#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.inl>
 
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,12 +35,12 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 template class LinearMovementConstraint<gpu::cuda::CudaRigid3fTypes>;
 
-}// namespace constraint
+}// namespace projectiveconstraintset
 
 }// namespace component
 
@@ -54,13 +54,13 @@ namespace cuda
 SOFA_DECL_CLASS(CudaLinearMovementConstraint)
 
 int LinearMovementConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-// .add< component::constraint::LinearMovementConstraint<CudaVec3fTypes> >()
-// .add< component::constraint::LinearMovementConstraint<CudaVec3f1Types> >()
-        .add< component::constraint::LinearMovementConstraint<CudaRigid3fTypes> >()
+// .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3fTypes> >()
+// .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3f1Types> >()
+        .add< component::projectiveconstraintset::LinearMovementConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< component::constraint::LinearMovementConstraint<CudaVec3dTypes> >()
-// .add< component::constraint::LinearMovementConstraint<CudaVec3d1Types> >()
-        .add< component::constraint::LinearMovementConstraint<CudaRigid3dTypes> >()
+// .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3dTypes> >()
+// .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3d1Types> >()
+        .add< component::projectiveconstraintset::LinearMovementConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

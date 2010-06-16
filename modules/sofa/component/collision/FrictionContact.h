@@ -28,7 +28,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/constraint/UnilateralInteractionConstraint.h>
+#include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/component/collision/RigidContactMapper.inl>
@@ -96,7 +96,7 @@ protected:
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraint::UnilateralInteractionConstraint<Vec3Types>* c;
+    constraintset::UnilateralInteractionConstraint<Vec3Types>* c;
     core::objectmodel::BaseContext* parent;
 
     Data<double> mu;

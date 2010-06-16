@@ -35,31 +35,36 @@ HEADERS += \
           DataEngine.h \
           behavior/BaseController.h \
           behavior/BaseConstraint.h \
+          behavior/BaseConstraintSet.h \
           behavior/BaseConstraintCorrection.h \
           behavior/BaseForceField.h \
           behavior/BaseLMConstraint.h \
           behavior/BaseMass.h \
           behavior/BaseMechanicalMapping.h \
-          behavior/BaseMechanicalState.h \
+          behavior/BaseMechanicalState.h \ 
+          behavior/BaseProjectiveConstraintSet.h \
           behavior/Constraint.h \
           behavior/Constraint.inl \
           behavior/ConstraintSolver.h \
           behavior/ForceField.h \
           behavior/ForceField.inl \
           behavior/InteractionForceField.h \
+          behavior/InteractionProjectiveConstraintSet.h \
           behavior/InteractionConstraint.h \
           behavior/LinearSolver.h \
           behavior/LMConstraint.h \
           behavior/LMConstraint.inl \
           behavior/PairInteractionForceField.h \
           behavior/PairInteractionForceField.inl \
-	  behavior/MixedInteractionForceField.h \
-	  behavior/MixedInteractionForceField.inl \
+          behavior/MixedInteractionForceField.h \
+          behavior/MixedInteractionForceField.inl \
           behavior/PairInteractionConstraint.h \
           behavior/PairInteractionConstraint.inl \
-	  behavior/MixedInteractionConstraint.h \
-	  behavior/MixedInteractionConstraint.inl \
-	  behavior/MappedModel.h \
+          behavior/PairInteractionProjectiveConstraintSet.h \
+          behavior/PairInteractionProjectiveConstraintSet.inl \
+          behavior/MixedInteractionConstraint.h \
+          behavior/MixedInteractionConstraint.inl \
+          behavior/MappedModel.h \
           behavior/Mass.h \
           behavior/Mass.inl \
           behavior/MasterSolver.h \
@@ -73,6 +78,8 @@ HEADERS += \
           behavior/MultiVector.h \
           behavior/MultiMatrix.h \
           behavior/MultiMatrixAccessor.h \
+          behavior/ProjectiveConstraintSet.h \
+          behavior/ProjectiveConstraintSet.inl \
           behavior/OdeSolver.h \
           behavior/State.h \
           collision/BroadPhaseDetection.h \
@@ -190,7 +197,9 @@ SOURCES +=  \
           behavior/PairInteractionForceField.cpp \
           behavior/MixedInteractionForceField.cpp \
           behavior/PairInteractionConstraint.cpp \
+          behavior/PairInteractionProjectiveConstraintSet.cpp \
           behavior/MixedInteractionConstraint.cpp \
+          behavior/ProjectiveConstraintSet.cpp \
           loader/MeshLoader.cpp 
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV

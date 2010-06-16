@@ -240,8 +240,8 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= isInteractionForceField;
     if (!isInteractionForceField)
         forceField.add(dynamic_cast< core::behavior::BaseForceField* >(obj));
-    inserted+= constraint.add(dynamic_cast< core::behavior::BaseConstraint* >(obj));
-    inserted+= LMConstraint.add(dynamic_cast< core::behavior::BaseLMConstraint* >(obj));
+    inserted+= projectiveConstraintSet.add(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
+    inserted+= constraintSet.add(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
     inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
     inserted+= visualModel.add(dynamic_cast< core::VisualModel* >(obj));
     inserted+= visualManager.add(dynamic_cast< core::VisualManager* >(obj));
@@ -280,8 +280,8 @@ void Node::doRemoveObject(BaseObject* obj)
 
     forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
     interactionForceField.remove(dynamic_cast< core::behavior::InteractionForceField* >(obj));
-    constraint.remove(dynamic_cast< core::behavior::BaseConstraint* >(obj));
-    LMConstraint.remove(dynamic_cast< core::behavior::BaseLMConstraint* >(obj));
+    projectiveConstraintSet.remove(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
+    constraintSet.remove(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
     mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
     behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< core::VisualModel* >(obj));
@@ -680,11 +680,11 @@ void Node::printComponents()
     cerr<<endl<<"Shader: ";
     for ( Single<Shader>::iterator i=shader.begin(), iend=shader.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"Constraint: ";
-    for ( Sequence<BaseConstraint>::iterator i=constraint.begin(), iend=constraint.end(); i!=iend; i++ )
+    cerr<<endl<<"ProjectiveConstraintSet: ";
+    for ( Sequence<BaseProjectiveConstraintSet>::iterator i=projectiveConstraintSet.begin(), iend=projectiveConstraintSet.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"LMConstraint: ";
-    for ( Sequence<BaseLMConstraint>::iterator i=LMConstraint.begin(), iend=LMConstraint.end(); i!=iend; i++ )
+    cerr<<endl<<"ConstraintSet: ";
+    for ( Sequence<BaseConstraintSet>::iterator i=constraintSet.begin(), iend=constraintSet.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"BehaviorModel: ";
     for ( Sequence<BehaviorModel>::iterator i=behaviorModel.begin(), iend=behaviorModel.end(); i!=iend; i++ )

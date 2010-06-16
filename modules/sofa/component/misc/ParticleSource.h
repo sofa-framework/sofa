@@ -36,7 +36,7 @@
 #ifndef SOFA_COMPONENT_MISC_PARTICLESOURCE_H
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_H
 
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -60,10 +60,10 @@ namespace misc
 {
 
 template<class TDataTypes>
-class ParticleSource : public core::behavior::Constraint<TDataTypes>
+class ParticleSource : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ParticleSource,TDataTypes), SOFA_TEMPLATE(core::behavior::Constraint,TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ParticleSource,TDataTypes), SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
@@ -113,7 +113,7 @@ public:
 
     virtual void init()
     {
-        this->core::behavior::Constraint<TDataTypes>::init();
+        this->core::behavior::ProjectiveConstraintSet<TDataTypes>::init();
         if (!this->mstate) return;
         N = f_center.getValue().size();
         lasttime = f_start.getValue() - f_delay.getValue();

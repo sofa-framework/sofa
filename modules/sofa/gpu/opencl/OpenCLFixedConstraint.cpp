@@ -49,15 +49,15 @@ namespace opencl
 SOFA_DECL_CLASS(OpenCLFixedConstraint)
 
 int FixedConstraintOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::constraint::FixedConstraint<OpenCLVec3fTypes> >()
-        .add< component::constraint::FixedConstraint<OpenCLVec3f1Types> >()
+        .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3fTypes> >()
+        .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3f1Types> >()
 #ifdef SOFA_DEV
-        .add< component::constraint::FixedConstraint<OpenCLRigid3fTypes> >()
+        .add< component::projectiveconstraintset::FixedConstraint<OpenCLRigid3fTypes> >()
 #endif // SOFA_DEV
-        .add< component::constraint::FixedConstraint<OpenCLVec3dTypes> >()
-        .add< component::constraint::FixedConstraint<OpenCLVec3d1Types> >()
+        .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3dTypes> >()
+        .add< component::projectiveconstraintset::FixedConstraint<OpenCLVec3d1Types> >()
 #ifdef SOFA_DEV
-        .add< component::constraint::FixedConstraint<OpenCLRigid3dTypes> >()
+        .add< component::projectiveconstraintset::FixedConstraint<OpenCLRigid3dTypes> >()
 #endif // SOFA_DEV
         ;
 

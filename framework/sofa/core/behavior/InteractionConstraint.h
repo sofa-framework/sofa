@@ -27,7 +27,8 @@
 #ifndef SOFA_CORE_BEHAVIOR_INTERACTIONCONSTRAINT_H
 #define SOFA_CORE_BEHAVIOR_INTERACTIONCONSTRAINT_H
 
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {

@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLFIXEDCONSTRAINT_INL
 
 #include "OpenCLFixedConstraint.h"
-#include <sofa/component/constraint/FixedConstraint.inl>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 
 namespace sofa
 {
@@ -70,7 +70,7 @@ extern "C"
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 
@@ -83,7 +83,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
     data.minIndex = -1;
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
-    m->core::behavior::Constraint<DataTypes>::init();
+    m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     const SetIndex& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
@@ -212,7 +212,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::init
     data.minIndex = -1;
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
-    m->core::behavior::Constraint<DataTypes>::init();
+    m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     const SetIndex& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
@@ -463,7 +463,7 @@ OpenCLFixedConstraint_ImplMethods(gpu::opencl::OpenCLVec3d1Types);
 OpenCLFixedConstraint_ImplMethods(gpu::opencl::OpenCLRigid3dTypes);
 #endif // SOFA_DEV
 
-} // namespace constraint
+} // namespace projectiveconstraintset
 
 } // namespace component
 

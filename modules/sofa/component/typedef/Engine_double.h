@@ -39,17 +39,19 @@
 
 
 #include <sofa/component/engine/BoxROI.h>
-#include <sofa/component/engine/PlaneROI.h>
-#include <sofa/component/engine/SphereROI.h>
 #include <sofa/component/engine/ExtrudeSurface.h>
 #include <sofa/component/engine/GroupFilterYoungModulus.h>
+#include <sofa/component/engine/IndexValueMapper.h>
 #include <sofa/component/engine/JoinPoints.h>
 #include <sofa/component/engine/MergePoints.h>
 #include <sofa/component/engine/MeshBarycentricMapperEngine.h>
 #include <sofa/component/engine/PlaneROI.h>
 #include <sofa/component/engine/PointsFromIndices.h>
 #include <sofa/component/engine/RandomPointDistributionInSurface.h>
+#include <sofa/component/engine/RigidEngine.h>
+#include <sofa/component/engine/SphereROI.h>
 #include <sofa/component/engine/Spiral.h>
+#include <sofa/component/engine/SubsetTopology.h>
 #include <sofa/component/engine/TextureInterpolation.h>
 #include <sofa/component/engine/TransformEngine.h>
 #include <sofa/component/engine/TransformPosition.h>
@@ -65,19 +67,6 @@ typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdRigidTypes<3, doub
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for PlaneROI
-typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PlaneROI3d;
-typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdRigidTypes<3, double> > PlaneROIRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for SphereROI
-typedef sofa::component::engine::SphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SphereROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for ExtrudeSurface
 typedef sofa::component::engine::ExtrudeSurface<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ExtrudeSurface3d;
 
@@ -86,6 +75,12 @@ typedef sofa::component::engine::ExtrudeSurface<sofa::defaulttype::StdVectorType
 //---------------------------------------------------------------------------------------------
 //Typedef for GroupFilterYoungModulus
 typedef sofa::component::engine::GroupFilterYoungModulus<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > GroupFilterYoungModulus3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for IndexValueMapper
+typedef sofa::component::engine::IndexValueMapper<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > IndexValueMapper3d;
 
 
 
@@ -111,6 +106,7 @@ typedef sofa::component::engine::MeshBarycentricMapperEngine<sofa::defaulttype::
 //---------------------------------------------------------------------------------------------
 //Typedef for PlaneROI
 typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PlaneROI3d;
+typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdRigidTypes<3, double> > PlaneROIRigid3d;
 
 
 
@@ -127,23 +123,42 @@ typedef sofa::component::engine::RandomPointDistributionInSurface<sofa::defaultt
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for RigidEngine
+typedef sofa::component::engine::RigidEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > RigidEngine3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for SphereROI
+typedef sofa::component::engine::SphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SphereROI3d;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for Spiral
 typedef sofa::component::engine::Spiral<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > Spiral3d;
 
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for SubsetTopology
+typedef sofa::component::engine::SubsetTopology<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SubsetTopology3d;
+typedef sofa::component::engine::SubsetTopology<sofa::defaulttype::StdRigidTypes<3, double> > SubsetTopologyRigid3d;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for TextureInterpolation
-typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > TextureInterpolation2d;
-typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > TextureInterpolation1d;
+typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > TextureInterpolation1d;
+typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > TextureInterpolation2d;
 typedef sofa::component::engine::TextureInterpolation<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TextureInterpolation3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TransformEngine
-typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > TransformEngine2d;
-typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > TransformEngine1d;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > TransformEngine1d;
+typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > TransformEngine2d;
 typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TransformEngine3d;
 typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdRigidTypes<2, double> > TransformEngineRigid2d;
 typedef sofa::component::engine::TransformEngine<sofa::defaulttype::StdRigidTypes<3, double> > TransformEngineRigid3d;
@@ -167,24 +182,27 @@ typedef sofa::component::engine::Vertex2Frame<sofa::defaulttype::StdRigidTypes<3
 #ifndef SOFA_FLOAT
 typedef BoxROI3d BoxROI3;
 typedef BoxROIRigid3d BoxROIRigid3;
-typedef PlaneROI3d PlaneROI3;
-typedef PlaneROIRigid3d PlaneROIRigid3;
-typedef SphereROI3d SphereROI3;
 typedef ExtrudeSurface3d ExtrudeSurface3;
 typedef GroupFilterYoungModulus3d GroupFilterYoungModulus3;
+typedef IndexValueMapper3d IndexValueMapper3;
 typedef JoinPoints3d JoinPoints3;
 typedef MergePoints3d MergePoints3;
 typedef MergePointsRigid3d MergePointsRigid3;
 typedef MeshBarycentricMapperEngine3d MeshBarycentricMapperEngine3;
 typedef PlaneROI3d PlaneROI3;
+typedef PlaneROIRigid3d PlaneROIRigid3;
 typedef PointsFromIndices3d PointsFromIndices3;
 typedef RandomPointDistributionInSurface3d RandomPointDistributionInSurface3;
+typedef RigidEngine3d RigidEngine3;
+typedef SphereROI3d SphereROI3;
 typedef Spiral3d Spiral3;
-typedef TextureInterpolation2d TextureInterpolation2;
+typedef SubsetTopology3d SubsetTopology3;
+typedef SubsetTopologyRigid3d SubsetTopologyRigid3;
 typedef TextureInterpolation1d TextureInterpolation1;
+typedef TextureInterpolation2d TextureInterpolation2;
 typedef TextureInterpolation3d TextureInterpolation3;
-typedef TransformEngine2d TransformEngine2;
 typedef TransformEngine1d TransformEngine1;
+typedef TransformEngine2d TransformEngine2;
 typedef TransformEngine3d TransformEngine3;
 typedef TransformEngineRigid2d TransformEngineRigid2;
 typedef TransformEngineRigid3d TransformEngineRigid3;

@@ -71,7 +71,8 @@ Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
     processObjects(node->topology,"Topology");
     processObjects(node->forceField,"ForceField");
     processObjects(node->interactionForceField,"InteractionForceField");
-    processObjects(node->constraint,"Constraint");
+    processObjects(node->projectiveConstraintSet,"ProjectiveConstraintSet");
+    processObjects(node->constraintSet,"ConstraintSet");
     processObjects(node->contextObject,"ContextObject");
 
     processObjects(node->mapping,"Mapping");

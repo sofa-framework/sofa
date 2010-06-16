@@ -24,7 +24,7 @@
  ******************************************************************************/
 
 #include <sofa/component/collision/FixParticlePerformer.h>
-#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
 #include <sofa/simulation/common/Simulation.h>
 
@@ -73,7 +73,7 @@ void FixParticlePerformer<DataTypes>::start()
 
 
     //Fix all the points
-    constraint::FixedConstraint<DataTypes> *fixFixation = new constraint::FixedConstraint<DataTypes>();
+    projectiveconstraintset::FixedConstraint<DataTypes> *fixFixation = new projectiveconstraintset::FixedConstraint<DataTypes>();
     fixFixation->f_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 

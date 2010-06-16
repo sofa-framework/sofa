@@ -27,7 +27,8 @@
 #include <sofa/component/behaviormodel/initBehaviorModel.h>
 #include <sofa/component/collision/initCollision.h>
 #include <sofa/component/configurationsetting/initConfigurationSetting.h>
-#include <sofa/component/constraint/initConstraint.h>
+#include <sofa/component/projectiveconstraintset/initProjectiveConstraintSet.h>
+#include <sofa/component/constraintset/initConstraintSet.h>
 #include <sofa/component/container/initContainer.h>
 #include <sofa/component/contextobject/initContextObject.h>
 #include <sofa/component/controller/initController.h>
@@ -68,7 +69,8 @@ void init()
         initBehaviorModel();
         initCollision();
         initConfigurationSetting();
-        initConstraint();
+        initProjectiveConstraintSet();
+        initConstraintSet();
         initContainer();
         initContextObject();
         initController();
