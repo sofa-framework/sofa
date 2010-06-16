@@ -151,10 +151,35 @@ public:
     /// @}
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) {};
-    virtual void applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int & /*offset*/) {};
+    /// @deprecated
+    virtual void applyConstraint(defaulttype::BaseMatrix* /*matrix*/, unsigned int & /*offset*/)
+    {
+    }
+
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    virtual void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix)
+    {
+        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+        if (r)
+            applyConstraint(r.matrix, r.offset);
+    }
+
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) {};
+    /// @deprecated
+    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, unsigned int & /*offset*/)
+    {
+    }
+
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    virtual void applyConstraint(defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+    {
+        int o = matrix->getGlobalOffset(this->mstate);
+        if (o >= 0)
+        {
+            unsigned int offset = (unsigned int)o;
+            applyConstraint(vector, offset);
+        }
+    }
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
