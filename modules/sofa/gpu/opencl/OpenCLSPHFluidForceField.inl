@@ -72,18 +72,21 @@ void SPHFluidForceFieldInternalData<gpu::opencl::OpenCLVec3fTypes>::Kernels_comp
     SPHFluidForceFieldOpenCL3f_computeDensity(gsize, cells, cellGhost, &params, pos4, x);
 }
 
-ShowVector *show_f_avant_addForce, *show_f_apres_addForce;
+ShowVector *show_f_avant_addForce, *show_f_apres_addForce, *show_pos4_avant_addForce;
 
 template<>
 void SPHFluidForceFieldInternalData<gpu::opencl::OpenCLVec3fTypes>::Kernels_addForce(int gsize, const _device_pointer cells, const _device_pointer cellGhost,_device_pointer f, const _device_pointer pos4, const _device_pointer v)
 {
     if(show_f_avant_addForce==NULL)show_f_avant_addForce = new ShowVector("debug_SPH_f_avant_addForce");
-    show_f_avant_addForce->addOpenCLVector<float>(f,1200);
+    show_f_avant_addForce->addOpenCLVector<float>(f,3000);
+    if(show_pos4_avant_addForce==NULL)show_pos4_avant_addForce = new ShowVector("debug_SPH_pos4_avant_addForce");
+    show_pos4_avant_addForce->addOpenCLVector<float>(pos4,4000);
+
 
     SPHFluidForceFieldOpenCL3f_addForce (gsize, cells, cellGhost, &params, f, pos4, v);
 
     if(show_f_apres_addForce==NULL)show_f_apres_addForce = new ShowVector("debug_SPH_f_apres_addForce");
-    show_f_apres_addForce->addOpenCLVector<float>(f,1200);
+    show_f_apres_addForce->addOpenCLVector<float>(f,3000);
 
 //	float posx[3000];
 //	gpu::opencl::myopenclEnqueueReadBuffer(0,posx,f.m,f.offset,3000*sizeof(float));
