@@ -35,12 +35,9 @@ namespace sofa
 {
 namespace core
 {
-namespace componentmodel
-{
 namespace topology
 {
 class TopologyChange;
-}
 }
 }
 

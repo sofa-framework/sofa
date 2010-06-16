@@ -32,6 +32,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/Data.h>
 
+#include <sofa/helper/list.h>
 
 
 namespace sofa

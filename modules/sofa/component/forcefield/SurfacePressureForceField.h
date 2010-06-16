@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/component.h>
 
-namespace sofa { namespace core { namespace componentmodel { namespace topology { class BaseMeshTopology; } } } }
+namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
 
 
 namespace sofa
