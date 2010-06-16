@@ -568,7 +568,7 @@ std::string myopenclErrorMsg(cl_int err)
         SOFA_CL_ERR(CL_INVALID_GL_OBJECT);
         SOFA_CL_ERR(CL_INVALID_BUFFER_SIZE);
         SOFA_CL_ERR(CL_INVALID_MIP_LEVEL);
-        SOFA_CL_ERR(CL_INVALID_GLOBAL_WORK_SIZE);
+//       SOFA_CL_ERR(CL_INVALID_GLOBAL_WORK_SIZE);
 #undef SOFA_CL_ERR
     default:
     {
