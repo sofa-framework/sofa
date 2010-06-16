@@ -1052,15 +1052,6 @@ void VisualModelImpl::updateVisual()
     field_quads.updateIfDirty();
 #ifdef SOFA_SMP
 
-#if 0
-
-    if(getContext()->getShowProcessorColor())
-    {
-        unsigned int proc=Core::Processor::get_current()->get_pid()%12;
-        this->setColor(colorTab[proc].r,colorTab[proc].g,colorTab[proc].b,1.0f);
-    }
-
-#endif
     if(getContext()->getShowProcessorColor())
     {
         sofa::core::objectmodel::Context *context=dynamic_cast<sofa::core::objectmodel::Context *>(this->getContext());
