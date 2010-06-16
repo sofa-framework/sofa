@@ -77,74 +77,6 @@ public:
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate; }
 
-    /// @name Vector operations
-    /// @{
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method retrieves the dx vector from the MechanicalState and call
-    /// the internal projectResponse(VecDeriv&) method implemented by
-    /// the component.
-    virtual void projectResponse();
-
-    /// Project the L matrix of the Lagrange Multiplier equation system.
-    ///
-    /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
-    /// the internal projectResponse(SparseVecDeriv&) method implemented by
-    /// the component.
-    virtual void projectJacobianMatrix();
-
-    /// Project v to constrained space (v models a velocity).
-    ///
-    /// This method retrieves the v vector from the MechanicalState and call
-    /// the internal projectVelocity(VecDeriv&) method implemented by
-    /// the component.
-    virtual void projectVelocity();
-
-    /// Project x to constrained space (x models a position).
-    ///
-    /// This method retrieves the x vector from the MechanicalState and call
-    /// the internal projectPosition(VecCoord&) method implemented by
-    /// the component.
-    virtual void projectPosition();
-
-    /// Project vFree to constrained space (vFree models a velocity).
-    ///
-    /// This method retrieves the vFree vector from the MechanicalState and call
-    /// the internal projectVelocity(VecDeriv&) method implemented by
-    /// the component.
-    virtual void projectFreeVelocity();
-
-    /// Project xFree to constrained space (xFree models a position).
-    ///
-    /// This method retrieves the xFree vector from the MechanicalState and call
-    /// the internal projectPosition(VecCoord&) method implemented by
-    /// the component.
-    virtual void projectFreePosition();
-
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectResponse() method.
-    virtual void projectResponse(VecDeriv& dx) = 0;
-    /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
-    virtual void projectResponse(SparseVecDeriv& dx) = 0;
-
-    /// Project v to constrained space (v models a velocity).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectVelocity() method.
-    virtual void projectVelocity(VecDeriv& v) = 0;
-
-    /// Project x to constrained space (x models a position).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectPosition() method.
-    virtual void projectPosition(VecCoord& x) = 0;
-
-    /// @}
-
     /// @name Matrix operations
     /// @{
 
@@ -179,8 +111,7 @@ public:
         }
     }
 
-    /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&) ?
-    virtual void applyConstraint(unsigned int & contactId); // Pure virtual would be better
+    virtual void buildConstraintMatrix(unsigned int & contactId, core::VecId);
 
     virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/) {}
 

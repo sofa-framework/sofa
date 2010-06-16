@@ -29,6 +29,9 @@
 #include <sofa/core/ObjectFactory.h>
 
 
+//Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
+//#define TEST_CREATION_COMPONENT
+
 namespace sofa
 {
 
@@ -49,6 +52,22 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 
     for (unsigned int i=0; i<entries.size(); ++i)
     {
+#ifdef      TEST_CREATION_COMPONENT
+        sofa::core::objectmodel::BaseObject *object;
+        std::cerr << "Creating " << entries[i]->className << std::endl;
+        if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
+        {
+            object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
+        }
+        else
+        {
+            object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
+        }
+        std::cerr << "Deleting " << entries[i]->className << std::endl;;
+        delete object;
+        std::cerr << "Ok for " << entries[i]->className << std::endl;;
+#endif
+
         //Insert Template specification
         std::set< std::string >::iterator it;
         for (it = entries[i]->baseClasses.begin(); it!= entries[i]->baseClasses.end(); ++it)

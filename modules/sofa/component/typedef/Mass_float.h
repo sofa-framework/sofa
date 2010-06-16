@@ -49,8 +49,8 @@
 //---------------------------------------------------------------------------------------------
 //Typedef for DiagonalMass
 typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> DiagonalMass3f;
-typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> DiagonalMass1f;
-typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> DiagonalMass2f;
+typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> DiagonalMass2f;
+typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> DiagonalMass1f;
 typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::RigidMass<3, float> > DiagonalMassRigid3f;
 typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdRigidTypes<2, float>, sofa::defaulttype::RigidMass<2, float> > DiagonalMassRigid2f;
 
@@ -65,24 +65,24 @@ typedef sofa::component::forcefield::HexahedronFEMForceFieldAndMass<sofa::defaul
 //---------------------------------------------------------------------------------------------
 //Typedef for MatrixMass
 typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::Mat<3, 3, float> > MatrixMass3f;
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, sofa::defaulttype::Mat<2, 2, float> > MatrixMass1f;
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::Mat<1, 1, float> > MatrixMass2f;
+typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, sofa::defaulttype::Mat<2, 2, float> > MatrixMass2f;
+typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::Mat<1, 1, float> > MatrixMass1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MeshMatrixMass
 typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> MeshMatrixMass3f;
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> MeshMatrixMass1f;
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> MeshMatrixMass2f;
+typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> MeshMatrixMass2f;
+typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> MeshMatrixMass1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for UniformMass
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> UniformMass3f;
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> UniformMass1f;
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> UniformMass2f;
+typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> UniformMass2f;
+typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> UniformMass1f;
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float>, float> UniformMass6f;
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::RigidMass<3, float> > UniformMassRigid3f;
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdRigidTypes<2, float>, sofa::defaulttype::RigidMass<2, float> > UniformMassRigid2f;
@@ -93,20 +93,20 @@ typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdRigidTypes<2, f
 
 #ifdef SOFA_FLOAT
 typedef DiagonalMass3f DiagonalMass3;
-typedef DiagonalMass1f DiagonalMass1;
 typedef DiagonalMass2f DiagonalMass2;
+typedef DiagonalMass1f DiagonalMass1;
 typedef DiagonalMassRigid3f DiagonalMassRigid3;
 typedef DiagonalMassRigid2f DiagonalMassRigid2;
 typedef HexahedronFEMForceFieldAndMass3f HexahedronFEMForceFieldAndMass3;
 typedef MatrixMass3f MatrixMass3;
-typedef MatrixMass1f MatrixMass1;
 typedef MatrixMass2f MatrixMass2;
+typedef MatrixMass1f MatrixMass1;
 typedef MeshMatrixMass3f MeshMatrixMass3;
-typedef MeshMatrixMass1f MeshMatrixMass1;
 typedef MeshMatrixMass2f MeshMatrixMass2;
+typedef MeshMatrixMass1f MeshMatrixMass1;
 typedef UniformMass3f UniformMass3;
-typedef UniformMass1f UniformMass1;
 typedef UniformMass2f UniformMass2;
+typedef UniformMass1f UniformMass1;
 typedef UniformMass6f UniformMass6;
 typedef UniformMassRigid3f UniformMassRigid3;
 typedef UniformMassRigid2f UniformMassRigid2;

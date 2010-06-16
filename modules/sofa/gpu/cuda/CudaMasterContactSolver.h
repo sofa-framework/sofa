@@ -133,10 +133,13 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* cSet)
     {
-        //sout << c->getName()<<"->getConstraintValue()"<<sendl;
-        c->getConstraintValue(_v /*, _numContacts*/);
+        if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
+        {
+            //sout << c->getName()<<"->getConstraintValue()"<<sendl;
+            c->getConstraintValue(_v /*, _numContacts*/);
+        }
         return RESULT_CONTINUE;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -159,9 +162,13 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node*,core::behavior::BaseConstraint* c)
+    virtual Result fwdConstraintSet(simulation::Node*,core::behavior::BaseConstraintSet* cSet)
     {
-        c->getConstraintValue(_v);
+
+        if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
+        {
+            c->getConstraintValue(_v);
+        }
         return RESULT_CONTINUE;
     }
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -190,11 +197,15 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
+    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
     {
-        ctime_t t0 = begin(node, c);
-        c->getConstraintInfo(_blocks, _ids, _positions, _directions, _areas);
-        end(node, c, t0);
+
+        if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
+        {
+            ctime_t t0 = begin(node, c);
+            c->getConstraintInfo(_blocks, _ids, _positions, _directions, _areas);
+            end(node, c, t0);
+        }
         return RESULT_CONTINUE;
     }
 

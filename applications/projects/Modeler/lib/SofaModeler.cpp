@@ -122,7 +122,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     Q3DockWindow *dockLibrary=new Q3DockWindow(this);
     dockLibrary->setResizeEnabled(true);
     this->moveDockWindow( dockLibrary, Qt::DockLeft);
-    dockLibrary->setFixedExtentWidth(this->width()*0.45);
+    dockLibrary->setFixedExtentWidth((int)(this->width()*0.45));
 
     QWidget *leftPartWidget = new QWidget( dockLibrary, "LibraryLayout");
     QVBoxLayout *leftPartLayout = new QVBoxLayout(leftPartWidget);
@@ -971,7 +971,7 @@ void SofaModeler::removeTemporaryFiles(const std::string &f)
     std::string copyBuffer(presetPath+"copyBuffer.scn");
     //Delete Temporary file
     ::remove(filename.c_str());
-    filename += "." + std::string(sofa::gui::GUIManager::GetValidGUIName()) + ".view";
+    filename += "." + std::string(sofa::gui::GUIManager::GetCurrentGUIName()) + ".view";
     //Remove eventual .view file
     ::remove(filename.c_str());
     //Remove eventual copy buffer

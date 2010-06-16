@@ -38,7 +38,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -63,10 +63,10 @@ namespace misc
 {
 
 template<class TDataTypes>
-class ParticleSink : public core::behavior::Constraint<TDataTypes>
+class ParticleSink : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ParticleSink,TDataTypes), SOFA_TEMPLATE(core::behavior::Constraint,TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ParticleSink,TDataTypes), SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
@@ -106,7 +106,7 @@ public:
 
     virtual void init()
     {
-        this->core::behavior::Constraint<TDataTypes>::init();
+        this->core::behavior::ProjectiveConstraintSet<TDataTypes>::init();
         if (!this->mstate) return;
 
         sout << "ParticleSink: normal="<<planeNormal.getValue()<<" d0="<<planeD0.getValue()<<" d1="<<planeD1.getValue()<<sendl;

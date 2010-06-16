@@ -42,17 +42,17 @@ ConstraintSolver::ConstraintSolver()
 ConstraintSolver::~ConstraintSolver()
 {}
 
-void ConstraintSolver::solveConstraint(double dt, VecId id)
+void ConstraintSolver::solveConstraint(double dt, VecId id, ConstOrder order)
 {
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints");
     bool continueSolving=true;
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints PrepareState");
-    continueSolving=prepareStates(dt, id);
+    continueSolving=prepareStates(dt, id, order);
     sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints PrepareState");
     if (continueSolving)
     {
         sofa::helper::AdvancedTimer::stepBegin("SolveConstraints BuildSystem");
-        continueSolving=buildSystem(dt, id);
+        continueSolving=buildSystem(dt, id, order);
         sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints BuildSystem");
     }
     else
@@ -63,7 +63,7 @@ void ConstraintSolver::solveConstraint(double dt, VecId id)
     if (continueSolving)
     {
         sofa::helper::AdvancedTimer::stepBegin("SolveConstraints SolveSystem");
-        continueSolving=solveSystem(dt, id);
+        continueSolving=solveSystem(dt, id, order);
         sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints SolveSystem");
     }
     else
@@ -75,7 +75,7 @@ void ConstraintSolver::solveConstraint(double dt, VecId id)
     if (continueSolving)
     {
         sofa::helper::AdvancedTimer::stepBegin("SolveConstraints ApplyCorrection");
-        continueSolving=applyCorrection(dt, id);
+        continueSolving=applyCorrection(dt, id, order);
         sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints ApplyCorrection");
     }
 

@@ -49,6 +49,7 @@ public:
     static int Init(const char* argv0, const char* name ="");
     static int RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init=NULL, int priority=0);
     static const char* GetValidGUIName();
+    static const std::string& GetCurrentGUIName();
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
     static void AddGUIOption(const char* option);
@@ -65,6 +66,7 @@ public:
     static void SetScene(sofa::simulation::Node* groot, const char* filename=NULL, bool temporaryFile=false);
     static void SetDimension(int  width , int  height );
     static void SetFullScreen();
+
     /// @}
 protected:
 

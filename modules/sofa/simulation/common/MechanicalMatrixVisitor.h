@@ -37,7 +37,9 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/InteractionForceField.h>
 #include <sofa/core/behavior/InteractionConstraint.h>
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
@@ -124,16 +126,26 @@ public:
         return fwdForceField(node, ff);
     }
 
+    /// Process all the BaseProjectiveConstraintSet
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
+    {
+        return RESULT_CONTINUE;
+    }
     /// Process all the BaseConstraint
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* /*c*/)
+    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
+    /// Process all the InteractionProjectiveConstraintSet
+    virtual Result fwdInteractionProjectiveConstraintSet(simulation::Node* node, core::behavior::InteractionProjectiveConstraintSet* c)
+    {
+        return fwdProjectiveConstraintSet(node, c);
+    }
     /// Process all the InteractionConstraint
     virtual Result fwdInteractionConstraint(simulation::Node* node, core::behavior::InteractionConstraint* c)
     {
-        return fwdConstraint(node, c);
+        return fwdConstraintSet(node, c);
     }
 
     ///@}
@@ -254,7 +266,7 @@ public:
 
     //Masses are now added in the addMBKToMatrix call for all ForceFields
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
     {
         if (matrix != NULL)
         {

@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_H
 
 #include "CudaTypes.h"
-#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
 namespace sofa
 {
@@ -34,7 +34,7 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 template<class TCoord, class TDeriv, class TReal>
@@ -118,7 +118,7 @@ CudaFixedConstraint_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 #undef CudaFixedConstraint_DeclMethods
 
-} // namespace constraint
+} // namespace projectiveconstraintset
 
 } // namespace component
 

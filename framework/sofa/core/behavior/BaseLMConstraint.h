@@ -28,6 +28,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_BASELMCONSTRAINT_H
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/core.h>
 
 namespace sofa
@@ -45,13 +46,10 @@ namespace behavior
  *        They can be constraint on acceleration, velocity, or position.
  *        They can be grouped or individual. The resolution is then done in the OdeSolver.
  **/
-class SOFA_CORE_API BaseLMConstraint: public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseLMConstraint: public BaseConstraintSet
 {
 public:
-    SOFA_CLASS(BaseLMConstraint, core::objectmodel::BaseObject);
-
-    /// Description of the order of the constraint
-    enum ConstOrder {POS,VEL,ACC};
+    SOFA_CLASS(BaseLMConstraint, BaseConstraintSet);
 
 
     /**
@@ -148,9 +146,6 @@ public:
 
     ~BaseLMConstraint() {};
 
-
-    /// Write the lines of the Jacobian
-    virtual void buildJacobian(unsigned int &constraintId)=0;
 
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
     virtual void writeConstraintEquations(ConstOrder id)=0;

@@ -153,7 +153,12 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
         if (showForceField) { show = true; *color = COLOR[FFIELD]; }
         else hide = true;
     }
-    if (dynamic_cast<core::behavior::BaseConstraint*>(obj))
+    if (dynamic_cast<core::behavior::BaseProjectiveConstraintSet*>(obj))
+    {
+        if (showConstraint) { show = true; *color = COLOR[CONSTRAINT]; }
+        else hide = true;
+    }
+    if (dynamic_cast<core::behavior::BaseConstraintSet*>(obj))
     {
         if (showConstraint) { show = true; *color = COLOR[CONSTRAINT]; }
         else hide = true;

@@ -86,7 +86,7 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
     {
         MechanicalState1* mstate1 = mapper1.createMapping();
         MechanicalState2* mstate2 = mapper2.createMapping();
-        ff = new constraint::LagrangianMultiplierContactConstraint<Vec3Types>(mstate1,mstate2);
+        ff = new constraintset::LagrangianMultiplierContactConstraint<Vec3Types>(mstate1,mstate2);
     }
 
     int size = contacts.size();

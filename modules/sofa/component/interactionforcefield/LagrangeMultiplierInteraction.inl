@@ -53,6 +53,7 @@
 
 #include <sofa/component/linearsolver/FullVector.h>
 
+
 namespace sofa
 {
 
@@ -138,11 +139,11 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
 
     for (unsigned int i=0; i<list_interaction_constraint.size(); i++)
     {
-        list_interaction_constraint[i]->applyConstraint(count);
+        list_interaction_constraint[i]->buildConstraintMatrix(count, core::VecId::position());
         sout<< "constraint count"<<count<<sendl;
     }
     unsigned int count1=0;
-    constraint->applyConstraint(count1);
+    constraint->buildConstraintMatrix(count1, core::VecId::position());
 
 
     /// @TODO clear the MechanicalState of the lagrange Multiplier during Begin visitor

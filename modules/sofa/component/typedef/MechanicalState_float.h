@@ -57,8 +57,8 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigid
 
 #ifdef SOFA_FLOAT
 typedef MechanicalObject3f MechanicalObject3;
-typedef MechanicalObject1f MechanicalObject1;
 typedef MechanicalObject2f MechanicalObject2;
+typedef MechanicalObject1f MechanicalObject1;
 typedef MechanicalObject6f MechanicalObject6;
 typedef MechanicalObjectRigid3f MechanicalObjectRigid3;
 typedef MechanicalObjectRigid2f MechanicalObjectRigid2;

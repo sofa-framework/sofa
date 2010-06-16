@@ -132,15 +132,17 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
         res = for_each_r(this, ctx, node->interactionForceField, &MechanicalVisitor::fwdInteractionForceField);
     }
 
+
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r(this, ctx, node->constraint, &MechanicalVisitor::fwdConstraint);
+        res = for_each_r(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::fwdProjectiveConstraintSet);
     }
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r(this, ctx, node->LMConstraint, &MechanicalVisitor::fwdLMConstraint);
+        res = for_each_r(this, ctx, node->constraintSet, &MechanicalVisitor::fwdConstraintSet);
     }
+
 
     return res;
 }
@@ -148,8 +150,8 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
 
 void MechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorContext* ctx)
 {
-    for_each(this, ctx, node->constraint, &MechanicalVisitor::bwdConstraint);
-    for_each(this, ctx, node->LMConstraint, &MechanicalVisitor::bwdLMConstraint);
+    for_each(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::bwdProjectiveConstraintSet);
+    for_each(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
     for_each(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
 
     if (node->mechanicalState != NULL)
@@ -443,8 +445,8 @@ void MechanicalVisitor::printWriteVectors(core::behavior::BaseMechanicalState* m
 void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj)
 {
     using sofa::core::behavior::InteractionForceField;
+    using sofa::core::behavior::InteractionProjectiveConstraintSet;
     using sofa::core::behavior::InteractionConstraint;
-    using sofa::core::behavior::BaseLMConstraint;
 
     if (!Visitor::printActivated || !Visitor::outputStateVector) return;
 
@@ -457,16 +459,21 @@ void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmod
             dof1 = interact->getMechModel1();
             dof2 = interact->getMechModel2();
         }
-        else if (InteractionConstraint* interact = dynamic_cast< InteractionConstraint* > (obj))
+        else if (InteractionProjectiveConstraintSet* interact = dynamic_cast< InteractionProjectiveConstraintSet* > (obj))
         {
             dof1 = interact->getMechModel1();
             dof2 = interact->getMechModel2();
         }
-        else if (BaseLMConstraint* interact = dynamic_cast< BaseLMConstraint* > (obj))
+        else if (InteractionConstraint* interact = dynamic_cast< InteractionConstraint* > (obj))
         {
-            dof1 = interact->getConstrainedMechModel1();
-            dof2 = interact->getConstrainedMechModel2();
-        }
+            dof1 = interact->getMechModel1();
+            dof2 = interact->getMechModel2();
+        }/*
+		else if (BaseLMConstraint* interact = dynamic_cast< BaseLMConstraint* > (obj))
+		{
+			dof1 = interact->getConstrainedMechModel1();
+			dof2 = interact->getConstrainedMechModel2();
+        }*/
         else
         {
             printReadVectors(node->mechanicalState);
@@ -491,8 +498,8 @@ void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmod
 void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj)
 {
     using sofa::core::behavior::InteractionForceField;
+    using sofa::core::behavior::InteractionProjectiveConstraintSet;
     using sofa::core::behavior::InteractionConstraint;
-    using sofa::core::behavior::BaseLMConstraint;
     using sofa::core::behavior::BaseMechanicalState;
 
     if (!Visitor::printActivated) return;
@@ -506,16 +513,21 @@ void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmo
             dof1 = interact->getMechModel1();
             dof2 = interact->getMechModel2();
         }
-        else if (InteractionConstraint* interact = dynamic_cast< InteractionConstraint* > (obj))
+        else if (InteractionProjectiveConstraintSet* interact = dynamic_cast< InteractionProjectiveConstraintSet* > (obj))
         {
             dof1 = interact->getMechModel1();
             dof2 = interact->getMechModel2();
         }
-        else if (BaseLMConstraint* interact = dynamic_cast< BaseLMConstraint* > (obj))
+        else if (InteractionConstraint* interact = dynamic_cast< InteractionConstraint* > (obj))
         {
-            dof1 = interact->getConstrainedMechModel1();
-            dof2 = interact->getConstrainedMechModel2();
-        }
+            dof1 = interact->getMechModel1();
+            dof2 = interact->getMechModel2();
+        }/*
+		else if (BaseLMConstraint* interact = dynamic_cast< BaseLMConstraint* > (obj))
+		{
+			dof1 = interact->getConstrainedMechModel1();
+			dof2 = interact->getConstrainedMechModel2();
+        }*/
         else
         {
             BaseMechanicalState* dof = node->mechanicalState;
@@ -1004,7 +1016,7 @@ Visitor::Result MechanicalProjectJacobianMatrixVisitor::fwdMechanicalMapping(sim
 {
     return RESULT_PRUNE;
 }
-Visitor::Result MechanicalProjectJacobianMatrixVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+Visitor::Result MechanicalProjectJacobianMatrixVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectJacobianMatrix();
     return RESULT_CONTINUE;
@@ -1014,7 +1026,7 @@ Visitor::Result MechanicalProjectVelocityVisitor::fwdMechanicalMapping(simulatio
 {
     return RESULT_PRUNE;
 }
-Visitor::Result MechanicalProjectVelocityVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+Visitor::Result MechanicalProjectVelocityVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectVelocity();
     return RESULT_CONTINUE;
@@ -1024,7 +1036,7 @@ Visitor::Result MechanicalProjectPositionVisitor::fwdMechanicalMapping(simulatio
 {
     return RESULT_PRUNE;
 }
-Visitor::Result MechanicalProjectPositionVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+Visitor::Result MechanicalProjectPositionVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectPosition();
     return RESULT_CONTINUE;
@@ -1060,7 +1072,7 @@ void MechanicalPropagatePositionVisitor::bwdMechanicalState(simulation::Node* , 
     mm->forceMask.activate(false);
 }
 
-Visitor::Result MechanicalPropagatePositionVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+Visitor::Result MechanicalPropagatePositionVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectPosition();
     return RESULT_CONTINUE;
@@ -1107,7 +1119,7 @@ void MechanicalPropagatePositionAndVelocityVisitor::bwdMechanicalState(simulatio
     mm->forceMask.activate(false);
 }
 
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectPosition();
     c->projectVelocity();
@@ -1178,7 +1190,7 @@ void MechanicalPropagateFreePositionVisitor::bwdMechanicalState(simulation::Node
     mm->forceMask.activate(false);
 }
 
-Visitor::Result MechanicalPropagateFreePositionVisitor::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+Visitor::Result MechanicalPropagateFreePositionVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectFreePosition();
     c->projectFreeVelocity();
@@ -1344,7 +1356,7 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdMappedMechanicalState(simul
 }
 
 
-Visitor::Result MechanicalResetConstraintVisitor::fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c)
+Visitor::Result MechanicalResetConstraintVisitor::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {
     // mm->setC(res);
     c->resetConstraint();
@@ -1354,57 +1366,52 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdLMConstraint(simulation::No
 
 #ifdef SOFA_HAVE_EIGEN2
 
-MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::Node* /*n*/)
+//MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::Node* /*n*/)
+//{
+//#ifdef SOFA_DUMP_VISITOR_INFO
+//setReadWriteVectors();
+//#endif
+//constraintId=0;
+//}
+
+
+//Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c)
+//{
+//	c->buildJacobian(constraintId);
+//	return RESULT_CONTINUE;
+//}
+
+
+//void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
+//{
+//	map->accumulateConstraint();
+//}
+
+
+//Visitor::Result MechanicalSolveLMConstraintVisitor::fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s)
+//{
+//	typedef core::behavior::BaseMechanicalState::VecId VecId;
+//	s->solveConstraint(propagateState,state);
+//	return RESULT_PRUNE;
+//}
+
+
+Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {
-#ifdef SOFA_DUMP_VISITOR_INFO
-    setReadWriteVectors();
+    if (core::behavior::BaseLMConstraint* LMc=dynamic_cast<core::behavior::BaseLMConstraint* >(c))
+    {
+        LMc->writeConstraintEquations(order);
+        datasC.push_back(LMc);
+    }
+    return RESULT_CONTINUE;
+}
+
 #endif
-    constraintId=0;
-}
 
-
-Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c)
+Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {
-    c->buildJacobian(constraintId);
-    return RESULT_CONTINUE;
-}
-
-
-void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
-{
-    map->accumulateConstraint();
-}
-
-
-Visitor::Result MechanicalSolveLMConstraintVisitor::fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s)
-{
-    typedef core::behavior::BaseMechanicalState::VecId VecId;
-    s->solveConstraint(propagateState,state);
-    return RESULT_PRUNE;
-}
-
-
-Visitor::Result MechanicalWriteLMConstraint::fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c)
-{
-    c->writeConstraintEquations(order);
-
-    datasC.push_back(c);
-
-    return RESULT_CONTINUE;
-}
-
-#endif
-
-Visitor::Result MechanicalAccumulateConstraint::fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
-{
-    c->applyConstraint(contactId);
-    return RESULT_CONTINUE;
-}
-
-
-Visitor::Result MechanicalAccumulateConstraint::fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c)
-{
-    c->buildJacobian(contactId);
+    c->serr << "buildConstraintMatrix " << contactId << c->sendl;
+    c->buildConstraintMatrix(contactId, position);
     return RESULT_CONTINUE;
 }
 
@@ -1430,7 +1437,7 @@ Visitor::Result MechanicalApplyConstraintsVisitor::fwdMappedMechanicalState(simu
 }
 
 
-void MechanicalApplyConstraintsVisitor::bwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c)
+void MechanicalApplyConstraintsVisitor::bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
     c->projectResponse();
     if (W != NULL)

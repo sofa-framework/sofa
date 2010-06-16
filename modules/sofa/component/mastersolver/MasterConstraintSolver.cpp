@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mastersolver/MasterConstraintSolver.h>
-#include <sofa/component/constraint/LCPConstraintSolver.h>
+#include <sofa/component/constraintset/LCPConstraintSolver.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
@@ -406,9 +406,9 @@ void MasterConstraintSolver::getIndividualConstraintViolations(simulation::Node 
         sout<<"   2. compute violation"<<sendl;
     // calling getConstraintValue
     if (doubleBuffer.getValue() && bufCP1)
-        constraint::MechanicalGetConstraintValueVisitor(CP2.getDfree()).execute(context);
+        constraintset::MechanicalGetConstraintValueVisitor(CP2.getDfree()).execute(context);
     else
-        constraint::MechanicalGetConstraintValueVisitor(CP1.getDfree()).execute(context);
+        constraintset::MechanicalGetConstraintValueVisitor(CP1.getDfree()).execute(context);
 
 }
 

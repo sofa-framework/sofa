@@ -26,7 +26,7 @@
 #define SOFA_GPU_OPENCL_OPENCLFIXEDCONSTRAINT_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
 namespace sofa
 {
@@ -34,7 +34,7 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 
@@ -120,7 +120,7 @@ OpenCLFixedConstraint_DeclMethods(gpu::opencl::OpenCLRigid3dTypes);
 
 
 
-} // namespace constraint
+} // namespace projectiveconstraintset
 
 } // namespace component
 

@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP
 #include <sofa/component/engine/IndicesFromValues.inl>
-#include <sofa/core/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

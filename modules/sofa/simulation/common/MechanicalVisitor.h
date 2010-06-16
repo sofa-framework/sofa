@@ -37,7 +37,13 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/InteractionForceField.h>
 #include <sofa/core/behavior/InteractionConstraint.h>
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+#ifdef SOFA_HAVE_EIGEN2
+//TO REMOVE ONCE THE CONVERGENCE IS DONE
+#include <sofa/core/behavior/BaseLMConstraint.h>
+#endif
 //#include <sofa/defaulttype/BaseMatrix.h>
 //#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -248,39 +254,52 @@ public:
         return fwdInteractionForceField(ctx->node, ff);
     }
 
-    /// Process all the BaseConstraint
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* /*c*/)
+    /// Process all the BaseProjectiveConstraintSet
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
-    /// Process all the BaseConstraint
-    virtual Result fwdConstraint(VisitorContext* ctx, core::behavior::BaseConstraint* c)
-    {
-        return fwdConstraint(ctx->node, c);
-    }
-
-    /// Process all the BaseLMConstraint
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* /*c*/)
+    /// Process all the BaseConstraintSet
+    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdLMConstraint(VisitorContext* ctx, core::behavior::BaseLMConstraint* c)
+    /// Process all the BaseProjectiveConstraintSet
+    virtual Result fwdProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseProjectiveConstraintSet* c)
     {
-        return fwdLMConstraint(ctx->node, c);
+        return fwdProjectiveConstraintSet(ctx->node, c);
+    }
+
+    /// Process all the BaseConstraintSet
+    virtual Result fwdConstraintSet(VisitorContext* ctx, core::behavior::BaseConstraintSet* c)
+    {
+        return fwdConstraintSet(ctx->node, c);
+    }
+
+    /// Process all the InteractionConstraint
+    virtual Result fwdInteractionProjectiveConstraintSet(simulation::Node* node, core::behavior::InteractionProjectiveConstraintSet* c)
+    {
+        return fwdInteractionProjectiveConstraintSet(node, c);
     }
 
     /// Process all the InteractionConstraint
     virtual Result fwdInteractionConstraint(simulation::Node* node, core::behavior::InteractionConstraint* c)
     {
-        return fwdConstraint(node, c);
+        return fwdInteractionConstraint(node, c);
+    }
+
+    /// Process all the InteractionConstraint
+    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::InteractionProjectiveConstraintSet* c)
+    {
+        return fwdProjectiveConstraintSet(ctx->node, c);
     }
 
     /// Process all the InteractionConstraint
     virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::InteractionConstraint* c)
     {
-        return fwdInteractionConstraint(ctx->node, c);
+        return fwdConstraintSet(ctx->node, c);
     }
 
     ///@}
@@ -341,21 +360,21 @@ public:
     virtual void bwdConstraintSolver(VisitorContext* ctx, core::behavior::ConstraintSolver* solver)
     { bwdConstraintSolver(ctx->node, solver); }
 
-    /// Process all the BaseConstraint
-    virtual void bwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* /*c*/)
+    /// Process all the BaseProjectiveConstraintSet
+    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
     {}
 
-    /// Process all the BaseConstraint
-    virtual void bwdConstraint(VisitorContext* ctx, core::behavior::BaseConstraint* c)
-    { bwdConstraint(ctx->node, c); }
-
-    /// Process all the BaseLMConstraint
-    virtual void bwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* /*c*/)
+    /// Process all the BaseConstraintSet
+    virtual void bwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
     {}
 
-    /// Process all the BaseLMConstraint
-    virtual void bwdLMConstraint(VisitorContext* ctx, core::behavior::BaseLMConstraint* c)
-    { bwdLMConstraint(ctx->node, c); }
+    /// Process all the BaseProjectiveConstraintSet
+    virtual void bwdProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseProjectiveConstraintSet* c)
+    { bwdProjectiveConstraintSet(ctx->node, c); }
+
+    /// Process all the BaseConstraintSet
+    virtual void bwdConstraintSet(VisitorContext* ctx, core::behavior::BaseConstraintSet* c)
+    { bwdConstraintSet(ctx->node, c); }
 
     ///@}
 
@@ -1046,7 +1065,7 @@ public:
     }
 
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
 
 
     /// Return a class name for this visitor
@@ -1077,7 +1096,7 @@ public:
     }
 
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
 
 
     /// Return a class name for this visitor
@@ -1113,7 +1132,7 @@ public:
     }
 
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
 
 
     /// Return a class name for this visitor
@@ -1150,7 +1169,7 @@ public:
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1205,7 +1224,7 @@ public:
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1294,7 +1313,7 @@ public:
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1516,7 +1535,7 @@ public:
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c);
+    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
@@ -1542,70 +1561,69 @@ public:
 
 #ifdef SOFA_HAVE_EIGEN2
 
-class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public MechanicalVisitor
-{
-public:
-    MechanicalExpressJacobianVisitor(simulation::Node* n);
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdLMConstraint(simulation::Node* node, core::behavior::BaseLMConstraint* c);
+//class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public MechanicalVisitor
+//{
+//public:
+//    MechanicalExpressJacobianVisitor(simulation::Node* n);
+//    virtual void bwdMechanicalMapping(simulation::Node* node, core::behavior::BaseMechanicalMapping* map);
+//    virtual Result fwdLMConstraint(simulation::Node* node, core::behavior::BaseLMConstraint* c);
 
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalExpressJacobianVisitor"; }
-    virtual bool isThreadSafe() const { return false;}
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-protected:
-    unsigned int constraintId;
-};
-
-
-
-class SOFA_SIMULATION_COMMON_API MechanicalSolveLMConstraintVisitor: public MechanicalVisitor
-{
-public:
-    MechanicalSolveLMConstraintVisitor(VecId v,bool priorStatePropagation,bool updateVelocity=true):state(v), propagateState(priorStatePropagation),isPositionChangeUpdateVelocity(updateVelocity)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    };
+//    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+//    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+//    {
+//        return false; // !map->isMechanical();
+//    }
+//    /// Return a class name for this visitor
+//    /// Only used for debugging / profiling purposes
+//    virtual const char* getClassName() const { return "MechanicalExpressJacobianVisitor"; }
+//    virtual bool isThreadSafe() const{ return false;}
+//#ifdef SOFA_DUMP_VISITOR_INFO
+//    void setReadWriteVectors()
+//    {
+//    }
+//#endif
+//  protected:
+//    unsigned int constraintId;
+//};
 
 
-    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s);
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
 
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalSolveLMConstraintVisitor"; }
-    virtual std::string getInfos() const { std::string name= "["+state.getName()+"]"; return name; }
+//class SOFA_SIMULATION_COMMON_API MechanicalSolveLMConstraintVisitor: public MechanicalVisitor
+//{
+// public:
+// MechanicalSolveLMConstraintVisitor(VecId v,bool priorStatePropagation,bool updateVelocity=true):state(v), propagateState(priorStatePropagation),isPositionChangeUpdateVelocity(updateVelocity){
+//#ifdef SOFA_DUMP_VISITOR_INFO
+//    setReadWriteVectors();
+//#endif
+//        };
 
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addReadWriteVector(state);
-    }
-#endif
-    VecId state;
-    bool propagateState;
-    bool isPositionChangeUpdateVelocity;
-};
+
+//  virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s);
+//    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+//  virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+//    {
+//        return false; // !map->isMechanical();
+//    }
+
+//  /// Return a class name for this visitor
+//  /// Only used for debugging / profiling purposes
+//  virtual const char* getClassName() const { return "MechanicalSolveLMConstraintVisitor"; }
+//  virtual std::string getInfos() const { std::string name= "["+state.getName()+"]"; return name; }
+
+//  virtual bool isThreadSafe() const
+//  {
+//    return false;
+//  }
+//#ifdef SOFA_DUMP_VISITOR_INFO
+//    void setReadWriteVectors()
+//    {
+//        addReadWriteVector(state);
+//    }
+//#endif
+//    VecId state;
+//    bool propagateState;
+//    bool isPositionChangeUpdateVelocity;
+//};
 
 class SOFA_SIMULATION_COMMON_API MechanicalWriteLMConstraint : public MechanicalVisitor
 {
@@ -1617,7 +1635,7 @@ public:
 #endif
     };
 
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c);
+    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {
@@ -1659,7 +1677,7 @@ public:
 
 protected:
     core::behavior::BaseLMConstraint::ConstOrder order;
-    std::vector< core::behavior::BaseLMConstraint *> datasC;
+    helper::vector< core::behavior::BaseLMConstraint *> datasC;
 
 };
 
@@ -1668,16 +1686,15 @@ protected:
 class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public MechanicalVisitor
 {
 public:
-    MechanicalAccumulateConstraint(unsigned int &_contactId)
-        :contactId(_contactId)
+    MechanicalAccumulateConstraint(unsigned int &_contactId, core::VecId pos=core::VecId::position())
+        :contactId(_contactId), position(pos)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c);
+    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
 
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1703,6 +1720,7 @@ public:
 
 protected:
     unsigned int &contactId;
+    core::VecId position;
 };
 
 class SOFA_SIMULATION_COMMON_API MechanicalRenumberConstraint : public MechanicalVisitor
@@ -1761,7 +1779,7 @@ public:
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
-    virtual void bwdConstraint(simulation::Node* /*node*/, core::behavior::BaseConstraint* c);
+    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
     {

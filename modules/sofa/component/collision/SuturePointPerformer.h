@@ -27,7 +27,7 @@
 
 #include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
 #include <sofa/component/collision/MouseInteractor.h>
 
@@ -58,7 +58,7 @@ class SOFA_COMPONENT_COLLISION_API SuturePointPerformer: public TInteractionPerf
     typedef typename DataTypes::Real Real;
     typedef sofa::component::forcefield::LinearSpring<Real> Spring;
     typedef sofa::component::forcefield::StiffSpringForceField<DataTypes> SpringObjectType;
-    typedef sofa::component::constraint::FixedConstraint<DataTypes> FixObjectType;
+    typedef sofa::component::projectiveconstraintset::FixedConstraint<DataTypes> FixObjectType;
 
 
 public:

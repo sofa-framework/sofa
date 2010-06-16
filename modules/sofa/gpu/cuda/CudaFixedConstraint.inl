@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_INL
 
 #include "CudaFixedConstraint.h"
-#include <sofa/component/constraint/FixedConstraint.inl>
+#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 
 namespace sofa
 {
@@ -69,7 +69,7 @@ extern "C"
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 using namespace gpu::cuda;
@@ -81,7 +81,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     data.minIndex = -1;
     data.maxIndex = -1;
     data.cudaIndices.clear();
-    m->core::behavior::Constraint<DataTypes>::init();
+    m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     const SetIndex& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
@@ -210,7 +210,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
     data.minIndex = -1;
     data.maxIndex = -1;
     data.cudaIndices.clear();
-    m->core::behavior::Constraint<DataTypes>::init();
+    m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     const SetIndex& indices = m->f_indices.getValue();
     if (!indices.empty())
     {
@@ -465,7 +465,7 @@ CudaFixedConstraint_ImplMethods(gpu::cuda::CudaRigid3dTypes);
 
 #undef CudaFixedConstraint_ImplMethods
 
-} // namespace constraint
+} // namespace projectiveconstraintset
 
 } // namespace component
 

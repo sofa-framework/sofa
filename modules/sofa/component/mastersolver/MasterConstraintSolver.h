@@ -61,13 +61,16 @@ public:
         //serr<<"creation of the visitor"<<sendl;
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
+    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
     {
         //serr<<"fwdConstraint called on "<<c->getName()<<sendl;
 
-        ctime_t t0 = begin(node, c);
-        c->getConstraintResolution(_res, _offset);
-        end(node, c, t0);
+        if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
+        {
+            ctime_t t0 = begin(node, c);
+            c->getConstraintResolution(_res, _offset);
+            end(node, c, t0);
+        }
         return RESULT_CONTINUE;
     }
 
@@ -92,11 +95,11 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* node, core::behavior::BaseConstraint* c)
+    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
     {
         ctime_t t0 = begin(node, c);
 //		  unsigned int temp = contactId;
-        c->applyConstraint(contactId);
+        c->buildConstraintMatrix(contactId);
 //		  std::cout << node->getName() << " : " << contactId - temp << std::endl;
         end(node, c, t0);
         return RESULT_CONTINUE;

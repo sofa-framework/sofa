@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mastersolver/LMContactConstraintSolver.h>
-#include <sofa/component/constraint/LMConstraintSolver.h>
+#include <sofa/component/constraintset/LMConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
@@ -95,8 +95,8 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor(node);
     JacobianVisitor.execute(node);
 
-    helper::vector< constraint::LMConstraintSolver* > listSolver;
-    node->get<constraint::LMConstraintSolver>(&listSolver, core::objectmodel::BaseContext::SearchDown);
+    helper::vector< constraintset::LMConstraintSolver* > listSolver;
+    node->get<constraintset::LMConstraintSolver>(&listSolver, core::objectmodel::BaseContext::SearchDown);
 
     helper::vector< bool > constraintActive(listSolver.size(), false);
     for (unsigned int i=0; i<listSolver.size(); ++i)

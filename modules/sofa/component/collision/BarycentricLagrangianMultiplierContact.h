@@ -28,7 +28,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/constraint/LagrangianMultiplierContactConstraint.h>
+#include <sofa/component/constraintset/LagrangianMultiplierContactConstraint.h>
 #include <sofa/helper/Factory.h>
 
 
@@ -67,7 +67,7 @@ protected:
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraint::LagrangianMultiplierContactConstraint<Vec3Types>* ff;
+    constraintset::LagrangianMultiplierContactConstraint<Vec3Types>* ff;
     core::objectmodel::BaseContext* parent;
 public:
     BarycentricLagrangianMultiplierContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);

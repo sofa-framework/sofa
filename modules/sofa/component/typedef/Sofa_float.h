@@ -35,7 +35,7 @@
 #include <sofa/component/typedef/Particles_float.h>
 #include <sofa/component/typedef/BehaviorModel_float.h>
 #include <sofa/component/typedef/CollisionModel_float.h>
-#include <sofa/component/typedef/Constraint_float.h>
+#include <sofa/component/typedef/ConstraintSet_float.h>
 #include <sofa/component/typedef/ConstraintSolver_float.h>
 #include <sofa/component/typedef/Controller_float.h>
 #include <sofa/component/typedef/Engine_float.h>
@@ -45,6 +45,7 @@
 #include <sofa/component/typedef/Mass_float.h>
 #include <sofa/component/typedef/MechanicalMapping_float.h>
 #include <sofa/component/typedef/MechanicalState_float.h>
+#include <sofa/component/typedef/ProjectiveConstraintSet_float.h>
 #include <sofa/component/typedef/TopologyObject_float.h>
 #include <sofa/component/typedef/VisualModel_float.h>
 #include <sofa/component/typedef/_Miscellaneous_float.h>

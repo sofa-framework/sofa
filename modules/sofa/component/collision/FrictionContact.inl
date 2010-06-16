@@ -121,7 +121,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         MechanicalState1* mmodel1 = mapper1.createMapping();
         // Get the mechanical model from mapper2 to fill the constraints vector
         MechanicalState2* mmodel2 = selfCollision ? mmodel1 : mapper2.createMapping();
-        c = new constraint::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
+        c = new constraintset::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
         c->setName( getName() );
     }
 
