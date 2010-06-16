@@ -124,15 +124,18 @@ const char* myopenclDeviceTypeName(cl_device_type type)
 
 void listDevices(cl_device_type type, cl_platform_id platformId, int platformIndex)
 {
+
+
     //number of devices on the platform
     cl_uint nb_devices;
-    clGetDeviceIDs(platformId,type,0,NULL,&nb_devices);
-    if (nb_devices == 0) return;
+    cl_int error = clGetDeviceIDs(platformId,type,0,NULL,&nb_devices);
+    if (nb_devices == 0 || error!=CL_SUCCESS) return;
     cl_device_id *deviceIds = new cl_device_id[nb_devices];
     clGetDeviceIDs(platformId,type,nb_devices,deviceIds,NULL);
     std::cout << "------------\n " << myopenclDeviceTypeName(type) << std::endl;
 
     int index0 = devices.size();
+
     devices.resize(index0+nb_devices);
     //for each device, display info
     for(cl_uint i=0; i<nb_devices; i++)
@@ -162,6 +165,11 @@ void listDevices(cl_device_type type, cl_platform_id platformId, int platformInd
     }
     delete[] deviceIds;
 }
+
+
+
+
+
 
 class OpenCLPlatformInfo
 {
