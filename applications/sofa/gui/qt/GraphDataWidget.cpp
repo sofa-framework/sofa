@@ -102,9 +102,6 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     connect(exportImageButton, SIGNAL(clicked()), this, SLOT(exportImage()));
     connect(findImageFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
 #endif
-
-    generalLayout->addSpacerItem(new QSpacerItem(10,10,QSizePolicy::Minimum,QSizePolicy::Expanding));
-
 }
 
 void GraphOptionWidget::openFindFileDialog()
