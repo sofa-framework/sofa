@@ -34,8 +34,6 @@ namespace sofa
 {
 namespace core
 {
-namespace componentmodel
-{
 namespace topology
 {
 class BaseMeshTopology;
@@ -43,7 +41,6 @@ class BaseMeshTopology;
 namespace behavior
 {
 class BaseMechanicalState;
-}
 }
 }
 
