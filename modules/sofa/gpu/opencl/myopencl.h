@@ -107,6 +107,7 @@ extern inline void myopenclSetKernelArg(cl_kernel kernel, int num_arg, const T* 
 /*
 template<>
 void myopenclSetKernelArg<_device_pointer>(cl_kernel kernel, int num_arg, const _device_pointer* arg);
+*/
 
 #if defined(__cplusplus)
 } // namespace cuda
