@@ -227,13 +227,6 @@ public:
 
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 
-    // Previous Constraint Interface
-    virtual void projectResponse() {}
-    virtual void projectJacobianMatrix() {}
-    virtual void projectVelocity() {}
-    virtual void projectPosition() {}
-    virtual void projectFreeVelocity() {}
-    virtual void projectFreePosition() {}
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
