@@ -50,6 +50,7 @@ const unsigned int quadsInHexahedronArray[6][4]= {{0,1,2,3}, {4,7,6,5}, {1,0,4,5
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
     , d_hexahedron(initData(&d_hexahedron, "hexahedra", "List of hexahedron indices"))
+    , m_topologyEngine(NULL)
 {
     addAlias(&d_hexahedron, "hexas");
 }
@@ -1142,6 +1143,32 @@ void HexahedronSetTopologyContainer::clear()
 
     QuadSetTopologyContainer::clear();
 }
+
+
+bool HexahedronSetTopologyContainer::createTopologyEngine()
+{
+    if (m_topologyEngine)
+        return true;
+
+    m_topologyEngine = new sofa::component::topology::HexahedronSetTopologyEngine();
+    if (!m_topologyEngine)
+    {
+        serr << "Error HexahedronSetTopologyEngine creation failed." << sendl;
+        return false;
+    }
+
+    m_topologyEngine->init();
+
+    return true;
+}
+
+const sofa::core::topology::TopologyEngine* HexahedronSetTopologyContainer::getHexahedronSetTopologyEngine()
+{
+    if (!m_topologyEngine)
+        this->createTopologyEngine();
+    return m_topologyEngine;
+}
+
 
 } // namespace topology
 

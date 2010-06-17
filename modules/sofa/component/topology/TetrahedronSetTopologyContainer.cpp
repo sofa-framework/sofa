@@ -53,6 +53,7 @@ const unsigned int trianglesInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0}
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
     , d_tetrahedron(initData(&d_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
+    , m_topologyEngine(NULL)
 {
     addAlias(&d_tetrahedron, "tetras");
 }
@@ -1060,6 +1061,30 @@ sofa::helper::vector< unsigned int >& TetrahedronSetTopologyContainer::getRemove
     return m_removedTetraIndex;
 }
 
+bool TetrahedronSetTopologyContainer::createTopologyEngine()
+{
+    if (m_topologyEngine)
+        return true;
+
+    m_topologyEngine = new sofa::component::topology::TetrahedronSetTopologyEngine();
+    if (!m_topologyEngine)
+    {
+        serr << "Error TetrahedronSetTopologyEngine creation failed." << sendl;
+        return false;
+    }
+
+    m_topologyEngine->init();
+
+    return true;
+}
+
+
+const sofa::core::topology::TopologyEngine* TetrahedronSetTopologyContainer::getTetrahedronSetTopologyEngine()
+{
+    if (!m_topologyEngine)
+        this->createTopologyEngine();
+    return m_topologyEngine;
+}
 } // namespace topology
 
 } // namespace component

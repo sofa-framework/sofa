@@ -47,6 +47,7 @@ int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology cont
 QuadSetTopologyContainer::QuadSetTopologyContainer()
     : EdgeSetTopologyContainer()
     , d_quad(initData(&d_quad, "quads", "List of quad indices"))
+    ,m_topologyEngine(NULL)
 {
 }
 
@@ -820,6 +821,33 @@ void QuadSetTopologyContainer::clear()
 
     EdgeSetTopologyContainer::clear();
 }
+
+
+bool QuadSetTopologyContainer::createTopologyEngine()
+{
+    if (m_topologyEngine)
+        return true;
+
+    m_topologyEngine = new sofa::component::topology::QuadSetTopologyEngine();
+    if (!m_topologyEngine)
+    {
+        serr << "Error QuadSetTopologyEngine creation failed." << sendl;
+        return false;
+    }
+
+    m_topologyEngine->init();
+
+    return true;
+}
+
+
+const sofa::core::topology::TopologyEngine* QuadSetTopologyContainer::getQuadSetTopologyEngine()
+{
+    if (!m_topologyEngine)
+        this->createTopologyEngine();
+    return m_topologyEngine;
+}
+
 
 } // namespace topology
 
