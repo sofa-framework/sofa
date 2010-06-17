@@ -133,7 +133,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
     LMConstraintVisitor.clear();
 
     orderState=order;
-
+    LMConstraintVisitor.setVecId(id);
     if      (order==core::behavior::BaseConstraintSet::ACC)
     {
         if (!constraintAcc.getValue()) return false;
