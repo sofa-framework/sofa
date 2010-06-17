@@ -91,13 +91,13 @@ void VRPNImager<DataTypes>::update()
 
     for (unsigned i=0; i < 7; i++)
         x[i] = imagerData.rigidPointData[i];
-    float temp = x[1];
-    x[1]=-x[1];
-    x[2]=-x[2];
+    //float temp = x[1];
+    x[1]= -x[1];
+    x[2]= -x[2];
 
-    x[0] *= 0.001;
-    x[1] *= 0.001;
-    x[2] *= 0.001;
+    //x[0] *= 1;
+    //x[1] *= -1;
+    //x[2] *= -1;
     //x[2]; x[2]=temp;
     /*temp=x[5];
     x[5]=x[6];
@@ -114,15 +114,18 @@ void VRPNImager<DataTypes>::update()
     Real currentAngleRotation;
     qt.quatToAxis(currentAxisRotation, currentAngleRotation);
 
-    Quat qt2(currentAxisRotation*(-1), currentAngleRotation);
+    //Quat qt2(currentAxisRotation*(-1), currentAngleRotation);
+    currentAxisRotation[1] *= -1;
+    currentAxisRotation[2] *= -1;
+    Quat qt2(currentAxisRotation, currentAngleRotation);
 
     x[3] = qt2[0];
     x[4] = qt2[1];
     x[5] = qt2[2];
     x[6] = qt2[3];
 
-    std::cout << "Quat = " << qt << std::endl;
-    std::cout << "Euler = " << qt.toEulerVector() << std::endl;
+    //std::cout << "Quat = " << qt << std::endl;
+    //std::cout << "Euler = " << qt.toEulerVector() << std::endl;
     f_rigidPoint.setValue(x);
 
 
