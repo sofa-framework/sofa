@@ -1400,7 +1400,7 @@ Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* 
 {
     if (core::behavior::BaseLMConstraint* LMc=dynamic_cast<core::behavior::BaseLMConstraint* >(c))
     {
-        LMc->writeConstraintEquations(order);
+        LMc->writeConstraintEquations(id, order);
         datasC.push_back(LMc);
     }
     return RESULT_CONTINUE;

@@ -148,7 +148,7 @@ public:
 
 
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
-    virtual void writeConstraintEquations(ConstOrder id)=0;
+    virtual void writeConstraintEquations(VecId id, ConstOrder order)=0;
 
     /// Compute the new Lagrange Multiplier given a block of the compliance matrix W, and the current correction (left hand term) and previous Lagrange Multiplier
     virtual void LagrangeMultiplierEvaluation(const SReal* /*W*/,

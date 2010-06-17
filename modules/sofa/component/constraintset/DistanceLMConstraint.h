@@ -97,7 +97,7 @@ public:
 
     // -- LMConstraint interface
     void buildConstraintMatrix(unsigned int &constraintId, core::VecId position);
-    void writeConstraintEquations(ConstOrder order);
+    void writeConstraintEquations(VecId id, ConstOrder order);
 
 
     void LagrangeMultiplierEvaluation(const SReal* Wptr, SReal* cptr, SReal* LambdaInitptr,
