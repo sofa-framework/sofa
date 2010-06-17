@@ -2145,6 +2145,18 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         direction.normalize();
         pick.updateRay(position, direction);
 
+        GLint viewport[4];
+        glGetIntegerv(GL_VIEWPORT,viewport);
+
+        MousePosition mousepos;
+        mousepos.screenWidth  = viewport[2];
+        mousepos.screenHeight = viewport[3];
+        mousepos.x      = eventX;
+        mousepos.y      = eventY;
+
+        pick.updateMouse2D(mousepos);
+
+
 
         switch (type)
         {
