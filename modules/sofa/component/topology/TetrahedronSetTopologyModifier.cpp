@@ -29,6 +29,7 @@
 #include <functional>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/SimpleTimer.h>
 
 namespace sofa
 {
@@ -525,9 +526,14 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(sofa::helper::vector< unsi
     m_container->addRemovedTetraIndex(tetrahedra);
 }
 
+static sofa::helper::TSimpleTimer<1,1> mytimer;
 void TetrahedronSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
 {
+    mytimer.start("remove");
+    mytimer.step("beginMonEtape");
     removeTetrahedra(items);
+    mytimer.step("endMonEtape");
+    mytimer.stop();
 }
 
 void TetrahedronSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigned int> &index,
