@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYCONTAINER_H
 
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/QuadSetTopologyEngine.h>
 
 namespace sofa
 {
@@ -272,6 +273,15 @@ protected:
     void clearQuadsAroundEdge();
 
 
+    /** \brief function to create appropriate pointer to TopologyEngine class.
+      *
+      * @return false if creation failed
+      */
+    virtual bool createTopologyEngine();
+
+    /** \brief return pointer to topologyEngine*/
+    const sofa::core::topology::TopologyEngine* getQuadSetTopologyEngine();
+
 protected:
 
     /** \brief Returns a non-const list of quad indices around a given DOF for subsequent modification.
@@ -305,6 +315,8 @@ protected:
     sofa::helper::vector< QuadsAroundEdge > m_quadsAroundEdge;
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
+
+    sofa::component::topology::QuadSetTopologyEngine* m_topologyEngine;
 };
 
 } // namespace topology
