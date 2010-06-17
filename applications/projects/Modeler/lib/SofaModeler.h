@@ -251,7 +251,7 @@ protected:
 
     QTextBrowser *infoItem;
     /// Correspondance between a name clicked in the menu and a path to the preset
-    std::map< std::string, std::string > mapPreset;
+    std::map< Q3PopupMenu*, std::map< std::string, std::string > > mapPreset;
 
 
     /// Map between a tabulation from the modeler to an object of type GraphModeler

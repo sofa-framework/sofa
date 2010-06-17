@@ -307,10 +307,13 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
         Q3PopupMenu* directory = new Q3PopupMenu(this);
         connect( directory, SIGNAL(activated(int)), this, SLOT(loadPreset(int)));
         preset->insertItem(QIconSet(), tr( it_preset->first.c_str()), directory);
+
+        std::map< std::string, std::string > &mPreset=mapPreset[directory];
+
         for (unsigned int i=0; i<presetArchitecture.count(directoryName); i++,it_preset++)
         {
             directory->insertItem(it_preset->second.first.c_str());//, this, SLOT(loadPreset()) );
-            mapPreset.insert(it_preset->second);
+            mPreset.insert(it_preset->second);
         }
     }
     //----------------------------------------------------------------------
@@ -576,14 +579,14 @@ void SofaModeler::fileSaveAs()
         if (extension.empty()) s+=QString(".scn");
 
         graph->save( s.ascii() );
-//  	    if (graph->getFilename().empty())
-//  	      {
+        //  	    if (graph->getFilename().empty())
+        //  	      {
         std::string filename = s.ascii();
         graph->setFilename(filename);
         changeNameWindow(filename);
         changeTabName(graph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
         examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
-//  	      }
+        //  	      }
         recentlyOpenedFilesManager.openFile(filename);
     }
 }
@@ -603,8 +606,8 @@ void SofaModeler::fileReload()
 void SofaModeler::loadPreset(int id)
 {
     Q3PopupMenu *s = (Q3PopupMenu*) sender();
-    std::string presetFile = presetPath+ mapPreset[s->text(id).ascii()];
-
+    const std::string elementClicked(s->text(id).ascii());
+    std::string presetFile = presetPath+ mapPreset[s][elementClicked];
 
     if (sofa::helper::system::DataRepository.findFile ( presetFile ))
     {
@@ -855,7 +858,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
             viewerExtension = ".view";
         }
 
-//        std::cerr << "viewFile = " << viewFile << std::endl;
+        //        std::cerr << "viewFile = " << viewFile << std::endl;
         if ( sofa::helper::system::DataRepository.findFile ( viewFile ) )
         {
             std::ifstream originalViewFile(viewFile.c_str());
