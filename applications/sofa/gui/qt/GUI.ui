@@ -582,7 +582,6 @@
         <action name="fileReloadAction"/>
         <action name="fileSaveAction"/>
         <action name="fileSaveAsAction"/>
-        <action name="exportGraphAction"/>
         <separator/>
         <separator/>
         <action name="fileExitAction"/>
@@ -879,20 +878,6 @@
     </action>
     <action>
         <property name="name">
-            <cstring>exportGraphAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image1</iconset>
-        </property>
-        <property name="text">
-            <string>Export &amp;Graph...</string>
-        </property>
-        <property name="menuText">
-            <string>Export &amp;Graph...</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
             <cstring>ViewerAction</cstring>
         </property>
         <property name="text">
@@ -1089,12 +1074,6 @@
         <slot>fileSaveAs()</slot>
     </connection>
     <connection>
-        <sender>exportGraphAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>exportGraph()</slot>
-    </connection>
-    <connection>
         <sender>fileExitAction</sender>
         <signal>activated()</signal>
         <receiver>GUI</receiver>
@@ -1218,7 +1197,6 @@
     <slot>fileReload()</slot>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>
-    <slot>exportGraph()</slot>
     <slot>fileExit()</slot>
     <slot>editUndo()</slot>
     <slot>editRedo()</slot>
