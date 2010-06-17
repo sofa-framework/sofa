@@ -229,8 +229,6 @@ protected:
      */
     virtual EdgesAroundVertex &getEdgesAroundVertexForModification(const PointID i);
 
-    sofa::component::topology::EdgeSetTopologyEngine* m_topologyEngine;
-
 protected:
 
     /** The array that stores the set of edges in the edge set */
@@ -239,6 +237,7 @@ protected:
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
 
+    sofa::component::topology::EdgeSetTopologyEngine* m_topologyEngine;
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 
