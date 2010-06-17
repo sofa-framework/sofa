@@ -47,6 +47,7 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
     : nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
     , d_initPoints (initData(&d_initPoints, "position", "Initial position of points"))
+    , m_topologyEngine(NULL)
 {
     addAlias(&d_initPoints,"points");
 }
@@ -159,6 +160,40 @@ void PointSetTopologyContainer::addPoint()
 void PointSetTopologyContainer::removePoint()
 {
     nbPoints.setValue(nbPoints.getValue()-1);
+}
+
+
+bool PointSetTopologyContainer::createTopologyEngine()
+{
+    if (m_topologyEngine)
+        return true;
+
+    m_topologyEngine = new sofa::component::topology::PointSetTopologyEngine();
+    if (!m_topologyEngine)
+    {
+        serr << "Error PointSetTopologyEngine creation failed." << sendl;
+        return false;
+    }
+
+    m_topologyEngine->init();
+
+    return true;
+}
+
+
+void PointSetTopologyContainer::addTopologycalData(PointData<void *> &topologicalData)
+{
+    if (!m_topologyEngine) // First time we add a Data, engine need to be created
+        this->createTopologyEngine();
+
+    m_topologyEngine->addTopologicalData(topologicalData);
+}
+
+const sofa::core::topology::TopologyEngine* PointSetTopologyContainer::getPointSetTopologyEngine()
+{
+    if (!m_topologyEngine)
+        this->createTopologyEngine();
+    return m_topologyEngine;
 }
 
 
