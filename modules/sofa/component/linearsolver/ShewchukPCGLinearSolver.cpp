@@ -127,7 +127,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
             preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);
         }
         first = false;
-        next_refresh_iteration = 1;
         next_refresh_step = 1;
     }
     else if (f_use_precond.getValue())     // We use only the first precond in the list
@@ -135,7 +134,19 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
         sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
         sofa::helper::AdvancedTimer::stepBegin("PCG::PrecondSetSystemMBKMatrix");
 
-        if (f_update_step.getValue()>0)
+        if ((f_update_step.getValue()>0) && (f_update_iteration.getValue()>0))
+        {
+            if ((next_refresh_step>=f_update_step.getValue()) && (next_refresh_iteration>=f_update_iteration.getValue()))
+            {
+                preconditioners[0]->setSystemMBKMatrix(mFact,bFact,kFact);
+                next_refresh_step=1;
+            }
+            else
+            {
+                next_refresh_step++;
+            }
+        }
+        else if (f_update_step.getValue()>0)
         {
             if (next_refresh_step>=f_update_step.getValue())
             {
@@ -157,6 +168,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
         }
         sofa::helper::AdvancedTimer::stepEnd("PCG::PrecondSetSystemMBKMatrix");
     }
+    next_refresh_iteration = 1;
 
 
 }
