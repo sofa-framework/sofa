@@ -29,7 +29,6 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/Data.h>
 
 #include <sofa/helper/list.h>
@@ -183,6 +182,42 @@ protected:
 };
 
 
+
+
+/** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
+class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
+{
+public:
+    SOFA_CLASS(TopologyEngine, DataEngine);
+    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *> _topologicalDataList;
+    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *>::iterator _iterator;
+
+    TopologyEngine() {};
+
+    virtual ~TopologyEngine() {}
+
+    virtual void init();
+
+    virtual void handleTopologyChange() {};
+
+protected:
+
+    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
+
+    _topologicalDataList m_topologicalData;
+
+public:
+    unsigned int getNumberOfTopologicalDataLinked() {return m_topologicalData.size();}
+
+    void addTopologicalData(sofa::core::objectmodel::BaseData& topologicalData);
+
+    void removeTopoligicalData(sofa::core::objectmodel::BaseData& topologicalData);
+
+};
+
+
+
+
 /** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
 class SOFA_CORE_API TopologyContainer : public sofa::core::topology::BaseTopologyObject,
     public core::topology::BaseMeshTopology
@@ -214,7 +249,8 @@ public:
     virtual const SeqHexahedra& getHexahedra()         { static SeqHexahedra     empty; return empty; }
     /// @}
 
-
+    /// TopologyChange interactions
+    /// @{
     const sofa::helper::list<const TopologyChange *> &getChangeList() const { return m_changeList.getValue(); }
 
     const sofa::helper::list<const TopologyChange *> &getStateChangeList() const { return m_stateChangeList.getValue(); }
@@ -264,6 +300,24 @@ public:
     */
     void resetStateChangeList();
 
+    ///@}
+
+    /// TopologyEngine interactions
+    ///@{
+    virtual const TopologyEngine* getPointSetTopologyEngine() {return NULL;}
+
+    virtual const TopologyEngine* getEdgeSetTopologyEngine() {return NULL;}
+
+    virtual const TopologyEngine* getTriangleSetTopologyEngine() {return NULL;}
+
+    virtual const TopologyEngine* getQuadSetTopologyEngine() {return NULL;}
+
+    virtual const TopologyEngine* getTetrahedronSetTopologyEngine() {return NULL;}
+
+    virtual const TopologyEngine* getHexahedronSetTopologyEngine() {return NULL;}
+    ///@}
+
+
 private:
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <sofa::helper::list<const TopologyChange *> >m_changeList;
@@ -277,35 +331,6 @@ protected:
 };
 
 
-/** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
-class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
-{
-public:
-    SOFA_CLASS(TopologyEngine, DataEngine);
-    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *> _topologicalDataList;
-    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *>::iterator _iterator;
-
-    virtual ~TopologyEngine() {}
-
-    virtual void init();
-
-    virtual void handleTopologyChange() {};
-
-protected:
-    TopologyEngine() {};
-
-    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
-
-    _topologicalDataList m_topologicalData;
-
-public:
-    unsigned int getNumberOfTopologicalDataLinked() {return m_topologicalData.size();}
-
-    void addTopologicalData(sofa::core::objectmodel::BaseData& topologicalData);
-
-    void removeTopoligicalData(sofa::core::objectmodel::BaseData& topologicalData);
-
-};
 
 
 } // namespace topology

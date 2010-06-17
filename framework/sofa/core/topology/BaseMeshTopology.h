@@ -36,6 +36,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/list.h>
 
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/core.h>
 
 namespace sofa
@@ -330,6 +331,20 @@ public:
 
     /// @}
 
+    /// Get acces to TopologyEngine. Should be overwritten in corresponding container
+    ///@{
+    virtual const DataEngine* getPointSetTopologyEngine() {return NULL;}
+
+    virtual const DataEngine* getEdgeSetTopologyEngine() {return NULL;}
+
+    virtual const DataEngine* getTriangleSetTopologyEngine() {return NULL;}
+
+    virtual const DataEngine* getQuadSetTopologyEngine() {return NULL;}
+
+    virtual const DataEngine* getTetrahedronSetTopologyEngine() {return NULL;}
+
+    virtual const DataEngine* getHexahedronSetTopologyEngine() {return NULL;}
+    ///@}
 
     // functions returning border elements. To be moved in a mapping.
     virtual const sofa::helper::vector <TriangleID>& getTrianglesOnBorder();
