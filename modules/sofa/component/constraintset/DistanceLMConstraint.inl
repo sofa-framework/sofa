@@ -158,19 +158,19 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         SReal correction=0;
         switch(Order)
         {
-        case core::behavior::BaseLMConstraint::ACC :
+        case core::behavior::BaseConstraintSet::ACC :
         {
             correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::dx());
             correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::dx());
             break;
         }
-        case core::behavior::BaseLMConstraint::VEL :
+        case core::behavior::BaseConstraintSet::VEL :
         {
             correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::velocity());
             correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::velocity());
             break;
         }
-        case core::behavior::BaseLMConstraint::POS :
+        case core::behavior::BaseConstraintSet::POS :
         {
             SReal length     = lengthEdge(edges[i],x1,x2);
             SReal restLength = this->l0[i];
