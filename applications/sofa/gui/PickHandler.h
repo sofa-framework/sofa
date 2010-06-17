@@ -92,7 +92,7 @@ public:
 
     void updateRay(const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &orientation);
 
-    void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button, MousePosition position);
+    void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button);
 
     void init( );
     void reset();

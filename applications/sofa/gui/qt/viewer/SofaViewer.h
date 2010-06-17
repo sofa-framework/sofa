@@ -523,7 +523,7 @@ protected:
         mousepos.screenHeight = viewport[3];
         mousepos.x      = e->x();
         mousepos.y      = e->y();
-        pick.updateMouse2D( mousepos );
+
 
 
 
@@ -532,6 +532,7 @@ protected:
         {
 
             pick.activateRay(true);
+            pick.updateMouse2D( mousepos );
 
             //_sceneTransform.ApplyInverse();
             switch (e->type())
@@ -540,15 +541,15 @@ protected:
 
                 if (e->button() == Qt::LeftButton)
                 {
-                    pick.handleMouseEvent(PRESSED, LEFT,mousepos);
+                    pick.handleMouseEvent(PRESSED, LEFT);
                 }
                 else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
                 {
-                    pick.handleMouseEvent(PRESSED, RIGHT,mousepos);
+                    pick.handleMouseEvent(PRESSED, RIGHT);
                 }
                 else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
                 {
-                    pick.handleMouseEvent(PRESSED, MIDDLE,mousepos);
+                    pick.handleMouseEvent(PRESSED, MIDDLE);
                 }
                 break;
             case QEvent::MouseButtonRelease:
@@ -557,15 +558,15 @@ protected:
 
                 if (e->button() == Qt::LeftButton)
                 {
-                    pick.handleMouseEvent(RELEASED, LEFT,mousepos);
+                    pick.handleMouseEvent(RELEASED, LEFT);
                 }
                 else if (e->button() == Qt::RightButton)
                 {
-                    pick.handleMouseEvent(RELEASED, RIGHT,mousepos);
+                    pick.handleMouseEvent(RELEASED, RIGHT);
                 }
                 else if (e->button() == Qt::MidButton)
                 {
-                    pick.handleMouseEvent(RELEASED, MIDDLE,mousepos);
+                    pick.handleMouseEvent(RELEASED, MIDDLE);
                 }
             }
             break;

@@ -259,13 +259,13 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
 }
 
 //Clear the node create, and destroy all its components
-void PickHandler::handleMouseEvent(MOUSE_STATUS status, MOUSE_BUTTON button, MousePosition position)
+void PickHandler::handleMouseEvent(MOUSE_STATUS status, MOUSE_BUTTON button)
 {
     if (!interaction) return;
 
     mouseButton=button;
     mouseStatus=status;
-    mousePosition=position;
+
 }
 
 
@@ -283,6 +283,7 @@ component::collision::BodyPicked PickHandler::findCollision()
         if (picked.body) return picked;
     }
     return findCollisionUsingBruteForce();
+    //return findCollisionUsingColourCoding();
 }
 
 component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
