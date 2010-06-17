@@ -41,6 +41,9 @@
 #include <sofa/component/configurationsetting/MouseButtonSetting.h>
 
 #include <sofa/helper/fixed_array.h>
+#include <sofa/helper/gl/FrameBufferObject.h>
+#include <functional>
+
 
 namespace sofa
 {
@@ -66,6 +69,15 @@ public:
     virtual void execute(const sofa::component::collision::BodyPicked &body)=0;
 };
 
+class CallBackRender
+{
+public:
+    virtual ~CallBackRender() {};
+    virtual void render() = 0;
+};
+
+
+
 class SOFA_SOFAGUI_API PickHandler
 {
     typedef sofa::component::collision::RayModel MouseCollisionModel;
@@ -80,10 +92,22 @@ public:
 
     void updateRay(const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &orientation);
 
-    void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button);
+    void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button, MousePosition position);
 
-    void init();
+    void init( );
     void reset();
+
+    void setColourRenderCallback(CallBackRender * colourRender)
+    {
+        if(renderCallback != NULL)
+        {
+            delete renderCallback;
+            renderCallback = NULL;
+        }
+        renderCallback = colourRender;
+    }
+
+    void updateMouse2D( MousePosition mouse ) { mousePosition = mouse ;}
 
 
     Operation *getOperation(MOUSE_BUTTON button) {return operations[button];}
@@ -96,39 +120,50 @@ public:
     void clearCallBacks() {for (unsigned int i=0; i<callbacks.size(); ++i) delete callbacks[i]; callbacks.clear();}
 
     static BodyPicked findCollisionUsingBruteForce(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, double maxLength);
-
+    BodyPicked findCollisionUsingColourCoding(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction);
 
     ComponentMouseInteraction           *getInteraction();
     BodyPicked                          *getLastPicked() {return &lastPicked;};
 
 protected:
+    bool interactorInUse;
+    MOUSE_STATUS mouseStatus;
+    MOUSE_BUTTON mouseButton;
 
     Node                *mouseNode;
     MouseContainer      *mouseContainer;
     MouseCollisionModel *mouseCollision;
 
+    MousePosition       mousePosition;
 
-    BodyPicked findCollision();
-    BodyPicked findCollisionUsingPipeline();
-    BodyPicked findCollisionUsingBruteForce();
-
-    bool needToCastRay();
-    void setCompatibleInteractor();
+    sofa::helper::gl::FrameBufferObject _fbo;
+    sofa::helper::gl::fboParameters     _fboParams;
 
     ComponentMouseInteraction *interaction;
     std::vector< ComponentMouseInteraction *> instanceComponents;
 
-    bool interactorInUse;
 
     BodyPicked lastPicked;
 
-    MOUSE_STATUS mouseStatus;
-    MOUSE_BUTTON mouseButton;
+    bool useCollisions;
+
 
     //NONE is the number of Operations in use.
     helper::fixed_array< Operation*,NONE > operations;
-    bool useCollisions;
+
     helper::vector< CallBackPicker* > callbacks;
+
+    CallBackRender* renderCallback;
+
+    BodyPicked findCollision();
+    BodyPicked findCollisionUsingPipeline();
+    BodyPicked findCollisionUsingBruteForce();
+    BodyPicked findCollisionUsingColourCoding();
+
+    bool needToCastRay();
+    void setCompatibleInteractor();
+    BodyPicked _decodeColour(const sofa::defaulttype::Vec4f& colour,const defaulttype::Vector3& origin,
+            const defaulttype::Vector3& direction);
 };
 }
 }

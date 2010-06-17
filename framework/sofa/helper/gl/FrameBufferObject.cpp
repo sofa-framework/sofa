@@ -30,7 +30,7 @@
  *  Created on: 6 janv. 2009
  *      Author: froy
  */
-
+#include <cassert>
 #include <sofa/helper/gl/FrameBufferObject.h>
 
 namespace sofa
@@ -49,12 +49,12 @@ FrameBufferObject::FrameBufferObject()
 
 }
 
-FrameBufferObject::FrameBufferObject(const FrameBufferObjectFormat& FboFormat)
+FrameBufferObject::FrameBufferObject(const fboParameters& fboParams)
     :width(0)
     ,height(0)
     ,depthTexture(0)
     ,initialized(false)
-    ,fboFormat(FboFormat)
+    ,_fboParams(fboParams)
 {
 }
 
@@ -72,6 +72,52 @@ void FrameBufferObject::destroy()
         glDeleteTextures( 1, &colorTexture );
         glDeleteFramebuffersEXT( 1, &id );
     }
+}
+
+bool FrameBufferObject::checkFBO()
+{
+
+    GLenum status;
+    status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    switch(status)
+    {
+    case GL_FRAMEBUFFER_COMPLETE_EXT:
+        return true;
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+        assert(false && "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT");
+        return false;
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+        assert(false && "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT");
+        return false;
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+        assert(false && "GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT");
+        return false;
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+        assert(false && "GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT");
+        return false;
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+        assert(false && "GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT");
+        return false;
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+        assert(false && "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT");
+        return false;
+        break;
+    case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+        assert(false && "GL_FRAMEBUFFER_UNSUPPORTED_EXT");
+        return false;
+        break;
+    default:
+        assert(false && "Unknown ERROR");
+        return false;
+    }
+
+
 }
 
 void FrameBufferObject::init(unsigned int width, unsigned height)
@@ -93,29 +139,13 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         glDrawBuffer(GL_BACK);
         glReadBuffer(GL_BACK);
 
-        //debug
-        //if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT)
-        //	std::cout << "FBO OK" << std::endl;
 
-        /*
-        switch(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT))
-        {
-        case GL_FRAMEBUFFER_COMPLETE_EXT:
-        	std::cout << "Status: Framebuffer Initialisation OK"
-        	<< std::endl;
-        	break;
-        case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-        	std::cout << "Error: Framebuffer Configuration"
-        	<< " Unsupported" << std::endl;
-        	break;
-        default:
-        	std::cout << "Error: Unknown Framebuffer"
-        	<< " Configuration Error" << std::endl;
-        	break;
-        }
-        */
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+#ifdef _DEBUG
+        checkFBO();
+#endif
 
         initialized=true;
     }
@@ -190,20 +220,19 @@ void FrameBufferObject::initDepthBuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
-    glTexImage2D(GL_TEXTURE_2D, 0, fboFormat.depthInternalformat , width, height, 0,GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, _fboParams.depthInternalformat , width, height, 0,GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void FrameBufferObject::initColorBuffer()
 {
     glBindTexture(GL_TEXTURE_2D, colorTexture);
-
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
-    glTexImage2D(GL_TEXTURE_2D, 0, fboFormat.colorInternalformat,  width, height, 0, fboFormat.colorFormat, fboFormat.colorType, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, _fboParams.colorInternalformat,  width, height, 0, _fboParams.colorFormat, _fboParams.colorType, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
 }

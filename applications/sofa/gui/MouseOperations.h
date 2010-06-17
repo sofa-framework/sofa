@@ -46,6 +46,15 @@ namespace gui
 enum MOUSE_BUTTON {LEFT, MIDDLE, RIGHT,NONE};
 enum MOUSE_STATUS {PRESSED,RELEASED, ACTIVATED, DEACTIVATED};
 
+
+struct MousePosition
+{
+    int x;
+    int y;
+    int screenWidth;
+    int screenHeight;
+};
+
 class PickHandler;
 
 class Operation
