@@ -34,8 +34,10 @@
 #ifndef FRAMEBUFFEROBJECT_H_
 #define FRAMEBUFFEROBJECT_H_
 
-#include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/helper.h>
+#include <sofa/helper/system/gl.h>
+#include <functional>
+
 
 namespace sofa
 {
@@ -44,14 +46,14 @@ namespace helper
 namespace gl
 {
 
-struct SOFA_HELPER_API FrameBufferObjectFormat
+struct SOFA_HELPER_API fboParameters
 {
     GLint  depthInternalformat; // GL_DEPTHCOMPONENT16 GL_DEPTHCOMPONENT24...
     GLint  colorInternalformat; // GL_RGB8, GL_RGB16...
     GLenum colorFormat; // GL_RGB, GL_RGBA, GL_BGR...
     GLenum colorType; // GL_UNSIGNED_BYTE GL_UNSIGNED_INT...
 
-    FrameBufferObjectFormat()
+    fboParameters()
     {
         depthInternalformat = GL_DEPTH_COMPONENT24;
         colorInternalformat = GL_RGBA8;
@@ -68,10 +70,11 @@ private:
     GLuint id;
     GLuint depthTexture, colorTexture;
     bool initialized;
-    FrameBufferObjectFormat fboFormat;
+    fboParameters _fboParams;
 public:
     FrameBufferObject();
-    FrameBufferObject(const FrameBufferObjectFormat& FboFormat);
+    FrameBufferObject(const fboParameters& FboFormat);
+    void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; };
     virtual ~FrameBufferObject();
 
     void init(unsigned int width, unsigned height);
@@ -79,6 +82,8 @@ public:
 
     void start();
     void stop();
+
+    bool checkFBO();
 
     void setSize(unsigned int width, unsigned height);
 

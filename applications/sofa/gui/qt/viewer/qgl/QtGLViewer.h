@@ -134,6 +134,8 @@ public:
     /// and can be used to unregister classes associated with in the the ObjectFactory.
     static int DisableViewer();
 
+    virtual void drawColourPicking ();
+
     QtGLViewer( QWidget* parent, const char* name="" );
     ~QtGLViewer();
 
@@ -185,6 +187,8 @@ public:
 
     virtual void setBackgroundImage(std::string imageFileName);
 
+
+
 private:
 
     void	InitGFX(void);
@@ -206,6 +210,8 @@ private:
     void	DisplayMenu(void);
     void	DrawScene();
 
+
+
 #ifdef SOFA_DEV
 
     void	DrawAutomate();
@@ -216,6 +222,9 @@ private:
 
 protected:
     //virtual bool event ( QEvent * e );
+
+
+
     virtual void keyPressEvent ( QKeyEvent * e );
     virtual void keyReleaseEvent ( QKeyEvent * e );
     virtual void mousePressEvent ( QMouseEvent * e );

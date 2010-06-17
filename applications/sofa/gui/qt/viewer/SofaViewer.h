@@ -128,6 +128,10 @@ public:
     {
     }
 
+    virtual void drawColourPicking () {};
+
+
+
     virtual QWidget* getQWidget()=0;
 
     virtual sofa::simulation::Node* getScene()
@@ -511,10 +515,24 @@ protected:
 
     void mouseEvent(QMouseEvent *e)
     {
+        GLint viewport[4];
+        glGetIntegerv(GL_VIEWPORT,viewport);
+
+        MousePosition mousepos;
+        mousepos.screenWidth  = viewport[2];
+        mousepos.screenHeight = viewport[3];
+        mousepos.x      = e->x();
+        mousepos.y      = e->y();
+        pick.updateMouse2D( mousepos );
+
+
+
+
         if (e->state() & Qt::ShiftButton)
         {
 
             pick.activateRay(true);
+
             //_sceneTransform.ApplyInverse();
             switch (e->type())
             {
@@ -522,15 +540,15 @@ protected:
 
                 if (e->button() == Qt::LeftButton)
                 {
-                    pick.handleMouseEvent(PRESSED, LEFT);
+                    pick.handleMouseEvent(PRESSED, LEFT,mousepos);
                 }
                 else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
                 {
-                    pick.handleMouseEvent(PRESSED, RIGHT);
+                    pick.handleMouseEvent(PRESSED, RIGHT,mousepos);
                 }
                 else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
                 {
-                    pick.handleMouseEvent(PRESSED, MIDDLE);
+                    pick.handleMouseEvent(PRESSED, MIDDLE,mousepos);
                 }
                 break;
             case QEvent::MouseButtonRelease:
@@ -539,15 +557,15 @@ protected:
 
                 if (e->button() == Qt::LeftButton)
                 {
-                    pick.handleMouseEvent(RELEASED, LEFT);
+                    pick.handleMouseEvent(RELEASED, LEFT,mousepos);
                 }
                 else if (e->button() == Qt::RightButton)
                 {
-                    pick.handleMouseEvent(RELEASED, RIGHT);
+                    pick.handleMouseEvent(RELEASED, RIGHT,mousepos);
                 }
                 else if (e->button() == Qt::MidButton)
                 {
-                    pick.handleMouseEvent(RELEASED, MIDDLE);
+                    pick.handleMouseEvent(RELEASED, MIDDLE,mousepos);
                 }
             }
             break;
@@ -859,8 +877,27 @@ protected:
     virtual void resizeW(int)=0;
     virtual void resizeH(int)=0;
 
+
 protected:
     sofa::component::visualmodel::BaseCamera* currentCamera;
+
+
+
+};
+
+class ColourPickingRenderCallBack : public sofa::gui::CallBackRender
+{
+public:
+    ColourPickingRenderCallBack(SofaViewer* viewer):_viewer(viewer) {};
+    virtual void render()
+    {
+        if(_viewer)
+        {
+            _viewer->drawColourPicking();
+        }
+    };
+protected:
+    SofaViewer* _viewer;
 
 };
 }

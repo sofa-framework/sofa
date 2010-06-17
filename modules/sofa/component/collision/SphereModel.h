@@ -95,6 +95,8 @@ public:
 
     void draw();
 
+    virtual void drawColourPicking();
+
     core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
     virtual bool load(const char* filename);

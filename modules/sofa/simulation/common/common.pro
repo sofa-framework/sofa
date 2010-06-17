@@ -13,6 +13,7 @@ HEADERS += common.h \
            ClassSystem.h \  
            CleanupVisitor.h \
            CollisionBeginEvent.h \
+           ColourPickingVisitor.h \
            CollisionEndEvent.h \
            CollisionVisitor.h \  
            Colors.h \
@@ -68,6 +69,7 @@ SOURCES += Node.cpp \
            CactusStackStorage.cpp \
            CleanupVisitor.cpp \
            CollisionVisitor.cpp \
+           ColourPickingVisitor.cpp \
            DeleteVisitor.cpp \
            DeactivatedNodeVisitor.cpp \
            ExportGnuplotVisitor.cpp \
