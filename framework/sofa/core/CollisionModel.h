@@ -274,6 +274,8 @@ public:
     /// Render the whole collision model.
     virtual void draw() {}
 
+    virtual void drawColourPicking() {}
+
     /// Return the first (i.e. root) CollisionModel in the hierarchy.
     CollisionModel* getFirst()
     {
