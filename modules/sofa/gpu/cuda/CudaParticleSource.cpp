@@ -36,7 +36,7 @@ namespace behavior
 {
 template class ProjectiveConstraintSet<gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class Constraint<gpu::cuda::CudaVec3dTypes>;
+template class ProjectiveConstraintSet<gpu::cuda::CudaVec3dTypes>;
 #endif
 } // namespace behavior
 } // namespace core
