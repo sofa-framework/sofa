@@ -54,7 +54,7 @@ contains(DEFINES,SOFA_EXTLIBS_FFMPEG){
 
 #DCCD
 contains(DEFINES,SOFA_HAVE_DCCD){
-	SUBDIRS += extlibs/self-ccd-1.0
+	SUBDIRS += extlibs/self-ccd-1.0/self-ccd.pro
 }
 
 #QGLViewer
