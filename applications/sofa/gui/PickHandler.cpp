@@ -31,6 +31,7 @@
 
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/DrawManager.h>
 #include <sofa/simulation/common/Simulation.h>
 
@@ -101,12 +102,26 @@ void PickHandler::init()
     simulation::getSimulation()->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
     useCollisions = (pipeline != NULL);
+
+
+
+
+
 #ifdef SOFA_GUI_QTOGREVIEWER
     if (simulation::getSimulation()->DrawUtility.getSystemDraw() != sofa::helper::gl::DrawManager::OGRE)
 #endif
     {
+        const char* version = (char*)glGetString( GL_VERSION);
+
         _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
-        _fboParams.colorInternalformat = GL_RGBA32F;
+        if( strcmp(version,"3") )
+        {
+            _fboParams.colorInternalformat = GL_RGBA32F;
+        }
+        else
+        {
+            _fboParams.colorInternalformat = GL_RGBA16;
+        }
         _fboParams.colorFormat         = GL_RGBA;
         _fboParams.colorType           = GL_FLOAT;
 
