@@ -101,8 +101,9 @@ void PickHandler::init()
     simulation::getSimulation()->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
     useCollisions = (pipeline != NULL);
-
+#ifdef SOFA_GUI_QTOGREVIEWER
     if (simulation::getSimulation()->DrawUtility.getSystemDraw() != sofa::helper::gl::DrawManager::OGRE)
+#endif
     {
         _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
         _fboParams.colorInternalformat = GL_RGBA32F;
