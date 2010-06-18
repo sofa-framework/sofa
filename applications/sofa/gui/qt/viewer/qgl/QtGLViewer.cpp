@@ -44,9 +44,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/system/glut.h>
-#include <sofa/helper/GL/FrameBufferObject.h>
 #include <sofa/gui/SofaGUI.h>
-#include <sofa/gui/ColorPicker.h>
 #include <qevent.h>
 #include "GenGraphForm.h"
 #include "Main.h"
