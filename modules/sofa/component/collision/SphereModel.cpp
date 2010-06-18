@@ -161,7 +161,7 @@ void SphereModel::drawColourPicking()
     this->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
     const int totalCollisionModel = listCollisionModel.size();
     helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
-    const int indexCollisionModel = std::distance(iter,listCollisionModel.begin() ) + 1 ;
+    const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
 
 
     float red = (float)indexCollisionModel / (float)totalCollisionModel;
@@ -198,6 +198,15 @@ void SphereModel::drawColourPicking()
 
         glPopMatrix();
     }
+}
+
+
+sofa::defaulttype::Vector3 SphereModel::getPositionFromWeights(int index, Real /*b*/, Real /*a*/)
+{
+    Element sphere(this,index);
+
+    return sphere.center();
+
 }
 
 void SphereModel::computeBoundingTree(int maxDepth)
