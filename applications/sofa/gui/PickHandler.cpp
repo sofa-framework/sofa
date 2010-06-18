@@ -394,7 +394,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(con
         const defaulttype::Vector3& direction)
 {
     BodyPicked result;
-    static const float threshold = 0.001f;
 
     sofa::defaulttype::Vec4f color;
     int x = mousePosition.screenWidth -  mousePosition.x;
@@ -422,35 +421,22 @@ component::collision::BodyPicked PickHandler::_decodeColour(const sofa::defaultt
     using namespace core::objectmodel;
     using namespace core::behavior;
     using namespace sofa::defaulttype;
-    static const float threshold = 0.001f;
+    static const float threshold = 0.00001f;
 
     component::collision::BodyPicked result;
 
     result.dist =  0;
 
-    if( colour[0] > threshold )
+    if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
     {
 
         helper::vector<core::CollisionModel*> listCollisionModel;
         sofa::simulation::getSimulation()->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         const int totalCollisionModel = listCollisionModel.size();
-
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;
         result.body = listCollisionModel[indexListCollisionModel];
         result.indexCollisionElement = (int) ( colour[1] * result.body->getSize() );
-
-        if( colour[2] < threshold && colour[3] < threshold )
-        {
-            /* no barycentric weights */
-            core::behavior::BaseMechanicalState *mstate;
-            result.body->getContext()->get(mstate,BaseContext::Local);
-            if(mstate)
-            {
-                result.point[0] = mstate->getPX(result.indexCollisionElement);
-                result.point[1] = mstate->getPY(result.indexCollisionElement);
-                result.point[2] = mstate->getPZ(result.indexCollisionElement);
-            }
-        }
+        result.point = result.body->getPositionFromWeights(result.indexCollisionElement, colour[2], colour[3]);
 
         result.rayLength = (result.point-origin)*direction;
     }

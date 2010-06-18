@@ -590,6 +590,64 @@ void TTriangleModel<DataTypes>::draw(int index)
 }
 
 template<class DataTypes>
+void TTriangleModel<DataTypes>::drawColourPicking()
+{
+
+    if( size != _topology->getNbTriangles())
+        updateFromTopology();
+    using namespace sofa::core::objectmodel;
+
+    helper::vector<core::CollisionModel*> listCollisionModel;
+    this->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
+    const int totalCollisionModel = listCollisionModel.size();
+    helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
+    const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
+
+    float r = (float)indexCollisionModel / (float)totalCollisionModel;
+    float g;
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_COLOR_MATERIAL);
+    glDisable(GL_DITHER);
+
+    for( int i=0 ; i<size; i++)
+    {
+        g = (float)i / (float)size;
+
+        Element t(this,i);
+        glBegin(GL_TRIANGLES);
+        helper::gl::glNormalT(t.n());
+        glColor4f(r,g,0,0);
+        helper::gl::glVertexT(t.p1());
+        glColor4f(r,g,0,1);
+        helper::gl::glVertexT(t.p2());
+        glColor4f(r,g,1,0);
+        helper::gl::glVertexT(t.p3());
+        glEnd();
+
+    }
+
+
+}
+
+template<class DataTypes>
+sofa::defaulttype::Vector3 TTriangleModel<DataTypes>::getPositionFromWeights(int index, Real b, Real a)
+{
+    assert( index >= 0 && index < size);
+    sofa::defaulttype::Vector3 result;
+    Element t(this,index);
+    result  = t.p2()*a;
+    result += t.p1()*(1-a);
+    result += t.p3()*b;
+    result  += t.p1()*(1-b);
+
+
+    return result;
+
+
+}
+
+template<class DataTypes>
 void TTriangleModel<DataTypes>::draw()
 {
     if (getContext()->getShowCollisionModels())
