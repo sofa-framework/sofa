@@ -120,35 +120,12 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3fTypes > >::kernel_u
     int nbbits = 8;
     while (nbbits < cellBits + 1) ++nbbits;
 
-//	gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
-//	rs->sort(particleIndex,particleIndex,nbPoints*8,nbbits);
-
-
-    /*		int posx[nbPoints*8];
-    	gpu::opencl::myopenclEnqueueReadBuffer(0,posx,particleIndex.m,particleIndex.offset,nbPoints*8*sizeof(int));
-    	std::cout << "\n###" << nbPoints << "\n";
-    	for(int i=0;i<nbPoints*8;i++){std::cout << posx[i];if(i%1024==1023)std::cout<<"\n";else std::cout<<";";}
-    	std::cout << "\n\n";*/
 
     gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
 
-    /*int posx[nbPoints*8];
-    gpu::opencl::myopenclEnqueueReadBuffer(0,posx,particleHash.m,particleHash.offset,nbPoints*8*sizeof(int));
-    std::cout << "\n###" << nbPoints << "\n";
-    for(int i=0;i<nbPoints*8;i++){std::cout << posx[i];if(i%1024==1023)std::cout<<"\n";else std::cout<<";";}
-    std::cout << "\n\n";
-    exit(0);*/
-
-//	std::cout << "cellBits:" << cellBits << "\tindex0:"<<index0<<"\tcellWidth:"<<cellWidth<<"\tnbPoints"<<nbPoints<<"\n";
 
     gpu::opencl::SpatialGridContainer_findCellRange(cellBits, index0, cellWidth, nbPoints, particleHash, cells, cellGhost);
 
-    /*	int posx[32768];
-    	gpu::opencl::myopenclEnqueueReadBuffer(0,posx,cellGhost.m,cellGhost.offset,32768*sizeof(int));
-    	std::cout << "\n###" << nbPoints << "\n";
-    	for(int i=0;i<32768;i++){std::cout << posx[i];if(i%1024==1023)std::cout<<"\n";else std::cout<<";";}
-    	std::cout << "\n\n";
-    	exit(0);*/
 
 }
 
