@@ -160,14 +160,14 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
     unsigned scalarConstraintIndex = 0;
     for (unsigned int i=0; i<edges.size(); ++i)
     {
-        core::behavior::BaseLMConstraint::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
-        constraintGroupToContact[constraintGroup] = &edgeToContact[edges[i]];
-
         switch(Order)
         {
         case core::behavior::BaseConstraintSet::ACC :
         case core::behavior::BaseConstraintSet::VEL :
         {
+            core::behavior::BaseLMConstraint::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
+            constraintGroupToContact[constraintGroup] = &edgeToContact[edges[i]];
+
             SReal correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex++], -correction);
@@ -190,7 +190,11 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
             const VecCoord &x1=*(this->constrainedObject1->getVecCoord(id.index));
             const VecCoord &x2=*(this->constrainedObject2->getVecCoord(id.index));
             SReal correction  = minDistance-lengthEdge(edges[i],x1,x2); //Distance min-current length
-            if (correction>0) constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex], correction);
+            if (correction>0)
+            {
+                core::behavior::BaseLMConstraint::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
+                constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex], correction);
+            }
             scalarConstraintIndex+=3;
             break;
         }
@@ -200,25 +204,22 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
 }
 
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const SReal* Wptr, SReal* cptr, SReal* LambdaInitptr,
+void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
         core::behavior::BaseLMConstraint::ConstraintGroup * group)
 {
     const int numConstraintToProcess = group->getNumConstraint();
-    Eigen::Map<VectorEigen> c(cptr, numConstraintToProcess);
-    Eigen::Map<MatrixEigen> W(Wptr, numConstraintToProcess, numConstraintToProcess);
+    const Eigen::Map<VectorEigen> c(cptr, numConstraintToProcess);
+    const Eigen::Map<MatrixEigen> W(Wptr, numConstraintToProcess, numConstraintToProcess);
     Eigen::Map<VectorEigen> LambdaInit(LambdaInitptr, numConstraintToProcess);
-    VectorEigen Lambda=sofa::component::linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,LambdaInitptr,numConstraintToProcess);
-//                std::cerr<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, c = "<< std::endl << c
-//                        <<std::endl<<", LambdaInit = "<<LambdaInit<<std::endl<<std::endl<<", Lambda = "<<Lambda<<std::endl;
-
-//                std::cerr<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, Lambda = "<<Lambda<<", friction = "<<contactFriction.getValue()<<std::endl;
+    VectorEigen Lambda=sofa::component::linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,numConstraintToProcess);
+//                serr<<"LagrangeMultiplierEvaluation, c = "<< sendl << c
+//                        <<sendl<<", Lambda = "<<Lambda.transpose()<<", friction = "<<contactFriction.getValue()<<sendl;
 
     switch (group->getOrder())
     {
     case core::behavior::BaseConstraintSet::VEL :
     {
         Contact &out=*(this->constraintGroupToContact[group]);
-//                        serr << "Lambda:" << Lambda.transpose() << sendl;
 //                        //The force cannot be attractive!
         if (Lambda(0) <= 0)
         {

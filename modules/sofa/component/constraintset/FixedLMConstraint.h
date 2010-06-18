@@ -108,11 +108,11 @@ public:
     void writeConstraintEquations(VecId id, ConstOrder order);
 
 
-    void LagrangeMultiplierEvaluation(const SReal* Wptr, SReal* cptr, SReal* LambdaInitptr,
+    void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
             core::behavior::BaseLMConstraint::ConstraintGroup * group)
     {
         const unsigned int numConstraintToProcess=group->getNumConstraint();
-        const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,LambdaInitptr,numConstraintToProcess);
+        const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,numConstraintToProcess);
         Eigen::Map<VectorEigen> LambdaInit(LambdaInitptr, numConstraintToProcess);
         LambdaInit = Lambda;
     }

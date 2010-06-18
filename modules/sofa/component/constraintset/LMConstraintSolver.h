@@ -62,7 +62,6 @@ protected:
 public:
     SOFA_CLASS(LMConstraintSolver, sofa::core::behavior::ConstraintSolver);
     LMConstraintSolver();
-    virtual ~LMConstraintSolver();
 
     virtual void init();
     virtual void reinit() {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
@@ -105,8 +104,8 @@ protected:
     /// Solve the System using a projective Gauss-Seidel algorithm: compute the Lagrange Multipliers Lambda
     virtual bool solveConstraintSystemUsingGaussSeidel(VecId id, ConstOrder Order,
             const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
-            MatrixEigen &W,
-            VectorEigen &c,
+            const MatrixEigen &W,
+            const VectorEigen &c,
             VectorEigen &Lambda);
 
     /// Compute Kinetic Energy
@@ -147,9 +146,9 @@ protected:
     DofToMask dofUsed;
     DofToMatrix invMass_Ltrans;
 
-    MatrixEigen *W;
-    VectorEigen *c;
-    VectorEigen *Lambda;
+    MatrixEigen W;
+    VectorEigen c;
+    VectorEigen Lambda;
 
 
     //Persitent datas

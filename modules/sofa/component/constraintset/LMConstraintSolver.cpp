@@ -53,11 +53,10 @@ LMConstraintSolver::LMConstraintSolver():
     constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity")),
     constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position")),
     numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints")),
-    maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints")),
+    maxError( initData( &maxError, 0.0000001, "maxError", "threshold for the residue of the Gauss-Seidel algorithm")),
     graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") ),
     traceKineticEnergy( initData( &traceKineticEnergy, false, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system")),
-    graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the kinetic energy of the system") ),
-    W(NULL), c(NULL), Lambda(NULL)
+    graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the kinetic energy of the system") )
 {
     graphGSError.setGroup("Statistics");
     graphGSError.setWidget("graph");
@@ -69,13 +68,6 @@ LMConstraintSolver::LMConstraintSolver():
     this->f_listening.setValue(true);
 }
 
-
-LMConstraintSolver::~LMConstraintSolver()
-{
-    if (W) delete W;
-    if (c) delete c;
-    if (Lambda) delete Lambda;
-}
 
 void LMConstraintSolver::init()
 {
@@ -232,10 +224,6 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
     }
     else serr << "Order Not recognized " << orderState << sendl;
 
-    if (W) delete W;
-    if (c) delete c;
-    if (Lambda) delete Lambda;
-
     setDofs.clear();
     dofUsed.clear();
     invMass_Ltrans.clear();
@@ -280,8 +268,8 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     //************************************************************
     // Build the Right Hand Term
     //************************************************************
-    c = new VectorEigen((int)numConstraint);
-    buildRightHandTerm(orderState,LMConstraints, *c);
+    c = VectorEigen::Zero((int)numConstraint);
+    buildRightHandTerm(orderState,LMConstraints, c);
 
 
     //************************************************************
@@ -325,15 +313,12 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     buildLeftMatrix(invMassMatrix, LMatrices,WEi, invMass_Ltrans);
 
     //Convert the Sparse Matrix AEi into a Dense Matrix-> faster access to elements, and possilibity to use a direct LU solution
-    W=new MatrixEigen((int)numConstraint, (int)numConstraint);
-    W->setZero((int)numConstraint, (int)numConstraint);
+    W=MatrixEigen::Zero((int)numConstraint, (int)numConstraint);
 
-
-    MatrixEigen &WEigen = *W;
     for (int k=0; k<WEi.outerSize(); ++k)
         for (SparseMatrixEigen::InnerIterator it(WEi,k); it; ++it)
         {
-            WEigen(it.row(),it.col()) = it.value();
+            W(it.row(),it.col()) = it.value();
         }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -356,17 +341,17 @@ bool LMConstraintSolver::solveSystem(double /*dt*/, VecId id, core::behavior::Ba
     if (f_printLog.getValue())
     {
         sout << "W= L0.M0^-1.L0^T + L1.M1^-1.L1^T + ...: "<<sendl;
-        sout <<"\n" << *W << sendl;
+        sout <<"\n" << W << sendl;
         sout << "for a constraint: " << ""<<sendl;
-        sout << "\n" << *c << sendl;
+        sout << "\n" << c << sendl;
     }
 
     const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
 
-    Lambda=new VectorEigen(numConstraint);
-    Lambda->setZero(numConstraint);
-
-    bool solutionFound=solveConstraintSystemUsingGaussSeidel(id, order, LMConstraints, *W, *c, *Lambda);
+    //"Cold" start
+    Lambda=VectorEigen::Zero(numConstraint);
+    bool solutionFound=solveConstraintSystemUsingGaussSeidel(id, order, LMConstraints,
+            W, c, Lambda);
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SystemSolution");
 #endif
@@ -389,9 +374,8 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, core::behavior
     for (SetDof::iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
     {
         sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
-        const VectorEigen &LambdaVector=*Lambda;
         bool updateVelocities=!constraintVel.getValue();
-        constraintStateCorrection(id, order, updateVelocities,invMass_Ltrans[dofs] , LambdaVector, dofUsed[dofs], dofs);
+        constraintStateCorrection(id, order, updateVelocities,invMass_Ltrans[dofs] , Lambda, dofUsed[dofs], dofs);
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         if (sofa::simulation::Visitor::IsExportStateVectorEnabled())
@@ -578,16 +562,14 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
     const unsigned int dimensionDofs=dof->getDerivDimension();
     typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
     //Get blocks of values from the Mechanical States
-    std::list< ConstraintBlock > blocks;
-    blocks =dof->constraintBlocks( idxEquations );
+    std::list< ConstraintBlock > blocks=dof->constraintBlocks( idxEquations );
 
-    std::list< ConstraintBlock >::iterator itBlock;
     //Fill the matrices
     const unsigned int numEquations=idxEquations.size();
 
     for (unsigned int eq=0; eq<numEquations; ++eq)
     {
-        for (itBlock=blocks.begin(); itBlock!=blocks.end(); itBlock++)
+        for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); itBlock++)
         {
             const ConstraintBlock &b=(*itBlock);
             const defaulttype::BaseMatrix &m=b.getMatrix();
@@ -602,9 +584,8 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
                 }
             }
         }
-
     }
-    for (itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
+    for (std::list< ConstraintBlock >::iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
     {
         delete itBlock->getMatrix();
     }
@@ -625,10 +606,11 @@ void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vec
 }
 
 
-bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints, MatrixEigen &W, VectorEigen &c, VectorEigen &Lambda)
+bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstOrder Order,
+        const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
+        const MatrixEigen &W, const VectorEigen &c, VectorEigen &Lambda)
 {
     if (f_printLog.getValue()) sout << "Using Gauss-Seidel solution"<<sendl;
-
     std::string orderName;
     switch (Order)
     {
@@ -636,6 +618,8 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
     case BaseLMConstraint::VEL: orderName="Velocity"; break;
     case BaseLMConstraint::POS: orderName="Position"; break;
     }
+
+    const SReal invNormC=1.0/c.norm();
 
     helper::vector<double> &vError=(*graphGSError.beginEdit())["Error "+ orderName];
 
@@ -653,7 +637,6 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
     helper::set< int > emptyBlock;
 
 
-
     for (; iteration < numIterations.getValue() && continueIteration; ++iteration)
     {
         unsigned int idxConstraint=0;
@@ -666,19 +649,17 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
         {
             BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
-            const std::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+            const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess)
             {
+                //Invalid constraints: due to projective constraints, or constraint expressed for Obstacle objects: we just ignore them
+                if (emptyBlock.find(idxConstraint) != emptyBlock.end()) continue;
+
                 //-------------------------------------
                 //Initialize the variables, and store X^(k-1) in previousIteration
                 numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
-
-                LambdaPreviousIteration = Lambda.block(idxConstraint,0,numConstraintToProcess,1);
-
-                //Invalid constraints: due to projective constraints, or constraint expressed for Obstacle objects: we just ignore them
-                if (emptyBlock.find(idxConstraint) != emptyBlock.end()) continue;
 
                 const MatrixEigen &Wblock=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
                 if (Wblock.isZero(1e-25))
@@ -687,15 +668,30 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                     continue;
                 }
 
-                constraint->LagrangeMultiplierEvaluation(Wblock.data(),c.data()+idxConstraint, Lambda.data()+idxConstraint,
-                        constraintOrder[constraintEntry]);
+                //Save previous iteration
+                if ((int) idxConstraint >= Lambda.rows())
+                {
+                    serr << "Empty Constraint Group Detected!" << sendl;
+                    continue;
+                }
+                LambdaPreviousIteration = Lambda.block(idxConstraint,0,numConstraintToProcess,1);
 
+                //Set to Zero sigma for the current set of constraints
+                Lambda.block(idxConstraint,0,numConstraintToProcess,1).setZero();
+
+                //Compute Sigma
+                VectorEigen sigma = c.block(idxConstraint         , 0,
+                        numConstraintToProcess, 1) -
+                        W.block(idxConstraint         , 0,
+                                numConstraintToProcess, numConstraint) * Lambda;
+
+                constraint->LagrangeMultiplierEvaluation(Wblock.data(),sigma.data(), Lambda.data()+idxConstraint,
+                        constraintOrder[constraintEntry]);
                 error=0;
                 if (constraintOrder[constraintEntry]->isActive())
                 {
                     const VectorEigen& LambdaBlock=Lambda.block(idxConstraint,0,numConstraintToProcess,1);
                     const MatrixEigen& LambdaBlockCorrection=(LambdaBlock-LambdaPreviousIteration);
-                    c -= W.block(0,idxConstraint,numConstraint, numConstraintToProcess)*LambdaBlockCorrection;
                     error += LambdaBlockCorrection.norm();
                 }
                 else
@@ -711,11 +707,8 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
 
                 //****************************************************************
                 //Update only if the error is higher than a threshold. If no "big changes" occured, we set: X[c]^(k) = X[c]^(k-1)
-                if (error < maxError.getValue()/(SReal)numConstraintToProcess)
-                {
-                    Lambda.block(idxConstraint,0,numConstraintToProcess,1)=LambdaPreviousIteration;
-                }
-                else continueIteration=true;
+//                    if (error < maxError.getValue()) Lambda.block(idxConstraint,0,numConstraintToProcess,1)=LambdaPreviousIteration;
+//                    else continueIteration=true;
             }
         }
 
@@ -734,9 +727,12 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
 
         LambdaPrevious=Lambda;
 
+        const SReal residue=(c-W*Lambda).norm()*invNormC;
         helper::vector<double> &vError=(*graphGSError.beginEdit())["Error "+ orderName];
-        vError.push_back(c.norm());
+        vError.push_back( residue );
         graphGSError.endEdit();
+
+        continueIteration = (residue < maxError.getValue());
 
         if (this->f_printLog.getValue())
         {
@@ -749,7 +745,6 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
 
     if (f_printLog.getValue())
         sout << "Gauss-Seidel done in " << iteration << " iterations "<<sendl;
-
 
     if (Order == BaseLMConstraint::VEL && traceKineticEnergy.getValue()) return false;
     return true;
