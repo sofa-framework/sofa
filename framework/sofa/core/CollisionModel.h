@@ -67,6 +67,7 @@ public:
 
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
+    typedef sofa::defaulttype::Vector3::value_type Real;
 
     /// Constructor
     CollisionModel()
@@ -274,7 +275,23 @@ public:
     /// Render the whole collision model.
     virtual void draw() {}
 
+    /// Picking related. Render the collision model with an appropriate RGBA colour code
+    /// so as to recognize it with the PickHandler of the GUI.
+    /// r channel : indexCollisionModel / totalCollisionModelInScene.
+    /// g channel : index of CollisionElement.
+    /// b channel : (TriangleModel) p1->0. p2->1. p3->0. (code the variation along the segment defined by p1 and p2)
+    /// a channel : (TriangleModel) p1->0. p2->0. p3->1. (code the variation along the segment defined by p1 and p3)
     virtual void drawColourPicking() {}
+
+    /// Picking related.
+    /// Retrieves the position in space, given a collsion index, the blue channel and the alpha channel of a
+    /// collision model colour, which contains the coordinates relative to the first vertex in the case of
+    /// a collision model based on triangles, and 0 value in the case of a collision model based on spheres.
+    virtual sofa::defaulttype::Vector3 getPositionFromWeights( int /*index*/ ,Real /* b */, Real /* a*/ )
+    {
+        sofa::defaulttype::Vector3  result;
+        return result;
+    };
 
     /// Return the first (i.e. root) CollisionModel in the hierarchy.
     CollisionModel* getFirst()
