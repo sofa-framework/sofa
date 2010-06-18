@@ -152,7 +152,7 @@ public:
 
     /// Compute the new Lagrange Multiplier given a block of the compliance matrix W, and the current correction (left hand term) and previous Lagrange Multiplier
     virtual void LagrangeMultiplierEvaluation(const SReal* /*W*/,
-            SReal* /*c*/, SReal* /*Lambda*/,
+            const SReal* /*c*/, SReal* /*Lambda*/,
             core::behavior::BaseLMConstraint::ConstraintGroup * /*group*/) {};
 
     /// Interface to construct a group of constraint: Giving the order of these constraints, it returns a pointer to the structure
