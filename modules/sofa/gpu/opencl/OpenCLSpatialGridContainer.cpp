@@ -28,6 +28,7 @@
 #include "oclRadixSort/CPUSortWithOpenCL.h"
 
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#include "tools/showvector.h"
 
 struct GridParams
 {
@@ -233,6 +234,8 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
 //NOT_IMPLEMENTED();
 }
 
+ShowVector *show_hash;
+
 sofa::helper::OpenCLKernel *SpatialGridContainer3f_findCellRange_kernel;
 void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidth, int nbPoints, const gpu::opencl::_device_pointer particleHash8,gpu::opencl::_device_pointer cellRange,gpu::opencl::_device_pointer cellGhost)
 {
@@ -241,6 +244,9 @@ void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidt
 
     opencl::myopenclMemsetDevice(0,cellRange, 0, ((1<<cellBits)+1)*sizeof(int));
     opencl::myopenclMemsetDevice(0,cellGhost, 0, ((1<<cellBits))*sizeof(int));
+
+    if(show_hash==NULL)show_hash = new ShowVector("debug_hash");
+    show_hash->addOpenCLVector<int>(cellRange,(1<<cellBits)+1);
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     SpatialGridContainer_CreateProgramWithFloat();
