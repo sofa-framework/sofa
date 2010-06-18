@@ -31,6 +31,8 @@
 
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/helper/gl/DrawManager.h>
+#include <sofa/simulation/common/Simulation.h>
 
 #include <iostream>
 
@@ -100,14 +102,16 @@ void PickHandler::init()
 
     useCollisions = (pipeline != NULL);
 
-    _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
-    _fboParams.colorInternalformat = GL_RGBA32F;
-    _fboParams.colorFormat         = GL_RGBA;
-    _fboParams.colorType           = GL_FLOAT;
+    if (simulation::getSimulation()->DrawUtility.getSystemDraw() != sofa::helper::gl::DrawManager::OGRE)
+    {
+        _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
+        _fboParams.colorInternalformat = GL_RGBA32F;
+        _fboParams.colorFormat         = GL_RGBA;
+        _fboParams.colorType           = GL_FLOAT;
 
-    _fbo.setFormat(_fboParams);
-    _fbo.init(GL_MAX_TEXTURE_SIZE,GL_MAX_TEXTURE_SIZE);
-
+        _fbo.setFormat(_fboParams);
+        _fbo.init(GL_MAX_TEXTURE_SIZE,GL_MAX_TEXTURE_SIZE);
+    }
 }
 
 void PickHandler::reset()
