@@ -598,7 +598,7 @@ void TTriangleModel<DataTypes>::drawColourPicking()
     using namespace sofa::core::objectmodel;
 
     helper::vector<core::CollisionModel*> listCollisionModel;
-    this->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
+    static_cast<simulation::Node*>(this->getContext())->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
     const int totalCollisionModel = listCollisionModel.size();
     helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
     const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
