@@ -1,15 +1,16 @@
 <Node name="root"  dt="0.03333" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" processor="0">
-	<Object type="CollisionPipeline" verbose="0" depth="10" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
-	<Object type="CollisionResponse" name="Response" response="default" />
+	<CollisionPipeline verbose="0" depth="10" draw="0"/>
+	<BruteForceDetection name="N2" />
+	<NewProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
+	<CollisionResponse name="Response" response="default" />
+<!--
 	<Object type="CollisionGroup" name="Group" />
+-->
 <?
 
 include_once("AllObjects.inc.php");
 include_once("DragonFFD.inc.php");
 include_once("FrogFFD.inc.php");
-$nobjects=$_ENV["N"]?$_ENV["N"]:3;
 $d= new DragonFFD();
 $d->setDx(10);
 $d->printObj();
@@ -18,10 +19,10 @@ $d->setDx(20);
 $d->printObj();
 ?>
 	<Node name="Floor" processor="0">
-                <Object type="MeshLoader" name="meshLoader" filename="mesh/floor2b.obj"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject" dy="-10.25" scale="0.5" />
-		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp"  dy="-10" />
+    <MeshLoader name="meshLoader" filename="mesh/floor2b.obj"/>
+		<Mesh />
+		<MechanicalObject dy="-10.25" scale="0.5" />
+		<Triangle name="Floor" simulated="0" moving="0" />
+		<OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp"  dy="-10" />
 	</Node>
 </Node>
