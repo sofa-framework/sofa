@@ -31,9 +31,6 @@
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
-#ifdef SOFA_SMP
-#include <sofa/component/odesolver/ParallelCGImplicitSolver.h>
-#endif
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
@@ -144,22 +141,6 @@ SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solve
     return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
 }
 
-#ifdef SOFA_SMP
-SolverSet createSolverParallelCGImplicitParallelCGImplicit(odesolver::ParallelCGImplicitSolver& solver1, odesolver::ParallelCGImplicitSolver& solver2)
-{
-    odesolver::ParallelCGImplicitSolver* solver = new odesolver::ParallelCGImplicitSolver;
-    solver->f_maxIter.setValue( solver1.f_maxIter.getValue() > solver2.f_maxIter.getValue() ? solver1.f_maxIter.getValue() : solver2.f_maxIter.getValue() );
-    solver->f_tolerance.setValue( solver1.f_tolerance.getValue() < solver2.f_tolerance.getValue() ? solver1.f_tolerance.getValue() : solver2.f_tolerance.getValue());
-    solver->f_smallDenominatorThreshold.setValue( solver1.f_smallDenominatorThreshold.getValue() < solver2.f_smallDenominatorThreshold.getValue() ? solver1.f_smallDenominatorThreshold.getValue() : solver2.f_smallDenominatorThreshold.getValue());
-
-    solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
-
-    solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
-    solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
-    return SolverSet(solver, NULL);
-}
-#endif
-
 typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
 
 LinearSolver* createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
@@ -214,39 +195,6 @@ SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, od
     return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
 }
 
-#ifdef SOFA_SMP
-SolverSet createSolverParallelCGImplicitEuler(odesolver::ParallelCGImplicitSolver& solver1, odesolver::EulerSolver& /*solver2*/)
-{
-    odesolver::ParallelCGImplicitSolver* solver = new odesolver::ParallelCGImplicitSolver;
-    solver->f_maxIter.setValue( solver1.f_maxIter.getValue() );
-    solver->f_tolerance.setValue( solver1.f_tolerance.getValue() );
-    solver->f_smallDenominatorThreshold.setValue( solver1.f_smallDenominatorThreshold.getValue() );
-
-    solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue());
-
-    solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() );
-    solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() );
-    return SolverSet(solver, NULL);
-}
-#endif
-
-#ifdef SOFA_SMP
-SolverSet createSolverParallelCGImplicitRungeKutta4(odesolver::ParallelCGImplicitSolver& solver1, odesolver::RungeKutta4Solver& /*solver2*/)
-{
-    odesolver::ParallelCGImplicitSolver* solver = new odesolver::ParallelCGImplicitSolver;
-    solver->f_maxIter.setValue( solver1.f_maxIter.getValue() );
-    solver->f_tolerance.setValue( solver1.f_tolerance.getValue() );
-    solver->f_smallDenominatorThreshold.setValue( solver1.f_smallDenominatorThreshold.getValue() );
-
-    solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue());
-
-    solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() );
-    solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() );
-    return SolverSet(solver, NULL);
-    //return SolverSet(new odesolver::ParallelCGImplicitSolver(solver1), NULL);
-}
-#endif
-
 SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerSolver& solver2)
 {
     return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
@@ -278,17 +226,8 @@ SolverMerger::SolverMerger()
 {
     solverDispatcher.add<odesolver::EulerSolver,odesolver::EulerSolver,createSolverEulerEuler,false>();
     solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::RungeKutta4Solver,createSolverRungeKutta4RungeKutta4,false>();
-#ifdef SOFA_SMP
-    solverDispatcher.add<odesolver::ParallelCGImplicitSolver,odesolver::ParallelCGImplicitSolver,createSolverParallelCGImplicitParallelCGImplicit,false>();
-#endif
     solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::EulerImplicitSolver,createSolverEulerImplicitEulerImplicit,false>();
     solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::EulerSolver,createSolverRungeKutta4Euler,true>();
-#ifdef SOFA_SMP2
-    solverDispatcher.add<odesolver::ParallelCGImplicitSolver,odesolver::EulerSolver,createSolverParallelCGImplicitEuler,true>();
-#endif
-#ifdef SOFA_SMP2
-    solverDispatcher.add<odesolver::ParallelCGImplicitSolver,odesolver::RungeKutta4Solver,createSolverParallelCGImplicitRungeKutta4,true>();
-#endif
     solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::EulerSolver,createSolverEulerImplicitEuler,true>();
     solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::RungeKutta4Solver,createSolverEulerImplicitRungeKutta4,true>();
     solverDispatcher.add<odesolver::StaticSolver,odesolver::StaticSolver,createSolverStaticSolver,true>();

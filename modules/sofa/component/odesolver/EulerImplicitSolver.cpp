@@ -33,6 +33,10 @@
 #include "sofa/helper/system/thread/CTime.h"
 #include "sofa/helper/AdvancedTimer.h"
 
+#ifdef SOFA_SMP
+#include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/tree/GNode.h>
+#endif
 
 
 
@@ -87,6 +91,29 @@ void EulerImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanicalS
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SolverVectorAllocation");
+#endif
+
+#ifdef SOFA_SMP
+    sofa::simulation::tree::GNode *context=dynamic_cast<sofa::simulation::tree::GNode *>(getContext());
+//   if (!getPartition()&&context&&!context->is_partition())
+    {
+        Iterative::IterativePartition *p;
+        Iterative::IterativePartition *firstPartition=context->getFirstPartition();
+        if (firstPartition)
+        {
+            //p->setCPU(firstPartition->getCPU());
+            p=firstPartition;
+        }
+        else if (context->getPartition())
+        {
+            p=context->getPartition();
+        }
+        else
+        {
+            p= new Iterative::IterativePartition();
+        }
+        setPartition(p);
+    }
 #endif
 
     double h = dt;
@@ -243,6 +270,9 @@ int EulerImplicitSolverClass = core::RegisterObject("Implicit time integrator us
         .addAlias("EulerImplicit")
         .addAlias("ImplicitEulerSolver")
         .addAlias("ImplicitEuler")
+#ifdef SOFA_SMP
+        .addAlias("ParallelEulerImplicit")
+#endif
         ;
 
 } // namespace odesolver

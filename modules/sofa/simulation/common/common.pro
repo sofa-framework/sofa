@@ -118,13 +118,11 @@ include($${SOFA_DIR}/sofa.cfg)
 contains(DEFINES,SOFA_SMP){
 HEADERS +=  \
            ChangeListener.h \
-           ParallelMechanicalVisitor.h \  
-           ParallelSolverImpl.h \
+           ParallelMechanicalVisitor.h 
 
 SOURCES +=  \
            ChangeListener.cpp \
-           ParallelMechanicalVisitor.cpp \
-           ParallelSolverImpl.cpp 
+           ParallelMechanicalVisitor.cpp 
 }
 
 CONFIG += $$CONFIGLIBRARIES
