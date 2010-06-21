@@ -61,6 +61,9 @@ OglModel::OglModel()
     , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
 #endif
     , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
+    , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
+    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
+    , cullFace(initData(&cullFace, (int) 0, "cullFace", "Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)"))
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
 {
@@ -275,7 +278,6 @@ void OglModel::internalDraw(bool transparent)
         else glDepthMask(GL_FALSE);
 
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         drawGroups(transparent);
 
@@ -285,7 +287,46 @@ void OglModel::internalDraw(bool transparent)
             glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
+    if (alphaBlend.getValue())
+    {
+        glDepthMask(GL_FALSE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+    }
+
+    if (!depthTest.getValue())
+        glDisable(GL_DEPTH_TEST);
+
+    switch (cullFace.getValue())
+    {
+    case 1:
+        glCullFace(GL_BACK);
+        glEnable(GL_CULL_FACE);
+        break;
+    case 2:
+        glCullFace(GL_FRONT);
+        glEnable(GL_CULL_FACE);
+        break;
+    }
+
     drawGroups(transparent);
+
+    switch (cullFace.getValue())
+    {
+    case 1:
+    case 2:
+        glDisable(GL_CULL_FACE);
+        break;
+    }
+
+    if (!depthTest.getValue())
+        glEnable(GL_DEPTH_TEST);
+
+    if (alphaBlend.getValue())
+    {
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+    }
 
     if (tex || putOnlyTexCoords.getValue())
     {
@@ -305,6 +346,7 @@ void OglModel::internalDraw(bool transparent)
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
+
     if (transparent)
     {
         glDisable(GL_BLEND);
