@@ -28,10 +28,12 @@ template<class DataTypes>
 VRPNImager<DataTypes>::VRPNImager()
 //: f_positions( initData (&f_positions, "positions", "Positions (Vector of 3)") )
 //, f_orientations( initData (&f_orientations, "orientations", "Orientations (Quaternion)") )
-    : f_rigidPoint( initData (&f_rigidPoint, "rigid point", "RigidPoint"))
+    : f_rigidPoint( initData (&f_rigidPoint, "rigid point", "RigidPoint")),
+      f_scale( initData (&f_scale, "scale", "Scale"))
 
 {
     addAlias(&f_rigidPoint,"rigidPosition");
+    f_scale.setValue(1.0); // = 1.0;
     // TODO Auto-generated constructor stub
     /*trackerData.data.resize(1);
     rg.initSeed( (long int) this );*/
@@ -92,8 +94,12 @@ void VRPNImager<DataTypes>::update()
     for (unsigned i=0; i < 7; i++)
         x[i] = imagerData.rigidPointData[i];
     //float temp = x[1];
-    x[1]= -x[1];
-    x[2]= -x[2];
+    x[0]*= f_scale.getValue();
+    x[1]= -x[1]*f_scale.getValue();
+    x[2]= -x[2]*f_scale.getValue();
+
+
+
 
     //x[0] *= 1;
     //x[1] *= -1;
@@ -117,6 +123,12 @@ void VRPNImager<DataTypes>::update()
     //Quat qt2(currentAxisRotation*(-1), currentAngleRotation);
     currentAxisRotation[1] *= -1;
     currentAxisRotation[2] *= -1;
+
+    /*Real ttemp;
+    ttemp = currentAxisRotation[0];
+    currentAxisRotation[0]=currentAxisRotation[2];
+    currentAxisRotation[2]=ttemp;*/
+
     Quat qt2(currentAxisRotation, currentAngleRotation);
 
     x[3] = qt2[0];
