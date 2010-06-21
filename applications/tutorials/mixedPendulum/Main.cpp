@@ -29,7 +29,6 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/contextobject/Gravity.h>
-#include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/visualmodel/OglModel.h>
@@ -39,8 +38,7 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa::simulation::tree;
-//typedef sofa::component::odesolver::EulerSolver Solver;
-typedef sofa::component::odesolver::CGImplicitSolver Solver;
+typedef sofa::component::odesolver::EulerSolver Solver;
 
 int main(int, char** argv)
 {
