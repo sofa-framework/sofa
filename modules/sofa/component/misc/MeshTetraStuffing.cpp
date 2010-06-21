@@ -524,7 +524,16 @@ void MeshTetraStuffing::init()
             if (newPid[p] != (int)p)
             {
                 outP[newPid[p]] = outP[p];
-                pInside[newPid[p]] = pInside[p];
+                //std::cout << "P = " << p << std::endl;
+                //std::cout << "newPid[p] = " << newPid[p] << std::endl;
+                //std::cout << "pInside[newPid[p]] = " << pInside[newPid[p]] << std::endl;
+                if (pInside.size() > p)
+                {
+                    //std::cout << "pInside[p] = " << pInside[p] << std::endl;
+                    pInside[newPid[p]] = pInside[p];
+                }
+                //else
+                //    std::cout << "Problem with |pInside| = " << pInside.size() << " and p = " << p << std::endl;
             }
         }
     }
