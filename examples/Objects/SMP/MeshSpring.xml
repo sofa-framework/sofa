@@ -1,0 +1,33 @@
+<Node name="MeshSpring">
+<<<<<<< HEAD
+	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<CGLinearSolver iterations="25" threshold="0.00000001" />	 
+	<MeshLoader name="mechaLoader" filename="file"/>
+	<Mesh/> 
+	<MechanicalObject translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
+	<UniformMass totalmass="1" />
+	<MeshSpringForceField name="Springs" stiffness="400" damping="4"/>
+    <VisualNodeTransformation/>
+    <CollisionNodeTransformation/>
+=======
+	<Object type="ParallelCGImplicitSolver" rayleighStiffness="0.01"  iterations="25" threshold="0.00000001" />	 
+	<Object type="MeshLoader" name="mechaLoader" filename="file"/>
+	<Object type="Mesh"/> 
+	<Object type="MechanicalObject" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
+	<Object type="UniformMass" totalmass="1" />
+	<Object type="MeshSpringForceField" name="Springs" stiffness="400" damping="4"/>
+	<Node name="VisualNode">
+		<Object type="OglModel" name="Visual" filename="file"  color="green"   translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
+		<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+	</Node>
+	<Node name="CollisionNode">
+	        <Object type="MeshLoader" name="collisionLoader"  filename="file"/>
+		<Object type="Mesh" />
+		<Object type="MechanicalObject" useMask="true"  translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
+		<Object type="Triangle" />
+		<Object type="Line" />
+		<Object type="Point" />
+		<Object type="BarycentricMapping" />
+	</Node>
+>>>>>>> 52c8280... UPDATE : SMP examples update including new one.
+</Node>

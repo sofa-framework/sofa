@@ -1,0 +1,25 @@
+<Node name="GridSpring">
+	<Object type="ParallelCGImplicitSolver" rayleighStiffness="0.01"  iterations="25" threshold="0.00000001" />
+<!--
+<Node name="Springs">
+	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
+	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001" />
+-->
+	<Object type="SparseGrid" n="6 6 6" filename="file"/> 
+	<Object type="MechanicalObject" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
+	<Object type="UniformMass" totalmass="1" />
+	<Object type="MeshSpringForceField" name="Springs" stiffness="400" damping="4"/>
+	<Node name="VisualNode">
+		<Object type="OglModel" name="Visual" filename="file"  color="green"  />
+		<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+	</Node>
+	<Node name="CollisionNode">
+         	<Object type="MeshLoader" name="collisionLoader" filename="file"/>
+		<Object type="Mesh" />
+		<Object type="MechanicalObject"  useMask="true"  />
+		<Object type="Triangle" />
+		<Object type="Line" />
+		<Object type="Point" />
+		<Object type="BarycentricMapping" />
+	</Node>
+</Node>

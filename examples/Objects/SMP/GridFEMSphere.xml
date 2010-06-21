@@ -1,0 +1,26 @@
+<Node name="FEM" processor="0">
+	<Object type="ParallelCGImplicit" rayleighStiffness="0.01"  iterations="25" threshold="0.00000001"  />
+
+	        <Object type="MeshLoader" name="sparse"  filename="file"/>
+		<Object type="Mesh" />
+	<Object type="MechanicalObject" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  template="CudaVec3f"/>
+	<Object type="UniformMass" totalmass="5" />
+	<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="5000" poissonRatio="0.3"  method="large"/>
+
+	<Node name="VisualNode">
+         	<Object type="MeshLoader"   name="VisualMesh"  filename="file" />
+                <Object type="Mesh" />
+        <!--        <Object type="MappedObject" name="Mapped"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   template="CudaVec3f" />-->
+	<Object type="MechanicalObject"  name="Mapped"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  template="CudaVec3f"/>
+		<Object type="CudaVisualModel"  computeNormals="true"   template="CudaVec3f"   name="Visual"   diffuse="0.8 0.8 0.8 1.0"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   />
+		<Object type="BarycentricMapping"  isMechanical="false" object1="../.." object2="Mapped" />
+	</Node>
+
+	<Node name="CollisionNode">
+	        <Object type="MeshLoader" name="collisionLoader"  filename="file"/>
+		<Object type="Mesh" />
+		<Object type="MechanicalObject"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   template="CudaVec3f"    />
+		<Object type="CudaTriangle"   template="CudaVectorTypes&lt;Vec&lt;3, float&gt;, Vec&lt;3, float&gt;, float&gt; &gt;"   />
+		<Object type="BarycentricMapping" />
+	</Node>
+</Node>
