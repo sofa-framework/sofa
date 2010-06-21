@@ -662,11 +662,11 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                 numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
 
                 const MatrixEigen &Wblock=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
-//                    if (Wblock.diagonal().isZero(1e-10))
-//                    {
-//                      emptyBlock.insert(idxConstraint);
-//                      continue;
-//                    }
+                if (Wblock.diagonal().isZero(1e-15))
+                {
+                    emptyBlock.insert(idxConstraint);
+                    continue;
+                }
 
                 //Save previous iteration
                 if ((int) idxConstraint >= Lambda.rows())
@@ -717,7 +717,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
             }
             VectorEigen LambdaSave=Lambda;
             Lambda -= LambdaPrevious;
-            if (continueIteration) computeKineticEnergy(id);
+            computeKineticEnergy(id);
             Lambda = LambdaSave;
         }
 
