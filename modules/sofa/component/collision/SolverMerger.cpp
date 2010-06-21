@@ -30,7 +30,6 @@
 #include <sofa/helper/FnDispatcher.inl>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
-#include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
