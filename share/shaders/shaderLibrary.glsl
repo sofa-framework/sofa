@@ -171,6 +171,9 @@ void main()
 #else
     Texcoord  = gl_MultiTexCoord0.xy;
 #endif
+#if defined(TexCoordFlipYAxis)
+    Texcoord.y = 1 - Texcoord.y;
+#endif
     Tangent   = gl_MultiTexCoord1.xyz;
     Bitangent = gl_MultiTexCoord2.xyz;
 

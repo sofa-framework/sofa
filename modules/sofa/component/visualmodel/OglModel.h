@@ -64,7 +64,8 @@ public:
     SOFA_CLASS(OglModel, VisualModelImpl);
 
 protected:
-    Data<bool> premultipliedAlpha, useVBO, writeZTransparent;
+    Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
+    Data<int> cullFace;
     helper::gl::Texture *tex;
     GLuint vbo, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
