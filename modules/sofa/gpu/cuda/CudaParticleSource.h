@@ -27,6 +27,7 @@
 
 #include "CudaTypes.h"
 #include <sofa/component/misc/ParticleSource.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
 namespace sofa
 {
