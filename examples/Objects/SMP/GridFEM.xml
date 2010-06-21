@@ -1,19 +1,19 @@
 <Node name="FEM" processor="0">
-	<Object type="ParallelCGImplicitSolver" rayleighStiffness="0.01"  iterations="25" threshold="0.00000001"  />
+	<ParallelCGImplicitSolver rayleighStiffness="0.01"  iterations="25" threshold="0.00000001"  />
 
-	<Object type="SparseGrid" name="sparse" n="6 6 6" filename="file"/>
-	<Object type="MechanicalObject" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
-	<Object type="UniformMass" totalmass="5" />
-	<Object type="HexahedronFEMForceField" name="FEM" youngModulus="5000" poissonRatio="0.3"  method="polar"/>
+	<SparseGrid name="sparse" n="6 6 6" filename="file"/>
+	<MechanicalObject dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
+	<UniformMass totalmass="5" />
+	<HexahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3"  method="polar"/>
 	<Node name="VisualNode" tags="Visual">
-		<Object type="OglModel" name="Visual" filename="file" color="red" />
-		<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		<OglModel name="Visual" filename="file" color="red" />
+		<BarycentricMapping object1="../.." object2="Visual" />
 	</Node>
 	<Node name="CollisionNode">
-	        <Object type="MeshLoader" name="collisionLoader"  filename="file"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject"  />
-		<Object type="Triangle" />
-		<Object type="BarycentricMapping" />
+	  <MeshLoader name="collisionLoader"  filename="file"/>
+		<Mesh />
+		<MechanicalObject  />
+		<Triangle />
+		<BarycentricMapping />
 	</Node>
 </Node>
