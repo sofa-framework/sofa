@@ -26,7 +26,7 @@
 ******************************************************************************/
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/component/odesolver/CGImplicitSolver.h>
+#include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/visualmodel/OglModel.h>
 
@@ -46,7 +46,7 @@
 
 using namespace sofa::simulation::tree;
 using sofa::simulation::Node;
-using sofa::component::odesolver::CGImplicitSolver;
+using sofa::component::odesolver::EulerSolver;
 using sofa::component::topology::MeshTopology;
 using sofa::component::visualmodel::OglModel;
 // ---------------------------------------------------------------------
@@ -65,9 +65,9 @@ int main(int argc, char** argv)
     groot->setName( "root" );
     groot->setGravityInWorld( Coord3(0,-10,0) );
 
-
     // One solver for all the graph
-    CGImplicitSolver* solver = new CGImplicitSolver;
+    EulerSolver* solver = new EulerSolver;
+    solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
 

@@ -30,8 +30,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
-//compliance computation include
-#include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -225,24 +223,17 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         const Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravityInWorld(gravity_zero);
 
-        CGImplicitSolver* odeSolver;
         EulerImplicitSolver* eulerSolver;
         CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >* cgLinearSolver;
         core::behavior::LinearSolver* linearSolver;
 
-        this->getContext()->get(odeSolver);
         this->getContext()->get(eulerSolver);
         this->getContext()->get(cgLinearSolver);
         this->getContext()->get(linearSolver);
 
         simulation::Node *solvernode = NULL;
 
-        if (odeSolver)
-        {
-            sout << "use CGImplicitSolver " << sendl;
-            solvernode = (simulation::Node*)odeSolver->getContext();
-        }
-        else if (eulerSolver && cgLinearSolver)
+        if (eulerSolver && cgLinearSolver)
         {
             sout << "use EulerImplicitSolver & CGLinearSolver" << sendl;
             solvernode = (simulation::Node*)eulerSolver->getContext();
@@ -259,7 +250,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
         else
         {
-            serr << "PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
+            serr << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
             return;
         }
 
@@ -291,16 +282,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         double buf_tolerance = 0, buf_threshold = 0;
         int	   buf_maxIter = 0;
 
-        if (odeSolver)
-        {
-            buf_tolerance = (double) odeSolver->f_tolerance.getValue();
-            buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
-            buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
-            odeSolver->f_tolerance.setValue(1e-20);
-            odeSolver->f_maxIter.setValue(5000);
-            odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
-        }
-        else if (cgLinearSolver)
+        if (cgLinearSolver)
         {
             buf_tolerance = (double) cgLinearSolver->f_tolerance.getValue();
             buf_maxIter   = (int) cgLinearSolver->f_maxIter.getValue();
@@ -359,14 +341,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 if (eulerSolver)
                     fact = eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-                //odeSolver->computeContactForce(force);
-
-                if(odeSolver)
-                {
-                    //serr<<"odeSolver"<<sendl;
-                    odeSolver->solve(dt);
-                }
-                else if(eulerSolver)
+                if(eulerSolver)
                 {
                     using core::behavior::BaseMechanicalState;
                     eulerSolver->solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity());
@@ -405,13 +380,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
         // gravity is reset at its previous value
         this->getContext()->setGravityInWorld(gravity);
-        if (odeSolver)
-        {
-            odeSolver->f_tolerance.setValue(buf_tolerance);
-            odeSolver->f_maxIter.setValue(buf_maxIter);
-            odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-        }
-        else if (cgLinearSolver)
+        if (cgLinearSolver)
         {
             cgLinearSolver->f_tolerance.setValue(buf_tolerance);
             cgLinearSolver->f_maxIter.setValue(buf_maxIter);
