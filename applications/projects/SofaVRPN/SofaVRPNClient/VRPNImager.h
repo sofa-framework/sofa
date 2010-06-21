@@ -95,6 +95,7 @@ public:
     //Data<sofa::helper::vector<Vec3 > > f_positions;
     //Data<sofa::helper::vector<Quat> > f_orientations;
     Data<Point> f_rigidPoint;
+    Data<Real>  f_scale;
 
 private:
     vrpn_Imager_Remote      *g_imager;      //< Imager client object
