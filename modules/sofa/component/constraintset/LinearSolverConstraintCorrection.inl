@@ -30,8 +30,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
-//compliance computation include
-#include <sofa/component/odesolver/CGImplicitSolver.h>
 //#include <glib.h>
 #include <sstream>
 #include <list>
@@ -46,8 +44,6 @@ namespace constraintset
 {
 #define MAX_NUM_CONSTRAINT_PER_NODE 100
 #define EPS_UNITARY_FORCE 0.01
-
-using namespace sofa::component::odesolver;
 
 template<class DataTypes>
 LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
