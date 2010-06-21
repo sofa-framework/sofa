@@ -111,6 +111,7 @@ int main(int argc, char** argv)
 #ifdef SOFA_SMP
     std::string nProcs="";
     bool        disableStealing = false;
+    bool        affinity = false;
 #endif
 
     std::string gui_help = "choose the UI (";
@@ -129,6 +130,7 @@ int main(int argc, char** argv)
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
+    .option(&affinity,'f',"affinity","Enable aFfinity base Work Stealing")
 #endif
     (argc,argv);
 #ifdef SOFA_SMP
@@ -141,6 +143,11 @@ int main(int argc, char** argv)
         Util::KaapiComponentManager::prop["sched.stealing"]="true";
     if(nProcs!="")
         Util::KaapiComponentManager::prop["community.thread.poolsize"]=nProcs;
+    if(affinity)
+    {
+        Util::KaapiComponentManager::prop["sched.stealing"]="true";
+        Util::KaapiComponentManager::prop["sched.affinity"]="true";
+    }
 
     a1::Community com = a1::System::join_community( ac, av);
 #endif /* SOFA_SMP */
