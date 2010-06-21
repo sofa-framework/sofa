@@ -1,0 +1,80 @@
+<Node name="root" dt="0.007" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0"  showProcessorColor="1" processor="1">
+	<Node name="AttachTwoWay" processor="1" >
+		<Object type="ParallelCGImplicit" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+<?php 
+#DEFAULT VALUES
+$mult=$_ENV["MULT"]?$_ENV["MULT"]:1;
+$count=$_ENV["KAAPI_CPUCOUNT"]?$_ENV["KAAPI_CPUCOUNT"]:2;
+$default_nx=4*$mult;
+$default_ny=4*$mult;
+$default_nz=10*$mult;
+$default_elems=3;
+$default_bars=1;
+$nx=$_ENV["NX"]?$_ENV["NX"]:$default_nx;
+$ny=$_ENV["NY"]?$_ENV["NY"]:$default_ny;
+$nz=$_ENV["NZ"]?$_ENV["NZ"]:$default_nz;
+$elems=$_ENV["ELEMS"]?$_ENV["ELEMS"]:$default_elems;
+$bars=$_ENV["BARS"]?$_ENV["BARS"]:$default_bars;
+$dz=20;
+$dx=3;
+#COMPUTE INDICES
+$indices1="";
+$indices2="";
+$i1=$nx*$ny*($nz-1);
+$i2="0";
+for($i=0;$i<($nx*$ny);$i++,$i1++,$i2++){
+$indices1 .= $i1 . " ";
+$indices2 .= $i2 . " ";
+}
+$distance=4;
+
+
+for($i=1;$i<=$bars;$i++)
+{
+$xmin=$distance*$i*$dx;
+$xmax=($distance*$i*$dx)+$dx;
+	/*<Node name="AttachTwoWay"  > */
+	/* <Node name="M0" <?=($procelems?"processor=\"0\"":"")?> processor="<?=(($i%($count -1))+1)?>"> */
+
+?>
+	<Node name="Bar<?=$i?>M0"  processor="<?=$i%16?>">
+		<Object type="MechanicalObject" />
+		<Object type="UniformMass" mass="1" />
+		<Object type="RegularGrid"
+			nx="<?=$nx?>" ny="<?=$ny?>" nz="<?=$nz?>"
+			xmin="<?=$xmin?>" xmax="<?=$xmax?>"
+			ymin="0" ymax="3"
+			zmin="0" zmax="<?=$dz?>"
+		/>
+		<Object type="BoxConstraint" box="<?=$xmin-0.1 ?> -0.1 -0.1 <?=$xmax+0.1?> 3.1 0.1" />
+		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="4000" poissonRatio="0.3" />
+    <Node name="Visu">
+          <Object type="OglModel" name="Visual" color="blue"/>
+          <Object type="IdentityMapping" object1="../.." object2="Visual"/>
+    </Node>
+	</Node>
+	<?php
+		for($j=1;$j<$elems;$j++){
+	?>
+	<Node name="Bar<?=$i?>M<?=$j?>"  processor="<?=$i%16?>">
+		<Object type="ParallelCGImplicit" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<Object type="MechanicalObject" />
+		<Object type="UniformMass" mass="1" />
+		<Object type="RegularGrid"
+			nx="<?=$nx?>" ny="<?=$ny?>" nz="<?=$nz?>"
+			xmin="<?=$xmin?>" xmax="<?=$xmax?>"
+			ymin="0" ymax="3"
+			zmin="<?=($dz*$j)?>" zmax="<?=($dz*($j+1))?>"
+		/>
+		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="4000" poissonRatio="0.3" />
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" color="blue"/>
+			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
+	  </Node>
+	<Object type="AttachConstraint" object1="Bar<?=$i?>M<?=($j-1)?>" object2="Bar<?=$i?>M<?=$j?>" twoWay="true" radius="0.1" indices1="<?=$indices1?>" indices2="<?=$indices2?>" />
+	</Node>
+	<?php } ?>
+
+<?php } ?>
+	</Node>
+</Node>

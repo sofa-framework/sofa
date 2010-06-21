@@ -1,0 +1,18 @@
+<Node name="TorusRigid" processor="0">
+                       <Object type="ParallelCGImplicitSolver" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+	<Object type="MechanicalObject" template="Rigid"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
+	<Object type="UniformMass" />
+	<Node name="Visu">
+		<Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="1.0"/>
+		<Object type="RigidMapping" object1="../.." object2="Visual" />
+	</Node>
+	<Node name="Surf2">
+		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
+		<Object type="Mesh"/>
+		<Object type="MechanicalObject" scale="1.0" />
+		<Object type="Triangle" />
+		<Object type="Line" />
+		<Object type="Point" />
+		<Object type="RigidMapping" />
+	</Node>
+</Node>
