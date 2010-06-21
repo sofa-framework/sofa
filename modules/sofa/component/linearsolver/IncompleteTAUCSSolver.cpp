@@ -55,12 +55,16 @@ using std::endl;
 
 template<class TMatrix, class TVector>
 IncompleteTAUCSSolver<TMatrix,TVector>::IncompleteTAUCSSolver()
-    : f_options( initData(&f_options,"options","TAUCS unified solver list of space-separated options") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_use_metis( initData(&f_use_metis,true,"use_metis","Use metis to reorder the matrix") )
-    , f_dropFactorTol( initData(&f_dropFactorTol,0.0,"dropFactorTol","Drop tolerance use for incomplete factorization") )
-    , f_modified_flag( initData(&f_modified_flag,false,"modified_flag","Factoring will be Modified ICC") )
+    : f_incompleteType( initData(&f_incompleteType,0,"incompleteType","0 = Incomplete Cholesky, 1 = vaidya") )
+    , f_ordering( initData(&f_ordering,2,"ordering","ose ordering 0=identity/1=tree/2=metis/3=natural/4=genmmd/5=md/6=mmd/7=amd") )
+    , f_dropTol( initData(&f_dropTol,0.0,"ic_dropTol","Drop tolerance use for incomplete factorization") )
+    , f_modified_flag( initData(&f_modified_flag,false,"ic_modifiedFlag","Modified ICC : maintains rowsums") )
+    , f_subgraphs( initData(&f_subgraphs,1.0,"va_subgraphs","Desired number of subgraphs for Vaidya") )
+    , f_stretch_flag( initData(&f_stretch_flag,false,"va_stretch_flag","Modified ICC : maintains rowsums") )
+    , f_multifrontal( initData(&f_multifrontal,false,"va_multifrontal","Use multifrontal algo in vaidya") )
+    , f_seed( initData(&f_seed,123,"va_seed","Affects decomposition to subtrees") )
 {
+    new_perm = false;
 }
 
 template<class T>
@@ -86,48 +90,92 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 
     if (data->perm) free(data->perm);
     if (data->invperm) free(data->invperm);
-    if (data->PAPT) taucs_ccs_free(data->PAPT);
     if (data->L) taucs_ccs_free(data->L);
-
-    int modified_flag = (int) f_modified_flag.getValue();
 
     data->Mfiltered.copyUpperNonZeros(M);
     data->Mfiltered.fullRows();
 
     data->matrix_taucs.n = data->Mfiltered.rowSize();
     data->matrix_taucs.m = data->Mfiltered.colSize();
-    data->matrix_taucs.flags = get_taucs_incomplete_flags<Real>();
-    data->matrix_taucs.flags |= TAUCS_SYMMETRIC;
-    data->matrix_taucs.flags |= TAUCS_LOWER; // Upper on row-major is actually lower on column-major transposed matrix
+    data->matrix_taucs.flags = get_taucs_incomplete_flags<Real>() | TAUCS_SYMMETRIC | TAUCS_LOWER; // Upper on row-major is actually lower on column-major transposed matrix
     data->matrix_taucs.colptr = (int *) &(data->Mfiltered.getRowBegin()[0]);
     data->matrix_taucs.rowind = (int *) &(data->Mfiltered.getColsIndex()[0]);
     data->matrix_taucs.values.d = (double*) &(data->Mfiltered.getColsValue()[0]);
 
-    char* ordering;
-    if (f_use_metis.getValue()) ordering = (char *) "metis";
-    else ordering = (char *) "identity";
-
     if (this->f_printLog.getValue()) taucs_logfile((char*)"stdout");
 
-    taucs_ccs_order(&data->matrix_taucs,&data->perm,&data->invperm,ordering);
-    data->PAPT = taucs_ccs_permute_symmetrically(&data->matrix_taucs,data->perm,data->invperm);
-    data->L = taucs_ccs_factor_llt(data->PAPT,f_dropFactorTol.getValue(),modified_flag);
+    char * ordering;
+    switch (f_ordering.getValue())
+    {
+    case 0  : ordering = (char *) "identity"; break;
+    case 1  : ordering = (char *) "tree"; break;
+    case 2  : ordering = (char *) "metis"; break;
+    case 3  : ordering = (char *) "natural"; break;
+    case 4  : ordering = (char *) "genmmd"; break;
+    case 5  : ordering = (char *) "md"; break;
+    case 6  : ordering = (char *) "mmd"; break;
+    case 7  : ordering = (char *) "amd"; break;
+    default : ordering = (char *) "identity"; break;
+    }
+
+    if (f_incompleteType.getValue()==0)
+    {
+        taucs_ccs_order(&data->matrix_taucs,&data->perm,&data->invperm,ordering);
+        taucs_ccs_matrix* PAPT = taucs_ccs_permute_symmetrically(&data->matrix_taucs,data->perm,data->invperm);
+        data->L = taucs_ccs_factor_llt(PAPT,f_dropTol.getValue(),(int) f_modified_flag.getValue());
+
+        taucs_ccs_free(PAPT);
+    }
+    else if (f_incompleteType.getValue()==1)
+    {
+        srand(f_seed.getValue());
+        int rnd = rand();
+
+        taucs_ccs_matrix *  V = taucs_amwb_preconditioner_create(&data->matrix_taucs,rnd,f_subgraphs.getValue(),f_stretch_flag.getValue(),0);
+        taucs_ccs_order(V,&data->perm,&data->invperm,ordering);
+
+        //data->PAPT = taucs_ccs_permute_symmetrically(&data->matrix_taucs,data->perm,data->invperm);
+        taucs_ccs_matrix *  PVPT = taucs_ccs_permute_symmetrically(V,data->perm,data->invperm);
+
+        taucs_ccs_free(V);
+
+        if (f_multifrontal.getValue())
+        {
+            void* snL = taucs_ccs_factor_llt_mf(PVPT);
+            data->L = taucs_supernodal_factor_to_ccs(snL);
+            taucs_supernodal_factor_free(snL);
+        }
+        else
+        {
+            data->L = taucs_ccs_factor_llt(PVPT,0.0,0);
+        }
+
+        taucs_ccs_free(PVPT);
+
+        data->L->flags |= TAUCS_DOUBLE;
+    }
 
     taucs_logfile((char*)"none");
+
+    data->B.resize(data->L->n);
+    data->R.resize(data->L->n);
+    new_perm = true;
 }
 
 template<class TMatrix, class TVector>
 void IncompleteTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
     IncompleteTAUCSSolverInvertData * data = (IncompleteTAUCSSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL || data->L==NULL)
+    if (data==NULL)
     {
         z = r;
         std::cerr << "Error the matrix is not factorized" << std::endl;
         return;
     }
 
-    taucs_ccs_solve_llt(data->L,&z[0],&r[0]);
+    if (new_perm) for (int i=0; i<data->L->n; i++) data->B[i] = r[data->perm[i]];
+    taucs_ccs_solve_llt(data->L,&data->R[0],&data->B[0]);
+    for (int i=0; i<data->L->n; i++) z[i] = data->R[data->invperm[i]];
 }
 
 
