@@ -70,11 +70,14 @@ public:
     typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
-    Data< helper::vector<std::string> > f_options;
-    Data<bool> f_verbose;
-    Data<bool> f_use_metis;
-    Data<double> f_dropFactorTol;
+    Data<int> f_incompleteType;
+    Data<int> f_ordering;
+    Data<double> f_dropTol;
     Data<bool> f_modified_flag;
+    Data<double> f_subgraphs;
+    Data<bool> f_stretch_flag;
+    Data<bool> f_multifrontal;
+    Data<int> f_seed;
 
     IncompleteTAUCSSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
@@ -88,14 +91,14 @@ protected:
         int* perm;
         int* invperm;
         taucs_ccs_matrix matrix_taucs;
-        taucs_ccs_matrix * PAPT;
-        taucs_ccs_matrix*  L;
+        taucs_ccs_matrix* L;
+        helper::vector<double> B;
+        helper::vector<double> R;
 
         IncompleteTAUCSSolverInvertData()
         {
             perm    = NULL;
             invperm = NULL;
-            PAPT    = NULL;
             L       = NULL;
         }
 
@@ -103,10 +106,14 @@ protected:
         {
             if (perm) taucs_free(perm);
             if (invperm) taucs_free(invperm);
-            if (PAPT) taucs_ccs_free(PAPT);
-            if (L) taucs_ccs_free(PAPT);
+            if (L) taucs_ccs_free(L);
+            perm    = NULL;
+            invperm = NULL;
+            L       = NULL;
         }
     };
+
+    bool new_perm;
 };
 
 } // namespace linearsolver
