@@ -170,6 +170,7 @@ public slots:
     virtual void setView(const Vec3d& pos, const Quat &ori);
     virtual void moveView(const Vec3d& pos, const Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
+    virtual void drawColourPicking ();
 
 signals:
     void redrawn();
