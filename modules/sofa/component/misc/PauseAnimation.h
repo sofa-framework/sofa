@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,9 @@ namespace component
 namespace misc
 {
 
-
+/**
+ * Abstract class defining how to pause the animation.
+ */
 class PauseAnimation: public virtual core::objectmodel::BaseObject
 {
 public:
@@ -48,7 +50,11 @@ public:
     PauseAnimation () {};
     ~PauseAnimation () {};
 
+    virtual void init();
+
     virtual bool isPaused() = 0;
+
+    virtual void pause();
 
 protected:
     sofa::simulation::Simulation *simu;

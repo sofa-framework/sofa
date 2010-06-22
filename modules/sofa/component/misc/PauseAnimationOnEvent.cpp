@@ -25,7 +25,6 @@
 #include <sofa/component/misc/PauseAnimationOnEvent.h>
 #include <sofa/simulation/common/PauseEvent.h>
 #include <sofa/core/ObjectFactory.h>
-// #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -36,9 +35,8 @@ namespace component
 namespace misc
 {
 
-PauseAnimationOnEvent::PauseAnimationOnEvent() : pause(false)
+PauseAnimationOnEvent::PauseAnimationOnEvent() : paused(false)
 {
-    this->simu = sofa::simulation::getSimulation();
 }
 
 
@@ -49,21 +47,21 @@ PauseAnimationOnEvent::~PauseAnimationOnEvent()
 
 void PauseAnimationOnEvent::init()
 {
-    BaseObject::init();
+    PauseAnimation::init();
     this->f_listening.setValue(true);
 }
 
 bool PauseAnimationOnEvent::isPaused()
 {
-    return pause;
+    return paused;
 }
 
 void PauseAnimationOnEvent::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (dynamic_cast<sofa::simulation::PauseEvent*>(event))
     {
-        pause = true;
-        this->simu->setPaused(true);
+        paused = true;
+        pause();
     }
 }
 
