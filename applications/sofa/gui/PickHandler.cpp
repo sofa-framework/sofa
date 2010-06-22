@@ -111,17 +111,8 @@ void PickHandler::init()
     if (simulation::getSimulation()->DrawUtility.getSystemDraw() != sofa::helper::gl::DrawManager::OGRE)
 #endif
     {
-        const char* version = (char*)glGetString( GL_VERSION);
-
         _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
-        if( strcmp(version,"3") )
-        {
-            _fboParams.colorInternalformat = GL_RGBA32F;
-        }
-        else
-        {
-            _fboParams.colorInternalformat = GL_RGBA16;
-        }
+        _fboParams.colorInternalformat = GL_RGBA32F;
         _fboParams.colorFormat         = GL_RGBA;
         _fboParams.colorType           = GL_FLOAT;
 
