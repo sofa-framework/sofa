@@ -312,6 +312,16 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
     }
 }
 
+void Simulation::setPaused(bool paused)
+{
+    this->paused = paused;
+}
+
+bool Simulation::getPaused()
+{
+    return paused;
+}
+
 /// Update contexts. Required before drawing the scene if root flags are modified.
 void Simulation::updateContext ( Node* root )
 {

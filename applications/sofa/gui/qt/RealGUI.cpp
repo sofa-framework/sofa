@@ -1590,6 +1590,8 @@ void RealGUI::step()
 
     stopDumpVisitor();
     emit newStep();
+    if ( simulation::getSimulation()->getPaused() )
+        startButton->setOn ( false );
 }
 
 //*****************************************************************************************

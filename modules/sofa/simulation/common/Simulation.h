@@ -127,6 +127,12 @@ public:
 
     bool isPrefetchingUsed() const { return needToPrefetch;};
 
+    /// Pause the simulation
+    virtual void setPaused(bool paused);
+
+    /// Return the current pause state
+    virtual bool getPaused();
+
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
 
@@ -143,6 +149,7 @@ public:
 
     sofa::helper::gl::DrawManager DrawUtility;
 
+    bool paused;
 
     ///load a scene from memory (typically : an xml into a string)
     static Node* loadFromMemory ( const char *filename, const char *data, unsigned int size );
