@@ -480,6 +480,74 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
             diag->getCudaMatrix().deviceWriteAt(offset),
             k);
     }
+    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    {
+        const VecElement& elems = *m->_indexedElements;
+
+        helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+
+        // Build Matrix Block for this ForceField
+        int i,j,n1, n2;
+        int offd3 = offset/3;
+
+        typename Main::Transformation Rot;
+        typename Main::StiffnessMatrix JKJt,tmp;
+
+
+        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+        Rot[0][1]=Rot[0][2]=0;
+        Rot[1][0]=Rot[1][2]=0;
+        Rot[2][0]=Rot[2][1]=0;
+
+        for (int ei=0; ei<data.nbElement; ++ei)
+        {
+            const Element& e = elems[ei];
+
+            int blockIdx = ei / BSIZE;
+            int threadIdx = ei % BSIZE;
+            for(i=0; i<3; i++)
+                for (j=0; j<3; j++)
+                    Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
+
+            m->computeStiffnessMatrix(JKJt, tmp, m->_materialsStiffnesses[ei], m->_strainDisplacements[ei], Rot);
+            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+
+            // find index of node 1
+            for (n1=0; n1<4; n1++)
+            {
+                for(i=0; i<3; i++)
+                {
+                    for (n2=0; n2<4; n2++)
+                    {
+                        for (j=0; j<3; j++)
+                        {
+                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
+                        }
+                    }
+                }
+            }
+
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
+
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
+
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
+
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
+        }
+    }
     else
     {
         const VecElement& elems = *m->_indexedElements;

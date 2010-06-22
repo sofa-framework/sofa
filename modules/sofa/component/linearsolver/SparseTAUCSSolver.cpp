@@ -177,6 +177,7 @@ SOFA_DECL_CLASS(SparseTAUCSSolver)
 
 int SparseTAUCSSolverClass = core::RegisterObject("Direct linear solvers implemented with the TAUCS library")
         .add< SparseTAUCSSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
+//.add< SparseTAUCSSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
         .addAlias("TAUCSSolver")
         ;
 
