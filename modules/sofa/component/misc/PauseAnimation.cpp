@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,12 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_PAUSEANIMATIONONEVENT_H
-#define SOFA_COMPONENT_MISC_PAUSEANIMATIONONEVENT_H
-
 #include <sofa/component/misc/PauseAnimation.h>
-
-#include <fstream>
 
 namespace sofa
 {
@@ -38,31 +33,20 @@ namespace component
 namespace misc
 {
 
-/**
-*/
-class PauseAnimationOnEvent : public virtual PauseAnimation
+void PauseAnimation::init()
 {
-public:
-    SOFA_CLASS(PauseAnimationOnEvent,PauseAnimation);
+    BaseObject::init();
+    simu = sofa::simulation::getSimulation();
+}
 
-    PauseAnimationOnEvent();
-
-    virtual ~PauseAnimationOnEvent();
-
-    virtual void init();
-
-    bool paused;
-    bool isPaused();
-
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
-
-};
-
+void PauseAnimation::pause()
+{
+    if (simu)
+        simu->setPaused(true);
+}
 
 } // namespace misc
 
 } // namespace component
 
 } // namespace sofa
-
-#endif

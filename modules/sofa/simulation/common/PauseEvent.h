@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,17 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: PauseEvent
-//
-// Description:
-//
-//
-// Author: Jeremie Allard, MGH/CIMIT, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_SIMULATION_PAUSEEVENT_H
 #define SOFA_SIMULATION_PAUSEEVENT_H
 
@@ -46,8 +35,7 @@ namespace simulation
 {
 
 /**
-  Event fired by Simulation::animate() before computing a new animation step.
-  @author
+  Event fired when needed to stop the animation.
 */
 class SOFA_SIMULATION_COMMON_API PauseEvent : public sofa::core::objectmodel::Event
 {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,17 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: PauseEvent
-//
-// Description:
-//
-//
-// Author: Jeremie Allard, MGH/CIMIT, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #include <sofa/simulation/common/PauseEvent.h>
 
 namespace sofa
