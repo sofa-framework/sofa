@@ -290,7 +290,6 @@ public:
         else *cpt--;
     }
 
-    template<class b>
     DataContainer<T, true>& operator=(const DataContainer<T, true>& dc )
     {
         //avoid self reference
