@@ -162,7 +162,7 @@ protected:
 #endif /* SOFA_SMP */
 public:
 #ifndef SOFA_SMP
-    explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {}
+    explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL),  maxsize(0), cursize(0), allocator(alloc) {}
     ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { resize(size); }
 #else /* SOFA_SMP */
     explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {init();}
@@ -246,6 +246,34 @@ public:
     T* end() { return getData()+size(); }
     const T* end() const { return getData()+size(); }
 
+    ExtVector& operator=(const ExtVector& ev)
+    {
+        cursize = ev.size();
+        maxsize = 0;
+        while(maxsize < cursize)
+            maxsize *= 2;
+        resize(cursize);
+        T* oldData = data;
+        data = new T[maxsize];
+        if (cursize)
+            std::copy(ev.begin(), ev.end(), data);
+        if (oldData!=NULL) delete[] oldData;
+
+        return *this;
+    }
+
+    ExtVector(const ExtVector& ev)
+    {
+        cursize = ev.size();
+        maxsize = 0;
+        while(maxsize < cursize)
+            maxsize *= 2;
+        data = new T[maxsize];
+        if (cursize)
+            std::copy(ev.begin(), ev.end(), data);
+        //Alloc
+    }
+
 
 /// Output stream
     inline friend std::ostream& operator<< ( std::ostream& os, const ExtVector<T>& vec )
@@ -311,6 +339,12 @@ public:
     ResizableExtVector()
         : ExtVector<T>(new DefaultAllocator<T>)
     {
+    }
+
+    ResizableExtVector(const ResizableExtVector& ev)
+        :ExtVector<T>(ev)
+    {
+        this->allocator = new DefaultAllocator<T>;
     }
 };
 
@@ -512,12 +546,18 @@ typedef ExtVec1dTypes ExtVec1Types;
 template<class T>
 struct DataTypeInfo< sofa::defaulttype::ExtVector<T> > : public VectorTypeInfo<sofa::defaulttype::ExtVector<T> >
 {
+    // Remove copy-on-write behavior which is normally activated for vectors
+    enum { CopyOnWrite     = 0 };
+
     static std::string name() { std::ostringstream o; o << "ExtVector<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
 template<class T>
 struct DataTypeInfo< sofa::defaulttype::ResizableExtVector<T> > : public VectorTypeInfo<sofa::defaulttype::ResizableExtVector<T> >
 {
+    // Remove copy-on-write behavior which is normally activated for vectors
+    enum { CopyOnWrite     = 0 };
+
     static std::string name() { std::ostringstream o; o << "ResizableExtVector<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
