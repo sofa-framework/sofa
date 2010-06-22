@@ -34,7 +34,7 @@
 #include <assert.h>
 #include <iostream>
 #include <set>
-
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {
@@ -1614,42 +1614,88 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     typename VecElement::const_iterator it;
 
     Index noeud1, noeud2;
+    int offd3 = offset/3;
 
     Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
     Rot[0][1]=Rot[0][2]=0;
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
 
-    for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
     {
-        if (method == SMALL)
-            computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
-        else
-            computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
-
-        // find index of node 1
-        for (n1=0; n1<4; n1++)
+        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
-            noeud1 = (*it)[n1];
+            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
+            else computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
 
-            for(i=0; i<3; i++)
+            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            // find index of node 1
+            for (n1=0; n1<4; n1++)
             {
-                ROW = offset+3*noeud1+i;
-                row = 3*n1+i;
-                // find index of node 2
-                for (n2=0; n2<4; n2++)
+                for(i=0; i<3; i++)
                 {
-                    noeud2 = (*it)[n2];
-
-                    for (j=0; j<3; j++)
+                    for (n2=0; n2<4; n2++)
                     {
-                        COLUMN = offset+3*noeud2+j;
-                        column = 3*n2+j;
-                        mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                        for (j=0; j<3; j++)
+                        {
+                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
+                        }
+                    }
+                }
+            }
+            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
+
+            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
+
+            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
+
+            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
+        }
+    }
+    else
+    {
+        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
+        {
+            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
+            else computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
+
+            // find index of node 1
+            for (n1=0; n1<4; n1++)
+            {
+                noeud1 = (*it)[n1];
+
+                for(i=0; i<3; i++)
+                {
+                    ROW = offset+3*noeud1+i;
+                    row = 3*n1+i;
+                    // find index of node 2
+                    for (n2=0; n2<4; n2++)
+                    {
+                        noeud2 = (*it)[n2];
+
+                        for (j=0; j<3; j++)
+                        {
+                            COLUMN = offset+3*noeud2+j;
+                            column = 3*n2+j;
+                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                        }
                     }
                 }
             }
         }
+
     }
 }
 

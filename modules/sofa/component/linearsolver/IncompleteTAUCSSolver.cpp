@@ -33,7 +33,8 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 
 namespace sofa
 {
@@ -64,7 +65,6 @@ IncompleteTAUCSSolver<TMatrix,TVector>::IncompleteTAUCSSolver()
     , f_multifrontal( initData(&f_multifrontal,false,"va_multifrontal","Use multifrontal algo in vaidya") )
     , f_seed( initData(&f_seed,123,"va_seed","Affects decomposition to subtrees") )
 {
-    new_perm = false;
 }
 
 template<class T>
@@ -122,8 +122,7 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
     {
         taucs_ccs_order(&data->matrix_taucs,&data->perm,&data->invperm,ordering);
         taucs_ccs_matrix* PAPT = taucs_ccs_permute_symmetrically(&data->matrix_taucs,data->perm,data->invperm);
-        data->L = taucs_ccs_factor_llt(PAPT,f_dropTol.getValue(),(int) f_modified_flag.getValue());
-
+        data->L = taucs_ccs_factor_llt(PAPT,f_dropTol.getValue(),f_modified_flag.getValue());
         taucs_ccs_free(PAPT);
     }
     else if (f_incompleteType.getValue()==1)
@@ -159,7 +158,6 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 
     data->B.resize(data->L->n);
     data->R.resize(data->L->n);
-    new_perm = true;
 }
 
 template<class TMatrix, class TVector>
@@ -173,7 +171,7 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector
         return;
     }
 
-    if (new_perm) for (int i=0; i<data->L->n; i++) data->B[i] = r[data->perm[i]];
+    for (int i=0; i<data->L->n; i++) data->B[i] = r[data->perm[i]];
     taucs_ccs_solve_llt(data->L,&data->R[0],&data->B[0]);
     for (int i=0; i<data->L->n; i++) z[i] = data->R[data->invperm[i]];
 }
@@ -182,7 +180,8 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector
 SOFA_DECL_CLASS(IncompleteTAUCSSolver)
 
 int IncompleteTAUCSSolverClass = core::RegisterObject("Direct linear solvers implemented with the TAUCS library")
-        .add< IncompleteTAUCSSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
+        .add< IncompleteTAUCSSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
+        .add< IncompleteTAUCSSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
         ;
 
 } // namespace linearsolver
