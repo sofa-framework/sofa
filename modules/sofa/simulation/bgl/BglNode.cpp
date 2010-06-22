@@ -46,7 +46,7 @@
 #include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
 
 
-#include <boost/vector_property_map.hpp>
+#include <boost/property_map/vector_property_map.hpp>
 #include <sofa/simulation/bgl/dfv_adapter.h>
 #include <sofa/helper/Factory.inl>
 
