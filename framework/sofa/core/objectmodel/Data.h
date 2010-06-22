@@ -201,6 +201,149 @@ protected:
     TData<T>* parentData;
 };
 
+template <class T, bool COW>
+class DataContainer
+{
+public:
+    DataContainer() {}
+
+    virtual ~DataContainer() {std::cout << "destry datacontainer" << std::endl;}
+
+    T* beginEdit() {return NULL; }
+    void endEdit() {};
+    const T& value() const { return T(); }
+    T& value()  { return T(); }
+
+};
+
+template <class T>
+class DataContainer<T, false>
+{
+protected:
+    T data;
+public:
+
+    DataContainer(const DataContainer<T, false>& dc)
+    {
+        data = dc.value();
+    }
+
+    DataContainer(const T &value)
+        : data(value)
+    {
+
+    }
+
+    DataContainer<T, false>& operator=(const DataContainer<T, false>& dc )
+    {
+        data = dc.value();
+        return *this;
+    }
+
+    T* beginEdit() { return &data; }
+    void endEdit() {};
+    const T& value() const { return data; }
+    T& value() { return data; }
+};
+
+
+template <class T>
+class DataContainer<T, true>
+{
+    //TODO: change this to be atomic
+    typedef unsigned int Counter;
+
+protected:
+    T* data;
+    Counter* cpt;
+public:
+    DataContainer()
+    {
+        cpt = new Counter;
+        *cpt = 1;
+        data = new T;
+    }
+
+    DataContainer(const T& value)
+    {
+        cpt = new Counter;
+        *cpt = 1;
+        data = new T;
+        *data = value;
+    }
+
+    DataContainer(const DataContainer& dc)
+    {
+        this->data = dc.data;
+        this->cpt = dc.cpt;
+
+        this->cpt++;
+    }
+
+    ~DataContainer()
+    {
+        if(*cpt < 1)
+        {
+            delete cpt;
+            delete data;
+        }
+        else *cpt--;
+    }
+
+    template<class b>
+    DataContainer<T, true>& operator=(const DataContainer<T, true>& dc )
+    {
+        //avoid self reference
+        if(&dc != this)
+        {
+            if(this->data && this->cpt && *(this->cpt) < 1)
+            {
+                delete this->data;
+                delete this->cpt;
+            }
+            this->data = dc.data;
+            this->cpt = dc.cpt;
+
+            *cpt++;
+        }
+
+        return *this;
+    }
+
+    T* beginEdit()
+    {
+        if (*cpt > 1)
+        {
+            *cpt--;
+
+            cpt = new Counter;
+            *cpt = 1;
+            T* newData;
+            newData = new T;
+            std::copy(data, data+sizeof(T),newData);
+            data = newData;
+        }
+        return data;
+    }
+
+    void endEdit()
+    {
+
+    };
+
+    const T& value() const
+    {
+        return *data;
+    }
+
+    T& value()
+    {
+        return *beginEdit();
+    }
+};
+
+
+
 /**
  *  \brief Container of data, readable and writable from/to a string.
  *
@@ -246,6 +389,7 @@ public:
         : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
         , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
+
     }
 
     /** Constructor
@@ -258,6 +402,12 @@ public:
     {
     }
 
+    Data(const Data& d)
+        : TData<T>()
+        ,m_value(d.getValue())
+    {
+    }
+
     virtual ~Data()
     {}
 
@@ -266,20 +416,23 @@ public:
         this->updateIfDirty();
         ++this->m_counter;
         BaseData::setDirtyOutputs();
-        return &m_value;
+        return m_value.beginEdit();
     }
     inline void endEdit()
     {
+        m_value.endEdit();
     }
+
     inline void setValue(const T& value )
     {
         *beginEdit()=value;
         endEdit();
     }
+
     inline const T& getValue() const
     {
         this->updateIfDirty();
-        return m_value;
+        return m_value.value();
     }
 
     inline friend std::ostream & operator << (std::ostream &out, const Data& df)
@@ -305,17 +458,21 @@ public:
 protected:
 
     /// Value
-    T m_value;
+    //T m_value;
+    DataContainer<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> m_value;
+    //DataContainer<T, false> m_value;
+
     const T& value() const
     {
         this->updateIfDirty();
-        return m_value;
+
+        return m_value.value();
     }
 
     T& value()
     {
         this->updateIfDirty();
-        return m_value;
+        return m_value.value();
     }
 };
 
