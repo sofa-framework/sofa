@@ -42,7 +42,7 @@
 #include <sofa/simulation/bgl/dfs_adapter.h>
 #include <sofa/simulation/bgl/dfv_adapter.h>
 
-#include <boost/vector_property_map.hpp>
+#include <boost/property_map/vector_property_map.hpp>
 
 
 namespace sofa
