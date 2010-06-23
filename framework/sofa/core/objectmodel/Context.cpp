@@ -180,12 +180,6 @@ bool Context::getAnimate() const
     return animate_.getValue();
 }
 
-/// MultiThreading activated
-bool Context::getMultiThreadSimulation() const
-{
-    return multiThreadSimulation_.getValue();
-}
-
 /// Display flags: Collision Models
 bool Context::getShowCollisionModels() const
 {
@@ -436,7 +430,6 @@ void Context::copySimulationContext(const Context& c)
     dt_.setValue(c.dt_.getValue());
     time_.setValue(c.time_.getValue());
     animate_.setValue(c.animate_.getValue());
-    multiThreadSimulation_.setValue(c.multiThreadSimulation_.getValue());
 #ifdef SOFA_SMP
     if(c.gpuPrioritary.getValue())
         gpuPrioritary.setValue(true);
