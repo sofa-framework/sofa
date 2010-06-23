@@ -177,6 +177,8 @@ bool BaseContext::getShowProcessorColor() const
 }
 #endif
 
+#ifdef SOFA_DEV
+#ifdef SOFA_SUPPORT_MULTIRESOLUTION
 /// Multiresolution
 int BaseContext::getCurrentLevel() const
 {
@@ -194,6 +196,8 @@ int BaseContext::getFinestLevel() const
 // {
 // 	return getCoarsestLevel() - getFinestLevel() + 1;
 // }
+#endif
+#endif // SOFA_DEV
 
 //////////////////////////////
 // Local Coordinates System //

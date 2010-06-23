@@ -56,9 +56,13 @@ Context::Context()
 #ifdef SOFA_SMP
     , showProcessorColor_                (initData(&showProcessorColor_,                -1,"showProcessorColor","display Processor Color"))
 #endif
+#ifdef SOFA_DEV
+#ifdef SOFA_SUPPORT_MULTIRESOLUTION
     , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
     , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
     , finestLevel_(initData(&finestLevel_,0,"finestLevel","Finest level of details"))
+#endif
+#endif // SOFA_DEV
 #ifdef SOFA_SMP
     ,  processor(initData(&processor,(int )-1,"processor","assigned processor"))
     ,  gpuPrioritary(initData(&gpuPrioritary,false,"gpuPrioritary","node should be executed on GPU")),
@@ -258,6 +262,8 @@ bool Context::getShowProcessorColor() const
 }
 #endif
 
+#ifdef SOFA_DEV
+#ifdef SOFA_SUPPORT_MULTIRESOLUTION
 // Multiresolution
 
 int Context::getCurrentLevel() const
@@ -272,7 +278,8 @@ int Context::getFinestLevel() const
 {
     return finestLevel_.getValue();
 }
-
+#endif
+#endif // SOFA_DEV
 
 //===============================================================================
 
@@ -373,6 +380,8 @@ void Context::setShowProcessorColor(bool val)
 }
 #endif
 
+#ifdef SOFA_DEV
+#ifdef SOFA_SUPPORT_MULTIRESOLUTION
 // Multiresolution
 
 bool Context::setCurrentLevel(int l)
@@ -400,6 +409,8 @@ void Context::setFinestLevel(int l)
 {
     finestLevel_.setValue( l );
 }
+#endif
+#endif // SOFA_DEV
 
 //======================
 
@@ -439,10 +450,15 @@ void Context::copySimulationContext(const Context& c)
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 
+#ifdef SOFA_DEV
+#ifdef SOFA_SUPPORT_MULTIRESOLUTION
     // for multiresolution
 // 	finestLevel_ = c.finestLevel_;
 // 	coarsestLevel_ = c.coarsestLevel_;
 // 	currentLevel_ = c.currentLevel_;
+#endif
+#endif // SOFA_DEV
+
 #ifdef SOFA_SMP
     if(!partition_)
     {
