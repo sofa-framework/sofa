@@ -99,11 +99,6 @@ bool BaseContext::getAnimate() const
     return true;
 }
 
-/// MultiThreading activated
-bool BaseContext::getMultiThreadSimulation() const
-{
-    return false;
-}
 #ifdef SOFA_SMP
 int BaseContext::getProcessor() const
 {

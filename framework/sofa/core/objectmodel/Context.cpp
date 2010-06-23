@@ -56,7 +56,6 @@ Context::Context()
 #ifdef SOFA_SMP
     , showProcessorColor_                (initData(&showProcessorColor_,                -1,"showProcessorColor","display Processor Color"))
 #endif
-    , multiThreadSimulation_(initData(&multiThreadSimulation_,false,"multiThreadSimulation","Apply multithreaded simulation"))
     , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
     , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
     , finestLevel_(initData(&finestLevel_,0,"finestLevel","Finest level of details"))
@@ -100,7 +99,6 @@ Context::Context()
     //setShowInteractionForceFields(objectmodel::BaseContext::getShowInteractionForceFields());
     //setShowWireFrame(objectmodel::BaseContext::getShowWireFrame());
     //setShowNormals(objectmodel::BaseContext::getShowNormals());
-    //setMultiThreadSimulation(objectmodel::BaseContext::getMultiThreadSimulation());
 }
 
 /// The Context is active
@@ -312,12 +310,6 @@ void Context::setGravityInWorld(const Vec3& g)
 void Context::setAnimate(bool val)
 {
     animate_.setValue(val);
-}
-
-/// MultiThreading activated
-void Context::setMultiThreadSimulation(bool val)
-{
-    multiThreadSimulation_.setValue(val);
 }
 
 /// Display flags: Collision Models

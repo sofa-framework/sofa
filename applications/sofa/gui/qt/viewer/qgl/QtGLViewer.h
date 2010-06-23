@@ -46,11 +46,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/common/xml/Element.h>
 
-#ifdef SOFA_DEV
-
-#include <sofa/simulation/automatescheduler/Automate.h>
-
-#endif // SOFA_DEV
 
 
 #include <QGLViewer/qglviewer.h>
@@ -111,12 +106,6 @@ private:
     //GLuint			_logoTexture;
     Texture			*texLogo;
 
-#ifdef SOFA_DEV
-
-    bool			_automateDisplayed;
-
-#endif // SOFA_DEV
-
     ctime_t			_beginTime;
 
 
@@ -151,12 +140,6 @@ protected:
 
 public:
 
-#ifdef SOFA_DEV
-
-    void			SwitchToAutomateView();
-
-#endif // SOFA_DEV
-
     //void			reshape(int width, int height);
     int GetWidth()
     {
@@ -174,14 +157,6 @@ public:
     void moveRayPickInteractor(int eventX, int eventY);
 
     void setCameraMode(component::visualmodel::BaseCamera::CameraType mode);
-
-#ifdef SOFA_DEV
-
-    // Display scene from the automate
-    void drawFromAutomate();
-    static void	automateDisplayVM(void);
-
-#endif // SOFA_DEV
 
     QString helpString();
 
@@ -209,14 +184,6 @@ private:
     void	DisplayOBJs();
     void	DisplayMenu(void);
     void	DrawScene();
-
-
-
-#ifdef SOFA_DEV
-
-    void	DrawAutomate();
-
-#endif // SOFA_DEV
 
     //int		handle(int event);	// required by FLTK
 
