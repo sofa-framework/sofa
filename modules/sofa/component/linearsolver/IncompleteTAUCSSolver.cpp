@@ -56,14 +56,25 @@ using std::endl;
 
 template<class TMatrix, class TVector>
 IncompleteTAUCSSolver<TMatrix,TVector>::IncompleteTAUCSSolver()
-    : f_incompleteType( initData(&f_incompleteType,0,"incompleteType","0 = Incomplete Cholesky, 1 = vaidya") )
-    , f_ordering( initData(&f_ordering,2,"ordering","ose ordering 0=identity/1=tree/2=metis/3=natural/4=genmmd/5=md/6=mmd/7=amd") )
-    , f_dropTol( initData(&f_dropTol,0.0,"ic_dropTol","Drop tolerance use for incomplete factorization") )
-    , f_modified_flag( initData(&f_modified_flag,false,"ic_modifiedFlag","Modified ICC : maintains rowsums") )
-    , f_subgraphs( initData(&f_subgraphs,1.0,"va_subgraphs","Desired number of subgraphs for Vaidya") )
-    , f_stretch_flag( initData(&f_stretch_flag,false,"va_stretch_flag","Modified ICC : maintains rowsums") )
-    , f_multifrontal( initData(&f_multifrontal,false,"va_multifrontal","Use multifrontal algo in vaidya") )
+    :
+#ifdef VAIDYA
+    f_incompleteType( initData(&f_incompleteType,0,"incompleteType","0 = Incomplete Cholesky (ic), 1 = vaidya (va) , 2 = recursive vaidya (vr) ") ) ,
+#endif
+    f_ordering( initData(&f_ordering,2,"ordering","ose ordering 0=identity/1=tree/2=metis/3=natural/4=genmmd/5=md/6=mmd/7=amd") )
+    , f_dropTol( initData(&f_dropTol,(double) 0.0,"ic_dropTol","Drop tolerance use for incomplete factorization") )
+    , f_modified_flag( initData(&f_modified_flag,true,"ic_modifiedFlag","Modified ICC : maintains rowsums") )
+#ifdef VAIDYA
+    , f_subgraphs( initData(&f_subgraphs,(double) 10,"va_subgraphs","Desired number of subgraphs for Vaidya") )
+    , f_stretch_flag( initData(&f_stretch_flag,false,"va_stretch_flag","Starting with a low stretch tree") )
+    , f_multifrontal( initData(&f_multifrontal,true,"va_multifrontal","Use multifrontal algo in vaidya") )
     , f_seed( initData(&f_seed,123,"va_seed","Affects decomposition to subtrees") )
+    , f_C( initData(&f_C,0.25,"vr_C","splits tree into about k=f_C*n^(1/(1+f_epsilon)) subgraphs") )
+    , f_epsilon( initData(&f_epsilon,(double) 0.2,"vr_epsilon","splits tree into about k=f_C*n^(1/(1+f_epsilon)) subgraphs") )
+    , f_nsmall( initData(&f_nsmall,10000,"vr_nsmall","matrices smaller than nsmall are factored directly") )
+    , f_maxlevels( initData(&f_maxlevels,2,"vr_maxlevels","preconditioner has at most l levels") )
+    , f_innerits( initData(&f_innerits,2,"vr_innerits","using at most m iterations") )
+    , f_innerconv( initData(&f_innerconv,(double) 0.01,"vr_innerconv","inner solves reduce their residual by a factor of r") )
+#endif
 {
 }
 
@@ -90,7 +101,6 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 
     if (data->perm) free(data->perm);
     if (data->invperm) free(data->invperm);
-    if (data->L) taucs_ccs_free(data->L);
 
     data->Mfiltered.copyUpperNonZeros(M);
     data->Mfiltered.fullRows();
@@ -101,6 +111,9 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
     data->matrix_taucs.colptr = (int *) &(data->Mfiltered.getRowBegin()[0]);
     data->matrix_taucs.rowind = (int *) &(data->Mfiltered.getColsIndex()[0]);
     data->matrix_taucs.values.d = (double*) &(data->Mfiltered.getColsValue()[0]);
+
+    data->B.resize(data->matrix_taucs.n);
+    data->R.resize(data->matrix_taucs.n);
 
     if (this->f_printLog.getValue()) taucs_logfile((char*)"stdout");
 
@@ -118,24 +131,32 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
     default : ordering = (char *) "identity"; break;
     }
 
+#ifdef VAIDYA
     if (f_incompleteType.getValue()==0)
     {
+#endif
+        data->freeL();
+
         taucs_ccs_order(&data->matrix_taucs,&data->perm,&data->invperm,ordering);
         taucs_ccs_matrix* PAPT = taucs_ccs_permute_symmetrically(&data->matrix_taucs,data->perm,data->invperm);
         data->L = taucs_ccs_factor_llt(PAPT,f_dropTol.getValue(),f_modified_flag.getValue());
         taucs_ccs_free(PAPT);
+
+        data->precond_fn = taucs_ccs_solve_llt;
+        data->precond_args = data->L;
+
+#ifdef VAIDYA
     }
     else if (f_incompleteType.getValue()==1)
     {
+        data->freeL();
+
         srand(f_seed.getValue());
         int rnd = rand();
 
         taucs_ccs_matrix *  V = taucs_amwb_preconditioner_create(&data->matrix_taucs,rnd,f_subgraphs.getValue(),f_stretch_flag.getValue(),0);
         taucs_ccs_order(V,&data->perm,&data->invperm,ordering);
-
-        //data->PAPT = taucs_ccs_permute_symmetrically(&data->matrix_taucs,data->perm,data->invperm);
         taucs_ccs_matrix *  PVPT = taucs_ccs_permute_symmetrically(V,data->perm,data->invperm);
-
         taucs_ccs_free(V);
 
         if (f_multifrontal.getValue())
@@ -152,12 +173,29 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
         taucs_ccs_free(PVPT);
 
         data->L->flags |= TAUCS_DOUBLE;
+
+        data->precond_fn = taucs_ccs_solve_llt;
+        data->precond_args = data->L;
     }
+    else if (f_incompleteType.getValue()==2)
+    {
+        data->freeRL();
+
+        data->RL = (recvaidya_args *) taucs_recursive_amwb_preconditioner_create(&data->matrix_taucs,
+                f_C.getValue(),
+                f_epsilon.getValue(),
+                f_nsmall.getValue(),
+                f_maxlevels.getValue(),
+                f_innerits.getValue(),
+                f_innerconv.getValue(),
+                &data->perm,
+                &data->invperm);
+        data->precond_fn   = taucs_recursive_amwb_preconditioner_solve;
+        data->precond_args = data->RL;
+    }
+#endif
 
     taucs_logfile((char*)"none");
-
-    data->B.resize(data->L->n);
-    data->R.resize(data->L->n);
 }
 
 template<class TMatrix, class TVector>
@@ -171,9 +209,9 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector
         return;
     }
 
-    for (int i=0; i<data->L->n; i++) data->B[i] = r[data->perm[i]];
-    taucs_ccs_solve_llt(data->L,&data->R[0],&data->B[0]);
-    for (int i=0; i<data->L->n; i++) z[i] = data->R[data->invperm[i]];
+    for (int i=0; i<data->matrix_taucs.n; i++) data->B[i] = r[data->perm[i]];
+    data->precond_fn(data->precond_args,&data->R[0],&data->B[0]);
+    for (int i=0; i<data->matrix_taucs.n; i++) z[i] = data->R[data->invperm[i]];
 }
 
 

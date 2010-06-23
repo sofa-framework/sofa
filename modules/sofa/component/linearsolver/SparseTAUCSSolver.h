@@ -32,6 +32,7 @@
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 // include all headers included in taucs.h to fix errors on macx
 #ifndef WIN32
@@ -82,7 +83,7 @@ protected:
     class SparseTAUCSSolverInvertData : public defaulttype::MatrixInvertData
     {
     public :
-        Matrix Mfiltered;
+        CompressedRowSparseMatrix<double> Mfiltered;
         void* factorization;
         taucs_ccs_matrix matrix_taucs;
 
