@@ -39,6 +39,11 @@
 #include <math.h>
 
 #include <qevent.h>
+
+//#ifdef __APPLE__
+//#include <OpenGL.h>
+//#endif
+
 #include "GenGraphForm.h"
 #include "Main.h"
 
@@ -149,11 +154,24 @@ int QtViewer::DisableViewer()
     return 0;
 }
 
+
+
+QGLFormat QtViewer::setupGLFormat()
+{
+    QGLFormat f = QGLFormat::defaultFormat();
+#if defined(QT_VERSION) && QT_VERSION >= 0x040200
+    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
+    f.setSwapInterval(0); // disable vertical refresh sync
+#endif
+    return f;
+}
+
+
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
-QtViewer::QtViewer(QWidget* parent, const char* name) :
-    QGLWidget(parent, name)
+QtViewer::QtViewer(QWidget* parent, const char* name)
+    : QGLWidget(setupGLFormat(), parent, name)
 {
 
     groot = NULL;
@@ -246,6 +264,12 @@ void QtViewer::initializeGL(void)
     {
         //std::cout << "progname=" << sofa::gui::qt::progname << std::endl;
         //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::qt::progname));
+
+//#ifdef __APPLE__
+//        std::cout << "QtViewer: disabling vertical refresh sync (Mac version)" << std::endl;
+//        const GLint swapInterval = 0;
+//        CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &swapInterval);
+//#endif
 
         // Define light parameters
         //_lightPosition[0] = 0.0f;

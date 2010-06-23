@@ -152,6 +152,7 @@ public:
     /// and can be used to unregister classes associated with in the the ObjectFactory.
     static int DisableViewer();
 
+    static QGLFormat setupGLFormat();
     QtViewer( QWidget* parent, const char* name="" );
     ~QtViewer();
 
