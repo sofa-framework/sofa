@@ -73,6 +73,8 @@ public:
     Data< Real > density0; ///< 1000 kg/m3 for water
     Data< Real > viscosity;
     Data< Real > surfaceTension;
+    Data< bool > newDensity;
+    Data< int > pressureExponent;
 
 protected:
     struct Particle
@@ -86,7 +88,7 @@ protected:
         sofa::helper::vector< std::pair<int,Real> > neighbors2; ///< indice + r/h
 #endif
     };
-
+    Real lastTime;
     sofa::helper::vector<Particle> particles;
 
     typedef SpatialGridContainer<DataTypes> Grid;

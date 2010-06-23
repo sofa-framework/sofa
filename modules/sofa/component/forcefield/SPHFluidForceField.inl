@@ -53,6 +53,8 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
       density0         (initData(&density0         ,Real(1)     , "density", "Density")),
       viscosity        (initData(&viscosity        ,Real(0.001f), "viscosity", "Viscosity")),
       surfaceTension   (initData(&surfaceTension   ,Real(0)     , "surfaceTension", "Surface Tension")),
+      newDensity       (initData(&newDensity       ,false       , "newDensity", "Use new and more stable density computation")),
+      pressureExponent (initData(&pressureExponent , 1          , "pressureExponent", "Exponent of density variation in pressure expression")),
       grid(NULL)
 {
 }
@@ -78,6 +80,7 @@ void SPHFluidForceField<DataTypes>::init()
         particles[i].normal.clear();
         particles[i].curvature = 0;
     }
+    lastTime = this->getContext()->getTime();
 }
 
 template<class DataTypes>
@@ -87,8 +90,14 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     const Real h2 = h*h;
     const Real m = particleMass.getValue();
     const Real m2 = m*m;
-    const Real k = pressureStiffness.getValue();
+    const bool newDensity = this->newDensity.getValue();
     const Real d0 = density0.getValue();
+    const int pE = pressureExponent.getValue();
+    const Real k = pressureStiffness.getValue(); // /(pE); //*(Real)pow(d0,pE-1));
+    Real time = this->getContext()->getTime();
+    Real dt = time - lastTime;
+    lastTime = time;
+
     //const Vec3d localg = this->getContext()->getLocalGravity();
     //Deriv g;
     //DataTypes::set ( g, localg[0], localg[1], localg[2]);
@@ -97,7 +106,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
 
     // Precompute constants for smoothing kernels
     const Real     CWd =     constWd(h);
-    //const Real CgradWd = constGradWd(h);
+    const Real CgradWd = constGradWd(h);
     //const Real  ClaplacianWd =  constLaplacianWd(h);
     //const Real     CWp =     constWp(h);
     const Real CgradWp = constGradWp(h);
@@ -112,6 +121,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     // Initialization
     f.resize(n);
     dforces.clear();
+    int n0 = particles.size();
     particles.resize(n);
     for (int i=0; i<n; i++)
     {
@@ -119,10 +129,20 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
         particles[i].neighbors2.clear();
 #endif
-        particles[i].density = 0;
+        //particles[i].density = 0;
         particles[i].pressure = 0;
         particles[i].normal.clear();
         particles[i].curvature = 0;
+    }
+    if (newDensity)
+    {
+        for (int i=n0; i<n; i++)
+            particles[i].density = d0;
+    }
+    else
+    {
+        for (int i=0; i<n; i++)
+            particles[i].density = 0;
     }
 
     // First compute the neighbors
@@ -198,23 +218,44 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     }
 
     // Compute density and pressure
-    for (int i=0; i<n; i++)
+    if (newDensity)
     {
-        Particle& Pi = particles[i];
-        Real density = Pi.density;
-        density += m*Wd(0,CWd); // density from current particle
-        for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+        for (int i=0; i<n0; i++)
         {
-            const int j = it->first;
-            const Real r_h = it->second;
-            Particle& Pj = particles[j];
-            Real d = m*Wd(r_h,CWd);
-            density += d;
-            Pj.density += d;
+            Particle& Pi = particles[i];
+            for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+            {
+                const int j = it->first;
+                const Real r_h = it->second;
+                Particle& Pj = particles[j];
+                Real d = dt*m*(gradWd(x[i]-x[j],r_h,CgradWd)*(v[i]-v[j]));
+                Pi.density += d;
+                Pj.density += d;
+            }
+            Pi.pressure = k*(Real)pow(Pi.density - d0, pE);
         }
-        Pi.density = density;
-        Pi.pressure = k*(density - d0);
     }
+    else
+    {
+        for (int i=0; i<n; i++)
+        {
+            Particle& Pi = particles[i];
+            Real density = Pi.density;
+            density += m*Wd(0,CWd); // density from current particle
+            for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+            {
+                const int j = it->first;
+                const Real r_h = it->second;
+                Particle& Pj = particles[j];
+                Real d = m*Wd(r_h,CWd);
+                density += d;
+                Pj.density += d;
+            }
+            Pi.density = density;
+            Pi.pressure = k*(density - d0);
+        }
+    }
+
 
     // Compute surface normal and curvature
     if (surfaceTension.getValue() > 0)
