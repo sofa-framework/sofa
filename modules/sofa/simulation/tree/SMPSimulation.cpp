@@ -252,8 +252,6 @@ void SMPSimulation::animate ( Node* root, double dt )
 void SMPSimulation::generateTasks ( Node* root, double dt )
 {
     if ( !root ) return;
-    if ( root->getMultiThreadSimulation() )
-        return;
 
     {
         AnimateBeginEvent ev ( dt );
