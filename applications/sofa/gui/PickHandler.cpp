@@ -112,7 +112,16 @@ void PickHandler::init()
 #endif
     {
         _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
-        _fboParams.colorInternalformat = GL_RGBA32F;
+#ifdef GL_VERSION_3_0
+        if (GLEW_VERSION_3_0)
+        {
+            _fboParams.colorInternalformat = GL_RGBA32F;
+        }
+        else
+#endif
+        {
+            _fboParams.colorInternalformat = GL_RGBA16;
+        }
         _fboParams.colorFormat         = GL_RGBA;
         _fboParams.colorType           = GL_FLOAT;
 
