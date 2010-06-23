@@ -45,17 +45,6 @@
 #include <sofa/gui/qt/viewer/qgl/QtGLViewer.h>
 #endif
 
-
-
-#ifdef SOFA_DEV
-
-#include <sofa/simulation/automatescheduler/ThreadSimulation.h>
-#include <sofa/simulation/automatescheduler/ExecBus.h>
-#include <sofa/simulation/automatescheduler/Node.h>
-#include <sofa/simulation/automatescheduler/AutomateUtils.h>
-
-#endif // SOFA_DEV
-
 #ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/core/objectmodel/GLInitializedEvent.h>
@@ -143,11 +132,6 @@ using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
 //       using namespace sofa::simulation::tree;
-
-#ifdef SOFA_DEV
-using namespace sofa::simulation::automatescheduler;
-typedef sofa::simulation::automatescheduler::Node AutomateNode;
-#endif // SOFA_DEV
 
 
 ///////////////////////////////////////////////////////////
@@ -254,30 +238,12 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     gui->setIcon(QPixmap(pathIcon));
 #endif
 
-#ifdef SOFA_DEV
-
-    // Threads Management
-    if ( sofa::simulation::automatescheduler::ThreadSimulation::initialized() )
-    {
-        sofa::simulation::automatescheduler::ThreadSimulation::getInstance()->computeVModelsList ( root );
-        root->setMultiThreadSimulation ( true );
-        sofa::simulation::automatescheduler::groot = root;
-
-        sofa::simulation::automatescheduler::Automate::setDrawCB ( gui->viewer );
-
-        gui->viewer->getQWidget()->update();
-        sofa::simulation::automatescheduler::ThreadSimulation::getInstance()->start();
-    }
-
-#endif // SOFA_DEV
-
     // show the gui
     gui->show();
 
-
 #ifdef SOFA_HAVE_CHAI3D
     // Tell nodes that openGl is initialized
-    // especialy the GL_MODELVIEW_MATRIX
+    // especially the GL_MODELVIEW_MATRIX
     sofa::core::objectmodel::GLInitializedEvent ev;
     sofa::simulation::PropagateEventVisitor act(&ev);
     root->execute(act);
@@ -1523,26 +1489,6 @@ void RealGUI::step()
     if ( root == NULL ) return;
 
     startDumpVisitor();
-
-#ifdef SOFA_DEV
-
-    if ( root->getContext()->getMultiThreadSimulation() )
-    {
-        static AutomateNode* n = NULL;
-
-        if ( ExecBus::getInstance() != NULL )
-        {
-            n = ExecBus::getInstance()->getNext ( "displayThread", n );
-
-            if ( n )
-            {
-                n->execute ( "displayThread" );
-            }
-        }
-    }
-    else
-
-#endif // SOFA_DEV
 
     {
         if ( viewer->ready() ) return;

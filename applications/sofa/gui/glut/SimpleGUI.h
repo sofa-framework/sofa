@@ -305,7 +305,6 @@ private:
     void	DisplayOBJs(bool shadowPass = false);
     void	DisplayMenu(void);
     void	DrawScene();
-    void	DrawAutomate();
     void	ApplySceneTransformation(int x, int y);
     //int		handle(int event);	// required by FLTK
 

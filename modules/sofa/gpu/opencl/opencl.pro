@@ -12,7 +12,6 @@ CONFIG += dll
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofatree$$LIBSUFFIX
-LIBS += -lsofaautomatescheduler$$LIBSUFFIX
 LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentmastersolver$$LIBSUFFIX
 LIBS += -lsofacomponentfemfetype$$LIBSUFFIX

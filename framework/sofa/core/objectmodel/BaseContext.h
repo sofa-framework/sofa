@@ -120,9 +120,6 @@ public:
     /// Animation flag
     virtual bool getAnimate() const;
 
-    /// MultiThreading activated
-    virtual bool getMultiThreadSimulation() const;
-
     /// Display flags: Collision Models
     virtual bool getShowCollisionModels() const;
 
@@ -361,10 +358,6 @@ public:
 
     /// Animation flag
     virtual void setAnimate(bool /*val*/)
-    { }
-
-    /// MultiThreading activated
-    virtual void setMultiThreadSimulation(bool /*val*/)
     { }
 
     /// Display flags: Collision Models

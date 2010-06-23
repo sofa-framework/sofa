@@ -18,9 +18,6 @@ CONFIG += dll
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofatree$$LIBSUFFIX
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-LIBS += -lsofaautomatescheduler$$LIBSUFFIX
-} # END SOFA_DEV
 LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentmastersolver$$LIBSUFFIX
 LIBS += -lsofacomponentfemfetype$$LIBSUFFIX

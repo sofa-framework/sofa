@@ -47,12 +47,6 @@
 
 #include <qcursor.h>
 
-#ifdef SOFA_DEV
-
-#include <sofa/simulation/automatescheduler/Automate.h>
-
-#endif // SOFA_DEV
-
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
 #ifdef SOFA_HAVE_FFMPEG
@@ -103,12 +97,6 @@ enum
 
 
 class SofaViewer
-
-#ifdef SOFA_DEV
-
-    : public sofa::simulation::automatescheduler::Automate::DrawCB
-
-#endif // SOFA_DEV
 {
 
 public:

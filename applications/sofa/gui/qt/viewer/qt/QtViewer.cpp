@@ -55,16 +55,6 @@
 #endif
 #include <sofa/helper/io/ImageBMP.h>
 
-#ifdef SOFA_DEV
-
-#include <sofa/simulation/automatescheduler/Automate.h>
-#include <sofa/simulation/automatescheduler/CPU.h>
-#include <sofa/simulation/automatescheduler/Node.h>
-#include <sofa/simulation/automatescheduler/Edge.h>
-#include <sofa/simulation/automatescheduler/ExecBus.h>
-#include <sofa/simulation/automatescheduler/ThreadSimulation.h>
-
-#endif // SOFA_DEV
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/ColourPickingVisitor.h>
 
@@ -90,11 +80,6 @@ using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 
-#ifdef SOFA_DEV
-
-using namespace sofa::simulation::automatescheduler;
-
-#endif // SOFA_DEV
 using sofa::simulation::getSimulation;
 
 //extern UserInterface*	GUI;
@@ -199,11 +184,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     sceneBBoxIsValid = false;
     texLogo = NULL;
 
-#ifdef SOFA_DEV
-
-    _automateDisplayed = false;
-
-#endif // SOFA_DEV
     /*_surfaceModel = NULL;
      _springMassView = NULL;
      _mapView = NULL;
@@ -745,11 +725,6 @@ void QtViewer::DisplayOBJs()
         initTexturesDone = true;
     }
 
-#ifdef SOFA_DEV
-
-    if (!groot->getMultiThreadSimulation())
-
-#endif // SOFA_DEV
     {
 
         getSimulation()->draw(groot, &visualParameters);
@@ -764,12 +739,6 @@ void QtViewer::DisplayOBJs()
         }
     }
 
-#ifdef SOFA_DEV
-
-    else
-        automateDisplayVM();
-
-#endif // SOFA_DEV
     // glDisable(GL_COLOR_MATERIAL);
 }
 
@@ -847,43 +816,6 @@ void QtViewer::DrawScene(void)
 
 }
 
-#ifdef SOFA_DEV
-
-void QtViewer::DrawAutomate(void)
-{
-    /*
-     std::cout << "DrawAutomate\n";
-     _newQuat.buildRotationMatrix(visualParameters.sceneTransform.rotation);
-
-     glLoadIdentity();
-     visualParameters.sceneTransform.Apply();
-     */
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(-0.5, 12.5, -10, 10, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    for(int i = 0; i < (int) Automate::getInstance()->tabNodes.size(); i++)
-    {
-        for(int j = 0; j < (int) Automate::getInstance()->tabNodes[i]->tabOutputs.size(); j++)
-        {
-            Automate::getInstance()->tabNodes[i]->tabOutputs[j]->draw();
-        }
-
-        Automate::getInstance()->tabNodes[i]->draw();
-    }
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-
-    update();
-}
-
-#endif // SOFA_DEV
 
 // ---------------------------------------------------------
 // --- Reshape of the window, reset the projection
@@ -1037,19 +969,9 @@ void QtViewer::paintGL()
     glClearDepth(1.0);
     glClear( _clearBuffer);
 
-#ifdef SOFA_DEV
-    if (!_automateDisplayed)
-    {
-#endif // SOFA_DEV
-        // draw the scene
-        DrawScene();
-#ifdef SOFA_DEV
-    }
-    else
-    {
-        DrawAutomate();
-    }
-#endif // SOFA_DEV
+    // draw the scene
+    DrawScene();
+
     if (_video)
     {
 #ifdef CAPTURE_PERIOD
@@ -1222,39 +1144,6 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
         switch (e->key())
         {
 
-#ifdef SOFA_DEV
-
-        case Qt::Key_A:
-            // --- switch automate display mode
-
-        {
-            bool multi = false;
-            if (groot)
-                multi = groot->getContext()->getMultiThreadSimulation();
-            //else
-            //	multi = Scene::getInstance()->getMultiThreadSimulation();
-            if (multi)
-            {
-                if (!_automateDisplayed)
-                {
-                    _automateDisplayed = true;
-                    //Fl::add_idle(displayAutomateCB);
-                    SwitchToAutomateView();
-                    sofa::helper::gl::glfntInit();
-                }
-                else
-                {
-                    _automateDisplayed = false;
-                    //Fl::remove_idle(displayAutomateCB);
-                    resetView();
-                    sofa::helper::gl::glfntClose();
-                }
-            }
-
-            update();
-            break;
-        }
-#endif // SOFA_DEV
 #ifdef TRACKING
         case Qt::Key_X:
         {
@@ -1758,23 +1647,6 @@ void QtViewer::moveView(const Vec3d& pos, const Quat &ori)
     SofaViewer::moveView(pos, ori);
 }
 
-#ifdef SOFA_DEV
-
-// -------------------------------------------------------------------
-// ---
-// -------------------------------------------------------------------
-void QtViewer::SwitchToAutomateView()
-{
-    visualParameters.sceneTransform.translation[0] = -10.0;
-    visualParameters.sceneTransform.translation[1] = 0.0;
-    visualParameters.sceneTransform.translation[2] = -50.0;
-    _newQuat[0] = 0.0;
-    _newQuat[1] = 0.0;
-    _newQuat[2] = 0.0;
-    _newQuat[3] = 0.0;
-}
-
-#endif // SOFA_DEV
 void QtViewer::saveView()
 {
     if (!sceneFileName.empty())
@@ -1815,27 +1687,6 @@ void QtViewer::setScene(sofa::simulation::Node* scene, const char* filename,
     }
 }
 
-#ifdef SOFA_DEV
-
-/// Render Scene called during multiThread simulation using automate
-void QtViewer::drawFromAutomate()
-{
-    update();
-}
-
-void QtViewer::automateDisplayVM(void)
-{
-    std::vector<core::VisualModel *>::iterator it = simulation::automatescheduler::ThreadSimulation::getInstance()->vmodels.begin();
-    std::vector<core::VisualModel *>::iterator itEnd = simulation::automatescheduler::ThreadSimulation::getInstance()->vmodels.end();
-
-    while (it != itEnd)
-    {
-        (*it)->draw();
-        ++it;
-    }
-}
-
-#endif // SOFA_DEV
 void QtViewer::setSizeW(int size)
 {
     resizeGL(size, _H);
