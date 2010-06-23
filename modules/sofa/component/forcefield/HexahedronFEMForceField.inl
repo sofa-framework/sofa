@@ -923,7 +923,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 
 // 	_rotations[i].transpose(R_0_2);
 
-    // positions of the deformed and displaced Tetrahedre in its frame
+    // positions of the deformed and displaced Tetrahedron in its frame
     Vec<8,Coord> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = _rotations[i] * nodes[w];

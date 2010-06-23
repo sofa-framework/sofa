@@ -118,14 +118,29 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
-
+#ifdef DEBUG_GETOBJECT
+    std::string cname = class_info.name();
+    if (cname != std::string("N4sofa4core6ShaderE"))
+        std::cout << "GNODE: search for object of type " << class_info.name() << std::endl;
+    std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
+    bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
+#endif
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
         if (tags.empty() || (*it)->getTags().includes(tags))
         {
+#ifdef DEBUG_GETOBJECT
+            if (isg)
+                std::cout << "GNODE: testing object " << (*it)->getName() << " of type " << (*it)->getClassName() << std::endl;
+#endif
             result = class_info.dynamicCast(*it);
             if (result != NULL)
+            {
+#ifdef DEBUG_GETOBJECT
+                std::cout << "GNODE: found object " << (*it)->getName() << " of type " << (*it)->getClassName() << std::endl;
+#endif
                 break;
+            }
         }
     }
 
