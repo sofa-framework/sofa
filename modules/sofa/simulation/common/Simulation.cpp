@@ -175,8 +175,6 @@ void Simulation::getInstruments( Node *node)
 void Simulation::animate ( Node* root, double dt )
 {
     if ( !root ) return;
-    if ( root->getMultiThreadSimulation() )
-        return;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode(std::string("Step"));
