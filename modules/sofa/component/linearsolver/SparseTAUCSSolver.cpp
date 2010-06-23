@@ -33,7 +33,8 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 
 namespace sofa
 {
@@ -176,8 +177,8 @@ void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 SOFA_DECL_CLASS(SparseTAUCSSolver)
 
 int SparseTAUCSSolverClass = core::RegisterObject("Direct linear solvers implemented with the TAUCS library")
-        .add< SparseTAUCSSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
-//.add< SparseTAUCSSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
+        .add< SparseTAUCSSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
+        .add< SparseTAUCSSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
         .addAlias("TAUCSSolver")
         ;
 

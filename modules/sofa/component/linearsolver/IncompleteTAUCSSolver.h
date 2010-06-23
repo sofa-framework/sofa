@@ -56,7 +56,7 @@ namespace component
 namespace linearsolver
 {
 
-
+//#define VAIDYA
 
 /// Direct linear solvers implemented with the TAUCS library
 template<class TMatrix, class TVector>
@@ -71,20 +71,41 @@ public:
     typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
-    Data<int> f_incompleteType;
-    Data<int> f_ordering;
+#ifdef VAIDYA
+    Data<int>    f_incompleteType;
+#endif
+    Data<int>    f_ordering;
     Data<double> f_dropTol;
-    Data<bool> f_modified_flag;
+    Data<bool>   f_modified_flag;
+#ifdef VAIDYA
     Data<double> f_subgraphs;
-    Data<bool> f_stretch_flag;
-    Data<bool> f_multifrontal;
-    Data<int> f_seed;
+    Data<bool>   f_stretch_flag;
+    Data<bool>   f_multifrontal;
+    Data<int>    f_seed;
+    Data<double> f_C;
+    Data<double> f_epsilon;
+    Data<int>    f_nsmall;
+    Data<int>    f_maxlevels;
+    Data<int>    f_innerits;
+    Data<double> f_innerconv;
+#endif
 
     IncompleteTAUCSSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
 protected:
+    typedef struct
+    {
+        taucs_ccs_matrix** B;
+        taucs_ccs_matrix** S;
+        taucs_ccs_matrix** L;
+        int             levels;
+        int             level;
+        double          convratio;
+        double          maxits;
+    } recvaidya_args;
+
     class IncompleteTAUCSSolverInvertData : public defaulttype::MatrixInvertData
     {
     public :
@@ -92,25 +113,52 @@ protected:
         int* perm;
         int* invperm;
         taucs_ccs_matrix matrix_taucs;
-        taucs_ccs_matrix* L;
+        void*            precond_args;
         helper::vector<double> B;
         helper::vector<double> R;
+        int             (*precond_fn)(void*,void* x,void* b);
+        int n;
+        taucs_ccs_matrix * L;
+        recvaidya_args * RL;
 
         IncompleteTAUCSSolverInvertData()
         {
-            perm    = NULL;
-            invperm = NULL;
-            L       = NULL;
+            perm         = NULL;
+            invperm      = NULL;
+            precond_args = NULL;
+            RL           = NULL;
+            L            = NULL;
+            n = 0;
         }
 
         ~IncompleteTAUCSSolverInvertData()
         {
             if (perm) taucs_free(perm);
             if (invperm) taucs_free(invperm);
+            freeL();
+            freeRL();
+            perm         = NULL;
+            invperm      = NULL;
+            precond_args = NULL;
+            n = 0;
+        }
+
+        void freeL()
+        {
             if (L) taucs_ccs_free(L);
-            perm    = NULL;
-            invperm = NULL;
-            L       = NULL;
+            L = NULL;
+        }
+
+        void freeRL()
+        {
+            if (RL)
+            {
+                for (int i=0; i<32; i++) if (RL->S[i]) taucs_ccs_free(RL->S[i]);
+                free(RL->S);
+                for (int i=0; i<32; i++) if (RL->L[i]) taucs_ccs_free(RL->L[i]);
+                free(RL->L);
+            }
+            RL = NULL;
         }
     };
 };

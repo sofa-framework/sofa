@@ -575,7 +575,8 @@ public:
         rowBegin.push_back(vid); // end of last row
     }
 
-    void copyNonZeros(Matrix& M)
+    template <class TMatrix>
+    void copyNonZeros(TMatrix& M)
     {
         filterValues(M, nonzeros);
     }

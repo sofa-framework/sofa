@@ -37,7 +37,7 @@ namespace linearsolver
 {
 
 template <> template <>
-void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
+inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
 {
     M.compress();
     nRow = M.rowSize();
