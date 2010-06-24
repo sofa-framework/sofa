@@ -84,7 +84,25 @@ public:
      * @param c is the list of deleted contacts.
      */
     virtual void removeContacts(const ContactVector &/*c*/);
+    void setDefaultResponseType(const std::string &responseT)
+    {
+        if (response.getValue().size() == 0)
+        {
+            helper::vector<std::string> listResponse(1,responseT);
 
+            sofa::helper::OptionsGroup responseOptions(listResponse);
+            response.setValue(responseOptions);
+        }
+        else
+        {
+            sofa::helper::OptionsGroup* options = response.beginEdit();
+
+            options->setSelectedItem(responseT);
+            response.endEdit();
+        }
+    }
+
+    std::string getDefaultResponseType() const { return response.getValue().getSelectedItem(); }
 
 protected:
     static sofa::helper::OptionsGroup initializeResponseOptions(core::collision::Pipeline *pipeline);

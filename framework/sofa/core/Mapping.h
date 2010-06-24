@@ -88,8 +88,8 @@ public:
     virtual void setModels(In* from, Out* to);
 
     /// Set the path to the objects mapped in the scene graph by default object1="../.." and object2=".."
-    void setPathObject1(std::string &o) {object1.setValue(o);}
-    void setPathObject2(std::string &o) {object2.setValue(o);}
+    void setPathObject1(const std::string &o) {object1.setValue(o);}
+    void setPathObject2(const std::string &o) {object2.setValue(o);}
 
     /// Return the pointer to the input model.
     In* getFromModel();

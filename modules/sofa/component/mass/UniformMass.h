@@ -86,6 +86,10 @@ public:
 
     double getTotalMass() const { return totalMass.getValue(); }
     void setTotalMass(double m);
+
+    void setFileMass(const std::string& file) {filenameMass.setValue(file);}
+    std::string getFileMass() const {return filenameMass.getFullPath();};
+
     void loadRigidMass(std::string filename);
     // -- Mass interface
 
