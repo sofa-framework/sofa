@@ -44,7 +44,7 @@
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
 #include <sofa/simulation/bgl/BglSimulation.h>
-
+#include <sofa/component/visualModel/OglModel.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -67,7 +67,7 @@ Node* createRegularGrid(double x, double y, double z)
     std::ostringstream oss;
     oss << "regularGrid_" << i;
 
-    Node* node = sofa::ObjectCreator::CreateEulerSolverNode(oss.str());
+    Node* node = sofa::simulation::getSimulation()->newNode(oss.str());
 
     RegularGridTopology* grid = new RegularGridTopology(3,3,3);
     grid->setPos(-1+x,1+x,-1+y,1+y,-1+z,1+z);
@@ -110,20 +110,33 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     sofa::gui::GUIManager::Init(argv[0]);
 
+    Node* solverNode = sofa::ObjectCreator::CreateEulerSolverNode("Solver");
+
+
     // The graph root node
     Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravityInWorld( Coord3(0,0,0) );
 
+    root->addChild(solverNode);
+
     Node* grid1 = createRegularGrid(-1.5,0,0);
     Node* grid2 = createRegularGrid(1.5,0,0);
-    root->addChild(grid1);
-    root->addChild(grid2);
+    solverNode->addChild(grid1);
+    solverNode->addChild(grid2);
 
 
     MechanicalObject3* subsetDof = new MechanicalObject3;
     SubsetMultiMappingVec3d_to_Vec3d* subsetMultiMapping = new SubsetMultiMappingVec3d_to_Vec3d();
     MechanicalObject3* input1 = dynamic_cast<MechanicalObject3*>(grid2->getMechanicalState());
     MechanicalObject3* input2 = dynamic_cast<MechanicalObject3*>(grid1->getMechanicalState());
+
+    input1->f_printLog.setValue(true);
+    input1->setName("input1");
+    input2->f_printLog.setValue(true);
+    input2->setName("input2");
+    subsetDof->f_printLog.setValue(true);
+    subsetDof->setName("subsetDof");
+
     subsetMultiMapping->addInputModel( input1 );
     subsetMultiMapping->addInputModel( input2 );
     subsetMultiMapping->addOutputModel( subsetDof );
