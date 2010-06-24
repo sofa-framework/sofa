@@ -63,7 +63,7 @@
 namespace sofa
 {
 
-simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType)
+simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string& responseType)
 {
 
     simulation::Node* root = simulation::getSimulation()->newNode("root");
@@ -90,6 +90,7 @@ simulation::Node *ObjectCreator::CreateRootWithCollisionPipeline(const std::stri
     //--> adding contact manager
     component::collision::DefaultContactManager* contactManager = new component::collision::DefaultContactManager;
     contactManager->setName("Contact Manager");
+    contactManager->setDefaultResponseType(responseType);
     root->addObject(contactManager);
 
 #ifdef SOFA_DEV
@@ -154,7 +155,7 @@ simulation::Node *ObjectCreator::CreateObstacle(const std::string &filenameColli
     simulation::Node* nodeFixed = simulation::getSimulation()->newNode("Fixed");
 
     component::container::MeshLoader* loaderFixed = new component::container::MeshLoader;
-    loaderFixed->load(sofa::helper::system::DataRepository.getFile(filenameCollision).c_str());
+    loaderFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameCollision));
     nodeFixed->addObject(loaderFixed);
 
     component::topology::MeshTopology* meshNodeFixed = new component::topology::MeshTopology;
@@ -180,7 +181,7 @@ simulation::Node *ObjectCreator::CreateObstacle(const std::string &filenameColli
 
     component::visualmodel::OglModel* visualFixed = new component::visualmodel::OglModel;
     visualFixed->setName("visual");
-    visualFixed->load(sofa::helper::system::DataRepository.getFile(filenameVisual),"","");
+    visualFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameVisual));
     visualFixed->setColor(color);
     visualFixed->setTranslation(translation[0],translation[1],translation[2]);
     visualFixed->setRotation(rotation[0],rotation[1],rotation[2]);
@@ -196,7 +197,7 @@ simulation::Node *ObjectCreator::CreateCollisionNodeVec3(MechanicalObject3* dof,
     simulation::Node* CollisionNode = simulation::getSimulation()->newNode("Collision");
 
     component::container::MeshLoader* loader_surf = new component::container::MeshLoader;
-    loader_surf->load(sofa::helper::system::DataRepository.getFile(filename).c_str());
+    loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 
     component::topology::MeshTopology* meshTorus_surf= new component::topology::MeshTopology;
@@ -210,6 +211,8 @@ simulation::Node *ObjectCreator::CreateCollisionNodeVec3(MechanicalObject3* dof,
     AddCollisionModels(CollisionNode, elements);
 
     BarycentricMechanicalMapping3_to_3* mechaMapping = new BarycentricMechanicalMapping3_to_3(dof, dof_surf);
+    mechaMapping->setPathObject1("../..");
+    mechaMapping->setPathObject2("..");
     CollisionNode->addObject(mechaMapping);
 
     return CollisionNode;
@@ -220,10 +223,10 @@ simulation::Node *ObjectCreator::CreateVisualNodeVec3(MechanicalObject3* dof,  c
 {
     simulation::Node* VisualNode = simulation::getSimulation()->newNode("Visu");
 
-
+    const std::string nameVisual="Visual";
     component::visualmodel::OglModel* visual = new component::visualmodel::OglModel;
-    visual->setName("visual");
-    visual->load(sofa::helper::system::DataRepository.getFile(filename),"","");
+    visual->setName(nameVisual);
+    visual->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     visual->setColor(color.c_str());
     visual->setTranslation(translation[0],translation[1],translation[2]);
     visual->setRotation(rotation[0],rotation[1],rotation[2]);
@@ -231,6 +234,8 @@ simulation::Node *ObjectCreator::CreateVisualNodeVec3(MechanicalObject3* dof,  c
 
     BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(dof, visual);
     mapping->setName("Mapping Visual");
+    mapping->setPathObject1("../..");
+    mapping->setPathObject2(nameVisual);
     VisualNode->addObject(mapping);
 
     return VisualNode;
@@ -246,7 +251,7 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(MechanicalObjectRigid3
 
 
     component::container::MeshLoader* loader_surf = new component::container::MeshLoader;
-    loader_surf->load(sofa::helper::system::DataRepository.getFile(filename).c_str());
+    loader_surf->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     CollisionNode->addObject(loader_surf);
 
     component::topology::MeshTopology* meshTorus_surf= new component::topology::MeshTopology;
@@ -260,6 +265,8 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(MechanicalObjectRigid3
     AddCollisionModels(CollisionNode, elements);
 
     RigidMechanicalMappingRigid3_to_3* mechaMapping = new RigidMechanicalMappingRigid3_to_3(dofRigid, dof_surf);
+    mechaMapping->setPathObject1("../..");
+    mechaMapping->setPathObject2("..");
     CollisionNode->addObject(mechaMapping);
 
     return CollisionNode;
@@ -270,10 +277,10 @@ simulation::Node *ObjectCreator::CreateVisualNodeRigid(MechanicalObjectRigid3* d
 {
     simulation::Node* RigidVisualNode = simulation::getSimulation()->newNode("Visu");
 
-
+    const std::string nameVisual="Visual";
     component::visualmodel::OglModel* visualRigid = new component::visualmodel::OglModel;
-    visualRigid->setName("visual");
-    visualRigid->load(sofa::helper::system::DataRepository.getFile(filename),"","");
+    visualRigid->setName(nameVisual);
+    visualRigid->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     visualRigid->setColor(color);
     visualRigid->setTranslation(translation[0],translation[1],translation[2]);
     visualRigid->setRotation(rotation[0],rotation[1],rotation[2]);
@@ -281,6 +288,8 @@ simulation::Node *ObjectCreator::CreateVisualNodeRigid(MechanicalObjectRigid3* d
 
     RigidMappingRigid3_to_Ext3* mappingRigid = new RigidMappingRigid3_to_Ext3(dofRigid, visualRigid);
     mappingRigid->setName("Mapping Visual");
+    mappingRigid->setPathObject1("../..");
+    mappingRigid->setPathObject2(nameVisual);
     RigidVisualNode->addObject(mappingRigid);
     return RigidVisualNode;
 }
