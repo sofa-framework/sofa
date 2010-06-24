@@ -247,7 +247,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::Base
 {
     const VecIndex& indices = points.getValue();
     const VecReal& k = stiffness.getValue();
-    const int N = Coord::static_size;
+    const int N = Coord::total_size;
 
     unsigned int curIndex = 0;
 

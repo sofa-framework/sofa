@@ -241,13 +241,12 @@ void FixedLMConstraint<DataTypes>::draw()
 
     std::vector< Vector3 > points;
     Vector3 point;
-    unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
     //serr<<"FixedLMConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
     {
-        for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+        point = DataTypes::getCPos(x[*it]);
         points.push_back(point);
     }
     if( _drawSize.getValue() == 0) // old classical drawing by points

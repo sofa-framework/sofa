@@ -71,31 +71,15 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-
-    enum { N=Coord::static_size };
+    enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-
-    class Mat3 : public fixed_array<Deriv,3>
-    {
-    public:
-        Deriv operator*(const Deriv& v)
-        {
-            return Deriv((*this)[0]*v,(*this)[1]*v,(*this)[2]*v);
-        }
-        Deriv transposeMultiply(const Deriv& v)
-        {
-            return Deriv(v[0]*((*this)[0])[0]+v[1]*((*this)[1])[0]+v[2]*((*this)[2][0]),
-                    v[0]*((*this)[0][1])+v[1]*((*this)[1][1])+v[2]*((*this)[2][1]),
-                    v[0]*((*this)[0][2])+v[1]*((*this)[1][2])+v[2]*((*this)[2][2]));
-        }
-    };
 
 protected:
 
     class EdgeInformation
     {
     public:
-        Mat3 DfDx; /// the edge stiffness matrix
+        Mat DfDx; /// the edge stiffness matrix
 
         int     m1, m2;  /// the two extremities of the first spring: masses m1 and m2
         int     m3, m4;  /// the two extremities of the second spring: masses m3 and m4

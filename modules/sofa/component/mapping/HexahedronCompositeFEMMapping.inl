@@ -406,11 +406,10 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw()
 
     std::vector< Vector3 > points;
     Vector3 point;
-    unsigned int sizePoints= (OutCoord::static_size <=3)?OutCoord::static_size:3;
 
     for(unsigned int i=0; i<_qFine.size(); i++)
     {
-        for (unsigned int s=0; s<sizePoints; ++s) point[s] = _qFine[i][s];
+        point = OutDataTypes::getCPos(_qFine[i]);
         points.push_back(point);
     }
 

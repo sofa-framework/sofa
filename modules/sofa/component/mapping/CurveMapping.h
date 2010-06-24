@@ -58,6 +58,7 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+    typedef typename Out::DataTypes DataTypes;
     typedef typename Out::VecCoord VecCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename Out::VecDeriv VecDeriv;

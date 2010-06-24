@@ -69,7 +69,7 @@ public:
     typedef State<Rigid3Types>::VecCoord VecCoord;
     typedef State<Rigid3Types>::Coord Coord;
     typedef Coord::value_type Real;
-    enum { M=Coord::static_size };
+    enum { M=Coord::spatial_dimensions };
     typedef defaulttype::Mat<M,M,Real> Mat;
     typedef defaulttype::Vec<M,Real> Vec;
     typedef helper::vector<unsigned int> VecIndex;

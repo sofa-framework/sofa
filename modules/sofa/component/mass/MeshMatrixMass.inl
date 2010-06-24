@@ -1026,8 +1026,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw()
     for (unsigned int i=0; i<x.size(); i++)
     {
         Vector3 p;
-        for (unsigned int j=0; j< Coord::static_size; ++j)
-            p[j] = x[i][j];
+        p = DataTypes::getCPos(x[i]);
 
         points.push_back(p);
         gravityCenter += x[i]*vertexMass[i];
@@ -1054,7 +1053,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw()
         glColor4f (1,1,0,1);
         glPointSize(5);
         gravityCenter /= totalMass;
-        for(unsigned int i=0 ; i<Coord::static_size ; i++)
+        for(unsigned int i=0 ; i<Coord::spatial_dimensions ; i++)
         {
             Coord v;
             v[i] = showAxisSize.getValue();

@@ -107,11 +107,11 @@ void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * m
     {
         const Contact& c = (this->contacts.getValue())[i];
         unsigned int p = c.index;
-        for (int l=0; l<Deriv::static_size; ++l)
-            for (int k=0; k<Deriv::static_size; ++k)
+        for (int l=0; l<Deriv::total_size; ++l)
+            for (int k=0; k<Deriv::total_size; ++k)
             {
                 SReal coef = (c.normal[l] * c.normal[k] * c.fact + (l==k ? (1 - c.fact) : (SReal)0.0)) * fact;
-                mat->add(offset + p*Deriv::static_size + l, offset + p*Deriv::static_size + k, coef);
+                mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + k, coef);
             }
     }
 }

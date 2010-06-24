@@ -168,21 +168,17 @@ template< class BasicMultiMapping >
 void CenterOfMassMultiMapping< BasicMultiMapping >::draw()
 {
     assert( this->toModels.size() == 1 );
-    OutVecCoord* X = this->getToModels()[0]->getVecCoord( VecId::position().index );
+    const OutVecCoord* X = this->getToModels()[0]->getVecCoord( VecId::position().index );
 
     std::vector< Vector3 > points;
     Vector3 point1,point2;
 
-    unsigned int sizePoints= (OutCoord::static_size <=3)?OutCoord::static_size:3;
-    for(unsigned int i=0 ; i<OutCoord::static_size ; i++)
+    for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
         OutCoord v;
         v[i] = (Real)0.1;
-        for (unsigned int s=0; s<sizePoints; ++s)
-        {
-            point1[s] = ( (*X)[0] -v)[s];
-            point2[s] = ( (*X)[0] +v)[s];
-        }
+        point1 = OutDataTypes::getCPos( (*X)[0] -v);
+        point2 = OutDataTypes::getCPos( (*X)[0] +v);
         points.push_back(point1);
         points.push_back(point2);
     }

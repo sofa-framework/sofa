@@ -130,8 +130,11 @@ public:
             return in;
         }
 
-        enum { static_size = 1 };
+        /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
         enum { total_size = 4 };
+        /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+        enum { spatial_dimensions = 3 };
+
         Real* ptr() { return &vTranslation; }
         const Real* ptr() const { return &vTranslation; }
 
@@ -262,8 +265,11 @@ public:
         }
 
 
-        enum { static_size = 1 };
+        /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
         enum { total_size = 5 };
+        /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+        enum { spatial_dimensions = 3 };
+
         Real* ptr() { return &translation; }
         const Real* ptr() const { return &translation; }
 
@@ -279,6 +285,10 @@ public:
             else       return this->orientation[i-1];
         }
     };
+
+    enum { spatial_dimensions = Coord::spatial_dimensions };
+    enum { coord_total_size = Coord::total_size };
+    enum { deriv_total_size = Deriv::total_size };
 
     typedef Coord::Pos CPos;
     typedef Coord::Rot CRot;
@@ -408,18 +418,14 @@ typedef LaparoscopicRigid3Types LaparoscopicRigidTypes; ///< Alias
 // Specialization of the defaulttype::DataTypeInfo type traits template
 
 template<>
-struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Deriv >
+struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Deriv, sofa::defaulttype::LaparoscopicRigid3Types::Deriv::total_size >
 {
-    // static_size is currently defined as the number of translation DOFs, while here we want all dofs
-    enum { Size = sofa::defaulttype::LaparoscopicRigid3Types::Deriv::total_size };
     static const char* name() { return "LaparoscopicRigid3Types::Deriv"; }
 };
 
 template<>
-struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord >
+struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord, sofa::defaulttype::LaparoscopicRigid3Types::Coord::total_size >
 {
-    // static_size is currently defined as the number of translation DOFs, while here we want all dofs
-    enum { Size = sofa::defaulttype::LaparoscopicRigid3Types::Coord::total_size };
     static const char* name() { return "LaparoscopicRigid3Types::Coord"; }
 };
 

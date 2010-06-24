@@ -78,7 +78,7 @@ inline void glVertexNv<1>(const double* p)
 template<class Coord>
 inline void glVertexT(const Coord& c)
 {
-    glVertexNv<Coord::static_size>(c.ptr());
+    glVertexNv<Coord::spatial_dimensions>(c.ptr());
 }
 
 template<>
@@ -258,7 +258,7 @@ inline void glTranslateNv<1>(const double* p)
 template<class Coord>
 inline void glTranslateT(const Coord& c)
 {
-    glTranslateNv<Coord::static_size>(c.ptr());
+    glTranslateNv<Coord::spatial_dimensions>(c.ptr());
 }
 
 template<>

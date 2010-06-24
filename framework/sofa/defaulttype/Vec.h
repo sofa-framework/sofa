@@ -48,6 +48,10 @@ template <int N, typename real=float>
 class Vec : public helper::fixed_array<real,N>
 {
 public:
+    /// Compile-time constant specifying the number of scalars within this vector (equivalent to static_size and size() method)
+    enum { total_size = N };
+    /// Compile-time constant specifying the number of dimensions of space (equivalent to total_size here)
+    enum { spatial_dimensions = N };
 
     /// Default constructor: sets all values to 0.
     Vec()

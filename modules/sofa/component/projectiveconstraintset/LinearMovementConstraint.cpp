@@ -73,11 +73,10 @@ void LinearMovementConstraint<Rigid3dTypes>::draw()
 
         sofa::helper::vector< Vector3 > points;
         Vector3 point;
-        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
         const SetIndexArray & indices = m_indices.getValue().getArray();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+            point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
         simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
@@ -152,11 +151,10 @@ void LinearMovementConstraint<Rigid3fTypes>::draw()
 
         sofa::helper::vector< Vector3 > points;
         Vector3 point;
-        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
         const SetIndexArray & indices = m_indices.getValue().getArray();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+            point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
         simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));

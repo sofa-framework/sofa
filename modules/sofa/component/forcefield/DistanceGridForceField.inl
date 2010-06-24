@@ -371,11 +371,11 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatr
         const int p = c.index;
         const Real fact = (Real)(c.fact * -kFactor);
         const Deriv& normal = c.normal;
-        for (int l=0; l<Deriv::static_size; ++l)
-            for (int c=0; c<Deriv::static_size; ++c)
+        for (int l=0; l<Deriv::total_size; ++l)
+            for (int c=0; c<Deriv::total_size; ++c)
             {
                 SReal coef = normal[l] * fact * normal[c];
-                mat->add(offset + p*Deriv::static_size + l, offset + p*Deriv::static_size + c, coef);
+                mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
             }
     }
 }
@@ -437,11 +437,8 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(float size)
         Coord p2 = p1[i];
         Deriv normal = grid->tgrad(p1[i]); //normal.normalize();
         p2 += normal*(-d);
-        for (unsigned int s=0; s< (Coord::static_size <=3 ? Coord::static_size:3); ++s)
-        {
-            point1[s] = p1[i][s];
-            point2[s] = p2[s];
-        }
+        point1 = DataTypes::getCPos(p1[i]);
+        point2 = DataTypes::getCPos(p2);
         if (d > 0)
         {
             pointsLineOut.push_back(point1);
@@ -467,8 +464,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(float size)
             defaulttype::Vector3 p;
             for (int j=0; j<3; ++j)
             {
-                for (int s=0; s<(Coord::static_size <=3 ? Coord::static_size:3); ++s)
-                    p[s] = p1[c.index[j]][s];
+                p = DataTypes::getCPos(p1[c.index[j]]);
                 pointsTri.push_back(p);
             }
         }
@@ -488,8 +484,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(float size)
             {
                 Coord pj = p1[c.index[j]];
                 pj += (pc-pj)*0.2f;
-                for (int s=0; s<(Coord::static_size <=3 ? Coord::static_size:3); ++s)
-                    p[j][s] = pj[s];
+                p[j] = DataTypes::getCPos(pj);
             }
             pointsTet.push_back(p[0]);
             pointsTet.push_back(p[1]);

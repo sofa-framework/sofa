@@ -84,7 +84,7 @@ public :
     ///initial constrained DOFs position
     VecCoord x0;
 
-    enum { NumDimensions = DataTypes::Deriv::static_size };
+    enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> Vec6Bool;
     Data<Vec6Bool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
 

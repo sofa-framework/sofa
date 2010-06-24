@@ -892,12 +892,11 @@ void RigidMapping<BasicMapping>::draw()
     if (!this->getShow()) return;
     std::vector< Vector3 > points;
     Vector3 point;
-    unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
 
     const typename Out::VecCoord& x = *this->toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
+        point = OutDataTypes::getCPos(x[i]);
         points.push_back(point);
     }
     simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
