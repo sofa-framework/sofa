@@ -40,7 +40,7 @@ namespace sofa
 class ObjectCreator
 {
 public:
-    static simulation::Node *CreateRootWithCollisionPipeline(const std::string &simulationType);
+    static simulation::Node *CreateRootWithCollisionPipeline(const std::string &simulationType, const std::string &responseType=std::string("default"));
     static simulation::Node *CreateEulerSolverNode(const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
 
 
