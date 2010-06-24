@@ -86,7 +86,8 @@ Simulation::Simulation()
       nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Steps number of computation", true, false)),
       needToPrefetch(false),
       gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
-      instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used"))
+      instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used")),
+      paused(false)
 {}
 
 Simulation::~Simulation()
@@ -121,6 +122,8 @@ void Simulation::exportXML ( Node* root, const char* fileName, bool compact )
     if ( fileName!=NULL )
     {
         std::ofstream out ( fileName );
+        out << "<?xml version=\"1.0\"?>\n";
+
         XMLPrintVisitor print ( out,compact );
         root->execute ( print );
     }
