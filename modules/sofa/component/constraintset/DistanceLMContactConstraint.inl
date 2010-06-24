@@ -208,12 +208,7 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
         core::behavior::BaseLMConstraint::ConstraintGroup * group)
 {
     const int numConstraintToProcess = group->getNumConstraint();
-    const Eigen::Map<VectorEigen> c(cptr, numConstraintToProcess);
-    const Eigen::Map<MatrixEigen> W(Wptr, numConstraintToProcess, numConstraintToProcess);
-    Eigen::Map<VectorEigen> LambdaInit(LambdaInitptr, numConstraintToProcess);
-    VectorEigen Lambda=sofa::component::linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,numConstraintToProcess);
-//                serr<<"LagrangeMultiplierEvaluation, c = "<< sendl << c
-//                        <<sendl<<", Lambda = "<<Lambda.transpose()<<", friction = "<<contactFriction.getValue()<<sendl;
+    Eigen::Map<VectorEigen> Lambda(LambdaInitptr, numConstraintToProcess);
 
     switch (group->getOrder())
     {
@@ -253,6 +248,10 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
                 const SReal beta =out.t1 *directionCone;
                 const SReal gamma=out.t2 *directionCone;
 
+
+                const Eigen::Map<VectorEigen> c(cptr, numConstraintToProcess);
+                const Eigen::Map<MatrixEigen> W(Wptr, numConstraintToProcess, numConstraintToProcess);
+
                 const SReal value=W(0, 0)*alpha+
                         W(0, 1)*beta +
                         W(0, 2)*gamma;
@@ -291,8 +290,6 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
     }
     default: {}
     }
-
-    LambdaInit = Lambda;
 
     return;
 }

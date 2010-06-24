@@ -44,42 +44,42 @@ ConstraintSolver::~ConstraintSolver()
 
 void ConstraintSolver::solveConstraint(double dt, VecId id, ConstOrder order)
 {
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints");
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints " + id.getName());
     bool continueSolving=true;
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints PrepareState");
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " PrepareState");
     continueSolving=prepareStates(dt, id, order);
-    sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints PrepareState");
+    sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName() + " PrepareState");
     if (continueSolving)
     {
-        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints BuildSystem");
+        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem");
         continueSolving=buildSystem(dt, id, order);
-        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints BuildSystem");
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName() + " BuildSystem");
     }
     else
     {
-        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints");
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName());
         return;
     }
     if (continueSolving)
     {
-        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints SolveSystem");
+        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " SolveSystem ");
         continueSolving=solveSystem(dt, id, order);
-        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints SolveSystem");
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName() + " SolveSystem ");
     }
     else
     {
-        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints");
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName());
         return;
     }
 
     if (continueSolving)
     {
-        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints ApplyCorrection");
+        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " ApplyCorrection ");
         continueSolving=applyCorrection(dt, id, order);
-        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints ApplyCorrection");
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName() + " ApplyCorrection ");
     }
 
-    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints");
+    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + "SolveConstraints ");
 }
 } // namespace behavior
 

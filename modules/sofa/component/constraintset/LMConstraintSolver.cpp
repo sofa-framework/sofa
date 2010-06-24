@@ -238,6 +238,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     sofa::simulation::Visitor::printNode("SystemCreation");
 #endif
 
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
     const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
     //Informations to build the matrices
     //Dofs to be constrained
@@ -262,24 +263,31 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
         }
 #endif
     }
+    sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
 
 
     //Store the indices used in order to speed up the correction propagation
     //************************************************************
     // Build the Right Hand Term
     //************************************************************
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem C");
+
     c = VectorEigen::Zero((int)numConstraint);
     buildRightHandTerm(orderState,LMConstraints, c);
+    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem C");
 
 
     //************************************************************
     // Build M^-1
     //************************************************************
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem M^-1");
     buildInverseMassMatrices(setDofs, invMassMatrix);
+    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem M^-1");
 
     //************************************************************
     //Building L
     //************************************************************
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem L");
     DofToMatrix LMatrices;
     //Init matrices to the good size
     for (SetDof::iterator it=setDofs.begin(); it!=setDofs.end(); ++it)
@@ -304,14 +312,18 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
             LMatrices.erase(itCurrent);
         }
     }
+    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem L");
 
     //************************************************************
     // Building W=L0.M0^-1.L0^T + L1.M1^-1.L1^T + ... and M^-1.L^T
     //************************************************************
     //Store the matrix M^-1.L^T for each dof in order to apply the modification of the state
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem W");
     SparseMatrixEigen WEi((int)numConstraint,(int)numConstraint);
     buildLeftMatrix(invMassMatrix, LMatrices,WEi, invMass_Ltrans);
+    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem W");
 
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
     //Convert the Sparse Matrix AEi into a Dense Matrix-> faster access to elements, and possilibity to use a direct LU solution
     W=MatrixEigen::Zero((int)numConstraint, (int)numConstraint);
 
@@ -321,6 +333,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
             W(it.row(),it.col()) = it.value();
         }
 
+    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SystemCreation");
 #endif
@@ -332,7 +345,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
 bool LMConstraintSolver::solveSystem(double /*dt*/, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
-    sofa::simulation::Visitor::printNode("SystemSolution");
+    sofa::simulation::Visitor::printNode("SystemConstraintSolution");
 #endif
 
     //************************************************************
@@ -353,7 +366,7 @@ bool LMConstraintSolver::solveSystem(double /*dt*/, VecId id, core::behavior::Ba
     bool solutionFound=solveConstraintSystemUsingGaussSeidel(id, order, LMConstraints,
             W, c, Lambda);
 #ifdef SOFA_DUMP_VISITOR_INFO
-    sofa::simulation::Visitor::printCloseNode("SystemSolution");
+    sofa::simulation::Visitor::printCloseNode("SystemConstraintSolution");
 #endif
     return solutionFound;
 }
@@ -628,64 +641,88 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
 
     VectorEigen LambdaPrevious=Lambda;
 
-    //-- Initialization of X, solution of the system
-    bool continueIteration=true;
-    bool correctionDone=true;
-    unsigned int iteration=0;
-
     //Store the invalid block of the W matrix
-    helper::set< int > emptyBlock;
+    std::set< int > emptyBlock;
+    helper::vector< std::pair<MatrixEigen,VectorEigen> > constraintToBlock;
+    helper::vector< MatrixEigen> constraintInvWBlock;
 
 
-    for (; iteration < numIterations.getValue() && continueIteration && correctionDone; ++iteration)
+    //Preparation Step:
     {
-        unsigned int idxConstraint=0;
-        VectorEigen LambdaPreviousIteration;
-        continueIteration=false;
-        correctionDone=false;
-
         //Iterate on all the Constraint components
+        unsigned int idxConstraint=0;
         for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
         {
-            BaseLMConstraint *constraint=LMConstraints[componentConstraint];
+            const BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
             const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess)
             {
-                //Invalid constraints: due to projective constraints, or constraint expressed for Obstacle objects: we just ignore them
-                if (emptyBlock.find(idxConstraint) != emptyBlock.end()) continue;
+                numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
 
+                const MatrixEigen &wConstraint=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
+                if (wConstraint.diagonal().isZero(1e-15)) emptyBlock.insert(idxConstraint);
+                constraintInvWBlock.push_back(wConstraint.marked<Eigen::SelfAdjoint>().inverse());
+
+                const VectorEigen &cb=c.block(idxConstraint         , 0,
+                        numConstraintToProcess, 1);
+                const MatrixEigen &wb=W.block(idxConstraint         , 0,
+                        numConstraintToProcess, W.cols());
+                constraintToBlock.push_back(std::make_pair(wb,cb));
+            }
+        }
+    }
+    //-- Initialization of X, solution of the system
+    bool continueIteration=true;
+    bool correctionDone=true;
+    unsigned int iteration=0;
+
+    const unsigned int numIterationsGS=numIterations.getValue();
+    const unsigned int numLMConstraintComponents=LMConstraints.size();
+
+    for (; iteration < numIterationsGS && continueIteration && correctionDone; ++iteration)
+    {
+        unsigned int idxConstraint=0;
+        VectorEigen LambdaPreviousIteration;
+        continueIteration=false;
+        correctionDone=false;
+        unsigned int idxBlocks=0;
+        //Iterate on all the Constraint components
+
+        for (unsigned int componentConstraint=0; componentConstraint<numLMConstraintComponents; ++componentConstraint)
+        {
+            BaseLMConstraint *constraint=LMConstraints[componentConstraint];
+            //Get the vector containing all the constraint stored in one component
+            const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+
+            unsigned int numConstraintToProcess=0;
+            for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess, ++idxBlocks)
+            {
                 //-------------------------------------
                 //Initialize the variables, and store X^(k-1) in previousIteration
                 numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
 
-                const MatrixEigen &Wblock=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
-                if (Wblock.diagonal().isZero(1e-15))
-                {
-                    emptyBlock.insert(idxConstraint);
-                    continue;
-                }
+                //Invalid constraints: due to projective constraints, or constraint expressed for Obstacle objects: we just ignore them
+                if (emptyBlock.find(idxConstraint) != emptyBlock.end()) continue;
 
-                //Save previous iteration
-                if ((int) idxConstraint >= Lambda.rows())
-                {
-                    serr << "Problem with numerotation of constraints: empty group maybe?" << sendl;
-                    continue;
-                }
+
                 LambdaPreviousIteration = Lambda.block(idxConstraint,0,numConstraintToProcess,1);
-
                 //Set to Zero sigma for the current set of constraints
                 Lambda.block(idxConstraint,0,numConstraintToProcess,1).setZero();
 
-                //Compute Sigma
-                VectorEigen sigma = c.block(idxConstraint         , 0,
-                        numConstraintToProcess, 1) -
-                        W.block(idxConstraint         , 0,
-                                numConstraintToProcess, numConstraint) * Lambda;
 
-                constraint->LagrangeMultiplierEvaluation(Wblock.data(),sigma.data(), Lambda.data()+idxConstraint,
+                const MatrixEigen &invWblock=constraintInvWBlock[idxBlocks];
+                std::pair<const MatrixEigen&,const VectorEigen&> blocks=constraintToBlock[idxBlocks];
+                const VectorEigen &cb=blocks.second;
+                const MatrixEigen &wb=blocks.first;
+
+                //Compute Sigma
+                const VectorEigen &sigma = cb - wb * Lambda;
+
+                VectorEigen newLambda=invWblock.marked<Eigen::SelfAdjoint>()*sigma;
+                constraint->LagrangeMultiplierEvaluation(invWblock.data(),sigma.data(), newLambda.data(),
                         constraintOrder[constraintEntry]);
 
                 //****************************************************************
@@ -696,10 +733,10 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                         sout <<"["<< iteration << "/" << numIterations.getValue() <<"] ###Deactivated###" << (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum()  << " for system n°" << idxConstraint << "/" << W.cols() << " of " << numConstraintToProcess << " equations "
                                 << " between " << constraint->getSimulatedMechModel1()->getName() << " and " << constraint->getSimulatedMechModel2()->getName() << ""<<sendl;
                     correctionDone |=    ( (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum() != 0);
-                    continue;
                 }
                 else
                 {
+                    Lambda.block(idxConstraint,0,numConstraintToProcess,1)=newLambda;
                     if (f_printLog.getValue())
                         sout <<"["<< iteration << "/" << numIterations.getValue() <<"] " << (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum()  << " for system n°" << idxConstraint << "/" << W.cols() << " of " << numConstraintToProcess << " equations "
                                 << " between " << constraint->getSimulatedMechModel1()->getName() << " and " << constraint->getSimulatedMechModel2()->getName() << ""<<sendl;
@@ -719,9 +756,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
             Lambda -= LambdaPrevious;
             computeKineticEnergy(id);
             Lambda = LambdaSave;
+            LambdaPrevious=Lambda;
         }
 
-        LambdaPrevious=Lambda;
 
         const SReal residual=(c-W*Lambda).norm()*invNormC;
         vError.push_back( residual );

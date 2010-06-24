@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
-#include <sofa/component/linearsolver/LagrangeMultiplierComputation.h>
 #include <sofa/simulation/common/Node.h>
 namespace sofa
 {
@@ -73,7 +72,6 @@ public:
     typedef typename core::behavior::BaseMechanicalState::VecId VecId;
     typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
-    typedef linearsolver::LagrangeMultiplierComputation::VectorEigen  VectorEigen;
 protected:
     DistanceLMConstraintInternalData<DataTypes> data;
     friend class DistanceLMConstraintInternalData<DataTypes>;
@@ -100,14 +98,6 @@ public:
     void writeConstraintEquations(VecId id, ConstOrder order);
 
 
-    void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
-            core::behavior::BaseLMConstraint::ConstraintGroup * group)
-    {
-        const unsigned int numConstraintToProcess=group->getNumConstraint();
-        const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,numConstraintToProcess);
-        Eigen::Map<VectorEigen> LambdaInit(LambdaInitptr, numConstraintToProcess);
-        LambdaInit = Lambda;
-    }
 
     virtual void draw();
 
