@@ -28,7 +28,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
-#include <sofa/component/linearsolver/LagrangeMultiplierComputation.h>
 #include <sofa/simulation/common/Node.h>
 
 
@@ -72,7 +71,6 @@ public:
 
     typedef typename core::behavior::BaseMechanicalState::VecId VecId;
     typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
-    typedef linearsolver::LagrangeMultiplierComputation::VectorEigen  VectorEigen;
 
 protected:
     FixedLMConstraintInternalData<DataTypes> data;
@@ -106,16 +104,6 @@ public:
     // -- LMConstraint interface
     void buildConstraintMatrix(unsigned int &constraintId, core::VecId position);
     void writeConstraintEquations(VecId id, ConstOrder order);
-
-
-    void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
-            core::behavior::BaseLMConstraint::ConstraintGroup * group)
-    {
-        const unsigned int numConstraintToProcess=group->getNumConstraint();
-        const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,numConstraintToProcess);
-        Eigen::Map<VectorEigen> LambdaInit(LambdaInitptr, numConstraintToProcess);
-        LambdaInit = Lambda;
-    }
 
 
     std::string getTemplateName() const
