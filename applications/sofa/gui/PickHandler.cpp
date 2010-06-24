@@ -352,7 +352,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding()
 
 }
 
-//WARNING: do not use this method with Ogre
 component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const defaulttype::Vector3& origin,
         const defaulttype::Vector3& direction,
         double maxLength)
@@ -379,6 +378,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
     return result;
 }
 
+//WARNING: do not use this method with Ogre
 component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(const defaulttype::Vector3& origin,
         const defaulttype::Vector3& direction)
 {
