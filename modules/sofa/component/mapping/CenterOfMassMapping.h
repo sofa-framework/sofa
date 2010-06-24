@@ -55,8 +55,10 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+    typedef typename Out::DataTypes OutDataTypes;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
+    typedef typename In::DataTypes InDataTypes;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename OutCoord::value_type Real;

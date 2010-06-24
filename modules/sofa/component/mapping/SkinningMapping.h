@@ -96,7 +96,7 @@ typedef enum
 
 template <class BasicMapping>
 #ifdef SOFA_DEV
-class SkinningMapping : public BasicMapping, public DualQuatStorage<BasicMapping::Out::Coord::static_size, typename BasicMapping::Out::Coord::value_type>
+class SkinningMapping : public BasicMapping, public DualQuatStorage<BasicMapping::Out::DataTypes::spatial_dimensions, typename BasicMapping::Out::DataTypes::Real>
 #else
 class SkinningMapping : public BasicMapping
 #endif
@@ -106,6 +106,7 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+    typedef typename Out::DataTypes DataTypes;
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
@@ -116,9 +117,9 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
-    typedef typename InCoord::value_type InReal;
-    typedef typename Coord::value_type Real;
-    enum { N=Coord::static_size };
+    typedef typename In::Real InReal;
+    typedef typename Out::Real Real;
+    enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
     //typedef defaulttype::Mat<3,1,Real> Mat31;
     typedef defaulttype::Mat<3,3,Real> Mat33;

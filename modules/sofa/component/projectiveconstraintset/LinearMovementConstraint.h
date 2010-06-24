@@ -54,12 +54,12 @@ using namespace sofa::defaulttype;
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
 */
-template <class DataTypes>
-class LinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+template <class TDataTypes>
+class LinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LinearMovementConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
-
+    SOFA_CLASS(SOFA_TEMPLATE(LinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;

@@ -455,7 +455,7 @@ struct TextTypeInfo
     }
 };
 
-template<class TDataType>
+template<class TDataType, int static_size = TDataType::static_size>
 struct FixedArrayTypeInfo
 {
     typedef TDataType DataType;
@@ -474,7 +474,7 @@ struct FixedArrayTypeInfo
     enum { Text            = BaseTypeInfo::Text            }; ///< 1 if this type uses text values
     enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write
 
-    enum { Size = DataType::static_size * BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = static_size * BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
     static unsigned int size()
     {
         return DataType::size() * BaseTypeInfo::size();

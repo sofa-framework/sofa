@@ -68,7 +68,7 @@ template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<V
 template <> template <class DataDeriv>
 void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(DataDeriv& res)
 {
-    const int N=Coord::static_size;
+    const int N=Coord::spatial_dimensions;
     Vec<N,Real> dir=direction.getValue().getCenter();
 
     for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
@@ -80,7 +80,7 @@ void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(DataDeriv& res)
 template <>
 bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord p)
 {
-    const int N=Coord::static_size;
+    const int N=Coord::spatial_dimensions;
     Vec<N,Real> pos = p.getCenter();
     Real d=pos*direction.getValue().getCenter();
     if ((d>dmin.getValue())&& (d<dmax.getValue()))
@@ -94,7 +94,7 @@ bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord p)
 template <> template <class DataDeriv>
 void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(DataDeriv& res)
 {
-    const int N=Coord::static_size;
+    const int N=Coord::spatial_dimensions;
     Vec<N,Real> dir=direction.getValue().getCenter();
 
     for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
@@ -106,7 +106,7 @@ void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(DataDeriv& res)
 template <>
 bool FixedPlaneConstraint<Rigid3fTypes>::isPointInPlane(Coord p)
 {
-    const int N=Coord::static_size;
+    const int N=Coord::spatial_dimensions;
     Vec<N,Real> pos = p.getCenter();
     Real d=pos*direction.getValue().getCenter();
     if ((d>dmin.getValue())&& (d<dmax.getValue()))

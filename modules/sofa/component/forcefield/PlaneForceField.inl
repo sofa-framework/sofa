@@ -110,11 +110,11 @@ void PlaneForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
         unsigned int p = this->contacts[i];
-        for (int l=0; l<Deriv::static_size; ++l)
-            for (int c=0; c<Deriv::static_size; ++c)
+        for (int l=0; l<Deriv::total_size; ++l)
+            for (int c=0; c<Deriv::total_size; ++c)
             {
                 SReal coef = normal[l] * fact * normal[c];
-                mat->add(offset + p*Deriv::static_size + l, offset + p*Deriv::static_size + c, coef);
+                mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
             }
     }
 }
@@ -237,7 +237,6 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
 
 
     defaulttype::Vector3 point1,point2;
-    unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
@@ -245,11 +244,8 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
         p2 += planeNormal.getValue()*(-d);
         if (d<0)
         {
-            for (unsigned int s=0; s<sizePoints; ++s)
-            {
-                point1[s] = p1[i][s];
-                point2[s] = p2[s];
-            }
+            point1 = DataTypes::getCPos(p1[i]);
+            point2 = DataTypes::getCPos(p2);
         }
         pointsLine.push_back(point1);
         pointsLine.push_back(point2);

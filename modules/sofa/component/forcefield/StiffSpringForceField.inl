@@ -167,8 +167,8 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatri
     {
         const Spring& s = ss[e];
 
-        unsigned p1 = offset+N*s.m1;
-        unsigned p2 = offset+N*s.m2;
+        unsigned p1 = offset+Deriv::total_size*s.m1;
+        unsigned p2 = offset+Deriv::total_size*s.m2;
 
         for(int i=0; i<N; i++)
             for (int j=0; j<N; j++)

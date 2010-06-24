@@ -65,7 +65,6 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
-    enum { N=Coord::static_size };
 
     struct Spring
     {

@@ -77,7 +77,7 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MState;
 
-    enum { N = Coord::static_size };
+    enum { N = DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N, N, Real> Mat;
     typedef Vec<N, Real> VecN;
     //typedef defaulttype::Mat<3,1,Real> Mat31;

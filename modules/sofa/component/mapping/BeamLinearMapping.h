@@ -47,15 +47,18 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+    typedef typename Out::DataTypes OutDataTypes;
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
     typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
     typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
+
+    typedef typename In::DataTypes InDataTypes;
     typedef typename In::Deriv InDeriv;
     typedef typename Coord::value_type Real;
-    enum { N=Coord::static_size };
+    enum { N=OutDataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:

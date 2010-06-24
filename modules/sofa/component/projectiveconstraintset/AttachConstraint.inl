@@ -297,36 +297,36 @@ template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid3dTypes>::DerivConstrainedSize(bool freeRotations)
 {
     if (freeRotations)
-        return Deriv::static_size;
+        return Deriv::spatial_dimensions;
     else
-        return Deriv::size();
+        return Deriv::total_size;
 }
 
 template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid3fTypes>::DerivConstrainedSize(bool freeRotations)
 {
     if (freeRotations)
-        return Deriv::static_size;
+        return Deriv::spatial_dimensions;
     else
-        return Deriv::size();
+        return Deriv::total_size;
 }
 
 template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid2dTypes>::DerivConstrainedSize(bool freeRotations)
 {
     if (freeRotations)
-        return Deriv::static_size;
+        return Deriv::spatial_dimensions;
     else
-        return Deriv::size();
+        return Deriv::total_size;
 }
 
 template<>
 inline unsigned int AttachConstraint<defaulttype::Rigid2fTypes>::DerivConstrainedSize(bool freeRotations)
 {
     if (freeRotations)
-        return Deriv::static_size;
+        return Deriv::spatial_dimensions;
     else
-        return Deriv::size();
+        return Deriv::total_size;
 }
 
 #if 0

@@ -67,7 +67,7 @@ public:
     typedef typename DataTypes2::Deriv Deriv2;
     typedef typename Coord2::value_type Real2;
 
-    enum { N=Coord1::static_size };
+    enum { N=DataTypes1::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real1> Mat;
 protected:
     class Contact

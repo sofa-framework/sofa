@@ -71,6 +71,10 @@ public:
     typedef OpenCLVector<Deriv> VecDeriv;
     typedef OpenCLVector<Real> VecReal;
 
+    enum { spatial_dimensions = Coord::spatial_dimensions };
+    enum { coord_total_size = Coord::total_size };
+    enum { deriv_total_size = Deriv::total_size };
+
     typedef Coord CPos;
     static const CPos& getCPos(const Coord& c) { return c; }
     static void setCPos(Coord& c, const CPos& v) { c = v; }
@@ -378,6 +382,9 @@ public:
     typedef OpenCLVector<Deriv> VecDeriv;
     typedef OpenCLVector<Real> VecReal;
 
+    enum { spatial_dimensions = Coord::spatial_dimensions };
+    enum { coord_total_size = Coord::total_size };
+    enum { deriv_total_size = Deriv::total_size };
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;

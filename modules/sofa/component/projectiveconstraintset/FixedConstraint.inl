@@ -281,12 +281,11 @@ void FixedConstraint<DataTypes>::draw()
     {
         std::vector< Vector3 > points;
         Vector3 point;
-        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
         //serr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
-        if( f_fixAll.getValue()==true )
+        if( f_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
-                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
+                point = DataTypes::getCPos(x[i]);
                 points.push_back(point);
             }
         else
@@ -294,7 +293,7 @@ void FixedConstraint<DataTypes>::draw()
                     it != indices.end();
                     ++it)
             {
-                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+                point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
         simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
@@ -303,12 +302,11 @@ void FixedConstraint<DataTypes>::draw()
     {
         std::vector< Vector3 > points;
         Vector3 point;
-        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
         glColor4f (1.0f,0.35f,0.35f,1.0f);
         if( f_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
-                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
+                point = DataTypes::getCPos(x[i]);
                 points.push_back(point);
             }
         else
@@ -316,13 +314,11 @@ void FixedConstraint<DataTypes>::draw()
                     it != indices.end();
                     ++it)
             {
-                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+                point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
         simulation::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
-
     }
-
 }
 
 // Specialization for rigids

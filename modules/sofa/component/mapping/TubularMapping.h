@@ -48,6 +48,7 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+    typedef typename Out::DataTypes DataTypes;
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
@@ -56,7 +57,7 @@ public:
 
     typedef typename In::Deriv InDeriv;
     typedef typename Coord::value_type Real;
-    enum { M=Coord::static_size };
+    enum { M=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<M,M,Real> Mat;
 
     typedef defaulttype::Vec<M,Real> Vec;

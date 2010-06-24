@@ -340,7 +340,7 @@ void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    const helper::vector<Spring>& springArrayData = springArray.getValue();
 
     if(useTopology)
     {
@@ -369,7 +369,6 @@ void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, 
             df2[e[1]]-=dforce;
         }
     }
-    springArray.endEdit();
 }
 
 template<class DataTypes>
