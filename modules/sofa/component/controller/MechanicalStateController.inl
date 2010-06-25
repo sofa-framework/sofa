@@ -62,17 +62,16 @@ template <class DataTypes>
 MechanicalStateController<DataTypes>::MechanicalStateController()
     : index( initData(&index, (unsigned int)0, "index", "Index of the controlled DOF") )
     , onlyTranslation( initData(&onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
-    , mainDirection(sofa::defaulttype::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0))
-    , mainDirectionPtr( initDataPtr(&mainDirectionPtr, &mainDirection, "mainDirection", "Main direction and orientation of the controlled DOF") )
+    , mainDirection( initData(&mainDirection, sofa::defaulttype::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
 {
-    mainDirection.normalize();
+    mainDirection.beginEdit()->normalize();
+    mainDirection.endEdit();
 }
 
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::init()
 {
     using core::behavior::MechanicalState;
-    mainDirectionPtr.beginEdit();
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
         serr << "MechanicalStateController has no binding MechanicalState" << sendl;
@@ -83,10 +82,8 @@ void MechanicalStateController<DataTypes>::init()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::applyController()
 {
-
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
-
 
     if(omni)
     {
@@ -127,7 +124,7 @@ void MechanicalStateController<DataTypes>::applyController()
             else
             {
                 sofa::helper::Quater<Real>& quatrot = (*mState->getX())[i].getOrientation();
-                sofa::defaulttype::Vec<3,Real> vectrans(dy * mainDirection[0] * (Real)0.05, dy * mainDirection[1] * (Real)0.05, dy * mainDirection[2] * (Real)0.05);
+                sofa::defaulttype::Vec<3,Real> vectrans(dy * mainDirection.getValue()[0] * (Real)0.05, dy * mainDirection.getValue()[1] * (Real)0.05, dy * mainDirection.getValue()[2] * (Real)0.05);
                 vectrans = quatrot.rotate(vectrans);
 
                 (*mState->getX())[i].getCenter() += vectrans;
@@ -247,7 +244,7 @@ void MechanicalStateController<DataTypes>::setIndex(const unsigned int _index)
 template <class DataTypes>
 const sofa::defaulttype::Vec<3, typename MechanicalStateController<DataTypes>::Real > &MechanicalStateController<DataTypes>::getMainDirection() const
 {
-    return mainDirection;
+    return mainDirection.getValue();
 }
 
 
@@ -255,7 +252,7 @@ const sofa::defaulttype::Vec<3, typename MechanicalStateController<DataTypes>::R
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::setMainDirection(const sofa::defaulttype::Vec<3,Real> _mainDirection)
 {
-    mainDirection = _mainDirection;
+    mainDirection.setValue(_mainDirection);
 }
 
 

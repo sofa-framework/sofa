@@ -39,7 +39,7 @@ namespace constraintset
 template<>
 SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw()
 {
-    if (!getContext()->getShowBehaviorModels() || !_rotations) return;
+    if (!getContext()->getShowBehaviorModels() || !m_rotations.getValue()) return;
 
     // we draw the rotations associated to each node //
 
@@ -119,7 +119,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
             Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Quat q;
-            if (_restRotations)
+            if (m_restRotations.getValue())
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
             else
                 q = x[localRowNodeIdx].getOrientation();
@@ -162,7 +162,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
         // on passe les deplacements du repere local (au repos) au repere global
         Deriv temp ;
         Quat q;
-        if (_restRotations)
+        if (m_restRotations.getValue())
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else
             q = x[j].getOrientation();
@@ -281,7 +281,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
             Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Quat q;
-            if (_restRotations)
+            if (m_restRotations)
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
             else
                 q = x[localRowNodeIdx].getOrientation();
@@ -373,7 +373,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
         // on passe les deplacements du repere local (au repos) au repere global
         Deriv temp ;
         Quat q;
-        if (_restRotations)
+        if (m_restRotations)
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else
             q = x[j].getOrientation();

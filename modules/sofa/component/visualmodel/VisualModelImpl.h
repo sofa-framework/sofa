@@ -142,12 +142,11 @@ protected:
 
     bool useTopology; ///< True if list of facets should be taken from the attached topology
     int lastMeshRev; ///< Time stamps from the last time the mesh was updated from the topology
-    bool useNormals; ///< True if normals should be read from file
     bool castShadow; ///< True if object cast shadows
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    DataPtr<bool> f_useNormals; ///< True if normals should be read from file
+    Data<bool> useNormals; ///< True if normals should be read from file
     Data<bool> updateNormals; ///< True if normals should be updated at each iteration
     Data<bool> computeTangents_; ///< True if tangents should be computed at startup
     Data<bool> updateTangents; ///< True if tangents should be updated at each iteration
@@ -265,8 +264,8 @@ public:
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
 
-    void setUseNormals(bool val) { useNormals = val;  }
-    bool getUseNormals() const   { return useNormals; }
+    void setUseNormals(bool val) { useNormals.setValue(val);  }
+    bool getUseNormals() const   { return useNormals.getValue(); }
 
     void setCastShadow(bool val) { castShadow = val;  }
     bool getCastShadow() const   { return castShadow; }

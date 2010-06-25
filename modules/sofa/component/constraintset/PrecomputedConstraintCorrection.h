@@ -71,10 +71,9 @@ public:
     typedef typename Coord::value_type Real;
     typedef MatNoInit<3, 3, Real> Transformation;
 
-    bool   _rotations;
-    DataPtr<bool> f_rotations;
-    bool   _restRotations;
-    DataPtr<bool> f_restRotations;
+    Data<bool> m_rotations;
+    Data<bool> m_restRotations;
+
     Data<bool> recompute;
     Data<std::string> filePrefix;
     Data<double> debugViewFrameScale;
