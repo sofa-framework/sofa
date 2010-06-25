@@ -103,7 +103,7 @@ public:
     /// Constructor
     SharedVector(const helper::vector<T, Alloc>& x): helper::vector<T,Alloc>(x),index(NULL),sharedData(new Shared<vector<T,Alloc> >(this)) {}
     /// Constructor
-    SharedVector(const SharedVector<T,Alloc> &cp): helper::vector<T,Alloc>(cp) {}
+    SharedVector(const SharedVector<T,Alloc> &cp): helper::vector<T,Alloc>(cp),index(NULL),sharedData(new Shared<vector<T,Alloc> >(this)) {}
     SharedVector<T,Alloc> &operator=(const SharedVector<T,Alloc> &cp)
     {
         helper::vector<T,Alloc>::operator=(cp);
