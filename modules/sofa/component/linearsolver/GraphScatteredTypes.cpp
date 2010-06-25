@@ -78,6 +78,43 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
     parent->projectResponse(res);     // q is projected to the constrained space
 }
 
+#ifdef SOFA_SMP
+void GraphScatteredMatrix::apply(ParallelGraphScatteredVector& res, ParallelGraphScatteredVector& x)
+{
+    // matrix-vector product
+#if 0
+    // may not have their SMP version
+    // new more powerful visitors
+    parent->propagateDxAndResetDf(x,res);
+    parent->addMBKdx(res,mFact,bFact,kFact, false); // df = (m M + b B + k K) dx
+
+#else
+    parent->propagateDx(x);          // dx = p
+    parent->computeDf(res);            // q = K p
+
+    if (kFact != 1.0)
+        res *= kFact; // q = k K p
+
+    // apply global Rayleigh damping
+    if (mFact == 1.0)
+    {
+        parent->addMdx(res); // no need to propagate p as dx again
+    }
+    else if (mFact != 0.0)
+    {
+        parent->addMdx(res,simulation::SolverImpl::VecId(),mFact); // no need to propagate p as dx again
+    }
+    // q = (m M + k K) p
+
+    /// @TODO: non-rayleigh damping (i.e. the B factor)
+#endif
+
+    // filter the product to take the constraints into account
+    //
+    parent->projectResponse(res);     // q is projected to the constrained space
+}
+#endif
+
 } // namespace linearsolver
 
 } // namespace component

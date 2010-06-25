@@ -39,7 +39,7 @@ namespace linearsolver
 SOFA_DECL_CLASS(ParallelCGLinearSolver)
 
 int ParallelCGLinearSolverClass = sofa::core::RegisterObject("Parallel linear system solver using the conjugate gradient iterative algorithm")
-        .add< ParallelCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >(true)
+        .add< ParallelCGLinearSolver<GraphScatteredMatrix, ParallelGraphScatteredVector> >(true)
         .addAlias("ParallelCGSolver")
         ;
 
