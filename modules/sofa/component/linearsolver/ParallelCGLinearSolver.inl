@@ -167,194 +167,15 @@ struct DivBeta
 
 
 template<class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix, TVector>::cgLoop( MultiVector &x, MultiVector &r,MultiVector& p,MultiVector &q,const bool verbose)
-{
-
-
-
-    r.dot(*rhoSh,r);
-
-    p = r; //z;
-
-
-    if ( verbose )
-    {
-        p.print();
-    }
-
-//     // matrix-vector product
-    propagateDx(p);          // dx = p
-
-    computeDf(q);            // q = df/dx p
-    //q.print();
-//     if ( verbose )
-//     {
-//                 q.print( );
-//     }
-// //    q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
-// //    if ( verbose )
-// //    {
-// //        //       q.print();
-// //
-// //    }
-//
-//     // // apply global Rayleigh damping
-//     // if (f_rayleighMass.getValue()==0.0)
-//     // {
-//     //     addMdx(q); // no need to propagate p as dx again
-//     // }
-//     // else
-//     // {
-//     //     addMdx(q,VecId(),(1+h*f_rayleighMass.getValue())); // no need to propagate p as dx again
-//     // }
-//     if ( verbose )
-//     {
-//
-//                 q.print();
-//
-//     }
-//
-//     // filter the product to take the constraints into account
-//     //
-//     projectResponse(q);     // q is projected to the constrained space
-//     if ( verbose )
-//     {
-//             q.print();
-//
-//
-//     }
-
-
-    p.dot(*denSh,q);
-    // OperationsIteration1 opIt1;
-    BaseObject::Task<OperationsIteration1<TMatrix,TVector> >(**alphaSh,**rhoSh,**denSh,**rho_1Sh,f_smallDenominatorThreshold.getValue(),**breakCondition,*normbSh);
-
-    x.peq(p,*alphaSh);                 // x = x + alpha p
-
-
-    r.meq(q,*alphaSh);                // r = r - alpha q
-
-    if ( verbose )
-    {
-
-        BaseObject::Task<Print>(**denSh);
-        BaseObject::Task<Print>(**denSh);
-        BaseObject::Task<Print>(**alphaSh);
-
-        x.print();
-        r.print();
-
-    }
-
-//END OF THE FIRST ITERATION
-    Iterative::Loop::BeginLoop(f_maxIter.getValue()-1,breakCondition);
-
-
-    BaseObject::Task<ResetDouble>(**rhoSh);
-    r.dot(*rhoSh,r);
-
-    if ( verbose )
-    {
-        BaseObject::Task<Print>(**rhoSh/*,"rho=r.dot(r):"*/);
-
-    }
-
-
-
-    BaseObject::Task<DivBeta>(**betaSh,**rhoSh,**rho_1Sh,**breakCondition,*normbSh,f_tolerance.getValue());
-    Iterative::Loop::ConditionalBreak();
-    //p += r; //z;
-
-    if ( verbose )
-    {
-        BaseObject::Task<Print>(**betaSh,"beta:");
-        p.print();
-
-    }
-
-    v_op(p,r,p,*betaSh); // p = p*beta + r
-
-
-
-    if ( verbose )
-    {
-        p.print();
-
-    }
-
-    // matrix-vector product
-    propagateDx(p);          // dx = p
-    computeDf(q);            // q = df/dx p
-
-    if ( verbose )
-    {
-        q.print();
-
-    }
-
-    // q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
-
-    // if ( verbose )
-    // {
-    //      q.print();
-    // }
-
-    // // apply global Rayleigh damping
-    // if (f_rayleighMass.getValue()==0.0)
-    // {
-    //     addMdx(q); // no need to propagate p as dx again
-    // }
-    // else
-    // {
-    //     addMdx(q,VecId(),(1+h*f_rayleighMass.getValue())); // no need to propagate p as dx again
-    // }
-
-    if ( verbose )
-    {
-        q.print();
-
-    }
-
-    // filter the product to take the constraints into account
-    //
-    projectResponse(q);     // q is projected to the constrained space
-    if ( verbose )
-    {
-
-        q.print();
-    }
-
-    p.dot(*denSh,q);
-
-    BaseObject::Task<DivAlpha>(**alphaSh,**rhoSh,**denSh,**rho_1Sh,f_smallDenominatorThreshold.getValue(),**breakCondition);
-    Iterative::Loop::ConditionalBreak();
-
-    x.peq(p,*alphaSh);                 // x = x + alpha p
-    r.meq(q,*alphaSh);                // r = r - alpha q
-
-
-    if ( verbose )
-    {
-        BaseObject::Task<Print>(**denSh/*,"den:"*/);
-        BaseObject::Task<Print>(**alphaSh/*,"alpha:"*/);
-
-        x.print();
-        r.print();
-    }
-    Iterative::Loop::EndLoop();
-
-}// ParallelCGLinearSolver::endLoop
-
-template<class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& /*M*/, Vector& x, Vector& b)
+void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 {
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
     MultiVector f(this, VecId::force());
-    MultiVector b2(this, VecId::V_DERIV);
+//    MultiVector b2(this, VecId::V_DERIV);
     MultiVector p(this, VecId::V_DERIV);
     MultiVector q(this, VecId::V_DERIV);
-    MultiVector x2(this, VecId::V_DERIV);
+//    MultiVector x2(this, VecId::V_DERIV);
 
     // -- solve the system using a conjugate gradient solution
     OPERATION_BEGIN("Reset rho");
@@ -370,7 +191,7 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& /*M*/, Vector& x, Ve
 
     v_clear( x );
 
-//    MultiVector& r.eq(b); // b is never used after this point
+    MultiVector& r = b;
 
     if ( verbose )
     {
@@ -384,7 +205,108 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& /*M*/, Vector& x, Ve
 
     OPERATION_BEGIN("CG Loop");
 
-    cgLoop( x2, b2, p, q, verbose);
+// BEGIN OF FIRST ITERATION
+    r.dot(*rhoSh,r);
+
+    p = r; //z;
+
+    if ( verbose )
+    {
+        p.print();
+    }
+
+    q=M*p;
+
+    p.dot(*denSh,q);
+    BaseObject::Task<OperationsIteration1<TMatrix,TVector> >
+    (**alphaSh,**rhoSh,**denSh,**rho_1Sh,f_smallDenominatorThreshold.getValue(),
+     **breakCondition,*normbSh);
+
+    x.peq(p,*alphaSh);                 // x = x + alpha p
+    r.meq(q,*alphaSh);                // r = r - alpha q
+
+    if ( verbose )
+    {
+
+        BaseObject::Task<Print>(**denSh, "den ");
+        BaseObject::Task<Print>(**alphaSh, "alpha ");
+
+        x.print();
+        r.print();
+
+    }
+
+//END OF THE FIRST ITERATION
+
+//BEGIN LOOP
+    Iterative::Loop::BeginLoop(f_maxIter.getValue()-1,breakCondition);
+
+
+    BaseObject::Task<ResetDouble>(**rhoSh);
+    r.dot(*rhoSh,r);
+
+    if ( verbose )
+    {
+        BaseObject::Task<Print>(**rhoSh,"rho=r.dot(r):");
+
+    }
+
+
+
+    BaseObject::Task<DivBeta>
+    (**betaSh,**rhoSh,**rho_1Sh,**breakCondition,*normbSh,f_tolerance.getValue());
+
+    Iterative::Loop::ConditionalBreak();
+    //p += r; //z;
+
+    if ( verbose )
+    {
+        BaseObject::Task<Print>(**betaSh,"beta:");
+        p.print();
+    }
+
+    v_op(p,r,p,*betaSh); // p = p*beta + r
+
+    // matrix-vector product
+//  	  propagateDx(p);          // dx = p
+//  	  computeDf(q);            // q = df/dx p
+    q=M*p;
+
+    if ( verbose )
+    {
+        q.print();
+
+    }
+
+//  	  projectResponse(q);     // q is projected to the constrained space
+    if ( verbose )
+    {
+
+        q.print();
+    }
+
+    p.dot(*denSh,q); // den = p.dot(q)
+
+    BaseObject::Task<DivAlpha>
+    (**alphaSh,**rhoSh,**denSh,**rho_1Sh,
+     f_smallDenominatorThreshold.getValue(),**breakCondition); // alpha = rho/den
+
+    Iterative::Loop::ConditionalBreak();
+
+    x.peq(p,*alphaSh);                 // x = x + alpha p
+    r.meq(q,*alphaSh);                // r = r - alpha q
+
+
+    if ( verbose )
+    {
+        BaseObject::Task<Print>(**denSh,"den:");
+        BaseObject::Task<Print>(**alphaSh,"alpha:");
+
+        x.print();
+        r.print();
+    }
+
+    Iterative::Loop::EndLoop();
 
 
     if( printLog )

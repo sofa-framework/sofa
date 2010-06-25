@@ -50,10 +50,11 @@ class SOFA_COMPONENT_LINEARSOLVER_API ParallelCGLinearSolver : public sofa::comp
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(ParallelCGLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
 
-    typedef sofa::core::behavior::ParallelMultiVector<ParallelCGLinearSolver> MultiVector;
+//		typedef sofa::core::behavior::ParallelMultiVector<ParallelCGLinearSolver> MultiVector;
     // typedef ParallelOdeSolverImpl::MultiVector MultiVector;
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef TVector MultiVector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
@@ -82,7 +83,7 @@ public:
 protected:
     Shared<double> *rhoSh,*rho_1Sh,*alphaSh,*betaSh,*denSh,normbSh;
     Shared<bool> *breakCondition;
-    void cgLoop( MultiVector &x, MultiVector &r,MultiVector& p,MultiVector &q,const bool verbose);
+//    void cgLoop( MultiVector &x, MultiVector &r,MultiVector& p,MultiVector &q,const bool verbose);
 };
 
 } // namespace linearsolver
