@@ -45,6 +45,7 @@ namespace component
 namespace constraintset
 {
 
+
 using core::behavior::BaseLMConstraint;
 class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
@@ -54,11 +55,65 @@ protected:
     typedef Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
     typedef Matrix<SReal, Eigen::Dynamic, 1>              VectorEigen;
     typedef Eigen::SparseMatrix<SReal,Eigen::RowMajor>    SparseMatrixEigen;
+    typedef Eigen::SparseVector<SReal,Eigen::RowMajor>    SparseVectorEigen;
 
     typedef helper::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, helper::set<unsigned int> > DofToMask;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
+
+
+
+
+
+
+
+    struct LMatrixManipulator
+    {
+        void init(const SparseMatrixEigen& L)
+        {
+            const unsigned int numConstraint=L.rows();
+            const unsigned int numDofs=L.cols();
+            LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
+            for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].startFill(0.3*numDofs);
+            for (int k=0; k<L.outerSize(); ++k)
+            {
+                for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
+                {
+                    const unsigned int row=it.row();
+                    const unsigned int col=it.col();
+                    const SReal value=it.value();
+                    LMatrix[row].fill(col)=value;
+                }
+            }
+
+            for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].endFill();
+        }
+
+        void buildLMatrix(const helper::vector<unsigned int> &lines, SparseMatrixEigen& matrix) const
+        {
+            matrix.startFill(LMatrix.size()*LMatrix.size());
+
+            for (unsigned int l=0; l<lines.size(); ++l)
+            {
+                const SparseVectorEigen& line=LMatrix[lines[l]];
+
+                for (SparseVectorEigen::InnerIterator it(line); it; ++it)
+                {
+                    matrix.fill(l,it.index())=it.value();
+                }
+            }
+            matrix.endFill();
+        }
+
+
+        helper::vector< SparseVectorEigen > LMatrix;
+    };
+
+
+
+
+
 public:
     SOFA_CLASS(LMConstraintSolver, sofa::core::behavior::ConstraintSolver);
     LMConstraintSolver();
@@ -84,6 +139,7 @@ public:
     mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphGSError;
     Data< bool > traceKineticEnergy;
     mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphKineticEnergy;
+
 
 protected:
     /// Explore the graph, looking for LMConstraints: each LMConstraint can tell if they need State Propagation in order to compute the right hand term of the system
@@ -149,7 +205,6 @@ protected:
     MatrixEigen W;
     VectorEigen c;
     VectorEigen Lambda;
-
 
     //Persitent datas
     DofToMatrix invMassMatrix;

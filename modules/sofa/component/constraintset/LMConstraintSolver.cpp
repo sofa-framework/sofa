@@ -311,8 +311,22 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
             setDofs.erase(const_cast<sofa::core::behavior::BaseMechanicalState*>(itCurrent->first));
             LMatrices.erase(itCurrent);
         }
+
+        //How to use the Matrix manipulator: here, creates a matrix with only the pair indices of the L Matrix
+//          LMatrixManipulator manip;
+        //Init the manipulator with the full matrix
+//          manip.init(matrix);
+
+        //Declare the new matrix
+//          SparseMatrixEigen newL(matrix.rows()/2,matrix.cols());
+        //Specify the desired indices
+//          helper::vector<unsigned int> rows;
+//          for (unsigned int i=0;i<matrix.rows()/2;++i) rows.push_back(2*i);
+        //Create the matrix
+//          manip.buildLMatrix(rows,newL);
     }
     sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem L");
+
 
     //************************************************************
     // Building W=L0.M0^-1.L0^T + L1.M1^-1.L1^T + ... and M^-1.L^T
@@ -722,7 +736,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                 const MatrixEigen &wb=blocks.first;
 
                 //Compute Sigma
-                const VectorEigen &sigma = cb - wb * Lambda;
+                VectorEigen sigma = cb; sigma -= (wb * Lambda).lazy();
 
                 VectorEigen newLambda=invWblock.marked<Eigen::SelfAdjoint>()*sigma;
                 constraint->LagrangeMultiplierEvaluation(Wblock.data(),sigma.data(), newLambda.data(),
