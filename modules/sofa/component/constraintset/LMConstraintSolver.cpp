@@ -714,7 +714,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
 
 
                 const MatrixEigen &invWblock=constraintInvWBlock[idxBlocks];
-                std::pair<const MatrixEigen&,const VectorEigen&> blocks=constraintToBlock[idxBlocks];
+                const std::pair<MatrixEigen, VectorEigen>& blocks=constraintToBlock[idxBlocks];
                 const VectorEigen &cb=blocks.second;
                 const MatrixEigen &wb=blocks.first;
 
