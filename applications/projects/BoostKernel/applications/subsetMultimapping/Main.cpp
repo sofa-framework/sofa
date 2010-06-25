@@ -44,7 +44,7 @@
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
 #include <sofa/simulation/bgl/BglSimulation.h>
-#include <sofa/component/visualModel/OglModel.h>
+#include <sofa/component/visualmodel/OglModel.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
