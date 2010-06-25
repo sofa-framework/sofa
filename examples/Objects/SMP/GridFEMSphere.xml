@@ -1,5 +1,6 @@
 <Node name="FEM" processor="0">
-	<ParallelCGImplicit rayleighStiffness="0.01"  iterations="25" threshold="0.00000001"  />
+	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<ParallelCGLinearSolver iterations="25" threshold="0.00000001"  />
 
   <MeshLoader name="sparse"  filename="file"/>
 	<Mesh />

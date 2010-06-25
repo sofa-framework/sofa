@@ -1,5 +1,6 @@
 <Node name="TorusSpring" processor="0">
-  <ParallelCGImplicitSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+	<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0" />
+  <ParallelCGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
 	<MeshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
 	<Mesh/>
 	<MechanicalObject  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
