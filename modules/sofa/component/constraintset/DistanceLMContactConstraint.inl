@@ -204,11 +204,10 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
 }
 
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
+void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const SReal* W, const SReal* c, SReal* Lambda,
         core::behavior::BaseLMConstraint::ConstraintGroup * group)
 {
     const int numConstraintToProcess = group->getNumConstraint();
-    Eigen::Map<VectorEigen> Lambda(LambdaInitptr, numConstraintToProcess);
 
     switch (group->getOrder())
     {
@@ -216,7 +215,7 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
     {
         Contact &out=*(this->constraintGroupToContact[group]);
 //                        //The force cannot be attractive!
-        if (Lambda(0) <= 0)
+        if (Lambda[0] <= 0)
         {
             group->setActive(false);
             out.contactForce=Deriv();
@@ -226,8 +225,8 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
 
         if (numConstraintToProcess == 3) //Friction force
         {
-            const SReal normTangentForce=sqrt(pow(Lambda(1),2)+pow(Lambda(2),2));
-            const SReal normNormalForce=fabs(Lambda(0));
+            const SReal normTangentForce=sqrt(pow(Lambda[1],2)+pow(Lambda[2],2));
+            const SReal normNormalForce=fabs(Lambda[0]);
 
             const SReal& coeffFriction = contactFriction.getValue();
 
@@ -235,54 +234,50 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
             if ( (normTangentForce / normNormalForce) > coeffFriction)
             {
                 //Force applied
-                out.contactForce = out.n*Lambda(0)+out.t1*Lambda(1)+ out.t2*Lambda(2);
+                out.contactForce = out.n*Lambda[0]+out.t1*Lambda[1]+ out.t2*Lambda[2];
                 //Outside: we project the force to the cone
 
                 //directionCone <--> n' : unitary vector along the cone
                 const SReal factor=coeffFriction*normNormalForce/normTangentForce;
 
-                Deriv directionCone=out.n*Lambda(0)+(out.t1*Lambda(1)+ out.t2*Lambda(2))*factor;
+                Deriv directionCone=out.n*Lambda[0]+(out.t1*Lambda[1]+ out.t2*Lambda[2])*factor;
                 directionCone.normalize();
 
                 const SReal alpha=out.n  *directionCone;
                 const SReal beta =out.t1 *directionCone;
                 const SReal gamma=out.t2 *directionCone;
 
-
-                const Eigen::Map<VectorEigen> c(cptr, numConstraintToProcess);
-                const Eigen::Map<MatrixEigen> W(Wptr, numConstraintToProcess, numConstraintToProcess);
-
-                const SReal value=W(0, 0)*alpha+
-                        W(0, 1)*beta +
-                        W(0, 2)*gamma;
+                const SReal value=W[0]*alpha+
+                        W[1]*beta +
+                        W[2]*gamma;
 
                 if (value == 0)
                 {
-                    serr << "ERROR DIVISION BY ZERO AVOIDED: w=[" << W(0, 0)  << "," << W(0, 1) << "," << W(0, 2)  << "] " << " DIRECTION CONE: " << directionCone << " BARY COEFF: " << alpha << ", " << beta << ", " << gamma << std::endl;
+                    serr << "ERROR DIVISION BY ZERO AVOIDED: w=[" << W[0]  << "," << W[1] << "," << W[2]  << "] " << " DIRECTION CONE: " << directionCone << " BARY COEFF: " << alpha << ", " << beta << ", " << gamma << std::endl;
                     group->setActive(false);
                     out.contactForce=Deriv();
                     return;
                 }
-                const SReal slidingLambda=c(0)/value;
+                const SReal slidingLambda=c[0]/value;
                 out.contactForce = directionCone*slidingLambda;
                 //Then project the force to the border of the cone
-                Lambda(0)=out.contactForce*out.n;
-                Lambda(1)=out.contactForce*out.t1;
-                Lambda(2)=out.contactForce*out.t2;
+                Lambda[0]=out.contactForce*out.n;
+                Lambda[1]=out.contactForce*out.t1;
+                Lambda[2]=out.contactForce*out.t2;
 //                                std::cerr<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, , friction = "<<contactFriction.getValue()<<std::endl<<", cut excessive friction force, bounded Lambda = "<<std::endl<<Lambda<<std::endl;
 
             }
-            out.contactForce = out.n*Lambda(0)+out.t1*Lambda(1)+out.t2*Lambda(2);
+            out.contactForce = out.n*Lambda[0]+out.t1*Lambda[1]+out.t2*Lambda[2];
         }
         else
-            out.contactForce = out.n*Lambda(0);
+            out.contactForce = out.n*Lambda[0];
 
         break;
     }
     case core::behavior::BaseConstraintSet::POS :
     {
         //The force cannot be attractive!
-        if (Lambda(0) < 0)
+        if (Lambda[0] < 0)
         {
             group->setActive(false);
             return;

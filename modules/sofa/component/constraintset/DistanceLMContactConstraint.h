@@ -31,9 +31,6 @@
 #include <sofa/component/linearsolver/LagrangeMultiplierComputation.h>
 #include <sofa/simulation/common/Node.h>
 
-#include <Eigen/Core>
-#include <Eigen/Sparse>
-USING_PART_OF_NAMESPACE_EIGEN
 
 namespace sofa
 {
@@ -64,10 +61,6 @@ class DistanceLMContactConstraint :  public core::behavior::LMConstraint<DataTyp
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DistanceLMContactConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
-
-    typedef Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
-    typedef Matrix<SReal, Eigen::Dynamic, 1>              VectorEigen;
-    typedef Eigen::SparseMatrix<SReal,Eigen::RowMajor>    SparseMatrixEigen;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

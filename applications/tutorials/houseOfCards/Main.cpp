@@ -39,6 +39,7 @@
 
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/core/CollisionModel.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
@@ -49,6 +50,9 @@
 using namespace sofa::simulation;
 using namespace sofa::component::container;
 using namespace sofa::component::topology;
+typedef sofa::component::linearsolver::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector> CGLinearSolverGraph;
+
+std::string colors[7]= {"red","green","blue","cyan","magenta","yellow","white"};
 
 SReal convertDegreeToRadian(const SReal& angle)
 {
@@ -61,17 +65,24 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     const std::string visualModel="mesh/card.obj";
     const std::string collisionModel="mesh/card.obj";
     const std::string inertiaMatrix="BehaviorModels/card.rigid";
+    static int colorIdx=0;
 
     std::vector<std::string> modelTypes;
     modelTypes.push_back("Triangle");
     modelTypes.push_back("Line");
     modelTypes.push_back("Point");
 
-    Node* card = sofa::ObjectCreator::CreateEulerSolverNode("Rigid");
+    Node* card = sofa::ObjectCreator::CreateEulerSolverNode("Rigid","Implicit");
+    CGLinearSolverGraph *cgLinearSolver; card->get(cgLinearSolver);
+    cgLinearSolver->f_maxIter.setValue(25);
+    cgLinearSolver->f_tolerance.setValue(1e-25);
+    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
+
+
     sofa::component::constraintset::LMConstraintSolver *constraintSolver = new sofa::component::constraintset::LMConstraintSolver();
     constraintSolver->constraintVel.setValue(true);
     constraintSolver->constraintPos.setValue(true);
-//  constraintSolver->numIterations.setValue(20);
+    constraintSolver->numIterations.setValue(25);
 
     card->addObject(constraintSolver);
 
@@ -81,11 +92,12 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     card->addObject(dofRigid);
 
     UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
+    uniMassRigid->setTotalMass(0.5);
     uniMassRigid->setFileMass(inertiaMatrix);
     card->addObject(uniMassRigid);
 
     //Node VISUAL
-    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(dofRigid, visualModel,"red");
+    Node* RigidVisualNode = sofa::ObjectCreator::CreateVisualNodeRigid(dofRigid, visualModel,colors[(colorIdx++)%7]);
     card->addChild(RigidVisualNode);
 
     //Node COLLISION
@@ -109,6 +121,7 @@ Node *create2Cards(const Coord3& globalPosition, SReal distanceInBetween=SReal(0
         const Coord3 rotation(0,0,angle);
         Node* leftCard = createCard(position, rotation);
         TwoCards->addChild(leftCard);
+        leftCard->setName("LeftCard");
     }
     //************************************
     //Right Rigid Card
@@ -117,6 +130,7 @@ Node *create2Cards(const Coord3& globalPosition, SReal distanceInBetween=SReal(0
         const Coord3 rotation(0,0,-angle);
         Node* rightCard = createCard(position, rotation);
         TwoCards->addChild(rightCard);
+        rightCard->setName("RightCard");
     }
     return TwoCards;
 }
@@ -156,6 +170,9 @@ Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween
                     0);
             Node *cards=create2Cards(position,distanceInBetween, angle);
             houseOfCards->addChild(cards);
+            std::ostringstream out;
+            out << "TwoCards["<< i << "|" << j << "]";
+            cards->setName(out.str());
         }
 
         //Create the support for the cards
@@ -168,6 +185,9 @@ Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween
                     0);
             Node *supportCard=createCard(position-initPosition, supportRotation);
             houseOfCards->addChild(supportCard);
+            std::ostringstream out;
+            out << "SupportCard["<< i << "|" << j << "]";
+            supportCard->setName(out.str());
         }
     }
 
@@ -191,10 +211,18 @@ int main(int argc, char** argv)
 
     std::string simulationType="tree";
     unsigned int sizeHouseOfCards=4;
+    SReal angle=20.0;
+    SReal distanceInBetween=0.1;
+    SReal friction=1;
+    SReal contactDistance=0.02;
 
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     .option(&sizeHouseOfCards,'l',"level","number of level of the house of cards")
+    .option(&angle,'a',"angle","angle formed by two cards")
+    .option(&distanceInBetween,'d',"distance","distance between two cards")
+    .option(&friction,'f',"friction","friction coeff")
+    .option(&contactDistance,'c',"contactDistance","contact distance")
     (argc,argv);
 
 #ifdef SOFA_DEV
@@ -213,16 +241,17 @@ int main(int argc, char** argv)
 
     sofa::component::collision::MinProximityIntersection *intersection;
     root->get(intersection, sofa::core::objectmodel::BaseContext::SearchDown);
-    const SReal contactD=0.02;
-    intersection->alarmDistance.setValue(contactD);
-    intersection->contactDistance.setValue(contactD*0.5);
+    intersection->alarmDistance.setValue(contactDistance);
+    intersection->contactDistance.setValue(contactDistance*0.5);
 
     //Add the objects
-    createHouseOfCards(root,sizeHouseOfCards);
+    createHouseOfCards(root,sizeHouseOfCards,distanceInBetween, angle);
 
+
+    const SReal contactFriction=sqrt(friction);
     sofa::helper::vector< sofa::core::CollisionModel* > listCollisionModels;
     root->getTreeObjects<sofa::core::CollisionModel>(&listCollisionModels);
-    for (unsigned int i=0; i<listCollisionModels.size(); ++i) listCollisionModels[i]->setContactFriction(0.95);
+    for (unsigned int i=0; i<listCollisionModels.size(); ++i) listCollisionModels[i]->setContactFriction(contactFriction);
     root->setAnimate(false);
 
     sofa::simulation::getSimulation()->exportXML(root,"HouseOfCards.xml", true);

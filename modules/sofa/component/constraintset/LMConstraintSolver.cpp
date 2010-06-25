@@ -645,6 +645,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
     std::set< int > emptyBlock;
     helper::vector< std::pair<MatrixEigen,VectorEigen> > constraintToBlock;
     helper::vector< MatrixEigen> constraintInvWBlock;
+    helper::vector< MatrixEigen> constraintWBlock;
 
 
     //Preparation Step:
@@ -664,6 +665,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
 
                 const MatrixEigen &wConstraint=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
                 if (wConstraint.diagonal().isZero(1e-15)) emptyBlock.insert(idxConstraint);
+                constraintWBlock.push_back(wConstraint);
                 constraintInvWBlock.push_back(wConstraint.marked<Eigen::SelfAdjoint>().inverse());
 
                 const VectorEigen &cb=c.block(idxConstraint         , 0,
@@ -707,14 +709,15 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                 //Invalid constraints: due to projective constraints, or constraint expressed for Obstacle objects: we just ignore them
                 if (emptyBlock.find(idxConstraint) != emptyBlock.end()) continue;
 
-
                 LambdaPreviousIteration = Lambda.block(idxConstraint,0,numConstraintToProcess,1);
                 //Set to Zero sigma for the current set of constraints
                 Lambda.block(idxConstraint,0,numConstraintToProcess,1).setZero();
 
 
+                const MatrixEigen &Wblock   =constraintWBlock[idxBlocks];
                 const MatrixEigen &invWblock=constraintInvWBlock[idxBlocks];
-                const std::pair<MatrixEigen, VectorEigen>& blocks=constraintToBlock[idxBlocks];
+
+                const std::pair<const MatrixEigen&,const VectorEigen&> &blocks=constraintToBlock[idxBlocks];
                 const VectorEigen &cb=blocks.second;
                 const MatrixEigen &wb=blocks.first;
 
@@ -722,7 +725,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                 const VectorEigen &sigma = cb - wb * Lambda;
 
                 VectorEigen newLambda=invWblock.marked<Eigen::SelfAdjoint>()*sigma;
-                constraint->LagrangeMultiplierEvaluation(invWblock.data(),sigma.data(), newLambda.data(),
+                constraint->LagrangeMultiplierEvaluation(Wblock.data(),sigma.data(), newLambda.data(),
                         constraintOrder[constraintEntry]);
 
                 //****************************************************************
