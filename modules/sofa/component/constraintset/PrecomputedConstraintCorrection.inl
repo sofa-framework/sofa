@@ -71,13 +71,11 @@ using namespace sofa::simulation;
 
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
-    : _rotations(false)
-    , f_rotations(initDataPtr(&f_rotations,&_rotations,"rotations",""))
-    , _restRotations(false)
-    , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
-    , recompute(initData(&recompute, false, "recompute","if true, always recompute the compliance"))
+    : m_rotations(initData(&m_rotations, false, "rotations", ""))
+    , m_restRotations(initData(&m_restRotations, false, "restDeformations", ""))
+    , recompute(initData(&recompute, false, "recompute", "if true, always recompute the compliance"))
 //	, filePrefix(initData(&filePrefix, "filePrefix","if not empty, the prefix used for the file containing the compliance matrix"))
-    , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale","Scale on computed node's frame"))
+    , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale", "Scale on computed node's frame"))
     , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , mstate(mm)
     , invM(NULL)
@@ -189,8 +187,6 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 {
-    f_rotations.beginEdit();
-    f_restRotations.beginEdit();
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     const VecDeriv& v0 = *mstate->getV();
 
@@ -478,7 +474,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
     /////////////////////////////////////////////////////////////////////////////////
 
     /////////// The constraints are modified using a rotation value at each node/////
-    if(_rotations)
+    if (m_rotations.getValue())
         rotateConstraints(false);
     /////////////////////////////////////////////////////////////////////////////////
 
@@ -708,7 +704,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     force.clear();
     force.resize(x_free.size());
 
-    if(_rotations)
+    if (m_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
@@ -867,7 +863,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(
     for (unsigned int i=0; i< numDOFs; i++)
         force[i] = Deriv();
 
-//    if(this->_rotations){
+//    if(this->m_rotations.getValue()){
 //
 //        this->rotateConstraints(true);
 //    }
@@ -1102,7 +1098,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     /////////////////////////////////////////////////////////////////////////////////
 
     /////////// The constraints are modified using a rotation value at each node/////
-    if(_rotations)
+    if (m_rotations.getValue())
         rotateConstraints(false);
     /////////////////////////////////////////////////////////////////////////////////
 

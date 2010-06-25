@@ -165,7 +165,7 @@ protected:
 
     virtual Coord getNewRestPos(const Coord& pos, Real /*t*/, Real dt)
     {
-        sofa::defaulttype::Vec<3,Real> vectrans(dt * this->mainDirection[0], dt * this->mainDirection[1], dt * this->mainDirection[2]);
+        sofa::defaulttype::Vec<3,Real> vectrans(dt * this->mainDirection.getValue()[0], dt * this->mainDirection.getValue()[1], dt * this->mainDirection.getValue()[2]);
         vectrans = pos.getOrientation().rotate(vectrans);
         return Coord(pos.getCenter() + vectrans, pos.getOrientation());
     }

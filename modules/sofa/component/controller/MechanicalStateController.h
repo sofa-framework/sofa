@@ -166,8 +166,7 @@ protected:
 
     core::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 
-    sofa::defaulttype::Vec<3,Real> mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.
-    DataPtr< sofa::defaulttype::Vec<3,Real> > mainDirectionPtr; ///< Warning ! Only 3d Rigid DOFs can use this mainDirection.
+    Data< sofa::defaulttype::Vec<3,Real> > mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.
 
     enum MouseMode {	None=0, BtLeft, BtRight, BtMiddle, Wheel }; ///< Mouse current mode.
     bool omni;

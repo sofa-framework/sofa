@@ -134,8 +134,8 @@ int VisualModelImplClass = core::RegisterObject("Generic visual model. If a view
         ;
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
-       f_useNormals      (initDataPtr(&f_useNormals, &useNormals, "useNormals", "True if normal smoothing groups should be read from file")),
+    :  useTopology(false), lastMeshRev(-1), castShadow(true),
+       useNormals		   (initData   (&useNormals, true, "useNormals", "True if normal smoothing groups should be read from file")),
        updateNormals     (initData   (&updateNormals, true, "updateNormals", "True if normals should be updated at each iteration")),
        computeTangents_  (initData   (&computeTangents_, false, "computeTangents", "True if tangents should be computed at startup")),
        updateTangents    (initData   (&updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration")),
@@ -170,7 +170,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     _topology = 0;
 
     material.setDisplayed(false);
-    addAlias(&f_useNormals, "normals");
     addAlias(&fileMesh, "filename");
 
     field_vertices.setGroup("Vector");
@@ -337,7 +336,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         const vector<int>& norms = vertNormTexIndex[2];
         for (unsigned int j = 0; j < verts.size(); j++)
         {
-            vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals?norms[j]:0))] = 0;
+            vertTexNormMap[verts[j]][std::make_pair((tex ? texs[j] : -1), (useNormals.getValue() ? norms[j] : 0))] = 0;
         }
     }
 
@@ -429,7 +428,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         idxs.resize(verts.size());
         for (unsigned int j = 0; j < verts.size(); j++)
         {
-            idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals?norms[j]:0))];
+            idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals.getValue() ? norms[j] : 0))];
             if ((unsigned)idxs[j] >= (unsigned)nbVOut)
             {
                 serr << "ERROR(VisualModelImpl): index "<<idxs[j]<<" out of range"<<sendl;

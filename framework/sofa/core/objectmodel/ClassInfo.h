@@ -29,7 +29,6 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <string>
 #include <map>
@@ -44,7 +43,6 @@ namespace core
 namespace objectmodel
 {
 
-using sofa::core::objectmodel::DataPtr;
 using sofa::core::objectmodel::Data;
 
 class Base;
