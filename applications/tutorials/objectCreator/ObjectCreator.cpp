@@ -128,9 +128,9 @@ simulation::Node *ObjectCreator::CreateEulerSolverNode(const std::string& name, 
         solver->f_rayleighMass.setValue(1);
 
         solver->setName("Conjugate Gradient");
-        linear->f_maxIter.setValue(20); //iteration maxi for the CG
-        linear->f_smallDenominatorThreshold.setValue(0.000001);
-        linear->f_tolerance.setValue(0.001);
+        linear->f_maxIter.setValue(25); //iteration maxi for the CG
+        linear->f_smallDenominatorThreshold.setValue(1e-05);
+        linear->f_tolerance.setValue(1e-05);
 
         node->addObject(solver);
         node->addObject(linear);
