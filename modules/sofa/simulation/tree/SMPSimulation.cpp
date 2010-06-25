@@ -182,6 +182,10 @@ SMPSimulation::SMPSimulation():visualNode(NULL)
     multiGraph2->compiled=true;
     multiGraph->compiled=true;
 #endif
+    sofa::core::ObjectFactory::ClassEntry* classCGLinearSolver;
+    sofa::core::ObjectFactory::AddAlias("CGLinearSolver","ParallelCGLinearSolver",true,&classCGLinearSolver);
+    sofa::core::ObjectFactory::AddAlias("CGSolver","ParallelCGLinearSolver",true,&classCGLinearSolver);
+    sofa::core::ObjectFactory::AddAlias("ConjugateGradient","ParallelCGLinearSolver",true,&classCGLinearSolver);
 }
 
 SMPSimulation::~SMPSimulation()
