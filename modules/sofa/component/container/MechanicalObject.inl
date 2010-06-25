@@ -51,28 +51,60 @@
 
 #include <sofa/component/linearsolver/SparseMatrix.h>
 
-
 #include <assert.h>
 #include <iostream>
 
 #include <sofa/component/container/MeshLoader.h>
 
-namespace sofa
+namespace
 {
 
+template<class V>
+void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
+{
+    if (v == NULL)
+        return;
+
+    if (v->empty())
+        return;
+
+    *tmp = *v;
+    for (unsigned int i = 0; i < v->size(); ++i)
+        (*v)[i] = (*tmp)[index[i]];
+}
+
+} // anonymous namespace
+
+namespace sofa
+{
 
 namespace component
 {
 
 namespace container
 {
+
 using namespace topology;
 using namespace sofa::core::topology;
-
 using namespace sofa::defaulttype;
+
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), internalForces(new VecDeriv), externalForces(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
+    : x(initData(&x, "position", "position coordinates of the degrees of freedom"))
+    , v(initData(&v, "velocity", "velocity coordinates of the degrees of freedom"))
+    , f(initData(&f, "force", "force vector of the degrees of freedom"))
+    , internalForces(initData(&internalForces, "internalForce", "internalForces vector of the degrees of freedom"))
+    , externalForces(initData(&externalForces, "externalForce", "externalForces vector of the degrees of freedom"))
+    , dx(initData(&dx, "derivX", "dx vector of the degrees of freedom"))
+    , xfree(initData(&xfree, "free_position", "free position coordinates of the degrees of freedom"))
+    , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))
+    , x0(initData(&x0, "rest_position", "rest position coordinates of the degrees of freedom"))
+    , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
+    , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
+    , debugViewIndices(initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices"))
+    , debugViewIndicesScale(initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices"))
+    , reset_position(NULL)
+    , v0(NULL)
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -81,88 +113,64 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , filename(initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
     , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader"))
     , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors"))
-    , vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
-    , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates of the degrees of freedom") )
-    , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates of the degrees of freedom") )
-    , f_F ( new VDataPtr<DataTypes>(&f,  "f vector of the degrees of freedom") )
-    , f_externalF ( new VDataPtr<DataTypes>(&externalForces,  "externalForces vector of the degrees of freedom") )
-    , f_Dx ( new VDataPtr<DataTypes>(&dx,  "dx vector of the degrees of freedom") )
-    , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
-    , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
-    , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
-    , restScale(initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
-    , debugViewIndices(initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices"))
-    , debugViewIndicesScale(initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices"))
+    , vsize(0)
+    , m_gnuplotFileX(NULL)
+    , m_gnuplotFileV(NULL)
 {
-    //HACK
+    // HACK
     if (!restScale.isSet())
+    {
         restScale.setValue(1);
-    initialized = false;
+    }
 
-    //set F to internal forces
-    f = internalForces;
+    m_initialized = false;
 
-    this->addField(f_X, "position");
-    this->addField(f_V, "velocity");
-    this->addField(f_F, "force");
-    this->addField(f_externalF, "externalForce");
-    this->addField(f_Dx, "derivX");
-    this->addField(f_Xfree, "free_position");
-    this->addField(f_Vfree, "free_velocity");
-    this->addField(f_X0,"rest_position");
+    x				.setGroup("Vector");
+    v				.setGroup("Vector");
+    f				.setGroup("Vector");
+    externalForces	.setGroup("Vector");
+    dx				.setGroup("Vector");
+    xfree			.setGroup("Vector");
+    vfree			.setGroup("Vector");
+    x0				.setGroup("Vector");
 
-    f_X->setGroup("Vector");
-    f_V->setGroup("Vector");
-    f_F->setGroup("Vector");
-    f_externalF->setGroup("Vector");
-    f_Dx->setGroup("Vector");
-    f_Xfree->setGroup("Vector");
-    f_Vfree->setGroup("Vector");
-    f_X0->setGroup("Vector");
+    translation		.setGroup("Transformation");
+    translation2	.setGroup("Transformation");
+    rotation		.setGroup("Transformation");
+    rotation2		.setGroup("Transformation");
+    scale			.setGroup("Transformation");
 
-    translation.setGroup("Transformation");
-    translation2.setGroup("Transformation");
-    rotation.setGroup("Transformation");
-    rotation2.setGroup("Transformation");
-    scale.setGroup("Transformation");
-
-    //Deactivate the Filter. MechanicalObjects created during the collision response must not use the filter as it will be empty
+    // Deactivate the Filter.
+    // MechanicalObjects created during the collision response must not use the filter as it will be empty
     this->forceMask.activate(false);
-
-    f_X->init();
-    f_V->init();
-    f_F->init();
-    f_externalF->init();
-    f_Dx->init();
-    f_Xfree->init();
-    f_Vfree->init();
-    f_X0->init();
-
-
-    /*    x = new VecCoord;
-          v = new VecDeriv;*/
-    //dx = new VecDeriv;
 
     // default size is 1
     resize(1);
 
-    _forceId = VecId::force();
+    m_posId				= VecId::position();
+    m_velId				= VecId::velocity();
+    m_forceId			= VecId::force();
+    m_internalForcesId	= VecId::internalForce();
+    m_externalForcesId	= VecId::externalForce();
+    m_dxId				= VecId::dx();
+    m_freePosId			= VecId::freePosition();
+    m_freeVelId			= VecId::freeVelocity();
+    m_x0Id				= VecId::restPosition();
+    m_constraintId		= VecId::holonomicC();
 
-    setVecCoord(VecId::position().index, this->x);
-    setVecDeriv(VecId::velocity().index, this->v);
-    setVecDeriv(_forceId.index, this->f);
-    setVecDeriv(VecId::externalForce().index, this->externalForces );
-    setVecDeriv(VecId::internalForce().index, this->internalForces );
-    setVecDeriv(VecId::dx().index, this->dx);
-    setVecCoord(VecId::restPosition().index, this->x0);
-    setVecCoord(VecId::freePosition().index, this->xfree);
-    setVecDeriv(VecId::freeVelocity().index, this->vfree);
+    setVecCoord(m_posId.index, &x);
+    setVecDeriv(m_velId.index, &v);
+    setVecDeriv(m_forceId.index, &f);
+    setVecDeriv(m_internalForcesId.index, &internalForces);
+    setVecDeriv(m_externalForcesId.index, &externalForces);
+    setVecDeriv(m_dxId.index, &dx);
+    setVecCoord(m_freePosId.index, &xfree);
+    setVecDeriv(m_freeVelId.index, &vfree);
+    setVecCoord(m_x0Id.index, &x0);
+    setVecConst(m_constraintId.index, &c);
 
-    //setVecDeriv(VecId::acceleration().index, this->dx);
-    /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
-      cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
-
-    // f = this->externalForces; // we are not doing an integration step, so f == external forces
+    // Set f to internalForces.
+    m_forceId = m_internalForcesId;
 }
 
 template <class DataTypes>
@@ -170,8 +178,12 @@ void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 {
     if( !this->getName().empty() )
     {
-        if (m_gnuplotFileX != NULL) delete m_gnuplotFileX;
-        if (m_gnuplotFileV != NULL) delete m_gnuplotFileV;
+        if (m_gnuplotFileX != NULL)
+            delete m_gnuplotFileX;
+
+        if (m_gnuplotFileV != NULL)
+            delete m_gnuplotFileV;
+
         m_gnuplotFileX = new std::ofstream( (path + this->getName()+"_x.txt").c_str() );
         m_gnuplotFileV = new std::ofstream( (path + this->getName()+"_v.txt").c_str() );
     }
@@ -184,6 +196,7 @@ void MechanicalObject<DataTypes>::exportGnuplot(Real time)
     {
         (*m_gnuplotFileX) << time <<"\t"<< *getX() << std::endl;
     }
+
     if( m_gnuplotFileV!=NULL )
     {
         (*m_gnuplotFileV) << time <<"\t"<< *getV() << std::endl;
@@ -191,20 +204,19 @@ void MechanicalObject<DataTypes>::exportGnuplot(Real time)
 }
 
 template <class DataTypes>
-MechanicalObject<DataTypes>&
-MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
+MechanicalObject<DataTypes> &MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
 {
-    resize( obj.getSize() );
+    resize(obj.getSize());
     /*    *getX() = *obj.getX();
-      if( obj.x0 != NULL ){
-      x0 = new VecCoord;
-      *x0 = *obj.x0;
-      }
-      *getV() = *obj.getV();
-      if( obj.v0 != NULL ){
-      v0 = new VecDeriv;
-      *v0 = *obj.v0;
-      }*/
+    if( obj.x0 != NULL ){
+    x0 = new VecCoord;
+    *x0 = *obj.x0;
+    }
+    *getV() = *obj.getV();
+    if( obj.v0 != NULL ){
+    v0 = new VecDeriv;
+    *v0 = *obj.v0;
+    }*/
     return *this;
 }
 
@@ -239,6 +251,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     {
         filename.setValue(arg->getAttribute("filename"));
     }
+
     if (!filename.getValue().empty())
     {
         load(filename.getFullPath().c_str());
@@ -248,63 +261,51 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     Inherited::parse(arg);
 
     // DEPRECATED: Warning, you should not use these parameters, but a TransformEngine instead
-    if (arg->getAttribute("scale")!=NULL)
+    if (arg->getAttribute("scale") != NULL)
     {
-        SReal s=(SReal)atof(arg->getAttribute("scale","1.0"));
-        scale.setValue(Vector3(s,s,s));
+        SReal s = (SReal)atof(arg->getAttribute("scale", "1.0"));
+        scale.setValue(Vector3(s, s, s));
     }
 
-    if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
+    if (arg->getAttribute("sx") != NULL || arg->getAttribute("sy") != NULL || arg->getAttribute("sz") != NULL)
     {
         scale.setValue(Vector3((SReal)(atof(arg->getAttribute("sx","1.0"))),(SReal)(atof(arg->getAttribute("sy","1.0"))),(SReal)(atof(arg->getAttribute("sz","1.0")))));
     }
 
-    if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
+    if (arg->getAttribute("rx") != NULL || arg->getAttribute("ry") != NULL || arg->getAttribute("rz") != NULL)
     {
         rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
     }
-    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+
+    if (arg->getAttribute("dx") != NULL || arg->getAttribute("dy") != NULL || arg->getAttribute("dz") != NULL)
     {
         translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
     }
-    if (arg->getAttribute("rx2")!=NULL || arg->getAttribute("ry2")!=NULL || arg->getAttribute("rz2")!=NULL)
+
+    if (arg->getAttribute("rx2") != NULL || arg->getAttribute("ry2") != NULL || arg->getAttribute("rz2") != NULL)
     {
         rotation2.setValue(Vector3((SReal)(atof(arg->getAttribute("rx2","0.0"))),(SReal)(atof(arg->getAttribute("ry2","0.0"))),(SReal)(atof(arg->getAttribute("rz2","0.0")))));
     }
-    if (arg->getAttribute("dx2")!=NULL || arg->getAttribute("dy2")!=NULL || arg->getAttribute("dz2")!=NULL)
+
+    if (arg->getAttribute("dx2") != NULL || arg->getAttribute("dy2") != NULL || arg->getAttribute("dz2") != NULL)
     {
         translation2.setValue(Vector3((Real)atof(arg->getAttribute("dx2","0.0")), (Real)atof(arg->getAttribute("dy2","0.0")), (Real)atof(arg->getAttribute("dz2","0.0"))));
     }
-
 }
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
 {
-    if (reset_position!=NULL)
+    if (reset_position != NULL)
         delete reset_position;
-    //if (x0!=NULL)
-    //  delete x0;
-    if (v0!=NULL)
-        delete v0;
-    for (unsigned int i=0; i<vectorsCoord.size(); i++)
-    {
-        if (vectorsCoord[i]!=NULL)
-            delete vectorsCoord[i];
-    }
-    for (unsigned int i=0; i<vectorsDeriv.size(); i++)
-    {
-        if (vectorsDeriv[i]!=NULL &&
-            vectorsDeriv[i] != internalForces &&
-            vectorsDeriv[i] != externalForces)
-            delete vectorsDeriv[i];
-    }
-    delete internalForces;
-    delete externalForces;
 
-    if( m_gnuplotFileV!=NULL )
+    if (v0 != NULL)
+        delete v0;
+
+    if (m_gnuplotFileV != NULL)
         delete m_gnuplotFileV;
-    if( m_gnuplotFileX!=NULL )
+
+    if (m_gnuplotFileX != NULL)
         delete m_gnuplotFileX;
 }
 
@@ -314,8 +315,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
 {
     using sofa::core::topology::TopologyChange;
 
-    std::list< const TopologyChange * >::const_iterator itBegin = _topology->firstStateChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = _topology->lastStateChange();
+    std::list< const TopologyChange * >::const_iterator itBegin = m_topology->firstStateChange();
+    std::list< const TopologyChange * >::const_iterator itEnd = m_topology->lastStateChange();
 
     while( itBegin != itEnd )
     {
@@ -456,34 +457,46 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
     // forces
     //if ((*internalForces).size()>0)
     //    (*internalForces)[outputIndex] = (*internalForces)[inputIndex];
-    if ((*externalForces).size() > maxIndex)
-        (*externalForces)[outputIndex] = (*externalForces)[inputIndex];
+
+    // PJB Modif : externalForces is in vectorsDeriv.
+    /*if (externalForces.getValue().size() > maxIndex)
+    {
+    	(*(externalForces.beginEdit()))[outputIndex] = externalForces.getValue()[inputIndex];
+    	externalForces.endEdit();
+    }*/
 
     // Note: the following assumes that topological changes won't be reset
     if (reset_position != NULL && (*reset_position).size() > maxIndex)
         (*reset_position)[outputIndex] = (*reset_position)[inputIndex];
 
     // temporary state vectors
-    unsigned int i;
-    for (i=0; i<vectorsCoord.size(); i++)
+    const unsigned int vecCoordSize = vectorsCoord.size();
+    for (unsigned int i = 0; i < vecCoordSize; i++)
     {
-        if(vectorsCoord[i] != NULL)
+        if (vectorsCoord[i] != NULL)
         {
-            VecCoord& vector = *vectorsCoord[i];
+            VecCoord& vector = *(vectorsCoord[i]->beginEdit());
+
             if (vector.size() > maxIndex)
-                vector[outputIndex]=vector[inputIndex];
-        }
-    }
-    for ( i=0; i<vectorsDeriv.size(); i++)
-    {
-        if(vectorsDeriv[i] != NULL)
-        {
-            VecDeriv& vector = *vectorsDeriv[i];
-            if (vector.size() > maxIndex)
-                vector[outputIndex]=vector[inputIndex];
+                vector[outputIndex] = vector[inputIndex];
+
+            vectorsCoord[i]->endEdit();
         }
     }
 
+    const unsigned int vecDerivSize = vectorsDeriv.size();
+    for (unsigned int i = 0; i < vecDerivSize; i++)
+    {
+        if (vectorsDeriv[i] != NULL)
+        {
+            VecDeriv& vector = *(vectorsDeriv[i]->beginEdit());
+
+            if (vector.size() > maxIndex)
+                vector[outputIndex] = vector[inputIndex];
+
+            vectorsDeriv[i]->endEdit();
+        }
+    }
 }
 
 template <class DataTypes>
@@ -529,12 +542,18 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
     //tmp2 = (*internalForces)[idx1];
     //(*internalForces)[idx1] = (*internalForces)[idx2];
     //(*internalForces)[idx2] = tmp2;
-    if ((*externalForces).size() > maxIndex)
+
+    // PJB Modif : externalForces is in vectorsDeriv.
+    /*if (externalForces.getValue().size() > maxIndex)
     {
-        tmp2 = (*externalForces)[idx1];
-        (*externalForces)[idx1] = (*externalForces)[idx2];
-        (*externalForces)[idx2] = tmp2;
-    }
+    	VecDeriv *extForcesEdit = externalForces.beginEdit();
+
+    	tmp2 = (*extForcesEdit)[idx1];
+    	(*extForcesEdit)[idx1] = (*extForcesEdit)[idx2];
+    	(*extForcesEdit)[idx2] = tmp2;
+
+    	externalForces.endEdit();
+    }*/
 
     // Note: the following assumes that topological changes won't be reset
     if (reset_position != NULL && (*reset_position).size() > maxIndex)
@@ -550,38 +569,30 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
     {
         if(vectorsCoord[i] != NULL)
         {
-            VecCoord& vector = *vectorsCoord[i];
+            VecCoord& vector = *vectorsCoord[i]->beginEdit();
             if(vector.size() > maxIndex)
             {
                 tmp = vector[idx1];
                 vector[idx1] = vector[idx2];
                 vector[idx2] = tmp;
             }
+            vectorsCoord[i]->endEdit();
         }
     }
     for (i=0; i<vectorsDeriv.size(); i++)
     {
         if(vectorsDeriv[i] != NULL)
         {
-            VecDeriv& vector = *vectorsDeriv[i];
+            VecDeriv& vector = *vectorsDeriv[i]->beginEdit();
             if(vector.size() > maxIndex)
             {
                 tmp2 = vector[idx1];
                 vector[idx1] = vector[idx2];
                 vector[idx2] = tmp2;
             }
+            vectorsDeriv[i]->endEdit();
         }
     }
-}
-
-template<class V>
-void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
-{
-    if (v==NULL) return;
-    if (v->empty()) return;
-    *tmp = *v;
-    for (unsigned int i = 0; i < v->size(); ++i)
-        (*v)[i] = (*tmp)[ index[i] ];
 }
 
 template <class DataTypes>
@@ -600,13 +611,31 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
     //renumber(f, &dtmp, index);
     //renumber(dx, &dtmp, index);
     //renumber(internalForces, &dtmp, index);
-    renumber(externalForces, &dtmp, index);
+
+    // PJB Modif : externalForces is now in vectorsDeriv.
+    //renumber(externalForces.beginEdit(), &dtmp, index);
+    //externalForces.endEdit();
+
     // Note: the following assumes that topological changes won't be reset
     renumber(reset_position, &ctmp, index);
+
     for (unsigned int i = 0; i < vectorsCoord.size(); ++i)
-        renumber(vectorsCoord[i], &ctmp, index);
+    {
+        if (vectorsCoord[i] != NULL)
+        {
+            renumber(vectorsCoord[i]->beginEdit(), &ctmp, index);
+            vectorsCoord[i]->endEdit();
+        }
+    }
+
     for (unsigned int i = 0; i < vectorsDeriv.size(); ++i)
-        renumber(vectorsDeriv[i], &dtmp, index);
+    {
+        if (vectorsDeriv[i] != NULL)
+        {
+            renumber(vectorsDeriv[i]->beginEdit(), &dtmp, index);
+            vectorsDeriv[i]->endEdit();
+        }
+    }
 }
 
 
@@ -619,42 +648,73 @@ void MechanicalObject<DataTypes>::resize(const int size)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
-    (*x).resize(size);
-    if (initialized && x0!=NULL)
-        (*x0).resize(size);
-    (*v).resize(size);
-    if (v0!=NULL)
+    x.beginEdit()->resize(size);
+    x.endEdit();
+
+    if (m_initialized && !(x0.getValue().empty()))
+    {
+        x0.beginEdit()->resize(size);
+        x0.endEdit();
+    }
+
+    v.beginEdit()->resize(size);
+    v.endEdit();
+
+    if (v0 != NULL)
         (*v0).resize(size);
-    (*f).resize(size);
-    (*dx).resize(size);
-    (*xfree).resize(size);
-    (*vfree).resize(size);
-    if (externalForces->size()>0)
-        externalForces->resize(size);
-    internalForces->resize(size);
+
+    f.beginEdit()->resize(size);
+    f.endEdit();
+
+    dx.beginEdit()->resize(size);
+    dx.endEdit();
+
+    xfree.beginEdit()->resize(size);
+    xfree.endEdit();
+
+    vfree.beginEdit()->resize(size);
+    vfree.endEdit();
+
+    if (externalForces.getValue().size() > 0)
+    {
+        externalForces.beginEdit()->resize(size);
+        externalForces.endEdit();
+    }
+
+    internalForces.beginEdit()->resize(size);
+    internalForces.endEdit();
+
     // Note: the following assumes that topological changes won't be reset
-    if (reset_position!=NULL)
+    if (reset_position != NULL)
         (*reset_position).resize(size);
 
     //if (size!=vsize)
     {
-        vsize=size;
-        for (unsigned int i=0; i<vectorsCoord.size(); i++)
-            if (vectorsCoord[i]!=NULL && vectorsCoord[i]->size()!=0)
+        vsize = size;
+        for (unsigned int i = 0; i < vectorsCoord.size(); i++)
+        {
+            if (vectorsCoord[i] != NULL && vectorsCoord[i]->getValue().size() != 0)
             {
-                vectorsCoord[i]->resize(size);
+                vectorsCoord[i]->beginEdit()->resize(size);
+                vectorsCoord[i]->endEdit();
+
 #ifdef SOFA_SMP
-                vectorsCoordSharedAllocated[i]=true;
+                vectorsCoordSharedAllocated[i] = true;
 #endif
             }
-        for (unsigned int i=0; i<vectorsDeriv.size(); i++)
-            if (vectorsDeriv[i]!=NULL && vectorsDeriv[i]->size()!=0)
+        }
+
+        for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+        {
+            if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->getValue().size() != 0)
             {
-                vectorsDeriv[i]->resize(size);
+                vectorsDeriv[i]->beginEdit()->resize(size);
+                vectorsDeriv[i]->endEdit();
 #ifdef SOFA_SMP
-                vectorsDerivSharedAllocated[i]=true;
+                vectorsDerivSharedAllocated[i] = true;
 #endif
             }
+        }
     }
 }
 
@@ -663,27 +723,60 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::reserve(const int size)
 {
     if (size == 0) return;
-    (*x).reserve(size);
-    if (initialized && x0!=NULL)
-        (*x0).reserve(size);
-    (*v).reserve(size);
-    if (v0!=NULL)
+
+    x.beginEdit()->reserve(size);
+    x.endEdit();
+
+    if (m_initialized && !x0.getValue().empty())
+    {
+        x0.beginEdit()->reserve(size);
+        x0.endEdit();
+    }
+
+    v.beginEdit()->reserve(size);
+    v.endEdit();
+
+    if (v0 != NULL)
         (*v0).reserve(size);
-    (*f).reserve(size);
-    (*dx).reserve(size);
-    (*xfree).reserve(size);
-    (*vfree).reserve(size);
-    externalForces->reserve(size);
-    internalForces->reserve(size);
-    if (reset_position!=NULL)
+
+    f.beginEdit()->reserve(size);
+    f.endEdit();
+
+    dx.beginEdit()->reserve(size);
+    dx.endEdit();
+
+    xfree.beginEdit()->reserve(size);
+    xfree.endEdit();
+
+    vfree.beginEdit()->reserve(size);
+    vfree.endEdit();
+
+    externalForces.beginEdit()->reserve(size);
+    externalForces.endEdit();
+
+    internalForces.beginEdit()->reserve(size);
+    internalForces.endEdit();
+
+    if (reset_position != NULL)
         (*reset_position).reserve(size);
 
-    for (unsigned int i=0; i<vectorsCoord.size(); i++)
-        if (vectorsCoord[i]!=NULL)
-            vectorsCoord[i]->reserve(size);
-    for (unsigned int i=0; i<vectorsDeriv.size(); i++)
-        if (vectorsDeriv[i]!=NULL)
-            vectorsDeriv[i]->reserve(size);
+    for (unsigned int i = 0; i < vectorsCoord.size(); i++)
+    {
+        if (vectorsCoord[i] != NULL)
+        {
+            vectorsCoord[i]->beginEdit()->reserve(size);
+            vectorsCoord[i]->endEdit();
+        }
+    }
+
+    for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+    {
+        if (vectorsDeriv[i] != NULL)
+        {
+            vectorsDeriv[i]->beginEdit()->reserve(size);
+            vectorsDeriv[i]->endEdit();
+        }
+    }
 }
 
 
@@ -691,21 +784,22 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (const double dx,const double dy,const double dz)
 {
     VecCoord& x = *this->getX();
-    for (unsigned int i=0; i<x.size(); i++)
+    for (unsigned int i = 0; i < x.size(); i++)
     {
-        DataTypes::add
-        (x[i],dx,dy,dz);
+        DataTypes::add(x[i], dx, dy, dz);
     }
 
 }
+
 
 //Apply Rotation from Euler angles (in degree!)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const double rx, const double ry, const double rz)
 {
-    Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    Quaternion q = helper::Quater< SReal >::createQuaterFromEuler(Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
@@ -724,7 +818,7 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
 /*    template <>
-	bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox)*/;
+bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox)*/;
 #endif
 #ifndef SOFA_DOUBLE
 template<>
@@ -736,7 +830,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,const double sz)
 {
-//       std::cout << "MechanicalObject : applyScale " << this->getName() << " s=" << s << "\n";
+    //       std::cout << "MechanicalObject : applyScale " << this->getName() << " s=" << s << "\n";
     VecCoord& x = *this->getX();
     const Vector3 s(sx,sy,sz);
     for (unsigned int i=0; i<x.size(); i++)
@@ -767,65 +861,65 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigne
 template <class DataTypes>
 void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
 {
-	// HD interpolate position, speed,force,...
-	// assume all coef sum to 1.0
-	unsigned int j;
+// HD interpolate position, speed,force,...
+// assume all coef sum to 1.0
+unsigned int j;
 
-	// Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
-	// not v0, reset_position, and externalForces) are present in the
-	// array of all vectors, so then don't need to be processed separatly.
-	if (v0 != NULL)
-	{
-		(*v0)[i] = Deriv();
-		for (j = 0; j < ancestors.size(); ++j)
-		{
-			(*v0)[i] += (*v0)[ancestors[j]] * (Real)coefs[j];
-		}
-	}
+// Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
+// not v0, reset_position, and externalForces) are present in the
+// array of all vectors, so then don't need to be processed separatly.
+if (v0 != NULL)
+{
+(*v0)[i] = Deriv();
+for (j = 0; j < ancestors.size(); ++j)
+{
+(*v0)[i] += (*v0)[ancestors[j]] * (Real)coefs[j];
+}
+}
 
-	// Note: the following assumes that topological changes won't be reset
-	if (reset_position != NULL)
-	{
-		(*reset_position)[i] = Coord();
-		for (j = 0; j < ancestors.size(); ++j)
-		{
-			(*reset_position)[i] += (*reset_position)[ancestors[j]] * (Real)coefs[j];
-		}
-	}
+// Note: the following assumes that topological changes won't be reset
+if (reset_position != NULL)
+{
+(*reset_position)[i] = Coord();
+for (j = 0; j < ancestors.size(); ++j)
+{
+(*reset_position)[i] += (*reset_position)[ancestors[j]] * (Real)coefs[j];
+}
+}
 
-	if (externalForces->size() > 0)
-	{
-		(*externalForces)[i] = Deriv();
-		for (j = 0; j < ancestors.size(); ++j)
-		{
-			(*externalForces)[i] += (*externalForces)[ancestors[j]] * (Real)coefs[j];
-		}
-	}
+if (externalForces->size() > 0)
+{
+(*externalForces)[i] = Deriv();
+for (j = 0; j < ancestors.size(); ++j)
+{
+(*externalForces)[i] += (*externalForces)[ancestors[j]] * (Real)coefs[j];
+}
+}
 
 
-	for (unsigned int k = 0; k < vectorsCoord.size(); k++)
-	{
-		if (vectorsCoord[k]!=NULL && vectorsCoord[k]->size()!=0)
-		{
-			(*vectorsCoord[k])[i] = Coord();
-			for (j = 0; j < ancestors.size(); ++j)
-			{
-				(*vectorsCoord[k])[i] += (*vectorsCoord[k])[ancestors[j]] * (Real)coefs[j];
-			}
-		}
-	}
+for (unsigned int k = 0; k < vectorsCoord.size(); k++)
+{
+if (vectorsCoord[k]!=NULL && vectorsCoord[k]->size()!=0)
+{
+(*vectorsCoord[k])[i] = Coord();
+for (j = 0; j < ancestors.size(); ++j)
+{
+(*vectorsCoord[k])[i] += (*vectorsCoord[k])[ancestors[j]] * (Real)coefs[j];
+}
+}
+}
 
-	for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
-	{
-		if (vectorsDeriv[k]!=NULL && vectorsDeriv[k]->size()!=0)
-		{
-			(*vectorsDeriv[k])[i] = Deriv();
-			for (j = 0; j < ancestors.size(); ++j)
-			{
-				(*vectorsDeriv[k])[i] += (*vectorsDeriv[k])[ancestors[j]] * (Real)coefs[j];
-			}
-		}
-	}
+for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
+{
+if (vectorsDeriv[k]!=NULL && vectorsDeriv[k]->size()!=0)
+{
+(*vectorsDeriv[k])[i] = Deriv();
+for (j = 0; j < ancestors.size(); ++j)
+{
+(*vectorsDeriv[k])[i] += (*vectorsDeriv[k])[ancestors[j]] * (Real)coefs[j];
+}
+}
+}
 }
 */
 
@@ -837,15 +931,19 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     // assume all coef sum to 1.0
     unsigned int j;
 
+    const unsigned int ancestorsSize = ancestors.size();
+
+    helper::vector< Coord > ancestorsCoord(ancestorsSize);
+    helper::vector< Deriv > ancestorsDeriv(ancestorsSize);
+    helper::vector< Real > ancestorsCoefs(ancestorsSize);
+
+
     // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
     // not v0, reset_position, and externalForces) are present in the
     // array of all vectors, so then don't need to be processed separatly.
     if (v0 != NULL)
     {
-        helper::vector< Deriv > ancestorsDeriv(ancestors.size());
-        helper::vector< Real > ancestorsCoefs(ancestors.size());
-
-        for (j = 0; j < ancestors.size(); ++j)
+        for (j = 0; j < ancestorsSize; ++j)
         {
             ancestorsDeriv[j] = (*v0)[ancestors[j]];
             ancestorsCoefs[j] = coefs[j];
@@ -857,10 +955,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     // Note: the following assumes that topological changes won't be reset
     if (reset_position != NULL)
     {
-        helper::vector< Coord > ancestorsCoord(ancestors.size());
-        helper::vector< Real > ancestorsCoefs(ancestors.size());
-
-        for (j = 0; j < ancestors.size(); ++j)
+        for (j = 0; j < ancestorsSize; ++j)
         {
             ancestorsCoord[j] = (*reset_position)[ancestors[j]];
             ancestorsCoefs[j] = coefs[j];
@@ -869,52 +964,62 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
         (*reset_position)[i] = DataTypes::interpolate(ancestorsCoord, ancestorsCoefs);
     }
 
-    if (externalForces->size() > 0)
+    // PJB Modif : externalForces is now in vectorsDeriv.
+    /*if (externalForces.getValue().size() > 0)
     {
-        helper::vector< Deriv > ancestorsDeriv(ancestors.size());
-        helper::vector< Real > ancestorsCoefs(ancestors.size());
+    	VecDeriv *extForcesEdit = externalForces.beginEdit();
 
-        for (j = 0; j < ancestors.size(); ++j)
-        {
-            ancestorsDeriv[j] = (*externalForces)[ancestors[j]];
-            ancestorsCoefs[j] = coefs[j];
-        }
+    	for (j = 0; j < ancestorsSize; ++j)
+    	{
+    		ancestorsDeriv[j] = (*extForcesEdit)[ancestors[j]];
+    		ancestorsCoefs[j] = coefs[j];
+    	}
 
-        (*externalForces)[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
-    }
+    	(*extForcesEdit)[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
+
+    	externalForces.endEdit();
+    }*/
 
 
     for (unsigned int k = 0; k < vectorsCoord.size(); k++)
     {
-        if ((vectorsCoord[k] != NULL) && (vectorsCoord[k]->size() != 0))
+        if (vectorsCoord[k] != NULL)
         {
-            helper::vector< Coord > ancestorsCoord(ancestors.size());
-            helper::vector< Real > ancestorsCoefs(ancestors.size());
+            VecCoord &vecCoord = *(vectorsCoord[k]->beginEdit());
 
-            for (j = 0; j < ancestors.size(); ++j)
+            if (vecCoord.size() != 0)
             {
-                ancestorsCoord[j] = (*vectorsCoord[k])[ancestors[j]];
-                ancestorsCoefs[j] = coefs[j];
+                for (j = 0; j < ancestorsSize; ++j)
+                {
+                    ancestorsCoord[j] = vecCoord[ancestors[j]];
+                    ancestorsCoefs[j] = coefs[j];
+                }
+
+                vecCoord[i] = DataTypes::interpolate(ancestorsCoord, ancestorsCoefs);
             }
 
-            (*vectorsCoord[k])[i] = DataTypes::interpolate(ancestorsCoord, ancestorsCoefs);
+            vectorsCoord[k]->endEdit();
         }
     }
 
     for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
     {
-        if ((vectorsDeriv[k] != NULL) && (vectorsDeriv[k]->size() != 0))
+        if (vectorsDeriv[k] != NULL)
         {
-            helper::vector< Deriv > ancestorsDeriv(ancestors.size());
-            helper::vector< Real > ancestorsCoefs(ancestors.size());
+            VecDeriv &vecDeriv = *(vectorsDeriv[k]->beginEdit());
 
-            for (j = 0; j < ancestors.size(); ++j)
+            if (vecDeriv.size() != 0)
             {
-                ancestorsDeriv[j] = (*vectorsDeriv[k])[ancestors[j]];
-                ancestorsCoefs[j] = coefs[j];
+                for (j = 0; j < ancestorsSize; ++j)
+                {
+                    ancestorsDeriv[j] = vecDeriv[ancestors[j]];
+                    ancestorsCoefs[j] = coefs[j];
+                }
+
+                vecDeriv[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
             }
 
-            (*vectorsDeriv[k])[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
+            vectorsDeriv[k]->endEdit();
         }
     }
 }
@@ -944,7 +1049,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 // Force the position of a point (and force its velocity to zero value)
 template <class DataTypes>
-void MechanicalObject<DataTypes>::forcePointPosition( const unsigned int i, const sofa::helper::vector< double >& m_x)
+void MechanicalObject<DataTypes>::forcePointPosition(const unsigned int i, const sofa::helper::vector< double >& m_x)
 {
     DataTypes::set((*getX())[i], m_x[0], m_x[1], m_x[2]);
     DataTypes::set((*getV())[i], (Real) 0.0, (Real) 0.0, (Real) 0.0);
@@ -960,11 +1065,11 @@ void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, V
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = dest->size()/coordDim;
 
-        for (unsigned int i=0; i<nbEntries; ++i)
-            for (unsigned int j=0; j<coordDim; ++j)
+        for (unsigned int i = 0; i < nbEntries; ++i)
+            for (unsigned int j = 0; j < coordDim; ++j)
             {
                 Real tmp;
-                DataTypeInfo<Coord>::getValue(vSrc[offset + i],j,tmp);
+                DataTypeInfo<Coord>::getValue(vSrc[offset + i], j, tmp);
                 dest->set(i * coordDim + j, tmp);
             }
         // offset += vSrc.size() * coordDim;
@@ -976,19 +1081,16 @@ void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, V
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = dest->size()/derivDim;
 
-        for (unsigned int i=0; i<nbEntries; i++)
-            for (unsigned int j=0; j<derivDim; j++)
+        for (unsigned int i = 0; i < nbEntries; i++)
+            for (unsigned int j = 0; j < derivDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue(vSrc[i + offset],j,tmp);
+                DataTypeInfo<Deriv>::getValue(vSrc[i + offset], j, tmp);
                 dest->set(i * derivDim + j, tmp);
             }
         // offset += vSrc.size() * derivDim;
     }
 }
-
-
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * dest, VecId src, unsigned int &offset)
@@ -999,13 +1101,16 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * des
         helper::ReadAccessor<VecCoord> vSrc = *getVecCoord(src.index);
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
-        for (unsigned int i=0; i<vSrc.size(); i++)
-            for (unsigned int j=0; j<coordDim; j++)
+        for (unsigned int i = 0; i < vSrc.size(); i++)
+        {
+            for (unsigned int j = 0; j < coordDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Coord>::getValue(vSrc[i],j,tmp);
+                DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
                 dest->set(offset + i * coordDim + j, tmp);
             }
+        }
+
         offset += vSrc.size() * coordDim;
     }
     else
@@ -1014,13 +1119,16 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * des
         helper::ReadAccessor<VecDeriv> vSrc = *getVecDeriv(src.index);
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
 
-        for (unsigned int i=0; i<vSrc.size(); i++)
-            for (unsigned int j=0; j<derivDim; j++)
+        for (unsigned int i = 0; i < vSrc.size(); i++)
+        {
+            for (unsigned int j = 0; j < derivDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue(vSrc[i],j,tmp);
+                DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
                 dest->set(offset + i * derivDim + j, tmp);
             }
+        }
+
         offset += vSrc.size() * derivDim;
     }
 }
@@ -1043,12 +1151,12 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
         helper::WriteAccessor<VecCoord> vDest = *getVecCoord(dest.index);
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
-        for (unsigned int i=0; i<vDest.size(); i++)
+        for (unsigned int i = 0; i < vDest.size(); i++)
         {
-            for (unsigned int j=0; j<coordDim; j++)
+            for (unsigned int j = 0; j < coordDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Coord>::getValue(vDest[i],j,tmp);
+                DataTypeInfo<Coord>::getValue(vDest[i], j, tmp);
                 DataTypeInfo<Coord>::setValue(vDest[i], j, tmp + src->element(offset + i * coordDim + j));
             }
         }
@@ -1061,13 +1169,15 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
         helper::WriteAccessor<VecDeriv> vDest = *getVecDeriv(dest.index);
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
 
-        for (unsigned int i=0; i<vDest.size(); i++)
-            for (unsigned int j=0; j<derivDim; j++)
+        for (unsigned int i = 0; i < vDest.size(); i++)
+        {
+            for (unsigned int j = 0; j < derivDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue(vDest[i],j,tmp);
+                DataTypeInfo<Deriv>::getValue(vDest[i], j, tmp);
                 DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(offset + i * derivDim + j));
             }
+        }
 
         offset += vDest.size() * derivDim;
     }
@@ -1086,7 +1196,6 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addVectorToState(VecId dest, d
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
 {
-
     if (dest.type == VecId::V_COORD)
     {
         helper::WriteAccessor<VecCoord> vDest = *getVecCoord(dest.index);
@@ -1120,17 +1229,19 @@ void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::Base
         }
         offset += nbEntries;
     }
-
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addDxToCollisionModel()
 {
-    helper::WriteAccessor<VecCoord> x = *this->x;
-    helper::ReadAccessor<VecCoord> xfree = *this->xfree;
-    helper::ReadAccessor<VecDeriv> dx = *this->dx;
-    for (unsigned int i=0; i < xfree.size(); i++)
-        x[i] = xfree[i] + dx[i];
+    helper::WriteAccessor< VecCoord > x_wa = *(x.beginEdit());
+    helper::ReadAccessor< VecCoord > xfree_ra = xfree.getValue();
+    helper::ReadAccessor< VecDeriv > dx_ra = dx.getValue();
+
+    for (unsigned int i = 0; i < xfree_ra.size(); i++)
+    {
+        x_wa[i] = xfree_ra[i] + dx_ra[i];
+    }
 }
 
 template <class DataTypes>
@@ -1141,20 +1252,21 @@ void MechanicalObject<DataTypes>::init()
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    _topology = this->getContext()->getMeshTopology();
+    m_topology = this->getContext()->getMeshTopology();
 
-    f_X->beginEdit();
+    /*f_X->beginEdit();
     f_V->beginEdit();
     f_F->beginEdit();
     f_Dx->beginEdit();
     f_Xfree->beginEdit();
     f_Vfree->beginEdit();
-    f_X0->beginEdit();
+    f_X0->beginEdit();*/
 
     //case if X0 has been set but not X
     if (getX0()->size() > getX()->size())
     {
-        *x = *x0;
+        //*x = *x0;
+        x.setValue(x0.getValue());
     }
 
     if (getX()->size() != (std::size_t)vsize || getV()->size() != (std::size_t)vsize)
@@ -1206,10 +1318,10 @@ void MechanicalObject<DataTypes>::init()
             else
             {
 
-                if (_topology!=NULL && _topology->hasPos() && _topology->getContext() == this->getContext())
+                if (m_topology != NULL && m_topology->hasPos() && m_topology->getContext() == this->getContext())
                 {
-                    int nbp = _topology->getNbPoints();
-                    //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << _topology->getName() <<std::endl;
+                    int nbp = m_topology->getNbPoints();
+                    //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
                     // copy the last specified velocity to all points
                     if (getV()->size() >= 1 && getV()->size() < (unsigned)nbp)
                     {
@@ -1223,7 +1335,7 @@ void MechanicalObject<DataTypes>::init()
                     for (int i=0; i<nbp; i++)
                     {
                         (*getX())[i] = Coord();
-                        DataTypes::set((*getX())[i], _topology->getPX(i), _topology->getPY(i), _topology->getPZ(i));
+                        DataTypes::set((*getX())[i], m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
                     }
 
                 }
@@ -1233,23 +1345,34 @@ void MechanicalObject<DataTypes>::init()
 
     reinit();
 
-    if (v0 == NULL) this->v0 = new VecDeriv;
-    *this->v0 = *v;
+    if (v0 == NULL)
+    {
+        this->v0 = new VecDeriv;
+    }
+
+//	*this->v0 = *v;
+    *this->v0 = v.getValue();
+
     // free position = position
-    *this->xfree = *x;
+//	*this->xfree = *x;
+    this->xfree.setValue(x.getValue());
+
+    VecCoord *x0_edit = x0.beginEdit();
 
     //Rest position
-    if (x0->size() == 0)
+    if (x0_edit->size() == 0)
     {
-        *x0 = *x;
+        //	*x0 = *x;
+        x0.setValue(x.getValue());
         if (restScale.getValue() != (Real)1)
         {
             Real s = (Real)restScale.getValue();
-            for (unsigned int i=0; i<x0->size(); i++)
-                (*x0)[i] *= s;
+            for (unsigned int i=0; i<x0_edit->size(); i++)
+                (*x0_edit)[i] *= s;
         }
     }
 
+    x0.endEdit();
 
     if (rotation2.getValue()[0]!=0.0 || rotation2.getValue()[1]!=0.0 || rotation2.getValue()[2]!=0.0)
     {
@@ -1261,18 +1384,18 @@ void MechanicalObject<DataTypes>::init()
         this->applyTranslation( translation2.getValue()[0],translation2.getValue()[1],translation2.getValue()[2]);
     }
 
-    initialized = true;
+    m_initialized = true;
 
     if (f_reserve.getValue() > 0)
         reserve(f_reserve.getValue());
 
-    f_X->endEdit();
+    /*f_X->endEdit();
     f_V->endEdit();
     f_F->endEdit();
     f_Dx->endEdit();
     f_Xfree->endEdit();
     f_Vfree->endEdit();
-    f_X0->endEdit();
+    f_X0->endEdit();*/
 }
 
 
@@ -1280,7 +1403,8 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
     Vector3 p0;
-    sofa::component::topology::RegularGridTopology *grid; this->getContext()->get(grid, BaseContext::Local);
+    sofa::component::topology::RegularGridTopology *grid;
+    this->getContext()->get(grid, BaseContext::Local);
     if (grid) p0 = grid->getP0();
 
     if (scale.getValue() != Vector3(1.0,1.0,1.0))
@@ -1321,7 +1445,8 @@ void MechanicalObject<DataTypes>::storeResetState()
 {
     // Save initial state for reset button
     if (reset_position == NULL) this->reset_position = new VecCoord;
-    *this->reset_position = *x;
+//	*this->reset_position = *x;
+    *this->reset_position = x.getValue();
 }
 
 //
@@ -1331,7 +1456,9 @@ void MechanicalObject<DataTypes>::storeResetState()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
-    if (reset_position == NULL)        return;
+    if (reset_position == NULL)
+        return;
+
     // Back to initial state
     this->resize(reset_position->size());
     //std::cout << this->getName() << ": reset X"<<std::endl;
@@ -1342,8 +1469,13 @@ void MechanicalObject<DataTypes>::reset()
 
     if (v0 == NULL)
     {
-        for( unsigned int i=0; i<this->v->size(); ++i )
-            (*this->v)[i] = Deriv();
+        VecDeriv *vEdit = this->v.beginEdit();
+
+        for( unsigned int i = 0; i < vEdit->size(); ++i )
+            (*vEdit)[i] = Deriv();
+
+        v.endEdit();
+
         return;
     }
 
@@ -1351,6 +1483,7 @@ void MechanicalObject<DataTypes>::reset()
 
     //std::cout << this->getName() << ": reset Xfree"<<std::endl;
     //*this->xfree = *x;
+
     *this->getVecCoord(VecId::freePosition().index) = *this->getVecCoord(VecId::position().index);
     //std::cout << this->getName() << ": reset Vfree"<<std::endl;
     //*this->vfree = *v;
@@ -1362,18 +1495,28 @@ void MechanicalObject<DataTypes>::writeX(std::ostream &out)
 {
     out << *getX();
 }
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::readX(std::istream &in)
 {
     //in >> *getX(); //Modified to handle a modification of the number of Dofs. Problem to resolve: how to modify the containers to handle this...
     Coord pos;
-    int i=0;
+    int i = 0;
+
+    VecCoord *xEdit = x.beginEdit();
+
     while (in >> pos)
     {
-        if (i>= getSize()) resize(i+1);
-        (*x)[i++]=pos;
+        if (i >= getSize())
+            resize(i+1);
+
+        (*xEdit)[i++] = pos;
     }
-    if (i<getSize()) resize(i);
+
+    x.endEdit();
+
+    if (i < getSize())
+        resize(i);
 }
 
 template <class DataTypes>
@@ -1394,7 +1537,7 @@ double MechanicalObject<DataTypes>::compareX(std::istream &in)
     unsigned int count=0;
     while (compareX_ref >> value_ref && compareX_cur >> value_cur )
     {
-// /* if ( fabs(value_ref-value_cur) != 0) */std::cout << " Eroor ! " << fabs(value_ref-value_cur) << " for " << this->getName() << "at time: " << this->getContext()->getTime() << " between " << value_ref << " && " << value_cur << "\n";
+        // /* if ( fabs(value_ref-value_cur) != 0) */std::cout << " Eroor ! " << fabs(value_ref-value_cur) << " for " << this->getName() << "at time: " << this->getContext()->getTime() << " between " << value_ref << " && " << value_cur << "\n";
         error += fabs(value_ref-value_cur);
         count ++;
     }
@@ -1406,19 +1549,27 @@ void MechanicalObject<DataTypes>::writeV(std::ostream &out)
 {
     out << *getV();
 }
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::readV(std::istream &in)
 {
-    //in >> *getV();
-    Deriv pos;
-    int i=0;
-    while (in >> pos)
-    {
-        if (i>= getSize()) resize(i+1);
-        (*v)[i++]=pos;
-    }
-    if (i<getSize()) resize(i);
+    Deriv vel;
+    int i = 0;
 
+    VecDeriv *vEdit = v.beginEdit();
+
+    while (in >> vel)
+    {
+        if (i >= getSize())
+            resize(i+1);
+
+        (*vEdit)[i++] = vel;
+    }
+
+    v.endEdit();
+
+    if (i < getSize())
+        resize(i);
 }
 
 template <class DataTypes>
@@ -1450,15 +1601,15 @@ void MechanicalObject<DataTypes>::writeF(std::ostream &out)
 {
     out << *getF();
 }
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::writeDx(std::ostream &out)
 {
     out << *getDx();
 }
 
-
 template <class DataTypes>
-void MechanicalObject<DataTypes>::writeState( std::ostream& out )
+void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 {
     writeX(out); out << " "; writeV(out);
 }
@@ -1466,14 +1617,14 @@ void MechanicalObject<DataTypes>::writeState( std::ostream& out )
 template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
 {
-    _forceId = VecId::internalForce();
+    m_forceId = VecId::internalForce();
     this->forceMask.activate(false);
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
 {
-    _forceId = VecId::externalForce();
+    m_forceId = VecId::externalForce();
     getVecDeriv(VecId::externalForce().index )->clear();
 
     this->forceMask.clear();
@@ -1482,7 +1633,8 @@ void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
 #ifdef SOFA_SMP
     BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**this->externalForces,0);
 #else
-    this->externalForces->clear();
+    this->externalForces.beginEdit()->clear();
+    this->externalForces.endEdit();
 #endif
 }
 
@@ -1497,8 +1649,8 @@ void MechanicalObject<DataTypes>::accumulateForce()
 #else
     if (!getVecDeriv(VecId::externalForce().index)->empty())
     {
-        helper::WriteAccessor<VecDeriv> f = *getF();
-        helper::ReadAccessor<VecDeriv> externalForces = *getVecDeriv(VecId::externalForce().index);
+        helper::WriteAccessor< VecDeriv > f = *getF();
+        helper::ReadAccessor< VecDeriv > externalForces = *getVecDeriv(VecId::externalForce().index);
 
         if (!this->forceMask.isInUse())
         {
@@ -1508,11 +1660,11 @@ void MechanicalObject<DataTypes>::accumulateForce()
         else
         {
             typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
+            const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
             ParticleMask::InternalStorage::const_iterator it;
-            for (it=indices.begin(); it!=indices.end(); it++)
+            for (it = indices.begin(); it != indices.end(); it++)
             {
-                const int i=(*it);
+                const int i = (*it);
                 f[i] += externalForces[i];
             }
         }
@@ -1521,16 +1673,17 @@ void MechanicalObject<DataTypes>::accumulateForce()
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecCoord(unsigned int index, VecCoord* v)
+void MechanicalObject<DataTypes>::setVecCoord(unsigned int index, Data< VecCoord > *v)
 {
-    if (index>=vectorsCoord.size())
+    if (index >= vectorsCoord.size())
     {
-        vectorsCoord.resize(index+1,0);
+        vectorsCoord.resize(index + 1, 0);
 #ifdef SOFA_SMP
-        vectorsCoordSharedAllocated.resize (index + 1);
+        vectorsCoordSharedAllocated.resize(index + 1);
 #endif
 
     }
+
     vectorsCoord[index] = v;
 #ifdef SOFA_SMP
     vectorsCoordSharedAllocated[index] = true;
@@ -1538,16 +1691,17 @@ void MechanicalObject<DataTypes>::setVecCoord(unsigned int index, VecCoord* v)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, VecDeriv* v)
+void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, Data< VecDeriv > *v)
 {
-    if (index>=vectorsDeriv.size())
+    if (index >= vectorsDeriv.size())
     {
-        vectorsDeriv.resize(index+1,0);
+        vectorsDeriv.resize(index + 1, 0);
 #ifdef SOFA_SMP
-        vectorsDerivSharedAllocated.resize (index + 1);
+        vectorsDerivSharedAllocated.resize(index + 1);
 #endif
 
     }
+
     vectorsDeriv[index] = v;
 #ifdef SOFA_SMP
     vectorsDerivSharedAllocated[index] = true;
@@ -1556,10 +1710,13 @@ void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, VecDeriv* v)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecConst(unsigned int index, VecConst* v)
+void MechanicalObject<DataTypes>::setVecConst(unsigned int index, Data < VecConst > *v)
 {
-    if (index>=vectorsConst.size())
-        vectorsConst.resize(index+1,0);
+    if (index >= vectorsConst.size())
+    {
+        vectorsConst.resize(index + 1, 0);
+    }
+
     vectorsConst[index] = v;
 }
 
@@ -1567,39 +1724,45 @@ void MechanicalObject<DataTypes>::setVecConst(unsigned int index, VecConst* v)
 template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
 {
-
 #ifdef SOFA_SMP_NUMA
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    if (index>=vectorsCoord.size())
+    if (index >= vectorsCoord.size())
     {
-        vectorsCoord.resize(index+1,0);
+        vectorsCoord.resize(index + 1, 0);
 #ifdef SOFA_SMP
-        vectorsCoordSharedAllocated.resize (index + 1);
+        vectorsCoordSharedAllocated.resize(index + 1);
 #endif
     }
-    if (vectorsCoord[index]==NULL)
+
+    if (vectorsCoord[index] == NULL)
     {
-        vectorsCoord[index] = new VecCoord;
+        vectorsCoord[index] = new Data< VecCoord >;
 #ifdef SOFA_SMP
         vectorsCoordSharedAllocated[index]=true;
 #endif
         if (f_reserve.getValue() > 0)
-            vectorsCoord[index]->reserve(f_reserve.getValue());
-
+        {
+            vectorsCoord[index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsCoord[index]->endEdit();
+        }
     }
-    return vectorsCoord[index];
+
+    return vectorsCoord[index]->beginEdit();
+    // @TODO endEdit has to be called.
 }
 
 template<class DataTypes>
 const typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index) const
 {
-    if (index>=vectorsCoord.size())
+    if (index >= vectorsCoord.size())
         return NULL;
-    if (vectorsCoord[index]==NULL)
+
+    if (vectorsCoord[index] == NULL)
         return NULL;
-    return vectorsCoord[index];
+
+    return &(vectorsCoord[index]->getValue());
 }
 
 template<class DataTypes>
@@ -1609,56 +1772,65 @@ typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::get
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    if (index>=vectorsDeriv.size())
+    if (index >= vectorsDeriv.size())
     {
-        vectorsDeriv.resize(index+1,0);
+        vectorsDeriv.resize(index + 1, 0);
 #ifdef SOFA_SMP
-        vectorsDerivSharedAllocated.resize (index + 1);
+        vectorsDerivSharedAllocated.resize(index + 1);
 #endif
     }
-    if (vectorsDeriv[index]==NULL)
+
+    if (vectorsDeriv[index] == NULL)
     {
-        vectorsDeriv[index] = new VecDeriv;
+        vectorsDeriv[index] = new Data< VecDeriv >;
 #ifdef SOFA_SMP
-        vectorsDerivSharedAllocated[index]=true;
+        vectorsDerivSharedAllocated[index] = true;
 #endif
         if (f_reserve.getValue() > 0)
-            vectorsDeriv[index]->reserve(f_reserve.getValue());
+        {
+            vectorsDeriv[index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsDeriv[index]->endEdit();
+        }
     }
-    return vectorsDeriv[index];
+
+    return vectorsDeriv[index]->beginEdit();
+    // @TODO endEdit has to be called.
 }
 
 template<class DataTypes>
 const typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index) const
 {
-    if (index>=vectorsDeriv.size())
-        return NULL;
-    if (vectorsDeriv[index]==NULL)
+    if (index >= vectorsDeriv.size())
         return NULL;
 
-    return vectorsDeriv[index];
+    if (vectorsDeriv[index] == NULL)
+        return NULL;
+
+    return &(vectorsDeriv[index]->getValue());
 }
 
 template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index)
 {
-    if (index>=vectorsConst.size())
-        vectorsConst.resize(index+1,0);
-    if (vectorsConst[index]==NULL)
-        vectorsConst[index] = new VecConst;
+    if (index >= vectorsConst.size())
+        vectorsConst.resize(index + 1, 0);
 
-    return vectorsConst[index];
+    if (vectorsConst[index] == NULL)
+        vectorsConst[index] = new Data< VecConst >;
+
+    return vectorsConst[index]->beginEdit();
 }
 
 template<class DataTypes>
 const typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index) const
 {
-    if (index>=vectorsConst.size())
-        return NULL;
-    if (vectorsConst[index]==NULL)
+    if (index >= vectorsConst.size())
         return NULL;
 
-    return vectorsConst[index];
+    if (vectorsConst[index] == NULL)
+        return NULL;
+
+    return &(vectorsConst[index]->getValue());
 }
 
 template <class DataTypes>
@@ -1670,7 +1842,7 @@ void MechanicalObject<DataTypes>::vAvail(VecId& v)
 #ifdef SOFA_SMP
             if (vectorsCoord[i] &&   vectorsCoordSharedAllocated[i])
 #else
-            if ((vectorsCoord[i]) && ! vectorsCoord[i]->empty())
+            if ((vectorsCoord[i]) && !vectorsCoord[i]->getValue().empty())
 #endif
                 v.index = i+1;
     }
@@ -1680,7 +1852,7 @@ void MechanicalObject<DataTypes>::vAvail(VecId& v)
 #ifdef SOFA_SMP
             if (vectorsDeriv[i] != NULL &&vectorsDerivSharedAllocated[i])
 #else
-            if ((vectorsDeriv[i] != NULL) && ! (*vectorsDeriv[i]).empty())
+            if ((vectorsDeriv[i] != NULL) && !vectorsDeriv[i]->getValue().empty())
 #endif
                 v.index = i+1;
     }
@@ -1716,7 +1888,7 @@ void MechanicalObject<DataTypes>::vAlloc(VecId v)
         std::cerr << "Invalid alloc operation ("<<v<<")\n";
         return;
     }
-//vOp(v); // clear vector
+    //vOp(v); // clear vector
 }
 
 template <class DataTypes>
@@ -1728,7 +1900,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         vec->resize(0);
 
         // Check X is not pointing on the deleted Dynamic Vector
-        if (vec == x)
+        if (vec == &x.getValue())
         {
             if (this->f_printLog.getValue())
             {
@@ -1740,7 +1912,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         }
 
         // Check XFree is not pointing on the deleted Dynamic Vector
-        if (vec == xfree)
+        if (vec == &xfree.getValue())
         {
             if (this->f_printLog.getValue())
             {
@@ -1761,7 +1933,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         vec->resize(0);
 
         // Check V is not pointing on the deleted Dynamic Vector
-        if (vec == v)
+        if (vec == &v.getValue())
         {
             if (this->f_printLog.getValue())
             {
@@ -1773,7 +1945,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         }
 
         // Check VFree is not pointing on the deleted Dynamic Vector
-        if (vec == vfree)
+        if (vec == &vfree.getValue())
         {
             if (this->f_printLog.getValue())
             {
@@ -1797,7 +1969,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         }
 
         // Check InternalForces is not pointing on the deleted Dynamic Vector
-        if (vec == internalForces)
+        if (vec == &internalForces.getValue())
         {
             if (this->f_printLog.getValue())
             {
@@ -1809,7 +1981,7 @@ void MechanicalObject<DataTypes>::vFree(VecId vId)
         }
 
         // Check ExternalForces is not pointing on the deleted Dynamic Vector
-        if (vec == externalForces)
+        if (vec == &externalForces.getValue())
         {
             if (this->f_printLog.getValue())
             {
@@ -2299,104 +2471,103 @@ double MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setX(VecId v)
+void MechanicalObject<DataTypes>::setX(VecId vId)
 {
-    if (v.type == VecId::V_COORD)
+    if (vId.type == VecId::V_COORD)
     {
         if (this->f_printLog.getValue() == true)
         {
-            std::cout<<"setX ("<<v.index<<") is called"<<std::endl;
+            std::cout << "setX (" << vId.index << ") is called" << std::endl;
         }
-        this->x = getVecCoord(v.index);
+
+        this->m_posId = vId;
     }
     else
     {
-        std::cerr << "Invalid setX operation ("<<v<<")\n";
+        std::cerr << "Invalid setX operation (" << vId << ")\n";
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setXfree(VecId v)
+void MechanicalObject<DataTypes>::setXfree(VecId vId)
 {
-    if (v.type == VecId::V_COORD)
+    if (vId.type == VecId::V_COORD)
     {
         if (this->f_printLog.getValue() == true)
         {
-            std::cout<<"setXfree ("<<v.index<<") is called"<<std::endl;
+            std::cout << "setXfree (" << vId.index << ") is called" << std::endl;
         }
 
-        this->xfree = getVecCoord(v.index);
+        this->m_freePosId = vId;
     }
     else
     {
-        std::cerr << "Invalid setXfree operation ("<<v<<")\n";
+        std::cerr << "Invalid setXfree operation (" << vId << ")\n";
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVfree(VecId v)
+void MechanicalObject<DataTypes>::setVfree(VecId vId)
 {
-    if (v.type == VecId::V_DERIV)
+    if (vId.type == VecId::V_DERIV)
     {
-        this->vfree = getVecDeriv(v.index);
+        this->m_freeVelId = vId;
     }
     else
     {
-        std::cerr << "Invalid setVfree operation ("<<v<<")\n";
+        std::cerr << "Invalid setVfree operation (" << vId << ")\n";
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setV(VecId v)
+void MechanicalObject<DataTypes>::setV(VecId vId)
 {
-    if (v.type == VecId::V_DERIV)
+    if (vId.type == VecId::V_DERIV)
     {
-        this->v = getVecDeriv(v.index);
+        this->m_velId = vId;
     }
     else
     {
-        std::cerr << "Invalid setV operation ("<<v<<")\n";
+        std::cerr << "Invalid setV operation (" << vId << ")\n";
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setF(VecId v)
+void MechanicalObject<DataTypes>::setF(VecId vId)
 {
-    if (v.type == VecId::V_DERIV)
+    if (vId.type == VecId::V_DERIV)
     {
-        //	std::cout << "setF("<< v.index << ")\n";
-        this->_forceId = v;
+        this->m_forceId = vId;
     }
     else
     {
-        std::cerr << "Invalid setF operation ("<<v<<")\n";
+        std::cerr << "Invalid setF operation (" << vId << ")\n";
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setDx(VecId v)
+void MechanicalObject<DataTypes>::setDx(VecId vId)
 {
-    if (v.type == VecId::V_DERIV)
+    if (vId.type == VecId::V_DERIV)
     {
-        this->dx = getVecDeriv(v.index);
+        this->m_dxId = vId;
     }
     else
     {
-        std::cerr << "Invalid setDx operation ("<<v<<")\n";
+        std::cerr << "Invalid setDx operation (" << vId << ")\n";
     }
 }
 
-
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setC(VecId v)
+void MechanicalObject<DataTypes>::setC(VecId vId)
 {
-    if (v.type == VecId::V_CONST)
+    if (vId.type == VecId::V_CONST)
     {
-        this->c = getVecConst(v.index);
+        this->m_constraintId = vId;
     }
     else
     {
-        std::cerr << "Invalid setC operation ("<<v<<")\n";
+        std::cerr << "Invalid setC operation (" << vId << ")\n";
     }
 }
 
@@ -2440,31 +2611,33 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firs
 #endif
 
 template <class DataTypes>
-unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime( VecId v,unsigned count, unsigned time, std::ostream& out)
+unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(VecId v, unsigned count, unsigned time, std::ostream& out)
 {
-
-    if( v.type==VecId::V_COORD )
+    if (v.type == VecId::V_COORD)
     {
-        VecCoord& x= *getVecCoord(v.index);
+        VecCoord& x = *getVecCoord(v.index);
 
-        for( unsigned i=0; i<x.size(); ++i )
+        for (unsigned i = 0; i < x.size(); ++i)
         {
-            out<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
+            out << count + i << "\t" << time << "\t" << x[i] << std::endl;
         }
-        out<<std::endl<<std::endl;
+        out << std::endl << std::endl;
         return x.size();
     }
-    else if( v.type==VecId::V_DERIV )
+    else if (v.type == VecId::V_DERIV)
     {
-        VecDeriv& x= *getVecDeriv(v.index);
-        for( unsigned i=0; i<x.size(); ++i )
-            out<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
-        out<<std::endl<<std::endl;
+        VecDeriv& x = *getVecDeriv(v.index);
+
+        for (unsigned i = 0; i < x.size(); ++i)
+        {
+            out << count + i << "\t" << time << "\t" << x[i] << std::endl;
+        }
+        out << std::endl << std::endl;
 
         return x.size();
     }
     else
-        out<<"MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = "<<v.type<<std::endl;
+        out << "MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = " << v.type << std::endl;
 
     return 0;
 }
@@ -2474,20 +2647,25 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce()
 {
 #ifdef SOFA_SMP
-    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**getF());
+    BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **getF());
 #else
-    helper::WriteAccessor<VecDeriv> f= *getF();
+    helper::WriteAccessor<VecDeriv> f = *getF();
+
     if (!this->forceMask.isInUse())
     {
-        for( unsigned i=0; i<f.size(); ++i )
+        for (unsigned i = 0; i < f.size(); ++i)
+        {
             f[i] = Deriv();
+        }
     }
     else
     {
         typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
+
+        const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
         ParticleMask::InternalStorage::const_iterator it;
-        for (it=indices.begin(); it!=indices.end(); it++)
+
+        for (it = indices.begin(); it != indices.end(); it++)
         {
             f[(*it)] = Deriv();
         }
@@ -2498,13 +2676,15 @@ void MechanicalObject<DataTypes>::resetForce()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetAcc()
 {
-
 #ifdef SOFA_SMP
-    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**getDx());
+    BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **getDx());
 #else
     helper::WriteAccessor<VecDeriv> a= *getDx();
-    for( unsigned i=0; i<a.size(); ++i )
+
+    for (unsigned i = 0; i < a.size(); ++i)
+    {
         a[i] = Deriv();
+    }
 #endif
 }
 
@@ -2541,12 +2721,12 @@ sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId
 template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering)
 {
-    for (unsigned int i=0; i<constraintId.size(); ++i)
+    for (unsigned int i = 0; i < constraintId.size(); ++i)
         constraintId[i] = renumbering[constraintId[i]];
 }
 
 template <class DataTypes>
-std::list<core::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
+std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
 {
     const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
     assert( indices.size() > 0 );
@@ -2564,15 +2744,13 @@ std::list<core::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject
     typedef std::list<unsigned int> indices_t;
 
     unsigned int block_row = 0;
-    for(indices_t::const_iterator rowIt = indices.begin();
-        rowIt != indices.end(); ++rowIt, ++block_row)
+    for(indices_t::const_iterator rowIt = indices.begin(); rowIt != indices.end(); ++rowIt, ++block_row)
     {
-
-        unsigned int row=getIdxConstraintFromId(*rowIt);
+        unsigned int row = getIdxConstraintFromId(*rowIt);
 
         // for all sparse data in the row
-        assert( row < c->size() );
-        std::pair<ConstraintIterator,ConstraintIterator> range = (*c)[ row ].data();
+        assert( row < c.getValue().size() );
+        std::pair< ConstraintIterator, ConstraintIterator > range = c.getValue()[row].data();
         ConstraintIterator chunk = range.first, last = range.second;
         for( ; chunk != last; ++chunk)
         {
@@ -2597,9 +2775,10 @@ std::list<core::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject
             matrix_t& block = *blocks[column];
 
             // fill the right line of the block
-            for( unsigned int i = 0; i < dimensionDeriv; ++i )
+            for (unsigned int i = 0; i < dimensionDeriv; ++i)
             {
-                SReal value; defaulttype::DataTypeInfo< Deriv >::getValue(chunk->second, i, value); // somebody should pay for this
+                SReal value;
+                defaulttype::DataTypeInfo< Deriv >::getValue(chunk->second, i, value); // somebody should pay for this
                 block.set(block_row, i, value);
             }
         }
@@ -2610,7 +2789,7 @@ std::list<core::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject
     for(blocks_t::const_iterator b = blocks.begin(); b != blocks.end(); ++b)
     {
         res.push_back( ConstraintBlock( b->first, b->second ) );
-    };
+    }
 
     return res;
 }
@@ -2618,19 +2797,19 @@ std::list<core::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject
 template <class DataTypes>
 SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id)
 {
-    SReal result=0;
-    SparseVecDeriv &value=(*c)[getIdxConstraintFromId(line)];
+    SReal result = 0;
+    SparseVecDeriv &value = (*c.beginEdit())[getIdxConstraintFromId(line)];
 
-    VecDeriv *data=NULL;
+    VecDeriv *data = 0;
 
     //Maybe we should extend this to restvelocity
     if (id == VecId::velocity())
     {
-        data = v;
+        data = v.beginEdit();
     }
     else if (id == VecId::dx())
     {
-        data = dx;
+        data = dx.beginEdit();
     }
     else
     {
@@ -2638,11 +2817,14 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned 
         return 0;
     }
 
-    std::pair<SparseVecDerivIterator,SparseVecDerivIterator> range=value.data();
-    for (SparseVecDerivIterator it=range.first; it!=range.second; ++it)
+    std::pair< SparseVecDerivIterator, SparseVecDerivIterator > range = value.data();
+
+    for (SparseVecDerivIterator it = range.first; it != range.second; ++it)
     {
-        result += it->second*(*data)[it->first];
+        result += it->second * (*data)[it->first];
     }
+
+    c.endEdit();
 
     return result;
 }
@@ -2652,17 +2834,26 @@ template <class DataTypes>
 bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 {
     const VecCoord& x = *getX();
-    if (x.size() <= 0) return false;
+    const unsigned int xSize = x.size();
+
+    if (xSize <= 0)
+        return false;
+
     Real p[3] = {0,0,0};
-    for (unsigned int i=0; i<x.size(); i++)
+
+    for (unsigned int i = 0; i < xSize; i++)
     {
         DataTypes::get(p[0], p[1], p[2], x[i]);
-        for (int c=0; c<3; c++)
+        for (int c = 0; c < 3; c++)
         {
-            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+            if (p[c] > maxBBox[c])
+                maxBBox[c] = p[c];
+
+            if (p[c] < minBBox[c])
+                minBBox[c] = p[c];
         }
     }
+
     return true;
 }
 
@@ -2788,8 +2979,8 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                 >(this,**getVecCoord (v.index), (unsigned) (this->vsize));
 
                 /*unsigned int vt=ExecutionGraph::add_operation("v=0");
-                   ExecutionGraph::read_var(vt,vv);
-                   ExecutionGraph::write_var(vt,vv); */
+                ExecutionGraph::read_var(vt,vv);
+                ExecutionGraph::write_var(vt,vv); */
 
 
 
@@ -2801,12 +2992,12 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                 BaseObject::Task < vClear < VecCoord,Coord >
                 >(this,**getVecDeriv (v.index), (unsigned) (this->vsize));
                 /*unsigned int vt=ExecutionGraph::add_operation("v=0");
-                   ExecutionGraph::read_var(vt,vv);
-                   ExecutionGraph::write_var(vt,vv);
-                   vv->resize(this->this->vsize);
-                   for (unsigned int i=0; i<vv->size(); i++)
-                   (*vv)[i] = Deriv();
-                 */
+                ExecutionGraph::read_var(vt,vv);
+                ExecutionGraph::write_var(vt,vv);
+                vv->resize(this->this->vsize);
+                for (unsigned int i=0; i<vv->size(); i++)
+                (*vv)[i] = Deriv();
+                */
             }
 
         }
@@ -2826,19 +3017,19 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                 {
 
                     /*VecCoord* vv = getVecCoord(v.index);
-                       unsigned int vt=ExecutionGraph::add_operation("v*=f");
-                       ExecutionGraph::read_var(vt,vv);
-                       ExecutionGraph::write_var(vt,vv); */
+                    unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                    ExecutionGraph::read_var(vt,vv);
+                    ExecutionGraph::write_var(vt,vv); */
                     BaseObject::Task < vTEq < VecCoord, Real >
                     >(this,**getVecCoord (v.index), f);
                 }
                 else
                 {
                     /*            VecDeriv* vv = getVecDeriv(v.index);
-                       unsigned int vt=ExecutionGraph::add_operation("v*=f");
-                       ExecutionGraph::read_var(vt,vv);
-                       ExecutionGraph::write_var(vt,vv);
-                     */
+                    unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                    ExecutionGraph::read_var(vt,vv);
+                    ExecutionGraph::write_var(vt,vv);
+                    */
 
 
 
@@ -3178,7 +3369,7 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
 template < class DataTypes >
 void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, VecId b)
 {
-//      double r = 0.0;
+    //      double r = 0.0;
     if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
     {
         if (a.index == b.index)
@@ -3320,19 +3511,19 @@ void MechanicalObject < DataTypes >::printDOF (VecId /*v*/,
         std::
         ostream & /*out*/, int /* firstIndex */, int /* range */) const
 {
-// 	if (v.type == VecId::V_COORD)
-// 	{
-// 		VecCoord & x = *getVecCoord (v.index);
-// 		Task < printDOFSh < VecCoord > >(this,*x);
-// 	}
-// 	else if (v.type == VecId::V_DERIV)
-// 	{
-// 		VecDeriv & x = *getVecDeriv (v.index);
-// 		Task < printDOFSh < VecDeriv > >(this,*x);
-// 	}
-// 	else
-// 		out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
-// 			v.type << std::endl;
+    // 	if (v.type == VecId::V_COORD)
+    // 	{
+    // 		VecCoord & x = *getVecCoord (v.index);
+    // 		Task < printDOFSh < VecCoord > >(this,*x);
+    // 	}
+    // 	else if (v.type == VecId::V_DERIV)
+    // 	{
+    // 		VecDeriv & x = *getVecDeriv (v.index);
+    // 		Task < printDOFSh < VecDeriv > >(this,*x);
+    // 	}
+    // 	else
+    // 		out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
+    // 			v.type << std::endl;
 
 }
 #endif
@@ -3374,18 +3565,25 @@ bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, doub
         return false;
 }
 
+
 template <class DataTypes>
 unsigned int  MechanicalObject<DataTypes>::getIdxConstraintFromId(unsigned int id) const
 {
-    for (unsigned int i=0; i<constraintId.size(); ++i) if (constraintId[i]==id) return i;
+    const unsigned int constraintIdSize = constraintId.size();
+
+    for (unsigned int i = 0; i < constraintIdSize; ++i)
+    {
+        if (constraintId[i] == id)
+            return i;
+    }
+
     serr << "Constraint Equation " << id << " Was not found!" << sendl;
+
     return 0;
 }
 
-//
-// Template specializations
 
-}
+} // namespace container
 
 } // namespace component
 
