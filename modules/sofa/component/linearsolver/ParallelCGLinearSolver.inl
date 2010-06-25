@@ -169,15 +169,25 @@ struct DivBeta
 template<class TMatrix, class TVector>
 void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 {
-    MultiVector pos(this, VecId::position());
-    MultiVector vel(this, VecId::velocity());
-    MultiVector f(this, VecId::force());
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printComment("ConjugateGradient");
+#endif
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("VectorAllocation");
+#endif
+
+    // -- solve the system using a conjugate gradient solution
+//    MultiVector pos(this, VecId::position());
+//    MultiVector vel(this, VecId::velocity());
+//    MultiVector f(this, VecId::force());
 //    MultiVector b2(this, VecId::V_DERIV);
     MultiVector p(this, VecId::V_DERIV);
     MultiVector q(this, VecId::V_DERIV);
+    MultiVector r(this, VecId::V_DERIV);
 //    MultiVector x2(this, VecId::V_DERIV);
 
-    // -- solve the system using a conjugate gradient solution
+
     OPERATION_BEGIN("Reset rho");
     BaseObject::Task<ResetRho>(**rho_1Sh,**rhoSh,**denSh);
     OPERATION_END();
@@ -191,13 +201,11 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
 
     v_clear( x );
 
-    MultiVector& r = b;
+    r = b;
 
     if ( verbose )
     {
         // cerr<<"CGLinearSolver, dt = "<< dt <<endl;
-        cerr<<"CGLinearSolver, initial x = "<< pos <<endl;
-        cerr<<"CGLinearSolver, initial v = "<< vel <<endl;
         cerr<<"CGLinearSolver, r0 = f0 = "<< b <<endl;
         //cerr<<"CGLinearSolver, r0 = "<< r <<endl;
     }
@@ -207,6 +215,15 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
 
 // BEGIN OF FIRST ITERATION
     r.dot(*rhoSh,r);
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("VectorAllocation");
+#endif
+#ifdef SOFA_DUMP_VISITOR_INFO
+    std::ostringstream comment;
+    comment << "Iteration_" << "1";
+    simulation::Visitor::printNode(comment.str());
+#endif
 
     p = r; //z;
 
@@ -236,11 +253,13 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
 
     }
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode(comment.str());
+#endif
 //END OF THE FIRST ITERATION
 
 //BEGIN LOOP
     Iterative::Loop::BeginLoop(f_maxIter.getValue()-1,breakCondition);
-
 
     BaseObject::Task<ResetDouble>(**rhoSh);
     r.dot(*rhoSh,r);
@@ -316,8 +335,6 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
     if ( verbose )
     {
         cerr<<"CGLinearSolver::solve, solution = "<<x<<endl;
-        cerr<<"CGLinearSolver, final x = "<< pos <<endl;
-        cerr<<"CGLinearSolver, final v = "<< vel <<endl;
     }
 }// ParallelCGLinearSolver::solve
 
