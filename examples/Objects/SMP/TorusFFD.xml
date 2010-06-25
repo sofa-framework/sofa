@@ -1,5 +1,6 @@
 <Node name="TorusFFD" processor="0">
-  <ParallelCGImplicitSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+	<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0" />
+  <ParallelCGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
 	<RegularGrid
 			nx="6" ny="2" nz="5"
 			xmin="-2.5" xmax="2.5"

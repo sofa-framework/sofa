@@ -56,7 +56,8 @@ for ($e=0;$e<$elems;$e++) {
 		</Node>
 	</Node>
 	<Node name="SquareCloth1" processor="0">
-		<ParallelCGImplicitSolver iterations="10" rayleighMass="0.2" threshold="0.000001"/>
+		<EulerImplicitSolver rayleighMass="0.2" />
+		<ParallelCGLinearSolver iterations="10" threshold="0.000001" />
 <?
 $colors=array("green", "yellow", "red", "cyan", "white", "magenta", "blue", "gray");
 $colors=array("green", "green", "green", "green", "green", "green", "green", "green");
@@ -75,7 +76,7 @@ $color = $colors[($elems-1-$i) % 8];
 			ymin="7" ymax="7"
 			zmin="<?=-12+$dz*$gz0[$i]?>" zmax="<?=-12+$dz*($gz0[$i]+$gnz[$i]-1)?>" />
 		<MechanicalObject />
-		<UniformMass mass="<?=$md?>" localRange="<?=$range?>" />-->
+		<UniformMass mass="<?=$md?>" localRange="<?=$range?>" />
 		<MeshSpringForceField name="Springs" stiffness="5000" damping="0" localRange="<?=$range?>"/>
 <?
 if($i==$elems-1){
@@ -107,7 +108,6 @@ if($gz0[$i]==$lz0[$i]){
 			xmin="12" xmax="-12"
 			ymin="7" ymax="7"
 			zmin="<?=-12+$dz*$lz0[$i]?>" zmax="<?=-12+$dz*$lz0[$i]?>" />
-			/>
 			<MechanicalObject />
 			<SphereModel radius="1.0" contactStiffness="1" group="1" />
 			<SubsetMapping />

@@ -33,7 +33,8 @@ $indices2 .= $i2 . " ";
 		</Node>
 	</Node>
 	<Node name="SquareCloth1" processor="0">
-		<ParallelCGImplicitSolver iterations="10" rayleighMass="0.05" threshold="0.000001"/>
+		<EulerImplicitSolver rayleighMass="0.05" />
+		<ParallelCGLinearSolver iterations="10" threshold="0.000001"/>
 <Node name="elem0" processor="0">
 		<RegularGrid
 			nx="100" ny="1" nz="<?=100/$elems?>"
