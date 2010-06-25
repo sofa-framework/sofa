@@ -38,14 +38,14 @@ namespace objectmodel
 
 void DataFileName::updatePath()
 {
-    fullpath = m_value.value();
+    fullpath = m_value.getValue();
     if (!fullpath.empty())
         helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
 }
 
 void DataFileNameVector::updatePath()
 {
-    fullpath = m_value.value();
+    fullpath = m_value.getValue();
     if (!fullpath.empty())
         for (unsigned int i=0 ; i<fullpath.size() ; i++)
             helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));

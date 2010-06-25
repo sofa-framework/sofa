@@ -41,9 +41,7 @@ template<>
 inline
 bool SOFA_CORE_API TData<std::string>::read( std::string& str )
 {
-    value() = str;
-    ++m_counter;
-    BaseData::setDirtyOutputs();
+    virtualSetValue(str);
     return true;
 }
 
@@ -54,18 +52,16 @@ bool SOFA_CORE_API TData<bool>::read( std::string& str )
 {
     if (str.empty())
         return false;
-
+    bool val;
     if (str[0] == 'T' || str[0] == 't')
-        value() = true;
+        val = true;
     else if (str[0] == 'F' || str[0] == 'f')
-        value() = false;
+        val = false;
     else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-        value() = (atoi(str.c_str()) != 0);
+        val = (atoi(str.c_str()) != 0);
     else
         return false;
-
-    ++m_counter;
-    BaseData::setDirtyOutputs();
+    virtualSetValue(val);
     return true;
 }
 

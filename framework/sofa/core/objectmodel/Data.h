@@ -84,30 +84,10 @@ public:
         return sofa::defaulttype::VirtualTypeInfo<T>::get();
     }
 
-    const T& virtualGetValue() const
-    {
-        this->updateIfDirty();
-        return value();
-    }
-
-    void virtualSetValue(const T& v)
-    {
-        ++this->m_counter;
-        value() = v;
-        BaseData::setDirtyOutputs();
-    }
-
-    virtual T* virtualBeginEdit()
-    {
-        this->updateIfDirty();
-        ++this->m_counter;
-        BaseData::setDirtyOutputs();
-        return &(value());
-    }
-
-    virtual void virtualEndEdit()
-    {
-    }
+    virtual const T& virtualGetValue() const = 0;
+    virtual void virtualSetValue(const T& v) = 0;
+    virtual T* virtualBeginEdit() = 0;
+    virtual void virtualEndEdit() = 0;
 
     /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
     virtual const void* getValueVoidPtr() const
@@ -136,15 +116,14 @@ public:
             return false;
         //serr<<"Field::read "<<s.c_str()<<sendl;
         std::istringstream istr( s.c_str() );
-        istr >> value();
+        istr >> *virtualBeginEdit();
+        virtualEndEdit();
         if( istr.fail() )
         {
             return false;
         }
         else
         {
-            ++this->m_counter;
-            BaseData::setDirtyOutputs();
             return true;
         }
     }
@@ -187,34 +166,18 @@ protected:
     {
         if (parent == parentData)
         {
-            value() = parentData->value();
-            ++this->m_counter;
+            virtualSetValue(parentData->virtualGetValue());
             return true;
         }
         else
             return BaseData::updateFromParentValue(parent);
     }
 
-    virtual const T& value() const = 0;
-    virtual T& value() = 0;
-
     TData<T>* parentData;
 };
 
 template <class T, bool COW>
-class DataContainer
-{
-public:
-    DataContainer() {}
-
-    virtual ~DataContainer() {std::cout << "destry datacontainer" << std::endl;}
-
-    T* beginEdit() {return NULL; }
-    void endEdit() {};
-    const T& value() const { return T(); }
-    T& value()  { return T(); }
-
-};
+class DataContainer;
 
 template <class T>
 class DataContainer<T, false>
@@ -223,27 +186,31 @@ protected:
     T data;
 public:
 
-    DataContainer(const DataContainer<T, false>& dc)
+    DataContainer()
+        : data(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
-        data = dc.value();
     }
 
     DataContainer(const T &value)
         : data(value)
     {
+    }
 
+    DataContainer(const DataContainer<T, false>& dc)
+        : data(dc.getValue())
+    {
     }
 
     DataContainer<T, false>& operator=(const DataContainer<T, false>& dc )
     {
-        data = dc.value();
+        data = dc.getValue();
         return *this;
     }
 
     T* beginEdit() { return &data; }
-    void endEdit() {};
-    const T& value() const { return data; }
-    T& value() { return data; }
+    void endEdit() {}
+    const T& getValue() const { return data; }
+//    T& value() { return data; }
 };
 
 
@@ -257,37 +224,33 @@ protected:
     T* data;
     Counter* cpt;
 public:
+
     DataContainer()
+        : data(new T(T())) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
+        , cpt(new Counter(1))
     {
-        cpt = new Counter;
-        *cpt = 1;
-        data = new T;
     }
 
     DataContainer(const T& value)
+        : data(new T(value))
+        , cpt(new Counter(1))
     {
-        cpt = new Counter;
-        *cpt = 1;
-        data = new T;
-        *data = value;
     }
 
     DataContainer(const DataContainer& dc)
+        : data(dc.data)
+        , cpt(dc.cpt)
     {
-        this->data = dc.data;
-        this->cpt = dc.cpt;
-
-        this->cpt++;
+        ++(*cpt);
     }
 
     ~DataContainer()
     {
-        if(*cpt < 1)
+        if ((--(*cpt)) == 0) // last ref to data
         {
             delete cpt;
             delete data;
         }
-        else *cpt--;
     }
 
     DataContainer<T, true>& operator=(const DataContainer<T, true>& dc )
@@ -295,15 +258,15 @@ public:
         //avoid self reference
         if(&dc != this)
         {
-            if(this->data && this->cpt && *(this->cpt) < 1)
+            if ((--(*cpt)) == 0) // last ref to data
             {
-                delete this->data;
-                delete this->cpt;
+                delete cpt;
+                delete data;
             }
             this->data = dc.data;
             this->cpt = dc.cpt;
 
-            *cpt++;
+            ++(*cpt);
         }
 
         return *this;
@@ -313,13 +276,14 @@ public:
     {
         if (*cpt > 1)
         {
-            *cpt--;
+            T* newData = new T(*data);
+            if ((--(*cpt)) == 0) // last ref to data, not that this can only happen if another thread released a reference between this test and the previous if condition
+            {
+                delete cpt;
+                delete data;
+            }
 
-            cpt = new Counter;
-            *cpt = 1;
-            T* newData;
-            newData = new T;
-            std::copy(data, data+sizeof(T),newData);
+            cpt = new Counter(1);
             data = newData;
         }
         return data;
@@ -327,18 +291,17 @@ public:
 
     void endEdit()
     {
+    }
 
-    };
-
-    const T& value() const
+    const T& getValue() const
     {
         return *data;
     }
 
-    T& value()
-    {
-        return *beginEdit();
-    }
+//    T& value()
+//    {
+//        return *beginEdit();
+//    }
 };
 
 
@@ -368,7 +331,6 @@ public:
      */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
-        , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
     }
 
@@ -403,7 +365,7 @@ public:
 
     Data(const Data& d)
         : TData<T>()
-        ,m_value(d.getValue())
+        , m_value(d.getValue())
     {
     }
 
@@ -431,8 +393,13 @@ public:
     inline const T& getValue() const
     {
         this->updateIfDirty();
-        return m_value.value();
+        return m_value.getValue();
     }
+
+    virtual const T& virtualGetValue() const { return getValue(); }
+    virtual void virtualSetValue(const T& v) { setValue(v); }
+    virtual T* virtualBeginEdit() { return beginEdit(); }
+    virtual void virtualEndEdit() { endEdit(); }
 
     inline friend std::ostream & operator << (std::ostream &out, const Data& df)
     {
@@ -460,19 +427,6 @@ protected:
     //T m_value;
     DataContainer<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> m_value;
     //DataContainer<T, false> m_value;
-
-    const T& value() const
-    {
-        this->updateIfDirty();
-
-        return m_value.value();
-    }
-
-    T& value()
-    {
-        this->updateIfDirty();
-        return m_value.value();
-    }
 };
 
 #if defined(WIN32) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
@@ -499,7 +453,7 @@ template<class T>
 inline
 void TData<T>::printValue( std::ostream& out=std::cout ) const
 {
-    out << value() << " ";
+    out << virtualGetValue() << " ";
 }
 
 /// General case for printing default value
@@ -508,7 +462,7 @@ inline
 std::string TData<T>::getValueString() const
 {
     std::ostringstream out;
-    out << value();
+    out << virtualGetValue();
     return out.str();
 }
 
@@ -516,7 +470,7 @@ template<class T>
 inline
 std::string TData<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&value());
+    return BaseData::typeName(&virtualGetValue());
 }
 
 
