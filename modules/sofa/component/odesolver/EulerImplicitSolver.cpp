@@ -186,6 +186,11 @@ void EulerImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanicalS
 #define SOFA_NO_VMULTIOP
 #endif
 
+#ifdef SOFA_SMP
+    // For SofaSMP we would need VMultiOp to be implemented in a SofaSMP compatible way
+#define SOFA_NO_VMULTIOP
+#endif
+
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if (firstOrder)
     {
