@@ -120,6 +120,8 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
 
     if (preconditioners.size()==0) return;
 
+    usePrecond = f_use_precond.getValue();
+
     if (first)   //We initialize all the preconditioners for the first step
     {
         for (unsigned int i=0; i<this->preconditioners.size(); ++i)
