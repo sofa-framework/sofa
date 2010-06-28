@@ -45,7 +45,7 @@
 //#endif
 
 #include "GenGraphForm.h"
-#include "Main.h"
+
 
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/glfont.h>

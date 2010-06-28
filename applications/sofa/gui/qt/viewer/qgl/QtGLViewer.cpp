@@ -47,7 +47,7 @@
 #include <sofa/gui/SofaGUI.h>
 #include <qevent.h>
 #include "GenGraphForm.h"
-#include "Main.h"
+
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
