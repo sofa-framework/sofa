@@ -80,8 +80,10 @@ void SPHFluidForceField<DataTypes>::init()
         particles[i].normal.clear();
         particles[i].curvature = 0;
     }
-    lastTime = this->getContext()->getTime();
+
+    lastTime = (Real)this->getContext()->getTime();
 }
+
 
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
@@ -94,7 +96,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     const Real d0 = density0.getValue();
     const int pE = pressureExponent.getValue();
     const Real k = pressureStiffness.getValue(); // /(pE); //*(Real)pow(d0,pE-1));
-    Real time = this->getContext()->getTime();
+    Real time = (Real)this->getContext()->getTime();
     Real dt = time - lastTime;
     lastTime = time;
 
