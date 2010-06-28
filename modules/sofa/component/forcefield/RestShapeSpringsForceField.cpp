@@ -41,132 +41,18 @@ SOFA_DECL_CLASS(RestShapeSpringsForceField)
 
 ///////////// SPECIALIZATION FOR RIGID TYPES //////////////
 
+
 #ifndef SOFA_FLOAT
-template <>
-void RestShapeSpringsForceField<Rigid3dTypes>::init()
-{
-
-    core::behavior::ForceField<Rigid3dTypes>::init();
-
-    if (points.getValue().size()==0)
-    {
-        VecIndex indices; // = points.getValue();
-        std::cout<<"in RestShapeSpringsForceField no point is defined, default case: points = all points "<<std::endl;
-
-        for (unsigned int i=0; i<(unsigned)this->mstate->getSize(); i++)
-        {
-            indices.push_back(i);
-        }
-        points.setValue(indices);
-
-    }
-    if(stiffness.getValue().size() == 0)
-    {
-        VecReal stiffs;
-        stiffs.push_back(100.0);
-        std::cout<<"in RestShapeSpringsForceField no stiffness is defined, assuming equal stiffness on each node, k = 100.0 "<<std::endl;
-        stiffness.setValue(stiffs);
-    }
-
-    if(stiffness.getValue().size() != points.getValue().size())
-    {
-        // The stiffness[0] is assigned to all points
-        const VecIndex& indices = points.getValue();
-        VecReal stiffs;
-        for (unsigned int i=0; i<indices.size(); i++)
-        {
-            stiffs.push_back(stiffness.getValue()[0]);
-        }
-        stiffness.setValue(stiffs);
-    }
-
-    if(angularStiffness.getValue().size() == 0)
-    {
-        VecReal Astiffs;
-        Astiffs.push_back(10.0);
-        std::cout<<"in RestShapeSpringsForceField no Angular stiffness is defined while using RigidTypes, assuming equal angular stiffness on each node, k = 10.0 "<<std::endl;
-        angularStiffness.setValue(Astiffs);
-    }
-
-    if(angularStiffness.getValue().size() != points.getValue().size())
-    {
-        // The stiffness[0] is assigned to all points
-        const VecIndex& indices = points.getValue();
-        VecReal Astiffs;
-        for (unsigned int i=0; i<indices.size(); i++)
-        {
-            Astiffs.push_back(angularStiffness.getValue()[0]);
-        }
-        angularStiffness.setValue(Astiffs);
-    }
-
-
-
-
-
-
-    const std::string path = external_rest_shape.getValue();
-    if (path.size()>0)
-    {
-        this->getContext()->get(restMState ,path  );
-    }
-    else
-        restMState = NULL;
-    //this->getContext()->get(restMState ,path  );
-
-    if(restMState == NULL)
-    {
-        if(!external_rest_shape.getValue().empty())
-            std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
-        useRestMState = false;
-        external_points.setValue(points.getValue());
-    }
-    else
-    {
-        std::cout<<"Mechanical state named "<<restMState->getName()<< " found"<<std::endl;
-        useRestMState = true;
-        if (external_points.getValue().size()==0)
-        {
-            VecIndex indices; // = points.getValue();
-            serr<<"in RestShapeSpringsForceField external_points undefined, external_points assigned automatically "<<sendl;
-
-            int pointSize = (int) points.getValue().size();
-            int restMstateSize = (int)  restMState->getSize();
-
-            if (pointSize > restMstateSize)
-                serr<<"ERROR in  RestShapeSpringsForceField<Rigid3fTypes>::init() : extenal_points must be defined !!" <<sendl;
-
-
-            for (unsigned int i=0; i<points.getValue().size(); i++)
-            {
-                indices.push_back(i);
-            }
-            external_points.setValue(indices);
-        }
-
-
-    }
-
-
-
-};
-
 
 template<>
 void RestShapeSpringsForceField<Rigid3dTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& )
 {
-
-
-    //const VecCoord& p_0 = *this->mstate->getX0();
     VecCoord p_0;
+
     if (useRestMState)
         p_0 = *restMState->getX();
     else
         p_0 = *this->mstate->getX0();
-
-    //std::cout<<" AddForce : p_0 = "<<p_0<<" p ="<< p <<std::endl;
-
-    //std::cout<<"addForce call in RestShapeSpringsForceField"<<std::endl;
 
     f.resize(p.size());
 
@@ -202,7 +88,6 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(VecDeriv& f, const VecCo
         //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
         f[index].getVOrientation() -= dir * angle * k_a[i] ;
     }
-
 }
 
 
@@ -213,18 +98,11 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(VecDeriv& df, const Vec
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
 
-    //std::cout<<" kFactor :"<<kFactor<<std::endl;
-
-
-
     for (unsigned int i=0; i<indices.size(); i++)
     {
         df[indices[i]].getVCenter()		 -=  dx[indices[i]].getVCenter()	  * k[i]   * kFactor ;
         df[indices[i]].getVOrientation() -=  dx[indices[i]].getVOrientation() * k_a[i] * kFactor ;
     }
-
-    //serr<<"addDForce : dx="<<dx<<"  - df="<<df<<sendl;
-
 }
 
 
@@ -235,10 +113,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(sofa::defaulttype::B
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
     const int N = 6;
-    //std::cout<<"addKToMatrix<Rigid3dTypes> : N = "<<N<<"   - kFactor :"<<kFact<<std::endl;
 
     unsigned int curIndex = 0;
-
 
     for (unsigned int index = 0; index < indices.size(); index++)
     {
@@ -247,7 +123,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(sofa::defaulttype::B
         // translation
         for(int i = 0; i < 3; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i,- kFact * k[index]);
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
         }
 
         // rotation
@@ -255,7 +131,6 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(sofa::defaulttype::B
         {
             mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k_a[index]);
         }
-
     }
 
 
@@ -264,7 +139,6 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(sofa::defaulttype::B
 
     for (unsigned int col=0; col<mat->colSize(); col++)
     {
-
     	for (unsigned int row=0; row<mat->rowSize(); row++)
     	{
     		std::cout<<" "<<mat->element(row, col);
@@ -273,108 +147,12 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(sofa::defaulttype::B
     	std::cout<<""<<std::endl;
     }
     */
-
-
 }
 
 
-#endif
+#endif // SOFA_FLOAT
 
 #ifndef SOFA_DOUBLE
-template <>
-void RestShapeSpringsForceField<Rigid3fTypes>::init()
-{
-
-    core::behavior::ForceField<Rigid3fTypes>::init();
-
-    if (points.getValue().size()==0)
-    {
-        VecIndex indices; // = points.getValue();
-        std::cout<<"in RestShapeSpringsForceField no point is defined, default case: points = all points "<<std::endl;
-
-        for (unsigned int i=0; i<(unsigned)this->mstate->getSize(); i++)
-        {
-            indices.push_back(i);
-        }
-        points.setValue(indices);
-
-    }
-    if(stiffness.getValue().size() == 0)
-    {
-        VecReal stiffs;
-        stiffs.push_back(100.0f);
-        std::cout<<"in RestShapeSpringsForceField no stiffness is defined, assuming equal stiffness on each node, k = 100.0 "<<std::endl;
-        stiffness.setValue(stiffs);
-    }
-
-    if(stiffness.getValue().size() != points.getValue().size())
-    {
-        // The stiffness[0] is assigned to all points
-        const VecIndex& indices = points.getValue();
-        VecReal stiffs;
-        for (unsigned int i=0; i<indices.size(); i++)
-        {
-            stiffs.push_back(stiffness.getValue()[0]);
-        }
-        stiffness.setValue(stiffs);
-    }
-
-    if(angularStiffness.getValue().size() == 0)
-    {
-        VecReal Astiffs;
-        Astiffs.push_back(10.0f);
-        std::cout<<"in RestShapeSpringsForceField no Angular stiffness is defined while using RigidTypes, assuming equal angular stiffness on each node, k = 10.0 "<<std::endl;
-        angularStiffness.setValue(Astiffs);
-    }
-
-    if(angularStiffness.getValue().size() != points.getValue().size())
-    {
-        // The stiffness[0] is assigned to all points
-        const VecIndex& indices = points.getValue();
-        VecReal Astiffs;
-        for (unsigned int i=0; i<indices.size(); i++)
-        {
-            Astiffs.push_back(angularStiffness.getValue()[0]);
-        }
-        angularStiffness.setValue(Astiffs);
-    }
-
-    const std::string path = external_rest_shape.getValue();
-    this->getContext()->get(restMState ,path  );
-
-    if(restMState == NULL)
-    {
-        std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
-        useRestMState = false;
-    }
-    else
-    {
-        std::cout<<"Mechanical state named "<<restMState->getName()<< " found"<<std::endl;
-        useRestMState = true;
-        if (external_points.getValue().size()==0)
-        {
-            VecIndex indices; // = points.getValue();
-            serr<<"in RestShapeSpringsForceField external_points undefined, default case: external_points assigned "<<sendl;
-
-
-            int pointSize = (int)points.getValue().size();
-            int restMstateSize = (int)  restMState->getSize();
-
-            if (  pointSize>restMstateSize)
-                serr<<"ERROR in  RestShapeSpringsForceField<Rigid3fTypes>::init() : extenal_points must be defined !!" <<sendl;
-
-            for (unsigned int i=0; i<points.getValue().size(); i++)
-            {
-                indices.push_back(i);
-            }
-            external_points.setValue(indices);
-        }
-
-
-    }
-
-};
-
 
 template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& )
@@ -384,15 +162,6 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(VecDeriv& f, const VecCo
         p_0 = *restMState->getX();
     else
         p_0 = *this->mstate->getX0();
-
-
-
-
-
-
-
-
-    //std::cout<<"addForce call in RestShapeSpringsForceField"<<std::endl;
 
     f.resize(p.size());
 
@@ -422,8 +191,8 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(VecDeriv& f, const VecCo
         //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
         f[index].getVOrientation() -= dir * angle * k_a[i] ;
     }
-
 }
+
 
 template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(VecDeriv& df, const VecDeriv &dx, double kFactor, double )
@@ -437,9 +206,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(VecDeriv& df, const Vec
         df[indices[i]].getVCenter()		 -=  dx[indices[i]].getVCenter()	  * k[i]   * kFactor ;
         df[indices[i]].getVOrientation() -=  dx[indices[i]].getVOrientation() * k_a[i] * kFactor ;
     }
-
 }
-
 
 
 template<>
@@ -469,12 +236,10 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(sofa::defaulttype::B
         {
             mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * k_a[index]);
         }
-
     }
-
 }
 
-#endif
+#endif // SOFA_DOUBLE
 
 #ifndef SOFA_FLOAT
 
@@ -509,7 +274,6 @@ void RestShapeSpringsForceField<Vec3dTypes>::addDForce(VecDeriv& df, const VecDe
 template<>
 void RestShapeSpringsForceField<Vec3dTypes>::draw()
 {
-
     if (!this->getContext()->getShowForceFields())
         return;  /// \todo put this in the parent class
 
@@ -581,8 +345,6 @@ template class RestShapeSpringsForceField<Vec1fTypes>;
 template class RestShapeSpringsForceField<Rigid3fTypes>;
 //template class RestShapeSpringsForceField<Rigid2fTypes>;
 #endif
-
-
 
 } // namespace forcefield
 
