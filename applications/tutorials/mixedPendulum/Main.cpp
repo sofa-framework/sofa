@@ -153,7 +153,7 @@ int main(int, char** argv)
 
 
     //=========================== Init the scene
-    getSimulation()->init(groot);
+    sofa::simulation::getSimulation()->init(groot);
     groot->setAnimate(false);
     groot->setShowNormals(false);
     groot->setShowInteractionForceFields(true);
