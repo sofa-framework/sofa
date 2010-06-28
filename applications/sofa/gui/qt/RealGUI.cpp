@@ -118,7 +118,10 @@ namespace gui
 namespace qt
 {
 
+
+
 SOFA_LINK_CLASS(ImageQt);
+
 
 #ifdef SOFA_QT4
 typedef Q3ListView QListView;
@@ -207,6 +210,12 @@ protected:
 #else
 typedef QApplication QSOFAApplication;
 #endif
+
+RealGUI* gui = NULL;
+QApplication* application = NULL;
+
+const char* progname="";
+
 
 SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node* root, const char* filename )
 {

@@ -61,7 +61,6 @@ HEADERS += viewer/SofaViewer.h \
            GraphListenerQListView.h \
            GenGraphForm.h \
            AddObject.h \
-           Main.h \
            RealGUI.h \
 		   DataWidget.h \
 		   DataFilenameWidget.h \
@@ -91,8 +90,7 @@ HEADERS += viewer/SofaViewer.h \
            QMenuFilesRecentlyOpened.h \
            ImageQt.h 
 
-SOURCES += Main.cpp \
-           GraphListenerQListView.cpp \
+SOURCES += GraphListenerQListView.cpp \
            GenGraphForm.cpp \
            AddObject.cpp \
            RealGUI.cpp \
