@@ -38,7 +38,7 @@ WFloatLineEdit::WFloatLineEdit(QWidget *parent,const char *name) : QLineEdit(par
     m_fMaxValue=1.0;
     m_fValue=0.0;
     m_bFirst=true;
-    m_DblValid=new QDoubleValidator(m_fMinValue,m_fMaxValue,6,this);
+    m_DblValid=new QDoubleValidator(m_fMinValue,m_fMaxValue,10,this);
     setValidator(m_DblValid);
 
     connect(this,SIGNAL(returnPressed()),
@@ -53,15 +53,15 @@ void WFloatLineEdit::slotReturnPressed()
     //cerr<<"WFloatLineEdit::slotReturnPressed"<<endl;
     m_bInternal=true;
 
-    slotCalcFloatValue(text().toFloat());
+    slotCalcValue(text().toFloat());
 
 }
 /* -------------------------------------------------------- */
-void WFloatLineEdit::slotCalcFloatValue(float f)
+void WFloatLineEdit::slotCalcValue(float f)
 {
     int    p;
 
-    //cerr << "WFloatLineEdit::slotCalcFloatValue" << endl;
+    //cerr << "WFloatLineEdit::slotCalcValue" << endl;
     if (f < m_fMinValue)
         f=m_fMinValue;
     else if (f > m_fMaxValue)
@@ -70,8 +70,8 @@ void WFloatLineEdit::slotCalcFloatValue(float f)
     {
         m_bFirst=false;
         m_fValue=f;
-        //cerr << "WFloatLineEdit::slotCalcFloatValue m_fValue = " << m_fValue << endl;
-        emit (floatValueChanged(f));
+        //cerr << "WFloatLineEdit::slotCalcValue m_fValue = " << m_fValue << endl;
+        emit (ValueChanged(f));
         p=(int)(100.0*(f - m_fMinValue)/(m_fMaxValue - m_fMinValue));
         if (p != m_iPercent)
         {
@@ -84,27 +84,26 @@ void WFloatLineEdit::slotCalcFloatValue(float f)
     validateAndSet(QString("%1").arg(m_fValue),0,0,0);
 }
 /* -------------------------------------------------------- */
-void WFloatLineEdit::slotCalcFloatValue(const QString& s)
+void WFloatLineEdit::slotCalcValue(const QString& s)
 {
-    slotCalcFloatValue(s.toFloat());
+    slotCalcValue(s.toFloat());
 }
 /* -------------------------------------------------------- */
-void WFloatLineEdit::setFloatValue(float f)
+void WFloatLineEdit::setValue(float f)
 {
     m_bInternal=true;
-    slotCalcFloatValue(f);
+    slotCalcValue(f);
 }
 
 void WFloatLineEdit::setIntValue(int f)
 {
-    setFloatValue(static_cast<float>(f));
+    setValue(static_cast<float>(f));
 }
 /* -------------------------------------------------------- */
 void WFloatLineEdit::setValuePercent(int p)
 {
     if (!m_bInternal)
-        setFloatValue(m_fMinValue + (m_fMaxValue -
-                m_fMinValue)*((double)p)/99.0);
+        setValue(m_fMinValue + (m_fMaxValue - m_fMinValue)*((double)p)/99.0);
     else
         m_bInternal=false;
 }

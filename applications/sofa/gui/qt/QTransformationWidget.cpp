@@ -35,48 +35,48 @@ QTransformationWidget::QTransformationWidget(QWidget* parent, QString name):Q3Gr
     //Translation
     new QLabel(QString("Translation"), this);
     translation[0] = new WFloatLineEdit( this, "translation[0]" );
-    translation[0]->setMinFloatValue( (float)-INFINITY );
-    translation[0]->setMaxFloatValue( (float)INFINITY );
+    translation[0]->setMinValue( (float)-INFINITY );
+    translation[0]->setMaxValue( (float)INFINITY );
 
     translation[1] = new WFloatLineEdit( this, "translation[1]" );
-    translation[1]->setMinFloatValue( (float)-INFINITY );
-    translation[1]->setMaxFloatValue( (float)INFINITY );
+    translation[1]->setMinValue( (float)-INFINITY );
+    translation[1]->setMaxValue( (float)INFINITY );
 
     translation[2] = new WFloatLineEdit( this, "translation[2]" );
-    translation[2]->setMinFloatValue( (float)-INFINITY );
-    translation[2]->setMaxFloatValue( (float)INFINITY );
+    translation[2]->setMinValue( (float)-INFINITY );
+    translation[2]->setMaxValue( (float)INFINITY );
 
 
     //********************************************************************************
     //Rotation
     new QLabel(QString("Rotation"), this);
     rotation[0] = new WFloatLineEdit( this, "rotation[0]" );
-    rotation[0]->setMinFloatValue( (float)-INFINITY );
-    rotation[0]->setMaxFloatValue( (float)INFINITY );
+    rotation[0]->setMinValue( (float)-INFINITY );
+    rotation[0]->setMaxValue( (float)INFINITY );
 
     rotation[1] = new WFloatLineEdit( this, "rotation[1]" );
-    rotation[1]->setMinFloatValue( (float)-INFINITY );
-    rotation[1]->setMaxFloatValue( (float)INFINITY );
+    rotation[1]->setMinValue( (float)-INFINITY );
+    rotation[1]->setMaxValue( (float)INFINITY );
 
     rotation[2] = new WFloatLineEdit( this, "rotation[2]" );
-    rotation[2]->setMinFloatValue( (float)-INFINITY );
-    rotation[2]->setMaxFloatValue( (float)INFINITY );
+    rotation[2]->setMinValue( (float)-INFINITY );
+    rotation[2]->setMaxValue( (float)INFINITY );
 
 
     //********************************************************************************
     //Scale
     QLabel *textScale = new QLabel(QString("Scale"), this);
     scale[0] = new WFloatLineEdit( this, "scale[0]" );
-    scale[0]->setMinFloatValue( (float)-INFINITY );
-    scale[0]->setMaxFloatValue( (float)INFINITY );
+    scale[0]->setMinValue( (float)-INFINITY );
+    scale[0]->setMaxValue( (float)INFINITY );
 
     scale[1] = new WFloatLineEdit( this, "scale[1]" );
-    scale[1]->setMinFloatValue( (float)-INFINITY );
-    scale[1]->setMaxFloatValue( (float)INFINITY );
+    scale[1]->setMinValue( (float)-INFINITY );
+    scale[1]->setMaxValue( (float)INFINITY );
 
     scale[2] = new WFloatLineEdit( this, "scale[2]" );
-    scale[2]->setMinFloatValue( (float)-INFINITY );
-    scale[2]->setMaxFloatValue( (float)INFINITY );
+    scale[2]->setMinValue( (float)-INFINITY );
+    scale[2]->setMaxValue( (float)INFINITY );
 
     setDefaultValues();
 
@@ -102,32 +102,32 @@ void QTransformationWidget::setDefaultValues()
 {
     //********************************************************************************
     //Default values
-    translation[0]->setFloatValue(0);
-    translation[1]->setFloatValue(0);
-    translation[2]->setFloatValue(0);
+    translation[0]->setValue(0);
+    translation[1]->setValue(0);
+    translation[2]->setValue(0);
 
-    rotation[0]->setFloatValue(0);
-    rotation[1]->setFloatValue(0);
-    rotation[2]->setFloatValue(0);
+    rotation[0]->setValue(0);
+    rotation[1]->setValue(0);
+    rotation[2]->setValue(0);
 
-    scale[0]->setFloatValue(1);
-    scale[1]->setFloatValue(1);
-    scale[2]->setFloatValue(1);
+    scale[0]->setValue(1);
+    scale[1]->setValue(1);
+    scale[2]->setValue(1);
 }
 
 bool QTransformationWidget::isDefaultValues() const
 {
-    return ( (translation[0]->getFloatValue() == 0 && translation[1]->getFloatValue() == 0 && translation[2]->getFloatValue() == 0 ) &&
-            (rotation[0]->getFloatValue() == 0    && rotation[1]->getFloatValue() == 0    && rotation[2]->getFloatValue() == 0 ) &&
-            (scale[0]->getFloatValue() == 1       && scale[1]->getFloatValue() == 1       && scale[2]->getFloatValue() == 1 ) );
+    return ( (translation[0]->getValue() == 0 && translation[1]->getValue() == 0 && translation[2]->getValue() == 0 ) &&
+            (rotation[0]->getValue() == 0    && rotation[1]->getValue() == 0    && rotation[2]->getValue() == 0 ) &&
+            (scale[0]->getValue() == 1       && scale[1]->getValue() == 1       && scale[2]->getValue() == 1 ) );
 }
 
 void QTransformationWidget::applyTransformation(simulation::Node *node)
 {
     sofa::simulation::TransformationVisitor transform;
-    transform.setTranslation(translation[0]->getFloatValue(),translation[1]->getFloatValue(),translation[2]->getFloatValue());
-    transform.setRotation(rotation[0]->getFloatValue(),rotation[1]->getFloatValue(),rotation[2]->getFloatValue());
-    transform.setScale(scale[0]->getFloatValue(),scale[1]->getFloatValue(),scale[2]->getFloatValue());
+    transform.setTranslation(translation[0]->getValue(),translation[1]->getValue(),translation[2]->getValue());
+    transform.setRotation(rotation[0]->getValue(),rotation[1]->getValue(),rotation[2]->getValue());
+    transform.setScale(scale[0]->getValue(),scale[1]->getValue(),scale[2]->getValue());
     transform.execute(node);
 }
 
