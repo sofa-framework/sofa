@@ -40,10 +40,10 @@
 class WFloatLineEdit : public QLineEdit
 {
     Q_OBJECT
-    Q_PROPERTY( float minFloatValue READ minFloatValue WRITE setMinFloatValue )
-    Q_PROPERTY( float maxFloatValue READ maxFloatValue WRITE setMaxFloatValue )
-    Q_PROPERTY( float floatValue    READ floatValue    WRITE setFloatValue )
-    Q_PROPERTY( int   intValue      READ intValue	     WRITE setIntValue )
+    Q_PROPERTY( float minValue READ minValue WRITE setMinValue )
+    Q_PROPERTY( float maxValue READ maxValue WRITE setMaxValue )
+    Q_PROPERTY( float Value    READ Value    WRITE setValue )
+    Q_PROPERTY( int   intValue READ intValue WRITE setIntValue )
 
 protected:
 
@@ -61,18 +61,18 @@ public:
 
     WFloatLineEdit(QWidget *parent,const char *name);
 
-    float   minFloatValue() const { return (m_fMinValue);}
-    float   getMinFloatValue() { emit(returnPressed()); return minFloatValue();}
-    void    setMinFloatValue(float f) {m_fMinValue=f; m_DblValid->setBottom(m_fMinValue); }
+    float   minValue() const { return (m_fMinValue);}
+    float   getMinValue() { emit(returnPressed()); return minValue();}
+    void    setMinValue(float f) {m_fMinValue=f; m_DblValid->setBottom(m_fMinValue); }
 
 
-    float   maxFloatValue() const { return (m_fMaxValue);}
-    float   getMaxFloatValue() { emit(returnPressed()); return maxFloatValue();}
-    void    setMaxFloatValue(float f) {m_fMaxValue=f; m_DblValid->setTop(m_fMaxValue); }
+    float   maxValue() const { return (m_fMaxValue);}
+    float   getMaxValue() { emit(returnPressed()); return maxValue();}
+    void    setMaxValue(float f) {m_fMaxValue=f; m_DblValid->setTop(m_fMaxValue); }
 
-    float   floatValue() const { return (m_fValue);}
-    float   getFloatValue() { emit(returnPressed()); return floatValue();}
-    void    setFloatValue(float f);
+    float   Value() const { return (m_fValue);}
+    float   getValue() { emit(returnPressed()); return Value();}
+    void    setValue(float f);
 
     int     intValue() const { return static_cast<int>(m_fValue);}
     int     getIntValue() { emit(returnPressed()); return intValue();}
@@ -81,18 +81,18 @@ public:
     int     valuePercent();
 
     //Return the value displayed: WARNING!! NO VALIDATION IS MADE!
-    float   getFloatDisplayedValue() {return text().toFloat();};
-    int     getIntDisplayedValue() {return static_cast<int>(text().toFloat());};
+    float   getDisplayedValue() {return text().toFloat();}
+    int     getIntDisplayedValue() {return static_cast<int>(text().toFloat());}
 
 signals:
 
-    void floatValueChanged(float);
+    void ValueChanged(float);
     void valuePercentChanged(int);
 
 protected slots:
 
-    void slotCalcFloatValue(const QString&);
-    void slotCalcFloatValue(float);
+    void slotCalcValue(const QString&);
+    void slotCalcValue(float);
     void slotReturnPressed();
 
 public slots:

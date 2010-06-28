@@ -74,6 +74,7 @@ HEADERS += viewer/SofaViewer.h \
            StructDataWidget.h \
            TableDataWidget.h \
            WFloatLineEdit.h \ 
+           WDoubleLineEdit.h \ 
            FileManagement.h \
            SofaPluginManager.h \
            SofaMouseManager.h \
@@ -105,6 +106,7 @@ SOURCES += Main.cpp \
            StructDataWidget.cpp \
            TableDataWidget.cpp \
            WFloatLineEdit.cpp \
+           WDoubleLineEdit.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \
            SofaVideoRecorderManager.cpp \

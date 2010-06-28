@@ -61,13 +61,13 @@ QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
     QCheckBox *activation=new QCheckBox(QString("Trace State Vector"), exportStateParameters);
 
     spinIndex = new WFloatLineEdit(exportStateParameters, "index");
-    spinIndex->setMinFloatValue( (float)-INFINITY );
-    spinIndex->setMaxFloatValue( (float)INFINITY );
+    spinIndex->setMinValue( (float)-INFINITY );
+    spinIndex->setMaxValue( (float)INFINITY );
     spinIndex->setIntValue(sofa::simulation::Visitor::GetFirstIndexStateVector());
     spinIndex->setMaximumWidth(50);
     spinRange = new WFloatLineEdit(exportStateParameters, "range");
-    spinRange->setMinFloatValue( (float)-INFINITY );
-    spinRange->setMaxFloatValue( (float)INFINITY );
+    spinRange->setMinValue( (float)-INFINITY );
+    spinRange->setMaxValue( (float)INFINITY );
     spinRange->setIntValue(sofa::simulation::Visitor::GetRangeStateVector());
     spinRange->setMaximumWidth(50);
 

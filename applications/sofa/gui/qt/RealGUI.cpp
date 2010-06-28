@@ -384,9 +384,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
         std::ostringstream s;
         s<<"background" <<i;
         background[i] = new WFloatLineEdit(colour,s.str().c_str());
-        background[i]->setMinFloatValue( 0.0f);
-        background[i]->setMaxFloatValue( 1.0f);
-        background[i]->setFloatValue( 1.0f);
+        background[i]->setMinValue( 0.0f);
+        background[i]->setMaxValue( 1.0f);
+        background[i]->setValue( 1.0f);
 
         colourLayout->addWidget(background[i]);
         connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateBackgroundColour() ) );
