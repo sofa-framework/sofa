@@ -107,32 +107,25 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     return card;
 }
 
-Node *create2Cards(const Coord3& globalPosition, SReal distanceInBetween=SReal(0.1), SReal angle=SReal(15.0))
+std::pair<Node *, Node* > create2Cards(const Coord3& globalPosition, SReal distanceInBetween=SReal(0.1), SReal angle=SReal(15.0))
 {
-    //We assume the card has a one unit length
+    //We assume the card has a 2 unit length, centered in (0,0,0)
     const SReal displacement=sin(convertDegreeToRadian(angle));
     const Coord3 separation=Coord3(displacement+distanceInBetween,0,0);
-    Node *TwoCards=sofa::simulation::getSimulation()->newNode("TwoCards");
 
     //************************************
     //Left Rigid Card
-    {
-        const Coord3 position=globalPosition + separation;
-        const Coord3 rotation(0,0,angle);
-        Node* leftCard = createCard(position, rotation);
-        TwoCards->addChild(leftCard);
-        leftCard->setName("LeftCard");
-    }
+    const Coord3 positionLeft=globalPosition + separation;
+    const Coord3 rotationLeft(0,0,angle);
+    Node* leftCard = createCard(positionLeft, rotationLeft);
+
     //************************************
     //Right Rigid Card
-    {
-        const Coord3 position=globalPosition - separation;
-        const Coord3 rotation(0,0,-angle);
-        Node* rightCard = createCard(position, rotation);
-        TwoCards->addChild(rightCard);
-        rightCard->setName("RightCard");
-    }
-    return TwoCards;
+    const Coord3 positionRight=globalPosition - separation;
+    const Coord3 rotationRight(0,0,-angle);
+    Node* rightCard = createCard(positionRight, rotationRight);
+
+    return std::make_pair(leftCard, rightCard);
 }
 
 Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween=SReal(0.1), SReal angle=SReal(15.0))
@@ -140,15 +133,8 @@ Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween
 
     //Elements of the scene
     //------------------------------------
-    Node* houseOfCards = getSimulation()->newNode("HouseOfCards");
-    root->addChild(houseOfCards);
+    Node* houseOfCards = root;
 
-    //************************************
-    //Floor
-    {
-        Node* torusFixed = sofa::ObjectCreator::CreateObstacle("mesh/floor.obj", "mesh/floor.obj", "gray");
-        houseOfCards->addChild(torusFixed);
-    }
 
     //Space between two levels of the house of cards
     const SReal space=0.5;
@@ -168,11 +154,13 @@ Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween
             Coord3 position=Coord3((i+j)*(distanceH)*0.5,
                     (i-j)*(distanceV),
                     0);
-            Node *cards=create2Cards(position,distanceInBetween, angle);
-            houseOfCards->addChild(cards);
+            const std::pair<Node *, Node*> &cards=create2Cards(position,distanceInBetween, angle);
+            houseOfCards->addChild(cards.first);
+            houseOfCards->addChild(cards.second);
             std::ostringstream out;
-            out << "TwoCards["<< i << "|" << j << "]";
-            cards->setName(out.str());
+            out << "Card["<< i << "|" << j << "]";
+            cards.first->setName("Left"+out.str());
+            cards.second->setName("Right"+out.str());
         }
 
         //Create the support for the cards
@@ -244,6 +232,11 @@ int main(int argc, char** argv)
     intersection->alarmDistance.setValue(contactDistance);
     intersection->contactDistance.setValue(contactDistance*0.5);
 
+    //************************************
+    //Floor
+    Node* torusFixed = sofa::ObjectCreator::CreateObstacle("mesh/floor.obj", "mesh/floor.obj", "gray");
+    root->addChild(torusFixed);
+
     //Add the objects
     createHouseOfCards(root,sizeHouseOfCards,distanceInBetween, angle);
 
@@ -256,7 +249,7 @@ int main(int argc, char** argv)
 
     sofa::simulation::getSimulation()->exportXML(root,"HouseOfCards.xml", true);
 
-    getSimulation()->init(root);
+    sofa::simulation::getSimulation()->init(root);
 
 
     //=======================================

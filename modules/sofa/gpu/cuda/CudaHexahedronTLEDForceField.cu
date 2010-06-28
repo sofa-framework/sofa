@@ -157,7 +157,7 @@ static void setX(const void* x)
     }
 }
 
-__device__ CudaVec3f getX(int i)
+static __device__ CudaVec3f getX(int i)
 {
     int i3 = umul24(i,3);
     float x1 = tex1Dfetch(texX, i3);
@@ -175,7 +175,7 @@ static void setX0(const void* x0)
     }
 }
 
-__device__ CudaVec3f getX0(int i)
+static __device__ CudaVec3f getX0(int i)
 {
     int i3 = umul24(i,3);
     float x1 = tex1Dfetch(texX0, i3);

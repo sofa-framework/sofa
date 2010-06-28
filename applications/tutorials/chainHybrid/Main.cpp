@@ -257,7 +257,7 @@ int main(int argc, char** argv)
 
     root->setAnimate(false);
 
-    getSimulation()->init(root);
+    sofa::simulation::getSimulation()->init(root);
 
 
     //=======================================
