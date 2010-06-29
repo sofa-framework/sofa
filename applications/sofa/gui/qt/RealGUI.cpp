@@ -392,7 +392,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     {
         std::ostringstream s;
         s<<"background" <<i;
-        background[i] = new WFloatLineEdit(colour,s.str().c_str());
+        background[i] = new WDoubleLineEdit(colour,s.str().c_str());
         background[i]->setMinValue( 0.0f);
         background[i]->setMaxValue( 1.0f);
         background[i]->setValue( 1.0f);

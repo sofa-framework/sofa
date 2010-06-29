@@ -34,49 +34,49 @@ QTransformationWidget::QTransformationWidget(QWidget* parent, QString name):Q3Gr
     //********************************************************************************
     //Translation
     new QLabel(QString("Translation"), this);
-    translation[0] = new WFloatLineEdit( this, "translation[0]" );
-    translation[0]->setMinValue( (float)-INFINITY );
-    translation[0]->setMaxValue( (float)INFINITY );
+    translation[0] = new WDoubleLineEdit( this, "translation[0]" );
+    translation[0]->setMinValue( (double)-INFINITY );
+    translation[0]->setMaxValue( (double)INFINITY );
 
-    translation[1] = new WFloatLineEdit( this, "translation[1]" );
-    translation[1]->setMinValue( (float)-INFINITY );
-    translation[1]->setMaxValue( (float)INFINITY );
+    translation[1] = new WDoubleLineEdit( this, "translation[1]" );
+    translation[1]->setMinValue( (double)-INFINITY );
+    translation[1]->setMaxValue( (double)INFINITY );
 
-    translation[2] = new WFloatLineEdit( this, "translation[2]" );
-    translation[2]->setMinValue( (float)-INFINITY );
-    translation[2]->setMaxValue( (float)INFINITY );
+    translation[2] = new WDoubleLineEdit( this, "translation[2]" );
+    translation[2]->setMinValue( (double)-INFINITY );
+    translation[2]->setMaxValue( (double)INFINITY );
 
 
     //********************************************************************************
     //Rotation
     new QLabel(QString("Rotation"), this);
-    rotation[0] = new WFloatLineEdit( this, "rotation[0]" );
-    rotation[0]->setMinValue( (float)-INFINITY );
-    rotation[0]->setMaxValue( (float)INFINITY );
+    rotation[0] = new WDoubleLineEdit( this, "rotation[0]" );
+    rotation[0]->setMinValue( (double)-INFINITY );
+    rotation[0]->setMaxValue( (double)INFINITY );
 
-    rotation[1] = new WFloatLineEdit( this, "rotation[1]" );
-    rotation[1]->setMinValue( (float)-INFINITY );
-    rotation[1]->setMaxValue( (float)INFINITY );
+    rotation[1] = new WDoubleLineEdit( this, "rotation[1]" );
+    rotation[1]->setMinValue( (double)-INFINITY );
+    rotation[1]->setMaxValue( (double)INFINITY );
 
-    rotation[2] = new WFloatLineEdit( this, "rotation[2]" );
-    rotation[2]->setMinValue( (float)-INFINITY );
-    rotation[2]->setMaxValue( (float)INFINITY );
+    rotation[2] = new WDoubleLineEdit( this, "rotation[2]" );
+    rotation[2]->setMinValue( (double)-INFINITY );
+    rotation[2]->setMaxValue( (double)INFINITY );
 
 
     //********************************************************************************
     //Scale
     QLabel *textScale = new QLabel(QString("Scale"), this);
-    scale[0] = new WFloatLineEdit( this, "scale[0]" );
-    scale[0]->setMinValue( (float)-INFINITY );
-    scale[0]->setMaxValue( (float)INFINITY );
+    scale[0] = new WDoubleLineEdit( this, "scale[0]" );
+    scale[0]->setMinValue( (double)-INFINITY );
+    scale[0]->setMaxValue( (double)INFINITY );
 
-    scale[1] = new WFloatLineEdit( this, "scale[1]" );
-    scale[1]->setMinValue( (float)-INFINITY );
-    scale[1]->setMaxValue( (float)INFINITY );
+    scale[1] = new WDoubleLineEdit( this, "scale[1]" );
+    scale[1]->setMinValue( (double)-INFINITY );
+    scale[1]->setMaxValue( (double)INFINITY );
 
-    scale[2] = new WFloatLineEdit( this, "scale[2]" );
-    scale[2]->setMinValue( (float)-INFINITY );
-    scale[2]->setMaxValue( (float)INFINITY );
+    scale[2] = new WDoubleLineEdit( this, "scale[2]" );
+    scale[2]->setMinValue( (double)-INFINITY );
+    scale[2]->setMaxValue( (double)INFINITY );
 
     setDefaultValues();
 

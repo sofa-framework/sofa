@@ -60,14 +60,14 @@ QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
 
     QCheckBox *activation=new QCheckBox(QString("Trace State Vector"), exportStateParameters);
 
-    spinIndex = new WFloatLineEdit(exportStateParameters, "index");
-    spinIndex->setMinValue( (float)-INFINITY );
-    spinIndex->setMaxValue( (float)INFINITY );
+    spinIndex = new WDoubleLineEdit(exportStateParameters, "index");
+    spinIndex->setMinValue( (double)-INFINITY );
+    spinIndex->setMaxValue( (double)INFINITY );
     spinIndex->setIntValue(sofa::simulation::Visitor::GetFirstIndexStateVector());
     spinIndex->setMaximumWidth(50);
-    spinRange = new WFloatLineEdit(exportStateParameters, "range");
-    spinRange->setMinValue( (float)-INFINITY );
-    spinRange->setMaxValue( (float)INFINITY );
+    spinRange = new WDoubleLineEdit(exportStateParameters, "range");
+    spinRange->setMinValue( (double)-INFINITY );
+    spinRange->setMaxValue( (double)INFINITY );
     spinRange->setIntValue(sofa::simulation::Visitor::GetRangeStateVector());
     spinRange->setMaximumWidth(50);
 
@@ -103,13 +103,13 @@ void QVisitorControlPanel::activateTraceStateVectors(bool active)
 }
 void QVisitorControlPanel::changeFirstIndex()
 {
-    WFloatLineEdit *w=(WFloatLineEdit *) sender();
+    WDoubleLineEdit *w=(WDoubleLineEdit *) sender();
     int value=w->getIntValue();
     changeFirstIndex(value);
 }
 void QVisitorControlPanel::changeRange()
 {
-    WFloatLineEdit *w=(WFloatLineEdit *) sender();
+    WDoubleLineEdit *w=(WDoubleLineEdit *) sender();
     int value=w->getIntValue();
     changeRange(value);
 }

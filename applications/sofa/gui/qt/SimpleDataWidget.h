@@ -33,7 +33,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/fixed_array.h>
-#include "WFloatLineEdit.h"
 #include "WDoubleLineEdit.h"
 #include <limits.h>
 
@@ -275,12 +274,12 @@ public:
 /// float and double support
 ////////////////////////////////////////////////////////////////
 
-template < typename T , class WTLineEdit >
+template < typename T >
 class real_data_widget_trait
 {
 public:
     typedef T data_type;
-    typedef WTLineEdit Widget;
+    typedef WDoubleLineEdit Widget;
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent, "real");
@@ -305,11 +304,11 @@ public:
 };
 
 template<>
-class data_widget_trait < float > : public real_data_widget_trait< float, WFloatLineEdit >
+class data_widget_trait < float > : public real_data_widget_trait< float >
 {};
 
 template<>
-class data_widget_trait < double > : public real_data_widget_trait< double , WDoubleLineEdit >
+class data_widget_trait < double > : public real_data_widget_trait< double >
 {};
 
 ////////////////////////////////////////////////////////////////
