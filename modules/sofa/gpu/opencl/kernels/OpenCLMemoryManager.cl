@@ -12,7 +12,5 @@ __kernel void MemoryManager_memset(
     int index = get_global_id(0) + offset;
 
     res1[index] = value;
-
-
 }
 

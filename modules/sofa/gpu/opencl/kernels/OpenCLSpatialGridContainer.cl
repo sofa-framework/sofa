@@ -85,7 +85,6 @@ __kernel void computeHashD(
         h_y += dH_y;
         h_z += dH_z;
         unsigned int hash = ((h_x ^ h_y ^ h_z) & gridParams.cellMask)<<1;
-        //if (hc^7 == (x&7)) ++hash;
         if (hc != (x&7)) ++hash;
         particleHash8[index0_8 + l] = hash;
     }

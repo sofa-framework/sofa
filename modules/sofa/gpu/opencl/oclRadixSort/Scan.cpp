@@ -17,6 +17,12 @@
 #include "../OpenCLMemoryManager.h"
 #include "Scan.h"
 
+OpenCLProgram *Scan::cpProgram=NULL;                // OpenCL program
+OpenCLKernel *Scan::ckScanExclusiveLocal1=NULL;
+OpenCLKernel *Scan::ckScanExclusiveLocal2=NULL;
+OpenCLKernel *Scan::ckUniformUpdate=NULL;
+
+
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 Scan::Scan(
@@ -34,22 +40,26 @@ Scan::Scan(
     //shrLog("Create and build Scan program\n");
 //	size_t szKernelLength; // Byte size of kernel code
 
-    cpProgram = new OpenCLProgram(OpenCLProgram::loadSource("oclRadixSort/Scan_b.cl"));
-    std::cout << "\n-/--/--/--/-\n" << cpProgram->buildLog(0) << "\n/-//-//-//-/\n";
-    cpProgram->buildProgram();
+    if(cpProgram==NULL)
+    {
+        cpProgram = new OpenCLProgram(OpenCLProgram::loadSource("oclRadixSort/Scan_b.cl"));
+        std::cout << "\n-/--/--/--/-\n" << cpProgram->buildLog(0) << "\n/-//-//-//-/\n";
+        cpProgram->buildProgram();
 
-    ckScanExclusiveLocal1 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal1");
-    ckScanExclusiveLocal2 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal2");
-    ckUniformUpdate =  new sofa::helper::OpenCLKernel(cpProgram,"uniformUpdate");
+        ckScanExclusiveLocal1 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal1");
+        ckScanExclusiveLocal2 = new sofa::helper::OpenCLKernel(cpProgram,"scanExclusiveLocal2");
+        ckUniformUpdate =  new sofa::helper::OpenCLKernel(cpProgram,"uniformUpdate");
+
+    }
 }
 
 Scan::~Scan()
 {
 //	cl_int ciErrNum;
-    delete(ckScanExclusiveLocal1);
-    delete(ckScanExclusiveLocal2);
-    delete(ckUniformUpdate);
-
+    /*	delete(ckScanExclusiveLocal1);
+    	delete(ckScanExclusiveLocal2);
+    	delete(ckUniformUpdate);
+    */
     if (mNumElements > MAX_WORKGROUP_INCLUSIVE_SCAN_SIZE)
     {
         clReleaseMemObject(d_Buffer.m);
@@ -66,6 +76,8 @@ void Scan::scanExclusiveLarge(
     unsigned int arrayLength
 )
 {
+    ERROR_OFFSET(d_Dst);
+    ERROR_OFFSET(d_Src);
     //Check power-of-two factorization
     unsigned int log2L;
     unsigned int factorizationRemainder = factorRadix2(log2L, arrayLength);

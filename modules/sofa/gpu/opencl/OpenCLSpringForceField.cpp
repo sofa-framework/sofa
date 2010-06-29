@@ -140,7 +140,6 @@ void SpringForceField_CreateProgramWithFloat()
         types["Real4"]="float4";
 
         std::string source =*sofa::helper::OpenCLProgram::loadSource("OpenCLSpringForceField.cl");
-        source = stringBSIZE + source;
 
         SpringForceFieldOpenCLFloat_program
             = new sofa::helper::OpenCLProgram(&source,&types);

@@ -47,9 +47,9 @@ public:
         unsigned int arrayLength);
 
 private:
-    OpenCLProgram *cpProgram;                // OpenCL program
+    static OpenCLProgram *cpProgram;                // OpenCL program
     sofa::gpu::opencl::_device_pointer d_Buffer;                     // Memory objects for original keys and work space
-    OpenCLKernel *ckScanExclusiveLocal1, *ckScanExclusiveLocal2, *ckUniformUpdate;
+    static OpenCLKernel *ckScanExclusiveLocal1, *ckScanExclusiveLocal2, *ckUniformUpdate;
 
     static const int WORKGROUP_SIZE = 256;
     static const unsigned int   MAX_BATCH_ELEMENTS = 64 * 1048576;
