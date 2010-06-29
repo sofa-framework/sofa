@@ -153,8 +153,8 @@ void radixSortBlockKeysOnly(uint4 *key/*,uint4 *values*/, uint nbits, uint start
 
 __kernel void radixSortBlocksKeysOnly(__global uint4* keysIn,
         __global uint4* keysOut,
-//										__global uint4* valueIn,
-//									  __global uint4* valueOut,
+        __global uint4* valueIn,
+        __global uint4* valueOut,
         uint nbits,
         uint startbit,
         uint numElements,
@@ -167,14 +167,14 @@ __kernel void radixSortBlocksKeysOnly(__global uint4* keysIn,
 
     uint4 key,value;
     key = keysIn[globalId];
-//	value = valueIn[globalId];
+    value = valueIn[globalId];
 
     barrier(CLK_LOCAL_MEM_FENCE);
 
     radixSortBlockKeysOnly(&key/*,&value*/, nbits, startbit, sMem/*,sMemV*/);
 
     keysOut[globalId] = key;
-//	valueOut[globalId] = value;
+    valueOut[globalId] = value;
 }
 
 //----------------------------------------------------------------------------
