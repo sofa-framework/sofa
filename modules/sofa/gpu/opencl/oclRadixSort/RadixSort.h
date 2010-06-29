@@ -43,29 +43,33 @@ public:
             unsigned int  keyBits);
 
 private:
-    OpenCLProgram *cpProgram;						// OpenCL program
-    _device_pointer d_tempKeys;		// Memory objects for original keys and work space
-    _device_pointer mCounters;			// Counter for each radix
-    _device_pointer mCountersSum;		// Prefix sum of radix counters
-    _device_pointer mBlockOffsets;		// Global offsets of each radix in each block
-    OpenCLKernel *ckRadixSortBlocksKeysOnly;			// OpenCL kernels
-    OpenCLKernel *ckFindRadixOffsets;
-    OpenCLKernel *ckScanNaive;
-    OpenCLKernel *ckReorderDataKeysOnly;
+    static OpenCLProgram *cpProgram;						// OpenCL program
+    static _device_pointer d_tempKeys,d_temp_resized;		// Memory objects for original keys and work space
+    static _device_pointer mCounters;			// Counter for each radix
+    static _device_pointer mCountersSum;		// Prefix sum of radix counters
+    static _device_pointer mBlockOffsets;		// Global offsets of each radix in each block
+    static OpenCLKernel *ckRadixSortBlocksKeysOnly;			// OpenCL kernels
+    static OpenCLKernel *ckFindRadixOffsets;
+    static OpenCLKernel *ckScanNaive;
+    static OpenCLKernel *ckReorderDataKeysOnly;
+    static OpenCLKernel *ckMemset;
+    static _device_pointer d_tempElements;
 
     int CTA_SIZE; // Number of threads per block
     static const unsigned int WARP_SIZE = 32;
     static const unsigned int bitStep = 4;
 
-    unsigned int  mNumElements;     // Number of elements of temp storage allocated
+    unsigned int mNumElements;     // Number of elements of temp storage allocated
 
     Scan scan;
 
     void radixSortKeysOnly(_device_pointer d_keys,_device_pointer v, unsigned int numElements, unsigned int keyBits);
     void radixSortStepKeysOnly(_device_pointer d_keys,_device_pointer v, unsigned int nbits, unsigned int startbit, unsigned int numElements);
-    void radixSortBlocksKeysOnlyOCL(_device_pointer d_keys,unsigned int nbits, unsigned int startbit, unsigned int numElements);
+    void radixSortBlocksKeysOnlyOCL(_device_pointer d_keys,_device_pointer d_values,unsigned int nbits, unsigned int startbit, unsigned int numElements);
     void findRadixOffsetsOCL(unsigned int startbit, unsigned int numElements);
     void scanNaiveOCL(unsigned int numElements);
     void reorderDataKeysOnlyOCL(_device_pointer d_keys,_device_pointer d_elements, unsigned int startbit, unsigned int numElements);
+
+    void memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,uint size);
 };
 #endif

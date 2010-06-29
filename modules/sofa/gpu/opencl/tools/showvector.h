@@ -32,6 +32,10 @@ public:
         fprintf(_file,"%f",v);
     }
 
+    void addTitle(char * str)
+    {
+        fprintf(_file,"yo%s\n",str);
+    }
 
     template <class T> void addVector(T* v,int size)
     {
