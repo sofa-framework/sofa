@@ -382,7 +382,7 @@ void SpringForceField<DataTypes>::updateMaskStatus()
 }
 
 template<class DataTypes>
-bool SpringForceField<DataTypes>::useMask()
+bool SpringForceField<DataTypes>::useMask() const
 {
     return maskInUse;
 }

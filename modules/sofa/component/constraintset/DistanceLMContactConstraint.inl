@@ -156,6 +156,7 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
     typedef core::behavior::BaseMechanicalState::VecId VecId;
     const SeqEdges &edges =  pointPairs.getValue();
 
+
     if (scalarConstraintsIndices.empty()) return;
     unsigned scalarConstraintIndex = 0;
     for (unsigned int i=0; i<edges.size(); ++i)
@@ -168,14 +169,21 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
             core::behavior::BaseLMConstraint::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
             constraintGroupToContact[constraintGroup] = &edgeToContact[edges[i]];
 
-            SReal correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            SReal correction = 0;
+            correction+=this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex++], -correction);
-            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+
+
+            correction = 0;
+            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex++], -correction);
-            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+
+
+            correction = 0;
+            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 //                            cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, constraint inserted "<<endl;
             break;
@@ -289,6 +297,18 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
     return;
 }
 
+
+template<class DataTypes>
+bool DistanceLMContactConstraint<DataTypes>::isCorrectionComputedWithSimulatedDOF(ConstOrder order) const
+{
+    switch(order)
+    {
+    case core::behavior::BaseConstraintSet::ACC :
+    case core::behavior::BaseConstraintSet::VEL : return true;
+    case core::behavior::BaseConstraintSet::POS : return false;
+    }
+    return false;
+}
 
 
 #ifndef SOFA_FLOAT

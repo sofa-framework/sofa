@@ -2798,6 +2798,8 @@ template <class DataTypes>
 SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id)
 {
     SReal result = 0;
+    if (std::find(constraintId.begin(), constraintId.end(), line) == constraintId.end()) return 0;
+
     SparseVecDeriv &value = (*c.beginEdit())[getIdxConstraintFromId(line)];
 
     VecDeriv *data = 0;

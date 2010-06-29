@@ -38,50 +38,6 @@ namespace behavior
 
 BaseLMConstraint::ConstraintGroup::ConstraintGroup( ConstOrder idConstraint):Order(idConstraint), active(true) {}
 
-//void BaseLMConstraint::ConstraintGroup::addConstraint(  unsigned int idx, SReal c)
-//{
-//    equations.resize(equations.size()+1);
-//    ConstraintEquation &eq=equations.back();
-//    eq.idx = idx;
-//    eq.correction=c;
-//}
-
-/// Random Access to an equation
-//const BaseLMConstraint::ConstraintEquation &
-//        BaseLMConstraint::ConstraintGroup::getConstraint(const unsigned int i) const
-//{
-//    EquationConstIterator it=equations.begin();
-//    std::advance(it,i);
-//    return *it;
-//}
-
-//BaseLMConstraint::ConstraintEquation &
-//        BaseLMConstraint::ConstraintGroup::getConstraint(const unsigned int i)
-//{
-//    EquationIterator it=equations.begin();
-//    std::advance(it,i);
-//    return *it;
-//}
-
-///// Retrieve all the equations
-//std::pair< BaseLMConstraint::ConstraintGroup::EquationConstIterator,BaseLMConstraint::ConstraintGroup::EquationConstIterator>
-//        BaseLMConstraint::ConstraintGroup::data() const
-//{
-//    return std::make_pair( equations.begin(), equations.end());
-//}
-
-//std::pair< BaseLMConstraint::ConstraintGroup::EquationIterator,BaseLMConstraint::ConstraintGroup::EquationIterator >
-//        BaseLMConstraint::ConstraintGroup::data()
-//{
-//    return std::make_pair( equations.begin(), equations.end());
-//}
-
-
-
-
-
-
-
 //------------------------------------------------------------------------
 BaseLMConstraint::BaseLMConstraint():
     pathObject1( initData(&pathObject1,  "object1","First Object to constrain") ),
@@ -92,11 +48,8 @@ BaseLMConstraint::BaseLMConstraint():
 unsigned int BaseLMConstraint::getNumConstraint(ConstOrder Order)
 {
     unsigned int result=0;
-    helper::vector< ConstraintGroup* > &vec = constraintOrder[Order];
-    for (unsigned int i=0; i<vec.size(); ++i)
-    {
-        result+=vec[i]->getNumConstraint();
-    }
+    const helper::vector< ConstraintGroup* > &vec = constraintOrder[Order];
+    for (unsigned int i=0; i<vec.size(); ++i) result+=vec[i]->getNumConstraint();
     return result;
 }
 

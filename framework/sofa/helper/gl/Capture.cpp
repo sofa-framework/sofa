@@ -80,7 +80,7 @@ std::string Capture::findFilename()
     do
     {
         ++c;
-        sprintf(buf, "%04d",c);
+        sprintf(buf, "%08d",c);
         filename = prefix;
         filename += buf;
 #ifdef SOFA_HAVE_PNG
@@ -92,7 +92,7 @@ std::string Capture::findFilename()
     while (stat(filename.c_str(),&st)==0);
     counter = c+1;
 
-    sprintf(buf, "%04d",c);
+    sprintf(buf, "%08d",c);
     filename = prefix;
     filename += buf;
 #ifdef SOFA_HAVE_PNG

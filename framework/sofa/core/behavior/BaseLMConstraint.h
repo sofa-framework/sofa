@@ -179,7 +179,7 @@ public:
     void getEquationsUsed(ConstOrder Order, DataStorage &used0) const
     {
         constraintOrder_t::const_iterator g = constraintOrder.find(Order);
-        assert( g != constraintOrder.end() );
+        if (g == constraintOrder.end()) return;
 
         const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints = g->second;
         for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
@@ -224,11 +224,11 @@ public:
     /// That way, we can optimize the time spent traversing the mappings
     /// Deactivated by default. The constraints using only a subset of particles should activate the mask,
     /// and during projectResponse(), insert the indices of the particles modified
-    virtual bool useMask() {return false;}
+    virtual bool useMask() const {return false;}
 
     /// Methods to know if we have to propagate the state we want to constrain before computing the correction
     /// If the correction is computed with the simulatedDOF, there is no need, and we can reach a good speed-up
-    virtual bool isCorrectionComputedWithSimulatedDOF() {return false;}
+    virtual bool isCorrectionComputedWithSimulatedDOF(ConstOrder) const {return false;}
 
     virtual void resetConstraint();
 protected:

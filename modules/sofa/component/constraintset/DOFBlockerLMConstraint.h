@@ -122,13 +122,13 @@ public:
     }
 
 
-    bool isCorrectionComputedWithSimulatedDOF()
+    bool isCorrectionComputedWithSimulatedDOF(core::behavior::BaseLMConstraint::ConstOrder /*order*/)
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;
         else return false;
     }
-    bool useMask() {return true;}
+    bool useMask() const {return true;}
 
     Data<helper::vector<Deriv> > BlockedAxis;
     Data<helper::vector<SReal> > factorAxis;

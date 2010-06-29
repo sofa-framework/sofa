@@ -119,13 +119,13 @@ public:
 
 
 
-    bool isCorrectionComputedWithSimulatedDOF()
+    bool isCorrectionComputedWithSimulatedDOF(core::behavior::BaseLMConstraint::ConstOrder /*order*/) const
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;
         else return false;
     }
-    bool useMask() {return true;}
+    bool useMask() const {return true;}
 protected :
 
     Deriv X,Y,Z;

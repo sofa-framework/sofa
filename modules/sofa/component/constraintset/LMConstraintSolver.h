@@ -52,8 +52,8 @@ class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintSolver : public sofa::core::b
 protected:
     typedef sofa::core::VecId VecId;
     typedef sofa::core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
-    typedef Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
-    typedef Matrix<SReal, Eigen::Dynamic, 1>              VectorEigen;
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>              VectorEigen;
     typedef Eigen::SparseMatrix<SReal,Eigen::RowMajor>    SparseMatrixEigen;
     typedef Eigen::SparseVector<SReal,Eigen::RowMajor>    SparseVectorEigen;
 
@@ -143,7 +143,7 @@ public:
 
 protected:
     /// Explore the graph, looking for LMConstraints: each LMConstraint can tell if they need State Propagation in order to compute the right hand term of the system
-    virtual bool needPriorStatePropagation();
+    virtual bool needPriorStatePropagation(core::behavior::BaseLMConstraint::ConstOrder order) const;
 
     /// Construct the Right hand term of the system
     virtual void buildRightHandTerm      ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
