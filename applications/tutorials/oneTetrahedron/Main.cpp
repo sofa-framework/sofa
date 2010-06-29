@@ -127,7 +127,7 @@ int main(int argc, char** argv)
     skin->addObject(mapping);
 
     // Init the scene
-    sofa::simulation::getSimulation()->init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot);
     groot->setAnimate(false);
     groot->setShowNormals(false);
     groot->setShowInteractionForceFields(false);

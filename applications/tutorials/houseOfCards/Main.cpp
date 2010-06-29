@@ -33,12 +33,15 @@
 #include <sofa/simulation/bgl/BglSimulation.h>
 #endif
 #include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
+
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/core/CollisionModel.h>
 
@@ -73,10 +76,15 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     modelTypes.push_back("Point");
 
     Node* card = sofa::ObjectCreator::CreateEulerSolverNode("Rigid","Implicit");
+
+    sofa::component::odesolver::EulerImplicitSolver *odeSolver; card->get(odeSolver);
+    odeSolver->f_rayleighStiffness.setValue(0.1);
+    odeSolver->f_rayleighMass.setValue(0.1);
+
     CGLinearSolverGraph *cgLinearSolver; card->get(cgLinearSolver);
-    cgLinearSolver->f_maxIter.setValue(25);
-    cgLinearSolver->f_tolerance.setValue(1e-25);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
+    cgLinearSolver->f_maxIter.setValue(20);
+    cgLinearSolver->f_tolerance.setValue(1e-7);
+    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-7);
 
 
     sofa::component::constraintset::LMConstraintSolver *constraintSolver = new sofa::component::constraintset::LMConstraintSolver();
@@ -92,7 +100,7 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     card->addObject(dofRigid);
 
     UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
-    uniMassRigid->setTotalMass(0.5);
+    uniMassRigid->setTotalMass(1);
     uniMassRigid->setFileMass(inertiaMatrix);
     card->addObject(uniMassRigid);
 
@@ -203,6 +211,12 @@ int main(int argc, char** argv)
     SReal distanceInBetween=0.1;
     SReal friction=1;
     SReal contactDistance=0.02;
+    std::string gui = "";
+
+
+    std::string gui_help = "choose the UI (";
+    gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
+    gui_help += ")";
 
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
@@ -211,6 +225,7 @@ int main(int argc, char** argv)
     .option(&distanceInBetween,'d',"distance","distance between two cards")
     .option(&friction,'f',"friction","friction coeff")
     .option(&contactDistance,'c',"contactDistance","contact distance")
+    .option(&gui,'g',"gui",gui_help.c_str())
     (argc,argv);
 
 #ifdef SOFA_DEV
@@ -220,7 +235,6 @@ int main(int argc, char** argv)
 #endif
         sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
-    sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
     Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline(simulationType,"distanceLMConstraint");
@@ -247,14 +261,42 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<listCollisionModels.size(); ++i) listCollisionModels[i]->setContactFriction(contactFriction);
     root->setAnimate(false);
 
-    sofa::simulation::getSimulation()->exportXML(root,"HouseOfCards.xml", true);
+    //=======================================
+    // Export the scene to file
+    const std::string fileName="HouseOfCards.xml";
+    sofa::simulation::getSimulation()->exportXML(root,fileName.c_str(), true);
 
-    sofa::simulation::getSimulation()->init(root);
+    //=======================================
+    // Destroy created scene: step needed, as I can't get rid of the locales (the mass can't init correctly as 0.1 is not considered as a floating point).
+    sofa::simulation::DeleteVisitor deleteScene;
+    root->execute(deleteScene);
+    delete root;
+
+    //=======================================
+    // Create the GUI
+    if (int err=sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
+        return err;
+
+    if (int err=sofa::gui::GUIManager::createGUI(NULL))
+        return err;
+
+    sofa::gui::GUIManager::SetDimension(800,600);
+    //=======================================
+    // Load the Scene
+    sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+
+
+    sofa::simulation::getSimulation()->init(groot);
+    sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
 
 
     //=======================================
     // Run the main loop
-    sofa::gui::GUIManager::MainLoop(root);
+    if (int err=sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
+        return err;
+    groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
 
+
+    if (groot!=NULL) sofa::simulation::getSimulation()->unload(groot);
     return 0;
 }
