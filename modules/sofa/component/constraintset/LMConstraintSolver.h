@@ -32,6 +32,9 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/component.h>
 
+
+#include <sofa/component/linearsolver/EigenMatrixManipulator.h>
+
 #include <Eigen/Core>
 #include <Eigen/Sparse>
 USING_PART_OF_NAMESPACE_EIGEN
@@ -61,58 +64,6 @@ protected:
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, helper::set<unsigned int> > DofToMask;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
-
-
-
-
-
-
-
-    struct LMatrixManipulator
-    {
-        void init(const SparseMatrixEigen& L)
-        {
-            const unsigned int numConstraint=L.rows();
-            const unsigned int numDofs=L.cols();
-            LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
-            for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].startFill(0.3*numDofs);
-            for (int k=0; k<L.outerSize(); ++k)
-            {
-                for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
-                {
-                    const unsigned int row=it.row();
-                    const unsigned int col=it.col();
-                    const SReal value=it.value();
-                    LMatrix[row].fill(col)=value;
-                }
-            }
-
-            for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].endFill();
-        }
-
-        void buildLMatrix(const helper::vector<unsigned int> &lines, SparseMatrixEigen& matrix) const
-        {
-            matrix.startFill(LMatrix.size()*LMatrix.size());
-
-            for (unsigned int l=0; l<lines.size(); ++l)
-            {
-                const SparseVectorEigen& line=LMatrix[lines[l]];
-
-                for (SparseVectorEigen::InnerIterator it(line); it; ++it)
-                {
-                    matrix.fill(l,it.index())=it.value();
-                }
-            }
-            matrix.endFill();
-        }
-
-
-        helper::vector< SparseVectorEigen > LMatrix;
-    };
-
-
-
-
 
 public:
     SOFA_CLASS(LMConstraintSolver, sofa::core::behavior::ConstraintSolver);

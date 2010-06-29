@@ -310,18 +310,28 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
             LMatrices.erase(itCurrent);
         }
 
-        //How to use the Matrix manipulator: here, creates a matrix with only the pair indices of the L Matrix
-//          LMatrixManipulator manip;
+        /*
+        //How to use the Matrix manipulator: here, creates a matrix with the average of two consecutive lines
+        linearsolver::LMatrixManipulator manip;
         //Init the manipulator with the full matrix
-//          manip.init(matrix);
+        manip.init(matrix);
 
-        //Declare the new matrix
-//          SparseMatrixEigen newL(matrix.rows()/2,matrix.cols());
-        //Specify the desired indices
-//          helper::vector<unsigned int> rows;
-//          for (unsigned int i=0;i<matrix.rows()/2;++i) rows.push_back(2*i);
+        //Declare the new matrix: in our case, it will have half the number of lines
+        SparseMatrixEigen newL(matrix.rows()/2,matrix.cols());
+        //Specify the desired combination
+        helper::vector<linearsolver::LLineManipulator> rows(matrix.rows()/2);
+        for (unsigned int i=0;i<rows.size();++i)
+        {
+          //index of the line, and factor applied
+          rows[i].addCombination(i*2  ,0.5)
+                 .addCombination(i*2+1,0.5);
+        }
+
         //Create the matrix
-//          manip.buildLMatrix(rows,newL);
+        manip.buildLMatrix(rows,newL);
+        serr << "Previous L\n" << matrix << "\n-----------------------------------------------------\n";
+        serr << "Combined L\n" << newL << "\n\n\n" << sendl;
+        */
     }
     sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem L");
 
