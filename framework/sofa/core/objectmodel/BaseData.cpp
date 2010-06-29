@@ -232,6 +232,12 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
+
+std::string BaseData::decodeTypeName(const std::type_info& t)
+{
+    return Base::decodeTypeName(t);
+}
+
 } // namespace objectmodel
 
 } // namespace core

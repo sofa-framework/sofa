@@ -31,14 +31,12 @@
 #include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <string>
 #include <map>
 
-using sofa::core::objectmodel::DataPtr;
 using sofa::core::objectmodel::Data;
 
 namespace sofa
@@ -194,22 +192,6 @@ public:
         typename Data<T>::InitData res;
         this->initData0(field, res, value, name, help, isDisplayed, isReadOnly);
         return res;
-    }
-
-    /// Helper method used to initialize a field pointing to a value of type T
-    template<class T>
-    DataPtr<T> initDataPtr( DataPtr<T>* field, T* ptr, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
-    {
-        std::string ln(name);
-        if( ln.size()>0 && findField(ln) )
-        {
-            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-            exit( 1 );
-        }
-        //field = tmp;
-        m_fieldVec.push_back( std::make_pair(ln,field));
-        m_aliasData.insert(std::make_pair(ln,field));
-        return DataPtr<T>(ptr,help,isDisplayed,isReadOnly, this, name);
     }
 
     /// Helper method used to add an alias to a Data
