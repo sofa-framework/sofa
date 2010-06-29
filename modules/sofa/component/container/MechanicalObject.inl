@@ -128,6 +128,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     x				.setGroup("Vector");
     v				.setGroup("Vector");
     f				.setGroup("Vector");
+    internalForces	.setGroup("Vector");
     externalForces	.setGroup("Vector");
     dx				.setGroup("Vector");
     xfree			.setGroup("Vector");
