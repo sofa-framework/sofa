@@ -72,7 +72,6 @@ HEADERS += viewer/SofaViewer.h \
 		   SofaGUIQt.h \
            StructDataWidget.h \
            TableDataWidget.h \
-           WFloatLineEdit.h \ 
            WDoubleLineEdit.h \ 
            FileManagement.h \
            SofaPluginManager.h \
@@ -103,7 +102,6 @@ SOURCES += GraphListenerQListView.cpp \
            SimpleDataWidget.cpp \
            StructDataWidget.cpp \
            TableDataWidget.cpp \
-           WFloatLineEdit.cpp \
            WDoubleLineEdit.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \

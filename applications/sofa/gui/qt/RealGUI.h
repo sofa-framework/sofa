@@ -277,7 +277,7 @@ protected:
 #endif
     QSofaStatWidget* statWidget;
     QTimer* timerStep;
-    WFloatLineEdit *background[3];
+    WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
     QWidgetStack* left_stack;
 

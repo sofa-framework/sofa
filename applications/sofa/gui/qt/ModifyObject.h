@@ -38,7 +38,7 @@
 #include <sofa/gui/qt/QTransformationWidget.h>
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/DisplayFlagWidget.h>
-#include "WFloatLineEdit.h"
+#include "WDoubleLineEdit.h"
 
 #ifdef SOFA_QT4
 #include <QDialog>

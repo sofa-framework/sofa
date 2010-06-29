@@ -2,7 +2,7 @@
 #define SOFA_GUI_QT_TRANSFORMATIONWIDGET_H
 
 #include <sofa/simulation/common/Node.h>
-#include "WFloatLineEdit.h"
+#include "WDoubleLineEdit.h"
 
 #ifdef SOFA_QT4
 #include <QWidget>
@@ -44,9 +44,9 @@ signals:
 protected:
     const unsigned int numWidgets_;
 
-    WFloatLineEdit* translation[3];
-    WFloatLineEdit* rotation[3];
-    WFloatLineEdit* scale[3];
+    WDoubleLineEdit* translation[3];
+    WDoubleLineEdit* rotation[3];
+    WDoubleLineEdit* scale[3];
 };
 
 
