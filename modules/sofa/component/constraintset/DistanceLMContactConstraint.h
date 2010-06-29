@@ -101,13 +101,13 @@ public:
     void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
             core::behavior::BaseLMConstraint::ConstraintGroup * group);
 
-
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const;
     //
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
     virtual void draw();
-    bool useMask() {return true;}
+    bool useMask() const {return true;}
 
     std::string getTemplateName() const
     {

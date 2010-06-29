@@ -204,7 +204,7 @@ public:
 
     virtual void handleTopologyChange(core::topology::Topology *topo);
 
-    virtual bool useMask();
+    virtual bool useMask() const ;
 
 
 };

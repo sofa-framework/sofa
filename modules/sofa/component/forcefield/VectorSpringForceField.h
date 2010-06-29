@@ -176,7 +176,7 @@ public:
         springArray.endEdit();
     }
 
-    bool useMask() {return true;}
+    bool useMask() const {return true;}
     void addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector);
 
     /// forward declaration of the loader class used to read spring information from file

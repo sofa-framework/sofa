@@ -101,14 +101,14 @@ public:
 
     virtual void draw();
 
-    bool isCorrectionComputedWithSimulatedDOF()
+    bool isCorrectionComputedWithSimulatedDOF(core::behavior::BaseLMConstraint::ConstOrder /*order*/) const
     {
         simulation::Node* node1=(simulation::Node*) this->constrainedObject1->getContext();
         simulation::Node* node2=(simulation::Node*) this->constrainedObject2->getContext();
         if (node1->mechanicalMapping.empty() && node2->mechanicalMapping.empty()) return true;
         else return false;
     }
-    bool useMask() {return true;}
+    bool useMask() const {return true;}
 
 
 

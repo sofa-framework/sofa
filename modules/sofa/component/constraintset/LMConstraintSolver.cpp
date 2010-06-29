@@ -88,10 +88,8 @@ void LMConstraintSolver::init()
 
 
 
-bool LMConstraintSolver::needPriorStatePropagation()
+bool LMConstraintSolver::needPriorStatePropagation(core::behavior::BaseLMConstraint::ConstOrder order) const
 {
-    return true;
-
     using core::behavior::BaseLMConstraint;
     bool needPriorPropagation=false;
     {
@@ -99,7 +97,7 @@ bool LMConstraintSolver::needPriorStatePropagation()
         this->getContext()->get<BaseLMConstraint>(&c, core::objectmodel::BaseContext::SearchDown);
         for (unsigned int i=0; i<c.size(); ++i)
         {
-            if (!c[i]->isCorrectionComputedWithSimulatedDOF())
+            if (!c[i]->isCorrectionComputedWithSimulatedDOF(order))
             {
                 needPriorPropagation=true;
                 if (f_printLog.getValue()) serr << "Propagating the State because of "<< c[i]->getName() << sendl;
@@ -129,7 +127,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
     if      (order==core::behavior::BaseConstraintSet::ACC)
     {
         if (!constraintAcc.getValue()) return false;
-        if (needPriorStatePropagation())
+        if (needPriorStatePropagation(order))
         {
             simulation::MechanicalPropagateDxVisitor propagateState(id,false);
             propagateState.execute(this->getContext());
@@ -146,7 +144,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
     else if (order==core::behavior::BaseConstraintSet::VEL)
     {
         if (!constraintVel.getValue()) return false;
-        if (needPriorStatePropagation())
+        if (needPriorStatePropagation(order))
         {
             simulation::MechanicalPropagateVVisitor propagateState(id,false);
             propagateState.execute(this->getContext());
@@ -173,7 +171,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
     {
         if (!constraintPos.getValue()) return false;
 
-        if (needPriorStatePropagation())
+        if (needPriorStatePropagation(order))
         {
             simulation::MechanicalPropagateXVisitor propagateState(id,false);
             propagateState.execute(this->getContext());

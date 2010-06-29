@@ -370,7 +370,7 @@ public:
         springs.endEdit();
     }
 
-    bool useMask() {return true;}
+    bool useMask() const {return true;}
 
 };
 
