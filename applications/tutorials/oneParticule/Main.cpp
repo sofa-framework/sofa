@@ -81,7 +81,7 @@ int main(int argc, char** argv)
     particule_node->addObject(mass);
     mass->setMass( 1 );
 
-    sofa::simulation::getSimulation()->init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot);
     groot->setAnimate(false);
 
     //=======================================
