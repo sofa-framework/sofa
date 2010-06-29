@@ -210,13 +210,13 @@ void RadixSort::radixSortBlocksKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_
 
     ckRadixSortBlocksKeysOnly->setArg<cl_mem>(0, &d_keys.m);
     ckRadixSortBlocksKeysOnly->setArg<cl_mem>(1, &d_tempKeys.m);
-//	ckRadixSortBlocksKeysOnly->setArg<cl_mem>(2, &d_values.m);
-//	ckRadixSortBlocksKeysOnly->setArg<cl_mem>(3, &d_tempElements.m);
-    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(2, &nbits);
-    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(3, &startbit);
-    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(4, &numElements);
-    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(5, &totalBlocks);
-    ckRadixSortBlocksKeysOnly->setArg(6, 4*CTA_SIZE*sizeof(unsigned int), NULL);
+    ckRadixSortBlocksKeysOnly->setArg<cl_mem>(2, &d_values.m);
+    ckRadixSortBlocksKeysOnly->setArg<cl_mem>(3, &d_tempElements.m);
+    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(4, &nbits);
+    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(5, &startbit);
+    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(6, &numElements);
+    ckRadixSortBlocksKeysOnly->setArg<unsigned int>(7, &totalBlocks);
+    ckRadixSortBlocksKeysOnly->setArg(8, 4*CTA_SIZE*sizeof(unsigned int), NULL);
 //	ckRadixSortBlocksKeysOnly->setArg(9, 4*CTA_SIZE*sizeof(unsigned int), NULL);
     ckRadixSortBlocksKeysOnly->execute(0,1,NULL,globalWorkSize,localWorkSize);
 
