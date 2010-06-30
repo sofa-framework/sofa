@@ -45,6 +45,8 @@ SubsetMapping<BaseMapping>::SubsetMapping(In* from, Out* to)
     , f_first( initData(&f_first, -1, "first", "first index (use if indices are sequential)"))
     , f_last( initData(&f_last, -1, "last", "last index (use if indices are sequential)"))
     , f_radius( initData(&f_radius, (Real)1.0e-5, "radius", "search radius to find corresponding points in case no indices are given"))
+    , matrixJ()
+    , updateJ(false)
 {
 }
 
@@ -210,7 +212,26 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::VecConst& out, const type
             out[i+offset].add( indices[indexIn] , data );
         }
     }
+}
 
+template<class BaseMapping>
+const sofa::defaulttype::BaseMatrix* SubsetMapping<BaseMapping>::getJ()
+{
+    if (matrixJ.get() == 0 || updateJ)
+    {
+        const OutVecCoord& out = *this->toModel->getX();
+        const InVecCoord& in = *this->fromModel->getX();
+        const IndexArray& indices = f_indices.getValue();
+        assert(indices.size() == out.size());
+
+        matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+        for (unsigned i = 0; i < indices.size(); ++i)
+        {
+            MBloc& block = *matrixJ->wbloc(i, indices[i], true);
+            block.identity();
+        }
+    }
+    return matrixJ.get();
 }
 
 } // namespace mapping
