@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 
@@ -50,8 +50,7 @@ class RigidMappingInternalData
 public:
 };
 
-
-template <class BasicMapping>
+template<class BasicMapping>
 class RigidMapping : public BasicMapping
 {
 public:
@@ -68,19 +67,22 @@ public:
     typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
     typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Coord::value_type Real;
-    enum { N=OutDataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector ;
+    enum
+    {
+        N = OutDataTypes::spatial_dimensions
+    };
+    typedef defaulttype::Mat<N, N, Real> Mat;
+    typedef defaulttype::Vec<N, Real> Vector;
 
-    Data< VecCoord > points;
+    Data<VecCoord> points;
     VecCoord rotatedPoints;
     RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     Data<unsigned int> index;
     sofa::core::objectmodel::DataFileName fileRigidMapping;
-    Data< bool > useX0;
-    Data< bool > indexFromEnd;
-    Data<sofa::helper::vector<unsigned int> >  repartition;
-    Data< bool > globalToLocalCoords;
+    Data<bool> useX0;
+    Data<bool> indexFromEnd;
+    Data<sofa::helper::vector<unsigned int> > repartition;
+    Data<bool> globalToLocalCoords;
 
     core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
     core::behavior::BaseMechanicalState::ParticleMask* maskTo;
@@ -96,43 +98,46 @@ public:
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) ),
           globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     {
-        this->addAlias(&fileRigidMapping,"filename");
+        this->addAlias(&fileRigidMapping, "filename");
         maskFrom = NULL;
-        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from))
+        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(from))
+        {
             maskFrom = &stateFrom->forceMask;
+        }
         maskTo = NULL;
-        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(to))
+        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(to))
+        {
             maskTo = &stateTo->forceMask;
+        }
     }
 
-    virtual ~RigidMapping()
-    {}
+    virtual ~RigidMapping() {}
 
-    int addPoint ( const Coord& c );
-    int addPoint ( const Coord& c, int indexFrom );
+    int addPoint(const Coord& c);
+    int addPoint(const Coord& c, int indexFrom);
 
     void init();
 
     //void disable(); //useless now that points are saved in a Data
 
-    virtual void apply ( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    virtual void applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
 
-    virtual void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
 
-    void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT(typename In::VecConst& out, const typename Out::VecConst& in);
 
     void draw();
 
-    void clear ( int reserve=0 );
+    void clear(int reserve = 0);
 
-    void setRepartition ( unsigned int value );
-    void setRepartition ( sofa::helper::vector<unsigned int> values );
+    void setRepartition(unsigned int value);
+    void setRepartition(sofa::helper::vector<unsigned int> values);
 
 protected:
     class Loader;
-    void load ( const char* filename );
+    void load(const char* filename);
     const VecCoord& getPoints();
 };
 
