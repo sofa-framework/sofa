@@ -237,6 +237,11 @@ else {
 
 contains(DEFINES,SOFA_HAVE_TAUCS) {
   message( "|  TAUCS library : ENABLED")
+contains(DEFINES,SOFA_HAVE_CILK) {
+  message( "|  CILK library : ENABLED")
+} else {
+  message( "|  CILK library : DISABLE")
+}
 }
 else {
   message( "|  TAUCS library : DISABLED")
