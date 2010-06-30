@@ -70,6 +70,6 @@ private:
     void scanNaiveOCL(unsigned int numElements);
     void reorderDataKeysOnlyOCL(_device_pointer d_keys,_device_pointer d_elements, unsigned int startbit, unsigned int numElements);
 
-    void memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,uint size);
+    void memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,unsigned int size);
 };
 #endif

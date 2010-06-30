@@ -130,7 +130,7 @@ void RadixSort::sort(sofa::gpu::opencl::_device_pointer d_keys,
 
     if(show_key==NULL)show_key = new ShowVector("show_key");
 
-    sofa::gpu::opencl::myopenclEnqueueCopyBuffer(0,d_temp_resized.m,0,d_keys.m,d_keys.offset,numElements*sizeof(uint));
+    sofa::gpu::opencl::myopenclEnqueueCopyBuffer(0,d_temp_resized.m,0,d_keys.m,d_keys.offset,numElements*sizeof(unsigned int));
     memset(d_temp_resized,numElements,maxElements-numElements);
 
     show_key->addOpenCLVector<int>(d_temp_resized,maxElements);
@@ -314,7 +314,7 @@ void RadixSort::reorderDataKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys
     DEBUG_TEXT("~reorderDataKeysOnlyOCL")
 }
 
-void RadixSort::memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,uint size)
+void RadixSort::memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,unsigned int size)
 {
     int BSIZE=32;
 

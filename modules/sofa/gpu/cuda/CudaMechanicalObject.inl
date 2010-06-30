@@ -375,7 +375,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     if (!m->externalForces.getValue().empty())
     {
         //std::cout << "ADD: external forces, size = "<< m->externalForces->size() << std::endl;
-        Kernels::vAssign(m->externalForces.getValue().size(),((VecDeriv) m->f.getValue()).deviceWrite(),m->externalForces.getValue().deviceRead());
+        Kernels::vAssign(m->externalForces.getValue().size(),m->f.beginEdit()->deviceWrite(),m->externalForces.getValue().deviceRead());
+        m->f.endEdit();
     }
     //else std::cout << "NO external forces" << std::endl;
 }
@@ -384,7 +385,8 @@ template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDxToCollisionModel(Main* m, bool prefetch)
 {
     if (prefetch) return;
-    Kernels::vAdd(m->xfree.getValue().size(), ((VecDeriv) m->x.getValue()).deviceWrite(), ((VecDeriv) m->xfree.getValue()).deviceRead(), ((VecDeriv) m->dx.getValue()).deviceRead());
+    Kernels::vAdd(m->xfree.getValue().size(), m->x.beginEdit()->deviceWrite(), m->xfree.getValue().deviceRead(), m->dx.getValue().deviceRead());
+    m->x.endEdit();
 }
 
 template<class TCoord, class TDeriv, class TReal>
