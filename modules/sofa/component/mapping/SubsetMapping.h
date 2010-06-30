@@ -25,10 +25,12 @@
 #ifndef SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
 
+#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/behavior/MechanicalMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubset.h>
+#include <memory>
 
 namespace sofa
 {
@@ -71,6 +73,11 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
 
+    enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
+    enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
+    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+
     /// Correspondance array
     //typedef helper::vector<unsigned int> IndexArray;
     typedef topology::PointSubset IndexArray;
@@ -102,6 +109,12 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+
+    const sofa::defaulttype::BaseMatrix* getJ();
+
+protected:
+    std::auto_ptr<MatrixType> matrixJ;
+    bool updateJ;
 };
 
 } // namespace mapping
