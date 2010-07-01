@@ -594,11 +594,8 @@
         <action name="MouseManagerAction"/>
         <action name="VideoRecorderManagerAction"/>
     </item>
-    <item text="&amp;View" name="View">
-        <action name="viewerOpenGLAction"/>
-        <action name="viewerQGLViewerAction"/>
-        <action name="viewerOGREAction"/>
-    </item>
+	<item text="&amp;View" name="View">
+	</item>
     <item text="Help" name="helpMenu">
         <action name="helpContentsAction"/>
         <action name="helpIndexAction"/>
@@ -886,54 +883,6 @@
     </action>
     <action>
         <property name="name">
-            <cstring>viewerOpenGLAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="text">
-            <string>OpenGL</string>
-        </property>
-        <property name="menuText">
-            <string>Open&amp;GL</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>viewerQGLViewerAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>QGLViewer</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;QGLViewer</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>viewerOGREAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>OGRE</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;OGRE</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
             <cstring>editRecordDirectoryAction</cstring>
         </property>
         <property name="text">
@@ -1116,24 +1065,6 @@
         <slot>editFind()</slot>
     </connection>
     <connection>
-        <sender>viewerOpenGLAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>viewerOpenGL()</slot>
-    </connection>
-    <connection>
-        <sender>viewerQGLViewerAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>viewerQGLViewer()</slot>
-    </connection>
-    <connection>
-        <sender>viewerOGREAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>viewerOGRE()</slot>
-    </connection>
-    <connection>
         <sender>helpIndexAction</sender>
         <signal>activated()</signal>
         <receiver>GUI</receiver>
@@ -1204,9 +1135,6 @@
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>
     <slot>editFind()</slot>
-    <slot>viewerOpenGL()</slot>
-    <slot>viewerQGLViewer()</slot>
-    <slot>viewerOGRE()</slot>
     <slot>helpIndex()</slot>
     <slot>helpContents()</slot>
     <slot>helpAbout()</slot>

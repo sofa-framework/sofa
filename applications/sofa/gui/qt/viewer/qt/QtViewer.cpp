@@ -75,6 +75,9 @@ namespace viewer
 
 namespace qt
 {
+
+
+
 using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
@@ -82,8 +85,9 @@ using namespace sofa::helper::gl;
 
 using sofa::simulation::getSimulation;
 
-//extern UserInterface*	GUI;
-//extern OBJmodel*		cubeModel;
+helper::Creator<SofaViewerFactory, QtViewer> QtViewer_class("qt",false);
+SOFA_DECL_CLASS ( QTGUI )
+
 
 
 // Mouse Interactor
@@ -106,39 +110,6 @@ float g_mProjection[16] =
 float g_mModelView[16] =
 { 0 };
 //float g_mCameraInverse[16] = {0};
-
-
-static bool enabled = false;
-sofa::core::ObjectFactory::ClassEntry* classVisualModel;
-
-/// Activate this class of viewer.
-/// This method is called before the viewer is actually created
-/// and can be used to register classes associated with in the the ObjectFactory.
-int QtViewer::EnableViewer()
-{
-    if (!enabled)
-    {
-        enabled = true;
-        // Replace generic visual models with OglModel
-        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
-                &classVisualModel);
-    }
-    return 0;
-}
-
-/// Disable this class of viewer.
-/// This method is called after the viewer is destroyed
-/// and can be used to unregister classes associated with in the the ObjectFactory.
-int QtViewer::DisableViewer()
-{
-    if (enabled)
-    {
-        enabled = false;
-        sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
-    }
-    return 0;
-}
-
 
 
 QGLFormat QtViewer::setupGLFormat()
