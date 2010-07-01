@@ -3,7 +3,7 @@
 *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     **
- under the terms of the GNU General Public License as published by the Free  *
+under the terms of the GNU General Public License as published by the Free  *
 * Software Foundation; either version 2 of the License, or (at your option)   *
 * any later version.                                                          *
 *                                                                             *
@@ -128,10 +128,6 @@ class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public SofaGUI
 
 public:
 
-#ifndef SOFA_QT4
-    void setWindowFilePath(const QString &filePath) { filePath_=filePath;};
-    QString windowFilePath() const { QString filePath = filePath_; return filePath; }
-#endif
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
     static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot = NULL, const char* filename = NULL);
@@ -144,10 +140,20 @@ public:
 
     /// @}
 
+
+#ifndef SOFA_QT4
+    void setWindowFilePath(const QString &filePath) { filePath_=filePath;};
+    QString windowFilePath() const { QString filePath = filePath_; return filePath; }
+#endif
+
     const char* viewerName;
 
     sofa::gui::qt::viewer::SofaViewer* viewer;
     QSofaListView* simulationGraph;
+
+    std::map< QAction* , sofa::gui::qt::viewer::SofaViewer* > viewerMap;
+
+
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
     QSofaListView* visualGraph;
 #endif
@@ -191,17 +197,11 @@ public:
     virtual void fileReload();
     virtual void fileExit();
     virtual void saveXML();
-    virtual void viewerOpenGL();
-    virtual void viewerQGLViewer();
-    virtual void viewerOGRE();
-
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
     virtual void showPluginManager();
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();
-
-
     void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);
 
@@ -224,6 +224,7 @@ public slots:
     void updateViewerParameters();
     void updateBackgroundColour();
     void updateBackgroundImage();
+    void changeViewer();
 
 #ifdef SOFA_QT4
     void changeHtmlPage( const QUrl&);
@@ -249,6 +250,9 @@ signals:
     void quit();
 
 protected:
+    void createViewers(const char* viewername);
+
+    void initViewer();
     void eventNewStep();
     void eventNewTime();
     void init();

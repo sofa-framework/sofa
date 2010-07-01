@@ -33,24 +33,13 @@
 #include "GenGraphForm.h"
 #include "QSofaListView.h"
 
-#ifdef SOFA_GUI_QTOGREVIEWER
-#include <sofa/gui/qt/viewer/qtogre/QtOgreViewer.h>
-#endif
-
-#ifdef SOFA_GUI_QTVIEWER
-#include <sofa/gui/qt/viewer/qt/QtViewer.h>
-#endif
-
-#ifdef SOFA_GUI_QGLVIEWER
-#include <sofa/gui/qt/viewer/qgl/QtGLViewer.h>
-#endif
-
 #ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/core/objectmodel/GLInitializedEvent.h>
 #endif // SOFA_HAVE_CHAI3D
 
-
+#include <sofa/gui/qt/viewer/ViewerFactory.h>
+#include <sofa/helper/Factory.inl>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/XML.h>
@@ -140,47 +129,6 @@ using namespace sofa::simulation;
 ///////////////////////////////////////////////////////////
 //////////////////// SofaGUI Interface ////////////////////
 ///////////////////////////////////////////////////////////
-
-#ifdef SOFA_GUI_QGLVIEWER
-SOFA_DECL_CLASS ( QGLViewerGUI )
-#endif
-#ifdef SOFA_GUI_QTVIEWER
-SOFA_DECL_CLASS ( QTGUI )
-#endif
-#ifdef SOFA_GUI_QTOGREVIEWER
-SOFA_DECL_CLASS ( OgreGUI )
-#endif
-
-int RealGUI::InitGUI ( const char* name, const std::vector<std::string>& /* options */ )
-{
-    ImageQt::Init();
-#ifdef SOFA_GUI_QGLVIEWER
-    if ( !name[0] || !strcmp ( name,"qglviewer" ) )
-    {
-        return sofa::gui::qt::viewer::qgl::QtGLViewer::EnableViewer();
-    }
-    else
-#endif
-#ifdef SOFA_GUI_QTVIEWER
-        if ( !name[0] || !strcmp ( name,"qt" ) )
-        {
-            return sofa::gui::qt::viewer::qt::QtViewer::EnableViewer();
-        }
-        else
-#endif
-#ifdef SOFA_GUI_QTOGREVIEWER
-            if ( !name[0] || !strcmp ( name,"ogre" ) )
-            {
-                return sofa::gui::qt::viewer::qtogre::QtOgreViewer::EnableViewer();
-            }
-            else
-#endif
-            {
-                std::cerr << "ERROR(QtGUI): unknown or disabled gui name "<<name<<std::endl;
-                return 1;
-            }
-}
-
 extern QApplication* application; // = NULL;
 extern RealGUI* gui;
 
@@ -217,6 +165,19 @@ QApplication* application = NULL;
 const char* progname="";
 
 
+int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* options */ )
+{
+    if ( ImageQt::Init() )
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+
 SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node* root, const char* filename )
 {
     {
@@ -235,9 +196,6 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
         gui->setScene ( root, filename );
         gui->setWindowFilePath(QString(filename));
     }
-
-    //gui->viewer->resetView();
-
     application->setMainWidget ( gui );
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
@@ -375,8 +333,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
 
+    createViewers(viewername);
 
-    addViewer();
     currentTabChanged ( tabs->currentPage() );
 
     //ADD GUI for Background
@@ -431,6 +389,35 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 #endif
 #endif
 
+#ifndef SOFA_DUMP_VISITOR_INFO
+    //Remove option to see visitor trace
+    this->exportVisitorCheckbox->hide();
+#else
+    //Main window containing a QListView only
+    windowTraceVisitor = new WindowVisitor;
+    windowTraceVisitor->graphView->setSorting(-1);
+    windowTraceVisitor->hide();
+    connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
+    handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
+#endif
+    //--------
+    descriptionScene = new QDialog(this);
+    descriptionScene->resize(400,400);
+    QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
+    htmlPage = new QTextBrowser(descriptionScene);
+    descriptionLayout->addWidget(htmlPage);
+#ifdef SOFA_QT4
+    connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
+#else
+    // QMimeSourceFactory::defaultFactory()->setExtensionType("html", "text/utf8");
+    htmlPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
+    connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
+#endif
+    //--------
+    SofaPluginManager::getInstance()->hide();
+    SofaMouseManager::getInstance()->hide();
+    SofaVideoRecorderManager::getInstance()->hide();
+
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
@@ -446,8 +433,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(visualGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(visualGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
 #endif
-    //connect(simulationGraph, SIGNAL( currentActivated(bool) ), viewer->getQWidget(), SLOT( resetView() ) );
-    //connect(simulationGraph, SIGNAL( currentActivated(bool) ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
@@ -516,102 +501,85 @@ void RealGUI::init()
     m_displayComputationTime = false;
     m_exportGnuplot = false;
     gnuplot_directory = "";
-
-
-
-
-
-#ifndef SOFA_DUMP_VISITOR_INFO
-    //Remove option to see visitor trace
-    this->exportVisitorCheckbox->hide();
-#else
-    //Main window containing a QListView only
-    windowTraceVisitor = new WindowVisitor;
-    windowTraceVisitor->graphView->setSorting(-1);
-    windowTraceVisitor->hide();
-    connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
-    handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
-#endif
-    //--------
-    descriptionScene = new QDialog(this);
-    descriptionScene->resize(400,400);
-    QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
-    htmlPage = new QTextBrowser(descriptionScene);
-    descriptionLayout->addWidget(htmlPage);
-#ifdef SOFA_QT4
-    connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
-#else
-    // QMimeSourceFactory::defaultFactory()->setExtensionType("html", "text/utf8");
-    htmlPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
-    connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
-#endif
-    //--------
-    SofaPluginManager::getInstance()->hide();
-    SofaMouseManager::getInstance()->hide();
-    SofaVideoRecorderManager::getInstance()->hide();
-
 }
 
-void RealGUI::addViewer()
+void RealGUI::createViewers(const char* viewername)
 {
-    init();
-    const char* name = viewerName;
-
-    // set menu state
-
-#ifdef SOFA_GUI_QTVIEWER
-    viewerOpenGLAction->setEnabled ( true );
-#else
-    viewerOpenGLAction->setEnabled ( false );
-    viewerOpenGLAction->setToolTip ( "enable SOFA_GUI_QTVIEWER in sofa-local.cfg to activate" );
-#endif
-#ifdef SOFA_GUI_QGLVIEWER
-    viewerQGLViewerAction->setEnabled ( true );
-#else
-    viewerQGLViewerAction->setEnabled ( false );
-    viewerQGLViewerAction->setToolTip ( "enable SOFA_GUI_QGLVIEWER in sofa-local.cfg to activate" );
-#endif
-#ifdef SOFA_GUI_QTOGREVIEWER
-    viewerOGREAction->setEnabled ( true );
-#else
-    viewerOGREAction->setEnabled ( false );
-    viewerOGREAction->setToolTip ( "enable SOFA_GUI_QTOGREVIEWER in sofa-local.cfg to activate" );
-#endif
-
-#ifdef SOFA_GUI_QGLVIEWER
-    if ( !name[0] || !strcmp ( name,"qglviewer" ) )
+    static bool first_time = true;
+    if( first_time )
     {
-        viewer = new sofa::gui::qt::viewer::qgl::QtGLViewer ( left_stack, "viewer" );
-        viewerQGLViewerAction->setOn ( true );
-    }
-    else
-#endif
-#ifdef SOFA_GUI_QTVIEWER
-        if ( !name[0] || !strcmp ( name,"qt" ) )
+        if ( ! viewer::SofaViewerFactory::HasKey( viewername ) )
         {
-            viewer = new sofa::gui::qt::viewer::qt::QtViewer ( left_stack, "viewer" );
-            viewerOpenGLAction->setOn ( true );
+
+            std::cout << "GUI: could not find " << viewername << std::endl;
+            std::cout << "enable SOFA_GUI_QTVIEWER     in sofa-local.cfg to activate viewer qt " <<std::endl;
+            std::cout << "enable SOFA_GUI_QGLVIEWER    in sofa-local.cfg to activate viewer qglviewer " <<std::endl;
+            std::cout << "enable SOFA_GUI_QTOGREVIEWER in sofa-local.cfg to activate viewer ogre" <<std::endl;
         }
-        else
-#endif
-#ifdef SOFA_GUI_QTOGREVIEWER
-            if ( !name[0] || !strcmp ( name,"ogre" ) )
-            {
-                viewer = new sofa::gui::qt::viewer::qtogre::QtOgreViewer ( left_stack , "viewer" );
-                viewerOGREAction->setOn ( true );
-            }
-            else
-#endif
-            {
-                std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<name<<std::endl;
-                application->exit();
-            }
+        std::vector<std::string> sofaViewerFactoryKeys;
+        sofaViewerFactoryKeys.push_back("qt");
+        sofaViewerFactoryKeys.push_back("qglviewer");
+        sofaViewerFactoryKeys.push_back("ogre");
 
-    //Specify the name of the viewer here
-    this->GetGUIName()=name;
+        viewer::CreatorArgument arg;
+        arg.name = "viewer";
+        arg.parent = left_stack;
 
+        viewerMap.clear();
+
+        for( unsigned int i = 0; i < sofaViewerFactoryKeys.size() ; ++i )
+        {
+            viewer::SofaViewer* sofaviewer = viewer::SofaViewerFactory::CreateObject( sofaViewerFactoryKeys[i], arg );
+            if( sofaviewer != NULL )
+            {
+                QAction* action = new QAction(this);
+                action->setIconText( QApplication::translate("GUI", sofaviewer->getViewerName() , 0, QApplication::UnicodeUTF8)  );
+                action->setText( QApplication::translate("GUI", sofaviewer->getAcceleratedViewerName() , 0, QApplication::UnicodeUTF8) );
+                action->setToggleAction(true);
+                View->addAction(action);
+                viewerMap[action] = sofaviewer;
+                action->setEnabled(true);
+                left_stack->addWidget ( sofaviewer->getQWidget() );
+                sofaviewer->getPickHandler()->addCallBack(new InformationOnPickCallBack(this));
+                connect(action, SIGNAL( activated() ), this, SLOT( changeViewer() ) );
+                action->setOn(false);
+                if( strcmp(sofaViewerFactoryKeys[i].c_str(), viewername )== 0 )
+                {
+                    viewer = sofaviewer;
+                    action->setOn(true);
+                }
+            }
+        }
+
+        if ( viewerMap.empty() )
+        {
+            std::cerr << "ERROR(QtGUI): no viewer could be created!"<<std::endl;
+            application->exit();
+        }
+
+        if ( ! viewer )  /* we could not find a matching viewer in the Factory with takes viewername as a key */
+        {
+            viewer = viewerMap.begin()->second;
+            viewerMap.begin()->first->setOn(true);
+        }
+        initViewer();
+    }
+}
+
+void RealGUI::initViewer()
+{
+    assert( viewer != NULL );
+    frameCounter = 0;
+    _animationOBJ = false;
+    _animationOBJcounter = 0;
+    m_dumpState = false;
+    m_dumpStateStream = 0;
+    m_displayComputationTime = false;
+    m_exportGnuplot = false;
+    gnuplot_directory = "";
+
+    viewer->RegisterVisualModels();
 #ifdef SOFA_QT4
-    left_stack->addWidget ( viewer->getQWidget() );
     left_stack->setCurrentWidget ( viewer->getQWidget() );
     viewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
 #else
@@ -620,12 +588,9 @@ void RealGUI::addViewer()
     viewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
     viewer->getQWidget()->setCursor ( QCursor ( 2 ) );
 #endif
-
     viewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1, viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
     viewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
     viewer->getQWidget()->setMouseTracking ( TRUE );
-
-//            viewer->setup();
     viewer->configureViewerTab(tabs);
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( resetView() ) );
@@ -657,149 +622,55 @@ void RealGUI::addViewer()
     setGUI();
 
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
-    viewer->getPickHandler()->addCallBack(new InformationOnPickCallBack(this));
-}
-
-void RealGUI::viewerOpenGL()
-{
-    setViewer ( "qt" );
-    viewerOpenGLAction->setOn(true);
-    viewerQGLViewerAction->setOn(false);
-    viewerOGREAction->setOn(false);
-}
-
-void RealGUI::viewerQGLViewer()
-{
-    setViewer ( "qglviewer" );
-    viewerOpenGLAction->setOn(false);
-    viewerQGLViewerAction->setOn(true);
-    viewerOGREAction->setOn(false);
-}
-
-void RealGUI::viewerOGRE()
-{
-    setViewer ( "ogre" );
-    viewerOpenGLAction->setOn(false);
-    viewerQGLViewerAction->setOn(false);
-    viewerOGREAction->setOn(true);
 
 }
 
-bool RealGUI::setViewer ( const char* name )
+
+
+void RealGUI::changeViewer()
 {
 
-    if ( !strcmp ( name,viewerName ) )
-        return true; // nothing to do
-    if ( !strcmp ( name,"qt" ) )
+    QAction* action = static_cast<QAction*>( QObject::sender() );
+    action->setOn(true);
+    std::map< QAction* , viewer::SofaViewer *>::const_iterator iter_map;
+    for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
     {
-#ifndef SOFA_GUI_QTVIEWER
-        std::cerr << "OpenGL viewer not activated. Enable SOFA_GUI_QGLVIEWER in sofa-local.cfg to activate.\n";
-        return false;
-#endif
-    }
-    else if ( !strcmp ( name,"qglviewer" ) )
-    {
-#ifndef SOFA_GUI_QGLVIEWER
-        std::cerr << "QGLViewer viewer not activated. Enable SOFA_GUI_QGLVIEWER in sofa-local.cfg to activate.\n";
-        return false;
-#endif
-    }
-    else if ( !strcmp ( name,"ogre" ) )
-    {
-#ifndef SOFA_GUI_QTOGREVIEWER
-        std::cerr << "OGRE viewer not activated. Enable SOFA_GUI_QTOGREVIEWER in sofa-local.cfg to activate.\n";
-        return false;
-#endif
-    }
-    else
-    {
-        std::cerr << "Unknown viewer.\n";
-        return false;
-    }
-    if ( QMessageBox::warning ( this, "Changing Viewer", "Changing viewer requires to reload the current scene.\nAre you sure you want to do that ?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
-        return false;
 
+        if ( (*iter_map).first == action )
+        {
 
-    std::string filename(this->windowFilePath().ascii());
+            if( ! ( (*iter_map).second == viewer ) )
+            {
 
-    if ( viewer->getScene() !=NULL )
-    {
-        simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+                /* cleanup previous viewer */
+                viewer->UnregisterVisualModels();
+
+                if ( viewer->getScene() !=NULL )
+                {
+                    simulation::getSimulation()->unload ( viewer->getScene() );
+                    delete viewer->getScene() ;
+                    viewer->setScene(NULL);
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
-        if(visualGraph->getListener() != NULL )
-            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
+                    if(visualGraph->getListener() != NULL )
+                        simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
 #endif
+                }
 
-        //  simulationGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getContext()) );
-        //  visualGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getVisualRoot()) );
-    }
-
-    // 	fileOpen(filename);
-    // 	GNode* groot = new GNode; // empty scene to do the transition
-    // 	setScene ( groot,filename.c_str() ); // keep the current display flags
-
-    viewer->removeViewerTab(tabs);
-
-    left_stack->removeWidget ( viewer->getQWidget() );
-    delete viewer;
-    viewer = NULL;
-    // Disable Viewer-specific classes
-#ifdef SOFA_GUI_QTVIEWER
-    if ( !strcmp ( viewerName,"qt" ) )
-    {
-        sofa::gui::qt::viewer::qt::QtViewer::DisableViewer();
-    }
-    else
-#endif
-#ifdef SOFA_GUI_QGLVIEWER
-        if ( !strcmp ( viewerName,"qglviewer" ) )
-        {
-            sofa::gui::qt::viewer::qgl::QtGLViewer::DisableViewer();
+                /* change viewer */
+                viewer = (*iter_map).second;
+                initViewer();
+            }
         }
         else
-#endif
-#ifdef SOFA_GUI_QTOGREVIEWER
-            if ( !strcmp ( viewerName,"ogre" ) )
-            {
-                sofa::gui::qt::viewer::qtogre::QtOgreViewer::DisableViewer();
-            }
-            else
-#endif
-            {}
-    // Enable Viewer-specific classes
-#ifdef SOFA_GUI_QTVIEWER
-    if ( !strcmp ( name,"qt" ) )
-    {
-        sofa::gui::qt::viewer::qt::QtViewer::EnableViewer();
-    }
-    else
-#endif
-#ifdef SOFA_GUI_QGLVIEWER
-        if ( !strcmp ( name,"qglviewer" ) )
         {
-            sofa::gui::qt::viewer::qgl::QtGLViewer::EnableViewer();
+            (*iter_map).first->setOn(false);
         }
-        else
-#endif
-#ifdef SOFA_GUI_QTOGREVIEWER
-            if ( !strcmp ( name,"ogre" ) )
-            {
-                sofa::gui::qt::viewer::qtogre::QtOgreViewer::EnableViewer();
-            }
-#endif
-    {}
-    viewerName = name;
-    addViewer();
-
-    viewer->configureViewerTab(tabs);
-    viewer->getPickHandler()->reset();
-
-    if (filename.rfind(".simu") != std::string::npos)
-        fileOpenSimu(filename.c_str() );
-
+    }
+    /* reload the scene */
+    std::string filename(this->windowFilePath().ascii());
     fileOpen ( filename.c_str() ); // keep the current display flags
-    return true;
 }
+
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
@@ -1172,7 +1043,7 @@ void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::View
 void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
 {
     SofaMouseManager::getInstance()->updateOperation(button);
-//        SofaMouseManager::getInstance()->updateContent();
+    //        SofaMouseManager::getInstance()->updateContent();
 }
 
 //--------------------------------------

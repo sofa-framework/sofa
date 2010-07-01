@@ -39,6 +39,9 @@
 
 
 #include <viewer/SofaViewer.h>
+
+#include <sofa/gui/qt/viewer/ViewerFactory.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/gl/Transformation.h>
@@ -75,7 +78,7 @@ using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
 
-class QtViewer :public QGLWidget,  public sofa::gui::qt::viewer::SofaViewer
+class QtViewer : public QGLWidget,  public sofa::gui::qt::viewer::SofaViewer
 {
     Q_OBJECT
 
@@ -136,15 +139,16 @@ private:
 
 public:
 
-    /// Activate this class of viewer.
-    /// This method is called before the viewer is actually created
-    /// and can be used to register classes associated with in the the ObjectFactory.
-    static int EnableViewer();
 
-    /// Disable this class of viewer.
-    /// This method is called after the viewer is destroyed
-    /// and can be used to unregister classes associated with in the the ObjectFactory.
-    static int DisableViewer();
+    static void create(QtViewer*& instance, const CreatorArgument& arg)
+    {
+        instance = new QtViewer(arg.parent, arg.name.c_str() );
+    }
+
+    virtual const char* getViewerName() const { return "OpenGL"; }
+
+    virtual const char* getAcceleratedViewerName() const { return "Open&GL"; }
+
 
     static QGLFormat setupGLFormat();
     QtViewer( QWidget* parent, const char* name="" );

@@ -29,7 +29,8 @@
 
 #include <qstring.h>
 #include <qwidget.h>
-
+#include <sofa/helper/Factory.h>
+#include <sofa/core/ObjectFactory.h>
 #ifdef SOFA_QT4
 #include <QEvent>
 #include <QMouseEvent>
@@ -95,11 +96,16 @@ enum
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
 
+static bool registered = false;
+
 
 class SofaViewer
 {
 
 public:
+
+
+
     SofaViewer()
         : groot(NULL)
         , m_isControlPressed(false)
@@ -112,8 +118,25 @@ public:
         ,currentCamera(NULL)
     {
     }
+
     virtual ~SofaViewer()
     {
+    }
+
+    virtual const char* getViewerName() const { return "getViewerName() not implemented !";  }
+
+    virtual const char* getAcceleratedViewerName() const { return "getAcceleratedViewerName() not implemented !"; }
+
+    virtual void RegisterVisualModels() const    /*default to oglModel */
+    {
+        sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
+    }
+
+    virtual void UnregisterVisualModels() const
+    {
+        sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
     }
 
     virtual void drawColourPicking () {};
@@ -870,8 +893,6 @@ protected:
 protected:
     sofa::component::visualmodel::BaseCamera* currentCamera;
 
-
-
 };
 
 class ColourPickingRenderCallBack : public sofa::gui::CallBackRender
@@ -889,6 +910,8 @@ protected:
     SofaViewer* _viewer;
 
 };
+
+
 }
 }
 }

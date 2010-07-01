@@ -37,6 +37,7 @@
 #include <fstream>
 
 #include <viewer/SofaViewer.h>
+#include <viewer/ViewerFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/gl/Transformation.h>
@@ -111,17 +112,21 @@ private:
 
     bool _waitForRender;
 
+    /*
+              viewerOGREAction->setIconText(QApplication::translate("GUI", "OGRE", 0, QApplication::UnicodeUTF8));
+            viewerOGREAction->setText(QApplication::translate("GUI", "&OGRE", 0, QApplication::UnicodeUTF8));
+    */
 public:
 
-    /// Activate this class of viewer.
-    /// This method is called before the viewer is actually created
-    /// and can be used to register classes associated with in the the ObjectFactory.
-    static int EnableViewer();
+    static void create(QtGLViewer*& instance, const CreatorArgument& arg)
+    {
+        instance = new QtGLViewer(arg.parent, arg.name.c_str() );
+    }
 
-    /// Disable this class of viewer.
-    /// This method is called after the viewer is destroyed
-    /// and can be used to unregister classes associated with in the the ObjectFactory.
-    static int DisableViewer();
+    virtual const char* getViewerName() const { return "QGLViewer"; }
+
+    virtual const char* getAcceleratedViewerName() const { return "&QGLViewer"; }
+
 
     virtual void drawColourPicking ();
 
