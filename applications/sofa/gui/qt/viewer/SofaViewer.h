@@ -96,9 +96,6 @@ enum
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
 
-static bool registered = false;
-
-
 class SofaViewer
 {
 
