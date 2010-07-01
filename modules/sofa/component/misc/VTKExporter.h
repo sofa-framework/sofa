@@ -58,6 +58,7 @@ public:
     Data<helper::vector<std::string> > dPointsDataFields;
     Data<helper::vector<std::string> > dCellsDataFields;
     Data<unsigned int> exportEveryNbSteps;
+    Data<bool> exportAtBegin;
     Data<bool> exportAtEnd;
 
     int nbFiles;
@@ -75,6 +76,7 @@ public:
 
     void init();
     void cleanup();
+    void bwdInit();
 
     void handleEvent(sofa::core::objectmodel::Event *);
 };
