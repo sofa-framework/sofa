@@ -615,12 +615,11 @@ void RealGUI::initViewer()
     list.push_back ( 250 );
     list.push_back ( 640 );
     splitter_ptr->setSizes ( list );
+    setGUI();
 
     viewer->getQWidget()->setFocus();
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
-    setGUI();
-
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
 
 }
@@ -819,6 +818,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
     viewer->setScene ( root, filename );
     this->setWindowFilePath(filename);
     viewer->resetView();
+
     eventNewTime();
 
     if (root)
@@ -866,6 +866,10 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
     if (std::string(sofa::gui::SofaGUI::GetGUIName()) == "ogre")
         resetScene();
 #endif
+    viewer->getQWidget()->setFocus();
+    viewer->getQWidget()->show();
+    viewer->getQWidget()->update();
+
 
 }
 

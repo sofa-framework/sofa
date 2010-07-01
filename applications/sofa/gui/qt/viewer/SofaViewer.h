@@ -126,13 +126,13 @@ public:
 
     virtual void RegisterVisualModels() const    /*default to oglModel */
     {
-        sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+
         sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
     }
 
     virtual void UnregisterVisualModels() const
     {
-        sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+
         sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
     }
 
@@ -889,6 +889,8 @@ protected:
 
 protected:
     sofa::component::visualmodel::BaseCamera* currentCamera;
+    mutable sofa::core::ObjectFactory::ClassEntry* classOglModel;
+    mutable sofa::core::ObjectFactory::ClassEntry* classVisualModel;
 
 };
 
