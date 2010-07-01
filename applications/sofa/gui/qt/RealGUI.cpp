@@ -533,10 +533,10 @@ void RealGUI::createViewers(const char* viewername)
             if( sofaviewer != NULL )
             {
                 QAction* action = new QAction(this);
-                action->setIconText( QApplication::translate("GUI", sofaviewer->getViewerName() , 0, QApplication::UnicodeUTF8)  );
-                action->setText( QApplication::translate("GUI", sofaviewer->getAcceleratedViewerName() , 0, QApplication::UnicodeUTF8) );
+                action->setText( sofaviewer->getViewerName() );
+                action->setMenuText(  sofaviewer->getAcceleratedViewerName() );
                 action->setToggleAction(true);
-                View->addAction(action);
+                action->addTo(View);
                 viewerMap[action] = sofaviewer;
                 action->setEnabled(true);
                 left_stack->addWidget ( sofaviewer->getQWidget() );
@@ -557,7 +557,7 @@ void RealGUI::createViewers(const char* viewername)
             application->exit();
         }
 
-        if ( ! viewer )  /* we could not find a matching viewer in the Factory with takes viewername as a key */
+        if ( ! viewer )  /* we could not find a matching viewer in the Factory which takes viewername as a key */
         {
             viewer = viewerMap.begin()->second;
             viewerMap.begin()->first->setOn(true);
@@ -630,7 +630,11 @@ void RealGUI::initViewer()
 void RealGUI::changeViewer()
 {
 
-    QAction* action = static_cast<QAction*>( QObject::sender() );
+    QObject* obj = const_cast<QObject*>( QObject::sender() );
+    if( !obj) return;
+
+    QAction* action = static_cast<QAction*>(obj);
+
     action->setOn(true);
     std::map< QAction* , viewer::SofaViewer *>::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
