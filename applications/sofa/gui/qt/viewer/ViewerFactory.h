@@ -23,7 +23,7 @@ struct CreatorArgument
 
 
 
-typedef sofa::helper::Factory< std::string, SofaViewer, CreatorArgument > SofaViewerFactory;
+typedef sofa::helper::Factory< std::string, sofa::gui::qt::viewer::SofaViewer, sofa::gui::qt::viewer::CreatorArgument > SofaViewerFactory;
 }
 }
 }
