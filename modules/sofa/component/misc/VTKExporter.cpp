@@ -44,6 +44,7 @@ VTKExporter::VTKExporter()
     , dPointsDataFields( initData(&dPointsDataFields, "pointsDataFields", "Data to visualize (on points)"))
     , dCellsDataFields( initData(&dCellsDataFields, "cellsDataFields", "Data to visualize (on cells)"))
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
+    , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
     , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
 {
 }
@@ -926,6 +927,12 @@ void VTKExporter::cleanup()
     if (exportAtEnd.getValue())
         (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
 
+}
+
+void VTKExporter::bwdInit()
+{
+    if (exportAtBegin.getValue())
+        (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
 }
 
 }
