@@ -45,8 +45,13 @@
 #include <sofa/core/behavior/InteractionConstraint.h>
 #include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
 
+#include <boost/version.hpp>
 
+#if BOOST_VERSION < 104200
 #include <boost/vector_property_map.hpp>
+#else
+#include <boost/property_map/vector_property_map.hpp>
+#endif
 #include <sofa/simulation/bgl/dfv_adapter.h>
 #include <sofa/helper/Factory.inl>
 
