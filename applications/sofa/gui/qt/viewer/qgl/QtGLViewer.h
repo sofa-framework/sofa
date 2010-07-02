@@ -127,6 +127,19 @@ public:
 
     virtual const char* getAcceleratedViewerName() const { return "&QGLViewer"; }
 
+    /// Activate this class of viewer.
+    /// This method is called before the viewer is actually created
+    /// and can be used to register classes associated with in the the ObjectFactory.
+    static int EnableViewer();
+
+    /// Disable this class of viewer.
+    /// This method is called after the viewer is destroyed
+    /// and can be used to unregister classes associated with in the the ObjectFactory.
+    static int DisableViewer();
+
+    void RegisterVisualModels() ;
+
+    void UnregisterVisualModels() ;
 
     virtual void drawColourPicking ();
 
