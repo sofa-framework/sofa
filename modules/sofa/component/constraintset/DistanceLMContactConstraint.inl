@@ -310,16 +310,6 @@ bool DistanceLMContactConstraint<DataTypes>::isCorrectionComputedWithSimulatedDO
     return false;
 }
 
-
-#ifndef SOFA_FLOAT
-template <>
-void DistanceLMContactConstraint<defaulttype::Rigid3dTypes>::draw();
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void DistanceLMContactConstraint<defaulttype::Rigid3fTypes>::draw();
-#endif
-
 template <class DataTypes>
 void DistanceLMContactConstraint<DataTypes>::draw()
 {
