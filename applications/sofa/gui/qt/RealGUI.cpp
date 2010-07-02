@@ -617,6 +617,8 @@ void RealGUI::RegisterViewer( const char* name )
                 sofa::gui::qt::viewer::qtogre::QtOgreViewer::EnableViewer();
             }
 #endif
+    {}
+
 }
 
 void RealGUI::initViewer()
