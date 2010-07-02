@@ -55,7 +55,7 @@ using namespace sofa::component::container;
 using namespace sofa::component::topology;
 typedef sofa::component::linearsolver::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector> CGLinearSolverGraph;
 
-std::string colors[7]= {"red","green","blue","cyan","magenta","yellow","white"};
+const std::string colors[7]= {"red","green","blue","cyan","magenta","yellow","white"};
 
 SReal convertDegreeToRadian(const SReal& angle)
 {
@@ -66,7 +66,7 @@ SReal convertDegreeToRadian(const SReal& angle)
 Node *createCard(const Coord3& position, const Coord3& rotation)
 {
     const std::string visualModel="mesh/card.obj";
-    const std::string collisionModel="mesh/card.obj";
+    const std::string collisionModel="mesh/cardCollision.obj";
     const std::string inertiaMatrix="BehaviorModels/card.rigid";
     static int colorIdx=0;
 
@@ -82,9 +82,9 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     odeSolver->f_rayleighMass.setValue(0.1);
 
     CGLinearSolverGraph *cgLinearSolver; card->get(cgLinearSolver);
-    cgLinearSolver->f_maxIter.setValue(20);
-    cgLinearSolver->f_tolerance.setValue(1e-7);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-7);
+    cgLinearSolver->f_maxIter.setValue(15);
+    cgLinearSolver->f_tolerance.setValue(1e-5);
+    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
 
 
     sofa::component::constraintset::LMConstraintSolver *constraintSolver = new sofa::component::constraintset::LMConstraintSolver();
@@ -100,7 +100,7 @@ Node *createCard(const Coord3& position, const Coord3& rotation)
     card->addObject(dofRigid);
 
     UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
-    uniMassRigid->setTotalMass(1);
+    uniMassRigid->setTotalMass(0.5);
     uniMassRigid->setFileMass(inertiaMatrix);
     card->addObject(uniMassRigid);
 
@@ -145,7 +145,7 @@ Node *createHouseOfCards(Node *root,  unsigned int size, SReal distanceInBetween
 
 
     //Space between two levels of the house of cards
-    const SReal space=0.5;
+    const SReal space=0.75;
     //Size of a card
     const SReal sizeCard=2;
     //overlap of the cards
@@ -209,8 +209,8 @@ int main(int argc, char** argv)
     unsigned int sizeHouseOfCards=4;
     SReal angle=20.0;
     SReal distanceInBetween=0.1;
-    SReal friction=1;
-    SReal contactDistance=0.02;
+    SReal friction=0.8;
+    SReal contactDistance=0.03;
     std::string gui = "";
 
 
