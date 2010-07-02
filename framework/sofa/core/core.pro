@@ -131,9 +131,7 @@ HEADERS += \
 	  objectmodel/MouseEvent.h \
 	  objectmodel/OmniEvent.h \
 	  objectmodel/GLInitializedEvent.h \
-          objectmodel/VDataPtr.h \
           objectmodel/Tag.h \
-          objectmodel/XDataPtr.h \
           VisualModel.h \
           VisualManager.h \
           ObjectFactory.h \
