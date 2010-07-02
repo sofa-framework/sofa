@@ -96,6 +96,7 @@ enum
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
 
+
 class SofaViewer
 {
 
@@ -118,22 +119,6 @@ public:
 
     virtual ~SofaViewer()
     {
-    }
-
-    virtual const char* getViewerName() const { return "getViewerName() not implemented !";  }
-
-    virtual const char* getAcceleratedViewerName() const { return "getAcceleratedViewerName() not implemented !"; }
-
-    virtual void RegisterVisualModels() const    /*default to oglModel */
-    {
-
-        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
-    }
-
-    virtual void UnregisterVisualModels() const
-    {
-
-        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
     }
 
     virtual void drawColourPicking () {};
@@ -889,8 +874,7 @@ protected:
 
 protected:
     sofa::component::visualmodel::BaseCamera* currentCamera;
-    mutable sofa::core::ObjectFactory::ClassEntry* classOglModel;
-    mutable sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+
 
 };
 

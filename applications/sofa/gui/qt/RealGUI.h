@@ -151,9 +151,6 @@ public:
     sofa::gui::qt::viewer::SofaViewer* viewer;
     QSofaListView* simulationGraph;
 
-    std::map< QAction* , sofa::gui::qt::viewer::SofaViewer* > viewerMap;
-
-
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
     QSofaListView* visualGraph;
 #endif
@@ -212,6 +209,9 @@ public slots:
     void Update();
     virtual void fileSaveAs(sofa::simulation::Node *node);
     void LockAnimation(bool);
+    virtual void viewerOpenGL();
+    virtual void viewerQGLViewer();
+    virtual void viewerOGRE();
 
     void fileRecentlyOpened(int id);
     void playpauseGUI(bool value);
@@ -224,7 +224,7 @@ public slots:
     void updateViewerParameters();
     void updateBackgroundColour();
     void updateBackgroundImage();
-    void changeViewer();
+
 
 #ifdef SOFA_QT4
     void changeHtmlPage( const QUrl&);
@@ -250,7 +250,7 @@ signals:
     void quit();
 
 protected:
-    void createViewers(const char* viewername);
+    void createViewers();
 
     void initViewer();
     void eventNewStep();
@@ -311,9 +311,10 @@ private:
 
     int frameCounter;
 
-    bool setViewer(const char* name);
     void addViewer();
     void setGUI(void);
+    void changeViewer(const char* name);
+    void RegisterViewer( const char* name );
 
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);
