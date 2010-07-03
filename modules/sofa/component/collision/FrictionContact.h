@@ -32,6 +32,10 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/component/collision/RigidContactMapper.inl>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.inl>
+#include <sofa/core/behavior/MechanicalMapping.inl>
+
 
 namespace sofa
 {
@@ -100,8 +104,15 @@ protected:
     core::objectmodel::BaseContext* parent;
 
     Data<double> mu;
+    std::vector<sofa::core::collision::DetectionOutput*> contacts;
+    std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
+
+    void activateMappers();
+
 
 public:
+
+    FrictionContact() {}
 
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~FrictionContact();
@@ -122,6 +133,77 @@ long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::
     // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
     return (long)(((x+y)*(x+y)+3*x+y)/2);
 }
+
+
+/////// TEST:
+template <class TCollisionModel1, class TCollisionModel2>
+class ContinuousFrictionContact : public FrictionContact<TCollisionModel1, TCollisionModel2>
+{
+    SOFA_CLASS(SOFA_TEMPLATE2(ContinuousFrictionContact,TCollisionModel1,TCollisionModel2), SOFA_TEMPLATE2(FrictionContact,TCollisionModel1,TCollisionModel2));
+
+public:
+    typedef TCollisionModel1 CollisionModel1;
+    typedef TCollisionModel2 CollisionModel2;
+    typedef core::collision::Intersection Intersection;
+    typedef core::collision::DetectionOutputVector OutputVector;
+    typedef typename CollisionModel1::DataTypes DataTypes1;
+    typedef typename CollisionModel2::DataTypes DataTypes2;
+    typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
+    typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
+    typedef typename CollisionModel1::Element CollisionElement1;
+    typedef typename CollisionModel2::Element CollisionElement2;
+
+
+
+
+    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(this->model1,this->model2); }
+
+    ContinuousFrictionContact() {}
+
+    ContinuousFrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
+
+    ~ContinuousFrictionContact();
+
+    void cleanup();
+
+    /// Set the generic description of a contact point
+    void setDetectionOutputs(OutputVector* outputs) ;
+
+    void createResponse(core::objectmodel::BaseContext* group) ;
+
+    virtual void removeResponse() ;
+
+protected:
+
+    bool findMappingOrUseMapper( bool case1);
+    void activateConstraint();
+
+    int mapTheContinuousContact(Vector3 &, int ,  Vector3 &, bool) {serr<<"Warning: mapTheContinuousContact is not defined for these collision elements"<<sendl; return 0;}
+
+    bool use_mapper_for_state1;
+    bool use_mapper_for_state2;
+
+    MechanicalState1 *mstate1;
+    MechanicalState2 *mstate2;
+
+
+    component::container::MechanicalObject<DataTypes1 >* constraintModel1;
+    component::container::MechanicalObject<DataTypes2 >* constraintModel2;
+
+    sofa::core::behavior::BaseMechanicalMapping *map1;
+    sofa::core::behavior::BaseMechanicalMapping *map2;
+
+    std::vector<Vector3> barycentricValues1;
+    std::vector<Vector3> barycentricValues2;
+
+
+
+
+
+
+};
+
+
 
 } // collision
 

@@ -46,6 +46,7 @@ using sofa::defaulttype::Vector3;
 
 // uncomment if you want to use the freePoint information
 #define DETECTIONOUTPUT_FREEMOTION
+#define DETECTIONOUTPUT_BARYCENTRICINFO
 
 
 
@@ -97,6 +98,11 @@ public:
 #ifdef DETECTIONOUTPUT_FREEMOTION
     Vector3 freePoint[2]; ///< free Point in contact on each element
 #endif
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+    Vector3 baryCoords[2]; ///< provides the barycentric Coordinates (alpha, beta, gamma) of each contact points over the element
+    ///< (alpha is used for lines / alpha and beta for triangles / alpha, beta and gamma for tetrahedrons)
+#endif
+
     /// Normal of the contact, pointing outward from the first model
     Vector3 normal;
     /*

@@ -148,61 +148,78 @@ int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
     return i;
 }
 
-template<class BasicMapping>
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::beginAddContactPoint()
+{
+
+    this->clear(0);
+    this->toModel->resize(0);
+
+}
+
+template <class BasicMapping>
+int RigidMapping<BasicMapping>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+{
+
+
+    typename In::VecCoord& xfrom = *this->fromModel->getX();
+
+    Coord posContact;
+    for (unsigned int i=0; i<3; i++)
+        posContact[i] = pos[i];
+
+
+
+    unsigned int inputIdx=_inputMapping->index.getValue();
+
+    this->index.setValue(inputIdx);
+    this->repartition.setValue(_inputMapping->repartition.getValue());
+    Coord x_local = xfrom[inputIdx].inverseRotate(posContact - xfrom[inputIdx].getCenter());
+
+
+    this->addPoint(x_local, inputIdx);
+
+    int index= points.getValue().size() -1;
+    this->toModel->resize(index+1);
+    return index;
+
+}
+
+template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
-    if (!fileRigidMapping.getValue().empty())
-        this->load(fileRigidMapping.getFullPath().c_str());
+    if ( !fileRigidMapping.getValue().empty() ) this->load ( fileRigidMapping.getFullPath().c_str() );
 
-    if (this->points.getValue().empty() && this->toModel != NULL
-        && !useX0.getValue())
+    if (this->points.getValue().empty() && this->toModel!=NULL && !useX0.getValue())
     {
         VecCoord& x = *this->toModel->getX();
         points.beginEdit()->resize(x.size());
-        unsigned int i = 0, cpt = 0;
-        if (globalToLocalCoords.getValue() == true)
+        unsigned int i=0, cpt=0;
+        if(globalToLocalCoords.getValue() == true) //test booleen fromWorldCoord
         {
-            //test booleen fromWorldCoord
             typename In::VecCoord& xfrom = *this->fromModel->getX();
             switch (repartition.getValue().size())
             {
-            case 0:
-                for (i = 0; i < x.size(); i++)
-                {
-                    (*points.beginEdit())[i] = xfrom[0].inverseRotate(x[i]
-                            - xfrom[0].getCenter());
-                }
+            case 0 :
+                for (i=0; i<x.size(); i++)
+                    (*points.beginEdit())[i] = xfrom[0].inverseRotate(x[i]-xfrom[0].getCenter());
                 break;
-            case 1:
-                for (i = 0; i < xfrom.size(); i++)
-                {
-                    for (unsigned int j = 0; j < repartition.getValue()[0]; j++, cpt++)
-                    {
-                        (*points.beginEdit())[cpt]
-                            = xfrom[i].inverseRotate(x[cpt]
-                                    - xfrom[i].getCenter());
-                    }
-                }
+            case 1 :
+                for (i=0; i<xfrom.size(); i++)
+                    for(unsigned int j=0; j<repartition.getValue()[0]; j++,cpt++)
+                        (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(x[cpt]-xfrom[i].getCenter());
                 break;
-            default:
-                for (i = 0; i < xfrom.size(); i++)
-                {
-                    for (unsigned int j = 0; j < repartition.getValue()[i]; j++, cpt++)
-                    {
-                        (*points.beginEdit())[cpt]
-                            = xfrom[i].inverseRotate(x[cpt]
-                                    - xfrom[i].getCenter());
-                    }
-                }
+            default :
+                for (i=0; i<xfrom.size(); i++)
+                    for(unsigned int j=0; j<repartition.getValue()[i]; j++,cpt++)
+                        (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(x[cpt]-xfrom[i].getCenter());
                 break;
             }
         }
         else
         {
-            for (i = 0; i < x.size(); i++)
-            {
+            for (i=0; i<x.size(); i++)
                 (*points.beginEdit())[i] = x[i];
-            }
         }
     }
 
@@ -213,40 +230,56 @@ void RigidMapping<BasicMapping>::init()
     if (loader)
     {
         sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
-        unsigned int cpt = 0;
+        unsigned int cpt=0;
         typename In::VecCoord& xfrom = *this->fromModel->getX();
         VecCoord& xto = *this->toModel->getX();
-        for (unsigned int i = 0; i < loader->getNbMeshs(); i++)
+        for (unsigned int i=0 ; i<loader->getNbMeshs() ; i++)
         {
             rep.push_back(loader->getNbPoints(i));
-            if (globalToLocalCoords.getValue() == true)
+            if(globalToLocalCoords.getValue() == true)
             {
-                for (unsigned int j = 0; j < loader->getNbPoints(i); j++, cpt++)
+                for (unsigned int j=0 ; j<loader->getNbPoints(i) ; j++, cpt++)
                 {
-                    (*points.beginEdit())[cpt]
-                        = xfrom[i].inverseRotate(xto[cpt] - xfrom[i].getCenter());
+                    (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(xto[cpt]-xfrom[i].getCenter());
                 }
             }
         }
         repartition.endEdit();
     }
 
-}
-/*
- template <class BasicMapping>
- void RigidMapping<BasicMapping>::disable()
- {
 
- if (!this->points.getValue().empty() && this->toModel!=NULL)
- {
- VecCoord& x = *this->toModel->getX();
- x.resize(points.getValue().size());
- for (unsigned int i=0;i<points.getValue().size();i++)
- x[i] = points.getValue()[i];
- }
- }
- */
-template<class BasicMapping>
+
+}
+
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::bwdInit()
+{
+    if(contactDuplicate.getValue()==true)
+    {
+        const std::string path = nameOfInputMap.getValue();
+        this->fromModel->getContext()->get(_inputMapping, sofa::core::objectmodel::BaseContext::SearchRoot);
+        if(_inputMapping==NULL)
+            serr<<"WARNING : can not found the input  Mapping"<<sendl;
+        else
+            sout<<"input Mapping named "<<_inputMapping->getName()<<" is found"<<sendl;
+    }
+}
+
+/*
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::disable()
+{
+
+	if (!this->points.getValue().empty() && this->toModel!=NULL)
+	{
+		VecCoord& x = *this->toModel->getX();
+		x.resize(points.getValue().size());
+		for (unsigned int i=0;i<points.getValue().size();i++)
+			x[i] = points.getValue()[i];
+	}
+}
+*/
+template <class BasicMapping>
 void RigidMapping<BasicMapping>::clear(int reserve)
 {
     this->points.beginEdit()->clear();

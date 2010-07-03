@@ -282,9 +282,30 @@ template<class R>
 typename SolidTypes<R>::Mat6x6 SolidTypes<R>::Transform::getAdjointMatrix() const
 {
     /// TODO
-    Mat6x6 m;
+    Mat6x6 Adj;
+    Mat3x3 Rot;
+    Rot = this->getRotationMatrix();
+    // correspond au produit vectoriel v^origin
+    Mat3x3 Origin;
+    Origin[0][0]=(Real)0.0;         Origin[0][1]=origin_[2];    Origin[0][2]=-origin_[1];
+    Origin[1][0]=-origin_[2];       Origin[1][1]=(Real)0.0;     Origin[1][2]=origin_[0];
+    Origin[2][0]=origin_[1];        Origin[2][1]=-origin_[0];   Origin[2][2]=(Real)0.0;
 
-    return m;
+    Mat3x3 R_Origin = Rot*Origin;
+
+    for (int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            Adj[i][j]     = Rot[i][j];
+            Adj[i+3][j+3] = Rot[i][j];
+            Adj[i][j+3] =   R_Origin[i][j];
+            Adj[i+3][j] = 0.0;
+        }
+    }
+
+
+    return Adj;
 }
 
 template<class R>

@@ -187,6 +187,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 
 void DefaultPipeline::doCollisionResponse()
 {
+
     core::objectmodel::BaseContext* scene = getContext();
     simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
@@ -206,6 +207,7 @@ void DefaultPipeline::doCollisionResponse()
 
     // First we remove all contacts with non-simulated objects and directly add them
     sofa::helper::vector<Contact*> notStaticContacts;
+
 
     for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
@@ -238,6 +240,7 @@ void DefaultPipeline::doCollisionResponse()
         groupManager->createGroups(scene, notStaticContacts);
         if (node) t0 = node->endTime(t0, category, groupManager, this);
     }
+
 }
 
 helper::set< std::string > DefaultPipeline::getResponseList() const
