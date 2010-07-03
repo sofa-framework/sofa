@@ -84,6 +84,10 @@ public:
     Data<sofa::helper::vector<unsigned int> > repartition;
     Data<bool> globalToLocalCoords;
 
+    ///// new: functions for continuous friction contact
+    Data<bool> contactDuplicate;
+    Data<std::string> nameOfInputMap;
+
     core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
     core::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
@@ -96,7 +100,10 @@ public:
           useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") ),
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) ),
-          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
+          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) ),
+          contactDuplicate(initData(&contactDuplicate,false,"contactDuplicate","if true, this mapping is a copy of an input mapping and is used to gather contact points (ContinuousFrictionContact Response)")),
+          nameOfInputMap(initData(&nameOfInputMap,"nameOfInputMap", "if contactDuplicate==true, it provides the name of the input mapping"))
+
     {
         this->addAlias(&fileRigidMapping, "filename");
         maskFrom = NULL;
@@ -116,7 +123,13 @@ public:
     int addPoint(const Coord& c);
     int addPoint(const Coord& c, int indexFrom);
 
+    // interface for continuous friction contact
+    void beginAddContactPoint();
+    int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
+
+
     void init();
+    void bwdInit();
 
     //void disable(); //useless now that points are saved in a Data
 
@@ -139,6 +152,8 @@ protected:
     class Loader;
     void load(const char* filename);
     const VecCoord& getPoints();
+    // for continuous_friction_contact:
+    RigidMapping<BasicMapping> *_inputMapping;
 };
 
 using core::Mapping;

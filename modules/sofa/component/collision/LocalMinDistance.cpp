@@ -316,6 +316,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
 #endif
 
+
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
     contacts->resize(contacts->size()+1);
@@ -327,6 +328,10 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 #ifdef DETECTIONOUTPUT_FREEMOTION
     detection->freePoint[0]=Pfree;
     detection->freePoint[1]=Qfree;
+#endif
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+    detection->baryCoords[0][0]=alpha;
+    detection->baryCoords[1][0]=beta;
 #endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
@@ -510,6 +515,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 
 #endif
 
+
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
     contacts->resize(contacts->size()+1);
@@ -521,6 +527,11 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 #ifdef DETECTIONOUTPUT_FREEMOTION
     detection->freePoint[0]=Qfree;
     detection->freePoint[1]=Pfree;
+#endif
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+    detection->baryCoords[0][0]=0;
+    detection->baryCoords[1][0]=alpha;
+    detection->baryCoords[1][1]=beta;
 #endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
@@ -666,18 +677,18 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
         */
     }
 
-
-
     // end filter
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
-
 
     Vector3 ABfree = e2.p2Free()-e2.p1Free();
     Vector3 Pfree = e1.pFree();
     Vector3 Qfree = e2.p1Free() + ABfree * alpha;
 
 #endif
+
+
+
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
@@ -691,6 +702,10 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 #ifdef DETECTIONOUTPUT_FREEMOTION
     detection->freePoint[0]=Qfree;
     detection->freePoint[1]=Pfree;
+#endif
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+    detection->baryCoords[0][0]=0;
+    detection->baryCoords[1][0]=alpha;
 #endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
@@ -759,11 +774,6 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     Q = e2.p();
     PQ = Q-P;
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    Vector3 Pfree,Qfree;
-    Pfree = e1.pFree();
-    Qfree = e2.pFree();
-#endif
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -801,7 +811,13 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     }
 
     // end filter
+#ifdef DETECTIONOUTPUT_FREEMOTION
 
+    Vector3 Pfree,Qfree;
+    Pfree = e1.pFree();
+    Qfree = e2.pFree();
+
+#endif
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
     contacts->resize(contacts->size()+1);
@@ -813,6 +829,10 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
 #ifdef DETECTIONOUTPUT_FREEMOTION
     detection->freePoint[0]=Pfree;
     detection->freePoint[1]=Qfree;
+#endif
+#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
+    detection->baryCoords[0][0]=0;
+    detection->baryCoords[1][0]=0;
 #endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
@@ -1200,8 +1220,11 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
         PointModel *pM = p.getCollisionModel();
         bool bothSide_computation = pM->bothSide.getValue();
         nMean.normalize();
-        if (dot(nMean, PQ) < 0 && !bothSide_computation)
+        if (dot(nMean, PQ) < -angleCone.getValue()*PQ.norm() && !bothSide_computation)
+        {
+            //std::cout<<" -------- LocalMinDistance -------- Reject proximity: PQ:"<<PQ<<"  nMean : "<<nMean<<std::endl;
             return false;
+        }
     }
     //else
     //	std::cerr<<"WARNING nMean is null"<<std::endl;
@@ -1219,7 +1242,10 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
             computedAngleCone=0.0;
         computedAngleCone+=angleCone.getValue();
         if (dot(l , PQ) < -computedAngleCone*PQ.norm())
+        {
+            //std::cout<<" -------- LocalMinDistance -------- Reject proximity: PQ:"<<PQ<<"  l : "<<l<<std::endl;
             return false;
+        }
     }
     return true;
 
