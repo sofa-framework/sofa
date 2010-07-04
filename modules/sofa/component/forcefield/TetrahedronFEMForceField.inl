@@ -35,6 +35,7 @@
 #include <iostream>
 #include <set>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/misc/ParallelizeBuildMatrixEvent.h>
 
 namespace sofa
 {
@@ -182,7 +183,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
     Rot[0][1]=Rot[0][2]=0;
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
-    computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex],_initialRotations[elementIndex]);
+    computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[elementIndex], parallelDataSimu->strainDisplacements[elementIndex],_initialRotations[elementIndex]);
     for(int i=0; i<12; i++)
     {
         for(int j=0; j<12; j++)
@@ -257,31 +258,31 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*youngModulusElement;
     const Real poissonRatio = _poissonRatio.getValue();
 
-    _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
-    _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
-            = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
-                    _materialsStiffnesses[i][2][1] = poissonRatio/(1-poissonRatio);
-    _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] = _materialsStiffnesses[i][0][5] = 0;
-    _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] = _materialsStiffnesses[i][1][5] = 0;
-    _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] = _materialsStiffnesses[i][2][5] = 0;
-    _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] = _materialsStiffnesses[i][3][5] = 0;
-    _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] = _materialsStiffnesses[i][4][5] = 0;
-    _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] = _materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
-    _materialsStiffnesses[i] *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
+    parallelDataSimu->materialsStiffnesses[i][0][0] = parallelDataSimu->materialsStiffnesses[i][1][1] = parallelDataSimu->materialsStiffnesses[i][2][2] = 1;
+    parallelDataSimu->materialsStiffnesses[i][0][1] = parallelDataSimu->materialsStiffnesses[i][0][2] = parallelDataSimu->materialsStiffnesses[i][1][0]
+            = parallelDataSimu->materialsStiffnesses[i][1][2] = parallelDataSimu->materialsStiffnesses[i][2][0] =
+                    parallelDataSimu->materialsStiffnesses[i][2][1] = poissonRatio/(1-poissonRatio);
+    parallelDataSimu->materialsStiffnesses[i][0][3] = parallelDataSimu->materialsStiffnesses[i][0][4] = parallelDataSimu->materialsStiffnesses[i][0][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][1][3] = parallelDataSimu->materialsStiffnesses[i][1][4] = parallelDataSimu->materialsStiffnesses[i][1][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][2][3] = parallelDataSimu->materialsStiffnesses[i][2][4] = parallelDataSimu->materialsStiffnesses[i][2][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][3][0] = parallelDataSimu->materialsStiffnesses[i][3][1] = parallelDataSimu->materialsStiffnesses[i][3][2] = parallelDataSimu->materialsStiffnesses[i][3][4] = parallelDataSimu->materialsStiffnesses[i][3][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][4][0] = parallelDataSimu->materialsStiffnesses[i][4][1] = parallelDataSimu->materialsStiffnesses[i][4][2] = parallelDataSimu->materialsStiffnesses[i][4][3] = parallelDataSimu->materialsStiffnesses[i][4][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][5][0] = parallelDataSimu->materialsStiffnesses[i][5][1] = parallelDataSimu->materialsStiffnesses[i][5][2] = parallelDataSimu->materialsStiffnesses[i][5][3] = parallelDataSimu->materialsStiffnesses[i][5][4] = 0;
+    parallelDataSimu->materialsStiffnesses[i][3][3] = parallelDataSimu->materialsStiffnesses[i][4][4] = parallelDataSimu->materialsStiffnesses[i][5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
+    parallelDataSimu->materialsStiffnesses[i] *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     /*Real gamma = (youngModulus*poissonRatio) / ((1+poissonRatio)*(1-2*poissonRatio));
     Real 		mu2 = youngModulus / (1+poissonRatio);
-    _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
-    _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
-    _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
-    _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] =	_materialsStiffnesses[i][3][5] = 0;
-    _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] =	_materialsStiffnesses[i][4][5] = 0;
-    _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] =	_materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = gamma+mu2;
-    _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
-    			= _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] = _materialsStiffnesses[i][2][1] = gamma;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] =	mu2;*/
+    parallelDataSimu->materialsStiffnesses[i][0][3] = parallelDataSimu->materialsStiffnesses[i][0][4] =	parallelDataSimu->materialsStiffnesses[i][0][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][1][3] = parallelDataSimu->materialsStiffnesses[i][1][4] =	parallelDataSimu->materialsStiffnesses[i][1][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][2][3] = parallelDataSimu->materialsStiffnesses[i][2][4] =	parallelDataSimu->materialsStiffnesses[i][2][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][3][0] = parallelDataSimu->materialsStiffnesses[i][3][1] = parallelDataSimu->materialsStiffnesses[i][3][2] = parallelDataSimu->materialsStiffnesses[i][3][4] =	parallelDataSimu->materialsStiffnesses[i][3][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][4][0] = parallelDataSimu->materialsStiffnesses[i][4][1] = parallelDataSimu->materialsStiffnesses[i][4][2] = parallelDataSimu->materialsStiffnesses[i][4][3] =	parallelDataSimu->materialsStiffnesses[i][4][5] = 0;
+    parallelDataSimu->materialsStiffnesses[i][5][0] = parallelDataSimu->materialsStiffnesses[i][5][1] = parallelDataSimu->materialsStiffnesses[i][5][2] = parallelDataSimu->materialsStiffnesses[i][5][3] =	parallelDataSimu->materialsStiffnesses[i][5][4] = 0;
+    parallelDataSimu->materialsStiffnesses[i][0][0] = parallelDataSimu->materialsStiffnesses[i][1][1] = parallelDataSimu->materialsStiffnesses[i][2][2] = gamma+mu2;
+    parallelDataSimu->materialsStiffnesses[i][0][1] = parallelDataSimu->materialsStiffnesses[i][0][2] = parallelDataSimu->materialsStiffnesses[i][1][0]
+    			= parallelDataSimu->materialsStiffnesses[i][1][2] = parallelDataSimu->materialsStiffnesses[i][2][0] = parallelDataSimu->materialsStiffnesses[i][2][1] = gamma;
+    parallelDataSimu->materialsStiffnesses[i][3][3] = parallelDataSimu->materialsStiffnesses[i][4][4] = parallelDataSimu->materialsStiffnesses[i][5][5] =	mu2;*/
 
     // divide by 36 times volumes of the element
 
@@ -296,7 +297,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     {
         serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
     }
-    _materialsStiffnesses[i] /= volumes6*6; // 36*Volume in the formula
+    parallelDataSimu->materialsStiffnesses[i] /= volumes6*6; // 36*Volume in the formula
 }
 
 template<class DataTypes>
@@ -553,7 +554,7 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c, Index&d)
 {
     const VecCoord &initialPoints=_initialPoints.getValue();
-    computeStrainDisplacement( _strainDisplacements[i], initialPoints[a], initialPoints[b], initialPoints[c], initialPoints[d] );
+    computeStrainDisplacement( parallelDataSimu->strainDisplacements[i], initialPoints[a], initialPoints[b], initialPoints[c], initialPoints[d] );
 }
 
 template<class DataTypes>
@@ -583,15 +584,15 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
     D[10] = initialPoints[d][1] - initialPoints[a][1] - p[d][1]+p[a][1];
     D[11] = initialPoints[d][2] - initialPoints[a][2] - p[d][2]+p[a][2];
     /*        serr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, displacement"<<D<<sendl;
-            serr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, straindisplacement"<<_strainDisplacements[elementIndex]<<sendl;
-            serr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, material"<<_materialsStiffnesses[elementIndex]<<sendl;*/
+            serr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, straindisplacement"<<parallelDataSimu->strainDisplacements[elementIndex]<<sendl;
+            serr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, material"<<parallelDataSimu->materialsStiffnesses[elementIndex]<<sendl;*/
 
     // compute force on element
     Displacement F;
 
     if(!_assembling.getValue())
     {
-        computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex] );
+        computeForce( F, D, parallelDataSimu->materialsStiffnesses[elementIndex], parallelDataSimu->strainDisplacements[elementIndex] );
         //serr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, force"<<F<<sendl;
     }
     else
@@ -604,7 +605,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 
 
         StiffnessMatrix JKJt,tmp;
-        computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex],Rot);
+        computeStiffnessMatrix(JKJt,tmp,parallelDataSimu->materialsStiffnesses[elementIndex], parallelDataSimu->strainDisplacements[elementIndex],Rot);
 
         //erase the stiffness matrix at each time step
         if(elementIndex==0)
@@ -681,7 +682,7 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f,
     X[11] = x[d][2];
 
     Displacement F;
-    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i], fact );
+    computeForce( F, X, parallelDataSimu->materialsStiffnesses[i], parallelDataSimu->strainDisplacements[i], fact );
 
     f[a] += Deriv( -F[0], -F[1],  -F[2] );
     f[b] += Deriv( -F[3], -F[4],  -F[5] );
@@ -732,8 +733,8 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     {
     Transformation R0t;
     R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
-    R = _rotations[_rotationIdx[nodeIdx]] * R0t;
-    //R = _rotations[_rotationIdx[nodeIdx]];
+    R = parallelDataSimu->rotations[_rotationIdx[nodeIdx]] * R0t;
+    //R = parallelDataSimu->rotations[_rotationIdx[nodeIdx]];
     }
     else
     {
@@ -767,7 +768,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
         {
             Transformation R0t;
             R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
-            R = _rotations[_rotationIdx[nodeIdx]] * R0t;
+            R = parallelDataSimu->rotations[_rotationIdx[nodeIdx]] * R0t;
         }
         else
         {
@@ -781,7 +782,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     {
         Transformation R0t;
         R0t.transpose(_initialRotations[liste_tetra[ti]]);
-        R += _rotations[liste_tetra[ti]] * R0t;
+        R += parallelDataSimu->rotations[liste_tetra[ti]] * R0t;
     }
 
 // on "moyenne"
@@ -834,7 +835,7 @@ void TetrahedronFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Ind
 
 //	serr<<"_rotatedInitialElements : "<<_rotatedInitialElements<<sendl;
 
-    computeStrainDisplacement( _strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
+    computeStrainDisplacement( parallelDataSimu->strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
 }
 
 template<class DataTypes>
@@ -846,7 +847,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     Transformation R_0_2;
     computeRotationLarge( R_0_2, p, index[0],index[1],index[2]);
 
-    _rotations[elementIndex].transpose(R_0_2);
+    parallelDataSimu->rotations[elementIndex].transpose(R_0_2);
     //serr<<"R_0_2 large : "<<R_0_2<<sendl;
 
     // positions of the deformed and displaced Tetrahedron in its frame
@@ -880,45 +881,45 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     if(_updateStiffnessMatrix.getValue())
     {
         //serr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceLarge, update stiffness matrix"<<sendl;
-        _strainDisplacements[elementIndex][0][0]   = ( - deforme[2][1]*deforme[3][2] );
-        _strainDisplacements[elementIndex][1][1] = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
-        _strainDisplacements[elementIndex][2][2]   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
+        parallelDataSimu->strainDisplacements[elementIndex][0][0]   = ( - deforme[2][1]*deforme[3][2] );
+        parallelDataSimu->strainDisplacements[elementIndex][1][1] = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
+        parallelDataSimu->strainDisplacements[elementIndex][2][2]   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
 
-        _strainDisplacements[elementIndex][3][0]   = ( deforme[2][1]*deforme[3][2] );
-        _strainDisplacements[elementIndex][4][1]  = ( - deforme[2][0]*deforme[3][2] );
-        _strainDisplacements[elementIndex][5][2]   = ( - deforme[2][1]*deforme[3][0] + deforme[2][0]*deforme[3][1] );
+        parallelDataSimu->strainDisplacements[elementIndex][3][0]   = ( deforme[2][1]*deforme[3][2] );
+        parallelDataSimu->strainDisplacements[elementIndex][4][1]  = ( - deforme[2][0]*deforme[3][2] );
+        parallelDataSimu->strainDisplacements[elementIndex][5][2]   = ( - deforme[2][1]*deforme[3][0] + deforme[2][0]*deforme[3][1] );
 
-        _strainDisplacements[elementIndex][7][1]  = ( deforme[1][0]*deforme[3][2] );
-        _strainDisplacements[elementIndex][8][2]   = ( - deforme[1][0]*deforme[3][1] );
+        parallelDataSimu->strainDisplacements[elementIndex][7][1]  = ( deforme[1][0]*deforme[3][2] );
+        parallelDataSimu->strainDisplacements[elementIndex][8][2]   = ( - deforme[1][0]*deforme[3][1] );
 
-        _strainDisplacements[elementIndex][11][2] = ( deforme[1][0]*deforme[2][1] );
+        parallelDataSimu->strainDisplacements[elementIndex][11][2] = ( deforme[1][0]*deforme[2][1] );
     }
 
     if(!_assembling.getValue())
     {
         // compute force on element
-        computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex]);
+        computeForce( F, D, parallelDataSimu->materialsStiffnesses[elementIndex], parallelDataSimu->strainDisplacements[elementIndex]);
         for(int i=0; i<12; i+=3)
-            f[index[i/3]] += _rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
+            f[index[i/3]] += parallelDataSimu->rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
 
         //serr<<"p large : "<<p<<sendl;
         //serr<<"F large : "<<f<<sendl;
 //		for(int i=0;i<12;i+=3)
 //		{
 //			Vec tmp;
-//			v_eq_Ab( tmp, _rotations[elementIndex], Vec( F[i], F[i+1],  F[i+2] ) );
+//			v_eq_Ab( tmp, parallelDataSimu->rotations[elementIndex], Vec( F[i], F[i+1],  F[i+2] ) );
 //			serr<<tmp<<"\t";
 //		}
 //		serr<<sendl;
     }
     else
     {
-        _strainDisplacements[elementIndex][6][0] = 0;
-        _strainDisplacements[elementIndex][9][0] = 0;
-        _strainDisplacements[elementIndex][10][1] = 0;
+        parallelDataSimu->strainDisplacements[elementIndex][6][0] = 0;
+        parallelDataSimu->strainDisplacements[elementIndex][9][0] = 0;
+        parallelDataSimu->strainDisplacements[elementIndex][10][1] = 0;
 
         StiffnessMatrix RJKJt, RJKJtRt;
-        computeStiffnessMatrix(RJKJt,RJKJtRt,_materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex],_rotations[elementIndex]);
+        computeStiffnessMatrix(RJKJt,RJKJtRt,parallelDataSimu->materialsStiffnesses[elementIndex], parallelDataSimu->strainDisplacements[elementIndex],parallelDataSimu->rotations[elementIndex]);
 
 
         //erase the stiffness matrix at each time step
@@ -970,7 +971,7 @@ template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
     Transformation R_0_2;
-    R_0_2.transpose(_rotations[i]);
+    R_0_2.transpose(parallelDataSimu->rotations[i]);
 
     Displacement X;
     Coord x_2;
@@ -999,14 +1000,14 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f,
 
     //serr<<"X : "<<X<<sendl;
 
-    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i], fact );
+    computeForce( F, X, parallelDataSimu->materialsStiffnesses[i], parallelDataSimu->strainDisplacements[i], fact );
 
     //serr<<"F : "<<F<<sendl;
 
-    f[a] += _rotations[i] * Deriv( -F[0], -F[1],  -F[2] );
-    f[b] += _rotations[i] * Deriv( -F[3], -F[4],  -F[5] );
-    f[c] += _rotations[i] * Deriv( -F[6], -F[7],  -F[8] );
-    f[d] += _rotations[i] * Deriv( -F[9], -F[10], -F[11] );
+    f[a] += parallelDataSimu->rotations[i] * Deriv( -F[0], -F[1],  -F[2] );
+    f[b] += parallelDataSimu->rotations[i] * Deriv( -F[3], -F[4],  -F[5] );
+    f[c] += parallelDataSimu->rotations[i] * Deriv( -F[6], -F[7],  -F[8] );
+    f[d] += parallelDataSimu->rotations[i] * Deriv( -F[9], -F[10], -F[11] );
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1041,7 +1042,7 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     _rotatedInitialElements[i][2] = R_0_1*initialPoints[c];
     _rotatedInitialElements[i][3] = R_0_1*initialPoints[d];
 
-    computeStrainDisplacement( _strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
+    computeStrainDisplacement( parallelDataSimu->strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
 }
 
 template<class DataTypes>
@@ -1058,7 +1059,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     MatNoInit<3,3,Real> S;
     polar_decomp(A, R_0_2, S);
 
-    _rotations[elementIndex].transpose( R_0_2 );
+    parallelDataSimu->rotations[elementIndex].transpose( R_0_2 );
 
     // positions of the deformed and displaced Tetrahedre in its frame
     helper::fixed_array<Coord, 4>  deforme;
@@ -1085,14 +1086,14 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     if(_updateStiffnessMatrix.getValue())
     {
         // shape functions matrix
-        computeStrainDisplacement( _strainDisplacements[elementIndex], deforme[0],deforme[1],deforme[2],deforme[3]  );
+        computeStrainDisplacement( parallelDataSimu->strainDisplacements[elementIndex], deforme[0],deforme[1],deforme[2],deforme[3]  );
     }
 
     if(!_assembling.getValue())
     {
-        computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex] );
+        computeForce( F, D, parallelDataSimu->materialsStiffnesses[elementIndex], parallelDataSimu->strainDisplacements[elementIndex] );
         for(int i=0; i<12; i+=3)
-            f[index[i/3]] += _rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
+            f[index[i/3]] += parallelDataSimu->rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
     }
     else
     {
@@ -1104,7 +1105,7 @@ template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
     Transformation R_0_2;
-    R_0_2.transpose( _rotations[i] );
+    R_0_2.transpose( parallelDataSimu->rotations[i] );
 
     Displacement X;
     //Coord x_2;
@@ -1133,25 +1134,25 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
 
     //serr<<"X : "<<X<<sendl;
 
-    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i], fact );
+    computeForce( F, X, parallelDataSimu->materialsStiffnesses[i], parallelDataSimu->strainDisplacements[i], fact );
 
     //serr<<"F : "<<F<<sendl;
 
-    f[a][0] -= _rotations[i][0][0] *  F[0] +  _rotations[i][0][1] * F[1] + _rotations[i][0][2] * F[2];
-    f[a][1] -= _rotations[i][1][0] *  F[0] +  _rotations[i][1][1] * F[1] + _rotations[i][1][2] * F[2];
-    f[a][2] -= _rotations[i][2][0] *  F[0] +  _rotations[i][2][1] * F[1] + _rotations[i][2][2] * F[2];
+    f[a][0] -= parallelDataSimu->rotations[i][0][0] *  F[0] +  parallelDataSimu->rotations[i][0][1] * F[1] + parallelDataSimu->rotations[i][0][2] * F[2];
+    f[a][1] -= parallelDataSimu->rotations[i][1][0] *  F[0] +  parallelDataSimu->rotations[i][1][1] * F[1] + parallelDataSimu->rotations[i][1][2] * F[2];
+    f[a][2] -= parallelDataSimu->rotations[i][2][0] *  F[0] +  parallelDataSimu->rotations[i][2][1] * F[1] + parallelDataSimu->rotations[i][2][2] * F[2];
 
-    f[b][0] -= _rotations[i][0][0] *  F[3] +  _rotations[i][0][1] * F[4] + _rotations[i][0][2] * F[5];
-    f[b][1] -= _rotations[i][1][0] *  F[3] +  _rotations[i][1][1] * F[4] + _rotations[i][1][2] * F[5];
-    f[b][2] -= _rotations[i][2][0] *  F[3] +  _rotations[i][2][1] * F[4] + _rotations[i][2][2] * F[5];
+    f[b][0] -= parallelDataSimu->rotations[i][0][0] *  F[3] +  parallelDataSimu->rotations[i][0][1] * F[4] + parallelDataSimu->rotations[i][0][2] * F[5];
+    f[b][1] -= parallelDataSimu->rotations[i][1][0] *  F[3] +  parallelDataSimu->rotations[i][1][1] * F[4] + parallelDataSimu->rotations[i][1][2] * F[5];
+    f[b][2] -= parallelDataSimu->rotations[i][2][0] *  F[3] +  parallelDataSimu->rotations[i][2][1] * F[4] + parallelDataSimu->rotations[i][2][2] * F[5];
 
-    f[c][0] -= _rotations[i][0][0] *  F[6] +  _rotations[i][0][1] * F[7] + _rotations[i][0][2] * F[8];
-    f[c][1] -= _rotations[i][1][0] *  F[6] +  _rotations[i][1][1] * F[7] + _rotations[i][1][2] * F[8];
-    f[c][2] -= _rotations[i][2][0] *  F[6] +  _rotations[i][2][1] * F[7] + _rotations[i][2][2] * F[8];
+    f[c][0] -= parallelDataSimu->rotations[i][0][0] *  F[6] +  parallelDataSimu->rotations[i][0][1] * F[7] + parallelDataSimu->rotations[i][0][2] * F[8];
+    f[c][1] -= parallelDataSimu->rotations[i][1][0] *  F[6] +  parallelDataSimu->rotations[i][1][1] * F[7] + parallelDataSimu->rotations[i][1][2] * F[8];
+    f[c][2] -= parallelDataSimu->rotations[i][2][0] *  F[6] +  parallelDataSimu->rotations[i][2][1] * F[7] + parallelDataSimu->rotations[i][2][2] * F[8];
 
-    f[d][0] -= _rotations[i][0][0] *  F[9] +  _rotations[i][0][1] * F[10] + _rotations[i][0][2] * F[11];
-    f[d][1]	-= _rotations[i][1][0] *  F[9] +  _rotations[i][1][1] * F[10] + _rotations[i][1][2] * F[11];
-    f[d][2]	-= _rotations[i][2][0] *  F[9] +  _rotations[i][2][1] * F[10] + _rotations[i][2][2] * F[11];
+    f[d][0] -= parallelDataSimu->rotations[i][0][0] *  F[9] +  parallelDataSimu->rotations[i][0][1] * F[10] + parallelDataSimu->rotations[i][0][2] * F[11];
+    f[d][1]	-= parallelDataSimu->rotations[i][1][0] *  F[9] +  parallelDataSimu->rotations[i][1][1] * F[10] + parallelDataSimu->rotations[i][1][2] * F[11];
+    f[d][2]	-= parallelDataSimu->rotations[i][2][0] *  F[9] +  parallelDataSimu->rotations[i][2][1] * F[10] + parallelDataSimu->rotations[i][2][2] * F[11];
 
 }
 
@@ -1162,6 +1163,11 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
+    parallelDataInit[0] = new ParallelData();
+    parallelDataInit[1] = NULL; // no parallel until the first event
+    parallelDataSimu = parallelDataInit[0];
+    parallelDataThrd = parallelDataInit[0];
+
     this->core::behavior::ForceField<DataTypes>::init();
     _mesh = this->getContext()->getMeshTopology();
     if (_mesh==NULL)
@@ -1313,8 +1319,8 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
     setMethod(f_method.getValue() );
     const VecCoord& p = *this->mstate->getX0();
     _initialPoints.setValue(p);
-    _strainDisplacements.resize( _indexedElements->size() );
-    _materialsStiffnesses.resize(_indexedElements->size() );
+    parallelDataSimu->strainDisplacements.resize( _indexedElements->size() );
+    parallelDataSimu->materialsStiffnesses.resize(_indexedElements->size() );
     if(_assembling.getValue())
     {
         _stiffnesses.resize( _initialPoints.getValue().size()*3 );
@@ -1339,7 +1345,7 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
     }
     case LARGE :
     {
-        _rotations.resize( _indexedElements->size() );
+        parallelDataSimu->rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
         _rotationIdx.resize(_indexedElements->size() *4);
         _rotatedInitialElements.resize(_indexedElements->size());
@@ -1356,7 +1362,7 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
     }
     case POLAR :
     {
-        _rotations.resize( _indexedElements->size() );
+        parallelDataSimu->rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
         _rotationIdx.resize(_indexedElements->size() *4);
         _rotatedInitialElements.resize(_indexedElements->size());
@@ -1381,6 +1387,12 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
+
+    if (parallelDataInit[1] && parallelDataSimu == parallelDataThrd)
+    {
+        parallelDataSimu = parallelDataSimu==parallelDataInit[0] ? parallelDataInit[1] : parallelDataInit[0];
+    }
+
     f.resize(p.size());
 
     if (needUpdateTopology)
@@ -1625,8 +1637,8 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
+            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],Rot);
+            else computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],parallelDataThrd->rotations[IT]);
 
             defaulttype::Mat<3,3,double> tmpBlock[4][4];
             // find index of node 1
@@ -1668,8 +1680,8 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
+            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],Rot);
+            else computeStiffnessMatrix(JKJt,tmp,parallelDataThrd->materialsStiffnesses[IT], parallelDataThrd->strainDisplacements[IT],parallelDataThrd->rotations[IT]);
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -1696,6 +1708,17 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
             }
         }
 
+    }
+}
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
+{
+    if (dynamic_cast<sofa::component::misc::ParallelizeBuildMatrixEvent*>(event))   //this event shoul be launch before the addKToMatrix
+    {
+        if (parallelDataInit[1] == NULL) createParallelData();
+        parallelDataThrd = parallelDataSimu;
+        event->setHandled();
     }
 }
 

@@ -53,7 +53,6 @@
 
 #ifdef SOFA_HAVE_CSPARSE
 #include <sofa/component/linearsolver/SparseCholeskySolver.h>
-#include <sofa/component/linearsolver/SparseLDLSolver.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #else
 #include <sofa/component/linearsolver/CholeskySolver.h>

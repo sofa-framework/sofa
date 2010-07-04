@@ -123,9 +123,25 @@ protected:
     typedef vector<MaterialStiffness> VecMaterialStiffness;
     typedef vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
 
-    /// Vector of material stiffness matrices of each tetrahedron
-    VecMaterialStiffness _materialsStiffnesses;
-    VecStrainDisplacement _strainDisplacements;   ///< the strain-displacement matrices vector
+    typedef struct
+    {
+        /// Vector of material stiffness matrices of each tetrahedron
+        VecMaterialStiffness materialsStiffnesses;
+        VecStrainDisplacement strainDisplacements;   ///< the strain-displacement matrices vector
+        vector<Transformation> rotations;
+    } ParallelData;
+
+    ParallelData * parallelDataSimu;
+    ParallelData * parallelDataThrd;
+    ParallelData * parallelDataInit[2]; //use to remember initial values because parallelData will be erase
+
+    void createParallelData()
+    {
+        parallelDataInit[1] = new ParallelData();
+        parallelDataInit[1]->materialsStiffnesses = parallelDataInit[0]->materialsStiffnesses;
+        parallelDataInit[1]->strainDisplacements = parallelDataInit[0]->strainDisplacements;
+        parallelDataInit[1]->rotations = parallelDataInit[0]->rotations;
+    }
 
     /// @name Full system matrix assembly support
     /// @{
@@ -212,6 +228,17 @@ public:
         this->addAlias(&_assembling, "assembling");
     }
 
+    ~TetrahedronFEMForceField()
+    {
+        if (parallelDataInit[0]) delete parallelDataInit[0];
+        if (parallelDataInit[1]) delete parallelDataInit[1];
+
+        parallelDataInit[0] = NULL;
+        parallelDataInit[1] = NULL;
+        parallelDataThrd = NULL;
+        parallelDataInit[2] = NULL;
+    }
+
     virtual bool canPrefetch() const { return false; }
 
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
@@ -229,14 +256,14 @@ public:
     //for tetra mapping, should be removed in future
     Transformation getActualTetraRotation(unsigned int index)
     {
-        if (index < _rotations.size() )
-            return _rotations[index];
+        if (index < parallelDataSimu->rotations.size() )
+            return parallelDataSimu->rotations[index];
         else { Transformation t; t.identity(); return t; }
     }
 
     Transformation getInitialTetraRotation(unsigned int index)
     {
-        if (index < _rotations.size() )
+        if (index < parallelDataSimu->rotations.size() )
             return _initialRotations[index];
         else { Transformation t; t.identity(); return t; }
     }
@@ -285,6 +312,8 @@ public:
     void getElementStiffnessMatrix(Real* stiffness, Tetra& te);
     void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
+    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+
 protected:
 
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
@@ -304,7 +333,6 @@ protected:
 
     ////////////// large displacements method
     vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    vector<Transformation> _rotations;
     vector<Transformation> _initialRotations;
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);

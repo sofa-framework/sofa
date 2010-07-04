@@ -204,15 +204,15 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::reinit(Main* m)
 {
     Data& data = m->data;
-    m->_strainDisplacements.resize( m->_indexedElements->size() );
-    m->_materialsStiffnesses.resize(m->_indexedElements->size() );
+    m->parallelDataSimu->strainDisplacements.resize( m->_indexedElements->size() );
+    m->parallelDataSimu->materialsStiffnesses.resize(m->_indexedElements->size() );
 
     const VecElement& elems = *m->_indexedElements;
 
     VecCoord& p = *m->mstate->getX0();
     m->_initialPoints.setValue(p);
 
-    m->_rotations.resize( m->_indexedElements->size() );
+    m->parallelDataSimu->rotations.resize( m->_indexedElements->size() );
     m->_initialRotations.resize( m->_indexedElements->size() );
     m->_rotationIdx.resize(m->_indexedElements->size() *4);
     m->_rotatedInitialElements.resize(m->_indexedElements->size());
@@ -269,7 +269,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         const Coord& b = m->_rotatedInitialElements[ei][1];
         const Coord& c = m->_rotatedInitialElements[ei][2];
         const Coord& d = m->_rotatedInitialElements[ei][3];
-        data.setE(i, e, a, b, c, d, m->_materialsStiffnesses[ei], m->_strainDisplacements[ei]);
+        data.setE(i, e, a, b, c, d, m->parallelDataSimu->materialsStiffnesses[ei], m->parallelDataSimu->strainDisplacements[ei]);
         for (unsigned int j=0; j<e.size(); j++)
             data.setV(e[j], nelems[e[j]]++, i*e.size()+j);
     }
@@ -278,6 +278,11 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& v, bool prefetch)
 {
+    if (m->parallelDataInit[1] && m->parallelDataSimu == m->parallelDataThrd)
+    {
+        m->parallelDataSimu = m->parallelDataSimu==m->parallelDataInit[0] ? m->parallelDataInit[1] : m->parallelDataInit[0];
+    }
+
     if (m->needUpdateTopology)
     {
         reinit(m);
@@ -391,7 +396,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         D[9] = m->_rotatedInitialElements[i][3][0] - xd[0];
         D[10]= m->_rotatedInitialElements[i][3][1] - xd[1];
         D[11]= m->_rotatedInitialElements[i][3][2] - xd[2];
-        Vec<6,Real> S = -((m->_materialsStiffnesses[i]) * ((m->_strainDisplacements[i]).multTranspose(D)))*(e.bx);
+        Vec<6,Real> S = -((m->parallelDataSimu->materialsStiffnesses[i]) * ((m->parallelDataSimu->strainDisplacements[i]).multTranspose(D)))*(e.bx);
 
         Vec<6,Real> Sdiff = S-s.S;
 
@@ -484,7 +489,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     {
         const VecElement& elems = *m->_indexedElements;
 
-        helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+        //helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
 
         // Build Matrix Block for this ForceField
         int i,j,n1, n2;
@@ -505,11 +510,21 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
             int blockIdx = ei / BSIZE;
             int threadIdx = ei % BSIZE;
-            for(i=0; i<3; i++)
-                for (j=0; j<3; j++)
-                    Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
-            m->computeStiffnessMatrix(JKJt, tmp, m->_materialsStiffnesses[ei], m->_strainDisplacements[ei], Rot);
+            if (m->parallelDataInit[1] == NULL)   // we build in the main thread²
+            {
+                for(i=0; i<3; i++)
+                    for (j=0; j<3; j++)
+                        Rot[j][i] = data.state[blockIdx].Rt[i][j][threadIdx];
+            }
+            else
+            {
+                for(i=0; i<3; i++)
+                    for (j=0; j<3; j++)
+                        Rot[j][i] = data.parallelRotation[blockIdx].Rt[i][j][threadIdx];
+            }
+
+            m->computeStiffnessMatrix(JKJt, tmp, m->parallelDataThrd->materialsStiffnesses[ei], m->parallelDataThrd->strainDisplacements[ei], Rot);
             defaulttype::Mat<3,3,double> tmpBlock[4][4];
 
             // find index of node 1
@@ -552,7 +567,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     {
         const VecElement& elems = *m->_indexedElements;
 
-        helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+        //helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
 
         // Build Matrix Block for this ForceField
         int i,j,n1, n2, row, column, ROW, COLUMN;
@@ -573,11 +588,21 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
             int blockIdx = ei / BSIZE;
             int threadIdx = ei % BSIZE;
-            for(i=0; i<3; i++)
-                for (j=0; j<3; j++)
-                    Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
-            m->computeStiffnessMatrix(JKJt, tmp, m->_materialsStiffnesses[ei], m->_strainDisplacements[ei], Rot);
+            if (m->parallelDataInit[1] == NULL)   // we build in the main thread²
+            {
+                for(i=0; i<3; i++)
+                    for (j=0; j<3; j++)
+                        Rot[j][i] = data.state[blockIdx].Rt[i][j][threadIdx];
+            }
+            else
+            {
+                for(i=0; i<3; i++)
+                    for (j=0; j<3; j++)
+                        Rot[j][i] = data.parallelRotation[blockIdx].Rt[i][j][threadIdx];
+            }
+
+            m->computeStiffnessMatrix(JKJt, tmp, m->parallelDataThrd->materialsStiffnesses[ei], m->parallelDataThrd->strainDisplacements[ei], Rot);
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -678,6 +703,19 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     }
 }
 
+template<class TCoord, class TDeriv, class TReal>
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::handleEvent(Main* m,sofa::core::objectmodel::Event* event)
+{
+    if (dynamic_cast<sofa::component::misc::ParallelizeBuildMatrixEvent*>(event))   //this event shoul be launch before the addKToMatrix
+    {
+        if (m->parallelDataInit[1] == NULL) m->createParallelData();
+        m->data.parallelRotation = m->data.state;
+        m->data.parallelRotation.hostRead();
+        m->parallelDataThrd = m->parallelDataSimu;
+        event->setHandled();
+    }
+}
+
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_ImplMethods(T) \
@@ -694,7 +732,9 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor) \
     { data.addDForce(this, df, dx, kFactor, bFactor, this->isPrefetching()); } \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
-    { data.addKToMatrix(this, mat, kFactor, offset); }
+    { data.addKToMatrix(this, mat, kFactor, offset); } \
+    template<> void TetrahedronFEMForceField< T >::handleEvent(sofa::core::objectmodel::Event* event) \
+    { data.handleEvent(this,event); }
 
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);
