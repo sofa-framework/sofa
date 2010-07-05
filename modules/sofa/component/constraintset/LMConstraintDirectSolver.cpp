@@ -296,6 +296,7 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMCo
                 {
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(it->idx));
                     rowsLT.push_back(rowsL.back());
+                    rightHandElements.push_back(it->idx);
                 }
             }
         }
