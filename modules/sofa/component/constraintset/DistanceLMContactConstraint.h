@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
+#include <sofa/component/constraintset/ContactDescription.h>
 #include <sofa/simulation/common/Node.h>
 
 
@@ -56,7 +57,7 @@ class DistanceLMContactConstraintInternalData
 /** Keep two particules at an initial distance
 */
 template <class DataTypes>
-class DistanceLMContactConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>
+class DistanceLMContactConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>, public ContactDescriptionHandler
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DistanceLMContactConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));

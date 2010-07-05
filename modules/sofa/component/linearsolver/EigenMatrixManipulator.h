@@ -43,22 +43,41 @@ namespace linearsolver
 
 typedef Eigen::SparseMatrix<SReal,Eigen::RowMajor>    SparseMatrixEigen;
 typedef Eigen::SparseVector<SReal,Eigen::RowMajor>    SparseVectorEigen;
+typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
 
 struct LMatrixManipulator;
 
 struct LLineManipulator
 {
-    friend struct LMatrixManipulator;
-protected:
     typedef std::pair<unsigned int, SReal> LineCombination;
     typedef helper::vector< LineCombination > InternalData;
 public:
-    LLineManipulator& addCombination(unsigned int idxConstraint, SReal factor);
+    LLineManipulator& addCombination(unsigned int idxConstraint, SReal factor=1.0);
 
+    inline friend std::ostream& operator << ( std::ostream& out, const LLineManipulator& s )
+    {
+        for (InternalData::const_iterator it = s._data.begin(); it!=s._data.end(); ++it)
+        {
+            if (it->second == 1.0)
+                out << "[" << it->first << "] ";
+            else
+                out << "[" << it->first << ", " << it->second <<"] ";
+        }
+        return out;
+    }
 
+    template <class Container, class Result>
+    void buildCombination(const Container& lines, Result &output) const
+    {
+        //TODO: improve estimation of non zero coeff
+        for (InternalData::const_iterator it=_data.begin(); it!=_data.end(); ++it)
+        {
+            const unsigned int indexConstraint=it->first;
+            const SReal factor=it->second;
+            output += lines[indexConstraint]*factor;
+        }
+    }
 protected:
-    void buildSparseLine(const helper::vector< SparseVectorEigen >& lines, SparseVectorEigen &vector) const;
-
     InternalData _data;
 };
 

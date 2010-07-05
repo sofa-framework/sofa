@@ -22,7 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/EigenMatrixManipulator.h>
+#ifndef SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
+#define SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
+
+#include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -30,56 +34,41 @@ namespace sofa
 namespace component
 {
 
-namespace linearsolver
+namespace constraintset
 {
 
-LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
+
+using core::behavior::BaseLMConstraint;
+class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintDirectSolver : public LMConstraintSolver
 {
-    _data.push_back(std::make_pair(idxConstraint, factor));
-    return *this;
-}
+    typedef Eigen::DynamicSparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
 
-void LMatrixManipulator::init(const SparseMatrixEigen& L)
-{
-    const unsigned int numConstraint=L.rows();
-    const unsigned int numDofs=L.cols();
-    LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].startFill(0.3*numDofs);
-    for (int k=0; k<L.outerSize(); ++k)
-    {
-        for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
-        {
-            const unsigned int row=it.row();
-            const unsigned int col=it.col();
-            const SReal value=it.value();
-            LMatrix[row].fill(col)=value;
-        }
-    }
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].endFill();
-}
+    typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
+public:
+    SOFA_CLASS(LMConstraintDirectSolver, LMConstraintSolver);
+    LMConstraintDirectSolver();
 
 
+    virtual bool buildSystem(double dt, VecId, core::behavior::BaseConstraintSet::ConstOrder);
+    virtual bool solveSystem(double dt, VecId, core::behavior::BaseConstraintSet::ConstOrder);
 
-void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
-{
-    for (unsigned int l=0; l<lines.size(); ++l)
-    {
-        const LLineManipulator& lManip=lines[l];
-        SparseVectorEigen vector;
-        lManip.buildCombination(LMatrix,vector);
-        for (SparseVectorEigen::InnerIterator it(vector); it; ++it)
-        {
-            matrix.fill(l,it.index())=it.value();
-        }
-    }
-}
+protected:
+
+    void analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::behavior::BaseConstraintSet::ConstOrder order,
+            JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const;
+
+    void buildLeftRectangularMatrix(const DofToMatrix& invMassMatrix,
+            DofToMatrix& LMatrix, DofToMatrix& LTMatrix,
+            SparseColMajorMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
 
 
-helper::vector< SparseVectorEigen > LMatrix;
+    Data<sofa::helper::OptionsGroup> solverAlgorithm;
+};
 
+} // namespace constraintset
 
+} // namespace component
 
+} // namespace sofa
 
-}
-}
-}
+#endif
