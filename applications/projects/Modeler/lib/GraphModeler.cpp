@@ -583,7 +583,7 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
     {
         if (std::string(it->getClass()) == std::string("Node"))
         {
-            buildNodeFromBaseElement(newNode, it,false); //Desactivate saving history
+            buildNodeFromBaseElement(newNode, it,true); //Desactivate saving history
         }
         else
         {

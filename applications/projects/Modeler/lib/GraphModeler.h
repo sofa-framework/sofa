@@ -119,7 +119,22 @@ public:
         Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
         while ( it.current() )
         {
-            selection.push_back(it.current());
+            //Verify if the parent item (node) is not selected
+            Q3ListViewItem *currentItem = it.current();
+            Q3ListViewItem *parentItem=currentItem->parent();
+            bool parentNodeAlreadySelected=false;
+            while (parentItem && !parentNodeAlreadySelected)
+            {
+                currentItem=parentItem;
+                if (currentItem->isSelected())
+                {
+                    parentNodeAlreadySelected=true;
+                    break;
+                }
+                parentItem=currentItem->parent();
+            }
+            if (!parentNodeAlreadySelected)
+                selection.push_back(it.current());
             ++it;
         }
     }
