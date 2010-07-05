@@ -676,6 +676,7 @@ void RealGUI::initViewer()
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
+    viewer->getPickHandler()->addCallBack( new InformationOnPickCallBack(this) );
 
 }
 
