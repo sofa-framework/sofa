@@ -107,7 +107,7 @@ uint4 rank4(uint4 preds, __local uint* sMem)
     return rank;
 }
 
-void radixSortBlockKeysOnly(uint4 *key/*,uint4 *values*/, uint nbits, uint startbit, __local uint* sMem/*,__local uint* sMemV*/)
+void radixSortBlockKeysOnly(uint4 *key,uint4 *values, uint nbits, uint startbit, __local uint* sMem,__local uint* sMemV)
 {
     int localId = get_local_id(0);
     int localSize = get_local_size(0);
@@ -130,10 +130,10 @@ void radixSortBlockKeysOnly(uint4 *key/*,uint4 *values*/, uint nbits, uint start
         sMem[(r.z & 3) * localSize + (r.z >> 2)] = (*key).z;
         sMem[(r.w & 3) * localSize + (r.w >> 2)] = (*key).w;
 
-//	sMemV[(r.x & 3) * localSize + (r.x >> 2)] = (*values).x;
-//	sMemV[(r.y & 3) * localSize + (r.y >> 2)] = (*values).y;
-//	sMemV[(r.z & 3) * localSize + (r.z >> 2)] = (*values).z;
-//	sMemV[(r.w & 3) * localSize + (r.w >> 2)] = (*values).w;
+        sMemV[(r.x & 3) * localSize + (r.x >> 2)] = (*values).x;
+        sMemV[(r.y & 3) * localSize + (r.y >> 2)] = (*values).y;
+        sMemV[(r.z & 3) * localSize + (r.z >> 2)] = (*values).z;
+        sMemV[(r.w & 3) * localSize + (r.w >> 2)] = (*values).w;
         barrier(CLK_LOCAL_MEM_FENCE);
 
         // The above allows us to read without 4-way bank conflicts:
@@ -142,10 +142,10 @@ void radixSortBlockKeysOnly(uint4 *key/*,uint4 *values*/, uint nbits, uint start
         (*key).z = sMem[localId + 2 * localSize];
         (*key).w = sMem[localId + 3 * localSize];
 
-//	(*values).x = sMemV[localId];
-//	(*values).y = sMemV[localId +     localSize];
-//	(*values).z = sMemV[localId + 2 * localSize];
-//	(*values).w = sMemV[localId + 3 * localSize];
+        (*values).x = sMemV[localId];
+        (*values).y = sMemV[localId +     localSize];
+        (*values).z = sMemV[localId + 2 * localSize];
+        (*values).w = sMemV[localId + 3 * localSize];
 
         barrier(CLK_LOCAL_MEM_FENCE);
     }
@@ -159,8 +159,8 @@ __kernel void radixSortBlocksKeysOnly(__global uint4* keysIn,
         uint startbit,
         uint numElements,
         uint totalBlocks,
-        __local uint* sMem//,
-        //									__local uint* sMemV
+        __local uint* sMem,
+        __local uint* sMemV
                                      )
 {
     int globalId = get_global_id(0);
@@ -171,7 +171,7 @@ __kernel void radixSortBlocksKeysOnly(__global uint4* keysIn,
 
     barrier(CLK_LOCAL_MEM_FENCE);
 
-    radixSortBlockKeysOnly(&key/*,&value*/, nbits, startbit, sMem/*,sMemV*/);
+    radixSortBlockKeysOnly(&key,&value, nbits, startbit, sMem,sMemV);
 
     keysOut[globalId] = key;
     valueOut[globalId] = value;
@@ -329,24 +329,23 @@ __kernel void scanNaive(__global uint *g_odata,
 
 __kernel void reorderDataKeysOnly(	__global uint  *outKeys,
         __global uint2  *keys,
-//									__global uint2  *outValues,
-//									uint outValues_offset,
-//									__global uint *values,
+        __global uint  *outValues,
+        __global uint2 *values,
         __global uint  *blockOffsets,
         __global uint  *offsets,
         __global uint  *sizes,
         uint startbit,
         uint numElements,
         uint totalBlocks,
-        __local uint2* sKeys2//,
-//									__local uint2* sValues2
+        __local uint2* sKeys2,
+        __local uint2* sValues2
                                  )
 {
     __local uint sOffsets[16];
     __local uint sBlockOffsets[16];
 
     __local uint *sKeys1 = (__local uint*)sKeys2;
-//	__local uint *sValues1 = (__local uint*)sValues2;
+    __local uint *sValues1 = (__local uint*)sValues2;
 
     uint groupId = get_group_id(0);
 
@@ -355,7 +354,7 @@ __kernel void reorderDataKeysOnly(	__global uint  *outKeys,
     uint groupSize = get_local_size(0);
 
     sKeys2[localId]   = keys[globalId];
-//	sValues2[localId]	= values[globalId];
+    sValues2[localId]	= values[globalId];
 
     if(localId < 16)
     {
@@ -370,7 +369,7 @@ __kernel void reorderDataKeysOnly(	__global uint  *outKeys,
     if (globalOffset < numElements)
     {
         outKeys[globalOffset]   = sKeys1[localId];
-//		outValues[globalOffset+outValues_offset] = sValues1[globalId];
+        outValues[globalOffset] = sValues1[localId];
     }
 
     radix = (sKeys1[localId + groupSize] >> startbit) & 0xF;
@@ -379,7 +378,7 @@ __kernel void reorderDataKeysOnly(	__global uint  *outKeys,
     if (globalOffset < numElements)
     {
         outKeys[globalOffset]   = sKeys1[localId + groupSize];
-//		outValues[globalOffset+outValues_offset] = sValues1[globalId];
+        outValues[globalOffset] = sValues1[localId + groupSize];
     }
 }
 

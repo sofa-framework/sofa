@@ -34,7 +34,7 @@ public:
 
     void addTitle(const char * str)
     {
-        fprintf(_file,"yo%s\n",str);
+        fprintf(_file,"%s\n",str);
     }
 
     template <class T> void addVector(T* v,int size)

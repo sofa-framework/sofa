@@ -99,6 +99,8 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(VecDeriv& f, co
     data.Kernels_computeDensity(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         data.pos4.deviceWrite(), x.deviceRead());
+
+//WARNING: erreur à l'appel v.deviceRead() quand utilisation 2^n trop grand ou BSIZE = 64
     data.Kernels_addForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());

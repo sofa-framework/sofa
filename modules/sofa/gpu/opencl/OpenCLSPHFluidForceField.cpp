@@ -76,12 +76,13 @@ void SPHFluidForceField_CreateProgramWithFloat()
 sofa::helper::OpenCLKernel *SPHFluidForceFieldOpenCL3f_computeDensity_kernel;
 void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer pos4, const _device_pointer x)
 {
+
     DEBUG_TEXT("SPHFluidForceFieldOpenCL3f_computeDensity");
     BARRIER(cells,__FILE__,__LINE__);
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     SPHFluidForceField_CreateProgramWithFloat();
-    std::cout << BSIZE << " " << stringBSIZE << "\n";
+//std::cout << BSIZE << " " << stringBSIZE << "\n";
     if(SPHFluidForceFieldOpenCL3f_computeDensity_kernel==NULL)SPHFluidForceFieldOpenCL3f_computeDensity_kernel
             = new sofa::helper::OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_computeDensity");
 
@@ -93,13 +94,15 @@ void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(4,&pos4);
     SPHFluidForceFieldOpenCL3f_computeDensity_kernel->setArg<_device_pointer>(5,&x);
 
+
+
     size_t local_size[1];
     local_size[0]=BSIZE;
 
     size_t work_size[1];
     work_size[0]=60*BSIZE;
 
-    std::cout << "COMPUTE DENSITY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+//	std::cout << "COMPUTE DENSITY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     //std::cout << __LINE__ << __FILE__ << " " << size << " " << nbSpringPerVertex << " " << springs.offset << " " << f.offset << " " <<  x.offset << " " <<  v.offset<< " " << dfdx.offset << "\n";
     //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
 
@@ -107,32 +110,37 @@ void SPHFluidForceFieldOpenCL3f_computeDensity(unsigned int size, const _device_
 
     DEBUG_TEXT("~SPHFluidForceFieldOpenCL3f_computeDensity");
     BARRIER(cells,__FILE__,__LINE__);
+
 }
 
 sofa::helper::OpenCLKernel *SPHFluidForceFieldOpenCL3f_addForce_kernel;
 void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_pointer cells, const _device_pointer cellGhost, GPUSPHFluid3f* params,_device_pointer f, const _device_pointer pos4, const _device_pointer v)
 {
+
+
+
     DEBUG_TEXT("SPHFluidForceFieldOpenCL3f_addForce");
+
     BARRIER(cells,__FILE__,__LINE__);
 
-    std::cout <<
-            params->h<<" "<<         ///< particles radius
-            params->h2<<" "<<       ///< particles radius squared
-            params->stiffness<<" "<< ///< pressure stiffness
-            params->mass<<" "<<      ///< particles mass
-            params->mass2<<" "<<     ///< particles mass squared
-            params->density0<<" "<<  ///< 1000 kg/m3 for water
-            params->viscosity<<" "<<
-            params->surfaceTension<<" "<<
+    /*std::cout <<
+    	params->h<<" "<<         ///< particles radius
+    	params->h2<<" "<<       ///< particles radius squared
+    	params->stiffness<<" "<< ///< pressure stiffness
+    	params->mass<<" "<<      ///< particles mass
+    	params->mass2<<" "<<     ///< particles mass squared
+    	params->density0<<" "<<  ///< 1000 kg/m3 for water
+    	params->viscosity<<" "<<
+    	params->surfaceTension<<" "<<
 
-            // Precomputed constants for smoothing kernels
-            params->CWd<<" "<<          ///< = constWd(h)
-            params->CgradWd<<" "<<      ///< = constGradWd(h)
-            params->CgradWp<<" "<<      ///< = constGradWp(h)
-            params->ClaplacianWv<<" "<< ///< = constLaplacianWv(h)
-            params->CgradWc<<" "<<      ///< = constGradWc(h)
-            params->ClaplacianWc<<"\n"; ///< = constLaplacianWc(h)
-
+    	// Precomputed constants for smoothing kernels
+    	params->CWd<<" "<<          ///< = constWd(h)
+    	params->CgradWd<<" "<<      ///< = constGradWd(h)
+    	params->CgradWp<<" "<<      ///< = constGradWp(h)
+    	params->ClaplacianWv<<" "<< ///< = constLaplacianWv(h)
+    	params->CgradWc<<" "<<      ///< = constGradWc(h)
+    	params->ClaplacianWc<<"\n"; ///< = constLaplacianWc(h)
+    */
 
 
 
@@ -143,6 +151,7 @@ void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_point
             = new sofa::helper::OpenCLKernel(SPHFluidForceFieldOpenCLFloat_program,"SPHFluidForceField_addForce");
 
 
+
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<unsigned int>(0,&size);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(1,&cells);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(2,&cellGhost);
@@ -150,6 +159,8 @@ void SPHFluidForceFieldOpenCL3f_addForce (unsigned int size, const _device_point
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(4,&f);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(5,&pos4);
     SPHFluidForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(6,&v);
+
+
 
     size_t local_size[1];
     local_size[0]=BSIZE;

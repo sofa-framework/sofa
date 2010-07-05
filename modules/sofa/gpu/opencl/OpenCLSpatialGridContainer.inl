@@ -119,9 +119,9 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3fTypes > >::kernel_u
 
     int nbbits = 8;
     while (nbbits < cellBits + 1) ++nbbits;
-    printf("nbbits: %d\n",nbbits);
+//	printf("nbbits: %d\n",nbbits);
 
-    printf("nbpoint1%d\n",nbPoints);
+//	printf("nbpoint1%d\n",nbPoints);
 //	gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
     rs->sort(particleHash,particleIndex,nbPoints*8,nbbits+1);
 
@@ -138,7 +138,7 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVec3f1Types > >::kernel_
     int nbbits = 8;
     while (nbbits < cellBits + 1) ++nbbits;
 //	gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
-    printf("nbpoint2%d\n",nbPoints);
+//	printf("nbpoint2%d\n",nbPoints);
     rs->sort(particleIndex,particleHash,nbPoints*8,nbbits);
 //	gpu::opencl::SpatialGridContainer_RadixSort(particleHash, particleIndex, sortTmp, nbPoints*8, nbbits);
 
@@ -177,10 +177,12 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeri
     int index0 = nbCells+ BSIZE;
     /*particleIndex*/ cells.recreate(index0+nbPoints*8,8*BSIZE);
     particleHash.recreate(nbPoints*8,8*BSIZE);
-    printf("nbpoint3%d\n",nbPoints);
+//	printf("nbpoint3%d\n",nbPoints);
     sortTmp.recreate(gpu::opencl::SpatialGridContainer_RadixSortTempStorage(nbPoints*8));
-    if(radixsort!=NULL) {delete(radixsort);};
-    radixsort = new RadixSort(nbPoints*8, BSIZE, true);
+//	if(radixsort!=NULL){delete(radixsort);};
+//	radixsort = new RadixSort(nbPoints*8, BSIZE, true);
+    if(radixsort==NULL) {radixsort = new RadixSort(nbPoints*8, BSIZE, true);};
+
 
     //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
