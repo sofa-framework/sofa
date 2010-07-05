@@ -286,7 +286,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     //Building L
     //************************************************************
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem L");
-    DofToMatrix LMatrices;
+    LMatrices.clear();
     //Init matrices to the good size
     for (SetDof::iterator it=setDofs.begin(); it!=setDofs.end(); ++it)
     {
@@ -427,8 +427,6 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, core::behavior
 #endif
     return true;
 }
-
-
 
 
 

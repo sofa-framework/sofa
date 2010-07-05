@@ -22,7 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/EigenMatrixManipulator.h>
+#ifndef SOFA_COMPONENT_CONSTRAINTSET_CONTACTDESCRIPTION_H
+#define SOFA_COMPONENT_CONSTRAINTSET_CONTACTDESCRIPTION_H
+
+#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -30,56 +34,50 @@ namespace sofa
 namespace component
 {
 
-namespace linearsolver
+namespace constraintset
 {
 
-LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
-{
-    _data.push_back(std::make_pair(idxConstraint, factor));
-    return *this;
-}
 
-void LMatrixManipulator::init(const SparseMatrixEigen& L)
+enum ContactState {VANISHING, STICKING, SLIDING};
+
+/// ContactDescription is a class providing precise information about the state of a contact
+/// A contact can be in 3 different states: vanishing, sticking, sliding
+/// with this states, we can solve precisely a contact, knowning its state, and the direction of the response
+struct ContactDescription
 {
-    const unsigned int numConstraint=L.rows();
-    const unsigned int numDofs=L.cols();
-    LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].startFill(0.3*numDofs);
-    for (int k=0; k<L.outerSize(); ++k)
+    /// State of the contact
+    /// @see ContactState
+    ContactState state;
+    /// When the contact is sliding, we have to know the direction of the reponse force.
+    /// coeff is the linear combination of the normal, and two tangent constraint directions.
+    SReal coeff[3];
+};
+
+
+/// Class handler to make the kink between constraint groups (a set of equations related to contact) and a description of the state of the contact
+class ContactDescriptionHandler
+{
+    typedef  std::map< const core::behavior::BaseLMConstraint::ConstraintGroup*, ContactDescription> InternalData;
+public:
+    const ContactDescription& getContactDescription( const core::behavior::BaseLMConstraint::ConstraintGroup* contact) const
     {
-        for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
-        {
-            const unsigned int row=it.row();
-            const unsigned int col=it.col();
-            const SReal value=it.value();
-            LMatrix[row].fill(col)=value;
-        }
-    }
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].endFill();
-}
-
-
-
-void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
-{
-    for (unsigned int l=0; l<lines.size(); ++l)
+        InternalData::const_iterator it = infos.find(contact);
+        assert (it != infos.end());
+        return it->second;
+    };
+    ContactDescription& getContactDescription(const core::behavior::BaseLMConstraint::ConstraintGroup* contact)
     {
-        const LLineManipulator& lManip=lines[l];
-        SparseVectorEigen vector;
-        lManip.buildCombination(LMatrix,vector);
-        for (SparseVectorEigen::InnerIterator it(vector); it; ++it)
-        {
-            matrix.fill(l,it.index())=it.value();
-        }
-    }
-}
-
-
-helper::vector< SparseVectorEigen > LMatrix;
-
-
+        return infos[contact];
+    };
+protected:
+    InternalData infos;
+};
 
 
 }
+
 }
+
 }
+
+#endif
