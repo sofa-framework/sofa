@@ -16,7 +16,7 @@
 //#include <oclUtils.h>
 #include "RadixSort.h"
 #include "OpenCLMemoryManager.h"
-#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 #include "tools/showvector.h"
 
 
@@ -36,6 +36,9 @@ _device_pointer RadixSort::mCountersSum;		// Prefix sum of radix counters
 _device_pointer RadixSort::mBlockOffsets;		// Global offsets of each radix in each block
 _device_pointer RadixSort::d_temp_resized;
 _device_pointer RadixSort::d_tempElements;
+_device_pointer RadixSort::d_value_resized;
+
+unsigned int RadixSort::lastNumElements=0;
 
 RadixSort::RadixSort(
     unsigned int maxElements,
@@ -47,7 +50,7 @@ RadixSort::RadixSort(
 
 {
     DEBUG_TEXT("RadixSort")
-    int n=1;
+    int n=1024;
     while(n<maxElements)n*=2;
     maxElements=n;
     unsigned int numBlocks = ((maxElements % (CTA_SIZE * 4)) == 0) ?
@@ -58,9 +61,10 @@ RadixSort::RadixSort(
     //cl_int ciErrNum;
     int sizeCounter = WARP_SIZE * numBlocks * sizeof(unsigned int);
 
-    printf("maxelement%d\n",maxElements);
+
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&d_tempKeys, sizeof(unsigned int) * maxElements);
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&d_temp_resized, sizeof(unsigned int) * maxElements);
+    sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&d_value_resized, sizeof(unsigned int) * maxElements);
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&mCounters,WARP_SIZE * numBlocks * sizeof(unsigned int));
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&mCountersSum, WARP_SIZE * numBlocks * sizeof(unsigned int));
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&mBlockOffsets,WARP_SIZE * numBlocks * sizeof(unsigned int));
@@ -105,6 +109,8 @@ RadixSort::~RadixSort()
     clReleaseMemObject(mCounters.m);
     clReleaseMemObject(mCountersSum.m);
     clReleaseMemObject(mBlockOffsets.m);
+    clReleaseMemObject(d_tempElements.m);
+    clReleaseMemObject(d_value_resized.m);
 }
 
 //------------------------------------------------------------------------
@@ -116,31 +122,45 @@ RadixSort::~RadixSort()
 //                    maxElements passed to the constructor
 // @param keyBits     The number of bits in each key to use for ordering
 //------------------------------------------------------------------------
-ShowVector *show_key;
-ShowVector *show_val;
+//ShowVector *show_key;
 
 void RadixSort::sort(sofa::gpu::opencl::_device_pointer d_keys,
-        sofa::gpu::opencl::_device_pointer values,
+        sofa::gpu::opencl::_device_pointer d_values,
         unsigned int  numElements,
         unsigned int  keyBits)
 {
-    int n=1,maxElements=numElements;
+    int n=1024,maxElements=numElements;
     while(n<maxElements)n*=2;
     maxElements=n;
 
-    if(show_key==NULL)show_key = new ShowVector("show_key");
+//if(show_key==NULL)show_key = new ShowVector("show_key");
+//show_key->addOpenCLVector<int>(d_keys,numElements);
+//show_key->addOpenCLVector<int>(d_values,numElements);
+//printf("mm\n");
 
-    sofa::gpu::opencl::myopenclEnqueueCopyBuffer(0,d_temp_resized.m,0,d_keys.m,d_keys.offset,numElements*sizeof(unsigned int));
-    memset(d_temp_resized,numElements,maxElements-numElements);
+//if(maxElements!=numElements)
+//{
+//	printf("m!=n\n");
+    sofa::gpu::opencl::myopenclEnqueueCopyBuffer(0,d_temp_resized.m,0,d_keys.m,d_keys.offset,numElements*sizeof(unsigned int ));
+    sofa::gpu::opencl::myopenclEnqueueCopyBuffer(0,d_value_resized.m,0,d_values.m,d_values.offset,numElements*sizeof(unsigned int ));
+//printf("kjkj\n");
+    if(numElements!=lastNumElements) {memset(d_temp_resized,numElements,maxElements-numElements); lastNumElements=numElements;};
+//printf("kjkj\n");
+    radixSortKeysOnly(d_temp_resized,d_value_resized, maxElements, keyBits);
+//printf("kjkj\n");
+    sofa::gpu::opencl::myopenclEnqueueCopyBuffer(0,d_keys.m,d_keys.offset,d_temp_resized.m,0,numElements*sizeof(unsigned int ));
+    sofa::gpu::opencl::myopenclEnqueueCopyBuffer(0,d_values.m,d_values.offset,d_value_resized.m,0,numElements*sizeof(unsigned int ));
 
-    show_key->addOpenCLVector<int>(d_temp_resized,maxElements);
-    show_key->addOpenCLVector<int>(values,numElements);
+    /*}
+    else
+    {
+    //	printf("m==n\n");
+    	radixSortKeysOnly(d_keys,d_values, numElements, keyBits);
+    }*/
+//show_key->addOpenCLVector<int>(d_keys,numElements);
+//show_key->addOpenCLVector<int>(d_values,numElements);
 
-    radixSortKeysOnly(d_temp_resized,values, numElements, keyBits);
-
-    show_key->addOpenCLVector<int>(d_temp_resized,maxElements);
-    show_key->addOpenCLVector<int>(d_tempElements,maxElements);
-    exit(0);
+//exit(0);
 
 
 }
@@ -151,12 +171,12 @@ void RadixSort::sort(sofa::gpu::opencl::_device_pointer d_keys,
 // parameters are device pointers.  Uses cudppScan() for the prefix sum of
 // radix counters.
 //----------------------------------------------------------------------------
-void RadixSort::radixSortKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,sofa::gpu::opencl::_device_pointer values,  unsigned int numElements, unsigned int keyBits)
+void RadixSort::radixSortKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,sofa::gpu::opencl::_device_pointer d_values,  unsigned int numElements, unsigned int keyBits)
 {
     int i = 0;
     while (keyBits > i*bitStep)
     {
-        radixSortStepKeysOnly(d_keys,values, bitStep, i*bitStep, numElements);
+        radixSortStepKeysOnly(d_keys,d_values, bitStep, i*bitStep, numElements);
         i++;
     }
 }
@@ -167,11 +187,12 @@ void RadixSort::radixSortKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,sofa
 //----------------------------------------------------------------------------
 void RadixSort::radixSortStepKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,sofa::gpu::opencl::_device_pointer d_values,  unsigned int nbits, unsigned int startbit, unsigned int numElements)
 {
-    int n=1;
-    while(n<numElements)n*=2;
-    numElements=n;
+//	int n=1;
+//	while(n<numElements)n*=2;
+//	numElements=n;
 
     // Four step algorithms from Satish, Harris & Garland
+
     radixSortBlocksKeysOnlyOCL(d_keys, d_values, nbits, startbit, numElements);
 
     findRadixOffsetsOCL(startbit, numElements);
@@ -184,7 +205,7 @@ void RadixSort::radixSortStepKeysOnly(sofa::gpu::opencl::_device_pointer d_keys,
 //----------------------------------------------------------------------------
 // Wrapper for the kernels of the four steps
 //----------------------------------------------------------------------------
-ShowVector *show_sbko;
+//ShowVector *show_sbko;
 
 
 void RadixSort::radixSortBlocksKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys,sofa::gpu::opencl::_device_pointer d_values, unsigned int nbits, unsigned int startbit, unsigned int numElements)
@@ -193,15 +214,11 @@ void RadixSort::radixSortBlocksKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_
     ERROR_OFFSET(d_keys);
     ERROR_OFFSET(d_tempKeys);
 
-    if(show_sbko==NULL)show_sbko = new ShowVector("show_sbko");
-    show_sbko->addTitle("d_keys before");
-    show_sbko->addOpenCLVector<int>(d_keys,8000);
-    show_sbko->addTitle("d_tempKeys before");
-    show_sbko->addOpenCLVector<int>(d_tempKeys,numElements);
-    /*show_sbko->addTitle("d_values before");
-    show_sbko->addOpenCLVector<int>(d_values,8000);
-    show_sbko->addTitle("d_tempvalues before");
-    show_sbko->addOpenCLVector<int>(d_tempElements,numElements);*/
+//if(show_sbko==NULL)show_sbko = new ShowVector("show_sbko");
+//show_sbko->addTitle("d_keys before sbko");
+//show_sbko->addOpenCLVector<int>(d_keys,numElements);
+//show_sbko->addTitle("d_values before sbko");
+//show_sbko->addOpenCLVector<int>(d_values,numElements);
 
     BARRIER(d_keys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/4/CTA_SIZE;
@@ -217,17 +234,14 @@ void RadixSort::radixSortBlocksKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_
     ckRadixSortBlocksKeysOnly->setArg<unsigned int>(6, &numElements);
     ckRadixSortBlocksKeysOnly->setArg<unsigned int>(7, &totalBlocks);
     ckRadixSortBlocksKeysOnly->setArg(8, 4*CTA_SIZE*sizeof(unsigned int), NULL);
-//	ckRadixSortBlocksKeysOnly->setArg(9, 4*CTA_SIZE*sizeof(unsigned int), NULL);
+    ckRadixSortBlocksKeysOnly->setArg(9, 4*CTA_SIZE*sizeof(unsigned int), NULL);
     ckRadixSortBlocksKeysOnly->execute(0,1,NULL,globalWorkSize,localWorkSize);
 
-    show_sbko->addTitle("d_keys after");
-    show_sbko->addOpenCLVector<int>(d_keys,8000);
-    show_sbko->addTitle("d_tempKeys after");
-    show_sbko->addOpenCLVector<int>(d_tempKeys,numElements);
-    /*show_sbko->addTitle("d_values after");
-    show_sbko->addOpenCLVector<int>(d_values,8000);
-    show_sbko->addTitle("d_tempvalues after");
-    show_sbko->addOpenCLVector<int>(d_tempElements,numElements);*/
+
+//show_sbko->addTitle("d_tempKeys after sbko");
+//show_sbko->addOpenCLVector<int>(d_tempKeys,numElements);
+//show_sbko->addTitle("d_tempvalues after sbko");
+//show_sbko->addOpenCLVector<int>(d_tempElements,numElements);
 
     BARRIER(d_keys,__FILE__,__LINE__);
     DEBUG_TEXT("~radixSortBlocksKeysOnlyOCL")
@@ -291,6 +305,7 @@ void RadixSort::reorderDataKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys
     ERROR_OFFSET(mBlockOffsets);
     ERROR_OFFSET(mCountersSum);
     ERROR_OFFSET(mCounters);
+
     BARRIER(d_keys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/2/CTA_SIZE;
     size_t globalWorkSize[1] = {CTA_SIZE*totalBlocks};
@@ -298,23 +313,24 @@ void RadixSort::reorderDataKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys
 
     ckReorderDataKeysOnly->setArg<cl_mem>(0,&d_keys.m);
     ckReorderDataKeysOnly->setArg<cl_mem>(1,&d_tempKeys.m);
-//	ckReorderDataKeysOnly->setArg<cl_mem>(2,&d_elements.m);
-//	ckReorderDataKeysOnly->setArg<unsigned int>(3,(unsigned int*)&d_elements.offset);
-//	ckReorderDataKeysOnly->setArg<cl_mem>(4,&d_tempElements.m);
-    ckReorderDataKeysOnly->setArg<cl_mem>(2,&mBlockOffsets.m);
-    ckReorderDataKeysOnly->setArg<cl_mem>(3,&mCountersSum.m);
-    ckReorderDataKeysOnly->setArg<cl_mem>(4,&mCounters.m);
-    ckReorderDataKeysOnly->setArg<unsigned int>(5,&startbit);
-    ckReorderDataKeysOnly->setArg<unsigned int>(6,&numElements);
-    ckReorderDataKeysOnly->setArg<unsigned int>(7,&totalBlocks);
-    ckReorderDataKeysOnly->setArg(8, 2 * CTA_SIZE * sizeof(unsigned int), NULL);
+    ckReorderDataKeysOnly->setArg<cl_mem>(2,&d_elements.m);
+    ckReorderDataKeysOnly->setArg<cl_mem>(3,&d_tempElements.m);
+    ckReorderDataKeysOnly->setArg<cl_mem>(4,&mBlockOffsets.m);
+    ckReorderDataKeysOnly->setArg<cl_mem>(5,&mCountersSum.m);
+    ckReorderDataKeysOnly->setArg<cl_mem>(6,&mCounters.m);
+    ckReorderDataKeysOnly->setArg<unsigned int>(7,&startbit);
+    ckReorderDataKeysOnly->setArg<unsigned int>(8,&numElements);
+    ckReorderDataKeysOnly->setArg<unsigned int>(9,&totalBlocks);
+    ckReorderDataKeysOnly->setArg(10, 2 * CTA_SIZE * sizeof(unsigned int), NULL);
+    ckReorderDataKeysOnly->setArg(11, 2 * CTA_SIZE * sizeof(unsigned int), NULL);
 
     ckReorderDataKeysOnly->execute(0, 1, NULL, globalWorkSize, localWorkSize);
+
     BARRIER(d_keys,__FILE__,__LINE__);
     DEBUG_TEXT("~reorderDataKeysOnlyOCL")
 }
 
-void RadixSort::memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,unsigned int size)
+void RadixSort::memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,unsigned int  size)
 {
     int BSIZE=32;
 

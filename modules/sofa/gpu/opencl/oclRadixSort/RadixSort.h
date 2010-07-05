@@ -44,7 +44,7 @@ public:
 
 private:
     static OpenCLProgram *cpProgram;						// OpenCL program
-    static _device_pointer d_tempKeys,d_temp_resized;		// Memory objects for original keys and work space
+    static _device_pointer d_tempKeys,d_temp_resized,d_value_resized;		// Memory objects for original keys and work space
     static _device_pointer mCounters;			// Counter for each radix
     static _device_pointer mCountersSum;		// Prefix sum of radix counters
     static _device_pointer mBlockOffsets;		// Global offsets of each radix in each block
@@ -54,6 +54,7 @@ private:
     static OpenCLKernel *ckReorderDataKeysOnly;
     static OpenCLKernel *ckMemset;
     static _device_pointer d_tempElements;
+    static unsigned int lastNumElements;
 
     int CTA_SIZE; // Number of threads per block
     static const unsigned int WARP_SIZE = 32;
@@ -70,6 +71,6 @@ private:
     void scanNaiveOCL(unsigned int numElements);
     void reorderDataKeysOnlyOCL(_device_pointer d_keys,_device_pointer d_elements, unsigned int startbit, unsigned int numElements);
 
-    void memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,unsigned int size);
+    void memset(sofa::gpu::opencl::_device_pointer dp,size_t offset,unsigned int  size);
 };
 #endif
