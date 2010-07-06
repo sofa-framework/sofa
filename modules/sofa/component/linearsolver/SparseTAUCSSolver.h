@@ -30,9 +30,9 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 // include all headers included in taucs.h to fix errors on macx
 #ifndef WIN32
