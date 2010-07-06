@@ -26,15 +26,14 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparsePARDISOSolver_H
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
 
-// include all headers included in taucs.h to fix errors on macx
-#include <complex.h>
 #include <assert.h>
 #include <float.h>
 #include <stdlib.h>
@@ -50,15 +49,15 @@ namespace linearsolver
 
 /// Direct linear solvers implemented with the PARDISO library
 template<class TMatrix, class TVector>
-class SparsePARDISOSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class SparsePARDISOSolver : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparsePARDISOSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE2(SparsePARDISOSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     //Data< helper::vector<std::string> > f_options;
@@ -74,15 +73,37 @@ public:
     void invert(Matrix& M);
 
 protected:
-    Matrix Mfiltered;
+    class SparsePARDISOSolverInvertData : public defaulttype::MatrixInvertData
+    {
+    public :
+        CompressedRowSparseMatrix<double> Mfiltered;
+        SparsePARDISOSolver<Matrix,Vector>* solver;
+        void*  pardiso_pt[64];
+        int    pardiso_iparm[64];
+        double pardiso_dparm[64];
+        int pardiso_initerr;
+        int pardiso_mtype;
+        bool factorized;
 
-    void*  pardiso_pt[64];
-    int    pardiso_iparm[64];
-    double pardiso_dparm[64];
-    int pardiso_initerr;
-    int pardiso_mtype;
-    int callPardiso(int phase, Vector* vx = NULL, Vector* vb = NULL);
-    bool factorized;
+        SparsePARDISOSolverInvertData()
+            : solver(NULL)
+            , pardiso_initerr(1)
+            , pardiso_mtype(0)
+            , factorized(false)
+        {
+        }
+
+        ~SparsePARDISOSolverInvertData()
+        {
+            if (solver && pardiso_initerr == 0)
+            {
+                solver->callPardiso(this, -1);  // Release internal memory.
+            }
+        }
+
+    };
+
+    int callPardiso(SparsePARDISOSolverInvertData* data, int phase, Vector* vx = NULL, Vector* vb = NULL);
 };
 
 } // namespace linearsolver

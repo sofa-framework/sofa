@@ -43,6 +43,17 @@ namespace component
 namespace linearsolver
 {
 
+template<class Matrix, class Vector>
+class SOFA_EXPORT_DYNAMIC_LIBRARY BaseMatrixLinearSolver : public sofa::core::behavior::LinearSolver
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector), sofa::core::behavior::LinearSolver);
+
+    virtual void invert(Matrix& M) = 0;
+
+    virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
+};
+
 
 template<class Matrix, class Vector>
 class MatrixLinearSolverInternalData
@@ -53,10 +64,10 @@ public:
 };
 
 template<class Matrix, class Vector>
-class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public sofa::core::behavior::LinearSolver, public sofa::simulation::SolverImpl
+class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public BaseMatrixLinearSolver<Matrix, Vector>, public sofa::simulation::SolverImpl
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), sofa::core::behavior::LinearSolver, sofa::simulation::SolverImpl);
+    SOFA_CLASS2(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector), sofa::simulation::SolverImpl);
 
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
     typedef  std::list<int> ListIndex;
@@ -431,7 +442,7 @@ void MatrixLinearSolver<Matrix,Vector>::resetSystem()
     for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
         if (!isMultiSolve()) setGroup(g);
-        if (!frozen)
+        if (!this->frozen)
         {
             if (currentGroup->systemMatrix) currentGroup->systemMatrix->clear();
             currentGroup->needInvert = true;
@@ -445,7 +456,7 @@ void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
 {
-    if (!frozen)
+    if (!this->frozen)
     {
         if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
         currentGroup->systemMatrix->resize(n,n);

@@ -33,7 +33,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 #ifndef WIN32
 #include <unistd.h>
 #else
@@ -77,9 +77,6 @@ template<class TMatrix, class TVector>
 SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolver()
     : f_symmetric( initData(&f_symmetric,1,"symmetric","0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , pardiso_initerr(1)
-    , pardiso_mtype(0)
-    , factorized(false)
 {
 }
 
@@ -87,57 +84,19 @@ template<class TMatrix, class TVector>
 void SparsePARDISOSolver<TMatrix,TVector>::init()
 {
     Inherit::init();
-    factorized = false;
-    pardiso_initerr = 0;
-    switch(f_symmetric.getValue())
-    {
-    case  0: pardiso_mtype = 11; break; // real and nonsymmetric
-    case  1: pardiso_mtype = -2; break; // real and symmetric indefinite
-    case  2: pardiso_mtype =  2; break; // real and symmetric positive definite
-    case -1: pardiso_mtype =  1; break; // real and structurally symmetric
-    default:
-        pardiso_mtype = 11; break; // real and nonsymmetric
-    }
-    pardiso_iparm[0] = 0;
-    int solver = 0; /* use sparse direct solver */
-    /* Numbers of processors, value of OMP_NUM_THREADS */
-    const char* var = getenv("OMP_NUM_THREADS");
-    if(var != NULL)
-        pardiso_iparm[2] = atoi(var);
-    else
-        pardiso_iparm[2] = 1;
-    F77_FUNC(pardisoinit) (pardiso_pt,  &pardiso_mtype, &solver, pardiso_iparm, pardiso_dparm, &pardiso_initerr);
-    switch(pardiso_initerr)
-    {
-    case 0:   sout << "PARDISO: License check was successful" << sendl; break;
-    case -10: serr << "PARDISO: No license file found" << sendl; break;
-    case -11: serr << "PARDISO: License is expired" << sendl; break;
-    case -12: serr << "PARDISO: Wrong username or hostname" << sendl; break;
-    default:  serr << "PARDISO: Unknown error " << pardiso_initerr << sendl; break;
-    }
-    if (pardiso_initerr) return;
-    if(var != NULL)
-        pardiso_iparm[2] = atoi(var);
-    else
-        pardiso_iparm[2] = 1;
-    sout << "Using " << pardiso_iparm[2] << " thread(s), set OMP_NUM_THREADS environment variable to change." << sendl;
 }
 
 template<class TMatrix, class TVector>
 SparsePARDISOSolver<TMatrix,TVector>::~SparsePARDISOSolver()
 {
-    if (pardiso_initerr == 0)
-    {
-        callPardiso(-1);  // Release internal memory.
-    }
 }
 
 template<class TMatrix, class TVector>
-int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(int phase, Vector* vx, Vector* vb)
+int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertData* data, int phase, Vector* vx, Vector* vb)
 {
     int maxfct = 1; // Maximum number of numerical factorizations
     int mnum = 1; // Which factorization to use
-    int n = Mfiltered.rowSize();
+    int n = data->Mfiltered.rowSize();
     double* a = NULL;
     int* ia = NULL;
     int* ja = NULL;
@@ -150,9 +109,9 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(int phase, Vector* vx, Vec
 
     if (phase > 0)
     {
-        ia = (int *) &(Mfiltered.getRowBegin()[0]);
-        ja = (int *) &(Mfiltered.getColsIndex()[0]);
-        a  = (double*) &(Mfiltered.getColsValue()[0]);
+        ia = (int *) &(data->Mfiltered.getRowBegin()[0]);
+        ja = (int *) &(data->Mfiltered.getColsIndex()[0]);
+        a  = (double*) &(data->Mfiltered.getColsValue()[0]);
         if (vx)
         {
             nrhs = 1;
@@ -161,9 +120,9 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(int phase, Vector* vx, Vec
         }
     }
     sout << "Solver phase " << phase << "..." << sendl;
-    F77_FUNC(pardiso)(pardiso_pt, &maxfct, &mnum, &pardiso_mtype, &phase,
+    F77_FUNC(pardiso)(data->pardiso_pt, &maxfct, &mnum, &data->pardiso_mtype, &phase,
             &n, a, ia, ja, perm, &nrhs,
-            pardiso_iparm, &msglvl, b, x, &error,  pardiso_dparm);
+            data->pardiso_iparm, &msglvl, b, x, &error,  data->pardiso_dparm);
     const char* msg = NULL;
     switch(error)
     {
@@ -193,70 +152,121 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(int phase, Vector* vx, Vec
 template<class TMatrix, class TVector>
 void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
 {
-    if (pardiso_initerr) return;
     M.compress();
-    Mfiltered.clear();
+
+    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) M.getMatrixInvertData();
+    if (data==NULL)
+    {
+        M.setMatrixInvertData(new SparsePARDISOSolverInvertData());
+        data = (SparsePARDISOSolverInvertData *) M.getMatrixInvertData();
+
+        data->factorized = false;
+        data->pardiso_initerr = 0;
+        switch(f_symmetric.getValue())
+        {
+        case  0: data->pardiso_mtype = 11; break; // real and nonsymmetric
+        case  1: data->pardiso_mtype = -2; break; // real and symmetric indefinite
+        case  2: data->pardiso_mtype =  2; break; // real and symmetric positive definite
+        case -1: data->pardiso_mtype =  1; break; // real and structurally symmetric
+        default:
+            data->pardiso_mtype = 11; break; // real and nonsymmetric
+        }
+        data->pardiso_iparm[0] = 0;
+        int solver = 0; /* use sparse direct solver */
+        /* Numbers of processors, value of OMP_NUM_THREADS */
+        const char* var = getenv("OMP_NUM_THREADS");
+        if(var != NULL)
+            data->pardiso_iparm[2] = atoi(var);
+        else
+            data->pardiso_iparm[2] = 1;
+        sout << "Using " << data->pardiso_iparm[2] << " thread(s), set OMP_NUM_THREADS environment variable to change." << sendl;
+        F77_FUNC(pardisoinit) (data->pardiso_pt,  &data->pardiso_mtype, &solver, data->pardiso_iparm, data->pardiso_dparm, &data->pardiso_initerr);
+        switch(data->pardiso_initerr)
+        {
+        case 0:   sout << "PARDISO: License check was successful" << sendl; break;
+        case -10: serr << "PARDISO: No license file found" << sendl; break;
+        case -11: serr << "PARDISO: License is expired" << sendl; break;
+        case -12: serr << "PARDISO: Wrong username or hostname" << sendl; break;
+        default:  serr << "PARDISO: Unknown error " << data->pardiso_initerr << sendl; break;
+        }
+        //if (data->pardiso_initerr) return;
+        //if(var != NULL)
+        //    data->pardiso_iparm[2] = atoi(var);
+        //else
+        //    data->pardiso_iparm[2] = 1;
+    }
+
+    if (data->pardiso_initerr) return;
+    data->Mfiltered.clear();
     if (f_symmetric.getValue() > 0)
     {
-        Mfiltered.copyUpperNonZeros(M);
-        Mfiltered.fullDiagonal();
-        sout << "Filtered upper part of M, nnz = " << Mfiltered.getRowBegin().back() << sendl;
+        data->Mfiltered.copyUpperNonZeros(M);
+        data->Mfiltered.fullDiagonal();
+        sout << "Filtered upper part of M, nnz = " << data->Mfiltered.getRowBegin().back() << sendl;
     }
     else if (f_symmetric.getValue() < 0)
     {
-        Mfiltered.copyNonZeros(M);
-        Mfiltered.fullDiagonal();
-        sout << "Filtered M, nnz = " << Mfiltered.getRowBegin().back() << sendl;
+        data->Mfiltered.copyNonZeros(M);
+        data->Mfiltered.fullDiagonal();
+        sout << "Filtered M, nnz = " << data->Mfiltered.getRowBegin().back() << sendl;
     }
     else
     {
-        Mfiltered.copyNonZeros(M);
-        Mfiltered.fullRows();
-        sout << "Filtered M, nnz = " << Mfiltered.getRowBegin().back() << sendl;
+        data->Mfiltered.copyNonZeros(M);
+        data->Mfiltered.fullRows();
+        sout << "Filtered M, nnz = " << data->Mfiltered.getRowBegin().back() << sendl;
     }
     //  Convert matrix from 0-based C-notation to Fortran 1-based notation.
-    Mfiltered.shiftIndices(1);
+    data->Mfiltered.shiftIndices(1);
 
     /* -------------------------------------------------------------------- */
     /* ..  Reordering and Symbolic Factorization.  This step also allocates */
     /*     all memory that is necessary for the factorization.              */
     /* -------------------------------------------------------------------- */
 
-    if (!factorized)
+    if (!data->factorized)
     {
-        if (callPardiso(11)) return;
-        factorized = true;
+        if (callPardiso(data, 11)) return;
+        data->factorized = true;
         sout << "Reordering completed ..." << sendl;
-        sout << "Number of nonzeros in factors  = " << pardiso_iparm[17] << sendl;
-        sout << "Number of factorization MFLOPS = " << pardiso_iparm[18] << sendl;
+        sout << "Number of nonzeros in factors  = " << data->pardiso_iparm[17] << sendl;
+        sout << "Number of factorization MFLOPS = " << data->pardiso_iparm[18] << sendl;
     }
 
     /* -------------------------------------------------------------------- */
     /* ..  Numerical factorization.                                         */
     /* -------------------------------------------------------------------- */
-    if (callPardiso(22)) { factorized = false; return; }
+    if (callPardiso(data, 22)) { data->factorized = false; return; }
     sout << "Factorization completed ..." << sendl;
 }
 
 template<class TMatrix, class TVector>
-void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
+void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    if (pardiso_initerr) return;
-    if (!factorized) return;
+    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) M.getMatrixInvertData();
+    if (data == NULL)
+    {
+        z = r;
+        return;
+    }
+
+    if (data->pardiso_initerr) return;
+    if (!data->factorized) return;
 
     /* -------------------------------------------------------------------- */
     /* ..  Back substitution and iterative refinement.                      */
     /* -------------------------------------------------------------------- */
-    pardiso_iparm[7] = 1;       /* Max numbers of iterative refinement steps. */
+    data->pardiso_iparm[7] = 1;       /* Max numbers of iterative refinement steps. */
 
-    if (callPardiso(33, &z, &r)) return;
+    if (callPardiso(data, 33, &z, &r)) return;
 }
 
 
 SOFA_DECL_CLASS(SparsePARDISOSolver)
 
 int SparsePARDISOSolverClass = core::RegisterObject("Direct linear solvers implemented with the PARDISO library")
-        .add< SparsePARDISOSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
+        .add< SparsePARDISOSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
+        .add< SparsePARDISOSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
         .addAlias("PARDISOSolver")
         ;
 
