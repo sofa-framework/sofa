@@ -25,14 +25,17 @@
 #ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/component.h>
 #include <sofa/core/behavior/MechanicalMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/MappedModel.h>
-#include <sofa/component/component.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+#include <boost/utility/enable_if.hpp>
 #include <vector>
+#include <memory>
 
 namespace sofa
 {
@@ -63,7 +66,11 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
+    typedef typename Out::VecConst VecConst;
     typedef typename In::Deriv InDeriv;
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::VecConst InVecConst;
     typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
     typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Coord::value_type Real;
@@ -71,8 +78,18 @@ public:
     {
         N = OutDataTypes::spatial_dimensions
     };
+    enum
+    {
+        NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size
+    };
+    enum
+    {
+        NOut = sofa::defaulttype::DataTypeInfo<Deriv>::Size
+    };
     typedef defaulttype::Mat<N, N, Real> Mat;
     typedef defaulttype::Vec<N, Real> Vector;
+    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     Data<VecCoord> points;
     VecCoord rotatedPoints;
@@ -102,8 +119,9 @@ public:
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) ),
           globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) ),
           contactDuplicate(initData(&contactDuplicate,false,"contactDuplicate","if true, this mapping is a copy of an input mapping and is used to gather contact points (ContinuousFrictionContact Response)")),
-          nameOfInputMap(initData(&nameOfInputMap,"nameOfInputMap", "if contactDuplicate==true, it provides the name of the input mapping"))
-
+          nameOfInputMap(initData(&nameOfInputMap,"nameOfInputMap", "if contactDuplicate==true, it provides the name of the input mapping")),
+          matrixJ(),
+          updateJ(false)
     {
         this->addAlias(&fileRigidMapping, "filename");
         maskFrom = NULL;
@@ -133,13 +151,15 @@ public:
 
     //void disable(); //useless now that points are saved in a Data
 
-    virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void apply(VecCoord& out, const InVecCoord& in);
 
-    virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
+    virtual void applyJ(VecDeriv& out, const InVecDeriv& in);
 
-    virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
+    virtual void applyJT(InVecDeriv& out, const VecDeriv& in);
 
-    void applyJT(typename In::VecConst& out, const typename Out::VecConst& in);
+    void applyJT(InVecConst& out, const VecConst& in);
+
+    const sofa::defaulttype::BaseMatrix* getJ();
 
     void draw();
 
@@ -150,11 +170,30 @@ public:
 
 protected:
     class Loader;
+
     void load(const char* filename);
     const VecCoord& getPoints();
-    // for continuous_friction_contact:
-    RigidMapping<BasicMapping> *_inputMapping;
+    void setJMatrixBlock(unsigned outIdx, unsigned inIdx);
+
+    template<int M>
+    void initCrossProductSubMatrix(typename boost::enable_if_c<M == 3, MBloc>::type& mat,
+            const Coord& vec,
+            int rowOffset = 0,
+            int colOffset = 0);
+    template<int M>
+    void initCrossProductSubMatrix(typename boost::enable_if_c<M == 2, MBloc>::type& mat,
+            const Coord& vec,
+            int rowOffset = 0,
+            int colOffset = 0);
+
+    RigidMapping<BasicMapping> *_inputMapping; // for continuous_friction_contact:
+
+    std::auto_ptr<MatrixType> matrixJ;
+    bool updateJ;
 };
+
+template <class Matrix>
+void initIdentitySubMatrix(Matrix& mat, unsigned n, unsigned rowOffset = 0, unsigned colOffset = 0);
 
 using core::Mapping;
 using core::behavior::MechanicalMapping;

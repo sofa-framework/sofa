@@ -224,7 +224,17 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<BaseMapping>::getJ()
         const IndexArray& indices = f_indices.getValue();
         assert(indices.size() == out.size());
 
-        matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+        updateJ = false;
+        if (matrixJ.get() == 0 ||
+            matrixJ->rowBSize() != out.size() ||
+            matrixJ->colBSize() != in.size())
+        {
+            matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+        }
+        else
+        {
+            matrixJ->clear();
+        }
         for (unsigned i = 0; i < indices.size(); ++i)
         {
             MBloc& block = *matrixJ->wbloc(i, indices[i], true);
