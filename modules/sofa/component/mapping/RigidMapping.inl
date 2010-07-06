@@ -188,38 +188,58 @@ int RigidMapping<BasicMapping>::addContactPointFromInputMapping(const sofa::defa
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
-    if ( !fileRigidMapping.getValue().empty() ) this->load ( fileRigidMapping.getFullPath().c_str() );
+    if (!fileRigidMapping.getValue().empty())
+        this->load(fileRigidMapping.getFullPath().c_str());
 
-    if (this->points.getValue().empty() && this->toModel!=NULL && !useX0.getValue())
+    if (this->points.getValue().empty() && this->toModel != NULL
+        && !useX0.getValue())
     {
         VecCoord& x = *this->toModel->getX();
         points.beginEdit()->resize(x.size());
-        unsigned int i=0, cpt=0;
-        if(globalToLocalCoords.getValue() == true) //test booleen fromWorldCoord
+        unsigned int i = 0, cpt = 0;
+        if (globalToLocalCoords.getValue() == true)
         {
-            typename In::VecCoord& xfrom = *this->fromModel->getX();
+            //test booleen fromWorldCoord
+            InVecCoord& xfrom = *this->fromModel->getX();
             switch (repartition.getValue().size())
             {
-            case 0 :
-                for (i=0; i<x.size(); i++)
-                    (*points.beginEdit())[i] = xfrom[0].inverseRotate(x[i]-xfrom[0].getCenter());
+            case 0:
+                for (i = 0; i < x.size(); i++)
+                {
+                    (*points.beginEdit())[i] = xfrom[0].inverseRotate(x[i]
+                            - xfrom[0].getCenter());
+                }
                 break;
-            case 1 :
-                for (i=0; i<xfrom.size(); i++)
-                    for(unsigned int j=0; j<repartition.getValue()[0]; j++,cpt++)
-                        (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(x[cpt]-xfrom[i].getCenter());
+            case 1:
+                for (i = 0; i < xfrom.size(); i++)
+                {
+                    for (unsigned int j = 0; j < repartition.getValue()[0]; j++, cpt++)
+                    {
+                        (*points.beginEdit())[cpt]
+                            = xfrom[i].inverseRotate(x[cpt]
+                                    - xfrom[i].getCenter());
+                    }
+                }
                 break;
-            default :
-                for (i=0; i<xfrom.size(); i++)
-                    for(unsigned int j=0; j<repartition.getValue()[i]; j++,cpt++)
-                        (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(x[cpt]-xfrom[i].getCenter());
+            default:
+                for (i = 0; i < xfrom.size(); i++)
+                {
+                    for (unsigned int j = 0; j < repartition.getValue()[i]; j++, cpt++)
+                    {
+                        (*points.beginEdit())[cpt]
+                            = xfrom[i].inverseRotate(x[cpt]
+                                    - xfrom[i].getCenter());
+                    }
+                }
                 break;
             }
         }
         else
         {
-            for (i=0; i<x.size(); i++)
+            for (i = 0; i < x.size(); i++)
+            {
                 (*points.beginEdit())[i] = x[i];
+            }
         }
     }
 
@@ -230,25 +250,23 @@ void RigidMapping<BasicMapping>::init()
     if (loader)
     {
         sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
-        unsigned int cpt=0;
-        typename In::VecCoord& xfrom = *this->fromModel->getX();
+        unsigned int cpt = 0;
+        InVecCoord& xfrom = *this->fromModel->getX();
         VecCoord& xto = *this->toModel->getX();
-        for (unsigned int i=0 ; i<loader->getNbMeshs() ; i++)
+        for (unsigned int i = 0; i < loader->getNbMeshs(); i++)
         {
             rep.push_back(loader->getNbPoints(i));
-            if(globalToLocalCoords.getValue() == true)
+            if (globalToLocalCoords.getValue() == true)
             {
-                for (unsigned int j=0 ; j<loader->getNbPoints(i) ; j++, cpt++)
+                for (unsigned int j = 0; j < loader->getNbPoints(i); j++, cpt++)
                 {
-                    (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(xto[cpt]-xfrom[i].getCenter());
+                    (*points.beginEdit())[cpt]
+                        = xfrom[i].inverseRotate(xto[cpt] - xfrom[i].getCenter());
                 }
             }
         }
         repartition.endEdit();
     }
-
-
-
 }
 
 template <class BasicMapping>
@@ -344,16 +362,16 @@ const typename RigidMapping<BasicMapping>::VecCoord & RigidMapping<BasicMapping>
 }
 
 template<class BasicMapping>
-void RigidMapping<BasicMapping>::apply(typename Out::VecCoord& out,
-        const typename In::VecCoord& in)
+void RigidMapping<BasicMapping>::apply(VecCoord& out, const InVecCoord& in)
 {
     //serr<<"RigidMapping<BasicMapping>::apply "<<getName()<<sendl;
     unsigned int cptOut;
     unsigned int val;
     Coord translation;
     Mat rotation;
-
     const VecCoord& pts = this->getPoints();
+
+    updateJ = true;
 
     rotatedPoints.resize(pts.size());
     out.resize(pts.size());
@@ -428,8 +446,7 @@ void RigidMapping<BasicMapping>::apply(typename Out::VecCoord& out,
 }
 
 template<class BasicMapping>
-void RigidMapping<BasicMapping>::applyJ(typename Out::VecDeriv& out,
-        const typename In::VecDeriv& in)
+void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
 {
     Deriv v, omega;
     const VecCoord& pts = this->getPoints();
@@ -587,8 +604,7 @@ void RigidMapping<BasicMapping>::applyJ(typename Out::VecDeriv& out,
 }
 
 template<class BasicMapping>
-void RigidMapping<BasicMapping>::applyJT(typename In::VecDeriv& out,
-        const typename Out::VecDeriv& in)
+void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
 {
     Deriv v, omega;
     unsigned int val;
@@ -768,15 +784,14 @@ void RigidMapping<BasicMapping>::applyJT(typename In::VecDeriv& out,
     }
 }
 
-// RigidMapping::applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) //
+// RigidMapping::applyJT( InVecConst& out, const VecConst& in ) //
 // this function propagate the constraint through the rigid mapping :
 // if one constraint along (vector n) with a value (v) is applied on the childModel (like collision model)
 // then this constraint is transformed by (Jt.n) with value (v) for the rigid model
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
 template<class BaseMapping>
-void RigidMapping<BaseMapping>::applyJT(typename In::VecConst& out,
-        const typename Out::VecConst& in)
+void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
 {
     int outSize = out.size();
     out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
@@ -898,9 +913,147 @@ void RigidMapping<BaseMapping>::applyJT(typename In::VecConst& out,
     }
 }
 
+template <class BaseMapping>
+const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
+{
+    const VecCoord& out = *this->toModel->getX();
+    const InVecCoord& in = *this->fromModel->getX();
+    const VecCoord& pts = this->getPoints();
+    assert(pts.size() == out.size());
+
+    if (matrixJ.get() == 0 || updateJ)
+    {
+        updateJ = false;
+        if (matrixJ.get() == 0 ||
+            matrixJ->rowBSize() != out.size() ||
+            matrixJ->colBSize() != in.size())
+        {
+            matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+        }
+        else
+        {
+            matrixJ->clear();
+        }
+
+//        bool isMaskInUse = maskTo->isInUse();
+        unsigned repartitionCount = repartition.getValue().size();
+
+        if (repartitionCount > 1 && repartitionCount != in.size())
+        {
+            serr << "Error : mapping dofs repartition is not correct" << sendl;
+            return 0;
+        }
+
+        unsigned inIdxBegin;
+        unsigned inIdxEnd;
+
+        if (repartitionCount == 0)
+        {
+            inIdxBegin = index.getValue();
+            if (indexFromEnd.getValue())
+            {
+                inIdxBegin = in.size() - 1 - inIdxBegin;
+            }
+            inIdxEnd = inIdxBegin + 1;
+        }
+        else
+        {
+            inIdxBegin = 0;
+            inIdxEnd = in.size();
+        }
+
+        unsigned outputPerInput;
+        if (repartitionCount == 0)
+        {
+            outputPerInput = pts.size();
+        }
+        else
+        {
+            outputPerInput = repartition.getValue()[0];
+        }
+
+//        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+//        const ParticleMask::InternalStorage& indices = maskTo->getEntries();
+//        ParticleMask::InternalStorage::const_iterator it = indices.begin();
+
+        for (unsigned inIdx = inIdxBegin, outIdx = 0; inIdx < inIdxEnd; ++inIdx)
+        {
+            if (repartitionCount > 1)
+            {
+                outputPerInput = repartition.getValue()[inIdx];
+            }
+
+            for (unsigned outputCount = 0;
+                    outputCount < outputPerInput; // outputCount < outputPerInput && !(isMaskInUse && it == indices.end());
+                    ++outputCount, ++outIdx)
+            {
+//                if (isMaskInUse)
+//                {
+//                    if (outIdx != *it)
+//                    {
+//                        continue;
+//                    }
+//                    ++it;
+//                }
+                setJMatrixBlock(outIdx, inIdx);
+            }
+        }
+    }
+    return matrixJ.get();
+}
+
+template<class BaseMapping>
+template<int M>
+void RigidMapping<BaseMapping>::initCrossProductSubMatrix(
+    typename boost::enable_if_c<M == 3, MBloc>::type& mat,
+    const Coord& vec,
+    int rowOffset,
+    int colOffset)
+{
+    mat[rowOffset  ][colOffset+1] = +vec.z();
+    mat[rowOffset  ][colOffset+2] = -vec.y();
+    mat[rowOffset+1][colOffset  ] = -vec.z();
+    mat[rowOffset+1][colOffset+2] = +vec.x();
+    mat[rowOffset+2][colOffset  ] = +vec.y();
+    mat[rowOffset+2][colOffset+1] = -vec.x();
+}
+
+template<class BaseMapping>
+template<int M>
+void RigidMapping<BaseMapping>::initCrossProductSubMatrix(
+    typename boost::enable_if_c<M == 2, MBloc>::type& mat,
+    const Coord& vec,
+    int rowOffset,
+    int colOffset)
+{
+    mat[rowOffset  ][colOffset  ] = +vec.x();
+    mat[rowOffset  ][colOffset+1] = -vec.y();
+    mat[rowOffset+1][colOffset  ] = +vec.x();
+    mat[rowOffset+1][colOffset+1] = -vec.y();
+}
+
+template <class Matrix>
+void initIdentitySubMatrix(Matrix& mat, unsigned n, unsigned rowOffset, unsigned colOffset)
+{
+    for(unsigned i = 0; i < n; ++i)
+    {
+        mat[i+rowOffset][i+colOffset] = 1.0;
+    }
+}
+
+template<class BasicMapping>
+void RigidMapping<BasicMapping>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
+{
+    // out = J in
+    // J = [ I -OM^ ]
+    MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
+    initIdentitySubMatrix(block, N);
+    initCrossProductSubMatrix<N>(block, rotatedPoints[outIdx], 0, N);
+}
+
 /// Template specialization for 2D rigids
 // template<typename real1, typename real2>
-// void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+// void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJ( VecDeriv& out, const InVecDeriv& in )
 // {
 //     Deriv v;
 //     Real omega;
@@ -949,7 +1102,7 @@ void RigidMapping< core::behavior::MechanicalMapping< core::behavior::Mechanical
 
 /// Template specialization for 2D rigids
 // template<typename real1, typename real2>
-// void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+// void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJT( InVecDeriv& out, const VecDeriv& in )
 // {
 //     Deriv v;
 //     Real omega;
@@ -972,7 +1125,7 @@ void RigidMapping<BasicMapping>::draw()
     std::vector<Vector3> points;
     Vector3 point;
 
-    const typename Out::VecCoord& x = *this->toModel->getX();
+    const VecCoord& x = *this->toModel->getX();
     for (unsigned int i = 0; i < x.size(); i++)
     {
         point = OutDataTypes::getCPos(x[i]);
