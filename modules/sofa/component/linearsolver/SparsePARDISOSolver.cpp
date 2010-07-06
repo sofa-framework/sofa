@@ -33,6 +33,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 #ifndef WIN32
 #include <unistd.h>
