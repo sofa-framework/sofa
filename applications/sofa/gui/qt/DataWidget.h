@@ -48,15 +48,15 @@
 #include <qspinbox.h>
 #include <qdialog.h>
 #include <qlineedit.h>
-#include <qtable.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qbuttongroup.h>
 #endif // SOFA_QT4
 
-#ifndef SOFA_QT4
-typedef QTable    Q3Table;
-#endif
+
+//If a table has higher than MAX_NUM_ELEM, its data won't be loaded at the creation of the window
+//user has to click on the button update to see the content
+#define MAX_NUM_ELEM 100
 
 
 namespace sofa
@@ -267,50 +267,6 @@ protected:
 
 
 
-class QTableUpdater : virtual public Q3Table
-{
-    Q_OBJECT
-public:
-    QTableUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * name = 0 ):
-#ifdef SOFA_QT4
-        Q3Table(numRows, numCols, parent, name)
-#else
-        QTable(numRows, numCols, parent, name)
-#endif
-    {};
-public slots:
-    void setDisplayed(bool b) {this->setShown(b);}
-    void resizeTableV( int number )
-    {
-        QSpinBox *spinBox = (QSpinBox *) sender();
-        QString header;
-        if( spinBox == NULL)
-        {
-            return;
-        }
-        if (number != numRows())
-        {
-            setNumRows(number);
-
-        }
-    }
-
-    void resizeTableH( int number )
-    {
-        QSpinBox *spinBox = (QSpinBox *) sender();
-        QString header;
-        if( spinBox == NULL)
-        {
-            return;
-        }
-        if (number != numCols())
-        {
-            setNumCols(number);
-
-        }
-    }
-
-};
 
 
 class QPushButtonUpdater: public QPushButton

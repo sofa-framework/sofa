@@ -121,6 +121,16 @@ SOURCES += viewer/ViewerFactory.cpp \
            QMenuFilesRecentlyOpened.cpp \
            ImageQt.cpp 
 
+contains (DEFINES, SOFA_QT4){
+HEADERS += QModelViewTableDataContainer.h \
+           QModelViewTableUpdater.h
+}
+
+!contains (DEFINES, SOFA_QT4){
+HEADERS += QTableDataContainer.h \
+           QTableUpdater.h
+}
+
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 HEADERS += GraphVisitor.h \
            WindowVisitor.h \
