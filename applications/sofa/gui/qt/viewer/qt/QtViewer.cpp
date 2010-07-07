@@ -678,9 +678,10 @@ void QtViewer::DrawLogo()
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void QtViewer::drawColourPicking()
+void QtViewer::drawColourPicking(core::CollisionModel::ColourCode code)
 {
-
+    // Define background color
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -689,10 +690,8 @@ void QtViewer::drawColourPicking()
     glMultMatrixd(lastProjectionMatrix);
     glMatrixMode(GL_MODELVIEW);
 
-    // Define background color
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    sofa::simulation::ColourPickingVisitor cpv;
+    sofa::simulation::ColourPickingVisitor cpv(code);
     cpv.execute(sofa::simulation::getSimulation()->getContext() );
 
     glMatrixMode(GL_PROJECTION);

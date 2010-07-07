@@ -2021,8 +2021,24 @@ void SimpleGUI::keyReleaseEvent ( int k )
 // ---------------------- Here are the mouse controls for the scene  ----------------------
 void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 {
-    pick.activateRay(isShiftPressed());
 
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+
+    MousePosition mousepos;
+    mousepos.screenWidth  = viewport[2];
+    mousepos.screenHeight = viewport[3];
+    mousepos.x      = eventX;
+    mousepos.y      = eventY;
+
+    if( isShiftPressed() )
+    {
+        pick.activateRay(viewport[2],viewport[3]);
+    }
+    else
+    {
+        pick.deactivateRay();
+    }
     if (_mouseInteractorRotationMode)
     {
         switch (type)
@@ -2144,20 +2160,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         direction = transform*Vec4d(0,0,1,0);
         direction.normalize();
         pick.updateRay(position, direction);
-
-        GLint viewport[4];
-        glGetIntegerv(GL_VIEWPORT,viewport);
-
-        MousePosition mousepos;
-        mousepos.screenWidth  = viewport[2];
-        mousepos.screenHeight = viewport[3];
-        mousepos.x      = eventX;
-        mousepos.y      = eventY;
-
         pick.updateMouse2D(mousepos);
-
-
-
         switch (type)
         {
         case MouseButtonPress:

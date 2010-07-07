@@ -49,7 +49,8 @@ using namespace component::collision;
 namespace gui
 {
 
-PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mouseButton(NONE),renderCallback(NULL)
+PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mouseButton(NONE),renderCallback(NULL),
+    pickingMethod(RAY_CASTING),_fboAllocated(false)
 {
     operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
 
@@ -96,6 +97,44 @@ PickHandler::~PickHandler()
 //       for (unsigned int i=0;i<instanceComponents.size();++i) delete instanceComponents[i];
 }
 
+void PickHandler::allocateSelectionBuffer(int width, int height)
+{
+    /*called when shift key is pressed */
+    assert(_fboAllocated == false );
+    static bool firstTime=true;
+    if (firstTime)
+    {
+
+        _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
+#ifdef GL_VERSION_3_0
+        if (GLEW_VERSION_3_0)
+        {
+            _fboParams.colorInternalformat = GL_RGBA32F;
+        }
+        else
+#endif
+        {
+            _fboParams.colorInternalformat = GL_RGBA16;
+        }
+        _fboParams.colorFormat         = GL_RGBA;
+        _fboParams.colorType           = GL_FLOAT;
+
+        _fbo.setFormat(_fboParams);
+        firstTime=false;
+    }
+    _fbo.init(width,height);
+    _fboAllocated = true;
+}
+
+void PickHandler::destroySelectionBuffer()
+{
+    /*called when shift key is released */
+    assert(_fboAllocated);
+    _fbo.destroy();
+    _fboAllocated = false;
+}
+
+
 void PickHandler::init()
 {
     core::collision::Pipeline *pipeline;
@@ -106,7 +145,7 @@ void PickHandler::init()
 
 void PickHandler::reset()
 {
-    activateRay(false);
+    deactivateRay();
     mouseButton = NONE;
     for (unsigned int i=0; i<instanceComponents.size(); ++i) instanceComponents[i]->reset();
 }
@@ -130,28 +169,39 @@ Operation *PickHandler::changeOperation(MOUSE_BUTTON button, const std::string &
 }
 
 
-void PickHandler::activateRay(bool act)
+void PickHandler::activateRay(int width, int height)
 {
-    if (interactorInUse && !act)
+    if (!interactorInUse)
+    {
+        Node *root = static_cast<Node*>(simulation::getSimulation()->getContext());
+        root->addChild(mouseNode);
+        interaction->activate();
+        if( pickingMethod == SELECTION_BUFFER)
+        {
+            allocateSelectionBuffer(width,height);
+        }
+        interactorInUse=true;
+    }
+}
+
+void PickHandler::deactivateRay()
+{
+    if (interactorInUse )
     {
         mouseNode->detachFromGraph();
-
 
         operations[LEFT]->endOperation();
         operations[MIDDLE]->endOperation();
         operations[RIGHT]->endOperation();
 
         interaction->deactivate();
-
+        if( pickingMethod == SELECTION_BUFFER)
+        {
+            destroySelectionBuffer();
+        }
         interactorInUse=false;
     }
-    else if (!interactorInUse && act)
-    {
-        Node *root = static_cast<Node*>(simulation::getSimulation()->getContext());
-        root->addChild(mouseNode);
-        interaction->activate();
-        interactorInUse=true;
-    }
+
 }
 
 
@@ -271,13 +321,26 @@ ComponentMouseInteraction *PickHandler::getInteraction()
 
 component::collision::BodyPicked PickHandler::findCollision()
 {
-    if (useCollisions)
+    BodyPicked result;
+    switch( pickingMethod)
     {
-        component::collision::BodyPicked picked=findCollisionUsingPipeline();
-        if (picked.body) return picked;
+    case RAY_CASTING:
+        if (useCollisions)
+        {
+            component::collision::BodyPicked picked=findCollisionUsingPipeline();
+            if (picked.body) result = picked;
+            else result = findCollisionUsingBruteForce();
+        }
+        else
+            result = findCollisionUsingBruteForce();
+        break;
+    case SELECTION_BUFFER:
+        result = findCollisionUsingColourCoding();
+        break;
+    default:
+        assert(false);
     }
-    return findCollisionUsingBruteForce();
-    //return findCollisionUsingColourCoding();
+    return result;
 }
 
 component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
@@ -382,81 +445,56 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(const defaulttype::Vector3& origin,
         const defaulttype::Vector3& direction)
 {
-
-    static bool firstTime=true;
-    if (firstTime)
-    {
-
-        _fboParams.depthInternalformat = GL_DEPTH_COMPONENT24;
-#ifdef GL_VERSION_3_0
-        if (GLEW_VERSION_3_0)
-        {
-            _fboParams.colorInternalformat = GL_RGBA32F;
-        }
-        else
-#endif
-        {
-            _fboParams.colorInternalformat = GL_RGBA16;
-        }
-        _fboParams.colorFormat         = GL_RGBA;
-        _fboParams.colorType           = GL_FLOAT;
-
-        _fbo.setFormat(_fboParams);
-        _fbo.init(GL_MAX_TEXTURE_SIZE,GL_MAX_TEXTURE_SIZE);
-
-        firstTime=false;
-    }
-
-
+    assert(_fboAllocated);
     BodyPicked result;
-
     sofa::defaulttype::Vec4f color;
-    int x = mousePosition.screenWidth -  mousePosition.x;
+    int x = mousePosition.x;
     int y = mousePosition.screenHeight - mousePosition.y;
     _fbo.start();
     if(renderCallback)
     {
-        renderCallback->render();
+        renderCallback->render(core::CollisionModel::ENCODE_COLLISIONELEMENT );
+        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
+        _decodeCollisionElement(result,color);
+        renderCallback->render(core::CollisionModel::ENCODE_RELATIVEPOSITION );
+        glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
+        _decodePosition(result,color);
+        result.rayLength = (result.point-origin)*direction;
     }
-
-    glReadPixels(x,y,1,1,_fboParams.colorFormat,_fboParams.colorType,color.elems);
-
     _fbo.stop();
-
-    result = _decodeColour(color, origin, direction);
-
     return result;
-
 }
 
-component::collision::BodyPicked PickHandler::_decodeColour(const sofa::defaulttype::Vec4f& colour,
-        const defaulttype::Vector3& origin,
-        const defaulttype::Vector3& direction)
+void PickHandler::_decodeCollisionElement( BodyPicked& body, const sofa::defaulttype::Vec4f colour)
 {
     using namespace core::objectmodel;
     using namespace core::behavior;
     using namespace sofa::defaulttype;
-    static const float threshold = 0.00001f;
+    const float threshold = std::numeric_limits<float>::min();
 
-    component::collision::BodyPicked result;
-
-    result.dist =  0;
-
-    if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
+    if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  ) // make sure we are not picking the background...
     {
 
         helper::vector<core::CollisionModel*> listCollisionModel;
         sofa::simulation::getSimulation()->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         const int totalCollisionModel = listCollisionModel.size();
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;
-        result.body = listCollisionModel[indexListCollisionModel];
-        result.indexCollisionElement = (int) ( colour[1] * result.body->getSize() );
-        result.point = result.body->getPositionFromWeights(result.indexCollisionElement, colour[2], colour[3]);
+        body.body = listCollisionModel[indexListCollisionModel];
+        body.indexCollisionElement = (unsigned int) ( colour[1] * body.body->getSize() + 0.5 );
 
-        result.rayLength = (result.point-origin)*direction;
+    }
+}
+
+void PickHandler::_decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f& colour)
+{
+
+    const float threshold = std::numeric_limits<float>::min();
+    if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
+    {
+        body.point = body.body->getPositionFromWeights(body.indexCollisionElement,colour[0], colour[1], colour[2]);
     }
 
-    return result;
+
 }
 
 

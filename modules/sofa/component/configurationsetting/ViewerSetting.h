@@ -54,11 +54,15 @@ public:
     std::string getCameraMode() const {return cameraMode.getValue().getSelectedItem();};
     unsigned int getCameraModeId() const {return cameraMode.getValue().getSelectedId();};
     void setCameraMode(const std::string &mode) {cameraMode.beginEdit()->setSelectedItem(mode); cameraMode.endEdit();}
+    std::string getPickingMethod() const {return objectPickingMethod.getValue().getSelectedItem();};
+    unsigned int getPickingMethodId() const {return objectPickingMethod.getValue().getSelectedId();};
+
 
 protected:
     Data<defaulttype::Vec<2,int> > resolution;
     Data<bool> fullscreen;
     Data<sofa::helper::OptionsGroup> cameraMode;
+    Data<sofa::helper::OptionsGroup> objectPickingMethod;
 
 };
 

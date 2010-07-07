@@ -95,9 +95,9 @@ public:
 
     void draw();
 
-    virtual void drawColourPicking();
+    virtual void drawColourPicking(const ColourCode method);
 
-    virtual sofa::defaulttype::Vector3 getPositionFromWeights(int index, Real b, Real a);
+    virtual sofa::defaulttype::Vector3 getPositionFromWeights(int index, Real /*a*/, Real /*b*/, Real /*c*/);
 
     core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 

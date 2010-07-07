@@ -45,9 +45,12 @@ ViewerSetting::ViewerSetting():
     resolution(initData(&resolution, defaulttype::Vec<2,int>(800,600), "resolution", "resolution of the Viewer"))
     ,fullscreen(initData(&fullscreen, false, "fullscreen", "Fullscreen mode"))
     ,cameraMode(initData(&cameraMode, "cameraMode", "Camera mode"))
+    ,objectPickingMethod(initData(&objectPickingMethod, "objectPickingMethod","The method used to pick objects"))
 {
     sofa::helper::OptionsGroup mode(2,"Perspective","Orthographic");
     cameraMode.setValue(mode);
+    sofa::helper::OptionsGroup pickmethod(2,"Ray casting","Selection buffer");
+    objectPickingMethod.setValue(pickmethod);
 }
 
 }

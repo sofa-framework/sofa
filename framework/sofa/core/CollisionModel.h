@@ -275,19 +275,27 @@ public:
     /// Render the whole collision model.
     virtual void draw() {}
 
-    /// Picking related. Render the collision model with an appropriate RGBA colour code
+
+    enum ColourCode
+    {
+        ENCODE_COLLISIONELEMENT,		///< The object colour encodes the pair CollisionModel - CollisionElement
+        ENCODE_RELATIVEPOSITION,	///< The object colour encodes the relative position.
+    };
+
+
+    /// Picking related. Render the collision model with an appropriate RGB colour code
     /// so as to recognize it with the PickHandler of the GUI.
-    /// r channel : indexCollisionModel / totalCollisionModelInScene.
-    /// g channel : index of CollisionElement.
-    /// b channel : (TriangleModel) p1->0. p2->1. p3->0. (code the variation along the segment defined by p1 and p2)
-    /// a channel : (TriangleModel) p1->0. p2->0. p3->1. (code the variation along the segment defined by p1 and p3)
-    virtual void drawColourPicking() {}
+    /// ENCODE_COLLISIONELEMENT Pass :
+    ///   r channel : indexCollisionModel / totalCollisionModelInScene.
+    ///   g channel : index of CollisionElement.
+    /// ENCODE_RELATIVEPOSITION Pass :
+    /// r,g,b channels encode the barycentric weights for a triangle model
+    virtual void drawColourPicking(const ColourCode /* method */) {}
 
     /// Picking related.
-    /// Retrieves the position in space, given a collsion index, the blue channel and the alpha channel of a
-    /// collision model colour, which contains the coordinates relative to the first vertex in the case of
-    /// a collision model based on triangles, and 0 value in the case of a collision model based on spheres.
-    virtual sofa::defaulttype::Vector3 getPositionFromWeights( int /*index*/ ,Real /* b */, Real /* a*/ )
+    /// For TriangleModels a,b,c encode the barycentric weights with respect to the vertex p1 p2 and p3 of
+    /// the TriangleElement with the given index
+    virtual sofa::defaulttype::Vector3 getPositionFromWeights( int /*index*/ , Real /*a*/, Real /* b */, Real /*c*/ )
     {
         sofa::defaulttype::Vector3  result;
         return result;

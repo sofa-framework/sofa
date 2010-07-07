@@ -41,6 +41,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/common/Simulation.h>
 
+
+
 namespace sofa
 {
 
@@ -127,8 +129,8 @@ void SphereModel::draw()
     {
         glEnable(GL_LIGHTING);
         glEnable(GL_COLOR_MATERIAL);
-        glColor4fv(getColor4f());
 
+        glColor4fv(getColor4f());
         // Check topological modifications
         const int npoints = mstate->getX()->size();
 
@@ -146,31 +148,27 @@ void SphereModel::draw()
         simulation::getSimulation()->DrawUtility.drawSpheres(points, radius, Vec<4,float>(getColor4f()));
         sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false); //Disable lightning
 
-        glDisable(GL_LIGHTING);
-        glDisable(GL_COLOR_MATERIAL);
     }
+    glDisable(GL_LIGHTING);
+    glDisable(GL_COLOR_MATERIAL);
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();
 }
 
-void SphereModel::drawColourPicking()
+void SphereModel::drawColourPicking(const ColourCode method)
 {
     using namespace sofa::core::objectmodel;
+
+    if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
 
     helper::vector<core::CollisionModel*> listCollisionModel;
     this->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
     const int totalCollisionModel = listCollisionModel.size();
     helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
     const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
-
-
     float red = (float)indexCollisionModel / (float)totalCollisionModel;
-
-
-
     // Check topological modifications
     const int npoints = mstate->getX()->size();
-
     std::vector<Vector3> points;
     std::vector<float> radius;
     for (int i=0; i<npoints; i++)
@@ -180,10 +178,11 @@ void SphereModel::drawColourPicking()
         points.push_back(p);
         radius.push_back(t.r());
     }
-
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
     glDisable(GL_DITHER);
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
     float ratio;
     for( int i=0; i<npoints; i++)
     {
@@ -192,8 +191,7 @@ void SphereModel::drawColourPicking()
         glPushMatrix();
         glTranslated(p[0], p[1], p[2]);
         ratio = (float)i / (float)npoints;
-        glColor4f(red,ratio,0,0);
-
+        glColor4f(red,ratio,0,1);
         glutSolidSphere(radius[i], 32, 16);
 
         glPopMatrix();
@@ -201,7 +199,7 @@ void SphereModel::drawColourPicking()
 }
 
 
-sofa::defaulttype::Vector3 SphereModel::getPositionFromWeights(int index, Real /*b*/, Real /*a*/)
+sofa::defaulttype::Vector3 SphereModel::getPositionFromWeights(int index, Real /*a*/ ,Real /*b*/, Real /*c*/)
 {
     Element sphere(this,index);
 
