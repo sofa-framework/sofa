@@ -1002,48 +1002,35 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
     return matrixJ.get();
 }
 
-template <class Matrix>
-template <template<int N, typename Real> class Vector>
-void MatrixHelper<Matrix>::initCrossProductSubMatrix(
-    Matrix& mat,
-    const Vector<2, Real>& vec,
-    int rowOffset,
-    int colOffset)
-{
-    mat[rowOffset  ][colOffset  ] = +vec.x();
-    mat[rowOffset  ][colOffset+1] = -vec.y();
-    mat[rowOffset+1][colOffset  ] = +vec.x();
-    mat[rowOffset+1][colOffset+1] = -vec.y();
-}
 
-template <class Matrix>
-template <template<int N, typename Real> class Vector>
-void MatrixHelper<Matrix>::initCrossProductSubMatrix(
-    Matrix& mat,
-    const Vector<3, Real>& vec,
-    int rowOffset,
-    int colOffset)
+template<class Real>
+struct RigidMappingMatrixHelper<2, Real>
 {
-    mat[rowOffset  ][colOffset+1] = -vec.z();
-    mat[rowOffset  ][colOffset+2] = +vec.y();
-    mat[rowOffset+1][colOffset  ] = +vec.z();
-    mat[rowOffset+1][colOffset+2] = -vec.x();
-    mat[rowOffset+2][colOffset  ] = -vec.y();
-    mat[rowOffset+2][colOffset+1] = +vec.x();
-}
-
-template <class Matrix>
-void MatrixHelper<Matrix>::initIdentitySubMatrix(
-    Matrix& mat,
-    unsigned n,
-    unsigned rowOffset,
-    unsigned colOffset)
-{
-    for(unsigned i = 0; i < n; ++i)
+    template <class Matrix, class Vector>
+    static void setMatrix(Matrix& mat,
+            const Vector& vec)
     {
-        mat[i+rowOffset][i+colOffset] = 1.0;
+        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;
+        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;
+        mat[0][2] = (Real)-vec[1];    mat[1][2] = (Real) vec[0];
     }
-}
+};
+
+template<class Real>
+struct RigidMappingMatrixHelper<3, Real>
+{
+    template <class Matrix, class Vector>
+    static void setMatrix(Matrix& mat,
+            const Vector& vec)
+    {
+        mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;    mat[2][0] = (Real) 0     ;
+        mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;    mat[2][1] = (Real) 0     ;
+        mat[0][2] = (Real) 0     ;    mat[1][2] = (Real) 0     ;    mat[2][2] = (Real) 1     ;
+        mat[0][3] = (Real) 0     ;    mat[1][3] = (Real)-vec[2];    mat[2][3] = (Real) vec[1];
+        mat[0][4] = (Real) vec[2];    mat[1][4] = (Real) 0     ;    mat[2][4] = (Real)-vec[0];
+        mat[0][5] = (Real)-vec[1];    mat[1][5] = (Real) vec[0];    mat[2][5] = (Real) 0     ;
+    }
+};
 
 template<class BasicMapping>
 void RigidMapping<BasicMapping>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
@@ -1051,24 +1038,8 @@ void RigidMapping<BasicMapping>::setJMatrixBlock(unsigned outIdx, unsigned inIdx
     // out = J in
     // J = [ I -OM^ ]
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
-    MatrixHelper<MBloc>::initIdentitySubMatrix(block, N);
-    MatrixHelper<MBloc>::initCrossProductSubMatrix(block, -rotatedPoints[outIdx], 0, N);
+    RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
 }
-
-/// Template specialization for 2D rigids
-// template<typename real1, typename real2>
-// void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJ( VecDeriv& out, const InVecDeriv& in )
-// {
-//     Deriv v;
-//     Real omega;
-//     v = in[index.getValue()].getVCenter();
-//     omega = (Real)in[index.getValue()].getVOrientation();
-//     out.resize(points.size());
-//     for(unsigned int i=0;i<points.size();i++)
-//     {
-//         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
-//     }
-// }
 
 #ifndef SOFA_FLOAT
 template<>

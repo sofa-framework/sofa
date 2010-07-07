@@ -180,26 +180,8 @@ protected:
     bool updateJ;
 };
 
-template <class Matrix>
-struct MatrixHelper
-{
-    typedef typename Matrix::Real Real;
-
-    template <template<int N, typename Real> class Vector>
-    static void initCrossProductSubMatrix(Matrix& mat,
-            const Vector<2, Real>& vec,
-            int rowOffset = 0,
-            int colOffset = 0);
-    template <template<int N, typename Real> class Vector>
-    static void initCrossProductSubMatrix(Matrix& mat,
-            const Vector<3, Real>& vec,
-            int rowOffset = 0,
-            int colOffset = 0);
-    static void initIdentitySubMatrix(Matrix& mat,
-            unsigned n,
-            unsigned rowOffset = 0,
-            unsigned colOffset = 0);
-};
+template <int N, class Real>
+struct RigidMappingMatrixHelper;
 
 using core::Mapping;
 using core::behavior::MechanicalMapping;
