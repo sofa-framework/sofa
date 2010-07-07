@@ -249,7 +249,7 @@ void FrameBufferObject::initColorBuffer()
     glBindTexture(GL_TEXTURE_2D, 0);
 
 }
-
+#ifdef SOFA_GUI_QTOGREVIEWER
 void FrameBufferObject::_initOGRE(unsigned int width, unsigned int height)
 {
     _texture = Ogre::TextureManager::getSingleton().createManual("rttText",
@@ -266,6 +266,7 @@ void FrameBufferObject::_initOGRE(unsigned int width, unsigned int height)
        renderTexture->getViewport(0)->setOverlaysEnabled(false);
        */
 }
+#endif
 
 } //gl
 
