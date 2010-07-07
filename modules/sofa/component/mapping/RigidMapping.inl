@@ -1002,27 +1002,11 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
     return matrixJ.get();
 }
 
-template<class BaseMapping>
-template<int M>
-void RigidMapping<BaseMapping>::initCrossProductSubMatrix(
-    typename boost::enable_if_c<M == 3, MBloc>::type& mat,
-    const Coord& vec,
-    int rowOffset,
-    int colOffset)
-{
-    mat[rowOffset  ][colOffset+1] = +vec.z();
-    mat[rowOffset  ][colOffset+2] = -vec.y();
-    mat[rowOffset+1][colOffset  ] = -vec.z();
-    mat[rowOffset+1][colOffset+2] = +vec.x();
-    mat[rowOffset+2][colOffset  ] = +vec.y();
-    mat[rowOffset+2][colOffset+1] = -vec.x();
-}
-
-template<class BaseMapping>
-template<int M>
-void RigidMapping<BaseMapping>::initCrossProductSubMatrix(
-    typename boost::enable_if_c<M == 2, MBloc>::type& mat,
-    const Coord& vec,
+template <class Matrix>
+template <template<int N, typename Real> class Vector>
+void MatrixHelper<Matrix>::initCrossProductSubMatrix(
+    Matrix& mat,
+    const Vector<2, Real>& vec,
     int rowOffset,
     int colOffset)
 {
@@ -1033,7 +1017,27 @@ void RigidMapping<BaseMapping>::initCrossProductSubMatrix(
 }
 
 template <class Matrix>
-void initIdentitySubMatrix(Matrix& mat, unsigned n, unsigned rowOffset, unsigned colOffset)
+template <template<int N, typename Real> class Vector>
+void MatrixHelper<Matrix>::initCrossProductSubMatrix(
+    Matrix& mat,
+    const Vector<3, Real>& vec,
+    int rowOffset,
+    int colOffset)
+{
+    mat[rowOffset  ][colOffset+1] = -vec.z();
+    mat[rowOffset  ][colOffset+2] = +vec.y();
+    mat[rowOffset+1][colOffset  ] = +vec.z();
+    mat[rowOffset+1][colOffset+2] = -vec.x();
+    mat[rowOffset+2][colOffset  ] = -vec.y();
+    mat[rowOffset+2][colOffset+1] = +vec.x();
+}
+
+template <class Matrix>
+void MatrixHelper<Matrix>::initIdentitySubMatrix(
+    Matrix& mat,
+    unsigned n,
+    unsigned rowOffset,
+    unsigned colOffset)
 {
     for(unsigned i = 0; i < n; ++i)
     {
@@ -1047,8 +1051,8 @@ void RigidMapping<BasicMapping>::setJMatrixBlock(unsigned outIdx, unsigned inIdx
     // out = J in
     // J = [ I -OM^ ]
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
-    initIdentitySubMatrix(block, N);
-    initCrossProductSubMatrix<N>(block, rotatedPoints[outIdx], 0, N);
+    MatrixHelper<MBloc>::initIdentitySubMatrix(block, N);
+    MatrixHelper<MBloc>::initCrossProductSubMatrix(block, -rotatedPoints[outIdx], 0, N);
 }
 
 /// Template specialization for 2D rigids
