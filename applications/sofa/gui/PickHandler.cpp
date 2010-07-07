@@ -36,6 +36,7 @@
 #include <sofa/simulation/common/Simulation.h>
 
 #include <iostream>
+#include <limits>
 
 
 
