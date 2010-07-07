@@ -23,6 +23,7 @@
 #else
 #include <qcolor.h>
 #include <qlayout.h>
+#include <qcombobox.h>
 #include <qcheckbox.h>
 #include <qcolordialog.h>
 #include <qcolordialog.h>
