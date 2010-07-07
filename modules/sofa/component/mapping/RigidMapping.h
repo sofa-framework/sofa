@@ -33,7 +33,6 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <boost/utility/enable_if.hpp>
 #include <vector>
 #include <memory>
 
@@ -175,17 +174,6 @@ protected:
     const VecCoord& getPoints();
     void setJMatrixBlock(unsigned outIdx, unsigned inIdx);
 
-    template<int M>
-    void initCrossProductSubMatrix(typename boost::enable_if_c<M == 3, MBloc>::type& mat,
-            const Coord& vec,
-            int rowOffset = 0,
-            int colOffset = 0);
-    template<int M>
-    void initCrossProductSubMatrix(typename boost::enable_if_c<M == 2, MBloc>::type& mat,
-            const Coord& vec,
-            int rowOffset = 0,
-            int colOffset = 0);
-
     RigidMapping<BasicMapping> *_inputMapping; // for continuous_friction_contact:
 
     std::auto_ptr<MatrixType> matrixJ;
@@ -193,7 +181,25 @@ protected:
 };
 
 template <class Matrix>
-void initIdentitySubMatrix(Matrix& mat, unsigned n, unsigned rowOffset = 0, unsigned colOffset = 0);
+struct MatrixHelper
+{
+    typedef typename Matrix::Real Real;
+
+    template <template<int N, typename Real> class Vector>
+    static void initCrossProductSubMatrix(Matrix& mat,
+            const Vector<2, Real>& vec,
+            int rowOffset = 0,
+            int colOffset = 0);
+    template <template<int N, typename Real> class Vector>
+    static void initCrossProductSubMatrix(Matrix& mat,
+            const Vector<3, Real>& vec,
+            int rowOffset = 0,
+            int colOffset = 0);
+    static void initIdentitySubMatrix(Matrix& mat,
+            unsigned n,
+            unsigned rowOffset = 0,
+            unsigned colOffset = 0);
+};
 
 using core::Mapping;
 using core::behavior::MechanicalMapping;
