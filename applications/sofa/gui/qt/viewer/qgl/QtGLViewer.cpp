@@ -604,9 +604,11 @@ void QtGLViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
     glEnd();
 }
 
-void QtGLViewer::drawColourPicking()
+void QtGLViewer::drawColourPicking(core::CollisionModel::ColourCode code)
 {
 
+    // Define background color
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // GL_PROJECTION matrix
@@ -614,10 +616,9 @@ void QtGLViewer::drawColourPicking()
     // GL_MODELVIEW matrix
     camera()->loadModelViewMatrix();
 
-    // Define background color
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    ColourPickingVisitor cpv;
+
+    ColourPickingVisitor cpv(code);
     cpv.execute(sofa::simulation::getSimulation()->getContext() );
 
     glMatrixMode(GL_PROJECTION);

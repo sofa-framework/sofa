@@ -33,6 +33,13 @@
 #include <cassert>
 #include <sofa/helper/gl/FrameBufferObject.h>
 
+#ifdef SOFA_GUI_QTOGREVIEWER
+#include <OgreTextureManager.h>
+
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderTexture.h>
+#endif
+
 namespace sofa
 {
 namespace helper
@@ -54,7 +61,8 @@ FrameBufferObject::FrameBufferObject(const fboParameters& fboParams)
     ,height(0)
     ,depthTexture(0)
     ,initialized(false)
-    ,_fboParams(fboParams)
+    ,_fboParams(fboParams),
+    _systemDraw(sofa::helper::gl::DrawManager::OPENGL)
 {
 }
 
@@ -68,9 +76,11 @@ void FrameBufferObject::destroy()
 {
     if(initialized)
     {
-        glDeleteTextures( 1, &depthTexture );
+        //glDeleteTextures( 1, &depthTexture );
+        glDeleteRenderbuffersEXT(1, &depthTexture);
         glDeleteTextures( 1, &colorTexture );
         glDeleteFramebuffersEXT( 1, &id );
+        initialized = false;
     }
 }
 
@@ -126,27 +136,23 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
     {
         this->width = width;
         this->height = height;
-
         glGenFramebuffersEXT(1, &id);
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
         createDepthBuffer();
         initDepthBuffer();
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthTexture);
+        //glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
         createColorBuffer();
         initColorBuffer();
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTexture, 0);
 
         glDrawBuffer(GL_BACK);
         glReadBuffer(GL_BACK);
-
-
-
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
 #ifdef _DEBUG
         checkFBO();
 #endif
-
         initialized=true;
     }
     else
@@ -197,8 +203,10 @@ void FrameBufferObject::setSize(unsigned int width, unsigned height)
 void FrameBufferObject::createDepthBuffer()
 {
     //Depth Texture
-    glEnable(GL_TEXTURE_2D);
-    glGenTextures(1, &depthTexture);
+    //glEnable(GL_TEXTURE_2D);
+    //glGenTextures(1, &depthTexture);
+    glGenRenderbuffersEXT(1, &depthTexture);
+
 }
 
 void FrameBufferObject::createColorBuffer()
@@ -210,6 +218,7 @@ void FrameBufferObject::createColorBuffer()
 
 void FrameBufferObject::initDepthBuffer()
 {
+    /*
     glBindTexture(GL_TEXTURE_2D, depthTexture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
@@ -222,6 +231,10 @@ void FrameBufferObject::initDepthBuffer()
 
     glTexImage2D(GL_TEXTURE_2D, 0, _fboParams.depthInternalformat , width, height, 0,GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
+    */
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthTexture);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 }
 
 void FrameBufferObject::initColorBuffer()
@@ -235,6 +248,23 @@ void FrameBufferObject::initColorBuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, _fboParams.colorInternalformat,  width, height, 0, _fboParams.colorFormat, _fboParams.colorType, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+}
+
+void FrameBufferObject::_initOGRE(unsigned int width, unsigned int height)
+{
+    _texture = Ogre::TextureManager::getSingleton().createManual("rttText",
+            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            Ogre::TEX_TYPE_2D,width,height,0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_RENDERTARGET);
+    /*
+       Ogre::RenderTexture *renderTexture = texture->getBuffer()->getRenderTarget();
+
+       Ogre::Camera* mCamera = mSceneMgr->getCamera("sofaCamera");
+
+       renderTexture->addViewport(mCamera);
+       renderTexture->getViewport(0)->setClearEveryFrame(true);
+       renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
+       renderTexture->getViewport(0)->setOverlaysEnabled(false);
+       */
 }
 
 } //gl

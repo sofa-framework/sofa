@@ -141,7 +141,7 @@ public:
 
     void UnregisterVisualModels() ;
 
-    virtual void drawColourPicking ();
+    virtual void drawColourPicking (core::CollisionModel::ColourCode code);
 
     QtGLViewer( QWidget* parent, const char* name="" );
     ~QtGLViewer();

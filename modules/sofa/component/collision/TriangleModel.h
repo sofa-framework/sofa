@@ -176,9 +176,9 @@ public:
 
     void draw();
 
-    void drawColourPicking();
+    void drawColourPicking(const ColourCode method);
 
-    virtual sofa::defaulttype::Vector3 getPositionFromWeights(int index, Real b, Real a);
+    virtual sofa::defaulttype::Vector3 getPositionFromWeights(int index, Real a, Real b, Real c);
 
     virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 

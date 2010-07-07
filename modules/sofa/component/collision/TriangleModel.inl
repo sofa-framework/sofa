@@ -42,8 +42,6 @@
 
 #include <sofa/simulation/common/Simulation.h>
 
-
-
 namespace sofa
 {
 
@@ -130,7 +128,7 @@ void TTriangleModel<DataTypes>::updateNormals()
 template<class DataTypes>
 void TTriangleModel<DataTypes>::updateFromTopology()
 {
-//    needsUpdate = false;
+    //    needsUpdate = false;
     const unsigned npoints = mstate->getX()->size();
     const unsigned ntris = _topology->getNbTriangles();
     const unsigned nquads = _topology->getNbQuads();
@@ -300,24 +298,24 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                 needsUpdate=true;
                 updateFlags();
 
-//                 updateNormals();
+                //                 updateNormals();
                 break;
             }
             /*
-            	case core::topology::TRIANGLESADDED:
-            	{
-            			//sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
-            		const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
-            		for (unsigned int i=0;i<ta->getNbAddedTriangles();++i) {
-            			Triangle t(this, size - ta->getNbAddedTriangles() + i);
-            			const Vector3& pt1 = t.p1();
-            			const Vector3& pt2 = t.p2();
-            			const Vector3& pt3 = t.p3();
-            			t.n() = cross(pt2-pt1,pt3-pt1);
-            			t.n().normalize();
-            		}
-            		break;
-            	}*/
+            case core::topology::TRIANGLESADDED:
+            {
+            //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
+            const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
+            for (unsigned int i=0;i<ta->getNbAddedTriangles();++i) {
+            Triangle t(this, size - ta->getNbAddedTriangles() + i);
+            const Vector3& pt1 = t.p1();
+            const Vector3& pt2 = t.p2();
+            const Vector3& pt3 = t.p3();
+            t.n() = cross(pt2-pt1,pt3-pt1);
+            t.n().normalize();
+            }
+            break;
+            }*/
             default: break;
             }
             ++itBegin;
@@ -590,59 +588,75 @@ void TTriangleModel<DataTypes>::draw(int index)
 }
 
 template<class DataTypes>
-void TTriangleModel<DataTypes>::drawColourPicking()
+void TTriangleModel<DataTypes>::drawColourPicking(const ColourCode method)
 {
 
     if( size != _topology->getNbTriangles())
         updateFromTopology();
     using namespace sofa::core::objectmodel;
-
-    helper::vector<core::CollisionModel*> listCollisionModel;
-    core::objectmodel::BaseContext* context = this->getContext();
-    context->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
-    const int totalCollisionModel = listCollisionModel.size();
-    helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
-    const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
-
-    float r = (float)indexCollisionModel / (float)totalCollisionModel;
-    float g;
-
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
     glDisable(GL_DITHER);
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
 
-    for( int i=0 ; i<size; i++)
+    helper::vector<Vector3> points;
+    helper::vector<Vector3> normals;
+    helper::vector< Vec<4,float> > colours;
+    helper::vector<core::CollisionModel*> listCollisionModel;
+    helper::vector<core::CollisionModel*>::iterator iter;
+    float r,g;
+    core::objectmodel::BaseContext* context;
+    context = this->getContext();
+    context->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
+    iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
+    const int totalCollisionModel = listCollisionModel.size();
+    const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
+
+    switch( method )
     {
-        g = (float)i / (float)size;
-
-        Element t(this,i);
-        glBegin(GL_TRIANGLES);
-        helper::gl::glNormalT(t.n());
-        glColor4f(r,g,0,0);
-        helper::gl::glVertexT(t.p1());
-        glColor4f(r,g,0,1);
-        helper::gl::glVertexT(t.p2());
-        glColor4f(r,g,1,0);
-        helper::gl::glVertexT(t.p3());
-        glEnd();
-
+    case ENCODE_COLLISIONELEMENT:
+        r = (float)indexCollisionModel / (float)totalCollisionModel;
+        for( int i=0 ; i<size; i++)
+        {
+            g = (float)i / (float)size;
+            Element t(this,i);
+            normals.push_back(t.n() );
+            points.push_back( t.p1() );
+            points.push_back( t.p2() );
+            points.push_back( t.p3() );
+            colours.push_back( Vec<4,float>(r,g,0,1) );
+            colours.push_back( Vec<4,float>(r,g,0,1) );
+            colours.push_back( Vec<4,float>(r,g,0,1) );
+        }
+        break;
+    case ENCODE_RELATIVEPOSITION:
+        for( int i=0 ; i<size; i++)
+        {
+            Element t(this,i);
+            normals.push_back(t.n() );
+            points.push_back( t.p1() );
+            points.push_back( t.p2() );
+            points.push_back( t.p3() );
+            colours.push_back( Vec<4,float>(1,0,0,1) );
+            colours.push_back( Vec<4,float>(0,1,0,1) );
+            colours.push_back( Vec<4,float>(0,0,1,1) );
+        }
+        break;
+    default: assert(false);
     }
+    sofa::simulation::getSimulation()->DrawUtility.drawTriangles(points,normals,colours);
 
 
 }
 
 template<class DataTypes>
-sofa::defaulttype::Vector3 TTriangleModel<DataTypes>::getPositionFromWeights(int index, Real b, Real a)
+sofa::defaulttype::Vector3 TTriangleModel<DataTypes>::getPositionFromWeights(int index, Real a, Real b, Real c)
 {
     assert( index >= 0 && index < size);
     sofa::defaulttype::Vector3 result;
     Element t(this,index);
-    result  = t.p2()*a;
-    result += t.p1()*(1-a);
-    result += t.p3()*b;
-    result  += t.p1()*(1-b);
-
-
+    result =( (t.p1()*a) + (t.p2()*b) + (t.p3()*c) );
     return result;
 
 

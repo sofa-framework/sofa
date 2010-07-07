@@ -36,8 +36,11 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/system/gl.h>
-#include <functional>
+#include <sofa/helper/gl/DrawManager.h>
 
+#ifdef SOFA_GUI_QTOGREVIEWER
+#include <OgreTexture.h>
+#endif
 
 namespace sofa
 {
@@ -71,11 +74,14 @@ private:
     GLuint depthTexture, colorTexture;
     bool initialized;
     fboParameters _fboParams;
+    sofa::helper::gl::DrawManager::MODEDISPLAY _systemDraw;
 public:
     FrameBufferObject();
+    virtual ~FrameBufferObject();
+
     FrameBufferObject(const fboParameters& FboFormat);
     void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; };
-    virtual ~FrameBufferObject();
+    void setModeDisplay( const sofa::helper::gl::DrawManager::MODEDISPLAY systemDraw) { _systemDraw = systemDraw; };
 
     void init(unsigned int width, unsigned height);
     void destroy();
@@ -95,6 +101,12 @@ public:
     void createColorBuffer();
     void initDepthBuffer();
     void initColorBuffer();
+private:
+#ifdef SOFA_GUI_QTOGREVIEWER
+    void _initOGRE( unsigned int width, unsigned int height);
+    Ogre::TexturePtr _texture;
+#endif
+
 
 };
 

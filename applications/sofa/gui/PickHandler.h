@@ -73,8 +73,10 @@ class CallBackRender
 {
 public:
     virtual ~CallBackRender() {};
-    virtual void render() = 0;
+    virtual void render(core::CollisionModel::ColourCode code ) = 0;
 };
+
+
 
 
 
@@ -82,13 +84,26 @@ class SOFA_SOFAGUI_API PickHandler
 {
     typedef sofa::component::collision::RayModel MouseCollisionModel;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
-public:
 
+public:
+    enum PickingMethod
+    {
+        RAY_CASTING,
+        SELECTION_BUFFER
+    };
 
     PickHandler();
     ~PickHandler();
 
-    void activateRay(bool act);
+    void activateRay(int width, int height);
+    void deactivateRay();
+
+    void allocateSelectionBuffer(int width, int height);
+    void destroySelectionBuffer();
+
+
+    void setPickingMethod(PickingMethod method) { pickingMethod = method; }
+    bool useSelectionBufferMethod() const { return (pickingMethod == SELECTION_BUFFER); }
 
     void updateRay(const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &orientation);
 
@@ -129,6 +144,7 @@ protected:
     bool interactorInUse;
     MOUSE_STATUS mouseStatus;
     MOUSE_BUTTON mouseButton;
+    PickingMethod pickingMethod;
 
     Node                *mouseNode;
     MouseContainer      *mouseContainer;
@@ -138,6 +154,7 @@ protected:
 
     sofa::helper::gl::FrameBufferObject _fbo;
     sofa::helper::gl::fboParameters     _fboParams;
+    bool _fboAllocated;
 
     ComponentMouseInteraction *interaction;
     std::vector< ComponentMouseInteraction *> instanceComponents;
@@ -146,6 +163,7 @@ protected:
     BodyPicked lastPicked;
 
     bool useCollisions;
+
 
 
     //NONE is the number of Operations in use.
@@ -162,8 +180,9 @@ protected:
 
     bool needToCastRay();
     void setCompatibleInteractor();
-    BodyPicked _decodeColour(const sofa::defaulttype::Vec4f& colour,const defaulttype::Vector3& origin,
-            const defaulttype::Vector3& direction);
+    void _decodeCollisionElement( BodyPicked& body, const sofa::defaulttype::Vec4f colour);
+    void _decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f& colour);
+
 };
 }
 }
