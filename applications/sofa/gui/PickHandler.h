@@ -144,7 +144,7 @@ protected:
     bool interactorInUse;
     MOUSE_STATUS mouseStatus;
     MOUSE_BUTTON mouseButton;
-    PickingMethod pickingMethod;
+
 
     Node                *mouseNode;
     MouseContainer      *mouseContainer;
@@ -154,7 +154,6 @@ protected:
 
     sofa::helper::gl::FrameBufferObject _fbo;
     sofa::helper::gl::fboParameters     _fboParams;
-    bool _fboAllocated;
 
     ComponentMouseInteraction *interaction;
     std::vector< ComponentMouseInteraction *> instanceComponents;
@@ -172,6 +171,11 @@ protected:
     helper::vector< CallBackPicker* > callbacks;
 
     CallBackRender* renderCallback;
+
+    PickingMethod pickingMethod;
+
+    bool _fboAllocated;
+
 
     BodyPicked findCollision();
     BodyPicked findCollisionUsingPipeline();
