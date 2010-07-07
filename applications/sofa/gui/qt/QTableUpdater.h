@@ -24,48 +24,69 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_TABLEDATAWIDGET_H
-#define SOFA_GUI_QT_TABLEDATAWIDGET_H
 
-#include "SimpleDataWidget.h"
-#include <sofa/gui/qt/StructDataWidget.h>
-#include <sofa/component/topology/PointSubset.h>
-#include <sofa/component/topology/PointData.h>
+#ifndef SOFA_GUI_QT_QTABLEUPDATER_H
+#define SOFA_GUI_QT_QTABLEUPDATER_H
 
-#ifdef SOFA_QT4
-#include <sofa/gui/qt/QModelViewTableDataContainer.h>
-#else
-#include <sofa/gui/qt/QTableDataContainer.h>.h>
-#endif
+
+#include "SofaGUIQt.h"
+
+
+#include <qspinbox.h>
+#include <qtable.h>
+
+
 
 namespace sofa
 {
-
 namespace gui
 {
-
 namespace qt
 {
 
-template<class T, int FLAGS = TABLE_NORMAL>
-class TableDataWidget : public SimpleDataWidget<T, table_data_widget_container< T , FLAGS > >
+
+class QTableUpdater : virtual public QTable
 {
+    Q_OBJECT
 public:
-    typedef T data_type;
-    typedef SimpleDataWidget<T, table_data_widget_container< T , FLAGS > > Inherit;
-    typedef sofa::core::objectmodel::TData<T> MyData;
-public:
-    TableDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
-    virtual unsigned int sizeWidget() {return 3;}
-    virtual unsigned int numColumnWidget() { return 1; }
+    QTableUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * name = 0 ):
+        QTable(numRows, numCols, parent, name)
+    {};
+public slots:
+    void setDisplayed(bool b) {this->setShown(b);}
+    void resizeTableV( int number )
+    {
+        QSpinBox *spinBox = (QSpinBox *) sender();
+        QString header;
+        if( spinBox == NULL)
+        {
+            return;
+        }
+        if (number != numRows())
+        {
+            setNumRows(number);
+        }
+    }
+
+    void resizeTableH( int number )
+    {
+        QSpinBox *spinBox = (QSpinBox *) sender();
+        QString header;
+        if( spinBox == NULL)
+        {
+            return;
+        }
+        if (number != numCols())
+        {
+            setNumCols(number);
+
+        }
+    }
+
 };
 
-
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
+}
+}
+}
 
 #endif

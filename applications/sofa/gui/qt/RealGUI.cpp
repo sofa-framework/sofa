@@ -235,11 +235,9 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 int RealGUI::mainLoop()
 {
     if (windowFilePath().isNull()) return application->exec();
-    std::string filename=windowFilePath().ascii();
-    if (filename.size() > 5 && filename.substr(filename.size()-5) == ".simu")
-    {
-        fileOpenSimu(filename);
-    }
+    const std::string &filename=windowFilePath().ascii();
+    const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    if (extension == "simu") fileOpenSimu(filename);
     return application->exec();
 }
 
@@ -749,7 +747,8 @@ void RealGUI::changeViewer(const char* name)
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
-    if (filename.size() > 5 && filename.substr(filename.size()-5) == ".simu")
+    const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    if (extension == "simu")
     {
         return fileOpenSimu(filename);
     }
@@ -1834,7 +1833,7 @@ void RealGUI::dropEvent(QDropEvent* event)
     }
 
     if (filename.rfind(".simu") != std::string::npos) fileOpenSimu(filename);
-    else  	                                    fileOpen(filename);
+    else fileOpen(filename);
 }
 
 #ifdef SOFA_QT4
