@@ -450,132 +450,68 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
 {
     const VecCoord& pts = this->getPoints();
     out.resize(pts.size());
-    unsigned cptOut;
-    unsigned val;
 
-    if (!(maskTo->isInUse()))
+    bool isMaskInUse = maskTo->isInUse();
+    unsigned repartitionCount = repartition.getValue().size();
+
+    if (repartitionCount > 1 && repartitionCount != in.size())
     {
-        switch (repartition.getValue().size())
+        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        return;
+    }
+
+    unsigned inIdxBegin;
+    unsigned inIdxEnd;
+
+    if (repartitionCount == 0)
+    {
+        inIdxBegin = index.getValue();
+        if (indexFromEnd.getValue())
         {
-        case 0:
-        {
-            unsigned inIdx = indexFromEnd.getValue() ?
-                    in.size()-1-index.getValue()
-                    : index.getValue();
-
-            for (unsigned int i = 0; i < pts.size(); i++)
-            {
-                // out = J in
-                // J = [ I -OM^ ]
-                out[i] = in[inIdx].velocityAtRotatedPoint(rotatedPoints[i]);
-            }
-            break;
+            inIdxBegin = in.size() - 1 - inIdxBegin;
         }
-        case 1:
-            val = repartition.getValue()[0];
-            cptOut = 0;
-
-            for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
-            {
-                for (unsigned int ito = 0; ito < val; ito++)
-                {
-                    // out = J in
-                    // J = [ I -OM^ ]
-                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
-                    cptOut++;
-                }
-            }
-            break;
-        default:
-            if (repartition.getValue().size() != in.size())
-            {
-                serr << "Error : mapping dofs repartition is not correct" << sendl;
-                return;
-            }
-
-            cptOut = 0;
-
-            for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
-            {
-                for (unsigned int ito = 0; ito < repartition.getValue()[ifrom]; ito++)
-                {
-                    // out = J in
-                    // J = [ I -OM^ ]
-                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
-                    cptOut++;
-                }
-            }
-            break;
-        }
-
+        inIdxEnd = inIdxBegin + 1;
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices = maskTo->getEntries();
-        ParticleMask::InternalStorage::const_iterator it = indices.begin();
-        switch (repartition.getValue().size())
-        {
-        case 0:
-        {
-            unsigned inIdx = indexFromEnd.getValue() ?
-                    in.size()-1-index.getValue()
-                    : index.getValue();
+        inIdxBegin = 0;
+        inIdxEnd = in.size();
+    }
 
-            for (unsigned int i = 0; i < pts.size() && it != indices.end(); i++)
-            {
-                const unsigned int idx = (*it);
-                if (idx != i)
-                    continue;
-                // out = J in
-                // J = [ I -OM^ ]
-                out[i] = in[inIdx].velocityAtRotatedPoint(rotatedPoints[i]);
-                it++;
-            }
-            break;
+    unsigned outputPerInput;
+    if (repartitionCount == 0)
+    {
+        outputPerInput = pts.size();
+    }
+    else
+    {
+        outputPerInput = repartition.getValue()[0];
+    }
+
+    typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    const ParticleMask::InternalStorage& indices = maskTo->getEntries();
+    ParticleMask::InternalStorage::const_iterator it = indices.begin();
+
+    for (unsigned inIdx = inIdxBegin, outIdx = 0; inIdx < inIdxEnd; ++inIdx)
+    {
+        if (repartitionCount > 1)
+        {
+            outputPerInput = repartition.getValue()[inIdx];
         }
-        case 1:
-            val = repartition.getValue()[0];
-            cptOut = 0;
 
-            for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
+        for (unsigned outputCount = 0;
+                outputCount < outputPerInput && !(isMaskInUse && it == indices.end());
+                ++outputCount, ++outIdx)
+        {
+            if (isMaskInUse)
             {
-                for (unsigned int ito = 0; ito < val && it != indices.end(); ito++, cptOut++)
+                if (outIdx != *it)
                 {
-                    const unsigned int idx = (*it);
-                    if (idx != cptOut)
-                        continue;
-                    // out = J in
-                    // J = [ I -OM^ ]
-                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
-                    it++;
+                    continue;
                 }
+                ++it;
             }
-            break;
-        default:
-            if (repartition.getValue().size() != in.size())
-            {
-                serr << "Error : mapping dofs repartition is not correct" << sendl;
-                return;
-            }
-
-            cptOut = 0;
-
-            for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
-            {
-                for (unsigned int ito = 0; ito < repartition.getValue()[ifrom]
-                        && it != indices.end(); ito++, cptOut++)
-                {
-                    const unsigned int idx = (*it);
-                    if (idx != cptOut)
-                        continue;
-                    // out = J in
-                    // J = [ I -OM^ ]
-                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
-                    it++;
-                }
-            }
-            break;
+            out[outIdx] = in[inIdx].velocityAtRotatedPoint(rotatedPoints[outIdx]);
         }
     }
 }
@@ -895,7 +831,7 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
     const VecCoord& out = *this->toModel->getX();
     const InVecCoord& in = *this->fromModel->getX();
     const VecCoord& pts = this->getPoints();
-    assert(pts.size() == out.size());
+    out.resize(pts.size());
 
     if (matrixJ.get() == 0 || updateJ)
     {
