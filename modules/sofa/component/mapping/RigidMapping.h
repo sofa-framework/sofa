@@ -67,6 +67,7 @@ public:
     typedef typename Out::Deriv Deriv;
     typedef typename Out::VecConst VecConst;
     typedef typename In::Deriv InDeriv;
+    typedef typename InDeriv::Rot DRot;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::VecConst InVecConst;
