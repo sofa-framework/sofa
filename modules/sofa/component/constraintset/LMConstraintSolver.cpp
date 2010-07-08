@@ -86,7 +86,16 @@ void LMConstraintSolver::init()
     graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());
 }
 
+void LMConstraintSolver::convertSparseToDense(const SparseMatrixEigen& sparseM, MatrixEigen& denseM) const
+{
+    denseM=MatrixEigen::Zero(sparseM.rows(), sparseM.cols());
 
+    for (int k=0; k<sparseM.outerSize(); ++k)
+        for (SparseMatrixEigen::InnerIterator it(sparseM,k); it; ++it)
+        {
+            denseM(it.row(),it.col()) = it.value();
+        }
+}
 
 bool LMConstraintSolver::needPriorStatePropagation(core::behavior::BaseLMConstraint::ConstOrder order) const
 {
@@ -230,7 +239,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
 
 
 
-bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::BaseConstraintSet::ConstOrder /*order*/)
+bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemCreation");
@@ -243,8 +252,11 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
     {
         BaseLMConstraint *constraint=LMConstraints[mat];
-        setDofs.insert(constraint->getSimulatedMechModel1());
-        setDofs.insert(constraint->getSimulatedMechModel2());
+        if (constraint->getNumConstraint(order))
+        {
+            setDofs.insert(constraint->getSimulatedMechModel1());
+            setDofs.insert(constraint->getSimulatedMechModel2());
+        }
     }
     for (SetDof::iterator it=setDofs.begin(); it!=setDofs.end();)
     {
@@ -292,7 +304,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     {
         const core::behavior::BaseMechanicalState* dofs=*it;
         SparseMatrixEigen L(numConstraint,dofs->getSize()*dofs->getDerivDimension());
-        L.startFill(numConstraint*(1+dofs->getSize()));//TODO: give a better estimation of non-zero coefficients
+        L.reserve(numConstraint*(1+dofs->getSize()));//TODO: give a better estimation of non-zero coefficients
         LMatrices.insert(std::make_pair(dofs, L));
     }
     buildLMatrices(orderState, LMConstraints, LMatrices, dofUsed);
@@ -301,6 +313,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     for (DofToMatrix::iterator it=LMatrices.begin(); it!=LMatrices.end();)
     {
         SparseMatrixEigen& matrix= it->second;
+        matrix.finalize();
         DofToMatrix::iterator itCurrent=it;
         ++it;
         if (!matrix.nonZeros()) //Empty Matrix: act as an obstacle
@@ -310,28 +323,6 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
             LMatrices.erase(itCurrent);
         }
 
-        /*
-        //How to use the Matrix manipulator: here, creates a matrix with the average of two consecutive lines
-        linearsolver::LMatrixManipulator manip;
-        //Init the manipulator with the full matrix
-        manip.init(matrix);
-
-        //Declare the new matrix: in our case, it will have half the number of lines
-        SparseMatrixEigen newL(matrix.rows()/2,matrix.cols());
-        //Specify the desired combination
-        helper::vector<linearsolver::LLineManipulator> rows(matrix.rows()/2);
-        for (unsigned int i=0;i<rows.size();++i)
-        {
-          //index of the line, and factor applied
-          rows[i].addCombination(i*2  ,0.5)
-                 .addCombination(i*2+1,0.5);
-        }
-
-        //Create the matrix
-        manip.buildLMatrix(rows,newL);
-        serr << "Previous L\n" << matrix << "\n-----------------------------------------------------\n";
-        serr << "Combined L\n" << newL << "\n\n\n" << sendl;
-        */
     }
     sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem L");
 
@@ -347,13 +338,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
 
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
     //Convert the Sparse Matrix AEi into a Dense Matrix-> faster access to elements, and possilibity to use a direct LU solution
-    W=MatrixEigen::Zero((int)numConstraint, (int)numConstraint);
-
-    for (int k=0; k<WEi.outerSize(); ++k)
-        for (SparseMatrixEigen::InnerIterator it(WEi,k); it; ++it)
-        {
-            W(it.row(),it.col()) = it.value();
-        }
+    convertSparseToDense(WEi,W);
 
     sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -442,12 +427,12 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
     {
         const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const SparseMatrixEigen &invMass=invMassMatrix.find(dofs)->second;
-        SparseMatrixEigen &L=LMatrix[dofs]; L.endFill();
+        const SparseMatrixEigen &L=LMatrix[dofs];
 
         if (f_printLog.getValue())  sout << "Matrix L for " << dofs->getName() << "\n" << L << sendl;
         if (f_printLog.getValue())  sout << "Matrix M-1 for " << dofs->getName() << "\n" << invMass << sendl;
 
-        const SparseMatrixEigen &invM_LTrans=invMass.marked<Eigen::SelfAdjoint|Eigen::UpperTriangular>()*L.transpose();
+        const SparseMatrixEigen &invM_LTrans=invMass*L.transpose();
         invMass_Ltrans.insert( std::make_pair(dofs,invM_LTrans) );
         LeftMatrix += L*invM_LTrans;
     }
@@ -472,6 +457,8 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
         //Get the entries in the Vector of constraints corresponding to the constraint equations
         std::list< unsigned int > equationsUsed;
         constraint->getEquationsUsed(Order, equationsUsed);
+
+        if (equationsUsed.empty()) continue;
 
         DofToMatrix::iterator itL1=LMatrices.find(dof1);
         if (itL1 != LMatrices.end())
@@ -518,7 +505,7 @@ void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToM
         if (needToConstructMassMatrix)
         {
             SparseMatrixEigen invMass(dofs->getSize()*dimensionDofs, dofs->getSize()*dimensionDofs);
-            invMass.startFill(dofs->getSize()*dimensionDofs*dimensionDofs);
+            invMass.reserve(dofs->getSize()*dimensionDofs*dimensionDofs);
 
             DofToConstraintCorrection::iterator constraintCorrectionFound=constraintCorrections.find(dofs);
             if (constraintCorrectionFound != constraintCorrections.end())
@@ -529,7 +516,7 @@ void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToM
             {
                 buildInverseMassMatrix(dofs, mass, invMass);
             }
-            invMass.endFill();
+            invMass.finalize();
             //Store the matrix in memory
             if (mFound != invMassMatrices.end())
                 invMassMatrices[dofs]=invMass;
@@ -547,12 +534,13 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
     //Then convert it into a Sparse Matrix: as it is done only at the init, or when topological changes occur, this should not be a burden for the framerate
     for (unsigned int i=0; i<computationInvM.rowSize(); ++i)
     {
+        invMass.startVec(i);
         for (unsigned int j=0; j<computationInvM.colSize(); ++j)
         {
             SReal value=computationInvM.element(i,j);
             if (value != 0)
             {
-                invMass.fill(i,j)=value;
+                invMass.insertBack(i,j)=value;
             }
         }
     }
@@ -572,16 +560,17 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
 
         //Translate the FullMatrix into a Eigen Matrix to invert it
         MatrixEigen mapMEigen=Eigen::Map<MatrixEigen>(computationM[0],(int)computationM.rowSize(),(int)computationM.colSize());
-        mapMEigen.marked<Eigen::SelfAdjoint|Eigen::UpperTriangular>().computeInverse(&invMEigen);
+        invMEigen=mapMEigen.inverse();
 
         //Store into the sparse matrix the block corresponding to the inverse of the mass matrix of a particle
         for (unsigned int r=0; r<dimensionDofs; ++r)
         {
+            invMass.startVec(i*dimensionDofs+r);
             for (unsigned int c=0; c<dimensionDofs; ++c)
             {
                 if (invMEigen(r,c) != 0)
                 {
-                    invMass.fill(i*dimensionDofs+r,i*dimensionDofs+c)=invMEigen(r,c);
+                    invMass.insertBack(i*dimensionDofs+r,i*dimensionDofs+c)=invMEigen(r,c);
                 }
             }
         }
@@ -597,11 +586,15 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
     //Get blocks of values from the Mechanical States
     std::list< ConstraintBlock > blocks=dof->constraintBlocks( idxEquations );
 
+
     //Fill the matrices
     const unsigned int numEquations=idxEquations.size();
 
     for (unsigned int eq=0; eq<numEquations; ++eq)
     {
+        const int idxRow=constraintOffset+eq;
+        L.startVec(idxRow);
+
         for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); itBlock++)
         {
             const ConstraintBlock &b=(*itBlock);
@@ -612,7 +605,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
                 SReal value=m.element(eq,j);
                 if (value!=0)
                 {
-                    L.fill(constraintOffset+eq, column+j) = m.element(eq,j);
+                    L.insert(idxRow, column+j) = m.element(eq,j);
                     dofUsed.insert((column+j)/dimensionDofs);
                 }
             }
@@ -686,7 +679,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                 const MatrixEigen &wConstraint=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
                 if (wConstraint.diagonal().isZero(1e-15)) emptyBlock.insert(idxConstraint);
                 constraintWBlock.push_back(wConstraint);
-                constraintInvWBlock.push_back(wConstraint.marked<Eigen::SelfAdjoint>().inverse());
+                constraintInvWBlock.push_back(wConstraint.inverse());
 
                 const VectorEigen &cb=c.block(idxConstraint         , 0,
                         numConstraintToProcess, 1);
@@ -742,9 +735,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                 const MatrixEigen &wb=blocks.first;
 
                 //Compute Sigma
-                VectorEigen sigma = cb; sigma -= (wb * Lambda).lazy();
+                VectorEigen sigma = cb; sigma.noalias() -= (wb * Lambda);
 
-                VectorEigen newLambda=invWblock.marked<Eigen::SelfAdjoint>()*sigma;
+                VectorEigen newLambda; newLambda.noalias() = invWblock*sigma;
                 constraint->LagrangeMultiplierEvaluation(Wblock.data(),sigma.data(), newLambda.data(),
                         constraintOrder[constraintEntry]);
 
@@ -776,7 +769,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
                 graphKineticEnergy.endEdit();
             }
             VectorEigen LambdaSave=Lambda;
-            Lambda -= LambdaPrevious;
+            Lambda.noalias() -= LambdaPrevious;
             computeKineticEnergy(id);
             Lambda = LambdaSave;
             LambdaPrevious=Lambda;
@@ -813,7 +806,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::behavior::Ba
     //Correct Dof
     //    operation: M0^-1.L0^T.lambda -> A
 
-    VectorEigen A = invM_Ltrans*c;
+    VectorEigen A; A.noalias() = invM_Ltrans*c;
     if (f_printLog.getValue())
     {
         sout << "M^-1.L^T " << "\n" << invM_Ltrans << sendl;
