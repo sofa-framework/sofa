@@ -181,6 +181,10 @@ public:
     const Vec3& getAngular () const { return vOrientation; }
 
 
+    Vec3 velocityAtRotatedPoint(const Vec3& p) const
+    {
+        return vCenter - cross(p, vOrientation);
+    }
 
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<3,real>& v )
@@ -831,6 +835,12 @@ public:
     Real& getVOrientation (void) { return vOrientation; }
     const Vec2& getVCenter (void) const { return vCenter; }
     const Real& getVOrientation (void) const { return vOrientation; }
+
+    Vec2 velocityAtRotatedPoint(const Vec2& p) const
+    {
+        return vCenter + Vec2(-p[1], p[0]) * vOrientation;
+    }
+
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<2,real>& v )
     {

@@ -448,49 +448,40 @@ void RigidMapping<BasicMapping>::apply(VecCoord& out, const InVecCoord& in)
 template<class BasicMapping>
 void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
 {
-    Deriv v, omega;
     const VecCoord& pts = this->getPoints();
     out.resize(pts.size());
-    unsigned int cptOut;
-    unsigned int val;
+    unsigned cptOut;
+    unsigned val;
 
     if (!(maskTo->isInUse()))
     {
         switch (repartition.getValue().size())
         {
         case 0:
-            if (indexFromEnd.getValue())
-            {
-                v = in[in.size() - 1 - index.getValue()].getVCenter();
-                omega = in[in.size() - 1 - index.getValue()].getVOrientation();
-            }
-            else
-            {
-                v = in[index.getValue()].getVCenter();
-                omega = in[index.getValue()].getVOrientation();
-            }
+        {
+            unsigned inIdx = indexFromEnd.getValue() ?
+                    in.size()-1-index.getValue()
+                    : index.getValue();
 
             for (unsigned int i = 0; i < pts.size(); i++)
             {
                 // out = J in
                 // J = [ I -OM^ ]
-                out[i] = v - cross(rotatedPoints[i], omega);
+                out[i] = in[inIdx].velocityAtRotatedPoint(rotatedPoints[i]);
             }
             break;
+        }
         case 1:
             val = repartition.getValue()[0];
             cptOut = 0;
 
             for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
             {
-                v = in[ifrom].getVCenter();
-                omega = in[ifrom].getVOrientation();
-
                 for (unsigned int ito = 0; ito < val; ito++)
                 {
                     // out = J in
                     // J = [ I -OM^ ]
-                    out[cptOut] = v - cross(rotatedPoints[cptOut], omega);
+                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
                     cptOut++;
                 }
             }
@@ -506,14 +497,11 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
 
             for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
             {
-                v = in[ifrom].getVCenter();
-                omega = in[ifrom].getVOrientation();
-
                 for (unsigned int ito = 0; ito < repartition.getValue()[ifrom]; ito++)
                 {
                     // out = J in
                     // J = [ I -OM^ ]
-                    out[cptOut] = v - cross(rotatedPoints[cptOut], omega);
+                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
                     cptOut++;
                 }
             }
@@ -529,16 +517,10 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
         switch (repartition.getValue().size())
         {
         case 0:
-            if (indexFromEnd.getValue())
-            {
-                v = in[in.size() - 1 - index.getValue()].getVCenter();
-                omega = in[in.size() - 1 - index.getValue()].getVOrientation();
-            }
-            else
-            {
-                v = in[index.getValue()].getVCenter();
-                omega = in[index.getValue()].getVOrientation();
-            }
+        {
+            unsigned inIdx = indexFromEnd.getValue() ?
+                    in.size()-1-index.getValue()
+                    : index.getValue();
 
             for (unsigned int i = 0; i < pts.size() && it != indices.end(); i++)
             {
@@ -547,19 +529,17 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
                     continue;
                 // out = J in
                 // J = [ I -OM^ ]
-                out[i] = v - cross(rotatedPoints[i], omega);
+                out[i] = in[inIdx].velocityAtRotatedPoint(rotatedPoints[i]);
                 it++;
             }
             break;
+        }
         case 1:
             val = repartition.getValue()[0];
             cptOut = 0;
 
             for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
             {
-                v = in[ifrom].getVCenter();
-                omega = in[ifrom].getVOrientation();
-
                 for (unsigned int ito = 0; ito < val && it != indices.end(); ito++, cptOut++)
                 {
                     const unsigned int idx = (*it);
@@ -567,7 +547,7 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
                         continue;
                     // out = J in
                     // J = [ I -OM^ ]
-                    out[cptOut] = v - cross(rotatedPoints[cptOut], omega);
+                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
                     it++;
                 }
             }
@@ -583,9 +563,6 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
 
             for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
             {
-                v = in[ifrom].getVCenter();
-                omega = in[ifrom].getVOrientation();
-
                 for (unsigned int ito = 0; ito < repartition.getValue()[ifrom]
                         && it != indices.end(); ito++, cptOut++)
                 {
@@ -594,7 +571,7 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
                         continue;
                     // out = J in
                     // J = [ I -OM^ ]
-                    out[cptOut] = v - cross(rotatedPoints[cptOut], omega);
+                    out[cptOut] = in[ifrom].velocityAtRotatedPoint(rotatedPoints[cptOut]);
                     it++;
                 }
             }
@@ -606,7 +583,6 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
 template<class BasicMapping>
 void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
 {
-    Deriv v, omega;
     unsigned int val;
     unsigned int cpt;
     const VecCoord& pts = this->getPoints();
@@ -617,6 +593,9 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
         switch (repartition.getValue().size())
         {
         case 0:
+        {
+            Deriv v;
+            DRot omega;
             for (unsigned int i = 0; i < pts.size(); i++)
             {
                 // out = Jt in
@@ -632,26 +611,22 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
                 //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
             }
 
-            if (!indexFromEnd.getValue())
-            {
-                out[index.getValue()].getVCenter() += v;
-                out[index.getValue()].getVOrientation() += omega;
-            }
-            else
-            {
-                out[out.size() - 1 - index.getValue()].getVCenter() += v;
-                out[out.size() - 1 - index.getValue()].getVOrientation()
-                += omega;
-            }
+            unsigned outIdx = indexFromEnd.getValue() ?
+                    out.size() - 1 - index.getValue()
+                    : index.getValue();
+
+            out[outIdx].getVCenter() += v;
+            out[outIdx].getVOrientation() += omega;
 
             break;
+        }
         case 1:
             val = repartition.getValue()[0];
             cpt = 0;
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
-                v = Deriv();
-                omega = Deriv();
+                Deriv v;
+                DRot omega;
                 for (unsigned int i = 0; i < val; i++)
                 {
                     Deriv f = in[cpt];
@@ -674,8 +649,8 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
             cpt = 0;
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
-                v = Deriv();
-                omega = Deriv();
+                Deriv v;
+                DRot omega;
                 for (unsigned int i = 0; i < repartition.getValue()[ito]; i++)
                 {
                     Deriv f = in[cpt];
@@ -698,6 +673,9 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
         switch (repartition.getValue().size())
         {
         case 0:
+        {
+            Deriv v;
+            DRot omega;
             for (; it != indices.end(); it++)
             {
                 const int i = (*it);
@@ -714,28 +692,23 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
                 //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
             }
 
-            if (!indexFromEnd.getValue())
-            {
-                out[index.getValue()].getVCenter() += v;
-                out[index.getValue()].getVOrientation() += omega;
-                maskFrom->insertEntry(index.getValue());
-            }
-            else
-            {
-                out[out.size() - 1 - index.getValue()].getVCenter() += v;
-                out[out.size() - 1 - index.getValue()].getVOrientation()
-                += omega;
-                maskFrom->insertEntry(out.size() - 1 - index.getValue());
-            }
+            unsigned outIdx = indexFromEnd.getValue() ?
+                    out.size() - 1 - index.getValue()
+                    : index.getValue();
+
+            out[outIdx].getVCenter() += v;
+            out[outIdx].getVOrientation() += omega;
+            maskFrom->insertEntry(outIdx);
 
             break;
+        }
         case 1:
             val = repartition.getValue()[0];
             cpt = 0;
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
-                v = Deriv();
-                omega = Deriv();
+                Deriv v;
+                DRot omega;
                 for (unsigned int i = 0; i < val && it != indices.end(); i++, cpt++)
                 {
                     const unsigned int idx = (*it);
@@ -762,8 +735,8 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
             cpt = 0;
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
-                v = Deriv();
-                omega = Deriv();
+                Deriv v;
+                DRot omega;
                 for (unsigned int i = 0; i < repartition.getValue()[ito] && it
                         != indices.end(); i++, cpt++)
                 {
@@ -802,7 +775,8 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
     {
         for (unsigned int i = 0; i < in.size(); i++)
         {
-            Vector v, omega;
+            Deriv v;
+            DRot omega;
             OutConstraintIterator itOut;
             std::pair<OutConstraintIterator, OutConstraintIterator> iter =
                 in[i].data();
@@ -847,7 +821,8 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
             OutConstraintIterator it = iter.first;
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
-                Vector v, omega;
+                Deriv v;
+                DRot omega;
                 bool needToInsert = false;
 
                 for (unsigned int r = 0; r < val && it != iter.second; r++, cpt++)
@@ -885,7 +860,8 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
             OutConstraintIterator it = iter.first;
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
-                Vector v, omega;
+                Deriv v;
+                DRot omega;
                 bool needToInsert = false;
 
                 for (unsigned int r = 0; r < repartition.getValue()[ito] && it
@@ -1002,7 +978,6 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
     return matrixJ.get();
 }
 
-
 template<class Real>
 struct RigidMappingMatrixHelper<2, Real>
 {
@@ -1040,57 +1015,6 @@ void RigidMapping<BasicMapping>::setJMatrixBlock(unsigned outIdx, unsigned inIdx
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
     RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
 }
-
-#ifndef SOFA_FLOAT
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
-#endif
-
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
-template<>
-void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
-#endif
-#endif
-
-/// Template specialization for 2D rigids
-// template<typename real1, typename real2>
-// void RigidMapping< core::behavior::MechanicalMapping< core::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJT( InVecDeriv& out, const VecDeriv& in )
-// {
-//     Deriv v;
-//     Real omega;
-//     for(unsigned int i=0;i<points.size();i++)
-//     {
-//         Deriv f = in[i];
-//         v += f;
-//         omega += cross(rotatedPoints[i],f);
-//     }
-//     out[index.getValue()].getVCenter() += v;
-//     out[index.getValue()].getVOrientation() += (typename In::Real)omega;
-// }
-
 
 template<class BasicMapping>
 void RigidMapping<BasicMapping>::draw()
