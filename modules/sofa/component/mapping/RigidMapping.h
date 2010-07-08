@@ -98,6 +98,12 @@ public:
     sofa::core::objectmodel::DataFileName fileRigidMapping;
     Data<bool> useX0;
     Data<bool> indexFromEnd;
+    /**
+     * Repartitions:
+     *  - no value specified : simple rigid mapping
+     *  - one value specified : uniform repartition mapping on the input dofs
+     *  - n values are specified : heterogen repartition mapping on the input dofs
+     */
     Data<sofa::helper::vector<unsigned int> > repartition;
     Data<bool> globalToLocalCoords;
 
