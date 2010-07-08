@@ -64,6 +64,26 @@ template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaV
 template class RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3f1Types> > >;
 template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3f1Types> > >;
 
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3dTypes> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3dTypes> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3dTypes> > >;
+//template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<Vec3dTypes> > >;
+//template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3dTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3dTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3dTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<Vec3dTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<Vec3fTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3d1Types> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3d1Types> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3d1Types> > >;
+template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3d1Types> > >;
+template class RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3d1Types> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3d1Types> > >;
+#endif // SOFA_GPU_CUDA_DOUBLE
 } // namespace mapping
 
 } // namespace component
@@ -99,6 +119,26 @@ int RigidMappingCudaClass = core::RegisterObject("Supports GPU-side computations
         .add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3f1Types> > > >()
         .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3f1Types> > > >()
         .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3f1Types> > > >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
+//.add< RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
+//.add< RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3dTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3dTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3dTypes> > > >()
+//.add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<Vec3dTypes> > > >()
+//.add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<Vec3fTypes> > > >()
+// //.add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+//.add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3d1Types> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3d1Types> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3d1Types> > > >()
+        .add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3d1Types> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3d1Types> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3d1Types> > > >()
+#endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
 } // namespace cuda

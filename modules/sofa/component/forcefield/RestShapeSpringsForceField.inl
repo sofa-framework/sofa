@@ -149,9 +149,13 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 
     f.resize(p.size());
 
-    const VecIndex& indices = points.getValue();
+// 	const VecIndex& indices = points.getValue();
+// 	const VecIndex& ext_indices = external_points.getValue();
+// 	const VecReal& k = stiffness.getValue();
+//      remove to be able to build in parallel
+    indices = points.getValue();
     const VecIndex& ext_indices = external_points.getValue();
-    const VecReal& k = stiffness.getValue();
+    k = stiffness.getValue();
 
     Springs_dir.resize(indices.size() );
     if ( k.size()!= indices.size() )
@@ -200,8 +204,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv &dx, double kFactor, double )
 {
-    const VecIndex& indices = points.getValue();
-    const VecReal& k = stiffness.getValue();
+//      remove to be able to build in parallel
+// 	const VecIndex& indices = points.getValue();
+// 	const VecReal& k = stiffness.getValue();
 
     if (k.size()!= indices.size() )
     {
@@ -226,8 +231,10 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDer
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, double kFact, unsigned int &offset)
 {
-    const VecIndex& indices = points.getValue();
-    const VecReal& k = stiffness.getValue();
+//      remove to be able to build in parallel
+// 	const VecIndex& indices = points.getValue();
+// 	const VecReal& k = stiffness.getValue();
+
     const int N = Coord::total_size;
 
     unsigned int curIndex = 0;

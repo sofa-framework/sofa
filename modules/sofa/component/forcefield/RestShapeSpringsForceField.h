@@ -103,6 +103,9 @@ public:
     virtual void draw();
     bool addBBox(double* minBBox, double* maxBBox);
 
+protected :
+    VecIndex indices;
+    VecReal k;
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.
