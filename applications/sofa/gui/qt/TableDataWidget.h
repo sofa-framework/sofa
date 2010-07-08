@@ -35,7 +35,7 @@
 #ifdef SOFA_QT4
 #include <sofa/gui/qt/QModelViewTableDataContainer.h>
 #else
-#include <sofa/gui/qt/QTableDataContainer.h>.h>
+#include <sofa/gui/qt/QTableDataContainer.h>
 #endif
 
 namespace sofa
@@ -66,6 +66,5 @@ public:
 } // namespace gui
 
 } // namespace sofa
-
 
 #endif
