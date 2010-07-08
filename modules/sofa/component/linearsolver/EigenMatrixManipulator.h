@@ -31,7 +31,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Sparse>
-USING_PART_OF_NAMESPACE_EIGEN
 
 namespace sofa
 {

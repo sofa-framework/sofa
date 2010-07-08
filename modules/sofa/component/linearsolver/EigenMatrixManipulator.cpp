@@ -44,7 +44,7 @@ void LMatrixManipulator::init(const SparseMatrixEigen& L)
     const unsigned int numConstraint=L.rows();
     const unsigned int numDofs=L.cols();
     LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].startFill(0.3*numDofs);
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(0.3*numDofs);
     for (int k=0; k<L.outerSize(); ++k)
     {
         for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
@@ -52,10 +52,10 @@ void LMatrixManipulator::init(const SparseMatrixEigen& L)
             const unsigned int row=it.row();
             const unsigned int col=it.col();
             const SReal value=it.value();
-            LMatrix[row].fill(col)=value;
+            LMatrix[row].insert(col)=value;
         }
     }
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].endFill();
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].finalize();
 }
 
 
@@ -67,9 +67,10 @@ void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &li
         const LLineManipulator& lManip=lines[l];
         SparseVectorEigen vector;
         lManip.buildCombination(LMatrix,vector);
+        matrix.startVec(l);
         for (SparseVectorEigen::InnerIterator it(vector); it; ++it)
         {
-            matrix.fill(l,it.index())=it.value();
+            matrix.insertBack(l,it.index())=it.value();
         }
     }
 }

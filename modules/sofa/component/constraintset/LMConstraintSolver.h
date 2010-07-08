@@ -37,7 +37,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Sparse>
-USING_PART_OF_NAMESPACE_EIGEN
 
 namespace sofa
 {
@@ -101,6 +100,8 @@ public:
         out << "(" << m.rows() << "," << m.cols() << ")";
         return out.str();
     }
+
+    void convertSparseToDense(const SparseMatrixEigen& sparseM, MatrixEigen& out) const;
 protected:
     /// Explore the graph, looking for LMConstraints: each LMConstraint can tell if they need State Propagation in order to compute the right hand term of the system
     virtual bool needPriorStatePropagation(core::behavior::BaseLMConstraint::ConstOrder order) const;

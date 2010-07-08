@@ -187,6 +187,7 @@ template <class BaseMapping>
 void SubsetMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     const IndexArray& indices = f_indices.getValue();
+    if (indices.empty()) return;
     for(unsigned int i = 0; i < in.size(); ++i)
     {
         out[indices[i]] += in[ i ];

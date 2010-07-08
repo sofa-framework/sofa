@@ -42,7 +42,8 @@ namespace constraintset
 LMConstraintDirectSolver::LMConstraintDirectSolver():
     solverAlgorithm(initData(&solverAlgorithm, "solverAlgorithm", "Algorithm used to solve the system W.Lambda=c"))
 {
-    sofa::helper::OptionsGroup algo(2,"SVD","QR");
+    //Add here other algo
+    sofa::helper::OptionsGroup algo(1,"SVD");
     solverAlgorithm.setValue(algo);
 }
 
@@ -128,18 +129,18 @@ bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::behavior::
 
         //------------------------------------------------------------------
         SparseMatrixEigen  L (rowsL.size(),  matrix.cols());
-        L.startFill(rowsL.size()*matrix.cols());
+        L.reserve(rowsL.size()*matrix.cols());
         manip.buildLMatrix(rowsL ,L);
-        L.endFill();
+        L.finalize();
         LMatricesDirectSolver.insert (std::make_pair(it->first,L ));
 
 
 
         //------------------------------------------------------------------
         SparseMatrixEigen  LT(rowsLT.size(), matrix.cols());
-        LT.startFill(rowsLT.size()*matrix.cols());
+        LT.reserve(rowsLT.size()*matrix.cols());
         manip.buildLMatrix(rowsLT,LT);
-        LT.endFill();
+        LT.finalize();
         LTMatricesDirectSolver.insert(std::make_pair(it->first,LT));
     }
 
@@ -161,6 +162,8 @@ bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::behavior::
 
     W=MatrixEigen::Zero(rows,cols);
 
+
+
     SparseMatrixEigen Wresult(Wsparse);
     for (int k=0; k<Wresult.outerSize(); ++k)
         for (SparseMatrixEigen::InnerIterator it(Wresult,k); it; ++it) W(it.row(),it.col()) = it.value();
@@ -181,24 +184,17 @@ bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::behavior::
     arg1.push_back(std::make_pair("Dimension", printDimension(W)));
     sofa::simulation::Visitor::printNode("DirectSolveSystem", "",arg1);
 #endif
-    if (algo == "QR")
+    if(algo == "SVD")
     {
-        Eigen::QR< MatrixEigen > solverQR(W);
-        if (this->f_printLog.getValue()) sout << printDimension(W) << " is W invertible? " << std::boolalpha << solverQR.isInvertible()  << sendl;
-        if (solverQR.isInvertible())
-            solverQR.solve(c, &Lambda);
-        else
-        {
-            if (this->f_printLog.getValue()) sout << "Fallback on SVD decomposition" << sendl;
-            Eigen::SVD< MatrixEigen > solverSVD(W);
-            solverSVD.solve(c, &Lambda);
-        }
+        Eigen::JacobiSVD< MatrixEigen > solverSVD(W);
+        VectorEigen invSingularValues(solverSVD.singularValues());
 
-    }
-    else if(algo == "SVD")
-    {
-        Eigen::SVD< MatrixEigen > solverSVD(W);
-        solverSVD.solve(c, &Lambda);
+        for (unsigned int i=0; i<invSingularValues.size(); ++i)
+        {
+            if (invSingularValues[i] < 1e-10) invSingularValues[i]=0;
+            else invSingularValues[i]=1/invSingularValues[i];
+        }
+        Lambda.noalias() = solverSVD.matrixV()*invSingularValues.asDiagonal()*solverSVD.matrixU().transpose()*c;
     }
 
     if (this->f_printLog.getValue())
@@ -315,10 +311,11 @@ void LMConstraintDirectSolver::buildLeftRectangularMatrix(const DofToMatrix& inv
     {
         const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const SparseMatrixEigen &invMass=invMassMatrix.find(dofs)->second;
-        SparseMatrixEigen &L =LMatrix[dofs];  L.endFill();
-        SparseMatrixEigen &LT=LTMatrix[dofs]; LT.endFill();
+        const SparseMatrixEigen &L =LMatrix[dofs];
+        const SparseMatrixEigen &LT=LTMatrix[dofs];
 
-        const SparseMatrixEigen &invMass_LT=invMass.marked<Eigen::SelfAdjoint|Eigen::UpperTriangular>()*LT.transpose();
+        const SparseMatrixEigen &invMass_LT=invMass*LT.transpose();
+
         invMass_Ltrans.insert(std::make_pair(dofs, invMass_LT));
         const SparseColMajorMatrixEigen& temp=L*invMass_LT;
         LeftMatrix += temp;
