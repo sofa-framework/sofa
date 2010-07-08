@@ -531,7 +531,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
         case 0:
         {
             Deriv v;
-            DRot omega;
+            DRot omega = DRot();
             for (unsigned int i = 0; i < pts.size(); i++)
             {
                 // out = Jt in
@@ -562,7 +562,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
                 Deriv v;
-                DRot omega;
+                DRot omega = DRot();
                 for (unsigned int i = 0; i < val; i++)
                 {
                     Deriv f = in[cpt];
@@ -586,7 +586,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
                 Deriv v;
-                DRot omega;
+                DRot omega = DRot();
                 for (unsigned int i = 0; i < repartition.getValue()[ito]; i++)
                 {
                     Deriv f = in[cpt];
@@ -611,7 +611,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
         case 0:
         {
             Deriv v;
-            DRot omega;
+            DRot omega = DRot();
             for (; it != indices.end(); it++)
             {
                 const int i = (*it);
@@ -644,7 +644,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
                 Deriv v;
-                DRot omega;
+                DRot omega = DRot();
                 for (unsigned int i = 0; i < val && it != indices.end(); i++, cpt++)
                 {
                     const unsigned int idx = (*it);
@@ -672,7 +672,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
             for (unsigned int ito = 0; ito < out.size(); ito++)
             {
                 Deriv v;
-                DRot omega;
+                DRot omega = DRot();
                 for (unsigned int i = 0; i < repartition.getValue()[ito] && it
                         != indices.end(); i++, cpt++)
                 {
@@ -712,7 +712,7 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
         for (unsigned int i = 0; i < in.size(); i++)
         {
             Deriv v;
-            DRot omega;
+            DRot omega = DRot();
             OutConstraintIterator itOut;
             std::pair<OutConstraintIterator, OutConstraintIterator> iter =
                 in[i].data();
@@ -758,7 +758,7 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
                 Deriv v;
-                DRot omega;
+                DRot omega = DRot();
                 bool needToInsert = false;
 
                 for (unsigned int r = 0; r < val && it != iter.second; r++, cpt++)
@@ -797,7 +797,7 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
                 Deriv v;
-                DRot omega;
+                DRot omega = DRot();
                 bool needToInsert = false;
 
                 for (unsigned int r = 0; r < repartition.getValue()[ito] && it
@@ -831,7 +831,7 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
     const VecCoord& out = *this->toModel->getX();
     const InVecCoord& in = *this->fromModel->getX();
     const VecCoord& pts = this->getPoints();
-    out.resize(pts.size());
+    assert(pts.size() == out.size());
 
     if (matrixJ.get() == 0 || updateJ)
     {
