@@ -364,11 +364,6 @@ const typename RigidMapping<BasicMapping>::VecCoord & RigidMapping<BasicMapping>
 template<class BasicMapping>
 void RigidMapping<BasicMapping>::apply(VecCoord& out, const InVecCoord& in)
 {
-    //serr<<"RigidMapping<BasicMapping>::apply "<<getName()<<sendl;
-    unsigned int cptOut;
-    unsigned int val;
-    Coord translation;
-    Mat rotation;
     const VecCoord& pts = this->getPoints();
 
     updateJ = true;
@@ -376,72 +371,63 @@ void RigidMapping<BasicMapping>::apply(VecCoord& out, const InVecCoord& in)
     rotatedPoints.resize(pts.size());
     out.resize(pts.size());
 
-    switch (repartition.getValue().size())
-    {
-    case 0: //no value specified : simple rigid mapping
+    unsigned repartitionCount = repartition.getValue().size();
 
+    if (repartitionCount > 1 && repartitionCount != in.size())
+    {
+        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        return;
+    }
+
+    unsigned inIdxBegin;
+    unsigned inIdxEnd;
+
+    if (repartitionCount == 0)
+    {
+        inIdxBegin = index.getValue();
         if (indexFromEnd.getValue())
         {
-            translation = in[in.size() - 1 - index.getValue()].getCenter();
-            in[in.size() - 1 - index.getValue()].writeRotationMatrix(rotation);
+            inIdxBegin = in.size() - 1 - inIdxBegin;
         }
-        else
+        inIdxEnd = inIdxBegin + 1;
+    }
+    else
+    {
+        inIdxBegin = 0;
+        inIdxEnd = in.size();
+    }
+
+    unsigned outputPerInput;
+    if (repartitionCount == 0)
+    {
+        outputPerInput = pts.size();
+    }
+    else
+    {
+        outputPerInput = repartition.getValue()[0];
+    }
+
+    Coord translation;
+    Mat rotation;
+
+    for (unsigned inIdx = inIdxBegin, outIdx = 0; inIdx < inIdxEnd; ++inIdx)
+    {
+        if (repartitionCount > 1)
         {
-            translation = in[index.getValue()].getCenter();
-            in[index.getValue()].writeRotationMatrix(rotation);
+            outputPerInput = repartition.getValue()[inIdx];
         }
 
-        for (unsigned int i = 0; i < pts.size(); i++)
+        translation = in[inIdx].getCenter();
+        in[inIdx].writeRotationMatrix(rotation);
+
+        for (unsigned outputCount = 0;
+                outputCount < outputPerInput;
+                ++outputCount, ++outIdx)
         {
-            rotatedPoints[i] = rotation * pts[i];
-            out[i] = rotatedPoints[i];
-            out[i] += translation;
+            rotatedPoints[outIdx] = rotation * pts[outIdx];
+            out[outIdx] = rotatedPoints[outIdx];
+            out[outIdx] += translation;
         }
-
-        break;
-
-    case 1: //one value specified : uniform repartition mapping on the input dofs
-        val = repartition.getValue()[0];
-        //Out::VecCoord::iterator itOut = out.begin();
-        cptOut = 0;
-
-        for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
-        {
-            translation = in[ifrom].getCenter();
-            in[ifrom].writeRotationMatrix(rotation);
-
-            for (unsigned int ito = 0; ito < val; ito++)
-            {
-                rotatedPoints[cptOut] = rotation * pts[cptOut];
-                out[cptOut] = rotatedPoints[cptOut];
-                out[cptOut] += translation;
-                cptOut++;
-            }
-        }
-        break;
-
-    default: //n values are specified : heterogen repartition mapping on the input dofs
-        if (repartition.getValue().size() != in.size())
-        {
-            serr << "Error : mapping dofs repartition is not correct" << sendl;
-            return;
-        }
-        cptOut = 0;
-
-        for (unsigned int ifrom = 0; ifrom < in.size(); ifrom++)
-        {
-            translation = in[ifrom].getCenter();
-            in[ifrom].writeRotationMatrix(rotation);
-
-            for (unsigned int ito = 0; ito < repartition.getValue()[ifrom]; ito++)
-            {
-                rotatedPoints[cptOut] = rotation * pts[cptOut];
-                out[cptOut] = rotatedPoints[cptOut];
-                out[cptOut] += translation;
-                cptOut++;
-            }
-        }
-        break;
     }
 }
 
@@ -934,6 +920,8 @@ struct RigidMappingMatrixHelper<3, Real>
     static void setMatrix(Matrix& mat,
             const Vector& vec)
     {
+        // out = J in
+        // J = [ I -OM^ ]
         mat[0][0] = (Real) 1     ;    mat[1][0] = (Real) 0     ;    mat[2][0] = (Real) 0     ;
         mat[0][1] = (Real) 0     ;    mat[1][1] = (Real) 1     ;    mat[2][1] = (Real) 0     ;
         mat[0][2] = (Real) 0     ;    mat[1][2] = (Real) 0     ;    mat[2][2] = (Real) 1     ;
@@ -946,8 +934,6 @@ struct RigidMappingMatrixHelper<3, Real>
 template<class BasicMapping>
 void RigidMapping<BasicMapping>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 {
-    // out = J in
-    // J = [ I -OM^ ]
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
     RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
 }
