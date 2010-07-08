@@ -25,6 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+
 #include <iostream>
 
 
@@ -35,8 +36,11 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
+
 #include <sofa/component/init.h>
 
+#include <functional>
+#include <ctype.h>
 using sofa::core::SofaLibrary;
 using sofa::core::CategoryLibrary;
 using sofa::core::ComponentLibrary;
@@ -84,6 +88,21 @@ static std::map< std::string, std::string >               includeComponents;
 static std::multimap< std::string, std::string >          typedefComponents;
 static std::multimap< std::string, std::string > simplificationTypedefComponents;
 
+static const std::string multimappingName  = "MultiMapping";
+static const std::string multi2mappingName = "Multi2Mapping";
+static const std::string mechanicalmultimappingName  = "MechanicalMultiMapping";
+static const std::string mechanicalmulti2mappingName = "MechanicalMulti2Mapping";
+static const std::string::value_type bracket_open = '[';
+static const std::string::value_type bracket_close = ']';
+
+struct isbracket : public std::unary_function<std::string::value_type, bool>
+{
+    typedef std::string::traits_type char_trait;
+    bool operator() (const std::string::value_type& c )
+    {
+        return ( char_trait::eq(c,bracket_open)  || char_trait::eq(c,bracket_close) );
+    }
+};
 
 void printIncludes( const CategoryLibrary &category)
 {
@@ -164,11 +183,28 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                 std::string componentName=component.getName();
                 std::string templateCombination=templateName;
                 bool isMapping=false;
-                //Special Case of Mapping!
-                if (categoryName == templateName.substr(0, categoryName.size()))
+
+                //Special case for Mapping and MultiMappings !
+                if ( templateName.substr(0,multimappingName.size()) == multimappingName )
+                {
+                    categoryName = multimappingName;
+                }
+                if ( templateName.substr(0,multi2mappingName.size()) == multi2mappingName )
+                {
+                    categoryName = multi2mappingName;
+                }
+                if ( templateName.substr(0,mechanicalmultimappingName.size()) == mechanicalmultimappingName )
+                {
+                    categoryName = mechanicalmultimappingName;
+                }
+                if ( templateName.substr(0,mechanicalmulti2mappingName.size()) == mechanicalmulti2mappingName )
+                {
+                    categoryName = mechanicalmulti2mappingName;
+                }
+                if (templateName.substr(0, categoryName.size()) == categoryName )
                 {
                     //Special case of Mappings
-                    //Transform: Mapping<Vec3d,Vec3d> into Vec3d,Vec3d
+                    //Transform: (Mechanical)(Multi)Mapping<Vec3d,Vec3d> into Vec3d,Vec3d
                     templateCombination = templateName.substr(categoryName.size()+1);
                     templateCombination = templateCombination.substr(0,templateCombination.size()-1);
                     isMapping=true;
@@ -178,7 +214,32 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                         componentName = componentName.substr(0,componentName.size()-7);
                         componentName += "MechanicalMapping";
                     }
+                    if( categoryName.find(mechanicalmultimappingName) != std::string::npos )
+                    {
+                        componentName = componentName.substr(0,componentName.size()-multimappingName.size() );
+                        componentName += mechanicalmultimappingName;
+                    }
+                    if( categoryName.find(mechanicalmulti2mappingName) != std::string::npos )
+                    {
+                        componentName = componentName.substr(0,componentName.size()-mechanicalmulti2mappingName.size() );
+                        componentName += mechanicalmulti2mappingName;
+                    }
                 }
+
+                /*    std::vector<std::string> templateList;
+                    std::vector<std::string>::const_iterator iter_template;
+                    std::string templateParam;
+                    std::istringstream iss(templateCombination);
+                    while ( std::getline( iss, templateParam, ',' ) ){
+                      templateParam.erase(std::remove_if(templateParam.begin(),templateParam.end(),isbracket()),templateParam.end());
+                      templateList.push_back(templateParam);
+                    }
+                    bool is_valid;
+                    for ( iter_template = templateList.begin() ; iter_template != templateList.end() ; ++iter_template ){
+
+                       is_valid =  ( templateExtension.find(*iter_template) != templateExtension.end() );
+                    }*/
+
                 std::size_t separation = templateCombination.find(',');
                 if (separation != std::string::npos)
                 {
@@ -317,7 +378,7 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
 
     typedefFile << "\n\n";
 
-    typedef std::multimap< std::string, std::string >::const_iterator multimapConstIterator;
+    typedef std::multimap< std::string, std::string >::iterator multimapConstIterator;
     //---------------------------------------------------------------------------------------------
     //TYPEDEF DECLARATIONS
     for (itIncludes=includeComponents.begin(); itIncludes!=includeComponents.end(); ++itIncludes)
@@ -331,7 +392,17 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
     //Typedef for " << itIncludes->first << "\n";
     for (multimapConstIterator it=range.first; it!=range.second; it++)
     {
-        typedefFile << "typedef " << it->second << ";\n";
+        std::string& str = (it->second);
+#ifdef WIN32
+        static const std::string keyword_class = "class";
+        size_t pos  = 0;
+        while( ( pos = str.find(keyword_class,pos) ) != std::string::npos )
+        {
+            str.replace(pos, keyword_class.length() ,"");
+            pos += 1;
+        }
+#endif
+        typedefFile << "typedef " << str << ";\n";
     }
     typedefFile << "\n\n";
 }
@@ -380,28 +451,10 @@ typedefFile << "\n#endif\n";
 typedefFile.close();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 int main(int , char** )
 {
 
     sofa::component::init();
-
     SofaLibrary library; library.build();
     const SofaLibrary::VecCategory &categories = library.getCategories();
 
