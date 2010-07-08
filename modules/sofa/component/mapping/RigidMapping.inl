@@ -505,176 +505,77 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
 template<class BasicMapping>
 void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
 {
-    unsigned int val;
-    unsigned int cpt;
     const VecCoord& pts = this->getPoints();
 
-    if (!(maskTo->isInUse()))
+    bool isMaskInUse = maskTo->isInUse();
+    maskFrom->setInUse(isMaskInUse);
+
+    unsigned repartitionCount = repartition.getValue().size();
+
+    if (repartitionCount > 1 && repartitionCount != out.size())
     {
-        maskFrom->setInUse(false);
-        switch (repartition.getValue().size())
+        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        return;
+    }
+
+    unsigned outIdxBegin;
+    unsigned outIdxEnd;
+
+    if (repartitionCount == 0)
+    {
+        outIdxBegin = index.getValue();
+        if (indexFromEnd.getValue())
         {
-        case 0:
-        {
-            Deriv v;
-            DRot omega = DRot();
-            for (unsigned int i = 0; i < pts.size(); i++)
-            {
-                // out = Jt in
-                // Jt = [ I     ]
-                //      [ -OM^t ]
-                // -OM^t = OM^
-
-                Deriv f = in[i];
-                //serr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<sendl;
-                v += f;
-                omega += cross(rotatedPoints[i], f);
-                //serr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<sendl;
-                //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
-            }
-
-            unsigned outIdx = indexFromEnd.getValue() ?
-                    out.size() - 1 - index.getValue()
-                    : index.getValue();
-
-            out[outIdx].getVCenter() += v;
-            out[outIdx].getVOrientation() += omega;
-
-            break;
+            outIdxBegin = in.size() - 1 - outIdxBegin;
         }
-        case 1:
-            val = repartition.getValue()[0];
-            cpt = 0;
-            for (unsigned int ito = 0; ito < out.size(); ito++)
-            {
-                Deriv v;
-                DRot omega = DRot();
-                for (unsigned int i = 0; i < val; i++)
-                {
-                    Deriv f = in[cpt];
-                    v += f;
-                    omega += cross(rotatedPoints[cpt], f);
-                    cpt++;
-                }
-                out[ito].getVCenter() += v;
-                out[ito].getVOrientation() += omega;
-            }
-            break;
-        default:
-            if (repartition.getValue().size() != out.size())
-            {
-                serr << "Error : mapping dofs repartition is not correct"
-                        << sendl;
-                return;
-            }
-
-            cpt = 0;
-            for (unsigned int ito = 0; ito < out.size(); ito++)
-            {
-                Deriv v;
-                DRot omega = DRot();
-                for (unsigned int i = 0; i < repartition.getValue()[ito]; i++)
-                {
-                    Deriv f = in[cpt];
-                    v += f;
-                    omega += cross(rotatedPoints[cpt], f);
-                    cpt++;
-                }
-                out[ito].getVCenter() += v;
-                out[ito].getVOrientation() += omega;
-            }
-            break;
-        }
+        outIdxEnd = outIdxBegin + 1;
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices = maskTo->getEntries();
+        outIdxBegin = 0;
+        outIdxEnd = in.size();
+    }
 
-        ParticleMask::InternalStorage::const_iterator it = indices.begin();
-        switch (repartition.getValue().size())
+    unsigned inputPerOutput;
+    if (repartitionCount == 0)
+    {
+        inputPerOutput = pts.size();
+    }
+    else
+    {
+        inputPerOutput = repartition.getValue()[0];
+    }
+
+    typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    const ParticleMask::InternalStorage& indices = maskTo->getEntries();
+    ParticleMask::InternalStorage::const_iterator it = indices.begin();
+
+    for (unsigned outIdx = outIdxBegin, inIdx = 0; outIdx < outIdxEnd; ++outIdx)
+    {
+        if (repartitionCount > 1)
         {
-        case 0:
-        {
-            Deriv v;
-            DRot omega = DRot();
-            for (; it != indices.end(); it++)
-            {
-                const int i = (*it);
-                // out = Jt in
-                // Jt = [ I     ]
-                //      [ -OM^t ]
-                // -OM^t = OM^
-
-                Deriv f = in[i];
-                //serr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<sendl;
-                v += f;
-                omega += cross(rotatedPoints[i], f);
-                //serr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<sendl;
-                //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
-            }
-
-            unsigned outIdx = indexFromEnd.getValue() ?
-                    out.size() - 1 - index.getValue()
-                    : index.getValue();
-
-            out[outIdx].getVCenter() += v;
-            out[outIdx].getVOrientation() += omega;
-            maskFrom->insertEntry(outIdx);
-
-            break;
+            inputPerOutput = repartition.getValue()[outIdx];
         }
-        case 1:
-            val = repartition.getValue()[0];
-            cpt = 0;
-            for (unsigned int ito = 0; ito < out.size(); ito++)
-            {
-                Deriv v;
-                DRot omega = DRot();
-                for (unsigned int i = 0; i < val && it != indices.end(); i++, cpt++)
-                {
-                    const unsigned int idx = (*it);
-                    if (idx != cpt)
-                        continue;
-                    Deriv f = in[cpt];
-                    v += f;
-                    omega += cross(rotatedPoints[cpt], f);
-                    it++;
-                }
-                out[ito].getVCenter() += v;
-                out[ito].getVOrientation() += omega;
-                maskFrom->insertEntry(ito);
-            }
-            break;
-        default:
-            if (repartition.getValue().size() != out.size())
-            {
-                serr << "Error : mapping dofs repartition is not correct"
-                        << sendl;
-                return;
-            }
 
-            cpt = 0;
-            for (unsigned int ito = 0; ito < out.size(); ito++)
+        for (unsigned inputCount = 0;
+                inputCount < inputPerOutput && !(isMaskInUse && it == indices.end());
+                ++inputCount, ++inIdx)
+        {
+            if (isMaskInUse)
             {
-                Deriv v;
-                DRot omega = DRot();
-                for (unsigned int i = 0; i < repartition.getValue()[ito] && it
-                        != indices.end(); i++, cpt++)
+                if (inIdx != *it)
                 {
-                    const unsigned int idx = (*it);
-                    if (idx != cpt)
-                        continue;
-                    Deriv f = in[cpt];
-                    v += f;
-                    omega += cross(rotatedPoints[cpt], f);
-                    it++;
+                    continue;
                 }
-                out[ito].getVCenter() += v;
-                out[ito].getVOrientation() += omega;
-                maskFrom->insertEntry(ito);
+                ++it;
             }
-            break;
+            out[outIdx].getVCenter() += in[inIdx];
+            out[outIdx].getVOrientation() += cross(rotatedPoints[inIdx], in[inIdx]);
+
+        }
+        if (isMaskInUse)
+        {
+            maskFrom->insertEntry(outIdx);
         }
     }
 }
