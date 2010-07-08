@@ -420,9 +420,9 @@ void RigidMapping<BasicMapping>::apply(VecCoord& out, const InVecCoord& in)
         translation = in[inIdx].getCenter();
         in[inIdx].writeRotationMatrix(rotation);
 
-        for (unsigned outputCount = 0;
-                outputCount < outputPerInput;
-                ++outputCount, ++outIdx)
+        for (unsigned iOutput = 0;
+                iOutput < outputPerInput;
+                ++iOutput, ++outIdx)
         {
             rotatedPoints[outIdx] = rotation * pts[outIdx];
             out[outIdx] = rotatedPoints[outIdx];
@@ -485,9 +485,9 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
             outputPerInput = repartition.getValue()[inIdx];
         }
 
-        for (unsigned outputCount = 0;
-                outputCount < outputPerInput && !(isMaskInUse && it == indices.end());
-                ++outputCount, ++outIdx)
+        for (unsigned iOutput = 0;
+                iOutput < outputPerInput && !(isMaskInUse && it == indices.end());
+                ++iOutput, ++outIdx)
         {
             if (isMaskInUse)
             {
@@ -526,14 +526,14 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
         outIdxBegin = index.getValue();
         if (indexFromEnd.getValue())
         {
-            outIdxBegin = in.size() - 1 - outIdxBegin;
+            outIdxBegin = out.size() - 1 - outIdxBegin;
         }
         outIdxEnd = outIdxBegin + 1;
     }
     else
     {
         outIdxBegin = 0;
-        outIdxEnd = in.size();
+        outIdxEnd = out.size();
     }
 
     unsigned inputPerOutput;
@@ -557,9 +557,9 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
             inputPerOutput = repartition.getValue()[outIdx];
         }
 
-        for (unsigned inputCount = 0;
-                inputCount < inputPerOutput && !(isMaskInUse && it == indices.end());
-                ++inputCount, ++inIdx)
+        for (unsigned iInput = 0;
+                iInput < inputPerOutput && !(isMaskInUse && it == indices.end());
+                ++iInput, ++inIdx)
         {
             if (isMaskInUse)
             {
@@ -782,9 +782,9 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
                 outputPerInput = repartition.getValue()[inIdx];
             }
 
-            for (unsigned outputCount = 0;
-                    outputCount < outputPerInput; // outputCount < outputPerInput && !(isMaskInUse && it == indices.end());
-                    ++outputCount, ++outIdx)
+            for (unsigned iOutput = 0;
+                    iOutput < outputPerInput; // iOutput < outputPerInput && !(isMaskInUse && it == indices.end());
+                    ++iOutput, ++outIdx)
             {
 //                if (isMaskInUse)
 //                {
