@@ -99,6 +99,7 @@ HEADERS += mycuda.h \
 
 SOURCES += mycuda.cpp \
            CudaBoxROI.cpp  \
+	   CudaRestShapeSpringsForceField.cpp  \
 	   CudaIndexValueMapper.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
