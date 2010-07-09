@@ -81,18 +81,18 @@ public:
         ,pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
         ,contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
         ,intersection(0)
-    {};
+    {initColorContactState();};
     DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2):
         core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
         ,pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
         ,contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
         ,intersection(0)
-    {};
+    {initColorContactState();};
     DistanceLMContactConstraint():
         pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
         ,contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
         ,intersection(0)
-    {}
+    {initColorContactState();}
 
     ~DistanceLMContactConstraint() {};
 
@@ -154,6 +154,22 @@ protected:
 protected:
     DistanceLMContactConstraintInternalData<DataTypes> data;
     friend class DistanceLMContactConstraintInternalData<DataTypes>;
+
+
+    void initColorContactState()
+    {
+        colorsContactState.clear();
+        //Vanishing
+        colorsContactState.push_back(defaulttype::Vec<4,float>(0.0f,1.0f,0.0f,1.0));
+        //Sticking
+        colorsContactState.push_back(defaulttype::Vec<4,float>(1.0f,0.0f,0.0f,1.0));
+        //Sliding
+        colorsContactState.push_back(defaulttype::Vec<4,float>(1.0f,1.0f,0.0f,1.0));
+        //Sliding Direction
+        colorsContactState.push_back(defaulttype::Vec<4,float>(1.0f,0.0f,1.0f,1.0));
+    }
+
+    helper::vector< defaulttype::Vec<4,float> > colorsContactState;
 };
 
 
