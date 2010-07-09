@@ -87,6 +87,7 @@ static std::map< TYPES, std::string >                     fileExtension;
 static std::map< std::string, std::string >               includeComponents;
 static std::multimap< std::string, std::string >          typedefComponents;
 static std::multimap< std::string, std::string > simplificationTypedefComponents;
+static std::multimap< std::string, std::string > bannedComponents;
 
 static const std::string multimappingName  = "MultiMapping";
 static const std::string multi2mappingName = "Multi2Mapping";
@@ -104,6 +105,27 @@ struct isbracket : public std::unary_function<std::string::value_type, bool>
     }
 };
 
+bool belongToBannedComponents(const std::string& category, const std::string& component )
+{
+    std::multimap< std::string, std::string>::iterator it;
+    std::multimap< std::string, std::string>::iterator end;
+
+    it = bannedComponents.find(category);
+    if ( it == bannedComponents.end() ) return false;
+
+    end = bannedComponents.upper_bound(category);
+
+    for ( ; it != end; ++it )
+    {
+        if ( component == it->second) return true;
+    }
+
+    return false;
+
+
+
+}
+
 void printIncludes( const CategoryLibrary &category)
 {
 
@@ -116,6 +138,8 @@ void printIncludes( const CategoryLibrary &category)
         std::ostringstream output;
 
         const ComponentLibrary &component = *(*itComp);
+
+        if ( belongToBannedComponents(category.getName(), component.getName() ) )continue;
 
         const std::type_info& defaultTypeInfo=component.getEntry()->creatorList.begin()->second->type();
 
@@ -156,6 +180,8 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
         const std::list< std::pair<std::string, Creator*> > &creatorList=component.getEntry()->creatorList;
         std::list< std::pair<std::string, Creator*> >::const_iterator itCreator;
 
+        if ( belongToBannedComponents(category.getName(), component.getName() ) ) continue;
+
         //Iterate on all the possible creation of templates
         for (itCreator=creatorList.begin(); itCreator!=creatorList.end(); ++itCreator)
         {
@@ -177,7 +203,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
             }
             else
             {
-                //Template not recognize
+                //Template not recognized
 
                 std::string categoryName=category.getName();
                 std::string componentName=component.getName();
@@ -454,6 +480,15 @@ typedefFile.close();
 int main(int , char** )
 {
 
+#ifdef WIN32
+    bannedComponents.insert(std::pair<std::string,std::string>("Controller","ComplianceMatrixUpdateManager" ) );
+    bannedComponents.insert(std::pair<std::string,std::string>("Controller","ComplianceMatrixUpdateManagerCarving" ) );
+//bannedComponents.insert(std::pair<std::string,std::string>("Controller","HandStateController" ) );
+//bannedComponents.insert(std::pair<std::string,std::string>("Controller","JointSpringController") );
+    bannedComponents.insert(std::pair<std::string,std::string>("Controller","TetrahedronCuttingManager") );
+    bannedComponents.insert(std::pair<std::string,std::string>("VisualModel","FlowVisualModel") );
+#endif
+
     sofa::component::init();
     SofaLibrary library; library.build();
     const SofaLibrary::VecCategory &categories = library.getCategories();
@@ -520,8 +555,32 @@ int main(int , char** )
     for (SofaLibrary::VecCategoryIterator itCat=categories.begin(); itCat!=categories.end(); ++itCat)
     {
     const CategoryLibrary &category = *(*itCat);
+
     const CategoryLibrary::VecComponent &components = category.getComponents();
 
+    /*      std::cout << category.getName() << std::endl;
+
+    if ( category.getName() != "BehaviorModel"
+    && category.getName() != "CollisionModel"
+    && category.getName() != "ConstraintSet"
+    && category.getName() != "ConstraintSolver"
+    && category.getName() != "Controller"
+    && category.getName() != "Engine"
+    && category.getName() != "ForceField"
+    && category.getName() != "InteractionForceField"
+    && category.getName() != "LinearSolver"
+    && category.getName() != "Mapping"
+    && category.getName() != "Mass"
+    && category.getName() != "MechanicalMapping"
+    && category.getName() != "MechanicalState"
+    && category.getName() != "ProjectiveConstraintSet"
+    && category.getName() != "Topology"
+    && category.getName() != "TopologyObject"
+    && category.getName() != "VisualModel"
+    && category.getName() != "_Miscellaneous"
+    )
+    continue;
+    */
 
     //First read all the components of the categories, and try to know if templates exist
     bool needToCreateTypedefs=false;
