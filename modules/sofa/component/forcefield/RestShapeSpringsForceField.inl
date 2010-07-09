@@ -51,6 +51,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
     , external_rest_shape(initData(&external_rest_shape, "external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
+    , recomput_indices(initData(&recomput_indices,true, "recomput_indices", "Recompute indices (should be false for BBOX)"))
     , restMState(NULL)
 {
 
@@ -136,6 +137,10 @@ void RestShapeSpringsForceField<DataTypes>::init()
             external_points.setValue(indices);
         }
     }
+
+    this->indices = points.getValue();
+    this->ext_indices = external_points.getValue();
+    this->k = stiffness.getValue();
 }
 
 
@@ -149,13 +154,14 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 
     f.resize(p.size());
 
-// 	const VecIndex& indices = points.getValue();
-// 	const VecIndex& ext_indices = external_points.getValue();
-// 	const VecReal& k = stiffness.getValue();
-//      remove to be able to build in parallel
-    indices = points.getValue();
-    const VecIndex& ext_indices = external_points.getValue();
-    k = stiffness.getValue();
+    if (recomput_indices.getValue())
+    {
+        indices = points.getValue();
+        ext_indices = external_points.getValue();
+        stiffness.getValue();
+    }
+
+
 
     Springs_dir.resize(indices.size() );
     if ( k.size()!= indices.size() )

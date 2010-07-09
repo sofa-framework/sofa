@@ -75,6 +75,7 @@ public:
     Data< VecReal > angularStiffness;
     Data< std::string > external_rest_shape;
     Data< VecIndex > external_points;
+    Data< bool > recomput_indices;
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
 
@@ -106,6 +107,7 @@ public:
 protected :
     VecIndex indices;
     VecReal k;
+    VecIndex ext_indices;
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.
