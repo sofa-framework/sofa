@@ -191,7 +191,7 @@ void IdentityMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const t
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
         ParticleMask::InternalStorage::const_iterator it;
         for (it=indices.begin(); it!=indices.end(); it++)
@@ -219,7 +219,7 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
         ParticleMask::InternalStorage::const_iterator it;
         for (it=indices.begin(); it!=indices.end(); it++)

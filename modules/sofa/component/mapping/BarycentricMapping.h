@@ -275,16 +275,16 @@ protected:
     sofa::helper::vector< MappingData2D >  map2d;
     sofa::helper::vector< MappingData3D >  map3d;
 
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
     MatrixType* matrixJ;
     bool updateJ;
 public:
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
             topology::PointSetTopologyContainer* toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
           maskFrom(_maskFrom), maskTo(_maskTo),
           matrixJ(NULL), updateJ(true)
@@ -406,8 +406,8 @@ protected:
 
     sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* fromTopology;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
     MatrixType* matrixJ;
     bool updateJ;
@@ -415,8 +415,8 @@ protected:
 public:
     BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology,
             topology::PointSetTopologyContainer* toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : Inherit(fromTopology, toTopology),fromTopology(fromTopology),
           maskFrom(_maskFrom), maskTo(_maskTo),
           matrixJ(NULL), updateJ(true)
@@ -432,8 +432,8 @@ public:
 
     bool isEmpty() {return this->map.size() == 0;}
     void setTopology(topology::RegularGridTopology* _topology) {this->fromTopology = _topology;}
-    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *m) {maskFrom = m;}
-    void setMaskTo  (core::behavior::BaseMechanicalState::ParticleMask *m) {maskTo = m;}
+    void setMaskFrom(helper::ParticleMask *m) {maskFrom = m;}
+    void setMaskTo  (helper::ParticleMask *m) {maskTo = m;}
     topology::RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->fromTopology);}
 
     int addPointInCube(const int cubeIndex, const SReal* baryCoords);
@@ -491,16 +491,16 @@ protected:
 
     sofa::helper::vector<CubeData> map;
     topology::SparseGridTopology* fromTopology;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
     MatrixType* matrixJ;
     bool updateJ;
 public:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
             topology::PointSetTopologyContainer* _toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           fromTopology(fromTopology),
           maskFrom(_maskFrom), maskTo(_maskTo),
@@ -580,14 +580,14 @@ protected:
     topology::PointData< MappingData >  map;
     topology::EdgeSetTopologyContainer*			_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
 public:
     BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
             topology::PointSetTopologyContainer* _toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
@@ -667,14 +667,14 @@ protected:
     topology::PointData< MappingData >		map;
     topology::TriangleSetTopologyContainer*			_fromContainer;
     topology::TriangleSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
 public:
     BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
             topology::PointSetTopologyContainer* _toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
@@ -754,14 +754,14 @@ protected:
     topology::PointData< MappingData >  map;
     topology::QuadSetTopologyContainer*			_fromContainer;
     topology::QuadSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
 public:
     BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
             topology::PointSetTopologyContainer* _toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
@@ -850,16 +850,16 @@ protected:
 
     topology::TetrahedronSetTopologyContainer*			_fromContainer;
     topology::TetrahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
 
 
 public:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
             topology::PointSetTopologyContainer* _toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
@@ -868,8 +868,8 @@ public:
 
     /*  //IPB
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology,
-                                         core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-                                         core::behavior::BaseMechanicalState::ParticleMask *_maskTo,
+                                         helper::ParticleMask *_maskFrom,
+                                         helper::ParticleMask *_maskTo,
                                          core::objectmodel::BaseContext *_mappingContext)
      : TopologyBarycentricMapper<In,Out>(topology),
     _container(topology),
@@ -955,8 +955,8 @@ protected:
     topology::HexahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
 
     std::set<int>	_invalidIndex;
-    core::behavior::BaseMechanicalState::ParticleMask *maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    helper::ParticleMask *maskFrom;
+    helper::ParticleMask *maskTo;
 
 public:
     BarycentricMapperHexahedronSetTopology()
@@ -966,8 +966,8 @@ public:
 
     BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
             topology::PointSetTopologyContainer* _toTopology,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+            helper::ParticleMask *_maskFrom,
+            helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
@@ -1001,8 +1001,8 @@ public:
             std::list< const core::topology::TopologyChange *>::const_iterator);
     bool isEmpty() {return this->map.getValue().empty();}
     void setTopology(topology::HexahedronSetTopologyContainer* _topology) {this->fromTopology = _topology; _fromContainer=_topology;}
-    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *m) {maskFrom = m;}
-    void setMaskTo(core::behavior::BaseMechanicalState::ParticleMask *m) {maskTo = m;}
+    void setMaskFrom(helper::ParticleMask *m) {maskFrom = m;}
+    void setMaskTo(helper::ParticleMask *m) {maskTo = m;}
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperHexahedronSetTopology<In, Out> &b )
     {
         unsigned int size_vec;

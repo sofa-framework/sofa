@@ -883,8 +883,8 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopolo
 
     BaseMechanicalState *dofFrom = static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
     BaseMechanicalState *dofTo = static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
-    BaseMechanicalState::ParticleMask *maskFrom = &dofFrom->forceMask;
-    BaseMechanicalState::ParticleMask *maskTo = NULL;
+    helper::ParticleMask *maskFrom = &dofFrom->forceMask;
+    helper::ParticleMask *maskTo = NULL;
 
     if (dofTo)
         maskTo = &dofTo->forceMask;
@@ -1469,7 +1469,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
     else
     {
         //std::cout << "BarycentricMapper: applyJ with masks" << std::endl;
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         const unsigned int sizeMap1d=map1d.size();
@@ -1607,7 +1607,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
     else
     {
 
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -1682,7 +1682,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeri
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -1740,7 +1740,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -1780,7 +1780,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJ ( typename Out::VecDer
     else
     {
 
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -1823,7 +1823,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
     else
     {
 
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -1867,7 +1867,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::Vec
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -1917,7 +1917,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecD
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2062,7 +2062,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2226,7 +2226,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDer
     else
     {
 
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2312,7 +2312,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecDeri
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2380,7 +2380,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJT ( typename In::VecDeriv& 
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2423,7 +2423,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJT ( typename In::VecDer
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2469,7 +2469,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJT ( typename In::VecDeriv& 
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2519,7 +2519,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Vec
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 
@@ -2582,7 +2582,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::VecD
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
 

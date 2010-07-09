@@ -1660,7 +1660,7 @@ void MechanicalObject<DataTypes>::accumulateForce()
         }
         else
         {
-            typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            typedef helper::ParticleMask ParticleMask;
             const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
             ParticleMask::InternalStorage::const_iterator it;
             for (it = indices.begin(); it != indices.end(); it++)
@@ -2661,7 +2661,7 @@ void MechanicalObject<DataTypes>::resetForce()
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
 
         const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
         ParticleMask::InternalStorage::const_iterator it;

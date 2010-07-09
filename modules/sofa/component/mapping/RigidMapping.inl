@@ -474,7 +474,7 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
         outputPerInput = repartition.getValue()[0];
     }
 
-    typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    typedef helper::ParticleMask ParticleMask;
     const ParticleMask::InternalStorage& indices = maskTo->getEntries();
     ParticleMask::InternalStorage::const_iterator it = indices.begin();
 
@@ -546,7 +546,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
         inputPerOutput = repartition.getValue()[0];
     }
 
-    typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    typedef helper::ParticleMask ParticleMask;
     const ParticleMask::InternalStorage& indices = maskTo->getEntries();
     ParticleMask::InternalStorage::const_iterator it = indices.begin();
 
@@ -771,7 +771,7 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
             outputPerInput = repartition.getValue()[0];
         }
 
-//        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+//        typedef helper::ParticleMask ParticleMask;
 //        const ParticleMask::InternalStorage& indices = maskTo->getEntries();
 //        ParticleMask::InternalStorage::const_iterator it = indices.begin();
 

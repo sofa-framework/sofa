@@ -96,8 +96,8 @@ public:
     Data<sofa::helper::vector<unsigned int> >  repartition;
     Data< bool > globalToLocalCoords;
 
-    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    helper::ParticleMask* maskFrom;
+    helper::ParticleMask* maskTo;
 
 
     DeformableOnRigidFrameMapping ( In* from, Out* to );

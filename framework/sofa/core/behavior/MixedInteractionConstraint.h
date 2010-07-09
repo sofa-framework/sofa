@@ -66,7 +66,7 @@ public:
     typedef typename DataTypes2::VecConst VecConst2;
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
-    typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    typedef helper::ParticleMask ParticleMask;
 
     MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 

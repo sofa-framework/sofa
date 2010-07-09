@@ -62,6 +62,7 @@ HEADERS += helper.h \
     list.h \
     MarchingCubeUtility.h \
     MemoryManager.h \
+    ParticleMask.h \
     PolarDecompose.h \
     Quater.h \
     Quater.inl \
