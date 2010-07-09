@@ -63,7 +63,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    typedef helper::ParticleMask ParticleMask;
 
 //     using sofa::core::objectmodel::Data;
 

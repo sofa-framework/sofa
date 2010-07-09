@@ -69,8 +69,8 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
-    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    helper::ParticleMask* maskFrom;
+    helper::ParticleMask* maskTo;
     //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
 
     core::behavior::BaseMechanicalState *stateFrom;

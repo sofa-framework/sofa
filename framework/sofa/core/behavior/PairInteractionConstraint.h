@@ -62,7 +62,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    typedef helper::ParticleMask ParticleMask;
 
     PairInteractionConstraint(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 

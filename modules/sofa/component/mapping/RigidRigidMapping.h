@@ -82,8 +82,8 @@ public:
     Data< bool > indexFromEnd;
     Data< bool > globalToLocalCoords;
 
-    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    helper::ParticleMask* maskFrom;
+    helper::ParticleMask* maskTo;
 
 
     RigidRigidMapping(In* from, Out* to)

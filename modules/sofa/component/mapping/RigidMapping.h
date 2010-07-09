@@ -111,8 +111,8 @@ public:
     Data<bool> contactDuplicate;
     Data<std::string> nameOfInputMap;
 
-    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    helper::ParticleMask* maskFrom;
+    helper::ParticleMask* maskTo;
 
 
     RigidMapping ( In* from, Out* to )

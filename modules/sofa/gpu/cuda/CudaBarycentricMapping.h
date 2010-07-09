@@ -57,12 +57,12 @@ protected:
     topology::RegularGridTopology* topology;
     void calcMapT();
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::behavior::BaseMechanicalState::ParticleMask *, core::behavior::BaseMechanicalState::ParticleMask *)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
         : Inherit(fromTopology, toTopology)
         , maxNOut(0), topology(fromTopology)
     {}
-    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *) {}
-    void setMaskTo  (core::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskFrom(helper::ParticleMask *) {}
+    void setMaskTo  (helper::ParticleMask *) {}
 
     void clear(int reserve=0);
 
@@ -116,12 +116,12 @@ protected:
     void buildTranslate(unsigned outsize);
 
 public:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::behavior::BaseMechanicalState::ParticleMask *, core::behavior::BaseMechanicalState::ParticleMask *)
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
         : Inherit(fromTopology, toTopology)
         , topology(fromTopology), bHexa(true), bTrans(true)
     {}
-    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *) {}
-    void setMaskTo  (core::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskFrom(helper::ParticleMask *) {}
+    void setMaskTo  (helper::ParticleMask *) {}
 
     void clear(int reserve=0);
 
@@ -185,15 +185,15 @@ protected:
     int getMapIndex(int outIndex, int j);
     void calcMapT();
 public:
-    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::behavior::BaseMechanicalState::ParticleMask *, core::behavior::BaseMechanicalState::ParticleMask *)
+    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
         : Inherit(fromTopology, toTopology)
         , maxNIn(0), maxNOut(0), insize(0), size(0), topology(fromTopology)
     {
         if (topology==NULL || topology->getNbHexahedra()==0) maxNIn = 4;
         else maxNIn = 8;
     }
-    void setMaskFrom(core::behavior::BaseMechanicalState::ParticleMask *) {}
-    void setMaskTo  (core::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskFrom(helper::ParticleMask *) {}
+    void setMaskTo  (helper::ParticleMask *) {}
 
     void clear(int reserve=0);
 

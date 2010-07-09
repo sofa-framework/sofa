@@ -341,7 +341,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childVeloc
     else
     {
 
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it=indices.begin();
@@ -510,7 +510,7 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
     }
     else
     {
-        typedef core::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        typedef helper::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it=indices.begin();

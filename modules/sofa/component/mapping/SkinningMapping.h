@@ -170,8 +170,8 @@ protected:
     vector<Coord> initPos; // pos: point coord in the world reference frame
     vector<Coord> rotatedPoints;
 
-    core::behavior::BaseMechanicalState::ParticleMask* maskFrom;
-    core::behavior::BaseMechanicalState::ParticleMask* maskTo;
+    helper::ParticleMask* maskFrom;
+    helper::ParticleMask* maskTo;
 
     Data<vector<int> > repartition;
     Data<VVD > coefs;

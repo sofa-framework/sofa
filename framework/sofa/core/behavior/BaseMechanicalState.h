@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/ParticleMask.h>
 
 #include <sstream>
 #include <iostream>
@@ -81,7 +82,7 @@ class BaseMechanicalState : public virtual objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseMechanicalState, objectmodel::BaseObject);
 
-    BaseMechanicalState():useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings")), forceMask(ParticleMask(useMask.beginEdit()))
+    BaseMechanicalState():useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings")), forceMask(helper::ParticleMask(useMask))
     {
         useMask.endEdit();
     }
@@ -166,64 +167,14 @@ public:
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */) const {return std::list<ConstraintBlock>();};
+
+
     /// Compute the error given a state vector and a line of the Jacobian (line in vector C)
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, VecId /*id*/) {this->serr << "NOT IMPLEMENTED YET" << this->sendl; return (SReal)0;};
 
-    /// Utility to store only the modified indices of a mapped dof.
-    /// This should allow to optimize the propagation of the forces from a mechanical state mapped, used as a collision model, to the independent dofs.
-    /// It is used during the applyJ and applyJT process of the MechanicalMappings.
-    /// Forcefields which acts only on a little number of particles should activate the mask (by redefining the method bool useMask()) and add entries in the particle mask
-    class ParticleMask
-    {
-    public:
-        typedef std::set< unsigned int > InternalStorage;
-        ParticleMask(const bool *activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {};
-
-        /// Insert an entry in the mask
-        void insertEntry(unsigned int index)
-        {
-            indices.insert(index);
-        }
-
-
-        const InternalStorage &getEntries() const {return indices;};
-        InternalStorage &getEntries() {return indices;};
-
-        /// To activate the use of the mask. External components like forcefields and constraints have to use this method if they want to get benefit of the mask mechanism
-        /// A mask deactivated previously will remain deactivated until explicit activation using activate method.
-        void setInUse(bool use)
-        {
-            allComponentsAreUsingMask = use && allComponentsAreUsingMask;
-        }
-
-        /// Explicit activation: when during some process we need the mask, we activate it
-        void activate(bool a)
-        {
-            activated = a;
-        }
-
-        /// Test if the mask can be used:
-        ///    * the parameter of the BaseMechanicalState useMask must be active
-        ///    * we must be inside a process using the mask
-        ///    * all the components of the node must use the mask. If a single one has deactivated its mask, we can't use the mask for the whole node.
-        bool isInUse() const
-        {
-            return *inUse && activated && allComponentsAreUsingMask;
-        }
-
-        void clear() {indices.clear(); activated=true; allComponentsAreUsingMask=true;}
-
-    protected:
-        InternalStorage indices;
-        // Act as a switch, to enable or not the mask.
-        const bool *inUse;
-        bool activated;
-        bool allComponentsAreUsingMask;
-    };
-
     Data<bool> useMask;
     /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
-    ParticleMask forceMask;
+    helper::ParticleMask forceMask;
 
 
     /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
