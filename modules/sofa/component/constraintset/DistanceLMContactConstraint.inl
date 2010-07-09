@@ -323,14 +323,44 @@ void DistanceLMContactConstraint<DataTypes>::draw()
         const VecCoord &x1=*(this->constrainedObject1->getX());
         const VecCoord &x2=*(this->constrainedObject2->getX());
 
-        std::vector< Vector3 > points;
+
+        helper::vector< helper::vector< Vector3 > > points;
+        points.resize(3);
+        //Sliding: show direction of the new constraint
+        helper::vector< Vector3 > slidingConstraints;
+
+        const helper::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::behavior::BaseConstraintSet::VEL);
+
         const SeqEdges &edges =  pointPairs.getValue();
-        for (unsigned int i=0; i<edges.size(); ++i)
+        for (unsigned int i=0; i<groups.size(); ++i)
         {
-            points.push_back(x1[edges[i][0]]);
-            points.push_back(x2[edges[i][1]]);
+            ContactDescription &contactDescription=this->getContactDescription(groups[i]);
+            Contact &contactDirection=*(this->constraintGroupToContact[groups[i]]);
+
+            points[contactDescription.state].push_back(x1[edges[i][0]]);
+            points[contactDescription.state].push_back(x2[edges[i][1]]);
+
+            if (contactDescription.state == SLIDING)
+            {
+                Vector3 direction=contactDirection.n *contactDescription.coeff[0] +
+                        contactDirection.t1*contactDescription.coeff[1]+
+                        contactDirection.t2*contactDescription.coeff[2];
+
+                direction.normalize();
+                SReal sizeV=this->lengthEdge(edges[i], x1,x2);
+
+                slidingConstraints.push_back(x1[edges[i][0]]);
+                slidingConstraints.push_back(x1[edges[i][0]]-direction*sizeV);
+            }
         }
-        simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+
+        simulation::getSimulation()->DrawUtility.drawLines(points[VANISHING], 1, colorsContactState[VANISHING]);
+        simulation::getSimulation()->DrawUtility.drawLines(points[STICKING], 1, colorsContactState[STICKING]);
+        simulation::getSimulation()->DrawUtility.drawLines(points[SLIDING], 1, colorsContactState[SLIDING]);
+
+        simulation::getSimulation()->DrawUtility.drawLines(slidingConstraints, 1, colorsContactState.back());
+
+
     }
 }
 
