@@ -166,7 +166,7 @@ int RigidMapping<BasicMapping>::addContactPointFromInputMapping(const sofa::defa
 
     Coord posContact;
     for (unsigned int i=0; i<3; i++)
-        posContact[i] = pos[i];
+        posContact[i] = (Real) pos[i];
 
 
 
@@ -570,7 +570,7 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
                 ++it;
             }
             out[outIdx].getVCenter() += in[inIdx];
-            out[outIdx].getVOrientation() += cross(rotatedPoints[inIdx], in[inIdx]);
+            out[outIdx].getVOrientation() += (DRot) cross(rotatedPoints[inIdx], in[inIdx]);
 
         }
         if (isMaskInUse)
@@ -614,7 +614,7 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
 
                 const Deriv f = (Deriv) itOut->second;
                 v += f;
-                omega += cross(rotatedPoints[i], f);
+                omega += (DRot) cross(rotatedPoints[i], f);
             }
 
             const InDeriv result(v, omega);
@@ -657,7 +657,7 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
                     needToInsert = true;
                     const Deriv f = (Deriv) it->second;
                     v += f;
-                    omega += cross(rotatedPoints[cpt], f);
+                    omega += (DRot) cross(rotatedPoints[cpt], f);
                     it++;
                 }
                 if (needToInsert)
@@ -697,7 +697,7 @@ void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
                     needToInsert = true;
                     const Deriv f = (Deriv) it->second;
                     v += f;
-                    omega += cross(rotatedPoints[cpt], f);
+                    omega += (DRot) cross(rotatedPoints[cpt], f);
                     it++;
                 }
                 if (needToInsert)
