@@ -31,6 +31,7 @@
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/map.h>
+#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
 
 #include <math.h>
 
@@ -49,16 +50,23 @@ namespace linearsolver
 //       $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b$
 //  , or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$
 
+class SSORPreconditionerInvertData : public defaulttype::MatrixInvertData
+{
+public :
+    unsigned bsize;
+    std::vector<double> inv_diag;
+};
+
 template<class TMatrix, class TVector>
-class SSORPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class SSORPreconditioner : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SSORPreconditioner,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE2(SSORPreconditioner,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::ParallelMatrixLinearSolver,TMatrix,TVector));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef SReal Real;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     Data<bool> f_verbose;
@@ -68,9 +76,6 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
-private :
-    unsigned bsize;
-    std::vector<double> inv_diag;
 };
 
 } // namespace linearsolver
