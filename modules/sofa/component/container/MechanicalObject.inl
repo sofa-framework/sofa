@@ -1632,7 +1632,8 @@ void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
     this->forceMask.setInUse(this->useMask.getValue());
 #ifdef SOFA_SMP
-    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**this->externalForces,0);
+    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**this->externalForces.beginEdit(),0);
+    this->externalForces.endEdit();
 #else
     this->externalForces.beginEdit()->clear();
     this->externalForces.endEdit();
@@ -1645,8 +1646,9 @@ void MechanicalObject<DataTypes>::accumulateForce()
 #ifdef SOFA_SMP
     BaseObject::Task < vPEq2 <  VecDeriv,
                VecDeriv >
-               >(this,**f,
+               >(this,**this->f.beginEdit(),
                        **getVecDeriv(VecId::externalForce().index));
+    this->f.endEdit();
 #else
     if (!getVecDeriv(VecId::externalForce().index)->empty())
     {
