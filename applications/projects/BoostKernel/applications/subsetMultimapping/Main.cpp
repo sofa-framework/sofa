@@ -126,7 +126,7 @@ int main(int argc, char** argv)
 
 
     MechanicalObject3* subsetDof = new MechanicalObject3;
-    SubsetMultiMappingVec3d_to_Vec3d* subsetMultiMapping = new SubsetMultiMappingVec3d_to_Vec3d();
+    SubsetMechanicalMultiMapping3_to_3* subsetMultiMapping = new SubsetMechanicalMultiMapping3_to_3();
     MechanicalObject3* input1 = dynamic_cast<MechanicalObject3*>(grid2->getMechanicalState());
     MechanicalObject3* input2 = dynamic_cast<MechanicalObject3*>(grid1->getMechanicalState());
 
