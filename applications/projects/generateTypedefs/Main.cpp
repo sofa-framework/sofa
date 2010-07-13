@@ -38,9 +38,8 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/component/init.h>
-
+#include <algorithm>
 #include <functional>
-#include <ctype.h>
 using sofa::core::SofaLibrary;
 using sofa::core::CategoryLibrary;
 using sofa::core::ComponentLibrary;
@@ -117,7 +116,6 @@ struct rule
 {
     bool result;
     rule():result(true) {};
-    virtual void operator() ( const std::string& /*templateParam*/ ) = 0;
 };
 
 struct onlyDouble : public rule
