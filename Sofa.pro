@@ -94,6 +94,13 @@ contains(DEFINES,SOFA_HAVE_VRPN){
 	SUBDIRS += extlibs/VRPN
 }
 
+#CUDPP
+contains(DEFINES,SOFA_GPU_CUDA){
+	contains(DEFINES,SOFA_GPU_CUDPP){
+		SUBDIRS += extlibs/cudpp
+	}
+}
+
 SUBDIRS += framework
 SUBDIRS += modules
 SUBDIRS += applications
