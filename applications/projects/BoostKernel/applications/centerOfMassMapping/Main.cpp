@@ -124,7 +124,7 @@ int main( int argc, char** argv )
 
     MultiParentsNode->addObject(dofMultiMapping);
 
-    CenterofMassMechanicalMultiMappingVec3d_to_Vec3d* multiMappingCOM = new CenterofMassMechanicalMultiMappingVec3d_to_Vec3d();
+    CenterOfMassMechanicalMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMechanicalMultiMapping3_to_3;
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube1->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube2->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube3->getMechanicalState()) );
