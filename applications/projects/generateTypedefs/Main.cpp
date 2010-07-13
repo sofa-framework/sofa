@@ -106,7 +106,7 @@ struct removeLastChar
 
 struct applyTemplateExtension
 {
-    std::string operator()(const std::string& str )
+    std::string operator()(std::string& str )
     {
         return templateExtension[str];
     }
@@ -120,7 +120,7 @@ struct rule
 
 struct onlyDouble : public rule
 {
-    void operator()( const std::string& templateParam )
+    void operator()(std::string& templateParam )
     {
         if ( *templateParam.rbegin() == 'd' ) this->result = ( true && this->result );
         else this->result = false;
@@ -129,7 +129,7 @@ struct onlyDouble : public rule
 
 struct onlyFloat : public rule
 {
-    virtual void operator()(const std::string& templateParam )
+    void operator()(std::string& templateParam )
     {
         if( *templateParam.rbegin() == 'f' ) this->result = ( true && this->result );
         else this->result = false;
@@ -138,7 +138,7 @@ struct onlyFloat : public rule
 
 struct onlyExtVec3f : public rule
 {
-    virtual void operator()(const std::string& templateParam )
+    void operator()(std::string& templateParam )
     {
         if ( templateParam == "ExtVec3f" )  this->result = this->result && true;
         else this->result = false;
@@ -147,7 +147,7 @@ struct onlyExtVec3f : public rule
 
 struct onlyExtVec3d : public rule
 {
-    virtual void operator()(const std::string& templateParam )
+    void operator()(std::string& templateParam )
     {
         if ( templateParam == "ExtVec3d" )  this->result = this->result && true;
         else this->result = false;
@@ -156,7 +156,7 @@ struct onlyExtVec3d : public rule
 
 struct validTemplate : public rule
 {
-    virtual void operator()(const std::string& templateParam )
+    void operator()(std::string& templateParam )
     {
         if( templateExtension.find(templateParam) !=  templateExtension.end() ) this->result = this->result && true;
         else this->result = false;
@@ -164,7 +164,7 @@ struct validTemplate : public rule
 };
 
 template< typename Rule >
-bool applyRule( const std::vector<const std::string>& templateList)
+bool applyRule( std::vector<std::string>& templateList)
 {
     Rule r;
     r = std::for_each( templateList.begin(), templateList.end(), r );
@@ -189,7 +189,7 @@ bool belongToBannedComponents(const std::string& category, const std::string& co
     return false;
 }
 
-void pushToList( const std::string& templateCombination, const char separator, std::vector<const std::string>& templateList )
+void pushToList( const std::string& templateCombination, const char separator, std::vector< std::string>& templateList )
 {
     size_t curPos = 0;
     size_t oldPos = 0;
@@ -204,8 +204,8 @@ void pushToList( const std::string& templateCombination, const char separator, s
 
 
 void parseTemplateCombination(const std::string& templateCombination,
-        std::vector<const std::string>& inputTemplateList,
-        std::vector<const std::string>& outputTemplateList )
+        std::vector<std::string>& inputTemplateList,
+        std::vector<std::string>& outputTemplateList )
 {
     size_t o_bracketPos = 0;
     size_t c_bracketPos = 0;
@@ -264,7 +264,7 @@ void parseTemplateCombination(const std::string& templateCombination,
     }
 }
 
-std::string cat(const std::vector<std::string>& first, const std::vector<std::string>& second, const std::string& separator)
+std::string cat(std::vector<std::string>& first, std::vector<std::string>& second, std::string& separator)
 {
     std::ostringstream oss;
     assert ( first.size() != 0 && second.size() != 0 );
@@ -410,8 +410,8 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     }
                 }
 
-                std::vector<const std::string> inputTemplateList;
-                std::vector<const std::string> outputTemplateList;
+                std::vector<std::string> inputTemplateList;
+                std::vector<std::string> outputTemplateList;
                 if ( templateCombination.find(',' ) != std::string::npos )
                 {
                     parseTemplateCombination(templateCombination,inputTemplateList,outputTemplateList);
@@ -442,10 +442,12 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     else           separatorCombination="_";
 
                     std::vector<std::string> inputTemplateExtensions;
+                    inputTemplateExtensions.resize(inputTemplateList.size() );
                     std::vector<std::string> outputTemplateExtensions;
+                    outputTemplateExtensions.resize(outputTemplateList.size() );
                     applyTemplateExtension applyTemplateExtensionFn;
-                    std::transform(inputTemplateList.begin(), inputTemplateList.end(), std::back_inserter(inputTemplateExtensions), applyTemplateExtensionFn );
-                    std::transform(outputTemplateList.begin(), outputTemplateList.end(), std::back_inserter(outputTemplateExtensions), applyTemplateExtensionFn );
+                    std::transform(inputTemplateList.begin(), inputTemplateList.end(), inputTemplateExtensions.begin(), applyTemplateExtensionFn );
+                    std::transform(outputTemplateList.begin(), outputTemplateList.end(), outputTemplateExtensions.begin(), applyTemplateExtensionFn );
                     const std::string finalName = componentName + cat(inputTemplateExtensions,outputTemplateExtensions,separatorCombination);
                     std::string smartFinalName;
 
