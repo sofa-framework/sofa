@@ -135,12 +135,30 @@ void EulerImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanicalS
 
     if (!firstOrder)
     {
+#ifdef SOFA_SMP
+        computeDfV(f);                // f = df/dx v
+        b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
+
+
+        if (f_rayleighMass.getValue() != 0.0)
+        {
+            //f.clear();
+            //addMdx(f,vel);
+            //b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
+            //addMdx(b,VecId(),-f_rayleighMass.getValue()); // no need to propagate vel as dx again
+
+            addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
+
+        }
+        b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+#else
         // new more powerful visitors
         // b += (h+rs)df/dx v - rd M v
         // values are not cleared so that contributions from computeForces are kept and accumulated through mappings once at the end
         addMBKv(b, (f_rayleighMass.getValue() == 0.0 ? 0.0 : -f_rayleighMass.getValue()), 0, h+f_rayleighStiffness.getValue(), false, true);
 
         b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+#endif
     }
 
     if( verbose )
