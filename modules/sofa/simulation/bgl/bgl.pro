@@ -11,12 +11,18 @@ HEADERS += bgl.h \
            BglSimulation.h \
            BglGraphManager.h \
            BglGraphManager.inl \
-           GetObjectsVisitor.h 
+           GetObjectsVisitor.h
 
-SOURCES += BglNode.cpp \   
+SOURCES += BglNode.cpp \
            BglSimulation.cpp \
            BglGraphManager.cpp  \
            GetObjectsVisitor.cpp
+
+contains(DEFINES,SOFA_SMP){
+HEADERS += SMPBglSimulation.h
+
+SOURCES += SMPBglSimulation.cpp
+}
 
 SOFA_DIR =../../../..
 TEMPLATE = lib
