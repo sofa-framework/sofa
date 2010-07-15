@@ -65,6 +65,14 @@ protected:
     helper::vector<In*> fromModels;
     /// Output Model container. New outputs are added through addOutputModel( Ou* )
     helper::vector<Out*> toModels;
+
+#ifdef SOFA_SMP
+    defaulttype::SharedVector<OutVecCoord *> VecOutPos;
+    defaulttype::SharedVector<const InVecCoord *> VecInPos;
+    defaulttype::SharedVector<OutVecDeriv *> VecOutVel;
+    defaulttype::SharedVector<const InVecDeriv *> VecInVel;
+#endif
+
 public:
     /// Constructor
     MultiMapping() {} ;
