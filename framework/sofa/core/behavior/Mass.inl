@@ -66,7 +66,16 @@ void Mass<DataTypes>::accFromF()
     if (this->mstate)
         accFromF(*this->mstate->getDx(), *this->mstate->getF());
 }
-
+template<class DataTypes>
+void Mass<DataTypes>::addMBKv(double mFactor, double bFactor, double kFactor)
+{
+    this->ForceField<DataTypes>::addMBKv(mFactor, bFactor, kFactor);
+    if (mFactor != 0.0)
+    {
+        if (this->mstate)
+            addMDx(*this->mstate->getF(), *this->mstate->getV(), mFactor);
+    }
+}
 #endif
 template<class DataTypes>
 double Mass<DataTypes>::getKineticEnergy() const
@@ -84,16 +93,7 @@ void Mass<DataTypes>::addMBKdx(double mFactor, double bFactor, double kFactor)
         addMDx(mFactor);
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::addMBKv(double mFactor, double bFactor, double kFactor)
-{
-    this->ForceField<DataTypes>::addMBKv(mFactor, bFactor, kFactor);
-    if (mFactor != 0.0)
-    {
-        if (this->mstate)
-            addMDx(*this->mstate->getF(), *this->mstate->getV(), mFactor);
-    }
-}
+
 
 template<class DataTypes>
 void Mass<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
@@ -185,7 +185,16 @@ void Mass< DataTypes >::accFromF()
 {
     Task<ParallelMassAccFromFCPU< DataTypes  >,ParallelMassAccFromF< DataTypes  > >(this,**this->mstate->getDx(), **this->mstate->getF());
 }
-
+template<class DataTypes>
+void Mass<DataTypes>::addMBKv(double mFactor, double bFactor, double kFactor)
+{
+    this->ForceField<DataTypes>::addMBKv(mFactor, bFactor, kFactor);
+    if (mFactor != 0.0)
+    {
+        if (this->mstate)
+            Task<ParallelMassAddMDxCPU < DataTypes  > ,ParallelMassAddMDx < DataTypes > >(this,**this->mstate->getF(), **this->mstate->getV(),mFactor);
+    }
+}
 #endif
 
 /// return the mass relative to the DOF #index
