@@ -70,8 +70,8 @@ void QSofaLibrary::addCategory(CategoryLibrary *c)
     SofaLibrary::addCategory(category);
     toolbox->setItemLabel(categories.size()-1, QString(category->getName().c_str()) + QString(" [") + QString::number(category->getNumComponents()) + QString("]"));
 
-    connect( category, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry* ) ),
-            this, SLOT( componentDraggedReception( std::string, std::string, std::string , ClassEntry* )));
+    connect( category, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntryPtr& ) ),
+            this, SLOT( componentDraggedReception( std::string, std::string, std::string , ClassEntryPtr& )));
 
 }
 
@@ -138,7 +138,7 @@ void QSofaLibrary::filter(const FilterQuery &f)
 //*********************//
 // SLOTS               //
 //*********************//
-void QSofaLibrary::componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry)
+void QSofaLibrary::componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntryPtr& componentEntry)
 {
     emit(componentDragged(description, categoryName,templateName,componentEntry));
 }

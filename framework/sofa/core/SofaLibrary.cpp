@@ -43,12 +43,12 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     //-----------------------------------------------------------------------
     //Read the content of the Object Factory
     //-----------------------------------------------------------------------
-    std::vector< ClassEntry* > entries;
+    std::vector< ClassEntryPtr > entries;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
     //Set of categories found in the Object Factory
     std::set< std::string > mainCategories;
     //Data containing all the entries for a given category
-    std::multimap< std::string, ClassEntry* > inventory;
+    std::multimap< std::string, ObjectFactory::ClassEntryPtr > inventory;
 
     for (unsigned int i=0; i<entries.size(); ++i)
     {
@@ -70,7 +70,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 
         //Insert Template specification
         std::set< std::string >::iterator it;
-        for (it = entries[i]->baseClasses.begin(); it!= entries[i]->baseClasses.end(); ++it)
+        for (it = entries[i]->baseClasses.begin(); it != entries[i]->baseClasses.end(); ++it)
         {
             mainCategories.insert((*it));
             inventory.insert(std::make_pair((*it), entries[i]));
@@ -87,7 +87,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     //Using the inventory, Add each component to the Sofa Library
     //-----------------------------------------------------------------------
     std::set< std::string >::iterator itCategory;
-    typedef std::multimap< std::string, ClassEntry* >::iterator IteratorInventory;
+    typedef std::multimap< std::string, ClassEntryPtr >::iterator IteratorInventory;
 
 
     //We add the components category by category
@@ -107,7 +107,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         //Process all the component of the current category, and add them to the group
         for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
         {
-            ClassEntry *entry = itComponent->second;
+            ClassEntryPtr& entry = itComponent->second;
             const std::string &componentName=entry->className;
 
             //Special Case of Mass Component: they are also considered as forcefield. We remove their occurence of the force field category group

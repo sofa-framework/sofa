@@ -83,8 +83,8 @@ typedef QListView Q3ListView;
 typedef QPopupMenu Q3PopupMenu;
 #endif
 
-typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
-typedef sofa::core::ObjectFactory::Creator    Creator;
+typedef sofa::core::ObjectFactory::ClassEntryPtr ClassEntryPtr;
+typedef sofa::core::ObjectFactory::Creator       Creator;
 
 using sofa::simulation::tree::GNode;
 
@@ -135,7 +135,7 @@ public slots:
     void newGNode();
 
     /// Reception of a click on the Sofa library
-    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry);
+    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntryPtr& componentEntry);
     /// Build from scratch the Sofa Library
     void rebuildLibrary();
     /// when the GNodeButton is pressed

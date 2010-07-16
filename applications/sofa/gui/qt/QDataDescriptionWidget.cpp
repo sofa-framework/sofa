@@ -53,7 +53,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
 
 
     //Class description
-    core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(object->getClassName());
+    core::ObjectFactory::ClassEntryPtr& entry = core::ObjectFactory::getInstance()->getEntry(object->getClassName());
     if (entry != NULL && ! entry->creatorList.empty())
     {
         Q3GroupBox *box = new Q3GroupBox(this, QString("Class"));

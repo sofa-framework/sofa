@@ -139,8 +139,8 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     std::vector<std::string> templates;
     std::set<std::string> templateSet;
 
-    sofa::core::ObjectFactory::ClassEntry* mobject = sofa::core::ObjectFactory::getInstance()->getEntry("MechanicalObject");
-    if (mobject)
+    sofa::core::ObjectFactory::ClassEntryPtr& mobject = sofa::core::ObjectFactory::getInstance()->getEntry("MechanicalObject");
+    if (mobject.get() != 0)
     {
         for (std::list< std::pair< std::string, sofa::core::ObjectFactory::Creator* > >::iterator itc = mobject->creatorList.begin(), itcend = mobject->creatorList.end(); itc != itcend; ++itc)
         {
@@ -152,15 +152,15 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
         }
     }
 
-    std::vector<sofa::core::ObjectFactory::ClassEntry*> classes;
+    std::vector<sofa::core::ObjectFactory::ClassEntryPtr> classes;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(classes);
 
     // re-order classes depending on namespaces
 
-    std::map<std::string, std::vector<sofa::core::ObjectFactory::ClassEntry*> > sortedClasses;
-    for (std::vector<sofa::core::ObjectFactory::ClassEntry*>::iterator it = classes.begin(), itend = classes.end(); it != itend; ++it)
+    std::map<std::string, std::vector<sofa::core::ObjectFactory::ClassEntryPtr> > sortedClasses;
+    for (std::vector<sofa::core::ObjectFactory::ClassEntryPtr>::iterator it = classes.begin(), itend = classes.end(); it != itend; ++it)
     {
-        sofa::core::ObjectFactory::ClassEntry* entry = *it;
+        sofa::core::ObjectFactory::ClassEntryPtr& entry = *it;
         std::string nameSpace = sofa::core::objectmodel::Base::decodeNamespaceName(entry->creatorList.begin()->second->type());
         sortedClasses[nameSpace].push_back(entry);
     }
@@ -209,10 +209,10 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     out << "<td class=\"sofa-namespace-header\">Namespace</td>";
     out << "</tr>\n";
 
-    for (std::map< std::string, std::vector<sofa::core::ObjectFactory::ClassEntry*> >::iterator it1 = sortedClasses.begin(), it1end = sortedClasses.end(); it1 != it1end; ++it1)
-        for (std::vector<sofa::core::ObjectFactory::ClassEntry*>::iterator it = it1->second.begin(), itend = it1->second.end(); it != itend; ++it)
+    for (std::map< std::string, std::vector<sofa::core::ObjectFactory::ClassEntryPtr> >::iterator it1 = sortedClasses.begin(), it1end = sortedClasses.end(); it1 != it1end; ++it1)
+        for (std::vector<sofa::core::ObjectFactory::ClassEntryPtr>::iterator it = it1->second.begin(), itend = it1->second.end(); it != itend; ++it)
         {
-            sofa::core::ObjectFactory::ClassEntry* entry = *it;
+            sofa::core::ObjectFactory::ClassEntryPtr& entry = *it;
 
             out << "<?php if (!$show || $show=='"<<xmlencode(entry->className)<<"'";
             for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)

@@ -282,16 +282,18 @@ protected:
     std::multimap< std::string, BaseData* > m_aliasData;
 
     /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
-    void addField( BaseData* f, const char* name )
+    void addField(BaseData* f, const char* name)
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(ln) )
+        if (ln.size() > 0 && findField(ln))
         {
-            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-            exit( 1 );
+            serr << "field name " << ln
+                    << " already used in this class or in a parent class !...aborting"
+                    << sendl;
+            exit(1);
         }
-        m_fieldVec.push_back( std::make_pair(ln,f));
-        m_aliasData.insert(std::make_pair(ln,f));
+        m_fieldVec.push_back(std::make_pair(ln, f));
+        m_aliasData.insert(std::make_pair(ln, f));
         f->setOwner(this);
         f->setName(name);
     }

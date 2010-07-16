@@ -59,13 +59,11 @@ Simulation* getSimulation()
 BglSimulation::BglSimulation()
 {
     //-------------------------------------------------------------------------------------------------------
-    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
     sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
-            "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
+            "BglCollisionGroupManager", true, 0);
 
-    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
-            "BglCollisionGroupManager", true, &classCollisionGroup);
+            "BglCollisionGroupManager", true, 0);
 }
 
 
