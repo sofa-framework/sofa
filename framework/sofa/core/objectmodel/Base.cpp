@@ -142,28 +142,31 @@ void Base::removeTag(Tag t)
 /// Helper method to decode the type name
 std::string Base::decodeFullName(const std::type_info& t)
 {
-    std::string name = t.name();
-    char* allocname = strdup(name.c_str());
+    std::string name;
 #ifdef __GNUC__
     int status;
-    allocname = abi::__cxa_demangle(allocname, 0, 0, &status);
+    char* allocname = abi::__cxa_demangle(t.name(), 0, 0, &status);
+    if(allocname == 0)
+    {
+        std::cerr << "Unable to demangle symbol: " << t.name() << std::endl;
+    }
+    else
+    {
+        name = allocname;
+        free(allocname);
+    }
+#else
+    name = t.name();
 #endif
-    return allocname;
+    return name;
 }
 /// Decode the type's name to a more readable form if possible
 std::string Base::decodeTypeName(const std::type_info& t)
 {
-    std::string name = t.name();
-    const char* realname = NULL;
-    char* allocname = strdup(name.c_str());
-#ifdef __GNUC__
-    int status;
-    realname = allocname = abi::__cxa_demangle(allocname, 0, 0, &status);
-    if (realname==NULL)
-#endif
-        realname = allocname;
-    int len = strlen(realname);
-    char* newname = (char*)malloc(len+1);
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
+    name.resize(len+1);
     int start = 0;
     int dest = 0;
     char cprev = '\0';
@@ -184,24 +187,17 @@ std::string Base::decodeTypeName(const std::type_info& t)
             // write result
             while (start < i)
             {
-                newname[dest++] = realname[start++];
-                newname[dest] = 0;
+                name[dest++] = realname[start++];
             }
         }
         cprev = c;
-        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<sendl;
+        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" name = "<<name<<sendl;
     }
     while (start < len)
     {
-        newname[dest++] = realname[start++];
-        newname[dest] = 0;
+        name[dest++] = realname[start++];
     }
-    newname[dest] = '\0';
-    //sout << "newname = "<<newname<<sendl;
-    name = newname;
-    free(newname);
-    //if (allocname)
-    //    free(allocname);
+    name.resize(dest);
     return name;
     /*
         // Remove namespaces
@@ -231,17 +227,10 @@ std::string Base::decodeTypeName(const std::type_info& t)
 /// Extract the class name (removing namespaces and templates)
 std::string Base::decodeClassName(const std::type_info& t)
 {
-    std::string name = t.name();
-    const char* realname = NULL;
-    char* allocname = strdup(name.c_str());
-#ifdef __GNUC__
-    int status;
-    realname = allocname = abi::__cxa_demangle(allocname, 0, 0, &status);
-    if (realname==NULL)
-#endif
-        realname = allocname;
-    int len = strlen(realname);
-    char* newname = (char*)malloc(len+1);
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
+    name.resize(len+1);
     int start = 0;
     int dest = 0;
     int i;
@@ -268,25 +257,17 @@ std::string Base::decodeClassName(const std::type_info& t)
             // write result
             while (start < i)
             {
-                newname[dest++] = realname[start++];
-                newname[dest] = 0;
+                name[dest++] = realname[start++];
             }
         }
         cprev = c;
-        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<sendl;
     }
 
     while (start < i)
     {
-        newname[dest++] = realname[start++];
-        newname[dest] = 0;
+        name[dest++] = realname[start++];
     }
-    newname[dest] = '\0';
-    //sout << "newname = "<<newname<<sendl;
-    name = newname;
-    free(newname);
-    //if (allocname)
-    //    free(allocname);
+    name.resize(dest);
     return name;
     /*
         std::string name = decodeTypeName(t);
@@ -304,16 +285,9 @@ std::string Base::decodeClassName(const std::type_info& t)
 /// Extract the namespace (removing class name and templates)
 std::string Base::decodeNamespaceName(const std::type_info& t)
 {
-    std::string name = t.name();
-    const char* realname = NULL;
-    char* allocname = strdup(name.c_str());
-#ifdef __GNUC__
-    int status;
-    realname = allocname = abi::__cxa_demangle(allocname, 0, 0, &status);
-    if (realname==NULL)
-#endif
-        realname = allocname;
-    int len = strlen(realname);
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
     int start = 0;
     int last = len-1;
     int i;
@@ -334,32 +308,21 @@ std::string Base::decodeNamespaceName(const std::type_info& t)
             break;
         }
     }
-    name.assign(realname+start, realname+last+1);
-    //if (allocname)
-    //    free(allocname);
+    name = realname.substr(start, last-start+1);
     return name;
 }
 
 /// Decode the template name (removing namespaces and class name)
 std::string Base::decodeTemplateName(const std::type_info& t)
 {
-    std::string name = t.name();
-    const char* realname = NULL;
-    char* allocname = strdup(name.c_str());
-#ifdef __GNUC__
-    int status;
-    realname = allocname = abi::__cxa_demangle(allocname, 0, 0, &status);
-    if (realname==NULL)
-#endif
-        realname = allocname;
-    int len = strlen(realname);
-    char* newname = (char*)malloc(len+1);
-    newname[0] = '\0';
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
+    name.resize(len+1);
     int start = 0;
     int dest = 0;
     int i = 0;
     char cprev = '\0';
-//     std::cerr  << "name = "<<realname<<std::endl;
     while (i < len && realname[i]!='<')
         ++i;
     start = i+1; ++i;
@@ -380,24 +343,16 @@ std::string Base::decodeTemplateName(const std::type_info& t)
             // write result
             while (start <= i)
             {
-                newname[dest++] = realname[start++];
-                newname[dest] = 0;
+                name[dest++] = realname[start++];
             }
         }
         cprev = c;
-        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<sendl;
     }
     while (start < i)
     {
-        newname[dest++] = realname[start++];
-        newname[dest] = 0;
+        name[dest++] = realname[start++];
     }
-    newname[dest] = '\0';
-    //sout << "newname = "<<newname<<sendl;
-    name = newname;
-    free(newname);
-    //if (allocname)
-    //    free(allocname);
+    name.resize(dest);
     return name;
     /*
         std::string name = decodeTypeName(t);
