@@ -191,13 +191,11 @@ SMPBglSimulation::SMPBglSimulation():visualNode(NULL)
     multiGraph= new Iterative::Multigraph<MainLoopTask>();
 
     //-------------------------------------------------------------------------------------------------------
-    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
     sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
-            "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
+            "BglCollisionGroupManager", true, 0);
 
-    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
-            "BglCollisionGroupManager", true, &classCollisionGroup);
+            "BglCollisionGroupManager", true, 0);
 
 #ifdef SOFA_SMP_WEIGHT
     multiGraph2= new Iterative::Multigraph<MainLoopTask>();

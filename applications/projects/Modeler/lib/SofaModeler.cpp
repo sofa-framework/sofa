@@ -168,8 +168,8 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
 
 
 
-    connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry *) ),
-            this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry *) ));
+    connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntryPtr& ) ),
+            this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntryPtr& ) ));
 
     for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
 
@@ -688,7 +688,7 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
 
 
 void SofaModeler::componentDraggedReception( std::string description, std::string // categoryName
-        , std::string templateName, ClassEntry* componentEntry)
+        , std::string templateName, ClassEntryPtr& componentEntry)
 {
     changeComponent(description );
     if (!graph) return;

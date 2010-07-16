@@ -59,16 +59,15 @@
 
 namespace sofa
 {
-
 namespace core
 {
 
-ObjectFactory::ClassEntry* ObjectFactory::getEntry(std::string classname)
+ObjectFactory::ClassEntryPtr& ObjectFactory::getEntry(std::string classname)
 {
-    ClassEntry*& p = registry[classname];
-    if (p==NULL)
+    ClassEntryPtr& p = registry[classname];
+    if (!p)
     {
-        p = new ClassEntry;
+        p.reset(new ClassEntry);
         p->className = classname;
     }
     return p;
@@ -77,32 +76,33 @@ ObjectFactory::ClassEntry* ObjectFactory::getEntry(std::string classname)
 /// Test if a creator exists for a given classname
 bool ObjectFactory::hasCreator(std::string classname)
 {
-    std::map<std::string, ClassEntry*>::iterator it = registry.find(classname);
-    if (it == registry.end()) return false;
-    ClassEntry* entry = it->second;
-    return (!entry->creatorMap.empty());
+    ClassEntryMap::iterator it = registry.find(classname);
+    if (it == registry.end())
+        return false;
+    ClassEntry& entry = *it->second;
+    return (!entry.creatorMap.empty());
 }
 
-bool ObjectFactory::addAlias(std::string name, std::string result, bool force, ClassEntry** previous)
+bool ObjectFactory::addAlias(std::string name, std::string result, bool force, ClassEntryPtr* previous)
 {
-    ClassEntry*& p = registry[name];
+    ClassEntryPtr& p = registry[name];
     if (previous)
         *previous = p;
-    std::map<std::string, ClassEntry*>::iterator it = registry.find(result);
+    ClassEntryMap::iterator it = registry.find(result);
     if (it == registry.end())
     {
         std::cerr << "ERROR: ObjectFactory: cannot create alias "<<name<<" to unknown class " << result << ".\n";
         return false;
     }
-    ClassEntry* entry = it->second;
-    if (p!=NULL && !force)
+    ClassEntryPtr& entry = it->second;
+    if (p.get() != 0 && !force)
     {
         std::cerr << "ERROR: ObjectFactory: cannot create alias "<<name<<" as a class with this name already exists.\n";
         return false;
     }
     else
     {
-        if (p!=NULL)
+        if (p.get() != 0)
         {
             p->aliases.erase(name);
         }
@@ -112,9 +112,9 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force, C
     }
 }
 
-void ObjectFactory::resetAlias(std::string name, ClassEntry* previous)
+void ObjectFactory::resetAlias(std::string name, ClassEntryPtr& previous)
 {
-    ClassEntry*& p = registry[name];
+    ClassEntryPtr& p = registry[name];
     p = previous;
 }
 
@@ -124,7 +124,7 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     std::vector< std::pair<std::string, Creator*> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");
-    std::map<std::string, ClassEntry*>::iterator it = registry.find(classname);
+    ClassEntryMap::iterator it = registry.find(classname);
     if (it == registry.end())
     {
         //std::cout << "ObjectFactory: class "<<classname<<" NOT FOUND."<<std::endl;
@@ -132,7 +132,7 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     else
     {
 //        std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
-        ClassEntry* entry = it->second;
+        ClassEntryPtr& entry = it->second;
         if(templatename.empty()) templatename = entry->defaultTemplate;
         std::map<std::string, Creator*>::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
@@ -183,12 +183,12 @@ ObjectFactory* ObjectFactory::getInstance()
     return &instance;
 }
 
-void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
+void ObjectFactory::getAllEntries(std::vector<ClassEntryPtr>& result)
 {
     result.clear();
-    for (std::map<std::string, ClassEntry*>::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second;
+        ClassEntryPtr& entry = it->second;
         if (entry->className != it->first) continue;
         result.push_back(entry);
     }
@@ -196,9 +196,9 @@ void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
 
 void ObjectFactory::dump(std::ostream& out)
 {
-    for (std::map<std::string, ClassEntry*>::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if (entry->className != it->first) continue;
         out << "class " << entry->className <<" :\n";
         if (!entry->aliases.empty())
@@ -248,9 +248,9 @@ static std::string xmlencode(const std::string& str)
 
 void ObjectFactory::dumpXML(std::ostream& out)
 {
-    for (std::map<std::string, ClassEntry*>::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
         for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
@@ -276,9 +276,9 @@ void ObjectFactory::dumpXML(std::ostream& out)
 void ObjectFactory::dumpHTML(std::ostream& out)
 {
     out << "<ul>\n";
-    for (std::map<std::string, ClassEntry*>::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
-        ClassEntry* entry = it->second;
+        ClassEntry* entry = it->second.get();
         if (entry->className != it->first) continue;
         out << "<li><b>" << xmlencode(entry->className) <<"</b>\n";
         if (!entry->description.empty())
@@ -469,7 +469,7 @@ RegisterObject::operator int()
     else
     {
         //std::cout << "ObjectFactory: commit"<<std::endl;
-        ObjectFactory::ClassEntry* reg = ObjectFactory::getInstance()->getEntry(entry.className);
+        ObjectFactory::ClassEntryPtr& reg = ObjectFactory::getInstance()->getEntry(entry.className);
         reg->description += entry.description;
         reg->authors += entry.authors;
         reg->license += entry.license;

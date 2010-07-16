@@ -52,20 +52,20 @@ QCategoryLibrary::~QCategoryLibrary()
     delete layout;
     components.clear();
 }
-ComponentLibrary *QCategoryLibrary::createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles)
+ComponentLibrary *QCategoryLibrary::createComponent(const std::string &componentName, ClassEntryPtr& entry, const std::vector< std::string > &exampleFiles)
 {
     QComponentLibrary* component = new QComponentLibrary(this, layout, componentName, this->getName(), entry, exampleFiles);
     return component;
 }
 
-ComponentLibrary *QCategoryLibrary::addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles)
+ComponentLibrary *QCategoryLibrary::addComponent(const std::string &componentName, ClassEntryPtr& entry, const std::vector< std::string > &exampleFiles)
 {
     QComponentLibrary *component = static_cast<QComponentLibrary *>(CategoryLibrary::addComponent(componentName, entry, exampleFiles));
     if (component)
     {
         layout->addWidget(component, components.size()-1,0);
-        connect( component->getQWidget(), SIGNAL( componentDragged( std::string, std::string, ClassEntry* ) ),
-                this, SLOT( componentDraggedReception( std::string, std::string, ClassEntry*) ) );
+        connect( component->getQWidget(), SIGNAL( componentDragged( std::string, std::string, ClassEntryPtr& ) ),
+                this, SLOT( componentDraggedReception( std::string, std::string, ClassEntryPtr&) ) );
     }
     return component;
 }
@@ -87,7 +87,7 @@ void QCategoryLibrary::setDisplayed(bool b)
 //*********************//
 // SLOTS               //
 //*********************//
-void QCategoryLibrary::componentDraggedReception( std::string description, std::string templateName, ClassEntry* componentEntry)
+void QCategoryLibrary::componentDraggedReception( std::string description, std::string templateName, ClassEntryPtr& componentEntry)
 {
     emit( componentDragged( description, this->getName(), templateName, componentEntry) );
 }

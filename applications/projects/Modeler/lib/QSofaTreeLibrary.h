@@ -46,7 +46,7 @@ namespace qt
 using sofa::core::SofaLibrary;
 using sofa::core::CategoryLibrary;
 
-typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
+typedef sofa::core::ObjectFactory::ClassEntryPtr ClassEntryPtr;
 
 //***************************************************************
 //Library using QToolBox
@@ -74,10 +74,10 @@ protected:
     LibraryContainer *toolbox;
 
 public slots:
-    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry);
+    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntryPtr& componentEntry);
 
 signals:
-    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntry *entry);
+    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntryPtr& entry);
 };
 
 }

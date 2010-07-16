@@ -88,8 +88,7 @@ using namespace sofa::simulation;
 //extern UserInterface*	GUI;
 //extern OBJmodel*		cubeModel;
 // Quaternion QtGLViewer::_newQuat;
-sofa::core::ObjectFactory::ClassEntry* classVisualModel;
-static bool registered = false;
+sofa::core::ObjectFactory::ClassEntryPtr classVisualModel;
 
 helper::Creator<SofaViewerFactory,QtGLViewer> QtGLViewer_class("qglviewer",false);
 SOFA_DECL_CLASS ( QGLViewerGUI )

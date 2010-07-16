@@ -49,13 +49,11 @@ Simulation* getSimulation()
 TreeSimulation::TreeSimulation(): visualNode(NULL)
 {
     //-------------------------------------------------------------------------------------------------------
-    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
     sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
-            "TreeCollisionGroupManager", true, &classDefaultCollisionGroupManager);
+            "TreeCollisionGroupManager", true, 0);
 
-    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
-            "TreeCollisionGroupManager", true, &classCollisionGroup);
+            "TreeCollisionGroupManager", true, 0);
 }
 
 Node *TreeSimulation::getVisualRoot()
