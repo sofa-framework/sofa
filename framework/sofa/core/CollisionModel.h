@@ -81,7 +81,7 @@ public:
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
-        , size(0), previous(NULL)  , next(NULL), numberOfContacts(0)
+        , size(0), previous(NULL), next(NULL), numberOfContacts(0)
     {
     }
 
@@ -90,7 +90,10 @@ public:
         getColor4f(); //init the color to default value
     }
     /// Destructor
-    virtual ~CollisionModel() { }
+    virtual ~CollisionModel()
+    {
+        delete previous;
+    }
 
     /// Return true if there are no elements
     bool empty() const
@@ -329,8 +332,7 @@ public:
         DerivedModel* pmodel = dynamic_cast<DerivedModel*>(previous);
         if (pmodel == NULL)
         {
-            if (previous != NULL)
-                delete previous;
+            delete previous;
             pmodel = new DerivedModel();
             pmodel->setContext(getContext());
             pmodel->setMoving(isMoving());
