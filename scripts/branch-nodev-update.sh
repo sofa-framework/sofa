@@ -213,7 +213,7 @@ function cp_process_dir {
 		if [ -f "$f" ]; then
 		    if [ -f "$SOURCE/$2$f" ]; then
 			cp -pf "$SOURCE/$2$f" "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
-			$SVN pl "$SOURCE/$2$f" | tail +2 | colrm 1 2 > "$TMPD/.source.plist"
+			$SVN pl "$SOURCE/$2$f" | tail +2 | colrm 1 2 | grep -v 'svn:mergeinfo' > "$TMPD/.source.plist"
 			$SVN pl "$DEST/$2$f" | tail +2 | colrm 1 2 > "$TMPD/.dest.plist"
 			for p in `cat "$TMPD/.source.plist"`; do
 			    $SVN pg $p --strict "$SOURCE/$2$f" > "$TMPD/.source.prop"
