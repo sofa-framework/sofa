@@ -121,7 +121,7 @@ void ObjectFactory::resetAlias(std::string name, ClassEntryPtr& previous)
 objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject* object = NULL;
-    std::vector<Creator*> creators;
+    std::vector< std::pair<std::string, Creator*> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");
     ClassEntryMap::iterator it = registry.find(classname);
@@ -140,7 +140,7 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
 //            std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
             Creator* c = it2->second;
             if (c->canCreate(context, arg))
-                creators.push_back(c);
+                creators.push_back(*it2);
         }
         else
         {
@@ -150,7 +150,7 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
             {
                 Creator* c = it3->second;
                 if (c->canCreate(context, arg))
-                    creators.push_back(c);
+                    creators.push_back(*it3);
             }
         }
     }
@@ -162,14 +162,14 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     else
     {
 //          std::cout << "Create Instance : " << arg->getFullName() << "\n";
-        object = creators[0]->createInstance(context, arg);
+        object = creators[0].second->createInstance(context, arg);
         if (creators.size()>1)
         {
 //                 std::cerr<<"WARNING: ObjectFactory: Several possibilities found for type "<<classname<<"<"<<templatename<<">:\n"; //<<std::endl;
             std::string w= "Template Unknown: <"+templatename+std::string("> : default used: <")+object->getTemplateName()+std::string("> in the list: ");
             for(unsigned int i=0; i<creators.size(); ++i)
             {
-                w += std::string("\n\t* ") + objectmodel::Base::decodeTemplateName(creators[i]->type());
+                w += std::string("\n\t* ") + creators[i].first; //creatorsobjectmodel::Base::decodeTemplateName(creators[i]->type());
             }
             object->serr<<w<<object->sendl;
         }
