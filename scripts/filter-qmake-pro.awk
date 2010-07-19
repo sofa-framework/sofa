@@ -45,25 +45,33 @@ blk_dev>0 && blk_after < blk_dev {
 
 # /contains[ \t]*\([ \t]*DEFINES[ \t]*,[ \t]*SOFA_DEV[ \t]*\)[ \t]*{/,/[ \t]*}.*SOFA_DEV/ {
 blk_dev>0 {
+    #print "# " $0
     # look for a filename
     # we assume files and directories are listed inside variables containing SUBDIRS, SOURCES or HEADERS
     f0=1;
+    nf=NF;
+    if ($nf~/\r/) {
+      #print "#CR <" $nf ">"
+      gsub(/[\r\n]/,"",$nf);
+      #print "#CRF <" $nf ">"
+      if ($nf=="") nf--;
+    }
     if (infilelist==0) {
 	if (($1~"SUBDIRS" || $1~"SOURCES" || $1~"HEADERS") && ($2=="=" || $2=="+=")) {
-#	    print "infilelist " $1
+	    #print "#infilelist " $1
 	    infilelist=1;
 	    f0=3; # first file is in 3rd field
 	}
     }
     if (infilelist) {
-	for(f=f0;f<=NF && !(f==NF && $f~/^[:space:]*\\[:space:]*$/);f++) {
+	for(f=f0;f<=nf && !(f==nf && $f~/^[:space:]*\\[:space:]*$/);f++) {
 	    fname=$f
 	    gsub(/[\r\n]/,"",fname);
 	    gsub(/\\[:space:]*$/,"",fname);
 	    if (fname != "#") print fname > "/dev/stderr";
 	}
-	if (f>NF && (NF==0 || $NF!~/\\[:space:]*$/)) { # no "\\" is put at the end of the line -> end of list
-#	    print "end"
+	if (f>nf && (nf==0 || $nf!~/\\[:space:]*$/)) { # no "\\" is put at the end of the line -> end of list
+	    #print "#end"
 	    infilelist=0;
 	}
     }
