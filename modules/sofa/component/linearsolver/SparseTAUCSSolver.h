@@ -74,6 +74,10 @@ public:
     Data< helper::vector<std::string> > f_options;
     Data<bool> f_symmetric;
     Data<bool> f_verbose;
+#ifdef SOFA_HAVE_CILK
+    Data<unsigned> f_nproc_simu;
+    Data<unsigned> f_nproc_fact;
+#endif
 
     SparseTAUCSSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
