@@ -1654,7 +1654,7 @@ void QtViewer::saveView()
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {
-            const Vec3d& camPosition = currentCamera->getLookAt();
+            const Vec3d& camPosition = currentCamera->getPosition();
             const Quat& camOrientation = currentCamera->getOrientation();
 
             out << camPosition[0] << " "
