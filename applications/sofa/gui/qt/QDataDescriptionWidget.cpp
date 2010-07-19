@@ -64,7 +64,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
             new QLabel(QString("Description"), box);
             (new QLabel(QString(entry->description.c_str()), box))->setMinimumWidth(20);
         }
-        std::map<std::string, core::ObjectFactory::Creator*>::iterator it = entry->creatorMap.find(object->getTemplateName());
+        core::ObjectFactory::CreatorMap::iterator it = entry->creatorMap.find(object->getTemplateName());
         if (it != entry->creatorMap.end() && *it->second->getTarget())
         {
             new QLabel(QString("Provided by"), box);

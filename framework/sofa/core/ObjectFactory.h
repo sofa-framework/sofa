@@ -55,6 +55,7 @@
 */
 
 #include <map>
+#include <memory>
 #include <iostream>
 #include <typeinfo>
 
@@ -79,6 +80,13 @@ namespace core
 class SOFA_CORE_API ObjectFactory
 {
 public:
+    class Creator;
+    class ClassEntry;
+
+    typedef std::map<std::string, Creator*> CreatorMap;
+    typedef std::list< std::pair< std::string, Creator* > > CreatorList;
+    typedef boost::shared_ptr<ClassEntry> ClassEntryPtr;
+    typedef std::map<std::string, ClassEntryPtr> ClassEntryMap;
 
     /// Abstract interface of objects used to create instances of a given type
     class Creator
@@ -116,16 +124,21 @@ public:
         std::string authors;
         std::string license;
         std::string defaultTemplate;
-        std::list< std::pair<std::string, Creator*> > creatorList;
-        std::map<std::string, Creator*> creatorMap;
+        CreatorList creatorList;
+        CreatorMap creatorMap;
         //void print();
+
+        ~ClassEntry()
+        {
+            for(CreatorMap::iterator it = creatorMap.begin(), itEnd = creatorMap.end();
+                it != itEnd; ++it)
+            {
+                delete it->second;
+            }
+        }
     };
 
-    typedef boost::shared_ptr<ClassEntry> ClassEntryPtr;
-
 protected:
-
-    typedef std::map<std::string, ClassEntryPtr> ClassEntryMap;
 
     /// Main class registry
     std::map<std::string, ClassEntryPtr> registry;
@@ -279,7 +292,7 @@ public:
     /// Add a creator able to instance this class with the given templatename.
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
-    RegisterObject& addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator);
+    RegisterObject& addCreator(std::string classname, std::string templatename, std::auto_ptr<ObjectFactory::Creator> creator);
     /*
         /// Test whether T* converts to U*,
         /// that is, if T is derived from U
@@ -371,7 +384,7 @@ public:
         */
         addBaseClasses(RealObject::GetClass());
 
-        return addCreator(classname, templatename, new ObjectCreator<RealObject>);
+        return addCreator(classname, templatename, std::auto_ptr<ObjectFactory::Creator>(new ObjectCreator<RealObject>));
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
