@@ -62,7 +62,7 @@ private:
 
     unsigned int mNumElements;     // Number of elements of temp storage allocated
 
-    Scan scan;
+    Scan *scan;
 
     void radixSortKeysOnly(_device_pointer d_keys,_device_pointer v, unsigned int numElements, unsigned int keyBits);
     void radixSortStepKeysOnly(_device_pointer d_keys,_device_pointer v, unsigned int nbits, unsigned int startbit, unsigned int numElements);
