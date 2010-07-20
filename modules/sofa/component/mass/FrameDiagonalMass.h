@@ -177,6 +177,14 @@ public:
 
     bool addBBox(double* minBBox, double* maxBBox);
 
+    static std::string templateName(const sofa::core::behavior::ForceField<DataTypes>* = NULL)
+    {
+        std::string name;
+        name.append(DataTypes::Name());
+        name.append(MassType::Name());
+        return name;
+    }
+
 private:
     DQStorage* dqStorage;
     VD* vol;
