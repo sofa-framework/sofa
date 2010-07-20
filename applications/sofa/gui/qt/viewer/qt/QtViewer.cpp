@@ -1306,14 +1306,15 @@ void QtViewer::mouseMoveEvent(QMouseEvent * e)
         firstTime = true;
     }
 #endif // TRACKING
-    mouseEvent(e);
-
-    SofaViewer::mouseMoveEvent(e);
+    //if the mouse move is not "interactive", give the event to the camera
+    if(!mouseEvent(e))
+        SofaViewer::mouseMoveEvent(e);
 }
 
 // ---------------------- Here are the mouse controls for the scene  ----------------------
-void QtViewer::mouseEvent(QMouseEvent * e)
+bool QtViewer::mouseEvent(QMouseEvent * e)
 {
+    bool isInteractive = false;
     int eventX = e->x();
     int eventY = e->y();
     if (_mouseInteractorRotationMode)
@@ -1396,16 +1397,17 @@ void QtViewer::mouseEvent(QMouseEvent * e)
     }
     else if (e->state() & Qt::ShiftButton)
     {
-        //_moving = false;
+        isInteractive = true;
         SofaViewer::mouseEvent(e);
     }
     else if (e->state() & Qt::ControlButton)
     {
+        isInteractive = true;
         moveLaparoscopic(e);
     }
     else if (e->state() & Qt::AltButton)
     {
-        //_moving = false;
+        isInteractive = true;
         switch (e->type())
         {
         case QEvent::MouseButtonPress:
@@ -1518,6 +1520,7 @@ void QtViewer::mouseEvent(QMouseEvent * e)
         }
     }
 
+    return isInteractive;
 }
 
 void QtViewer::moveRayPickInteractor(int eventX, int eventY)
