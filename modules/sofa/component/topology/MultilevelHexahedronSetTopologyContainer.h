@@ -98,12 +98,12 @@ public:
         m_changeListFine.clear();
     }
 
-    std::list<const TopologyChange *>::const_iterator firstChangeFine() const
+    std::list<const TopologyChange *>::const_iterator beginChangeFine() const
     {
         return m_changeListFine.begin();
     }
 
-    std::list<const TopologyChange *>::const_iterator lastChangeFine() const
+    std::list<const TopologyChange *>::const_iterator endChangeFine() const
     {
         return m_changeListFine.end();
     }

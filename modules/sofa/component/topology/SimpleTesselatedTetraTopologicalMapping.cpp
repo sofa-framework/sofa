@@ -174,8 +174,8 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
         //TetrahedronSetTopologyContainer *to_tstc;
         //toModel->getContext()->get(to_tstc);
 
-        std::list<const TopologyChange *>::const_iterator changeIt=toModel->firstChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=toModel->lastChange();
+        std::list<const TopologyChange *>::const_iterator changeIt=toModel->beginChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=toModel->endChange();
 
         while( changeIt != itEnd )
         {
@@ -392,8 +392,8 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
         //TetrahedronSetTopologyContainer *to_tstc;
         //toModel->getContext()->get(to_tstc);
 
-        std::list<const TopologyChange *>::const_iterator changeIt=fromModel->firstChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->lastChange();
+        std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
         while( changeIt != itEnd )
         {

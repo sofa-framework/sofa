@@ -142,10 +142,13 @@ public:
     * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
     * last call to propagateTopologicalChanges.
     *
-    * @sa firstChange()
-    * @sa lastChange()
+    * @sa beginChange()
+    * @sa endChange()
     */
     void propagateTopologicalChanges();
+
+    /// TODO: temporary duplication of topological events (commented by default)
+    virtual void propagateTopologicalEngineChanges();
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
     *
@@ -153,8 +156,8 @@ public:
     * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
     * last call to propagateTopologicalChanges.
     *
-    * @sa firstChange()
-    * @sa lastChange()
+    * @sa beginChange()
+    * @sa endChange()
     */
     void propagateStateChanges();
     /// @}

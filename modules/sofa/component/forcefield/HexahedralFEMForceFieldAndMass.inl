@@ -92,8 +92,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topol
 
     HexahedralFEMForceFieldT::handleTopologyChange();
 
-    std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
 
     // handle point events
     _particleMasses.handleTopologyEvents(itBegin,itEnd);

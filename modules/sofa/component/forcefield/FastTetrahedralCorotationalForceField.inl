@@ -143,8 +143,8 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
 
 template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>::handleTopologyChange()
 {
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
     tetrahedronInfo.handleTopologyEvents(itBegin,itEnd);

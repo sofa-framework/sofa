@@ -187,8 +187,8 @@ void BeamFEMForceField<DataTypes>::handleTopologyChange()
 {
     //_beamQuat.resize( _indexedElements->size() );
 
-    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     beamsData.handleTopologyEvents(itBegin,itEnd);
 }

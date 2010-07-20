@@ -62,8 +62,8 @@ void ExternalInterpolationMapping<BaseMapping>::handleTopologyChange(core::topol
     /*
      core::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
      if (t != topoFrom) return;
-     std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->firstChange();
-     std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->lastChange();
+     std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->beginChange();
+     std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->endChange();
      f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getX()->size());
      f_indices.endEdit();
     */

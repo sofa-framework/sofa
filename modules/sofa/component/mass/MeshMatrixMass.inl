@@ -801,8 +801,8 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::handleTopologyChange()
 {
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     vertexMassInfo.handleTopologyEvents(itBegin,itEnd);
     edgeMassInfo.handleTopologyEvents(itBegin,itEnd);

@@ -94,8 +94,8 @@ void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (int hexahe
 
 template <class DataTypes> void HexahedralFEMForceField<DataTypes>::handleTopologyChange()
 {
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     hexahedronInfo.handleTopologyEvents(itBegin,itEnd);
 }

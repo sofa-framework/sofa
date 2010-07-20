@@ -163,8 +163,8 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::Tria
 
 template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::handleTopologyChange()
 {
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
     triangleInfo.handleTopologyEvents(itBegin,itEnd);
