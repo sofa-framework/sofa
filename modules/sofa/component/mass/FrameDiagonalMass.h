@@ -177,6 +177,11 @@ public:
 
     bool addBBox(double* minBBox, double* maxBBox);
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
     static std::string templateName(const sofa::core::behavior::ForceField<DataTypes>* = NULL)
     {
         std::string name;
