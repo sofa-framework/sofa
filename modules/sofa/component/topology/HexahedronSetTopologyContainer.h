@@ -382,16 +382,6 @@ protected:
 
     void clearHexahedraAroundQuad();
 
-
-    /** \brief function to create appropriate pointer to TopologyEngine class.
-      *
-      * @return false if creation failed
-      */
-    virtual bool createTopologyEngine();
-
-    /** \brief return pointer to topologyEngine*/
-    const sofa::core::topology::TopologyEngine* getHexahedronSetTopologyEngine();
-
 protected:
 
 
@@ -438,8 +428,6 @@ protected:
 
     /// for each quad provides the set of hexahedra adjacent to that quad.
     sofa::helper::vector< HexahedraAroundQuad > m_hexahedraAroundQuad;
-
-    sofa::component::topology::HexahedronSetTopologyEngine* m_topologyEngine;
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };
