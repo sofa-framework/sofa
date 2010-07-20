@@ -1,0 +1,4 @@
+<Node name="Group"> 
+  <EulerImplicitSolver name="Euler Implicit" tags="" printLog="false" verbose="false" rayleighStiffness="0.1" rayleighMass="0.1" vdamping="0" />
+  <CGLinearSolver name="CG Solver" tags="" printLog="false" verbose="false" iterations="25" tolerance="1e-5" threshold="1e-5" />
+</Node>
