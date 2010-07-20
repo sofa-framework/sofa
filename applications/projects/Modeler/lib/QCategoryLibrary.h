@@ -50,7 +50,7 @@ namespace qt
 using sofa::core::CategoryLibrary;
 using sofa::core::ComponentLibrary;
 
-typedef sofa::core::ObjectFactory::ClassEntryPtr ClassEntryPtr;
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 //***************************************************************
 class QCategoryLibrary : virtual public QWidget, public CategoryLibrary
@@ -63,22 +63,22 @@ public:
     QCategoryLibrary(QWidget *parent, const std::string &categoryName, unsigned int numCom);
     ~QCategoryLibrary();
 
-    ComponentLibrary *addComponent(const std::string &componentName, ClassEntryPtr& entry, const std::vector< std::string > &exampleFiles);
+    ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
     void endConstruction();
 
     void setDisplayed(bool b);
 
     QWidget *getQWidget() { return this;};
 protected:
-    ComponentLibrary *createComponent(const std::string &componentName, ClassEntryPtr& entry, const std::vector< std::string > &exampleFiles);
+    ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
 
     CategoryLayout *layout;
 
 public slots:
-    void componentDraggedReception( std::string description, std::string templateName, ClassEntryPtr& componentEntry);
+    void componentDraggedReception( std::string description, std::string templateName, ClassEntry* componentEntry);
 
 signals:
-    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntryPtr& entry);
+    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntry* entry);
 };
 
 

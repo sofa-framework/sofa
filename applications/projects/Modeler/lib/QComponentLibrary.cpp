@@ -41,7 +41,7 @@ namespace gui
 
 namespace qt
 {
-QComponentLibrary::QComponentLibrary(QWidget *parent, ComponentLayout *l, const std::string &componentN, const std::string &categoryN, ClassEntryPtr& e, const std::vector< std::string > &exampleFiles): QWidget(parent, componentN.c_str()), ComponentLibrary(componentN,categoryN,e, exampleFiles)
+QComponentLibrary::QComponentLibrary(QWidget *parent, ComponentLayout *l, const std::string &componentN, const std::string &categoryN, ClassEntry* e, const std::vector< std::string > &exampleFiles): QWidget(parent, componentN.c_str()), ComponentLibrary(componentN,categoryN,e, exampleFiles)
 {
 //         layout    = new ComponentLayout( this );
     layout    = l;

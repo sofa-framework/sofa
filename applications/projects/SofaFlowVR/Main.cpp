@@ -1819,7 +1819,7 @@ int main(int argc, char** argv)
     sofa::simulation::xml::initXml();
 
 
-    sofa::core::ObjectFactory::ClassEntryPtr classVisualModel;
+    sofa::core::ObjectFactory::ClassEntry* classVisualModel;
     sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
 
     if (!files.empty()) fileName = files[0];

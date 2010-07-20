@@ -53,7 +53,7 @@ namespace qt
 {
 
 using sofa::core::ComponentLibrary;
-typedef sofa::core::ObjectFactory::ClassEntryPtr ClassEntryPtr;
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 class QComponentLibrary : virtual public QWidget, public ComponentLibrary
 {
@@ -64,7 +64,7 @@ public:
     typedef QPushButton ComponentLabel;
     typedef QComboBox   ComponentTemplates;
 public:
-    QComponentLibrary(QWidget *parent, ComponentLayout *layout, const std::string &componentName, const std::string &categoryName, ClassEntryPtr& entry, const std::vector< std::string > &exampleFiles);
+    QComponentLibrary(QWidget *parent, ComponentLayout *layout, const std::string &componentName, const std::string &categoryName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
     ~QComponentLibrary();
 
     void endConstruction();
@@ -86,7 +86,7 @@ public slots:
     void componentPressed();
 
 signals:
-    void componentDragged( std::string description, std::string templateName, ClassEntryPtr& entry);
+    void componentDragged( std::string description, std::string templateName, ClassEntry* entry);
 };
 
 }

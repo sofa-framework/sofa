@@ -69,19 +69,19 @@ QCategoryTreeLibrary::~QCategoryTreeLibrary()
     components.clear();
 }
 
-ComponentLibrary *QCategoryTreeLibrary::createComponent(const std::string &componentName, ClassEntryPtr& entry, const std::vector< std::string > &exampleFiles)
+ComponentLibrary *QCategoryTreeLibrary::createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles)
 {
     QComponentTreeLibrary* component = new QComponentTreeLibrary(tree, categoryTree, componentName, this->getName(), entry, exampleFiles);
     return component;
 }
 
-ComponentLibrary *QCategoryTreeLibrary::addComponent(const std::string &componentName, ClassEntryPtr& entry, const std::vector< std::string > &exampleFiles)
+ComponentLibrary *QCategoryTreeLibrary::addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles)
 {
     QComponentTreeLibrary *component = static_cast<QComponentTreeLibrary *>(CategoryLibrary::addComponent(componentName, entry, exampleFiles));
     if (component)
     {
-        connect( component->getQWidget(), SIGNAL( componentDragged( std::string, std::string, ClassEntryPtr& ) ),
-                this, SLOT( componentDraggedReception( std::string, std::string, ClassEntryPtr&) ) );
+        connect( component->getQWidget(), SIGNAL( componentDragged( std::string, std::string, ClassEntry* ) ),
+                this, SLOT( componentDraggedReception( std::string, std::string, ClassEntry*) ) );
     }
     return component;
 }
@@ -102,7 +102,7 @@ void QCategoryTreeLibrary::setDisplayed(bool b)
 //*********************//
 // SLOTS               //
 //*********************//
-void QCategoryTreeLibrary::componentDraggedReception( std::string description, std::string templateName, ClassEntryPtr& componentEntry)
+void QCategoryTreeLibrary::componentDraggedReception( std::string description, std::string templateName, ClassEntry* componentEntry)
 {
     emit( componentDragged( description, this->getName(), templateName, componentEntry) );
 }

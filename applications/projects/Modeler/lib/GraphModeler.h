@@ -67,8 +67,8 @@ namespace qt
 {
 
 
-typedef sofa::core::ObjectFactory::ClassEntryPtr ClassEntryPtr;
-typedef sofa::core::ObjectFactory::Creator       Creator;
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
+typedef sofa::core::ObjectFactory::Creator    Creator;
 
 #ifndef SOFA_QT4
 typedef QListView Q3ListView;
@@ -168,7 +168,7 @@ public:
     void configureElement(Base* b, xml::BaseElement *elem);
 
     /// Used to know what component is about to be created by a drag&drop
-    void setLastSelectedComponent( const std::string& templateName, ClassEntryPtr& entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
+    void setLastSelectedComponent( const std::string& templateName, ClassEntry* entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
 
 
 signals:
@@ -238,7 +238,7 @@ protected:
     /// Insert a GNode in the scene
     GNode      *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
-    BaseObject *addComponent(GNode *parent, const ClassEntryPtr& entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
+    BaseObject *addComponent(GNode *parent, const ClassEntry* entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
 
     /// Find the Sofa Component above the item
     Base *getComponentAbove(Q3ListViewItem *item);
@@ -267,7 +267,7 @@ protected:
     std::string filenameXML; //name associated to the current graph
 
     //Store template + ClassEntry
-    std::pair< std::string, ClassEntryPtr > lastSelectedComponent;
+    std::pair< std::string, ClassEntry* > lastSelectedComponent;
 
     GraphHistoryManager *historyManager;
 };
