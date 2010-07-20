@@ -36,7 +36,6 @@
 #include "WDoubleLineEdit.h"
 #include <limits.h>
 
-#include <sofa/component/fem/QuadratureFormular.h>
 #include <sofa/helper/Polynomial_LD.inl>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -52,8 +51,9 @@
 #endif
 
 #ifdef SOFA_DEV
+#include <sofa/component/fem/QuadratureFormular.h>
 #include <sofa/core/fem/FiniteElement.h>
-#endif
+#endif // SOFA_DEV
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -702,6 +702,7 @@ template<class T>
 class data_widget_container < Quater<T> > : public fixed_vector_data_widget_container < Quater<T> >
 {};
 
+#ifdef SOFA_DEV
 ////////////////////////////////////////////////////////////////
 /// sofa::component::fem::QuadratureFormular support
 ////////////////////////////////////////////////////////////////
@@ -749,8 +750,6 @@ class data_widget_container < QuadraturePoint<VecN > >
 ////////////////////////////////////////////////////////////////
 /// sofa::core::fem::FiniteElement::LocalNode support
 ////////////////////////////////////////////////////////////////
-
-#ifdef SOFA_DEV
 typedef sofa::core::fem::FiniteElement::LocalNode LocalNode;
 
 template<>
@@ -789,8 +788,8 @@ template<>
 class data_widget_container < LocalNode >
     : public fixed_vector_data_widget_container < LocalNode >
 {};
+#endif // SOFA_DEV
 
-#endif
 ////////////////////////////////////////////////////////////////
 /// sofa::helper::Polynomial_LD support
 ////////////////////////////////////////////////////////////////
