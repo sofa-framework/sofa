@@ -52,7 +52,6 @@ int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topol
 TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()
     , d_triangle(initData(&d_triangle, "triangles", "List of triangle indices"))
-    , m_topologyEngine(NULL)
 {
 
 }
@@ -1053,33 +1052,6 @@ void TriangleSetTopologyContainer::clear()
     clearBorderElementLists();
     EdgeSetTopologyContainer::clear();
 }
-
-
-bool TriangleSetTopologyContainer::createTopologyEngine()
-{
-    if (m_topologyEngine)
-        return true;
-
-    m_topologyEngine = new sofa::component::topology::TriangleSetTopologyEngine();
-    if (!m_topologyEngine)
-    {
-        serr << "Error TriangleSetTopologyEngine creation failed." << sendl;
-        return false;
-    }
-
-    m_topologyEngine->init();
-
-    return true;
-}
-
-
-const sofa::core::topology::TopologyEngine* TriangleSetTopologyContainer::getTriangleSetTopologyEngine()
-{
-    if (!m_topologyEngine)
-        this->createTopologyEngine();
-    return m_topologyEngine;
-}
-
 
 } // namespace topology
 

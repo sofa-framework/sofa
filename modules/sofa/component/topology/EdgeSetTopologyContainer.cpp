@@ -59,7 +59,6 @@ int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology cont
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
-    , m_topologyEngine(NULL)
     , m_checkConnexity(initData(&m_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
 }
@@ -575,32 +574,6 @@ void EdgeSetTopologyContainer::clear()
     clearEdgesAroundVertex();
 
     PointSetTopologyContainer::clear();
-}
-
-
-bool EdgeSetTopologyContainer::createTopologyEngine()
-{
-    if (m_topologyEngine)
-        return true;
-
-    m_topologyEngine = new sofa::component::topology::EdgeSetTopologyEngine();
-    if (!m_topologyEngine)
-    {
-        serr << "Error EdgeSetTopologyEngine creation failed." << sendl;
-        return false;
-    }
-
-    m_topologyEngine->init();
-
-    return true;
-}
-
-
-const sofa::core::topology::TopologyEngine* EdgeSetTopologyContainer::getEdgeSetTopologyEngine()
-{
-    if (!m_topologyEngine)
-        this->createTopologyEngine();
-    return m_topologyEngine;
 }
 
 } // namespace topology

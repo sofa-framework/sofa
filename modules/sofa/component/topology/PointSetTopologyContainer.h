@@ -150,24 +150,10 @@ public:
     }
 
 
-    /** \brief function to create appropriate pointer to TopologyEngine class.
-      *
-      * @return false if creation failed
-      */
-    virtual bool createTopologyEngine();
-
-    /** \brief function to register a topological Data to the list of Data in the topologyEngine. */
-    void addTopologycalData(PointData<void*>& topologicalData);
-
-    /** \brief return pointer to topologyEngine*/
-    const sofa::core::topology::TopologyEngine* getPointSetTopologyEngine();
-
 protected:
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 
     Data<unsigned int> nbPoints;
-
-    sofa::component::topology::PointSetTopologyEngine* m_topologyEngine;
 
 private:
     typedef defaulttype::Vec3Types InitTypes;

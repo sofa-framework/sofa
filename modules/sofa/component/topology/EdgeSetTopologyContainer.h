@@ -209,17 +209,6 @@ protected:
 
     void clearEdgesAroundVertex();
 
-
-    /** \brief function to create appropriate pointer to TopologyEngine class.
-      *
-      * @return false if creation failed
-      */
-    virtual bool createTopologyEngine();
-
-    /** \brief return pointer to topologyEngine*/
-    const sofa::core::topology::TopologyEngine* getEdgeSetTopologyEngine();
-
-
 protected:
 
     /** \brief Returns a non-const list of Edge indices around the ith DOF for subsequent modification.
@@ -236,8 +225,6 @@ protected:
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
-
-    sofa::component::topology::EdgeSetTopologyEngine* m_topologyEngine;
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 
