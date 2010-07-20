@@ -73,7 +73,6 @@ HEADERS += mycuda.h \
            CudaIdentityMapping.inl \
            CudaBarycentricMapping.h \
            CudaBarycentricMapping.inl \
-	   CudaRotationMatrix.h \
            CudaRigidMapping.h \
            CudaRigidMapping.inl \
            CudaSubsetMapping.h \
@@ -158,6 +157,7 @@ HEADERS += \
 			CudaMathRigid.h \
 	   	CudaMatrixUtils.h \
 	   	CudaDiagonalMatrix.h \
+        CudaRotationMatrix.h \
        	CudaMasterContactSolver.h \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
