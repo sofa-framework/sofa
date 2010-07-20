@@ -97,6 +97,11 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
     m_stateChangeList.endEdit();
 }
 
+void TopologyContainer::addTopologyEngine(const TopologyEngine *_topologyEngine)
+{
+    m_topologyEngineList.push_back(_topologyEngine);
+}
+
 
 sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::lastChange() const
 {
@@ -116,6 +121,16 @@ sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::la
 sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::firstStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
+}
+
+sofa::helper::list<const TopologyEngine *>::const_iterator TopologyContainer::lastTopologyEngine() const
+{
+    return m_topologyEngineList.end();
+}
+
+sofa::helper::list<const TopologyEngine *>::const_iterator TopologyContainer::firstTopologyEngine() const
+{
+    return m_topologyEngineList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()
@@ -144,21 +159,44 @@ void TopologyContainer::resetStateChangeList()
     m_stateChangeList.endEdit();
 }
 
+void TopologyContainer::resetTopologyEngineList()
+{
+    for (std::list<const TopologyEngine *>::iterator it=m_topologyEngineList.begin();
+            it!=m_topologyEngineList.end(); ++it)
+    {
+        delete (*it);
+    }
+
+    m_topologyEngineList.clear();
+}
+
 
 // TopologyEngine implementation
+TopologyEngine::TopologyEngine(): m_topologicalData(NULL)
+{}
+
+TopologyEngine::~TopologyEngine()
+{
+    if (this->m_topologicalData != NULL)
+        this->removeTopoligicalData();
+}
+
 void TopologyEngine::init()
 {
     DataEngine::init();
+
+    this->addInput(&m_changeList);
 }
 
-void TopologyEngine::addTopologicalData(sofa::core::objectmodel::BaseData& topologicalData)
+void TopologyEngine::registerTopologicalData(sofa::core::objectmodel::Data< sofa::helper::vector <void*> >* topologicalData)
 {
-    m_topologicalData.push_back(&topologicalData);
+    m_topologicalData = topologicalData;
 }
 
-void TopologyEngine::removeTopoligicalData(sofa::core::objectmodel::BaseData& topologicalData)
+void TopologyEngine::removeTopoligicalData()
 {
-    m_topologicalData.remove(&topologicalData);
+    if (this->m_topologicalData)
+        delete this->m_topologicalData;
 }
 
 

@@ -184,34 +184,38 @@ protected:
 
 
 
-/** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
+/** A class that will interact on a topological Data */
 class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
 {
 public:
     SOFA_CLASS(TopologyEngine, DataEngine);
-    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *> _topologicalDataList;
-    typedef sofa::helper::list<sofa::core::objectmodel::BaseData *>::iterator _iterator;
+    typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
 
-    TopologyEngine() {};
+    TopologyEngine();
 
-    virtual ~TopologyEngine() {}
+    virtual ~TopologyEngine();
 
     virtual void init();
 
     virtual void handleTopologyChange() {};
 
-protected:
+
+public:
 
     Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
-    _topologicalDataList m_topologicalData;
+    unsigned int getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
 
-public:
-    unsigned int getNumberOfTopologicalDataLinked() {return m_topologicalData.size();}
 
-    void addTopologicalData(sofa::core::objectmodel::BaseData& topologicalData);
+    virtual void registerTopologicalData(t_topologicalData* topologicalData);
 
-    void removeTopoligicalData(sofa::core::objectmodel::BaseData& topologicalData);
+    virtual void removeTopoligicalData();
+
+    virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
+
+protected:
+
+    t_topologicalData* m_topologicalData;
 
 };
 
@@ -304,30 +308,37 @@ public:
 
     /// TopologyEngine interactions
     ///@{
-    virtual const TopologyEngine* getPointSetTopologyEngine() {return NULL;}
+    const sofa::helper::list<const TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
 
-    virtual const TopologyEngine* getEdgeSetTopologyEngine() {return NULL;}
+    /** \brief Adds a TopologyEngine to the list.
+    */
+    void addTopologyEngine(const TopologyEngine* _topologyEngine);
 
-    virtual const TopologyEngine* getTriangleSetTopologyEngine() {return NULL;}
+    /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
+     */
+    sofa::helper::list<const TopologyEngine *>::const_iterator firstTopologyEngine() const;
 
-    virtual const TopologyEngine* getQuadSetTopologyEngine() {return NULL;}
+    /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
+     */
+    sofa::helper::list<const TopologyEngine *>::const_iterator lastTopologyEngine() const;
 
-    virtual const TopologyEngine* getTetrahedronSetTopologyEngine() {return NULL;}
+    /** \brief Free each Topology changes in the list and remove them from the list
+    *
+    */
+    void resetTopologyEngineList();
 
-    virtual const TopologyEngine* getHexahedronSetTopologyEngine() {return NULL;}
     ///@}
 
 
-private:
+protected:
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
     /// Array of state modifications that have already occured (addition) or will occur next (deletion).
     Data <sofa::helper::list<const TopologyChange *> >m_stateChangeList;
 
-protected:
-    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
-    TopologyEngine *m_topologyEngine;
+    /// List of topology engines which will interact on all topological Data.
+    sofa::helper::list<const TopologyEngine *> m_topologyEngineList;
 };
 
 
