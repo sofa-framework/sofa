@@ -397,7 +397,7 @@ void DiagonalMass<DataTypes, MassType>::handleTopologyChange()
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
 //	VecMass& masses = *f_mass.beginEdit();
-    //f_mass.handleTopologyEvents(itBegin,itEnd);
+    f_mass.handleTopologyEvents(itBegin,itEnd);
 //	f_mass.endEdit();
 }
 

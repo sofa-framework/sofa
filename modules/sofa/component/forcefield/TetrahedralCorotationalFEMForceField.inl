@@ -77,7 +77,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunct
         case SMALL :
             ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
             ff->initSmall(tetrahedronIndex,a,b,c,d);
-            //ff->printStiffnessMatrix(tetrahedronIndex);////////////////////////////////////////////////////////
             break;
         case LARGE :
             ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
