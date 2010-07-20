@@ -50,7 +50,7 @@ namespace bgl
 
 Simulation* getSimulation()
 {
-    if ( simulation::Simulation::theSimulation==NULL )
+    if ( simulation::Simulation::theSimulation.get() == 0 )
         setSimulation(new BglSimulation);
     return simulation::getSimulation();
 }

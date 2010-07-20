@@ -41,8 +41,10 @@ using namespace sofa::defaulttype;
 
 Simulation* getSimulation()
 {
-    if ( simulation::Simulation::theSimulation==NULL )
-        setSimulation( new TreeSimulation() );
+    if ( simulation::Simulation::theSimulation.get() == 0 )
+    {
+        setSimulation( new TreeSimulation );
+    }
     return simulation::getSimulation();
 }
 
@@ -58,13 +60,12 @@ TreeSimulation::TreeSimulation(): visualNode(NULL)
 
 Node *TreeSimulation::getVisualRoot()
 {
-    if (visualNode) return visualNode;
-    else
+    if (visualNode.get() == 0)
     {
-        visualNode= new GNode("VisualNode");
+        visualNode.reset(new GNode("VisualNode"));
         visualNode->addTag(core::objectmodel::Tag("Visual"));
-        return visualNode;
     }
+    return visualNode.get();
 }
 
 /// Create a new node
