@@ -92,20 +92,19 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
-    if (Simulation::theSimulation == this) setSimulation( NULL );
 }
 
 /// The (unique) simulation which controls the scene
-Simulation* Simulation::theSimulation = NULL;
+std::auto_ptr<Simulation> Simulation::theSimulation;
 
 void setSimulation ( Simulation* s )
 {
-    Simulation::theSimulation = s;
+    Simulation::theSimulation.reset(s);
 }
 
 Simulation* getSimulation()
 {
-    return Simulation::theSimulation;
+    return Simulation::theSimulation.get();
 }
 
 /// Print all object in the graph
