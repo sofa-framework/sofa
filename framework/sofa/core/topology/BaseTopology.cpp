@@ -103,32 +103,32 @@ void TopologyContainer::addTopologyEngine(const TopologyEngine *_topologyEngine)
 }
 
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::lastChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
 {
     return (m_changeList.getValue()).end();
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::firstChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::beginChange() const
 {
     return (m_changeList.getValue()).begin();
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::lastStateChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::endStateChange() const
 {
     return (m_stateChangeList.getValue()).end();
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::firstStateChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
 }
 
-sofa::helper::list<const TopologyEngine *>::const_iterator TopologyContainer::lastTopologyEngine() const
+sofa::helper::list<const TopologyEngine *>::const_iterator TopologyContainer::endTopologyEngine() const
 {
     return m_topologyEngineList.end();
 }
 
-sofa::helper::list<const TopologyEngine *>::const_iterator TopologyContainer::firstTopologyEngine() const
+sofa::helper::list<const TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngine() const
 {
     return m_topologyEngineList.begin();
 }
@@ -178,7 +178,7 @@ TopologyEngine::TopologyEngine(): m_topologicalData(NULL)
 TopologyEngine::~TopologyEngine()
 {
     if (this->m_topologicalData != NULL)
-        this->removeTopoligicalData();
+        this->removeTopologicalData();
 }
 
 void TopologyEngine::init()
@@ -193,7 +193,7 @@ void TopologyEngine::registerTopologicalData(sofa::core::objectmodel::Data< sofa
     m_topologicalData = topologicalData;
 }
 
-void TopologyEngine::removeTopoligicalData()
+void TopologyEngine::removeTopologicalData()
 {
     if (this->m_topologicalData)
         delete this->m_topologicalData;
