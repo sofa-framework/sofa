@@ -89,7 +89,7 @@ helper::Creator<SofaViewerFactory, QtViewer> QtViewer_class("qt",false);
 SOFA_DECL_CLASS ( QTGUI )
 
 
-sofa::core::ObjectFactory::ClassEntryPtr classVisualModel;
+sofa::core::ObjectFactory::ClassEntry* classVisualModel;
 
 static  bool enabled = false;
 

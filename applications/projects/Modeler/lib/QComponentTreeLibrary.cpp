@@ -37,7 +37,7 @@ namespace gui
 
 namespace qt
 {
-QComponentTreeLibrary::QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category, const std::string &componentN, const std::string &categoryN, ClassEntryPtr& e, const std::vector< std::string > &exampleFiles): QWidget(parent, componentN.c_str()), ComponentLibrary(componentN,categoryN,e, exampleFiles)
+QComponentTreeLibrary::QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category, const std::string &componentN, const std::string &categoryN, ClassEntry* e, const std::vector< std::string > &exampleFiles): QWidget(parent, componentN.c_str()), ComponentLibrary(componentN,categoryN,e, exampleFiles)
 {
     //Create Tree component
     tree=(QTreeWidget*) parent;
