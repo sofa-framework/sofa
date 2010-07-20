@@ -67,19 +67,22 @@ struct SOFA_HELPER_API fboParameters
 
 class SOFA_HELPER_API FrameBufferObject
 {
-
 private:
     unsigned int width, height;
     GLuint id;
-    GLuint depthTexture, colorTexture;
+    GLuint depthTextureID, colorTextureID;
     bool initialized;
     fboParameters _fboParams;
+    bool depthTexture;
+    bool enableDepth;
+    bool enableColor;
     sofa::helper::gl::DrawManager::MODEDISPLAY _systemDraw;
+
 public:
-    FrameBufferObject();
+    FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true);
     virtual ~FrameBufferObject();
 
-    FrameBufferObject(const fboParameters& FboFormat);
+    FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true);
     void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; };
     void setModeDisplay( const sofa::helper::gl::DrawManager::MODEDISPLAY systemDraw) { _systemDraw = systemDraw; };
 
@@ -96,11 +99,11 @@ public:
     GLuint getDepthTexture();
     GLuint getColorTexture();
 
-
     void createDepthBuffer();
     void createColorBuffer();
     void initDepthBuffer();
     void initColorBuffer();
+
 private:
 #ifdef SOFA_GUI_QTOGREVIEWER
     void _initOGRE( unsigned int width, unsigned int height);
