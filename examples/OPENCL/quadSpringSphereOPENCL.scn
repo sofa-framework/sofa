@@ -15,7 +15,7 @@
 		<CGLinearSolver iterations="10" threshold="0.000001"/>
 
 		<MechanicalObject template="OpenCLVec3f" />
-		<!-- <WriteState filename="spereCUDA.state" /> -->
+		<!-- --> <WriteState filename="OPENCL" /> <!-- -->
 
 		<UniformMass totalmass="100" />
 

@@ -74,7 +74,8 @@ public:
     Data< Real > viscosity;
     Data< Real > surfaceTension;
     Data< bool > newDensity;
-    Data< int > pressureExponent;
+    Data< int  > pressureExponent;
+    Data< bool > usePCISPH;
 
 protected:
     struct Particle
@@ -88,8 +89,24 @@ protected:
         sofa::helper::vector< std::pair<int,Real> > neighbors2; ///< indice + r/h
 #endif
     };
+
+    struct PredictedParticle
+    {
+        Real pressure_variation;
+        Deriv predicted_velocity;
+        Deriv predicted_position;
+        Real predicted_density;
+        Real predicted_density_variation;
+        Deriv pressure_force;
+        Deriv sum_gradWd;
+        Real sum_gradWdWd;
+        int neighborhood;
+    };
+
     Real lastTime;
     sofa::helper::vector<Particle> particles;
+    sofa::helper::vector<PredictedParticle> PCIParticles;
+    std::vector< VecCoord > iterParticles;
 
     typedef SpatialGridContainer<DataTypes> Grid;
 
@@ -114,12 +131,17 @@ protected:
     Real  constWd(Real h) const
     {
         return (Real)(315 / (64*R_PI*h*h*h));
+
     }
     Real  Wd(Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
+        if(a<=0)return 0;
         return  C*a*a*a;
     }
+
+
+
 
     // grad W = d(W)/dr Ur            in spherical coordinates, with Ur = D/|D| = D/r
     //        = d( C(1-r2/h2)3 )/dr D/r
@@ -131,15 +153,20 @@ protected:
     //        = -6C/h6 ( r4 -2h2r2 +h4 ) D
     //        = -6C/h6 ( h2 - r2 )2 D
     //        = -6C/h2 ( 1 - r2/h2 )2 D
-    Real  constGradWd(Real h) const
+    Real constGradWd(Real h) const
     {
-        return -6*constWd(h)/(h*h);
+//		return -6*constWd(h)/(h*h);
+        return -6*constWd(h)/h;
     }
+
     Deriv gradWd(const Deriv& d, Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
-        return d*(C*a*a);
+        if(a<=0)return Deriv();
+//		return d*(C*a*a);
+        return d*(C*a*a)*r_h;
     }
+
 
     // laplacian(W) = d(W)/dx2 + d(W)/dy2 + d(W)/dz2
     //              = 1/r d2(rW)/dr2                 in spherical coordinate, as f only depends on r
@@ -315,6 +342,73 @@ public:
     Real getParticleFieldConstant(Real h)
     {
         return constWc(h)*particleMass.getValue();
+    }
+
+
+    Real GetMonaghanKernel(Real r,Real smoothRadius)
+    {
+        float h = smoothRadius/2;
+
+        float q = r / h;
+
+        static float norm = 15.0 / (14 * 3.141592);
+
+
+        static float h2 = h * h;
+
+        float q2 = (2-q);
+        if (q<=1.5)
+        {
+            float q1 = (1-q);
+            return (norm / h2) * (q2*q2*q2 - 4*q1*q1*q1);
+        }
+        else if (q>1.0 && q<=2.0)
+        {
+            return norm / h2 * q2*q2*q2;
+        }
+        else return 0.0;
+    }
+
+
+    Real GetMonaghanGrad(Real r,Real smoothRadius)
+    {
+        float h = smoothRadius/2;
+        float q= r / h;
+
+
+        static float h4 = pow(h,4);
+        static float norm = 15.0 / (14 * M_PI * h4);
+
+        if (q<=1.0)
+        {
+            return (3*norm*r) * (3*q - 4);
+        }
+        else if (q>1.0 && q<=2.0)
+        {
+            return (3*norm*r) * (-1*(2-q)*(2-q)/q);
+        }
+        else return 0.0;
+    }
+
+
+    Real GetMonaghanLap(Real r, Real smoothRadius)
+    {
+        float h = smoothRadius/2;
+
+        float q= r / h;
+
+        static float norm = 15.0 / (14 * 3.141592);
+
+        static float h2 = h * h;
+        if (q<=1.0)
+        {
+            return norm / (h2 * h2) * (6*(2-q) - 24*(1-q));
+        }
+        else if (q>1.0 && q<=2.0)
+        {
+            return norm / (h2 * h2) *  6 * (2-q);
+        }
+        else return 0.0;
     }
 
     virtual void init();
