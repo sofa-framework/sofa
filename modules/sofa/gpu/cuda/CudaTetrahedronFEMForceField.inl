@@ -27,8 +27,10 @@
 
 #include "CudaTetrahedronFEMForceField.h"
 #include <sofa/component/forcefield/TetrahedronFEMForceField.inl>
+#ifdef SOFA_DEV
 #include <sofa/gpu/cuda/CudaDiagonalMatrix.h>
 #include <sofa/gpu/cuda/CudaRotationMatrix.h>
+#endif // SOFA_DEV
 namespace sofa
 {
 
@@ -472,6 +474,7 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
 {
     Data& data = m->data;
+#ifdef SOFA_DEV
     if (CudaDiagonalMatrix<Real> * diag = dynamic_cast<CudaDiagonalMatrix<Real> * >(mat))
     {
         Kernels::addKToMatrix(
@@ -485,150 +488,152 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
             diag->getCudaMatrix().deviceWriteAt(offset),
             k);
     }
-    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
-    {
-        const VecElement& elems = *m->_indexedElements;
-
-        //helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
-
-        // Build Matrix Block for this ForceField
-        int i,j,n1, n2;
-        int offd3 = offset/3;
-
-        typename Main::Transformation Rot;
-        typename Main::StiffnessMatrix JKJt,tmp;
-
-
-        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-        Rot[0][1]=Rot[0][2]=0;
-        Rot[1][0]=Rot[1][2]=0;
-        Rot[2][0]=Rot[2][1]=0;
-
-        for (int ei=0; ei<data.nbElement; ++ei)
-        {
-            const Element& e = elems[ei];
-
-            int blockIdx = ei / BSIZE;
-            int threadIdx = ei % BSIZE;
-
-            if (m->parallelDataInit[1] == NULL)   // we build in the main thread²
-            {
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        Rot[j][i] = data.state[blockIdx].Rt[i][j][threadIdx];
-            }
-            else
-            {
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        Rot[j][i] = data.parallelRotation[blockIdx].Rt[i][j][threadIdx];
-            }
-
-            m->computeStiffnessMatrix(JKJt, tmp, m->parallelDataThrd->materialsStiffnesses[ei], m->parallelDataThrd->strainDisplacements[ei], Rot);
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
-
-            // find index of node 1
-            for (n1=0; n1<4; n1++)
-            {
-                for(i=0; i<3; i++)
-                {
-                    for (n2=0; n2<4; n2++)
-                    {
-                        for (j=0; j<3; j++)
-                        {
-                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
-                        }
-                    }
-                }
-            }
-
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
-
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
-
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
-
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
-        }
-    }
     else
-    {
-        const VecElement& elems = *m->_indexedElements;
-
-        //helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
-
-        // Build Matrix Block for this ForceField
-        int i,j,n1, n2, row, column, ROW, COLUMN;
-
-        typename Main::Transformation Rot;
-        typename Main::StiffnessMatrix JKJt,tmp;
-
-        Index noeud1, noeud2;
-
-        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-        Rot[0][1]=Rot[0][2]=0;
-        Rot[1][0]=Rot[1][2]=0;
-        Rot[2][0]=Rot[2][1]=0;
-
-        for (int ei=0; ei<data.nbElement; ++ei)
+#endif // SOFA_DEV
+        if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
         {
-            const Element& e = elems[ei];
+            const VecElement& elems = *m->_indexedElements;
 
-            int blockIdx = ei / BSIZE;
-            int threadIdx = ei % BSIZE;
+            //helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
 
-            if (m->parallelDataInit[1] == NULL)   // we build in the main thread²
+            // Build Matrix Block for this ForceField
+            int i,j,n1, n2;
+            int offd3 = offset/3;
+
+            typename Main::Transformation Rot;
+            typename Main::StiffnessMatrix JKJt,tmp;
+
+
+            Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+            Rot[0][1]=Rot[0][2]=0;
+            Rot[1][0]=Rot[1][2]=0;
+            Rot[2][0]=Rot[2][1]=0;
+
+            for (int ei=0; ei<data.nbElement; ++ei)
             {
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        Rot[j][i] = data.state[blockIdx].Rt[i][j][threadIdx];
-            }
-            else
-            {
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        Rot[j][i] = data.parallelRotation[blockIdx].Rt[i][j][threadIdx];
-            }
+                const Element& e = elems[ei];
 
-            m->computeStiffnessMatrix(JKJt, tmp, m->parallelDataThrd->materialsStiffnesses[ei], m->parallelDataThrd->strainDisplacements[ei], Rot);
+                int blockIdx = ei / BSIZE;
+                int threadIdx = ei % BSIZE;
 
-            // find index of node 1
-            for (n1=0; n1<4; n1++)
-            {
-                noeud1 = e[n1];
-
-                for(i=0; i<3; i++)
+                if (m->parallelDataInit[1] == NULL)   // we build in the main thread²
                 {
-                    ROW = offset+3*noeud1+i;
-                    row = 3*n1+i;
-                    // find index of node 2
-                    for (n2=0; n2<4; n2++)
-                    {
-                        noeud2 = e[n2];
-
+                    for(i=0; i<3; i++)
                         for (j=0; j<3; j++)
+                            Rot[j][i] = data.state[blockIdx].Rt[i][j][threadIdx];
+                }
+                else
+                {
+                    for(i=0; i<3; i++)
+                        for (j=0; j<3; j++)
+                            Rot[j][i] = data.parallelRotation[blockIdx].Rt[i][j][threadIdx];
+                }
+
+                m->computeStiffnessMatrix(JKJt, tmp, m->parallelDataThrd->materialsStiffnesses[ei], m->parallelDataThrd->strainDisplacements[ei], Rot);
+                defaulttype::Mat<3,3,double> tmpBlock[4][4];
+
+                // find index of node 1
+                for (n1=0; n1<4; n1++)
+                {
+                    for(i=0; i<3; i++)
+                    {
+                        for (n2=0; n2<4; n2++)
                         {
-                            COLUMN = offset+3*noeud2+j;
-                            column = 3*n2+j;
-                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                            for (j=0; j<3; j++)
+                            {
+                                tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
+                            }
+                        }
+                    }
+                }
+
+                *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
+                *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
+                *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
+                *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
+
+                *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
+                *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
+                *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
+                *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
+
+                *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
+                *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
+                *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
+                *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
+
+                *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
+                *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
+                *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
+                *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
+            }
+        }
+        else
+        {
+            const VecElement& elems = *m->_indexedElements;
+
+            //helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+
+            // Build Matrix Block for this ForceField
+            int i,j,n1, n2, row, column, ROW, COLUMN;
+
+            typename Main::Transformation Rot;
+            typename Main::StiffnessMatrix JKJt,tmp;
+
+            Index noeud1, noeud2;
+
+            Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+            Rot[0][1]=Rot[0][2]=0;
+            Rot[1][0]=Rot[1][2]=0;
+            Rot[2][0]=Rot[2][1]=0;
+
+            for (int ei=0; ei<data.nbElement; ++ei)
+            {
+                const Element& e = elems[ei];
+
+                int blockIdx = ei / BSIZE;
+                int threadIdx = ei % BSIZE;
+
+                if (m->parallelDataInit[1] == NULL)   // we build in the main thread²
+                {
+                    for(i=0; i<3; i++)
+                        for (j=0; j<3; j++)
+                            Rot[j][i] = data.state[blockIdx].Rt[i][j][threadIdx];
+                }
+                else
+                {
+                    for(i=0; i<3; i++)
+                        for (j=0; j<3; j++)
+                            Rot[j][i] = data.parallelRotation[blockIdx].Rt[i][j][threadIdx];
+                }
+
+                m->computeStiffnessMatrix(JKJt, tmp, m->parallelDataThrd->materialsStiffnesses[ei], m->parallelDataThrd->strainDisplacements[ei], Rot);
+
+                // find index of node 1
+                for (n1=0; n1<4; n1++)
+                {
+                    noeud1 = e[n1];
+
+                    for(i=0; i<3; i++)
+                    {
+                        ROW = offset+3*noeud1+i;
+                        row = 3*n1+i;
+                        // find index of node 2
+                        for (n2=0; n2<4; n2++)
+                        {
+                            noeud2 = e[n2];
+
+                            for (j=0; j<3; j++)
+                            {
+                                COLUMN = offset+3*noeud2+j;
+                                column = 3*n2+j;
+                                mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                            }
                         }
                     }
                 }
             }
         }
-    }
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -673,11 +678,13 @@ template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m,defaulttype::BaseMatrix * rotations,int offset, bool prefetch)
 {
     Data& data = m->data;
+#ifdef SOFA_DEV
     if (CudaRotationMatrix<TReal> * diagd = dynamic_cast<CudaRotationMatrix<TReal> * >(rotations))
     {
         data.getRotations(m,diagd->getCudaVector(),prefetch);
     }
     else
+#endif // SOFA_DEV
     {
 
         data.vecTmpRotation.resize(data.nbVertex*9);
