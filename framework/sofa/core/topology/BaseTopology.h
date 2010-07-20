@@ -209,7 +209,7 @@ public:
 
     virtual void registerTopologicalData(t_topologicalData* topologicalData);
 
-    virtual void removeTopoligicalData();
+    virtual void removeTopologicalData();
 
     virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
 
@@ -279,19 +279,19 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator firstChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator beginChange() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator lastChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator endChange() const;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator firstStateChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator beginStateChange() const;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator lastStateChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator endStateChange() const;
 
 
     /** \brief Free each Topology changes in the list and remove them from the list
@@ -316,11 +316,11 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
      */
-    sofa::helper::list<const TopologyEngine *>::const_iterator firstTopologyEngine() const;
+    sofa::helper::list<const TopologyEngine *>::const_iterator beginTopologyEngine() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
      */
-    sofa::helper::list<const TopologyEngine *>::const_iterator lastTopologyEngine() const;
+    sofa::helper::list<const TopologyEngine *>::const_iterator endTopologyEngine() const;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *

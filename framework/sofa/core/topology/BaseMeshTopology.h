@@ -315,19 +315,19 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    virtual sofa::helper::list<const TopologyChange *>::const_iterator firstChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator beginChange() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    virtual sofa::helper::list<const TopologyChange *>::const_iterator lastChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator endChange() const;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
      */
-    virtual sofa::helper::list<const TopologyChange *>::const_iterator firstStateChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator beginStateChange() const;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
      */
-    virtual sofa::helper::list<const TopologyChange *>::const_iterator lastStateChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator endStateChange() const;
 
     /// @}
 
