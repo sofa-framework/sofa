@@ -316,8 +316,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
 {
     using sofa::core::topology::TopologyChange;
 
-    std::list< const TopologyChange * >::const_iterator itBegin = m_topology->firstStateChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = m_topology->lastStateChange();
+    std::list< const TopologyChange * >::const_iterator itBegin = m_topology->beginStateChange();
+    std::list< const TopologyChange * >::const_iterator itEnd = m_topology->endStateChange();
 
     while( itBegin != itEnd )
     {

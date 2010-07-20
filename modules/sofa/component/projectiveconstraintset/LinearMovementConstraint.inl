@@ -103,8 +103,8 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
 // Handle topological changes
 template <class DataTypes> void LinearMovementConstraint<DataTypes>::handleTopologyChange()
 {
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
 
     m_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
 

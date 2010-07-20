@@ -77,7 +77,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunct
         case SMALL :
             ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
             ff->initSmall(tetrahedronIndex,a,b,c,d);
-            ff->printStiffnessMatrix(tetrahedronIndex);////////////////////////////////////////////////////////
+            //ff->printStiffnessMatrix(tetrahedronIndex);////////////////////////////////////////////////////////
             break;
         case LARGE :
             ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
@@ -94,8 +94,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunct
 
 template <class DataTypes> void TetrahedralCorotationalFEMForceField<DataTypes>::handleTopologyChange()
 {
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     tetrahedronInfo.handleTopologyEvents(itBegin,itEnd);
 }

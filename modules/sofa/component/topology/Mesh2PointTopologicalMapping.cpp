@@ -272,8 +272,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if(fromModel && toModel)
     {
-        std::list<const TopologyChange *>::const_iterator changeIt=fromModel->firstChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->lastChange();
+        std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
         PointSetTopologyModifier *to_pstm;
         toModel->getContext()->get(to_pstm);

@@ -279,8 +279,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
     {
         // We use the same triangle array as the topology -> only resize and recompute flags
 
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
         //elems.handleTopologyEvents(itBegin,itEnd);
 
         while( itBegin != itEnd )
@@ -329,8 +329,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
     if (topoMod)   // dynamic topology
     {
 
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
 
         while( itBegin != itEnd )

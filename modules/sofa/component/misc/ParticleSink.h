@@ -169,8 +169,8 @@ public:
     void handleTopologyChange()
     {
         sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=topology->beginChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
         if (itBegin != itEnd)
         {
             fixed.handleTopologyEvents(itBegin, itEnd, this->mstate->getSize());

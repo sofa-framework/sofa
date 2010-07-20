@@ -168,8 +168,8 @@ void LineModel::handleTopologyChange()
 
     if (bmt)
     {
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->firstChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->lastChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->beginChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
 
         while( itBegin != itEnd )
         {

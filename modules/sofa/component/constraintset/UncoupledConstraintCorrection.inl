@@ -104,8 +104,8 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
     if (!topology)
         return;
 
-    std::list< const TopologyChange * >::const_iterator itBegin = topology->firstChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = topology->lastChange();
+    std::list< const TopologyChange * >::const_iterator itBegin = topology->beginChange();
+    std::list< const TopologyChange * >::const_iterator itEnd = topology->endChange();
 
     VecReal& comp = *(compliance.beginEdit());
 

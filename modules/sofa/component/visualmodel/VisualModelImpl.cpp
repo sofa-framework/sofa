@@ -1186,8 +1186,8 @@ void VisualModelImpl::handleTopologyChange()
     ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
     ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
 
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
     while( itBegin != itEnd )
     {
