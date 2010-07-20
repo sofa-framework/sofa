@@ -181,6 +181,8 @@ public:
         return in;
     }
 
+    static const char* Name();
+
 };
 
 
@@ -198,6 +200,9 @@ inline typename StdRigidTypes<N, real>::Deriv operator/ ( const typename StdRigi
 
 typedef FrameMass<3,double> Frame3dMass;
 typedef FrameMass<3,float> Frame3fMass;
+
+template<> inline const char* defaulttype::Frame3dMass::Name() { return "Frame3dMass"; }
+template<> inline const char* defaulttype::Frame3fMass::Name() { return "Frame3fMass"; }
 
 #ifdef SOFA_FLOAT
 typedef Frame3fMass Frame3Mass;
