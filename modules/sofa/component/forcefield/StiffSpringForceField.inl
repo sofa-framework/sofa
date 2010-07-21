@@ -162,23 +162,22 @@ template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, double kFact, unsigned int &offset)
 {
     const sofa::helper::vector<Spring >& ss = this->springs.getValue();
-
     for (unsigned int e=0; e<ss.size(); e++)
     {
         const Spring& s = ss[e];
-
         unsigned p1 = offset+Deriv::total_size*s.m1;
         unsigned p2 = offset+Deriv::total_size*s.m2;
-
         for(int i=0; i<N; i++)
             for (int j=0; j<N; j++)
             {
-                Real k = (Real)(this->dfdx[e][i][j]*kFact);
-
-                mat->add(p1+i,p1+j, -k);
-                mat->add(p1+i,p2+j, k);
-                mat->add(p2+i,p1+j, k);//or mat->add(p1+j,p2+i, k);
-                mat->add(p2+i,p2+j, -k);
+                if (e<this->dfdx.size())
+                {
+                    Real k = (Real)(this->dfdx[e][i][j]*kFact);
+                    mat->add(p1+i,p1+j, -k);
+                    mat->add(p1+i,p2+j, k);
+                    mat->add(p2+i,p1+j, k);//or mat->add(p1+j,p2+i, k);
+                    mat->add(p2+i,p2+j, -k);
+                }
             }
     }
 }
