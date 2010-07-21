@@ -114,9 +114,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     _indexedElements = & (_mesh->getCubes());
 #endif
 // 	}
-#ifdef SOFA_DEV
     _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
-#endif // SOFA_DEV
     _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
 
 
@@ -217,9 +215,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     {
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
-#ifdef SOFA_DEV
             if (_trimgrid && !_trimgrid->isCubeActive(i)) continue;
-#endif // SOFA_DEV
             accumulateForceLarge( f, p, i, *it );
         }
         break;
@@ -228,9 +224,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     {
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
-#ifdef SOFA_DEV
             if (_trimgrid && !_trimgrid->isCubeActive(i)) continue;
-#endif // SOFA_DEV
             accumulateForcePolar( f, p, i, *it );
         }
         break;
@@ -251,9 +245,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
-#ifdef SOFA_DEV
         if (_trimgrid && !_trimgrid->isCubeActive(i)) continue;
-#endif // SOFA_DEV
 
 // 					Transformation R_0_2;
 // 					R_0_2.transpose(_rotations[i]);
@@ -1162,9 +1154,7 @@ void HexahedronFEMForceField<DataTypes>::draw()
 
         std::vector< Vector3 > points[6];
 
-#ifdef SOFA_DEV
         if (_trimgrid && !_trimgrid->isCubeActive(i)) continue;
-#endif // SOFA_DEV
         Index a = (*it)[0];
         Index b = (*it)[1];
 #ifndef SOFA_NEW_HEXA
