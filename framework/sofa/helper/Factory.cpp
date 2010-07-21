@@ -40,16 +40,25 @@ namespace helper
 /// Decode the type's name to a more readable form if possible
 std::string SOFA_HELPER_API gettypename(const std::type_info& t)
 {
-    std::string name = t.name();
+    std::string name;
 #ifdef __GNUC__
     char* realname = NULL;
     int status;
-    realname = abi::__cxa_demangle(name.c_str(), 0, 0, &status);
+    realname = abi::__cxa_demangle(t.name(), 0, 0, &status);
     if (realname!=NULL)
     {
-        name = realname;
+        int length = 0;
+        while(realname[length] != '\0')
+        {
+            length++;
+        }
+        name.resize(length);
+        for(int i=0; i<(int)length; i++)
+            name[i] = realname[i];
         free(realname);
     }
+#else
+    name = t.name();
 #endif
     // Remove namespaces
     for(;;)

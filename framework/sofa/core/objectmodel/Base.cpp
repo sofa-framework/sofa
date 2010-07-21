@@ -145,14 +145,22 @@ std::string Base::decodeFullName(const std::type_info& t)
     std::string name;
 #ifdef __GNUC__
     int status;
-    char* allocname = abi::__cxa_demangle(t.name(), 0, 0, &status);
+    /* size_t length; */ // although it should, length would not be filled in by the following call
+    char* allocname = abi::__cxa_demangle(t.name(), 0, /*&length*/0, &status);
     if(allocname == 0)
     {
         std::cerr << "Unable to demangle symbol: " << t.name() << std::endl;
     }
     else
     {
-        name = allocname;
+        int length = 0;
+        while(allocname[length] != '\0')
+        {
+            length++;
+        }
+        name.resize(length);
+        for(int i=0; i<(int)length; i++)
+            name[i] = allocname[i];
         free(allocname);
     }
 #else
