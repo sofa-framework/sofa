@@ -193,6 +193,16 @@ public:
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const DiagonalMass<DataTypes, TMassType>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
