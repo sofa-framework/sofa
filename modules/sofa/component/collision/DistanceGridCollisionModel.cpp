@@ -513,26 +513,23 @@ void FFDDistanceGridCollisionModel::init()
     for (int e=0; e<ffdMesh->getNbCubes(); e++)
 #endif
     {
-        if (ffdMesh->isCubeActive( e ))
-        {
-            if (c != e)
-                elems[c].points.swap(elems[e].points); // move the list of points to the new
-            elems[c].elem = e;
+        if (c != e)
+            elems[c].points.swap(elems[e].points); // move the list of points to the new
+        elems[c].elem = e;
 #ifdef SOFA_NEW_HEXA
-            core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
-            { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
-            { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
+        core::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexahedron(e));
+        { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
+        { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
 #else
-            core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
+        core::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
 #endif
-            elems[c].initP0 = GCoord(ffdMesh->getPX(cube[0]), ffdMesh->getPY(cube[0]), ffdMesh->getPZ(cube[0]));
-            elems[c].initDP = GCoord(ffdMesh->getPX(cube[7]), ffdMesh->getPY(cube[7]), ffdMesh->getPZ(cube[7]))-elems[c].initP0;
-            elems[c].invDP[0] = 1/elems[c].initDP[0];
-            elems[c].invDP[1] = 1/elems[c].initDP[1];
-            elems[c].invDP[2] = 1/elems[c].initDP[2];
-            elems[c].grid = grid;
-            ++c;
-        }
+        elems[c].initP0 = GCoord(ffdMesh->getPX(cube[0]), ffdMesh->getPY(cube[0]), ffdMesh->getPZ(cube[0]));
+        elems[c].initDP = GCoord(ffdMesh->getPX(cube[7]), ffdMesh->getPY(cube[7]), ffdMesh->getPZ(cube[7]))-elems[c].initP0;
+        elems[c].invDP[0] = 1/elems[c].initDP[0];
+        elems[c].invDP[1] = 1/elems[c].initDP[1];
+        elems[c].invDP[2] = 1/elems[c].initDP[2];
+        elems[c].grid = grid;
+        ++c;
     }
     resize(c);
 

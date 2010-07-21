@@ -161,13 +161,11 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbHexahedra();
                 for (int i=0; i<n; ++i)
                 {
-                    if (!topology->isCubeActive(i)) continue;
                     sofa::core::topology::BaseMeshTopology::Hexa e = topology->getHexahedron(i);
 #else
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)
                 {
-                    if (!topology->isCubeActive(i)) continue;
                     sofa::core::topology::BaseMeshTopology::Cube e = topology->getCube(i);
 #endif
                     for (int i=0; i<8; i++)

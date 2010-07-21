@@ -28,9 +28,6 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/TetrahedronData.h>
-#ifdef SOFA_DEV
-#include <sofa/component/topology/FittedRegularGridTopology.h>
-#endif // SOFA_DEV
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
@@ -156,9 +153,6 @@ protected:
     SReal m_potentialEnergy;
 
     core::topology::BaseMeshTopology* _mesh;
-#ifdef SOFA_DEV
-    topology::FittedRegularGridTopology* _trimgrid;
-#endif // SOFA_DEV
     const VecElement *_indexedElements;
     bool needUpdateTopology;
 
@@ -212,9 +206,6 @@ public:
 
     TetrahedronFEMForceField()
         : _mesh(NULL)
-#ifdef SOFA_DEV
-        , _trimgrid(NULL)
-#endif // SOFA_DEV
         , _indexedElements(NULL)
         , needUpdateTopology(false)
         , _initialPoints(core::objectmodel::BaseObject::initData(&_initialPoints, "initialPoints", "Initial Position"))

@@ -27,9 +27,6 @@
 
 #include <sofa/component/forcefield/StiffSpringForceField.h>
 #include <sofa/component/topology/RegularGridTopology.h>
-#ifdef SOFA_DEV
-#include <sofa/component/topology/FittedRegularGridTopology.h>
-#endif // SOFA_DEV
 
 namespace sofa
 {
@@ -80,9 +77,6 @@ public:
           , cubesStiffness(initData(&cubesStiffness,Real(100),"cubesStiffness","Cubes Stiffness"))
           , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
           , topology(NULL)
-#ifdef SOFA_DEV
-          , trimmedTopology(NULL)
-#endif // SOFA_DEV
     {
         addAlias(&linesStiffness,    "stiffness"); addAlias(&linesDamping,    "damping");
         addAlias(&quadsStiffness,    "stiffness"); addAlias(&quadsDamping,    "damping");
@@ -98,9 +92,6 @@ public:
         , cubesStiffness(initData(&cubesStiffness,Real(100),"cubesStiffness","Cubes Stiffness"))
         , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
         , topology(NULL)
-#ifdef SOFA_DEV
-        , trimmedTopology(NULL)
-#endif // SOFA_DEV
     {
         addAlias(&linesStiffness,    "stiffness"); addAlias(&linesDamping,    "damping");
         addAlias(&quadsStiffness,    "stiffness"); addAlias(&quadsDamping,    "damping");
@@ -163,9 +154,6 @@ public:
 
 protected:
     topology::RegularGridTopology* topology;
-#ifdef SOFA_DEV
-    topology::FittedRegularGridTopology* trimmedTopology;
-#endif // SOFA_DEV
 };
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP)
 #pragma warning(disable : 4231)

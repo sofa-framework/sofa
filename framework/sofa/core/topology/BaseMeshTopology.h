@@ -306,10 +306,6 @@ public:
     /// @deprecated
     virtual int getRevision() const { return 0; }
 
-    /// return true if the given cube is active, i.e. it contains or is surrounded by mapped points.
-    /// @deprecated
-    virtual bool isCubeActive(int /*index*/) { return true; }
-
     /// Management of topological changes and state changes
     /// @{
 

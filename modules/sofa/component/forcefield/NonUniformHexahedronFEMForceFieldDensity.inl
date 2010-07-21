@@ -416,8 +416,6 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
 
     for(it = this->_indexedElements->begin(), hexa_elem = 0 ; it != this->_indexedElements->end() ; ++it, ++hexa_elem)
     {
-        if (this->_trimgrid && !this->_trimgrid->isCubeActive(hexa_elem/6)) continue;
-
         for (unsigned int elem=0; elem<8; ++elem)
         {
             double s=0;
