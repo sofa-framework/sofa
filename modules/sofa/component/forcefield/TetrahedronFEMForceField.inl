@@ -1190,9 +1190,6 @@ void TetrahedronFEMForceField<DataTypes>::init()
     }
     else
     {
-#ifdef SOFA_DEV
-        _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
-#endif // SOFA_DEV
         core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
 #ifdef SOFA_NEW_HEXA
         int nbcubes = _mesh->getNbHexahedra();
@@ -1409,9 +1406,6 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
     {
         for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
-#ifdef SOFA_DEV
-            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-#endif // SOFA_DEV
             accumulateForceSmall( f, p, it, i );
         }
         break;
@@ -1421,9 +1415,6 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
         for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
 
-#ifdef SOFA_DEV
-            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-#endif // SOFA_DEV
             accumulateForceLarge( f, p, it, i );
         }
         break;
@@ -1432,9 +1423,6 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
     {
         for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
-#ifdef SOFA_DEV
-            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-#endif // SOFA_DEV
             accumulateForcePolar( f, p, it, i );
         }
         break;
@@ -1455,9 +1443,6 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-#ifdef SOFA_DEV
-            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-#endif // SOFA_DEV
             Index a = (*it)[0];
             Index b = (*it)[1];
             Index c = (*it)[2];
@@ -1471,9 +1456,6 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-#ifdef SOFA_DEV
-            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-#endif // SOFA_DEV
             Index a = (*it)[0];
             Index b = (*it)[1];
             Index c = (*it)[2];
@@ -1488,9 +1470,6 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
     {
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-#ifdef SOFA_DEV
-            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-#endif // SOFA_DEV
             Index a = (*it)[0];
             Index b = (*it)[1];
             Index c = (*it)[2];
@@ -1531,9 +1510,6 @@ void TetrahedronFEMForceField<DataTypes>::draw()
     int i;
     for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
-#ifdef SOFA_DEV
-        if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-#endif // SOFA_DEV
         Index a = (*it)[0];
         Index b = (*it)[1];
         Index c = (*it)[2];

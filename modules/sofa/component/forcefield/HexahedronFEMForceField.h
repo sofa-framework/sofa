@@ -27,7 +27,6 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/FittedRegularGridTopology.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -127,7 +126,6 @@ protected:
 
 
     sofa::core::topology::BaseMeshTopology* _mesh;
-    topology::FittedRegularGridTopology* _trimgrid;
     topology::SparseGridTopology* _sparseGrid;
     const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
@@ -157,7 +155,6 @@ public:
     HexahedronFEMForceField()
         : _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
         , _mesh(NULL)
-        , _trimgrid(NULL)
         , _sparseGrid(NULL)
         , _indexedElements(NULL)
         , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
