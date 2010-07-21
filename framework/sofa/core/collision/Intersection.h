@@ -42,9 +42,8 @@ namespace collision
 
 class ElementIntersector
 {
-protected:
-    virtual ~ElementIntersector() {}
 public:
+    virtual ~ElementIntersector() {}
 
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
     virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) = 0;
@@ -66,8 +65,11 @@ public:
 ///
 /// This class uses the new ClassInfo metaclass to be able to recognize derived classes. So it is no longer necessary
 /// to register all derived collision models (i.e. an intersector registered for RayModel will also be used for RayPickIntersector).
-class SOFA_CORE_API IntersectorMap : public std::map< std::pair< helper::TypeInfo, helper::TypeInfo >, ElementIntersector* >
+class SOFA_CORE_API IntersectorMap
 {
+    typedef std::map<std::pair<helper::TypeInfo, helper::TypeInfo>, ElementIntersector*> InternalMap;
+    typedef InternalMap::key_type MapKey;
+    typedef InternalMap::value_type MapValue;
 public:
 
     template<class Model1, class Model2, class T>
@@ -76,11 +78,21 @@ public:
     template<class Model1, class Model2>
     void ignore();
 
+    ~IntersectorMap();
+
     helper::TypeInfo getType(core::CollisionModel* model);
 
     ElementIntersector* get(core::CollisionModel* model1, core::CollisionModel* model2, bool& swapModels);
 
 protected:
+    template<class Model1, class Model2>
+    void add_impl(ElementIntersector* intersector);
+
+    void add_impl(const objectmodel::ClassInfo& c1, const objectmodel::ClassInfo& c2, ElementIntersector* intersector);
+
+    void insert(const helper::TypeInfo& t1, const helper::TypeInfo& t2, ElementIntersector* intersector);
+
+    InternalMap intersectorsMap;
     std::map< helper::TypeInfo, helper::TypeInfo > castMap;
     std::set< const objectmodel::ClassInfo* > classes;
 };

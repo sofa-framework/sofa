@@ -98,31 +98,19 @@ protected:
 template<class Model1, class Model2, class T>
 void IntersectorMap::add(T* ptr)
 {
-    const objectmodel::ClassInfo* c1 = &classid(Model1);
-    const objectmodel::ClassInfo* c2 = &classid(Model2);
-    classes.insert(c1);
-    classes.insert(c2);
-    castMap.clear();
-    // rebuild castMap
-    for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
-        castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
-    (*this)[std::make_pair(c1->type(),c2->type())] =
-        new MemberElementIntersector<typename Model1::Element, typename Model2::Element, T>(ptr);
+    add_impl<Model1, Model2>(new MemberElementIntersector<typename Model1::Element, typename Model2::Element, T>(ptr));
 }
 
 template<class Model1, class Model2>
 void IntersectorMap::ignore()
 {
-    const objectmodel::ClassInfo* c1 = &classid(Model1);
-    const objectmodel::ClassInfo* c2 = &classid(Model2);
-    classes.insert(c1);
-    classes.insert(c2);
-    castMap.clear();
-    // rebuild castMap
-    for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
-        castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
-    (*this)[std::make_pair(c1->type(),c2->type())] =
-        NULL;
+    add_impl<Model1, Model2>(0);
+}
+
+template<class Model1, class Model2>
+void IntersectorMap::add_impl(ElementIntersector* intersector)
+{
+    add_impl(classid(Model1), classid(Model2), intersector);
 }
 
 } // namespace collision
