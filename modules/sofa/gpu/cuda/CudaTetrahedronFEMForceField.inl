@@ -30,6 +30,7 @@
 #ifdef SOFA_DEV
 #include <sofa/gpu/cuda/CudaDiagonalMatrix.h>
 #include <sofa/gpu/cuda/CudaRotationMatrix.h>
+#include <sofa/component/linearsolver/RotationMatrix.h>
 #endif // SOFA_DEV
 namespace sofa
 {
@@ -684,28 +685,48 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         data.getRotations(m,diagd->getCudaVector(),prefetch);
     }
     else
-#endif // SOFA_DEV
+#endif // SOFA_DEV    
     {
-
         data.vecTmpRotation.resize(data.nbVertex*9);
         data.getRotations(m,data.vecTmpRotation,prefetch);
-
         rotations->resize(data.nbVertex*3,data.nbVertex*3);
-        for (int i=0; i<data.nbVertex; i++)
+
+#ifdef SOFA_DEV
+        if (CudaRotationMatrix<float> * diagd = dynamic_cast<CudaRotationMatrix<float> * >(rotations))   //if the test with real didn pass that mean that rotation are different than real so we test both float and double
         {
-            int i9 = i*9;
-            int e = offset+i*3;
-            rotations->set(e+0,e+0,data.vecTmpRotation[i9+0]);
-            rotations->set(e+0,e+1,data.vecTmpRotation[i9+1]);
-            rotations->set(e+0,e+2,data.vecTmpRotation[i9+2]);
+            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getCudaVector()[i] = data.vecTmpRotation[i];
+        }
+        else if (CudaRotationMatrix<double> * diagd = dynamic_cast<CudaRotationMatrix<double> * >(rotations))
+        {
+            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getCudaVector()[i] = data.vecTmpRotation[i];
+        }
+        else if (component::linearsolver::RotationMatrix<float> * diagd = dynamic_cast<component::linearsolver::RotationMatrix<float> * >(rotations))
+        {
+            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
+        }
+        else if (component::linearsolver::RotationMatrix<double> * diagd = dynamic_cast<component::linearsolver::RotationMatrix<double> * >(rotations))
+        {
+            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
+        }
+        else
+#endif // SOFA_DEV
+        {
+            for (int i=0; i<data.nbVertex; i++)
+            {
+                int i9 = i*9;
+                int e = offset+i*3;
+                rotations->set(e+0,e+0,data.vecTmpRotation[i9+0]);
+                rotations->set(e+0,e+1,data.vecTmpRotation[i9+1]);
+                rotations->set(e+0,e+2,data.vecTmpRotation[i9+2]);
 
-            rotations->set(e+1,e+0,data.vecTmpRotation[i9+3]);
-            rotations->set(e+1,e+1,data.vecTmpRotation[i9+4]);
-            rotations->set(e+1,e+2,data.vecTmpRotation[i9+5]);
+                rotations->set(e+1,e+0,data.vecTmpRotation[i9+3]);
+                rotations->set(e+1,e+1,data.vecTmpRotation[i9+4]);
+                rotations->set(e+1,e+2,data.vecTmpRotation[i9+5]);
 
-            rotations->set(e+2,e+0,data.vecTmpRotation[i9+6]);
-            rotations->set(e+2,e+1,data.vecTmpRotation[i9+7]);
-            rotations->set(e+2,e+2,data.vecTmpRotation[i9+8]);
+                rotations->set(e+2,e+0,data.vecTmpRotation[i9+6]);
+                rotations->set(e+2,e+1,data.vecTmpRotation[i9+7]);
+                rotations->set(e+2,e+2,data.vecTmpRotation[i9+8]);
+            }
         }
     }
 }

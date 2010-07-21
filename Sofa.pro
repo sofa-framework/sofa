@@ -42,7 +42,11 @@ contains(DEFINES,SOFA_EXTLIBS_METIS){
 #TAUCS
 
 contains(DEFINES,SOFA_EXTLIBS_TAUCS){
-	SUBDIRS += extlibs/taucs
+	contains(DEFINES,SOFA_HAVE_CILK){
+		SUBDIRS += extlibs/taucs
+	} else {
+		SUBDIRS += extlibs/taucs-svn
+	}
 }
 
 #FFMPEG
