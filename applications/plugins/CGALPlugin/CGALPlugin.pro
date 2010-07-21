@@ -29,7 +29,6 @@ INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES = initCGALPlugin.cpp \
 		  MeshGenerationFromPolyhedron.cpp \
-		  Optimize2DMesh.cpp \
 		  Refine2DMesh.cpp \
                   RefineTriangleMesh.cpp \
 		  TriangularConvexHull3D.cpp \
@@ -38,8 +37,6 @@ SOURCES = initCGALPlugin.cpp \
 HEADERS = \
 		  MeshGenerationFromPolyhedron.h \
 		  MeshGenerationFromPolyhedron.inl \
-		  Optimize2DMesh.h \
-		  Optimize2DMesh.inl \
 		  Refine2DMesh.h \
 		  Refine2DMesh.inl \
                   RefineTriangleMesh.h \
@@ -48,7 +45,15 @@ HEADERS = \
 		  TriangularConvexHull3D.inl \
           DecimateMesh.h \
           DecimateMesh.inl
-		  
+
+# These files do not compile with current version of CGAL...
+contains(DEFINES, SOFA_NEW_CGAL_MESH) {
+  SOURCES += Optimize2DMesh.cpp
+  
+  HEADERS += Optimize2DMesh.h \
+             Optimize2DMesh.inl
+}
+
 README_FILE = CGALPlugin.txt
 
 unix{
