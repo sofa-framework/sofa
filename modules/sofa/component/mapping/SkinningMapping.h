@@ -36,16 +36,14 @@
 
 #include <vector>
 
+#include <sofa/component/mapping/BasicSkinningMapping.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #ifdef SOFA_DEV
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
 
-#include <sofa/helper/DualQuat.h>
 #include <sofa/helper/Quater.h>
-//#include <sofa/component/mapping/DualQuatStorage.h>
-#include "DualQuatStorage.h"
 #endif
 
 namespace sofa
@@ -64,45 +62,18 @@ using sofa::helper::SVector;
 using sofa::component::topology::HexahedronGeodesicalDistance;
 #endif
 
-#define DISTANCE_EUCLIDIAN 0
-#define DISTANCE_GEODESIC 1
-#define DISTANCE_HARMONIC 2
 
-#define WEIGHT_NONE 0
-#define WEIGHT_INVDIST_SQUARE 1
-#define WEIGHT_LINEAR 2
-#define WEIGHT_HERMITE 3
-#define WEIGHT_SPLINE 4
 
-#define INTERPOLATION_LINEAR 0
-#define INTERPOLATION_DUAL_QUATERNION 1
 
-/*
-typedef enum
-{
-	DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC, DISTANCE_HARMONIC
-} DistanceType;
 
-typedef enum
-{
-	WEIGHT_LINEAR, WEIGHT_INVDIST_SQUARE, WEIGHT_HERMITE
-} WeightingType;
 
-typedef enum
-{
-	INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
-} InterpolationType;*/
 
 
 template <class BasicMapping>
-#ifdef SOFA_DEV
-class SkinningMapping : public BasicMapping, public DualQuatStorage<BasicMapping::Out::DataTypes::spatial_dimensions, typename BasicMapping::Out::DataTypes::Real>
-#else
-class SkinningMapping : public BasicMapping
-#endif
+class SkinningMapping : public BasicSkinningMapping<BasicMapping>
 {
 public:
-    SOFA_CLASS ( SOFA_TEMPLATE ( SkinningMapping,BasicMapping ), BasicMapping );
+    SOFA_CLASS ( SOFA_TEMPLATE ( SkinningMapping,BasicMapping ), SOFA_TEMPLATE ( BasicSkinningMapping, BasicMapping ) );
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
@@ -158,10 +129,6 @@ public:
     typedef typename HexahedronGeodesicalDistance< GeoType >::VecCoord GeoVecCoord;
     typedef typename HexahedronGeodesicalDistance< GeoType >::Coord GeoCoord;
     typedef typename HexahedronGeodesicalDistance< GeoType >::VecVecCoord GeoVecVecCoord;
-
-    typedef typename helper::DualQuatd DualQuat;
-    typedef typename DualQuatStorage<N, Real>::DUALQUAT DUALQUAT;
-    typedef typename DualQuatStorage<N, Real>::VDUALQUAT VDUALQUAT;
 #else
     typedef Coord GeoCoord;
     typedef VecCoord GeoVecCoord;
@@ -205,7 +172,6 @@ public:
 
 protected:
     Data<sofa::helper::OptionsGroup> wheightingType;
-    Data<sofa::helper::OptionsGroup> interpolationType;
     Data<sofa::helper::OptionsGroup> distanceType;
     bool computeWeights;
     VVD distances;
@@ -241,10 +207,6 @@ public:
     inline void getDistances( int xfromBegin);
     //inline void temporaryUpdateWeightsAfterInsertion( VVD& w, VecVecCoord& dw, int xfromBegin);
 
-    // Interpolations
-    void setInterpolationToLinear();
-    void setInterpolationToDualQuaternion();
-
     // Accessors
     void setNbRefs ( unsigned int nb )
     {
@@ -273,52 +235,7 @@ public:
         return computeWeights;
     }
 
-#ifdef SOFA_DEV
-    void computeDqL ( Mat86& L, const DUALQUAT& qi, const Coord& ti );
-    void BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const VVD& w );
-
-    void computeQrel ( DUALQUAT& qrel, const Mat88& T, const DUALQUAT& q );
-    void computeDqRigid ( Mat33& R, Vec3& t, const DUALQUAT& bn );
-    void computeDqN ( Mat88& N, const Mat44& q0q0T, const Mat44& q0qeT, const Mat44& qeq0T , const double& QEQ0, const double& Q0Q0, const double& Q0 );
-    void computeDqN_constants ( Mat44& q0q0T, Mat44& q0qeT, Mat44& qeq0T, const DUALQUAT& bn );
-    void computeDqDN ( Mat88& DN, const Mat44& q0q0T, const Mat44& q0qeT, const Mat44& qeq0T, const double& QEQ0, const double& Q0Q0, const double& Q0, const Mat44& q0V0T, const Mat44& V0q0T, const double& q0V0, const Mat44& q0VeT, const Mat44& Veq0T, const double& q0Ve, const Mat44& qeV0T, const Mat44& V0qeT, const double& qeV0, const DUALQUAT& V );
-    void computeDqDN_constants ( Mat44& q0V0T, Mat44& V0q0T, double& q0V0, Mat44& q0VeT, Mat44& Veq0T,double& q0Ve, Mat44& qeV0T, Mat44& V0qeT, double& qeV0, const DUALQUAT& bn, const DUALQUAT& V );
-    void XItoQ ( DUALQUAT& q, const InCoord& xi );
-    void getCov ( Mat44& q1q2T, const Vec4& q1, const Vec4& q2 );
-    void computeDqQ ( Mat38& Q, const DUALQUAT& bn, const Vec3& p );
-    void computeDqDR ( Mat33& DR, const DUALQUAT& bn, const DUALQUAT& V );
-    void computeDqDQ ( Mat38& DQ, const Vec3& p, const DUALQUAT& V );
-    void computeDqT ( Mat88& T, const DUALQUAT& qi0 );
-    void Multi_Q(Quat& q, const Vec4& q1, const Quat& q2);
-
-    void removeFrame( const unsigned int index);
-    void insertFrame( const Coord& pos, const Quat& rot, GeoVecCoord beginPointSet = GeoVecCoord(), double distMax = 0.0);
-    bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
-    void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
-    void updateDataAfterInsertion();
-    inline void changeSettingsDueToInsertion();
-
-    void apply0 ();
-
-#endif
 };
-
-using core::Mapping;
-using core::behavior::MechanicalMapping;
-using core::behavior::MappedModel;
-using core::behavior::State;
-using core::behavior::MechanicalState;
-
-using sofa::defaulttype::Vec2dTypes;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec2fTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec2fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-using sofa::defaulttype::Rigid2dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::Rigid2fTypes;
-using sofa::defaulttype::Rigid3fTypes;
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 #pragma warning(disable : 4231)
