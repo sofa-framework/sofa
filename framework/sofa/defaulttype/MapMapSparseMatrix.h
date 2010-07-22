@@ -40,16 +40,21 @@ template <class T>
 class MapMapSparseMatrix
 {
 public:
-    typedef std::map< unsigned int, T > ColType;
-    typedef std::map< unsigned int, ColType > SparseMatrix;
     typedef T Data;
+    typedef unsigned int KeyType;
+    typedef std::map< KeyType, T > RowType;
 
+    /// Removes every matrix elements
     void clear()
     {
         m_data.clear();
     }
 
-    bool empty() const { return m_data.empty(); }
+    /// @return true if the matrix is empty
+    bool empty() const
+    {
+        return m_data.empty();
+    }
 
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const MapMapSparseMatrix<T>& /*sc*/ )
@@ -64,116 +69,34 @@ public:
     }
 
 protected:
+
+    typedef std::map< KeyType, RowType > SparseMatrix;
+
+    /// Data container
     SparseMatrix m_data;
 
 public:
 
-    class RowConstIterator
-    {
-    protected:
-        RowConstIterator()
-            : m_matrix(NULL)
-        {
-
-        }
-
-        RowConstIterator(const SparseMatrix* _matrix, typename SparseMatrix::const_iterator _internal)
-            : m_matrix(_matrix), m_internal(_internal)
-        {
-
-        }
-
-    public:
-
-        RowConstIterator(const RowConstIterator& it2)
-            : m_matrix(it2.m_matrix), m_internal(it2.m_internal)
-        {
-
-        }
-
-        void operator=(const RowConstIterator& it2)
-        {
-            m_matrix = it2.m_matrix;
-            m_internal = it2.m_internal;
-        }
-
-        RowConstIterator begin()
-        {
-            return RowConstIterator(this->m_matrix, this->m_matrix->begin());
-        }
-
-        RowConstIterator end()
-        {
-            return RowConstIterator(this->m_matrix, this->m_matrix->end());
-        }
-
-        const std::pair< typename SparseMatrix::key_type, ColType >& operator*()
-        {
-            return *m_internal;
-        }
-
-        const std::pair< typename SparseMatrix::key_type, ColType >& operator->()
-        {
-            return *m_internal;
-        }
-
-        void operator++() // prefix
-        {
-            m_internal++;
-        }
-
-        void operator++(int) // postfix
-        {
-            m_internal++;
-        }
-
-        void operator--() // prefix
-        {
-            m_internal--;
-        }
-
-        void operator--(int) // postfix
-        {
-            m_internal--;
-        }
-
-        bool operator==(const RowConstIterator& it2) const
-        {
-            return m_internal == it2.m_internal;
-        }
-
-        bool operator!=(const RowConstIterator& it2) const
-        {
-            return !(m_internal == it2.m_internal);
-        }
-
-        bool operator<(const RowConstIterator& it2) const
-        {
-            return m_internal < it2.m_internal;
-        }
-
-        bool operator>(const RowConstIterator& it2) const
-        {
-            return m_internal > it2.m_internal;
-        }
-
-    private:
-        const SparseMatrix* m_matrix;
-        typename SparseMatrix::const_iterator m_internal;
-    };
-
+    /// Sparse Matrix columns constant Iterator
     class ColConstIterator
     {
+    public:
+
+        typedef typename RowType::key_type KeyT;
+        typedef typename RowType::const_iterator Iterator;
+
+        friend class RowConstIterator;
+
     protected:
+
         ColConstIterator()
             : m_col(NULL)
         {
 
         }
 
-        ColConstIterator(const ColType _col, typename ColType::const_iterator _internal, const unsigned int _rowIndex)
-            : m_col(_col)
-            , m_internal(_internal)
+        ColConstIterator(typename Iterator _internal, const KeyT _rowIndex)
+            : m_internal(_internal)
             , m_rowIndex(_rowIndex)
         {
 
@@ -182,39 +105,44 @@ public:
     public:
 
         ColConstIterator(const ColConstIterator& it2)
-            : m_col(it2.m_col), m_internal(it2.m_internal), m_rowIndex(it2.m_rowIndex)
+            : m_internal(it2.m_internal)
+            , m_rowIndex(it2.m_rowIndex)
         {
 
         }
 
         void operator=(const ColConstIterator& it2)
         {
-            m_col = it2.m_col;
             m_internal = it2.m_internal;
             m_rowIndex = it2.m_rowIndex;
         }
 
-        unsigned int row()
+        /// @return the row index of the parsed row (ie constraint id)
+        typename SparseMatrix::key_type row() const
         {
             return m_rowIndex;
         }
 
-        ColConstIterator begin()
+        /// @return the DOF index the constraint is applied on
+        KeyT index() const
         {
-            return ColConstIterator(this->m_col, this->m_col->begin(), this->row());
+            return m_internal->first;
         }
 
-        ColConstIterator end()
+        /// @return the constraint value
+        const T &val() const
         {
-            return ColConstIterator(this->m_col, this->m_col->end(), this->row());
+            return m_internal->second;
         }
 
-        const std::pair< typename ColType::key_type, T >& operator*()
+        /// @return the DOF index the constraint is applied on and its value
+        const std::pair< typename RowType::key_type, T >& operator*() const
         {
             return *m_internal;
         }
 
-        const std::pair< typename ColType::key_type, T >& operator->()
+        /// @return the DOF index the constraint is applied on and its value
+        const std::pair< typename RowType::key_type, T >& operator->() const
         {
             return *m_internal;
         }
@@ -260,10 +188,484 @@ public:
         }
 
     private :
-        const ColType *m_col;
-        typename ColType::const_iterator m_internal;
-        const unsigned int m_rowIndex;
+
+        Iterator m_internal;
+        const KeyT m_rowIndex;
     };
+
+
+    class RowConstIterator
+    {
+    public:
+
+        typedef typename SparseMatrix::const_iterator Iterator;
+        typedef typename SparseMatrix::key_type KeyT;
+
+        template <class T> friend class MapMapSparseMatrix;
+
+    protected:
+
+        RowConstIterator()
+        {
+
+        }
+
+        RowConstIterator(Iterator _internal)
+            : m_internal(_internal)
+        {
+
+        }
+
+    public:
+
+        RowConstIterator(const RowConstIterator& it2)
+            : m_internal(it2.m_internal)
+        {
+
+        }
+
+        ColConstIterator begin()
+        {
+            return ColConstIterator(m_internal->second.begin(), m_internal->first);
+        }
+
+        ColConstIterator end()
+        {
+            return ColConstIterator(m_internal->second.end(), m_internal->first);
+        }
+
+        void operator=(const RowConstIterator& it2)
+        {
+            m_internal = it2.m_internal;
+        }
+
+        const std::pair< KeyT, RowType >& operator*() const
+        {
+            return *m_internal;
+        }
+
+        ///@
+        const KeyT index() const
+        {
+            return m_internal->first;
+        }
+
+        const RowType& row() const
+        {
+            return m_internal->second;
+        }
+
+
+        const std::pair< KeyT, RowType >& operator->() const
+        {
+            return *m_internal;
+        }
+
+        void operator++() // prefix
+        {
+            m_internal++;
+        }
+
+        void operator++(int) // postfix
+        {
+            m_internal++;
+        }
+
+        void operator--() // prefix
+        {
+            m_internal--;
+        }
+
+        void operator--(int) // postfix
+        {
+            m_internal--;
+        }
+
+        bool operator==(const RowConstIterator& it2) const
+        {
+            return m_internal == it2.m_internal;
+        }
+
+        bool operator!=(const RowConstIterator& it2) const
+        {
+            return !(m_internal == it2.m_internal);
+        }
+
+        bool operator<(const RowConstIterator& it2) const
+        {
+            return m_internal < it2.m_internal;
+        }
+
+        bool operator>(const RowConstIterator& it2) const
+        {
+            return m_internal > it2.m_internal;
+        }
+
+    private:
+
+        Iterator m_internal;
+    };
+
+
+    RowConstIterator begin() const
+    {
+        return RowConstIterator(this->m_data.begin());
+    }
+
+    RowConstIterator end() const
+    {
+        return RowConstIterator(this->m_data.end());
+    }
+
+
+    class ColIterator
+    {
+    public:
+
+        typedef typename RowType::iterator Iterator;
+        typedef typename RowType::key_type KeyT;
+
+        friend class RowIterator;
+
+    protected:
+
+        ColIterator()
+        {
+
+        }
+
+        ColIterator(Iterator _internal, const KeyT _rowIndex)
+            : m_internal(_internal)
+            , m_rowIndex(_rowIndex)
+        {
+
+        }
+
+    public:
+
+        ColIterator(const ColIterator& it2)
+            : m_internal(it2.m_internal)
+            , m_rowIndex(it2.m_rowIndex)
+        {
+
+        }
+
+        void operator=(const ColIterator& it2)
+        {
+            m_internal = it2.m_internal;
+            m_rowIndex = it2.m_rowIndex;
+        }
+
+        /// @return the row index of the parsed row (ie constraint id)
+        typename SparseMatrix::key_type row() const
+        {
+            return m_rowIndex;
+        }
+
+        /// @return the DOF index the constraint is applied on
+        KeyT index() const
+        {
+            return m_internal->first;
+        }
+
+        /// @return the constraint value
+        T &val()
+        {
+            return m_internal->second;
+        }
+
+        /// @return the DOF index the constraint is applied on and its value
+        std::pair< KeyT, T >& operator*()
+        {
+            return *m_internal;
+        }
+
+        /// @return the DOF index the constraint is applied on and its value
+        std::pair< KeyT, T >& operator->()
+        {
+            return *m_internal;
+        }
+
+        void operator++() // prefix
+        {
+            m_internal++;
+        }
+
+        void operator++(int) // postfix
+        {
+            m_internal++;
+        }
+
+        void operator--() // prefix
+        {
+            m_internal--;
+        }
+
+        void operator--(int) // postfix
+        {
+            m_internal--;
+        }
+
+        bool operator==(const ColIterator& it2) const
+        {
+            return m_internal == it2.m_internal;
+        }
+
+        bool operator!=(const ColIterator& it2) const
+        {
+            return !(m_internal == it2.m_internal);
+        }
+
+        bool operator<(const ColIterator& it2) const
+        {
+            return m_internal < it2.m_internal;
+        }
+
+        bool operator>(const ColIterator& it2) const
+        {
+            return m_internal > it2.m_internal;
+        }
+
+    private :
+
+        Iterator m_internal;
+        const KeyT m_rowIndex;
+    };
+
+
+    class RowIterator
+    {
+    public:
+        typedef typename SparseMatrix::key_type KeyT;
+        typedef typename SparseMatrix::iterator Iterator;
+
+        template <class T> friend class MapMapSparseMatrix;
+
+    protected:
+
+        RowIterator()
+        {
+
+        }
+
+        RowIterator(Iterator _internal)
+            : m_internal(_internal)
+        {
+
+        }
+
+    public:
+
+        RowIterator(const RowIterator& it2)
+            : m_internal(it2.m_internal)
+        {
+
+        }
+
+        ColIterator begin()
+        {
+            return ColIterator(m_internal->second.begin(), m_internal->first);
+        }
+
+        ColIterator end()
+        {
+            return ColIterator(m_internal->second.end(), m_internal->first);
+        }
+
+        void operator=(const RowIterator& it2)
+        {
+            m_internal = it2.m_internal;
+        }
+
+        std::pair< KeyT, RowType >& operator*()
+        {
+            return *m_internal;
+        }
+
+        std::pair< KeyT, RowType >& operator->()
+        {
+            return *m_internal;
+        }
+
+        KeyT index()
+        {
+            return m_internal->first;
+        }
+
+        RowType& row()
+        {
+            return m_internal->second;
+        }
+
+        void operator++() // prefix
+        {
+            m_internal++;
+        }
+
+        void operator++(int) // postfix
+        {
+            m_internal++;
+        }
+
+        void operator--() // prefix
+        {
+            m_internal--;
+        }
+
+        void operator--(int) // postfix
+        {
+            m_internal--;
+        }
+
+        bool operator==(const RowIterator& it2) const
+        {
+            return m_internal == it2.m_internal;
+        }
+
+        bool operator!=(const RowIterator& it2) const
+        {
+            return !(m_internal == it2.m_internal);
+        }
+
+        bool operator<(const RowIterator& it2) const
+        {
+            return m_internal < it2.m_internal;
+        }
+
+        bool operator>(const RowIterator& it2) const
+        {
+            return m_internal > it2.m_internal;
+        }
+
+        void addCol(KeyT id, T value)
+        {
+            RowType row = m_internal->second;
+            RowType::iterator it = row.find(id);
+
+            if (it != row.end())
+            {
+                it->second += value;
+            }
+            else
+            {
+                row.insert(std::make_pair< KeyT, T >(id, value));
+            }
+        }
+
+        void setCol(KeyT id, T value)
+        {
+            RowType row = m_internal->second;
+            RowType::iterator it = row.find(id);
+
+            if (it != row.end())
+            {
+                it->second = value;
+            }
+            else
+            {
+                row.insert(std::make_pair< KeyT, T >(id, value));
+            }
+        }
+
+    private:
+
+        Iterator m_internal;
+    };
+
+
+    RowIterator begin()
+    {
+        return RowIterator(this->m_data.begin());
+    }
+
+    RowIterator end()
+    {
+        return RowIterator(this->m_data.end());
+    }
+
+    /// @return Constant Iterator on specified row
+    /// @param lIndex row index
+    /// If lIndex row doesn't exist, returns end iterator
+    RowConstIterator readLine(KeyType lIndex) const
+    {
+        return RowConstIterator(m_data.find(lIndex));
+    }
+
+    /// @return Iterator on specified row
+    /// @param lIndex row index
+    /// If lIndex row doesn't exist, creates the line and returns an iterator on it
+    RowIterator writeLine(KeyType lIndex)
+    {
+        RowIterator it(m_data.find(lIndex));
+
+        if (it != this->end())
+        {
+            return it;
+        }
+        else
+        {
+            std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, RowType()));
+            return RowIterator(res.first);
+        }
+    }
+
+    /// @return Pair of Iterator on specified row and boolean on true if insertion took place
+    /// @param lIndex row Index
+    /// @param row constraint itself
+    /// If lindex already exists, overwrite existing constraint
+    std::pair< RowIterator, bool > writeLine(KeyType lIndex, RowType row)
+    {
+        RowIterator it(m_data.find(lIndex));
+
+        if (it != this->end())
+        {
+            // removes already existing constraint
+            m_data.erase(m_data.find(lIndex));
+        }
+
+        std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
+
+        return std::make_pair(RowIterator(res.first), res.second);
+    }
+
+    /// @return Pair of Iterator on specified row and boolean on true if addition took place
+    /// @param lIndex row Index
+    /// @param row constraint itself
+    /// If lindex doesn't exists, creates the row
+    std::pair< RowIterator, bool > addLine(KeyType lIndex, RowType row)
+    {
+        RowIterator it(m_data.find(lIndex));
+
+        if (it == this->end())
+        {
+            std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
+
+            return std::make_pair(RowIterator(res.first), res.second);
+        }
+        else
+        {
+            RowType::const_iterator rowIt = row.begin();
+            RowType::const_iterator rowItEnd = row.end();
+
+            while (rowIt != rowItEnd)
+            {
+                it.addCol(rowIt->first, rowIt->second);
+                ++rowIt;
+            }
+
+            return std::make_pair(it, true);
+        }
+    }
+
+    /// @return Iterator on new allocated row
+    /// Creates a new row in the sparse matrix with the last+1 key index
+    RowIterator newLine()
+    {
+        KeyType lastId = m_data.empty() ? 0 : m_data.rbegin()->first;
+
+        std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lastId + 1, RowType()));
+        return RowIterator(res.first);
+    }
 };
 
 } // namespace defaulttype
