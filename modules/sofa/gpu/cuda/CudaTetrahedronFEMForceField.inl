@@ -223,9 +223,6 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     std::vector<int> activeElems;
     for (unsigned int i=0; i<elems.size(); i++)
     {
-#ifdef SOFA_DEV
-        if (!m->_trimgrid || m->_trimgrid->isCubeActive(i/6))
-#endif // SOFA_DEV
         {
             activeElems.push_back(i);
         }
@@ -292,22 +289,6 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         m->needUpdateTopology = false;
     }
     Data& data = m->data;
-#ifdef SOFA_DEV
-    // Count active cubes in topology
-    if (m->_trimgrid)
-    {
-        int nactive = 0;
-#ifdef SOFA_NEW_HEXA
-        int ncubes = m->_trimgrid->getNbHexahedra();
-#else
-        int ncubes = m->_trimgrid->getNbCubes();
-#endif
-        for (int i=0; i<ncubes; i++)
-            if (m->_trimgrid->isCubeActive(i)) ++nactive;
-        if ((int)data.size() != 6*nactive)
-            m->reinit();
-    }
-#endif // SOFA_DEV
 
     f.resize(x.size());
 
