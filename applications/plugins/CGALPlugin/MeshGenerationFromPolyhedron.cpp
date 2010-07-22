@@ -24,7 +24,7 @@ int MeshGenerationFromPolyhedronClass = sofa::core::RegisterObject("Generate tet
         .add< MeshGenerationFromPolyhedron<Vec3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< MeshGenerationFromPolyhedron<Vec3fTypes> >()
+//.add< MeshGenerationFromPolyhedron<Vec3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
@@ -32,5 +32,5 @@ int MeshGenerationFromPolyhedronClass = sofa::core::RegisterObject("Generate tet
 template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<Vec3fTypes>;
+//template class SOFA_CGALPLUGIN_API MeshGenerationFromPolyhedron<Vec3fTypes>;
 #endif //SOFA_DOUBLE
