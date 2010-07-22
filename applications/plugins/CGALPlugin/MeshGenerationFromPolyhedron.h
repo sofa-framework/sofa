@@ -98,12 +98,13 @@ public:
             // Postcondition: `hds' is a valid polyhedral surface.
             CGAL::Polyhedron_incremental_builder_3<HDS> polyhedronBuilder( hds, true);
 
-            if (!triangles.empty())
+            if (!triangles.empty() || !quads.empty())
             {
                 //we assume that the point iterator gives point in ascendant order (0,.. n+1...)
                 //std::map<int, Vertex_handle> s2cVertices;
 
-                polyhedronBuilder.begin_surface(points.size(), triangles.size()+quads.size());
+                //polyhedronBuilder.begin_surface(points.size(), triangles.size()+quads.size());
+                polyhedronBuilder.begin_surface(points.size(), triangles.size()+2*quads.size());
 
                 for (typename VecCoord::const_iterator itVertex = points.begin() ; itVertex != points.end() ; ++itVertex)
                 {
@@ -130,14 +131,20 @@ public:
                     polyhedronBuilder.add_vertex_to_facet( t[0]);
                     polyhedronBuilder.add_vertex_to_facet( t[1]);
                     polyhedronBuilder.add_vertex_to_facet( t[2]);
+                    // polyhedronBuilder.add_vertex_to_facet( t[3]);
+                    polyhedronBuilder.end_facet();
+
+                    polyhedronBuilder.begin_facet();
+                    polyhedronBuilder.add_vertex_to_facet( t[0]);
+                    polyhedronBuilder.add_vertex_to_facet( t[2]);
                     polyhedronBuilder.add_vertex_to_facet( t[3]);
                     polyhedronBuilder.end_facet();
 
                 }
                 if ( polyhedronBuilder.check_unconnected_vertices() )
                 {
+                    std::cout << "Remove unconnected vertices" << std::endl;
                     polyhedronBuilder.remove_unconnected_vertices();
-                    std::cout << "Remove unconnect vertices" << std::endl;
                 }
 
                 polyhedronBuilder.end_surface();
