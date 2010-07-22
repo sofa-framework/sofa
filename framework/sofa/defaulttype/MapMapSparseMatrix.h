@@ -42,7 +42,7 @@ class MapMapSparseMatrix
 public:
     typedef T Data;
     typedef unsigned int KeyType;
-    typedef std::map< KeyType, T > RowType;
+    typedef typename std::map< KeyType, T > RowType;
 
     /// Removes every matrix elements
     void clear()
@@ -90,12 +90,11 @@ public:
     protected:
 
         ColConstIterator()
-            : m_col(NULL)
         {
 
         }
 
-        ColConstIterator(typename Iterator _internal, const KeyT _rowIndex)
+        ColConstIterator(Iterator _internal, const KeyT _rowIndex)
             : m_internal(_internal)
             , m_rowIndex(_rowIndex)
         {
@@ -136,13 +135,13 @@ public:
         }
 
         /// @return the DOF index the constraint is applied on and its value
-        const std::pair< typename RowType::key_type, T >& operator*() const
+        const std::pair< KeyT, T >& operator*() const
         {
             return *m_internal;
         }
 
         /// @return the DOF index the constraint is applied on and its value
-        const std::pair< typename RowType::key_type, T >& operator->() const
+        const std::pair< KeyT, T >& operator->() const
         {
             return *m_internal;
         }
@@ -201,7 +200,7 @@ public:
         typedef typename SparseMatrix::const_iterator Iterator;
         typedef typename SparseMatrix::key_type KeyT;
 
-        template <class T> friend class MapMapSparseMatrix;
+        template <class U> friend class MapMapSparseMatrix;
 
     protected:
 
@@ -439,7 +438,7 @@ public:
         typedef typename SparseMatrix::key_type KeyT;
         typedef typename SparseMatrix::iterator Iterator;
 
-        template <class T> friend class MapMapSparseMatrix;
+        template <class U> friend class MapMapSparseMatrix;
 
     protected:
 
@@ -540,7 +539,7 @@ public:
         void addCol(KeyT id, T value)
         {
             RowType row = m_internal->second;
-            RowType::iterator it = row.find(id);
+            typename RowType::iterator it = row.find(id);
 
             if (it != row.end())
             {
@@ -555,7 +554,7 @@ public:
         void setCol(KeyT id, T value)
         {
             RowType row = m_internal->second;
-            RowType::iterator it = row.find(id);
+            typename RowType::iterator it = row.find(id);
 
             if (it != row.end())
             {
@@ -604,7 +603,7 @@ public:
         }
         else
         {
-            std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, RowType()));
+            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, RowType()));
             return RowIterator(res.first);
         }
     }
@@ -623,7 +622,7 @@ public:
             m_data.erase(m_data.find(lIndex));
         }
 
-        std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
+        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
 
         return std::make_pair(RowIterator(res.first), res.second);
     }
@@ -638,14 +637,14 @@ public:
 
         if (it == this->end())
         {
-            std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
+            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lIndex, row));
 
             return std::make_pair(RowIterator(res.first), res.second);
         }
         else
         {
-            RowType::const_iterator rowIt = row.begin();
-            RowType::const_iterator rowItEnd = row.end();
+            typename RowType::const_iterator rowIt = row.begin();
+            typename RowType::const_iterator rowItEnd = row.end();
 
             while (rowIt != rowItEnd)
             {
@@ -663,7 +662,7 @@ public:
     {
         KeyType lastId = m_data.empty() ? 0 : m_data.rbegin()->first;
 
-        std::pair< SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lastId + 1, RowType()));
+        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lastId + 1, RowType()));
         return RowIterator(res.first);
     }
 };
