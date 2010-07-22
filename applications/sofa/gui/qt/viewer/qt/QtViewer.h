@@ -139,6 +139,8 @@ private:
 
 public:
 
+    static const std::string VIEW_FILE_EXTENSION;
+
 
     static void create(QtViewer*& instance, const CreatorArgument& arg)
     {

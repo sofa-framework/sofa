@@ -93,6 +93,8 @@ sofa::core::ObjectFactory::ClassEntry* classVisualModel;
 
 static  bool enabled = false;
 
+
+const std::string QtViewer::VIEW_FILE_EXTENSION = "qglviewer.view";
 // Mouse Interactor
 bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
@@ -1593,7 +1595,7 @@ void QtViewer::resetView()
 
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName + ".view";
+        std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
         std::ifstream in(viewFileName.c_str());
         if (!in.fail())
         {
@@ -1653,7 +1655,7 @@ void QtViewer::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName + ".view";
+        std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {
