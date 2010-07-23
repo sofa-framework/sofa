@@ -155,8 +155,8 @@ class Polynomial_LD
 
 public :
 
-    typedef sofa::helper::vector< Monomial_LD<Real,N> > MonomialsList;
-    //typedef std::vector< Monomial_LD<Real,N> > MonomialsList;
+    //typedef sofa::helper::vector< Monomial_LD<Real,N> > MonomialsList;
+    typedef std::vector< Monomial_LD<Real,N> > MonomialsList;
     typedef typename MonomialsList::const_iterator MonomialConstIterator;
     typedef typename MonomialsList::iterator MonomialIterator;
     typedef sofa::defaulttype::Vec<N,Real> RNpoint;
