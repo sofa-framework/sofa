@@ -256,7 +256,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                 for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
                 {
                     const int j = it->first;
-                    const Real r_h = it->second;
+                    //const Real r_h = it->second;
                     Particle& Pj = particles[j];
                     //				Real d = m*Wd(r_h,CWd);
                     Real d = m*GetMonaghanKernel((x[i]-x[j]).norm(),h);
@@ -407,7 +407,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     PredictedParticle& Pjv = PCIParticles[j];
                     const Coord& rj = Pjv.predicted_position;
                     Real r2 = (rj-ri).norm2();
-                    Real r = sqrt(r2);
+                    //Real r = sqrt(r2);
                     Real r_h = (Real)sqrt(r2/h2);
 
                     if(r2<h2)
@@ -463,7 +463,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     PredictedParticle& Pjv = PCIParticles[j];
                     Particle& Pj = particles[j];
                     Real r_h = (Real)sqrt((x[i]-x[j]).norm2()/h2);
-                    Real r = (x[i]-x[j]).norm();
+                    //Real r = (x[i]-x[j]).norm();
                     Deriv fpressure = gradWd(x[i]-x[j],r_h,CgradWd) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
 //					Deriv fpressure = (x[i]-x[j]) * GetMonaghanGrad(r,h) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
 // std::cout << "fpressure "<< fpressure << "="<< Pi.pressure <<"/"<< (Pi.density*Pi.density) << "+" << Pj.pressure <<"/"<< (Pj.density*Pj.density) << std::endl;
@@ -498,7 +498,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
         {
 
             PredictedParticle& Piv = PCIParticles[i];
-            Particle& Pi = particles[i];
+            //Particle& Pi = particles[i];
 
             std::cout << "force" << f[i] << " + " << Piv.pressure_force << "=" << f[i] +Piv.pressure_force << std::endl;
             f[i] = Piv.pressure_force;
