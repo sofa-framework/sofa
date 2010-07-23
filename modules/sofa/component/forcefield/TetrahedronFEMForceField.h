@@ -205,7 +205,9 @@ public:
     Data<bool> _assembling;
 
     TetrahedronFEMForceField()
-        : _mesh(NULL)
+        : parallelDataSimu(NULL)
+        ,parallelDataThrd(NULL)
+        ,_mesh(NULL)
         , _indexedElements(NULL)
         , needUpdateTopology(false)
         , _initialPoints(core::objectmodel::BaseObject::initData(&_initialPoints, "initialPoints", "Initial Position"))
