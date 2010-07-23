@@ -201,10 +201,10 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    sofa::helper::list<const sofa::core::topology::TopologyEngine*>::const_iterator engineIt;
+    sofa::helper::list<sofa::core::topology::TopologyEngine*>::const_iterator engineIt;
     for (engineIt = m_container->beginTopologyEngine(); engineIt != m_container->endTopologyEngine(); ++engineIt)
     {
-        // (*engineIt)->update();
+        (*engineIt)->update();
     }
 
     std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges() end" << std::endl;
