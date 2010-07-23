@@ -176,6 +176,7 @@ public slots:
 
     virtual void getView(Vec3d& pos, Quat& ori) const;
     virtual void setView(const Vec3d& pos, const Quat &ori);
+    virtual void newView();
     virtual void moveView(const Vec3d& pos, const Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
     virtual void drawColourPicking (core::CollisionModel::ColourCode code);

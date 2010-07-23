@@ -77,10 +77,12 @@ public:
     virtual ~BaseCamera();
 
     void init();
+    void reinit();
 
     void translate(const Vec3& t);
     void translateLookAt(const Vec3& t);
     void rotate(const Quat& r);
+    void moveCamera(const Vec3 &p, const Quat &q);
 
     void rotateCameraAroundPoint( Quat& rotation, const Vec3& point);
     void rotateWorldAroundPoint( Quat& rotation, const Vec3& point);
@@ -129,8 +131,6 @@ public:
         return p_type.getValue();
     }
 
-    void getOpenGLMatrix(double mat[16]);
-
     void setCameraType(int type)
     {
         if (type == ORTHOGRAPHIC_TYPE)
@@ -153,31 +153,31 @@ public:
         p_heightViewport.setValue(h);
     }
 
-    void setView(const Vec3& position, const Quat &orientation)
+    double getZNear()
     {
-        p_position.setValue(position);
-        p_orientation.setValue(orientation);
-        computeZ();
+        return p_zNear.getValue();
     }
 
-    double getZNear() { return p_zNear.getValue(); }
-    double getZFar() { return p_zFar.getValue(); }
-
-    void reinit();
-
-    void moveCamera(const Vec3 &p, const Quat &q)
+    double getZFar()
     {
-        translate(p);
-        translateLookAt(p);
-        rotate(q);
+        return p_zFar.getValue();
     }
+
+    void setView(const Vec3& position, const Quat &orientation);
+
+    //Camera will look at the center of the scene's bounding box
+    //at a good distance to view all the scene. The up vector will
+    //be according to the gravity.
+    void setDefaultView(const Vec3& gravity = Vec3(0, -9.81, 0));
+
+    void getOpenGLMatrix(double mat[16]);
 
     Quat getOrientationFromLookAt(const Vec3 &pos, const Vec3& lookat);
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
     Vec3 getPositionFromOrientation(const Vec3 &lookAt, const double &distance, const Quat& orientation);
 
     virtual void manageEvent(core::objectmodel::Event* e)=0;
-    virtual void internalUpdate() {};
+    virtual void internalUpdate() {}
 
 protected:
     Vec3 sceneCenter;
