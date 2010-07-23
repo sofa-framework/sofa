@@ -68,58 +68,6 @@ BaseCamera::~BaseCamera()
 }
 
 
-void BaseCamera::translate(const Vec3& t)
-{
-    Vec3 &pos = *p_position.beginEdit();
-    pos += t;
-    p_position.endEdit();
-
-}
-
-void BaseCamera::translateLookAt(const Vec3& t)
-{
-    Vec3 &lookat = *p_lookAt.beginEdit();
-    lookat += t;
-    currentLookAt = lookat;
-    p_lookAt.endEdit();
-
-}
-
-void BaseCamera::rotate(const Quat& r)
-{
-    Quat &rot = *p_orientation.beginEdit();
-    rot = rot * r;
-    rot.normalize();
-    p_orientation.endEdit();
-}
-
-BaseCamera::Vec3 BaseCamera::cameraToWorldCoordinates(const Vec3& p)
-{
-    return p_orientation.getValue().rotate(p) + p_position.getValue();
-}
-
-BaseCamera::Vec3 BaseCamera::worldToCameraCoordinates(const Vec3& p)
-{
-    return p_orientation.getValue().inverseRotate(p - p_position.getValue());
-}
-
-BaseCamera::Vec3 BaseCamera::cameraToWorldTransform(const Vec3& v)
-{
-    Quat q = p_orientation.getValue();
-    return q.rotate(v) ;
-}
-
-BaseCamera::Vec3 BaseCamera::worldToCameraTransform(const Vec3& v)
-{
-    return p_orientation.getValue().inverseRotate(v);
-}
-
-void BaseCamera::getOpenGLMatrix(double mat[16])
-{
-    defaulttype::SolidTypes<double>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
-    world_H_cam.inversed().writeOpenGlMatrix(mat);
-}
-
 void BaseCamera::init()
 {
     if(p_position.isSet())
@@ -167,6 +115,66 @@ void BaseCamera::init()
 
 }
 
+void BaseCamera::translate(const Vec3& t)
+{
+    Vec3 &pos = *p_position.beginEdit();
+    pos += t;
+    p_position.endEdit();
+
+}
+
+void BaseCamera::translateLookAt(const Vec3& t)
+{
+    Vec3 &lookat = *p_lookAt.beginEdit();
+    lookat += t;
+    currentLookAt = lookat;
+    p_lookAt.endEdit();
+
+}
+
+void BaseCamera::rotate(const Quat& r)
+{
+    Quat &rot = *p_orientation.beginEdit();
+    rot = rot * r;
+    rot.normalize();
+    p_orientation.endEdit();
+}
+
+void BaseCamera::moveCamera(const Vec3 &p, const Quat &q)
+{
+    translate(p);
+    translateLookAt(p);
+    rotate(q);
+}
+
+BaseCamera::Vec3 BaseCamera::cameraToWorldCoordinates(const Vec3& p)
+{
+    return p_orientation.getValue().rotate(p) + p_position.getValue();
+}
+
+BaseCamera::Vec3 BaseCamera::worldToCameraCoordinates(const Vec3& p)
+{
+    return p_orientation.getValue().inverseRotate(p - p_position.getValue());
+}
+
+BaseCamera::Vec3 BaseCamera::cameraToWorldTransform(const Vec3& v)
+{
+    Quat q = p_orientation.getValue();
+    return q.rotate(v) ;
+}
+
+BaseCamera::Vec3 BaseCamera::worldToCameraTransform(const Vec3& v)
+{
+    return p_orientation.getValue().inverseRotate(v);
+}
+
+void BaseCamera::getOpenGLMatrix(double mat[16])
+{
+    defaulttype::SolidTypes<double>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
+    world_H_cam.inversed().writeOpenGlMatrix(mat);
+}
+
+
 void BaseCamera::reinit()
 {
     //Data "LookAt" has changed
@@ -198,7 +206,7 @@ BaseCamera::Quat BaseCamera::getOrientationFromLookAt(const BaseCamera::Vec3 &po
     yAxis = zAxis.cross(xAxis);
 
     Quat q;
-    q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+    q = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
     q.normalize();
     return q;
 }
@@ -319,6 +327,53 @@ void BaseCamera::computeZ()
 
     }
 }
+
+void BaseCamera::setView(const Vec3& position, const Quat &orientation)
+{
+    p_position.setValue(position);
+    p_orientation.setValue(orientation);
+    computeZ();
+}
+
+void BaseCamera::setDefaultView(const Vec3 & gravity)
+{
+    const Vec3 & minBBox = p_minBBox.getValue();
+    const Vec3 & maxBBox = p_maxBBox.getValue();
+    sceneCenter = (minBBox + maxBBox)*0.5;
+
+    //LookAt
+    p_lookAt.setValue(sceneCenter);
+    currentLookAt = p_lookAt.getValue();
+
+    //Orientation
+    Vec3 xAxis (1.0, 0.0, 0.0);
+    Vec3 yAxis = -gravity;
+    yAxis.normalize();
+
+    if( 1.0 - fabs(dot(xAxis, yAxis)) < 0.001)
+        xAxis = Vec3(0.0,1.0,0.0);
+
+    Vec3 zAxis = xAxis.cross(yAxis);
+    zAxis.normalize();
+    xAxis = yAxis.cross(zAxis);
+    xAxis.normalize();
+    Quat q = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+    q.normalize();
+    p_orientation.setValue(q);
+
+    //Distance
+    double coeff = 3.0;
+    double dist = (minBBox - sceneCenter).norm() * coeff;
+    p_distance.setValue(dist);
+    currentDistance = dist;
+
+    //Position
+    Vec3 pos = currentLookAt + zAxis*dist;
+    p_position.setValue(pos);
+
+    computeZ();
+}
+
 
 } // namespace visualmodel
 

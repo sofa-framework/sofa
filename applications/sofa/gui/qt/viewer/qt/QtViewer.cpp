@@ -1610,30 +1610,27 @@ void QtViewer::resetView()
 
             in.close();
             fileRead = true;
+
+            setView(position, orientation);
         }
     }
 
+    //if there is no .view file , look at the center of the scene bounding box
+    // and with a Up vector in the same axis as the gravity
     if (!fileRead)
     {
-
-        position[0] = 0.0;
-        position[1] = 0.0;
-        if (sceneBBoxIsValid && visualParameters.maxBBox[0]	> visualParameters.minBBox[0])
-            position[2]	= -(visualParameters.maxBBox - visualParameters.minBBox).norm();
-        else
-            position[2] = -50.0;
-
-        orientation[0] = 0.17;
-        orientation[1] = -0.83;
-        orientation[2] = -0.26;
-        orientation[3] = -0.44;
+        newView();
     }
 
-    setView(position, orientation);
-
     update();
+
     //SofaViewer::resetView();
     //ResetScene();
+}
+
+void QtViewer::newView()
+{
+    SofaViewer::newView();
 }
 
 void QtViewer::getView(Vec3d& pos, Quat& ori) const
