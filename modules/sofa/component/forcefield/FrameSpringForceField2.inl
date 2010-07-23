@@ -128,7 +128,7 @@ void FrameSpringForceField2<DataTypes>::computeK0()
     // K=-B^T.H.B
     const int nbDOF=(*B).size();
     if ( nbDOF==0 ) return;
-    int i,j,k;
+    int i,j,k,l,m;
     const int nbP=(*B)[0].size();
     Mat66 HB,BTHB,BT;
     for ( i=0; i<nbP; ++i )
@@ -142,11 +142,44 @@ void FrameSpringForceField2<DataTypes>::computeK0()
                 K0[k][j]-=BTHB;
             }
         }
+
+
+// update KSpring (K expressed at the joint location)
+    VecCoord& xiref = *this->getMState()->getX0();
+    Mat33 crossi,crossj;
+    Mat66 Kbackup;
+    Vec3 tpref;
+
+    for(i=0; i<nbDOF; i++)
+        for(j=0; j<nbDOF; j++)
+            if(i>j)
+            {
+                Kbackup=K0[i][j];
+                tpref=(xiref[j].getCenter() + xiref[i].getCenter())/2.;		// pivot = center
+
+                GetCrossproductMatrix(crossi,tpref-xiref[i].getCenter());            GetCrossproductMatrix(crossj,tpref-xiref[j].getCenter());
+
+                for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                        {
+                            K0[i][j][l][m+3] -= crossi[l][k]*K0[i][j][k+3][m+3];
+                            K0[i][j][l+3][m] += K0[i][j][l+3][k+3]*crossj[k][m];
+                        }
+                for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                            K0[i][j][l][m] += K0[i][j][l][k+3]*crossj[k][m] - crossi[l][k]*Kbackup[k+3][m];
+
+                K0[j][i].transpose(K0[i][j]);
+            }
+
     /*
-    for ( i=0;i<nbDOF;++i )
-    for ( j=0;j<nbDOF;++j )
-    serr << "K0["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
-    */
+    	for ( i=0;i<nbDOF;++i )
+    		for ( j=0;j<nbDOF;++j )
+    			if(i!=j)
+    				{
+    				for(l=0;l<6;l++)  for(m=0;m<6;m++) if(fabs(K0[i][j][l][m])<1E-5) K0[i][j][l][m]=0;
+    				serr << "Kspring["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
+    				}
+    		 */
+
 }
 
 template<class DataTypes>
@@ -210,152 +243,116 @@ void FrameSpringForceField2<DataTypes>::draw()
 }
 
 
-template<class DataTypes>
-void FrameSpringForceField2<DataTypes>::GetIntermediateFrame( Coord& xi, const Coord& x1, const Coord& x2 )
-{
-// dual quat linear blending with two frames with w=0.5
-    int i;
-    DUALQUAT bn,b,q1,q2;
-    XItoQ( q1, x1);
-    XItoQ( q2, x2);
-    for(i=0; i<4; i++) {b.q0[i]=0; b.qe[i]=0;}
-    for(i=0; i<4; i++) {b.q0[i]+=0.5*q1.q0[i]; b.qe[i]+=0.5*q1.qe[i];}
-    for(i=0; i<4; i++) {b.q0[i]+=0.5*q2.q0[i]; b.qe[i]+=0.5*q2.qe[i];}
-    double Q0Q0 = b.q0 * b.q0,QEQ0 = b.q0 * b.qe; double Q0= sqrt(Q0Q0);
-    for(i=0; i<4; i++) {bn.q0[i]=b.q0[i]/Q0; bn.qe[i]=b.qe[i]/Q0;}
-    for(i=0; i<4; i++) bn.qe[i]-=QEQ0*bn.q0[i]/Q0Q0;
-    QtoXI(xi,bn);
-}
-
 
 template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K, const VecCoord& xi, const VVMat66& Kref )
 {
-// force_i =sum Kij Omega_ij.dt + sum (-Kji Omega_ji.dt)_(moved to i)
+// generalized spring joint network based on precomputed FrameHooke stiffness matrices
     VecCoord& xiref = *this->getMState()->getX0();
     int i,j,k,l,m,nbDOF=xi.size();
-    Coord Xinv,xjbar,xmean,xmeanref,xmeaninv,T;
+    double n;
+    Coord XI,XJ,XP;
     Deriv Theta,df;
-    Vec3 OiOj,cr;
-    Mat33 R,Crossp;
+    Vec3 tpref;
+    Quat q;
+    Mat33 crossi,crossj;
     Mat66 K2,K3;
+    Mat33 Rp;
 
     for(i=0; i<nbDOF; i++)
     {
         for(j=0; j<nbDOF; j++)
             if(i>j)
             {
-// intermediate frames and registration
-                GetIntermediateFrame( xmean,xi[i],xi[j]);
-                GetIntermediateFrame( xmeanref,xiref[i],xiref[j]);
-                Invert_Rigid( xmeaninv, xmean);
-                Multi_Rigid( T,xmeanref,xmeaninv);
-                QtoR( R,T.getOrientation()); // 3x3 rotation
+                tpref=(xiref[j].getCenter() + xiref[i].getCenter())/2.;		// pivot = center
 
-                OiOj=xi[j].getCenter()-xi[i].getCenter();
-                Crossp[0][0]=0; Crossp[0][1]=-OiOj[2]; Crossp[0][2]=OiOj[1];
-                Crossp[1][0]=OiOj[2]; Crossp[1][1]=0; Crossp[1][2]=-OiOj[0];
-                Crossp[2][0]=-OiOj[1]; Crossp[2][1]=OiOj[0]; Crossp[2][2]=0;
+                q=xiref[i].getOrientation();   q[3]*=-1;    Multi_Q(XI.getOrientation(),xi[i].getOrientation(),q);      Transform_Q(XI.getCenter(),tpref-xiref[i].getCenter(),XI.getOrientation());   XI.getCenter()+=xi[i].getCenter();
+                q=xiref[j].getOrientation();   q[3]*=-1;    Multi_Q(XJ.getOrientation(),xi[j].getOrientation(),q);      Transform_Q(XJ.getCenter(),tpref-xiref[j].getCenter(),XJ.getOrientation());   XJ.getCenter()+=xi[j].getCenter();
 
-//action of j
-                Multi_Rigid( xjbar,T,xi[j]);
-// in ref pos: Theta.dt=jbar.jo-1
-                PostoSpeed( Theta,xiref[j],xjbar);
+                // in ref pos: Theta.dt=XJ.XI-1
+                PostoSpeed(Theta,XI,XJ);
 
-// in current pos: Df_i= R(irel_q^1) Kij Theta.dt = K2 Theta.dt
-                K2.fill(0);
-                for(l=0; l<3; l++) for(m=0; m<3; m++) for(k=0; k<3; k++)
+                // mid frame
+                XP.getCenter()=(XI.getCenter()+XJ.getCenter())/2.;
+                n=Theta.getVOrientation()[0]*Theta.getVOrientation()[0]+Theta.getVOrientation()[1]*Theta.getVOrientation()[1]+Theta.getVOrientation()[2]*Theta.getVOrientation()[2];
+                if(n>0) {n=sqrt(n); q[3]=cos(n/4.);  n=sin(n/4.)/n;		q[0]=Theta.getVOrientation()[0]*n; q[1]=Theta.getVOrientation()[1]*n; q[2]=Theta.getVOrientation()[2]*n;}
+                else {q[3]=1; q[0]=q[1]=q[2]=0;}
+
+                Multi_Q(XP.getOrientation(),q,XI.getOrientation());
+                QtoR(Rp,XP.getOrientation());
+
+                // rotate K in deformed space
+                K2=(Kref[i][j]+Kref[j][i])/2.;
+
+                K3.fill(0);
+                for(k=0; k<3; k++)  for(l=0; l<3; l++) for(m=0; m<3; m++)
                         {
-                            K2[l][m]+=Kref[i][j][k][m] * R[k][l];
-                            K2[l][m+3]+=Kref[i][j][k][m+3] * R[k][l];
-                            K2[l+3][m]+=Kref[i][j][k+3][m] * R[k][l];
-                            K2[l+3][m+3]+=Kref[i][j][k+3][m+3] * R[k][l];
+                            K3[k][l]+=Rp[k][m]*K2[m][l];
+                            K3[k][l+3]+=Rp[k][m]*K2[m][l+3];
+                            K3[k+3][l]+=Rp[k][m]*K2[m+3][l];
+                            K3[k+3][l+3]+=Rp[k][m]*K2[m+3][l+3];
                         }
-                df = Deriv();
+                K2.fill(0);
+                for(k=0; k<3; k++)  for(l=0; l<3; l++) for(m=0; m<3; m++)
+                        {
+                            K2[k][l]+=K3[k][m]*Rp[l][m];
+                            K2[k][l+3]+=K3[k][m+3]*Rp[l][m];
+                            K2[k+3][l]+=K3[k+3][m]*Rp[l][m];
+                            K2[k+3][l+3]+=K3[k+3][m+3]*Rp[l][m];
+                        }
+
+                // spring force at p
+                df= Deriv();
                 for(k=0; k<3; k++) for(l=0; l<3; l++)
                     {
-                        df.getVOrientation()[k]+=K2[k][l]*Theta.getVOrientation()[l]; df.getVOrientation()[k]+=K2[k][l+3]*Theta.getVCenter()[l];
-                        df.getVCenter()[k]+=K2[k+3][l]*Theta.getVOrientation()[l]; df.getVCenter()[k]+=K2[k+3][l+3]*Theta.getVCenter()[l];
+                        df.getVOrientation()[k]+=K2[k][l]*Theta.getVOrientation()[l];     df.getVOrientation()[k]+=K2[k][l+3]*Theta.getVCenter()[l];
+                        df.getVCenter()[k]+=K2[k+3][l]*Theta.getVOrientation()[l];   df.getVCenter()[k]+=K2[k+3][l+3]*Theta.getVCenter()[l];
                     }
-                Force[i].getVOrientation()+=df.getVOrientation(); Force[i].getVCenter()+=df.getVCenter();
 
-//qDebug()<<"thetaj"<<Theta.getVOrientation()[0]<<","<<Theta.getVOrientation()[1]<<","<<Theta.getVOrientation()[2]<<","<<Theta.getVCenter()[0]<<","<<Theta.getVCenter()[1]<<","<<Theta.getVCenter()[2];
-//qDebug()<<"fji"<<df.getVOrientation()[0]<<","<<df.getVOrientation()[1]<<","<<df.getVOrientation()[2]<<","<<df.getVCenter()[0]<<","<<df.getVCenter()[1]<<","<<df.getVCenter()[2];
+                // force on i
+                Force[i].getVOrientation()+=df.getVOrientation()+cross(XP.getCenter()-xi[i].getCenter(),df.getVCenter()); Force[i].getVCenter()+=df.getVCenter();
 
-// reciprocal force: Df_j= -Df_i (moved to j)
-                df.getVOrientation()-=Crossp*df.getVCenter();
-                Force[j].getVOrientation()-=df.getVOrientation(); Force[j].getVCenter()-=df.getVCenter();
+                // reciprocal force on j
+                Force[j].getVOrientation()-=df.getVOrientation()+cross(XP.getCenter()-xi[j].getCenter(),df.getVCenter()); Force[j].getVCenter()-=df.getVCenter();
 
-//qDebug()<<"fjj"<<-df.getVOrientation()[0]<<","<<-df.getVOrientation()[1]<<","<<-df.getVOrientation()[2]<<","<<-df.getVCenter()[0]<<","<<-df.getVCenter()[1]<<","<<-df.getVCenter()[2];
-// new stiffness: Kij=d f_ij/Omega_j=K2 R(T) Kjj=d f_jj/Omega_j=d f_jj/d f_ij Kij
+                // update K
                 if(K.size())
                 {
-                    K3.fill(0);
-                    for(l=0; l<3; l++) for(m=0; m<3; m++) for(k=0; k<3; k++)
+                    GetCrossproductMatrix(crossi,XP.getCenter()-xi[i].getCenter());
+                    GetCrossproductMatrix(crossj,XP.getCenter()-xi[j].getCenter());
+
+                    K3=K2;
+                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
                             {
-                                K3[l][m]+=K2[l][k] * R[k][m];
-                                K3[l][m+3]+=K2[l][k+3] * R[k][m];
-                                K3[l+3][m]+=K2[l+3][k] * R[k][m];
-                                K3[l+3][m+3]+=K2[l+3][k+3] * R[k][m];
+                                K3[l][m]   += crossi[l][k]*K2[k+3][m];
+                                K3[l][m+3] += crossi[l][k]*K2[k+3][m+3];
                             }
-                    K[i][j]+=K3; K[j][j]-=K3;
-// (moved to j)
-                    for(l=0; l<3; l++) for(m=0; m<3; m++) for(k=0; k<3; k++)
+                    K[i][i]-=K3;  K[i][j]=K3;
+                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
                             {
-                                K[j][j][l][m] +=Crossp[l][k] * K3[k+3][m];
-                                K[j][j][l][m+3]+= Crossp[l][k] * K3[k+3][m+3];
+                                K[i][i][l][m]  += K3[l][k+3]  * crossi[k][m];
+                                K[i][i][l+3][m]+= K3[l+3][k+3]* crossi[k][m];
+                                K[i][j][l][m]  -= K3[l][k+3]  * crossj[k][m];
+                                K[i][j][l+3][m]-= K3[l+3][k+3]* crossj[k][m];
+                            }
+                    K[j][i].transpose(K[i][j]);
+
+                    K3=K2;
+                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                            {
+                                K3[l][m]   += crossj[l][k]*K2[k+3][m];
+                                K3[l][m+3] += crossj[l][k]*K2[k+3][m+3];
+                            }
+                    K[j][j]-=K3;
+                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                            {
+                                K[j][j][l][m]  += K3[l][k+3]  * crossj[k][m];
+                                K[j][j][l+3][m]+= K3[l+3][k+3]* crossj[k][m];
                             }
                 }
 
-//action of i
-                Multi_Rigid( xjbar,T,xi[i]);
-// in ref pos: Theta.dt=jbar.jo-1
-                PostoSpeed( Theta,xiref[i],xjbar);
-// in current pos: Df_j= R(jrel_q^1) Kji Theta.dt = K2 Theta.dt
-                K2.fill(0);
-                for(l=0; l<3; l++) for(m=0; m<3; m++) for(k=0; k<3; k++)
-                        {
-                            K2[l][m]+=Kref[j][i][k][m] * R[k][l];
-                            K2[l][m+3]+=Kref[j][i][k][m+3] * R[k][l];
-                            K2[l+3][m]+=Kref[j][i][k+3][m] * R[k][l];
-                            K2[l+3][m+3]+=Kref[j][i][k+3][m+3] * R[k][l];
-                        }
-
-                df = Deriv();
-                for(k=0; k<3; k++) for(l=0; l<3; l++)
-                    {
-                        df.getVOrientation()[k]+=K2[k][l]*Theta.getVOrientation()[l]; df.getVOrientation()[k]+=K2[k][l+3]*Theta.getVCenter()[l];
-                        df.getVCenter()[k]+=K2[k+3][l]*Theta.getVOrientation()[l]; df.getVCenter()[k]+=K2[k+3][l+3]*Theta.getVCenter()[l];
-                    }
-                Force[j].getVOrientation()+=df.getVOrientation(); Force[j].getVCenter()+=df.getVCenter();
-
-//qDebug()<<"thetai"<<Theta.getVOrientation()[0]<<","<<Theta.getVOrientation()[1]<<","<<Theta.getVOrientation()[2]<<","<<Theta.getVCenter()[0]<<","<<Theta.getVCenter()[1]<<","<<Theta.getVCenter()[2];
-//qDebug()<<"fij"<<df.getVOrientation()[0]<<","<<df.getVOrientation()[1]<<","<<df.getVOrientation()[2]<<","<<df.getVCenter()[0]<<","<<df.getVCenter()[1]<<","<<df.getVCenter()[2];
-// reciprocal force: Df_j= -Df_i (moved to j)
-                df.getVOrientation()+=Crossp*df.getVCenter();// OiOj=xi[i].t-xi[j].t; cr=cross(df.getVCenter(),OiOj); df.getVOrientation()+=cr;
-                Force[i].getVOrientation()-=df.getVOrientation(); Force[i].getVCenter()-=df.getVCenter();
-
-//qDebug()<<"fii"<<-df.getVOrientation()[0]<<","<<-df.getVOrientation()[1]<<","<<-df.getVOrientation()[2]<<","<<-df.getVCenter()[0]<<","<<-df.getVCenter()[1]<<","<<-df.getVCenter()[2];
-// new stiffness: Kji=d f_ji/Omega_i=K2 R(T) Kii=d f_i/Omega_i=d f_ii/d f_ji Kji
-                if(K.size())
-                {
-                    K3.fill(0);
-                    for(l=0; l<3; l++) for(m=0; m<3; m++) for(k=0; k<3; k++)
-                            {
-                                K3[l][m]+=K2[l][k] * R[k][m];
-                                K3[l][m+3]+=K2[l][k+3] * R[k][m];
-                                K3[l+3][m]+=K2[l+3][k] * R[k][m];
-                                K3[l+3][m+3]+=K2[l+3][k+3] * R[k][m];
-                            }
-                    K[j][i]+=K3; K[i][i]-=K3;
-// (moved to j)
-                    for(l=0; l<3; l++) for(m=0; m<3; m++) for(k=0; k<3; k++)
-                            {
-                                K[i][i][l][m] -=Crossp[l][k] * K3[k+3][m];
-                                K[i][i][l][m+3] -= Crossp[l][k] * K3[k+3][m+3];
-                            }
-                }
             }
+
     }
 
     /*
@@ -370,46 +367,8 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
     qDebug()<<"w:"<<df.getVOrientation().norm()<<"v:"<<df.getVCenter().norm();*/
 }
 
-template<class DataTypes>
-void FrameSpringForceField2<DataTypes>::XItoQ ( DUALQUAT& q, const Coord& xi )
-{
-    // xi: quat(a,b,c,w),tx,ty,tz
-    // qi: quat(a,b,c,w),1/2quat(t.q)
-    const Quat& roti = xi.getOrientation();
-    const Vec3& ti = xi.getCenter();
 
-    q.q0[0]=roti[0];
-    q.q0[1]=roti[1];
-    q.q0[2]=roti[2];
-    q.q0[3]=roti[3];
-    q.qe[3]= ( - ( roti[0]*ti[0]+roti[1]*ti[1]+roti[2]*ti[2] ) ) /2.;
-    q.qe[0]= ( ti[1]*roti[2]-roti[1]*ti[2]+roti[3]*ti[0] ) /2.;
-    q.qe[1]= ( ti[2]*roti[0]-roti[2]*ti[0]+roti[3]*ti[1] ) /2.;
-    q.qe[2]= ( ti[0]*roti[1]-roti[0]*ti[1]+roti[3]*ti[2] ) /2.;
-}
 
-template<class DataTypes>
-void FrameSpringForceField2<DataTypes>::Multi_Rigid( Coord& x1x2, const Coord& x1, const Coord& x2)
-{
-    Multi_Q( x1x2.getOrientation(),x1.getOrientation(),x2.getOrientation());
-    Transform_Q( x1x2.getCenter(),x2.getCenter(),x1.getOrientation());
-    x1x2.getCenter()+=x1.getCenter();
-}
-
-template<class DataTypes>
-void FrameSpringForceField2<DataTypes>::QtoXI ( Coord& xi, const DUALQUAT& q )
-{
-// xi: quat(a,b,c,w),tx,ty,tz
-// qi: quat(a,b,c,w),1/2quat(t.q)
-    xi.getOrientation()[0]=q.q0[0];
-    xi.getOrientation()[1]=q.q0[1];
-    xi.getOrientation()[2]=q.q0[2];
-    xi.getOrientation()[3]=q.q0[3];
-
-    xi.getCenter()[0]=2.*(-q.q0[2]*q.qe[1]+q.q0[1]*q.qe[2]+q.q0[3]*q.qe[0]);
-    xi.getCenter()[1]=2.*(-q.q0[0]*q.qe[2]+q.q0[2]*q.qe[0]+q.q0[3]*q.qe[1]);
-    xi.getCenter()[2]=2.*(-q.q0[1]*q.qe[0]+q.q0[0]*q.qe[1]+q.q0[3]*q.qe[2]);
-}
 
 template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::QtoR( Mat33& M, const Quat& q)
@@ -469,13 +428,6 @@ void FrameSpringForceField2<DataTypes>::Multi_Q( Quat& q, const Quat& q1, const 
     q[2]+=q2[3]*q1[2]+q1[3]*q2[2];
 }
 
-template<class DataTypes>
-void FrameSpringForceField2<DataTypes>::Invert_Rigid( Coord& xinv, const Coord& x)
-{
-    xinv.getOrientation()[0]=-x.getOrientation()[0];    xinv.getOrientation()[1]=-x.getOrientation()[1];    xinv.getOrientation()[2]=-x.getOrientation()[2];
-    xinv.getOrientation()[3]=x.getOrientation()[3];
-    Transform_Q( xinv.getCenter(),-x.getCenter(),xinv.getOrientation());
-}
 
 template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::getH_isotropic ( Mat66& H, const double& E, const double& v )
@@ -492,6 +444,15 @@ void FrameSpringForceField2<DataTypes>::getH_isotropic ( Mat66& H, const double&
     H[2][0]=H[0][2]=c*v;
     H[2][1]=H[1][2]=c*v;
 }
+
+template<class DataTypes>
+void FrameSpringForceField2<DataTypes>::GetCrossproductMatrix(Mat33& C,const Vec3& u)
+{
+    C[0][0]=0;	   C[0][1]=-u[2];  C[0][2]=u[1];
+    C[1][0]=u[2];   C[1][1]=0;      C[1][2]=-u[0];
+    C[2][0]=-u[1];  C[2][1]=u[0];   C[2][2]=0;
+}
+
 
 } // namespace forcefield
 
