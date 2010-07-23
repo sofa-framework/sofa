@@ -161,7 +161,6 @@ public:
         H.clear();
     }
 
-    void GetIntermediateFrame ( Coord& xi, const Coord& x1, const Coord& x2 );
     void updateForce ( VecDeriv& Force, VVMat66& K, const VecCoord& xi, const VVMat66& Kref );
 
     virtual double getPotentialEnergy ( const VecCoord& /*x*/ ) const
@@ -178,15 +177,12 @@ private:
     DQStorage* dqInfos;
 
     void computeK0();
-    void XItoQ ( DUALQUAT& q, const Coord& xi );
-    void Multi_Rigid( Coord& x1x2, const Coord& x1, const Coord& x2);
-    void QtoXI ( Coord& xi, const DUALQUAT& q );
     void QtoR( Mat33& M, const Quat& q);
     void Transform_Q( Vec3& pout, const Vec3& pin, const Quat& q, const bool& invert=false);
     void PostoSpeed( Deriv& Omega, const Coord& xi, const Coord& xi2);
     void Multi_Q( Quat& q, const Quat& q1, const Quat& q2);
-    void Invert_Rigid( Coord& xinv, const Coord& x);
     void getH_isotropic ( Mat66& H, const double& E, const double& v );
+    void GetCrossproductMatrix(Mat33& C,const Vec3& u);
 
 };
 
