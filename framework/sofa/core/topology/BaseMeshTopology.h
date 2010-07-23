@@ -34,9 +34,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/list.h>
 
-#include <sofa/core/DataEngine.h>
 #include <sofa/core/core.h>
 
 namespace sofa
@@ -325,6 +323,17 @@ public:
      */
     virtual sofa::helper::list<const TopologyChange *>::const_iterator endStateChange() const;
 
+    /** \brief Adds a TopologyEngine to the list.
+    */
+    virtual void addTopologyEngine(TopologyEngine* _topologyEngine);
+
+    /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
+     */
+    virtual sofa::helper::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
+
+    /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
+     */
+    virtual sofa::helper::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
     /// @}
 
     // functions returning border elements. To be moved in a mapping.

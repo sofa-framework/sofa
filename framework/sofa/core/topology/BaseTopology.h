@@ -29,7 +29,6 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/objectmodel/Data.h>
 
 #include <sofa/helper/list.h>
 
@@ -183,45 +182,6 @@ protected:
 
 
 
-
-/** A class that will interact on a topological Data */
-class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
-{
-public:
-    SOFA_CLASS(TopologyEngine, DataEngine);
-    typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
-
-    TopologyEngine();
-
-    virtual ~TopologyEngine();
-
-    virtual void init();
-
-    virtual void handleTopologyChange() {};
-
-
-public:
-
-    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
-
-    unsigned int getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
-
-
-    virtual void registerTopologicalData(t_topologicalData* topologicalData);
-
-    virtual void removeTopologicalData();
-
-    virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
-
-protected:
-
-    t_topologicalData* m_topologicalData;
-
-};
-
-
-
-
 /** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
 class SOFA_CORE_API TopologyContainer : public sofa::core::topology::BaseTopologyObject,
     public core::topology::BaseMeshTopology
@@ -308,19 +268,20 @@ public:
 
     /// TopologyEngine interactions
     ///@{
-    const sofa::helper::list<const TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
+    const sofa::helper::list<TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
 
     /** \brief Adds a TopologyEngine to the list.
     */
-    void addTopologyEngine(const TopologyEngine* _topologyEngine);
+    virtual void addTopologyEngine(TopologyEngine* _topologyEngine);
+
 
     /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
      */
-    sofa::helper::list<const TopologyEngine *>::const_iterator beginTopologyEngine() const;
+    sofa::helper::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
      */
-    sofa::helper::list<const TopologyEngine *>::const_iterator endTopologyEngine() const;
+    sofa::helper::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
@@ -338,7 +299,7 @@ protected:
     Data <sofa::helper::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    sofa::helper::list<const TopologyEngine *> m_topologyEngineList;
+    sofa::helper::list<TopologyEngine *> m_topologyEngineList;
 };
 
 

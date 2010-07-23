@@ -31,6 +31,8 @@
 #include <string>
 #include <iostream>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/helper/list.h>
+#include <sofa/core/DataEngine.h>
 
 #include <sofa/helper/vector.h>
 namespace sofa
@@ -144,6 +146,58 @@ public:
         : core::topology::TopologyChange(core::topology::ENDING_EVENT)
     {}
 };
+
+
+
+/** A class that will interact on a topological Data */
+class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
+{
+public:
+    SOFA_CLASS(TopologyEngine, DataEngine);
+    typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
+
+    TopologyEngine(): m_topologicalData(NULL)  {}
+
+    virtual ~TopologyEngine()
+    {
+        if (this->m_topologicalData != NULL)
+            this->removeTopologicalData();
+    }
+
+    virtual void init()
+    {
+        DataEngine::init();
+
+        this->addInput(&m_changeList);
+        this->addOutput(m_topologicalData);
+    }
+
+    virtual void handleTopologyChange() {};
+
+
+public:
+
+    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
+
+    unsigned int getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
+
+
+    virtual void registerTopologicalData(t_topologicalData* topologicalData) {m_topologicalData = topologicalData;}
+
+    virtual void removeTopologicalData()
+    {
+        if (this->m_topologicalData)
+            delete this->m_topologicalData;
+    }
+
+    virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
+
+protected:
+
+    t_topologicalData* m_topologicalData;
+
+};
+
 
 
 class Topology : public virtual core::objectmodel::BaseObject

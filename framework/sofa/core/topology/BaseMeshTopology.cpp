@@ -355,30 +355,52 @@ void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
 
 sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
 {
-    serr << "firstChange() not supported." << sendl;
+    serr << "beginChange() not supported." << sendl;
     sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() const
 {
-    serr<<"lastChange() not supported." << sendl;
+    serr<<"endChange() not supported." << sendl;
     sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
 {
-    serr<<"firstStateChange() not supported." << sendl;
+    serr<<"beginStateChange() not supported." << sendl;
     sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
 {
-    serr<<"lastStateChange() not supported." << sendl;
+    serr<<"endStateChange() not supported." << sendl;
     sofa::helper::list<const TopologyChange *>::const_iterator l;
     return l;
+}
+
+
+sofa::helper::list<TopologyEngine *>::const_iterator BaseMeshTopology::beginTopologyEngine() const
+{
+    serr<<"beginTopologyEngine() not supported." << sendl;
+    sofa::helper::list<TopologyEngine *>::const_iterator l;
+    return l;
+}
+
+
+sofa::helper::list<TopologyEngine *>::const_iterator BaseMeshTopology::endTopologyEngine() const
+{
+    serr<<"endTopologyEngine() not supported." << sendl;
+    sofa::helper::list<TopologyEngine *>::const_iterator l;
+    return l;
+}
+
+void BaseMeshTopology::addTopologyEngine(TopologyEngine* _topologyEngine)
+{
+    serr<<"addTopologyEngine() not supported." << sendl;
+    (void)_topologyEngine;
 }
 
 int BaseMeshTopology::getEdgeIndex(PointID, PointID)
