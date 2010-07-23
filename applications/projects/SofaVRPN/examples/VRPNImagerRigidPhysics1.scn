@@ -10,7 +10,7 @@
         <EulerImplicit rayleighStiffness="0.01" name="cg_odesolver" printLog="false"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 	<Node name="tracking">
-		<VRPNImager name="imageData" template="Rigid" listening="true" serverName="manou" serverPort="3883" deviceName="TestImage" />
+		<VRPNImager name="imageData" template="Rigid" listening="true" serverName="134.206.18.181" serverPort="3883" deviceName="TestImage" />
 	</Node>
 	<Node name="proxy">
                 <!--<TransformEngine name="transform" template="Rigid" rotation="0 0 0" translation="0.42 0.095 0" scale="1.0 1.0 1.0" input_position="@../tracking/imageData.rigidPosition"/>
