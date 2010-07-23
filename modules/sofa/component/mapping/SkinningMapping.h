@@ -42,8 +42,6 @@
 
 #ifdef SOFA_DEV
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
-
-#include <sofa/helper/Quater.h>
 #endif
 
 namespace sofa
@@ -133,107 +131,10 @@ public:
     typedef Coord GeoCoord;
     typedef VecCoord GeoVecCoord;
 #endif
-protected:
-    vector<Coord> initPos; // pos: point coord in the world reference frame
-    vector<Coord> rotatedPoints;
-
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
-
-    Data<vector<int> > repartition;
-    Data<VVD > coefs;
-    Data<SVector<SVector<GeoCoord> > > weightGradients;
-    Data<unsigned int> nbRefs;
-public:
-    Data<bool> showBlendedFrame;
-    Data<bool> showDefTensors;
-    Data<bool> showDefTensorsValues;
-    Data<double> showDefTensorScale;
-    Data<unsigned int> showFromIndex;
-    Data<bool> showDistancesValues;
-    Data<bool> showCoefs;
-    Data<double> showGammaCorrection;
-    Data<bool> showCoefsValues;
-    Data<bool> showReps;
-    Data<int> showValuesNbDecimals;
-    Data<double> showTextScaleFactor;
-    Data<bool> showGradients;
-    Data<bool> showGradientsValues;
-    Data<double> showGradientsScaleFactor;
-#ifdef SOFA_DEV
-    HexahedronGeodesicalDistance< GeoType>* geoDist;
-    Data<double> newFrameMinDist;
-    Data<vector<double> > newFrameWeightingRadius;
-    Data<double> newFrameDefaultCutOffDistance;
-    Data<double> newFrameDistanceToMaximizeWeight;
-    Data<bool> enableSkinning;
-    Data<double> voxelVolume;
-#endif
-
-protected:
-    Data<sofa::helper::OptionsGroup> wheightingType;
-    Data<sofa::helper::OptionsGroup> distanceType;
-    bool computeWeights;
-    VVD distances;
-#ifdef SOFA_DEV
-    GeoVecVecCoord distGradients;
-#else
-    vector<vector<GeoCoord> > distGradients;
-#endif
-
-    inline void computeInitPos();
-    inline void computeDistances();
-    inline void sortReferences( vector<int>& references);
 
 public:
     SkinningMapping ( In* from, Out* to );
     virtual ~SkinningMapping();
-
-    void init();
-
-    void apply ( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
-
-    void draw();
-    void clear();
-
-    // Weights
-    void setWeightsToHermite();
-    void setWeightsToInvDist();
-    void setWeightsToLinear();
-    inline void updateWeights();
-    inline void getDistances( int xfromBegin);
-    //inline void temporaryUpdateWeightsAfterInsertion( VVD& w, VecVecCoord& dw, int xfromBegin);
-
-    // Accessors
-    void setNbRefs ( unsigned int nb )
-    {
-        nbRefs.setValue ( nb );
-    }
-    void setWeightCoefs ( VVD& weights );
-    void setRepartition ( vector<int> &rep );
-    void setComputeWeights ( bool val )
-    {
-        computeWeights=val;
-    }
-    unsigned int getNbRefs()
-    {
-        return nbRefs.getValue();
-    }
-    const VVD& getWeightCoefs()
-    {
-        return coefs.getValue();
-    }
-    const vector<int>& getRepartition()
-    {
-        return repartition.getValue();
-    }
-    bool getComputeWeights()
-    {
-        return computeWeights;
-    }
 
 };
 
