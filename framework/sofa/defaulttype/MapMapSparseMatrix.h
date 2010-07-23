@@ -76,6 +76,7 @@ protected:
     SparseMatrix m_data;
 
 public:
+    class RowConstIterator;
 
     /// Sparse Matrix columns constant Iterator
     class ColConstIterator
@@ -316,6 +317,7 @@ public:
         return RowConstIterator(this->m_data.end());
     }
 
+    class RowIterator;
 
     class ColIterator
     {
