@@ -218,6 +218,8 @@ public:
         , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
     {
+        parallelDataInit[0]=0;
+        parallelDataInit[1]=0;
         this->addAlias(&_assembling, "assembling");
     }
 
