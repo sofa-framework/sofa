@@ -188,10 +188,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         index2 = mapper2.addPoint(o->point[1], index2, r2);
 
         double distance = d0 + r1 + r2;
-//        double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());
-//        if (distance != 0.0) stiffness /= distance;
-
-        double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness())/(elem1.getContactStiffness() + elem2.getContactStiffness());
+        double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());
+        if (distance != 0.0) stiffness /= distance;
 
         double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
         ff->addContact(index1, index2, elem1.getIndex(), elem2.getIndex(), o->normal, distance, stiffness, mu_v/* *distance */, mu_v, index);

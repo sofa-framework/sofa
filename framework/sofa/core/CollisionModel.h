@@ -76,7 +76,7 @@ public:
         , bSimulated(initData(&bSimulated, true, "simulated", "flag indicating if this object is controlled by a simulation"))
         , bSelfCollision(initData(&bSelfCollision, false, "selfCollision", "flag indication if the object can self collide"))
         , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
-        , contactStiffness(initData(&contactStiffness, 200.0, "contactStiffness", "Default contact stiffness"))
+        , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
