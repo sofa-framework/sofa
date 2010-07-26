@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
 *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
@@ -132,7 +133,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void FrictionContact<TCollisionModel1,TCollisionModel2>::activateMappers()
 {
 
-    std::cerr<<"activateMappers call"<<std::endl;
+    //std::cerr<<"activateMappers call"<<std::endl;
     if (c==NULL)
     {
         // Get the mechanical model from mapper1 to fill the constraint vector
@@ -154,7 +155,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::activateMappers()
     int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
-    std::cout<<" d0 = "<<d0<<std::endl;
+    //std::cout<<" d0 = "<<d0<<std::endl;
 
     mappedContacts.resize(contacts.size());
     for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
@@ -165,7 +166,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::activateMappers()
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
-        std::cout<<" indices :"<<index1<<" - "<<index2<<std::endl;
+        //std::cout<<" indices :"<<index1<<" - "<<index2<<std::endl;
 
         typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
@@ -189,7 +190,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::activateMappers()
     if (!selfCollision) mapper2.updateXfree();
 
 
-    std::cerr<<" end activateMappers call"<<std::endl;
+    //std::cerr<<" end activateMappers call"<<std::endl;
 
 }
 
