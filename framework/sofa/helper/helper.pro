@@ -27,8 +27,9 @@ HEADERS += helper.h \
     FnDispatcher.inl \
     gl/Axis.h \
     gl/BasicShapes.h \
-    gl/Cylinder.h \
     gl/Capture.h \
+    gl/Color.h \
+    gl/Cylinder.h \
     gl/DrawManager.h \
     gl/glfont.h \
     gl/glText.inl \
@@ -96,8 +97,9 @@ SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
     Factory.cpp \
     gl/Axis.cpp \
-    gl/Cylinder.cpp \
     gl/Capture.cpp \
+    gl/Color.cpp \
+    gl/Cylinder.cpp \
     gl/DrawManager.cpp \
     gl/glfont.cpp \
     gl/glText.cpp \
