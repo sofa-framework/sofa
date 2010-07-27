@@ -57,8 +57,18 @@ public:
     }
 
     /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const MapMapSparseMatrix<T>& /*sc*/ )
+    inline friend std::ostream& operator << ( std::ostream& out, const MapMapSparseMatrix<T>& sc)
     {
+        for (typename SparseMatrix::const_iterator rowIt = sc.m_data.begin(); rowIt !=  sc.m_data.end(); ++rowIt)
+        {
+            out << rowIt->first << " : ";
+            for (typename RowType::const_iterator colIt = rowIt->second.begin(); colIt !=  rowIt->second.end(); ++colIt)
+            {
+                out << colIt->first << " " << colIt->second << ", ";
+            }
+            out << "\n";
+        }
+
         return out;
     }
 
@@ -540,7 +550,7 @@ public:
 
         void addCol(KeyT id, T value)
         {
-            RowType row = m_internal->second;
+            RowType& row = m_internal->second;
             typename RowType::iterator it = row.find(id);
 
             if (it != row.end())
@@ -555,7 +565,7 @@ public:
 
         void setCol(KeyT id, T value)
         {
-            RowType row = m_internal->second;
+            RowType& row = m_internal->second;
             typename RowType::iterator it = row.find(id);
 
             if (it != row.end())
@@ -662,12 +672,14 @@ public:
     /// Creates a new row in the sparse matrix with the last+1 key index
     RowIterator newLine()
     {
-        KeyType lastId = m_data.empty() ? 0 : m_data.rbegin()->first;
+        KeyType newId = m_data.empty() ? 0 : (m_data.rbegin()->first + 1);
 
-        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(lastId + 1, RowType()));
+        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair< KeyType, RowType >(newId, RowType()));
         return RowIterator(res.first);
     }
 };
+
+
 
 } // namespace defaulttype
 
