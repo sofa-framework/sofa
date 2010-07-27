@@ -61,6 +61,7 @@ class SOFA_COMPONENT_ODESOLVER_API NewmarkImplicitSolver : public sofa::componen
 {
 protected:
     unsigned int cpt;
+
 public:
     SOFA_CLASS(NewmarkImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
     Data<double> f_rayleighStiffness;
