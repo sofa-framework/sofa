@@ -45,16 +45,26 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 NewmarkImplicitSolver::NewmarkImplicitSolver()
-    : f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
-    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
-    , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay coefficient (no decay if null)") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_gamma( initData(&f_gamma, 0.5, "gamma", "Newmark scheme gamma coefficient") )
+    : f_rayleighStiffness(
+        initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping
+                coefficient related to stiffness") )
+    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping
+            coefficient related to mass"))
+    , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay
+            coefficient (no decay if null)") )
+    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each
+            iteration") )
+    , f_gamma( initData(&f_gamma, 0.5, "gamma", "Newmark scheme gamma coefficient")
+             )
     , f_beta( initData(&f_beta, 0.25, "beta", "Newmark scheme beta coefficient") )
 {
+    cpt=0;
 }
 
-void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult)
+
+void NewmarkImplicitSolver::solve(double dt,
+        sofa::core::behavior::BaseMechanicalState::VecId xResult,
+        sofa::core::behavior::BaseMechanicalState::VecId vResult)
 {
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
@@ -62,6 +72,8 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
     MultiVector b(this, VecId::V_DERIV);
     MultiVector a(this, VecId::V_DERIV);
     MultiVector aResult(this, VecId::V_DERIV);
+    MultiVector dx(this,VecId::dx());
+
 
     const double h = dt;
     const double gamma = f_gamma.getValue();
@@ -75,50 +87,54 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
     *   $x_{t+h} = x_t + h v_t + h^2/2 ( (1-2\beta) a_t + 2\beta a_{t+h} )$
     *   $v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )$
     *
-    * Applied to a mechanical system where $ M a_t + (r_M M + r_K K) v_t + K x_t = f_ext$, we need to solve the following system:
+    * Applied to a mechanical system where $ M a_t + (r_M M + r_K K) v_t + K x_t
+    = f_ext$, we need to solve the following system:
     *
     *   $ M a_{t+h} + (r_M M + r_K K) v_{t+h} + K x_{t+h} = f_ext $
-    *   $ M a_{t+h} + (r_M M + r_K K) ( v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} ) ) + K ( x_t + h v_t + h^2/2 ( (1-2\beta) a_t + 2\beta a_{t+h} ) ) = f_ext $
-    *   $ ( M + h \gamma (r_M M + r_K K) + h^2 \beta K ) a_{t+h} = f_ext - (r_M M + r_K K) ( v_t + h (1-\gamma) a_t ) - K ( x_t + h v_t + h^2/2 (1-2\beta) a_t ) $
-    *   $ ( (1 + h \gamma r_M) M + (h^2 \beta + h \gamma r_K) K ) a_{t+h} = f_ext - (r_M M + r_K K) v_t - K x_t - (r_M M + r_K K) ( h (1-\gamma) a_t ) - K ( h v_t + h^2/2 (1-2\beta) a_t ) $
-    *   $ ( (1 + h \gamma r_M) M + (h^2 \beta + h \gamma r_K) K ) a_{t+h} = a_t - (r_M M + r_K K) ( h (1-\gamma) a_t ) - K ( h v_t + h^2/2 (1-2\beta) a_t ) $
+    *   $ M a_{t+h} + (r_M M + r_K K) ( v_t + h ( (1-\gamma) a_t + \gamma
+    a_{t+h} ) ) + K ( x_t + h v_t + h^2/2 ( (1-2\beta) a_t + 2\beta a_{t+h} ) ) =
+    f_ext $
+    *   $ ( M + h \gamma (r_M M + r_K K) + h^2 \beta K ) a_{t+h} = f_ext - (r_M
+    M + r_K K) ( v_t + h (1-\gamma) a_t ) - K ( x_t + h v_t + h^2/2 (1-2\beta) a_t )
+    $
+    *   $ ( (1 + h \gamma r_M) M + (h^2 \beta + h \gamma r_K) K ) a_{t+h} =
+    f_ext - (r_M M + r_K K) v_t - K x_t - (r_M M + r_K K) ( h (1-\gamma) a_t ) - K (
+    h v_t + h^2/2 (1-2\beta) a_t ) $
+    *   $ ( (1 + h \gamma r_M) M + (h^2 \beta + h \gamma r_K) K ) a_{t+h} = Ma_t
+    - (r_M M + r_K K) ( h (1-\gamma) a_t ) - K ( h v_t + h^2/2 (1-2\beta) a_t ) $
     *
-    * The current implementation first computes $a_t$ directly (as in the explicit solvers), then solves the previous system to compute $a_{t+dt}$, and finally computes the new position and velocity.
+    * The current implementation first computes $a_t$ directly (as in the
+    explicit solvers), then solves the previous system to compute $a_{t+dt}$, and
+    finally computes the new position and velocity.
     */
 
-    // 1. Compute a_t (stored in a)
+    //we need to initialize a_t and to store it as a vecId to be used in the
+    resolution of this solver (using as well old xand v). Once we have a_ {t+dt} we
+    can update the new x and v.
 
-    if (rM == 0.0 && rK == 0.0)
+    //for the resolution we need to create a function addMBKa, which needs
+    addForcea ... to be implemented.
+
+    if(cpt==0)
     {
-        computeForce(f);                                                        // f = f_ext - K x
+        a.clear();
     }
-    else
-    {
-        // accumulation through mappings is disabled as it will be done by
-        // addMBKv after all factors are computed
-        computeForce(f, true, false);                                           //  f = f_ext - K x
-
-        // values are not cleared so that contributions from computeForce
-        // are kept and accumulated through mappings once at the end
-        addMBKv(f, -rM, 0, rK, false, true);                                   // f -= (r_M M + r_K K) v
-    }
-
-    accFromF(a, f);
-
-    projectResponse(a);          // b is projected to the constrained space
-
-    if( verbose )
-        serr<<"NewmarkImplicitSolver, a0 = "<< a <<sendl;
-
+    cpt++;
     // 2. Compute right hand term of equation on a_{t+h}
 
-    b = a;                                                                      // b = a
+    computeForce(b,true,false);
+    //b = f;
+// b = M a
     if (rM != 0.0 || rK != 0.0 || beta != 0.5)
     {
         propagateDx(a);
-        addMBKdx(b, -h*(1-gamma)*rM, 0, h*(1-gamma)*rK + h*h*(1-2*beta)/2);    // b += ( -h (1-\gamma)(r_M M + r_K K) - h^2/2 (1-2\beta) K ) a
+        addMBKdx(b, -h*(1-gamma)*rM, h*(1-gamma), h*(1-gamma)*rK +
+                h*h*(1-2*beta)/2.0,true,true); // b += ( -h (1-\gamma)(r_M M + r_K K) - h^2/2
+        (1-2\beta) K ) a
+
     }
-    addMBKv(b, 0, 0, h);                                                       // b += -h K v
+    addMBKv(b, -rM, 0,rK+h);
+    // b += -h K v
 
     if( verbose )
         serr<<"NewmarkImplicitSolver, b = "<< b <<sendl;
@@ -131,10 +147,13 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
     // 3. Solve system of equations on a_{t+h}
 
     MultiMatrix matrix(this);
-    matrix = MechanicalMatrix::K * (-h*h*beta - h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM);
+    matrix = MechanicalMatrix::K * (-h*h*beta - h*rK) + MechanicalMatrix::B
+            *(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
 
     //if( verbose )
-    //	serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K * (h*h*beta + h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix <<sendl;
+    //	serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *
+    (h*h*beta + h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix
+            <<sendl;
 
     matrix.solve(aResult, b);
     projectResponse(aResult);
@@ -152,7 +171,8 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
-    solveConstraint(dt,xResult,core::behavior::BaseConstraintSet::POS);
+    std::cout<<"there"<<std::endl;
+    solveConstraint(dt,VecId::position());
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
@@ -160,20 +180,22 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
 
 #else // single-operation optimization
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+
     VMultiOp ops;
-    ops.resize(3);
-    ops[0].first = (VecId)b;
-    ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
-    ops[0].second.push_back(std::make_pair((VecId)a, h*(0.5-beta)));
-    ops[0].second.push_back(std::make_pair((VecId)aResult, h*beta));
-    ops[1].first = (VecId)newPos;
-    ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-    ops[1].second.push_back(std::make_pair((VecId)b,h));
-    ops[2].first = (VecId)newVel;
-    ops[2].second.push_back(std::make_pair((VecId)vel,1.0));
-    ops[2].second.push_back(std::make_pair((VecId)a, h*(1-gamma)));
-    ops[2].second.push_back(std::make_pair((VecId)aResult, h*gamma));
+    ops.resize(2);
+    ops[0].first = (VecId)newPos;
+    ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+    ops[0].second.push_back(std::make_pair((VecId)vel, h));
+    ops[0].second.push_back(std::make_pair((VecId)a, h*h*(0.5-beta)));
+    ops[0].second.push_back(std::make_pair((VecId)aResult,
+            h*h*beta));//b=vt+at*h/2(1-2*beta)+a(t+h)*h*beta
+    ops[1].first = (VecId)newVel;
+    ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+    ops[1].second.push_back(std::make_pair((VecId)a, h*(1-gamma)));
+    ops[1].second.push_back(std::make_pair((VecId)aResult,
+            h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
     simulation::MechanicalVMultiOpVisitor vmop(ops);
+    vmop.setTags(this->getTags());
     vmop.execute(this->getContext());
 
     solveConstraint(dt,vResult,core::behavior::BaseConstraintSet::VEL);
@@ -181,7 +203,8 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
 
 #endif
 
-    addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to
+    added G separately from the other forces to v.
     if (f_velocityDamping.getValue()!=0.0)
         newVel *= exp(-h*f_velocityDamping.getValue());
 
@@ -190,11 +213,15 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanica
         serr<<"NewmarkImplicitSolver, final x = "<< newPos <<sendl;
         serr<<"NewmarkImplicitSolver, final v = "<< newVel <<sendl;
     }
+
+    // Increment
+    a.eq(aResult);
 }
 
 SOFA_DECL_CLASS(NewmarkImplicitSolver)
 
-int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integrator using Newmark scheme")
+int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integrator
+        using Newmark scheme")
         .add< NewmarkImplicitSolver >()
         .addAlias("Newmark");
 ;
