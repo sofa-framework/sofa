@@ -1,21 +1,23 @@
 <Node name="root" dt="0.007" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0"  showProcessorColor="1" processor="1">
 	<Node name="AttachTwoWay" processor="1" >
 		<EulerImplicitSolver />
-		<ParallelCGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" verbose="true" />
+		<ParallelCGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 <?php 
 #DEFAULT VALUES
-$mult=$_ENV["MULT"]?$_ENV["MULT"]:1;
-$count=$_ENV["KAAPI_CPUCOUNT"]?$_ENV["KAAPI_CPUCOUNT"]:2;
+#$mult=$_ENV["MULT"]?$_ENV["MULT"]:1;
+$mult=getenv("MULT")?getenv("MULT"):1;
+#$count=$_ENV["KAAPI_CPUCOUNT"]?$_ENV["KAAPI_CPUCOUNT"]:2;
+$count=getenv("KAAPI_CPUCOUNT")?getenv("KAAPI_CPUCOUNT"):2;
 $default_nx=4*$mult;
 $default_ny=4*$mult;
 $default_nz=10*$mult;
 $default_elems=3;
 $default_bars=1;
-$nx=$_ENV["NX"]?$_ENV["NX"]:$default_nx;
-$ny=$_ENV["NY"]?$_ENV["NY"]:$default_ny;
-$nz=$_ENV["NZ"]?$_ENV["NZ"]:$default_nz;
-$elems=$_ENV["ELEMS"]?$_ENV["ELEMS"]:$default_elems;
-$bars=$_ENV["BARS"]?$_ENV["BARS"]:$default_bars;
+$nx=getenv("NX")?getenv("NX"):$default_nx;
+$ny=getenv("NY")?getenv("NY"):$default_ny;
+$nz=getenv("NZ")?getenv("NZ"):$default_nz;
+$elems=getenv("ELEMS")?getenv("ELEMS"):$default_elems;
+$bars=getenv("BARS")?getenv("BARS"):$default_bars;
 $dz=20;
 $dx=3;
 #COMPUTE INDICES

@@ -9,8 +9,8 @@ function repeat($n,$v) {
 }
 
 $default_elems=4;
-$NZ=$_ENV["NZ"]?$_ENV["NZ"]:100;
-$elems=$_ENV["ELEMS"]?$_ENV["ELEMS"]:$default_elems;
+$NZ=getenv("NZ")?getenv("NZ"):100;
+$elems=getenv("ELEMS")?getenv("ELEMS"):$default_elems;
 //$md=0.08;
 $md = 1310.72/($NZ*$NZ);
 $overlap=2;
