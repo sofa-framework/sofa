@@ -1,45 +1,45 @@
 <Node name="root" dt="0.02" gravity="0 0 100" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<Node name="Reference">
-		<Object type="OglModel" fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
+		<OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
 	</Node>
 	<Node name="CylinderFEMTetra">
-		<Object type="EulerImplicit" />                
-		<Object type="CGLinearSolver" iterations="25"  tolerance="0.000001"/>
-		<Object type="MechanicalObject" dx="-10" />
-		<Object type="UniformMass" totalmass="15" />
-		<Object type="CylinderGridTopology"
+		<EulerImplicit />                
+		<CGLinearSolver iterations="25"  tolerance="0.000001"/>
+		<MechanicalObject dx="-10" />
+		<UniformMass totalmass="15" />
+		<CylinderGridTopology
 			nx="5" ny="5" nz="20"
 			length="35.56" radius="3.75" axis="0 1 0"
 		/>
-		<Object type="BoxConstraint" box="-14 -0.1 -4 -6 0.1 4" fixAll="0" />
-		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1116" poissonRatio="0.3" method="polar" />
+		<BoxConstraint box="-14 -0.1 -4 -6 0.1 4" fixAll="0" />
+		<TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="polar" />
 	</Node>
 	<Node name="CylinderFEM">
-		<Object type="EulerImplicit" />                
-		<Object type="CGLinearSolver" iterations="25"  tolerance="0.000001"/>
-		<Object type="MechanicalObject" />
-		<Object type="UniformMass" totalmass="15" />
-		<Object type="CylinderGridTopology"
+		<EulerImplicit />                
+		<CGLinearSolver iterations="25"  tolerance="0.000001"/>
+		<MechanicalObject />
+		<UniformMass totalmass="15" />
+		<CylinderGridTopology
 			nx="5" ny="5" nz="20"
 			length="35.56" radius="3.75" axis="0 1 0"
 		/>
-		<NOObject type="RegularGridTopology"
+		<NORegularGridTopology
 			nx="2" ny="10" nz="2"
 			min="-1 0 -1" max="1 9 1"
 		/>
-		<Object type="BoxConstraint" box="-4 -0.1 -4 4 0.1 4" fixAll="0" />
-		<Object type="HexahedronFEMForceField" name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
+		<BoxConstraint box="-4 -0.1 -4 4 0.1 4" fixAll="0" />
+		<HexahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
 	</Node>
 	<Node name="CylinderSpring">
-		<Object type="EulerImplicit" />                
-		<Object type="CGLinearSolver" iterations="25"  tolerance="0.000001"/>
-		<Object type="MechanicalObject" dx="10" />
-		<Object type="UniformMass" totalmass="15" />
-		<Object type="CylinderGridTopology"
+		<EulerImplicit />                
+		<CGLinearSolver iterations="25"  tolerance="0.000001"/>
+		<MechanicalObject dx="10" />
+		<UniformMass totalmass="15" />
+		<CylinderGridTopology
 			nx="5" ny="5" nz="20"
 			length="35.56" radius="3.75" axis="0 1 0"
 		/>
-		<Object type="BoxConstraint" box="6 -0.1 -4 14 0.1 4" fixAll="0" />
-		<Object type="MeshSpringForceField" name="FEM" stiffness="1000" />
+		<BoxConstraint box="6 -0.1 -4 14 0.1 4" fixAll="0" />
+		<MeshSpringForceField name="FEM" stiffness="1000" />
 	</Node>
 </Node>

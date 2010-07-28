@@ -1,28 +1,28 @@
 <Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
-	<Object type="CollisionPipeline" verbose="0" name="CollisionPipeline"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="CollisionResponse" response="default" name="collision response"/>
+	<CollisionPipeline verbose="0" name="CollisionPipeline"/>
+	<BruteForceDetection name="N2" />
+	<CollisionResponse response="default" name="collision response"/>
 	<Node name="Cubes" >
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
-		<Object type="CubeTopology" internalPoints="0" splitNormals="1"
+		<CubeTopology internalPoints="0" splitNormals="1"
 			nx="3" ny="3" nz="5"
                         min="-0.015 -0.015 -0.075"
                         max="0.015 0.015 0.075"
 			/>		
-		<Object type="MechanicalObject" name="dofs" />
-		<Object type="TriangleFEMForceField" name="FEM1" youngModulus="500" poissonRatio="0.3" method="large"/>
-		<Object type="UniformMass" mass="0.1" />
-                <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
+		<MechanicalObject name="dofs" />
+		<TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large"/>
+		<UniformMass mass="0.1" />
+                <FixedConstraint name="FixedConstraint" indices="3 39 64" />
 		
 		<Node name="Visu">
-			<Object type="OglModel" name="VisualModel" color="red" />
-			<Object type="IdentityMapping" object1="../.." object2="VisualModel" name="visual mapping"/>
+			<OglModel name="VisualModel" color="red" />
+			<IdentityMapping object1="../.." object2="VisualModel" name="visual mapping"/>
 		</Node>
 		<Node name="Surf">
-			<Object type="TriangleSet" name="CollisionModel" />
-			<Object type="IdentityMapping" name="mapping"/>
+			<TriangleSet name="CollisionModel" />
+			<IdentityMapping name="mapping"/>
 		</Node>
 	</Node>
 </Node>
