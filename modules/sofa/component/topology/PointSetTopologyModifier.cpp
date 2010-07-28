@@ -201,11 +201,26 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    sofa::helper::list<sofa::core::topology::TopologyEngine*>::const_iterator engineIt;
+    /*sofa::helper::list<sofa::core::topology::TopologyEngine*>::const_iterator engineIt;
     for (engineIt = m_container->beginTopologyEngine(); engineIt != m_container->endTopologyEngine(); ++engineIt)
     {
-        (*engineIt)->update();
+       (*engineIt)->update();
+    }*/
+
+    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_initPoints).getOutputs();
+    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    std::cout << "nbr outputs: " << _outs.size() << std::endl;
+    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
+        if (topoEngine)
+            topoEngine->update();
+        else
+            std::cout <<"Et rate!" << std::endl;
+
+        delete topoEngine;
     }
+
 
     std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges() end" << std::endl;
 }
