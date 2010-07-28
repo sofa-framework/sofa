@@ -103,6 +103,9 @@ public:
     Data<SeqTriangles> m_outTriangles;
     Data< helper::vector<Vec3> > m_outNormals;
 
+    // Parameters
+    Data<bool> m_writeToFile;
+
 
 };
 
