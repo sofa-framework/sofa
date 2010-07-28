@@ -23,6 +23,45 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+/************************************************************************************************************************************
+*                                                                                                                                   *
+*                          About this GPU implementation of the Total Lagrangian Explicit Dynamics                                  *
+*                                                    (TLED) algorithm                                                               *
+*                                                                                                                                   *
+*************************************************************************************************************************************
+                                                                                                                                    *
+This work was carried out by Olivier Comas and Zeike Taylor and funded by INRIA and CSIRO.                                          *
+This implementation was optimised for graphics cards Geforce 8800GTX                                                                *
+                                                                                                                                    *
+ - Preventative Health Flagship, CSIRO ICT, AEHRC, Brisbane, Australia                                                              *
+   http://aehrc.com/biomedical_imaging/surgical_simulation.html                                                                     *
+ - INRIA, Shaman team                                                                                                               *
+   http://www.inria.fr/recherche/equipes/shaman.en.html                                                                             *
+                                                                                                                                    *
+ (1) For more details about the CUDA implementation of TLED into SOFA                                                               *
+@InProceedings{Comas2008,                                                                                                           *
+Author = {Comas, O. and Taylor, Z. and Allard, J. and Ourselin, S. and Cotin, S. and Passenger, J.},                                *
+Title = {Efficient nonlinear FEM for soft tissue modelling and its GPU implementation within the open source framework SOFA},       *
+Booktitle = {In Proceedings of ISBMS 2008},                                                                                         *
+Year = {2008},                                                                                                                      *
+Month = {July 7-8},                                                                                                                 *
+Address = {London, United Kingdom}                                                                                                  *
+}                                                                                                                                   *
+                                                                                                                                    *
+(2) For more details about the models implemented by the TLED algorithm and its validation                                          *
+@article{Taylor2009,                                                                                                                *
+Author = {Taylor, Z.A. and Comas, O. and Cheng, M. and Passenger, J. and Hawkes, D.J. and Atkinson, D. and Ourselin, S.},           *
+Journal = {Medical Image Analysis},                                                                                                 *
+Month = {April},                                                                                                                    *
+Number = {2},                                                                                                                       *
+Pages = {234-244},                                                                                                                  *
+Title = {On modelling of anisotropic viscoelasticity for soft tissue simulation: Numerical solution and {GPU} execution},           *
+Volume = {13},                                                                                                                      *
+Year = {2009}                                                                                                                       *
+}                                                                                                                                   *
+                                                                                                                                    *
+************************************************************************************************************************************/
+
 #ifndef SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 #define SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 
@@ -30,15 +69,6 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/MeshTopology.h>
 
-// Total Lagrangian Explicit Dynamics algorithm from
-// @InProceedings{Comas2008ISBMS,
-// author = {Comas, O. and Taylor, Z. and Allard, J. and Ourselin, S. and Cotin, S. and Passenger, J.},
-// title = {Efficient nonlinear FEM for soft tissue modelling and its GPU implementation within the open source framework SOFA},
-// booktitle = {In Proceedings of ISBMS 2008},
-// year = {2008},
-// month = {July 7-8},
-// address = {London, United Kingdom}
-// }
 
 namespace sofa
 {
@@ -61,21 +91,20 @@ public:
     typedef component::topology::MeshTopology::SeqTetrahedra VecElement;
 
 
-    int nbVertex; // number of vertices
-    int nbElems; // number of elements
-    int nbElementPerVertex; // max number of elements connected to a vertex
+    int nbVertex;                           // number of vertices
+    int nbElems;                            // number of elements
+    int nbElementPerVertex;                 // max number of elements connected to a vertex
 
-    /// Material properties
+    // Material properties
     Data<Real> poissonRatio;
     Data<Real> youngModulus;
-    /// Lame coefficients
-    float Lambda, Mu;
+    float Lambda, Mu;                       // Lame coefficients
 
-    /// TLED configuration
-    Data<Real> timestep;    // time step of the simulation
-    Data<unsigned int> viscoelasticity; // flag to enable viscoelasticity
-    Data<unsigned int> anisotropy;      // flag to enable transverse isotropy
-    Data<Vec3f> preferredDirection;     // uniform preferred direction for transverse isotropy
+    // TLED configuration
+    Data<Real> timestep;                    // time step of the simulation
+    Data<unsigned int> isViscoelastic;      // flag = 1 to enable viscoelasticity
+    Data<unsigned int> isAnisotropic;       // flag = 1 to enable transverse isotropy
+    Data<Vec3f> preferredDirection;         // uniform preferred direction for transverse isotropy
 
     CudaTetrahedronTLEDForceField();
     virtual ~CudaTetrahedronTLEDForceField();
@@ -85,12 +114,11 @@ public:
     void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
     double getPotentialEnergy(const VecCoord&) const { return 0.0; }
 
-    /// Compute lambda and mu based on the Young modulus and Poisson ratio
+    // Computes lambda and mu based on Young's modulus and Poisson ratio
     void updateLameCoefficients();
-
-    /// Compute element volumes for tetrahedral elements
+    // Computes element volumes for tetrahedral elements
     float CompElVolTetra( const Element& e, const VecCoord& x );
-    /// Compute shape function global derivatives for tetrahedral elements
+    // Computes shape function global derivatives for tetrahedral elements
     void ComputeDhDxTetra(const Element& e, const VecCoord& x, float DhDr[4][3], float DhDx[4][3]);
 
 protected:
