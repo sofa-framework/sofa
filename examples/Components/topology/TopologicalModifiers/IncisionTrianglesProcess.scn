@@ -1,11 +1,12 @@
-<Node 	name="root" gravity="0 -1 -0.1" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0"  >
+<Node 	name="root" gravity="0 -1 -0.1" dt="0.08" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0"  >
 	<DefaultPipeline name="default0"  verbose="0" />
 	<BruteForceDetection name="N2" />
 	<DefaultContactManager name="default1"  response="default" />
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.8"  contactDistance="0.5" />
 	<TreeCollisionGroupManager name="default2" />
 	<Node 	name="SquareGravity" gravity="0 0 0"  >
-		<CGImplicitSolver name="default3"  iterations="40"  tolerance="1e-06"  threshold="1e-10" />
+		<EulerImplicit name="cg_odesolver" printLog="false"  />
+		<CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
 		<MeshLoader name="meshLoader"  filename="mesh/square3.msh" />
 		<MechanicalObject template="Vec3d" name="default4"  scale3d="10 10 10"  restScale="1" />
 		<TriangleSetTopologyContainer name="Container" />
