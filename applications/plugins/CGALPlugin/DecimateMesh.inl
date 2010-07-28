@@ -164,7 +164,7 @@ void DecimateMesh<DataTypes>::computeNormals()
 }
 
 template <class DataTypes>
-void DecimateMesh<DataTypes>::handleEvent(sofa::core::objectmodel::Event * event)
+void DecimateMesh<DataTypes>::handleEvent(sofa::core::objectmodel::Event * /*event*/)
 {
 //        std::cout << "handleEvent called" << std::endl;
 
