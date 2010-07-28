@@ -7,7 +7,7 @@
 #define CGALPLUGIN_DECIMETEMESH_CPP
 
 #include <cgal_config.h>
-#include "DecimateMesh.inl"
+#include "DecimateMeshInline.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
