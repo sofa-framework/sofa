@@ -86,7 +86,7 @@ public:
     }
 
     /** \brief Returns a reference to the Data of triangles array container. */
-    Data< sofa::helper::vector<Triangle> > getTriangleDataArray() const {return d_triangle;}
+    Data< sofa::helper::vector<Triangle> >& getTriangleDataArray() {return d_triangle;}
 
 
     /** \brief Returns the triangle corresponding to the TriangleID i.

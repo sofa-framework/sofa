@@ -101,7 +101,7 @@ public:
     }
 
     /** \brief Returns a reference to the Data of tetrahedra array container. */
-    Data< sofa::helper::vector<Tetrahedron> > getTetrahedronDataArray() const {return d_tetrahedron;}
+    Data< sofa::helper::vector<Tetrahedron> >& getTetrahedronDataArray() {return d_tetrahedron;}
 
     /** \brief Returns the tetrahedron corresponding to the TetraID i.
      *
