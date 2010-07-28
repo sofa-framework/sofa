@@ -1,11 +1,11 @@
 <Node name="root"  gravity="0 0 0" dt="0.02" showBehaviorModels="0" showVisualModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
 	
 	
-	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
+	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<BruteForceDetection name="N2" />
+	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+	<CollisionResponse name="Response" response="default" />
+	<CollisionGroup name="Group" />
 	
 
 	<Node name="frog with several stiffnesses">
@@ -15,7 +15,7 @@
 		
 		
 		
-		<Object type="SparseGridMultiple"
+		<SparseGridMultiple
 				  n="9 9 7"
 				  fileTopologies="mesh/frog_body.obj mesh/frog_eyes.obj mesh/frog_eyebrows.obj mesh/frog_lips.obj"
 				  stiffnessCoefs="10 100 100 .2"
@@ -31,37 +31,37 @@
 		
 		
 		
-		<Object type="EulerImplicit" />
-		<Object type="CGLinearSolver" iterations="10" />
-		<Object type="MechanicalObject" />
+		<EulerImplicit />
+		<CGLinearSolver iterations="10" />
+		<MechanicalObject />
 		
-		<Object type="UniformMass" mass="1"/>
-		<Object type="HexahedronFEMForceField" youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0"/>
+		<UniformMass mass="1"/>
+		<HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0"/>
 	
 		<Node name="Visu1">
-			<Object type="OglModel" name="VisualBody" fileMesh="mesh/frog_body.obj" normals="0"   color="0.17 0.70 0.05" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualBody" />
+			<OglModel name="VisualBody" fileMesh="mesh/frog_body.obj" normals="0"   color="0.17 0.70 0.05" />
+			<BarycentricMapping object1="../.." object2="VisualBody" />
 		</Node>
 		<Node name="Visu2">
-			<Object type="OglModel" name="VisualEyes" fileMesh="mesh/frog_eyes.obj" normals="0"   color="0.04 0.19 0.52" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualEyes" />
+			<OglModel name="VisualEyes" fileMesh="mesh/frog_eyes.obj" normals="0"   color="0.04 0.19 0.52" />
+			<BarycentricMapping object1="../.." object2="VisualEyes" />
 		</Node>
 		<Node name="Visu3">
-			<Object type="OglModel" name="VisualEyebrows" fileMesh="mesh/frog_eyebrows.obj" normals="0"   color="0.44 0.43 0.00" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualEyebrows" />
+			<OglModel name="VisualEyebrows" fileMesh="mesh/frog_eyebrows.obj" normals="0"   color="0.44 0.43 0.00" />
+			<BarycentricMapping object1="../.." object2="VisualEyebrows" />
 		</Node>
 		<Node name="Visu4">
-			<Object type="OglModel" name="VisualLips" fileMesh="mesh/frog_lips.obj" normals="0"   color="0.47 0.25 0.03" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualLips" />
+			<OglModel name="VisualLips" fileMesh="mesh/frog_lips.obj" normals="0"   color="0.47 0.25 0.03" />
+			<BarycentricMapping object1="../.." object2="VisualLips" />
 		</Node>
 		<Node name="Surf">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/frog-push25.obj"/>
-			<Object type="Mesh" />
-			<Object type="MechanicalObject"   />
-			<Object type="Triangle" />
-			<Object type="Line" />
-			<Object type="Point" />
-			<Object type="BarycentricMapping" />
+			<MeshLoader name="meshLoader" filename="mesh/frog-push25.obj"/>
+			<Mesh />
+			<MechanicalObject   />
+			<Triangle />
+			<Line />
+			<Point />
+			<BarycentricMapping />
 		</Node>
 		
 	</Node>
