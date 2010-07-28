@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/component/component.h>
-#include <sofa/component/topology/PointSetTopologyEngine.h>
 
 namespace sofa
 {
@@ -44,6 +43,7 @@ class MeshLoader;
 
 namespace topology
 {
+class PointSetTopologyModifier;
 using core::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::PointID			PointID;
@@ -54,6 +54,10 @@ class SOFA_COMPONENT_CONTAINER_API PointSetTopologyContainer : public core::topo
 {
 public:
     SOFA_CLASS(PointSetTopologyContainer,core::topology::TopologyContainer);
+
+    friend class PointSetTopologyModifier;
+    typedef defaulttype::Vec3Types InitTypes;
+
 
     PointSetTopologyContainer(int nPoints = 0);
 
@@ -83,6 +87,8 @@ public:
      */
     virtual unsigned int getNumberOfElements() const;
 
+    /** \brief Returns a reference to the Data of points array container. */
+    Data<InitTypes::VecCoord> getPointDataArray() const {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
     void setNbPoints(int n);
@@ -155,8 +161,6 @@ protected:
 
     Data<unsigned int> nbPoints;
 
-private:
-    typedef defaulttype::Vec3Types InitTypes;
     Data<InitTypes::VecCoord> d_initPoints;
 };
 
