@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYCONTAINER_H
 
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyEngine.h>
 
 namespace sofa
 {
@@ -85,6 +84,9 @@ public:
     {
         return getTriangleArray();
     }
+
+    /** \brief Returns a reference to the Data of triangles array container. */
+    Data< sofa::helper::vector<Triangle> > getTriangleDataArray() const {return d_triangle;}
 
 
     /** \brief Returns the triangle corresponding to the TriangleID i.

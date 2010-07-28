@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
 
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TetrahedronSetTopologyEngine.h>
 
 namespace sofa
 {
@@ -101,6 +100,8 @@ public:
         return getTetrahedronArray();
     }
 
+    /** \brief Returns a reference to the Data of tetrahedra array container. */
+    Data< sofa::helper::vector<Tetrahedron> > getTetrahedronDataArray() const {return d_tetrahedron;}
 
     /** \brief Returns the tetrahedron corresponding to the TetraID i.
      *

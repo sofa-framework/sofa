@@ -48,7 +48,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYCONTAINER_H
 
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
-#include <sofa/component/topology/HexahedronSetTopologyEngine.h>
 #include <sofa/component/container/MeshLoader.h>
 
 namespace sofa
@@ -115,6 +114,8 @@ public:
         return getHexahedronArray();
     }
 
+    /** \brief Returns a reference to the Data of hexahedra array container. */
+    Data< sofa::helper::vector<Hexahedron> > getHexahedronDataArray() const {return d_hexahedron;}
 
     /** \brief Returns the ith Hexahedron.
      *
