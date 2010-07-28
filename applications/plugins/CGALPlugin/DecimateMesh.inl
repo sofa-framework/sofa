@@ -1,8 +1,8 @@
 /*
  * DecimateMesh.inl
  *
- *  Created on: 2nd of June 2010
- *      Author: Olivier
+ * Created on: 2nd of June 2010
+ * Author: Olivier Comas
  */
 
 #ifndef CGALPLUGIN_DECIMATEMESH_INL
@@ -31,6 +31,7 @@ DecimateMesh<DataTypes>::DecimateMesh()
     , m_outVertices(initData (&m_outVertices, "outputPoints", "New vertices after decimation") )
     , m_outTriangles(initData (&m_outTriangles, "outputTriangles", "New triangles after decimation") )
     , m_outNormals(initData (&m_outNormals, "outputNormals", "New normals after decimation") )
+    , m_writeToFile(initData (&m_writeToFile, false, "writeToFile", "Writes the decimated mesh into a file") )
 {
 }
 
@@ -72,8 +73,8 @@ void DecimateMesh<DataTypes>::update()
     geometry_to_surface(surface);
 
     // Edge collapse simplification method
-    std::cout << "Initial mesh has " << m_inVertices.getValue().size() << " vertices and " << m_inTriangles.getValue().size() << " triangles." << std::endl;
-    std::cout << "Processing mesh simplification..." << std::endl;
+    sout << "DecimateMesh: Initial mesh has " << m_inVertices.getValue().size() << " vertices and " << m_inTriangles.getValue().size() << " triangles." << sendl;
+    sout << "DecimateMesh: Processing mesh simplification..." << sendl;
     if (m_edgesTarget != NULL)
     {
         SMS::Count_stop_predicate<Surface> stop(m_edgesTarget.getValue());
@@ -96,7 +97,13 @@ void DecimateMesh<DataTypes>::update()
     // Computes normals
     computeNormals();
 
-    std::cout << "Decimated mesh has " << m_outVertices.getValue().size() << " vertices and " << m_outTriangles.getValue().size() << " triangles." << std::endl;
+    // Writes into file if necessary
+    if (m_writeToFile.getValue())
+    {
+        writeObj();
+    }
+
+    sout << "DecimateMesh: Decimated mesh has " << m_outVertices.getValue().size() << " vertices and " << m_outTriangles.getValue().size() << " triangles." << sendl;
 }
 
 template <class DataTypes>
@@ -161,20 +168,20 @@ void DecimateMesh<DataTypes>::handleEvent(sofa::core::objectmodel::Event * event
 {
 //        std::cout << "handleEvent called" << std::endl;
 
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
-    {
-        std::cout << "KeypressedEvent detected" << std::endl;
-
-        switch(ev->getKey())
-        {
-
-        case 'M':
-        case 'm':
-            std::cout << "key pressed" << std::endl;
-            writeObj();
-            break;
-        }
-    }
+//        if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+//        {
+//            std::cout << "KeypressedEvent detected" << std::endl;
+//
+//            switch(ev->getKey())
+//            {
+//
+//            case 'M':
+//            case 'm':
+//                std::cout << "key pressed" << std::endl;
+//                writeObj();
+//                break;
+//            }
+//        }
 }
 
 template <class DataTypes>
