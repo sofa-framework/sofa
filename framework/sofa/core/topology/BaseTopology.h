@@ -199,8 +199,7 @@ protected:
 
 public:
     /// Destructor
-    virtual ~TopologyContainer()
-    {}
+    virtual ~TopologyContainer();
 
     virtual void init();
 

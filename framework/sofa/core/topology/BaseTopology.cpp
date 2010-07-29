@@ -76,6 +76,14 @@ void TopologyModifier::removeItems(sofa::helper::vector< unsigned int >& /*items
 
 // TopologyContainer implementation
 
+
+TopologyContainer::~TopologyContainer()
+{
+    resetTopologyChangeList();
+    resetStateChangeList();
+    resetTopologyEngineList();
+}
+
 void TopologyContainer::init()
 {
     core::topology::BaseMeshTopology::init();
