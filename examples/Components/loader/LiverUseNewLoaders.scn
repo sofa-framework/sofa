@@ -1,11 +1,11 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
-	<!-- <Object type="Simulation" name="Simulation" /> -->
+	<!-- <Simulation name="Simulation" /> -->
 	<CollisionPipeline verbose="0" name="CollisionPipeline"/>
 	<BruteForceDetection name="N2" />
 	<CollisionResponse response="default" name="collision response"/>
 
-	<!--<Object type="CollisionGroup" />-->
+	<!--<CollisionGroup />-->
 	<Node name="Liver">
 		<EulerImplicit name="cg_odesolver" printLog="false"  />
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />

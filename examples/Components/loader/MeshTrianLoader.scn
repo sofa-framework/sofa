@@ -9,7 +9,7 @@
 	  <CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
 	  <MeshTrianLoader name="TrianLoader" filename="mesh/coeur1.trian"/>
 	  
-	  <!--	  <Object type="MeshLoader" name="meshLoader" filename="mesh/square3.msh" /> -->
+	  <!--	  <MeshLoader name="meshLoader" filename="mesh/square3.msh" /> -->
 	  <MechanicalObject name="dofs" scale="1" src="@TrianLoader" />
 	  
 	  <TriangleSetTopologyContainer name="topo" src="@TrianLoader" />
