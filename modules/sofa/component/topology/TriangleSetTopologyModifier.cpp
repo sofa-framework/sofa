@@ -640,6 +640,32 @@ void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper:
     (void)triangles;
 }
 
+
+void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
+{
+    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges()" << std::endl;
+
+    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
+
+    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_triangle).getOutputs();
+    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+    std::cout << "nbr outputs triangle: " << _outs.size() << std::endl;
+    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
+        if (topoEngine)
+            topoEngine->update();
+        else
+            std::cout <<"Error cast topologyEngine" << std::endl;
+
+        //delete topoEngine;
+    }
+
+    EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
+
+    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges() end" << std::endl;
+}
+
 } // namespace topology
 
 } // namespace component

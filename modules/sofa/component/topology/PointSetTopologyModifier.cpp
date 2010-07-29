@@ -209,19 +209,17 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_initPoints).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
-    std::cout << "nbr outputs: " << _outs.size() << std::endl;
+    std::cout << "nbr outputs points: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
         if (topoEngine)
             topoEngine->update();
         else
-            std::cout <<"Et rate!" << std::endl;
+            std::cout <<"Error cast topologyEngine" << std::endl;
 
-        delete topoEngine;
+        //delete topoEngine;
     }
-
-
     std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges() end" << std::endl;
 }
 
