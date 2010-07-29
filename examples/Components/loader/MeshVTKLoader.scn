@@ -9,7 +9,7 @@
 	  <CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
 	  <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk"/>
 
-	  <!--	  <Object type="MeshLoader" name="meshLoader" filename="mesh/square3.msh" /> -->
+	  <!--	  <MeshLoader name="meshLoader" filename="mesh/square3.msh" /> -->
 	  <MechanicalObject name="dofs" scale="1" src="@VtkLoader"  />
 	  
 	  <TriangleSetTopologyContainer name="topo" src="@VtkLoader" />
