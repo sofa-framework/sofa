@@ -57,6 +57,37 @@ void TriangleSetTopologyModifier::init()
 
 void TriangleSetTopologyModifier::reinit()
 {
+    //char* toto[256];
+    const sofa::helper::vector <unsigned int>& vertexToBeRemoved = this->list_Out.getValue();
+
+
+    sofa::helper::vector <unsigned int> trianglesToBeRemoved;
+    const sofa::helper::vector<Triangle>& listTri = this->m_container->d_triangle.getValue();
+
+    for (unsigned int i = 0; i<listTri.size(); ++i)
+    {
+        Triangle the_tri = listTri[i];
+        bool find = false;
+        for (unsigned int j = 0; j<3; ++j)
+        {
+            unsigned int the_point = the_tri[j];
+            for (unsigned int k = 0; k<vertexToBeRemoved.size(); ++k)
+                if (the_point == vertexToBeRemoved[k])
+                {
+                    find = true;
+                    break;
+                }
+
+            if (find)
+            {
+                trianglesToBeRemoved.push_back(i);
+                break;
+            }
+        }
+    }
+
+    std::cout << trianglesToBeRemoved << std::endl;
+    this->removeItems(trianglesToBeRemoved);
 }
 
 
@@ -643,27 +674,20 @@ void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper:
 
 void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 {
-    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges()" << std::endl;
-
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_triangle).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
-    std::cout << "nbr outputs triangle: " << _outs.size() << std::endl;
+
+    std::cout << "Number of outputs for triangle array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
         if (topoEngine)
             topoEngine->update();
-        else
-            std::cout <<"Error cast topologyEngine" << std::endl;
-
-        //delete topoEngine;
     }
 
     EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
-
-    std::cout << "TriangleSetTopologyModifier::propagateTopologicalEngineChanges() end" << std::endl;
 }
 
 } // namespace topology
