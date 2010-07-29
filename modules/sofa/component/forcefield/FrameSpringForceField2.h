@@ -107,7 +107,7 @@ public:
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8, Real> Vec8;
     typedef vector<double> VD;
-    typedef DualQuatStorage<N, Real> DQStorage;
+    typedef DualQuatStorage<DataTypes, Real> DQStorage;
 
     typedef struct
     {
