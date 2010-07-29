@@ -166,8 +166,6 @@ public:
 
     virtual void init()
     {
-        DataEngine::init();
-
         this->addInput(&m_changeList);
         this->addOutput(m_topologicalData);
     }
@@ -180,7 +178,6 @@ public:
     Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
     unsigned int getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
-
 
     virtual void registerTopologicalData(t_topologicalData* topologicalData) {m_topologicalData = topologicalData;}
 
