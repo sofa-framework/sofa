@@ -632,6 +632,25 @@ void HexahedronSetTopologyModifier::renumberPoints(const sofa::helper::vector<un
     m_container->checkTopology();
 }
 
+
+void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
+{
+    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
+
+    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_hexahedron).getOutputs();
+    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+
+    std::cout << "Number of outputs for hexahedra array: " << _outs.size() << std::endl;
+    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
+        if (topoEngine)
+            topoEngine->update();
+    }
+
+    QuadSetTopologyModifier::propagateTopologicalEngineChanges();
+}
+
 } // namespace topology
 
 } // namespace component

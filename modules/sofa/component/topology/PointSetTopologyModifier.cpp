@@ -197,30 +197,18 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
 void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 {
-    std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges()" << std::endl;
-
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-
-    /*sofa::helper::list<sofa::core::topology::TopologyEngine*>::const_iterator engineIt;
-    for (engineIt = m_container->beginTopologyEngine(); engineIt != m_container->endTopologyEngine(); ++engineIt)
-    {
-       (*engineIt)->update();
-    }*/
 
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_initPoints).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
-    std::cout << "nbr outputs points: " << _outs.size() << std::endl;
+
+    std::cout << "Number of outputs for points array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
+        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
         if (topoEngine)
             topoEngine->update();
-        else
-            std::cout <<"Error cast topologyEngine" << std::endl;
-
-        //delete topoEngine;
     }
-    std::cout << "PointSetTopologyModifier::propagateTopologicalEngineChanges() end" << std::endl;
 }
 
 void PointSetTopologyModifier::propagateStateChanges()

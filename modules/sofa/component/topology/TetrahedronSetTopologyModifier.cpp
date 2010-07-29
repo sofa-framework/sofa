@@ -551,27 +551,20 @@ void TetrahedronSetTopologyModifier::renumberPoints( const sofa::helper::vector<
 
 void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 {
-    std::cout << "TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()" << std::endl;
-
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
     std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_tetrahedron).getOutputs();
     std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
-    std::cout << "nbr outputs tetra: " << _outs.size() << std::endl;
+
+    std::cout << "Number of outputs for tetrahedra array: " << _outs.size() << std::endl;
     for ( it = _outs.begin(); it!=_outs.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast<sofa::core::topology::TopologyEngine*>( (*it));
         if (topoEngine)
             topoEngine->update();
-        else
-            std::cout <<"Error cast topologyEngine" << std::endl;
-
-        //delete topoEngine;
     }
 
     TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
-
-    std::cout << "TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges() end" << std::endl;
 }
 
 } // namespace topology

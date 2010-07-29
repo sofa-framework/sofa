@@ -445,6 +445,25 @@ void QuadSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigne
     m_container->checkTopology();
 }
 
+
+void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
+{
+    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
+
+    std::list <sofa::core::objectmodel::DDGNode* > _outs = (m_container->d_quad).getOutputs();
+    std::list <sofa::core::objectmodel::DDGNode* >::iterator it;
+
+    std::cout << "Number of outputs for quads array: " << _outs.size() << std::endl;
+    for ( it = _outs.begin(); it!=_outs.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
+        if (topoEngine)
+            topoEngine->update();
+    }
+
+    EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
+}
+
 } // namespace topology
 
 } // namespace component

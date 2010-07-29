@@ -51,7 +51,9 @@ class SOFA_COMPONENT_CONTAINER_API TriangleSetTopologyModifier : public EdgeSetT
 public:
     SOFA_CLASS(TriangleSetTopologyModifier,EdgeSetTopologyModifier);
 
-    TriangleSetTopologyModifier() {}
+    TriangleSetTopologyModifier()
+        : list_Out(initData(&list_Out,"list_Out","triangles with at least one null values."))
+    {}
 
     virtual ~TriangleSetTopologyModifier() {}
 
@@ -278,6 +280,7 @@ protected:
      */
     virtual void addTrianglesPostProcessing(const sofa::helper::vector <Triangle>& triangles);
 
+    Data<sofa::helper::vector <unsigned int> > list_Out;
 private:
     TriangleSetTopologyContainer*	m_container;
 };
