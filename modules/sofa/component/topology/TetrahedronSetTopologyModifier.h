@@ -72,6 +72,9 @@ public:
 
     virtual void reinit();
 
+    /// TODO: temporary duplication of topological events (commented by default)
+    virtual void propagateTopologicalEngineChanges();
+
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
     *
     * \sa addTetrahedraProcess
