@@ -162,7 +162,17 @@ public:
 
     AffineDeriv<3, real> operator - () const
     {
-        return AffineDeriv ( -vCenter, -vAffine );
+        Affine tmp;
+        tmp[0][0] = - vAffine[0][0];
+        tmp[0][1] = - vAffine[0][1];
+        tmp[0][2] = - vAffine[0][2];
+        tmp[1][0] = - vAffine[1][0];
+        tmp[1][1] = - vAffine[1][1];
+        tmp[1][2] = - vAffine[1][2];
+        tmp[2][0] = - vAffine[2][0];
+        tmp[2][1] = - vAffine[2][1];
+        tmp[2][2] = - vAffine[2][2];
+        return AffineDeriv ( -vCenter, tmp );
     }
 
     AffineDeriv<3, real> operator - ( const AffineDeriv<3, real>& a ) const

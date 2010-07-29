@@ -28,6 +28,7 @@
 #include <sofa/component/mass/FrameDiagonalMass.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/AffineTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
@@ -321,7 +322,9 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
         }
         for( unsigned int i = 0; i < xfrom.size(); ++i)
         {
-            rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, xfrom[i].getOrientation(), xfrom0[i].getOrientation());
+            Mat33 relRot;
+            computeRelRot( relRot, xfrom[i], xfrom0[i]);
+            rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, relRot);
             vecMass[i].recalc();
         }
         f_mass.endEdit();
@@ -443,15 +446,15 @@ bool FrameDiagonalMass<DataTypes, MassType>::load ( const char *filename )
 
 
 template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const VMat36& J, const VD& vol, const VD& volmass )
+void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const VMat3xIn& J, const VD& vol, const VD& volmass )
 {
     // Mass_ij=sum(d.p.Ji^TTJj)
     int j,nbP=vol.size();
-    Mat63 JT;
-    Mat66 JJT;
+    MatInx3 JT;
+    MatInxIn JJT;
 
     mass.mass = 1.0;//volmass[i] * vol[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, are directly stored in the inertia matrix)
-    Mat66& frameMass = mass.inertiaMatrix;
+    MatInxIn& frameMass = mass.inertiaMatrix;
     // Init the diagonal block 'i'
     for ( unsigned int l = 0; l < 6; l++ )
         for ( unsigned int m = 0; m < 6; m++ )
@@ -477,15 +480,25 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
     //serr << "Mass["<<i<<"]: " << vecMass[i] << sendl;
 }
 
+
 template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::rotateM( Mat66& M, const Mat66& M0, const Quat& q, const Quat& q0)
+void FrameDiagonalMass<DataTypes, MassType>::computeRelRot ( Mat33& relRot, const Coord& xi, const Coord& xi0)
 {
-    int i,j,k;
+    const Quat& q  = xi.getOrientation();
+    const Quat& q0 = xi0.getOrientation();
 
     Quat q0_inv; q0_inv[0]=-q0[0]; q0_inv[1]=-q0[1]; q0_inv[2]=-q0[2]; q0_inv[3]=q0[3];
     Quat qrel;
     qrel = q * q0_inv;
-    Mat33 R; QtoR( R, qrel);
+    QtoR( relRot, qrel);
+}
+
+
+template<class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::rotateM( Mat66& M, const Mat66& M0, const Mat33& R)
+{
+    int i,j,k;
+
     Mat66 M1; M1.fill(0);
     M.fill(0);
     for(i=0; i<3; i++) for(j=0; j<3; j++) for(k=0; k<3; k++)

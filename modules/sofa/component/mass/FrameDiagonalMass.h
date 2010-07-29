@@ -67,6 +67,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef TMassType MassType;
     enum { N=DataTypes::spatial_dimensions };
+    enum { InDerivDim=DataTypes::deriv_total_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
     //typedef defaulttype::Mat<3,1,Real> Mat31;
     typedef defaulttype::Mat<3,3,Real> Mat33;
@@ -74,10 +75,17 @@ public:
     typedef vector<Mat36> VMat36;
     typedef vector<VMat36> VVMat36;
     typedef defaulttype::Mat<3,8,Real> Mat38;
+    typedef defaulttype::Mat<3,InDerivDim,Real> Mat3xIn;
+    typedef vector<Mat3xIn> VMat3xIn;
+    typedef vector<VMat3xIn> VVMat3xIn;
     typedef defaulttype::Mat<4,4,Real> Mat44;
     //typedef defaulttype::Mat<6,1,Real> Mat61;
     typedef defaulttype::Mat<6,3,Real> Mat63;
+    typedef defaulttype::Mat<InDerivDim,3,Real> MatInx3;
+    typedef vector<MatInx3> VMatInx3;
+    typedef vector<VMatInx3> VVMatInx3;
     typedef defaulttype::Mat<6,6,Real> Mat66;
+    typedef defaulttype::Mat<InDerivDim,InDerivDim,Real> MatInxIn;
     typedef vector<Mat66> VMat66;
     typedef vector<VMat66> VVMat66;
     //typedef defaulttype::Mat<8,1,Real> Mat81;
@@ -95,7 +103,7 @@ public:
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef vector<double> VD;
-    typedef DualQuatStorage<N, Real> DQStorage;
+    typedef DualQuatStorage<DataTypes, Real> DQStorage;
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3Mass;
@@ -194,11 +202,12 @@ private:
     DQStorage* dqStorage;
     VD* vol;
     VD* volMass;
-    VVMat36* J;
-    VVMat36* J0;
+    VVMat3xIn* J;
+    VVMat3xIn* J0;
 
-    void updateMass ( MassType& mass, const VMat36& J, const VD& vol, const VD& volmass );
-    void rotateM( Mat66& M, const Mat66& M0, const Quat& q, const Quat& q0);
+    void updateMass ( MassType& mass, const VMat3xIn& J, const VD& vol, const VD& volmass );
+    void computeRelRot ( Mat33& relRot, const Coord& xi, const Coord& xi0);
+    void rotateM( Mat66& M, const Mat66& M0, const Mat33& R);
     void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);
 };
 
