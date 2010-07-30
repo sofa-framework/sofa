@@ -270,11 +270,10 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
 
             //compute the linear forces for each vertex from the torque, inspired by rigid mapping
             Vector3 torque = in[i].getVOrientation();
-            if (torque.norm() > 10e-6)
-            {
-                for (unsigned int ti = 0; ti<4; ti++)
-                    out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
-            }
+            //if (torque.norm() > 10e-6) {
+            for (unsigned int ti = 0; ti<4; ti++)
+                out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
+            //}
 
 #ifdef SOFA_IP_TRACES
             //IPTR_BARCPP_APPLYJT("torque = " << torque  << endl); //  " |"<<torqueMagnitude<<"| "<< endl); // in point = " << glPointPositions[i] << endl);
@@ -305,11 +304,10 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
 
             //compute the linear forces for each vertex from the torque, inspired by rigid mapping
             Vector3 torque = in[i].getVOrientation();
-            if (torque.norm() > 10e-6)
-            {
-                for (unsigned int ti = 0; ti<4; ti++)
-                    out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
-            }
+            //if (torque.norm() > 10e-6) {
+            for (unsigned int ti = 0; ti<4; ti++)
+                out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
+            //}
             maskFrom->insertEntry(tetra[0]);
             maskFrom->insertEntry(tetra[1]);
             maskFrom->insertEntry(tetra[2]);
@@ -347,8 +345,8 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
             Vector3 actualDRot(0,0,0);
             for (unsigned int vert = 0; vert < 4; vert++)
             {
-                if (in[tetra[i]].norm() > 10e-6)
-                    actualDRot += cross(actualTetraPosition[tetra[i]], in[tetra[i]]);
+                //if (in[tetra[vert]].norm() > 10e-6)
+                actualDRot += cross(actualTetraPosition[tetra[vert]], in[tetra[vert]]);
             }
 
             defaulttype::Rigid3Types::setDRot(out[i], actualDRot);
@@ -379,8 +377,8 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
             Vector3 actualDRot(0,0,0);
             for (unsigned int vert = 0; vert < 4; vert++)
             {
-                if (in[tetra[i]].norm() > 10e-6)
-                    actualDRot += cross(actualTetraPosition[tetra[i]], in[tetra[i]]);
+                //if (in[tetra[vert]].norm() > 10e-6)
+                actualDRot += cross(actualTetraPosition[tetra[vert]], in[tetra[vert]]);
             }
 
             defaulttype::Rigid3Types::setDRot(out[i], actualDRot);
