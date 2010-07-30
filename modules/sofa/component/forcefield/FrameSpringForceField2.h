@@ -78,26 +78,31 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MState;
 
     enum { N = DataTypes::spatial_dimensions };
+    enum { InDerivDim=DataTypes::deriv_total_size };
     typedef defaulttype::Mat<N, N, Real> Mat;
     typedef Vec<N, Real> VecN;
-    //typedef defaulttype::Mat<3,1,Real> Mat31;
     typedef defaulttype::Mat<3, 3, Real> Mat33;
     typedef defaulttype::Mat<3, 6, Real> Mat36;
     typedef vector<Mat36> VMat36;
     typedef vector<VMat36> VVMat36;
     typedef defaulttype::Mat<3, 8, Real> Mat38;
     typedef defaulttype::Mat<4, 4, Real> Mat44;
-    //typedef defaulttype::Mat<6,1,Real> Mat61;
     typedef defaulttype::Mat<6, 3, Real> Mat63;
     typedef defaulttype::Mat<6, 6, Real> Mat66;
     typedef vector<Mat66> VMat66;
     typedef vector<VMat66> VVMat66;
-    //typedef defaulttype::Mat<8,1,Real> Mat81;
+    typedef defaulttype::Mat<6,InDerivDim,Real> Mat6xIn;
+    typedef vector<Mat6xIn> VMat6xIn;
+    typedef vector<VMat6xIn> VVMat6xIn;
     typedef defaulttype::Mat<8, 3, Real> Mat83;
     typedef defaulttype::Mat<8, 6, Real> Mat86;
     typedef vector<Mat86> VMat86;
     typedef defaulttype::Mat<8, 8, Real> Mat88;
     typedef vector<Mat88> VMat88;
+    typedef defaulttype::Mat<InDerivDim,6,Real> MatInx6;
+    typedef defaulttype::Mat<InDerivDim,InDerivDim,Real> MatInxIn;
+    typedef vector<MatInxIn> VMatInxIn;
+    typedef vector<VMatInxIn> VVMatInxIn;
     typedef defaulttype::Vec<3, Real> Vec3;
     typedef vector<Vec3> VVec3;
     typedef vector<VVec3> VVVec3;
@@ -107,6 +112,8 @@ public:
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8, Real> Vec8;
     typedef vector<double> VD;
+    typedef defaulttype::Vec<InDerivDim,Real> VecIn;
+    typedef vector<vector<VecIn> > VVVecIn;
     typedef DualQuatStorage<DataTypes, Real> DQStorage;
 
     typedef struct
@@ -122,11 +129,11 @@ protected:
     Data<double> youngModulus;
     Data<double> poissonRatio;
     Mat66 H;
-    VVMat66 K;
-    VVMat66 K0;
-    VVMat66* B;
-    vector<double>* det;
-    VVVec6* ddet;
+    VVMatInxIn K;
+    VVMatInxIn K0;
+    VVMat6xIn* B;
+    VVVecIn* ddet;
+    VD* det;
     VD* vol;
 
     FrameSpringForceField2InternalData<DataTypes> data;
@@ -161,7 +168,7 @@ public:
         H.clear();
     }
 
-    void updateForce ( VecDeriv& Force, VVMat66& K, const VecCoord& xi, const VVMat66& Kref );
+    void updateForce ( VecDeriv& Force, VVMatInxIn& K, const VecCoord& xi, const VVMatInxIn& Kref );
 
     virtual double getPotentialEnergy ( const VecCoord& /*x*/ ) const
     {

@@ -77,6 +77,24 @@ int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigi
 #ifdef SOFA_DEV
 #ifndef SOFA_FLOAT
         .add< SkinningMapping< MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > > >()
+//.add< SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<Vec3dTypes> > > >()
+//.add< SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+//.add< SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
+#ifndef SOFA_DOUBLE
+//.add< SkinningMapping< MechanicalMapping< MechanicalState<Affine3fTypes>, MechanicalState<Vec3fTypes> > > >()
+//.add< SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<Vec3fTypes> > > >()
+// .add< SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+//.add< SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+//.add< SkinningMapping< MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3fTypes> > > >()
+//.add< SkinningMapping< MechanicalMapping< MechanicalState<Affine3fTypes>, MechanicalState<Vec3dTypes> > > >()
+//.add< SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<Vec3fTypes> > > >()
+//.add< SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<Vec3dTypes> > > >()
+#endif
 #endif
 #endif
         ;
@@ -131,6 +149,54 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 
 
 template <>
+void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
+// precomputeMatrices( Vec3& pmt0,Mat3xIn& J,Mat33& Atilde, const Vec3&  p0, const double&  w,Vec3& dw, const typename In::Coord& xi0)
+{
+    const VecInCoord& xfrom0 = *this->fromModel->getX0();
+    const VecCoord& xto0 = *this->toModel->getX0();
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_coefs = coefs.getValue();
+    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+
+    for ( unsigned int i=0 ; i<xto0.size(); i++ )
+    {
+        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        {
+            const int& idx=nbRefs.getValue() *i+m;
+            const int& idxReps=m_reps[idx];
+
+            const InCoord& xi0 = xfrom0[idxReps];
+            const Mat33& affine = xi0.getAffine();
+            Mat33 affineInv;
+            affineInv.invert (affine);
+
+            for(int k=0; k<3; k++)
+            {
+                for(int l=0; l<3; l++)
+                {
+                    (Atilde[i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_coefs[idxReps][i] * (affineInv)[k][l];
+                }
+            }
+
+
+            Mat3xIn Ji = J[idxReps][i];
+            Ji.fill(0);
+            double val;
+            for(int k=0; k<3; k++)
+            {
+                val = m_coefs[idxReps][i] * initPos[idx][k];
+                Ji[0][k]=val;
+                Ji[1][k+3]=val;
+                Ji[2][k+6]=val;
+                Ji[k][k+9]=m_coefs[idxReps][i];
+            }
+        }
+    }
+}
+
+
+
+template <>
 void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::apply ( Out::VecCoord& out, const In::VecCoord& in )
 {
     const vector<int>& m_reps = repartition.getValue();
@@ -138,19 +204,104 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 
     rotatedPoints.resize ( initPos.size() );
     out.resize ( initPos.size() / nbRefs.getValue() );
-    for ( unsigned int i=0 ; i<out.size(); i++ )
+
+    for ( unsigned int i = 0 ; i < out.size(); i++ )
     {
+        // Point transformation (apply)
         out[i] = Coord();
-        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
         {
-            const int& idx=nbRefs.getValue() *i+m;
-            const int& idxReps=m_reps[idx];
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
 
             // Save rotated points for applyJ/JT
             rotatedPoints[idx] = in[idxReps].getAffine() * initPos[idx];
 
             // And add each reference frames contributions to the new position out[i]
             out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_coefs[idxReps][i];
+        }
+
+        // Physical computations
+        if ( !this->computeAllMatrices.getValue()) continue;
+
+        const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
+
+        Mat33 F, FT, Finv, E;
+        F.fill ( 0 );
+        E.fill ( 0 );
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat33 cov;
+            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
+            F += cov + in[idxReps ].getAffine() * this->Atilde[idxReps];
+        }
+
+        // strain and determinant
+        this->det[i] = determinant ( F );
+        invertMatrix ( Finv, F );
+        for ( unsigned int k = 0; k < 3; ++k )
+        {
+            for ( unsigned int j = 0; j < 3; ++j )
+                for ( unsigned int l = 0; l < 3; ++l )
+                    E[k][j] += F[l][j] * F[l][k];
+
+            E[k][k] -= 1.;
+        }
+        E /= 2.; // update E=1/2(U^TU-I)
+        this->deformationTensors[i][0] = E[0][0];
+        this->deformationTensors[i][1] = E[1][1];
+        this->deformationTensors[i][2] = E[2][2];
+        this->deformationTensors[i][3] = E[0][1];
+        this->deformationTensors[i][4] = E[1][2];
+        this->deformationTensors[i][5] = E[0][2]; // column form
+
+        // update B and ddet
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            unsigned int k, l, m;
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat6xIn& Bij = this->B[idxReps][i];
+            const Mat33& At = this->Atilde[idxReps];
+            const Vec3& dWeight = dw[idxReps][i];
+
+            // stretch
+            for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) for ( l = 0; l < 3; l++ ) Bij[m][3*l+k] = F[l][m] * At[k][m];
+
+            for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) Bij[m][9+k] = dWeight [m] * F[k][m];
+
+            // shear
+            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ ) Bij[3][3*l+k] = 0.5 * ( F[l][0] * At[k][1] +
+                            F[l][1] * At[k][0] );
+
+            for ( k = 0; k < 3; k++ ) Bij[3][9+k] = 0.5 * ( dWeight [0] * F[k][1] + dWeight [1] * F[k][0] );
+
+            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
+                    Bij[4][3*l+k] = 0.5 * ( F[l][1] * At[k][2] + F[l][2] * At[k][1] );
+
+            for ( k = 0; k < 3; k++ ) Bij[4][9+k] = 0.5 * ( dWeight [1] * F[k][2] + dWeight [2] * F[k][1] );
+
+            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
+                    Bij[5][3*l+k] = 0.5 * ( F[l][2] * At[k][0] + F[l][0] * At[k][2] );
+
+            for ( k = 0; k < 3; k++ ) Bij[5][9+k] = 0.5 * ( dWeight [2] * F[k][0] + dWeight [0] * F[k][2] );
+
+            // Compute ddet
+            /*
+            for ( k = 0;k < 12;k++ ) n->ddet[j].affine[k] = 0;
+
+            for ( k = 0;k < 3;k++ ) for ( m = 0;m < 3;m++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[m+3*k] +=
+                    At[m][l] * Finv[l][k];
+
+            for ( k = 0;k < 3;k++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[9+k] += dWeight [l] * Finv[l][k];
+
+            this->ddet[idxReps][i] = this->det[i] * this->ddet[idxReps][i];
+            */
         }
     }
 }
@@ -362,51 +513,6 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
     }
 }
 
-template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
-// precomputeMatrices( Vec3& pmt0,Mat3xIn& J,Mat33& Atilde, const Vec3&  p0, const double&  w,Vec3& dw, const typename In::Coord& xi0)
-{
-    const VecInCoord& xfrom0 = *this->fromModel->getX0();
-    const VecCoord& xto0 = *this->toModel->getX0();
-    const vector<int>& m_reps = repartition.getValue();
-    const VVD& m_coefs = coefs.getValue();
-    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
-
-    for ( unsigned int i=0 ; i<xto0.size(); i++ )
-    {
-        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-        {
-            const int& idx=nbRefs.getValue() *i+m;
-            const int& idxReps=m_reps[idx];
-
-            const InCoord& xi0 = xfrom0[idxReps];
-            const Mat33& affine = xi0.getAffine();
-            Mat33 affineInv;
-            affineInv.invert (affine);
-
-            for(int k=0; k<3; k++)
-            {
-                for(int l=0; l<3; l++)
-                {
-                    (Atilde[i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_coefs[idxReps][i] * (affineInv)[k][l];
-                }
-            }
-
-
-            Mat3xIn Ji = J[idxReps][i];
-            Ji.fill(0);
-            double val;
-            for(int k=0; k<3; k++)
-            {
-                val = m_coefs[idxReps][i] * initPos[idx][k];
-                Ji[0][k]=val;
-                Ji[1][k+3]=val;
-                Ji[2][k+6]=val;
-                Ji[k][k+9]=m_coefs[idxReps][i];
-            }
-        }
-    }
-}
 
 
 

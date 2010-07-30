@@ -130,7 +130,9 @@ void FrameSpringForceField2<DataTypes>::computeK0()
     if ( nbDOF==0 ) return;
     int i,j,k,l,m;
     const int nbP=(*B)[0].size();
-    Mat66 HB,BTHB,BT;
+    Mat6xIn HB;
+    MatInx6 BT;
+    MatInxIn BTHB;
     for ( i=0; i<nbP; ++i )
         for ( j=0; j<nbDOF; ++j )
         {
@@ -245,7 +247,7 @@ void FrameSpringForceField2<DataTypes>::draw()
 
 
 template<class DataTypes>
-void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K, const VecCoord& xi, const VVMat66& Kref )
+void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMatInxIn& K, const VecCoord& xi, const VVMatInxIn& Kref )
 {
 // generalized spring joint network based on precomputed FrameHooke stiffness matrices
     VecCoord& xiref = *this->getMState()->getX0();
