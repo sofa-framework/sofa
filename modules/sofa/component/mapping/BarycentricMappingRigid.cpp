@@ -391,6 +391,68 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
 
 
 template <>
+const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>::getJ(int outSize, int inSize)
+{
+
+    //if (matrixJ && !updateJ && matrixJ->rowBSize() == (unsigned)outSize && matrixJ->colBSize() == (unsigned)inSize)
+    //    return matrixJ;
+    if (outSize > 0 && map.getValue().size() == 0)
+    {
+        std::cout << "Maps not created yet" << std::endl;
+        return NULL; // error: maps not yet created ?
+    }
+    if (!matrixJ)
+    {
+        std::cout << "Allocating matrix J" << std::endl;
+        matrixJ = new MatrixType;
+    }
+
+    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    {
+        std::cout << "Resizing to " << outSize*NOut  << " X " << inSize*NIn << std::endl;
+        matrixJ->resize(outSize*NOut, inSize*NIn);
+    }
+    else
+        matrixJ->clear();
+
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    for (unsigned int beamNode = 0; beamNode < map.getValue().size(); beamNode++)
+    {
+        //linear forces
+        const OutReal fx = ( OutReal ) map.getValue()[beamNode].baryCoords[0];
+        const OutReal fy = ( OutReal ) map.getValue()[beamNode].baryCoords[1];
+        const OutReal fz = ( OutReal ) map.getValue()[beamNode].baryCoords[2];
+
+
+        int index = map.getValue()[beamNode].in_index;
+        const topology::Tetrahedron& tetra = tetrahedra[index];
+        for (int dim = 0; dim < 3; dim++)
+        {
+            matrixJ->add(beamNode*6+dim, 3*tetra[0]+dim, 1-fx-fy-fz);
+            matrixJ->add(beamNode*6+dim, 3*tetra[1]+dim, fx);
+            matrixJ->add(beamNode*6+dim, 3*tetra[2]+dim, fy);
+            matrixJ->add(beamNode*6+dim, 3*tetra[3]+dim, fz);
+        }
+
+        for (int vert = 0; vert < 4; vert++)
+        {
+            Vec3f v = actualTetraPosition[tetra[vert]];
+            matrixJ->add(beamNode*6+3, 3*tetra[vert]+1, -v[2]);
+            matrixJ->add(beamNode*6+3, 3*tetra[vert]+2, +v[1]);
+            matrixJ->add(beamNode*6+4, 3*tetra[vert]+0, +v[2]);
+            matrixJ->add(beamNode*6+4, 3*tetra[vert]+2, -v[0]);
+            matrixJ->add(beamNode*6+5, 3*tetra[vert]+0, -v[1]);
+            matrixJ->add(beamNode*6+5, 3*tetra[vert]+1, +v[0]);
+        }
+    }
+
+    updateJ = false;
+    return matrixJ;
+} // getJ
+
+
+
+template <>
 void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>::handleTopologyChange()
 {
 
