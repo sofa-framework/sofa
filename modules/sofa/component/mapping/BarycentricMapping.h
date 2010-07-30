@@ -837,15 +837,15 @@ public:
 
     typedef typename In::VecCoord VecCoord;
 
-    typedef typename forcefield::TetrahedronFEMForceField<In> TetraFF;
+    enum { NIn = Inherit::NIn };
+    enum { NOut = Inherit::NOut };
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
 protected:
     topology::PointData< MappingData >  map;
     topology::PointData< MappingData >  mapOrient[3];
-    //defaulttype::Vec3dTypes::VecCoord initialTetraPos;
-    //VecCoord glPointPositions, glVertexPositions[4];
-    //sofa::helper::vector<sofa::defaulttype::Quat> prevTetraRotation, initTetraRotation, initRigidOrientation;
-    //TetraFF* forceField;
-    //core::objectmodel::BaseContext* mappingContext;
+
     VecCoord actualTetraPosition;
 
     topology::TetrahedronSetTopologyContainer*			_fromContainer;
@@ -853,17 +853,20 @@ protected:
     helper::ParticleMask *maskFrom;
     helper::ParticleMask *maskTo;
 
-
+    MatrixType* matrixJ;
+    bool updateJ;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
-            topology::PointSetTopologyContainer* _toTopology,
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,
             helper::ParticleMask *_maskFrom,
             helper::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom), maskTo(_maskTo)
+          maskFrom(_maskFrom),
+          maskTo(_maskTo),
+          matrixJ(NULL),
+          updateJ(true)
     {}
 
     /*  //IPB
@@ -895,6 +898,11 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize)
+    {
+        return TopologyBarycentricMapper<In,Out>::getJ(outSize, inSize);
+    }
 
     // handle topology changes in the From topology
     virtual void handleTopologyChange();
