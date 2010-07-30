@@ -49,14 +49,12 @@ using namespace core::behavior;
 // Register in the Factory
 int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
 
+// Rigid Types
 #ifndef SOFA_FLOAT
         .add< SkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
 // .add< SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-
-// Affine
-        .add< SkinningMapping< MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< SkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
@@ -71,6 +69,14 @@ int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigi
         .add< SkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
         .add< SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
+#endif
+#endif
+
+
+// Affine Types
+#ifdef SOFA_DEV
+#ifndef SOFA_FLOAT
+        .add< SkinningMapping< MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > > >()
 #endif
 #endif
         ;
@@ -99,7 +105,7 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3
 
 
 
-
+#ifdef SOFA_DEV
 ///////////////////////////////////////////////////////////////////////////////
 //                           Affine Specialization                           //
 ///////////////////////////////////////////////////////////////////////////////
@@ -356,7 +362,6 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
     }
 }
 
-#ifdef SOFA_DEV
 template <>
 void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
 // precomputeMatrices( Vec3& pmt0,Mat3xIn& J,Mat33& Atilde, const Vec3&  p0, const double&  w,Vec3& dw, const typename In::Coord& xi0)
@@ -402,7 +407,7 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
         }
     }
 }
-#endif
+
 
 
 
@@ -425,6 +430,7 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< Me
 #endif
 #endif
 
+#endif // ifdef SOFA_DEV for Affines
 
 } // namespace mapping
 
