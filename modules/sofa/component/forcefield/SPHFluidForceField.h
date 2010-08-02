@@ -155,16 +155,16 @@ protected:
     //        = -6C/h2 ( 1 - r2/h2 )2 D
     Real constGradWd(Real h) const
     {
-//		return -6*constWd(h)/(h*h);
-        return -6*constWd(h)/h;
+        return -6*constWd(h)/(h*h);
+//		return -6*constWd(h)/h;
     }
 
     Deriv gradWd(const Deriv& d, Real r_h, Real C)
     {
         Real a = (1-r_h*r_h);
         if(a<=0)return Deriv();
-//		return d*(C*a*a);
-        return d*(C*a*a)*r_h;
+        return d*(C*a*a);
+//		return d*(C*a*a)*r_h;
     }
 
 
@@ -357,14 +357,14 @@ public:
         static float h2 = h * h;
 
         float q2 = (2-q);
-        if (q<=1.5)
+        if (q<=1)
         {
             float q1 = (1-q);
             return (norm / h2) * (q2*q2*q2 - 4*q1*q1*q1);
         }
         else if (q>1.0 && q<=2.0)
         {
-            return norm / h2 * q2*q2*q2;
+            return (norm / h2) * q2*q2*q2;
         }
         else return 0.0;
     }

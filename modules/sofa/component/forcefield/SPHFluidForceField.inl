@@ -103,12 +103,19 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     const Real dt2 = dt*dt;
     const Real betaPCISPH = dt2*m2*2/(d0*d0);
     lastTime = time;
-    iterParticles.clear();
+
     //const Vec3d localg = this->getContext()->getLocalGravity();
     //Deriv g;
     //DataTypes::set ( g, localg[0], localg[1], localg[2]);
     //const Deriv mg = g * mass;
     const int n = x.size();
+
+    VecCoord vec;
+    vec.resize(n);
+    if(iterParticles.size()>1) vec = iterParticles[1];
+    else vec = x;
+    iterParticles.clear();
+    iterParticles.push_back(vec);
 
     // Precompute constants for smoothing kernels
     const Real     CWd =     constWd(h);
@@ -256,10 +263,10 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                 for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
                 {
                     const int j = it->first;
-                    //const Real r_h = it->second;
+                    const Real r_h = it->second;
                     Particle& Pj = particles[j];
-                    //				Real d = m*Wd(r_h,CWd);
-                    Real d = m*GetMonaghanKernel((x[i]-x[j]).norm(),h);
+                    Real d = m*Wd(r_h,CWd);
+                    //				Real d = m*GetMonaghanKernel((x[i]-x[j]).norm(),h);
                     density += d;
                     Pj.density += d;
 
@@ -364,9 +371,9 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
 
 
 
-        while(((max_predicted_density_variation>d0*0.05) || (iteration<4)) /*&& iteration <2000*/)
+        while(((max_predicted_density_variation>d0*0.01) || (iteration<4)) /*&& iteration <2000*/)
         {
-//printf("while((max_predicted_density_variation>d0/100)||(iteration<4)) --> ((%f>%f) || (%d<n)\n",max_predicted_density_variation,d0/100,iteration);
+            printf("while((max_predicted_density_variation>d0/100)||(iteration<4)) --> ((%f>%f) || (%d<n)\n",max_predicted_density_variation,d0*0.01,iteration);
 
 
             max_predicted_density_variation=0;
@@ -385,9 +392,10 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                 Deriv d;
                 Piv.sum_gradWd = d;
                 Piv.sum_gradWdWd =0;
-                Piv.pressure_force = f[i];
+                Piv.pressure_force =  f[i];
             }
-
+            Real distance_min=100;
+            Real force_max=0;
             for (int i=0; i<n; i++)
             {
                 PredictedParticle& Piv = PCIParticles[i];
@@ -407,7 +415,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     PredictedParticle& Pjv = PCIParticles[j];
                     const Coord& rj = Pjv.predicted_position;
                     Real r2 = (rj-ri).norm2();
-                    //Real r = sqrt(r2);
+                    Real r  = sqrt(r2);
                     Real r_h = (Real)sqrt(r2/h2);
 
                     if(r2<h2)
@@ -419,7 +427,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
 
                         Deriv vgradWd = gradWd(rj-ri,r_h,CgradWd);//value_laplacianWc;
 //						Deriv vgradWd = (rj-ri)*GetMonaghanGrad(r,h);
-
+                        if(r<distance_min)distance_min=r;
 //std::cout << "distance: " << r << " - Wd: " << vWd << " - gradWd: " << vgradWd << std::endl;
 
                         //predict density
@@ -452,7 +460,6 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                 }
                 Pi.density = Piv.predicted_density;
             }
-
             for (int i=0; i<n; i++)
             {
                 PredictedParticle& Piv = PCIParticles[i];
@@ -463,33 +470,38 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     PredictedParticle& Pjv = PCIParticles[j];
                     Particle& Pj = particles[j];
                     Real r_h = (Real)sqrt((x[i]-x[j]).norm2()/h2);
-                    //Real r = (x[i]-x[j]).norm();
-                    Deriv fpressure = gradWd(x[i]-x[j],r_h,CgradWd) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
-//					Deriv fpressure = (x[i]-x[j]) * GetMonaghanGrad(r,h) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
-// std::cout << "fpressure "<< fpressure << "="<< Pi.pressure <<"/"<< (Pi.density*Pi.density) << "+" << Pj.pressure <<"/"<< (Pj.density*Pj.density) << std::endl;
+                    Real r = (x[i]-x[j]).norm();
+//					Deriv fpressure = gradWp(x[i]-x[j],r_h,CgradWd) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
+                    //if(fpressure.norm2()>55000){fpressure = ((x[i]-x[j])/(x[i]-x[j]).norm())*55000;}
+                    Deriv fpressure = (x[i]-x[j]) * GetMonaghanGrad(r,h) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
+//std::cout << "fpressure "<< fpressure << "="<< Pi.pressure <<"/"<< (Pi.density*Pi.density) << "+" << Pj.pressure <<"/"<< (Pj.density*Pj.density) << std::endl;
                     Piv.pressure_force += fpressure;
                     Pjv.pressure_force -= fpressure;
+                    if(fpressure.norm()>force_max)force_max=fpressure.norm();
                 }
+                std::cout << "distance_min" << distance_min << " force_max:" << force_max << "distance engeandrée " << force_max*dt*dt << std::endl;
+                if(distance_min<0.65)sleep(2);
             }
 
 
 
 
-            VecCoord v;
+            VecCoord vec;
 
 
-            v.resize(n);
+            vec.resize(n);
+            if(iteration==0)iterParticles.push_back(x);
 
             for (int i=0; i<n; i++)
             {
                 PredictedParticle& Piv = PCIParticles[i];
-                v[i]= Piv.predicted_position;
+                vec[i]= Piv.predicted_position;
             }
-
+            iterParticles.push_back(vec);
 
             iteration++;
 
-            iterParticles.push_back(v);
+
 
         }
 
@@ -498,9 +510,9 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
         {
 
             PredictedParticle& Piv = PCIParticles[i];
-            //Particle& Pi = particles[i];
+            // Particle& Pi = particles[i];
 
-            std::cout << "force" << f[i] << " + " << Piv.pressure_force << "=" << f[i] +Piv.pressure_force << std::endl;
+//std::cout << "force" << f[i] << " + " << Piv.pressure_force << "=" << f[i] +Piv.pressure_force << std::endl;
             f[i] = Piv.pressure_force;
 //			f[i] += Piv.pressure_force;
 
@@ -653,23 +665,47 @@ void SPHFluidForceField<DataTypes>::draw()
         }
         helper::gl::glVertexT(x[i]);
     }
-    /*
+
+
     float red[16]   =	{0.1, 0.1, 0.1, 0.7, 0.1, 0.7, 0.7, 0.7,  0.4, 0.4, 0.4, 1.0, 0.4, 1.0, 1.0, 1.0};
     float green[16] =	{0.1, 0.1, 0.7, 0.1, 0.7, 0.7, 0.1, 0.7,  0.4, 0.4, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0};
     float blue[16]  =	{0.1, 0.7, 0.1, 0.1, 0.7, 0.1, 0.7, 0.7,  0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 1.0, 1.0};
-    for(unsigned int i=0;i<iterParticles.size();i++)
+    for(unsigned int i=0; i<iterParticles.size(); i++)
     {
-    glColor3f(red[i%16],green[i%16],blue[i%16]);
-    VecCoord v = iterParticles[i];
-    std::cout << "iteration "<<i;
-    for (unsigned int j=0;j<particles.size();j++)
+        glColor3f(red[i%16],green[i%16],blue[i%16]);
+        VecCoord v = iterParticles[i];
+//std::cout << "iteration "<<i;
+        for (unsigned int j=0; j<particles.size(); j++)
+        {
+            helper::gl::glVertexT(v[j]);
+//std::cout << "{" << v[j] << "} ";
+        }
+//std::cout << std::endl;
+
+
+        if(particles.size()==2)
+        {
+            std::cout << (v[0]-v[1]).norm() << std::endl;
+        }
+
+    }
+
+    Real distancemin=100;
+    Real distanceparcourumax=0;
+    for (unsigned int i=0; i<iterParticles.size(); i++)
     {
-    helper::gl::glVertexT(v[j]);
-    std::cout << "{" << v[j] << "} ";
+        for (unsigned int j=0; j<iterParticles.size(); j++)
+        {
+            Real distance1 = ((iterParticles[1])[i] -  (iterParticles[1])[j]).norm();
+            if(distance1<distancemin && i!=j)distancemin=distance1;
+        }
+        Real distance2 = ((iterParticles[0])[i] -  (iterParticles[1])[i]).norm();
+        if(distance2>distanceparcourumax)distanceparcourumax=distance2;
     }
-    std::cout << std::endl;
-    }
-    */
+    std::cout << "distancemin " << distancemin<< std::endl;
+    std::cout << "distanceparcourumax " << distanceparcourumax<< std::endl;
+
+
 
 
 
