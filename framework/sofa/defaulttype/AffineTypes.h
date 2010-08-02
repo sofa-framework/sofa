@@ -287,7 +287,7 @@ public:
     {
     }
 
-    void clear() { center.clear(); affine.clear(); }
+    void clear() { center.clear(); affine.identity(); }
 
     template<typename real2>
     void operator = ( const AffineCoord<3, real2>& c )

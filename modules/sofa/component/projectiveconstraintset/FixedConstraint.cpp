@@ -26,6 +26,7 @@
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/AffineTypes.h>
 
 #include <sofa/simulation/common/Node.h>
 
@@ -52,6 +53,7 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
         .add< FixedConstraint<Vec6dTypes> >()
         .add< FixedConstraint<Rigid3dTypes> >()
         .add< FixedConstraint<Rigid2dTypes> >()
+        .add< FixedConstraint<Affine3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< FixedConstraint<Vec3fTypes> >()
@@ -60,6 +62,7 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
         .add< FixedConstraint<Vec6fTypes> >()
         .add< FixedConstraint<Rigid3fTypes> >()
         .add< FixedConstraint<Rigid2fTypes> >()
+        .add< FixedConstraint<Affine3fTypes> >()
 #endif
         ;
 
