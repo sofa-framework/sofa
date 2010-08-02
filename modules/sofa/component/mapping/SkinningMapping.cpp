@@ -141,16 +141,18 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
     for ( unsigned int i = 0; i < xto.size(); i++ )
         for ( unsigned int m = 0; m < nbRefs.getValue(); m++ )
         {
+            const int& idx=nbRefs.getValue() *i+m;
+            const int& idxReps=m_reps[idx];
+
             Mat33 affineInv;
-            affineInv.invert( xfrom[m_reps[nbRefs.getValue() *i+m]].getAffine() );
-            initPos[nbRefs.getValue() *i+m] = affineInv * ( xto[i] - xfrom[m_reps[nbRefs.getValue() *i+m]].getCenter() );
+            affineInv.invert( xfrom[idxReps].getAffine() );
+            initPos[idx] = affineInv * ( xto[i] - xfrom[idxReps].getCenter() );
         }
 }
 
 
 template <>
 void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
-// precomputeMatrices( Vec3& pmt0,Mat3xIn& J,Mat33& Atilde, const Vec3&  p0, const double&  w,Vec3& dw, const typename In::Coord& xi0)
 {
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecCoord& xto0 = *this->toModel->getX0();

@@ -219,7 +219,7 @@ void FrameSpringForceField2<Affine3dTypes>::updateForce( VecDeriv& /*Force*/, VV
               }
 
          }
-
+    */
     /*
     // test momentum conservation
     df.getVOrientation().fill(0); df.getVCenter().fill(0);

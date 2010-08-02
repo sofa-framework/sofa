@@ -135,15 +135,15 @@ public:
     template<typename real2>
     void operator*= ( real2 a )
     {
-        vCenter *= a;
-        vAffine *= a;
+        vCenter *= (Real)a;
+        vAffine *= (Real)a;
     }
 
     template<typename real2>
     void operator/= ( real2 a )
     {
-        vCenter /= a;
-        vAffine /= a;
+        vCenter /= (Real)a;
+        vAffine /= (Real)a;
     }
 
     AffineDeriv<3, real> operator* ( float a ) const
