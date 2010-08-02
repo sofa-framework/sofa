@@ -33,8 +33,9 @@
 #include <math.h>
 #include <iostream>
 
-
-
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 namespace sofa
 {
@@ -452,7 +453,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     if(Piv.predicted_density_variation>max_predicted_density_variation)max_predicted_density_variation=Piv.predicted_density_variation;
 
                     //udpate pressure
-                    Real sigma = -1.0/(betaPCISPH*(-Piv.sum_gradWd*Piv.sum_gradWd-Piv.sum_gradWdWd));
+                    Real sigma = (Real)-1.0/(betaPCISPH*(-Piv.sum_gradWd*Piv.sum_gradWd-Piv.sum_gradWdWd));
                     Piv.pressure_variation = sigma*Piv.predicted_density_variation;
 
                     Pi.pressure += Piv.pressure_variation;
@@ -469,7 +470,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     const int j = it->first;
                     PredictedParticle& Pjv = PCIParticles[j];
                     Particle& Pj = particles[j];
-                    Real r_h = (Real)sqrt((x[i]-x[j]).norm2()/h2);
+                    //	Real r_h = (Real)sqrt((x[i]-x[j]).norm2()/h2);
                     Real r = (x[i]-x[j]).norm();
 //					Deriv fpressure = gradWp(x[i]-x[j],r_h,CgradWd) * ( - m2 * (Pi.pressure / (Pi.density*Pi.density) + Pj.pressure / (Pj.density*Pj.density)) );
                     //if(fpressure.norm2()>55000){fpressure = ((x[i]-x[j])/(x[i]-x[j]).norm())*55000;}
@@ -479,8 +480,17 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     Pjv.pressure_force -= fpressure;
                     if(fpressure.norm()>force_max)force_max=fpressure.norm();
                 }
+
                 std::cout << "distance_min" << distance_min << " force_max:" << force_max << "distance engeandrée " << force_max*dt*dt << std::endl;
-                if(distance_min<0.65)sleep(2);
+
+                if(distance_min < 0.65)
+                {
+#ifdef WIN32
+                    Sleep(2);
+#else
+                    sleep(2);
+#endif
+                }
             }
 
 
@@ -667,9 +677,9 @@ void SPHFluidForceField<DataTypes>::draw()
     }
 
 
-    float red[16]   =	{0.1, 0.1, 0.1, 0.7, 0.1, 0.7, 0.7, 0.7,  0.4, 0.4, 0.4, 1.0, 0.4, 1.0, 1.0, 1.0};
-    float green[16] =	{0.1, 0.1, 0.7, 0.1, 0.7, 0.7, 0.1, 0.7,  0.4, 0.4, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0};
-    float blue[16]  =	{0.1, 0.7, 0.1, 0.1, 0.7, 0.1, 0.7, 0.7,  0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 1.0, 1.0};
+    float red[16]   =	{0.1f, 0.1f, 0.1f, 0.7f, 0.1f, 0.7f, 0.7f, 0.7f,  0.4f, 0.4f, 0.4f, 1.0f, 0.4f, 1.0f, 1.0f, 1.0f};
+    float green[16] =	{0.1f, 0.1f, 0.7f, 0.1f, 0.7f, 0.7f, 0.1f, 0.7f,  0.4f, 0.4f, 1.0f, 0.4f, 1.0f, 1.0f, 0.4f, 1.0f};
+    float blue[16]  =	{0.1f, 0.7f, 0.1f, 0.1f, 0.7f, 0.1f, 0.7f, 0.7f,  0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f, 1.0f, 1.0f};
     for(unsigned int i=0; i<iterParticles.size(); i++)
     {
         glColor3f(red[i%16],green[i%16],blue[i%16]);

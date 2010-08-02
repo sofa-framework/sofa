@@ -347,11 +347,11 @@ public:
 
     Real GetMonaghanKernel(Real r,Real smoothRadius)
     {
-        float h = smoothRadius/2;
+        float h = (float)smoothRadius/2;
 
-        float q = r / h;
+        float q = (float)r / h;
 
-        static float norm = 15.0 / (14 * 3.141592);
+        static float norm = (float)15.0 / (float)(14 * 3.141592);
 
 
         static float h2 = h * h;
@@ -372,12 +372,12 @@ public:
 
     Real GetMonaghanGrad(Real r,Real smoothRadius)
     {
-        float h = smoothRadius/2;
-        float q= r / h;
+        float h = (float)smoothRadius/2;
+        float q = (float)r / h;
 
 
         static float h4 = pow(h,4);
-        static float norm = 15.0 / (14 * M_PI * h4);
+        static float norm = (float)15.0 / (float)(14 * M_PI * h4);
 
         if (q<=1.0)
         {
@@ -393,11 +393,11 @@ public:
 
     Real GetMonaghanLap(Real r, Real smoothRadius)
     {
-        float h = smoothRadius/2;
+        float h = (float)smoothRadius/2;
 
-        float q= r / h;
+        float q = (float)r / h;
 
-        static float norm = 15.0 / (14 * 3.141592);
+        static float norm = (float)15.0 / (float)(14 * 3.141592);
 
         static float h2 = h * h;
         if (q<=1.0)
