@@ -259,6 +259,7 @@ helper::vector<int> activeDevices;
 
 cl_context createContext(cl_device_type default_type)
 {
+    myopenclShowError(__FILE__, __LINE__);
     if(_context)
     {
         clReleaseContext(_context);
@@ -290,12 +291,14 @@ cl_context createContext(cl_device_type default_type)
         {
             _context = clCreateContextFromType(0, default_type, NULL, NULL, &_error);
         }
+        myopenclShowError(__FILE__, __LINE__);
     }
     else
     {
         cl_context_properties context_props[3] = { CL_CONTEXT_PLATFORM, (cl_context_properties)devices[selectedDeviceIndex].platformId, 0 };
         cl_device_id dev_ids[1] = { devices[selectedDeviceIndex].id };
         _context = clCreateContext(context_props, 1, dev_ids, NULL, NULL, &_error);
+        myopenclShowError(__FILE__, __LINE__);
     }
     myopenclShowError(__FILE__, __LINE__);
     return _context;
