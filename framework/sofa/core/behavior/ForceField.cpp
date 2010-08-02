@@ -43,6 +43,7 @@ template class SOFA_CORE_API ForceField<Vec1dTypes>;
 template class SOFA_CORE_API ForceField<Vec6dTypes>;
 template class SOFA_CORE_API ForceField<Rigid3dTypes>;
 template class SOFA_CORE_API ForceField<Rigid2dTypes>;
+template class SOFA_CORE_API ForceField<Affine3dTypes>;
 
 template class SOFA_CORE_API ForceField<Vec3fTypes>;
 template class SOFA_CORE_API ForceField<Vec2fTypes>;
@@ -50,6 +51,8 @@ template class SOFA_CORE_API ForceField<Vec1fTypes>;
 template class SOFA_CORE_API ForceField<Vec6fTypes>;
 template class SOFA_CORE_API ForceField<Rigid3fTypes>;
 template class SOFA_CORE_API ForceField<Rigid2fTypes>;
+template class SOFA_CORE_API ForceField<Affine3fTypes>;
+
 
 } // namespace behavior
 

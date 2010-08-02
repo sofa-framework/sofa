@@ -30,6 +30,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/defaulttype/AffineTypes.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -240,6 +241,7 @@ extern template class SOFA_CORE_API ForceField<defaulttype::Vec1dTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec6dTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Rigid3dTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Rigid2dTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Affine3dTypes>;
 
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec3fTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec2fTypes>;
@@ -247,6 +249,7 @@ extern template class SOFA_CORE_API ForceField<defaulttype::Vec1fTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec6fTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Rigid3fTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Rigid2fTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Affine3fTypes>;
 #endif
 
 } // namespace behavior

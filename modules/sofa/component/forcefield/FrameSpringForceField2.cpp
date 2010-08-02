@@ -77,7 +77,7 @@ template class SOFA_COMPONENT_FORCEFIELD_API FrameSpringForceField2<Rigid3dTypes
 
 // TODO
 template<>
-void FrameSpringForceField2<Affine3dTypes>::addDForce(VecDeriv& df, const VecDeriv& dx )
+void FrameSpringForceField2<Affine3dTypes>::addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/ )
 {
     /*
     df.resize ( dx.size() );
@@ -109,7 +109,7 @@ void FrameSpringForceField2<Affine3dTypes>::addDForce(VecDeriv& df, const VecDer
 
 // TODO
 template<>
-void FrameSpringForceField2<Affine3dTypes>::updateForce( VecDeriv& Force, VVMatInxIn& K, const VecCoord& xi, const VVMatInxIn& Kref )
+void FrameSpringForceField2<Affine3dTypes>::updateForce( VecDeriv& /*Force*/, VVMatInxIn& /*K*/, const VecCoord& /*xi*/, const VVMatInxIn& /*Kref*/ )
 {
     /*
     // generalized spring joint network based on precomputed FrameHooke stiffness matrices
@@ -235,7 +235,7 @@ void FrameSpringForceField2<Affine3dTypes>::updateForce( VecDeriv& Force, VVMatI
 
 // TODO
 template<>
-void FrameSpringForceField2<Affine3dTypes>::PostoSpeed( Deriv& Omega, const Coord& xi, const Coord& xi2)
+void FrameSpringForceField2<Affine3dTypes>::PostoSpeed( Deriv& /*Omega*/, const Coord& /*xi*/, const Coord& /*xi2*/)
 {
     /*
     // X2=Omega*X -> Q(Omega/2)=X2*X^-1
