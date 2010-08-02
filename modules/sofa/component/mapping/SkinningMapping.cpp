@@ -158,6 +158,31 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
     const VVD& m_coefs = coefs.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
 
+    // vol and volMass
+    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
+    this->getContext()->get( hexaContainer);
+    double volume = this->voxelVolume.getValue();
+    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    const VecCoord& xto = *this->toModel->getX();
+    this->vol.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
+    this->volMass.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
+
+    // Resize matrices
+    this->det.resize(xto.size());
+    this->deformationTensors.resize(xto.size());
+    this->B.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->B[i].resize(xto.size());
+
+    // Atilde and J
+    Atilde.resize(xto0.size());
+    J0.resize(xfrom0.size());
+    J.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        J[i].resize(xto0.size());
+
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
     {
         for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
@@ -204,6 +229,16 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 
     rotatedPoints.resize ( initPos.size() );
     out.resize ( initPos.size() / nbRefs.getValue() );
+
+    // Resize matrices
+    if ( this->computeAllMatrices.getValue())
+    {
+        this->det.resize(out.size());
+        this->deformationTensors.resize(out.size());
+        this->B.resize(in.size());
+        for(unsigned int i = 0; i < in.size(); ++i)
+            this->B[i].resize(out.size());
+    }
 
     for ( unsigned int i = 0 ; i < out.size(); i++ )
     {
@@ -326,22 +361,22 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
             for ( unsigned int j=0 ; j<in.size(); j++ )
             {
                 Vec12 speed;
-                speed[0]  = in[i][0];
-                speed[1]  = in[i][1];
-                speed[2]  = in[i][2];
-                speed[3]  = in[i][3];
-                speed[4]  = in[i][4];
-                speed[5]  = in[i][5];
-                speed[6]  = in[i][6];
-                speed[7]  = in[i][7];
-                speed[8]  = in[i][8];
-                speed[9]  = in[i][9];
-                speed[10] = in[i][10];
-                speed[11] = in[i][11];
+                speed[0]  = in[j][0];
+                speed[1]  = in[j][1];
+                speed[2]  = in[j][2];
+                speed[3]  = in[j][3];
+                speed[4]  = in[j][4];
+                speed[5]  = in[j][5];
+                speed[6]  = in[j][6];
+                speed[7]  = in[j][7];
+                speed[8]  = in[j][8];
+                speed[9]  = in[j][9];
+                speed[10] = in[j][10];
+                speed[11] = in[j][11];
 
                 Vec3 f = ( this->J[j][i] * speed );
 
-                out[j] += Deriv ( f[0], f[1], f[2] );
+                out[i] += Deriv ( f[0], f[1], f[2] );
             }
         }
     }
@@ -358,22 +393,22 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
             for ( unsigned int j=0 ; j<in.size(); j++ )
             {
                 Vec12 speed;
-                speed[0]  = in[i][0];
-                speed[1]  = in[i][1];
-                speed[2]  = in[i][2];
-                speed[3]  = in[i][3];
-                speed[4]  = in[i][4];
-                speed[5]  = in[i][5];
-                speed[6]  = in[i][6];
-                speed[7]  = in[i][7];
-                speed[8]  = in[i][8];
-                speed[9]  = in[i][9];
-                speed[10] = in[i][10];
-                speed[11] = in[i][11];
+                speed[0]  = in[j][0];
+                speed[1]  = in[j][1];
+                speed[2]  = in[j][2];
+                speed[3]  = in[j][3];
+                speed[4]  = in[j][4];
+                speed[5]  = in[j][5];
+                speed[6]  = in[j][6];
+                speed[7]  = in[j][7];
+                speed[8]  = in[j][8];
+                speed[9]  = in[j][9];
+                speed[10] = in[j][10];
+                speed[11] = in[j][11];
 
                 Vec3 f = ( this->J[j][i] * speed );
 
-                out[j] += Deriv ( f[0], f[1], f[2] );
+                out[i] += Deriv ( f[0], f[1], f[2] );
             }
         }
     }
