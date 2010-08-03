@@ -56,6 +56,12 @@ public:
         return m_data.empty();
     }
 
+    /// @return the number of rows
+    unsigned int size() const
+    {
+        return m_data.size();
+    }
+
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const MapMapSparseMatrix<T>& sc)
     {
