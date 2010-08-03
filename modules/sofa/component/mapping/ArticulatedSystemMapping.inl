@@ -510,106 +510,188 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
 }
 
 
-
 template <class BasicMapping>
-void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outRoot )
+void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, typename InRoot::MatrixDeriv* outRoot )
 {
-//	sout << "ApplyJT const  - size in = " << in.size() << sendl;
-
     OutVecCoord& xto = *this->toModel->getX();
 
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
-
-
-
-
-    //out.resize(in.size());
-    unsigned int sizeOut = out.size();
-    out.resize(sizeOut+in.size());
-
-    unsigned int sizeOutRoot =0;
-
-    if (rootModel!=NULL)
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        sizeOutRoot = outRoot->size();
-        outRoot->resize(in.size() + sizeOutRoot); // the constraints are all transmitted to the root
-    }
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-
-    for(unsigned int i=0; i<in.size(); i++)
-    {
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
         {
-            int childIndex = itOut->first;
-            const OutDeriv valueConst = (OutDeriv) itOut->second;
-            Vec<3,OutReal> C = xto[childIndex].getCenter();
-            vector<ArticulatedHierarchyContainer::ArticulationCenter*> ACList = ahc->getAcendantList(childIndex);
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
 
-            vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = ACList.begin();
-            vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = ACList.end();
+            //Hack to get a RowIterator, withtout default constructor
+            typename InRoot::MatrixDeriv temp;
+            typename Out::MatrixDeriv::RowIterator rootRowIt = temp.end();
+            typename Out::MatrixDeriv::RowIterator rootRowItEnd = temp.end();
 
-
-            int ii=0;
-
-            for (; ac != acEnd; ac++)
+            if(rootModel && outRoot)
             {
-
-                vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
-                vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
-                vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
-
-
-                for (; a != aEnd; a++)
-                {
-                    int ind=	(*a)->articulationIndex.getValue();
-                    InDeriv data;
-
-                    Vec<3,OutReal> axis = ArticulationAxis[ind]; // xto[parent].getOrientation().rotate((*a)->axis.getValue());
-                    Vec<3,Real> A = ArticulationPos[ind] ; // Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
-                    OutDeriv T;
-                    T.getVCenter() = valueConst.getVCenter();
-                    T.getVOrientation() = valueConst.getVOrientation() + cross(C - A, valueConst.getVCenter());
-
-
-
-                    if ((*a)->rotation.getValue())
-                    {
-                        data = (Real)dot(axis, T.getVOrientation());
-                    }
-                    if ((*a)->translation.getValue())
-                    {
-                        data = (Real)dot(axis, T.getVCenter());
-                        //printf("\n weightedNormalArticulation : %f", constArt.data);
-                    }
-                    out[sizeOut+i].add(ind,data);
-                    ii++;
-                }
+                rootRowIt = outRoot->end();
+                rootRowItEnd = outRoot->end();
             }
 
-            if (rootModel!=NULL)
+            while (colIt != colItEnd)
             {
+                int childIndex = colIt.index();
+                const OutDeriv valueConst = colIt.val();
 
-                unsigned int indexT = rootModel->getSize()-1; // On applique sur le dernier noeud
-                Vec<3,OutReal> posRoot = xto[indexT].getCenter();
+                Vec<3,OutReal> C = xto[childIndex].getCenter();
+                vector< ArticulatedHierarchyContainer::ArticulationCenter* > ACList = ahc->getAcendantList(childIndex);
 
-                OutDeriv T;
-                T.getVCenter() = valueConst.getVCenter();
-                T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
+                vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator ac = ACList.begin();
+                vector< ArticulatedHierarchyContainer::ArticulationCenter* >::const_iterator acEnd = ACList.end();
 
-                (*outRoot)[sizeOutRoot+i].add(indexT,T);
-                //std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
-                //(*outRoot)[i].push_back(constraintT);
-                //	sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;
+                for (; ac != acEnd; ac++)
+                {
+                    vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
+
+                    vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator a = articulations.begin();
+                    vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* >::const_iterator aEnd = articulations.end();
+
+                    for (; a != aEnd; a++)
+                    {
+                        int ind = (*a)->articulationIndex.getValue();
+                        InDeriv data;
+
+                        Vec< 3, OutReal > axis = ArticulationAxis[ind]; // xto[parent].getOrientation().rotate((*a)->axis.getValue());
+                        Vec< 3, Real > A = ArticulationPos[ind] ; // Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
+
+                        OutDeriv T;
+                        T.getVCenter() = valueConst.getVCenter();
+                        T.getVOrientation() = valueConst.getVOrientation() + cross(C - A, valueConst.getVCenter());
+
+                        if ((*a)->rotation.getValue())
+                        {
+                            data = (Real)dot(axis, T.getVOrientation());
+                        }
+
+                        if ((*a)->translation.getValue())
+                        {
+                            data = (Real)dot(axis, T.getVCenter());
+                        }
+
+                        o.addCol(ind, data);
+                    }
+                }
+
+                if(rootModel && outRoot)
+                {
+                    unsigned int indexT = rootModel->getSize() - 1; // On applique sur le dernier noeud
+                    Vec<3,OutReal> posRoot = xto[indexT].getCenter();
+
+                    OutDeriv T;
+                    T.getVCenter() = valueConst.getVCenter();
+                    T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
+
+                    if (rootRowIt == rootRowItEnd)
+                        rootRowIt = (*outRoot).newLine();
+
+                    rootRowIt.addCol(indexT, T);
+                }
+
+                ++colIt;
             }
         }
     }
-
-//	sout<<"End ApplyJT const"<<sendl;
-
 }
+
+
+
+//template <class BasicMapping>
+//void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, typename InRoot::MatrixDeriv* outRoot )
+//{
+////	sout << "ApplyJT const  - size in = " << in.size() << sendl;
+//
+//	OutVecCoord& xto = *this->toModel->getX();
+//
+//	//out.resize(in.size());
+//	unsigned int sizeOut = out.size();
+//	out.resize(sizeOut+in.size());
+//
+//	unsigned int sizeOutRoot =0;
+//
+//	if (rootModel!=NULL)
+//	{
+//		sizeOutRoot = outRoot->size();
+//		outRoot->resize(in.size() + sizeOutRoot); // the constraints are all transmitted to the root
+//	}
+//
+//	for(unsigned int i=0; i<in.size(); i++)
+//	{
+//		OutConstraintIterator itOut;
+//		std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+//
+//		for (itOut=iter.first;itOut!=iter.second;itOut++)
+//		{
+//			int childIndex = itOut->first;
+//			const OutDeriv valueConst = (OutDeriv) itOut->second;
+//			Vec<3,OutReal> C = xto[childIndex].getCenter();
+//			vector<ArticulatedHierarchyContainer::ArticulationCenter*> ACList = ahc->getAcendantList(childIndex);
+//
+//			vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = ACList.begin();
+//			vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = ACList.end();
+//
+//			int ii=0;
+//
+//			for (; ac != acEnd; ac++)
+//			{
+//				vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
+//				vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
+//				vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
+//
+//				for (; a != aEnd; a++)
+//					{
+//					int ind=	(*a)->articulationIndex.getValue();
+//					InDeriv data;
+//
+//					Vec<3,OutReal> axis = ArticulationAxis[ind]; // xto[parent].getOrientation().rotate((*a)->axis.getValue());
+//					Vec<3,Real> A = ArticulationPos[ind] ; // Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
+//					OutDeriv T;
+//					T.getVCenter() = valueConst.getVCenter();
+//					T.getVOrientation() = valueConst.getVOrientation() + cross(C - A, valueConst.getVCenter());
+//
+//
+//					if ((*a)->rotation.getValue())
+//					{
+//						data = (Real)dot(axis, T.getVOrientation());
+//					}
+//					if ((*a)->translation.getValue())
+//					{
+//						data = (Real)dot(axis, T.getVCenter());
+//						//printf("\n weightedNormalArticulation : %f", constArt.data);
+//					}
+//					out[sizeOut+i].add(ind,data);
+//					ii++;
+//				}
+//			}
+//
+//			if (rootModel!=NULL)
+//			{
+//				unsigned int indexT = rootModel->getSize()-1; // On applique sur le dernier noeud
+//				Vec<3,OutReal> posRoot = xto[indexT].getCenter();
+//
+//				OutDeriv T;
+//				T.getVCenter() = valueConst.getVCenter();
+//				T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
+//
+//				(*outRoot)[sizeOutRoot+i].add(indexT,T);
+//				//std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
+//				//(*outRoot)[i].push_back(constraintT);
+//			//	sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;
+//			}
+//		}
+//	}
+//
+////	sout<<"End ApplyJT const"<<sendl;
+//}
 
 
 template <class BasicMapping>
@@ -723,19 +805,19 @@ void ArticulatedSystemMapping<BasicMapping>::accumulateConstraint()
         propagateX();
         applyJT(*this->fromModel->getC(), *this->toModel->getC(), (rootModel==NULL ? NULL : rootModel->getC()));
 
-        // Accumulate contacts indices through the MechanicalMapping
-        std::vector<unsigned int>::iterator it = this->toModel->getConstraintId().begin();
-        std::vector<unsigned int>::iterator itEnd = this->toModel->getConstraintId().end();
+        //// Accumulate contacts indices through the MechanicalMapping
+        //std::vector<unsigned int>::iterator it = this->toModel->getConstraintId().begin();
+        //std::vector<unsigned int>::iterator itEnd = this->toModel->getConstraintId().end();
 
-        while (it != itEnd)
-        {
-            this->fromModel->setConstraintId(*it);
-            // in case of a "multi-mapping" (the articulation system is placed on a  simulated object)
-            // the constraints are transmitted to the rootModle (the <rigidtype> object which is the root of the articulated system)
-            if (rootModel!=NULL)
-                rootModel->setConstraintId(*it);
-            it++;
-        }
+        //while (it != itEnd)
+        //{
+        //	this->fromModel->setConstraintId(*it);
+        //	// in case of a "multi-mapping" (the articulation system is placed on a  simulated object)
+        //	// the constraints are transmitted to the rootModle (the <rigidtype> object which is the root of the articulated system)
+        //	if (rootModel!=NULL)
+        //		rootModel->setConstraintId(*it);
+        //	it++;
+        //}
     }
 }
 

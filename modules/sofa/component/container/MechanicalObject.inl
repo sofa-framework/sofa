@@ -168,7 +168,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecCoord(m_freePosId.index, &xfree);
     setVecDeriv(m_freeVelId.index, &vfree);
     setVecCoord(m_x0Id.index, &x0);
-    setVecConst(m_constraintId.index, &c);
+    setVecMatrixDeriv(m_constraintId.index, &c);
 
     // Set f to internalForces.
     m_forceId = m_internalForcesId;
@@ -1713,14 +1713,14 @@ void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, Data< VecDeriv
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecConst(unsigned int index, Data < VecConst > *v)
+void MechanicalObject<DataTypes>::setVecMatrixDeriv(unsigned int index, Data < MatrixDeriv > *m)
 {
-    if (index >= vectorsConst.size())
+    if (index >= vectorsMatrixDeriv.size())
     {
-        vectorsConst.resize(index + 1, 0);
+        vectorsMatrixDeriv.resize(index + 1, 0);
     }
 
-    vectorsConst[index] = v;
+    vectorsMatrixDeriv[index] = m;
 }
 
 
@@ -1813,27 +1813,27 @@ const typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes
 }
 
 template<class DataTypes>
-typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index)
+typename MechanicalObject<DataTypes>::MatrixDeriv* MechanicalObject<DataTypes>::getMatrixDeriv(unsigned int index)
 {
-    if (index >= vectorsConst.size())
-        vectorsConst.resize(index + 1, 0);
+    if (index >= vectorsMatrixDeriv.size())
+        vectorsMatrixDeriv.resize(index + 1, 0);
 
-    if (vectorsConst[index] == NULL)
-        vectorsConst[index] = new Data< VecConst >;
+    if (vectorsMatrixDeriv[index] == NULL)
+        vectorsMatrixDeriv[index] = new Data< MatrixDeriv >;
 
-    return vectorsConst[index]->beginEdit();
+    return vectorsMatrixDeriv[index]->beginEdit();
 }
 
 template<class DataTypes>
-const typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index) const
+const typename MechanicalObject<DataTypes>::MatrixDeriv* MechanicalObject<DataTypes>::getMatrixDeriv(unsigned int index) const
 {
-    if (index >= vectorsConst.size())
+    if (index >= vectorsMatrixDeriv.size())
         return NULL;
 
-    if (vectorsConst[index] == NULL)
+    if (vectorsMatrixDeriv[index] == NULL)
         return NULL;
 
-    return &(vectorsConst[index]->getValue());
+    return &(vectorsMatrixDeriv[index]->getValue());
 }
 
 template <class DataTypes>
@@ -2697,10 +2697,16 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint()
 {
     //	std::cout << "resetConstraint()\n";
-    VecConst& c= *getC();
-    c.clear();
+    // VecConst& c= *getC();
+    // c.clear();
 
-    constraintId.clear();
+    MatrixDeriv *c = getC();
+    if (c != NULL)
+    {
+        c->clear();
+    }
+
+//	constraintId.clear();
 }
 
 
@@ -2727,6 +2733,77 @@ void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vecto
     for (unsigned int i = 0; i < constraintId.size(); ++i)
         constraintId[i] = renumbering[constraintId[i]];
 }
+//
+//template <class DataTypes>
+//std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
+//{
+//	const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
+//	assert( indices.size() > 0 );
+//	assert( dimensionDeriv > 0 );
+//
+//	// simple column/block map
+//
+//	typedef sofa::component::linearsolver::SparseMatrix<SReal> matrix_t;
+//	// typedef sofa::component::linearsolver::FullMatrix<SReal> matrix_t;
+//
+//	typedef std::map<unsigned int, matrix_t* > blocks_t;
+//	blocks_t blocks;
+//
+//	// for all row indices
+//	typedef std::list<unsigned int> indices_t;
+//
+//	unsigned int block_row = 0;
+//	for(indices_t::const_iterator rowIt = indices.begin(); rowIt != indices.end(); ++rowIt, ++block_row)
+//	{
+//		unsigned int row = getIdxConstraintFromId(*rowIt);
+//
+//		// for all sparse data in the row
+//		assert( row < c.getValue().size() );
+//		std::pair< ConstraintIterator, ConstraintIterator > range = c.getValue()[row].data();
+//		ConstraintIterator chunk = range.first, last = range.second;
+//		for( ; chunk != last; ++chunk)
+//		{
+//			const unsigned int column = chunk->first;
+//
+//			// do we already have a block for this column ?
+//			if( blocks.find( column ) == blocks.end() )
+//			{
+//				// nope: let's create it
+//				matrix_t* mat = new matrix_t(indices.size(), dimensionDeriv);
+//				blocks[column] = mat;
+//
+//				// for(unsigned int i = 0; i < mat->rowSize(); ++i) {
+//				//   for(unsigned int j = 0; j < mat->colSize(); ++j) {
+//				//     mat->set(i, j, 0);
+//				//   }
+//				// }
+//
+//			}
+//
+//			// now it's created no matter what \o/
+//			matrix_t& block = *blocks[column];
+//
+//			// fill the right line of the block
+//			const Deriv curValue = chunk->value();
+//
+//			for (unsigned int i = 0; i < dimensionDeriv; ++i)
+//			{
+//				SReal value;
+//				defaulttype::DataTypeInfo< Deriv >::getValue(curValue, i, value);
+//				block.set(block_row, i, value);
+//			}
+//		}
+//	}
+//
+//	// put all blocks in a list and we're done
+//	std::list<ConstraintBlock> res;
+//	for(blocks_t::const_iterator b = blocks.begin(); b != blocks.end(); ++b)
+//	{
+//		res.push_back( ConstraintBlock( b->first, b->second ) );
+//	}
+//
+//	return res;
+//}
 
 template <class DataTypes>
 std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
@@ -2746,43 +2823,40 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
     // for all row indices
     typedef std::list<unsigned int> indices_t;
 
+    const MatrixDeriv& constraints = c.getValue();
+
     unsigned int block_row = 0;
-    for(indices_t::const_iterator rowIt = indices.begin(); rowIt != indices.end(); ++rowIt, ++block_row)
+    for (indices_t::const_iterator rowIt = indices.begin(); rowIt != indices.end(); ++rowIt, ++block_row)
     {
-        unsigned int row = getIdxConstraintFromId(*rowIt);
+        MatrixDerivRowConstIterator rowIterator = constraints.readLine(*rowIt);
 
-        // for all sparse data in the row
-        assert( row < c.getValue().size() );
-        std::pair< ConstraintIterator, ConstraintIterator > range = c.getValue()[row].data();
-        ConstraintIterator chunk = range.first, last = range.second;
-        for( ; chunk != last; ++chunk)
+        if (rowIterator != constraints.end())
         {
-            const unsigned int column = chunk->first;
+            MatrixDerivColConstIterator chunk = rowIterator.begin();
+            MatrixDerivColConstIterator chunkEnd = rowIterator.end();
 
-            // do we already have a block for this column ?
-            if( blocks.find( column ) == blocks.end() )
+            for( ; chunk != chunkEnd ; chunk++)
             {
-                // nope: let's create it
-                matrix_t* mat = new matrix_t(indices.size(), dimensionDeriv);
-                blocks[column] = mat;
+                const unsigned int column = chunk.index();
+                if( blocks.find( column ) == blocks.end() )
+                {
+                    // nope: let's create it
+                    matrix_t* mat = new matrix_t(indices.size(), dimensionDeriv);
+                    blocks[column] = mat;
+                }
 
-                // for(unsigned int i = 0; i < mat->rowSize(); ++i) {
-                //   for(unsigned int j = 0; j < mat->colSize(); ++j) {
-                //     mat->set(i, j, 0);
-                //   }
-                // }
+                // now it's created no matter what \o/
+                matrix_t& block = *blocks[column];
 
-            }
+                // fill the right line of the block
+                const Deriv curValue = chunk.val();
 
-            // now it's created no matter what \o/
-            matrix_t& block = *blocks[column];
-
-            // fill the right line of the block
-            for (unsigned int i = 0; i < dimensionDeriv; ++i)
-            {
-                SReal value;
-                defaulttype::DataTypeInfo< Deriv >::getValue(chunk->second, i, value); // somebody should pay for this
-                block.set(block_row, i, value);
+                for (unsigned int i = 0; i < dimensionDeriv; ++i)
+                {
+                    SReal value;
+                    defaulttype::DataTypeInfo< Deriv >::getValue(curValue, i, value);
+                    block.set(block_row, i, value);
+                }
             }
         }
     }
@@ -2797,24 +2871,66 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
     return res;
 }
 
+//template <class DataTypes>
+//SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id)
+//{
+//	SReal result = 0;
+//    if (std::find(constraintId.begin(), constraintId.end(), line) == constraintId.end()) return 0;
+//
+//    SparseVecDeriv &value = (*c.beginEdit())[getIdxConstraintFromId(line)];
+//
+//	VecDeriv *data = 0;
+//
+//	//Maybe we should extend this to restvelocity
+//	if (id == VecId::velocity())
+//	{
+//		data = v.beginEdit();
+//	}
+//	else if (id == VecId::dx())
+//	{
+//		data = dx.beginEdit();
+//	}
+//	else
+//	{
+//		this->serr << "getConstraintJacobianTimesVecDeriv " << "NOT IMPLEMENTED for " << id.getName() << this->sendl;
+//		return 0;
+//	}
+//
+//	std::pair< SparseVecDerivIterator, SparseVecDerivIterator > range = value.data();
+//
+//	for (SparseVecDerivIterator it = range.first; it != range.second; ++it)
+//	{
+//		result += it->second * (*data)[it->first];
+//	}
+//
+//	c.endEdit();
+//
+//	return result;
+//}
+
+
 template <class DataTypes>
-SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id)
+SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned int line, VecId id)
 {
     SReal result = 0;
-    if (std::find(constraintId.begin(), constraintId.end(), line) == constraintId.end()) return 0;
 
-    SparseVecDeriv &value = (*c.beginEdit())[getIdxConstraintFromId(line)];
+    const MatrixDeriv& constraints = c.getValue();
 
-    VecDeriv *data = 0;
+    MatrixDerivRowConstIterator rowIterator = constraints.readLine(line);
 
-    //Maybe we should extend this to restvelocity
+    if (rowIterator == constraints.end())
+        return 0;
+
+    const VecDeriv *data = 0;
+
+    // Maybe we should extend this to restvelocity
     if (id == VecId::velocity())
     {
-        data = v.beginEdit();
+        data = &v.getValue();
     }
     else if (id == VecId::dx())
     {
-        data = dx.beginEdit();
+        data = &dx.getValue();
     }
     else
     {
@@ -2822,14 +2938,14 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned 
         return 0;
     }
 
-    std::pair< SparseVecDerivIterator, SparseVecDerivIterator > range = value.data();
+    MatrixDerivColConstIterator it = rowIterator.begin();
+    MatrixDerivColConstIterator itEnd = rowIterator.end();
 
-    for (SparseVecDerivIterator it = range.first; it != range.second; ++it)
+    while (it != itEnd)
     {
-        result += it->second * (*data)[it->first];
+        result += it.val() * (*data)[it.index()];
+        ++it;
     }
-
-    c.endEdit();
 
     return result;
 }
@@ -3570,22 +3686,22 @@ bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, doub
         return false;
 }
 
-
-template <class DataTypes>
-unsigned int  MechanicalObject<DataTypes>::getIdxConstraintFromId(unsigned int id) const
-{
-    const unsigned int constraintIdSize = constraintId.size();
-
-    for (unsigned int i = 0; i < constraintIdSize; ++i)
-    {
-        if (constraintId[i] == id)
-            return i;
-    }
-
-    serr << "Constraint Equation " << id << " Was not found!" << sendl;
-
-    return 0;
-}
+//
+//template <class DataTypes>
+//unsigned int  MechanicalObject<DataTypes>::getIdxConstraintFromId(unsigned int id) const
+//{
+//	const unsigned int constraintIdSize = constraintId.size();
+//
+//	for (unsigned int i = 0; i < constraintIdSize; ++i)
+//	{
+//		if (constraintId[i] == id)
+//			return i;
+//	}
+//
+//	serr << "Constraint Equation " << id << " Was not found!" << sendl;
+//
+//	return 0;
+//}
 
 
 } // namespace container

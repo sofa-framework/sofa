@@ -58,13 +58,6 @@ template class LinearSolverConstraintCorrection<Vec3fTypes>;
 template class LinearSolverConstraintCorrection<Vec1fTypes>;
 template class LinearSolverConstraintCorrection<Rigid3fTypes>;
 #endif
-//template class LinearSolverConstraintCorrection<Vec3fTypes>;
-//template class LinearSolverConstraintCorrection<Vec2dTypes>;
-//template class LinearSolverConstraintCorrection<Vec2fTypes>;
-//template class LinearSolverConstraintCorrection<Vec1fTypes>;
-//template class LinearSolverConstraintCorrection<Rigid3fTypes>;
-//template class LinearSolverConstraintCorrection<Rigid2dTypes>;
-//template class LinearSolverConstraintCorrection<Rigid2fTypes>;
 
 
 } // namespace collision

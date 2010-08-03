@@ -204,7 +204,7 @@ void PartialFixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
     projectResponseT(res);
 }
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectResponse(SparseVecDeriv& res)
+void PartialFixedConstraint<DataTypes>::projectResponse(MatrixDerivRowType& res)
 {
     projectResponseT(res);
 }

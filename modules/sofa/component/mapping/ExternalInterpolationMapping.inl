@@ -168,10 +168,51 @@ void ExternalInterpolationMapping<BaseMapping>::applyJT( typename In::VecDeriv& 
 }
 
 template <class BaseMapping>
-void ExternalInterpolationMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void ExternalInterpolationMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
+    using sofa::helper::vector;
+
     if(doNotMap)
         return;
+
+    const vector< vector< unsigned int > > table_indices = f_interpolationIndices.getValue();
+    const vector< vector< Real > > table_values = f_interpolationValues.getValue();
+
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    unsigned int i = 0;
+
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
+        {
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            while (colIt != colItEnd)
+            {
+                const unsigned int indexIn = colIt.index();
+                const OutDeriv data = colIt.val();
+
+                const unsigned int tIndicesSize = table_indices[i].size();
+
+                for(unsigned int j = 0; j < tIndicesSize; j++)
+                {
+                    o.addCol(table_indices[indexIn][j] , data * table_values[indexIn][j] );
+                }
+
+                ++colIt;
+            }
+        }
+
+        i++;
+    }
+
+    /*if(doNotMap)
+    	return;
 
     const sofa::helper::vector<sofa::helper::vector< unsigned int > > table_indices = f_interpolationIndices.getValue();
     const sofa::helper::vector<sofa::helper::vector< Real > > table_values = f_interpolationValues.getValue();
@@ -185,20 +226,17 @@ void ExternalInterpolationMapping<BaseMapping>::applyJT( typename In::VecConst& 
         OutConstraintIterator itOut;
         std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        for (itOut=iter.first;itOut!=iter.second;itOut++)
         {
             unsigned int indexIn = itOut->first;
             OutDeriv data = (OutDeriv) itOut->second;
 
-            for(unsigned int j = 0; j < table_indices[i].size(); j++)
-            {
+            for(unsigned int j = 0; j < table_indices[i].size();j++){
 
                 out[i+offset].add( table_indices[indexIn][j] , data*table_values[indexIn][j] );
             }
         }
-    }
-
-
+    }*/
 }
 
 } // namespace mapping

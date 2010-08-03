@@ -57,8 +57,6 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename Coord::value_type Real;
@@ -119,7 +117,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void computeAccFromMapping(  typename Out::VecDeriv& acc_out, const typename In::VecDeriv& v_in, const typename In::VecDeriv& acc_in);
 

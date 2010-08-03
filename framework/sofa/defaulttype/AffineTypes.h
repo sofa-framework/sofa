@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/SparseConstraintTypes.h>
+#include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 //#include <sofa/core/behavior/Mass.h>
 #ifdef SOFA_SMP
@@ -670,15 +670,17 @@ public:
 
     static void setDAffine ( Deriv& d, const DAffine& v ) { d.getVAffine() = v; }
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
+    //  typedef SparseConstraint<Coord> SparseVecCoord;
+    //  typedef SparseConstraint<Deriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
 #ifndef SOFA_SMP
-    typedef vector<SparseVecDeriv> VecConst;
+    //  typedef vector<SparseVecDeriv> VecConst;
 #else /* SOFA_SMP */
-    typedef SharedVector<SparseVecDeriv> VecConst;
+    //  typedef SharedVector<SparseVecDeriv> VecConst;
 #endif /* SOFA_SMP */
+
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
 #ifndef SOFA_SMP
     typedef vector<Coord> VecCoord;

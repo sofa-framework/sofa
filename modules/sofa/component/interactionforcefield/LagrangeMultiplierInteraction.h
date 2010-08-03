@@ -61,6 +61,7 @@ public:
     typedef core::behavior::InteractionConstraint InteractionConstraint;
 
     typedef core::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
+
     typedef typename DataTypes1::VecCoord VecCoord1;
     typedef typename DataTypes1::VecDeriv VecDeriv1;
     typedef typename DataTypes1::Coord Coord1;
@@ -68,25 +69,20 @@ public:
     typedef typename Coord1::value_type Real1;
     typedef typename DataTypes2::VecCoord VecCoord2;
     typedef typename DataTypes2::VecDeriv VecDeriv2;
-    typedef typename DataTypes2::VecConst VecConst2;
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
-    typedef typename DataTypes2::SparseVecDeriv SparseVecDeriv2;
-    typedef typename defaulttype::SparseConstraint<Deriv2> SparseConstraint2;
-    typedef typename SparseConstraint2::const_data_iterator ConstraintIterator;
+    typedef typename DataTypes2::MatrixDeriv MatrixDeriv2;
+    typedef typename DataTypes2::MatrixDeriv::RowConstIterator MatrixDeriv2RowConstIterator;
+    typedef typename DataTypes2::MatrixDeriv::ColConstIterator MatrixDeriv2ColConstIterator;
+    typedef typename DataTypes2::MatrixDeriv::RowIterator MatrixDeriv2RowIterator;
+    typedef typename DataTypes2::MatrixDeriv::ColIterator MatrixDeriv2ColIterator;
     typedef typename Coord2::value_type Real2;
 
-
-
-
-
-
     Data < std::string > f_constraint;
-    Data<std::string> pathObject1;
-    Data<std::string> pathObject2;
+    Data < std::string > pathObject1;
+    Data < std::string > pathObject2;
 
 protected:
-
 
     LagrangeMultiplierInteractionInternalData<DataTypes1, DataTypes2> data;
     baseConstraint* constraint;
@@ -95,17 +91,13 @@ protected:
     std::vector<SimpleConstraint*> list_constraint;
     std::vector<InteractionConstraint*> list_interaction_constraint;
 
-
-
 public:
-
 
     LagrangeMultiplierInteraction()
         : f_constraint( initData(&f_constraint, "constraint", "constraint path"))
         , pathObject1(initData(&pathObject1,  "object1", "Mechanical State of the Lagrange Multiplier"))
         , pathObject2(initData(&pathObject2,  "object2", "Mechanical Object subject to constraints"))
     {
-
 
     }
 
@@ -119,13 +111,9 @@ public:
 
     void init();
 
-
     void reinit() { init(); }
 
     void draw() {}
-
-protected:
-
 };
 
 } // namespace interactionforcefield

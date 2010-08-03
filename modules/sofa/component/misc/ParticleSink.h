@@ -74,7 +74,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef helper::vector<Real> VecDensity;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
@@ -190,7 +191,7 @@ public:
     {
         projectResponseT(res);
     }
-    virtual void projectResponse(SparseVecDeriv& res) ///< project dx to constrained space
+    virtual void projectResponse(MatrixDerivRowType& res) ///< project dx to constrained space
     {
         projectResponseT(res);
     }

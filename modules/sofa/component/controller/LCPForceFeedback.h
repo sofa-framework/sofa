@@ -59,14 +59,16 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,TDataTypes),sofa::component::controller::ForceFeedback);
 
-
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef defaulttype::SparseConstraint<Deriv> SparseConstraint;
-    typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
+    typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
+    typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
     void init();
 
@@ -120,7 +122,7 @@ protected:
     //component::constraintset::LCP* lcp, *next_lcp;
     core::behavior::MechanicalState<DataTypes> *mState; ///< The omni try to follow this mechanical state.
     VecCoord mVal[3];
-    typename DataTypes::VecConst mConstraints[3];
+    MatrixDeriv mConstraints[3];
     std::vector<int> mId_buf[3];
     component::constraintset::LCP* mLcp[3];
     /* 	typename DataType::VecConst *constraint; */

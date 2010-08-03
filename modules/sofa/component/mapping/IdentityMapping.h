@@ -47,6 +47,7 @@ class IdentityMapping : public BasicMapping
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(IdentityMapping,BasicMapping), BasicMapping);
+
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
@@ -62,8 +63,6 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Out::DataTypes OutDataTypes;
     typedef typename OutDataTypes::Real OutReal;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
@@ -103,7 +102,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     virtual void handleTopologyChange();
 };

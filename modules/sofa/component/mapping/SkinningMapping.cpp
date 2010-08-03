@@ -496,34 +496,38 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 }
 
 template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT ( In::VecConst& out, const Out::VecConst& in )
+void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT (In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
     //const vector<int>& m_reps = repartition.getValue();
     //const VVD& m_coefs = coefs.getValue();
     //const unsigned int nbr = nbRefs.getValue();
+
     const unsigned int nbi = this->fromModel->getX()->size();
     In::Deriv::Affine omega;
     In::VecDeriv v;
     vector<bool> flags;
-    int outSize = out.size();
-    out.resize ( in.size() + outSize ); // we can accumulate in "out" constraints from several mappings
 
-    if ( !this->enableSkinning.getValue()) return;
-    const unsigned int numOut=this->J.size();
+    if ( !this->enableSkinning.getValue())
+        return;
+    const unsigned int numOut = this->J.size();
 
-    for ( unsigned int i=0; i<in.size(); i++ )
+    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
         v.clear();
-        v.resize ( nbi );
+        v.resize(nbi);
         flags.clear();
-        flags.resize ( nbi );
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        flags.resize(nbi);
 
-        for ( itOut=iter.first; itOut!=iter.second; itOut++ )
+        In::MatrixDeriv::RowIterator o = out.end();
+
+        Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+        for (Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            unsigned int indexIn = itOut->first;
-            Deriv data = ( Deriv ) itOut->second;
+            const unsigned int indexIn = colIt.index();
+            const Deriv data = colIt.val();
 
             for (unsigned int j=0; j<numOut; ++j)
             {
@@ -544,10 +548,58 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
                 affine[2][2] = speed[8];
                 const Vec3 pos( speed[9], speed[10], speed[11] );
                 InDeriv value(pos,affine);
-                out[outSize+i].add(j,value);
+                o.addCol(j, value);
             }
         }
     }
+
+    //const unsigned int nbi = this->fromModel->getX()->size();
+    //  In::Deriv::Affine omega;
+    //  In::VecDeriv v;
+    //  vector<bool> flags;
+    //  int outSize = out.size();
+    //  out.resize ( in.size() + outSize ); // we can accumulate in "out" constraints from several mappings
+    //
+    //  if ( !this->enableSkinning.getValue()) return;
+    //  const unsigned int numOut=this->J.size();
+
+    //  for ( unsigned int i=0;i<in.size();i++ )
+    //  {
+    //      v.clear();
+    //      v.resize ( nbi );
+    //      flags.clear();
+    //      flags.resize ( nbi );
+    //      OutConstraintIterator itOut;
+    //      std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+    //      for ( itOut=iter.first;itOut!=iter.second;itOut++ )
+    //      {
+    //          unsigned int indexIn = itOut->first;
+    //          Deriv data = ( Deriv ) itOut->second;
+
+    //          for (unsigned int j=0;j<numOut;++j)
+    //          {
+    //              Mat12x3 Jt;
+    //              Jt.transpose ( this->J[j][indexIn] );
+
+    //              Vec12 speed = Jt * data;
+
+    //              In::Deriv::Affine affine;
+    //              affine[0][0] = speed[0];
+    //              affine[0][1] = speed[1];
+    //              affine[0][2] = speed[2];
+    //              affine[1][0] = speed[3];
+    //              affine[1][1] = speed[4];
+    //              affine[1][2] = speed[5];
+    //              affine[2][0] = speed[6];
+    //              affine[2][1] = speed[7];
+    //              affine[2][2] = speed[8];
+    //              const Vec3 pos( speed[9], speed[10], speed[11] );
+    //              InDeriv value(pos,affine);
+    //              out[outSize+i].add(j,value);
+    //          }
+    //      }
+    //  }
 }
 
 

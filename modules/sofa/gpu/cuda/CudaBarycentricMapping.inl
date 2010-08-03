@@ -219,7 +219,7 @@ void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJ
 }
 
 template<>
-void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/ )
 {
 }
 
@@ -259,7 +259,7 @@ void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::appl
 }
 
 template<>
-void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/ )
 {
 }
 
@@ -299,7 +299,7 @@ void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::apply
 }
 
 template<>
-void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/ )
 {
 }
 
@@ -338,7 +338,7 @@ void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::apply
 }
 
 template<>
-void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/ )
 {
 }
 
@@ -525,61 +525,77 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT
 }
 
 template<>
-void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& out, const Out::VecConst& in )
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
-    int offset = out.size();
-    out.resize ( offset+in.size() );
-    for ( unsigned int i=0; i<in.size(); i++ )
+    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        int nbout = 0;
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        if (colIt != colItEnd)
         {
-            unsigned indexIn = itOut->first;
-            InDeriv data = (InDeriv) itOut->second;
+            In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for ( ; colIt != colItEnd; ++colIt)
+            {
+                unsigned indexIn = colIt.index();
+                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-            const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
 #else
-            const topology::SparseGridTopology::Cube cube = this->topology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
 #endif
-            const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
-            const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
-            const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
+                const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
+                const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal oneMinusFx = 1-fx;
+                const OutReal oneMinusFy = 1-fy;
+                const OutReal oneMinusFz = 1-fz;
 
-            OutReal f = ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[0],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[1],  ( data * f ) ); ++nbout;
+                OutReal f = ( oneMinusFx * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[0],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[1],  ( data * f ) );
 
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
 #endif
-            f = ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[4],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[5],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * oneMinusFy * ( fz ) );
+                o.addCol ( cube[4],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * ( fz ) );
+                o.addCol ( cube[5],  ( data * f ) );
+
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
 #endif
+            }
         }
     }
 }
@@ -613,61 +629,78 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::apply
 }
 
 template<>
-void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecConst& out, const Out::VecConst& in)
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in)
 {
-    int offset = out.size();
-    out.resize ( offset+in.size() );
-    for ( unsigned int i=0; i<in.size(); i++ )
+
+    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        int nbout = 0;
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        if (colIt != colItEnd)
         {
-            unsigned indexIn = itOut->first;
-            InDeriv data = (InDeriv) itOut->second;
+            In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for ( ; colIt != colItEnd; ++colIt)
+            {
+                unsigned indexIn = colIt.index();
+                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-            const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
 #else
-            const topology::SparseGridTopology::Cube cube = this->topology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
 #endif
-            const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
-            const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
-            const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
+                const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
+                const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal oneMinusFx = 1-fx;
+                const OutReal oneMinusFy = 1-fy;
+                const OutReal oneMinusFz = 1-fz;
 
-            OutReal f = ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[0],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[1],  ( data * f ) ); ++nbout;
+                OutReal f = ( oneMinusFx * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[0],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[1],  ( data * f ) );
 
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
 #endif
-            f = ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[4],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[5],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * oneMinusFy * ( fz ) );
+                o.addCol ( cube[4],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * ( fz ) );
+                o.addCol ( cube[5],  ( data * f ) );
+
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
 #endif
+            }
         }
     }
 }
@@ -701,61 +734,77 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ
 }
 
 template<>
-void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecConst& out, const Out::VecConst& in )
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
-    int offset = out.size();
-    out.resize ( offset+in.size() );
-    for ( unsigned int i=0; i<in.size(); i++ )
+    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        int nbout = 0;
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        if (colIt != colItEnd)
         {
-            unsigned indexIn = itOut->first;
-            InDeriv data = (InDeriv) itOut->second;
+            In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for ( ; colIt != colItEnd; ++colIt)
+            {
+                unsigned indexIn = colIt.index();
+                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-            const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
 #else
-            const topology::SparseGridTopology::Cube cube = this->topology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
 #endif
-            const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
-            const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
-            const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
+                const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
+                const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal oneMinusFx = 1-fx;
+                const OutReal oneMinusFy = 1-fy;
+                const OutReal oneMinusFz = 1-fz;
 
-            OutReal f = ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[0],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[1],  ( data * f ) ); ++nbout;
+                OutReal f = ( oneMinusFx * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[0],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[1],  ( data * f ) );
 
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
 #endif
-            f = ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[4],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[5],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * oneMinusFy * ( fz ) );
+                o.addCol ( cube[4],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * ( fz ) );
+                o.addCol ( cube[5],  ( data * f ) );
+
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
 #endif
+            }
         }
     }
 }
@@ -789,61 +838,77 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ
 }
 
 template<>
-void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecConst& out, const Out::VecConst& in )
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
-    int offset = out.size();
-    out.resize ( offset+in.size() );
-    for ( unsigned int i=0; i<in.size(); i++ )
+    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        int nbout = 0;
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        if (colIt != colItEnd)
         {
-            unsigned indexIn = itOut->first;
-            InDeriv data = (InDeriv) itOut->second;
+            In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for ( ; colIt != colItEnd; ++colIt)
+            {
+                unsigned indexIn = colIt.index();
+                InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
 #ifdef SOFA_NEW_HEXA
-            const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
 #else
-            const topology::SparseGridTopology::Cube cube = this->topology->getCube ( this->map[indexIn].in_index );
+                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
 #endif
-            const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
-            const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
-            const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
+                const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
+                const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
+                const OutReal oneMinusFx = 1-fx;
+                const OutReal oneMinusFy = 1-fy;
+                const OutReal oneMinusFz = 1-fz;
 
-            OutReal f = ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[0],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[1],  ( data * f ) ); ++nbout;
+                OutReal f = ( oneMinusFx * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[0],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * oneMinusFz );
+                o.addCol ( cube[1],  ( data * f ) );
 
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * oneMinusFz );
+                o.addCol ( cube[2],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * oneMinusFz );
+                o.addCol ( cube[3],  ( data * f ) );
+
 #endif
-            f = ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[4],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( 1-fy ) * ( fz ) );
-            out[i+offset].add ( cube[5],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * oneMinusFy * ( fz ) );
+                o.addCol ( cube[4],  ( data * f ) );
+
+                f = ( ( fx ) * oneMinusFy * ( fz ) );
+                o.addCol ( cube[5],  ( data * f ) );
+
 #ifdef SOFA_NEW_HEXA
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
 #else
-            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
-            f = ( ( fx ) * ( fy ) * ( fz ) );
-            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
+                f = ( oneMinusFx * ( fy ) * ( fz ) );
+                o.addCol ( cube[6],  ( data * f ) );
+
+                f = ( ( fx ) * ( fy ) * ( fz ) );
+                o.addCol ( cube[7],  ( data * f ) );
 #endif
+            }
         }
     }
 }
@@ -1266,25 +1331,34 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::
 }
 
 template<>
-void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& out, const Out::VecConst& in)
+void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::MatrixDeriv& out, const Out::MatrixDeriv& in)
 {
-    int offset = out.size();
-    out.resize ( offset+in.size() );
-    for ( unsigned int i=0; i<in.size(); i++ )
-    {
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+    Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for ( Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+        Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+
+        int indexIn;
+
+        if (colIt != colItEnd)
         {
-            int indexIn = itOut->first;
-            InDeriv data = (InDeriv) itOut->second;
-            for (int j=0; j<maxNIn; ++j)
+            In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+            for ( ; colIt != colItEnd; ++colIt)
             {
-                const OutReal f = ( OutReal ) getMapValue(indexIn,j);
-                int index = getMapIndex(indexIn,j);
-                if (index < 0) break;
-                out[i+offset].add (  index, data * f );
+                indexIn = colIt.index();
+                InDeriv data = (InDeriv) colIt.val();
+
+                for (int j=0; j<maxNIn; ++j)
+                {
+                    const OutReal f = ( OutReal ) getMapValue(indexIn,j);
+                    int index = getMapIndex(indexIn,j);
+                    if (index < 0) break;
+                    o.addCol( index, data * f );
+                }
+
             }
         }
     }
@@ -1318,7 +1392,7 @@ void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In
 }
 
 template<>
-void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/ )
 {
 }
 
@@ -1350,7 +1424,7 @@ void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In:
 }
 
 template<>
-void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/ )
 {
 }
 
@@ -1382,7 +1456,7 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In:
 }
 
 template<>
-void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/ )
 {
 }
 

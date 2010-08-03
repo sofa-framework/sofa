@@ -60,84 +60,71 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
     assert(this->object1);
     assert(this->object2);
 
-    VecConst& c1 = *this->object1->getC();
-    VecConst& c2 = *this->object2->getC();
+    MatrixDeriv& c1 = *this->object1->getC();
+    MatrixDeriv& c2 = *this->object2->getC();
 
-    Coord A, B, P, uniAB, dir1, dir2, proj;
-    P = (*this->object1->getXfree())[tm1];
-    A = (*this->object2->getXfree())[tm2a];
-    B = (*this->object2->getXfree())[tm2b];
+    const Coord P = (*this->object1->getXfree())[tm1];
+    const Coord A = (*this->object2->getXfree())[tm2a];
+    const Coord B = (*this->object2->getXfree())[tm2b];
 
     // the axis
-    uniAB = (B - A);
-    Real ab = uniAB.norm();
+    Coord uniAB = B - A;
+    const Real ab = uniAB.norm();
     uniAB.normalize();
 
     // projection of the point on the axis
     Real r = (P-A) * uniAB;
     Real r2 = r / ab;
-    proj = A + uniAB * r;
+    const Coord proj = A + uniAB * r;
 
     // We move the constraint point onto the projection
-    dir1 = P-proj;
-    dist = dir1.norm(); // constraint violation
+    Coord dir1 = P - proj;
+    m_dist = dir1.norm(); // constraint violation
     dir1.normalize(); // direction of the constraint
 
-    dir2 = cross(dir1, uniAB);
+    Coord dir2 = cross(dir1, uniAB);
     dir2.normalize();
 
     cid = constraintId;
-    constraintId+=2;
+    constraintId += 2;
 
-    SparseVecDeriv svd1;
-    SparseVecDeriv svd2;
+    MatrixDerivRowIterator c1_it = c1.writeLine(cid);
+    c1_it.addCol(tm1, dir1);
 
-    this->object1->setConstraintId(cid);
-    svd1.add(tm1, dir1);
-    c1.push_back(svd1);
+    MatrixDerivRowIterator c2_it = c2.writeLine(cid);
+    c2_it.addCol(tm2a, -dir1 * (1-r2));
+    c2_it.addCol(tm2b, -dir1 * r2);
 
-    this->object2->setConstraintId(cid);
-    svd2.add(tm2a, -dir1 * (1-r2));
-    svd2.add(tm2b, -dir1 * r2);
-    c2.push_back(svd2);
-    svd2.clear();
+    c1_it = c1.writeLine(cid + 1);
+    c1_it.addCol(tm1, dir2);
 
-    this->object1->setConstraintId(cid+1);
-    svd1.set(tm1, dir2);
-    c1.push_back(svd1);
-
-    this->object2->setConstraintId(cid+1);
-    svd2.add(tm2a, -dir2 * (1-r2));
-    svd2.add(tm2b, -dir2 * r2);
-    c2.push_back(svd2);
-    svd2.clear();
+    c2_it = c2.writeLine(cid + 1);
+    c2_it.addCol(tm2a, -dir2 * (1-r2));
+    c2_it.addCol(tm2b, -dir2 * r2);
 
     thirdConstraint = 0;
-    if(r<0)
+
+    if (r < 0)
     {
         thirdConstraint = r;
         constraintId++;
 
-        this->object1->setConstraintId(cid+2);
-        svd1.set(tm1, uniAB);
-        c1.push_back(svd1);
+        c1_it = c1.writeLine(cid + 2);
+        c1_it.addCol(tm1, uniAB);
 
-        this->object2->setConstraintId(cid+2);
-        svd2.add(tm2a, -uniAB);
-        c2.push_back(svd2);
+        c2_it = c2.writeLine(cid + 2);
+        c2_it.addCol(tm2a, -uniAB);
     }
-    else if(r>ab)
+    else if (r > ab)
     {
-        thirdConstraint = r-ab;
+        thirdConstraint = r - ab;
         constraintId++;
 
-        this->object1->setConstraintId(cid+2);
-        svd1.set(tm1, -uniAB);
-        c1.push_back(svd1);
+        c1_it = c1.writeLine(cid + 2);
+        c1_it.addCol(tm1, -uniAB);
 
-        this->object2->setConstraintId(cid+2);
-        svd2.add(tm2b, uniAB);
-        c2.push_back(svd2);
+        c2_it = c2.writeLine(cid + 2);
+        c2_it.addCol(tm2b, uniAB);
     }
 }
 
@@ -147,7 +134,7 @@ void SlidingConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v
     if (!freeMotion)
         sout<<"WARNING has to be implemented for method based on non freeMotion"<<sendl;
 
-    v->set(cid, dist);
+    v->set(cid, m_dist);
     v->set(cid+1, 0.0);
 
     if(thirdConstraint)
@@ -173,12 +160,14 @@ void SlidingConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offse
         id[offset++] = cid;
     }
 }
+
 #ifdef SOFA_DEV
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(int i=0; i<2; i++)
         resTab[offset++] = new BilateralConstraintResolution();
+
     if(thirdConstraint)
         resTab[offset++] = new UnilateralConstraintResolution();
 }
@@ -199,8 +188,8 @@ void SlidingConstraint<DataTypes>::draw()
     else
         glColor4f(1,0,1,1);
     helper::gl::glVertexT((*this->object1->getX())[m1.getValue()]);
-//      helper::gl::glVertexT((*this->object2->getX())[m3]);
-//      helper::gl::glVertexT(proj);
+    //      helper::gl::glVertexT((*this->object2->getX())[m3]);
+    //      helper::gl::glVertexT(proj);
     glEnd();
 
     glBegin(GL_LINES);

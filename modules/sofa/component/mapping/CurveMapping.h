@@ -65,7 +65,6 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator OutConstraintIterator;
     typedef typename Out::Real Real;
 
     Data < helper::vector<Real> > abscissa;
@@ -114,7 +113,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 

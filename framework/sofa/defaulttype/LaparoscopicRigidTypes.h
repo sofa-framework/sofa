@@ -27,17 +27,21 @@
 #ifndef SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
 #define SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
 
-
+#include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/SparseConstraintTypes.h>
+//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/defaulttype/Vec.h>
+
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/Mass.h>
+
 #include <sofa/helper/vector.h>
 #include <iostream>
+
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
+
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
@@ -305,15 +309,17 @@ public:
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
-
-    //! All the Constraints applied to a state Vector
-#ifndef SOFA_SMP
-    typedef	vector<SparseVecDeriv> VecConst;
-#else /* SOFA_SMP */
-    typedef	SharedVector<SparseVecDeriv> VecConst;
-#endif /* SOFA_SMP */
+//	typedef SparseConstraint<Coord> SparseVecCoord;
+//	typedef SparseConstraint<Deriv> SparseVecDeriv;
+//
+//	//! All the Constraints applied to a state Vector
+//#ifndef SOFA_SMP
+//	typedef	vector<SparseVecDeriv> VecConst;
+//#else /* SOFA_SMP */
+//	typedef	SharedVector<SparseVecDeriv> VecConst;
+//#endif /* SOFA_SMP */
+//
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
 #ifndef SOFA_SMP
 

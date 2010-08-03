@@ -141,7 +141,7 @@ void ParabolicConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 }
 
 template <class DataTypes>
-void ParabolicConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+void ParabolicConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
 {
     projectResponseT(dx);
 }

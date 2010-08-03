@@ -81,10 +81,12 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     /// Container of Deriv values with the same API as sofa::helper::vector.
     typedef typename DataTypes::VecDeriv VecDeriv;
-    /// Sparse vector of Deriv values (defining coefficient of a constraint).
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    /// Vector of constraints (i.e. of SparseVecDeriv).
-    typedef typename DataTypes::VecConst VecConst;
+    ///// Sparse vector of Deriv values (defining coefficient of a constraint).
+    //typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    ///// Vector of constraints (i.e. of SparseVecDeriv).
+    //typedef typename DataTypes::VecConst VecConst;
+    /// Sparse matrix containing derivative values (constraints)
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 
     virtual ~MechanicalState() { }
 
@@ -104,7 +106,7 @@ public:
     /// Return the displacement vector (read-write access).
     virtual VecDeriv* getDx() = 0;
     /// Return the constraints system matrix (read-write access).
-    virtual VecConst* getC() = 0;
+    virtual MatrixDeriv* getC() = 0;
     /// Return the free-motion position vector (read-write access).
     virtual VecCoord* getXfree() = 0;
     /// Return the current position vector (read-write access).
@@ -128,7 +130,7 @@ public:
     /// Return the displacement vector (read-only access).
     virtual const VecDeriv* getDx() const = 0;
     /// Return the constraints system matrix (read-only access).
-    virtual const VecConst* getC() const = 0;
+    virtual const MatrixDeriv* getC() const = 0;
     /// Return the free-motion position vector (read-only access).
     virtual const VecCoord* getXfree()  const = 0;
     /// Return the free-motion velocity vector (read-only access).
@@ -156,12 +158,13 @@ public:
     virtual const VecDeriv* getVecDeriv(unsigned int index) const = 0;
 
     /// Return a VecConst given its index
-    virtual VecConst* getVecConst(unsigned int index) = 0;
+    virtual MatrixDeriv* getMatrixDeriv(unsigned int index) = 0;
 
     /// Return a VecConst given its index, or NULL if it does not exists
-    virtual const VecConst* getVecConst(unsigned int index) const = 0;
+    virtual const MatrixDeriv* getMatrixDeriv(unsigned int index) const = 0;
 
-    virtual unsigned int getCSize() const { return getC()->size(); }
+    // virtual unsigned int getCSize() const { return getC()->size(); } // unused
+    virtual unsigned int getCSize() const { return 0; } // unused
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;

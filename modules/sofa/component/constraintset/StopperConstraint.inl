@@ -44,7 +44,6 @@ void StopperConstraint<DataTypes>::init()
     assert(this->object);
     pathObject.setValue(this->object->getName());
 
-
     this->getContext()->get(ode_integrator);
 
     if(ode_integrator!= NULL)
@@ -70,49 +69,39 @@ void StopperConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
 
     assert(this->object);
 
-    VecConst& c = *this->object->getC();
+    MatrixDeriv& c = *this->object->getC();
 
-    cid=constraintId;
-    this->object->setConstraintId(cid);
-    constraintId+=1;
+    cid = constraintId;
+    constraintId += 1;
 
-    SparseVecDeriv svd;
-    svd.add(tm, cx);
-    c.push_back(svd);
+    c.writeLine(cid).addCol(tm, cx);
 
-    //std::cout<<"StopperConstraint on "<<this->object->getName()<<" c.size = "<<c.size()<<std::endl;
+    //for (unsigned int i=0; i< c.size(); i++)
+    //{
+    //	ConstraintIterator itConstraint;
+    //	std::pair< ConstraintIterator, ConstraintIterator > iter=c[i].data();
 
-    for (unsigned int i=0; i< c.size(); i++)
-    {
-        ConstraintIterator itConstraint;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=c[i].data();
-
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
-        {
-//			unsigned int dof = itConstraint->first;
-            Deriv n = itConstraint->second;
-            //std::cout<<"  ["<<dof<<"] = "<< n;
-        }
-    }
-
-
-    //std::cout<<" "<<std::endl;
+    //	for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+    //	{
+    //		unsigned int dof = itConstraint->first;
+    //		Deriv n = itConstraint->second;
+    //		//std::cout<<"  ["<<dof<<"] = "<< n;
+    //	}
+    //}
+//
+    ////std::cout<<" "<<std::endl;
 }
 
 template<class DataTypes>
 void StopperConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
 {
-
-
-
-
     if (!freeMotion)
         sout<<"WARNING has to be implemented for method based on non freeMotion"<<sendl;
 
-
     if (freeMotion)
+    {
         dfree = (*this->object->getXfree())[index.getValue()];
-
+    }
     else
     {
         serr<<"WARNING: StopperConstraint with no freeMotion not implemented "<<sendl;
@@ -126,20 +115,15 @@ void StopperConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v
 
         dt = 1.0; // ode_integrator->getSolutionIntegrationFactor(0) * 2;
         */
-
     }
 
-    v->set(cid  , dfree[0]);
-
+    v->set(cid, dfree[0]);
 }
 
 template<class DataTypes>
 void StopperConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
 {
-
-
     id[offset++] = cid;
-
 }
 
 #ifdef SOFA_DEV
@@ -148,7 +132,6 @@ void StopperConstraint<DataTypes>::getConstraintResolution(std::vector<core::beh
 {
 //	resTab[offset] = new BilateralConstraintResolution3Dof();
 //	offset += 3;
-
 
     for(int i=0; i<1; i++)
         resTab[offset++] = new StopperConstraintResolution1Dof(min.getValue(), max.getValue());
@@ -170,7 +153,6 @@ void StopperConstraint<DataTypes>::draw()
     	glEnd();
     	glPointSize(1);
     */
-
 }
 
 } // namespace constraintset

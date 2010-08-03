@@ -169,7 +169,7 @@ void FixedTranslationConstraint<DataTypes>::projectResponse(VecDeriv& res)
     projectResponseT(res);
 }
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectResponse(SparseVecDeriv& res)
+void FixedTranslationConstraint<DataTypes>::projectResponse(MatrixDerivRowType& res)
 {
     projectResponseT(res);
 }

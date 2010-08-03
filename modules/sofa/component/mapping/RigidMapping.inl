@@ -587,126 +587,134 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
 template<class BaseMapping>
-void RigidMapping<BaseMapping>::applyJT(InVecConst& out, const VecConst& in)
+void RigidMapping<BaseMapping>::applyJT(InMatrixDeriv& out, const OutMatrixDeriv& in)
 {
-    int outSize = out.size();
-    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
-
     switch (repartition.getValue().size())
     {
     case 0:
     {
-        for (unsigned int i = 0; i < in.size(); i++)
+        typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+        for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
         {
             Deriv v;
             DRot omega = DRot();
-            OutConstraintIterator itOut;
-            std::pair<OutConstraintIterator, OutConstraintIterator> iter =
-                in[i].data();
 
-            for (itOut = iter.first; itOut != iter.second; itOut++)
+            typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+            for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                const unsigned int i = itOut->first;// index of the node
-                // out = Jt in
-                // Jt = [ I     ]
-                //      [ -OM^t ]
-                // -OM^t = OM^
-
-                const Deriv f = (Deriv) itOut->second;
+                const Deriv f = colIt.val();
                 v += f;
-                omega += (DRot) cross(rotatedPoints[i], f);
+                omega += (DRot) cross(rotatedPoints[colIt.index()], f);
             }
 
             const InDeriv result(v, omega);
+            typename InMatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
             if (!indexFromEnd.getValue())
             {
-                out[outSize + i].add(index.getValue(), result);
+                o.addCol(index.getValue(), result);
             }
             else
             {
-                out[outSize + i].add(out.size() - 1 - index.getValue(), result);
+                // Commented by PJ. Bug??
+                // o.addCol(out.size() - 1 - index.getValue(), result);
+                const unsigned int numDofs = this->getFromModel()->getX()->size();
+                o.addCol(numDofs - 1 - index.getValue(), result);
             }
         }
+
         break;
     }
     case 1:
     {
         const unsigned int numDofs = this->getFromModel()->getX()->size();
-
         const unsigned int val = repartition.getValue()[0];
-        for (unsigned int i = 0; i < in.size(); i++)
+
+        typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+        for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
         {
             unsigned int cpt = 0;
 
-            std::pair<OutConstraintIterator, OutConstraintIterator> iter =
-                in[i].data();
+            typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+            typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-            OutConstraintIterator it = iter.first;
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
                 Deriv v;
                 DRot omega = DRot();
                 bool needToInsert = false;
 
-                for (unsigned int r = 0; r < val && it != iter.second; r++, cpt++)
+                for (unsigned int r = 0; r < val && colIt != colItEnd; r++, cpt++)
                 {
-                    const unsigned int i = it->first;// index of the node
-                    if (i != cpt)
+                    if (colIt.index() != cpt)
                         continue;
 
                     needToInsert = true;
-                    const Deriv f = (Deriv) it->second;
+                    const Deriv f = colIt.val();
                     v += f;
                     omega += (DRot) cross(rotatedPoints[cpt], f);
-                    it++;
+
+                    ++colIt;
                 }
+
                 if (needToInsert)
                 {
                     const InDeriv result(v, omega);
-                    out[outSize + i].add(ito, result);
+
+                    typename InMatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+                    o.addCol(ito, result);
                 }
             }
         }
+
         break;
     }
     default:
     {
         const unsigned int numDofs = this->getFromModel()->getX()->size();
 
-        for (unsigned int i = 0; i < in.size(); i++)
+        typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+        for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
         {
             unsigned int cpt = 0;
 
-            std::pair<OutConstraintIterator, OutConstraintIterator> iter =
-                in[i].data();
+            typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+            typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-            OutConstraintIterator it = iter.first;
             for (unsigned int ito = 0; ito < numDofs; ito++)
             {
                 Deriv v;
                 DRot omega = DRot();
                 bool needToInsert = false;
 
-                for (unsigned int r = 0; r < repartition.getValue()[ito] && it
-                        != iter.second; r++, cpt++)
+                for (unsigned int r = 0; r < repartition.getValue()[ito] && colIt
+                        != colItEnd; r++, cpt++)
                 {
-                    const unsigned int i = it->first;// index of the node
-                    if (i != cpt)
+                    if (colIt.index() != cpt)
                         continue;
 
                     needToInsert = true;
-                    const Deriv f = (Deriv) it->second;
+                    const Deriv f = colIt.val();
                     v += f;
                     omega += (DRot) cross(rotatedPoints[cpt], f);
-                    it++;
+
+                    ++colIt;
                 }
+
                 if (needToInsert)
                 {
                     const InDeriv result(v, omega);
-                    out[outSize + i].add(ito, result);
+
+                    typename InMatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+                    o.addCol(ito, result);
                 }
             }
         }
+
         break;
     }
     }

@@ -194,64 +194,94 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const ty
 
 }
 
+template <class BasicMapping>
+void TubularMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+{
+    // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
+    unsigned int N = m_nbPointsOnEachCircle.getValue();
 
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
+        {
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            {
+                // index of the node
+                const unsigned int iIn = colIt.index();
+                const Deriv f = (Deriv) colIt.val();
+                Deriv v, omega;
+                v+=f;
+                omega += cross(rotatedPoints[iIn],f);
+                unsigned int Iout = iIn/N;
+                InDeriv result(v, omega);
+
+                o.addCol(Iout, result);
+            }
+        }
+    }
+}
+
+/*
 template <class BasicMapping>
 void TubularMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in)
 {
-    // usefull for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
+	// usefull for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
 
-    //sout << "INFO_print : pass HERE applyJT !!!" << sendl;
+	//sout << "INFO_print : pass HERE applyJT !!!" << sendl;
 
-    /*if(in.size() != rotatedPoints.size()){
-    	rotatedPoints.resize(in.size());
-    }
-    */
+	//std::cerr<< "INFO_print : pass HERE applyJT : numConstraint= " <<in.size()<<std::endl;
 
-    //std::cerr<< "INFO_print : pass HERE applyJT : numConstraint= " <<in.size()<<std::endl;
-
-    unsigned int N = m_nbPointsOnEachCircle.getValue();
+	unsigned int N = m_nbPointsOnEachCircle.getValue();
 
 
-    int outSize = out.size();
-    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
+	int outSize = out.size();
+	out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
 
-    //std::cerr<<"Resize ok"<<std::endl;
-    for(unsigned int i=0; i<in.size(); i++)
-    {
-        OutConstraintIterator itIn;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+	//std::cerr<<"Resize ok"<<std::endl;
+	for(unsigned int i=0; i<in.size(); i++)
+	{
+		OutConstraintIterator itIn;
+		std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
 
-        //std::cerr<<"iter ok"<<std::endl;
-
-
-        for (itIn=iter.first; itIn!=iter.second; itIn++)
-        {
-            const unsigned int iIn = itIn->first;// index of the node
-            const Deriv f = (Deriv) itIn->second;
-            Deriv v, omega;
-
-            //std::cerr<<"calcul omega"<<std::endl;
-            v+=f;
-            omega += cross(rotatedPoints[iIn],f);
-
-            //std::cerr<<"omega ok"<<std::endl;
-
-            unsigned int Iout = iIn/N;
-
-            //std::cerr<<"io="<<io<<"  Iout="<<Iout<<std::endl;
-
-            InDeriv result(v, omega);
-
-            out[outSize+i].add(Iout, result);
+		//std::cerr<<"iter ok"<<std::endl;
 
 
-        }
-    }
+		for (itIn=iter.first;itIn!=iter.second;itIn++)
+		{
+			const unsigned int iIn = itIn->first;// index of the node
+			const Deriv f = (Deriv) itIn->second;
+			Deriv v, omega;
 
-    //std::cerr<< " applyJT ended !!!" <<std::endl;
+			//std::cerr<<"calcul omega"<<std::endl;
+			v+=f;
+			omega += cross(rotatedPoints[iIn],f);
+
+			//std::cerr<<"omega ok"<<std::endl;
+
+			unsigned int Iout = iIn/N;
+
+			//std::cerr<<"io="<<io<<"  Iout="<<Iout<<std::endl;
+
+			InDeriv result(v, omega);
+
+			out[outSize+i].add(Iout, result);
+
+
+		}
+	}
+
+	//std::cerr<< " applyJT ended !!!" <<std::endl;
 
 }
-
+*/
 
 
 

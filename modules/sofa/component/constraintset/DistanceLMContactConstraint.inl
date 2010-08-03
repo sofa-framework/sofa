@@ -104,6 +104,9 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int 
     const VecCoord &x1=*(this->constrainedObject1->getVecCoord(position.index));
     const VecCoord &x2=*(this->constrainedObject2->getVecCoord(position.index));
 
+    MatrixDeriv& c1 = *this->constrainedObject1->getC();
+    MatrixDeriv& c2 = *this->constrainedObject2->getC();
+
     const SeqEdges &edges =  pointPairs.getValue();
 
     //if (this->l0.size() != edges.size()) updateRestLength();
@@ -119,26 +122,27 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int 
 
         const Deriv normal = computeNormal(edges[i], x1, x2);
 
-        SparseVecDeriv V1; V1.add(idx1, normal);
-        SparseVecDeriv V2; V2.add(idx2,-normal);
-        registerEquationInJ1(constraintId,V1);
-        registerEquationInJ2(constraintId,V2);
+        MatrixDerivRowIterator c1_normal = c1.writeLine(constraintId);
+        c1_normal.addCol(idx1,normal);
+        MatrixDerivRowIterator c2_normal = c2.writeLine(constraintId);
+        c2_normal.addCol(idx2,-normal);
         scalarConstraintsIndices.push_back(constraintId++);
 
         Deriv tgt1, tgt2;
         computeTangentVectors(tgt1,tgt2,normal);
 //                    cerr<<"DistanceLMContactConstraint<DataTypes>::buildJacobian, tgt1 = "<<tgt1<<", tgt2 = "<<tgt2<<endl;
 
-        SparseVecDeriv T1V1; T1V1.add(idx1, tgt1);
-        SparseVecDeriv T1V2; T1V2.add(idx2,-tgt1);
-        registerEquationInJ1(constraintId,T1V1);
-        registerEquationInJ2(constraintId,T1V2);
+        MatrixDerivRowIterator c1_t1 = c1.writeLine(constraintId);
+        c1_t1.addCol(idx1,tgt1);
+        MatrixDerivRowIterator c2_t1 = c2.writeLine(constraintId);
+        c2_t1.addCol(idx2,-tgt1);
         scalarConstraintsIndices.push_back(constraintId++);
 
-        SparseVecDeriv T2V1; T2V1.add(idx1, tgt2);
-        SparseVecDeriv T2V2; T2V2.add(idx2,-tgt2);
-        registerEquationInJ1(constraintId,T2V1);
-        registerEquationInJ2(constraintId,T2V2);
+
+        MatrixDerivRowIterator c1_t2 = c1.writeLine(constraintId);
+        c1_t2.addCol(idx1,tgt2);
+        MatrixDerivRowIterator c2_t2 = c2.writeLine(constraintId);
+        c2_t2.addCol(idx2,-tgt2);
         scalarConstraintsIndices.push_back(constraintId++);
 
         this->constrainedObject1->forceMask.insertEntry(idx1);

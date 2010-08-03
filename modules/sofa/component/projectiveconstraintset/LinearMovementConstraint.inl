@@ -220,7 +220,7 @@ void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+void LinearMovementConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
 {
     projectResponseT(dx);
 }

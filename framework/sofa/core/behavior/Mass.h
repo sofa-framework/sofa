@@ -64,8 +64,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     //Constraint typedef
-    typedef typename DataTypes::VecConst VecConst;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+//    typedef typename DataTypes::VecConst VecConst;
+//    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
 
     Mass(MechanicalState<DataTypes> *mm = NULL);
 

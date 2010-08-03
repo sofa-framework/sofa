@@ -59,13 +59,13 @@ public:
     typedef typename behavior::BaseConstraintCorrection Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecConst VecConst;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
-    typedef typename SparseConstraint::const_data_iterator ConstConstraintIterator;
-    typedef typename SparseConstraint::data_iterator ConstraintIterator;
-    typedef typename DataTypes::SparseVecDeriv Const;
+    typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
+    typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
     /// element rotation matrix
     typedef typename Coord::value_type Real;
@@ -182,17 +182,15 @@ public:
 
     // new :  for non building the constraint system during solving process //
     //VecDeriv constraint_disp, constraint_force;
-    //std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
     helper::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
     sofa::helper::vector<unsigned int>* localConstraintId;
-    linearsolver::FullMatrix<Real> localW;
+    linearsolver::FullMatrix< Real > localW;
     double* constraint_force;
 
-// NEW METHOD FOR UNBUILT
+    // NEW METHOD FOR UNBUILT
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_D, constraint_F;
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
-
 
 public:
     Real* getInverse()

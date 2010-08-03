@@ -36,6 +36,7 @@ namespace sofa
 
 namespace core
 {
+
 namespace behavior
 {
 
@@ -44,31 +45,14 @@ LMConstraint<DataTypes1,DataTypes2>::~LMConstraint()
 {
 }
 
-template<class DataTypes1,class DataTypes2>
-void   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ1(unsigned int constraintId, const SparseVecDeriv1 &C1) const
-{
-    //VecConst interface:
-    //index where the direction will be found
-    constrainedObject1->getC()->push_back(C1);
-    constrainedObject1->setConstraintId(constraintId);
-}
-
-template<class DataTypes1,class DataTypes2>
-void   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ2(unsigned int constraintId, const SparseVecDeriv2 &C2) const
-{
-    //VecConst interface:
-    //index where the direction will be found
-    constrainedObject2->getC()->push_back(C2);
-    constrainedObject2->setConstraintId(constraintId);
-}
-
-
 
 template<class DataTypes1,class DataTypes2>
 void LMConstraint<DataTypes1,DataTypes2>::init()
 {
-    BaseLMConstraint::init();
+    using sofa::core::objectmodel::BaseContext;
+    using sofa::core::objectmodel::BaseNode;
 
+    BaseLMConstraint::init();
 
     if (constrainedObject1 != NULL && constrainedObject2 != NULL)
     {
@@ -76,38 +60,43 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
 
         if (constrainedObject1->getContext() != getContext())
         {
-            sofa::core::objectmodel::BaseContext *context = NULL;
-            sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(constrainedObject1->getContext());
+            BaseContext *context = NULL;
+            BaseNode *currentNode = dynamic_cast< BaseNode * >(constrainedObject1->getContext());
 
-            std::string constrainedObject_name=currentNode->getPathName();
-            if (context != NULL) this->pathObject1.setValue(constrainedObject_name);
+            std::string constrainedObject_name = currentNode->getPathName();
+            if (context != NULL)
+                this->pathObject1.setValue(constrainedObject_name);
         }
-
 
         if (constrainedObject2->getContext() != getContext())
         {
-            sofa::core::objectmodel::BaseContext *context = NULL;
-            sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(constrainedObject2->getContext());
+            BaseContext *context = NULL;
+            BaseNode *currentNode = dynamic_cast< BaseNode* >(constrainedObject2->getContext());
 
-            std::string constrainedObject_name=currentNode->getPathName();
-            if (context != NULL) this->pathObject2.setValue(constrainedObject_name);
+            std::string constrainedObject_name = currentNode->getPathName();
+            if (context != NULL)
+                this->pathObject2.setValue(constrainedObject_name);
         }
 
-        simulatedObject1=constrainedObject1;
+        simulatedObject1 = constrainedObject1;
+
         while (simulatedObject1)
         {
             core::behavior::BaseMechanicalMapping* mapping;
             simulatedObject1->getContext()->get(mapping);
-            if (!mapping) break;
+            if (!mapping)
+                break;
             simulatedObject1 = mapping->getMechFrom()[0];
         }
 
-        simulatedObject2=constrainedObject2;
+        simulatedObject2 = constrainedObject2;
+
         while (simulatedObject2)
         {
             core::behavior::BaseMechanicalMapping* mapping;
             simulatedObject2->getContext()->get(mapping);
-            if (!mapping) break;
+            if (!mapping)
+                break;
             simulatedObject2 = mapping->getMechFrom()[0];
         }
     }

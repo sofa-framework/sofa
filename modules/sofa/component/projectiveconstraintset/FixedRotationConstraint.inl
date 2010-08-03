@@ -83,7 +83,7 @@ void FixedRotationConstraint<DataTypes>::projectResponse(VecDeriv& /*res*/)
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectResponse(SparseVecDeriv& /*res*/)
+void FixedRotationConstraint<DataTypes>::projectResponse(MatrixDerivRowType& /*res*/)
 {
 
 }

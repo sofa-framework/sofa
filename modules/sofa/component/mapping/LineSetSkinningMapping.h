@@ -53,21 +53,18 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::SparseVecDeriv OutSparseVecDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
+    typedef typename OutCoord::value_type OutReal;
 
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
-    typedef typename In::SparseVecDeriv InSparseVecDeriv;
     typedef typename In::Real Real;
-    typedef typename OutCoord::value_type OutReal;
 
 
     LineSetSkinningMapping(In* from, Out* to)
@@ -92,7 +89,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void draw();
 

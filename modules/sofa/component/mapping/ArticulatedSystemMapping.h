@@ -62,23 +62,16 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::SparseVecDeriv OutSparseVecDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
-    typedef typename In::SparseVecDeriv InSparseVecDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename In::Real Real;
     typedef typename OutCoord::value_type OutReal;
 
     typedef sofa::core::behavior::MechanicalState<typename Out::DataTypes> InRoot;
     typedef typename InRoot::VecCoord InRootVecCoord;
     typedef typename InRoot::VecDeriv InRootVecDeriv;
-    typedef typename InRoot::VecConst InRootVecConst;
 
     typedef typename core::behavior::BaseMechanicalState::VecId VecId;
 
@@ -114,7 +107,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outroot );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, typename InRoot::MatrixDeriv* outroot );
 
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
@@ -127,7 +120,7 @@ public:
         applyJT(out,in, NULL);
     }
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
     {
         applyJT(out,in, NULL);
     }

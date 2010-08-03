@@ -145,24 +145,30 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
         sout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(SReal)(numDOFReals*numDOFReals)<<sendl;
         refMinv.resize(0,0);
     }
+
     // Compute J
-    VecConst& constraints = *mstate->getC();
-    const unsigned int numConstraints = constraints.size();
+    const MatrixDeriv& c = *mstate->getC();
     const unsigned int totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);
-    for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-    {
-        int cid = mstate->getConstraintId()[c1];
-        ConstraintIterator itConstraint;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
 
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+    MatrixDerivRowConstIterator rowItEnd = c.end();
+
+    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        const int cid = rowIt.index();
+
+        MatrixDerivColConstIterator colItEnd = rowIt.end();
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            unsigned int dof = itConstraint->first;
-            Deriv n = itConstraint->second;
-            for (unsigned int r=0; r<N; ++r)
-                J.add(cid, dof*N+r, n[r]);
+            const unsigned int dof = colIt.index();
+            const Deriv n = colIt.val();
+
+            for (unsigned int r = 0; r < N; ++r)
+            {
+                J.add(cid, dof * N + r, n[r]);
+            }
         }
     }
 
@@ -259,25 +265,21 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         for (unsigned int r=0; r<N; ++r)
             force[i][r] = F[i*N+r];
 #else
-    const VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
+    const MatrixDeriv& c = *mstate->getC();
 
-    for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+    MatrixDerivRowConstIterator rowItEnd = c.end();
+
+    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        int indexC1 = mstate->getConstraintId()[c1];
-        double fC1 = f->element(indexC1);
-        //sout << "fC("<<indexC1<<")="<<fC1<<sendl;
+        const double fC1 = f->element(rowIt.index());
+
         if (fC1 != 0.0)
         {
-            ConstraintIterator itConstraint;
-            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
-            {
-                unsigned int dof = itConstraint->first;
-                Deriv n = itConstraint->second;
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
 
-                //sout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << sendl;
-                force[dof] += n * fC1;
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            {
+                force[colIt.index()] += colIt.val() * fC1;
             }
         }
     }
@@ -322,32 +324,24 @@ void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce
     for (unsigned int i=0; i< numDOFs; i++)
         force[i] = Deriv();
 
+    const MatrixDeriv& c = *mstate->getC();
 
-    const VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
+    MatrixDerivRowConstIterator rowItEnd = c.end();
 
-    for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        int indexC1 = mstate->getConstraintId()[c1];
-        double fC1 = f->element(indexC1);
-        //sout << "fC("<<indexC1<<")="<<fC1<<sendl;
+        const double fC1 = f->element(rowIt.index());
+
         if (fC1 != 0.0)
         {
-            ConstraintIterator itConstraint;
-            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
+
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                unsigned int dof = itConstraint->first;
-                Deriv n = itConstraint->second;
-
-
-
-                std::cout << "Predictive Force => f("<<itConstraint->first<<") += "<< (itConstraint->second * fC1) << std::endl;
-                force[dof] += n * fC1;
+                force[colIt.index()] += colIt.val() * fC1;
             }
         }
     }
-    std::cout<< "Predictive External Forces: "<< force<<std::endl;
 }
 
 
@@ -359,131 +353,128 @@ void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
         force[i] = Deriv();
 }
 
+
 template<class DataTypes>
 bool LinearSolverConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 {
-    const VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
+    const MatrixDeriv& c = *mstate->getC();
 
-    for(unsigned int c = 0; c < numConstraints; c++)
-    {
-        int indexC = mstate->getConstraintId()[c];
-        if (indexC == index)
-            return true;
-    }
-    return false;
+    return c.readLine(index) != c.end();
 }
 
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::verify_constraints()
 {
-    VecConst& constraints = *mstate->getC();
-    //unsigned int numConstraints = constraints.size();
-    sofa::helper::vector<unsigned int>& Id_vec = mstate->getConstraintId();
-    sofa::helper::vector<unsigned int>::iterator it_id(Id_vec.begin());
-
-    // debug
-    /*
-    bool change = false;
-
-    for (unsigned int i=0; i<numConstraints; i++)
-     {
-    	int indexI =  mstate->getConstraintId()[i];
-    	for (unsigned int j=0; j<i; j++)
-    	{
-    		int indexJ =  mstate->getConstraintId()[j];
-
-    		if (indexI==indexJ)
-    		{
-    			change = true;
-    			//debug
-    			std::cout<<"!! duplicate detected !! i= "<<i<<"  j= "<<j<<"index commun"<<indexI<<std::endl;
-    		}
-    	}
-     }
-
-
-     if(change)
-     {
-    	std::cout<<"******* BEFORE******** \n constraints.size() ="<<constraints.size()<<"Id_vec.size()"<<Id_vec.size()<<std::endl;
-    	for (unsigned int j=0; j<Id_vec.size(); j++)
-    	{
-    		std::cout<<"Id_vec["<<j<<"] = "<<Id_vec[j]<<std::endl;
-    	}
-     }
-    */
-
-
-    VecConstIt it_constI, it_constJ;
-
-    for (it_constI=constraints.begin() ; it_constI!= constraints.end(); it_constI++ )
-    {
-        unsigned int indexI= *it_id;
-
-        int j=0;
-        for (it_constJ=constraints.begin(); it_constJ!=it_constI; it_constJ++ )
-        {
-            unsigned int indexJ = Id_vec[j];
-
-            if (indexI==indexJ)
-            {
-
-                //debug
-                //std::cout<<"!! duplicate detected !!  j= "<<j<<"index commun"<<indexI<<std::endl;
-
-
-                /// on copie les données de I dans J
-                ConstraintIterator itConstraintI;
-                std::pair< ConstraintIterator, ConstraintIterator > iter=it_constI->data();
-                //ConstraintIterator itConstraintJ;
-
-                //std::cout<<" copie de I dans J"<<std::endl;
-                for (itConstraintI=iter.first; itConstraintI!=iter.second; itConstraintI++)
-                {
-
-                    unsigned int dof = itConstraintI->first;
-                    Deriv n = itConstraintI->second;
-                    it_constJ->add(dof,n);
-
-                }
-                //std::cout<<" suppression de I"<<std::endl;
-                constraints.erase(it_constI);
-                //std::cout<<" suppression de l'identifiant I"<<std::endl;
-                Id_vec.erase(it_id);
-                it_constI--;
-                it_id--;
-                break;
-            }
-            j++;
-
-        }
-
-        it_id++;
-    }
-
-    /*
-    if(change)
-    {
-    std::cout<<"******* AFTER ******** \n constraints.size() ="<<constraints.size()<<"Id_vec.size()"<<Id_vec.size()<<std::endl;
-    for (unsigned int j=0; j<Id_vec.size(); j++)
-    {
-    	std::cout<<"Id_vec["<<j<<"] = "<<Id_vec[j]<<std::endl;
-    }
-    }
-    */
-
+    // New design prevents duplicated constraints.
 }
+
+
+//template<class DataTypes>
+//void LinearSolverConstraintCorrection<DataTypes>::verify_constraints()
+//{
+//	VecConst& constraints = *mstate->getC();
+//	sofa::helper::vector<unsigned int>& Id_vec = mstate->getConstraintId();
+//	sofa::helper::vector<unsigned int>::iterator it_id(Id_vec.begin());
+//
+//	// debug
+//	/*
+//	bool change = false;
+//
+//	for (unsigned int i=0; i<numConstraints; i++)
+//	 {
+//		int indexI =  mstate->getConstraintId()[i];
+//		for (unsigned int j=0; j<i; j++)
+//		{
+//			int indexJ =  mstate->getConstraintId()[j];
+//
+//			if (indexI==indexJ)
+//			{
+//				change = true;
+//				//debug
+//				std::cout<<"!! duplicate detected !! i= "<<i<<"  j= "<<j<<"index commun"<<indexI<<std::endl;
+//			}
+//		}
+//	 }
+//
+//
+//	 if(change)
+//	 {
+//		std::cout<<"******* BEFORE******** \n constraints.size() ="<<constraints.size()<<"Id_vec.size()"<<Id_vec.size()<<std::endl;
+//		for (unsigned int j=0; j<Id_vec.size(); j++)
+//		{
+//			std::cout<<"Id_vec["<<j<<"] = "<<Id_vec[j]<<std::endl;
+//		}
+//	 }
+//	*/
+//
+//
+//	VecConstIt it_constI, it_constJ;
+//
+//	 for (it_constI=constraints.begin() ; it_constI!= constraints.end(); it_constI++ )
+//	 {
+//		unsigned int indexI= *it_id;
+//
+//		int j=0;
+//		for (it_constJ=constraints.begin(); it_constJ!=it_constI; it_constJ++ )
+//		{
+//			unsigned int indexJ = Id_vec[j];
+//
+//			if (indexI==indexJ)
+//			{
+//
+//				//debug
+//				//std::cout<<"!! duplicate detected !!  j= "<<j<<"index commun"<<indexI<<std::endl;
+//
+//
+//				/// on copie les données de I dans J
+//				ConstraintIterator itConstraintI;
+//                                std::pair< ConstraintIterator, ConstraintIterator > iter=it_constI->data();
+//				//ConstraintIterator itConstraintJ;
+//
+//				//std::cout<<" copie de I dans J"<<std::endl;
+//				for (itConstraintI=iter.first;itConstraintI!=iter.second;itConstraintI++)
+//				{
+//
+//					unsigned int dof = itConstraintI->first;
+//					Deriv n = itConstraintI->second;
+//					it_constJ->add(dof,n);
+//
+//				}
+//				//std::cout<<" suppression de I"<<std::endl;
+//				constraints.erase(it_constI);
+//				//std::cout<<" suppression de l'identifiant I"<<std::endl;
+//				Id_vec.erase(it_id);
+//				it_constI--;
+//				it_id--;
+//				break;
+//			}
+//			j++;
+//
+//		}
+//
+//		it_id++;
+//	 }
+//
+//	 /*
+//	 if(change)
+//	 {
+//		std::cout<<"******* AFTER ******** \n constraints.size() ="<<constraints.size()<<"Id_vec.size()"<<Id_vec.size()<<std::endl;
+//		for (unsigned int j=0; j<Id_vec.size(); j++)
+//		{
+//			std::cout<<"Id_vec["<<j<<"] = "<<Id_vec[j]<<std::endl;
+//		}
+//	 }
+//	 */
+//}
+
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& renumbering)
 {
-
     verify_constraints();
 
-    VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
-
+    const MatrixDeriv& constraints = *mstate->getC();
 
     constraint_disp.clear();
     constraint_disp.resize(mstate->getSize());
@@ -494,43 +485,40 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     constraint_dofs.clear();
     id_to_localIndex.clear();
 
-
-
-////// TODO : supprimer le classement par indice max
+    ////// TODO : supprimer le classement par indice max
     //std::vector<unsigned int> VecMaxDof;
     //VecMaxDof.resize(numConstraints);
 
-
+    const unsigned int nbConstraints = constraints.size();
     std::vector<unsigned int> VecMinDof;
-    VecMinDof.resize(numConstraints);
-
+    VecMinDof.resize(nbConstraints);
 
     int maxIndex = -1;
-    for(unsigned int c = 0; c < numConstraints; c++)
+    unsigned int c = 0;
+
+    MatrixDerivRowConstIterator rowItEnd = constraints.end();
+
+    for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
     {
-
-
         I_last_Dforce.clear();
 
-        int indexC = mstate->getConstraintId()[c];
+        const int indexC = rowIt.index();
 
         // resize table if necessary
         if (indexC > maxIndex)
         {
-            id_to_localIndex.resize(indexC+1, -1);   // debug : -1 value allows to know if the table is badly filled
+            id_to_localIndex.resize(indexC + 1, -1);   // debug : -1 value allows to know if the table is badly filled
             maxIndex = indexC;
         }
 
-        if(id_to_localIndex[indexC]!=-1)
+        if(id_to_localIndex[indexC] != -1)
         {
-
-            serr<<" WARNING: id_to_localIndex["<<indexC<<"] has already a constraint : "<<id_to_localIndex[indexC]<<" concurrent constraint ="<<c<<sendl;
-            serr<<" mstate->getConstraintId()["<<c<<"] = "<<mstate->getConstraintId()[c]<<sendl;
-
+            serr << " WARNING: id_to_localIndex[" << indexC << "] has already a constraint : " << id_to_localIndex[indexC] << " concurrent constraint =" << c << sendl;
+            serr << " mstate->getConstraintId()[" << c << "] = " << mstate->getConstraintId()[c] << sendl;
         }
+
         // buf the table of local indices
         id_to_localIndex[indexC] = c;
-
 
         // debug //
         //if (c==0)
@@ -539,79 +527,69 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
         // buf the value of force applied on concerned dof : constraint_force
         // buf a table of indice of involved dof : constraint_dofs
         double fC = f[indexC];
-        // debug
-        //std::cout<<"f["<<indexC<<"] = "<<fC<<std::endl;
-
-
-
 
         if (fC != 0.0)
         {
-            ConstraintIterator itConstraint;
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
 
-            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
-            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-
-                unsigned int dof = itConstraint->first;
-                Deriv n = itConstraint->second;
-                constraint_force[dof] +=n * fC;
+                const unsigned int dof = colIt.index();
+                constraint_force[dof] += colIt.val() * fC;
                 I_last_Dforce.push_back(dof);
-
             }
         }
 
-
         //////////// for wire optimization ////////////
-        ConstraintIterator itConstraint;
+
+        MatrixDerivColConstIterator colItEnd = rowIt.end();
+
         //VecMaxDof[c] = 0;
-        //for (itConstraint=constraints[c].getData().begin();itConstraint!=constraints[c].getData().end();itConstraint++)
-        //{
-        //	unsigned int dof = itConstraint->first;
-        //	constraint_dofs.push_back(dof);
-        //	if(dof>VecMaxDof[c]) VecMaxDof[c]=dof;
-        //}
 
-        /// a vector of the minimal indice of dof involved with each constraint is built
-        VecMinDof[c] = mstate->getSize()+1;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        /*for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            unsigned int dof = itConstraint->first;
-            constraint_dofs.push_back(dof);
-            if(dof<VecMinDof[c]) VecMinDof[c]=dof;
+        	const unsigned int dof = colIt.index();
+        	constraint_dofs.push_back(dof);
+        	if (dof > VecMaxDof[c])
+        		VecMaxDof[c] = dof;
+        }*/
 
+        VecMinDof[c] = mstate->getSize()+1;
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+        {
+            const unsigned int dof = colIt.index();
+            constraint_dofs.push_back(dof);
+            if (dof < VecMinDof[c])
+                VecMinDof[c] = dof;
         }
 
-        // debug
-        //std::cout<<VecMaxDof[c]<<" ";
+        c++;
     }
-
-
-
 
     if (wire_optimization.getValue())
     {
-
         std::vector< std::vector<int> > ordering_per_dof;
         ordering_per_dof.resize(mstate->getSize());
-        for(unsigned int c = 0; c < numConstraints; c++)
+
+        MatrixDerivRowConstIterator rowItEnd = constraints.end();
+        unsigned int c = 0;
+
+        for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
         {
-            int indexC = mstate->getConstraintId()[c];
-            ordering_per_dof[VecMinDof[c]].push_back(indexC);
+            ordering_per_dof[VecMinDof[c]].push_back(rowIt.index());
+            c++;
         }
 
-
         renumbering.clear();
-        for(int dof= 0; dof<mstate->getSize(); dof++)
+
+        for (int dof = 0; dof < mstate->getSize(); dof++)
         {
-            for (unsigned int c = 0; c< ordering_per_dof[dof].size(); c++)
+            for (unsigned int c = 0; c < ordering_per_dof[dof].size(); c++)
             {
                 renumbering.push_back(ordering_per_dof[dof][c]);
             }
-
         }
-
     }
 
     // debug
@@ -619,7 +597,6 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
     // constraint_dofs buff the DOF that are involved with the constraints
     constraint_dofs.unique();
-
 
     I_last_Dforce.sort();
     I_last_Dforce.unique();
@@ -655,14 +632,11 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     systemLHVector_buf->resize(systemSize) ;
     //std::cerr<<"resize ok"<<std::endl;
 
-
-
     for ( int i=0; i<mstate->getSize(); i++)
     {
         for  (unsigned int j=0; j<derivDim; j++)
             systemRHVector_buf->set(i*derivDim+j, constraint_force[i][j]);
     }
-
 
     // debug !!
     //double values[12];
@@ -670,29 +644,228 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     //addConstraintDisplacement(values, 0,0) ;
     //std::cout<<"values[0] ="<<values[0]<<std::endl;
 
-
     ///////// new : précalcul des liste d'indice ///////
     Vec_I_list_dof.clear(); // clear = the list is fill during the block compliance computation
-    Vec_I_list_dof.resize(numConstraints);
+    Vec_I_list_dof.resize(nbConstraints);
     last_disp = 0;
-    last_force= numConstraints-1;
+    last_force = nbConstraints - 1;
     _new_force = true;
-
-
-
-
-
 }
 
+
+//template<class DataTypes>
+//void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& renumbering)
+//{
+//	verify_constraints();
+//
+//	VecConst& constraints = *mstate->getC();
+//	 unsigned int numConstraints = constraints.size();
+//
+//
+//	constraint_disp.clear();
+//	constraint_disp.resize(mstate->getSize());
+//
+//	constraint_force.clear();
+//	constraint_force.resize(mstate->getSize());
+//
+//	constraint_dofs.clear();
+//	id_to_localIndex.clear();
+//
+//
+//
+//////// TODO : supprimer le classement par indice max
+//	//std::vector<unsigned int> VecMaxDof;
+//	//VecMaxDof.resize(numConstraints);
+//
+//
+//	std::vector<unsigned int> VecMinDof;
+//	VecMinDof.resize(numConstraints);
+//
+//
+//	int maxIndex = -1;
+//	for(unsigned int c = 0; c < numConstraints; c++)
+//	{
+//
+//
+//		I_last_Dforce.clear();
+//
+//		int indexC = mstate->getConstraintId()[c];
+//
+//		// resize table if necessary
+//		if (indexC > maxIndex){
+//			id_to_localIndex.resize(indexC+1, -1);   // debug : -1 value allows to know if the table is badly filled
+//			maxIndex = indexC;
+//		}
+//
+//		if(id_to_localIndex[indexC]!=-1)
+//		{
+//
+//                        serr<<" WARNING: id_to_localIndex["<<indexC<<"] has already a constraint : "<<id_to_localIndex[indexC]<<" concurrent constraint ="<<c<<sendl;
+//                        serr<<" mstate->getConstraintId()["<<c<<"] = "<<mstate->getConstraintId()[c]<<sendl;
+//
+//		}
+//		// buf the table of local indices
+//		id_to_localIndex[indexC] = c;
+//
+//
+//		// debug //
+//		//if (c==0)
+//		//	f[indexC]=1.0;
+//
+//		// buf the value of force applied on concerned dof : constraint_force
+//		// buf a table of indice of involved dof : constraint_dofs
+//		double fC = f[indexC];
+//		// debug
+//		//std::cout<<"f["<<indexC<<"] = "<<fC<<std::endl;
+//
+//
+//
+//
+//		if (fC != 0.0)
+//		{
+//			ConstraintIterator itConstraint;
+//
+//                        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+//			for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+//			{
+//
+//				unsigned int dof = itConstraint->first;
+//				Deriv n = itConstraint->second;
+//				constraint_force[dof] +=n * fC;
+//				I_last_Dforce.push_back(dof);
+//
+//			}
+//		}
+//
+//
+//		//////////// for wire optimization ////////////
+//		ConstraintIterator itConstraint;
+//		//VecMaxDof[c] = 0;
+//		//for (itConstraint=constraints[c].getData().begin();itConstraint!=constraints[c].getData().end();itConstraint++)
+//		//{
+//		//	unsigned int dof = itConstraint->first;
+//		//	constraint_dofs.push_back(dof);
+//		//	if(dof>VecMaxDof[c]) VecMaxDof[c]=dof;
+//		//}
+//
+//		/// a vector of the minimal indice of dof involved with each constraint is built
+//		VecMinDof[c] = mstate->getSize()+1;
+//                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+//		{
+//			unsigned int dof = itConstraint->first;
+//			constraint_dofs.push_back(dof);
+//			if(dof<VecMinDof[c]) VecMinDof[c]=dof;
+//
+//		}
+//
+//		// debug
+//		//std::cout<<VecMaxDof[c]<<" ";
+//	}
+//
+//
+//
+//
+//	if (wire_optimization.getValue())
+//	{
+//
+//		std::vector< std::vector<int> > ordering_per_dof;
+//		ordering_per_dof.resize(mstate->getSize());
+//		for(unsigned int c = 0; c < numConstraints; c++)
+//		{
+//			int indexC = mstate->getConstraintId()[c];
+//			ordering_per_dof[VecMinDof[c]].push_back(indexC);
+//		}
+//
+//
+//		renumbering.clear();
+//		for(int dof= 0; dof<mstate->getSize(); dof++)
+//		{
+//			for (unsigned int c = 0; c< ordering_per_dof[dof].size(); c++)
+//			{
+//				renumbering.push_back(ordering_per_dof[dof][c]);
+//			}
+//
+//		}
+//
+//	}
+//
+//	// debug
+//	//std::cout<<"in resetConstraintForce : constraint_force ="<<constraint_force<<std::endl;
+//
+//	// constraint_dofs buff the DOF that are involved with the constraints
+//	constraint_dofs.unique();
+//
+//
+//	I_last_Dforce.sort();
+//	I_last_Dforce.unique();
+//
+//	// debug
+//	/*std::cout<<"in resetConstraintForce I_last_Dforce.size() = "<<I_last_Dforce.size()<<"value : "<<std::endl;
+//	std::list<int>::const_iterator lit(I_last_Dforce.begin()), lend(I_last_Dforce.end());
+//		for(;lit!=lend;++lit)
+//		{
+//			int dof =*lit;
+//			std::cout<<dof<<" - ";
+//		}
+//		std::cout<<" "<<std::endl;
+//	*/
+//
+//	/////////////// SET INFO FOR LINEAR SOLVER /////////////
+//
+//	behavior::BaseMechanicalState::VecId forceID(behavior::BaseMechanicalState::VecId::V_DERIV, behavior::BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX);
+//    behavior::BaseMechanicalState::VecId dxID(behavior::BaseMechanicalState::VecId::dx()); //behavior::BaseMechanicalState::VecId::V_DERIV, behavior::BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX+1);
+//
+//    linearsolver->setSystemRHVector(forceID);
+//    linearsolver->setSystemLHVector(dxID);
+//
+//	systemMatrix_buf   = linearsolver->getSystemBaseMatrix();
+//    systemRHVector_buf = linearsolver->getSystemRHBaseVector();
+//	systemLHVector_buf = linearsolver->getSystemLHBaseVector();
+//
+//	// systemRHVector_buf is set to constraint_force;
+//	//std::cerr<<"WARNING: resize is called"<<std::endl;
+//    const unsigned int derivDim = Deriv::size();
+//	const unsigned int systemSize = mstate->getSize() * derivDim;
+//	systemRHVector_buf->resize(systemSize) ;
+//	systemLHVector_buf->resize(systemSize) ;
+//	//std::cerr<<"resize ok"<<std::endl;
+//
+//
+//
+//    for ( int i=0; i<mstate->getSize(); i++)
+//	{
+//		for  (unsigned int j=0; j<derivDim; j++)
+//			systemRHVector_buf->set(i*derivDim+j, constraint_force[i][j]);
+//	}
+//
+//
+//	// debug !!
+//   //double values[12];
+//   //values[0]=0.0;
+//   //addConstraintDisplacement(values, 0,0) ;
+//   //std::cout<<"values[0] ="<<values[0]<<std::endl;
+//
+//
+//	///////// new : précalcul des liste d'indice ///////
+//	Vec_I_list_dof.clear(); // clear = the list is fill during the block compliance computation
+//	Vec_I_list_dof.resize(numConstraints);
+//	last_disp = 0;
+//	last_force= numConstraints-1;
+//	_new_force = true;
+//
+//
+//
+//
+//
+//}
+
+
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin,int end)
+void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
 {
-
-
-    const VecConst& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *mstate->getC();
     const unsigned int derivDim = Deriv::size();
-
-
 
     /*
     I_last_Disp.clear();
@@ -712,7 +885,6 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
     last_disp = begin;
 
-
     /*
     std::cout<<"in addConstraintDisplacement I_last_Disp.size() = "<<I_last_Disp.size()<<" value : "<<std::endl;
     std::list<int>::const_iterator lit(I_last_Disp.begin()), lend(I_last_Disp.end());
@@ -725,87 +897,128 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
     */
     //std::cout<<"constraint_force : "<<constraint_force<<std::endl;
 
-
     linearsolver->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
 
     _new_force = false;
 
-
-
-    for ( int id_=begin; id_<=end; id_++)
+    for (int i = begin; i <= end; i++)
     {
-        //std::cout<<"dfree["<<id_<<"] ="<<d[id_];
-        int c = id_to_localIndex[id_];
-        ConstraintIterator itConstraint;
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(id_to_localIndex[i]);
 
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        if (rowIt != constraints.end())
         {
-            int dof = (int) itConstraint->first;
-            Deriv n = itConstraint->second;
-            Deriv Disp;
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
 
-            for(unsigned int j=0; j<derivDim; j++)
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                Disp[j] = (Real)(systemLHVector_buf->element(dof*derivDim + j) * odesolver->getPositionIntegrationFactor());
+                const unsigned int dof = colIt.index();
+                Deriv disp;
+
+                for(unsigned int j = 0; j < derivDim; j++)
+                {
+                    disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * odesolver->getPositionIntegrationFactor());
+                }
+
+                d[i] += colIt.val() * disp;
             }
-            d[id_] += n*Disp;
-
-
         }
-        //std::cout<<" - d["<<id_<<"] = "<<d[id_]<<std::endl;
     }
-
-
-
 }
+
+
+//template<class DataTypes>
+//void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin,int end)
+//{
+//	const VecConst& constraints = *mstate->getC();
+//	const unsigned int derivDim = Deriv::size();
+//
+//	/*
+//	I_last_Disp.clear();
+//	for ( int id_=begin; id_<=end; id_++)
+//	{
+//		int c = id_to_localIndex[id_];
+//		ConstraintIterator itConstraint;
+//		for (itConstraint=constraints[c].getData().begin();itConstraint!=constraints[c].getData().end();itConstraint++)
+//		{
+//			int dof = (int) itConstraint->first;
+//			I_last_Disp.push_back(dof);
+//		}
+//	}
+//	I_last_Disp.sort();
+//	I_last_Disp.unique();
+//	*/
+//
+//	last_disp = begin;
+//
+//	/*
+//	std::cout<<"in addConstraintDisplacement I_last_Disp.size() = "<<I_last_Disp.size()<<" value : "<<std::endl;
+//	std::list<int>::const_iterator lit(I_last_Disp.begin()), lend(I_last_Disp.end());
+//		for(;lit!=lend;++lit)
+//		{
+//			int dof =*lit;
+//			std::cout<<dof<<" - ";
+//		}
+//		std::cout<<" "<<std::endl;
+//	*/
+//	//std::cout<<"constraint_force : "<<constraint_force<<std::endl;
+//
+//	linearsolver->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
+//
+//	_new_force = false;
+//
+//	for ( int id_=begin; id_<=end; id_++)
+//	{
+//		//std::cout<<"dfree["<<id_<<"] ="<<d[id_];
+//		int c = id_to_localIndex[id_];
+//		ConstraintIterator itConstraint;
+//
+//                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+//		{
+//			int dof = (int) itConstraint->first;
+//			Deriv n = itConstraint->second;
+//			Deriv Disp;
+//
+//			for(unsigned int j=0; j<derivDim; j++){
+//			    Disp[j] = (Real)(systemLHVector_buf->element(dof*derivDim + j) * odesolver->getPositionIntegrationFactor());
+//			}
+//			d[id_] += n*Disp;
+//		}
+//		//std::cout<<" - d["<<id_<<"] = "<<d[id_]<<std::endl;
+//	}
+//}
+
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
 {
-    const VecConst& constraints = *mstate->getC();
+    const MatrixDeriv& constraints = *mstate->getC();
     const unsigned int derivDim = Deriv::size();
 
-    //std::cout<<" setConstraintDForce is called"<<std::endl;
-    // debug
-    //if (end<3)
-    //	std::cout<<"addDf - df["<<begin<<" to "<<end<<"] ="<< df[begin] << " " << df[begin+1] << " "<< df[begin+2] << std::endl;
-
-
-    if (update==false)
+    if (!update)
         return;
 
     _new_force = true;
-    //debug
+
     Deriv DF_c;
 
-    for ( int id_=begin; id_<=end; id_++)
+    for (int i = begin; i <= end; i++)
     {
-        int c = id_to_localIndex[id_];
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(id_to_localIndex[i]);
 
-        // debug
-        //std::cout<<" - setConstraintDForce : constraint"<< c <<std::endl;
-
-
-        ConstraintIterator itConstraint;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        if (rowIt != constraints.end())
         {
-            Deriv n = itConstraint->second;
-            int dof = (int) itConstraint->first;
-            //debug
-            //std::cout<<"constraint_force["<<dof<<"] = "<<constraint_force[dof] ;
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
 
-            constraint_force[dof] += n * df[id_];
-            //I_last_Dforce.push_back(dof);
-            //std::cout<<"     after ... constraint_force["<<dof<<"] = "<<constraint_force[dof] ;
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            {
+                const Deriv n = colIt.val();
+                const unsigned int dof = colIt.index();
 
-            DF_c +=  n * df[id_];
-
+                constraint_force[dof] += n * df[i];
+                DF_c +=  n * df[i];
+            }
         }
-
-        //std::cout<<std::endl;
-
     }
 
     /*
@@ -818,8 +1031,6 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
     last_force = begin;
     //debug
 
-
-
     std::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
     for(; it_dof!=it_end; ++it_dof)
     {
@@ -828,13 +1039,77 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
         for  (unsigned int j=0; j<derivDim; j++)
             systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
     }
-
-
-
-
-
-
 }
+
+
+//template<class DataTypes>
+//void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
+//{
+//	const VecConst& constraints = *mstate->getC();
+//	const unsigned int derivDim = Deriv::size();
+//
+//	//std::cout<<" setConstraintDForce is called"<<std::endl;
+//	// debug
+//	//if (end<3)
+//	//	std::cout<<"addDf - df["<<begin<<" to "<<end<<"] ="<< df[begin] << " " << df[begin+1] << " "<< df[begin+2] << std::endl;
+//
+//
+//	if (update==false)
+//		return;
+//
+//	_new_force = true;
+//	//debug
+//	Deriv DF_c;
+//
+//	for ( int id_=begin; id_<=end; id_++)
+//	{
+//		int c = id_to_localIndex[id_];
+//
+//		// debug
+//		//std::cout<<" - setConstraintDForce : constraint"<< c <<std::endl;
+//
+//
+//		ConstraintIterator itConstraint;
+//                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+//		{
+//			Deriv n = itConstraint->second;
+//			int dof = (int) itConstraint->first;
+//			//debug
+//			//std::cout<<"constraint_force["<<dof<<"] = "<<constraint_force[dof] ;
+//
+//			constraint_force[dof] += n * df[id_];
+//			//I_last_Dforce.push_back(dof);
+//			//std::cout<<"     after ... constraint_force["<<dof<<"] = "<<constraint_force[dof] ;
+//
+//			DF_c +=  n * df[id_];
+//
+//		}
+//
+//		//std::cout<<std::endl;
+//
+//	}
+//
+//	/*
+//	if (df[begin]<0)
+//	{
+//		std::cout<<" DF_c : "<< DF_c<< std::endl;
+//	}
+//	*/
+//
+//	last_force = begin;
+//	//debug
+//
+//	std::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
+//	for(;it_dof!=it_end;++it_dof)
+//	{
+//	    int dof =(*it_dof) ;
+//		//std::cout<<"dof -  "<<dof <<std::endl;
+//		for  (unsigned int j=0; j<derivDim; j++)
+//			systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
+//	}
+//}
+
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
@@ -849,75 +1124,156 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
     const unsigned int numDOFReals = numDOFs*N;
 
     // Compute J
-    VecConst& constraints = *mstate->getC();
-    //  const unsigned int numConstraints = constraints.size();
+    const MatrixDeriv& constraints = *mstate->getC();
     const unsigned int totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);
 
-
-
-    for (int id1=begin; id1<=end; id1++)
+    for (int i = begin; i <= end; i++)
     {
-        //std::cerr<<"constraint : "<<id1;
-        int c1 = id_to_localIndex[id1];
-        //std::cerr<<" local index : "<<c1<<std::endl;
+        int c1 = id_to_localIndex[i];
 
-        ConstraintIterator itConstraint1;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-        unsigned int dof_buf=0;
-        int debug=0;
-        for (itConstraint1=iter.first; itConstraint1!=iter.second; itConstraint1++)
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(c1);
+
+        if (rowIt != constraints.end())
         {
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
 
-            unsigned int dof = itConstraint1->first;
-            Deriv n = itConstraint1->second;
-            for (unsigned int r=0; r<N; ++r)
-                J.add(id1, dof*N+r, n[r]);
+            unsigned int dof_buf = 0;
+            int debug = 0;
 
-            if (debug!=0)
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                int test=dof_buf - dof;
-                if (test>2 || test< -2)
-                    sout<<"YES !!!! for constraint id1 dof1 = "<<dof_buf<<" dof2 = "<<dof<<sendl;
-            }
-            dof_buf =dof;
+                const unsigned int dof = colIt.index();
+                const Deriv n = colIt.val();
 
+                for (unsigned int r = 0; r < N; ++r)
+                    J.add(i, dof * N + r, n[r]);
+
+                if (debug!=0)
+                {
+                    int test = dof_buf - dof;
+                    if (test>2 || test< -2)
+                        sout << "YES !!!! for constraint id1 dof1 = " << dof_buf << " dof2 = " << dof << sendl;
+                }
+
+                dof_buf = dof;
+            }
         }
     }
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     linearsolver->addJMInvJt(W, &J, factor);
 
-
-
     // construction of  Vec_I_list_dof : vector containing, for each constraint block, the list of dof concerned
 
     ListIndex list_dof;
-    for ( int id_=begin; id_<=end; id_++)
-    {
-        int c = id_to_localIndex[id_];
-        ConstraintIterator itConstraint;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
 
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+    for (int i = begin; i <= end; i++)
+    {
+        int c = id_to_localIndex[i];
+
+        MatrixDerivRowConstIterator rowIt = constraints.readLine(c);
+
+        if (rowIt != constraints.end())
         {
-            int dof = (int) itConstraint->first;
-            list_dof.push_back(dof);
+            MatrixDerivColConstIterator colItEnd = rowIt.end();
+
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            {
+                list_dof.push_back(colIt.index());
+            }
         }
     }
+
     list_dof.sort();
     list_dof.unique();
-    for ( int id_=begin; id_<=end; id_++)
+
+    for (int i = begin; i <= end; i++)
     {
-        Vec_I_list_dof[id_] = list_dof;
+        Vec_I_list_dof[i] = list_dof;
     }
-
-
-
-
-
 }
+
+
+
+//template<class DataTypes>
+//void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+//{
+//    if (!mstate || !odesolver || !linearsolver) return;
+//
+//    // use the OdeSolver to get the position integration factor
+//    const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
+//
+//    const unsigned int numDOFs = mstate->getSize();
+//    const unsigned int N = Deriv::size();
+//    const unsigned int numDOFReals = numDOFs*N;
+//
+//    // Compute J
+//    VecConst& constraints = *mstate->getC();
+//  //  const unsigned int numConstraints = constraints.size();
+//    const unsigned int totalNumConstraints = W->rowSize();
+//
+//    J.resize(totalNumConstraints, numDOFReals);
+//
+//
+//
+//	for (int id1=begin; id1<=end; id1++)
+//	{
+//		//std::cerr<<"constraint : "<<id1;
+//		int c1 = id_to_localIndex[id1];
+//		//std::cerr<<" local index : "<<c1<<std::endl;
+//
+//		ConstraintIterator itConstraint1;
+//                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+//		unsigned int dof_buf=0;
+//      int debug=0;
+//		for (itConstraint1=iter.first;itConstraint1!=iter.second;itConstraint1++)
+//		{
+//
+//			unsigned int dof = itConstraint1->first;
+//            Deriv n = itConstraint1->second;
+//            for (unsigned int r=0;r<N;++r)
+//                J.add(id1, dof*N+r, n[r]);
+//
+//         if (debug!=0)
+//			{
+//				int test=dof_buf - dof;
+//				if (test>2 || test< -2)
+//               sout<<"YES !!!! for constraint id1 dof1 = "<<dof_buf<<" dof2 = "<<dof<<sendl;
+//			}
+//			dof_buf =dof;
+//
+//		}
+//	}
+//
+//	// use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+//    linearsolver->addJMInvJt(W, &J, factor);
+//
+//
+//
+//	// construction of  Vec_I_list_dof : vector containing, for each constraint block, the list of dof concerned
+//
+//	ListIndex list_dof;
+//	for ( int id_=begin; id_<=end; id_++)
+//	{
+//		int c = id_to_localIndex[id_];
+//		ConstraintIterator itConstraint;
+//                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+//
+//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+//		{
+//			int dof = (int) itConstraint->first;
+//			list_dof.push_back(dof);
+//		}
+//	}
+//	list_dof.sort();
+//	list_dof.unique();
+//	for ( int id_=begin; id_<=end; id_++)
+//	{
+//		Vec_I_list_dof[id_] = list_dof;
+//	}
+//}
 
 
 } // namespace collision

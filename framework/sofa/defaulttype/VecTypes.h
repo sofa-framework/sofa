@@ -33,7 +33,8 @@
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/SparseConstraintTypes.h>
+//#include <sofa/defaulttype/SparseConstraintTypes.h>
+#include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <iostream>
 #include <algorithm>
 
@@ -75,16 +76,17 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
+//	typedef SparseConstraint<Coord> SparseVecCoord;
+//	typedef SparseConstraint<Deriv> SparseVecDeriv;
+//
+//	//! All the Constraints applied to a state Vector
+//#ifndef SOFA_SMP
+//	typedef	vector<SparseVecDeriv> VecConst;
+//#else /* SOFA_SMP */
+//	typedef	SharedVector<SparseVecDeriv> VecConst;
+//#endif /* SOFA_SMP */
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
-
-    //! All the Constraints applied to a state Vector
-#ifndef SOFA_SMP
-    typedef	vector<SparseVecDeriv> VecConst;
-#else /* SOFA_SMP */
-    typedef	SharedVector<SparseVecDeriv> VecConst;
-#endif /* SOFA_SMP */
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T z)
@@ -374,15 +376,17 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
+//	typedef SparseConstraint<Coord> SparseVecCoord;
+//	typedef SparseConstraint<Deriv> SparseVecDeriv;
+//
+//	//! All the Constraints applied to a state Vector
+//#ifndef SOFA_SMP
+//	typedef	vector<SparseVecDeriv> VecConst;
+//#else /* SOFA_SMP */
+//	typedef	SharedVector<SparseVecDeriv> VecConst;
+//#endif /* SOFA_SMP */
 
-    //! All the Constraints applied to a state Vector
-#ifndef SOFA_SMP
-    typedef	vector<SparseVecDeriv> VecConst;
-#else /* SOFA_SMP */
-    typedef	SharedVector<SparseVecDeriv> VecConst;
-#endif /* SOFA_SMP */
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T z)

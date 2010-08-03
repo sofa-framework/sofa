@@ -369,107 +369,239 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     }
 }
 
-template <class BaseMapping>
-void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
-{
 
-    if (!topoMap) return;
-    const sofa::helper::vector< std::pair<topology::Mesh2PointTopologicalMapping::Element,int> >& pointSource = topoMap->getPointSource();
-    if (pointSource.empty()) return;
+template <class BaseMapping>
+void Mesh2PointMechanicalMapping<BaseMapping>::applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+{
+    using topology::Mesh2PointTopologicalMapping;
+
+    if (!topoMap)
+        return;
+
+    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, int> >& pointSource = topoMap->getPointSource();
+
+    if (pointSource.empty())
+        return;
+
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
     const core::topology::BaseMeshTopology::SeqQuads& quads = inputTopo->getQuads();
     const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = inputTopo->getTetrahedra();
     const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
-    int offset = out.size();
-    out.resize(offset+in.size());
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
-    for(unsigned int i = 0; i < in.size(); ++i)
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
         {
-            unsigned int indexIn = itOut->first;
-            OutDeriv data = (OutDeriv) itOut->second;
-            std::pair<topology::Mesh2PointTopologicalMapping::Element,int> source = pointSource[indexIn];
-            switch (source.first)
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            while (colIt != colItEnd)
             {
-            case topology::Mesh2PointTopologicalMapping::POINT:
-            {
-                out[i+offset].add( source.second , data );
-                break;
-            }
-            case topology::Mesh2PointTopologicalMapping::EDGE:
-            {
-                core::topology::BaseMeshTopology::Edge e = edges[source.second];
-                typename In::Deriv f = data;
-                double fx = topoMap->getEdgeBaryCoords()[indexIn][0];
-                out[i+offset].add( e[0] , f*(1-fx) );
-                out[i+offset].add( e[1] , f*fx );
-                break;
-            }
-            case topology::Mesh2PointTopologicalMapping::TRIANGLE:
-            {
-                core::topology::BaseMeshTopology::Triangle t = triangles[source.second];
-                typename In::Deriv f = data;
-                double fx = topoMap->getTriangleBaryCoords()[indexIn][0];
-                double fy = topoMap->getTriangleBaryCoords()[indexIn][1];
-                out[i+offset].add( t[0] , f*(1-fx-fy) );
-                out[i+offset].add( t[1] , f*fx );
-                out[i+offset].add( t[2] , f*fy );
-                break;
-            }
-            case topology::Mesh2PointTopologicalMapping::QUAD:
-            {
-                core::topology::BaseMeshTopology::Quad q = quads[source.second];
-                typename In::Deriv f = data;
-                double fx = topoMap->getQuadBaryCoords()[indexIn][0];
-                double fy = topoMap->getQuadBaryCoords()[indexIn][1];
-                out[i+offset].add( q[0] , f*((1-fx) * (1-fy)) );
-                out[i+offset].add( q[1] , f*((  fx) * (1-fy)) );
-                out[i+offset].add( q[0] , f*((1-fx) * (  fy)) );
-                out[i+offset].add( q[1] , f*((  fx) * (  fy)) );
-                break;
-            }
-            case topology::Mesh2PointTopologicalMapping::TETRA:
-            {
-                core::topology::BaseMeshTopology::Tetra t = tetrahedra[source.second];
-                typename In::Deriv f = data;
-                double fx = topoMap->getTetraBaryCoords()[indexIn][0];
-                double fy = topoMap->getTetraBaryCoords()[indexIn][1];
-                double fz = topoMap->getTetraBaryCoords()[indexIn][2];
-                out[i+offset].add( t[0] , f*(1-fx-fy-fz) );
-                out[i+offset].add( t[1] , f*fx );
-                out[i+offset].add( t[0] , f*fy );
-                out[i+offset].add( t[1] , f*fz );
-                break;
-            }
-            case topology::Mesh2PointTopologicalMapping::HEXA:
-            {
-                core::topology::BaseMeshTopology::Hexa h = hexahedra[source.second];
-                typename In::Deriv f = data;
-                double fx = topoMap->getHexaBaryCoords()[indexIn][0];
-                double fy = topoMap->getHexaBaryCoords()[indexIn][1];
-                double fz = topoMap->getHexaBaryCoords()[indexIn][2];
-                out[i+offset].add( h[0] , f*((1-fx) * (1-fy) * (1-fz)) );
-                out[i+offset].add( h[1] , f*((  fx) * (1-fy) * (1-fz)) );
-                out[i+offset].add( h[0] , f*((1-fx) * (  fy) * (1-fz)) );
-                out[i+offset].add( h[1] , f*((  fx) * (  fy) * (1-fz)) );
-                out[i+offset].add( h[0] , f*((1-fx) * (1-fy) * (  fz)) );
-                out[i+offset].add( h[1] , f*((  fx) * (1-fy) * (  fz)) );
-                out[i+offset].add( h[0] , f*((  fx) * (  fy) * (  fz)) );
-                out[i+offset].add( h[1] , f*((1-fx) * (  fy) * (  fz)) );
-                break;
-            }
-            default:
-                break;
+                const unsigned int indexIn = colIt.index();
+                const OutDeriv data = colIt.val();
+                std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexIn];
+
+                switch (source.first)
+                {
+                case topology::Mesh2PointTopologicalMapping::POINT:
+                {
+                    o.addCol(source.second, data);
+
+                    break;
+                }
+                case topology::Mesh2PointTopologicalMapping::EDGE:
+                {
+                    core::topology::BaseMeshTopology::Edge e = edges[source.second];
+                    typename In::Deriv f = data;
+                    double fx = topoMap->getEdgeBaryCoords()[indexIn][0];
+
+                    o.addCol(e[0], f * (1 - fx));
+                    o.addCol(e[1], f * fx);
+
+                    break;
+                }
+                case topology::Mesh2PointTopologicalMapping::TRIANGLE:
+                {
+                    core::topology::BaseMeshTopology::Triangle t = triangles[source.second];
+                    typename In::Deriv f = data;
+                    double fx = topoMap->getTriangleBaryCoords()[indexIn][0];
+                    double fy = topoMap->getTriangleBaryCoords()[indexIn][1];
+
+                    o.addCol(t[0], f * (1 - fx - fy));
+                    o.addCol(t[1], f * fx);
+                    o.addCol(t[2], f * fy);
+
+                    break;
+                }
+                case topology::Mesh2PointTopologicalMapping::QUAD:
+                {
+                    core::topology::BaseMeshTopology::Quad q = quads[source.second];
+                    typename In::Deriv f = data;
+                    double fx = topoMap->getQuadBaryCoords()[indexIn][0];
+                    double fy = topoMap->getQuadBaryCoords()[indexIn][1];
+
+                    o.addCol(q[0], f * ((1-fx) * (1-fy)));
+                    o.addCol(q[1], f * (fx * (1-fy)));
+                    o.addCol(q[0], f * ((1-fx) * fy));
+                    o.addCol(q[1], f * (fx * fy));
+
+                    break;
+                }
+                case topology::Mesh2PointTopologicalMapping::TETRA:
+                {
+                    core::topology::BaseMeshTopology::Tetra t = tetrahedra[source.second];
+                    typename In::Deriv f = data;
+                    double fx = topoMap->getTetraBaryCoords()[indexIn][0];
+                    double fy = topoMap->getTetraBaryCoords()[indexIn][1];
+                    double fz = topoMap->getTetraBaryCoords()[indexIn][2];
+
+                    o.addCol(t[0], f * (1-fx-fy-fz));
+                    o.addCol(t[1], f * fx);
+                    o.addCol(t[0], f * fy);
+                    o.addCol(t[1], f * fz);
+
+                    break;
+                }
+                case topology::Mesh2PointTopologicalMapping::HEXA:
+                {
+                    core::topology::BaseMeshTopology::Hexa h = hexahedra[source.second];
+                    typename In::Deriv f = data;
+                    const double fx = topoMap->getHexaBaryCoords()[indexIn][0];
+                    const double fy = topoMap->getHexaBaryCoords()[indexIn][1];
+                    const double fz = topoMap->getHexaBaryCoords()[indexIn][2];
+                    const double oneMinFx = 1 - fx;
+                    const double oneMinFy = 1 - fy;
+                    const double oneMinFz = 1 - fz;
+
+                    o.addCol(h[0] , f * oneMinFx * oneMinFy * oneMinFz);
+                    o.addCol(h[1] , f * fx * oneMinFy * oneMinFz);
+                    o.addCol(h[0] , f * oneMinFx * fy * oneMinFz);
+                    o.addCol(h[1] , f * fx * fy * oneMinFz);
+                    o.addCol(h[0] , f * oneMinFx * oneMinFy * fz);
+                    o.addCol(h[1] , f * fx * oneMinFy * fz);
+                    o.addCol(h[0] , f * fx * fy * fz);
+                    o.addCol(h[1] , f * oneMinFx * fy * fz);
+
+                    break;
+                }
+                default:
+
+                    break;
+                }
+
+                ++colIt;
             }
         }
     }
 }
+
+
+//template <class BaseMapping>
+//void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+//{
+//
+//    if (!topoMap) return;
+//    const sofa::helper::vector< std::pair<topology::Mesh2PointTopologicalMapping::Element,int> >& pointSource = topoMap->getPointSource();
+//    if (pointSource.empty()) return;
+//    const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
+//    const core::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
+//    const core::topology::BaseMeshTopology::SeqQuads& quads = inputTopo->getQuads();
+//    const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = inputTopo->getTetrahedra();
+//    const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
+//
+//    int offset = out.size();
+//    out.resize(offset+in.size());
+//
+//    for(unsigned int i = 0; i < in.size(); ++i)
+//    {
+//      OutConstraintIterator itOut;
+//      std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+//
+//      for (itOut=iter.first;itOut!=iter.second;itOut++)
+//        {
+//            unsigned int indexIn = itOut->first;
+//            OutDeriv data = (OutDeriv) itOut->second;
+//	    std::pair<topology::Mesh2PointTopologicalMapping::Element,int> source = pointSource[indexIn];
+//	    switch (source.first) {
+//	    case topology::Mesh2PointTopologicalMapping::POINT:
+//	    {
+//		out[i+offset].add( source.second , data );
+//		break;
+//	    }
+//	    case topology::Mesh2PointTopologicalMapping::EDGE:
+//	    {
+//		core::topology::BaseMeshTopology::Edge e = edges[source.second];
+//		typename In::Deriv f = data;
+//		double fx = topoMap->getEdgeBaryCoords()[indexIn][0];
+//                out[i+offset].add( e[0] , f*(1-fx) );
+//                out[i+offset].add( e[1] , f*fx );
+//		break;
+//	    }
+//	    case topology::Mesh2PointTopologicalMapping::TRIANGLE:
+//	    {
+//		core::topology::BaseMeshTopology::Triangle t = triangles[source.second];
+//		typename In::Deriv f = data;
+//		double fx = topoMap->getTriangleBaryCoords()[indexIn][0];
+//		double fy = topoMap->getTriangleBaryCoords()[indexIn][1];
+//                out[i+offset].add( t[0] , f*(1-fx-fy) );
+//                out[i+offset].add( t[1] , f*fx );
+//                out[i+offset].add( t[2] , f*fy );
+//		break;
+//	    }
+//	    case topology::Mesh2PointTopologicalMapping::QUAD:
+//	    {
+//		core::topology::BaseMeshTopology::Quad q = quads[source.second];
+//		typename In::Deriv f = data;
+//		double fx = topoMap->getQuadBaryCoords()[indexIn][0];
+//		double fy = topoMap->getQuadBaryCoords()[indexIn][1];
+//                out[i+offset].add( q[0] , f*((1-fx) * (1-fy)) );
+//                out[i+offset].add( q[1] , f*((  fx) * (1-fy)) );
+//                out[i+offset].add( q[0] , f*((1-fx) * (  fy)) );
+//                out[i+offset].add( q[1] , f*((  fx) * (  fy)) );
+//		break;
+//	    }
+//	    case topology::Mesh2PointTopologicalMapping::TETRA:
+//	    {
+//		core::topology::BaseMeshTopology::Tetra t = tetrahedra[source.second];
+//		typename In::Deriv f = data;
+//		double fx = topoMap->getTetraBaryCoords()[indexIn][0];
+//		double fy = topoMap->getTetraBaryCoords()[indexIn][1];
+//		double fz = topoMap->getTetraBaryCoords()[indexIn][2];
+//                out[i+offset].add( t[0] , f*(1-fx-fy-fz) );
+//                out[i+offset].add( t[1] , f*fx );
+//                out[i+offset].add( t[0] , f*fy );
+//                out[i+offset].add( t[1] , f*fz );
+//		break;
+//	    }
+//	    case topology::Mesh2PointTopologicalMapping::HEXA:
+//	    {
+//		core::topology::BaseMeshTopology::Hexa h = hexahedra[source.second];
+//		typename In::Deriv f = data;
+//		double fx = topoMap->getHexaBaryCoords()[indexIn][0];
+//		double fy = topoMap->getHexaBaryCoords()[indexIn][1];
+//		double fz = topoMap->getHexaBaryCoords()[indexIn][2];
+//                out[i+offset].add( h[0] , f*((1-fx) * (1-fy) * (1-fz)) );
+//                out[i+offset].add( h[1] , f*((  fx) * (1-fy) * (1-fz)) );
+//                out[i+offset].add( h[0] , f*((1-fx) * (  fy) * (1-fz)) );
+//                out[i+offset].add( h[1] , f*((  fx) * (  fy) * (1-fz)) );
+//                out[i+offset].add( h[0] , f*((1-fx) * (1-fy) * (  fz)) );
+//                out[i+offset].add( h[1] , f*((  fx) * (1-fy) * (  fz)) );
+//                out[i+offset].add( h[0] , f*((  fx) * (  fy) * (  fz)) );
+//                out[i+offset].add( h[1] , f*((1-fx) * (  fy) * (  fz)) );
+//		break;
+//	    }
+//	    default:
+//		break;
+//	    }
+//	}
+//    }
+//}
 
 } // namespace mapping
 

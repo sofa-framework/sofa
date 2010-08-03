@@ -71,7 +71,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef helper::vector<Real> VecDensity;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
@@ -284,7 +285,7 @@ public:
         projectResponseT(dx);
     }
 
-    void projectResponse(SparseVecDeriv& dx)
+    void projectResponse(MatrixDerivRowType& dx)
     {
         projectResponseT(dx);
     }

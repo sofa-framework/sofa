@@ -61,7 +61,6 @@ class WarpPreconditioner : public core::behavior::LinearSolver
 public:
     SOFA_CLASS(SOFA_TEMPLATE(WarpPreconditioner,TDataTypes),sofa::core::behavior::LinearSolver);
     typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;

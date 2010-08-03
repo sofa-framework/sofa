@@ -125,7 +125,7 @@ void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& 
 }
 
 template <class BaseMapping>
-void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& /*out*/, const typename Out::VecConst& /*in*/ )
+void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
 {
     // TODO
 

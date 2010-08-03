@@ -116,6 +116,9 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constr
     const VecCoord &x1=*(this->constrainedObject1->getVecCoord(position.index));
     const VecCoord &x2=*(this->constrainedObject2->getVecCoord(position.index));
 
+    MatrixDeriv& c1 = *this->constrainedObject1->getC();
+    MatrixDeriv& c2 = *this->constrainedObject2->getC();
+
     const SeqEdges &edges =  vecConstraint.getValue();
 
     if (this->l0.size() != edges.size()) updateRestLength();
@@ -129,12 +132,12 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constr
 
         const Deriv V12 = getDirection(edges[i], x1, x2);
 
-        SparseVecDeriv V1; V1.add(idx1, V12);
-        SparseVecDeriv V2; V2.add(idx2,-V12);
+        MatrixDerivRowIterator c1_it = c1.writeLine(constraintId);
+        c1_it.addCol(idx1,V12);
+        MatrixDerivRowIterator c2_it = c2.writeLine(constraintId);
+        c2_it.addCol(idx2,-V12);
 
         registeredConstraints.push_back(constraintId);
-        registerEquationInJ1(constraintId,V1);
-        registerEquationInJ2(constraintId,V2);
         constraintId++;
 
         this->constrainedObject1->forceMask.insertEntry(idx1);
