@@ -39,7 +39,7 @@
 				</Node>
 			
 			<Node name="Constraints">
-				<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1	-1.25 -1.25 1.25"/>
+				<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1 -1.25 -1.25 1.25"/>
 				<Object type="RigidMapping" />
 				</Node>
 		</Node>
