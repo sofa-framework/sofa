@@ -344,7 +344,7 @@ void CurveMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
 }
 
 template <class BaseMapping>
-void CurveMapping<BaseMapping>::applyJT( typename In::VecConst& /*out*/, const typename Out::VecConst& /*in*/ )
+void CurveMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
 {
 }
 

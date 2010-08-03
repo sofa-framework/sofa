@@ -79,7 +79,6 @@ public:
     typedef typename InRoot::VecCoord InRootVecCoord;
     typedef typename InRoot::Deriv InRootDeriv;
     typedef typename InRoot::VecDeriv InRootVecDeriv;
-    typedef typename InRoot::VecConst InRootVecConst;
 
     typedef typename core::behavior::BaseMechanicalState::VecId VecId;
 
@@ -117,7 +116,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outroot );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, typename InRoot::MatrixDeriv* outroot );
 
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
@@ -135,7 +134,7 @@ public:
         applyJT(out,in, NULL);
     }
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
     {
         applyJT(out,in, NULL);
     }

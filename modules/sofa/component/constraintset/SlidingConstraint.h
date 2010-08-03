@@ -47,8 +47,8 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecConst VecConst;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
@@ -65,7 +65,7 @@ protected:
     Data<int> m2a;
     Data<int> m2b;
 
-    Real dist;	// constraint violation
+    Real m_dist;	// constraint violation
     Real thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
 
 public:

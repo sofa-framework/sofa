@@ -62,7 +62,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;

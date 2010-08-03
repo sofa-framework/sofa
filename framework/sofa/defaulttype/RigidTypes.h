@@ -28,9 +28,10 @@
 #define SOFA_DEFAULTTYPE_RIGIDTYPES_H
 
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/SparseConstraintTypes.h>
+//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 //#include <sofa/core/behavior/Mass.h>
 #ifdef SOFA_SMP
@@ -597,15 +598,17 @@ public:
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
+//	typedef SparseConstraint<Coord> SparseVecCoord;
+//	typedef SparseConstraint<Deriv> SparseVecDeriv;
+//
+//    //! All the Constraints applied to a state Vector
+//#ifndef SOFA_SMP
+//    typedef	vector<SparseVecDeriv> VecConst;
+//#else /* SOFA_SMP */
+//    typedef	SharedVector<SparseVecDeriv> VecConst;
+//#endif /* SOFA_SMP */
 
-    //! All the Constraints applied to a state Vector
-#ifndef SOFA_SMP
-    typedef	vector<SparseVecDeriv> VecConst;
-#else /* SOFA_SMP */
-    typedef	SharedVector<SparseVecDeriv> VecConst;
-#endif /* SOFA_SMP */
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
 #ifndef SOFA_SMP
     typedef vector<Coord> VecCoord;
@@ -1237,19 +1240,23 @@ public:
     typedef SharedVector<Deriv> VecDeriv;
 #endif /* SOFA_SMP */
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
+
 #ifndef SOFA_SMP
     typedef vector<Real> VecReal;
 #else /* SOFA_SMP */
     typedef SharedVector<Real> VecReal;
 #endif /* SOFA_SMP */
 
-#ifndef SOFA_SMP
-    typedef	vector<SparseVecDeriv> VecConst;
-#else /* SOFA_SMP */
-    typedef	SharedVector<SparseVecDeriv> VecConst;
-#endif /* SOFA_SMP */
+//    typedef SparseConstraint<Coord> SparseVecCoord;
+//    typedef SparseConstraint<Deriv> SparseVecDeriv;
+//
+//#ifndef SOFA_SMP
+//    typedef	vector<SparseVecDeriv> VecConst;
+//#else /* SOFA_SMP */
+//    typedef	SharedVector<SparseVecDeriv> VecConst;
+//#endif /* SOFA_SMP */
+
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T)

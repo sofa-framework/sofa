@@ -232,24 +232,29 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
 }
 
 template <class BaseMapping>
-void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void IdentityMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
-
-    unsigned int outSize = out.size();
-    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
-    //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
-    for(unsigned int i=0; i<in.size(); i++)
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        typename In::SparseVecDeriv& o = out[i+outSize];
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
         {
-            unsigned int indexIn = itOut->first;
-            InDeriv data; eq(data, itOut->second);
-            o.add( indexIn, data);
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            while (colIt != colItEnd)
+            {
+                InDeriv data;
+                eq(data, colIt.val());
+
+                o.addCol(colIt.index(), data);
+
+                ++colIt;
+            }
         }
     }
 }

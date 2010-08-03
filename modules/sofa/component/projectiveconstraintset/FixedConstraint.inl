@@ -197,9 +197,9 @@ void FixedConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+void FixedConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
 {
-    projectResponseT<SparseVecDeriv>(dx);
+    projectResponseT<MatrixDerivRowType>(dx);
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :

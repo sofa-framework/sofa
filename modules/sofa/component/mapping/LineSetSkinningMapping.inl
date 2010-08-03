@@ -335,43 +335,75 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, 
 }
 
 template <class BasicMapping>
-void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
-    //out.clear();
-    unsigned int outSize = out.size();
-    out.resize(outSize+in.size());
-
     InVecCoord& xfrom = *this->fromModel->getX();
 
-    //serr<<"applyJT for constraints called : in.size() = "<<in.size()<<sendl;
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
-    for(unsigned int i=0; i<in.size(); i++)
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
         {
-            unsigned int indexIn = itOut->first;
-            OutDeriv data = (OutDeriv) itOut->second;
-            int verticeIndex = indexIn;
-            const OutDeriv d = data;
-            //printf(" normale : %f %f %f",d.x(), d.y(), d.z());
-            for(unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            while (colIt != colItEnd)
             {
-                influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-                Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
-                InDeriv direction;
-                direction.getVCenter() = d * iline.weight;
-                //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
-                direction.getVOrientation() = IP.cross(d) * iline.weight;
-                out[outSize+i].add(t->getLine(iline.lineIndex)[0], direction);
+                const OutDeriv data = colIt.val();
+                const unsigned int verticeIndex = colIt.index();
+
+                //printf(" normale : %f %f %f",d.x(), d.y(), d.z());
+                for (unsigned int lineInfluencedIndex = 0; lineInfluencedIndex < linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
+                {
+                    influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
+                    Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+                    InDeriv direction;
+                    direction.getVCenter() = data * iline.weight;
+                    //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
+                    direction.getVOrientation() = IP.cross(data) * iline.weight;
+
+                    o.addCol(t->getLine(iline.lineIndex)[0], direction);
+                }
+
+                ++colIt;
             }
         }
     }
 
+    ////out.clear();
+    //unsigned int outSize = out.size();
+    //out.resize(outSize+in.size());
 
-
+    //InVecCoord& xfrom = *this->fromModel->getX();
+    //
+    //for(unsigned int i=0; i<in.size(); i++)
+    //{
+    //	OutConstraintIterator itOut;
+    //	std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+    //
+    //	for (itOut=iter.first;itOut!=iter.second;itOut++)
+    //	{
+    //		unsigned int indexIn = itOut->first;
+    //		OutDeriv data = (OutDeriv) itOut->second;
+    //		int verticeIndex = indexIn;
+    //		const OutDeriv d = data;
+    //		//printf(" normale : %f %f %f",d.x(), d.y(), d.z());
+    //		for(unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
+    //		{
+    //			influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
+    //			Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+    //			InDeriv direction;
+    //			direction.getVCenter() = d * iline.weight;
+    //			//printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
+    //			direction.getVOrientation() = IP.cross(d) * iline.weight;
+    //			out[outSize+i].add(t->getLine(iline.lineIndex)[0], direction);
+    //		}
+    //	}
+    //}
 }
 
 

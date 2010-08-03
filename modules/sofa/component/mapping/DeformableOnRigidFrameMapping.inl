@@ -467,78 +467,109 @@ void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecDeriv
 }
 
 template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecConst&  out , const typename Out::VecConst&  in , typename InRoot::VecConst*  outroot)
+void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::MatrixDeriv&  out , const typename Out::MatrixDeriv&  in , typename InRoot::MatrixDeriv*  outroot)
 {
-    int outSize=out.size();
-    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
     if (rootModel)
     {
-        int outRootSize = outroot->size();
-        outroot->resize(in.size() + outRootSize); // we can accumulate in "out" constraints from several mappings
+        typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
-        /*       switch (repartition.getValue().size())
-               {
-               case 0:
-                 {
-         */
-
-
-
-        for(unsigned int i=0; i<in.size(); i++)
+        for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
         {
-            Vector v,omega;
-            OutConstraintIterator itIn;
-            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+            typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+            typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-            for (itIn=iter.first; itIn!=iter.second; itIn++)
+            // Creates a constraints if the input constraint is not empty.
+            if (colIt != colItEnd)
             {
-                const unsigned int node_index = itIn->first;// index of the node
-                // out = Jt in
-                // Jt = [ I     ]
-                //      [ -OM^t ]
-                // -OM^t = OM^
+                Vector v, omega;
 
-                const Deriv f = (Deriv) itIn->second;
-                v += f;
-                omega += cross(rotatedPoints[node_index],f);
-                InDeriv f_deform = rootX.getOrientation().inverseRotate(f);
-                out[outSize+i].add(node_index,f_deform);
+                typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+                typename InRoot::MatrixDeriv::RowIterator oRoot = outroot->writeLine(rowIt.index());
 
+                while (colIt != colItEnd)
+                {
+                    const unsigned int node_index = colIt.index();
+                    // out = Jt in
+                    // Jt = [ I     ]
+                    //      [ -OM^t ]
+                    // -OM^t = OM^
+
+                    const Deriv f = colIt.val();
+                    v += f;
+                    omega += cross(rotatedPoints[node_index], f);
+                    InDeriv f_deform = rootX.getOrientation().inverseRotate(f);
+
+                    o.addCol(node_index, f_deform);
+
+                    ++colIt;
+                }
+
+                const InRoot::Deriv result(v, omega);
+
+                if (!indexFromEnd.getValue())
+                {
+                    oRoot.addCol(index.getValue(), result);
+                }
+                else
+                {
+                    // Commented by PJ. Bug??
+                    // oRoot.addCol(out.size() - 1 - index.getValue(), result);
+
+                    const unsigned int numDofs = this->getFromModel()->getX()->size();
+                    oRoot.addCol(numDofs - 1 - index.getValue(), result);
+                }
             }
-
-            const InRoot::Deriv result(v, omega);
-            if (!indexFromEnd.getValue())
-            {
-                (*outroot)[outRootSize+i].add(index.getValue(), result);
-            }
-            else
-            {
-                (*outroot)[outRootSize+i].add(out.size() - 1 - index.getValue(), result);
-            }
-            /*
-            }
-            break;
-            }
-
-            case 1://one value specified : uniform repartition mapping on the input dofs
-             std::cout<<"DeformableOnRigidFrameMapping:Case 1 not implemented yet"<<std::endl;
-             break;
-
-            default:
-             std::cout<<"DeformableOnRigidFrameMapping:Defaut case not implemented yet"<<std::endl;
-             break;
-
-             */
         }
     }
-
-
     else
     {
 
     }
 
+    //int outSize=out.size();
+    //out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
 
+    //if (rootModel)
+    //{
+    //	int outRootSize = outroot->size();
+    //	outroot->resize(in.size() + outRootSize); // we can accumulate in "out" constraints from several mappings
+
+    //	for(unsigned int i=0; i<in.size(); i++)
+    //	{
+    //		Vector v,omega;
+    //		OutConstraintIterator itIn;
+    //		std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+    //		for (itIn=iter.first;itIn!=iter.second;itIn++)
+    //		{
+    //			const unsigned int node_index = itIn->first;// index of the node
+    //			// out = Jt in
+    //			// Jt = [ I     ]
+    //			//      [ -OM^t ]
+    //			// -OM^t = OM^
+
+    //			const Deriv f = (Deriv) itIn->second;
+    //			v += f;
+    //			omega += cross(rotatedPoints[node_index],f);
+    //			InDeriv f_deform = rootX.getOrientation().inverseRotate(f);
+    //			out[outSize+i].add(node_index,f_deform);
+    //		}
+
+    //		const InRoot::Deriv result(v, omega);
+    //		if (!indexFromEnd.getValue())
+    //		{
+    //			(*outroot)[outRootSize+i].add(index.getValue(), result);
+    //		}
+    //		else
+    //		{
+    //			(*outroot)[outRootSize+i].add(out.size() - 1 - index.getValue(), result);
+    //		}
+    //	}
+    //}
+    //else
+    //{
+
+    //}
 }
 
 /// Template specialization for 2D rigids
@@ -726,19 +757,19 @@ void DeformableOnRigidFrameMapping<BasicMapping>::accumulateConstraint()
         //propagateX();
         applyJT(*this->fromModel->getC(), *this->toModel->getC(), (rootModel==NULL ? NULL : rootModel->getC()));
 
-        // Accumulate contacts indices through the MechanicalMapping
-        std::vector<unsigned int>::iterator it = this->toModel->getConstraintId().begin();
-        std::vector<unsigned int>::iterator itEnd = this->toModel->getConstraintId().end();
+        //// Accumulate contacts indices through the MechanicalMapping
+        //std::vector<unsigned int>::iterator it = this->toModel->getConstraintId().begin();
+        //std::vector<unsigned int>::iterator itEnd = this->toModel->getConstraintId().end();
 
-        while (it != itEnd)
-        {
-            this->fromModel->setConstraintId(*it);
-            // in case of a "multi-mapping" (the articulation system is placed on a  simulated object)
-            // the constraints are transmitted to the rootModle (the <rigidtype> object which is the root of the articulated system)
-            if (rootModel!=NULL)
-                rootModel->setConstraintId(*it);
-            it++;
-        }
+        //while (it != itEnd)
+        //{
+        //	this->fromModel->setConstraintId(*it);
+        //	// in case of a "multi-mapping" (the articulation system is placed on a  simulated object)
+        //	// the constraints are transmitted to the rootModle (the <rigidtype> object which is the root of the articulated system)
+        //	if (rootModel!=NULL)
+        //		rootModel->setConstraintId(*it);
+        //	it++;
+        //}
     }
 }
 

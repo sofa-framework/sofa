@@ -65,14 +65,14 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename Out::VecConst VecConst;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename In::Deriv InDeriv;
     typedef typename InDeriv::Rot DRot;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::VecConst InVecConst;
-    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+//    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
+//    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Coord::value_type Real;
     enum
     {
@@ -163,7 +163,7 @@ public:
 
     virtual void applyJT(InVecDeriv& out, const VecDeriv& in);
 
-    void applyJT(InVecConst& out, const VecConst& in);
+    void applyJT(InMatrixDeriv& out, const OutMatrixDeriv& in);
 
     const sofa::defaulttype::BaseMatrix* getJ();
 

@@ -30,7 +30,7 @@
 				<Object type="Line" />
 				<Object type="Point" />
 				<Object type="RigidMapping" />
-			</Node>
+			</Node> 
 		</Node>
 <!--
 
@@ -51,7 +51,7 @@
 				<Object type="Line" />
 				<Object type="Point" />
 				<Object type="RigidMapping" />
-			</Node>
+			</Node> 
                 </Node>-->
 				
 

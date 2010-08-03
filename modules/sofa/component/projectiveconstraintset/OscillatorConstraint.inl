@@ -91,7 +91,7 @@ void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
     projectResponseT(res);
 }
 template <class DataTypes>
-void OscillatorConstraint<DataTypes>::projectResponse(SparseVecDeriv& res)
+void OscillatorConstraint<DataTypes>::projectResponse(MatrixDerivRowType& res)
 {
     projectResponseT(res);
 }

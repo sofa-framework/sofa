@@ -195,24 +195,46 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const type
 }
 
 template <class BaseMapping>
-void SubsetMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void SubsetMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
-    int offset = out.size();
-    out.resize(offset+in.size());
-
     const IndexArray& indices = f_indices.getValue();
-    for(unsigned int i = 0; i < in.size(); ++i)
-    {
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
 
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
         {
-            unsigned int indexIn = itOut->first;
-            OutDeriv data = (OutDeriv) itOut->second;
-            out[i+offset].add( indices[indexIn] , data );
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            while (colIt != colItEnd)
+            {
+                o.addCol(indices[colIt.index()], colIt.val());
+                ++colIt;
+            }
         }
     }
+
+    //int offset = out.size();
+    //out.resize(offset+in.size());
+
+    //const IndexArray& indices = f_indices.getValue();
+    //for(unsigned int i = 0; i < in.size(); ++i)
+    //{
+    //  OutConstraintIterator itOut;
+    //  std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+    //
+    //  for (itOut=iter.first;itOut!=iter.second;itOut++)
+    //    {
+    //      unsigned int indexIn = itOut->first;
+    //      OutDeriv data = (OutDeriv) itOut->second;
+    //      out[i+offset].add( indices[indexIn] , data );
+    //    }
+    //}
 }
 
 template<class BaseMapping>

@@ -50,14 +50,39 @@ void BilateralInteractionConstraint<DataTypes>::init()
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId)
 {
-    int tm1, tm2;
-    tm1 = m1.getValue();
-    tm2 = m2.getValue();
+    int tm1 = m1.getValue();
+    int tm2 = m2.getValue();
 
     assert(this->object1);
     assert(this->object2);
 
-    VecConst& c1 = *this->object1->getC();
+    MatrixDeriv& c1 = *this->object1->getC();
+    MatrixDeriv& c2 = *this->object2->getC();
+
+    const defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+
+    cid = constraintId;
+    constraintId += 3;
+
+    MatrixDerivRowIterator c1_it = c1.writeLine(cid);
+    c1_it.addCol(tm1, -cx);
+
+    MatrixDerivRowIterator c2_it = c2.writeLine(cid);
+    c2_it.addCol(tm2, cx);
+
+    c1_it = c1.writeLine(cid + 1);
+    c1_it.setCol(tm1, -cy);
+
+    c2_it = c2.writeLine(cid + 1);
+    c2_it.setCol(tm2, cy);
+
+    c1_it = c1.writeLine(cid + 2);
+    c1_it.setCol(tm1, -cz);
+
+    c2_it = c2.writeLine(cid + 2);
+    c2_it.setCol(tm2, cz);
+
+    /*VecConst& c1 = *this->object1->getC();
     VecConst& c2 = *this->object2->getC();
 
     defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
@@ -90,7 +115,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned i
 
     this->object2->setConstraintId(cid+2);
     svd2.set(tm2, cz);
-    c2.push_back(svd2);
+    c2.push_back(svd2);*/
 }
 
 template<class DataTypes>

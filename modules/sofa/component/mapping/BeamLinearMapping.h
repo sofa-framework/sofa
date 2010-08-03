@@ -52,17 +52,19 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
     typedef typename In::DataTypes InDataTypes;
     typedef typename In::Deriv InDeriv;
+
     typedef typename Coord::value_type Real;
     enum { N=OutDataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+    //typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
+    //typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
+
 protected:
-    sofa::helper::vector<Coord> points;
+    helper::vector<Coord> points;
     //Coord translation;
     //Real orientation[4];
     //Mat rotation;
@@ -92,7 +94,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void draw();
 
@@ -105,3 +107,4 @@ public:
 } // namespace sofa
 
 #endif
+

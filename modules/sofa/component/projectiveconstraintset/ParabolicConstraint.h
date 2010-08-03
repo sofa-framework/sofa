@@ -55,7 +55,8 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
@@ -117,7 +118,7 @@ public:
     void projectResponseT(DataDeriv& dx);
 
     void projectResponse(VecDeriv& dx);
-    void projectResponse(SparseVecDeriv& dx);
+    void projectResponse(MatrixDerivRowType& dx);
     virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
 

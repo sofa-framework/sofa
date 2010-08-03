@@ -118,9 +118,9 @@ void FixedPlaneConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+void FixedPlaneConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
 {
-    projectResponseT<SparseVecDeriv>(dx);
+    projectResponseT<MatrixDerivRowType>(dx);
 }
 
 

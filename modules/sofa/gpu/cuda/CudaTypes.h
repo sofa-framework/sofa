@@ -30,6 +30,7 @@
 #include "mycuda.h"
 #include <sofa/helper/system/gl.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
 //#include <sofa/helper/BackTrace.h>
@@ -334,6 +335,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
+    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };
@@ -645,6 +647,7 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
+    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };

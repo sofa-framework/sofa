@@ -65,7 +65,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(FixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef topology::PointSubset SetIndex;
@@ -95,7 +96,7 @@ public:
     void projectResponseT(DataDeriv& dx);
 
     void projectResponse(VecDeriv& dx);
-    void projectResponse(SparseVecDeriv& dx);
+    void projectResponse(MatrixDerivRowType& dx);
 
 
     void projectVelocity(VecDeriv& /*dx*/); ///< project dx to constrained space (dx models a velocity)

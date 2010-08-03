@@ -182,47 +182,100 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
 template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void BeamLinearMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     const typename In::VecCoord& x = *this->fromModel->getX();
-    int outSize = out.size();
-    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
 
-    for(unsigned int i=0; i<in.size(); i++)
+    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        // computation of (Jt.n) //
-        // in[i].size() = num node involved in the constraint
+        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+        if (colIt != colItEnd)
         {
-            unsigned int indexIn = itOut->first;
-            Deriv data = (Deriv) itOut->second;
-            // interpolation//////////
-            defaulttype::Vec<N, typename In::Real> inpos = points[indexIn];
-            int in0 = helper::rfloor(inpos[0]);
-            if (in0<0) in0 = 0; else if (in0 > (int)x.size()-2) in0 = x.size()-2;
-            inpos[0] -= in0;
-            Real fact = (Real)inpos[0];
-            fact = 3*(fact*fact)-2*(fact*fact*fact);
-            /////////////////////////
-            Deriv w_n = data;	// weighted value of the constraint direction
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
 
-            // Compute the mapped Constraint on the beam nodes ///
-            InDeriv direction0;
-            direction0.getVCenter() = w_n * (1-fact);
-            direction0.getVOrientation() = cross(rotatedPoints0[indexIn], w_n) * (1-fact);
-            InDeriv direction1;
-            direction1.getVCenter() = w_n * (fact);
-            direction1.getVOrientation() = cross(rotatedPoints1[indexIn], w_n) * (fact);
-            out[outSize+i].add(in0, direction0);
-            out[outSize+i].add(in0+1, direction1);
+            // computation of (Jt.n)
+            for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+            {
+                unsigned int indexIn = colIt.index();
+                Deriv data = (Deriv) colIt.val();
+
+                // interpolation
+                Coord inpos = points[indexIn];
+                int in0 = helper::rfloor(inpos[0]);
+                if (in0<0)
+                    in0 = 0;
+                else if (in0 > (int)x.size()-2)
+                    in0 = x.size()-2;
+                inpos[0] -= in0;
+                Real fact = (Real)inpos[0];
+                fact = 3.0*(fact*fact)-2.0*(fact*fact*fact);
+
+                // weighted value of the constraint direction
+                Deriv w_n = data;
+
+                // Compute the mapped Constraint on the beam nodes
+                InDeriv direction0;
+                direction0.getVCenter() = w_n * (1-fact);
+                direction0.getVOrientation() = cross(rotatedPoints0[indexIn], w_n) * (1-fact);
+                InDeriv direction1;
+                direction1.getVCenter() = w_n * (fact);
+                direction1.getVOrientation() = cross(rotatedPoints1[indexIn], w_n) * (fact);
+
+                o.addCol(in0, direction0);
+                o.addCol(in0+1, direction1);
+            }
         }
-
     }
 }
+
+/*
+template <class BasicMapping>
+void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+	const typename In::VecCoord& x = *this->fromModel->getX();
+	int outSize = out.size();
+	out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
+
+	for(unsigned int i=0; i<in.size(); i++)
+	{
+		// computation of (Jt.n) //
+		// in[i].size() = num node involved in the constraint
+
+                OutConstraintIterator itOut;
+                std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+                for (itOut=iter.first;itOut!=iter.second;itOut++)
+                {
+                        unsigned int indexIn = itOut->first;
+                        Deriv data = (Deriv) itOut->second;
+			// interpolation//////////
+			defaulttype::Vec<N, typename In::Real> inpos = points[indexIn];
+			int in0 = helper::rfloor(inpos[0]);
+			if (in0<0) in0 = 0; else if (in0 > (int)x.size()-2) in0 = x.size()-2;
+			inpos[0] -= in0;
+                        Real fact = (Real)inpos[0];
+                        fact = 3*(fact*fact)-2*(fact*fact*fact);
+			/////////////////////////
+			Deriv w_n = data;	// weighted value of the constraint direction
+
+			// Compute the mapped Constraint on the beam nodes ///
+			InDeriv direction0;
+			direction0.getVCenter() = w_n * (1-fact);
+			direction0.getVOrientation() = cross(rotatedPoints0[indexIn], w_n) * (1-fact);
+			InDeriv direction1;
+			direction1.getVCenter() = w_n * (fact);
+			direction1.getVOrientation() = cross(rotatedPoints1[indexIn], w_n) * (fact);
+                        out[outSize+i].add(in0, direction0);
+                        out[outSize+i].add(in0+1, direction1);
+		}
+
+	}
+}
+*/
 
 template <class BasicMapping>
 void BeamLinearMapping<BasicMapping>::draw()

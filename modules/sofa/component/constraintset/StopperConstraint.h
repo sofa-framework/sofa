@@ -72,8 +72,6 @@ public:
         force[line  ] = 0.0;
     }
 
-
-
     virtual void resolution(int line, double** /*w*/, double* d, double* force)
     {
         double dfree = d[line] - _w * force[line];
@@ -84,16 +82,11 @@ public:
             force[line] = (_min - dfree) * _invW;
         else
             force[line] = 0;
-
-
-
-
     }
-
-
 };
 #endif
-template<class DataTypes>
+
+template< class DataTypes >
 class StopperConstraint : public core::behavior::BaseConstraint
 {
 public:
@@ -101,13 +94,10 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecConst VecConst;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type Real;
-    typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
-    typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
@@ -121,8 +111,6 @@ protected:
     Data<std::string> pathObject;
     Data<double> min;
     Data<double> max;
-
-
 
     sofa::core::behavior::OdeSolver* ode_integrator;
 

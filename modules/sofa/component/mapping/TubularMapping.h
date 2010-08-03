@@ -53,7 +53,7 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator OutConstraintIterator;
+    //typedef typename std::map<unsigned int, Deriv>::const_iterator OutConstraintIterator;
 
     typedef typename In::Deriv InDeriv;
     typedef typename Coord::value_type Real;
@@ -82,7 +82,8 @@ public:
 
     virtual void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
+    //void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     Data<unsigned int> m_nbPointsOnEachCircle; // number of points along the circles around each point of the input object (10 by default)
     Data<double> m_radius; // radius of the circles around each point of the input object (1 by default)

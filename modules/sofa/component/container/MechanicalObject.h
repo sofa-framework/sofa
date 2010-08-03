@@ -33,6 +33,7 @@
 
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -79,11 +80,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename DataTypes::VecConst VecConst;
-    typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
-    typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
-    typedef typename DataTypes::SparseVecDeriv::const_data_iterator SparseVecDerivIterator;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
+    typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
+
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
     MechanicalObject();
@@ -107,35 +109,37 @@ public:
     Data< VecCoord > xfree;
     Data< VecDeriv > vfree;
     Data< VecCoord > x0;
-    Data< VecConst > c;
+    Data< MatrixDeriv > c;
+
+    defaulttype::MapMapSparseMatrix< Deriv > c2;
 
     Data< SReal > restScale;
 
     Data< bool >	debugViewIndices;
     Data< float >	debugViewIndicesScale;
 
-    virtual VecCoord* getX()				{ return getVecCoord(m_posId.index); }
-    virtual VecDeriv* getV()				{ return getVecDeriv(m_velId.index); }
-    virtual VecDeriv* getF()				{ return getVecDeriv(m_forceId.index); }
-    virtual VecDeriv* getExternalForces()	{ return getVecDeriv(m_externalForcesId.index); }
-    virtual VecDeriv* getDx()				{ return getVecDeriv(m_dxId.index); }
-    virtual VecConst* getC()				{ return getVecConst(m_constraintId.index); }
-    virtual VecCoord* getXfree()			{ return getVecCoord(m_freePosId.index); }
-    virtual VecDeriv* getVfree()			{ return getVecDeriv(m_freeVelId.index); }
-    virtual VecCoord* getX0()				{ return getVecCoord(m_x0Id.index); }
-    virtual VecCoord* getXReset()			{ return reset_position; }
+    virtual VecCoord*		getX()				{ return getVecCoord(m_posId.index); }
+    virtual VecDeriv*		getV()				{ return getVecDeriv(m_velId.index); }
+    virtual VecDeriv*		getF()				{ return getVecDeriv(m_forceId.index); }
+    virtual VecDeriv*		getExternalForces()	{ return getVecDeriv(m_externalForcesId.index); }
+    virtual VecDeriv*		getDx()				{ return getVecDeriv(m_dxId.index); }
+    virtual MatrixDeriv*	getC()				{ return getMatrixDeriv(m_constraintId.index); }
+    virtual VecCoord*		getXfree()			{ return getVecCoord(m_freePosId.index); }
+    virtual VecDeriv*		getVfree()			{ return getVecDeriv(m_freeVelId.index); }
+    virtual VecCoord*		getX0()				{ return getVecCoord(m_x0Id.index); }
+    virtual VecCoord*		getXReset()			{ return reset_position; }
 
-    virtual const VecCoord* getX()				const	{ return getVecCoord(m_posId.index); }
-    virtual const VecDeriv* getV()				const	{ return getVecDeriv(m_velId.index); }
-    virtual const VecDeriv* getF()				const	{ return getVecDeriv(m_forceId.index); }
-    virtual const VecDeriv* getExternalForces() const	{ return getVecDeriv(m_externalForcesId.index); }
-    virtual const VecDeriv* getDx()				const	{ return getVecDeriv(m_dxId.index); }
-    virtual const VecConst* getC()				const	{ return getVecConst(m_constraintId.index);}
-    virtual const VecCoord* getXfree()			const	{ return getVecCoord(m_freePosId.index); }
-    virtual const VecDeriv* getVfree()			const	{ return getVecDeriv(m_freeVelId.index); }
-    virtual const VecCoord* getX0()				const	{ return getVecCoord(m_x0Id.index); }
-    virtual const VecCoord* getXReset()			const	{ return reset_position; }
-    virtual const VecDeriv* getV0()				const	{ return v0;  }
+    virtual const VecCoord*			getX()				const	{ return getVecCoord(m_posId.index); }
+    virtual const VecDeriv*			getV()				const	{ return getVecDeriv(m_velId.index); }
+    virtual const VecDeriv*			getF()				const	{ return getVecDeriv(m_forceId.index); }
+    virtual const VecDeriv*			getExternalForces() const	{ return getVecDeriv(m_externalForcesId.index); }
+    virtual const VecDeriv*			getDx()				const	{ return getVecDeriv(m_dxId.index); }
+    virtual const MatrixDeriv*		getC()				const	{ return getMatrixDeriv(m_constraintId.index);}
+    virtual const VecCoord*			getXfree()			const	{ return getVecCoord(m_freePosId.index); }
+    virtual const VecDeriv*			getVfree()			const	{ return getVecDeriv(m_freeVelId.index); }
+    virtual const VecCoord*			getX0()				const	{ return getVecCoord(m_x0Id.index); }
+    virtual const VecCoord*			getXReset()			const	{ return reset_position; }
+    virtual const VecDeriv*			getV0()				const	{ return v0;  }
 
     virtual void init();
     virtual void reinit();
@@ -282,8 +286,8 @@ public:
     VecDeriv* getVecDeriv(unsigned int index);
     const VecDeriv* getVecDeriv(unsigned int index) const;
 
-    VecConst* getVecConst(unsigned int index);
-    const VecConst* getVecConst(unsigned int index) const;
+    MatrixDeriv* getMatrixDeriv(unsigned int index);
+    const MatrixDeriv* getMatrixDeriv(unsigned int index) const;
 
     virtual void vAvail(VecId& v);
 
@@ -375,7 +379,7 @@ protected :
 
     sofa::helper::vector< Data< VecCoord > * > vectorsCoord; ///< Coordinates DOFs vectors table (static and dynamic allocated)
     sofa::helper::vector< Data< VecDeriv > * > vectorsDeriv; ///< Derivates DOFs vectors table (static and dynamic allocated)
-    sofa::helper::vector< Data< VecConst > * > vectorsConst; ///< Constraint vectors table
+    sofa::helper::vector< Data< MatrixDeriv > * > vectorsMatrixDeriv; ///< Constraint vectors table
 
     int vsize; ///< Number of elements to allocate in vectors
 
@@ -390,9 +394,9 @@ protected :
     void setVecDeriv(unsigned int /*index*/, Data< VecDeriv >* /*vDeriv*/);
 
     /**
-     * @brief Inserts VecConst constraint vector at index in the vectorsCoord container.
+     * @brief Inserts MatrixDeriv DOF  at index in the MatrixDeriv container.
      */
-    void setVecConst(unsigned int /*index*/, Data< VecConst> * /*vConst*/);
+    void setVecMatrixDeriv(unsigned int /*index*/, Data< MatrixDeriv> * /*mDeriv*/);
 
 #ifdef SOFA_SMP
     sofa::helper::vector< bool > vectorsCoordSharedAllocated;
@@ -402,7 +406,7 @@ protected :
     /// @}
 
     /// Given the number of a constraint Equation, find the index in the VecConst C, where the constraint is actually stored
-    unsigned int getIdxConstraintFromId(unsigned int id) const;
+    // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
     MechanicalObjectInternalData<DataTypes> data;
 

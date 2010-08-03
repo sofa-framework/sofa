@@ -62,8 +62,9 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::VecConst VecConst;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+//    typedef typename DataTypes::VecConst VecConst;
+//    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
 
     Constraint(MechanicalState<DataTypes> *mm = NULL);
 
@@ -113,7 +114,7 @@ public:
 
     virtual void buildConstraintMatrix(unsigned int & contactId, core::VecId);
 
-    virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/) {}
+    virtual void applyConstraint(MatrixDeriv& /*c*/, unsigned int & /*contactId*/) {}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

@@ -25,33 +25,13 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_LAGRANGEMULTIPLIERINTERACTION_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LAGRANGEMULTIPLIERINTERACTION_INL
 
-#include <sofa/core/behavior/ForceField.inl>
-#include <sofa/core/behavior/InteractionForceField.h>
 #include "LagrangeMultiplierInteraction.h"
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/system/glut.h>
-#include <sofa/helper/rmath.h>
-#include <assert.h>
-#include <iostream>
 
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/ObjectFactory.h>
-/*#include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/helper/gl/template.h>
-*/
+#include <sofa/component/linearsolver/FullVector.h>
 
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/Node.h>
-
-#include <sofa/component/linearsolver/FullVector.h>
 
 
 namespace sofa
@@ -62,8 +42,6 @@ namespace component
 
 namespace interactionforcefield
 {
-
-using namespace sofa::component::linearsolver;
 
 template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
@@ -114,7 +92,6 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
                 sout<<" - this constraint must be handled - "<<sendl;
                 list_interaction_constraint.push_back(ic);
 
-
                 offset=0;
                 ic->getConstraintId(id, offset);
                 sout<< "constraint offset"<<offset<<sendl;
@@ -134,6 +111,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
         const VecCoord1& , const VecCoord2& ,
         const VecDeriv1& , const VecDeriv2& )
 {
+    using linearsolver::FullVector;
 
     unsigned int count=0;
 
@@ -142,6 +120,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
         list_interaction_constraint[i]->buildConstraintMatrix(count, core::VecId::position());
         sout<< "constraint count"<<count<<sendl;
     }
+
     unsigned int count1=0;
     constraint->buildConstraintMatrix(count1, core::VecId::position());
 
@@ -170,8 +149,8 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     {
         violation[i].x() = _violation[i];
     }
-
 }
+
 /*
 template<class DataTypes1, class DataTypes2>
 void LagranintgeMultiplierInteraction<DataTypes1, DataTypes2>::addForce2(VecDeriv1& f1, VecDeriv2& f2,
@@ -179,54 +158,71 @@ void LagranintgeMultiplierInteraction<DataTypes1, DataTypes2>::addForce2(VecDeri
 																	  const VecDeriv1& v1, const VecDeriv2& v2)
 {
 
-
-
 }
 */
 
 template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1& dViolation, VecDeriv2& df2, const VecDeriv1& dLambda, const VecDeriv2& dx2)
 {
-
+    using sofa::simulation::Node;
     //sout<<"addDForce : dLambda "<< dLambda << " -  dx2:" << dx2 <<sendl;
 
-
-    sofa::simulation::Node *context = dynamic_cast<sofa::simulation::Node *>(this->getContext()); // access to current node (which is supposed to be the root)
+    Node *context = dynamic_cast< Node* >(this->getContext()); // access to current node (which is supposed to be the root)
     sofa::simulation::MechanicalResetConstraintVisitor().execute(context);
 
-    VecConst2& c2= *this->mstate2->getC();
-    //sout<<" constraint size :"<<c2.size()<<sendl;
-    ConstraintIterator it;
+    const MatrixDeriv2& c2 = *this->mstate2->getC();
 
+    MatrixDeriv2RowConstIterator rowIt = c2.begin();
+    MatrixDeriv2RowConstIterator rowItEnd = c2.end();
 
-    for (unsigned int i=0; i< c2.size(); i++)
+    unsigned int i = 0;
+
+    while (rowIt != rowItEnd)
     {
-        SparseVecDeriv2 constraint = c2[i];
+        MatrixDeriv2ColConstIterator colIt = rowIt.begin();
+        MatrixDeriv2ColConstIterator colItEnd = rowIt.end();
 
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraint.data();
-        //sout<<" i= "<<i <<"   constraint size= "<< constraint.size() <<sendl;
-        for (it=iter.first; it!=iter.second; it++)
+        while (colIt != colItEnd)
         {
-            //sout<<" constraint : i "<< constraint[j].index  << "  data"<< constraint[j].data << sendl;
             /// @TODO : use the constraint ID
-            //Deriv2 dV0 = constraint[j].data * dx2[constraint[j].index];
-            unsigned int  index=it->first;
-            Deriv2 value=it->second;
+            unsigned int index = colIt.index();
+            Deriv2 value = colIt.val();
             dViolation[i].x() += value * dx2[index];
             df2[index] += value * dLambda[i].x();
 
+            ++colIt;
         }
+
+        i++;
+        ++rowIt;
     }
 
+    //ConstraintIterator it;
+
+    //for (unsigned int i = 0; i < c2.size(); i++)
+    //{
+    //	SparseVecDeriv2 constraint = c2[i];
+
+    //	std::pair< ConstraintIterator, ConstraintIterator > iter = constraint.data();
+    //	//sout<<" i= "<<i <<"   constraint size= "<< constraint.size() <<sendl;
+    //	for (it=iter.first;it!=iter.second;it++)
+    //	{
+    //		//sout<<" constraint : i "<< constraint[j].index  << "  data"<< constraint[j].data << sendl;
+    //		/// @TODO : use the constraint ID
+    //		//Deriv2 dV0 = constraint[j].data * dx2[constraint[j].index];
+    //		unsigned int  index=it->first;
+    //		Deriv2 value=it->second;
+    //		dViolation[i].x() += value * dx2[index];
+    //		df2[index] += value * dLambda[i].x();
+    //	}
+    //}
 
     //sout<<"addDForce : dViolation "<< dViolation << " -  df2:" << df2 <<sendl;
-
-
 }
 
 /*
 template <class DataTypes1, class DataTypes2>
-    double LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& x1 , const VecCoord2& x2 ) const
+double LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& x1 , const VecCoord2& x2 ) const
 {
     serr<<"LagrangeMultiplierInteraction::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -238,14 +234,13 @@ template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::draw()
 {
 
-
 }
 */
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_INTERACTIONFORCEFIELD_LAGRANGEMULTIPLIERINTERACTION_INL

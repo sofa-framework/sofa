@@ -596,125 +596,140 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
 }
 
 
-template <class BaseMapping>
-void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+template<class BaseMapping>
+void RigidRigidMapping<BaseMapping>::applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
-
-    int outSize = out.size();
-    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
-
-
     switch (repartition.getValue().size())
     {
     case 0:
     {
-        for(unsigned int i=0; i<in.size(); i++)
-        {
-            Vector v,omega;
-            OutConstraintIterator itOut;
-            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+        typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
-            for (itOut=iter.first; itOut!=iter.second; itOut++)
+        for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+        {
+            Vector v, omega;
+
+            typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+            for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                const unsigned int i = itOut->first;// index of the node
-                Deriv data=(Deriv) itOut->second;
+                const Deriv data = colIt.val();
                 // out = Jt in
                 // Jt = [ I     ]
                 //      [ -OM^t ]
                 // -OM^t = OM^
-
                 Vector f = data.getVCenter();
                 v += f;
-                omega += data.getVOrientation() + cross(f,-pointsR0[i].getCenter());
+                omega += data.getVOrientation() + cross(f,-pointsR0[colIt.index()].getCenter());
             }
 
             const InDeriv result(v, omega);
+            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
 
             if (!indexFromEnd.getValue())
             {
-                out[outSize+i].add(index.getValue(), result);
+                o.addCol(index.getValue(), result);
             }
             else
             {
-                out[outSize+i].add(out.size() - 1 - index.getValue(), result);
+                // Commented by PJ. Bug??
+                // o.addCol(out.size() - 1 - index.getValue(), result);
+                const unsigned int numDofs = this->getFromModel()->getX()->size();
+                o.addCol(numDofs - 1 - index.getValue(), result);
             }
         }
+
         break;
     }
     case 1:
     {
         const unsigned int numDofs = this->getFromModel()->getX()->size();
+        const unsigned int val = repartition.getValue()[0];
 
-        const unsigned int val=repartition.getValue()[0];
-        for(unsigned int i=0; i<in.size(); i++)
+        typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+        for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
         {
-            unsigned int cpt=0;
+            unsigned int cpt = 0;
 
-            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+            typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+            typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
-            OutConstraintIterator it=iter.first;
-            for(unsigned int ito=0; ito<numDofs && it != iter.second; ito++)
+            for (unsigned int ito = 0; ito < numDofs; ito++)
             {
-                Vector v,omega;
-                bool needToInsert=false;
+                Vector v, omega;
+                bool needToInsert = false;
 
-                for(unsigned int r=0; r<val && it != iter.second; r++, cpt++)
+                for (unsigned int r = 0; r < val && colIt != colItEnd; r++, cpt++)
                 {
-                    const unsigned int idx=it->first;
-                    if (idx != cpt) continue;
-                    needToInsert=true;
+                    if (colIt.index() != cpt)
+                        continue;
 
-                    Deriv data=(Deriv) it->second;
-
+                    needToInsert = true;
+                    const Deriv data = colIt.val();
                     Vector f = data.getVCenter();
                     v += f;
                     omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
-                    it++;
+
+                    ++colIt;
                 }
+
                 if (needToInsert)
                 {
                     const InDeriv result(v, omega);
-                    out[outSize+i].add(ito, result);
+
+                    typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+                    o.addCol(ito, result);
                 }
             }
         }
+
         break;
     }
     default:
     {
         const unsigned int numDofs = this->getFromModel()->getX()->size();
 
-        for(unsigned int i=0; i<in.size(); i++)
+        typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+        for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
         {
-            unsigned int cpt=0;
-            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+            unsigned int cpt = 0;
 
-            OutConstraintIterator it=iter.first;
-            for(unsigned int ito=0; ito<numDofs && it != iter.second; ito++)
+            typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+            typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+            for (unsigned int ito = 0; ito < numDofs; ito++)
             {
-                Vector v,omega;
-                bool needToInsert=false;
+                Vector v, omega;
+                bool needToInsert = false;
 
-                for(unsigned int r=0; r<repartition.getValue()[ito] && it != iter.second; r++, cpt++)
+                for (unsigned int r = 0; r < repartition.getValue()[ito] && colIt
+                        != colItEnd; r++, cpt++)
                 {
-                    const unsigned int idx=it->first;
-                    if (idx != cpt) continue;
-                    needToInsert=true;
+                    if (colIt.index() != cpt)
+                        continue;
 
-                    Deriv data=(Deriv) it->second;
-                    Vector f = data.getVCenter();
+                    needToInsert = true;
+
+                    const Deriv data = colIt.val();
+                    const Vector f = data.getVCenter();
                     v += f;
-                    omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
-                    it++;
+                    omega += data.getVOrientation() + cross(f, -pointsR0[cpt].getCenter());
+
+                    ++colIt;
                 }
 
                 if (needToInsert)
                 {
                     const InDeriv result(v, omega);
-                    out[outSize+i].add(ito, result);
+
+                    typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+                    o.addCol(ito, result);
                 }
             }
         }
+
         break;
     }
     }

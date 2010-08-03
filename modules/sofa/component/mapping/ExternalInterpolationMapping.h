@@ -52,12 +52,11 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
@@ -89,7 +88,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 private:
     bool doNotMap;
 };

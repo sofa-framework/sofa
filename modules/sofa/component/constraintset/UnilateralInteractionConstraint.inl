@@ -242,86 +242,145 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned 
 
     if (this->object1 == this->object2)
     {
+        MatrixDeriv& c1 = *this->object1->getC();
 
+        for (unsigned int i = 0; i < contacts.size(); i++)
+        {
+            Contact& c = contacts[i];
+
+            c.id = contactId++;
+
+            MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
+            c1_it.addCol(c.m1, -c.norm);
+            c1_it.addCol(c.m2, c.norm);
+
+            if (c.mu > 0.0)
+            {
+                c1_it = c1.writeLine(c.id + 1);
+                c1_it.setCol(c.m1, -c.t);
+                c1_it.setCol(c.m2, c.t);
+
+                c1_it = c1.writeLine(c.id + 2);
+                c1_it.setCol(c.m1, -c.s);
+                c1_it.setCol(c.m2, c.s);
+
+                contactId += 2;
+            }
+        }
+
+        /*
         VecConst& c1 = *this->object1->getC();
 
         for (unsigned int i=0; i<contacts.size(); i++)
         {
-            Contact& c = contacts[i];
+        	Contact& c = contacts[i];
 
-            //mu = c.mu;
-            //c.mu = mu;
-            c.id = contactId++;
+        	//mu = c.mu;
+        	//c.mu = mu;
+        	c.id = contactId++;
 
-            SparseVecDeriv svd1;
+        	SparseVecDeriv svd1;
 
-            this->object1->setConstraintId(c.id);
-            svd1.add(c.m1, -c.norm);
-            svd1.add(c.m2, c.norm);
-            c1.push_back(svd1);
+        	this->object1->setConstraintId(c.id);
+        	svd1.add(c.m1, -c.norm);
+        	svd1.add(c.m2, c.norm);
+        	c1.push_back(svd1);
 
-            if (c.mu > 0.0)
-            {
-                contactId += 2;
-                this->object1->setConstraintId(c.id+1);
-                svd1.set(c.m1, -c.t);
-                svd1.set(c.m2, c.t);
-                c1.push_back(svd1);
+        	if (c.mu > 0.0)
+        	{
+        		contactId += 2;
+        		this->object1->setConstraintId(c.id+1);
+        		svd1.set(c.m1, -c.t);
+        		svd1.set(c.m2, c.t);
+        		c1.push_back(svd1);
 
-                this->object1->setConstraintId(c.id+2);
-                svd1.set(c.m1, -c.s);
-                svd1.set(c.m2, c.s);
-                c1.push_back(svd1);
-            }
+        		this->object1->setConstraintId(c.id+2);
+        		svd1.set(c.m1, -c.s);
+        		svd1.set(c.m2, c.s);
+        		c1.push_back(svd1);
+        	}
         }
-
+        */
     }
     else
     {
+        MatrixDeriv& c1 = *this->object1->getC();
+        MatrixDeriv& c2 = *this->object2->getC();
 
+        for (unsigned int i = 0; i < contacts.size(); i++)
+        {
+            Contact& c = contacts[i];
+
+            c.id = contactId++;
+
+            MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
+            c1_it.addCol(c.m1, -c.norm);
+
+            MatrixDerivRowIterator c2_it = c2.writeLine(c.id);
+            c2_it.addCol(c.m2, c.norm);
+
+            if (c.mu > 0.0)
+            {
+                c1_it = c1.writeLine(c.id + 1);
+                c1_it.setCol(c.m1, -c.t);
+
+                c1_it = c1.writeLine(c.id + 2);
+                c1_it.setCol(c.m1, -c.s);
+
+                c2_it = c2.writeLine(c.id + 1);
+                c2_it.setCol(c.m2, c.t);
+
+                c2_it = c2.writeLine(c.id + 2);
+                c2_it.setCol(c.m2, c.s);
+
+                contactId += 2;
+            }
+        }
+
+        /*
         VecConst& c1 = *this->object1->getC();
         VecConst& c2 = *this->object2->getC();
 
         for (unsigned int i=0; i<contacts.size(); i++)
         {
-            Contact& c = contacts[i];
+        	Contact& c = contacts[i];
 
-            //mu = c.mu;
-            //c.mu = mu;
-            c.id = contactId++;
+        	//mu = c.mu;
+        	//c.mu = mu;
+        	c.id = contactId++;
 
-            SparseVecDeriv svd1;
-            SparseVecDeriv svd2;
+        	SparseVecDeriv svd1;
+        	SparseVecDeriv svd2;
 
-            this->object1->setConstraintId(c.id);
-            svd1.add(c.m1, -c.norm);
-            c1.push_back(svd1);
+        	this->object1->setConstraintId(c.id);
+        	svd1.add(c.m1, -c.norm);
+        	c1.push_back(svd1);
 
-            this->object2->setConstraintId(c.id);
-            svd2.add(c.m2, c.norm);
-            c2.push_back(svd2);
+        	this->object2->setConstraintId(c.id);
+        	svd2.add(c.m2, c.norm);
+        	c2.push_back(svd2);
 
-            if (c.mu > 0.0)
-            {
-                contactId += 2;
-                this->object1->setConstraintId(c.id+1);
-                svd1.set(c.m1, -c.t);
-                c1.push_back(svd1);
+        	if (c.mu > 0.0)
+        	{
+        		contactId += 2;
+        		this->object1->setConstraintId(c.id+1);
+        		svd1.set(c.m1, -c.t);
+        		c1.push_back(svd1);
 
-                this->object1->setConstraintId(c.id+2);
-                svd1.set(c.m1, -c.s);
-                c1.push_back(svd1);
+        		this->object1->setConstraintId(c.id+2);
+        		svd1.set(c.m1, -c.s);
+        		c1.push_back(svd1);
 
-                this->object2->setConstraintId(c.id+1);
-                svd2.set(c.m2, c.t);
-                c2.push_back(svd2);
+        		this->object2->setConstraintId(c.id+1);
+        		svd2.set(c.m2, c.t);
+        		c2.push_back(svd2);
 
-                this->object2->setConstraintId(c.id+2);
-                svd2.set(c.m2, c.s);
-                c2.push_back(svd2);
-            }
+        		this->object2->setConstraintId(c.id+2);
+        		svd2.set(c.m2, c.s);
+        		c2.push_back(svd2);
+        	}
         }
-
+        */
     }
 }
 
@@ -334,7 +393,9 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype:
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i]; // get each contact detected
-        v->set(c.id,c.dfree);
+
+        v->set(c.id, c.dfree);
+
         if (c.mu > 0.0)
         {
             v->set(c.id+1,c.dfree_t); // dfree_t & dfree_s are added to v to compute the friction

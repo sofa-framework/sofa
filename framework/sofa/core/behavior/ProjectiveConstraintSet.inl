@@ -67,12 +67,21 @@ void ProjectiveConstraintSet<DataTypes>::init()
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix()
 {
-    if( !isActive() ) return;
+    if (!isActive())
+        return;
+
     if (mstate)
     {
-        VecConst *C=mstate->getC();
-        typedef typename VecConst::iterator VecConstIterator;
-        for (VecConstIterator it=C->begin(); it!=C->end(); ++it) projectResponse(*it);
+        MatrixDeriv *c = mstate->getC();
+
+        MatrixDerivRowIterator rowIt = c->begin();
+        MatrixDerivRowIterator rowItEnd = c->end();
+
+        while (rowIt != rowItEnd)
+        {
+            projectResponse(rowIt.row());
+            ++rowIt;
+        }
     }
 }
 

@@ -62,20 +62,43 @@ public:
     typedef typename DataTypes1::VecDeriv VecDeriv1;
     typedef typename DataTypes1::Coord Coord1;
     typedef typename DataTypes1::Deriv Deriv1;
-    typedef typename DataTypes1::VecConst VecConst1;
-    typedef typename DataTypes1::SparseVecDeriv SparseVecDeriv1;
+    typedef typename DataTypes1::MatrixDeriv MatrixDeriv1;
+    typedef typename DataTypes1::MatrixDeriv::RowConstIterator MatrixDeriv1RowConstIterator;
+    typedef typename DataTypes1::MatrixDeriv::ColConstIterator MatrixDeriv1ColConstIterator;
+    typedef typename DataTypes1::MatrixDeriv::RowIterator MatrixDeriv1RowIterator;
+    typedef typename DataTypes1::MatrixDeriv::ColIterator MatrixDeriv1ColIterator;
+    typedef typename DataTypes1::MatrixDeriv::RowType MatrixDerivRowType1;
 
     typedef typename DataTypes2::Real Real2;
     typedef typename DataTypes2::VecCoord VecCoord2;
     typedef typename DataTypes2::VecDeriv VecDeriv2;
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
-    typedef typename DataTypes2::VecConst VecConst2;
-    typedef typename DataTypes2::SparseVecDeriv SparseVecDeriv2;
+    typedef typename DataTypes2::MatrixDeriv MatrixDeriv2;
+    typedef typename DataTypes2::MatrixDeriv::RowConstIterator MatrixDeriv2RowConstIterator;
+    typedef typename DataTypes2::MatrixDeriv::ColConstIterator MatrixDeriv2ColConstIterator;
+    typedef typename DataTypes2::MatrixDeriv::RowIterator MatrixDeriv2RowIterator;
+    typedef typename DataTypes2::MatrixDeriv::ColIterator MatrixDeriv2ColIterator;
+    typedef typename DataTypes2::MatrixDeriv::RowType MatrixDerivRowType2;
 
 
-    LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2):constrainedObject1(dof1),constrainedObject2(dof2),simulatedObject1(dof1),simulatedObject2(dof2) {}
-    LMConstraint():constrainedObject1(NULL),constrainedObject2(NULL),simulatedObject1(NULL),simulatedObject2(NULL) {}
+    LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2)
+        : constrainedObject1(dof1)
+        , constrainedObject2(dof2)
+        , simulatedObject1(dof1)
+        , simulatedObject2(dof2)
+    {
+
+    }
+
+    LMConstraint()
+        : constrainedObject1(NULL)
+        , constrainedObject2(NULL)
+        , simulatedObject1(NULL)
+        , simulatedObject2(NULL)
+    {
+
+    }
 
     virtual ~LMConstraint();
 
@@ -129,7 +152,6 @@ public:
         }
     }
 
-
     virtual std::string getTemplateName() const
     {
         return templateName(this);
@@ -140,20 +162,12 @@ public:
         return std::string("[") + DataTypes1::Name() + std::string(",") + DataTypes2::Name() + std::string("]");
     }
 
-
 protected:
-    /// Insert in the Vector C (VecConst) of each constrainedObject the equation expressed using SparseVecDeriv
-    /// Returns the index where the lines have been entered
-    void  registerEquationInJ1( unsigned int constraintId, const SparseVecDeriv1 &C1) const;
-    void  registerEquationInJ2( unsigned int constraintId, const SparseVecDeriv2 &C2) const;
-
     MechanicalState<DataTypes1> *constrainedObject1;
     MechanicalState<DataTypes2> *constrainedObject2;
 
     BaseMechanicalState         *simulatedObject1;
     BaseMechanicalState         *simulatedObject2;
-
-
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)

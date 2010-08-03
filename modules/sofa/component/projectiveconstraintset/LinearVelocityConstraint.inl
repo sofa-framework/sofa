@@ -185,7 +185,7 @@ void LinearVelocityConstraint<DataTypes>::projectResponse(VecDeriv& )
 }
 
 template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::projectResponse(SparseVecDeriv& )
+void LinearVelocityConstraint<DataTypes>::projectResponse(MatrixDerivRowType& )
 {
 
 }

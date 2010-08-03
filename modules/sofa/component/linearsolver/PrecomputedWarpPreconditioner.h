@@ -96,7 +96,6 @@ class PrecomputedWarpPreconditioner : public sofa::component::linearsolver::Matr
 public:
     SOFA_CLASS(SOFA_TEMPLATE3(PrecomputedWarpPreconditioner,TDataTypes,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
     typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecConst VecConst;
     typedef typename TDataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename TDataTypes::Coord Coord;

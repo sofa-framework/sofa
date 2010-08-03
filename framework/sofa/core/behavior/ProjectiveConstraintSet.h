@@ -65,10 +65,15 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
+    typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::VecConst VecConst;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+
 
     ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = NULL);
 
@@ -134,7 +139,7 @@ public:
     /// by the generic ProjectiveConstraintSet::projectResponse() method.
     virtual void projectResponse(VecDeriv& dx) = 0;
     /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
-    virtual void projectResponse(SparseVecDeriv& dx) = 0;
+    virtual void projectResponse(MatrixDerivRowType& dx) = 0;
 
     /// Project v to constrained space (v models a velocity).
     ///

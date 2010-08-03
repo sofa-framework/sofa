@@ -58,7 +58,8 @@ public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecConst VecConst;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+//    typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
@@ -148,7 +149,7 @@ public:
     /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&) ?
     virtual void applyConstraint(unsigned int & contactId); // Pure virtual would be better
 
-    virtual void applyConstraint(VecConst& /*c1*/, VecConst& /*c2*/, unsigned int & /*contactId*/) {}
+    virtual void applyConstraint(MatrixDeriv& /*c1*/, MatrixDeriv& /*c2*/, unsigned int & /*contactId*/) {}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

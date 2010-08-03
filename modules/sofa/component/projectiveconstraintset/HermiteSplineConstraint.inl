@@ -164,7 +164,7 @@ void HermiteSplineConstraint<DataTypes>::projectResponse(VecDeriv& dx)
     projectResponseT(dx);
 }
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::projectResponse(SparseVecDeriv& dx)
+void HermiteSplineConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
 {
     projectResponseT(dx);
 }

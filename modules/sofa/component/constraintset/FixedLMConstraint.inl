@@ -145,6 +145,7 @@ template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChan
 template<class DataTypes>
 void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId /*position*/)
 {
+    MatrixDeriv& c = *this->constrainedObject1->getC();
     idxX.clear();
     idxY.clear();
     idxZ.clear();
@@ -155,19 +156,15 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
         const unsigned int index=*it;
 
         //Constraint degree of freedom along X direction
-
-        SparseVecDeriv VX; VX.add(index,X);
-        registerEquationInJ1(constraintId, VX);
+        c.writeLine(constraintId).addCol(index,X);
         idxX.push_back(constraintId++);
 
         //Constraint degree of freedom along X direction
-        SparseVecDeriv VY; VY.add(index,Y);
-        registerEquationInJ1(constraintId, VY);
+        c.writeLine(constraintId).addCol(index,Y);
         idxY.push_back(constraintId++);
 
         //Constraint degree of freedom along Z direction
-        SparseVecDeriv VZ; VZ.add(index,Z);
-        registerEquationInJ1(constraintId, VZ);
+        c.writeLine(constraintId).addCol(index,Z);
         idxZ.push_back(constraintId++);
 
         this->constrainedObject1->forceMask.insertEntry(index);
