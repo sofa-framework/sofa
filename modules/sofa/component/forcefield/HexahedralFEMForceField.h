@@ -143,30 +143,15 @@ public:
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
     {
-        _coef[0][0]=-1;
-        _coef[1][0]=1;
-        _coef[2][0]=1;
-        _coef[3][0]=-1;
-        _coef[4][0]=-1;
-        _coef[5][0]=1;
-        _coef[6][0]=1;
-        _coef[7][0]=-1;
-        _coef[0][1]=-1;
-        _coef[1][1]=-1;
-        _coef[2][1]=1;
-        _coef[3][1]=1;
-        _coef[4][1]=-1;
-        _coef[5][1]=-1;
-        _coef[6][1]=1;
-        _coef[7][1]=1;
-        _coef[0][2]=-1;
-        _coef[1][2]=-1;
-        _coef[2][2]=-1;
-        _coef[3][2]=-1;
-        _coef[4][2]=1;
-        _coef[5][2]=1;
-        _coef[6][2]=1;
-        _coef[7][2]=1;
+
+        _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;
+        _coef[1][0]=  1;		_coef[1][1]= -1;		_coef[1][2]= -1;
+        _coef[2][0]=  1;		_coef[2][1]=  1;		_coef[2][2]= -1;
+        _coef[3][0]= -1;		_coef[3][1]=  1;		_coef[3][2]= -1;
+        _coef[4][0]= -1;		_coef[4][1]= -1;		_coef[4][2]=  1;
+        _coef[5][0]=  1;		_coef[5][1]= -1;		_coef[5][2]=  1;
+        _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
+        _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
     }
 
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }

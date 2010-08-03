@@ -201,6 +201,8 @@ SOURCES +=  \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
+	 fem/QuadratureFormular.h \
+ 	 fem/QuadratureFormular.inl \
 	 fem/BaseMaterial.h \
 	 fem/BaseShapeFunction.h \
 	 fem/BaseStrainTensor.h \
@@ -209,6 +211,7 @@ HEADERS += \
 	 fem/DofContainer.h 
  
 SOURCES +=  \
+	 fem/QuadratureFormular.cpp \
 	 fem/BaseMaterial.cpp \
 	 fem/BaseFiniteElement.cpp \
 	 fem/FiniteElement.cpp \

@@ -51,7 +51,7 @@
 #endif
 
 #ifdef SOFA_DEV
-#include <sofa/component/fem/QuadratureFormular.h>
+#include <sofa/core/fem/QuadratureFormular.h>
 #include <sofa/core/fem/FiniteElement.h>
 #endif // SOFA_DEV
 
@@ -706,7 +706,7 @@ class data_widget_container < Quater<T> > : public fixed_vector_data_widget_cont
 ////////////////////////////////////////////////////////////////
 /// sofa::component::fem::QuadratureFormular support
 ////////////////////////////////////////////////////////////////
-using sofa::component::fem::QuadraturePoint;
+using sofa::core::fem::QuadraturePoint;
 
 template<typename VecN>
 class vector_data_trait < QuadraturePoint< VecN > >
