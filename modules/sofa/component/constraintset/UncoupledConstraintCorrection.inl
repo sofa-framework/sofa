@@ -207,7 +207,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     std::cout << "******\n Constraint after Merge  \n *******" << std::endl;
 
-    for (int group = 0; group < numGroup; group++)
+    for (unsigned int group = 0; group < numGroup; group++)
     {
         std::cout << "constraint[" << group << "] : " << std::endl;
 
@@ -216,7 +216,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
         while (rowCopyIt != rowCopyItEnd)
         {
-            if (constraint_merge[rowCopyIt.index()] == group)
+            if (constraint_merge[rowCopyIt.index()] == (int)group)
             {
                 constraints.addLine(group, rowCopyIt.row());
             }
