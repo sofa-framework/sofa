@@ -62,7 +62,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
         using sofa::simulation::Node;
 
         Node *node = dynamic_cast< Node * >(getContext());
-        const Rigid3Mass *massValue;
+        const Rigid3Mass *massValue = 0;
         bool destroyMassValue = false;
 
         //Should use the BaseMatrix API to get the Mass

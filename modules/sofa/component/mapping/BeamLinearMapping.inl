@@ -212,7 +212,7 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, co
                     in0 = x.size()-2;
                 inpos[0] -= in0;
                 Real fact = (Real)inpos[0];
-                fact = 3.0*(fact*fact)-2.0*(fact*fact*fact);
+                fact = (Real)3.0*(fact*fact) - (Real)2.0*(fact*fact*fact);
 
                 // weighted value of the constraint direction
                 Deriv w_n = data;
