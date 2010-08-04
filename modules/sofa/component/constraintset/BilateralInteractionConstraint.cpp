@@ -97,35 +97,35 @@ void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(unsigne
     c2_it.addCol(tm2, Deriv(cx, vZero));
 
     c1_it = c1.writeLine(cid + 1);
-    c1_it.addCol(tm1, Deriv(-cy, vZero));
+    c1_it.setCol(tm1, Deriv(-cy, vZero));
 
     c2_it = c2.writeLine(cid + 1);
-    c2_it.addCol(tm2, Deriv(cy, vZero));
+    c2_it.setCol(tm2, Deriv(cy, vZero));
 
     c1_it = c1.writeLine(cid + 2);
-    c1_it.addCol(tm1, Deriv(-cz, vZero));
+    c1_it.setCol(tm1, Deriv(-cz, vZero));
 
     c2_it = c2.writeLine(cid + 2);
-    c2_it.addCol(tm2, Deriv(cz, vZero));
+    c2_it.setCol(tm2, Deriv(cz, vZero));
 
     //Apply constraint for orientation
     c1_it = c1.writeLine(cid + 3);
-    c1_it.addCol(tm1, Deriv(vZero, -cx));
+    c1_it.setCol(tm1, Deriv(vZero, -cx));
 
     c2_it = c2.writeLine(cid + 3);
-    c2_it.addCol(tm2, Deriv(vZero, cx));
+    c2_it.setCol(tm2, Deriv(vZero, cx));
 
     c1_it = c1.writeLine(cid + 4);
-    c1_it.addCol(tm1, Deriv(vZero, -cy));
+    c1_it.setCol(tm1, Deriv(vZero, -cy));
 
     c2_it = c2.writeLine(cid + 4);
-    c2_it.addCol(tm2, Deriv(vZero, cy));
+    c2_it.setCol(tm2, Deriv(vZero, cy));
 
     c1_it = c1.writeLine(cid + 5);
-    c1_it.addCol(tm1, Deriv(vZero, -cz));
+    c1_it.setCol(tm1, Deriv(vZero, -cz));
 
     c2_it = c2.writeLine(cid + 5);
-    c2_it.addCol(tm2, Deriv(vZero, cz));
+    c2_it.setCol(tm2, Deriv(vZero, cz));
 
     //SparseVecDeriv svd1;
     //SparseVecDeriv svd2;
@@ -251,35 +251,35 @@ void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(unsigne
     c2_it.addCol(tm2, Deriv(cx, vZero));
 
     c1_it = c1.writeLine(cid + 1);
-    c1_it.addCol(tm1, Deriv(-cy, vZero));
+    c1_it.setCol(tm1, Deriv(-cy, vZero));
 
     c2_it = c2.writeLine(cid + 1);
-    c2_it.addCol(tm2, Deriv(cy, vZero));
+    c2_it.setCol(tm2, Deriv(cy, vZero));
 
     c1_it = c1.writeLine(cid + 2);
-    c1_it.addCol(tm1, Deriv(-cz, vZero));
+    c1_it.setCol(tm1, Deriv(-cz, vZero));
 
     c2_it = c2.writeLine(cid + 2);
-    c2_it.addCol(tm2, Deriv(cz, vZero));
+    c2_it.setCol(tm2, Deriv(cz, vZero));
 
     //Apply constraint for orientation
     c1_it = c1.writeLine(cid + 3);
-    c1_it.addCol(tm1, Deriv(vZero, -cx));
+    c1_it.setCol(tm1, Deriv(vZero, -cx));
 
     c2_it = c2.writeLine(cid + 3);
-    c2_it.addCol(tm2, Deriv(vZero, cx));
+    c2_it.setCol(tm2, Deriv(vZero, cx));
 
     c1_it = c1.writeLine(cid + 4);
-    c1_it.addCol(tm1, Deriv(vZero, -cy));
+    c1_it.setCol(tm1, Deriv(vZero, -cy));
 
     c2_it = c2.writeLine(cid + 4);
-    c2_it.addCol(tm2, Deriv(vZero, cy));
+    c2_it.setCol(tm2, Deriv(vZero, cy));
 
     c1_it = c1.writeLine(cid + 5);
-    c1_it.addCol(tm1, Deriv(vZero, -cz));
+    c1_it.setCol(tm1, Deriv(vZero, -cz));
 
     c2_it = c2.writeLine(cid + 5);
-    c2_it.addCol(tm2, Deriv(vZero, cz));
+    c2_it.setCol(tm2, Deriv(vZero, cz));
 }
 
 template <>

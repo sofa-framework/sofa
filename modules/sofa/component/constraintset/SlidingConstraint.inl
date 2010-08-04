@@ -96,7 +96,7 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
     c2_it.addCol(tm2b, -dir1 * r2);
 
     c1_it = c1.writeLine(cid + 1);
-    c1_it.addCol(tm1, dir2);
+    c1_it.setCol(tm1, dir2);
 
     c2_it = c2.writeLine(cid + 1);
     c2_it.addCol(tm2a, -dir2 * (1-r2));
@@ -110,7 +110,7 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
         constraintId++;
 
         c1_it = c1.writeLine(cid + 2);
-        c1_it.addCol(tm1, uniAB);
+        c1_it.setCol(tm1, uniAB);
 
         c2_it = c2.writeLine(cid + 2);
         c2_it.addCol(tm2a, -uniAB);
@@ -121,7 +121,7 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
         constraintId++;
 
         c1_it = c1.writeLine(cid + 2);
-        c1_it.addCol(tm1, -uniAB);
+        c1_it.setCol(tm1, -uniAB);
 
         c2_it = c2.writeLine(cid + 2);
         c2_it.addCol(tm2b, uniAB);
