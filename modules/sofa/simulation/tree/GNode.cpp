@@ -502,25 +502,6 @@ void GNode::updateVisualContext(VISUAL_FLAG FILTER)
     }
     simulation::Node::updateVisualContext(FILTER);
 }
-#ifdef SOFA_SMP
-Iterative::IterativePartition* GNode::getFirstPartition()
-{
-    if(is_partition())
-        return partition_;
-    for (GNode::ChildIterator it= child.begin(); it != child.end(); ++it)
-    {
-        GNode *g=dynamic_cast<GNode *>(*it);
-        if(g)
-        {
-            Iterative::IterativePartition* p= g->getFirstPartition();
-            if(p)
-                return p;
-        }
-    }
-    return NULL;
-}
-#endif
-
 
 /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
 void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
