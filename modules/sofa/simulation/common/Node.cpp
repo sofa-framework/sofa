@@ -773,6 +773,25 @@ void Node::sortComponents()
 
 }
 
+#ifdef SOFA_SMP
+Iterative::IterativePartition* Node::getFirstPartition()
+{
+    if(is_partition())
+        return partition_;
+    for (sofa::simulation::Node::ChildIterator it= child.begin(); it != child.end(); ++it)
+    {
+        sofa::simulation::Node *g=static_cast<sofa::simulation::Node *>(*it);
+        if(g)
+        {
+            Iterative::IterativePartition* p= g->getFirstPartition();
+            if(p)
+                return p;
+        }
+    }
+    return NULL;
+}
+#endif
+
 template <class RealObject>
 void Node::create( RealObject*& obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg)
 {

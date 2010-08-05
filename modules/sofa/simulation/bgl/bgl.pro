@@ -19,9 +19,9 @@ SOURCES += BglNode.cpp \
            GetObjectsVisitor.cpp
 
 contains(DEFINES,SOFA_SMP){
-HEADERS += SMPBglSimulation.h
+HEADERS += \ SMPBglSimulation.h
 
-SOURCES += SMPBglSimulation.cpp
+SOURCES += \ SMPBglSimulation.cpp
 }
 
 SOFA_DIR =../../../..

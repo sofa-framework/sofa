@@ -78,9 +78,6 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     const core::objectmodel::BaseNode* getParent() const;
 
-#ifdef SOFA_SMP
-    Iterative::IterativePartition *getFirstPartition();
-#endif
     /// Test if the given node is a parent of this node.
     bool hasParent(const BaseNode* node) const
     {
