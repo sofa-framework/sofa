@@ -94,7 +94,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::behavior::BaseMechanicalS
 #endif
 
 #ifdef SOFA_SMP
-    sofa::simulation::tree::GNode *context=dynamic_cast<sofa::simulation::tree::GNode *>(getContext());
+    sofa::simulation::Node *context=static_cast<sofa::simulation::Node *>(getContext());
 //   if (!getPartition()&&context&&!context->is_partition())
     {
         Iterative::IterativePartition *p;

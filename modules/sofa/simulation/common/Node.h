@@ -363,7 +363,10 @@ public:
     /// Find an object given its name
     core::objectmodel::BaseObject* getObject(const std::string& name) const;
 
-
+#ifdef SOFA_SMP
+    /// Get first partition
+    Iterative::IterativePartition* getFirstPartition();
+#endif
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///

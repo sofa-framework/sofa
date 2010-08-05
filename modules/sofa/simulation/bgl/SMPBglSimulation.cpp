@@ -70,9 +70,7 @@
 #endif
 #include <fstream>
 #include <string.h>
-#ifndef WIN32
-#include <locale.h>
-#endif
+
 #include <sofa/helper/system/thread/CTime.h>
 using
 sofa::helper::system::thread::CTime;
@@ -217,27 +215,6 @@ void SMPBglSimulation::init( Node* root )
     changeListener->addChild ( NULL,  dynamic_cast< Node *>(root) );
 }
 
-/*Simulation* getSimulation()
-{
-    if ( simulation::Simulation::theSimulation==NULL )
-        setSimulation(new SMPBglSimulation);
-    return simulation::getSimulation();
-}*/
-
-
-/*SMPBglSimulation::SMPBglSimulation()
-{
-    //-------------------------------------------------------------------------------------------------------
-    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
-    sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
-                                        "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
-
-    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
-    sofa::core::ObjectFactory::AddAlias("CollisionGroup",
-                                        "BglCollisionGroupManager", true, &classCollisionGroup);
-}*/
-
-
 /// Create a graph node and attach a new Node to it, then return the Node
 Node* SMPBglSimulation::newNode(const std::string& name)
 {
@@ -252,7 +229,7 @@ Result: hroots, interaction groups, all nodes initialized.
 
 
 
-/// Create a GNode tree structure using available file loaders, then convert it to a SMPBglSimulation
+/// Create a Node bgl structure using available file loaders, then convert it to a SMPBglSimulation
 Node* SMPBglSimulation::load(const char* f)
 {
     Node *root=Simulation::load(f);
@@ -354,10 +331,8 @@ void SMPBglSimulation::generateTasks ( Node* root, double dt )
         root->execute ( act );
     }
 
-    //std::cout << "animate\n";
     double startTime = root->getTime();
     double mechanicalDt = dt/numMechSteps.getValue();
-    //double nextTime = root->getTime() + root->getDt();
 
     // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
     //root->execute<CollisionVisitor>();
