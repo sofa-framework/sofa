@@ -138,7 +138,22 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDistances ()
 {
-    getDistances( 0);
+#ifdef SOFA_DEV
+    if( this->computeAllMatrices.getValue())
+    {
+        VecInCoord& xfrom0 = *this->fromModel->getX0();
+
+        GeoVecCoord tmpFrom;
+        tmpFrom.resize ( xfrom0.size() );
+        for ( unsigned int i = 0; i < xfrom0.size(); i++ )
+            tmpFrom[i] = xfrom0[i].getCenter();
+
+        if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC && this->computeAllMatrices.getValue()) geoDist->computeGeodesicalDistanceMap ( tmpFrom );
+        if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC && this->computeAllMatrices.getValue()) geoDist->computeHarmonicCoordsDistanceMap ( tmpFrom );
+    }
+#endif
+
+    this->getDistances( 0);
 }
 
 template <class BasicMapping>
@@ -990,6 +1005,8 @@ void SkinningMapping<BasicMapping>::precomputeMatrices()
     // Atilde and J
     this->Atilde.resize(xto0.size());
     this->J0.resize ( xfrom0.size() );
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->J0[i].resize(xto0.size());
     this->J.resize(xfrom0.size());
     for (unsigned int i = 0; i < xfrom0.size(); ++i)
         this->J[i].resize(xto0.size());
