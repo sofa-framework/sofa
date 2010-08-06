@@ -157,7 +157,7 @@ extern void peq(defaulttype::RigidDeriv<N,real1>& dest, const defaulttype::Vec<N
 }
 
 template <class BasicMapping>
-void IdentityMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+void IdentityMapping<BasicMapping>::apply( VecCoord& out, const InVecCoord& in )
 {
 
 
@@ -173,7 +173,7 @@ void IdentityMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
 }
 
 template <class BasicMapping>
-void IdentityMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+void IdentityMapping<BasicMapping>::applyJ( VecDeriv& out, const InVecDeriv& in )
 {
 
 
@@ -203,7 +203,7 @@ void IdentityMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const t
 }
 
 template <class BasicMapping>
-void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+void IdentityMapping<BasicMapping>::applyJT( InVecDeriv& out, const VecDeriv& in )
 {
     //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
 
@@ -264,6 +264,67 @@ void IdentityMapping<BaseMapping>::handleTopologyChange()
 {
     if ( stateTo && stateFrom && stateTo->getSize() != stateFrom->getSize()) this->init();
 }
+
+template <class BaseMapping>
+const sofa::defaulttype::BaseMatrix* IdentityMapping<BaseMapping>::getJ()
+{
+    const VecCoord& out = *this->toModel->getX();
+    const InVecCoord& in = *this->fromModel->getX();
+    assert(in.size() == out.size());
+
+    if (matrixJ.get() == 0 || updateJ)
+    {
+        updateJ = false;
+        if (matrixJ.get() == 0 ||
+            matrixJ->rowBSize() != out.size() ||
+            matrixJ->colBSize() != in.size())
+        {
+            matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+        }
+        else
+        {
+            matrixJ->clear();
+        }
+
+        bool isMaskInUse = maskTo->isInUse();
+
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage& indices = maskTo->getEntries();
+        ParticleMask::InternalStorage::const_iterator it = indices.begin();
+
+        for(unsigned i = 0; i < out.size() && !(isMaskInUse && it == indices.end()); i++)
+        {
+            if (isMaskInUse)
+            {
+                if(i != *it)
+                {
+                    continue;
+                }
+                ++it;
+            }
+            MBloc& block = *matrixJ->wbloc(i, i, true);
+            IdentityMappingMatrixHelper<NOut, NIn, Real>::setMatrix(block);
+        }
+    }
+    return matrixJ.get();
+}
+
+template<int N, int M, class Real>
+struct IdentityMappingMatrixHelper
+{
+    template <class Matrix>
+    static void setMatrix(Matrix& mat)
+    {
+        for(int r = 0; r < N; ++r)
+        {
+            for(int c = 0; c < M; ++c)
+            {
+                mat[r][c] = (Real) 0;
+            }
+            mat[r][r] = (Real) 1.0;
+        }
+    }
+};
 
 } // namespace mapping
 

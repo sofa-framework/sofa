@@ -28,10 +28,12 @@
 #include <sofa/core/behavior/MechanicalMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/MappedModel.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
+#include <memory>
 
 namespace sofa
 {
@@ -53,20 +55,38 @@ public:
     typedef typename Inherit::Out Out;
 
     typedef typename In::DataTypes InDataTypes;
-    typedef typename InDataTypes::Real Real;
-    typedef typename InDataTypes::VecCoord InVecCoord;
-    typedef typename InDataTypes::VecDeriv InVecDeriv;
-    typedef typename InDataTypes::Coord InCoord;
-    typedef typename InDataTypes::Deriv InDeriv;
+    typedef typename In::Real      Real;
+    typedef typename In::VecCoord  InVecCoord;
+    typedef typename In::VecDeriv  InVecDeriv;
+    typedef typename In::Coord     InCoord;
+    typedef typename In::Deriv     InDeriv;
 
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
-    typedef typename Out::Coord Coord;
-    typedef typename Out::Deriv Deriv;
-    typedef typename Out::DataTypes OutDataTypes;
-    typedef typename OutDataTypes::Real OutReal;
+    typedef typename Out::Coord    Coord;
+    typedef typename Out::Deriv    Deriv;
+
+    typedef typename Out::DataTypes        OutDataTypes;
+    typedef typename OutDataTypes::Real     OutReal;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
+
+    enum
+    {
+        N = OutDataTypes::spatial_dimensions
+    };
+    enum
+    {
+        NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size
+    };
+    enum
+    {
+        NOut = sofa::defaulttype::DataTypeInfo<Deriv>::Size
+    };
+
+    typedef defaulttype::Mat<N, N, Real> Mat;
+    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
@@ -76,7 +96,9 @@ public:
     core::behavior::BaseMechanicalState *stateTo;
 
     IdentityMapping(In* from, Out* to)
-        : Inherit(from, to)
+        : Inherit(from, to),
+          matrixJ(),
+          updateJ(false)
     {
         maskFrom = NULL;
         if ((stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(from)))
@@ -96,16 +118,25 @@ public:
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return true; }
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply(VecCoord& out, const InVecCoord& in);
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJ(VecDeriv& out, const InVecDeriv& in);
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT(InVecDeriv& out, const VecDeriv& in);
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+
+    const sofa::defaulttype::BaseMatrix* getJ();
 
     virtual void handleTopologyChange();
+
+protected:
+    std::auto_ptr<MatrixType> matrixJ;
+    bool updateJ;
 };
+
+template <int N, int M, class Real>
+struct IdentityMappingMatrixHelper;
 
 using core::Mapping;
 using core::behavior::MechanicalMapping;
