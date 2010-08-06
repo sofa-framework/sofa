@@ -69,7 +69,7 @@ void EdgeSetTopologyContainer::init()
     d_edge.updateIfDirty(); // make sure m_edge is up to date
 
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    if (!m_edge.empty())
+    if (!m_edge.empty() && !d_initPoints.isSet()) // if d_initPoints is set, we don't overwrite it.
     {
         for (unsigned int i=0; i<m_edge.size(); ++i)
         {
