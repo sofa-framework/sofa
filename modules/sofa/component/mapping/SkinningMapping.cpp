@@ -130,7 +130,7 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3
 
 
 template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::computeInitPos ( )
+void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::computeInitPos ( )
 {
     const VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
     const VecInCoord& xfrom = *this->fromModel->getX0();
@@ -152,7 +152,7 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 
 
 template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
+void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
 {
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecCoord& xto0 = *this->toModel->getX0();
@@ -224,7 +224,7 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 
 
 template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::apply ( Out::VecCoord& out, const In::VecCoord& in )
+void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::apply ( Out::VecCoord& out, const In::VecCoord& in )
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_coefs = coefs.getValue();
@@ -346,7 +346,7 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 
 
 template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJ ( Out::VecDeriv& out, const In::VecDeriv& in )
+void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJ ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     //const vector<int>& m_reps = repartition.getValue();
     //const VVD& m_coefs = coefs.getValue();
@@ -417,7 +417,7 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 }
 
 template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT ( In::VecDeriv& out, const Out::VecDeriv& in )
+void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT ( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     //const vector<int>& m_reps = repartition.getValue();
     //const VVD& m_coefs = coefs.getValue();
@@ -496,7 +496,7 @@ void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mec
 }
 
 template <>
-void BasicSkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT (In::MatrixDeriv& out, const Out::MatrixDeriv& in )
+void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT (In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
     //const vector<int>& m_reps = repartition.getValue();
     //const VVD& m_coefs = coefs.getValue();
