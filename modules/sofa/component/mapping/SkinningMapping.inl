@@ -1055,7 +1055,7 @@ void SkinningMapping<BasicMapping>::getCov33 (Mat33& M, const Vec3& vec1, const 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::QtoR(Mat33& M, const Quat& q) const
 {
-// q to M
+    // q to M
     double xs = q[0]*2., ys = q[1]*2., zs = q[2]*2.;
     double wx = q[3]*xs, wy = q[3]*ys, wz = q[3]*zs;
     double xx = q[0]*xs, xy = q[0]*ys, xz = q[0]*zs;
@@ -1127,6 +1127,24 @@ void SkinningMapping<BasicMapping>::ComputeMw(Mat33& M, const Quat& q) const
     M[1][0]=q[2]; M[1][1]=0; M[1][2]=-q[0];
     M[2][0]=-q[1]; M[2][1]=q[0]; M[2][2]=0;
 }
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::computeInitPos();
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::apply(Out::VecCoord& /*out*/, const In::VecCoord& /*in*/);
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::applyJ(Out::VecDeriv& /*out*/, const In::VecDeriv& /*in*/);
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::applyJT(In::VecDeriv& /*out*/, const Out::VecDeriv& /*in*/);
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::applyJT(In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/);
 
 #endif
 

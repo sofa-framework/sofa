@@ -147,7 +147,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
 
     for (unsigned int i=0; i<lambda.size(); i++)
     {
-        violation[i].x() = _violation[i];
+        violation[i].x() = (Real1)_violation[i];
     }
 }
 
@@ -187,7 +187,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
             /// @TODO : use the constraint ID
             unsigned int index = colIt.index();
             Deriv2 value = colIt.val();
-            dViolation[i].x() += value * dx2[index];
+            dViolation[i].x() += (Real1)(value * dx2[index]);
             df2[index] += value * dLambda[i].x();
 
             ++colIt;
