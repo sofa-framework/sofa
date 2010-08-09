@@ -54,7 +54,6 @@ public:
     virtual void reinit()
     {
         setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
-
     }
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
@@ -73,7 +72,7 @@ public:
 
     unsigned getIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid point
     Vector3 getPoint(int i) const;
-    Vector3 getPoint(int x, int y, int z) const;
+    Vector3 getPoint(int x, int y, int z) const ;
     bool hasPos()  const { return true; }
     double getPX(int i)  const { return getPoint(i)[0]; }
     double getPY(int i) const { return getPoint(i)[1]; }
@@ -107,6 +106,8 @@ public:
     int findNearestHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findNearestCube(pos, fx, fy, fz); }
 
 protected:
+
+    Data<bool> computeHexaList, computeQuadList, computeEdgeList, computePointList;
     Data< Vector3 > min, max;
     /// Position of point 0
     Data< Vector3 > p0;
