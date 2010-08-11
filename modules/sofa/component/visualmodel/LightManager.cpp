@@ -234,8 +234,8 @@ void LightManager::fwdDraw(Pass pass)
 
                 lightFlag[i] = 1;
                 shadowTextureID[i] = 0;
-                zNears[i] = lights[i]->p_zNear.getValue();
-                zFars[i] = lights[i]->p_zFar.getValue();
+                zNears[i] = (GLfloat) lights[i]->p_zNear.getValue();
+                zFars[i] = (GLfloat) lights[i]->p_zFar.getValue();
 
                 if (shadowsEnabled.getValue() && lights[i]->shadowsEnabled.getValue())
                 {
