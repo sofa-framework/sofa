@@ -3,7 +3,6 @@ uniform float zFar;
 uniform float zNear;
 
 varying vec4 lightVec;
-varying float m_depth;
 
 vec2 ComputeMoments(float depth)
 {
