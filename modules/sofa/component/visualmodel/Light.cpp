@@ -163,9 +163,9 @@ void Light::preDrawShadow(helper::gl::VisualParameters* /* vp */)
 
 #ifdef SOFA_HAVE_GLEW
     depthShader.TurnOn();
-    depthShader.SetFloat(depthShader.GetVariable("zFar"), p_zFar.getValue());
-    depthShader.SetFloat(depthShader.GetVariable("zNear"), p_zNear.getValue());
-    depthShader.SetFloat4(depthShader.GetVariable("lightPosition"), pos[0], pos[1], pos[2], 1.0);
+    depthShader.SetFloat(depthShader.GetVariable("zFar"), (GLfloat) p_zFar.getValue());
+    depthShader.SetFloat(depthShader.GetVariable("zNear"), (GLfloat) p_zNear.getValue());
+    depthShader.SetFloat4(depthShader.GetVariable("lightPosition"), (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
     shadowFBO.start();
 #endif
 }
