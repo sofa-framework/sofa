@@ -115,11 +115,14 @@ std::string GLSLShader::LoadTextFile(const std::string& strFile)
 
 std::string CombineHeaders(std::string header, const std::string &shaderStage, std::string source)
 {
-    std::size_t spos = 0;
-
+    std::size_t spos = 1;
     // Skip #version
-    if (source.size() > spos + 8 && source.substr(spos,8) == std::string("#version"))
+    if (source.size() > spos + 8 && (source.substr(spos,8)).compare(std::string("#version")) == 0)
+    {
         spos = source.find('\n', spos+8);
+        spos++;
+    }
+
 
     // Skip #extension strings
     while (spos != std::string::npos && source.size() > spos + 10 && source.substr(spos,10) == std::string("#extension"))

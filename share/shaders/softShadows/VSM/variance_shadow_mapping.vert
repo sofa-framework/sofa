@@ -1,4 +1,5 @@
 #version 120
+
 varying vec3 normal;
 varying vec4 ambientGlobal;
 
@@ -7,7 +8,7 @@ uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
 uniform vec3 lightPosition[MAX_NUMBER_OF_LIGHTS];
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
-varying float dist[MAX_NUMBER_OF_LIGHTS];
+//varying float dist[MAX_NUMBER_OF_LIGHTS];
 
 void main()
 {
@@ -31,7 +32,7 @@ void main()
 			lightDir[i] = (aux);
 
 			// compute the distance to the light source to a varying variable
-			dist[i] = length(aux);
+			//dist[i] = length(aux);
 
 			// Normalize the halfVector to pass it to the fragment shader
 			//halfVector[i] = normalize(gl_LightSource[i].halfVector.xyz);
