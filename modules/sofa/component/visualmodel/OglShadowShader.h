@@ -52,17 +52,18 @@ class SOFA_COMPONENT_VISUALMODEL_API OglShadowShader : public sofa::component::v
 public:
     SOFA_CLASS(OglShadowShader, sofa::component::visualmodel::OglShader);
 
-    Data<int> test;
     OglShadowShader();
     virtual ~OglShadowShader();
 
     void init();
 
-    void initShaders(unsigned int numberOfLights);
+    void initShaders(unsigned int numberOfLights, bool softShadow);
 
 protected:
     static const std::string PATH_TO_SHADOW_VERTEX_SHADERS;
     static const std::string PATH_TO_SHADOW_FRAGMENT_SHADERS;
+    static const std::string PATH_TO_SOFT_SHADOW_VERTEX_SHADERS;
+    static const std::string PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS;
 
 
 

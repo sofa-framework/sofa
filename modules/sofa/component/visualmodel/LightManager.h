@@ -74,8 +74,6 @@ private:
     std::vector<Light*> lights;
     std::vector<defaulttype::Mat4x4f> lightModelViewMatrix;
     std::vector<defaulttype::Mat4x4f> lightProjectionMatrix;
-    Data<bool> shadowEnabled;
-    Data<defaulttype::Vec4f> ambient;
 #ifdef SOFA_HAVE_GLEW
     //OglShadowShader* shadowShader;
     helper::vector<OglShadowShader*> shadowShaders;
@@ -86,8 +84,12 @@ public:
 #ifndef __APPLE__
     enum { MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 5 };
 #else
-    enum { MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 3 };
+    enum { MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 2 };
 #endif
+
+    Data<bool> shadowsEnabled;
+    Data<bool> softShadowsEnabled;
+    Data<defaulttype::Vec4f> ambient;
 
     LightManager();
     virtual ~LightManager();
@@ -102,7 +104,7 @@ public:
     void postDrawScene(helper::gl::VisualParameters* vp);
 
 
-    void drawVisual();
+    void draw();
     void fwdDraw(Pass);
     void bwdDraw(Pass);
 
