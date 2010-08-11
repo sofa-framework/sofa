@@ -592,7 +592,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& 
                     T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
 
                     if (rootRowIt == rootRowItEnd)
-                        rootRowIt = (*outRoot).newLine();
+                        rootRowIt = (*outRoot).writeLine(rowIt.index());
 
                     rootRowIt.addCol(indexT, T);
                 }
