@@ -177,6 +177,7 @@ public:
             if (!currentCamera)
             {
                 currentCamera = new component::visualmodel::InteractiveCamera();
+                groot->addObject(currentCamera);
                 //std::cout << "Create Default Camera" << std::endl;
             }
             sofa::defaulttype::Vec3d minBBox, maxBBox;
