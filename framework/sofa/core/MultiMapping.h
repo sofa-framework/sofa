@@ -66,6 +66,7 @@ protected:
     /// Output Model container. New outputs are added through addOutputModel( Ou* )
     helper::vector<Out*> toModels;
 
+public:
 #ifdef SOFA_SMP
     defaulttype::SharedVector<OutVecCoord *> VecOutPos;
     defaulttype::SharedVector<const InVecCoord *> VecInPos;

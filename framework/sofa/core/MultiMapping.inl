@@ -141,6 +141,63 @@ struct ParallelMultiMappingApplyJCPU
     }
 };
 
+template<class T>
+struct accessOutPos
+{
+    void operator()(void *m, Shared_rw<typename T::Out::VecCoord> out)
+    {
+        out.access();
+    }
+};
+
+template<class T>
+struct ParallelMultiMappingApply3
+{
+    void operator()(void *m, Shared_rw<typename T::Out::VecCoord> out, Shared_r<typename T::In::VecCoord> in1, Shared_r<typename T::In::VecCoord> in2)
+    {
+        out.access();
+        in1.read();
+        in2.read();
+        ((T *)m)->apply(((T *)m)->VecOutPos,((T *)m)->VecInPos);
+    }
+};
+
+template<class T>
+struct ParallelMultiMappingApplyJ3
+{
+    void operator()(void *m, Shared_rw<typename T::Out::VecDeriv> out, Shared_r<typename T::In::VecDeriv> in1,Shared_r<typename T::In::VecDeriv> in2)
+    {
+        out.access();
+        in1.read();
+        in2.read();
+        ((T *)m)->applyJ(((T *)m)->VecOutVel,((T *)m)->VecInVel);
+    }
+};
+template<class T>
+struct ParallelMultiMappingApplyCPU3
+{
+    void operator()(void *m, Shared_rw<typename T::Out::VecCoord> out, Shared_r<typename T::In::VecCoord> in1,Shared_r<typename T::In::VecCoord> in2)
+    {
+        out.access();
+        in1.read();
+        in2.read();
+        ((T *)m)->apply(((T *)m)->VecOutPos,((T *)m)->VecInPos);
+    }
+};
+
+template<class T>
+struct ParallelMultiMappingApplyJCPU3
+{
+    void operator()(void *m, Shared_rw<typename T::Out::VecDeriv> out, Shared_r<typename T::In::VecDeriv> in1,Shared_r<typename T::In::VecDeriv> in2)
+    {
+        out.access();
+        in1.read();
+        in2.read();
+
+        ((T *)m)->applyJ(((T *)m)->VecOutVel,((T *)m)->VecInVel);
+    }
+};
+
 
 template <class In, class Out>
 void MultiMapping<In,Out>::updateMapping()
@@ -148,15 +205,15 @@ void MultiMapping<In,Out>::updateMapping()
     if( this->fromModels.empty() || this->toModels.empty() )
         return;
 
+    std::cout << "update mapping" << std::endl;
+
     const VecId &idCoord = VecId::position();
 
     VecOutPos.resize(0);
     getVecOutCoord(idCoord, VecOutPos);
+    std::cout << "VecOutPos size" << VecOutPos.size() << std::endl;
     VecInPos.resize(0);
     getConstVecInCoord(idCoord, VecInPos);
-
-    Task<ParallelMultiMappingApplyCPU<MultiMapping<In,Out> >, ParallelMultiMappingApply<MultiMapping<In,Out> > >(this,*VecOutPos,*VecInPos);
-
 
     const VecId &idDeriv = VecId::velocity();
 
@@ -165,8 +222,10 @@ void MultiMapping<In,Out>::updateMapping()
     VecInVel.resize(0);
     getConstVecInDeriv(idDeriv, VecInVel);
 
-    Task<ParallelMultiMappingApplyJCPU< MultiMapping< In,Out > >,  ParallelMultiMappingApplyJ< MultiMapping< In,Out > > >(this,*VecOutVel, *VecInVel);
-
+    //Task<ParallelMultiMappingApplyCPU3<MultiMapping<In,Out> >, ParallelMultiMappingApply3<MultiMapping<In,Out> > >(this,**this->toModels[0]->getX(),**this->fromModels[0]->getX(),**this->fromModels[1]->getX());
+    Task<ParallelMultiMappingApplyCPU3<MultiMapping<In,Out> >, ParallelMultiMappingApply3<MultiMapping<In,Out> > >(this,**(VecOutPos[0]),**(VecInPos[0]),**(VecInPos[1]));
+    Task<ParallelMultiMappingApplyJCPU3<MultiMapping<In,Out> >, ParallelMultiMappingApplyJ3<MultiMapping<In,Out> > >(this,**(VecOutVel[0]),**(VecInVel[0]),**(VecInVel[1]));
+    //Task<ParallelMultiMappingApplyJCPU< MultiMapping< In,Out > >,  ParallelMultiMappingApplyJ< MultiMapping< In,Out > > >(this,**(VecOutVel[0]), **(VecInVel[0]),**(VecInVel[1]));
 }
 
 #endif
