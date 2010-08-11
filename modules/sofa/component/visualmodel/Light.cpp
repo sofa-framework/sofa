@@ -71,14 +71,22 @@ int SpotLightClass = core::RegisterObject("Spot Light")
 
 using sofa::defaulttype::Vector3;
 
+const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "share/shaders/softShadows/VSM/generate_depth_texture.vert";
+const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "share/shaders/softShadows/VSM/generate_depth_texture.frag";
+
+const std::string Light::PATH_TO_BLUR_TEXTURE_VERTEX_SHADER = "share/shaders/softShadows/VSM/blur_texture.vert";
+const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "share/shaders/softShadows/VSM/blur_texture.frag";
+
 Light::Light()
     : lightID(0), shadowTexWidth(0),shadowTexHeight(0)
+    , shadowFBO(true, true, true), blurHFBO(false,false,true), blurVFBO(false,false,true)
     , color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
     , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , drawSource(initData(&drawSource, (bool) false, "drawSource", "Draw Light Source"))
     , p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
     , p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
-    , enableShadow(initData(&enableShadow, (bool) true, "enableShadow", "Enable Shadow from this light"))
+    , shadowsEnabled(initData(&shadowsEnabled, (bool) true, "shadowsEnabled", "Enable Shadow from this light"))
+    , softShadows(initData(&softShadows, (bool) false, "softShadows", "Turn on Soft Shadow from this light"))
 {
 
 }
@@ -97,7 +105,16 @@ void Light::init()
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     LightManager* lm = context->core::objectmodel::BaseContext::get<LightManager>();
 
-    lm->putLight(this);
+    if(lm)
+    {
+        lm->putLight(this);
+        softShadows.setParent(&(lm->softShadowsEnabled));
+        //softShadows = lm->softShadowsEnabled.getValue();
+    }
+    else
+    {
+        serr << "No LightManager found" << sendl;
+    }
 
 }
 
@@ -109,6 +126,12 @@ void Light::initVisual()
     //Shadow texture init
 #ifdef SOFA_HAVE_GLEW
     shadowFBO.init(shadowTexWidth, shadowTexHeight);
+    blurHFBO.init(shadowTexWidth, shadowTexHeight);
+    blurVFBO.init(shadowTexWidth, shadowTexHeight);
+    depthShader.InitShaders(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER,
+            PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
+    blurShader.InitShaders(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER,
+            PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
 #endif
 }
 
@@ -132,12 +155,17 @@ void Light::drawLight()
 
 void Light::preDrawShadow(helper::gl::VisualParameters* /* vp */)
 {
+    const Vector3& pos = getPosition();
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
 #ifdef SOFA_HAVE_GLEW
+    depthShader.TurnOn();
+    depthShader.SetFloat(depthShader.GetVariable("zFar"), p_zFar.getValue());
+    depthShader.SetFloat(depthShader.GetVariable("zNear"), p_zNear.getValue());
+    depthShader.SetFloat4(depthShader.GetVariable("lightPosition"), pos[0], pos[1], pos[2], 1.0);
     shadowFBO.start();
 #endif
 }
@@ -147,12 +175,82 @@ void Light::postDrawShadow()
 #ifdef SOFA_HAVE_GLEW
     //Unbind fbo
     shadowFBO.stop();
+    depthShader.TurnOff();
 #endif
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+
+    if(softShadows.getValue())
+        blurDepthTexture();
+}
+
+void Light::blurDepthTexture()
+{
+    float vxmax, vymax, vzmax ;
+    float vxmin, vymin, vzmin ;
+    float txmax,tymax,tzmax;
+    float txmin,tymin,tzmin;
+
+    txmin = tymin = tzmin = 0.0;
+    vxmin = vymin = vzmin = -1.0;
+    vxmax = vymax = vzmax = txmax = tymax = tzmax = 1.0;
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    blurHFBO.start();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, shadowFBO.getColorTexture());
+
+    blurShader.TurnOn();
+    blurShader.SetFloat(blurShader.GetVariable("mapDimX"), (GLfloat) shadowTexWidth);
+    blurShader.SetInt(blurShader.GetVariable("orientation"), 0);
+    glBegin(GL_QUADS);
+    {
+        glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
+        glTexCoord3f(txmax,tymax,0.0); glVertex3f(vxmax,vymax,0.0);
+        glTexCoord3f(txmax,tymin,0.0); glVertex3f(vxmax,vymin,0.0);
+        glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
+    }
+    glEnd();
+    blurShader.TurnOff();
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    blurHFBO.stop();
+
+    blurVFBO.start();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, blurHFBO.getColorTexture());
+
+    blurShader.TurnOn();
+    blurShader.SetFloat(blurShader.GetVariable("mapDimX"), (GLfloat) shadowTexWidth);
+    blurShader.SetInt(blurShader.GetVariable("orientation"), 1);
+    glBegin(GL_QUADS);
+    {
+        glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
+        glTexCoord3f(txmax,tymax,0.0); glVertex3f(vxmax,vymax,0.0);
+        glTexCoord3f(txmax,tymin,0.0); glVertex3f(vxmax,vymin,0.0);
+        glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
+    }
+    glEnd();
+    blurShader.TurnOff();
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    blurVFBO.stop();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
 }
 
 void Light::computeShadowMapSize()
@@ -414,11 +512,15 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
     const Vector3 &dir = direction.getValue();
 
     Vector3 xAxis, yAxis;
-    yAxis = (fabs(dir[1]) > fabs(dir[2])) ? Vector3(0.0,0.0,1.0) : Vector3(0.0,1.0,0.0);
+
+    yAxis=Vector3(0.0,1.0,0.0);
+    if( 1.0 - dot(yAxis, dir)  < 0.0001)
+        yAxis = Vector3(0.0,0.0,1.0);
     xAxis = yAxis.cross(dir);
-    yAxis = dir.cross(xAxis);
     xAxis.normalize();
+    yAxis = dir.cross(xAxis);
     yAxis.normalize();
+
     defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, dir);
 
@@ -458,6 +560,9 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
             if (zNear < 0.1) zNear = 0.1;
             if (zFar < 2.0) zFar = 2.0;
         }
+
+        p_zNear.setValue(zNear);
+        p_zFar.setValue(zFar);
     }
     else
     {
@@ -468,8 +573,8 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
     //Projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //gluPerspective(2*cutoff.getValue(),1.0, p_zNear.getValue(), p_zFar.getValue());
-    gluPerspective(2*cutoff.getValue(),1.0, zNear, zFar);
+
+    gluPerspective(2.0*cutoff.getValue(),1.0, zNear, zFar);
 
     //Modelview matrix
     glMatrixMode(GL_MODELVIEW);
@@ -488,12 +593,26 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
     glEnable(GL_DEPTH_TEST);
 }
 
-GLuint SpotLight::getShadowTexture()
+GLuint SpotLight::getDepthTexture()
 {
     //return debugVisualShadowTexture;
     //return shadowTexture;
 #ifdef SOFA_HAVE_GLEW
     return shadowFBO.getDepthTexture();
+#else
+    return 0;
+#endif
+}
+
+GLuint SpotLight::getColorTexture()
+{
+    //return debugVisualShadowTexture;
+    //return shadowTexture;
+#ifdef SOFA_HAVE_GLEW
+    if(softShadows.getValue())
+        return blurVFBO.getColorTexture();
+    else
+        return shadowFBO.getColorTexture();
 #else
     return 0;
 #endif

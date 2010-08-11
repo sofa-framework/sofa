@@ -56,16 +56,12 @@ int OglShadowShaderClass = core::RegisterObject("OglShadowShader")
         .add< OglShadowShader >()
         ;
 
-#ifndef PCSS_SHADOWS
-const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/shadowMapping.vert";
-const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/shadowMapping.frag";
-#else
-const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/shadowMappingPCSS.vert";
-const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/shadowMappingPCSS.frag";
-#endif
+const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/hardShadows/shadowMapping.vert";
+const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/hardShadows/shadowMapping.frag";
+const std::string OglShadowShader::PATH_TO_SOFT_SHADOW_VERTEX_SHADERS = "shaders/softShadows/VSM/variance_shadow_mapping.vert";
+const std::string OglShadowShader::PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS = "shaders/softShadows/VSM/variance_shadow_mapping.frag";
 
 OglShadowShader::OglShadowShader()
-    :test(initData(&test, (int) 0, "test", "test"))
 {
 
 
@@ -82,13 +78,19 @@ void OglShadowShader::init()
     turnOn.setValue(true);
 }
 
-void OglShadowShader::initShaders(unsigned int /* numberOfLights */)
+void OglShadowShader::initShaders(unsigned int /* numberOfLights */, bool softShadow)
 {
-    std::string tempFragment="";
-    std::string tempVertex="";
+    if(!softShadow)
+    {
+        vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
+        fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
+    }
+    else
+    {
+        vertexFilenames.push_back( PATH_TO_SOFT_SHADOW_VERTEX_SHADERS );
+        fragmentFilenames.push_back( PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS );
+    }
 
-    vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
-    fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
     shaderVector.push_back(new sofa::helper::gl::GLSLShader());
 
     std::ostringstream oss;

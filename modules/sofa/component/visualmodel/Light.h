@@ -35,6 +35,7 @@
 
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/helper/gl/GLSLShader.h>
 #endif
 
 namespace sofa
@@ -67,22 +68,29 @@ protected:
     GLint lightID;
     GLuint shadowTexWidth, shadowTexHeight;
 
-    Data<sofa::defaulttype::Vector3> color;
-    Data<GLuint> shadowTextureSize;
-    Data<bool> drawSource;
-    Data<double> p_zNear, p_zFar;
-
 #ifdef SOFA_HAVE_GLEW
     helper::gl::FrameBufferObject shadowFBO;
+    helper::gl::FrameBufferObject blurHFBO;
+    helper::gl::FrameBufferObject blurVFBO;
+    static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER;
+    static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER;
+    static const std::string PATH_TO_BLUR_TEXTURE_VERTEX_SHADER;
+    static const std::string PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER;
+    helper::gl::GLSLShader depthShader;
+    helper::gl::GLSLShader blurShader;
 #endif
-    GLuint debugVisualShadowTexture;
-
     GLfloat lightMatProj[16];
     GLfloat lightMatModelview[16];
 
     void computeShadowMapSize();
+    void blurDepthTexture();
 public:
-    Data<bool> enableShadow;
+    Data<sofa::defaulttype::Vector3> color;
+    Data<GLuint> shadowTextureSize;
+    Data<bool> drawSource;
+    Data<double> p_zNear, p_zFar;
+    Data<bool> shadowsEnabled;
+    Data<bool> softShadows;
 
     Light();
     virtual ~Light();
@@ -101,9 +109,11 @@ public:
     virtual void preDrawShadow(helper::gl::VisualParameters* vp);
     virtual void postDrawShadow();
     virtual GLuint getShadowMapSize();
-    virtual GLuint getShadowTexture() { return 0 ;};
+    virtual GLuint getDepthTexture() { return 0 ;};
+    virtual GLuint getColorTexture() { return 0 ;};
     virtual GLfloat* getProjectionMatrix() { return NULL ;};
     virtual GLfloat* getModelviewMatrix() { return NULL ;};
+    virtual const sofa::defaulttype::Vector3 getPosition() { return sofa::defaulttype::Vector3(0.0,0.0,0.0); }
 };
 
 class DirectionalLight : public Light
@@ -138,6 +148,7 @@ public:
     virtual void drawLight();
     virtual void draw();
     virtual void reinit();
+    virtual const sofa::defaulttype::Vector3 getPosition() { return position.getValue(); }
 
 };
 
@@ -158,7 +169,8 @@ public:
     virtual void reinit();
 
     void preDrawShadow(helper::gl::VisualParameters* vp);
-    GLuint getShadowTexture();
+    GLuint getDepthTexture();
+    GLuint getColorTexture();
     GLfloat* getProjectionMatrix();
     GLfloat* getModelviewMatrix();
 
