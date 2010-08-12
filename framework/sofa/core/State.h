@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BASESTATE_H
-#define SOFA_CORE_BASESTATE_H
+#ifndef SOFA_CORE_STATE_H
+#define SOFA_CORE_STATE_H
 
 #include <sofa/core/BaseState.h>
 
@@ -80,10 +80,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     /// Container of Deriv values with the same API as sofa::helper::vector.
     typedef typename DataTypes::VecDeriv VecDeriv;
-    /// Sparse vector of Deriv values (defining coefficient of a constraint).
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    /// Vector of constraints (i.e. of SparseVecDeriv).
-    typedef typename DataTypes::VecConst VecConst;
+    /// Vector of constraints
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 
     virtual ~State() { }
 
@@ -144,8 +142,6 @@ public:
         return TDataTypes::Name();
     }
 };
-
-} // namespace behavior
 
 } // namespace core
 
