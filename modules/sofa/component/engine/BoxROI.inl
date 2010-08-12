@@ -358,16 +358,18 @@ void BoxROI<DataTypes>::update()
 template <class DataTypes>
 void BoxROI<DataTypes>::draw()
 {
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!this->getContext()->getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
     const VecCoord* x0 = &f_X0.getValue();
-    glColor3f(0.0, 1.0, 1.0);
+    glColor3f(1.0f, 0.4f, 0.4f);
 
     ///draw the boxes
     if( p_drawBoxes.getValue())
     {
         glDisable(GL_LIGHTING);
+        if (_drawSize.getValue())
+            glLineWidth((GLfloat)_drawSize.getValue());
         glBegin(GL_LINES);
         const helper::vector<Vec6>& vb=boxes.getValue();
         for (unsigned int bi=0; bi<vb.size(); ++bi)
@@ -405,11 +407,14 @@ void BoxROI<DataTypes>::draw()
             glVertex3d(Xmax,Ymax,Zmax);
         }
         glEnd();
+        glLineWidth(1);
     }
 
     ///draw points in ROI
     if( p_drawPoints.getValue())
     {
+        if (_drawSize.getValue())
+            glPointSize((GLfloat)_drawSize.getValue());
         glDisable(GL_LIGHTING);
         glBegin(GL_POINTS);
         glPointSize(5.0);
@@ -420,6 +425,7 @@ void BoxROI<DataTypes>::draw()
             helper::gl::glVertexT(p);
         }
         glEnd();
+        glPointSize(1);
     }
 
     ///draw edges in ROI
@@ -439,13 +445,13 @@ void BoxROI<DataTypes>::draw()
             }
         }
         glEnd();
+        glLineWidth(1);
     }
 
     ///draw triangles in ROI
     if( p_drawTriangles.getValue())
     {
         glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
         glBegin(GL_TRIANGLES);
         helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
@@ -488,6 +494,7 @@ void BoxROI<DataTypes>::draw()
             helper::gl::glVertexT(p);
         }
         glEnd();
+        glLineWidth(1);
     }
 }
 
