@@ -8,7 +8,9 @@ uniform float zNear[MAX_NUMBER_OF_LIGHTS];
 
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
-//varying float dist[MAX_NUMBER_OF_LIGHTS];
+varying float dist[MAX_NUMBER_OF_LIGHTS];
+
+
 
 #ifdef USE_TEXTURE
 uniform sampler2D colorTexture;
@@ -45,30 +47,19 @@ float VarianceShadow(vec2 moments, float depth)
     return p_max;
 }
 
-float shadow_variance(int index, float depthSqr) 
+float shadow_variance(sampler2D shadowMap, vec4 shadowCoord, float depth) 
 { 
-	vec4 shadowTexCoord = shadowTexCoord[index];
-	vec2 moment;
-	
-	//Array of Sampler2D can only be accessed with a constant
-	//with mac os x.
-	if (index == 0)
-		moment = texture2DProj(shadowTexture[0], shadowTexCoord).xy;
-	if (index == 1)
-		moment = texture2DProj(shadowTexture[1], shadowTexCoord).xy;
-#if MAX_NUMBER_OF_LIGHTS > 2
-	if (index == 2)
-		moment = texture2DProj(shadowTexture[2], shadowTexCoord).xy;
-#endif
-#if MAX_NUMBER_OF_LIGHTS > 3
-	if (index == 3)
-		moment = texture2DProj(shadowTexture[3], shadowTexCoord).xy;
-#endif
-#if MAX_NUMBER_OF_LIGHTS > 4
-	if (index == 4)
-		moment = texture2DProj(shadowTexture[4], shadowTexCoord).xy;
-#endif		
-	return VarianceShadow(moment, depthSqr);
+	return VarianceShadow(texture2DProj(shadowMap, shadowCoord).xy, depth);
+}
+
+float shadow_variance_unroll(const int index, const sampler2D shadowTexture) 
+{ 
+	float depth, depthSqr;
+	depthSqr = dot(lightDir[index], lightDir[index]);
+	depth = sqrt(depthSqr);
+	depth = (depth - zNear[index])/(zFar[index] - zNear[index]);
+
+	return VarianceShadow(texture2DProj(shadowTexture, shadowTexCoord[index]).xy, depth);
 }
 
 
@@ -85,27 +76,52 @@ void main()
 	//lightFlag[0] = 2;
 	//lightFlag[1] = 0;
 	float shadow=1.0;
-	float depth, depthSqr;
+
+	
+	//Compute first all shadow variables
+	//as : -Mac Os does not support accessing array of sampler2D with a non const index
+	//     -Linux does not support accessing more than 1 time an element in an array (at compilation time)
+	       
+	       
+#if MAX_NUMBER_OF_LIGHTS > 0
+	 float shadowsVar[MAX_NUMBER_OF_LIGHTS];
+	 for(int i=0 ; i<MAX_NUMBER_OF_LIGHTS ; i++)
+	 	shadowsVar[i] = 1.0;
+	 	
+	 if(lightFlag[0] == 2)
+	 	shadowsVar[0] = shadow_variance_unroll(0, shadowTexture[0]);
+#if MAX_NUMBER_OF_LIGHTS > 1
+	 if(lightFlag[1] == 2)
+	 	shadowsVar[1] = shadow_variance_unroll(1, shadowTexture[1]);
+#endif //MAX_NUMBER_OF_LIGHTS > 1
+#if MAX_NUMBER_OF_LIGHTS > 2
+	 if(lightFlag[2] == 2)
+	 	shadowsVar[2] = shadow_variance_unroll(2, shadowTexture[2]);
+#endif //MAX_NUMBER_OF_LIGHTS > 2
+#if MAX_NUMBER_OF_LIGHTS > 3
+	 if(lightFlag[3] == 2)
+	 	shadowsVar[3] = shadow_variance_unroll(3, shadowTexture[3]);
+#endif //MAX_NUMBER_OF_LIGHTS > 3
+#if MAX_NUMBER_OF_LIGHTS > 4
+	 if(lightFlag[4] == 2)
+	 	shadowsVar[4] = shadow_variance_unroll(4, shadowTexture[4]);
+#endif //MAX_NUMBER_OF_LIGHTS > 4
+#endif //MAX_NUMBER_OF_LIGHTS > 0
 
 	// a fragment shader can't write a verying variable, hence we need
 	//a new variable to store the normalized interpolated normal
-
 	n = normalize(normal);
 	
 	for(int i=0 ; i<MAX_NUMBER_OF_LIGHTS ;i++)
 	{
-		int flag = lightFlag[i]; 
-		if(flag > 0)
+		if(lightFlag[i] > 0)
 		{
 			hasLight = true;
-			depthSqr = dot(lightDir[i], lightDir[i]);
-			depth = sqrt(depthSqr);
-   			depth = (depth - zNear[i])/(zFar[i] - zNear[i]);
-			shadow = 1.0;
+			
+			shadow = shadowsVar[i];
 
-			if(flag == 2)
-				shadow = shadow_variance(i, depth);
-
+			//if(lightFlag[i] == 2)
+			//	shadow = shadow_variance(shadowTexture[i], shadowTexCoord[i], depth);
 			NdotL = max(dot(n,normalize(lightDir[i])),0.0);	
 			if (shadow > 0.0 && NdotL > 0.0)
 			{
@@ -142,7 +158,7 @@ void main()
 	else
 		gl_FragColor = gl_Color;
 
-	//gl_FragColor = vec4(shadow, shadow, shadow, 1.0);
+	//gl_FragColor = vec4(shadowsVar[0], shadowsVar[0], shadowsVar[0], 1.0);
 }
 
 
