@@ -51,7 +51,11 @@ public:
     //virtual void init();
     virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
 
+protected:
+    void updateMesh();
 private:
+    void updateElements();
+    void updatePoints();
     void updateNormals();
 
 protected:
@@ -81,9 +85,9 @@ protected:
     Data< helper::vector< PrimitiveGroup > > tetrahedraGroups;
     Data< helper::vector< PrimitiveGroup > > hexahedraGroups;
 
-    Data< bool > triangulate;
-    Data< bool > fillMState; ///< Must this mesh loader fill the mstate instead of manually or by using the topology
     Data< bool > flipNormals;
+    Data< bool > triangulate;
+    Data< bool > onlyAttachedPoints;
 
     void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p);
     void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions,  SReal x, SReal y, SReal z);
@@ -106,9 +110,6 @@ protected:
     void addHexahedron(helper::vector< helper::fixed_array<unsigned int,8> >* pHexahedra,
             unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
             unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7);
-
-    //      Data< helper::vector< helper::vector < helper::vector <int> > > > facets;
-
 
 };
 

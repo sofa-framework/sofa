@@ -51,9 +51,8 @@ MeshLoader::MeshLoader() : BaseLoader()
     , tetrahedraGroups(initData(&tetrahedraGroups,"tetrahedraGroups","Groups of Tetrahedra"))
     , hexahedraGroups(initData(&hexahedraGroups,"hexahedraGroups","Groups of Hexahedra"))
     , flipNormals(initData(&flipNormals, false,"flipNormals","Flip Normals"))
-    //, triangulate(initData(&triangulate,false,"triangulate","Divide all polygons into triangles"))
-    //, fillMState(initData(&fillMState,true,"fillMState","Must this mesh loader fill the mstate instead of manually or by using the topology"))
-    //, facets(initData(&facets,"facets","Facets of the mesh loaded"))
+    , triangulate(initData(&triangulate,false,"triangulate","Divide all polygons into triangles"))
+    , onlyAttachedPoints(initData(&onlyAttachedPoints, false,"onlyAttachedPoints","Only keep points attached to elements of the mesh"))
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
@@ -70,7 +69,6 @@ MeshLoader::MeshLoader() : BaseLoader()
 
 
 void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-//void MeshLoader::init()
 {
     BaseLoader::parse(arg);
 
@@ -79,7 +77,7 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
     else
         sout << "Doing nothing" << sendl;
 
-    updateNormals();
+    updateMesh();
 }
 
 
@@ -127,17 +125,123 @@ bool MeshLoader::canLoad()
     return true;
 }
 
+void MeshLoader::updateMesh()
+{
+    updateElements();
+    updatePoints();
+    updateNormals();
+}
+
+void MeshLoader::updateElements()
+{
+    if (triangulate.getValue())
+    {
+        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,4> > > > waQuads = quads;
+        helper::WriteAccessor<Data<helper::vector< helper::fixed_array <unsigned int,3> > > > waTriangles = triangles;
+
+        for (unsigned int i = 0; i < waQuads.size() ; i++)
+        {
+            const helper::fixed_array <unsigned int,4>& q = waQuads[i];
+            addTriangle(&waTriangles.wref(), q[0], q[1], q[2]);
+            addTriangle(&waTriangles.wref(), q[0], q[2], q[3]);
+        }
+        waQuads.clear();
+    }
+}
+
+void MeshLoader::updatePoints()
+{
+    if (onlyAttachedPoints.getValue())
+    {
+        std::set<unsigned int> attachedPoints;
+        {
+            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,2> > > > elems = edges;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    attachedPoints.insert(elems[i][j]);
+        }
+        {
+            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > elems = triangles;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    attachedPoints.insert(elems[i][j]);
+        }
+        {
+            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = quads;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    attachedPoints.insert(elems[i][j]);
+        }
+        {
+            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = tetrahedra;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    attachedPoints.insert(elems[i][j]);
+        }
+        {
+            helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,8> > > > elems = hexahedra;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    attachedPoints.insert(elems[i][j]);
+        }
+        const unsigned int newsize = attachedPoints.size();
+        if (newsize == positions.getValue().size()) return; // all points are attached
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > waPositions = positions;
+        helper::vector<unsigned int> old2new;
+        old2new.resize(waPositions.size());
+        unsigned int p = 0;
+        for (std::set<unsigned int>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
+        {
+            unsigned int newp = *it;
+            old2new[newp] = p;
+            if (p != newp) waPositions[p] = waPositions[newp];
+            ++p;
+        }
+        waPositions.resize(newsize);
+        {
+            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,2> > > > elems = edges;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    elems[i][j] = old2new[elems[i][j]];
+        }
+        {
+            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > elems = triangles;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    elems[i][j] = old2new[elems[i][j]];
+        }
+        {
+            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = quads;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    elems[i][j] = old2new[elems[i][j]];
+        }
+        {
+            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > elems = tetrahedra;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    elems[i][j] = old2new[elems[i][j]];
+        }
+        {
+            helper::WriteAccessor<Data< helper::vector< helper::fixed_array <unsigned int,8> > > > elems = hexahedra;
+            for (unsigned int i=0; i<elems.size(); ++i)
+                for (unsigned int j=0; j<elems[i].size(); ++j)
+                    elems[i][j] = old2new[elems[i][j]];
+        }
+    }
+}
+
 void MeshLoader::updateNormals()
 {
     helper::ReadAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > raPositions = positions;
     helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > raTriangles = triangles;
     helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > raQuads = quads;
 
-    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > waNormals = normals;
-
     //look if we already have loaded normals
-    if (waNormals.size() == raPositions.size())
+    if (normals.getValue().size() == raPositions.size())
         return;
+
+    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > waNormals = normals;
 
     waNormals.resize(raPositions.size());
 
