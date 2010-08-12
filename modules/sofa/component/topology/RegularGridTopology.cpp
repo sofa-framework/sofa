@@ -124,7 +124,6 @@ void RegularGridTopology::init()
         sout<<"Init: Number of Hexadredra ="<<seq_hexa.size()<<sendl;
     }
 
-
     if (computeQuadList.getValue())
     {
         const SeqQuads seq_quads= this->getQuads();
@@ -137,10 +136,8 @@ void RegularGridTopology::init()
         sout<<"Init: Number of Lines ="<<seq_l.size()<<sendl;
     }
 
-
     if (computePointList.getValue())
     {
-
         int nbPoints= this->getNbPoints();
         // put the result in seqPoints
         SeqPoints& seq_P= *(seqPoints.beginEdit());
@@ -152,12 +149,9 @@ void RegularGridTopology::init()
         }
 
         seqPoints.endEdit();
-
     }
 
-
-
-    MeshTopology::init();
+//    MeshTopology::init();
 
     reinit();
 }
