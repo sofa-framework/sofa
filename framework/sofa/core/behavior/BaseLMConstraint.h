@@ -192,6 +192,8 @@ public:
     /// Get Right Hand Term
     virtual void getCorrections(ConstOrder Order, helper::vector<SReal>& c);
 
+    virtual void getConstraintViolation(defaulttype::BaseVector * /*v*/, VecId /*vId*/, ConstOrder /*order*/ = BaseConstraintSet::POS);
+
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
     virtual void getConstraints( std::map< ConstOrder, helper::vector< ConstraintGroup* > >  &i) { i=constraintOrder;}

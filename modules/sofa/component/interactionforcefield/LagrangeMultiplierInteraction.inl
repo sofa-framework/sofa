@@ -33,6 +33,8 @@
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/Node.h>
 
+#include <sofa/core/VecId.h>
+
 
 namespace sofa
 {
@@ -142,7 +144,8 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     /// @TODO automatically adapt the size of the LagMult state to the num of constraints: for now it is based the scene file entries
     _violation.resize(numLagMult);
 
-    constraint->getConstraintValue(&_violation, false);
+//	constraint->getConstraintValue(&_violation, false);
+    constraint->getConstraintViolation(&_violation, core::VecId::position());
     //sout<<"violation:" <<_violation[0] << " "<<_violation[1] << " "<<_violation[2] << " "<<sendl;
 
     for (unsigned int i=0; i<lambda.size(); i++)
