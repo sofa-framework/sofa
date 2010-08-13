@@ -60,6 +60,26 @@ BaseLMConstraint::ConstraintGroup* BaseLMConstraint::addGroupConstraint( ConstOr
     return c;
 }
 
+
+void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector *v, VecId /*vId*/, ConstOrder order)
+{
+    const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints = constraintOrder[order];
+    unsigned int cId = m_constraintIndex.getValue();
+
+    for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
+    {
+        ConstraintGroup *group=constraints[idxGroupConstraint];
+        std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
+
+        for (ConstraintGroup::EquationIterator equation = range.first; equation != range.second; ++equation)
+        {
+            v->set(cId, equation->correction);
+            cId++;
+        }
+    }
+}
+
+
 void BaseLMConstraint::getCorrections(ConstOrder Order, helper::vector<SReal>& c)
 {
     const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints=constraintOrder[Order];

@@ -202,12 +202,12 @@ public:
         {
             //sout << c->getName()<<"->getConstraintValue()"<<sendl;
             ctime_t t0 = begin(node, c);
-            c->getConstraintValue(_v /*, _numContacts*/);
+            //c->getConstraintValue(_v);
+            c->getConstraintViolation(_v, VecId::freePosition());
             end(node, c, t0);
         }
         return RESULT_CONTINUE;
     }
-
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
@@ -224,6 +224,7 @@ public:
     {
     }
 #endif
+
 private:
     BaseVector* _v; // vector for constraint values
     // unsigned int &_numContacts; // we need an offset to fill the vector _v if differents contact class are created

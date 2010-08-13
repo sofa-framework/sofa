@@ -109,6 +109,9 @@ public:
     /// Set the violation of each constraint
     virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true ) {}
 
+    /// Set the violation of each constraint (NEW API)
+    virtual void getConstraintViolation(defaulttype::BaseVector * /*v*/, VecId /*vId*/, ConstOrder order = BaseConstraintSet::POS);
+
     /// Set an Id for each constraint
     virtual void getConstraintId(long * /*id*/, unsigned int & /*offset*/) {}
 

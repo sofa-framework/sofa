@@ -31,6 +31,8 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/core.h>
 
+#include <sofa/defaulttype/BaseVector.h>
+
 
 namespace sofa
 {
@@ -52,6 +54,7 @@ public:
 
     BaseConstraintSet()
         : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
+        , m_constraintIndex(initData(&m_constraintIndex, (unsigned int)0, "constraintIndex", "Constraint index (first index in the right hand term resolution vector)"))
     {
     }
 
@@ -60,12 +63,15 @@ public:
     virtual void resetConstraint() {};
 
     /**
-     *  \brief Construct the Jacobian Matrix
-     *
-     *  \param constraintId is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-     *  \param x is the state vector containing the positions used to determine the line of the Jacobian Matrix
-     **/
-    virtual void buildConstraintMatrix(unsigned int &constraintId, core::VecId x=core::VecId::position())=0;
+    *  \brief Construct the Jacobian Matrix
+    *
+    *  \param constraintId is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    *  \param x is the state vector containing the positions used to determine the line of the Jacobian Matrix
+    **/
+    virtual void buildConstraintMatrix(unsigned int &constraintId, core::VecId x=core::VecId::position()) = 0;
+
+    /// Construct the Constraint violations vector
+    virtual void getConstraintViolation(defaulttype::BaseVector *v, VecId vId, ConstOrder order = POS) = 0;
 
 
     /// says if the constraint is holonomic or not
@@ -79,8 +85,11 @@ public:
     /// Deactivated by default. The constraints using only a subset of particles should activate the mask,
     /// and during projectResponse(), insert the indices of the particles modified
     virtual bool useMask() const {return false;}
+
 protected:
-    Data<int> group;
+
+    Data< int > group;
+    Data< unsigned int > m_constraintIndex; /// Constraint index (first index in the right hand term resolution vector)
 };
 
 } // namespace behavior
