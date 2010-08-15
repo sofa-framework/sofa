@@ -93,7 +93,7 @@ protected:
     typedef Mat<6, 6, Real> MaterialStiffness;
 
     /// Strain-displacement matrix
-    typedef Mat<12, 6, Real> StrainDisplacement;
+    typedef Mat<12, 6, Real> StrainDisplacementTransposed;
 
     /// Rigid transformation (rotation) matrix
     typedef MatNoInit<3, 3, Real> Transformation;
@@ -110,7 +110,7 @@ protected:
         /// material stiffness matrices of each tetrahedron
         MaterialStiffness materialMatrix;
         /// the strain-displacement matrices vector
-        StrainDisplacement strainDisplacementMatrix;
+        StrainDisplacementTransposed strainDisplacementTransposedMatrix;
         /// large displacement method
         helper::fixed_array<Coord,4> rotatedInitialElements;
         Transformation rotation;
@@ -209,16 +209,16 @@ public:
 
 protected:
 
-    void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
+    void computeStrainDisplacement( StrainDisplacementTransposed &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M );
 
-    void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
+    void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacementTransposed &J, const Transformation& Rot );
 
     void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
     void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, double localStiffnessFactor=1);
 
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );
+    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacementTransposed &J );
+    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacementTransposed &J, double fact );
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
