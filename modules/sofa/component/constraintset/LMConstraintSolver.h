@@ -49,6 +49,7 @@ namespace constraintset
 
 
 using core::behavior::BaseLMConstraint;
+using core::behavior::ConstraintGroup;
 class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
 protected:
@@ -107,8 +108,8 @@ protected:
     virtual bool needPriorStatePropagation(core::behavior::BaseLMConstraint::ConstOrder order) const;
 
     /// Construct the Right hand term of the system
-    virtual void buildRightHandTerm      ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
-            VectorEigen &c) const;
+    virtual void buildRightHandTerm      ( const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
+            VectorEigen &c, VecId, ConstOrder Order ) const;
     /// Construct the Inverse of the mass matrix for a set of Dofs
     virtual void buildInverseMassMatrices( const SetDof &setDofs,
             DofToMatrix& invMassMatrices);

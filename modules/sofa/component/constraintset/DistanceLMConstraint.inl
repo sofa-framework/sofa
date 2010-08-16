@@ -147,7 +147,7 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constr
 
 
 template<class DataTypes>
-void DistanceLMConstraint<DataTypes>::writeConstraintEquations(VecId id, ConstOrder Order)
+void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder Order)
 {
     typedef core::behavior::BaseMechanicalState::VecId VecId;
     const SeqEdges &edges =  vecConstraint.getValue();
@@ -155,7 +155,7 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(VecId id, ConstOr
     if (registeredConstraints.empty()) return;
     for (unsigned int i=0; i<edges.size(); ++i)
     {
-        core::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
+        core::behavior::ConstraintGroup *constraint = this->addGroupConstraint(Order);
         SReal correction=0;
         switch(Order)
         {
@@ -176,7 +176,7 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(VecId id, ConstOr
             break;
         }
         };
-        constraint->addConstraint( registeredConstraints[i], -correction);
+        constraint->addConstraint( lineNumber, registeredConstraints[i], -correction);
     }
 }
 

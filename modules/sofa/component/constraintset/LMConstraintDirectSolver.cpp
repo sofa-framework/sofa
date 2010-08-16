@@ -223,11 +223,11 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMCo
         //Find the constraint dealing with contact
         if (ContactDescriptionHandler* contactDescriptor=dynamic_cast<ContactDescriptionHandler*>(constraint))
         {
-            const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
+            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
             //Iterate among all the contacts
-            for (helper::vector< BaseLMConstraint::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            for (helper::vector< ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
             {
-                const BaseLMConstraint::ConstraintGroup* group=*itGroup;
+                const ConstraintGroup* group=*itGroup;
                 const ContactDescription& contact=contactDescriptor->getContactDescription(group);
 
                 const unsigned int idxEquation=group->getConstraint(0).idx;
@@ -283,12 +283,12 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMCo
         else
         {
             //Non contact constraints: we add all the equations
-            const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
-            for (helper::vector< BaseLMConstraint::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
+            for (helper::vector< ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
             {
-                const BaseLMConstraint::ConstraintGroup* group=*itGroup;
-                std::pair< BaseLMConstraint::ConstraintGroup::EquationConstIterator,BaseLMConstraint::ConstraintGroup::EquationConstIterator> range=group->data();
-                for ( BaseLMConstraint::ConstraintGroup::EquationConstIterator it=range.first; it!=range.second; ++it)
+                const ConstraintGroup* group=*itGroup;
+                std::pair< ConstraintGroup::EquationConstIterator,ConstraintGroup::EquationConstIterator> range=group->data();
+                for ( ConstraintGroup::EquationConstIterator it=range.first; it!=range.second; ++it)
                 {
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(it->idx));
                     rowsLT.push_back(rowsL.back());

@@ -57,15 +57,15 @@ struct ContactDescription
 /// Class handler to make the kink between constraint groups (a set of equations related to contact) and a description of the state of the contact
 class ContactDescriptionHandler
 {
-    typedef  std::map< const core::behavior::BaseLMConstraint::ConstraintGroup*, ContactDescription> InternalData;
+    typedef  std::map< const core::behavior::ConstraintGroup*, ContactDescription> InternalData;
 public:
-    const ContactDescription& getContactDescription( const core::behavior::BaseLMConstraint::ConstraintGroup* contact) const
+    const ContactDescription& getContactDescription( const core::behavior::ConstraintGroup* contact) const
     {
         InternalData::const_iterator it = infos.find(contact);
         assert (it != infos.end());
         return it->second;
     };
-    ContactDescription& getContactDescription(const core::behavior::BaseLMConstraint::ConstraintGroup* contact)
+    ContactDescription& getContactDescription(const core::behavior::ConstraintGroup* contact)
     {
         return infos[contact];
     };

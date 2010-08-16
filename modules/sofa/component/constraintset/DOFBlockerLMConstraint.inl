@@ -153,7 +153,7 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &cons
 
 
 template<class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(VecId id, ConstOrder Order)
+void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder Order)
 {
 
     typedef core::behavior::BaseMechanicalState::VecId VecId;
@@ -169,7 +169,7 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(VecId id, Const
     {
         for (unsigned int i=0; i<idxEquations[numParticle].size(); ++i)
         {
-            core::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
+            core::behavior::ConstraintGroup *constraint = this->addGroupConstraint(Order);
             SReal correction=0;
             switch(Order)
             {
@@ -186,7 +186,7 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(VecId id, Const
                 if (i < factor.size()) correction*=factor[i];
                 else                   correction*=factor.back();
             }
-            constraint->addConstraint( idxEquations[numParticle][i], -correction);
+            constraint->addConstraint( lineNumber, idxEquations[numParticle][i], -correction);
         }
 
     }
