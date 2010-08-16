@@ -40,6 +40,98 @@ namespace core
 namespace behavior
 {
 
+
+
+
+/**
+ * \brief Expression of a line of the system created to solve the constraint
+*
+* @param idx                  index of the equation in the constraint equation system stored within the mechanical states
+* @param correction           right hand term of the equation: corresponds to a correction we have to apply to the system
+* @param constraintId         actual index of the line corresponding to the constraint equation in the whole system: can be different from idx
+**/
+struct ConstraintEquation
+{
+    int idx;
+    SReal correction;
+    unsigned int constraintId;
+};
+
+
+
+
+
+/**
+ * \brief Intern storage of the constraints.
+ *         a ConstraintGroup is a list of equations that will be solved together.
+ *  They are defined by a ConstOrder(position, velocity or acceleration)
+ * @see ConstraintEquation
+ * @see ConstOrder
+ **/
+class ConstraintGroup
+{
+    typedef sofa::helper::vector< ConstraintEquation > VecEquations;
+public:
+    typedef VecEquations::const_iterator EquationConstIterator;
+    typedef VecEquations::iterator       EquationIterator;
+
+    ConstraintGroup( BaseConstraintSet::ConstOrder idConstraint);
+    /**
+     * Method to add an interaction constraint to the group
+     *
+    * @param idx index of the equation
+     * @param c  correction we need to apply in order to solve the constraint
+     **/
+    void addConstraint( unsigned int &constraintId, unsigned int idx, SReal c);
+
+
+
+    /// Random Access to an equation
+    const ConstraintEquation &getConstraint(const unsigned int i) const
+    {
+        EquationConstIterator it=equations.begin();
+        std::advance(it,i);
+        return *it;
+    }
+
+    ConstraintEquation &getConstraint(const unsigned int i)
+    {
+        EquationIterator it=equations.begin();
+        std::advance(it,i);
+        return *it;
+    }
+
+
+    /// Retrieve all the equations
+    std::pair< EquationConstIterator,EquationConstIterator> data() const
+    {
+        return std::make_pair( equations.begin(), equations.end());
+    }
+
+    std::pair< EquationIterator,EquationIterator > data()
+    {
+        return std::make_pair( equations.begin(), equations.end());
+    }
+
+
+    /// Return the number of constraint contained in this group
+    std::size_t getNumConstraint() const { return equations.size();};
+
+    /// Return the order of the constraint
+    /// @see ConstOrder
+    BaseConstraintSet::ConstOrder getOrder() const { return Order;};
+
+    bool isActive()const {return active;}
+    void setActive(bool b) {active=b;}
+protected:
+    /// Order of the constraint
+    /// @see ConstOrder
+    BaseConstraintSet::ConstOrder Order;
+    VecEquations equations;
+    bool active;
+};
+
+
 /**
  * \brief Object storing constraints base on Lagrangrian Multipliers.
  *
@@ -51,147 +143,21 @@ class SOFA_CORE_API BaseLMConstraint: public BaseConstraintSet
 public:
     SOFA_CLASS(BaseLMConstraint, BaseConstraintSet);
 
-
-    /**
-     * \brief Expression of a line of the system created to solve the constraint
-    *
-    * @param idx                  index of the equation in the constraint equation system
-     * @param correction           right hand term of the equation: corresponds to a correction we have to apply to the system
-     **/
-    struct ConstraintEquation
-    {
-        int idx;
-        SReal correction;
-    };
-
-    /**
-     * \brief Intern storage of the constraints.
-     *         a ConstraintGroup is a list of equations that will be solved together.
-     *  They are defined by a ConstOrder(position, velocity or acceleration)
-     * @see ConstraintEquation
-     * @see ConstOrder
-     **/
-    class ConstraintGroup
-    {
-        typedef sofa::helper::vector< ConstraintEquation > VecEquations;
-    public:
-        typedef VecEquations::const_iterator EquationConstIterator;
-        typedef VecEquations::iterator       EquationIterator;
-
-        ConstraintGroup( ConstOrder idConstraint);
-        /**
-         * Method to add an interaction constraint to the group
-         *
-        * @param idx index of the equation
-         * @param c  correction we need to apply in order to solve the constraint
-         **/
-        void addConstraint(  unsigned int idx, SReal c)
-        {
-            equations.resize(equations.size()+1);
-            ConstraintEquation &eq=equations.back();
-            eq.idx = idx;
-            eq.correction=c;
-        }
-
-
-
-        /// Random Access to an equation
-        const ConstraintEquation &getConstraint(const unsigned int i) const
-        {
-            EquationConstIterator it=equations.begin();
-            std::advance(it,i);
-            return *it;
-        }
-
-        ConstraintEquation &getConstraint(const unsigned int i)
-        {
-            EquationIterator it=equations.begin();
-            std::advance(it,i);
-            return *it;
-        }
-
-
-        /// Retrieve all the equations
-        std::pair< EquationConstIterator,EquationConstIterator> data() const
-        {
-            return std::make_pair( equations.begin(), equations.end());
-        }
-
-        std::pair< EquationIterator,EquationIterator > data()
-        {
-            return std::make_pair( equations.begin(), equations.end());
-        }
-
-
-        /// Return the number of constraint contained in this group
-        std::size_t getNumConstraint() const { return equations.size();};
-
-        /// Return the order of the constraint
-        /// @see ConstOrder
-        ConstOrder getOrder() const { return Order;};
-
-        bool isActive()const {return active;}
-        void setActive(bool b) {active=b;}
-    protected:
-        /// Order of the constraint
-        /// @see ConstOrder
-        ConstOrder Order;
-        VecEquations equations;
-        bool active;
-    };
-
-
-public:
     BaseLMConstraint();
 
     ~BaseLMConstraint() {};
 
 
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
-    virtual void writeConstraintEquations(VecId id, ConstOrder order)=0;
+    virtual void writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder order)=0;
 
     /// Compute the new Lagrange Multiplier given a block of the compliance matrix W, and the current correction (left hand term) and previous Lagrange Multiplier
     virtual void LagrangeMultiplierEvaluation(const SReal* /*W*/,
             const SReal* /*c*/, SReal* /*Lambda*/,
-            core::behavior::BaseLMConstraint::ConstraintGroup * /*group*/) {};
+            ConstraintGroup * /*group*/) {};
 
-    /// Interface to construct a group of constraint: Giving the order of these constraints, it returns a pointer to the structure
-    /// @see ConstraintGroup
-    virtual ConstraintGroup* addGroupConstraint( ConstOrder Order);
-
-
-    /// Get Left Hand Term for a given constraint group
-    template <typename DataStorage>
-    void getEquationsUsed(const BaseLMConstraint::ConstraintGroup* group, DataStorage &used0) const
-    {
-        typedef ConstraintGroup::EquationConstIterator iterator_t;
-        std::pair< iterator_t, iterator_t > range=group->data();
-
-        for (iterator_t equation=range.first; equation!=range.second; ++equation)
-        {
-            used0.push_back(equation->idx);
-        }
-
-    }
-
-    /// Get Left Hand Term for each ConstraintGroup of a given order
-    template <typename DataStorage>
-    void getEquationsUsed(ConstOrder Order, DataStorage &used0) const
-    {
-        constraintOrder_t::const_iterator g = constraintOrder.find(Order);
-        if (g == constraintOrder.end()) return;
-
-        const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints = g->second;
-        for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
-        {
-            ConstraintGroup *group=constraints[idxGroupConstraint];
-            getEquationsUsed(group, used0);
-        }
-    }
 
     /// Get Right Hand Term
-    virtual void getCorrections(ConstOrder Order, helper::vector<SReal>& c);
-
     virtual void getConstraintViolation(defaulttype::BaseVector * /*v*/, VecId /*vId*/, ConstOrder /*order*/ = BaseConstraintSet::POS);
 
 
@@ -205,6 +171,30 @@ public:
         return c->second;
     }
 
+
+    /// Get Left Hand Term for a given constraint group
+    template <typename DataStorage>
+    void getEquationsUsed(const ConstraintGroup* group, DataStorage &used0) const
+    {
+        typedef ConstraintGroup::EquationConstIterator iterator_t;
+        std::pair< iterator_t, iterator_t > range=group->data();
+        for (iterator_t equation=range.first; equation!=range.second; ++equation) used0.push_back(equation->idx);
+    }
+
+    /// Get Left Hand Term for each ConstraintGroup of a given order
+    template <typename DataStorage>
+    void getEquationsUsed(ConstOrder Order, DataStorage &used0) const
+    {
+        constraintOrder_t::const_iterator g = constraintOrder.find(Order);
+        if (g == constraintOrder.end()) return;
+
+        const helper::vector< ConstraintGroup* > &constraints = g->second;
+        for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
+        {
+            ConstraintGroup *group=constraints[idxGroupConstraint];
+            getEquationsUsed(group, used0);
+        }
+    }
 
 
 
@@ -234,6 +224,10 @@ public:
 
     virtual void resetConstraint();
 protected:
+
+    /// Interface to construct a group of constraint: Giving the order of these constraints, it returns a pointer to the structure
+    /// @see ConstraintGroup
+    virtual ConstraintGroup* addGroupConstraint( ConstOrder Order);
 
     /// Constraints stored depending on their nature
     /// @see ConstraintGroup

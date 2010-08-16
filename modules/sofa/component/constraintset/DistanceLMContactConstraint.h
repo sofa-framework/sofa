@@ -73,7 +73,7 @@ public:
     typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::behavior::BaseMechanicalState::VecId VecId;
     typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
-    typedef core::behavior::BaseLMConstraint::ConstraintGroup ConstraintGroup;
+    typedef core::behavior::ConstraintGroup ConstraintGroup;
 
 
 public:
@@ -99,9 +99,9 @@ public:
 
     // -- LMConstraint interface
     void buildConstraintMatrix(unsigned int &constraintId, core::VecId position);
-    void writeConstraintEquations(VecId id, ConstOrder order);
+    void writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder order);
     void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
-            core::behavior::BaseLMConstraint::ConstraintGroup * group);
+            core::behavior::ConstraintGroup * group);
 
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const;
     //

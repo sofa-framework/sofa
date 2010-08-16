@@ -154,7 +154,7 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int 
 
 
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, ConstOrder Order)
+void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder Order)
 {
 //                cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, scalarConstraintsIndices.size() = "<<scalarConstraintsIndices.size()<<endl;
     typedef core::behavior::BaseMechanicalState::VecId VecId;
@@ -170,25 +170,25 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
         case core::behavior::BaseConstraintSet::ACC :
         case core::behavior::BaseConstraintSet::VEL :
         {
-            core::behavior::BaseLMConstraint::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
+            core::behavior::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
             constraintGroupToContact[constraintGroup] = &edgeToContact[edges[i]];
 
             SReal correction = 0;
-            correction+=this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex++], -correction);
+            constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 
 
             correction = 0;
             correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex++], -correction);
+            constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 
 
             correction = 0;
             correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex++], -correction);
+            constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 //                            cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, constraint inserted "<<endl;
             break;
         }
@@ -204,8 +204,8 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
             SReal correction  = minDistance-lengthEdge(edges[i],x1,x2); //Distance min-current length
             if (correction>0)
             {
-                core::behavior::BaseLMConstraint::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
-                constraintGroup->addConstraint( scalarConstraintsIndices[scalarConstraintIndex], correction);
+                core::behavior::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
+                constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex], correction);
             }
             scalarConstraintIndex+=3;
             break;
@@ -217,7 +217,7 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(VecId id, 
 
 template<class DataTypes>
 void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const SReal* W, const SReal* c, SReal* Lambda,
-        core::behavior::BaseLMConstraint::ConstraintGroup * group)
+        core::behavior::ConstraintGroup * group)
 {
     switch (group->getOrder())
     {

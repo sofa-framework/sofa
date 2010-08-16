@@ -281,9 +281,8 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     // Build the Right Hand Term
     //************************************************************
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem C");
-
     c = VectorEigen::Zero((int)numConstraint);
-    buildRightHandTerm(orderState,LMConstraints, c);
+    buildRightHandTerm(LMConstraints, c, id, orderState);
     sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem C");
 
 
@@ -617,18 +616,11 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
     }
 }
 
-void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints, VectorEigen &c) const
+void LMConstraintSolver::buildRightHandTerm( const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints, VectorEigen &c,
+        VecId id, ConstOrder Order) const
 {
-    unsigned int offset=0;
-    for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
-    {
-        helper::vector<SReal> correction; LMConstraints[mat]->getCorrections(Order,correction);
-        for (unsigned int numC=0; numC<correction.size(); ++numC)
-        {
-            c(offset+numC)=correction[numC];
-        }
-        offset += correction.size();
-    }
+    FullVector<SReal> c_fullvector(c.data(), c.rows());
+    for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)  LMConstraints[mat]->getConstraintViolation(&c_fullvector, id, Order);
 }
 
 
@@ -669,7 +661,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
         {
             const BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
-            const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess)
@@ -710,7 +702,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
         {
             BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
-            const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess, ++idxBlocks)
