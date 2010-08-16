@@ -96,6 +96,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
             SolverSet solver;
             if (mergeSolvers)
                 solver = SolverMerger::merge(group1->solver[0], group2->solver[0]);
+
+
             //else std::cout << "New integration group below multi-group solver" << std::endl;
             if (!mergeSolvers || solver.odeSolver!=NULL)
             {
@@ -184,7 +186,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     group->removeObject(solver2);
                     delete solver2;
                 }
-                if (solver.linearSolver)
+                if (solver.odeSolver)
                     group->addObject(solver.odeSolver);
                 if (solver.linearSolver)
                     group->addObject(solver.linearSolver);
