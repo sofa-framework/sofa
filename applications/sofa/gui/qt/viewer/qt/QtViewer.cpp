@@ -94,7 +94,9 @@ sofa::core::ObjectFactory::ClassEntry* classVisualModel;
 static  bool enabled = false;
 
 
-const std::string QtViewer::VIEW_FILE_EXTENSION = "qglviewer.view";
+//Why would the QtViewer write its .view file with the qglviewer (a GPL library) extension?
+//const std::string QtViewer::VIEW_FILE_EXTENSION = "qglviewer.view";
+const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
 // Mouse Interactor
 bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
