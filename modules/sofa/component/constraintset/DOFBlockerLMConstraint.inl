@@ -134,8 +134,6 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &cons
 {
     if (!idxEquations.empty()) return;
 
-    m_constraintIndex.setValue(constraintId);
-
     MatrixDeriv& c = *this->constrainedObject1->getC();
     const SetIndexArray &indices = f_indices.getValue().getArray();
     const helper::vector<Deriv> &axis=BlockedAxis.getValue();

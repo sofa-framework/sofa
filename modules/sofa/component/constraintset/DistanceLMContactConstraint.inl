@@ -100,8 +100,6 @@ void DistanceLMContactConstraint<DataTypes>::computeTangentVectors( Deriv& T1, D
 template<class DataTypes>
 void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId position)
 {
-    m_constraintIndex.setValue(constraintId);
-
 //                cerr<<"DistanceLMContactConstraint<DataTypes>::buildJacobian"<<endl;
     const VecCoord &x1=*(this->constrainedObject1->getVecCoord(position.index));
     const VecCoord &x2=*(this->constrainedObject2->getVecCoord(position.index));

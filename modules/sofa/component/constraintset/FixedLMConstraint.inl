@@ -145,8 +145,6 @@ template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChan
 template<class DataTypes>
 void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId /*position*/)
 {
-    m_constraintIndex.setValue(constraintId);
-
     MatrixDeriv& c = *this->constrainedObject1->getC();
     idxX.clear();
     idxY.clear();

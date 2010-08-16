@@ -113,8 +113,6 @@ typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Ed
 template<class DataTypes>
 void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId position)
 {
-    m_constraintIndex.setValue(constraintId);
-
     const VecCoord &x1=*(this->constrainedObject1->getVecCoord(position.index));
     const VecCoord &x2=*(this->constrainedObject2->getVecCoord(position.index));
 
