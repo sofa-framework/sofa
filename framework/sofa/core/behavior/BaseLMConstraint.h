@@ -50,7 +50,7 @@ namespace behavior
 * @param correction           right hand term of the equation: corresponds to a correction we have to apply to the system
 * @param constraintId         actual index of the line corresponding to the constraint equation in the whole system: can be different from idx
 **/
-struct ConstraintEquation
+struct  SOFA_CORE_API ConstraintEquation
 {
     int idx;
     SReal correction;
@@ -68,7 +68,7 @@ struct ConstraintEquation
  * @see ConstraintEquation
  * @see ConstOrder
  **/
-class ConstraintGroup
+class SOFA_CORE_API  ConstraintGroup
 {
     typedef sofa::helper::vector< ConstraintEquation > VecEquations;
 public:
