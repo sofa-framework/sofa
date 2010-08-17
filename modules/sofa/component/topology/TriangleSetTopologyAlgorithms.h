@@ -63,8 +63,8 @@ public:
 
     TriangleSetTopologyAlgorithms()
         : EdgeSetTopologyAlgorithms<DataTypes>()
-        , m_listTriRemove( initData(&m_listTriRemove,  "Remove triangles by index", "Debug : Remove a triangle or a list of triangles by using their indices (only while animate)."))
-        , m_listTriAdd( initData(&m_listTriAdd,  "Add triangles by index", "Debug : Add a triangle or a list of triangles by using their indices (only while animate)."))
+        , m_listTriRemove( initData(&m_listTriRemove,  "RemoveTrianglesByIndex", "Debug : Remove a triangle or a list of triangles by using their indices (only while animate)."))
+        , m_listTriAdd( initData(&m_listTriAdd,  "addTrianglesByIndex", "Debug : Add a triangle or a list of triangles by using their indices (only while animate)."))
     {
     }
 
