@@ -159,7 +159,7 @@ public:
 
     static std::string templateName(const LMConstraint<DataTypes1,DataTypes2>* = NULL)
     {
-        return std::string("[") + DataTypes1::Name() + std::string(",") + DataTypes2::Name() + std::string("]");
+        return DataTypes1::Name() + std::string(",") + DataTypes2::Name();
     }
 
 protected:
