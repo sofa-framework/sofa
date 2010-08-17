@@ -99,7 +99,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         graph->moveItem(graph->graphListener->items[o.sofaComponent],graph->graphListener->items[o.above]);
         o.ID = Operation::ADD_OBJECT;
         message=std::string("Undo Delete NODE ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
-        emit historyMessage(message);
+        emit displayMessage(message);
         break;
     case Operation::DELETE_GNODE:
         o.parent->addChild(dynamic_cast<Node*>(o.sofaComponent));
@@ -108,7 +108,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         o.ID = Operation::ADD_GNODE;
 
         message=std::string("Undo Add NODE ") +" (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
-        emit historyMessage(message);
+        emit displayMessage(message);
         break;
     case Operation::ADD_OBJECT:
         o.parent=graph->getGNode(graph->graphListener->items[o.sofaComponent]);
@@ -117,7 +117,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         o.ID = Operation::DELETE_OBJECT;
 
         message=std::string("Undo Delete OBJECT ") +" (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
-        emit historyMessage(message);
+        emit displayMessage(message);
         break;
     case Operation::ADD_GNODE:
         o.parent=graph->getGNode(graph->graphListener->items[o.sofaComponent]->parent());
@@ -126,7 +126,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         o.ID = Operation::DELETE_GNODE;
 
         message=std::string("Undo Add OBJECT ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
-        emit historyMessage(message);
+        emit displayMessage(message);
         break;
     case Operation::COMPONENT_MODIFICATION:
     {
@@ -136,7 +136,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         graph->graphListener->items[o.sofaComponent]->setText(0, name);
         graph->setSelected(graph->graphListener->items[o.sofaComponent],true);
         message=std::string("Undo Modifications on OBJECT ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName() + " | " + modifDone;
-        emit historyMessage(message);
+        emit displayMessage(message);
         o.info=previousState;
         break;
     }
@@ -148,7 +148,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         graph->graphListener->items[o.sofaComponent]->setText(0, name);
         graph->setSelected(graph->graphListener->items[o.sofaComponent],true);
         message=std::string("Undo Modifications on NODE ") + o.sofaComponent->getName() + " | " + modifDone;
-        emit historyMessage(message);
+        emit displayMessage(message);
         o.info=previousState;
         break;
     }

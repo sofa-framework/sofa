@@ -24,15 +24,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GRAPHHISTORYMANAGER_H
-#define SOFA_GRAPHHISTORYMANAGER_H
+#ifndef SOFA_GLOBALMODIFICATION_H
+#define SOFA_GLOBALMODIFICATION_H
 
+#ifdef SOFA_QT4
+#include <Q3Header>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QStringList>
+#else
+#include <qstringlist.h>
+#include <qheader.h>
+#include <qlineedit.h>
+#include <qcombobox.h>
+#endif
 
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/simulation/tree/GNode.h>
-
-#include <qobject.h>
-#include <vector>
 
 namespace sofa
 {
@@ -43,65 +49,22 @@ namespace gui
 namespace qt
 {
 
-using sofa::core::objectmodel::Base;
-using sofa::simulation::tree::GNode;
-
-class GraphModeler;
-
-class GraphHistoryManager: public QObject
+//***************************************************************
+class GlobalModification : public QWidget
 {
     Q_OBJECT
 public:
-    //-----------------------------------------------------------------------------//
-    //Historic of actions: management of the undo/redo actions
-    ///Basic class storing information about the operation done
-    class Operation
-    {
-    public:
-        Operation() {};
-        enum op {DELETE_OBJECT,DELETE_GNODE, ADD_OBJECT,ADD_GNODE, NODE_MODIFICATION, COMPONENT_MODIFICATION};
-        Operation(Base* sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
-        {}
-
-        Base* sofaComponent;
-        GNode* parent;
-        Base* above;
-        op ID;
-        std::string info;
-    };
-
-    GraphHistoryManager(GraphModeler *);
-    ~GraphHistoryManager();
-
-    bool isUndoEnabled() const {return !historyOperation.empty();}
-    bool isRedoEnabled() const {return !historyUndoOperation.empty();}
-
+    GlobalModification();
+    ~GlobalModification();
 public slots:
-    void operationPerformed(GraphHistoryManager::Operation&);
-    void undo();
-    void redo();
-    void graphClean();
-    void beginModification(sofa::core::objectmodel::Base* object);
-    void endModification(sofa::core::objectmodel::Base* object);
+    void applyGlobalModification();
 signals:
-    void graphModified(bool);
-    void undoEnabled(bool);
-    void redoEnabled(bool);
-    void displayMessage(const std::string&);
+    void modifyData(const std::string& dataName, const std::string& value);
+    void displayMessage(const std::string &message);
 protected:
-    void clearHistoryUndo();
-    void clearHistory();
-
-    void undoOperation(Operation &);
-    std::string componentState(Base *base) const;
-    std::string setComponentState(Base *base, const std::string &datasStr);
-
-    std::vector< Operation > historyOperation;
-    std::vector< Operation > historyUndoOperation;
-
-    std::map<Base*, std::string> componentPriorModificationState;
-
-    GraphModeler *graph;
+    QComboBox *dataNameSelector;
+    QLineEdit *valueModifier;
+    static QStringList listDataName;
 };
 
 }
