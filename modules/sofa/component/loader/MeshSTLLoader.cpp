@@ -97,7 +97,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
     // get length of file
     dataFile.seekg(0, std::ios::end);
-    int length = dataFile.tellg();
+    std::streampos length = dataFile.tellg();
     dataFile.seekg(0, std::ios::beg);
 
 
@@ -109,7 +109,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     unsigned long int nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
 
-    int position = 0;
+    std::streampos position = 0;
     // Parsing facets
     std::cout << "Reading file...";
     for (unsigned int i = 0; i<nbrFacet; ++i)
@@ -184,7 +184,7 @@ bool MeshSTLLoader::readSTL(const char *filename)
 
     // get length of file:
     dataFile.seekg(0, std::ios::end);
-    int length = dataFile.tellg();
+    std::streampos length = dataFile.tellg();
     dataFile.seekg(0, std::ios::beg);
 
     // Reading header
@@ -192,7 +192,7 @@ bool MeshSTLLoader::readSTL(const char *filename)
 
     helper::fixed_array <unsigned int,3> the_tri;
     unsigned int cpt = 0;
-    int position = 0;
+    std::streampos position = 0;
 
     // Parsing facets
     while (position < length)
