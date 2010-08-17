@@ -33,6 +33,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Base.h>
 
+#include <sofa/helper/vector.h>
+
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -49,7 +51,7 @@ const std::string headerFile(
     "\
 /******************************************************************************\n\
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *\n\
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *\n\
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *\n\
 *                                                                             *\n\
 * This library is free software; you can redistribute it and/or modify it     *\n\
 * under the terms of the GNU Lesser General Public License as published by    *\n\
@@ -164,7 +166,7 @@ struct validTemplate : public rule
 };
 
 template< typename Rule >
-bool applyRule( std::vector<std::string>& templateList)
+bool applyRule( sofa::helper::vector<std::string>& templateList)
 {
     Rule r;
     r = std::for_each( templateList.begin(), templateList.end(), r );
@@ -189,7 +191,7 @@ bool belongToBannedComponents(const std::string& category, const std::string& co
     return false;
 }
 
-void pushToList( const std::string& templateCombination, const char separator, std::vector< std::string>& templateList )
+void pushToList( const std::string& templateCombination, const char separator, sofa::helper::vector< std::string>& templateList )
 {
     size_t curPos = 0;
     size_t oldPos = 0;
@@ -204,13 +206,12 @@ void pushToList( const std::string& templateCombination, const char separator, s
 
 
 void parseTemplateCombination(const std::string& templateCombination,
-        std::vector<std::string>& inputTemplateList,
-        std::vector<std::string>& outputTemplateList )
+        sofa::helper::vector<std::string>& inputTemplateList,
+        sofa::helper::vector<std::string>& outputTemplateList )
 {
     size_t o_bracketPos = 0;
     size_t c_bracketPos = 0;
     size_t separatorPos = 0;
-
 
     o_bracketPos = templateCombination.find('[');
     // case one inputTemplateParam and one outputTemplateParam
@@ -264,23 +265,29 @@ void parseTemplateCombination(const std::string& templateCombination,
     }
 }
 
-std::string cat(std::vector<std::string>& first, std::vector<std::string>& second, std::string& separator)
+std::string cat(sofa::helper::vector<std::string>& first, sofa::helper::vector<std::string>& second, std::string& separator)
 {
     std::ostringstream oss;
     assert ( first.size() != 0 && second.size() != 0 );
-    if( first.size() > 1 )
+    if (!first.empty())
     {
-        std::copy( first.begin(), first.end() - 1, std::ostream_iterator<std::string>( oss, "_" ) );
-        oss << first.back();
+        if( first.size() > 1 )
+        {
+            std::copy( first.begin(), first.end() - 1, std::ostream_iterator<std::string>( oss, "_" ) );
+            oss << first.back();
+        }
+        else oss << first[0];
+        oss << separator;
     }
-    else oss << first[0];
-    oss << separator;
-    if( second.size() > 1 )
+    if (!second.empty())
     {
-        std::copy( second.begin(), second.end() - 1, std::ostream_iterator<std::string>( oss , "_" ) );
-        oss << second.back();
+        if( second.size() > 1 )
+        {
+            std::copy( second.begin(), second.end() - 1, std::ostream_iterator<std::string>( oss , "_" ) );
+            oss << second.back();
+        }
+        else oss << second[0];
     }
-    else oss << second[0];
     oss.flush();
     return oss.str();
 }
@@ -330,7 +337,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
 {
 
     //   output << "\n\n//Declaration of the typedefs \n";
-    std::vector< std::pair< std::string, std::string > > typedefWritten;
+    sofa::helper::vector< std::pair< std::string, std::string > > typedefWritten;
     const CategoryLibrary::VecComponent &components = category.getComponents();
     for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
     {
@@ -410,8 +417,8 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     }
                 }
 
-                std::vector<std::string> inputTemplateList;
-                std::vector<std::string> outputTemplateList;
+                sofa::helper::vector<std::string> inputTemplateList;
+                sofa::helper::vector<std::string> outputTemplateList;
                 if ( templateCombination.find(',' ) != std::string::npos )
                 {
                     parseTemplateCombination(templateCombination,inputTemplateList,outputTemplateList);
@@ -441,9 +448,9 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     if (isMapping) separatorCombination="_to_";
                     else           separatorCombination="_";
 
-                    std::vector<std::string> inputTemplateExtensions;
+                    sofa::helper::vector<std::string> inputTemplateExtensions;
                     inputTemplateExtensions.resize(inputTemplateList.size() );
-                    std::vector<std::string> outputTemplateExtensions;
+                    sofa::helper::vector<std::string> outputTemplateExtensions;
                     outputTemplateExtensions.resize(outputTemplateList.size() );
                     applyTemplateExtension applyTemplateExtensionFn;
                     std::transform(inputTemplateList.begin(), inputTemplateList.end(), inputTemplateExtensions.begin(), applyTemplateExtensionFn );
@@ -497,6 +504,14 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
 #include <sofa/defaulttype/VecTypes.h>\n\
 #include <sofa/defaulttype/RigidTypes.h>\n\
 #include <sofa/defaulttype/Mat.h>\n\n\
+\n\
+#ifdef SOFA_GPU_CUDA\n\
+#include <sofa/gpu/cuda/CudaTypesBase.h>\n\
+#include <sofa/gpu/cuda/CudaTypes.h>\n\
+#endif\n\
+#ifdef SOFA_GPU_OPENCL\n\
+#include <sofa/gpu/opencl/OpenCLTypes.h>\n\
+#endif\n\
 ";
 
             if (category.getName() == "Mapping")
@@ -607,7 +622,6 @@ typedefFile.close();
 
 int main(int , char** )
 {
-
 #ifdef WIN32
     bannedComponents.insert(std::pair<std::string,std::string>("Controller","ComplianceMatrixUpdateManager" ) );
     bannedComponents.insert(std::pair<std::string,std::string>("Controller","ComplianceMatrixUpdateManagerCarving" ) );
@@ -638,6 +652,42 @@ int main(int , char** )
     templateExtension.insert(std::make_pair("Rigid2f", "Rigid2f"));
     templateExtension.insert(std::make_pair("ExtVec3f", "Ext3f"));
     templateExtension.insert(std::make_pair("ExtVec3d", "Ext3d"));
+
+#ifdef SOFA_GPU_CUDA
+    templateExtension.insert(std::make_pair("CudaVec6d", "Cuda6d"));
+    templateExtension.insert(std::make_pair("CudaVec4d", "Cuda4d"));
+    templateExtension.insert(std::make_pair("CudaVec3d", "Cuda3d"));
+    templateExtension.insert(std::make_pair("CudaVec2d", "Cuda2d"));
+    templateExtension.insert(std::make_pair("CudaVec1d", "Cuda1d"));
+    templateExtension.insert(std::make_pair("CudaRigid3d", "CudaRigid3d"));
+    templateExtension.insert(std::make_pair("CudaRigid2d", "CudaRigid2d"));
+
+    templateExtension.insert(std::make_pair("CudaVec6f", "Cuda6f"));
+    templateExtension.insert(std::make_pair("CudaVec4f", "Cuda4f"));
+    templateExtension.insert(std::make_pair("CudaVec3f", "Cuda3f"));
+    templateExtension.insert(std::make_pair("CudaVec2f", "Cuda2f"));
+    templateExtension.insert(std::make_pair("CudaVec1f", "Cuda1f"));
+    templateExtension.insert(std::make_pair("CudaRigid3f", "CudaRigid3f"));
+    templateExtension.insert(std::make_pair("CudaRigid2f", "CudaRigid2f"));
+#endif
+
+#ifdef SOFA_GPU_OPENCL
+    templateExtension.insert(std::make_pair("OpenCLVec6d", "OpenCL6d"));
+    templateExtension.insert(std::make_pair("OpenCLVec4d", "OpenCL4d"));
+    templateExtension.insert(std::make_pair("OpenCLVec3d", "OpenCL3d"));
+    templateExtension.insert(std::make_pair("OpenCLVec2d", "OpenCL2d"));
+    templateExtension.insert(std::make_pair("OpenCLVec1d", "OpenCL1d"));
+    templateExtension.insert(std::make_pair("OpenCLRigid3d", "OpenCLRigid3d"));
+    templateExtension.insert(std::make_pair("OpenCLRigid2d", "OpenCLRigid2d"));
+
+    templateExtension.insert(std::make_pair("OpenCLVec6f", "OpenCL6f"));
+    templateExtension.insert(std::make_pair("OpenCLVec4f", "OpenCL4f"));
+    templateExtension.insert(std::make_pair("OpenCLVec3f", "OpenCL3f"));
+    templateExtension.insert(std::make_pair("OpenCLVec2f", "OpenCL2f"));
+    templateExtension.insert(std::make_pair("OpenCLVec1f", "OpenCL1f"));
+    templateExtension.insert(std::make_pair("OpenCLRigid3f", "OpenCLRigid3f"));
+    templateExtension.insert(std::make_pair("OpenCLRigid2f", "OpenCLRigid2f"));
+#endif
 
     fileExtension.insert    (std::make_pair(TYPE_DOUBLE, "_double"));
     fileExtension.insert    (std::make_pair(TYPE_FLOAT, "_float"));
@@ -680,52 +730,56 @@ int main(int , char** )
 \n";
     sofaFloat << "\n#include <sofa/component/typedef/Particles_float.h>\n";
 
+std::cout << "Generating Type definition for Sofa Component: " << std::endl;
     for (SofaLibrary::VecCategoryIterator itCat=categories.begin(); itCat!=categories.end(); ++itCat)
     {
     const CategoryLibrary &category = *(*itCat);
-
-    const CategoryLibrary::VecComponent &components = category.getComponents();
-    //First read all the components of the categories, and try to know if templates exist
-    bool needToCreateTypedefs=false;
-    for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
+    std::cerr << "\tProcessing " << category.getNumComponents() << " components for the " << category.getName();
+        const CategoryLibrary::VecComponent &components = category.getComponents();
+        //First read all the components of the categories, and try to know if templates exist
+        bool needToCreateTypedefs=false;
+        for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
     {
-    const ComponentLibrary &component = *(*itComp);
-    if (!component.getTemplates().empty()) {needToCreateTypedefs=true; break;}
-}
+        const ComponentLibrary &component = *(*itComp);
+        if (!component.getTemplates().empty()) {needToCreateTypedefs=true; break;}
+    }
 
-    //If templates have been found, we create an empty file, in which we will write the typedefs associated
-    if (needToCreateTypedefs)
+        //If templates have been found, we create an empty file, in which we will write the typedefs associated
+        if (needToCreateTypedefs)
     {
-    //Find the files needed to be included
-    printIncludes( category);
+        std::cerr << " -> Generating headers";
+        //Find the files needed to be included
+        printIncludes( category);
 
-    //Get typedefs for the TYPE_DOUBLE
-    printFullTypedefs( category, TYPE_DOUBLE);
-    writeFile( category, TYPE_DOUBLE, sofaDouble);
-    typedefComponents.clear();
-    simplificationTypedefComponents.clear();
+        //Get typedefs for the TYPE_DOUBLE
+        printFullTypedefs( category, TYPE_DOUBLE);
+        writeFile( category, TYPE_DOUBLE, sofaDouble);
+        typedefComponents.clear();
+        simplificationTypedefComponents.clear();
 
-    //Get typedefs for the TYPE_FLOAT
-    printFullTypedefs( category, TYPE_FLOAT);
-    writeFile( category, TYPE_FLOAT, sofaFloat);
-    typedefComponents.clear();
-    simplificationTypedefComponents.clear();
+        //Get typedefs for the TYPE_FLOAT
+        printFullTypedefs( category, TYPE_FLOAT);
+        writeFile( category, TYPE_FLOAT, sofaFloat);
+        typedefComponents.clear();
+        simplificationTypedefComponents.clear();
 
-    //Get typedefs for the TYPE_COMBINATION
-    printFullTypedefs( category, TYPE_COMBINATION);
-    writeFile( category, TYPE_COMBINATION, sofaTypedef);
-    typedefComponents.clear();
-    simplificationTypedefComponents.clear();
+        //Get typedefs for the TYPE_COMBINATION
+        printFullTypedefs( category, TYPE_COMBINATION);
+        writeFile( category, TYPE_COMBINATION, sofaTypedef);
+        typedefComponents.clear();
+        simplificationTypedefComponents.clear();
 
-}
-}
+    }
+        std::cerr << std::endl;
+    }
 
-    sofaTypedef << "\n#endif\n";
-    sofaTypedef << "#endif\n";
+        sofaTypedef << "\n#endif\n";
+        sofaTypedef << "#endif\n";
 
 
-    sofaTypedef << "#endif\n";
-    sofaDouble  << "\n#endif\n";
-    sofaFloat   << "\n#endif\n";
-    return 0;
-}
+        sofaTypedef << "#endif\n";
+        sofaDouble  << "\n#endif\n";
+        sofaFloat   << "\n#endif\n";
+
+        return 0;
+    }
