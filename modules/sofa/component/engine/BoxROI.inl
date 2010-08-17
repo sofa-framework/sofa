@@ -94,7 +94,7 @@ void BoxROI<DataTypes>::init()
 {
     if (!f_X0.isSet())
     {
-        MechanicalState<DataTypes>* mstate;
+        BaseMechanicalState* mstate;
         this->getContext()->get(mstate);
         if (mstate)
         {
