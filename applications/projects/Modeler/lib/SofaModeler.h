@@ -122,8 +122,8 @@ public slots:
     void setRedoEnabled(bool v) {this->editRedoAction->setEnabled(v);}
     /// Each time a graph component is modified, or is cleaned
     void graphModifiedNotification(bool);
-    ///Each time an operation is done in a graph in relation with undo/redo
-    void displayHistoryMessage(const std::string &m);
+    ///Each time a message must be displayed in the status bar (undo/redo, ...)
+    void displayMessage(const std::string &m);
 
     /// Change the content of the description box. Happens when the user has clicked on a component
 #ifdef SOFA_QT4

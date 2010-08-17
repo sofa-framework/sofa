@@ -25,6 +25,7 @@ SOURCES = SofaModeler.cpp \
           TutorialSelector.cpp \
           AddPreset.cpp \
           FilterLibrary.cpp \
+          GlobalModification.cpp \
           GraphHistoryManager.cpp \
           ../../../sofa/gui/qt/SofaPluginManager.cpp 
 
@@ -34,6 +35,7 @@ HEADERS = SofaModeler.h \
           TutorialSelector.h \
           AddPreset.h \
           FilterLibrary.h \
+          GlobalModification.h \
           GraphHistoryManager.h \
           ../../../sofa/gui/qt/SofaPluginManager.h 
 

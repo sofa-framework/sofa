@@ -27,6 +27,7 @@
 #include "GraphModeler.h"
 #include "AddPreset.h"
 
+
 #include <sofa/core/ComponentLibrary.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 
@@ -42,6 +43,7 @@
 #include <sofa/simulation/common/xml/DataElement.h>
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
+
 
 
 #ifdef SOFA_QT4
@@ -88,7 +90,7 @@ GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f):Q3L
     connect(historyManager, SIGNAL(undoEnabled(bool)),   this, SIGNAL(undoEnabled(bool)));
     connect(historyManager, SIGNAL(redoEnabled(bool)),   this, SIGNAL(redoEnabled(bool)));
     connect(historyManager, SIGNAL(graphModified(bool)), this, SIGNAL(graphModified(bool)));
-    connect(historyManager, SIGNAL(historyMessage(const std::string&)), this, SIGNAL(historyMessage(const std::string&)));
+    connect(historyManager, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
 
 #ifdef SOFA_QT4
     connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *)), this, SLOT( doubleClick(Q3ListViewItem *)));
@@ -291,23 +293,30 @@ void GraphModeler::dropEvent(QDropEvent* event)
 }
 
 
-
-
-BaseObject *GraphModeler::getObject(Q3ListViewItem *item)
+Base* GraphModeler::getComponent(Q3ListViewItem *item) const
 {
+    if (!item) return NULL;
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
     {
         if (it->second == item)
         {
-            return dynamic_cast< BaseObject *>(it->first);
+            return it->first;
         }
     }
     return NULL;
 }
 
 
-GNode *GraphModeler::getGNode(const QPoint &pos)
+
+BaseObject *GraphModeler::getObject(Q3ListViewItem *item) const
+{
+    Base* component=getComponent(item);
+    return dynamic_cast<BaseObject*>(component);
+}
+
+
+GNode *GraphModeler::getGNode(const QPoint &pos) const
 {
     Q3ListViewItem *item = itemAt(pos);
     if (!item) return NULL;
@@ -316,36 +325,20 @@ GNode *GraphModeler::getGNode(const QPoint &pos)
 
 
 
-GNode *GraphModeler::getGNode(Q3ListViewItem *item)
+GNode *GraphModeler::getGNode(Q3ListViewItem *item) const
 {
     if (!item) return NULL;
-    sofa::core::objectmodel::Base *object;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
-    for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
-    {
-        if (it->second == item)
-        {
-            object = it->first;
-            break;
-        }
-    }
-    if (it == graphListener->items.end()) return NULL;
+    sofa::core::objectmodel::Base *component=getComponent(item);
 
-    if (dynamic_cast<GNode*>(it->first)) return dynamic_cast<GNode*>(it->first);
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+
+    if (GNode *node=dynamic_cast<GNode*>(component)) return node;
     else
     {
         item = item->parent();
-        for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
-        {
-            if (it->second == item)
-            {
-                object = it->first;
-                break;
-            }
-        }
-        if (it == graphListener->items.end()) return NULL;
-        if (dynamic_cast<GNode*>(it->first)) return dynamic_cast<GNode*>(it->first);
-        else return NULL;
+        component=getComponent(item);
+        if (GNode *node=dynamic_cast<GNode*>(component)) return node;
+        return NULL;
     }
 }
 
@@ -474,6 +467,7 @@ void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int ind
 //        }
 
     contextMenu->insertItem("Modify"  , this, SLOT( openModifyObject()));
+    contextMenu->insertItem("GlobalModification"  , this, SLOT( globalModification()));
     contextMenu->popup ( point, index );
 
 }
@@ -552,6 +546,48 @@ GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename, bool s
 }
 
 
+void GraphModeler::globalModification()
+{
+    sofa::gui::qt::GlobalModification *window=new sofa::gui::qt::GlobalModification();
+    helper::vector<Q3ListViewItem*> &selection = globalModificationOperation[window];
+    getSelectedItems(selection);
+
+    connect(window, SIGNAL(modifyData(const std::string&, const std::string&)), this, SLOT(globalDataModification(const std::string&, const std::string&)));
+    connect(window, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
+
+    window->show();
+
+}
+
+void GraphModeler::globalDataModification(const std::string& name, const std::string& value)
+{
+    sofa::gui::qt::GlobalModification *window=static_cast<sofa::gui::qt::GlobalModification *>(sender());
+
+    const helper::vector<Q3ListViewItem*> &selection = globalModificationOperation[window];
+    for (unsigned int i=0; i<selection.size(); ++i)
+    {
+        globalDataModificationRecursive(name, value, selection[i]);
+    }
+}
+
+void GraphModeler::globalDataModificationRecursive(const std::string &name, const std::string &value, Q3ListViewItem *item) const
+{
+    if (!item) return;
+    changeComponentDataValue(name, value, getComponent(item));
+
+    item = item->firstChild();
+    if (!item) return;
+
+    globalDataModificationRecursive(name, value, item);
+    while (item->nextSibling())
+    {
+        item = item->nextSibling();
+        globalDataModificationRecursive(name, value, item);
+    }
+
+
+
+}
 
 GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory)
 {
@@ -583,7 +619,7 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
     {
         if (std::string(it->getClass()) == std::string("Node"))
         {
-            buildNodeFromBaseElement(newNode, it,true); //Desactivate saving history
+            buildNodeFromBaseElement(newNode, it,true);
         }
         else
         {
@@ -868,6 +904,19 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
     }
 
 }
+
+void GraphModeler::changeComponentDataValue(const std::string &name, const std::string &value, Base* component) const
+{
+    if (!component) return;
+    historyManager->beginModification(component);
+    BaseData *data=component->findField(name);
+    if (!data) //this data is not present in the current component
+        return;
+    std::string v(value);
+    data->read(v);
+    historyManager->endModification(component);
+}
+
 
 Base *GraphModeler::getComponentAbove(Q3ListViewItem *item)
 {

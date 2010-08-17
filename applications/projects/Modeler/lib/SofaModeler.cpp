@@ -423,7 +423,7 @@ void SofaModeler::createTab()
     connect(graph, SIGNAL( undoEnabled(bool)), this, SLOT(setUndoEnabled(bool)));
     connect(graph, SIGNAL( redoEnabled(bool)), this, SLOT(setRedoEnabled(bool)));
     connect(graph, SIGNAL( graphModified(bool)), this, SLOT(graphModifiedNotification(bool)));
-    connect(graph, SIGNAL( historyMessage(const std::string&)), this, SLOT(displayHistoryMessage(const std::string &)));
+    connect(graph, SIGNAL( displayMessage(const std::string&)), this, SLOT(displayMessage(const std::string &)));
 }
 
 void SofaModeler::closeTab()
@@ -1104,7 +1104,7 @@ void SofaModeler::showPluginManager()
     SofaPluginManager::getInstance()->show();
 }
 
-void SofaModeler::displayHistoryMessage(const std::string &m)
+void SofaModeler::displayMessage(const std::string &m)
 {
     QString messageLaunch(m.c_str());
     statusBar()->message(messageLaunch,5000);

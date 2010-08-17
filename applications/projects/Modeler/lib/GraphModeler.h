@@ -31,6 +31,7 @@
 
 #include "AddPreset.h"
 #include "GraphHistoryManager.h"
+#include "GlobalModification.h"
 #include <sofa/core/SofaLibrary.h>
 
 #include <sofa/simulation/common/Simulation.h>
@@ -182,7 +183,7 @@ signals:
     void undoEnabled(bool);
     void redoEnabled(bool);
     void graphModified(bool);
-    void historyMessage(const std::string &);
+    void displayMessage(const std::string &);
 
 public slots:
     void editUndo() {emit undo();}
@@ -206,6 +207,10 @@ public slots:
     void expandNode();
     /// Context Menu Operation: loading a node as a child of the current one
     GNode *loadNode();
+    /// Context Menu Operation: process to a global modification of a Data
+    void globalModification();
+    void globalDataModification(const std::string&, const std::string&);
+
     /// Load a file given the node in which it will be added
     GNode *loadNode(GNode*, std::string, bool saveHistory=true);
     /// Context Menu Operation: loading a preset: open the window of configuration
@@ -228,17 +233,22 @@ protected:
 
     bool getSaveFilename(std::string &filename);
     /// Given a position, get the GNode corresponding (if the point is on a component, it returns the GNode parent)
-    GNode      *getGNode(const QPoint &pos);
+    GNode      *getGNode(const QPoint &pos) const;
 
     /// Given a item of the list, return the GNode corresponding
-    GNode      *getGNode(Q3ListViewItem *item);
+    Base      *getComponent(Q3ListViewItem *item) const;
+    /// Given a item of the list, return the GNode corresponding
+    GNode      *getGNode(Q3ListViewItem *item) const;
     /// Get the component corresponding to the item, NULL if the item is a GNode
-    BaseObject *getObject(Q3ListViewItem *item);
+    BaseObject *getObject(Q3ListViewItem *item) const;
 
     /// Insert a GNode in the scene
     GNode      *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
     BaseObject *addComponent(GNode *parent, const ClassEntry* entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
+
+    void globalDataModificationRecursive(const std::string &name, const std::string &value, Q3ListViewItem *item) const;
+    void changeComponentDataValue(const std::string &name, const std::string &value, Base* component) const ;
 
     /// Find the Sofa Component above the item
     Base *getComponentAbove(Q3ListViewItem *item);
@@ -263,6 +273,8 @@ protected:
     void *current_Id_modifyDialog;
     std::map< void*, Q3ListViewItem* >       map_modifyDialogOpened;
     std::map< void*, QDialog* >    map_modifyObjectWindow;
+
+    std::map< sofa::gui::qt::GlobalModification *, helper::vector<Q3ListViewItem*> > globalModificationOperation;
 
     std::string filenameXML; //name associated to the current graph
 
