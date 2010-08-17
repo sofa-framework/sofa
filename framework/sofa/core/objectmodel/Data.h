@@ -86,6 +86,7 @@ public:
 
     virtual const T& virtualGetValue() const = 0;
     virtual void virtualSetValue(const T& v) = 0;
+    virtual void virtualSetLink(const BaseData& bd) = 0;
     virtual T* virtualBeginEdit() = 0;
     virtual void virtualEndEdit() = 0;
 
@@ -166,7 +167,8 @@ protected:
     {
         if (parent == parentData)
         {
-            virtualSetValue(parentData->virtualGetValue());
+            //virtualSetValue(parentData->virtualGetValue());
+            virtualSetLink(*parentData);
             return true;
         }
         else
@@ -210,6 +212,11 @@ public:
     T* beginEdit() { return &data; }
     void endEdit() {}
     const T& getValue() const { return data; }
+    void setValue(const T& value)
+    {
+        data = value;
+    }
+
 //    T& value() { return data; }
 };
 
@@ -297,6 +304,23 @@ public:
     {
         return *data;
     }
+
+    void setValue(const T& value)
+    {
+        if (*cpt >= 1)
+        {
+            if ((--(*cpt)) == 0) // last ref to data, not that this can only happen if another thread released a reference between this test and the previous if condition
+            {
+                delete cpt;
+                delete data;
+            }
+
+            cpt = new Counter(1);
+            data = &value;
+        }
+
+    }
+
 
 //    T& value()
 //    {
@@ -398,6 +422,14 @@ public:
 
     virtual const T& virtualGetValue() const { return getValue(); }
     virtual void virtualSetValue(const T& v) { setValue(v); }
+
+    virtual void virtualSetLink(const BaseData& bd)
+    {
+        const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
+        if (d)
+            this->m_value = d->m_value;
+    }
+
     virtual T* virtualBeginEdit() { return beginEdit(); }
     virtual void virtualEndEdit() { endEdit(); }
 
@@ -427,6 +459,7 @@ protected:
     //T m_value;
     DataContainer<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> m_value;
     //DataContainer<T, false> m_value;
+    //DataContainer<T, true> m_value;
 };
 
 #if defined(WIN32) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
