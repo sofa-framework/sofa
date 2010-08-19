@@ -548,46 +548,23 @@ GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename, bool s
 
 void GraphModeler::globalModification()
 {
-    sofa::gui::qt::GlobalModification *window=new sofa::gui::qt::GlobalModification();
-    helper::vector<Q3ListViewItem*> &selection = globalModificationOperation[window];
+    //Get all the components which can be modified
+    helper::vector< Q3ListViewItem* > selection;
     getSelectedItems(selection);
 
-    connect(window, SIGNAL(modifyData(const std::string&, const std::string&)), this, SLOT(globalDataModification(const std::string&, const std::string&)));
+    helper::vector< Q3ListViewItem* > hierarchySelection;
+    for (unsigned int i=0; i<selection.size(); ++i) getComponentHierarchy(selection[i], hierarchySelection);
+
+    helper::vector< Base* > allComponentsSelected;
+    for (unsigned int i=0; i<hierarchySelection.size(); ++i) allComponentsSelected.push_back(getComponent(hierarchySelection[i]));
+
+    sofa::gui::qt::GlobalModification *window=new sofa::gui::qt::GlobalModification(allComponentsSelected, historyManager);
+
     connect(window, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
 
     window->show();
-
 }
 
-void GraphModeler::globalDataModification(const std::string& name, const std::string& value)
-{
-    sofa::gui::qt::GlobalModification *window=static_cast<sofa::gui::qt::GlobalModification *>(sender());
-
-    const helper::vector<Q3ListViewItem*> &selection = globalModificationOperation[window];
-    for (unsigned int i=0; i<selection.size(); ++i)
-    {
-        globalDataModificationRecursive(name, value, selection[i]);
-    }
-}
-
-void GraphModeler::globalDataModificationRecursive(const std::string &name, const std::string &value, Q3ListViewItem *item) const
-{
-    if (!item) return;
-    changeComponentDataValue(name, value, getComponent(item));
-
-    item = item->firstChild();
-    if (!item) return;
-
-    globalDataModificationRecursive(name, value, item);
-    while (item->nextSibling())
-    {
-        item = item->nextSibling();
-        globalDataModificationRecursive(name, value, item);
-    }
-
-
-
-}
 
 GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory)
 {
@@ -909,12 +886,15 @@ void GraphModeler::changeComponentDataValue(const std::string &name, const std::
 {
     if (!component) return;
     historyManager->beginModification(component);
-    BaseData *data=component->findField(name);
-    if (!data) //this data is not present in the current component
+    const std::vector< BaseData* > &data=component->findGlobalField(name);
+    if (data.empty()) //this data is not present in the current component
         return;
+
     std::string v(value);
-    data->read(v);
+    for (unsigned int i=0; i<data.size(); ++i) data[i]->read(v);
+
     historyManager->endModification(component);
+
 }
 
 

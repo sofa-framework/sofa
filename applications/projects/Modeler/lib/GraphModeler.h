@@ -140,6 +140,22 @@ public:
         }
     }
 
+
+    template <class T>
+    void getComponentHierarchy(Q3ListViewItem *item, T &hierarchy)
+    {
+        if (!item) return;
+        hierarchy.push_back(item);
+        item = item->firstChild();
+        if (!item) return;
+        getComponentHierarchy(item, hierarchy);
+        while (item->nextSibling())
+        {
+            item = item->nextSibling();
+            getComponentHierarchy(item, hierarchy);
+        }
+    }
+
     /// Says if there is something to undo
     bool isUndoEnabled() {return historyManager->isUndoEnabled();}
     /// Says if there is something to redo
@@ -209,7 +225,6 @@ public slots:
     GNode *loadNode();
     /// Context Menu Operation: process to a global modification of a Data
     void globalModification();
-    void globalDataModification(const std::string&, const std::string&);
 
     /// Load a file given the node in which it will be added
     GNode *loadNode(GNode*, std::string, bool saveHistory=true);
@@ -247,7 +262,6 @@ protected:
     /// Insert a Component in the scene
     BaseObject *addComponent(GNode *parent, const ClassEntry* entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
 
-    void globalDataModificationRecursive(const std::string &name, const std::string &value, Q3ListViewItem *item) const;
     void changeComponentDataValue(const std::string &name, const std::string &value, Base* component) const ;
 
     /// Find the Sofa Component above the item
@@ -273,8 +287,6 @@ protected:
     void *current_Id_modifyDialog;
     std::map< void*, Q3ListViewItem* >       map_modifyDialogOpened;
     std::map< void*, QDialog* >    map_modifyObjectWindow;
-
-    std::map< sofa::gui::qt::GlobalModification *, helper::vector<Q3ListViewItem*> > globalModificationOperation;
 
     std::string filenameXML; //name associated to the current graph
 
