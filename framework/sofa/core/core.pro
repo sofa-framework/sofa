@@ -205,9 +205,9 @@ HEADERS += \
 	 fem/QuadratureFormular.h \
  	 fem/QuadratureFormular.inl \
 	 fem/BaseMaterial.h \
-	 fem/BaseShapeFunction.h \
 	 fem/BaseStrainTensor.h \
 	 fem/BaseFiniteElement.h \
+#	 	 fem/BaseFiniteElementType.h \
 	 fem/FiniteElement.h \
 	 fem/DofContainer.h 
  
@@ -215,6 +215,7 @@ SOURCES +=  \
 	 fem/QuadratureFormular.cpp \
 	 fem/BaseMaterial.cpp \
 	 fem/BaseFiniteElement.cpp \
+#	 	 	 fem/BaseFiniteElementType.cpp \
 	 fem/FiniteElement.cpp \
 	 fem/DofContainer.cpp \
  	 fem/BaseStrainTensor.cpp 
