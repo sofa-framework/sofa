@@ -27,6 +27,7 @@ SOURCES = SofaModeler.cpp \
           FilterLibrary.cpp \
           GlobalModification.cpp \
           GraphHistoryManager.cpp \
+          ModifierCondition.cpp \
           ../../../sofa/gui/qt/SofaPluginManager.cpp 
 
 HEADERS = SofaModeler.h \
@@ -37,6 +38,7 @@ HEADERS = SofaModeler.h \
           FilterLibrary.h \
           GlobalModification.h \
           GraphHistoryManager.h \
+          ModifierCondition.h \
           ../../../sofa/gui/qt/SofaPluginManager.h 
 
 contains (DEFINES, SOFA_QT4) {	

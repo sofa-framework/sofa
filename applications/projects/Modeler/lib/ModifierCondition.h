@@ -24,28 +24,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GLOBALMODIFICATION_H
-#define SOFA_GLOBALMODIFICATION_H
+#ifndef SOFA_MODIFIERCONDITION_H
+#define SOFA_MODIFIERCONDITION_H
 
 #include <sofa/core/objectmodel/Base.h>
 
-#include "ModifierCondition.h"
-#include "GraphHistoryManager.h"
-
 #ifdef SOFA_QT4
-#include <Q3Header>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QStringList>
 #include <QCheckBox>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QStringList>
 #else
-#include <qstringlist.h>
-#include <qheader.h>
+#include <qcheckbox.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
-#include <qcheckbox.h>
+#include <qstringlist.h>
 #endif
-
 
 namespace sofa
 {
@@ -57,34 +51,48 @@ namespace qt
 {
 
 
-
-
-/// Qt Widget applying modifying the value of a given data among a selection of component
-class GlobalModification : public QWidget
+struct ModifierCondition
 {
-    Q_OBJECT
-public:
-    typedef helper::vector< sofa::core::objectmodel::Base* > InternalStorage;
-    GlobalModification(const InternalStorage &c, GraphHistoryManager* historyManager);
-    ~GlobalModification();
-public slots:
-    void applyGlobalModification();
-    void useAliases(bool);
-signals:
-    void displayMessage(const std::string &message);
-protected:
-    QCheckBox *aliasEnable;
-    QComboBox *dataNameSelector;
-    QLineEdit *valueModifier;
-
-    QStringList listDataName;
-    QStringList listDataAliases;
-
-
-    InternalStorage components;
-    GraphHistoryManager* historyManager;
-    helper::vector< ModifierCondition* > conditions;
+    virtual bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const =0;
+    virtual bool isActive() const=0;
 };
+
+
+
+
+class QNamingModifierCondition: public QWidget, public ModifierCondition
+{
+public:
+    QNamingModifierCondition(QWidget *parent=0);
+
+    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
+    bool isActive() const {return activated->isChecked();}
+    std::string getValue() const {return entryName->text().ascii();}
+protected:
+    QCheckBox *activated;
+    QLineEdit *entryName;
+    QComboBox *criteriaSelector;
+    QStringList criteriaList;
+};
+
+
+class QValueModifierCondition: public QWidget, public ModifierCondition
+{
+public:
+    QValueModifierCondition(QWidget *parent=0);
+
+    bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
+
+    bool isActive() const {return activated->isChecked();}
+    std::string getValue() const {return value->text().ascii();}
+protected:
+    QCheckBox *activated;
+    QLineEdit *value;
+    QComboBox *criteriaSelector;
+    QStringList criteriaList;
+};
+
+
 
 }
 }

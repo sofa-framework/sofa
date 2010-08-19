@@ -26,6 +26,7 @@
 ******************************************************************************/
 
 #include "GlobalModification.h"
+
 #include <sofa/helper/set.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -38,11 +39,13 @@
 #include <QCompleter>
 #include <QPushButton>
 #include <QSpacerItem>
+#include <QGroupBox>
 #else
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qsizepolicy.h>
+#include <qgroupbox.h>
 #endif
 
 namespace sofa
@@ -54,48 +57,43 @@ namespace gui
 namespace qt
 {
 
-QStringList GlobalModification::listDataName;
 
-GlobalModification::GlobalModification()
+GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryManager* h): components(c), historyManager(h)
 {
-
     setCaption(QString("Global Modifications"));
 
-    static bool isInitialized=false;
 
-    //Store inside a set all the available name of Data.
-    //This is a critical section. If someone makes a mistake in the desctructor, it might lead to a crash of the application!
-    if (!isInitialized)
+    helper::set< std::string > allNames;
+    helper::set< std::string > allAliases;
+
+    for (InternalStorage::const_iterator it=components.begin(); it!=components.end(); ++it)
     {
-        std::vector< sofa::core::ObjectFactory::ClassEntry* > allEntries;
-        helper::set< std::string > allNames;
-
-        sofa::core::ObjectFactory::getInstance()->getAllEntries(allEntries);
-
-        for (unsigned int i=0; i<allEntries.size(); ++i)
+        const core::objectmodel::Base *c=(*it);
+        const std::vector< std::pair<std::string, sofa::core::objectmodel::BaseData*> >& datas=c->getFields();
+        for (unsigned int d=0; d<datas.size(); ++d)
         {
-            sofa::core::ObjectFactory::ClassEntry& entry=*(allEntries[i]);
-
-            sofa::core::ObjectFactory::Creator *creatorEntry=entry.creatorList.front().second;
-            sofa::core::objectmodel::BaseObject *object=creatorEntry->createInstance(0,0);
-            if (!object) continue;
-            const std::vector< std::pair<std::string, sofa::core::objectmodel::BaseData*> >& datas=object->getFields();
-            for (unsigned int d=0; d<datas.size(); ++d)
-            {
-                allNames.insert(datas[d].first);
-            }
-            delete object;
+            allNames.insert(datas[d].first);
         }
 
-        for (helper::set< std::string >::const_iterator it=allNames.begin(); it!=allNames.end(); ++it)
-            listDataName << it->c_str();
+        const std::multimap< std::string, sofa::core::objectmodel::BaseData* >& aliases=c->getAliases();
+        for (std::multimap< std::string, sofa::core::objectmodel::BaseData* >::const_iterator it=aliases.begin(); it!=aliases.end(); ++it)
+        {
+            allAliases.insert(it->first);
+        }
 
-        isInitialized=true;
     }
 
+    for (helper::set< std::string >::const_iterator it=allNames.begin(); it!=allNames.end(); ++it)
+        listDataName << it->c_str();
+
+    for (helper::set< std::string >::const_iterator it=allAliases.begin(); it!=allAliases.end(); ++it)
+        listDataAliases << it->c_str();
 
     //Creation of the GUI
     QVBoxLayout *globalLayout = new QVBoxLayout(this);
+
+
+
 
     //***********************************************************************************
     //Selection of the Data Name
@@ -143,13 +141,48 @@ GlobalModification::GlobalModification()
     buttonLayout->addWidget(cancelButton);
 
     //***********************************************************************************
+    //Control Panel
+
+    QGroupBox *controlPanel = new QGroupBox(this);
+    QVBoxLayout *controlLayout = new QVBoxLayout(controlPanel);
+
+    //--------------------
+    //Alias Enable
+    QWidget *dataAliasEnableWidget = new QWidget(this);
+    QHBoxLayout *aliasLayout = new QHBoxLayout(dataAliasEnableWidget);
+
+    aliasEnable= new QCheckBox(QString("Using also Aliases for Data name"),dataAliasEnableWidget);
+
+    aliasLayout->addWidget(aliasEnable);
+
+
+
+    //--------------------
+    //Name Condition
+    QNamingModifierCondition *nameCondition = new QNamingModifierCondition();
+    conditions.push_back(nameCondition);
+
+    //--------------------
+    //Value Condition
+    QValueModifierCondition *valueCondition = new QValueModifierCondition();
+    conditions.push_back(valueCondition);
+
+    //***********************************************************************************
+    // Setup the layout
+    controlLayout->addWidget(dataAliasEnableWidget);
+    controlLayout->addWidget(nameCondition);
+    controlLayout->addWidget(valueCondition);
+
+
     globalLayout->addWidget(dataNameWidget);
+    globalLayout->addWidget(controlPanel);
     globalLayout->addWidget(dataValueWidget);
     globalLayout->addWidget(buttonWidget);
 
 
     //***********************************************************************************
     //Do the connections
+    connect(aliasEnable, SIGNAL(toggled(bool)), this, SLOT(useAliases(bool)));
     connect(modifyButton, SIGNAL(clicked()), this, SLOT(applyGlobalModification()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(valueModifier, SIGNAL(returnPressed()), this, SLOT(applyGlobalModification()));
@@ -164,18 +197,69 @@ GlobalModification::~GlobalModification()
 
 void GlobalModification::applyGlobalModification()
 {
+    QStringList *list;
+
+    if (aliasEnable->isChecked ()) list = &listDataAliases;
+    else   list = &listDataName;
+
+
     QString name=dataNameSelector->currentText();
-    if (listDataName.find(name) == listDataName.end())
+    if (list->find(name) == list->end())
     {
         const std::string message="Data " + std::string(name.ascii()) + " does not exist!";
         emit displayMessage(message);
         close();
         return;
     }
-    emit( modifyData(name.ascii(),
-            valueModifier->text().ascii()));
+
+    std::string n=name.ascii();
+    std::string v=valueModifier->text().ascii();
+
+    for (InternalStorage::const_iterator it=components.begin(); it!=components.end(); ++it)
+    {
+        core::objectmodel::Base *c=(*it);
+
+        const std::vector< core::objectmodel::BaseData* > &data=c->findGlobalField(n);
+        if (!data.empty())
+        {
+
+            if (historyManager) historyManager->beginModification(c);
+
+
+            for (unsigned int i=0; i<data.size(); ++i)
+            {
+                bool conditionsAccepted=true;
+                for (unsigned int cond=0; cond<conditions.size() && conditionsAccepted; ++cond) conditionsAccepted &= conditions[cond]->verify(c,data[i]);
+                if (conditionsAccepted) data[i]->read(v);
+            }
+            if (historyManager) historyManager->endModification(c);
+        }
+    }
+
     close();
 }
+
+
+void GlobalModification::useAliases(bool b)
+{
+    const QString currentText=dataNameSelector->currentText();
+    dataNameSelector->clear();
+
+    QStringList *list;
+
+    if (b) list = &listDataAliases;
+    else   list = &listDataName;
+
+
+#ifdef SOFA_QT4
+    if (dataNameSelector->completer()) delete dataNameSelector->completer();
+    dataNameSelector->setCompleter(new QCompleter(*list,dataNameSelector));
+#endif
+    dataNameSelector->insertStringList(*list);
+
+    dataNameSelector->setCurrentText(currentText);
+}
+
 }
 }
 }
