@@ -126,7 +126,10 @@ std::string CombineHeaders(std::string header, const std::string &shaderStage, s
 
     // Skip #extension strings
     while (spos != std::string::npos && source.size() > spos + 10 && source.substr(spos,10) == std::string("#extension"))
+    {
         spos = source.find('\n', spos+10);
+        spos++;
+    }
 
     header += "#define " + shaderStage + '\n';
 
