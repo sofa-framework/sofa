@@ -104,6 +104,7 @@ SOURCES += mycuda.cpp \
 	   CudaIndexValueMapper.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
+					 CudaExtraMonitor.cpp \
            CudaFixedConstraint.cpp \
            CudaFixedTranslationConstraint.cpp \
            CudaLinearMovementConstraint.cpp \
@@ -165,6 +166,7 @@ HEADERS += \
 	   	CudaPrecomputedWarpPreconditioner.h \		
 	        CudaParallelMatrixLinearSolver.h \
 		CudaWarpPreconditioner.h \
+		CudaConstantForceField.inl \
 		CudaJacobiPreconditioner.h \
         CudaTetrahedronTLEDForceField.h \
        	CudaHexahedronFEMForceField.h \
@@ -199,13 +201,16 @@ SOURCES += \
 	   	CudaUnilateralInteractionConstraint.cpp \
 	   	CudaPrecomputedWarpPreconditioner.cpp \
 		CudaWarpPreconditioner.cpp \
+		CudaConstantForceField.cpp \
 		CudaJacobiPreconditioner.cpp \
 		CudaBlockJacobiPreconditioner.cpp \
 		CudaHexahedronFEMForceField.cpp \
 		#CudaHexahedronGeodesicalDistance.cpp \
+           	CudaLinearForceField.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \
                CudaJointSpringForceField.cpp \
+		CudaPairInteractionForceField.cpp \
 		CudaTetrahedronSuperTLEDForceField.cpp \
        	CudaUncoupledConstraintCorrection.cpp \
 		CudaRasterizer.cpp \
@@ -213,7 +218,6 @@ SOURCES += \
 		CudaLDISimpleContactConstraint.cpp \
 		CudaLDICuttingContactConstraint.cpp \
 	CudaComplianceMatrixUpdateManager.cpp \
-	CudaConstantForceField.cpp \
 	CudaTetrahedronCuttingManager.cpp \
 	CudaDiagonalMass.cpp \
 	CudaBilateralInteractionConstraint.cpp \
