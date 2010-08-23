@@ -94,6 +94,9 @@ public:
     virtual       Data<VecDeriv>* writeVecDeriv(     VecId v)       = 0;
     virtual const Data<VecDeriv>*  readVecDeriv(ConstVecId v) const = 0;
 
+    virtual       Data<MatrixDeriv>* writeMatrixDeriv(     VecId v)       = 0;
+    virtual const Data<MatrixDeriv>*  readMatrixDeriv(ConstVecId v) const = 0;
+
     /// @}
 
     /// @name Old specific vectors access API (now limited to read-only accesses)
