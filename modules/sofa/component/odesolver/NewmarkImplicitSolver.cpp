@@ -121,7 +121,7 @@ void NewmarkImplicitSolver::solve(double dt,sofa::core::behavior::BaseMechanical
 
     }
 
-    addMBKv(b, -rM, 0,rK+h);
+    addMBKv(b, -rM, 1,rK+h);
     // b += -h K v
 
     if( verbose )
@@ -136,7 +136,7 @@ void NewmarkImplicitSolver::solve(double dt,sofa::core::behavior::BaseMechanical
 
     MultiMatrix matrix(this);
 
-    matrix = MechanicalMatrix::K * (-h*h*beta - h*rK) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
+    matrix = MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
 
     //if( verbose )
     //	serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *(h*h*beta + h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
