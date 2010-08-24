@@ -53,7 +53,7 @@ QNamingModifierCondition::QNamingModifierCondition(QWidget *parent):QWidget(pare
     activated = new QCheckBox(QString("Data name is "),this);
     criteriaSelector = new QComboBox(this);
     criteriaList << QString("Equal") << QString("Different");
-    criteriaSelector->addItems(criteriaList);
+    criteriaSelector->insertStringList (criteriaList);
     entryName = new QLineEdit(this);
 
 
@@ -84,7 +84,7 @@ QValueModifierCondition::QValueModifierCondition(QWidget *parent):QWidget(parent
     activated = new QCheckBox(QString("Value is "),this);
     criteriaSelector = new QComboBox(this);
     criteriaList << QString("!=") << QString(">") << QString(">=") << QString("<") << QString("<=");
-    criteriaSelector->addItems(criteriaList);
+    criteriaSelector->insertStringList (criteriaList);
 
     value = new QLineEdit(this);
 
