@@ -63,8 +63,8 @@ void NewmarkImplicitSolver::solve(double dt,sofa::core::behavior::BaseMechanical
     MultiVector f(this, VecId::force());
     MultiVector b(this, VecId::V_DERIV);
     MultiVector a(this, VecId::V_DERIV);
-    MultiVector aResult(this, VecId::V_DERIV);
-    MultiVector dx(this,VecId::dx());
+    MultiVector aResult(this, VecId(VecId::V_DERIV,14));
+    //MultiVector dx(this,VecId::dx());
 
 
     const double h = dt;
