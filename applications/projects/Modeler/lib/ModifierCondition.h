@@ -53,6 +53,7 @@ namespace qt
 
 struct ModifierCondition
 {
+    virtual ~ModifierCondition() {};
     virtual bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const =0;
     virtual bool isActive() const=0;
 };
