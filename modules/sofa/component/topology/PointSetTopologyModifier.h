@@ -146,6 +146,7 @@ public:
     * @sa endChange()
     */
     void propagateTopologicalChanges();
+    void propagateTopologicalChangesWithoutReset();
 
     /// TODO: temporary duplication of topological events (commented by default)
     virtual void propagateTopologicalEngineChanges();

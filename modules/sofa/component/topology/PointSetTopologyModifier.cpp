@@ -195,6 +195,24 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     m_container->resetTopologyChangeList();
 }
 
+void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
+{
+    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
+    sofa::simulation::TopologyChangeVisitor a(m_container);
+
+// std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
+// for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
+// std:: cout << (*it)->getChangeType() << std::endl;
+
+    getContext()->executeVisitor(&a);
+
+    //TODO: temporary code to test topology engine pipeline. Commented by default for the moment
+    //this->propagateTopologicalEngineChanges();
+
+}
+
+
+
 void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored

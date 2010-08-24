@@ -183,7 +183,7 @@ public:
     */
     // side effect: edges are sorted in removeEdgesWarning
     virtual void removeEdges(/*const*/ sofa::helper::vector< unsigned int >& edges,
-            const bool removeIsolatedPoints = true);
+            const bool removeIsolatedPoints = true, const bool resetTopoChange = true);
 
     /** \brief Generic method to remove a list of items.
     */

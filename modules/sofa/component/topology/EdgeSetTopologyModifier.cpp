@@ -165,6 +165,8 @@ void EdgeSetTopologyModifier::removeEdgesWarning(sofa::helper::vector<unsigned i
     // Warning that these edges will be deleted
     EdgesRemoved *e = new EdgesRemoved(edges);
     addTopologyChange(e);
+
+    std::cout<<"addTopologyChange EdgesRemoved"<<std::endl;
 }
 
 
@@ -231,6 +233,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
 
     if (! vertexToBeRemoved.empty())
     {
+        std::cout<<" vertexToBeRemoved is not empty !! "<<std::endl;
         removePointsWarning(vertexToBeRemoved);
         // inform other objects that the points are going to be removed
         propagateTopologicalChanges();
@@ -579,12 +582,15 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
 }
 
 void EdgeSetTopologyModifier::removeEdges(sofa::helper::vector< unsigned int >& edges,
-        const bool removeIsolatedPoints)
+        const bool removeIsolatedPoints, const bool resetTopoChange)
 {
     /// add the topological changes in the queue
     removeEdgesWarning(edges);
     // inform other objects that the edges are going to be removed
-    propagateTopologicalChanges();
+    if (resetTopoChange)
+        propagateTopologicalChanges();
+    else
+        propagateTopologicalChangesWithoutReset();
     // now destroy the old edges.
     removeEdgesProcess( edges, removeIsolatedPoints );
 
