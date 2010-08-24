@@ -136,7 +136,7 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
 
     modifyButton->setAutoDefault(true);
 
-    buttonLayout->addSpacerItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Minimum));
+    buttonLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Minimum));
     buttonLayout->addWidget(modifyButton);
     buttonLayout->addWidget(cancelButton);
 
