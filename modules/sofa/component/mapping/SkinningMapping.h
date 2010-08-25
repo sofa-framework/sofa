@@ -205,6 +205,7 @@ protected:
     inline void computeInitPos();
     inline void computeDistances();
     inline void sortReferences( vector<int>& references);
+    inline void normalizeWeights();
 
 public:
     SkinningMapping ( In* from, Out* to );

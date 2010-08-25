@@ -131,7 +131,9 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
     for ( unsigned int i = 0; i < xto.size(); i++ )
         for ( unsigned int m = 0; m < nbRefs.getValue(); m++ )
         {
-            initPos[nbRefs.getValue() *i+m] = xfrom[m_reps[nbRefs.getValue() *i+m]].getOrientation().inverseRotate ( xto[i] - xfrom[m_reps[nbRefs.getValue() *i+m]].getCenter() );
+            const int& idx=nbRefs.getValue() *i+m;
+            const int& idxReps=m_reps[idx];
+            initPos[idx] = xfrom[idxReps].getOrientation().inverseRotate ( xto[i] - xfrom[idxReps].getCenter() );
         }
 }
 
@@ -222,6 +224,37 @@ void SkinningMapping<BasicMapping>::sortReferences( vector<int>& references)
                     break;
                 }
             }
+}
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::normalizeWeights()
+{
+    const unsigned int xtoSize = this->toModel->getX()->size();
+    const unsigned int& nbRef = nbRefs.getValue();
+    VVD& m_coefs = * ( coefs.beginEdit() );
+    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+
+    // Normalise weights & dweights
+    for (unsigned int j = 0; j < xtoSize; ++j)
+    {
+        double sumWeights = 0;
+        Vec3 sumGrad;
+
+        // Compute norm
+        for (unsigned int i = 0; i < nbRef; ++i)
+        {
+            sumWeights += m_coefs[i][j];
+            sumGrad += m_dweight[i][j];
+        }
+
+        // Normalise
+        for (unsigned int i = 0; i < nbRef; ++i)
+        {
+            m_coefs[i][j] /= sumWeights;
+            m_dweight[i][j] = (m_dweight[i][j] - sumGrad * m_coefs[i][j]) / sumWeights;
+        }
+    }
 }
 
 
@@ -484,6 +517,8 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     default:
     {}
     }
+
+    normalizeWeights();
 }
 
 template <class BasicMapping>
