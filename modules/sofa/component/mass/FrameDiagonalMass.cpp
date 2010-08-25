@@ -107,13 +107,34 @@ void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::draw()
     RigidTypes::Vec3 gravityCenter;
     for ( unsigned int i=0; i<x.size(); i++ )
     {
-        //const Mat33& affine = x[i].getAffine(); // TODO multiply gl matrix by affine bfore drawing the Frame
+        // Deform the frame
+        glPushMatrix();
         const RigidTypes::Vec3& center = x[i].getCenter();
+        const Mat33& affine = x[i].getAffine();
+        double glTransform[16];
+        glTransform[0] = affine[0][0];
+        glTransform[1] = affine[1][0];
+        glTransform[2] = affine[2][0];
+        glTransform[3] = 0;
+        glTransform[4] = affine[0][1];
+        glTransform[5] = affine[1][1];
+        glTransform[6] = affine[2][1];
+        glTransform[7] = 0;
+        glTransform[8] = affine[0][2];
+        glTransform[9] = affine[1][2];
+        glTransform[10] = affine[2][2];
+        glTransform[11] = 0;
+        glTransform[12] = center[0];
+        glTransform[13] = center[1];
+        glTransform[14] = center[2];
+        glTransform[15] = 1;
+        glMultMatrixd( glTransform);
 
-        simulation::getSimulation()->DrawUtility.drawFrame(center, Quat(), Vec3d(1,1,1)*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3d(1,1,1)*showAxisSize.getValue() );
 
         gravityCenter += ( center * masses[i].mass );
         totalMass += masses[i].mass;
+        glPopMatrix();
     }
 
     if ( showCenterOfGravity.getValue() )

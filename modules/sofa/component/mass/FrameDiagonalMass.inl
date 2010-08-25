@@ -275,7 +275,9 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     {
         MassVector& vecMass = * ( f_mass.beginEdit() );
         for ( unsigned int i=0; i<(*J).size(); i++ )
+        {
             updateMass ( vecMass[i], (*J)[i], *vol, *volMass );
+        }
         f_mass.endEdit();
     }
 }
