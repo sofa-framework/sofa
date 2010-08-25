@@ -205,8 +205,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
                 }
             }
 
-
-            Mat3xIn Ji = J[idxReps][i];
+            Mat3xIn& Ji = J[idxReps][i];
             Ji.fill(0);
             double val;
             for(int k=0; k<3; k++)

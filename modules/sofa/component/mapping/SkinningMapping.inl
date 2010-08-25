@@ -564,6 +564,22 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         }
 
 #ifdef SOFA_DEV
+        if ( !(this->computeJ.getValue() || this->computeAllMatrices.getValue())) continue;
+
+        // update J
+        Mat37 Q;
+        VMat76 L;
+        L.resize(in.size());
+        for(unsigned int j = 0; j < nbRefs.getValue(); j++)
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            ComputeQ( Q, in[idxReps ].getOrientation(), initPos[idx]);
+            ComputeL( L[idxReps], in[idxReps ].getOrientation());
+            this->J[j][i] = (Real)m_coefs[idxReps][i] * Q * L[idxReps];
+        }
+
         // Physical computations
         if ( !this->computeAllMatrices.getValue()) continue;
 
@@ -602,20 +618,6 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         this->deformationTensors[i][3] = E[0][1];
         this->deformationTensors[i][4] = E[1][2];
         this->deformationTensors[i][5] = E[0][2]; // column form
-
-        // update J
-        Mat37 Q;
-        VMat76 L;
-        L.resize(in.size());
-        for(unsigned int j = 0; j < nbRefs.getValue(); j++)
-        {
-            const int& idx = nbRefs.getValue() * i + j;
-            const int& idxReps = m_reps[idx];
-
-            ComputeQ( Q, in[idxReps ].getOrientation(), initPos[idx]);
-            ComputeL( L[idxReps], in[idxReps ].getOrientation());
-            this->J[j][i] = (Real)m_coefs[idxReps][i] * Q * L[idxReps];
-        }
 
         // update B and ddet
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
