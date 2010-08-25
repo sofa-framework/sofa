@@ -118,6 +118,8 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const;
 
+    const helper::vector< Contact >& getContact() const { return contacts.getValue();};
+
     // -- tool grabing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
             const helper::vector< unsigned int > &index,
