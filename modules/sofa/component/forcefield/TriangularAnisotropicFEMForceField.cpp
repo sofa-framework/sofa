@@ -190,7 +190,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     const helper::vector<Real> & poisson2Array = f_poisson2.getValue();
 
     unsigned int index = 0;
-    if (i < youngArray.size() )
+    if (i < (int) youngArray.size() )
         index = i;
 
     Q11 = youngArray[index] /(1-poissonArray[index]*poisson2Array[index]);
