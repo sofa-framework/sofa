@@ -249,124 +249,148 @@ void FrameSpringForceField2<DataTypes>::draw()
 template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMatInxIn& K, const VecCoord& xi, const VVMatInxIn& Kref )
 {
-// generalized spring joint network based on precomputed FrameHooke stiffness matrices
+    // generalized spring joint network based on precomputed FrameHooke stiffness matrices
     VecCoord& xiref = *this->getMState()->getX0();
     int i,j,k,l,m,nbDOF=xi.size();
     double n;
-    Coord XI,XJ,XP;
-    Deriv Theta,df;
-    Vec3 tpref;
+    Coord MI,MJ,M;
+    Deriv Thetaij,Fm;
+    Vec3 mbar;
     Quat q;
-    Mat33 crossi,crossj;
-    Mat66 K2,K3;
-    Mat33 Rp;
+    Mat33 crossli,crosslj;
+    Mat66 Km,Ktemp,KmSym;
+    Mat33 Rm;
 
-    for(i=0; i<nbDOF; i++)
+    for (i=0; i<nbDOF; i++)
     {
-        for(j=0; j<nbDOF; j++)
-            if(i>j)
+        for (j=0; j<nbDOF; j++)
+            if (i>j)
             {
-                tpref=(xiref[j].getCenter() + xiref[i].getCenter())/2.;		// pivot = center
+                mbar=(xiref[j].getCenter() + xiref[i].getCenter())/2.;    // pivot = center
 
-                q=xiref[i].getOrientation();   q[3]*=-1;    Multi_Q(XI.getOrientation(),xi[i].getOrientation(),q);      Transform_Q(XI.getCenter(),tpref-xiref[i].getCenter(),XI.getOrientation());   XI.getCenter()+=xi[i].getCenter();
-                q=xiref[j].getOrientation();   q[3]*=-1;    Multi_Q(XJ.getOrientation(),xi[j].getOrientation(),q);      Transform_Q(XJ.getCenter(),tpref-xiref[j].getCenter(),XJ.getOrientation());   XJ.getCenter()+=xi[j].getCenter();
+                q=xiref[i].getOrientation();
+                q[3]*=-1;
+                Multi_Q(MI.getOrientation(),xi[i].getOrientation(),q);
+                Transform_Q(MI.getCenter(),mbar-xiref[i].getCenter(),MI.getOrientation());
+                MI.getCenter()+=xi[i].getCenter();
+                q=xiref[j].getOrientation();
+                q[3]*=-1;
+                Multi_Q(MJ.getOrientation(),xi[j].getOrientation(),q);
+                Transform_Q(MJ.getCenter(),mbar-xiref[j].getCenter(),MJ.getOrientation());
+                MJ.getCenter()+=xi[j].getCenter();
 
-                // in ref pos: Theta.dt=XJ.XI-1
-                PostoSpeed(Theta,XI,XJ);
+                // in ref pos: Theta.dt=MJ.MI-1
+                PostoSpeed(Thetaij,MI,MJ);
 
-                // mid frame
-                XP.getCenter()=(XI.getCenter()+XJ.getCenter())/2.;
-                n=Theta.getVOrientation()[0]*Theta.getVOrientation()[0]+Theta.getVOrientation()[1]*Theta.getVOrientation()[1]+Theta.getVOrientation()[2]*Theta.getVOrientation()[2];
-                if(n>0) {n=sqrt(n); q[3]=cos(n/4.);  n=sin(n/4.)/n;		q[0]=Theta.getVOrientation()[0]*n; q[1]=Theta.getVOrientation()[1]*n; q[2]=Theta.getVOrientation()[2]*n;}
-                else {q[3]=1; q[0]=q[1]=q[2]=0;}
+                // mid frame M
+                M.getCenter()=(MI.getCenter()+MJ.getCenter())/2.;
+                n=Thetaij.getVOrientation()[0]*Thetaij.getVOrientation()[0]+Thetaij.getVOrientation()[1]*Thetaij.getVOrientation()[1]+Thetaij.getVOrientation()[2]*Thetaij.getVOrientation()[2];
+                if (n>0)
+                {
+                    n=sqrt(n);
+                    q[3]=cos(n/4.);
+                    n=sin(n/4.)/n;
+                    q[0]=Thetaij.getVOrientation()[0]*n;
+                    q[1]=Thetaij.getVOrientation()[1]*n;
+                    q[2]=Thetaij.getVOrientation()[2]*n;
+                }
+                else
+                {
+                    q[3]=1;
+                    q[0]=q[1]=q[2]=0;
+                }
 
-                Multi_Q(XP.getOrientation(),q,XI.getOrientation());
-                QtoR(Rp,XP.getOrientation());
+                Multi_Q(M.getOrientation(),q,MI.getOrientation());
+                QtoR(Rm,M.getOrientation());
 
-                // rotate K in deformed space
-                K2=(Kref[i][j]+Kref[j][i])/2.;
+                // rotate Kspring (=Kmbar in the paper) in deformed space
+                Km=Kref[j][i];
 
-                K3.fill(0);
-                for(k=0; k<3; k++)  for(l=0; l<3; l++) for(m=0; m<3; m++)
+                Ktemp.fill(0);
+                for (k=0; k<3; k++)  for (l=0; l<3; l++) for (m=0; m<3; m++)
                         {
-                            K3[k][l]+=Rp[k][m]*K2[m][l];
-                            K3[k][l+3]+=Rp[k][m]*K2[m][l+3];
-                            K3[k+3][l]+=Rp[k][m]*K2[m+3][l];
-                            K3[k+3][l+3]+=Rp[k][m]*K2[m+3][l+3];
+                            Ktemp[k][l]+=Rm[k][m]*Km[m][l];
+                            Ktemp[k][l+3]+=Rm[k][m]*Km[m][l+3];
+                            Ktemp[k+3][l]+=Rm[k][m]*Km[m+3][l];
+                            Ktemp[k+3][l+3]+=Rm[k][m]*Km[m+3][l+3];
                         }
-                K2.fill(0);
-                for(k=0; k<3; k++)  for(l=0; l<3; l++) for(m=0; m<3; m++)
+                Km.fill(0);
+                for (k=0; k<3; k++)  for (l=0; l<3; l++) for (m=0; m<3; m++)
                         {
-                            K2[k][l]+=K3[k][m]*Rp[l][m];
-                            K2[k][l+3]+=K3[k][m+3]*Rp[l][m];
-                            K2[k+3][l]+=K3[k+3][m]*Rp[l][m];
-                            K2[k+3][l+3]+=K3[k+3][m+3]*Rp[l][m];
+                            Km[k][l]+=Ktemp[k][m]*Rm[l][m];
+                            Km[k][l+3]+=Ktemp[k][m+3]*Rm[l][m];
+                            Km[k+3][l]+=Ktemp[k+3][m]*Rm[l][m];
+                            Km[k+3][l+3]+=Ktemp[k+3][m+3]*Rm[l][m];
                         }
+                KmSym=(Km+Km.transposed())/2.;
 
-                // spring force at p
-                df= Deriv();
-                for(k=0; k<3; k++) for(l=0; l<3; l++)
+                // spring force at M
+                Fm=Deriv();
+                for (k=0; k<3; k++) for (l=0; l<3; l++)
                     {
-                        df.getVOrientation()[k]+=K2[k][l]*Theta.getVOrientation()[l];     df.getVOrientation()[k]+=K2[k][l+3]*Theta.getVCenter()[l];
-                        df.getVCenter()[k]+=K2[k+3][l]*Theta.getVOrientation()[l];   df.getVCenter()[k]+=K2[k+3][l+3]*Theta.getVCenter()[l];
+                        Fm.getVOrientation()[k]+=KmSym[k][l]*Thetaij.getVOrientation()[l];
+                        Fm.getVOrientation()[k]+=KmSym[k][l+3]*Thetaij.getVCenter()[l];
+                        Fm.getVCenter()[k]+=KmSym[k+3][l]*Thetaij.getVOrientation()[l];
+                        Fm.getVCenter()[k]+=KmSym[k+3][l+3]*Thetaij.getVCenter()[l];
                     }
 
-                // force on i
-                Force[i].getVOrientation()+=df.getVOrientation()+cross(XP.getCenter()-xi[i].getCenter(),df.getVCenter()); Force[i].getVCenter()+=df.getVCenter();
+                // force on i (displaced from M)
+                Force[i].getVOrientation()+=Fm.getVOrientation()+cross(M.getCenter()-xi[i].getCenter(),Fm.getVCenter());
+                Force[i].getVCenter()+=Fm.getVCenter();
 
-                // reciprocal force on j
-                Force[j].getVOrientation()-=df.getVOrientation()+cross(XP.getCenter()-xi[j].getCenter(),df.getVCenter()); Force[j].getVCenter()-=df.getVCenter();
+                // force on j (displaced from M)
+                Force[j].getVOrientation()-=Fm.getVOrientation()+cross(M.getCenter()-xi[j].getCenter(),Fm.getVCenter());
+                Force[j].getVCenter()-=Fm.getVCenter();
 
                 // update K
-                if(K.size())
+                if (K.size())
                 {
-                    GetCrossproductMatrix(crossi,XP.getCenter()-xi[i].getCenter());
-                    GetCrossproductMatrix(crossj,XP.getCenter()-xi[j].getCenter());
+                    GetCrossproductMatrix(crossli,M.getCenter()-xi[i].getCenter());
+                    GetCrossproductMatrix(crosslj,M.getCenter()-xi[j].getCenter());
 
-                    K3=K2;
-                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                    Ktemp=Km;
+                    for (l=0; l<3; l++)  for (m=0; m<3; m++) for (k=0; k<3; k++)
                             {
-                                K3[l][m]   += crossi[l][k]*K2[k+3][m];
-                                K3[l][m+3] += crossi[l][k]*K2[k+3][m+3];
+                                Ktemp[l][m]  -= Ktemp[l][k+3]  * crossli[k][m];
+                                Ktemp[l+3][m]-= Ktemp[l+3][k+3]* crossli[k][m];
                             }
-                    K[i][i]-=K3;  K[i][j]=K3;
-                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                    K[j][i]=Ktemp;
+                    K[i][i]-=Ktemp;
+                    for (l=0; l<3; l++)  for (m=0; m<3; m++) for (k=0; k<3; k++)
                             {
-                                K[i][i][l][m]  += K3[l][k+3]  * crossi[k][m];
-                                K[i][i][l+3][m]+= K3[l+3][k+3]* crossi[k][m];
-                                K[i][j][l][m]  -= K3[l][k+3]  * crossj[k][m];
-                                K[i][j][l+3][m]-= K3[l+3][k+3]* crossj[k][m];
+                                K[j][i][l][m]   += crosslj[l][k]*Ktemp[k+3][m];
+                                K[j][i][l][m+3] += crosslj[l][k]*Ktemp[k+3][m+3];
+                                K[i][i][l][m]   -= crossli[l][k]*Ktemp[k+3][m];
+                                K[i][i][l][m+3] -= crossli[l][k]*Ktemp[k+3][m+3];
                             }
-                    K[j][i].transpose(K[i][j]);
+                    K[i][j]=K[j][i].transposed();
 
-                    K3=K2;
-                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                    Ktemp=Km.transposed();
+                    for (l=0; l<3; l++)  for (m=0; m<3; m++) for (k=0; k<3; k++)
                             {
-                                K3[l][m]   += crossj[l][k]*K2[k+3][m];
-                                K3[l][m+3] += crossj[l][k]*K2[k+3][m+3];
+                                Ktemp[l][m]  -= Ktemp[l][k+3]  * crosslj[k][m];
+                                Ktemp[l+3][m]-= Ktemp[l+3][k+3]* crosslj[k][m];
                             }
-                    K[j][j]-=K3;
-                    for(l=0; l<3; l++)  for(m=0; m<3; m++) for(k=0; k<3; k++)
+                    K[j][j]-=Ktemp;
+                    for (l=0; l<3; l++)  for (m=0; m<3; m++) for (k=0; k<3; k++)
                             {
-                                K[j][j][l][m]  += K3[l][k+3]  * crossj[k][m];
-                                K[j][j][l+3][m]+= K3[l+3][k+3]* crossj[k][m];
+                                K[j][j][l][m]   -= crosslj[l][k]*Ktemp[k+3][m];
+                                K[j][j][l][m+3] -= crosslj[l][k]*Ktemp[k+3][m+3];
                             }
                 }
 
             }
 
     }
-
     /*
     // test momentum conservation
-    df.getVOrientation().fill(0); df.getVCenter().fill(0);
+    Fm=Deriv();
     for(i=0;i<nbDOF;i++)
     {
-    OiOj=-xi[i].t; cr=cross(Force[i].getVCenter(),OiOj);
-    df.getVOrientation()+=Force[i].getVOrientation()+cr;
-    df.getVCenter()+=Force[i].getVCenter();
+    Fm.getVOrientation()+=Force[i].getVOrientation()+cross(Force[i].getVCenter(),-xi[i].getCenter());
+    Fm.getVCenter()+=Force[i].getVCenter();
     }
-    qDebug()<<"w:"<<df.getVOrientation().norm()<<"v:"<<df.getVCenter().norm();*/
+    cerr<<"w:"<<Fm.getVOrientation().norm()<<"v:"<<Fm.getVCenter().norm();*/
 }
 
 
