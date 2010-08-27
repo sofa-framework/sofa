@@ -177,20 +177,23 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
     this->B.resize(xfrom0.size());
     for(unsigned int i = 0; i < xfrom0.size(); ++i)
         this->B[i].resize(xto.size());
-
-    // Atilde and J
-    Atilde.resize(xto0.size());
-    J0.resize(xfrom0.size());
+    Atilde.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        Atilde[i].resize(xto0.size());
+    //J0.resize(xfrom0.size());
+    //for (unsigned int i = 0; i < nbRefs.getValue(); ++i)
+    //  J0[i].resize(xto0.size());
     J.resize(xfrom0.size());
     for (unsigned int i = 0; i < xfrom0.size(); ++i)
         J[i].resize(xto0.size());
 
+    // Precompute matrices
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
     {
         for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
         {
-            const int& idx=nbRefs.getValue() *i+m;
-            const int& idxReps=m_reps[idx];
+            const int& idx = nbRefs.getValue() *i+m;
+            const int& idxReps = m_reps[idx];
 
             const InCoord& xi0 = xfrom0[idxReps];
             const Mat33& affine = xi0.getAffine();
@@ -201,7 +204,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             {
                 for(int l=0; l<3; l++)
                 {
-                    (Atilde[i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_coefs[idxReps][i] * (affineInv)[k][l];
+                    (Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_coefs[idxReps][i] * (affineInv)[k][l];
                 }
             }
 
@@ -225,6 +228,19 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::apply ( Out::VecCoord& out, const In::VecCoord& in )
 {
+    /*
+    const VecInCoord& xfrom = *this->fromModel->getX();
+    const VecInDeriv& vfrom = *this->fromModel->getV();
+
+    std::cerr << "positions" << std::endl;
+    for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+      std::cerr << "in["<<j<<"]: " << xfrom[j] << std::endl;
+
+    std::cerr << "vitesses" << std::endl;
+    for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+      std::cerr << "in["<<j<<"]: " << vfrom[j] << std::endl;
+    */
+
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_coefs = coefs.getValue();
 
@@ -263,7 +279,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 
         const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
 
-        Mat33 F, FT, Finv, E;
+        Mat33 F, Finv, E;
         F.fill ( 0 );
         E.fill ( 0 );
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
@@ -273,7 +289,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 
             Mat33 cov;
             getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
-            F += cov + in[idxReps ].getAffine() * this->Atilde[idxReps];
+            F += cov + in[idxReps ].getAffine() * this->Atilde[idxReps][i];
         }
 
         // strain and determinant
@@ -303,7 +319,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             const int& idxReps = m_reps[idx];
 
             Mat6xIn& Bij = this->B[idxReps][i];
-            const Mat33& At = this->Atilde[idxReps];
+            const Mat33& At = this->Atilde[idxReps][i];
             const Vec3& dWeight = dw[idxReps][i];
 
             // stretch

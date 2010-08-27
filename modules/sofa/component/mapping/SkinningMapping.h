@@ -98,6 +98,7 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
+    typedef typename In::VecDeriv VecInDeriv;
     typedef typename In::Real InReal;
     typedef typename Out::Real Real;
     enum { N=DataTypes::spatial_dimensions };
