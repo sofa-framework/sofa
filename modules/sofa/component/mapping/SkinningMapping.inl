@@ -597,7 +597,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
             Mat33 rot;
             in[idxReps ].getOrientation().toMatrix(rot);
-            F += cov + rot * this->Atilde[idxReps];
+            F += cov + rot * this->Atilde[idxReps][i];
         }
 
         // strain and determinant
@@ -627,7 +627,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             const int& idxReps = m_reps[idx];
 
             Mat6xIn& Bij = this->B[idxReps][i];
-            const Mat33& At = this->Atilde[j];
+            const Mat33& At = this->Atilde[j][i];
             const Quat& rot = in[idxReps ].getOrientation();
             const Vec3& dWeight = dw[idxReps][i];
 
@@ -1039,8 +1039,15 @@ void SkinningMapping<BasicMapping>::precomputeMatrices()
     this->volMass.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
 
-    // Atilde and J
-    this->Atilde.resize(xto0.size());
+    // Resize matrices
+    this->det.resize(xto.size());
+    this->deformationTensors.resize(xto.size());
+    this->B.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->B[i].resize(xto.size());
+    this->Atilde.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->Atilde[i].resize(xto0.size());
     this->J0.resize ( xfrom0.size() );
     for (unsigned int i = 0; i < xfrom0.size(); ++i)
         this->J0[i].resize(xto0.size());
@@ -1048,6 +1055,7 @@ void SkinningMapping<BasicMapping>::precomputeMatrices()
     for (unsigned int i = 0; i < xfrom0.size(); ++i)
         this->J[i].resize(xto0.size());
 
+    // Precompute matrices
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
     {
         for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
@@ -1065,7 +1073,7 @@ void SkinningMapping<BasicMapping>::precomputeMatrices()
             {
                 for(int l=0; l<3; l++)
                 {
-                    (this->Atilde[i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_coefs[idxReps][i] * (transformationInv)[k][l];
+                    (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_coefs[idxReps][i] * (transformationInv)[k][l];
                 }
             }
 

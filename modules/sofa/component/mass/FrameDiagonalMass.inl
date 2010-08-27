@@ -209,7 +209,7 @@ void FrameDiagonalMass<DataTypes, MassType>::reinit()
     unsigned int nbPt = this->volMass->size();
     for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue();
 
-    this->resize ( (*J0).size() );
+    this->resize ( (*J).size() );
     if( rotateMass.getValue())
     {
         MassVector& vecMass0 = * ( f_mass0.beginEdit() );
@@ -263,7 +263,7 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     unsigned int nbPt = this->volMass->size();
     for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue();
 
-    this->resize ( (*J0).size() );
+    this->resize ( J->size() );
     if( rotateMass.getValue())
     {
         MassVector& vecMass0 = * ( f_mass0.beginEdit() );
@@ -455,7 +455,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
     MatInx3 JT;
     MatInxIn JJT;
 
-    mass.mass = 1.0;//volmass[i] * vol[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, are directly stored in the inertia matrix)
+    mass.mass = 1.0;//volmass[i] * vol[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, is directly stored in the inertia matrix via the displacement matrix J)
     MatInxIn& frameMass = mass.inertiaMatrix;
     // Init the diagonal block 'i'
     for ( unsigned int l = 0; l < 6; l++ )
@@ -470,7 +470,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
         JJT=JT*J[j];
         frameMass += JJT;
         /*/ // With lumping
-        //					serr << "J[i][j]: " << J[i][j] << sendl;
+        //serr << "J[i][j]: " << J[i][j] << sendl;
         for ( unsigned int k=0;k<nbDOF;k++ )
         	{
         		JJT=JT*J[k][j];
@@ -479,7 +479,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
         	//*/
     }
     mass.recalc();
-    //serr << "Mass["<<i<<"]: " << vecMass[i] << sendl;
+    //serr << "Mass: " << mass << sendl;
 }
 
 
