@@ -129,7 +129,7 @@ public:
     /// @deprecated use readVecDeriv(ConstVecId::velocity()) instead.
     virtual const VecDeriv* getN() const
     {
-        const Data<VecDeriv>* v = readVecDeriv(ConstVecId::velocity());
+        const Data<VecDeriv>* v = readVecDeriv(ConstVecId::normal());
         return (v == NULL) ? NULL : &(v->getValue());
     }
 
