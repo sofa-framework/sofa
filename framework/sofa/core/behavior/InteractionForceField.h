@@ -29,7 +29,7 @@
 
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-
+#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 
@@ -68,12 +68,12 @@ public:
         serr << "addKToMatrix not implemented by " << this->getClassName() << sendl;
     }
 
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact)
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r1 = matrix->getMatrix(getMechModel1());
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r2 = matrix->getMatrix(getMechModel2());
-        if (r1) addKToMatrix(r1.matrix, kFact, r1.offset);
-        if (r2) addKToMatrix(r2.matrix, kFact, r2.offset);
+        if (r1) addKToMatrix(r1.matrix, mparams->kFactor(), r1.offset);
+        if (r2) addKToMatrix(r2.matrix,  mparams->kFactor(), r2.offset);
     }
 
 };
