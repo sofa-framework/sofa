@@ -569,7 +569,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         // update J
         Mat37 Q;
         VMat76 L;
-        L.resize(in.size());
+        L.resize(nbRefs.getValue());
         for(unsigned int j = 0; j < nbRefs.getValue(); j++)
         {
             const int& idx = nbRefs.getValue() * i + j;
@@ -577,7 +577,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 
             ComputeQ( Q, in[idxReps ].getOrientation(), initPos[idx]);
             ComputeL( L[idxReps], in[idxReps ].getOrientation());
-            this->J[j][i] = (Real)m_coefs[idxReps][i] * Q * L[idxReps];
+            this->J[idxReps][i] = (Real)m_coefs[idxReps][i] * Q * L[idxReps];
         }
 
         // Physical computations
@@ -599,6 +599,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             in[idxReps ].getOrientation().toMatrix(rot);
             F += cov + rot * this->Atilde[idxReps][i];
         }
+        FT.transpose( F);
 
         // strain and determinant
         this->det[i] = determinant ( F );
@@ -627,7 +628,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             const int& idxReps = m_reps[idx];
 
             Mat6xIn& Bij = this->B[idxReps][i];
-            const Mat33& At = this->Atilde[j][i];
+            const Mat33& At = this->Atilde[idxReps][i];
             const Quat& rot = in[idxReps ].getOrientation();
             const Vec3& dWeight = dw[idxReps][i];
 
@@ -650,24 +651,71 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             for(k=0; k<3; k++) dE[4][k+4]=dWeight[1]*F[k][2]+dWeight[2]*F[k][1];
             for(k=0; k<3; k++) dE[5][k+4]=dWeight[0]*F[k][2]+dWeight[2]*F[k][0];
             Bij = dE * L[idxReps];
-
             /*
-            // Compute ddet
-            for(k=0;k<7;k++) u7[k]=0;
-            for(k=0;k<3;k++)
+            if( i == 69)
             {
-              for(m=0;m<3;m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k];
-              u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
-              u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
+            std::cerr << "For frame " << idxReps << " with quat: " << in[idxReps ].getOrientation() << std::endl;
+            std::cerr << "Ma: " << Ma << std::endl;
+            std::cerr << "Mb: " << Mb << std::endl;
+            std::cerr << "Mc: " << Mc << std::endl;
+            std::cerr << "Mw: " << Mw << std::endl;
+            std::cerr << "FT: " << FT << std::endl;
+            std::cerr << "dE: " << dE << std::endl;
+            std::cerr << "Bij: " << Bij << std::endl;
             }
-            for(k=0;k<6;k++) n->ddet[j].rigid[k]=0;
-            for(k=0;k<6;k++) for(m=0;m<7;m++) n->ddet[j].rigid[k]+=u7[m]*L[f][m][k];
-            n->ddet[j].rigid=n->det * n->ddet[j].rigid;
             */
+            /*
+                            // Compute ddet
+                            for(k=0;k<7;k++) u7[k]=0;
+                            for(k=0;k<3;k++)
+                            {
+                              for(m=0;m<3;m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k];
+                              u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
+                              u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
+                            }
+                            for(k=0;k<6;k++) n->ddet[idxReps].rigid[k]=0;
+                            for(k=0;k<6;k++) for(m=0;m<7;m++) n->ddet[idxReps].rigid[k]+=u7[m]*L[f][m][k];
+                            n->ddet[idxReps].rigid=n->det * n->ddet[idxReps].rigid;
+                            */
 
         }
+        /*
+        if( i == 69)
+        {
+          Mat33 A0, A1;
+          in[0].getOrientation().toMatrix(A0);
+          in[1].getOrientation().toMatrix(A1);
+
+          std::cerr << "weight0: " << m_coefs[0][i] << std::endl;
+          std::cerr << "weight1: " << m_coefs[1][i] << std::endl;
+          std::cerr << "dweight0: " << dw[0][i] << std::endl;
+          std::cerr << "dweight1: " << dw[1][i] << std::endl;
+          std::cerr << "initPos0: " << initPos[138] << std::endl;
+          std::cerr << "initPos1: " << initPos[139] << std::endl;
+          std::cerr << "Atilde0: " << this->Atilde[0][i] << std::endl;
+          std::cerr << "Atilde1: " << this->Atilde[1][i] << std::endl;
+          std::cerr << "A0: " << A0 << std::endl;
+          std::cerr << "A1: " << A1 << std::endl;
+          std::cerr << "J0: " << this->J[0][i] << std::endl;
+          std::cerr << "J1: " << this->J[1][i] << std::endl;
+          std::cerr << "strain: " << this->deformationTensors[i] << std::endl;
+          std::cerr << "B0: " << this->B[0][i] << std::endl;
+          std::cerr << "B1: " << this->B[1][i] << std::endl;
+        }
+        */
 #endif
     }
+    /*
+            VecInDeriv& vfrom = *this->fromModel->getV();
+            std::cerr << "positions: " << std::endl;
+            std::cerr << in << std::endl;
+            std::cerr << "vitesses: " << std::endl;
+            std::cerr << vfrom << std::endl;
+      */
+    /*
+      std::cerr << std::endl;
+      std::cerr << std::endl;
+      */
 }
 
 template <class BasicMapping>
@@ -911,7 +959,7 @@ void SkinningMapping<BasicMapping>::draw()
     if ( showReps.getValue())
     {
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0]*scale, xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( m_reps[nbRef*i+0]*scale, xto[i], textScale );
     }
 
     // Display distances for each points
@@ -919,7 +967,7 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(distances[showFromIndex.getValue()%distances.size()][i]*scale), xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( (int)(distances[m_reps[i*nbRef+showFromIndex.getValue()%distances.size()]][i]*scale), xto[i], textScale );
     }
 
     // Display coefs for each points
@@ -927,7 +975,7 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%m_coefs.size()][i]*scale), xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[m_reps[i*nbRef+showFromIndex.getValue()%m_coefs.size()]][i]*scale), xto[i], textScale );
     }
 
     // Display gradient values for each points
@@ -937,7 +985,7 @@ void SkinningMapping<BasicMapping>::draw()
         glColor3f( 0.5, 0.5, 0.5);
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
-            const Vec3& grad = dw[showFromIndex.getValue()%dw.size()][i];
+            const Vec3& grad = dw[m_reps[i*nbRef+showFromIndex.getValue()%dw.size()]][i];
             sprintf( txt, "( %i, %i, %i)", (int)(grad[0]*scale), (int)(grad[1]*scale), (int)(grad[2]*scale));
             sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
         }
@@ -948,12 +996,12 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f ( 0.0, 1.0, 0.3 );
         glBegin ( GL_LINES );
-        const vector<GeoCoord>& gradMap = dw[showFromIndex.getValue()%dw.size()];
-        for ( unsigned int j = 0; j < gradMap.size(); j++ )
+        for ( unsigned int j = 0; j < xto.size(); j++ )
         {
+            const GeoCoord& gradMap = dw[m_reps[j*nbRef+showFromIndex.getValue()%dw.size()]][j];
             const Coord& point = xto[j];
             glVertex3f ( point[0], point[1], point[2] );
-            glVertex3f ( point[0] + gradMap[j][0] * showGradientsScaleFactor.getValue(), point[1] + gradMap[j][1] * showGradientsScaleFactor.getValue(), point[2] + gradMap[j][2] * showGradientsScaleFactor.getValue() );
+            glVertex3f ( point[0] + gradMap[0] * showGradientsScaleFactor.getValue(), point[1] + gradMap[1] * showGradientsScaleFactor.getValue(), point[2] + gradMap[2] * showGradientsScaleFactor.getValue() );
         }
         glEnd();
     }
@@ -968,8 +1016,8 @@ void SkinningMapping<BasicMapping>::draw()
         double maxValue = -0xFFF;
         for ( unsigned int j = 0; j < xto.size(); j++)
         {
-            if ( m_coefs[showFromIndex.getValue()%m_coefs.size()][j] < minValue && m_coefs[showFromIndex.getValue()%m_coefs.size()][j] != 0xFFF) minValue = m_coefs[showFromIndex.getValue()%m_coefs.size()][j];
-            if ( m_coefs[showFromIndex.getValue()%m_coefs.size()][j] > maxValue && m_coefs[showFromIndex.getValue()%m_coefs.size()][j] != 0xFFF) maxValue = m_coefs[showFromIndex.getValue()%m_coefs.size()][j];
+            if ( m_coefs[m_reps[j*nbRef+showFromIndex.getValue()%m_coefs.size()]][j] < minValue && m_coefs[m_reps[j*nbRef+showFromIndex.getValue()%m_coefs.size()]][j] != 0xFFF) minValue = m_coefs[m_reps[j*nbRef+showFromIndex.getValue()%m_coefs.size()]][j];
+            if ( m_coefs[m_reps[j*nbRef+showFromIndex.getValue()%m_coefs.size()]][j] > maxValue && m_coefs[m_reps[j*nbRef+showFromIndex.getValue()%m_coefs.size()]][j] != 0xFFF) maxValue = m_coefs[m_reps[j*nbRef+showFromIndex.getValue()%m_coefs.size()]][j];
         }
 
         TriangleSetTopologyContainer *mesh;
@@ -985,7 +1033,7 @@ void SkinningMapping<BasicMapping>::draw()
             {
                 for ( unsigned int j = 0; j < 3; j++)
                 {
-                    double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][tri[i][j]] - minValue) / (maxValue - minValue);
+                    double color = (m_coefs[m_reps[tri[i][j]*nbRef+showFromIndex.getValue()%m_coefs.size()]][tri[i][j]] - minValue) / (maxValue - minValue);
                     color = pow(color, showGammaCorrection.getValue());
                     points.push_back(defaulttype::Vector3(xto[tri[i][j]][0],xto[tri[i][j]][1],xto[tri[i][j]][2]));
                     colors.push_back(defaulttype::Vec<4,float>(color, 0.0, 0.0,1.0));
@@ -1000,7 +1048,7 @@ void SkinningMapping<BasicMapping>::draw()
             glBegin( GL_POINTS);
             for ( unsigned int i = 0; i < xto.size(); i++)
             {
-                double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][i] - minValue) / (maxValue - minValue);
+                double color = (m_coefs[m_reps[i*nbRef+showFromIndex.getValue()%m_coefs.size()]][i] - minValue) / (maxValue - minValue);
                 color = pow(color, showGammaCorrection.getValue());
                 glColor3f( color, 0.0, 0.0);
                 glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
@@ -1028,7 +1076,7 @@ void SkinningMapping<BasicMapping>::precomputeMatrices()
     const VVD& m_coefs = coefs.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
 
-    // vol and volMass
+    // vol and massDensity
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
     this->getContext()->get( hexaContainer);
     double volume = this->voxelVolume.getValue();
@@ -1036,8 +1084,8 @@ void SkinningMapping<BasicMapping>::precomputeMatrices()
     const VecCoord& xto = *this->toModel->getX();
     this->vol.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
-    this->volMass.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
+    this->massDensity.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
 
     // Resize matrices
     this->det.resize(xto.size());

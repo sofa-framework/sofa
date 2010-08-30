@@ -160,7 +160,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
     const VVD& m_coefs = coefs.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
 
-    // vol and volMass
+    // vol and massDensity
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
     this->getContext()->get( hexaContainer);
     double volume = this->voxelVolume.getValue();
@@ -168,8 +168,8 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
     const VecCoord& xto = *this->toModel->getX();
     this->vol.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
-    this->volMass.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
+    this->massDensity.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
 
     // Resize matrices
     this->det.resize(xto.size());

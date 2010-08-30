@@ -115,7 +115,7 @@ public:
     VecMass f_mass;
     VecMass f_mass0;
     /// the mass density used to compute the mass from a mesh topology and geometry
-    Data< Real > m_massDensity;
+    Data< Real > m_massDensity; // Used to fix mass density of all the samples.
 
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;
@@ -201,13 +201,13 @@ public:
 private:
     DQStorage* dqStorage;
     VD* vol;
-    VD* volMass;
+    VD* massDensity;
     VVMat3xIn* J;
     VVMat3xIn* J0;
 
     void updateMass ( MassType& mass, const VMat3xIn& J, const VD& vol, const VD& volmass );
     void computeRelRot ( Mat33& relRot, const Coord& xi, const Coord& xi0);
-    void rotateM( Mat66& M, const Mat66& M0, const Mat33& R);
+    void rotateM( MatInxIn& M, const MatInxIn& M0, const Mat33& R);
     void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);
 };
 
