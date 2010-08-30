@@ -152,12 +152,20 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 
 
 template <>
+void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::setInCoord( InCoord& coord, const Coord& position, const Quat& rotation) const
+{
+    coord.getCenter() = position;
+    rotation.toMatrix( coord.getAffine());
+}
+
+
+template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
 {
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecCoord& xto0 = *this->toModel->getX0();
     const vector<int>& m_reps = repartition.getValue();
-    const VVD& m_coefs = coefs.getValue();
+    const VVD& m_weights = weights.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
 
     // vol and massDensity
@@ -180,9 +188,6 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
     Atilde.resize(xfrom0.size());
     for (unsigned int i = 0; i < xfrom0.size(); ++i)
         Atilde[i].resize(xto0.size());
-    //J0.resize(xfrom0.size());
-    //for (unsigned int i = 0; i < nbRefs.getValue(); ++i)
-    //  J0[i].resize(xto0.size());
     J.resize(xfrom0.size());
     for (unsigned int i = 0; i < xfrom0.size(); ++i)
         J[i].resize(xto0.size());
@@ -204,7 +209,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             {
                 for(int l=0; l<3; l++)
                 {
-                    (Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_coefs[idxReps][i] * (affineInv)[k][l];
+                    (Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (affineInv)[k][l];
                 }
             }
 
@@ -213,36 +218,22 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             double val;
             for(int k=0; k<3; k++)
             {
-                val = m_coefs[idxReps][i] * initPos[idx][k];
+                val = m_weights[idxReps][i] * initPos[idx][k];
                 Ji[0][k]=val;
                 Ji[1][k+3]=val;
                 Ji[2][k+6]=val;
-                Ji[k][k+9]=m_coefs[idxReps][i];
+                Ji[k][k+9]=m_weights[idxReps][i];
             }
         }
     }
 }
 
 
-
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::apply ( Out::VecCoord& out, const In::VecCoord& in )
 {
-    /*
-    const VecInCoord& xfrom = *this->fromModel->getX();
-    const VecInDeriv& vfrom = *this->fromModel->getV();
-
-    std::cerr << "positions" << std::endl;
-    for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
-      std::cerr << "in["<<j<<"]: " << xfrom[j] << std::endl;
-
-    std::cerr << "vitesses" << std::endl;
-    for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
-      std::cerr << "in["<<j<<"]: " << vfrom[j] << std::endl;
-    */
-
     const vector<int>& m_reps = repartition.getValue();
-    const VVD& m_coefs = coefs.getValue();
+    const VVD& m_weights = weights.getValue();
 
     rotatedPoints.resize ( initPos.size() );
     out.resize ( initPos.size() / nbRefs.getValue() );
@@ -271,7 +262,7 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             rotatedPoints[idx] = in[idxReps].getAffine() * initPos[idx];
 
             // And add each reference frames contributions to the new position out[i]
-            out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_coefs[idxReps][i];
+            out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_weights[idxReps][i];
         }
 
         // Physical computations
@@ -324,34 +315,25 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 
             // stretch
             for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) for ( l = 0; l < 3; l++ ) Bij[m][3*l+k] = F[l][m] * At[k][m];
-
             for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) Bij[m][9+k] = dWeight [m] * F[k][m];
 
             // shear
             for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ ) Bij[3][3*l+k] = 0.5 * ( F[l][0] * At[k][1] +
                             F[l][1] * At[k][0] );
-
             for ( k = 0; k < 3; k++ ) Bij[3][9+k] = 0.5 * ( dWeight [0] * F[k][1] + dWeight [1] * F[k][0] );
-
             for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
                     Bij[4][3*l+k] = 0.5 * ( F[l][1] * At[k][2] + F[l][2] * At[k][1] );
-
             for ( k = 0; k < 3; k++ ) Bij[4][9+k] = 0.5 * ( dWeight [1] * F[k][2] + dWeight [2] * F[k][1] );
-
             for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
                     Bij[5][3*l+k] = 0.5 * ( F[l][2] * At[k][0] + F[l][0] * At[k][2] );
-
             for ( k = 0; k < 3; k++ ) Bij[5][9+k] = 0.5 * ( dWeight [2] * F[k][0] + dWeight [0] * F[k][2] );
 
             // Compute ddet
             /*
             for ( k = 0;k < 12;k++ ) n->ddet[j].affine[k] = 0;
-
             for ( k = 0;k < 3;k++ ) for ( m = 0;m < 3;m++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[m+3*k] +=
                     At[m][l] * Finv[l][k];
-
             for ( k = 0;k < 3;k++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[9+k] += dWeight [l] * Finv[l][k];
-
             this->ddet[idxReps][i] = this->det[i] * this->ddet[idxReps][i];
             */
         }
@@ -359,12 +341,9 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 }
 
 
-
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJ ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
-    //const vector<int>& m_reps = repartition.getValue();
-    //const VVD& m_coefs = coefs.getValue();
     VecCoord& xto = *this->toModel->getX();
     out.resize ( xto.size() );
     Deriv v;
@@ -431,12 +410,10 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
     }
 }
 
+
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT ( In::VecDeriv& out, const Out::VecDeriv& in )
 {
-    //const vector<int>& m_reps = repartition.getValue();
-    //const VVD& m_coefs = coefs.getValue();
-
     Deriv v;
     In::Deriv::Affine omega;
     if ( ! ( maskTo->isInUse() ) )
@@ -510,13 +487,10 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 
 }
 
+
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT (In::MatrixDeriv& out, const Out::MatrixDeriv& in )
 {
-    //const vector<int>& m_reps = repartition.getValue();
-    //const VVD& m_coefs = coefs.getValue();
-    //const unsigned int nbr = nbRefs.getValue();
-
     const unsigned int nbi = this->fromModel->getX()->size();
     In::Deriv::Affine omega;
     In::VecDeriv v;
@@ -567,54 +541,6 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             }
         }
     }
-
-    //const unsigned int nbi = this->fromModel->getX()->size();
-    //  In::Deriv::Affine omega;
-    //  In::VecDeriv v;
-    //  vector<bool> flags;
-    //  int outSize = out.size();
-    //  out.resize ( in.size() + outSize ); // we can accumulate in "out" constraints from several mappings
-    //
-    //  if ( !this->enableSkinning.getValue()) return;
-    //  const unsigned int numOut=this->J.size();
-
-    //  for ( unsigned int i=0;i<in.size();i++ )
-    //  {
-    //      v.clear();
-    //      v.resize ( nbi );
-    //      flags.clear();
-    //      flags.resize ( nbi );
-    //      OutConstraintIterator itOut;
-    //      std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-    //      for ( itOut=iter.first;itOut!=iter.second;itOut++ )
-    //      {
-    //          unsigned int indexIn = itOut->first;
-    //          Deriv data = ( Deriv ) itOut->second;
-
-    //          for (unsigned int j=0;j<numOut;++j)
-    //          {
-    //              Mat12x3 Jt;
-    //              Jt.transpose ( this->J[j][indexIn] );
-
-    //              Vec12 speed = Jt * data;
-
-    //              In::Deriv::Affine affine;
-    //              affine[0][0] = speed[0];
-    //              affine[0][1] = speed[1];
-    //              affine[0][2] = speed[2];
-    //              affine[1][0] = speed[3];
-    //              affine[1][1] = speed[4];
-    //              affine[1][2] = speed[5];
-    //              affine[2][0] = speed[6];
-    //              affine[2][1] = speed[7];
-    //              affine[2][2] = speed[8];
-    //              const Vec3 pos( speed[9], speed[10], speed[11] );
-    //              InDeriv value(pos,affine);
-    //              out[outSize+i].add(j,value);
-    //          }
-    //      }
-    //  }
 }
 
 

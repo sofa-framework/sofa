@@ -163,7 +163,7 @@ protected:
     helper::ParticleMask* maskTo;
 
     Data<vector<int> > repartition;
-    Data<VVD > coefs;
+    Data<VVD> weights;
     Data<SVector<SVector<GeoCoord> > > weightGradients;
     Data<unsigned int> nbRefs;
 public:
@@ -246,7 +246,7 @@ public:
     }
     const VVD& getWeightCoefs()
     {
-        return coefs.getValue();
+        return weights.getValue();
     }
     const vector<int>& getRepartition()
     {
@@ -258,7 +258,12 @@ public:
     }
 
 #ifdef SOFA_DEV
+    void removeFrame( const unsigned int index);
     void insertFrame( const Coord& pos, const Quat& rot, GeoVecCoord beginPointSet = GeoVecCoord(), double distMax = 0.0);
+    bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
+    void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
+    void updateDataAfterInsertion();
+    inline void changeSettingsDueToInsertion();
 
 protected:
     void precomputeMatrices();
@@ -270,6 +275,8 @@ protected:
     void ComputeMb(Mat33& M, const Quat& q) const;
     void ComputeMc(Mat33& M, const Quat& q) const;
     void ComputeMw(Mat33& M, const Quat& q) const;
+
+    inline void setInCoord( InCoord& coord, const Coord& position, const Quat& rotation) const;
 #endif
 };
 
