@@ -201,7 +201,7 @@ SOURCES +=  \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
-	 fem/DataConfigFE.h \
+#	 fem/DataConfigFE.h \
 	 fem/QuadratureFormular.h \
  	 fem/QuadratureFormular.inl \
 	 fem/BaseMaterial.h \
