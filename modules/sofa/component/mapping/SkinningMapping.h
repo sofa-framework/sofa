@@ -175,7 +175,7 @@ public:
     Data<bool> showDistancesValues;
     Data<bool> showWeights;
     Data<double> showGammaCorrection;
-    Data<bool> showCoefsValues;
+    Data<bool> showWeightsValues;
     Data<bool> showReps;
     Data<int> showValuesNbDecimals;
     Data<double> showTextScaleFactor;
