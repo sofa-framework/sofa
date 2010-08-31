@@ -26,15 +26,16 @@
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
 
 #include <sofa/component/mapping/SkinningMapping.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <string>
 #include <iostream>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/core/behavior/MechanicalMapping.inl>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/helper/gl/Axis.h>
+#include <sofa/helper/gl/Color.h>
 #include <sofa/helper/gl/glText.inl>
+#include <sofa/helper/gl/template.h>
+#include <sofa/helper/io/Mesh.h>
 
 
 #ifdef SOFA_DEV
