@@ -37,6 +37,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -63,6 +64,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef helper::vector<Real> VecReal;
     typedef typename DataTypes::CPos CPos;
+    typedef defaulttype::Vec<3, Real> Vec3;
 
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -124,11 +126,21 @@ protected:
         VecReal inputValues;
         const VecCoord* x0;
     };
+
+    void updateValues(TempData& _data);
     Real valueFromPosition(const CPos& p, const TempData& data);
     Real valueFromPoint(const PointID& pid, const TempData& data);
     Real valueFromEdge(const Edge& e, const TempData& data);
     Real valueFromTriangle(const Triangle& t, const TempData& data);
     Real valueFromTetrahedron(const Tetra &t, const TempData& data);
+
+    void updateVectors(TempData& _data);
+    Vec3 vectorFromPosition(const CPos& p, const TempData& data);
+    Vec3 vectorFromPoint(const PointID& pid, const TempData& data);
+    Vec3 vectorFromEdge(const Edge& e, const TempData& data);
+    Vec3 vectorFromTriangle(const Triangle& t, const TempData& data);
+    Vec3 vectorFromTetrahedron(const Tetra &t, const TempData& data);
+
 public:
     //Input
     Data<VecReal> f_inputValues;
@@ -138,11 +150,22 @@ public:
     Data<helper::vector<Triangle> > f_triangles;
     Data<helper::vector<Tetra> > f_tetrahedra;
 
-    //Output
+    //Output scalars
     Data<VecReal> f_values;
     Data<VecReal> f_edgeValues;
     Data<VecReal> f_triangleValues;
     Data<VecReal> f_tetrahedronValues;
+
+    //Output vectors
+    Data<sofa::helper::vector<Vec3> > f_pointVectors;
+    Data<sofa::helper::vector<Vec3> > f_edgeVectors;
+    Data<sofa::helper::vector<Vec3> > f_triangleVectors;
+    Data<sofa::helper::vector<Vec3> > f_tetrahedronVectors;
+
+    // parameters
+    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType;
+    Data <bool> p_drawVectors;
+    Data <float> p_vectorLength;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
