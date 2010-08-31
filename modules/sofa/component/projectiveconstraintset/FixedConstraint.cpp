@@ -26,7 +26,9 @@
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
+#ifdef SOFA_DEV
 #include <sofa/defaulttype/AffineTypes.h>
+#endif
 
 #include <sofa/simulation/common/Node.h>
 
@@ -53,7 +55,9 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
         .add< FixedConstraint<Vec6dTypes> >()
         .add< FixedConstraint<Rigid3dTypes> >()
         .add< FixedConstraint<Rigid2dTypes> >()
+#ifdef SOFA_DEV
         .add< FixedConstraint<Affine3dTypes> >()
+#endif
 #endif
 #ifndef SOFA_DOUBLE
         .add< FixedConstraint<Vec3fTypes> >()
@@ -62,7 +66,9 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
         .add< FixedConstraint<Vec6fTypes> >()
         .add< FixedConstraint<Rigid3fTypes> >()
         .add< FixedConstraint<Rigid2fTypes> >()
+#ifdef SOFA_DEV
         .add< FixedConstraint<Affine3fTypes> >()
+#endif
 #endif
         ;
 
@@ -73,6 +79,9 @@ template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec1dT
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec6dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid3dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid2dTypes>;
+#ifdef SOFA_DEV
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3dTypes>;
+#endif
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec3fTypes>;
@@ -81,6 +90,9 @@ template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec1fT
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Vec6fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid3fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Rigid2fTypes>;
+#ifdef SOFA_DEV
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3fTypes>;
+#endif
 #endif
 
 #ifndef SOFA_FLOAT
