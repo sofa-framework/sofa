@@ -70,9 +70,9 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
     , showDistancesValues ( initData ( &showDistancesValues, false, "showDistancesValues","Show dstances values." ) )
-    , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
+    , showWeights ( initData ( &showWeights, false, "showWeights","Show coeficients." ) )
     , showGammaCorrection ( initData ( &showGammaCorrection, 1.0, "showGammaCorrection","Correction of the Gamma by a power" ) )
-    , showCoefsValues ( initData ( &showCoefsValues, false, "showCoefsValues","Show coeficients values." ) )
+    , showWeightsValues ( initData ( &showWeightsValues, false, "showWeightsValues","Show coeficients values." ) )
     , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
     , showValuesNbDecimals ( initData ( &showValuesNbDecimals, 0, "showValuesNbDecimals","Multiply floating point by 10^n." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
@@ -133,6 +133,7 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
         {
             const int& idx=nbRefs.getValue() *i+m;
             const int& idxReps=m_reps[idx];
+            //initPos[idx] = getLocalCoord( xfrom[idxReps], xto[i]);
             initPos[idx] = xfrom[idxReps].getOrientation().inverseRotate ( xto[i] - xfrom[idxReps].getCenter() );
         }
 }
@@ -647,75 +648,27 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             D = FT*Mw; dE[0][3] = 2*D[0][0]; dE[1][3] = 2*D[1][1]; dE[2][3] = 2*D[2][2];
             dE[3][3] = D[0][1]+D[1][0]; dE[4][3] = D[1][2]+D[2][1]; dE[5][3] = D[0][2]+D[2][0];
             for(k=0; k<3; k++) for(m=0; m<3; m++) dE[m][k+4]=dWeight[m]*F[k][m];
-            for(k=0; k<3; k++) dE[3][k+4]=dWeight[0]*F[k][1]+dWeight[1]*F[k][0];
-            for(k=0; k<3; k++) dE[4][k+4]=dWeight[1]*F[k][2]+dWeight[2]*F[k][1];
-            for(k=0; k<3; k++) dE[5][k+4]=dWeight[0]*F[k][2]+dWeight[2]*F[k][0];
+            for(k=0; k<3; k++) dE[3][k+4]=(dWeight[0]*F[k][1]+dWeight[1]*F[k][0])/2.0;
+            for(k=0; k<3; k++) dE[4][k+4]=(dWeight[1]*F[k][2]+dWeight[2]*F[k][1])/2.0;
+            for(k=0; k<3; k++) dE[5][k+4]=(dWeight[0]*F[k][2]+dWeight[2]*F[k][0])/2.0;
             Bij = dE * L[idxReps];
             /*
-            if( i == 69)
+            // Compute ddet
+            for(k=0;k<7;k++) u7[k]=0;
+            for(k=0;k<3;k++)
             {
-            std::cerr << "For frame " << idxReps << " with quat: " << in[idxReps ].getOrientation() << std::endl;
-            std::cerr << "Ma: " << Ma << std::endl;
-            std::cerr << "Mb: " << Mb << std::endl;
-            std::cerr << "Mc: " << Mc << std::endl;
-            std::cerr << "Mw: " << Mw << std::endl;
-            std::cerr << "FT: " << FT << std::endl;
-            std::cerr << "dE: " << dE << std::endl;
-            std::cerr << "Bij: " << Bij << std::endl;
+              for(m=0;m<3;m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k];
+              u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
+              u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
             }
+            for(k=0;k<6;k++) n->ddet[idxReps].rigid[k]=0;
+            for(k=0;k<6;k++) for(m=0;m<7;m++) n->ddet[idxReps].rigid[k]+=u7[m]*L[f][m][k];
+            n->ddet[idxReps].rigid=n->det * n->ddet[idxReps].rigid;
             */
-            /*
-                            // Compute ddet
-                            for(k=0;k<7;k++) u7[k]=0;
-                            for(k=0;k<3;k++)
-                            {
-                              for(m=0;m<3;m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k];
-                              u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
-                              u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
-                            }
-                            for(k=0;k<6;k++) n->ddet[idxReps].rigid[k]=0;
-                            for(k=0;k<6;k++) for(m=0;m<7;m++) n->ddet[idxReps].rigid[k]+=u7[m]*L[f][m][k];
-                            n->ddet[idxReps].rigid=n->det * n->ddet[idxReps].rigid;
-                            */
 
         }
-        /*
-        if( i == 69)
-        {
-          Mat33 A0, A1;
-          in[0].getOrientation().toMatrix(A0);
-          in[1].getOrientation().toMatrix(A1);
-
-          std::cerr << "weight0: " << m_weights[0][i] << std::endl;
-          std::cerr << "weight1: " << m_weights[1][i] << std::endl;
-          std::cerr << "dweight0: " << dw[0][i] << std::endl;
-          std::cerr << "dweight1: " << dw[1][i] << std::endl;
-          std::cerr << "initPos0: " << initPos[138] << std::endl;
-          std::cerr << "initPos1: " << initPos[139] << std::endl;
-          std::cerr << "Atilde0: " << this->Atilde[0][i] << std::endl;
-          std::cerr << "Atilde1: " << this->Atilde[1][i] << std::endl;
-          std::cerr << "A0: " << A0 << std::endl;
-          std::cerr << "A1: " << A1 << std::endl;
-          std::cerr << "J0: " << this->J[0][i] << std::endl;
-          std::cerr << "J1: " << this->J[1][i] << std::endl;
-          std::cerr << "strain: " << this->deformationTensors[i] << std::endl;
-          std::cerr << "B0: " << this->B[0][i] << std::endl;
-          std::cerr << "B1: " << this->B[1][i] << std::endl;
-        }
-        */
 #endif
     }
-    /*
-            VecInDeriv& vfrom = *this->fromModel->getV();
-            std::cerr << "positions: " << std::endl;
-            std::cerr << in << std::endl;
-            std::cerr << "vitesses: " << std::endl;
-            std::cerr << vfrom << std::endl;
-      */
-    /*
-      std::cerr << std::endl;
-      std::cerr << std::endl;
-      */
 }
 
 template <class BasicMapping>
@@ -869,45 +822,6 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::MatrixDeriv& out, con
             }
         }
     }
-
-    //const vector<int>& m_reps = repartition.getValue();
-    //const VVD& m_weights = weights.getValue();
-    //const unsigned int nbr = nbRefs.getValue();
-    //const unsigned int nbi = this->fromModel->getX()->size();
-    //Deriv omega;
-    //typename In::VecDeriv v;
-    //vector<bool> flags;
-    //int outSize = out.size();
-    //out.resize ( in.size() + outSize ); // we can accumulate in "out" constraints from several mappings
-    //for ( unsigned int i=0;i<in.size();i++ )
-    //{
-    //    v.clear();
-    //    v.resize ( nbi );
-    //    flags.clear();
-    //    flags.resize ( nbi );
-    //    OutConstraintIterator itOut;
-    //    std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-    //    for ( itOut=iter.first;itOut!=iter.second;itOut++ )
-    //    {
-    //        unsigned int indexIn = itOut->first;
-    //        Deriv data = ( Deriv ) itOut->second;
-    //        Deriv f = data;
-    //        for ( unsigned int m=0 ; m<nbr; m++ )
-    //        {
-    //            omega = cross ( rotatedPoints[nbr*indexIn+m],f );
-    //            flags[m_reps[nbr*indexIn+m] ] = true;
-    //            v[m_reps[nbr*indexIn+m] ].getVCenter() += f * m_weights[m_reps[nbr*indexIn+m]][i];
-    //            v[m_reps[nbr*indexIn+m] ].getVOrientation() += omega * m_weights[m_reps[nbr*indexIn+m]][i];
-    //        }
-    //    }
-    //    for ( unsigned int j=0 ; j<nbi; j++ )
-    //    {
-    //        //if (!(v[i] == typename In::Deriv()))
-    //        if ( flags[j] )
-    //            out[outSize+i].add ( j,v[j] );
-    //    }
-    //}
 }
 
 template <class BasicMapping>
@@ -966,15 +880,7 @@ void SkinningMapping<BasicMapping>::draw()
             sofa::helper::gl::GlText::draw ( (int)(distances[m_reps[i*nbRef+showFromIndex.getValue()%distances.size()]][i]*scale), xto[i], textScale );
     }
 
-    // Display weights for each points
-    if ( showCoefsValues.getValue())
-    {
-        glColor3f( 1.0, 1.0, 1.0);
-        for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_weights[m_reps[i*nbRef+showFromIndex.getValue()%m_weights.size()]][i]*scale), xto[i], textScale );
-    }
-
-    // Display gradient values for each points
+    // Display distance gradients values for each points
     if ( showGradientsValues.getValue())
     {
         char txt[100];
@@ -987,7 +893,15 @@ void SkinningMapping<BasicMapping>::draw()
         }
     }
 
-    // Display gradient for each points
+    // Display weights for each points
+    if ( showWeightsValues.getValue())
+    {
+        glColor3f( 1.0, 1.0, 1.0);
+        for ( unsigned int i=0; i<xto.size(); i++ )
+            sofa::helper::gl::GlText::draw ( (int)(m_weights[m_reps[i*nbRef+showFromIndex.getValue()%m_weights.size()]][i]*scale), xto[i], textScale );
+    }
+
+    // Display weights gradients for each points
     if ( showGradients.getValue())
     {
         glColor3f ( 0.0, 1.0, 0.3 );
@@ -1004,8 +918,8 @@ void SkinningMapping<BasicMapping>::draw()
     //*/
 
 #ifdef SOFA_DEV
-    // Coefs show
-    if ( showCoefs.getValue())
+    // Show weights
+    if ( showWeights.getValue())
     {
         // Compute min and max values.
         double minValue = 0xFFFF;
@@ -1052,6 +966,63 @@ void SkinningMapping<BasicMapping>::draw()
             glEnd();
         }
     }
+
+    // Display def tensor values for each points
+    if ( this->showDefTensorsValues.getValue())
+    {
+        char txt[100];
+        glColor3f( 0.5, 0.5, 0.5);
+        for ( unsigned int i=0; i<xto.size(); i++ )
+        {
+            const Vec6& e = this->deformationTensors[i];
+            sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
+            sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+        }
+    }
+
+    // Deformation tensor show
+    if ( this->showDefTensors.getValue() && this->computeAllMatrices.getValue() )
+    {
+        TriangleSetTopologyContainer *mesh;
+        this->getContext()->get( mesh);
+        if ( mesh)
+        {
+            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+            glDisable( GL_LIGHTING);
+            glBegin( GL_TRIANGLES);
+            const TriangleSetTopologyContainer::SeqTriangles& tri = mesh->getTriangles();
+            for ( unsigned int i = 0; i < mesh->getNumberOfTriangles(); i++)
+            {
+                for ( unsigned int j = 0; j < 3; j++)
+                {
+                    const Vec6& e = this->deformationTensors[tri[i][j]];
+                    double color = 0.5 + ( e[0] + e[1] + e[2])/this->showDefTensorScale.getValue();
+                    glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
+                    glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
+                }
+            }
+            glEnd();
+            glPopAttrib();
+        }
+        else // Show by points
+        {
+            glPointSize( 10);
+            glBegin( GL_POINTS);
+            for ( unsigned int i = 0; i < xto.size(); i++)
+            {
+                const Vec6& e = this->deformationTensors[i];
+                double mult=500;
+                double color = (e[0]+e[1]+e[2])/3.;
+                if(color<0) color=2*color/(color+1.);
+                color*=mult; color+=120; if(color<0) color=0; if(color>240) color=240;
+                sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
+                glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
+            }
+            glEnd();
+        }
+    }
+
+
 #endif
 }
 
@@ -1457,6 +1428,14 @@ void SkinningMapping<BasicMapping>::setInCoord( InCoord& coord, const Coord& pos
     coord.getOrientation() = rotation;
 }
 
+/* TODO !!
+template <class BasicMapping>
+template< int DataDim, class DataReal, template<int, class> class DataType>
+inline Coord& SkinningMapping<BasicMapping>::getLocalCoord( const DataType<DataDim, DataReal>& inCoord, const Coord& coord)
+{
+  return  inCoord.getOrientation().inverseRotate ( coord - inCoord.getCenter() );
+}
+*/
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::precomputeMatrices()
