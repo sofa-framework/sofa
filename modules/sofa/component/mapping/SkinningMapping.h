@@ -173,7 +173,7 @@ public:
     Data<double> showDefTensorScale;
     Data<unsigned int> showFromIndex;
     Data<bool> showDistancesValues;
-    Data<bool> showCoefs;
+    Data<bool> showWeights;
     Data<double> showGammaCorrection;
     Data<bool> showCoefsValues;
     Data<bool> showReps;
@@ -277,6 +277,8 @@ protected:
     void ComputeMw(Mat33& M, const Quat& q) const;
 
     inline void setInCoord( InCoord& coord, const Coord& position, const Quat& rotation) const;
+    /*          template< int DataDim, class DataReal, template<int, class> class DataType>
+              inline Coord& getLocalCoord( const DataType<DataDim, DataReal>& inCoord, const Coord& coord);*/
 #endif
 };
 
