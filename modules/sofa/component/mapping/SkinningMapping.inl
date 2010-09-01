@@ -134,8 +134,7 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
         {
             const int& idx=nbRefs.getValue() *i+m;
             const int& idxReps=m_reps[idx];
-            //initPos[idx] = getLocalCoord( xfrom[idxReps], xto[i]);
-            initPos[idx] = xfrom[idxReps].getOrientation().inverseRotate ( xto[i] - xfrom[idxReps].getCenter() );
+            getLocalCoord( initPos[idx], xfrom[idxReps], xto[i]);
         }
 }
 
@@ -671,6 +670,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 #endif
     }
 }
+
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
@@ -1423,20 +1423,36 @@ void SkinningMapping<BasicMapping>::changeSettingsDueToInsertion()
 
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::setInCoord( InCoord& coord, const Coord& position, const Quat& rotation) const
+void SkinningMapping<BasicMapping>::setInCoord( typename defaulttype::StdRigidTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const
 {
     coord.getCenter() = position;
     coord.getOrientation() = rotation;
 }
 
-/* TODO !!
+
 template <class BasicMapping>
-template< int DataDim, class DataReal, template<int, class> class DataType>
-inline Coord& SkinningMapping<BasicMapping>::getLocalCoord( const DataType<DataDim, DataReal>& inCoord, const Coord& coord)
+void SkinningMapping<BasicMapping>::setInCoord( typename defaulttype::StdAffineTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const
 {
-  return  inCoord.getOrientation().inverseRotate ( coord - inCoord.getCenter() );
+    coord.getCenter() = position;
+    rotation.toMatrix( coord.getAffine());
 }
-*/
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename defaulttype::StdRigidTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
+{
+    result = inCoord.getOrientation().inverseRotate ( coord - inCoord.getCenter() );
+}
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
+{
+    Mat33 affineInv;
+    affineInv.invert( inCoord.getAffine() );
+    result = affineInv * ( coord - inCoord.getCenter() );
+}
+
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::precomputeMatrices()
@@ -1591,12 +1607,6 @@ void SkinningMapping<BasicMapping>::ComputeMw(Mat33& M, const Quat& q) const
     M[1][0]=q[2]; M[1][1]=0; M[1][2]=-q[0];
     M[2][0]=-q[1]; M[2][1]=q[0]; M[2][2]=0;
 }
-
-template <>
-void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::computeInitPos();
-
-template <>
-void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::setInCoord( InCoord& coord, const Coord& position, const Quat& rotation) const;
 
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
