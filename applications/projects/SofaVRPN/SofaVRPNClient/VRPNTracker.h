@@ -56,6 +56,7 @@ private:
 
     Data<Real> p_dx, p_dy, p_dz;
     Data<Real> p_scale;
+    Data<bool> p_nullPoint;
 
 
     VRPNTrackerData trackerData;
