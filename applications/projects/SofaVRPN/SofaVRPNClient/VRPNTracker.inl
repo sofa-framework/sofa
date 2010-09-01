@@ -31,6 +31,7 @@ VRPNTracker<DataTypes>::VRPNTracker()
     , p_dy(initData(&p_dy, (Real) 0.0, "dy", "Translation along Y axis"))
     , p_dz(initData(&p_dz, (Real) 0.0, "dz", "Translation along Z axis"))
     , p_scale(initData(&p_scale, (Real) 1.0, "scale", "Scale (3 axis)"))
+    , p_nullPoint(initData(&p_nullPoint, true, "nullPoint", "If not tracked, return a (0, 0, 0) point"))
 {
     // TODO Auto-generated constructor stub
     trackerData.data.resize(1);
@@ -75,16 +76,27 @@ void VRPNTracker<DataTypes>::update()
             points.clear();
             //if (points.size() < trackerData.data.size())
             points.resize(copyTrackerData.data.size());
+            Coord pos;
 
-            for (unsigned int i=0 ; i<copyTrackerData.data.size() ; i++)
+            if (copyTrackerData.data.size() < 1)
             {
-                Coord pos;
-                pos[0] = (copyTrackerData.data[i].pos[0])*p_scale.getValue() + p_dx.getValue();
-                pos[1] = (copyTrackerData.data[i].pos[1])*p_scale.getValue() + p_dy.getValue();
-                pos[2] = (copyTrackerData.data[i].pos[2])*p_scale.getValue() + p_dz.getValue();
+                pos[0] = 0.0;
+                pos[1] = 0.0;
+                pos[2] = 0.0;
+                points.push_back(pos);
+            }
+            else
+            {
+                for (unsigned int i=0 ; i<copyTrackerData.data.size() ; i++)
+                {
 
-                Coord p(pos);
-                points[i] = p;
+                    pos[0] = (copyTrackerData.data[i].pos[0])*p_scale.getValue() + p_dx.getValue();
+                    pos[1] = (copyTrackerData.data[i].pos[1])*p_scale.getValue() + p_dy.getValue();
+                    pos[2] = (copyTrackerData.data[i].pos[2])*p_scale.getValue() + p_dz.getValue();
+
+                    Coord p(pos);
+                    points[i] = p;
+                }
             }
         }
     }
