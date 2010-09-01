@@ -130,36 +130,6 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3
 
 
 template <>
-void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::computeInitPos ( )
-{
-    const VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
-    const VecInCoord& xfrom = *this->fromModel->getX0();
-
-    const vector<int>& m_reps = repartition.getValue();
-
-    initPos.resize ( xto.size() * nbRefs.getValue() );
-    for ( unsigned int i = 0; i < xto.size(); i++ )
-        for ( unsigned int m = 0; m < nbRefs.getValue(); m++ )
-        {
-            const int& idx=nbRefs.getValue() *i+m;
-            const int& idxReps=m_reps[idx];
-
-            Mat33 affineInv;
-            affineInv.invert( xfrom[idxReps].getAffine() );
-            initPos[idx] = affineInv * ( xto[i] - xfrom[idxReps].getCenter() );
-        }
-}
-
-
-template <>
-void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::setInCoord( InCoord& coord, const Coord& position, const Quat& rotation) const
-{
-    coord.getCenter() = position;
-    rotation.toMatrix( coord.getAffine());
-}
-
-
-template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::precomputeMatrices()
 {
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
