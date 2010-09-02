@@ -57,7 +57,8 @@ extern "C"
 template<class real>
 __global__ void matrix_vector_product_kernel(int dim,const real * M,int mPitch,const real * r, real * z,int offset)
 {
-    __shared__ real temp[MAX_THREADS];
+    __shared__ real stemp[MAX_THREADS];
+    volatile real * temp = stemp;
 
     int tx = threadIdx.x;
     int by = blockIdx.y;
