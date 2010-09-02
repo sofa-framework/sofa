@@ -817,29 +817,30 @@ __global__ void MechanicalObjectCudaVec_vDot_kernel(unsigned int n, float* res, 
 #endif
     if (tid < 32)
     {
+        volatile float * smem = fdata;
 #if blockSize >= 64
         //if (blockSize >= 64)
-        fdata[tid] += fdata[tid + 32];
+        smem[tid] += smem[tid + 32];
 #endif
 #if blockSize >= 32
         //if (blockSize >= 32)
-        fdata[tid] += fdata[tid + 16];
+        smem[tid] += smem[tid + 16];
 #endif
 #if blockSize >= 16
         //if (blockSize >= 16)
-        fdata[tid] += fdata[tid + 8];
+        smem[tid] += smem[tid + 8];
 #endif
 #if blockSize >= 8
         //if (blockSize >= 8)
-        fdata[tid] += fdata[tid + 4];
+        smem[tid] += smem[tid + 4];
 #endif
 #if blockSize >= 4
         //if (blockSize >= 4)
-        fdata[tid] += fdata[tid + 2];
+        smem[tid] += smem[tid + 2];
 #endif
 #if blockSize >= 2
         //if (blockSize >= 2)
-        fdata[tid] += fdata[tid + 1];
+        smem[tid] += smem[tid + 1];
 #endif
     }
     if (tid == 0) res[blockIdx.x] = fdata[0];
@@ -876,29 +877,30 @@ __global__ void MechanicalObjectCudaVec_vDot_kernel(unsigned int n, double* res,
 #endif
     if (tid < 32)
     {
+        volatile double * smem = ddata;
 #if blockSize >= 64
         //if (blockSize >= 64)
-        ddata[tid] += ddata[tid + 32];
+        smem[tid] += smem[tid + 32];
 #endif
 #if blockSize >= 32
         //if (blockSize >= 32)
-        ddata[tid] += ddata[tid + 16];
+        smem[tid] += smem[tid + 16];
 #endif
 #if blockSize >= 16
         //if (blockSize >= 16)
-        ddata[tid] += ddata[tid + 8];
+        smem[tid] += smem[tid + 8];
 #endif
 #if blockSize >= 8
         //if (blockSize >= 8)
-        ddata[tid] += ddata[tid + 4];
+        smem[tid] += smem[tid + 4];
 #endif
 #if blockSize >= 4
         //if (blockSize >= 4)
-        ddata[tid] += ddata[tid + 2];
+        smem[tid] += smem[tid + 2];
 #endif
 #if blockSize >= 2
         //if (blockSize >= 2)
-        ddata[tid] += ddata[tid + 1];
+        smem[tid] += smem[tid + 1];
 #endif
     }
     if (tid == 0) res[blockIdx.x] = ddata[0];
@@ -936,29 +938,30 @@ __global__ void MechanicalObjectCudaVec_vSum_kernel(int n, real* res, const real
 #endif
     if (tid < 32)
     {
+        volatile real * smem = sdata;
 #if blockSize >= 64
         //if (blockSize >= 64)
-        sdata[tid] += sdata[tid + 32];
+        smem[tid] += smem[tid + 32];
 #endif
 #if blockSize >= 32
         //if (blockSize >= 32)
-        sdata[tid] += sdata[tid + 16];
+        smem[tid] += smem[tid + 16];
 #endif
 #if blockSize >= 16
         //if (blockSize >= 16)
-        sdata[tid] += sdata[tid + 8];
+        smem[tid] += smem[tid + 8];
 #endif
 #if blockSize >= 8
         //if (blockSize >= 8)
-        sdata[tid] += sdata[tid + 4];
+        smem[tid] += smem[tid + 4];
 #endif
 #if blockSize >= 4
         //if (blockSize >= 4)
-        sdata[tid] += sdata[tid + 2];
+        smem[tid] += smem[tid + 2];
 #endif
 #if blockSize >= 2
         //if (blockSize >= 2)
-        sdata[tid] += sdata[tid + 1];
+        smem[tid] += smem[tid + 1];
 #endif
     }
     if (tid == 0) res[blockIdx.x] = sdata[0];
@@ -1003,29 +1006,30 @@ __global__ void MultiMechanicalObjectCudaVec_vDot_kernel(unsigned int nops, floa
 #endif
     if (tid < 32)
     {
+        volatile float * smem = fdata;
 #if blockSize >= 64
         //if (blockSize >= 64)
-        fdata[tid] += fdata[tid + 32];
+        smem[tid] += smem[tid + 32];
 #endif
 #if blockSize >= 32
         //if (blockSize >= 32)
-        fdata[tid] += fdata[tid + 16];
+        smem[tid] += smem[tid + 16];
 #endif
 #if blockSize >= 16
         //if (blockSize >= 16)
-        fdata[tid] += fdata[tid + 8];
+        smem[tid] += smem[tid + 8];
 #endif
 #if blockSize >= 8
         //if (blockSize >= 8)
-        fdata[tid] += fdata[tid + 4];
+        smem[tid] += smem[tid + 4];
 #endif
 #if blockSize >= 4
         //if (blockSize >= 4)
-        fdata[tid] += fdata[tid + 2];
+        smem[tid] += smem[tid + 2];
 #endif
 #if blockSize >= 2
         //if (blockSize >= 2)
-        fdata[tid] += fdata[tid + 1];
+        smem[tid] += smem[tid + 1];
 #endif
     }
     if (tid == 0) allres[umul24(blockIdx.y,gridDim.x) + blockIdx.x] = fdata[0];

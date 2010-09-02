@@ -468,19 +468,44 @@ __global__ void SparseGridMapperCuda3f_applyJT_kernel(unsigned int size, const u
     if (tx<32) readValue[tx] += readValue[tx+32];
 #endif
 #if SPARSE_GRID_MAX_CUBE>16
-    if (tx<16) readValue[tx] += readValue[tx+16];
+    if (tx<16)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+16)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+16)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+16)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>8
-    if (tx<8) readValue[tx] += readValue[tx+8];
+    if (tx<8)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+8)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+8)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+8)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>4
-    if (tx<4) readValue[tx] += readValue[tx+4];
+    if (tx<4)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+4)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+4)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+4)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>2
-    if (tx<2) readValue[tx] += readValue[tx+2];
+    if (tx<2)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+2)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+2)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+2)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>1
-    if (tx<1) readValue[tx] += readValue[tx+1];
+    if (tx<1)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+1)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+1)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+1)[2];
+    }
 #endif
 
     if (tx<3)
@@ -528,19 +553,44 @@ __global__ void SparseGridMapperCuda3f1_applyJT_kernel(unsigned int size, const 
     if (tx<32) readValue[tx] += readValue[tx+32];
 #endif
 #if SPARSE_GRID_MAX_CUBE>16
-    if (tx<16) readValue[tx] += readValue[tx+16];
+    if (tx<16)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+16)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+16)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+16)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>8
-    if (tx<8) readValue[tx] += readValue[tx+8];
+    if (tx<8)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+8)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+8)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+8)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>4
-    if (tx<4) readValue[tx] += readValue[tx+4];
+    if (tx<4)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+4)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+4)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+4)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>2
-    if (tx<2) readValue[tx] += readValue[tx+2];
+    if (tx<2)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+2)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+2)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+2)[2];
+    }
 #endif
 #if SPARSE_GRID_MAX_CUBE>1
-    if (tx<1) readValue[tx] += readValue[tx+1];
+    if (tx<1)
+    {
+        ((volatile float *) readValue+tx)[0] += ((volatile float *) readValue+tx+1)[0];
+        ((volatile float *) readValue+tx)[1] += ((volatile float *) readValue+tx+1)[1];
+        ((volatile float *) readValue+tx)[2] += ((volatile float *) readValue+tx+1)[2];
+    }
 #endif
 
 
