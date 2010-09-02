@@ -1054,7 +1054,7 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     VecInCoord& xfrom0 = *this->fromModel->getX0();
     VecInCoord& xfrom = *this->fromModel->getX();
     unsigned int indexFrom = xfrom.size();
-    MechanicalState<In>* mstateFrom = dynamic_cast<MechanicalState<In>* >( this->fromModel);
+    MechanicalState<In::DataTypes>* mstateFrom = dynamic_cast<MechanicalState<In::DataTypes>* >( this->fromModel);
     if ( !mstateFrom)
     {
         serr << "Error: try to insert a new frame on fromModel, which is not a mechanical state !" << sendl;
