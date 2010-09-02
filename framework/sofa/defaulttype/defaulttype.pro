@@ -47,10 +47,7 @@ SOURCES += \
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
-HEADERS += AffineTypes.h \
-           FrameMass.h \
-           QuadraticTypes.h \
-	       DataConfigFE.h 
+HEADERS += DataConfigFE.h 
 
 SOURCES += 
 

@@ -24,7 +24,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/ForceField.inl>
+#ifndef SOFA_CORE_BEHAVIOR_FRAMEFORCEFIELD_H
+#define SOFA_CORE_BEHAVIOR_FRAMEFORCEFIELD_H
+
+#include <sofa/frame/AffineTypes.h>
 
 namespace sofa
 {
@@ -37,22 +40,15 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class SOFA_CORE_API ForceField<Vec3dTypes>;
-template class SOFA_CORE_API ForceField<Vec2dTypes>;
-template class SOFA_CORE_API ForceField<Vec1dTypes>;
-template class SOFA_CORE_API ForceField<Vec6dTypes>;
-template class SOFA_CORE_API ForceField<Rigid3dTypes>;
-template class SOFA_CORE_API ForceField<Rigid2dTypes>;
-
-template class SOFA_CORE_API ForceField<Vec3fTypes>;
-template class SOFA_CORE_API ForceField<Vec2fTypes>;
-template class SOFA_CORE_API ForceField<Vec1fTypes>;
-template class SOFA_CORE_API ForceField<Vec6fTypes>;
-template class SOFA_CORE_API ForceField<Rigid3fTypes>;
-template class SOFA_CORE_API ForceField<Rigid2fTypes>;
+#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+extern template class SOFA_CORE_API ForceField<defaulttype::Affine3dTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Affine3fTypes>;
+#endif
 
 } // namespace behavior
 
 } // namespace core
 
 } // namespace sofa
+
+#endif

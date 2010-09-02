@@ -29,6 +29,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
+
+
 namespace sofa
 {
 
