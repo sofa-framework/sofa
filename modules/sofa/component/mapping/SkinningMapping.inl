@@ -1054,7 +1054,7 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     VecInCoord& xfrom0 = *this->fromModel->getX0();
     VecInCoord& xfrom = *this->fromModel->getX();
     unsigned int indexFrom = xfrom.size();
-    MechanicalState<In::DataTypes>* mstateFrom = dynamic_cast<MechanicalState<In::DataTypes>* >( this->fromModel);
+    MechanicalState<typename In::DataTypes>* mstateFrom = dynamic_cast<MechanicalState<typename In::DataTypes>* >( this->fromModel);
     if ( !mstateFrom)
     {
         serr << "Error: try to insert a new frame on fromModel, which is not a mechanical state !" << sendl;
@@ -1436,6 +1436,7 @@ void SkinningMapping<BasicMapping>::setInCoord( typename defaulttype::StdAffineT
     coord.getCenter() = position;
     rotation.toMatrix( coord.getAffine());
 }
+#endif
 
 
 template <class BasicMapping>
@@ -1443,9 +1444,9 @@ void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename
 {
     result = inCoord.getOrientation().inverseRotate ( coord - inCoord.getCenter() );
 }
-#endif
 
 
+#ifdef SOFA_DEV
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
 {
@@ -1455,7 +1456,6 @@ void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename
 }
 
 
-#ifdef SOFA_DEV
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::precomputeMatrices()
 {
