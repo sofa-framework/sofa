@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_CPP
-#include <sofa/component/mass/FrameDiagonalMass.inl>
+#define SOFA_FRAME_FRAMEDIAGONALMASS_CPP
+#include <sofa/frame/FrameDiagonalMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/Axis.h>

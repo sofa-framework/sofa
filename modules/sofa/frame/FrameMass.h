@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MASS_FRAMEMASS_H
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/AffineTypes.h>
+#include <sofa/frame/AffineTypes.h>
 #include <sofa/simulation/common/Visitor.h>
 
 namespace sofa

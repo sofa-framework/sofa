@@ -25,8 +25,8 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_H
-#define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_H
+#ifndef SOFA_FRAME_FRAMESPRINGFORCEFIELD2_H
+#define SOFA_FRAME_FRAMESPRINGFORCEFIELD2_H
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>

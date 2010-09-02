@@ -37,9 +37,6 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#ifdef SOFA_DEV
-#include <sofa/defaulttype/AffineTypes.h>
-#endif
 
 #include <vector>
 #include <fstream>
@@ -442,7 +439,6 @@ extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype:
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid3dTypes>;
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid2dTypes>;
 #ifdef SOFA_DEV
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Affine3dTypes>;
 #endif
 #endif
 #ifndef SOFA_DOUBLE
@@ -452,9 +448,6 @@ extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype:
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec6fTypes>;
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid3fTypes>;
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid2fTypes>;
-#ifdef SOFA_DEV
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Affine3fTypes>;
-#endif
 #endif
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 #endif

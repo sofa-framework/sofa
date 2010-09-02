@@ -25,10 +25,10 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_INL
-#define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_INL
+#ifndef SOFA_FRAME_FRAMESPRINGFORCEFIELD2_INL
+#define SOFA_FRAME_FRAMESPRINGFORCEFIELD2_INL
 
-#include <sofa/component/forcefield/FrameSpringForceField2.h>
+#include <sofa/frame/FrameSpringForceField2.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>

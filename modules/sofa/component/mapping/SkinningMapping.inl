@@ -552,9 +552,9 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
     for ( unsigned int i=0 ; i<out.size(); i++ )
     {
         out[i] = Coord();
-        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        for ( unsigned int j = 0; j < nbRefs.getValue(); ++j)
         {
-            const int& idx=nbRefs.getValue() *i+m;
+            const int& idx=nbRefs.getValue() *i+j;
             const int& idxReps=m_reps[idx];
 
             // Save rotated points for applyJ/JT
@@ -1443,6 +1443,7 @@ void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename
 {
     result = inCoord.getOrientation().inverseRotate ( coord - inCoord.getCenter() );
 }
+#endif
 
 
 template <class BasicMapping>
@@ -1454,6 +1455,7 @@ void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename
 }
 
 
+#ifdef SOFA_DEV
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::precomputeMatrices()
 {

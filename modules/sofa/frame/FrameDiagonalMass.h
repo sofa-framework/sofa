@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_H
-#define SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_H
+#ifndef SOFA_FRAME_FRAMEDIAGONALMASS_H
+#define SOFA_FRAME_FRAMEDIAGONALMASS_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -37,7 +37,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/FrameMass.h>
+#include <sofa/frame/FrameMass.h>
 #include <sofa/component/mapping/DualQuatStorage.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
