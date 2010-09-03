@@ -394,11 +394,14 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
     RigidTypes::Vec3 gravityCenter;
     for ( unsigned int i=0; i<x.size(); i++ )
     {
-        const Quat& orient = x[i].getOrientation();
-        const RigidTypes::Vec3& center = x[i].getCenter();
+        glPushMatrix();
+        float glTransform[16];
+        x[i].writeOpenGlMatrix( glTransform);
+        glMultMatrixf( glTransform);
+        simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3d(1,1,1)*showAxisSize.getValue() );
+        glPopMatrix();
 
-        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, Vec3d(1,1,1)*showAxisSize.getValue() );
-
+        const Vec3& center = x[i].getCenter();
         gravityCenter += ( center * masses[i].mass );
         totalMass += masses[i].mass;
     }

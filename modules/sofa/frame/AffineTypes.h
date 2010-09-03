@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_AFFINETYPES_H
-#define SOFA_DEFAULTTYPE_AFFINETYPES_H
+#ifndef SOFA_FRAME_AFFINETYPES_H
+#define SOFA_FRAME_AFFINETYPES_H
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -390,16 +390,6 @@ public:
         AffineCoord c;
         return c;
     }
-
-    Vec3 rotateAndDeform ( const Vec3& v ) const
-    {
-        return affine * v;
-    }
-
-    Vec3 inverseRotateAndDeform ( const Vec3& v ) const
-    {
-        return affine.inverse() * v;
-    }
     /*
               /// Apply a transformation with respect to itself
               void multRight ( const AffineCoord<3, real>& c )
@@ -612,25 +602,25 @@ public:
         invInertiaMassMatrix *= fact;
     }
 };
+/*
+    template<int N, typename real>
+    inline AffineDeriv<N, real> operator* ( const AffineDeriv<N, real>& d, const AffineMass<N, real>& m )
+    {
+      AffineDeriv<N, real> res;
+      res.getVCenter() = d.getVCenter() * m.mass;
+      res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
+      return res;
+    }
 
-template<int N, typename real>
-inline AffineDeriv<N, real> operator* ( const AffineDeriv<N, real>& d, const AffineMass<N, real>& m )
-{
-    AffineDeriv<N, real> res;
-    res.getVCenter() = d.getVCenter() * m.mass;
-    res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
-    return res;
-}
-
-template<int N, typename real>
-inline AffineDeriv<N, real> operator/ ( const AffineDeriv<N, real>& d, const AffineMass<N, real>& m )
-{
-    AffineDeriv<N, real> res;
-    res.getVCenter() = d.getVCenter() / m.mass;
-    res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
-    return res;
-}
-
+    template<int N, typename real>
+    inline AffineDeriv<N, real> operator/ ( const AffineDeriv<N, real>& d, const AffineMass<N, real>& m )
+    {
+      AffineDeriv<N, real> res;
+      res.getVCenter() = d.getVCenter() / m.mass;
+      res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
+      return res;
+    }
+*/
 
 
 
