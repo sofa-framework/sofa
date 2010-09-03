@@ -47,9 +47,7 @@ SOURCES += \
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
-HEADERS += AffineTypes.h \
-           FrameMass.h \
-           QuadraticTypes.h \
+HEADERS += \
 	       ElementDataTypes.h \
 	       QuadratureDataTypes.h
 
