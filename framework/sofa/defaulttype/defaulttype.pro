@@ -48,8 +48,9 @@ SOURCES += \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
-	       ElementDataTypes.h \
-	       QuadratureDataTypes.h
+	       ElementDataTypes.h    \
+	       FENodesDataTypes.h     \
+	       QuadratureDataTypes.h 
 
 SOURCES += 
 
