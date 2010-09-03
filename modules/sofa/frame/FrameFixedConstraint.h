@@ -24,10 +24,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FRAMEFIXEDCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FRAMEFIXEDCONSTRAINT_H
+#ifndef SOFA_FRAME_FRAMEFIXEDCONSTRAINT_H
+#define SOFA_FRAME_FRAMEFIXEDCONSTRAINT_H
 
-#include <sofa/defaulttype/AffineTypes.h>
+#include <sofa/frame/AffineTypes.h>
 
 namespace sofa
 {
