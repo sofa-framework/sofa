@@ -28,6 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_FRAMEFORCEFIELD_H
 
 #include <sofa/frame/AffineTypes.h>
+#include <sofa/frame/QuadraticTypes.h>
 
 namespace sofa
 {
@@ -43,6 +44,8 @@ using namespace sofa::defaulttype;
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)
 extern template class SOFA_CORE_API ForceField<defaulttype::Affine3dTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Affine3fTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Quadratic3dTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Quadratic3fTypes>;
 #endif
 
 } // namespace behavior

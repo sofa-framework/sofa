@@ -75,6 +75,7 @@ public:
     typedef vector<Mat36> VMat36;
     typedef vector<VMat36> VVMat36;
     typedef defaulttype::Mat<3,8,Real> Mat38;
+    typedef defaulttype::Mat<3,9,Real> Mat39;
     typedef defaulttype::Mat<3,InDerivDim,Real> Mat3xIn;
     typedef vector<Mat3xIn> VMat3xIn;
     typedef vector<VMat3xIn> VVMat3xIn;

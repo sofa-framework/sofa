@@ -43,6 +43,11 @@ template class SOFA_CORE_API ForceField<Affine3dTypes>;
 
 template class SOFA_CORE_API ForceField<Affine3fTypes>;
 
+template class SOFA_CORE_API ForceField<Quadratic3dTypes>;
+
+template class SOFA_CORE_API ForceField<Quadratic3fTypes>;
+
+
 } // namespace behavior
 
 } // namespace core

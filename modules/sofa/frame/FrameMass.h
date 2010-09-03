@@ -27,6 +27,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/frame/AffineTypes.h>
+#include <sofa/frame/QuadraticTypes.h>
 #include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
@@ -52,6 +53,7 @@ public:
     typedef real Real;
     typedef typename StdAffineTypes<3,Real>::Deriv AffineDeriv;
     typedef typename StdRigidTypes<3,Real>::Deriv RigidDeriv;
+    typedef typename StdQuadraticTypes<3,Real>::Deriv QuadraticDeriv;
     typedef Mat<Nc,Nc,Real> MatMass;
     typedef Vec<Nc,Real> VecDOFs;
     typedef vector<double> VD;
@@ -227,6 +229,58 @@ public:
         return a;
     }
 
+    /// compute ma = M*a
+    QuadraticDeriv operator * ( const QuadraticDeriv& a ) const
+    {
+        const unsigned int& dim = (Nc-3)/3;
+        VecDOFs va, vma;
+        for (unsigned int i = 0; i < 3; ++i)
+            for (unsigned int j = 0; j < dim; ++j)
+                va[dim*i+j] = a.getVQuadratic() [i][j];
+        va[3*dim  ] = a.getVCenter() [0];
+        va[3*dim+1] = a.getVCenter() [1];
+        va[3*dim+2] = a.getVCenter() [2];
+
+        vma = inertiaMassMatrix * va;
+        //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
+
+        QuadraticDeriv ma;
+        for (unsigned int i = 0; i < 3; ++i)
+            for (unsigned int j = 0; j < dim; ++j)
+                ma.getVQuadratic()[i][j] = vma[dim*i+j];
+        ma.getVCenter()[0] = vma[3*dim];
+        ma.getVCenter()[1] = vma[3*dim+1];
+        ma.getVCenter()[2] = vma[3*dim+2];
+
+        return ma;
+    }
+
+    /// compute a = f/m
+    QuadraticDeriv operator / ( const QuadraticDeriv& f ) const
+    {
+        const unsigned int& dim = (Nc-3)/3;
+        VecDOFs va, vma;
+        for (unsigned int i = 0; i < 3; ++i)
+            for (unsigned int j = 0; j < dim; ++j)
+                vma[dim*i+j] = f.getVQuadratic() [i][j];
+        vma[3*dim  ] = f.getVCenter() [0];
+        vma[3*dim+1] = f.getVCenter() [1];
+        vma[3*dim+2] = f.getVCenter() [2];
+
+        va = invInertiaMassMatrix * vma;
+        //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
+
+        QuadraticDeriv a;
+        for (unsigned int i = 0; i < 3; ++i)
+            for (unsigned int j = 0; j < dim; ++j)
+                a.getVQuadratic()[i][j] = va[dim*i+j];
+        a.getVCenter()[0] = va[3*dim  ];
+        a.getVCenter()[1] = va[3*dim+1];
+        a.getVCenter()[2] = va[3*dim+2];
+
+        return a;
+    }
+
     void operator *= ( Real fact )
     {
         mass *= fact;
@@ -282,22 +336,40 @@ inline typename StdAffineTypes<Nl, real>::Deriv operator/ ( const typename StdAf
     return m / d;
 }
 
+template<int Nl, int Nc, typename real>
+inline typename StdQuadraticTypes<Nl, real>::Deriv operator* ( const typename StdQuadraticTypes<Nl,real>::Deriv& d, const FrameMass<Nl, Nc, real>& m )
+{
+    return m * d;
+}
+
+template<int Nl, int Nc, typename real>
+inline typename StdQuadraticTypes<Nl, real>::Deriv operator/ ( const typename StdQuadraticTypes<Nl, real>::Deriv& d, const FrameMass<Nl, Nc, real>& m )
+{
+    return m / d;
+}
+
 typedef FrameMass<3,6,double> Frame3x6dMass;
 typedef FrameMass<3,6,float> Frame3x6fMass;
 typedef FrameMass<3,12,double> Frame3x12dMass;
 typedef FrameMass<3,12,float> Frame3x12fMass;
+typedef FrameMass<3,30,double> Frame3x30dMass;
+typedef FrameMass<3,30,float> Frame3x30fMass;
 
 template<> inline const char* defaulttype::Frame3x6dMass::Name() { return "Frame3x6dMass"; }
 template<> inline const char* defaulttype::Frame3x6fMass::Name() { return "Frame3x6fMass"; }
 template<> inline const char* defaulttype::Frame3x12dMass::Name() { return "Frame3x12dMass"; }
 template<> inline const char* defaulttype::Frame3x12fMass::Name() { return "Frame3x12fMass"; }
+template<> inline const char* defaulttype::Frame3x30dMass::Name() { return "Frame3x30dMass"; }
+template<> inline const char* defaulttype::Frame3x30fMass::Name() { return "Frame3x30fMass"; }
 
 #ifdef SOFA_FLOAT
 typedef Frame3x6fMass Frame3x6Mass;
 typedef Frame3x12fMass Frame3x12Mass;
+typedef Frame3x30fMass Frame3x130Mass;
 #else
 typedef Frame3x6dMass Frame3x6Mass;
 typedef Frame3x12dMass Frame3x12Mass;
+typedef Frame3x30dMass Frame3x30Mass;
 #endif
 
 // The next line hides all those methods from the doxygen documentation
@@ -330,6 +402,21 @@ template<> struct DataTypeName< defaulttype::Frame3x12dMass >
     static const char* name()
     {
         return "Frame3x12dMass";
+    }
+};
+
+template<> struct DataTypeName< defaulttype::Frame3x30fMass >
+{
+    static const char* name()
+    {
+        return "Frame3x30fMass";
+    }
+};
+template<> struct DataTypeName< defaulttype::Frame3x30dMass >
+{
+    static const char* name()
+    {
+        return "Frame3x30dMass";
     }
 };
 

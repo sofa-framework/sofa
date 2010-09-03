@@ -46,10 +46,12 @@ int FrameDiagonalMassClass = core::RegisterObject("Define a specific mass for ea
 #ifndef SOFA_FLOAT
         .add< FrameDiagonalMass<Rigid3dTypes,Frame3x6dMass> >()
         .add< FrameDiagonalMass<Affine3dTypes,Frame3x12dMass> >()
+        .add< FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass> >()
         .add< FrameDiagonalMass<Affine3fTypes,Frame3x12fMass> >()
+        .add< FrameDiagonalMass<Quadratic3fTypes,Frame3x30fMass> >()
 #endif
         ;
 
@@ -98,61 +100,6 @@ void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::addForce ( VecDeriv& f, c
     }
 }
 
-template <>
-void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::draw()
-{
-    const MassVector &masses= f_mass.getValue();
-    if ( !this->getContext()->getShowBehaviorModels() ) return;
-    VecCoord& x = *this->mstate->getX();
-    if( x.size() != masses.size()) return;
-    Real totalMass=0;
-    RigidTypes::Vec3 gravityCenter;
-    for ( unsigned int i=0; i<x.size(); i++ )
-    {
-        // Deform the frame
-        glPushMatrix();
-        const RigidTypes::Vec3& center = x[i].getCenter();
-        const Mat33& affine = x[i].getAffine();
-        double glTransform[16];
-        glTransform[0] = affine[0][0];
-        glTransform[1] = affine[1][0];
-        glTransform[2] = affine[2][0];
-        glTransform[3] = 0;
-        glTransform[4] = affine[0][1];
-        glTransform[5] = affine[1][1];
-        glTransform[6] = affine[2][1];
-        glTransform[7] = 0;
-        glTransform[8] = affine[0][2];
-        glTransform[9] = affine[1][2];
-        glTransform[10] = affine[2][2];
-        glTransform[11] = 0;
-        glTransform[12] = center[0];
-        glTransform[13] = center[1];
-        glTransform[14] = center[2];
-        glTransform[15] = 1;
-        glMultMatrixd( glTransform);
-        simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3d(1,1,1)*showAxisSize.getValue() );
-        glPopMatrix();
-
-        gravityCenter += ( center * masses[i].mass );
-        totalMass += masses[i].mass;
-    }
-
-    if ( showCenterOfGravity.getValue() )
-    {
-        glColor3f ( 1,1,0 );
-        glBegin ( GL_LINES );
-        gravityCenter /= totalMass;
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-        glEnd();
-    }
-}
-
 template<>
 void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
 {
@@ -193,61 +140,6 @@ void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::addForce ( VecDeriv& f, c
     }
 }
 
-template <>
-void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::draw()
-{
-    const MassVector &masses= f_mass.getValue();
-    if ( !this->getContext()->getShowBehaviorModels() ) return;
-    VecCoord& x = *this->mstate->getX();
-    if( x.size() != masses.size()) return;
-    Real totalMass=0;
-    RigidTypes::Vec3 gravityCenter;
-    for ( unsigned int i=0; i<x.size(); i++ )
-    {
-        // Deform the frame
-        glPushMatrix();
-        const RigidTypes::Vec3& center = x[i].getCenter();
-        const Mat33& affine = x[i].getAffine();
-        double glTransform[16];
-        glTransform[0] = affine[0][0];
-        glTransform[1] = affine[1][0];
-        glTransform[2] = affine[2][0];
-        glTransform[3] = 0;
-        glTransform[4] = affine[0][1];
-        glTransform[5] = affine[1][1];
-        glTransform[6] = affine[2][1];
-        glTransform[7] = 0;
-        glTransform[8] = affine[0][2];
-        glTransform[9] = affine[1][2];
-        glTransform[10] = affine[2][2];
-        glTransform[11] = 0;
-        glTransform[12] = center[0];
-        glTransform[13] = center[1];
-        glTransform[14] = center[2];
-        glTransform[15] = 1;
-        glMultMatrixd( glTransform);
-        simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3d(1,1,1)*showAxisSize.getValue() );
-        glPopMatrix();
-
-        gravityCenter += ( center * masses[i].mass );
-        totalMass += masses[i].mass;
-    }
-
-    if ( showCenterOfGravity.getValue() )
-    {
-        glColor3f ( 1,1,0 );
-        glBegin ( GL_LINES );
-        gravityCenter /= totalMass;
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-        glEnd();
-    }
-}
-
 template<>
 void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
 {
@@ -259,6 +151,97 @@ template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Affine3dTypes,Frame3x12
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
+#endif
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                    Quadratic3dTypes, Frame3x30dMass                       //
+///////////////////////////////////////////////////////////////////////////////
+
+template <>
+void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::addForce ( VecDeriv& f, const VecCoord& , const VecDeriv& v )
+{
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if ( this->m_separateGravity.getValue() )
+        return;
+
+    const MassVector &masses= f_mass.getValue();
+
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set ( theGravity, g[0], g[1], g[2] );
+
+    // velocity-based stuff
+    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+
+    // project back to local frame
+    vframe = this->getContext()->getPositionInWorld() / vframe;
+    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
+
+    // add weight and inertia force
+    const double& invDt = 1./this->getContext()->getDt();
+    for ( unsigned int i=0; i<masses.size(); i++ )
+    {
+        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
+        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
+        //std::cerr << "F_mass["<<i<<"]: " << f[i] << std::endl;
+    }
+}
+
+template<>
+void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//                    Quadratic3fTypes, Frame3x30fMass                       //
+///////////////////////////////////////////////////////////////////////////////
+
+template <>
+void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::addForce ( VecDeriv& f, const VecCoord& , const VecDeriv& v )
+{
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if ( this->m_separateGravity.getValue() )
+        return;
+
+    const MassVector &masses= f_mass.getValue();
+
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set ( theGravity, g[0], g[1], g[2] );
+
+    // velocity-based stuff
+    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+
+    // project back to local frame
+    vframe = this->getContext()->getPositionInWorld() / vframe;
+    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
+
+    // add weight and inertia force
+    const double& invDt = 1./this->getContext()->getDt();
+    for ( unsigned int i=0; i<masses.size(); i++ )
+    {
+        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
+        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
+    }
+}
+
+template<>
+void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
+{
+}
+
+
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Quadratic3fTypes,Frame3x30fMass>;
 #endif
 
 
