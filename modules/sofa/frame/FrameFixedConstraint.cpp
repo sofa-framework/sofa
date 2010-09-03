@@ -24,11 +24,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FRAMEFIXEDCONSTRAINT_CPP
+#define SOFA_FRAME_FRAMEFIXEDCONSTRAINT_CPP
 
 #include <sofa/frame/AffineTypes.h>
+#include <sofa/frame/QuadraticTypes.h>
 #include <sofa/frame/FrameFixedConstraint.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -41,22 +43,28 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-/*
+
+int FixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT
-.add< FixedConstraint<Affine3dTypes> >()
+        .add< FixedConstraint<Affine3dTypes> >()
+        .add< FixedConstraint<Quadratic3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-.add< FixedConstraint<Affine3fTypes> >()
+        .add< FixedConstraint<Affine3fTypes> >()
+        .add< FixedConstraint<Quadratic3fTypes> >()
 #endif
-*/
-
+        ;
 
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3dTypes>;
 
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3fTypes>;
 
-} // namespace behavior
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Quadratic3dTypes>;
 
-} // namespace core
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Quadratic3fTypes>;
+
+} // namespace projectiveconstraintset
+
+} // namespace component
 
 } // namespace sofa

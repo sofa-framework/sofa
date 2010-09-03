@@ -24,21 +24,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/frame/AffineTypes.h>
-#include <sofa/frame/QuadraticTypes.h>
 #include <sofa/frame/FrameMechanicalObject.h>
 #include <sofa/component/container/MechanicalObject.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace behavior
+namespace container
 {
 
 using namespace sofa::defaulttype;
+
+int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
+#ifndef SOFA_FLOAT
+        .add< MechanicalObject<Affine3dTypes> >()
+        .add< MechanicalObject<Quadratic3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< MechanicalObject<Affine3fTypes> >()
+        .add< MechanicalObject<Quadratic3fTypes> >()
+#endif
+        ;
+
 
 template class SOFA_CORE_API MechanicalObject<Affine3dTypes>;
 
