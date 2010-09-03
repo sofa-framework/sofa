@@ -23,6 +23,7 @@ HEADERS += \
            AffineTypes.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
+           FrameFixedConstraint.h \
            FrameForcefield.h \
            FrameHookeForceField.h \
            FrameHookeForceField.inl \
@@ -34,6 +35,7 @@ HEADERS += \
 
 SOURCES += \
            FrameDiagonalMass.cpp \
+           FrameFixedConstraint.cpp \
            FrameForcefield.cpp \
            FrameHookeForceField.cpp \
            FrameMechanicalObject.cpp \
