@@ -212,7 +212,7 @@ private:
     void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_CPP)
+#if defined(WIN32) && !defined(FRAME_FRAMEDIAGONALMASS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Frame3dMass>;
