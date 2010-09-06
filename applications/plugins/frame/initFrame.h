@@ -27,7 +27,7 @@
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_HAVE_FRAME
+#ifdef SOFA_BUILD_FRAME
 #define SOFA_FRAME_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #define SOFA_FRAME_API SOFA_IMPORT_DYNAMIC_LIBRARY
