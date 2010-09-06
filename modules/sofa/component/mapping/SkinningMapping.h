@@ -104,8 +104,13 @@ public:
     typedef typename Out::Real Real;
     enum { N=DataTypes::spatial_dimensions };
     //enum { InDerivDim=In::DataTypes::deriv_total_size };
+#ifdef SOFA_DEV
     enum { InDOFs=sofa::frame::DataTypesInfo<In::DataTypes::spatial_dimensions, typename In::DataTypes::Real, typename In::DataTypes>::degrees_of_freedom };
     enum { InAt=sofa::frame::DataTypesInfo<In::DataTypes::spatial_dimensions, typename In::DataTypes::Real, typename In::DataTypes>::Atilde_nb_column };
+#else
+    enum { InDOFs=In::DataTypes::deriv_total_size };
+    enum { InAt=0 };
+#endif
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Mat<3,3,Real> Mat33;
     typedef defaulttype::Mat<3,InDOFs,Real> Mat3xIn;
@@ -288,9 +293,9 @@ protected:
     inline void setInCoord( typename defaulttype::StdRigidTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
     inline void setInCoord( typename defaulttype::StdAffineTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
     inline void setInCoord( typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
-#ifdef SOFA_DEV
-    inline void getLocalCoord( Coord& result, const typename defaulttype::StdRigidTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
 #endif
+    inline void getLocalCoord( Coord& result, const typename defaulttype::StdRigidTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
+#ifdef SOFA_DEV
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
 #endif
