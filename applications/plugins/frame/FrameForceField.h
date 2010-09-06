@@ -24,34 +24,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FRAME_FRAMEMECHANICALOBJECT_H
-#define SOFA_FRAME_FRAMEMECHANICALOBJECT_H
+#ifndef FRAME_FRAMEFORCEFIELD_H
+#define FRAME_FRAMEFORCEFIELD_H
 
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/frame/AffineTypes.h>
-#include <sofa/frame/QuadraticTypes.h>
+#include "AffineTypes.h"
+#include "QuadraticTypes.h"
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace container
+namespace behavior
 {
 
 using namespace sofa::defaulttype;
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Affine3dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Affine3fTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Quadratic3dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Quadratic3fTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Affine3dTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Affine3fTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Quadratic3dTypes>;
+extern template class SOFA_CORE_API ForceField<defaulttype::Quadratic3fTypes>;
 #endif
 
-} // namespace container
+} // namespace behavior
 
-} // namespace component
+} // namespace core
 
 } // namespace sofa
 

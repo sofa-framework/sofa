@@ -42,8 +42,8 @@
 #ifdef SOFA_DEV
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
 #include "DualQuatStorage.h"
-#include <sofa/frame/AffineTypes.h>
-#include <sofa/frame/QuadraticTypes.h>
+#include <../applications/plugins/frame/AffineTypes.h>
+#include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
 
 namespace sofa

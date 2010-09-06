@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FRAME_QUADRATICTYPES_H
-#define SOFA_FRAME_QUADRATICTYPES_H
+#ifndef FRAME_QUADRATICTYPES_H
+#define FRAME_QUADRATICTYPES_H
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

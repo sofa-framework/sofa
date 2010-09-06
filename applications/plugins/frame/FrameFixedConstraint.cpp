@@ -24,11 +24,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_FRAME_FRAMEFIXEDCONSTRAINT_CPP
+#define FRAME_FRAMEFIXEDCONSTRAINT_CPP
 
-#include <sofa/frame/AffineTypes.h>
-#include <sofa/frame/QuadraticTypes.h>
-#include <sofa/frame/FrameFixedConstraint.h>
+#include "AffineTypes.h"
+#include "QuadraticTypes.h"
+#include "FrameFixedConstraint.h"
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -43,6 +43,7 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
+SOFA_DECL_CLASS(FrameFixedConstraint)
 
 int FixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT

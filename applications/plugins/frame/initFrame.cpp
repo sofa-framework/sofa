@@ -16,18 +16,14 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FRAME_FRAMEFIXEDCONSTRAINT_H
-#define SOFA_FRAME_FRAMEFIXEDCONSTRAINT_H
-
-#include <sofa/frame/AffineTypes.h>
+#include <sofa/helper/system/config.h>
+#include "initFrame.h"
 
 namespace sofa
 {
@@ -35,20 +31,59 @@ namespace sofa
 namespace component
 {
 
-namespace projectiveconstraintset
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_FRAME_API void initExternalModule();
+    SOFA_FRAME_API const char* getModuleName();
+    SOFA_FRAME_API const char* getModuleVersion();
+    SOFA_FRAME_API const char* getModuleLicense();
+    SOFA_FRAME_API const char* getModuleDescription();
+    SOFA_FRAME_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-using namespace sofa::defaulttype;
+const char* getModuleName()
+{
+    return "Frame Based Dynamic Plugin";
+}
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3dTypes>;
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3fTypes>;
-#endif
+const char* getModuleVersion()
+{
+    return "0.1";
+}
 
-} // namespace behavior
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-} // namespace core
+
+const char* getModuleDescription()
+{
+    return "Use frame based dynamic technic in SOFA";
+}
+
+const char* getModuleComponentList()
+{
+    return "FrameDiagonalMass, FixedConstraint, FrameHookeForceField, MechanicalObject, FrameSpringForceField2";
+}
+
+} // namespace frame
 
 } // namespace sofa
 
-#endif
+////////// BEGIN CLASS LIST //////////
+SOFA_LINK_CLASS(FrameDiagonalMass)
+SOFA_LINK_CLASS(FrameFixedConstraint)
+SOFA_LINK_CLASS(FrameHookeForceField)
+SOFA_LINK_CLASS(FrameMechanicalObject)
+SOFA_LINK_CLASS(FrameSpringForceField2)
