@@ -34,6 +34,7 @@
 #include <sofa/component/component.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
+#include "initFrame.h"
 
 namespace sofa
 {
@@ -190,15 +191,18 @@ private:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD2_CPP)
+#if defined(WIN32) && !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 
-extern template class SOFA_COMPONENT_FORCEFIELD_API FrameSpringForceField2<defaulttype::Rigid3dTypes>;
+extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3dTypes>;
+extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3dTypes>;
+//extern template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-
-//extern template class SOFA_COMPONENT_FORCEFIELD_API FrameSpringForceField2<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3fTypes>;
+//extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3fTypes>;
+//extern template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3fTypes>;
 #endif
 #endif
 

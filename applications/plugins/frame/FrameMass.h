@@ -29,6 +29,7 @@
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 #include <sofa/simulation/common/Visitor.h>
+#include "initFrame.h"
 
 namespace sofa
 {

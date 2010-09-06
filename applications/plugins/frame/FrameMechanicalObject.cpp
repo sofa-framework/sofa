@@ -55,13 +55,13 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
         ;
 
 
-template class SOFA_CORE_API MechanicalObject<Affine3dTypes>;
+template class SOFA_FRAME_API MechanicalObject<Affine3dTypes>;
 
-template class SOFA_CORE_API MechanicalObject<Affine3fTypes>;
+template class SOFA_FRAME_API MechanicalObject<Affine3fTypes>;
 
-template class SOFA_CORE_API MechanicalObject<Quadratic3dTypes>;
+template class SOFA_FRAME_API MechanicalObject<Quadratic3dTypes>;
 
-template class SOFA_CORE_API MechanicalObject<Quadratic3fTypes>;
+template class SOFA_FRAME_API MechanicalObject<Quadratic3fTypes>;
 
 } // namespace behavior
 

@@ -56,10 +56,10 @@ int FrameDiagonalMassClass = core::RegisterObject("Define a specific mass for ea
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Rigid3dTypes,Frame3x6dMass>;
+template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3x6dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass>;
+template class SOFA_FRAME_API FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass>;
 #endif
 
 
@@ -147,10 +147,10 @@ void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::computeRelRot ( Mat33& , 
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
+template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
+template class SOFA_FRAME_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
 #endif
 
 
@@ -238,10 +238,10 @@ void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::computeRelRot ( Mat33&
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass>;
+template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<Quadratic3fTypes,Frame3x30fMass>;
+template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3fTypes,Frame3x30fMass>;
 #endif
 
 
