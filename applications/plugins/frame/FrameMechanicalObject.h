@@ -30,6 +30,7 @@
 #include <sofa/component/container/MechanicalObject.h>
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
+#include "initFrame.h"
 
 namespace sofa
 {
@@ -42,11 +43,11 @@ namespace container
 
 using namespace sofa::defaulttype;
 
-#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Affine3dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Affine3fTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Quadratic3dTypes>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Quadratic3fTypes>;
+#if defined(WIN32) && !defined(FRAME_FRAMEMECHANICALOBJECT_CPP)
+extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3dTypes>;
+extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3fTypes>;
+extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3dTypes>;
+extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3fTypes>;
 #endif
 
 } // namespace container

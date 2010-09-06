@@ -41,13 +41,13 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class SOFA_CORE_API ForceField<Affine3dTypes>;
+template class SOFA_FRAME_API ForceField<Affine3dTypes>;
 
-template class SOFA_CORE_API ForceField<Affine3fTypes>;
+template class SOFA_FRAME_API ForceField<Affine3fTypes>;
 
-template class SOFA_CORE_API ForceField<Quadratic3dTypes>;
+template class SOFA_FRAME_API ForceField<Quadratic3dTypes>;
 
-template class SOFA_CORE_API ForceField<Quadratic3fTypes>;
+template class SOFA_FRAME_API ForceField<Quadratic3fTypes>;
 
 
 } // namespace behavior

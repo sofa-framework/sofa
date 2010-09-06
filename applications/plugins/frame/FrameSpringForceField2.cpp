@@ -50,19 +50,21 @@ using namespace sofa::defaulttype;
 // Register in the Factory
 int FrameSpringForceField2Class = core::RegisterObject("Springs between frames.")
 #ifndef SOFA_FLOAT
-        .add< FrameSpringForceField2<Affine3dTypes> >()
         .add< FrameSpringForceField2<Rigid3dTypes> >()
+        .add< FrameSpringForceField2<Affine3dTypes> >()
+//.add< FrameSpringForceField2<Quadratic3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
 //.add< FrameSpringForceField2<Affine3fTypes> >()
 //.add< FrameSpringForceField2<Rigid3fTypes> >()
+//.add< FrameSpringForceField2<Quadratic3fTypes> >()
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API FrameSpringForceField2<Rigid3dTypes>;
+template class SOFA_FRAME_API FrameSpringForceField2<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-//template class SOFA_COMPONENT_FORCEFIELD_API FrameSpringForceField2<Rigid3fTypes>;
+//template class SOFA_FRAME_API FrameSpringForceField2<Rigid3fTypes>;
 #endif
 
 
@@ -262,12 +264,21 @@ void FrameSpringForceField2<Affine3dTypes>::PostoSpeed( Deriv& /*Omega*/, const 
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API FrameSpringForceField2<Affine3dTypes>;
+template class SOFA_FRAME_API FrameSpringForceField2<Affine3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-//template class SOFA_COMPONENT_FORCEFIELD_API FrameSpringForceField2<Affine3fTypes>;
+//template class SOFA_FRAME_API FrameSpringForceField2<Affine3fTypes>;
 #endif
 
+
+/*
+#ifndef SOFA_FLOAT
+template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+//template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3fTypes>;
+#endif
+*/
 
 } // namespace forcefield
 

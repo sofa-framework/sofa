@@ -33,12 +33,14 @@
 #include <sofa/component/contextobject/initContextObject.h>
 #include <sofa/component/controller/initController.h>
 #include <sofa/component/engine/initEngine.h>
+#ifdef SOFA_DEV
 #include <sofa/component/fem/quadrature/initQuadrature.h>
 #include <sofa/component/fem/fetype/initFEType.h>
 #include <sofa/component/fem/straintensor/initStrainTensor.h>
 #include <sofa/component/fem/material/initMaterial.h>
 #include <sofa/component/fem/initFEM.h>
 #include <sofa/component/fem/forcefield/initFEMForceField.h>
+#endif
 #include <sofa/component/forcefield/initForceField.h>
 #include <sofa/component/interactionforcefield/initInteractionForceField.h>
 #include <sofa/component/linearsolver/initLinearSolver.h>
@@ -73,12 +75,14 @@ void init()
         initContextObject();
         initController();
         initEngine();
+#ifdef SOFA_DEV
         initQuadrature();
         initFEType();
         initStrainTensor();
         initMaterial();
         initFEM();
         initFEMForceField();
+#endif
         initForceField();
         initInteractionForceField();
         initLinearSolver();

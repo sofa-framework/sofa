@@ -56,13 +56,13 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
 #endif
         ;
 
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3dTypes>;
+template class SOFA_FRAME_API FixedConstraint<Affine3dTypes>;
 
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3fTypes>;
+template class SOFA_FRAME_API FixedConstraint<Affine3fTypes>;
 
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Quadratic3dTypes>;
+template class SOFA_FRAME_API FixedConstraint<Quadratic3dTypes>;
 
-template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Quadratic3fTypes>;
+template class SOFA_FRAME_API FixedConstraint<Quadratic3fTypes>;
 
 } // namespace projectiveconstraintset
 

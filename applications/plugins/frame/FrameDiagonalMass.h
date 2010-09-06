@@ -37,9 +37,12 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include "AffineTypes.h"
+#include "QuadraticTypes.h"
 #include "FrameMass.h"
 #include <sofa/component/mapping/DualQuatStorage.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include "initFrame.h"
 
 namespace sofa
 {
@@ -215,10 +218,14 @@ private:
 #if defined(WIN32) && !defined(FRAME_FRAMEDIAGONALMASS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Frame3dMass>;
+extern template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3dMass>;
+extern template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
+extern template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Frame3fMass>;
+extern template class SOFA_FRAME_API FrameDiagonalMass<Rigid3fTypes,Frame3fMass>;
+extern template class SOFA_FRAME_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
+extern template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3fTypes,Frame3x30fMass>;
 #endif
 #endif
 
