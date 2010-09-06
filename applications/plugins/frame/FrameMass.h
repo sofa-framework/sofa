@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_FRAMEMASS_H
-#define SOFA_COMPONENT_MASS_FRAMEMASS_H
+#ifndef FRAME_FRAMEMASS_H
+#define FRAME_FRAMEMASS_H
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/frame/AffineTypes.h>
-#include <sofa/frame/QuadraticTypes.h>
+#include "AffineTypes.h"
+#include "QuadraticTypes.h"
 #include <sofa/simulation/common/Visitor.h>
 
 namespace sofa

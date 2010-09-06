@@ -16,44 +16,42 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/frame/initFrame.h>
+#define FRAME_FORCEFIELD_CPP
+
+#include "AffineTypes.h"
+#include "FrameForceField.h"
+#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
 {
 
-namespace frame
+namespace core
 {
 
-
-void initFrame()
+namespace behavior
 {
-    static bool first = true;
-    if (first)
-    {
-//         sout << "Sofa components initialized."<<sendl;
 
-        //std::ofstream ofile("sofa-classes.html");
-        //ofile << "<html><body>\n";
-        //sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
-        //ofile << "</body></html>\n";
-        first = false;
-    }
-}
+using namespace sofa::defaulttype;
 
-} // namespace frame
+template class SOFA_CORE_API ForceField<Affine3dTypes>;
+
+template class SOFA_CORE_API ForceField<Affine3fTypes>;
+
+template class SOFA_CORE_API ForceField<Quadratic3dTypes>;
+
+template class SOFA_CORE_API ForceField<Quadratic3fTypes>;
+
+
+} // namespace behavior
+
+} // namespace core
 
 } // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(FrameDiagonalMass)
-SOFA_LINK_CLASS(FixedConstraint)
-SOFA_LINK_CLASS(FrameHookeForceField)
-SOFA_LINK_CLASS(MechanicalObject)
-SOFA_LINK_CLASS(FrameSpringForceField2)

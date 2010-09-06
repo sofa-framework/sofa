@@ -3,6 +3,8 @@ TEMPLATE = lib
 TARGET = sofaframe
 include($${SOFA_DIR}/sofa.cfg)
 
+DESTDIR = $$SOFA_DIR/lib/sofa-plugins
+
 CONFIG += $$CONFIGLIBRARIES
 
 !contains(CONFIGSTATIC, static) {

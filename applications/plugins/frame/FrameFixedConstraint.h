@@ -16,34 +16,39 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FRAME_INIT_H
-#define SOFA_FRAME_INIT_H
+#ifndef FRAME_FRAMEFIXEDCONSTRAINT_H
+#define FRAME_FRAMEFIXEDCONSTRAINT_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_COMPONENT
-#  define SOFA_FRAME_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_FRAME_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include "AffineTypes.h"
 
 namespace sofa
 {
 
-namespace frame
+namespace component
 {
 
-void SOFA_FRAME_API initFrame();
+namespace projectiveconstraintset
+{
 
-} // namespace component
+using namespace sofa::defaulttype;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3dTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3fTypes>;
+#endif
+
+} // namespace behavior
+
+} // namespace core
 
 } // namespace sofa
 
-#endif //SOFA_COMPONENT_FORCEFIELD_INIT_H
-
+#endif

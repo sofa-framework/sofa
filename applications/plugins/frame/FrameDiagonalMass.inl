@@ -22,18 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_FRAME_FRAMEDIAGONALMASS_INL
-#define SOFA_FRAME_FRAMEDIAGONALMASS_INL
+#ifndef FRAME_FRAMEDIAGONALMASS_INL
+#define FRAME_FRAMEDIAGONALMASS_INL
 
-#include <sofa/frame/FrameDiagonalMass.h>
+#include "FrameDiagonalMass.h"
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/frame/AffineTypes.h>
+#include "AffineTypes.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/frame/FrameMass.h>
+#include "FrameMass.h"
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/simulation/common/Visitor.h>
 

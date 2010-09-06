@@ -24,34 +24,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_FRAMEFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_FRAMEFORCEFIELD_H
+#define FRAME_FRAMEMECHANICALOBJECT_CPP
 
-#include <sofa/frame/AffineTypes.h>
-#include <sofa/frame/QuadraticTypes.h>
+#include "FrameMechanicalObject.h"
+#include <sofa/component/container/MechanicalObject.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace behavior
+namespace container
 {
+
+SOFA_DECL_CLASS(FrameMechanicalObject)
 
 using namespace sofa::defaulttype;
 
-#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
-extern template class SOFA_CORE_API ForceField<defaulttype::Affine3dTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Affine3fTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Quadratic3dTypes>;
-extern template class SOFA_CORE_API ForceField<defaulttype::Quadratic3fTypes>;
+int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
+#ifndef SOFA_FLOAT
+        .add< MechanicalObject<Affine3dTypes> >()
+        .add< MechanicalObject<Quadratic3dTypes> >()
 #endif
+#ifndef SOFA_DOUBLE
+        .add< MechanicalObject<Affine3fTypes> >()
+        .add< MechanicalObject<Quadratic3fTypes> >()
+#endif
+        ;
+
+
+template class SOFA_CORE_API MechanicalObject<Affine3dTypes>;
+
+template class SOFA_CORE_API MechanicalObject<Affine3fTypes>;
+
+template class SOFA_CORE_API MechanicalObject<Quadratic3dTypes>;
+
+template class SOFA_CORE_API MechanicalObject<Quadratic3fTypes>;
 
 } // namespace behavior
 
 } // namespace core
 
 } // namespace sofa
-
-#endif

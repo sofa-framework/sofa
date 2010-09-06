@@ -22,14 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-#define SOFA_FRAME_FRAMESPRINGFORCEFIELD2_CPP
-#include <sofa/frame/FrameSpringForceField2.inl>
+#define FRAME_FRAMESPRINGFORCEFIELD2_CPP
+
+#include "FrameSpringForceField2.inl"
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/frame/AffineTypes.h>
+#include "AffineTypes.h"
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <typeinfo>
