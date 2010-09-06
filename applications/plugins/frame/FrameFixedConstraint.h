@@ -27,6 +27,7 @@
 #ifndef FRAME_FRAMEFIXEDCONSTRAINT_H
 #define FRAME_FRAMEFIXEDCONSTRAINT_H
 
+#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 #include "AffineTypes.h"
 
 namespace sofa
@@ -40,7 +41,7 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
+#if defined(WIN32) && !defined(FRAME_FRAMEFIXEDCONSTRAINT_CPP)
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedConstraint<Affine3fTypes>;
 #endif
