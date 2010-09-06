@@ -28,7 +28,7 @@ HEADERS += \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
            FrameFixedConstraint.h \
-           FrameForcefield.h \
+           FrameForceField.h \
            FrameHookeForceField.h \
            FrameHookeForceField.inl \
            FrameMass.h \
@@ -36,12 +36,12 @@ HEADERS += \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
            initFrame.h \
-           QuadratiqueTypes.h
+           QuadraticTypes.h
 
 SOURCES += \
            FrameDiagonalMass.cpp \
            FrameFixedConstraint.cpp \
-           FrameForcefield.cpp \
+           FrameForceField.cpp \
            FrameHookeForceField.cpp \
            FrameMechanicalObject.cpp \
            FrameSpringForceField2.cpp \
