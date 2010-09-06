@@ -27,10 +27,12 @@
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_COMPONENT
-#  define SOFA_FRAME_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_FRAME
+#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#define SOFA_FRAME_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_FRAME_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#define SOFA_FRAME_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif //FRAME_INIT_H
