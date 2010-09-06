@@ -33,6 +33,7 @@ HEADERS += \
            FrameMechanicalObject.h \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
+           initFrame.h \
            QuadratiqueTypes.h
 
 SOURCES += \
@@ -41,4 +42,5 @@ SOURCES += \
            FrameForcefield.cpp \
            FrameHookeForceField.cpp \
            FrameMechanicalObject.cpp \
-           FrameSpringForceField2.cpp
+           FrameSpringForceField2.cpp \
+           initFrame.cpp

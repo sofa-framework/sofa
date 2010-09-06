@@ -648,9 +648,9 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             D = FT*Mw; dE[0][3] = 2*D[0][0]; dE[1][3] = 2*D[1][1]; dE[2][3] = 2*D[2][2];
             dE[3][3] = D[0][1]+D[1][0]; dE[4][3] = D[1][2]+D[2][1]; dE[5][3] = D[0][2]+D[2][0];
             for(k=0; k<3; k++) for(m=0; m<3; m++) dE[m][k+4]=dWeight[m]*F[k][m];
-            for(k=0; k<3; k++) dE[3][k+4]=(dWeight[0]*F[k][1]+dWeight[1]*F[k][0])/2.0;
-            for(k=0; k<3; k++) dE[4][k+4]=(dWeight[1]*F[k][2]+dWeight[2]*F[k][1])/2.0;
-            for(k=0; k<3; k++) dE[5][k+4]=(dWeight[0]*F[k][2]+dWeight[2]*F[k][0])/2.0;
+            for(k=0; k<3; k++) dE[3][k+4]=0.5*(dWeight[0]*F[k][1]+dWeight[1]*F[k][0]);
+            for(k=0; k<3; k++) dE[4][k+4]=0.5*(dWeight[1]*F[k][2]+dWeight[2]*F[k][1]);
+            for(k=0; k<3; k++) dE[5][k+4]=0.5*(dWeight[0]*F[k][2]+dWeight[2]*F[k][0]);
             Bij = dE * L[idxReps];
             /*
             // Compute ddet
@@ -1436,6 +1436,14 @@ void SkinningMapping<BasicMapping>::setInCoord( typename defaulttype::StdAffineT
     coord.getCenter() = position;
     rotation.toMatrix( coord.getAffine());
 }
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::setInCoord( typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const
+{
+    coord.getCenter() = position;
+    rotation.toMatrix( coord.getQuadratic());
+}
 #endif
 
 
@@ -1453,6 +1461,13 @@ void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename
     Mat33 affineInv;
     affineInv.invert( inCoord.getAffine() );
     result = affineInv * ( coord - inCoord.getCenter() );
+}
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
+{
+    result = coord - inCoord.getCenter();
 }
 
 
@@ -1610,6 +1625,7 @@ void SkinningMapping<BasicMapping>::ComputeMw(Mat33& M, const Quat& q) const
     M[2][0]=-q[1]; M[2][1]=q[0]; M[2][2]=0;
 }
 
+// Affine specializations
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
 
@@ -1624,6 +1640,24 @@ void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, Mechan
 
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::applyJT(In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/);
+
+
+
+// Quadratic specializations
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::apply(Out::VecCoord& /*out*/, const In::VecCoord& /*in*/);
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::applyJ(Out::VecDeriv& /*out*/, const In::VecDeriv& /*in*/);
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::applyJT(In::VecDeriv& /*out*/, const Out::VecDeriv& /*in*/);
+
+template <>
+void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::applyJT(In::MatrixDeriv& /*out*/, const Out::MatrixDeriv& /*in*/);
 
 #endif
 
