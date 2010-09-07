@@ -201,24 +201,25 @@ SOURCES +=  \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
-	 fem/FEMRecipe.h \
+	 fem/FEMRecipe.h              \
 	 fem/BaseQuadratureFormular.h \
-	 fem/QuadratureFormular.h \
- 	 fem/QuadratureFormular.inl \
-	 fem/BaseMaterial.h \
-	 fem/BaseStrainTensor.h \
-	 fem/BaseFiniteElement.h \
-#	 	 fem/BaseFiniteElementType.h \
-	 fem/FiniteElement.h \
+	 fem/BaseFENodes.h			  \
+ 	 fem/BaseFENodes.inl		  \
+	 fem/QuadratureFormular.h     \
+ 	 fem/QuadratureFormular.inl   \
+	 fem/BaseMaterial.h           \
+	 fem/BaseStrainTensor.h       \
+	 fem/BaseFiniteElement.h      \
+	 fem/FiniteElement.h          \
 	 fem/DofContainer.h 
  
 SOURCES +=  \
-	 fem/QuadratureFormular.cpp \
-	 fem/BaseMaterial.cpp \
-	 fem/BaseFiniteElement.cpp \
-#	 	 	 fem/BaseFiniteElementType.cpp \
-	 fem/FiniteElement.cpp \
-	 fem/DofContainer.cpp \
+	 fem/BaseFENodes.cpp		  \
+	 fem/QuadratureFormular.cpp   \
+	 fem/BaseMaterial.cpp         \
+	 fem/BaseFiniteElement.cpp    \
+	 fem/FiniteElement.cpp        \
+	 fem/DofContainer.cpp         \
  	 fem/BaseStrainTensor.cpp 
  
 } # END SOFA_DEV
