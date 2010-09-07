@@ -31,7 +31,7 @@ VRPNTracker<DataTypes>::VRPNTracker()
     , p_dy(initData(&p_dy, (Real) 0.0, "dy", "Translation along Y axis"))
     , p_dz(initData(&p_dz, (Real) 0.0, "dz", "Translation along Z axis"))
     , p_scale(initData(&p_scale, (Real) 1.0, "scale", "Scale (3 axis)"))
-    , p_nullPoint(initData(&p_nullPoint, true, "nullPoint", "If not tracked, return a (0, 0, 0) point"))
+    , p_nullPoint(initData(&p_nullPoint, false, "nullPoint", "If not tracked, return a (0, 0, 0) point"))
 {
     // TODO Auto-generated constructor stub
     trackerData.data.resize(1);
