@@ -28,6 +28,7 @@
 #define SOFA_CORE_BASESTATE_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/VecId.h>
 
 namespace sofa
 {
