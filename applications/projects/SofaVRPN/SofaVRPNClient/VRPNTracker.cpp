@@ -47,7 +47,7 @@ void VRPNTracker<RigidTypes>::update()
 {
     sofa::helper::WriteAccessor< Data< VecCoord > > points = f_points;
     //std::cout << "read tracker " << this->getName() << std::endl;
-
+    Coord pointIfNull;
     if (tkr)
     {
         //get infos
@@ -57,29 +57,46 @@ void VRPNTracker<RigidTypes>::update()
 
         if(copyTrackerData.modified)
         {
+
+            //size == 0 => first position not tracked
+            if (points.size() >= 1)
+                pointIfNull = points[0];
+
             points.clear();
             //if (points.size() < trackerData.data.size())
             points.resize(copyTrackerData.data.size());
 
-            for (unsigned int i=0 ; i<copyTrackerData.data.size() ; i++)
+            if(copyTrackerData.data.size() == 0)
             {
-                RigidTypes::Coord::Pos pos;
-                RigidTypes::Coord::Rot rot;
+                points.push_back(pointIfNull);
+            }
+            else
+            {
+                for (unsigned int i=0 ; i<copyTrackerData.data.size() ; i++)
+                {
+                    RigidTypes::Coord::Pos pos;
+                    RigidTypes::Coord::Rot rot;
 
-                pos[0] = (copyTrackerData.data[i].pos[0])*p_scale.getValue() + p_dx.getValue();
-                pos[1] = (copyTrackerData.data[i].pos[1])*p_scale.getValue() + p_dy.getValue();
-                pos[2] = (copyTrackerData.data[i].pos[2])*p_scale.getValue() + p_dz.getValue();
+                    pos[0] = (copyTrackerData.data[i].pos[0])*p_scale.getValue() + p_dx.getValue();
+                    pos[1] = (copyTrackerData.data[i].pos[1])*p_scale.getValue() + p_dy.getValue();
+                    pos[2] = (copyTrackerData.data[i].pos[2])*p_scale.getValue() + p_dz.getValue();
 
-                //TODO: modify quat too
-                for (unsigned int j=0 ; j<4 ; j++)
-                    rot[j] = copyTrackerData.data[i].quat[j];
+                    //TODO: modify quat too
+                    for (unsigned int j=0 ; j<4 ; j++)
+                        rot[j] = copyTrackerData.data[i].quat[j];
 
-                Coord p;
-                p.getCenter() = pos;
-                p.getOrientation() = rot;
-                points[i] = p;
+                    Coord p;
+                    p.getCenter() = pos;
+                    p.getOrientation() = rot;
+                    points[i] = p;
+                }
             }
         }
+    }
+
+    if(points.size() == 0)
+    {
+        points.push_back(pointIfNull);
     }
 }
 
