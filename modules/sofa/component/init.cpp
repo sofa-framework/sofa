@@ -35,6 +35,7 @@
 #include <sofa/component/engine/initEngine.h>
 #ifdef SOFA_DEV
 #include <sofa/component/fem/quadrature/initQuadrature.h>
+#include <sofa/component/fem/fenode/initFENode.h>
 #include <sofa/component/fem/fetype/initFEType.h>
 #include <sofa/component/fem/straintensor/initStrainTensor.h>
 #include <sofa/component/fem/material/initMaterial.h>
@@ -77,6 +78,7 @@ void init()
         initEngine();
 #ifdef SOFA_DEV
         initQuadrature();
+        initFENode();
         initFEType();
         initStrainTensor();
         initMaterial();
