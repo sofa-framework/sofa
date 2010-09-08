@@ -355,18 +355,8 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             for ( unsigned int j=0 ; j<in.size(); j++ )
             {
                 VecIn speed;
-                speed[0]  = in[j][0];
-                speed[1]  = in[j][1];
-                speed[2]  = in[j][2];
-                speed[3]  = in[j][3];
-                speed[4]  = in[j][4];
-                speed[5]  = in[j][5];
-                speed[6]  = in[j][6];
-                speed[7]  = in[j][7];
-                speed[8]  = in[j][8];
-                speed[9]  = in[j][9];
-                speed[10] = in[j][10];
-                speed[11] = in[j][11];
+                for (unsigned int k = 0; k < InDOFs; ++k)
+                    speed[k]  = in[j][k];
 
                 Vec3 f = ( this->J[j][i] * speed );
 
@@ -387,18 +377,8 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
             for ( unsigned int j=0 ; j<in.size(); j++ )
             {
                 VecIn speed;
-                speed[0]  = in[j][0];
-                speed[1]  = in[j][1];
-                speed[2]  = in[j][2];
-                speed[3]  = in[j][3];
-                speed[4]  = in[j][4];
-                speed[5]  = in[j][5];
-                speed[6]  = in[j][6];
-                speed[7]  = in[j][7];
-                speed[8]  = in[j][8];
-                speed[9]  = in[j][9];
-                speed[10] = in[j][10];
-                speed[11] = in[j][11];
+                for (unsigned int k = 0; k < InDOFs; ++k)
+                    speed[k]  = in[j][k];
 
                 Vec3 f = ( this->J[j][i] * speed );
 
@@ -430,15 +410,9 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
                 f[2] = in[j][2];
                 VecIn speed = Jt * f;
 
-                omega[0][0] = speed[0];
-                omega[0][1] = speed[1];
-                omega[0][2] = speed[2];
-                omega[1][0] = speed[3];
-                omega[1][1] = speed[4];
-                omega[1][2] = speed[5];
-                omega[2][0] = speed[6];
-                omega[2][1] = speed[7];
-                omega[2][2] = speed[8];
+                for (unsigned int k = 0; k < 3; ++k)
+                    for (unsigned int l = 0; l < 3; ++l)
+                        omega[k][l] = speed[3*k+l];
                 v = Deriv ( speed[9], speed[10], speed[11] );
 
                 out[i].getVCenter() += v;
@@ -466,15 +440,9 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
                 f[2] = in[j][2];
                 VecIn speed = Jt * f;
 
-                omega[0][0] = speed[0];
-                omega[0][1] = speed[1];
-                omega[0][2] = speed[2];
-                omega[1][0] = speed[3];
-                omega[1][1] = speed[4];
-                omega[1][2] = speed[5];
-                omega[2][0] = speed[6];
-                omega[2][1] = speed[7];
-                omega[2][2] = speed[8];
+                for (unsigned int k = 0; k < 3; ++k)
+                    for (unsigned int l = 0; l < 3; ++l)
+                        omega[k][l] = speed[3*k+l];
                 v = Deriv ( speed[9], speed[10], speed[11] );
 
                 out[i].getVCenter() += v;
@@ -513,10 +481,10 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
 
         for (Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            const unsigned int indexIn = colIt.index();
+            const unsigned int indexIn = colIt.index(); // Point
             const Deriv data = colIt.val();
 
-            for (unsigned int j=0; j<numOut; ++j)
+            for (unsigned int j=0; j<numOut; ++j) // Affine
             {
                 MatInx3 Jt;
                 Jt.transpose ( this->J[j][indexIn] );
@@ -524,15 +492,9 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, Mechanic
                 VecIn speed = Jt * data;
 
                 In::Deriv::Affine affine;
-                affine[0][0] = speed[0];
-                affine[0][1] = speed[1];
-                affine[0][2] = speed[2];
-                affine[1][0] = speed[3];
-                affine[1][1] = speed[4];
-                affine[1][2] = speed[5];
-                affine[2][0] = speed[6];
-                affine[2][1] = speed[7];
-                affine[2][2] = speed[8];
+                for (unsigned int k = 0; k < 3; ++k)
+                    for (unsigned int l = 0; l < 3; ++l)
+                        affine[k][l] = speed[3*k+l];
                 const Vec3 pos( speed[9], speed[10], speed[11] );
                 InDeriv value(pos,affine);
                 o.addCol(j, value);
@@ -830,16 +792,10 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Quadratic3dTypes>, Mecha
                 f[2] = in[j][2];
                 VecIn speed = Jt * f;
 
-                omega[0][0] = speed[0];
-                omega[0][1] = speed[1];
-                omega[0][2] = speed[2];
-                omega[1][0] = speed[3];
-                omega[1][1] = speed[4];
-                omega[1][2] = speed[5];
-                omega[2][0] = speed[6];
-                omega[2][1] = speed[7];
-                omega[2][2] = speed[8];
-                v = Deriv ( speed[9], speed[10], speed[11] );
+                for (unsigned int k = 0; k < 3; ++k)
+                    for (unsigned int l = 0; l < 9; ++l)
+                        omega[k][l] = speed[9*k+l];
+                v = Deriv ( speed[27], speed[28], speed[29] );
 
                 out[i].getVCenter() += v;
                 out[i].getVQuadratic() += omega;
@@ -866,16 +822,10 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Quadratic3dTypes>, Mecha
                 f[2] = in[j][2];
                 VecIn speed = Jt * f;
 
-                omega[0][0] = speed[0];
-                omega[0][1] = speed[1];
-                omega[0][2] = speed[2];
-                omega[1][0] = speed[3];
-                omega[1][1] = speed[4];
-                omega[1][2] = speed[5];
-                omega[2][0] = speed[6];
-                omega[2][1] = speed[7];
-                omega[2][2] = speed[8];
-                v = Deriv ( speed[9], speed[10], speed[11] );
+                for (unsigned int k = 0; k < 3; ++k)
+                    for (unsigned int l = 0; l < 9; ++l)
+                        omega[k][l] = speed[9*k+l];
+                v = Deriv ( speed[27], speed[28], speed[29] );
 
                 out[i].getVCenter() += v;
                 out[i].getVQuadratic() += omega;
@@ -923,18 +873,13 @@ void SkinningMapping<MechanicalMapping< MechanicalState<Quadratic3dTypes>, Mecha
 
                 VecIn speed = Jt * data;
 
-                In::Deriv::Quadratic affine;
-                affine[0][0] = speed[0];
-                affine[0][1] = speed[1];
-                affine[0][2] = speed[2];
-                affine[1][0] = speed[3];
-                affine[1][1] = speed[4];
-                affine[1][2] = speed[5];
-                affine[2][0] = speed[6];
-                affine[2][1] = speed[7];
-                affine[2][2] = speed[8];
-                const Vec3 pos( speed[9], speed[10], speed[11] );
-                InDeriv value(pos,affine);
+                In::Deriv::Quadratic quad;
+                for (unsigned int k = 0; k < 9; ++k)
+                    for (unsigned int l = 0; l < 3; ++l)
+                        quad[k][l] = speed[3*k+l];
+                const Vec3 pos ( speed[27], speed[28], speed[29] );
+
+                InDeriv value(pos,quad);
                 o.addCol(j, value);
             }
         }

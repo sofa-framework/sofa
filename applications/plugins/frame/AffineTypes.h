@@ -454,15 +454,15 @@ public:
     /// Write the OpenGL transformation matrix
     void writeOpenGlMatrix ( float m[16] ) const
     {
-        m[0] = affine(0,0);
-        m[4] = affine(0,1);
-        m[8] = affine(0,2);
-        m[1] = affine(1,0);
-        m[5] = affine(1,1);
-        m[9] = affine(1,2);
-        m[2] = affine(2,0);
-        m[6] = affine(2,1);
-        m[10] = affine(2,2);
+        m[0] = (float)affine(0,0);
+        m[4] = (float)affine(0,1);
+        m[8] = (float)affine(0,2);
+        m[1] = (float)affine(1,0);
+        m[5] = (float)affine(1,1);
+        m[9] = (float)affine(1,2);
+        m[2] = (float)affine(2,0);
+        m[6] = (float)affine(2,1);
+        m[10] = (float)affine(2,2);
         m[3] = 0;
         m[7] = 0;
         m[11] = 0;

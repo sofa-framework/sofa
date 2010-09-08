@@ -24,9 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FRAME_FORCEFIELD_CPP
+#define FRAME_FRAMEFORCEFIELD_CPP
 
-#include "AffineTypes.h"
 #include "FrameForceField.h"
 #include <sofa/core/behavior/ForceField.inl>
 
