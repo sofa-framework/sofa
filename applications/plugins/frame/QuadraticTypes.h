@@ -447,15 +447,15 @@ public:
     void writeOpenGlMatrix ( float m[16] ) const
     {
         // Use only Affine part to display frame
-        m[0] = quadratic(0,0);
-        m[4] = quadratic(0,1);
-        m[8] = quadratic(0,2);
-        m[1] = quadratic(1,0);
-        m[5] = quadratic(1,1);
-        m[9] = quadratic(1,2);
-        m[2] = quadratic(2,0);
-        m[6] = quadratic(2,1);
-        m[10] = quadratic(2,2);
+        m[0] = (float) quadratic(0,0);
+        m[4] = (float) quadratic(0,1);
+        m[8] = (float) quadratic(0,2);
+        m[1] = (float) quadratic(1,0);
+        m[5] = (float) quadratic(1,1);
+        m[9] = (float) quadratic(1,2);
+        m[2] = (float) quadratic(2,0);
+        m[6] = (float) quadratic(2,1);
+        m[10] = (float) quadratic(2,2);
         m[3] = 0;
         m[7] = 0;
         m[11] = 0;

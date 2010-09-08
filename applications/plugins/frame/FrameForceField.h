@@ -43,11 +43,11 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-#if defined(WIN32) && !defined(FRAME_FORCEFIELD_CPP)
-extern template class SOFA_FRAME_API ForceField<defaulttype::Affine3dTypes>;
-extern template class SOFA_FRAME_API ForceField<defaulttype::Affine3fTypes>;
-extern template class SOFA_FRAME_API ForceField<defaulttype::Quadratic3dTypes>;
-extern template class SOFA_FRAME_API ForceField<defaulttype::Quadratic3fTypes>;
+#if defined(WIN32) && !defined(FRAME_FRAMEFORCEFIELD_CPP)
+extern template class SOFA_FRAME_API ForceField<Affine3dTypes>;
+extern template class SOFA_FRAME_API ForceField<Affine3fTypes>;
+extern template class SOFA_FRAME_API ForceField<Quadratic3dTypes>;
+extern template class SOFA_FRAME_API ForceField<Quadratic3fTypes>;
 #endif
 
 } // namespace behavior
