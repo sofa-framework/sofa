@@ -213,6 +213,8 @@ public:
     int nbElementPerVertex; ///< max number of elements connected to a vertex
     /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
     /// Note that each integer is actually equat the the index of the element * 4 + the index of this vertex inside the tetrahedron.
+    int GATHER_PT;
+    int GATHER_BSIZE;
     gpu::cuda::CudaVector<int> velems;
     TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0), preForceOpID(-1), preDForceOpID(-1) {}
     void init(int nbe, int v0, int nbv, int nbelemperv)
@@ -326,6 +328,21 @@ public:
 
     VecReal vecTmpRotation;
     gpu::cuda::CudaVector<GPUElementState> parallelRotation;
+
+    void initPtrData(Main* m)
+    {
+//       m->_gatherPt = NULL;
+//       //new Data<int>(core::objectmodel::BaseObject::initData(m->_gatherPt,8,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"));
+//       m->_gatherBsize = NULL;
+//       //new Data<int>(core::objectmodel::BaseObject::initData(m->_gatherBsize,256,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"));
+        m->_gatherPt.beginEdit()->setNames(3,"1","4","8");
+        m->_gatherPt.beginEdit()->setSelectedItem("8");
+        m->_gatherPt.endEdit();
+
+        m->_gatherBsize.beginEdit()->setNames(4,"32","64","128","256");
+        m->_gatherBsize.beginEdit()->setSelectedItem("256");
+        m->_gatherBsize.endEdit();
+    }
 };
 
 //

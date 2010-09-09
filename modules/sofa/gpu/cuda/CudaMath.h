@@ -37,6 +37,13 @@ namespace cuda
 {
 #endif
 
+#if (__CUDA_ARCH__ < 200)
+#define fastmul(x,y)	__mul24((x),(y))
+#else
+#define fastmul(x,y)	((x)*(y))
+#endif
+
+
 template<class real>
 class CudaVec2;
 

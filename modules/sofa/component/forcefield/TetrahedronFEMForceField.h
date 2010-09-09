@@ -34,6 +34,7 @@
 #include <sofa/component/component.h>
 #include <sofa/component/misc/BaseRotationFinder.h>
 #include <sofa/component/linearsolver/RotationMatrix.h>
+#include <sofa/helper/OptionsGroup.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -61,11 +62,23 @@ using namespace sofa::defaulttype;
 using sofa::helper::vector;
 using namespace sofa::component::topology;
 
+template<class DataTypes>
+class TetrahedronFEMForceField;
+
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
 class TetrahedronFEMForceFieldInternalData
 {
 public:
+    typedef TetrahedronFEMForceField<DataTypes> Main;
+    void initPtrData(Main * m)
+    {
+        m->_gatherPt.beginEdit()->setNames(1," ");
+        m->_gatherPt.endEdit();
+
+        m->_gatherBsize.beginEdit()->setNames(1," ");
+        m->_gatherBsize.endEdit();
+    }
 };
 
 
@@ -203,6 +216,8 @@ public:
     Data<VecReal> _localStiffnessFactor;
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
+    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
 
     TetrahedronFEMForceField()
         : parallelDataSimu(NULL)
@@ -217,7 +232,10 @@ public:
         , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
         , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
+        , _gatherPt(core::objectmodel::BaseObject::initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
+        , _gatherBsize(core::objectmodel::BaseObject::initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
     {
+        data.initPtrData(this);
         parallelDataInit[0]=0;
         parallelDataInit[1]=0;
         this->addAlias(&_assembling, "assembling");
@@ -232,6 +250,11 @@ public:
         parallelDataInit[1] = NULL;
         parallelDataThrd = NULL;
         parallelDataInit[2] = NULL;
+
+// 	    if (_gatherPt) delete _gatherPt;
+// 	    if (_gatherBsize)  delete _gatherBsize;
+// 	    _gatherPt = NULL;
+// 	    _gatherBsize = NULL
     }
 
     virtual bool canPrefetch() const { return false; }
