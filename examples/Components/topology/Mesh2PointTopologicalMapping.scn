@@ -16,7 +16,7 @@
 		<Node name="PointSetTopology">
 			<PointSetTopologyContainer name="Container2"/>
 			<!--<PointSetTopologyModifier/>-->
-			<Mesh2PointTopologicalMapping object1="Container1" object2="Container2" tetraBaryCoords="0.25 0.25 0.25" />
+			<Mesh2PointTopologicalMapping object1="Container1" object2="Container2" pointBaryCoords="0 0 0" tetraBaryCoords="0.25 0.25 0.25" />
 			<MechanicalObject />
 			<!--<Mesh2PointMechanicalMapping/>-->
 			<SphereModel radius="0.25" />
