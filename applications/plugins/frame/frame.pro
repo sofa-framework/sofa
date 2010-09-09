@@ -25,6 +25,7 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
            AffineTypes.h \
+           FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
            FrameFixedConstraint.h \
@@ -39,6 +40,7 @@ HEADERS += \
            QuadraticTypes.h
 
 SOURCES += \
+           FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
