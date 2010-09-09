@@ -544,131 +544,7 @@ void SkinningMapping<BasicMapping>::setRepartition ( vector<int> &rep )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    const vector<int>& m_reps = repartition.getValue();
-    const VVD& m_weights = weights.getValue();
-
-    rotatedPoints.resize ( initPos.size() );
-    out.resize ( initPos.size() / nbRefs.getValue() );
-    for ( unsigned int i=0 ; i<out.size(); i++ )
-    {
-        out[i] = Coord();
-        for ( unsigned int j = 0; j < nbRefs.getValue(); ++j)
-        {
-            const int& idx=nbRefs.getValue() *i+j;
-            const int& idxReps=m_reps[idx];
-
-            // Save rotated points for applyJ/JT
-            rotatedPoints[idx] = in[idxReps].getOrientation().rotate ( initPos[idx] );
-
-            // And add each reference frames contributions to the new position out[i]
-            out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_weights[idxReps][i];
-        }
-
-#ifdef SOFA_DEV
-        if ( !(this->computeJ.getValue() || this->computeAllMatrices.getValue())) continue;
-
-        // update J
-        Mat37 Q;
-        VMat76 L;
-        L.resize(nbRefs.getValue());
-        for(unsigned int j = 0; j < nbRefs.getValue(); j++)
-        {
-            const int& idx = nbRefs.getValue() * i + j;
-            const int& idxReps = m_reps[idx];
-
-            ComputeQ( Q, in[idxReps ].getOrientation(), initPos[idx]);
-            ComputeL( L[idxReps], in[idxReps ].getOrientation());
-            this->J[idxReps][i] = (Real)m_weights[idxReps][i] * Q * L[idxReps];
-        }
-
-        // Physical computations
-        if ( !this->computeAllMatrices.getValue()) continue;
-
-        const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
-
-        Mat33 F, FT, Finv, E;
-        F.fill ( 0 );
-        E.fill ( 0 );
-        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
-        {
-            const int& idx = nbRefs.getValue() * i + j;
-            const int& idxReps = m_reps[idx];
-
-            Mat33 cov;
-            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
-            Mat33 rot;
-            in[idxReps ].getOrientation().toMatrix(rot);
-            F += cov + rot * this->Atilde[idxReps][i];
-        }
-        FT.transpose( F);
-
-        // strain and determinant
-        this->det[i] = determinant ( F );
-        invertMatrix ( Finv, F );
-        for ( unsigned int k = 0; k < 3; ++k )
-        {
-            for ( unsigned int j = 0; j < 3; ++j )
-                for ( unsigned int l = 0; l < 3; ++l )
-                    E[k][j] += F[l][j] * F[l][k];
-
-            E[k][k] -= 1.;
-        }
-        E /= 2.; // update E=1/2(U^TU-I)
-        this->deformationTensors[i][0] = E[0][0];
-        this->deformationTensors[i][1] = E[1][1];
-        this->deformationTensors[i][2] = E[2][2];
-        this->deformationTensors[i][3] = E[0][1];
-        this->deformationTensors[i][4] = E[1][2];
-        this->deformationTensors[i][5] = E[0][2]; // column form
-
-        // update B and ddet
-        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
-        {
-            unsigned int k, m;
-            const int& idx = nbRefs.getValue() * i + j;
-            const int& idxReps = m_reps[idx];
-
-            Mat6xIn& Bij = this->B[idxReps][i];
-            const Mat33& At = this->Atilde[idxReps][i];
-            const Quat& rot = in[idxReps ].getOrientation();
-            const Vec3& dWeight = dw[idxReps][i];
-
-            Mat33 D, Ma, Mb, Mc, Mw;
-            ComputeMa( D, rot); Ma=D*(At);
-            ComputeMb( D, rot); Mb=D*(At);
-            ComputeMc( D, rot); Mc=D*(At);
-            ComputeMw( D, rot); Mw=D*(At);
-            Mat67 dE;
-            D = FT*Ma; dE[0][0] = 2*D[0][0]; dE[1][0] = 2*D[1][1]; dE[2][0] = 2*D[2][2];
-            dE[3][0] = D[0][1]+D[1][0]; dE[4][0] = D[1][2]+D[2][1]; dE[5][0] = D[0][2]+D[2][0];
-            D = FT*Mb; dE[0][1] = 2*D[0][0]; dE[1][1] = 2*D[1][1]; dE[2][1] = 2*D[2][2];
-            dE[3][1] = D[0][1]+D[1][0]; dE[4][1] = D[1][2]+D[2][1]; dE[5][1] = D[0][2]+D[2][0];
-            D = FT*Mc; dE[0][2] = 2*D[0][0]; dE[1][2] = 2*D[1][1]; dE[2][2] = 2*D[2][2];
-            dE[3][2] = D[0][1]+D[1][0]; dE[4][2] = D[1][2]+D[2][1]; dE[5][2] = D[0][2]+D[2][0];
-            D = FT*Mw; dE[0][3] = 2*D[0][0]; dE[1][3] = 2*D[1][1]; dE[2][3] = 2*D[2][2];
-            dE[3][3] = D[0][1]+D[1][0]; dE[4][3] = D[1][2]+D[2][1]; dE[5][3] = D[0][2]+D[2][0];
-            for(k=0; k<3; k++) for(m=0; m<3; m++) dE[m][k+4]=dWeight[m]*F[k][m];
-            for(k=0; k<3; k++) dE[3][k+4]=0.5*(dWeight[0]*F[k][1]+dWeight[1]*F[k][0]);
-            for(k=0; k<3; k++) dE[4][k+4]=0.5*(dWeight[1]*F[k][2]+dWeight[2]*F[k][1]);
-            for(k=0; k<3; k++) dE[5][k+4]=0.5*(dWeight[0]*F[k][2]+dWeight[2]*F[k][0]);
-            Bij = dE * L[idxReps];
-            /*
-            // Compute ddet
-            for(k=0;k<7;k++) u7[k]=0;
-            for(k=0;k<3;k++)
-            {
-              for(m=0;m<3;m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k];
-              u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
-              u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
-            }
-            for(k=0;k<6;k++) n->ddet[idxReps].rigid[k]=0;
-            for(k=0;k<6;k++) for(m=0;m<7;m++) n->ddet[idxReps].rigid[k]+=u7[m]*L[f][m][k];
-            n->ddet[idxReps].rigid=n->det * n->ddet[idxReps].rigid;
-            */
-
-        }
-#endif
-    }
+    _apply( out, in);
 }
 
 
@@ -1625,12 +1501,378 @@ void SkinningMapping<BasicMapping>::ComputeMw(Mat33& M, const Quat& q) const
     M[2][0]=-q[1]; M[2][1]=q[0]; M[2][2]=0;
 }
 
+#endif
+
+// Generic Apply (old one in .inl)
+template <class BasicMapping>
+template<int InN, class InReal2, template<int,class> class TCoord>
+inline typename enable_if<Equal<typename defaulttype::StdRigidTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in)
+{
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_weights = weights.getValue();
+
+    rotatedPoints.resize ( initPos.size() );
+    out.resize ( initPos.size() / nbRefs.getValue() );
+    for ( unsigned int i=0 ; i<out.size(); i++ )
+    {
+        out[i] = Coord();
+        for ( unsigned int j = 0; j < nbRefs.getValue(); ++j)
+        {
+            const int& idx=nbRefs.getValue() *i+j;
+            const int& idxReps=m_reps[idx];
+
+            // Save rotated points for applyJ/JT
+            rotatedPoints[idx] = in[idxReps].getOrientation().rotate ( initPos[idx] );
+
+            // And add each reference frames contributions to the new position out[i]
+            out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_weights[idxReps][i];
+        }
+
+#ifdef SOFA_DEV
+        if ( !(this->computeJ.getValue() || this->computeAllMatrices.getValue())) continue;
+
+        // update J
+        Mat37 Q;
+        VMat76 L;
+        L.resize(nbRefs.getValue());
+        for(unsigned int j = 0; j < nbRefs.getValue(); j++)
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            ComputeQ( Q, in[idxReps ].getOrientation(), initPos[idx]);
+            ComputeL( L[idxReps], in[idxReps ].getOrientation());
+            this->J[idxReps][i] = (Real)m_weights[idxReps][i] * Q * L[idxReps];
+        }
+
+        // Physical computations
+        if ( !this->computeAllMatrices.getValue()) continue;
+
+        const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
+
+        Mat33 F, FT, Finv, E;
+        F.fill ( 0 );
+        E.fill ( 0 );
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat33 cov;
+            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
+            Mat33 rot;
+            in[idxReps ].getOrientation().toMatrix(rot);
+            F += cov + rot * this->Atilde[idxReps][i];
+        }
+        FT.transpose( F);
+
+        // strain and determinant
+        this->det[i] = determinant ( F );
+        invertMatrix ( Finv, F );
+        for ( unsigned int k = 0; k < 3; ++k )
+        {
+            for ( unsigned int j = 0; j < 3; ++j )
+                for ( unsigned int l = 0; l < 3; ++l )
+                    E[k][j] += F[l][j] * F[l][k];
+
+            E[k][k] -= 1.;
+        }
+        E /= 2.; // update E=1/2(U^TU-I)
+        this->deformationTensors[i][0] = E[0][0];
+        this->deformationTensors[i][1] = E[1][1];
+        this->deformationTensors[i][2] = E[2][2];
+        this->deformationTensors[i][3] = E[0][1];
+        this->deformationTensors[i][4] = E[1][2];
+        this->deformationTensors[i][5] = E[0][2]; // column form
+
+        // update B and ddet
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            unsigned int k, m;
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat6xIn& Bij = this->B[idxReps][i];
+            const Mat33& At = this->Atilde[idxReps][i];
+            const Quat& rot = in[idxReps ].getOrientation();
+            const Vec3& dWeight = dw[idxReps][i];
+
+            Mat33 D, Ma, Mb, Mc, Mw;
+            ComputeMa( D, rot); Ma=D*(At);
+            ComputeMb( D, rot); Mb=D*(At);
+            ComputeMc( D, rot); Mc=D*(At);
+            ComputeMw( D, rot); Mw=D*(At);
+            Mat67 dE;
+            D = FT*Ma; dE[0][0] = 2*D[0][0]; dE[1][0] = 2*D[1][1]; dE[2][0] = 2*D[2][2];
+            dE[3][0] = D[0][1]+D[1][0]; dE[4][0] = D[1][2]+D[2][1]; dE[5][0] = D[0][2]+D[2][0];
+            D = FT*Mb; dE[0][1] = 2*D[0][0]; dE[1][1] = 2*D[1][1]; dE[2][1] = 2*D[2][2];
+            dE[3][1] = D[0][1]+D[1][0]; dE[4][1] = D[1][2]+D[2][1]; dE[5][1] = D[0][2]+D[2][0];
+            D = FT*Mc; dE[0][2] = 2*D[0][0]; dE[1][2] = 2*D[1][1]; dE[2][2] = 2*D[2][2];
+            dE[3][2] = D[0][1]+D[1][0]; dE[4][2] = D[1][2]+D[2][1]; dE[5][2] = D[0][2]+D[2][0];
+            D = FT*Mw; dE[0][3] = 2*D[0][0]; dE[1][3] = 2*D[1][1]; dE[2][3] = 2*D[2][2];
+            dE[3][3] = D[0][1]+D[1][0]; dE[4][3] = D[1][2]+D[2][1]; dE[5][3] = D[0][2]+D[2][0];
+            for(k=0; k<3; k++) for(m=0; m<3; m++) dE[m][k+4]=dWeight[m]*F[k][m];
+            for(k=0; k<3; k++) dE[3][k+4]=0.5*(dWeight[0]*F[k][1]+dWeight[1]*F[k][0]);
+            for(k=0; k<3; k++) dE[4][k+4]=0.5*(dWeight[1]*F[k][2]+dWeight[2]*F[k][1]);
+            for(k=0; k<3; k++) dE[5][k+4]=0.5*(dWeight[0]*F[k][2]+dWeight[2]*F[k][0]);
+            Bij = dE * L[idxReps];
+            /*
+            // Compute ddet
+            for(k=0;k<7;k++) u7[k]=0;
+            for(k=0;k<3;k++)
+            {
+              for(m=0;m<3;m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k];
+              u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
+              u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
+            }
+            for(k=0;k<6;k++) n->ddet[idxReps].rigid[k]=0;
+            for(k=0;k<6;k++) for(m=0;m<7;m++) n->ddet[idxReps].rigid[k]+=u7[m]*L[f][m][k];
+            n->ddet[idxReps].rigid=n->det * n->ddet[idxReps].rigid;
+            */
+
+        }
+#endif
+    }
+}
+
+#ifdef SOFA_DEV
+
+// Apply for Affine types
+template <class BasicMapping>
+template<int InN, class InReal2, template<int,class> class TCoord>
+typename enable_if<Equal<typename defaulttype::StdAffineTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in)
+{
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_weights = weights.getValue();
+
+    rotatedPoints.resize ( initPos.size() );
+    out.resize ( initPos.size() / nbRefs.getValue() );
+
+    // Resize matrices
+    if ( this->computeAllMatrices.getValue())
+    {
+        this->det.resize(out.size());
+        this->deformationTensors.resize(out.size());
+        this->B.resize(in.size());
+        for(unsigned int i = 0; i < in.size(); ++i)
+            this->B[i].resize(out.size());
+    }
+
+    for ( unsigned int i = 0 ; i < out.size(); i++ )
+    {
+        // Point transformation (apply)
+        out[i] = Coord();
+
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            // Save rotated points for applyJ/JT
+            rotatedPoints[idx] = in[idxReps].getAffine() * initPos[idx];
+
+            // And add each reference frames contributions to the new position out[i]
+            out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_weights[idxReps][i];
+        }
+
+        // Physical computations
+        if ( !this->computeAllMatrices.getValue()) continue;
+
+        const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
+
+        Mat33 F, Finv, E;
+        F.fill ( 0 );
+        E.fill ( 0 );
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat33 cov;
+            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
+            F += cov + in[idxReps ].getAffine() * this->Atilde[idxReps][i];
+        }
+
+        // strain and determinant
+        this->det[i] = determinant ( F );
+        invertMatrix ( Finv, F );
+        for ( unsigned int k = 0; k < 3; ++k )
+        {
+            for ( unsigned int j = 0; j < 3; ++j )
+                for ( unsigned int l = 0; l < 3; ++l )
+                    E[k][j] += F[l][j] * F[l][k];
+
+            E[k][k] -= 1.;
+        }
+        E /= 2.; // update E=1/2(U^TU-I)
+        this->deformationTensors[i][0] = E[0][0];
+        this->deformationTensors[i][1] = E[1][1];
+        this->deformationTensors[i][2] = E[2][2];
+        this->deformationTensors[i][3] = E[0][1];
+        this->deformationTensors[i][4] = E[1][2];
+        this->deformationTensors[i][5] = E[0][2]; // column form
+
+        // update B and ddet
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            unsigned int k, l, m;
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat6xIn& Bij = this->B[idxReps][i];
+            const Mat33& At = this->Atilde[idxReps][i];
+            const Vec3& dWeight = dw[idxReps][i];
+
+            // stretch
+            for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) for ( l = 0; l < 3; l++ ) Bij[m][3*l+k] = F[l][m] * At[k][m];
+            for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) Bij[m][9+k] = dWeight [m] * F[k][m];
+
+            // shear
+            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ ) Bij[3][3*l+k] = 0.5 * ( F[l][0] * At[k][1] +
+                            F[l][1] * At[k][0] );
+            for ( k = 0; k < 3; k++ ) Bij[3][9+k] = 0.5 * ( dWeight [0] * F[k][1] + dWeight [1] * F[k][0] );
+            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
+                    Bij[4][3*l+k] = 0.5 * ( F[l][1] * At[k][2] + F[l][2] * At[k][1] );
+            for ( k = 0; k < 3; k++ ) Bij[4][9+k] = 0.5 * ( dWeight [1] * F[k][2] + dWeight [2] * F[k][1] );
+            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
+                    Bij[5][3*l+k] = 0.5 * ( F[l][2] * At[k][0] + F[l][0] * At[k][2] );
+            for ( k = 0; k < 3; k++ ) Bij[5][9+k] = 0.5 * ( dWeight [2] * F[k][0] + dWeight [0] * F[k][2] );
+
+            // Compute ddet
+            /*
+            for ( k = 0;k < 12;k++ ) n->ddet[j].affine[k] = 0;
+            for ( k = 0;k < 3;k++ ) for ( m = 0;m < 3;m++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[m+3*k] +=
+                    At[m][l] * Finv[l][k];
+            for ( k = 0;k < 3;k++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[9+k] += dWeight [l] * Finv[l][k];
+            this->ddet[idxReps][i] = this->det[i] * this->ddet[idxReps][i];
+            */
+        }
+    }
+}
+
+
+// Apply for Quadratic types
+template <class BasicMapping>
+template<int InN, class InReal2, template<int,class> class TCoord>
+typename enable_if<Equal<typename defaulttype::StdQuadraticTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in)
+{
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_weights = weights.getValue();
+
+    rotatedPoints.resize ( initPos.size() );
+    out.resize ( initPos.size() / nbRefs.getValue() );
+
+    // Resize matrices
+    if ( this->computeAllMatrices.getValue())
+    {
+        this->det.resize(out.size());
+        this->deformationTensors.resize(out.size());
+        this->B.resize(in.size());
+        for(unsigned int i = 0; i < in.size(); ++i)
+            this->B[i].resize(out.size());
+    }
+
+    for ( unsigned int i = 0 ; i < out.size(); i++ )
+    {
+        // Point transformation (apply)
+        out[i] = Coord();
+
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            const Vec3& p0 = initPos[idx];
+            Vec9 p2 = Vec9( p0[0], p0[1], p0[2], p0[0]*p0[0], p0[1]*p0[1], p0[2]*p0[2], p0[0]*p0[1], p0[1]*p0[2], p0[0]*p0[2]);
+
+            // Save rotated points for applyJ/JT
+            rotatedPoints[idx] = in[idxReps].getQuadratic() * p2;
+
+            // And add each reference frames contributions to the new position out[i]
+            out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_weights[idxReps][i];
+        }
+
+        // Physical computations
+        if ( !this->computeAllMatrices.getValue()) continue;
+
+        const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
+
+        Mat33 F, FT, Finv, E;
+        F.fill ( 0 );
+        E.fill ( 0 );
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat33 cov;
+            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
+            F += cov + in[idxReps ].getQuadratic() * this->Atilde[idxReps][i];
+        }
+        FT.transpose(F);
+
+        // strain and determinant
+        this->det[i] = determinant ( F );
+        invertMatrix ( Finv, F );
+        for ( unsigned int k = 0; k < 3; ++k )
+        {
+            for ( unsigned int j = 0; j < 3; ++j )
+                for ( unsigned int l = 0; l < 3; ++l )
+                    E[k][j] += F[l][j] * F[l][k];
+
+            E[k][k] -= 1.;
+        }
+        E /= 2.; // update E=1/2(U^TU-I)
+        this->deformationTensors[i][0] = E[0][0];
+        this->deformationTensors[i][1] = E[1][1];
+        this->deformationTensors[i][2] = E[2][2];
+        this->deformationTensors[i][3] = E[0][1];
+        this->deformationTensors[i][4] = E[1][2];
+        this->deformationTensors[i][5] = E[0][2]; // column form
+
+        // update B and ddet
+        for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
+        {
+            unsigned int k, l, m;
+            const int& idx = nbRefs.getValue() * i + j;
+            const int& idxReps = m_reps[idx];
+
+            Mat6xIn& Bij = this->B[idxReps][i];
+            const MatInAtx3& At = this->Atilde[idxReps][i];
+            const Vec3& dWeight = dw[idxReps][i];
+
+            // stretch
+            for(k=0; k<9; k++) for(m=0; m<3; m++) for(l=0; l<3; l++) Bij[m][9*l+k] = F[l][m] * At[k][m];
+            for(k=0; k<3; k++) for(m=0; m<3; m++) Bij[m][27+k]=dWeight[m]*F[k][m];
+
+            // shear
+            for(k=0; k<9; k++) for(l=0; l<3; l++) Bij[3][9*l+k]=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
+            for(k=0; k<3; k++) Bij[3][27+k]=0.5*(dWeight[0]*F[k][1] + dWeight[1]*F[k][0]);
+            for(k=0; k<9; k++) for(l=0; l<3; l++) Bij[4][9*l+k]=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
+            for(k=0; k<3; k++) Bij[4][27+k]=0.5*(dWeight[1]*F[k][2] + dWeight[2]*F[k][1]);
+            for(k=0; k<9; k++) for(l=0; l<3; l++) Bij[5][9*l+k]=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
+            for(k=0; k<3; k++) Bij[5][27+k]=0.5*(dWeight[2]*F[k][0] + dWeight[0]*F[k][2]);
+
+            /*
+                            // Compute ddet
+                            for(k=0;k<30;k++) n->ddet[j].quadratic[k]=0;
+                            for(k=0;k<3;k++) for(m=0;m<9;m++) for(l=0;l<3;l++) n->ddet[j].quadratic[m+9*k]+=
+                            (*At2)[m][l]*Finv[l][k];
+                            for(k=0;k<3;k++) for(l=0;l<3;l++) n->ddet[j].quadratic[27+k]+= (*dW)[l]*Finv[l][k];
+                            n->ddet[j].quadratic=n->det * n->ddet[j].quadratic;
+            */
+        }
+    }
+}
+
+
+
 // Affine specializations
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
-
-template <>
-void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::apply(Out::VecCoord& /*out*/, const In::VecCoord& /*in*/);
 
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::applyJ(Out::VecDeriv& /*out*/, const In::VecDeriv& /*in*/);
@@ -1646,9 +1888,6 @@ void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, Mechan
 // Quadratic specializations
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
-
-template <>
-void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::apply(Out::VecCoord& /*out*/, const In::VecCoord& /*in*/);
 
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::applyJ(Out::VecDeriv& /*out*/, const In::VecDeriv& /*in*/);

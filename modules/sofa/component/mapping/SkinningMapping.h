@@ -72,8 +72,34 @@ using sofa::component::topology::HexahedronGeodesicalDistance;
 #define WEIGHT_HERMITE 3
 #define WEIGHT_SPLINE 4
 
+////////////// Definitions to avoid multiple specializations //////////////////
+// See "Substitution failure is not an error" desgin patern and boost::enable_if
+// http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error
+// http://www.boost.org/doc/libs/1_36_0/libs/utility/enable_if.html
+template <bool B, class T = void>
+struct enable_if_c
+{
+    typedef T type;
+};
 
+template <class T>
+struct enable_if_c<false, T> {};
 
+template <class Cond, class T = void>
+struct enable_if : public enable_if_c<Cond::value, T> {};
+
+template <class T, class T2>
+struct Equal
+{
+    typedef char ok;
+    typedef long nok;
+
+    static ok test(const T t, const T t2);
+    static nok test(...);
+
+    static const bool value=(sizeof(test(T(),T2()))==sizeof(ok));
+};
+///////////////////////////////////////////////////////////////////////////////
 
 
 template <class BasicMapping>
@@ -298,6 +324,16 @@ protected:
 #ifdef SOFA_DEV
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
+#endif
+    //template<int InN, class InReal2, template<int,class> class T>
+    //inline typename enable_if_c<!(Equal<defaulttype::StdAffineTypes<InN, InReal2>,T<InN,InReal2> >::value || Equal<defaulttype::StdQuadraticTypes<InN, InReal2>,T<InN,InReal2> >::value)>::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename T<InN,InReal2>::Coord>& in);
+    template<int InN, class InReal2, template<int,class> class TCoord>
+    typename enable_if<Equal<typename defaulttype::StdRigidTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in);
+#ifdef SOFA_DEV
+    template<int InN, class InReal2, template<int,class> class TCoord>
+    typename enable_if<Equal<typename defaulttype::StdAffineTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in);
+    template<int InN, class InReal2, template<int,class> class TCoord>
+    typename enable_if<Equal<typename defaulttype::StdQuadraticTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in);
 #endif
 };
 
