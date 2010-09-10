@@ -158,56 +158,6 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3
 
 
 template <>
-void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJ ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    VecCoord& xto = *this->toModel->getX();
-    out.resize ( xto.size() );
-    Deriv v;
-    In::Deriv::Affine omega;
-
-    if ( ! ( maskTo->isInUse() ) )
-    {
-        for ( unsigned int i=0; i<out.size(); i++ )
-        {
-            out[i] = Deriv();
-            for ( unsigned int j=0 ; j<in.size(); j++ )
-            {
-                VecIn speed;
-                for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
-
-                Vec3 f = ( this->J[j][i] * speed );
-
-                out[i] += Deriv ( f[0], f[1], f[2] );
-            }
-        }
-    }
-    else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-
-        ParticleMask::InternalStorage::const_iterator it;
-        for ( it=indices.begin(); it!=indices.end(); it++ )
-        {
-            const int i= ( int ) ( *it );
-            out[i] = Deriv();
-            for ( unsigned int j=0 ; j<in.size(); j++ )
-            {
-                VecIn speed;
-                for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
-
-                Vec3 f = ( this->J[j][i] * speed );
-
-                out[i] += Deriv ( f[0], f[1], f[2] );
-            }
-        }
-    }
-}
-
-
-template <>
 void SkinningMapping<MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >::applyJT ( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     Deriv v;
@@ -350,56 +300,6 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< Me
 ///////////////////////////////////////////////////////////////////////////////
 //                           Quadratic Specialization                           //
 ///////////////////////////////////////////////////////////////////////////////
-
-
-template <>
-void SkinningMapping<MechanicalMapping< MechanicalState<Quadratic3dTypes>, MechanicalState<Vec3dTypes> > >::applyJ ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    VecCoord& xto = *this->toModel->getX();
-    out.resize ( xto.size() );
-    Deriv v;
-    In::Deriv::Quadratic omega;
-
-    if ( ! ( maskTo->isInUse() ) )
-    {
-        for ( unsigned int i=0; i<out.size(); i++ )
-        {
-            out[i] = Deriv();
-            for ( unsigned int j=0 ; j<in.size(); j++ )
-            {
-                VecIn speed;
-                for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
-
-                Vec3 f = ( this->J[j][i] * speed );
-
-                out[i] += Deriv ( f[0], f[1], f[2] );
-            }
-        }
-    }
-    else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-
-        ParticleMask::InternalStorage::const_iterator it;
-        for ( it=indices.begin(); it!=indices.end(); it++ )
-        {
-            const int i= ( int ) ( *it );
-            out[i] = Deriv();
-            for ( unsigned int j=0 ; j<in.size(); j++ )
-            {
-                VecIn speed;
-                for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
-
-                Vec3 f = ( this->J[j][i] * speed );
-
-                out[i] += Deriv ( f[0], f[1], f[2] );
-            }
-        }
-    }
-}
 
 
 template <>
