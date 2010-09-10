@@ -365,12 +365,12 @@ protected:
 #endif
 
     template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type _applyJT( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    inline typename enable_if<Equal<RigidType, T> >::type _applyJT_Matrix( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 #ifdef SOFA_DEV
     template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type _applyJT( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    inline typename enable_if<Equal<AffineType, T> >::type _applyJT_Matrix( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
     template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type _applyJT( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    inline typename enable_if<Equal<QuadraticType, T> >::type _applyJT_Matrix( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 #endif
 };
 
