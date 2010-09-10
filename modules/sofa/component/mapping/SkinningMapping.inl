@@ -1363,7 +1363,7 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >
 
             Mat3xIn Ji = this->J[idxReps][i];
             Ji.fill(0);
-            Ji = (Real)m_weights[idxReps][i] * Q * L;
+            Ji = (InReal)m_weights[idxReps][i] * Q * L;
             this->J0[idxReps][i] = Ji;
         }
     }
@@ -1496,7 +1496,7 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType, 
             At[6][0] = p2[1];   At[6][1]=p2[0];   At[6][2]=0;
             At[7][0] = 0;       At[7][1]=p2[2];   At[7][2]=p2[1];
             At[8][0] = p2[2];   At[8][1]=0;       At[8][2]=p2[0];
-            At = m_weights[idxReps][i] * At;
+            At = (InReal)m_weights[idxReps][i] * At;
             for (int k=0; k<9; k++) for (int l=0; l<3; l++) At[k][l] += p2[k] * m_dweight[idxReps][i][l];
 
             Mat3xIn& Ji = this->J[idxReps][i];
@@ -1557,7 +1557,7 @@ SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::
 
             ComputeQ( Q, in[idxReps ].getOrientation(), initPos[idx]);
             ComputeL( L[idxReps], in[idxReps ].getOrientation());
-            this->J[idxReps][i] = (Real)m_weights[idxReps][i] * Q * L[idxReps];
+            this->J[idxReps][i] = (InReal)m_weights[idxReps][i] * Q * L[idxReps];
         }
 
         // Physical computations
