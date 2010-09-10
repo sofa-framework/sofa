@@ -330,11 +330,11 @@ protected:
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
 
     template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices();
+    inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(RigidType); // Useless parameter here to be compatible with gcc-4.0
     template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type precomputeMatrices();
+    inline typename enable_if<Equal<AffineType, T> >::type precomputeMatrices(AffineType); // Useless parameter here to be compatible with gcc-4.0
     template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type precomputeMatrices();
+    inline typename enable_if<Equal<QuadraticType, T> >::type precomputeMatrices(QuadraticType); // Useless parameter here to be compatible with gcc-4.0
 #endif
 
     template<class TCoord>
@@ -344,6 +344,15 @@ protected:
     inline typename enable_if<Equal<typename AffineType::Coord, TCoord> >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename AffineType::Coord>& in);
     template<class TCoord>
     inline typename enable_if<Equal<typename QuadraticType::Coord, TCoord> >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename QuadraticType::Coord>& in);
+#endif
+
+    template<class TDeriv>
+    inline typename enable_if<Equal<typename RigidType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename RigidType::Deriv>& in);
+#ifdef SOFA_DEV
+    template<class TDeriv>
+    inline typename enable_if<Equal<typename AffineType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename AffineType::Deriv>& in);
+    template<class TDeriv>
+    inline typename enable_if<Equal<typename QuadraticType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename QuadraticType::Deriv>& in);
 #endif
 };
 
