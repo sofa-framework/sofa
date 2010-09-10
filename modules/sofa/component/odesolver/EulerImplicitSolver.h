@@ -40,23 +40,38 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 
-/** Implicit time integrator using backward Euler scheme for first and second order. By default second.
+/** Semi-implicit time integrator using backward Euler scheme for first and second degree ODEs. (default: second)
  *
  *** 2nd Order ***
  *
- * This integration scheme is based on the following equations:
+ * This is based on [Baraff and Witkin, Large Steps in Cloth Simulation, SIGGRAPH 1998]
+ * The integration scheme is based on the following equations:
  *
  *   $x_{t+h} = x_t + h v_{t+h}$
  *   $v_{t+h} = v_t + h a_{t+h}$
  *
- * Applied to a mechanical system where $ M a_t + (B + r_M M + r_K K) v_t + K x_t = f_ext$, we need to solve the following system:
+ *   The unknown is
+ *   $v_{t+h} - v_t = dv$
  *
- *   $ M a_{t+h} + (B + r_M M + r_K K) v_{t+h} + K x_{t+h} = f_ext $
- *   $ M a_{t+h} + (B + r_M M + r_K K) ( v_t + h a_{t+h} ) + K ( x_t + h v_t + h^2 a_{t+h} ) = f_ext $
- *   $ ( M + h (B + r_M M + r_K K) + h^2 K ) a_{t+h} = f_ext - (B + r_M M + r_K K) v_t - K ( x_t + h v_t ) $
- *   $ ( M + h (B + r_M M + r_K K) + h^2 K ) a_{t+h} = f_ext - K x_t - B v_t - (r_M M + r_K K + h K) v_t $
- *   $ ( M + h (B + r_M M + r_K K) + h^2 K ) a_{t+h} = f_t - (r_M M + r_K K + h K) v_t $
+ *   Newton's law is
+ *   $ M dv = h f(t+h) $
+ *   $ M dv = h ( f(t) + K dx     + (B - r_M M + r_K K) dv )$
+ *   $ M dv = h ( f(t) + K h dv   + (B - r_M M + r_K K) dv )$
  *
+ *   $ M $ is the mass matrix.
+ *   $ K = df/dx $ is the stiffness implemented (or not) by the force fields.
+ *   $ B = df/dv $ is the damping implemented (or not) by the force fields.
+ *   An additional, uniform Rayleigh damping  $- r_M M + r_K K$ is imposed by the solver.
+ *
+ * This corresponds to the following equation system:
+ *
+ *   $ ( (1+r_M) M - h B - h(h + r_K) K ) dv = h ( f(t) + h K dv - r_M M dv )$
+ *
+ * Moreover, the projective constraints filter out the forbidden motions.
+ * This is equivalent with multiplying vectors with a projection matrix $P$.
+ * Finally, the equation system set by this ode solver is:
+ *
+ *   $ P ( (1+r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + h K dv - r_M M dv )$
  *
  *** 1st Order ***
  *
