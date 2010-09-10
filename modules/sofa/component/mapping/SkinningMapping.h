@@ -330,11 +330,11 @@ protected:
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
 
     template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(RigidType); // Useless parameter here to be compatible with gcc-4.0
+    inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(const RigidType&); // Useless parameter here to be compatible with gcc-4.0
     template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type precomputeMatrices(AffineType); // Useless parameter here to be compatible with gcc-4.0
+    inline typename enable_if<Equal<AffineType, T> >::type precomputeMatrices(const AffineType&); // Useless parameter here to be compatible with gcc-4.0
     template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type precomputeMatrices(QuadraticType); // Useless parameter here to be compatible with gcc-4.0
+    inline typename enable_if<Equal<QuadraticType, T> >::type precomputeMatrices(const QuadraticType&); // Useless parameter here to be compatible with gcc-4.0
 #endif
 
     template<class TCoord>
@@ -365,12 +365,12 @@ protected:
 #endif
 
     template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type _applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, RigidType); // Useless last parameter to be compatible with gcc-4.0
+    inline typename enable_if<Equal<RigidType, T> >::type _applyJT( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 #ifdef SOFA_DEV
     template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type _applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, AffineType); // Useless last parameter to be compatible with gcc-4.0
+    inline typename enable_if<Equal<AffineType, T> >::type _applyJT( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
     template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type _applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, QuadraticType); // Useless last parameter to be compatible with gcc-4.0
+    inline typename enable_if<Equal<QuadraticType, T> >::type _applyJT( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 #endif
 };
 
