@@ -544,7 +544,7 @@ void SkinningMapping<BasicMapping>::setRepartition ( vector<int> &rep )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    _apply( out, in);
+    _apply<N,typename In::DataTypes::Real,typename In::DataTypes::Coord>( out, in);
 }
 
 
@@ -1505,9 +1505,9 @@ void SkinningMapping<BasicMapping>::ComputeMw(Mat33& M, const Quat& q) const
 
 // Generic Apply (old one in .inl)
 template <class BasicMapping>
-template<int InN, class InReal2, template<int,class> class TCoord>
-inline typename enable_if<Equal<typename defaulttype::StdRigidTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type
-SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in)
+template<int InN, class InReal2, class TCoord>
+inline typename enable_if<Equal<typename defaulttype::StdRigidTypes<InN, InReal2>::Coord, TCoord > >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename defaulttype::StdRigidTypes<InN, InReal2>::Coord>& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
@@ -1640,9 +1640,9 @@ SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::
 
 // Apply for Affine types
 template <class BasicMapping>
-template<int InN, class InReal2, template<int,class> class TCoord>
-typename enable_if<Equal<typename defaulttype::StdAffineTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type
-SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in)
+template<int InN, class InReal2, class TCoord>
+typename enable_if<Equal<typename defaulttype::StdAffineTypes<InN, InReal2>::Coord, TCoord> >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename defaulttype::StdAffineTypes<InN, InReal2>::Coord>& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
@@ -1755,9 +1755,9 @@ SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::
 
 // Apply for Quadratic types
 template <class BasicMapping>
-template<int InN, class InReal2, template<int,class> class TCoord>
-typename enable_if<Equal<typename defaulttype::StdQuadraticTypes<InN, InReal2>::Coord, TCoord<InN,InReal2> > >::type
-SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<TCoord<InN,InReal2> >& in)
+template<int InN, class InReal2, class TCoord>
+typename enable_if<Equal<typename defaulttype::StdQuadraticTypes<InN, InReal2>::Coord, TCoord> >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename defaulttype::StdQuadraticTypes<InN, InReal2>::Coord>& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
