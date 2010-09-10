@@ -354,6 +354,24 @@ protected:
     template<class TDeriv>
     inline typename enable_if<Equal<typename QuadraticType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename QuadraticType::Deriv>& in);
 #endif
+
+    template<class TDeriv>
+    inline typename enable_if<Equal<typename RigidType::Deriv, TDeriv> >::type _applyJT( sofa::helper::vector<typename RigidType::Deriv>& out, const typename Out::VecDeriv& in);
+#ifdef SOFA_DEV
+    template<class TDeriv>
+    inline typename enable_if<Equal<typename AffineType::Deriv, TDeriv> >::type _applyJT( sofa::helper::vector<typename AffineType::Deriv>& out, const typename Out::VecDeriv& in);
+    template<class TDeriv>
+    inline typename enable_if<Equal<typename QuadraticType::Deriv, TDeriv> >::type _applyJT( sofa::helper::vector<typename QuadraticType::Deriv>& out, const typename Out::VecDeriv& in);
+#endif
+
+    template<class T>
+    inline typename enable_if<Equal<RigidType, T> >::type _applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, RigidType); // Useless last parameter to be compatible with gcc-4.0
+#ifdef SOFA_DEV
+    template<class T>
+    inline typename enable_if<Equal<AffineType, T> >::type _applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, AffineType); // Useless last parameter to be compatible with gcc-4.0
+    template<class T>
+    inline typename enable_if<Equal<QuadraticType, T> >::type _applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, QuadraticType); // Useless last parameter to be compatible with gcc-4.0
+#endif
 };
 
 using core::Mapping;
