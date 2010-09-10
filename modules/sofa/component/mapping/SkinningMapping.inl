@@ -304,7 +304,7 @@ void SkinningMapping<BasicMapping>::init()
     }
 
 #ifdef SOFA_DEV
-    precomputeMatrices();
+    precomputeMatrices<typename In::DataTypes>();
 #endif
 
     this->BasicMapping::init();
@@ -544,7 +544,7 @@ void SkinningMapping<BasicMapping>::setRepartition ( vector<int> &rep )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    _apply<N,typename In::DataTypes::Real,typename In::DataTypes::Coord>( out, in);
+    _apply<typename In::DataTypes::Coord>( out, in);
 }
 
 
@@ -1348,76 +1348,6 @@ void SkinningMapping<BasicMapping>::getLocalCoord( Coord& result, const typename
 
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::precomputeMatrices()
-{
-    const VecInCoord& xfrom0 = *this->fromModel->getX0();
-    const VecCoord& xto0 = *this->toModel->getX0();
-    const vector<int>& m_reps = repartition.getValue();
-    const VVD& m_weights = weights.getValue();
-    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
-
-    // vol and massDensity
-    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
-    this->getContext()->get( hexaContainer);
-    double volume = this->voxelVolume.getValue();
-    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
-    const VecCoord& xto = *this->toModel->getX();
-    this->vol.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
-    this->massDensity.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
-
-    // Resize matrices
-    this->det.resize(xto.size());
-    this->deformationTensors.resize(xto.size());
-    this->B.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->B[i].resize(xto.size());
-    this->Atilde.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->Atilde[i].resize(xto0.size());
-    this->J0.resize ( xfrom0.size() );
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->J0[i].resize(xto0.size());
-    this->J.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->J[i].resize(xto0.size());
-
-    // Precompute matrices
-    for ( unsigned int i=0 ; i<xto0.size(); i++ )
-    {
-        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-        {
-            const int& idx=nbRefs.getValue() *i+m;
-            const int& idxReps=m_reps[idx];
-
-            const InCoord& xi0 = xfrom0[idxReps];
-            Mat33 transformation;
-            QtoR( transformation, xi0.getOrientation());
-            Mat33 transformationInv;
-            transformationInv.invert (transformation);
-
-            for(int k=0; k<3; k++)
-            {
-                for(int l=0; l<3; l++)
-                {
-                    (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (transformationInv)[k][l];
-                }
-            }
-
-            Mat76 L; ComputeL(L, xi0.getOrientation());
-
-            Mat37 Q; ComputeQ(Q, xi0.getOrientation(), initPos[idx]);
-
-            Mat3xIn Ji = this->J[idxReps][i];
-            Ji.fill(0);
-            Ji = (Real)m_weights[idxReps][i] * Q * L;
-            this->J0[idxReps][i] = Ji;
-        }
-    }
-}
-
-template <class BasicMapping>
 void SkinningMapping<BasicMapping>::getCov33 (Mat33& M, const Vec3& vec1, const Vec3& vec2) const
 {
     for(int i=0; i<3; i++)
@@ -1501,13 +1431,231 @@ void SkinningMapping<BasicMapping>::ComputeMw(Mat33& M, const Quat& q) const
     M[2][0]=-q[1]; M[2][1]=q[0]; M[2][2]=0;
 }
 
+
+template <class BasicMapping>
+template<class T>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices()
+{
+    const VecInCoord& xfrom0 = *this->fromModel->getX0();
+    const VecCoord& xto0 = *this->toModel->getX0();
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_weights = weights.getValue();
+    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+
+    // vol and massDensity
+    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
+    this->getContext()->get( hexaContainer);
+    double volume = this->voxelVolume.getValue();
+    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    const VecCoord& xto = *this->toModel->getX();
+    this->vol.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
+    this->massDensity.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
+
+    // Resize matrices
+    this->det.resize(xto.size());
+    this->deformationTensors.resize(xto.size());
+    this->B.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->B[i].resize(xto.size());
+    this->Atilde.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->Atilde[i].resize(xto0.size());
+    this->J0.resize ( xfrom0.size() );
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->J0[i].resize(xto0.size());
+    this->J.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->J[i].resize(xto0.size());
+
+    // Precompute matrices
+    for ( unsigned int i=0 ; i<xto0.size(); i++ )
+    {
+        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        {
+            const int& idx=nbRefs.getValue() *i+m;
+            const int& idxReps=m_reps[idx];
+
+            const InCoord& xi0 = xfrom0[idxReps];
+            Mat33 transformation;
+            QtoR( transformation, xi0.getOrientation());
+            Mat33 transformationInv;
+            transformationInv.invert (transformation);
+
+            for(int k=0; k<3; k++)
+            {
+                for(int l=0; l<3; l++)
+                {
+                    (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (transformationInv)[k][l];
+                }
+            }
+
+            Mat76 L; ComputeL(L, xi0.getOrientation());
+
+            Mat37 Q; ComputeQ(Q, xi0.getOrientation(), initPos[idx]);
+
+            Mat3xIn Ji = this->J[idxReps][i];
+            Ji.fill(0);
+            Ji = (Real)m_weights[idxReps][i] * Q * L;
+            this->J0[idxReps][i] = Ji;
+        }
+    }
+}
+
+
+template <class BasicMapping>
+template<class T>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices()
+{
+    const VecInCoord& xfrom0 = *this->fromModel->getX0();
+    const VecCoord& xto0 = *this->toModel->getX0();
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_weights = weights.getValue();
+    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+
+    // vol and massDensity
+    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
+    this->getContext()->get( hexaContainer);
+    double volume = this->voxelVolume.getValue();
+    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    const VecCoord& xto = *this->toModel->getX();
+    this->vol.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
+    this->massDensity.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
+
+    // Resize matrices
+    this->det.resize(xto.size());
+    this->deformationTensors.resize(xto.size());
+    this->B.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->B[i].resize(xto.size());
+    this->Atilde.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->Atilde[i].resize(xto0.size());
+    this->J.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->J[i].resize(xto0.size());
+
+    // Precompute matrices
+    for ( unsigned int i=0 ; i<xto0.size(); i++ )
+    {
+        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        {
+            const int& idx = nbRefs.getValue() *i+m;
+            const int& idxReps = m_reps[idx];
+
+            const InCoord& xi0 = xfrom0[idxReps];
+            const Mat33& affine = xi0.getAffine();
+            Mat33 affineInv;
+            affineInv.invert (affine);
+
+            for(int k=0; k<3; k++)
+            {
+                for(int l=0; l<3; l++)
+                {
+                    (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (affineInv)[k][l];
+                }
+            }
+
+            Mat3xIn& Ji = this->J[idxReps][i];
+            Ji.fill(0);
+            double val;
+            for(int k=0; k<3; k++)
+            {
+                val = m_weights[idxReps][i] * initPos[idx][k];
+                Ji[0][k]=val;
+                Ji[1][k+3]=val;
+                Ji[2][k+6]=val;
+                Ji[k][k+9]=m_weights[idxReps][i];
+            }
+        }
+    }
+}
+
+
+template <class BasicMapping>
+template<class T>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices()
+{
+    const VecInCoord& xfrom0 = *this->fromModel->getX0();
+    const VecCoord& xto0 = *this->toModel->getX0();
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_weights = weights.getValue();
+    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+
+    // vol and massDensity
+    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
+    this->getContext()->get( hexaContainer);
+    double volume = this->voxelVolume.getValue();
+    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    const VecCoord& xto = *this->toModel->getX();
+    this->vol.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
+    this->massDensity.resize( xto.size());
+    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
+
+    // Resize matrices
+    this->det.resize(xto.size());
+    this->deformationTensors.resize(xto.size());
+    this->B.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->B[i].resize(xto.size());
+    this->Atilde.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->Atilde[i].resize(xto0.size());
+    this->J.resize(xfrom0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->J[i].resize(xto0.size());
+
+    // Precompute matrices ( suppose that A0=I )
+    for ( unsigned int i=0 ; i<xto0.size(); i++ )
+    {
+        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        {
+            const int& idx = nbRefs.getValue() *i+m;
+            const int& idxReps = m_reps[idx];
+
+            const Vec3& p0 = initPos[idx];
+            Vec9 p2 = Vec9( p0[0], p0[1], p0[2], p0[0]*p0[0], p0[1]*p0[1], p0[2]*p0[2], p0[0]*p0[1], p0[1]*p0[2], p0[0]*p0[2]);
+
+            MatInAtx3& At = this->Atilde[idxReps][i];
+            At[0][0] = 1;       At[0][1]=0;       At[0][2]=0;
+            At[1][0] = 0;       At[1][1]=1;       At[1][2]=0;
+            At[2][0] = 0;       At[2][1]=0;       At[2][2]=1;
+            At[3][0] = 2*p2[0]; At[3][1]=0;       At[3][2]=0;
+            At[4][0] = 0;       At[4][1]=2*p2[1]; At[4][2]=0;
+            At[5][0] = 0;       At[5][1]=0;       At[5][2]=2*p2[2];
+            At[6][0] = p2[1];   At[6][1]=p2[0];   At[6][2]=0;
+            At[7][0] = 0;       At[7][1]=p2[2];   At[7][2]=p2[1];
+            At[8][0] = p2[2];   At[8][1]=0;       At[8][2]=p2[0];
+            At = m_weights[idxReps][i] * At;
+            for (int k=0; k<9; k++) for (int l=0; l<3; l++) At[k][l] += p2[k] * m_dweight[idxReps][i][l];
+
+            Mat3xIn& Ji = this->J[idxReps][i];
+            Ji.fill(0);
+            double val;
+            for(int k=0; k<9; k++)
+            {
+                val = m_weights[idxReps][i] * p2[k];
+                Ji[0][k] = val;
+                Ji[1][k+9] = val;
+                Ji[2][k+18] = val;
+            }
+            for(int k=0; k<3; k++)
+                Ji[k][k+27] = m_weights[idxReps][i];
+        }
+    }
+}
+
 #endif
 
 // Generic Apply (old one in .inl)
 template <class BasicMapping>
-template<int InN, class InReal2, class TCoord>
-inline typename enable_if<Equal<typename defaulttype::StdRigidTypes<InN, InReal2>::Coord, TCoord > >::type
-SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename defaulttype::StdRigidTypes<InN, InReal2>::Coord>& in)
+template<class TCoord>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType::Coord, TCoord > >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename RigidType::Coord>& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
@@ -1640,9 +1788,9 @@ SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::
 
 // Apply for Affine types
 template <class BasicMapping>
-template<int InN, class InReal2, class TCoord>
-typename enable_if<Equal<typename defaulttype::StdAffineTypes<InN, InReal2>::Coord, TCoord> >::type
-SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename defaulttype::StdAffineTypes<InN, InReal2>::Coord>& in)
+template<class TCoord>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType::Coord, TCoord> >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename AffineType::Coord>& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
@@ -1755,9 +1903,9 @@ SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::
 
 // Apply for Quadratic types
 template <class BasicMapping>
-template<int InN, class InReal2, class TCoord>
-typename enable_if<Equal<typename defaulttype::StdQuadraticTypes<InN, InReal2>::Coord, TCoord> >::type
-SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename defaulttype::StdQuadraticTypes<InN, InReal2>::Coord>& in)
+template<class TCoord>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType::Coord, TCoord> >::type
+SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename QuadraticType::Coord>& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
@@ -1872,9 +2020,6 @@ SkinningMapping<BasicMapping>::_apply( typename Out::VecCoord& out, const sofa::
 
 // Affine specializations
 template <>
-void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
-
-template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, MechanicalState< Vec3dTypes > > >::applyJ(Out::VecDeriv& /*out*/, const In::VecDeriv& /*in*/);
 
 template <>
@@ -1886,9 +2031,6 @@ void SkinningMapping<MechanicalMapping< MechanicalState< Affine3dTypes >, Mechan
 
 
 // Quadratic specializations
-template <>
-void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::precomputeMatrices();
-
 template <>
 void SkinningMapping<MechanicalMapping< MechanicalState< Quadratic3dTypes >, MechanicalState< Vec3dTypes > > >::applyJ(Out::VecDeriv& /*out*/, const In::VecDeriv& /*in*/);
 
