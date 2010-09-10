@@ -104,7 +104,7 @@ struct Equal
 
 template <class BasicMapping>
 #ifdef SOFA_DEV
-class SkinningMapping : public BasicMapping, public DualQuatStorage<typename BasicMapping::In::DataTypes, typename BasicMapping::Out::Real>
+class SkinningMapping : public BasicMapping, public DualQuatStorage<typename BasicMapping::In::DataTypes, typename BasicMapping::In::Real>
 #else
 class SkinningMapping : public BasicMapping
 #endif
@@ -137,48 +137,48 @@ public:
     enum { InDOFs=In::DataTypes::deriv_total_size };
     enum { InAt=0 };
 #endif
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Mat<3,3,Real> Mat33;
-    typedef defaulttype::Mat<3,InDOFs,Real> Mat3xIn;
+    typedef defaulttype::Mat<N,N,InReal> Mat;
+    typedef defaulttype::Mat<3,3,InReal> Mat33;
+    typedef defaulttype::Mat<3,InDOFs,InReal> Mat3xIn;
     typedef vector<Mat3xIn> VMat3xIn;
     typedef vector<VMat3xIn> VVMat3xIn;
-    typedef defaulttype::Mat<InAt,3,Real> MatInAtx3;
+    typedef defaulttype::Mat<InAt,3,InReal> MatInAtx3;
     typedef vector<MatInAtx3> VMatInAtx3;
     typedef vector<VMatInAtx3> VVMatInAtx3;
-    typedef defaulttype::Mat<3,6,Real> Mat36;
+    typedef defaulttype::Mat<3,6,InReal> Mat36;
     typedef vector<Mat36> VMat36;
     typedef vector<VMat36> VVMat36;
-    typedef defaulttype::Mat<3,7,Real> Mat37;
-    typedef defaulttype::Mat<3,8,Real> Mat38;
-    typedef defaulttype::Mat<3,9,Real> Mat39;
-    typedef defaulttype::Mat<4,3,Real> Mat43;
+    typedef defaulttype::Mat<3,7,InReal> Mat37;
+    typedef defaulttype::Mat<3,8,InReal> Mat38;
+    typedef defaulttype::Mat<3,9,InReal> Mat39;
+    typedef defaulttype::Mat<4,3,InReal> Mat43;
     typedef vector<Mat43> VMat43;
-    typedef defaulttype::Mat<4,4,Real> Mat44;
-    typedef defaulttype::Mat<6,3,Real> Mat63;
-    typedef defaulttype::Mat<6,6,Real> Mat66;
+    typedef defaulttype::Mat<4,4,InReal> Mat44;
+    typedef defaulttype::Mat<6,3,InReal> Mat63;
+    typedef defaulttype::Mat<6,6,InReal> Mat66;
     typedef vector<Mat66> VMat66;
     typedef vector<VMat66> VVMat66;
-    typedef defaulttype::Mat<6,7,Real> Mat67;
-    typedef defaulttype::Mat<6,InDOFs,Real> Mat6xIn;
-    typedef defaulttype::Mat<7,6,Real> Mat76;
+    typedef defaulttype::Mat<6,7,InReal> Mat67;
+    typedef defaulttype::Mat<6,InDOFs,InReal> Mat6xIn;
+    typedef defaulttype::Mat<7,6,InReal> Mat76;
     typedef vector<Mat76> VMat76;
-    typedef defaulttype::Mat<8,3,Real> Mat83;
-    typedef defaulttype::Mat<8,6,Real> Mat86;
+    typedef defaulttype::Mat<8,3,InReal> Mat83;
+    typedef defaulttype::Mat<8,6,InReal> Mat86;
     typedef vector<Mat86> VMat86;
-    typedef defaulttype::Mat<8,8,Real> Mat88;
+    typedef defaulttype::Mat<8,8,InReal> Mat88;
     typedef vector<Mat88> VMat88;
-    typedef defaulttype::Mat<InDOFs,3,Real> MatInx3;
+    typedef defaulttype::Mat<InDOFs,3,InReal> MatInx3;
 
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef defaulttype::Vec<3,InReal> Vec3;
     typedef vector<Vec3> VVec3;
     typedef vector<VVec3> VVVec3;
-    typedef defaulttype::Vec<4,Real> Vec4;
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef defaulttype::Vec<4,InReal> Vec4;
+    typedef defaulttype::Vec<6,InReal> Vec6;
     typedef vector<Vec6> VVec6;
     typedef vector<VVec6> VVVec6;
-    typedef defaulttype::Vec<8,Real> Vec8;
-    typedef defaulttype::Vec<9,Real> Vec9;
-    typedef defaulttype::Vec<InDOFs,Real> VecIn;
+    typedef defaulttype::Vec<8,InReal> Vec8;
+    typedef defaulttype::Vec<9,InReal> Vec9;
+    typedef defaulttype::Vec<InDOFs,InReal> VecIn;
     typedef Quater<InReal> Quat;
     typedef sofa::helper::vector< VecCoord > VecVecCoord;
     typedef SVector<double> VD;
