@@ -27,6 +27,9 @@
 
 //Sensable include
 #include <HD/hd.h>
+#include <HDU/hdu.h>
+#include <HDU/hduError.h>
+#include <HDU/hduVector.h>
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 
@@ -57,7 +60,7 @@ typedef struct
     HHD id;
     int nupdates;
     int m_buttonState;					/* Has the device button has been pressed. */
-    // hduVector3Dd m_devicePosition;	/* Current device coordinates. */
+    hduVector3Dd m_devicePosition;	/* Current device coordinates. */
     HDErrorInfo m_error;
     Vec3d pos;
     Quat quat;
@@ -73,8 +76,8 @@ typedef struct
     sofa::defaulttype::SolidTypes<double>::Transform endOmni_H_virtualTool;
     //Transform baseOmni_H_endOmni;
     sofa::defaulttype::SolidTypes<double>::Transform world_H_baseOmni;
-    double scale;
     double forceScale;
+    double scale;
     bool permanent_feedback;
 
     // API OMNI //
@@ -90,6 +93,7 @@ class NewOmniDriver : public Controller
 {
 
 public:
+    SOFA_CLASS(NewOmniDriver, Controller);
     Data<double> scale;
     Data<double> forceScale;
     Data<Vec3d> positionBase;
@@ -104,9 +108,12 @@ public:
     NewOmniDriver();
     virtual ~NewOmniDriver();
 
+    virtual void init();
     virtual void bwdInit();
     virtual void reset();
     void reinit();
+
+    int initDevice(OmniData& data);
 
     void cleanup();
     virtual void draw();
