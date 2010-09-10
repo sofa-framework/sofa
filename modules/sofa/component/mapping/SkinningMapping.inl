@@ -564,7 +564,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
-    _applyJT<typename In::DataTypes>( out, in, typename In::DataTypes());
+    _applyJT<typename In::DataTypes>( out, in);
 }
 
 template <class BasicMapping>
@@ -1300,7 +1300,7 @@ void SkinningMapping<BasicMapping>::ComputeMw(Mat33& M, const Quat& q) const
 
 template <class BasicMapping>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices(RigidType)
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices(const RigidType&)
 {
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecCoord& xto0 = *this->toModel->getX0();
@@ -1372,7 +1372,7 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >
 
 template <class BasicMapping>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices(AffineType)
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices(const AffineType&)
 {
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecCoord& xto0 = *this->toModel->getX0();
@@ -1443,7 +1443,7 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> 
 
 template <class BasicMapping>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices(QuadraticType)
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType, T> >::type SkinningMapping<BasicMapping>::precomputeMatrices(const QuadraticType&)
 {
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecCoord& xto0 = *this->toModel->getX0();
@@ -2223,7 +2223,7 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType::
 
 template <class BasicMapping>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >::type SkinningMapping<BasicMapping>::_applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, RigidType)
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >::type SkinningMapping<BasicMapping>::_applyJT( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
@@ -2280,7 +2280,7 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >
 
 template <class BasicMapping>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> >::type SkinningMapping<BasicMapping>::_applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, AffineType)
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> >::type SkinningMapping<BasicMapping>::_applyJT( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const unsigned int nbi = this->fromModel->getX()->size();
     typename In::Deriv::Affine omega;
@@ -2331,7 +2331,7 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> 
 
 template <class BasicMapping>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType, T> >::type SkinningMapping<BasicMapping>::_applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, QuadraticType)
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType, T> >::type SkinningMapping<BasicMapping>::_applyJT( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const unsigned int nbi = this->fromModel->getX()->size();
     typename In::Deriv::Quadratic omega;
