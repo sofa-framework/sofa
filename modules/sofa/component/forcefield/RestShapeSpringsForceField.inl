@@ -141,13 +141,16 @@ void RestShapeSpringsForceField<DataTypes>::init()
     this->indices = points.getValue();
     this->ext_indices = external_points.getValue();
     this->k = stiffness.getValue();
+    pp_0 = this->mstate->getX0();
 }
 
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& )
 {
-    VecCoord& p_0 = *this->mstate->getX0();
+    if (recomput_indices.getValue()) pp_0 = this->mstate->getX0();
+
+    VecCoord& p_0 = *pp_0;
 
     if (useRestMState)
         p_0 = *restMState->getX();
@@ -160,8 +163,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
         ext_indices = external_points.getValue();
         stiffness.getValue();
     }
-
-
 
     Springs_dir.resize(indices.size() );
     if ( k.size()!= indices.size() )
