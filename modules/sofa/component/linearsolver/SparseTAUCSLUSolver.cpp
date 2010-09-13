@@ -89,6 +89,12 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
     if (data->perm) free(data->perm);
     if (data->invperm) free(data->invperm);
     if (data->PAPT) taucs_ccs_free(data->PAPT);
+    if (data->L) taucs_ccs_free(data->L);
+
+    data->perm = NULL;
+    data->invperm = NULL;
+    data->PAPT = NULL;
+    data->L = NULL;
 
     data->Mfiltered.copyUpperNonZeros(M);
     data->Mfiltered.fullRows();
