@@ -61,6 +61,8 @@ public:
     virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz) = 0;
     virtual void computeWrench(const SolidTypes<double>::Transform &, const SolidTypes<double>::SpatialVector &, SolidTypes<double>::SpatialVector & )=0;
+
+    virtual void setReferencePosition(SolidTypes<double>::Transform& /*referencePosition*/) {};
 };
 
 } // namespace controller
