@@ -218,6 +218,10 @@ public:
     Data<bool> _assembling;
     Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
     Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
+    Data< bool > drawHeterogeneousTetra;
+
+    Real minYoung;
+    Real maxYoung;
 
     TetrahedronFEMForceField()
         : parallelDataSimu(NULL)
@@ -234,11 +238,14 @@ public:
         , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
         , _gatherPt(core::objectmodel::BaseObject::initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
         , _gatherBsize(core::objectmodel::BaseObject::initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
+        , drawHeterogeneousTetra(core::objectmodel::BaseObject::initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
     {
         data.initPtrData(this);
         parallelDataInit[0]=0;
         parallelDataInit[1]=0;
         this->addAlias(&_assembling, "assembling");
+        minYoung = 0.0;
+        maxYoung = 0.0;
     }
 
     ~TetrahedronFEMForceField()
