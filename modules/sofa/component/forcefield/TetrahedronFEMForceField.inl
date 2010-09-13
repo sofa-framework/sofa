@@ -1163,6 +1163,15 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
+    const VecReal& youngModulus = _youngModulus.getValue();
+    minYoung=youngModulus[0];
+    maxYoung=youngModulus[0];
+    for (unsigned i=0; i<youngModulus.size(); i++)
+    {
+        if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
+        if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
+    }
+
     parallelDataInit[0] = new ParallelData();
     parallelDataInit[1] = NULL; // no parallel until the first event
     parallelDataSimu = parallelDataInit[0];
@@ -1504,6 +1513,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
+    const VecReal & youngModulus = _youngModulus.getValue();
     simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
     std::vector< Vector3 > points[4];
     typename VecElement::const_iterator it;
@@ -1539,12 +1549,32 @@ void TetrahedronFEMForceField<DataTypes>::draw()
         points[3].push_back(pd);
         points[3].push_back(pa);
         points[3].push_back(pb);
+
+        if(drawHeterogeneousTetra.getValue() && minYoung!=maxYoung)
+        {
+            double col = (youngModulus[i]-minYoung) / (maxYoung-minYoung);
+            double fac = col * 0.5;
+            Vec<4,float> color1 = Vec<4,float>(col    ,0.0-fac,1.0-col,1.0);
+            Vec<4,float> color2 = Vec<4,float>(col    ,0.5-fac,1.0-col,1.0);
+            Vec<4,float> color3 = Vec<4,float>(col    ,1.0-fac,1.0-col,1.0);
+            Vec<4,float> color4 = Vec<4,float>(col+0.5,1.0-fac,1.0-col,1.0);
+
+            simulation::getSimulation()->DrawUtility.drawTriangles(points[0],color1 );
+            simulation::getSimulation()->DrawUtility.drawTriangles(points[1],color2 );
+            simulation::getSimulation()->DrawUtility.drawTriangles(points[2],color3 );
+            simulation::getSimulation()->DrawUtility.drawTriangles(points[3],color4 );
+
+            for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
+        }
     }
 
-    simulation::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
-    simulation::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
-    simulation::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
-    simulation::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+    if(!drawHeterogeneousTetra.getValue() || minYoung==maxYoung)
+    {
+        simulation::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
+        simulation::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
+        simulation::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
+        simulation::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+    }
 
     if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
