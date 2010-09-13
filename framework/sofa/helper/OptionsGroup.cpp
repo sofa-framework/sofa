@@ -24,7 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "OptionsGroup.h"
+#include <sofa/helper/OptionsGroup.h>
 #include <cstdlib>
 
 namespace sofa
@@ -87,7 +87,7 @@ void OptionsGroup::setNames(int nbofRadioButton,...)
     selectedItem=0;
 }
 ///////////////////////////////////////
-int OptionsGroup::isInButtonList(const std::string & tempostring) const
+int OptionsGroup::isInOptionsList(const std::string & tempostring) const
 {
     for(unsigned int i=0; i<textItems.size(); i++)
     {
@@ -100,12 +100,11 @@ void OptionsGroup::setSelectedItem(unsigned int id_item)
 {
     if (id_item<textItems.size())
         selectedItem=id_item;
-    //std::cout<<"OptionsGroup:: ==============================setted :"<< this->selectedItem << std::endl;
 }
 ///////////////////////////////////////
 void OptionsGroup::setSelectedItem(const std::string & m_string)
 {
-    int id_stringinButtonList = isInButtonList(m_string);
+    int id_stringinButtonList = isInOptionsList(m_string);
     if (id_stringinButtonList == -1)
     {
         std::cout<<"WARNING(OptionsGroup) : \""<< m_string <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
@@ -121,7 +120,7 @@ unsigned int OptionsGroup::getSelectedId() const
     return selectedItem;
 }
 ///////////////////////////////////////
-const std::string  &OptionsGroup::getSelectedItem() const
+const std::string& OptionsGroup::getSelectedItem() const
 {
     return textItems[selectedItem];
 }
@@ -130,7 +129,7 @@ void OptionsGroup::readFromStream(std::istream & stream)
 {
     std::string tempostring;
     std::getline(stream,tempostring);
-    int id_stringinButtonList = isInButtonList(tempostring);
+    int id_stringinButtonList = isInOptionsList(tempostring);
     if (id_stringinButtonList == -1)
     {
         int idx=atoi(tempostring.c_str());

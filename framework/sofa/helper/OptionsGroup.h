@@ -51,67 +51,88 @@ namespace helper
  *
  */
 
-class SOFA_HELPER_API OptionsGroup //: public std::vector<std::string>
+class SOFA_HELPER_API OptionsGroup
 {
 public :
-//	typedef
-    helper::vector<std::string> textItems;
 
+    /// @name Constructors
+    /// @{
+    /// Default constructor
     OptionsGroup();
 
-    ///Example OptionsGroup(4,"button0","button1","button2","button3");
+    ///Constructor by given the number of argument following by the variable arguments
+    ///Example OptionsGroup m_options(4,"button0","button1","button2","button3");
     OptionsGroup(int nbofRadioButton,...);
 
-    template <class T>
-    OptionsGroup(const T &list)
-    {
-        for (typename T::const_iterator it=list.begin(); it!=list.end(); ++it)
-        {
-            std::ostringstream oss;
-            oss << (*it);
-            textItems.push_back( oss.str() );
-        }
-        selectedItem=0;
-    }
+    ///generic constructor taking other string container like list<string>, set<string>, vector<string>
+    template <class T> OptionsGroup(const T& list);
 
-    ///Copy
-    OptionsGroup(const OptionsGroup & m_radiotrick);
+    ///Copy constructor
+    OptionsGroup(const OptionsGroup& m_radiotrick);
+    /// @}
 
-    OptionsGroup & operator=(const OptionsGroup & m_radiotrick);
 
-    ///Example OptionsGroup::setNames(4,"button0","button1","button2","button3");
+    /// @name setting operators
+    /// @{
+
+    ///Reinitializing options by a pre-constructed optionsgroup objected
+    ///Example m_options.setNames(4,"button0","button1","button2","button3");
     void setNames(int nbofRadioButton,...);
+
+    ///Setting the activated item by its id
     void setSelectedItem(unsigned int id_item);
-    void setSelectedItem(const std::string &);
-    unsigned int getSelectedId() const;
-    const std::string &getSelectedItem() const;
-    std::string & operator[](unsigned int i) {return textItems[i];}
-    unsigned int size() const {return textItems.size();}
 
+    ///Setting the activated item by its value (string)
+    void setSelectedItem(const std::string& );
 
-    ///An other way to do the setSelectedItem() using a string for input
-    ///If the reading string is in string list, set the selected item to this
+    ///Setting the activated item by a input-stream.
+    ///the istream is converted to string.
+    ///If the reading string is in options list, its value is setted activated,
     ///else push a warning.
-    void readFromStream(std::istream & stream);
-    void writeToStream(std::ostream & stream) const;
+    void readFromStream(std::istream& stream);
 
+    /// @}
+
+    /// @name getting informations operators
+    /// @{
+    unsigned int       getSelectedId()                      const;
+    const std::string& getSelectedItem()                    const;
+    const std::string& operator[](const unsigned int i)     const {return textItems[i];}
+    unsigned int       size()                               const {return textItems.size();}
+    void               writeToStream(std::ostream& stream)  const;
+    OptionsGroup&      operator=(const OptionsGroup& m_radiotrick);
+    /// @}
 
 protected:
 
-    unsigned int selectedItem;
+    helper::vector<std::string> textItems    ;
+    unsigned int                selectedItem ;
 
     ///return the id_item of the string if found in string list button
     ///             -1    if not found
-    int isInButtonList(const std::string & m_string) const;
+    int isInOptionsList(const std::string & m_string) const;
 
 };
 
 
-inline std::ostream & operator <<(std::ostream & on, const OptionsGroup & m_trick)
+inline std::ostream & operator <<(std::ostream& on, const OptionsGroup& m_trick)
 {m_trick.writeToStream(on); return on;}
 
-inline std::istream & operator >>(std::istream & in, OptionsGroup & m_trick)
+inline std::istream & operator >>(std::istream& in, OptionsGroup& m_trick)
 {m_trick.readFromStream(in); return in;}
+
+
+template <class T>
+inline OptionsGroup::OptionsGroup(const T& list)
+{
+    for (typename T::const_iterator it=list.begin(); it!=list.end(); ++it)
+    {
+        std::ostringstream oss;
+        oss << (*it);
+        textItems.push_back( oss.str() );
+    }
+    selectedItem=0;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
