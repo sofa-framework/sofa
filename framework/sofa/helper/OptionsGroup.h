@@ -27,15 +27,13 @@
 #ifndef SOFA_HELPER_OPTIONSGROUP_H
 #define SOFA_HELPER_OPTIONSGROUP_H
 
-#include <vector>
 #include <string>
 #include <iostream>
 #include <cstdarg>
 #include <sstream>
 
-
+#include <sofa/helper/vector.h>
 #include <sofa/helper/helper.h>
-#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
 {
@@ -67,7 +65,12 @@ public :
     template <class T>
     OptionsGroup(const T &list)
     {
-        for (typename T::const_iterator it=list.begin(); it!=list.end(); ++it) textItems.push_back(*it);
+        for (typename T::const_iterator it=list.begin(); it!=list.end(); ++it)
+        {
+            std::ostringstream oss;
+            oss << (*it);
+            textItems.push_back( oss.str() );
+        }
         selectedItem=0;
     }
 
