@@ -99,6 +99,12 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     const int level = _multilevelTopology->getLevel();
     const int coarseNodeSize = (1 << level);
 
+    if (!this->_topology->getNbHexahedra())
+    {
+        serr << "Topology is empty !" << sendl;
+        return;
+    }
+
     const VecCoord *X0=this->mstate->getX0();
     Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
