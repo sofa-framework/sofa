@@ -63,9 +63,16 @@ using namespace core::behavior;
 using namespace sofa::defaulttype;
 
 
+
+
+
+
+
+
+
 void UpdateForceFeedBack(void* toolData)
 {
-    XiToolData* myData = static_cast<XiToolData*>(toolData);
+    XiToolDataIHP* myData = static_cast<XiToolDataIHP*>(toolData);
 
     // Compute actual tool state:
     xiTrocarAcquire();
@@ -170,7 +177,7 @@ void UpdateForceFeedBack(void* toolData)
 
 bool isInitialized = false;
 
-int initDevice(XiToolData& /*data*/)
+int initDevice(XiToolDataIHP& /*data*/)
 {
     if (isInitialized) return 0;
     isInitialized = true;
@@ -182,6 +189,11 @@ int initDevice(XiToolData& /*data*/)
 
     return 0;
 }
+
+
+SOFA_DECL_CLASS(IHPDriver)
+int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
+        .add< IHPDriver >();
 
 IHPDriver::IHPDriver()
     : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
@@ -666,13 +678,7 @@ void IHPDriver::graspClosed()
 }
 
 
-int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
-        .add< IHPDriver >();
 
-
-
-
-SOFA_DECL_CLASS(IHPDriver)
 
 
 } // namespace controller

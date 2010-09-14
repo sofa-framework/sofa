@@ -64,7 +64,7 @@ using namespace sofa::defaulttype;
 
 extern bool isInitialized;
 
-int initDeviceITP(XiToolData& /*data*/)
+int initDeviceITP(XiToolDataITP& /*data*/)
 {
     if (isInitialized) return 0;
     isInitialized = true;
@@ -76,6 +76,11 @@ int initDeviceITP(XiToolData& /*data*/)
 
     return 0;
 }
+
+SOFA_DECL_CLASS(ITPDriver)
+int ITPDriverClass = core::RegisterObject("Driver and Controller of ITP Xitact Device")
+        .add< ITPDriver >();
+
 
 ITPDriver::ITPDriver()
     : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
@@ -515,10 +520,8 @@ void ITPDriver::leftButtonPushed()
 }*/
 
 
-int ITPDriverClass = core::RegisterObject("Driver and Controller of ITP Xitact Device")
-        .add< ITPDriver >();
 
-SOFA_DECL_CLASS(ITPDriver)
+
 
 
 } // namespace controller

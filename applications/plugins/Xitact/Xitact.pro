@@ -24,18 +24,24 @@ LIBS += $$SOFA_LIBS
 LIBS += $$SOFA_EXT_LIBS
 LIBS += -lXiRobot
 INCLUDEPATH += $$SOFA_DIR/extlibs/Xitact
+INCLUDEPATH += $$SOFA_DIR/include
+
+HEADERS = \
+initXitact.h \
+PaceMaker.h \
+IHPDriver.h \
+ITPDriver.h 
+
 
 SOURCES = \
 initXitact.cpp \
+PaceMaker.cpp  \
 IHPDriver.cpp \
-ITPDriver.cpp \
-PaceMaker.cpp
+ITPDriver.cpp 
 
 
-HEADERS = \
-IHPDriver.h \
-ITPDriver.h \
-PaceMaker.h
+
+
 
 
 README_FILE = PluginXitact.txt

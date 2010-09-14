@@ -24,36 +24,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+#include "initXitact.h"
 
+#include "PaceMaker.h"
+#include "IHPDriver.h"
+#include "ITPDriver.h"
 
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_ARTRACKPLUGIN_API
-#else
-#ifdef SOFA_BUILD_XITACTPLUGIN
-#define SOFA_XITACTPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_XITACTPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-#endif
 
 namespace sofa
 {
 
 namespace component
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_XITACTPLUGIN_API void initExternalModule();
-    SOFA_XITACTPLUGIN_API const char* getModuleName();
-    SOFA_XITACTPLUGIN_API const char* getModuleVersion();
-    SOFA_XITACTPLUGIN_API const char* getModuleDescription();
-    SOFA_XITACTPLUGIN_API const char* getModuleComponentList();
-}
 
 void initExternalModule()
 {
@@ -90,7 +72,7 @@ const char* getModuleComponentList()
 
 }
 
-
+SOFA_LINK_CLASS(PaceMaker)
 SOFA_LINK_CLASS(IHPDriver)
 SOFA_LINK_CLASS(ITPDriver)
-//SOFA_LINK_CLASS(PaceMaker)
+
