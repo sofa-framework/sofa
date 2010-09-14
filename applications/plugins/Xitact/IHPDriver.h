@@ -37,7 +37,7 @@
 #include "XiTrocarInterface.h"
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include "PaceMaker.h"
-
+#include "initXitact.h"
 namespace sofa
 {
 namespace simulation { class Node; }
@@ -75,17 +75,19 @@ typedef struct
     XiToolState restState;  // for initial haptic state
     XiToolForce hapticForce;
 
-} XiToolData;
+} XiToolDataIHP;
 
 
 /**
 * Omni driver
 */
-class IHPDriver : public Controller
+class SOFA_XITACTPLUGIN_API IHPDriver : public sofa::component::controller::Controller
 {
-    //SOFA_CLASS(IHPDriver,sofa::component::controller::Controller);
+
 
 public:
+    SOFA_CLASS(IHPDriver,sofa::component::controller::Controller);
+
     Data<double> Scale;
     Data<double> forceScale;
     Data<bool> permanent;
@@ -95,7 +97,7 @@ public:
     Data<bool> testFF;
 
 
-    XiToolData	data;
+    XiToolDataIHP	data;
 
     IHPDriver();
     virtual ~IHPDriver();

@@ -40,7 +40,7 @@
 #include <sofa/gui/PickHandler.h>
 #include <sofa/component/collision/RayModel.h>
 //#include <sofa/component/collision/HeartSimulationManager.h>
-
+#include "initXitact.h"
 
 
 namespace sofa
@@ -60,7 +60,7 @@ class ForceFeedback;
 using namespace sofa::defaulttype;
 using core::objectmodel::Data;
 
-typedef struct
+typedef SOFA_XITACTPLUGIN_API struct
 {
     ForceFeedback* forceFeedback;
     simulation::Node *context;
@@ -74,23 +74,24 @@ typedef struct
     XiToolState simuState;		 // for the simulation loop
     XiToolForce hapticForce;
 
-} XiToolData;
+} XiToolDataITP;
 
 /**
 * Omni driver
 */
-class ITPDriver : public Controller
+class SOFA_XITACTPLUGIN_API ITPDriver : public sofa::component::controller::Controller
 {
-    //SOFA_CLASS(ITPDriver,sofa::component::controller::Controller);
 
 public:
+
+    SOFA_CLASS(ITPDriver,sofa::component::controller::Controller);
     Data<double> Scale;
     Data<bool> permanent;
     Data <int> indexTool;
     Data <sofa::defaulttype::Vec3d> direction;
     Data <sofa::defaulttype::Vec3d> position;
 
-    XiToolData	data;
+    XiToolDataITP	data;
 
     ITPDriver();
     virtual ~ITPDriver();

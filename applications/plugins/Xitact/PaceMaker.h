@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
-
+#include "initXitact.h"
 namespace sofa
 {
 
@@ -28,7 +28,7 @@ struct dataPace
 
 };*/
 
-class PaceMaker
+class SOFA_XITACTPLUGIN_API PaceMaker
 {
 public:
     static void runclock();
@@ -37,7 +37,7 @@ public:
     static const double time_scale;
     static HANDLE clockThread;
 
-public:
+
     PaceMaker(); //without frequency. Warning function will be called continually
     PaceMaker(double fr);
     PaceMaker(double fr, double end);
