@@ -1552,12 +1552,12 @@ void TetrahedronFEMForceField<DataTypes>::draw()
 
         if(drawHeterogeneousTetra.getValue() && minYoung!=maxYoung)
         {
-            double col = (youngModulus[i]-minYoung) / (maxYoung-minYoung);
-            double fac = col * 0.5;
-            Vec<4,float> color1 = Vec<4,float>(col    ,0.0-fac,1.0-col,1.0);
-            Vec<4,float> color2 = Vec<4,float>(col    ,0.5-fac,1.0-col,1.0);
-            Vec<4,float> color3 = Vec<4,float>(col    ,1.0-fac,1.0-col,1.0);
-            Vec<4,float> color4 = Vec<4,float>(col+0.5,1.0-fac,1.0-col,1.0);
+            float col = (float)(youngModulus[i]-minYoung) / (maxYoung-minYoung);
+            float fac = col * 0.5f;
+            Vec<4,float> color1 = Vec<4,float>(col      , 0.0f - fac , 1.0f-col,1.0f);
+            Vec<4,float> color2 = Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
+            Vec<4,float> color3 = Vec<4,float>(col      , 1.0f - fac , 1.0f-col,1.0f);
+            Vec<4,float> color4 = Vec<4,float>(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
 
             simulation::getSimulation()->DrawUtility.drawTriangles(points[0],color1 );
             simulation::getSimulation()->DrawUtility.drawTriangles(points[1],color2 );

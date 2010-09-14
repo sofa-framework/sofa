@@ -198,7 +198,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::
             const Spring& s = ss[e];
             unsigned p1 = /*mat.offset+*/Deriv::total_size*s.m1;
             unsigned p2 = /*mat.offset+*/Deriv::total_size*s.m2;
-            Mat m = this->dfdx[e]*kFact;
+            Mat m = this->dfdx[e]* (Real) kFact;
             if (mat11)
                 for(int i=0; i<N; i++) for (int j=0; j<N; j++) mat11.matrix->add(mat11.offset+p1+i,mat11.offset+p1+j, -(Real)m[i][j]);
             if (mat12)
