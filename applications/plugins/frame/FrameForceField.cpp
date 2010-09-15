@@ -40,14 +40,14 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
+#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API ForceField<Affine3dTypes>;
-
-template class SOFA_FRAME_API ForceField<Affine3fTypes>;
-
 template class SOFA_FRAME_API ForceField<Quadratic3dTypes>;
-
+#endif
+#ifndef SOFA_DOUBLE
 template class SOFA_FRAME_API ForceField<Quadratic3fTypes>;
-
+template class SOFA_FRAME_API ForceField<Affine3fTypes>;
+#endif
 
 } // namespace behavior
 

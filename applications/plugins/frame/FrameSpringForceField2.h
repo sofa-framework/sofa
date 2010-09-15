@@ -192,9 +192,7 @@ private:
 };
 
 #if defined(WIN32) && !defined(FRAME_FRAMESPRINGFORCEFIELD2_CPP)
-#pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-
 extern template class SOFA_FRAME_API FrameSpringForceField2<Rigid3dTypes>;
 extern template class SOFA_FRAME_API FrameSpringForceField2<Affine3dTypes>;
 //extern template class SOFA_FRAME_API FrameSpringForceField2<Quadratic3dTypes>;

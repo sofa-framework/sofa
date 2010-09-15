@@ -90,13 +90,15 @@ double ConstantForceField<Quadratic3fTypes>::getPotentialEnergy(const VecCoord& 
 
 
 
+#ifndef SOFA_FLOAT
 template class SOFA_FRAME_API ConstantForceField<Affine3dTypes>;
-
-template class SOFA_FRAME_API ConstantForceField<Affine3fTypes>;
-
 template class SOFA_FRAME_API ConstantForceField<Quadratic3dTypes>;
-
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_FRAME_API ConstantForceField<Affine3fTypes>;
 template class SOFA_FRAME_API ConstantForceField<Quadratic3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

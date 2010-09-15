@@ -27,10 +27,11 @@
 #ifndef FRAME_FRAMEFORCEFIELD_H
 #define FRAME_FRAMEFORCEFIELD_H
 
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 #include "initFrame.h"
+#include "FrameMechanicalObject.h"
 
 namespace sofa
 {
@@ -43,11 +44,16 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
+
 #if defined(WIN32) && !defined(FRAME_FRAMEFORCEFIELD_CPP)
+#ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API ForceField<Affine3dTypes>;
-extern template class SOFA_FRAME_API ForceField<Affine3fTypes>;
 extern template class SOFA_FRAME_API ForceField<Quadratic3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
 extern template class SOFA_FRAME_API ForceField<Quadratic3fTypes>;
+extern template class SOFA_FRAME_API ForceField<Affine3fTypes>;
+#endif
 #endif
 
 } // namespace behavior
