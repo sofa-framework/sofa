@@ -71,7 +71,7 @@ int initDeviceITP(XiToolDataITP& /*data*/)
 
     const char* vendor = getenv("XITACT_VENDOR");
     if (!vendor || !*vendor)
-        vendor = "INRIA_Sophia";
+        vendor = "INRIA_Lille";
     xiSoftwareVendor(vendor);
 
     return 0;

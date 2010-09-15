@@ -184,7 +184,7 @@ int initDevice(XiToolDataIHP& /*data*/)
 
     const char* vendor = getenv("XITACT_VENDOR");
     if (!vendor || !*vendor)
-        vendor = "INRIA_Sophia";
+        vendor = "INRIA_Lille";
     xiSoftwareVendor(vendor);
 
     return 0;
@@ -192,8 +192,10 @@ int initDevice(XiToolDataIHP& /*data*/)
 
 
 SOFA_DECL_CLASS(IHPDriver)
+
 int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
         .add< IHPDriver >();
+
 
 IHPDriver::IHPDriver()
     : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))

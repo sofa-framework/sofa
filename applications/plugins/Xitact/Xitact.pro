@@ -20,11 +20,13 @@ CONFIG += dll
 TARGET = Xitact$$LIBSUFFIX
 DEFINES += SOFA_BUILD_XITACTPLUGIN
 
+#INCLUDEPATH += $$SOFA_DIR/extlibs/Xitact
+INCLUDEPATH += $$SOFA_DIR/include
+
 LIBS += $$SOFA_LIBS
 LIBS += $$SOFA_EXT_LIBS
 LIBS += -lXiRobot
-INCLUDEPATH += $$SOFA_DIR/extlibs/Xitact
-INCLUDEPATH += $$SOFA_DIR/include
+
 
 HEADERS = \
 initXitact.h \
