@@ -41,6 +41,11 @@
 #endif
 #endif
 
+
+namespace sofa
+{
+namespace component
+{
 extern "C" {
     SOFA_XITACTPLUGIN_API void initExternalModule();
     SOFA_XITACTPLUGIN_API const char* getModuleName();
@@ -49,6 +54,8 @@ extern "C" {
     SOFA_XITACTPLUGIN_API const char* getModuleComponentList();
 }
 
+} //component
+} //sofa
+
 
 #endif /* PLUGIN_XITACT_INIT_H */
-
