@@ -44,10 +44,14 @@ namespace container
 using namespace sofa::defaulttype;
 
 #if defined(WIN32) && !defined(FRAME_FRAMEMECHANICALOBJECT_CPP)
+#ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3dTypes>;
-extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3fTypes>;
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3fTypes>;
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3fTypes>;
+#endif
 #endif
 
 } // namespace container
