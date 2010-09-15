@@ -1552,7 +1552,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
 
         if(drawHeterogeneousTetra.getValue() && minYoung!=maxYoung)
         {
-            float col = (float)(youngModulus[i]-minYoung) / (maxYoung-minYoung);
+            float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
             float fac = col * 0.5f;
             Vec<4,float> color1 = Vec<4,float>(col      , 0.0f - fac , 1.0f-col,1.0f);
             Vec<4,float> color2 = Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
