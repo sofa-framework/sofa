@@ -83,6 +83,8 @@ public:
 
     virtual void init();
 
+    virtual bool load(const char* filename);
+
     // -- CollisionModel interface
 
     virtual void resize(int size);
@@ -96,17 +98,31 @@ public:
 
     void draw();
 
+    virtual void drawColourPicking(const ColourCode method);
+    virtual sofa::defaulttype::Vector3 getPositionFromWeights(int index, Real /*a*/ ,Real /*b*/, Real /*c*/);
+
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
 
     const VecReal& getR() const { return this->radius.getValue(); }
 
+    void setRadius(const int i, const Real r);
+    void setRadius(const Real r);
+
+    int addSphere(const Vector3& pos, Real r);
+    void setSphere(int i, const Vector3& pos, Real r);
+
+
 protected:
     core::behavior::MechanicalState<InDataTypes>* mstate;
+
+    sofa::core::objectmodel::DataFileName filename;
 
     Data< VecReal > radius;
     Data< SReal > defaultRadius;
 
     Real getRadius(const int i) const; /// return the radius of the given sphere
+
+    class Loader;
 
 
 };
