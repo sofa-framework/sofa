@@ -30,6 +30,9 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 
+#include <sofa/helper/io/SphereLoader.h>
+#include <sofa/helper/system/FileRepository.h>
+
 namespace sofa
 {
 
@@ -52,6 +55,7 @@ CudaSphereModel::CudaSphereModel()
     : mstate(NULL)
     , radius( initData(&radius, "listRadius", "Radius of each sphere"))
     , defaultRadius( initData(&defaultRadius,(SReal)(1.0), "radius", "Default Radius"))
+    , filename(initData(&filename, "fileSphere", "File .sph describing the spheres"))
 {
 
 }
@@ -92,6 +96,57 @@ void CudaSphereModel::draw(int index)
     glTranslated(p[0], p[1], p[2]);
     glutSolidSphere(t.r(), 32, 16);
     glPopMatrix();
+}
+
+void CudaSphereModel::drawColourPicking(const ColourCode method)
+{
+    using namespace sofa::core::objectmodel;
+
+    if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
+
+    helper::vector<core::CollisionModel*> listCollisionModel;
+    this->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
+    const int totalCollisionModel = listCollisionModel.size();
+    helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
+    const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
+    float red = (float)indexCollisionModel / (float)totalCollisionModel;
+    // Check topological modifications
+    const int npoints = mstate->getX()->size();
+    std::vector<Vector3> points;
+    std::vector<float> radius;
+    for (int i=0; i<npoints; i++)
+    {
+        CudaSphere t(this,i);
+        Vector3 p = t.p();
+        points.push_back(p);
+        radius.push_back(t.r());
+    }
+    glDisable(GL_LIGHTING);
+    glDisable(GL_COLOR_MATERIAL);
+    glDisable(GL_DITHER);
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    float ratio;
+    for( int i=0; i<npoints; i++)
+    {
+        Vector3 p = points[i];
+
+        glPushMatrix();
+        glTranslated(p[0], p[1], p[2]);
+        ratio = (float)i / (float)npoints;
+        glColor4f(red,ratio,0,1);
+        glutSolidSphere(radius[i], 32, 16);
+
+        glPopMatrix();
+    }
+}
+
+sofa::defaulttype::Vector3 CudaSphereModel::getPositionFromWeights(int index, Real /*a*/ ,Real /*b*/, Real /*c*/)
+{
+    Element sphere(this,index);
+
+    return sphere.center();
+
 }
 
 void CudaSphereModel::draw()
@@ -169,6 +224,65 @@ void CudaSphereModel::resize(int size)
     {
         radius.beginEdit()->resize(size);
     }
+}
+
+void CudaSphereModel::setRadius(const int i, const CudaSphereModel::Real r)
+{
+    if((int) radius.getValue().size() <= i)
+    {
+        radius.beginEdit()->reserve(i+1);
+        while((int)radius.getValue().size() <= i)
+            radius.beginEdit()->push_back(defaultRadius.getValue());
+    }
+
+    (*radius.beginEdit())[i] = r;
+}
+
+void CudaSphereModel::setRadius(const CudaSphereModel::Real r)
+{
+    *defaultRadius.beginEdit() = r;
+    radius.beginEdit()->clear();
+}
+
+class CudaSphereModel::Loader : public helper::io::SphereLoader
+{
+public:
+    CudaSphereModel* dest;
+    Loader(CudaSphereModel* dest)
+        : dest(dest) {}
+
+    void addSphere(SReal x, SReal y, SReal z, SReal r)
+    {
+        dest->addSphere(Vector3(x,y,z),r);
+    }
+};
+
+bool CudaSphereModel::load(const char* filename)
+{
+    this->resize(0);
+    std::string sphereFilename(filename);
+    if (!sofa::helper::system::DataRepository.findFile (sphereFilename))
+        serr<<"Sphere File \""<< filename <<"\" not found"<< sendl;
+
+    Loader loader(this);
+    return loader.load(filename);
+}
+
+int CudaSphereModel::addSphere(const Vector3& pos, Real r)
+{
+    int i = size;
+    resize(i+1);
+    if((int) mstate->getX()->size() != i+1)
+        mstate->resize(i+1);
+
+    setSphere(i, pos, r);
+    return i;
+}
+
+void CudaSphereModel::setSphere(int i, const Vector3& pos, Real r)
+{
+    (*mstate->getX())[i] = pos;
+    setRadius(i,r);
 }
 
 } // namespace cuda
