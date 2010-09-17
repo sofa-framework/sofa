@@ -70,78 +70,67 @@ using namespace sofa::defaulttype;
 
 
 
-void UpdateForceFeedBack(void* toolData)
+SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
 {
     static unsigned int ffbCounter=0;/////////////////////////////////////////////////////////
     ffbCounter++;
-    if((ffbCounter%1000) == 0)
+    if((ffbCounter%100) == 0)
     {
         std::cout<<"UpdateForceFeedBack called :"<<ffbCounter<<std::endl;///////////////////////////////////////////////////////
     }
+
+
+    XiToolDataIHP* myData = static_cast<XiToolDataIHP*>(toolData);
+
+    // Compute actual tool state:
+    xiTrocarAcquire();
+    XiToolState state;
+
+    xiTrocarQueryStates();
+    xiTrocarGetState(myData->indexTool, &state);
+
+    Vector3 dir;
+    dir[0] = (double)state.trocarDir[0];
+    dir[1] = (double)state.trocarDir[1];
+    dir[2] = (double)state.trocarDir[2];
+
+    double toolDpth = state.toolDepth;
+    double thetaX= asin(dir[2]);
+    double cx = cos(thetaX);
+    double thetaZ=0;
+
+    if (cx > 0.0001)
+    {
+        thetaZ = -asin(dir[0]/cx);
+    }
+    else
+    {
+        //this->f_printLog.setValue(true);
+        std::cerr<<"WARNING can not found the position thetaZ of the interface"<<std::endl;
+    }
+
+    // Call LCPForceFeedBack
+    sofa::defaulttype::Vec1dTypes::VecCoord currentState; //sofa::helper::vector<sofa::defaulttype::Vector1 > currentState;
+    sofa::defaulttype::Vec1dTypes::VecDeriv ForceBack; //sofa::helper::vector<sofa::defaulttype::Vector1 > ForceBack;
+
+    /* Here, in older version, currentState is declared as an vector<Vec1d> which
+     * is not compatible in the use of LCPForceFeedback::computeForce(const  VecCoord& state,  VecDeriv& forces) below
+     * In the other way, if currentState declare like a Vec1dTypes::VecCoord for compatibility in function computeForce,
+     * it will not have a size of 6 double
+     * the interrogation point is : is it resonable to declare all LCPForceFeedback in the template Rigid3dTypes instead of Vec1d
+    currentState.resize(6);
+    currentState[0] = thetaX;
+    currentState[1] = thetaZ;
+    currentState[2] = state.toolRoll;
+    currentState[3] = toolDpth * myData->scale;
+    currentState[4] = state.opening;
+    currentState[5] = state.opening;
+    */
+
+    myData->forceFeedback->computeForce(currentState, ForceBack);//Error here
+
+
     /*
-
-    	XiToolDataIHP* myData = static_cast<XiToolDataIHP*>(toolData);
-
-    	// Compute actual tool state:
-    	xiTrocarAcquire();
-    	XiToolState state;
-
-    	xiTrocarQueryStates();
-    	xiTrocarGetState(myData->indexTool, &state);
-
-    	Vector3 dir;
-    	dir[0] = (double)state.trocarDir[0];
-    	dir[1] = (double)state.trocarDir[1];
-    	dir[2] = (double)state.trocarDir[2];
-
-    	double toolDpth = state.toolDepth;
-    	double thetaX= asin(dir[2]);
-    	double cx = cos(thetaX);
-    	double thetaZ=0;
-
-    	if (cx > 0.0001)
-    	{
-    		thetaZ = -asin(dir[0]/cx);
-    	}
-    	else
-    	{
-    		this->f_printLog.setValue(true);
-    		std::cerr<<"WARNING can not found the position thetaZ of the interface"<<std::endl;
-    	}
-
-    	// Call LCPForceFeedBack
-    	sofa::helper::vector<sofa::defaulttype::Vector1 > currentState;
-    	sofa::helper::vector<sofa::defaulttype::Vector1 > ForceBack;
-
-    	currentState.resize(6);
-    	currentState[0] = thetaX;
-    	currentState[1] = thetaZ;
-    	currentState[2] = state.toolRoll;
-    	currentState[3] = toolDpth * myData->scale;
-    	currentState[4] = state.opening;
-    	currentState[5] = state.opening;
-
-    	myData->forceFeedback->computeForce(currentState, ForceBack);
-
-
-
-    	// z = [0 -sin(state[0]) cos(state[0])];
-    	// x= [1 0 0];
-    	// Mx = forces[0]; //couple calculé selon X
-    	// Mz = forces[1]; //couple calculé selon Z
-    	// if (toolDepth > 0 {
-    	//  	OP = trocarDir*toolDepth ;
-    	//  	forceX = Mz/dot(cross(z,OP),x) ;  => normalement devrait etre tjrs egal a Mz /
-    	// toolDepth
-    	// 	forceZ = Mx/dot(cross(x,OP),z) ;  => attention pas tjs egal à Mx /toolDepth car
-    	// x et OP non tjs perpendiculaires
-    	// }
-    	// tipForce = trocarDir*forces[3]+  // translation (signe ?)
-    	// forceX*x+ // force "crée" au bout de la pince par le moment Mz
-    	// forceZ*z; // force "crée" au bout de la pince par le moement Mx
-
-
-
     	double forceX, forceZ; //Y?
     	Vector3 tipForce;
 
@@ -180,13 +169,13 @@ void UpdateForceFeedBack(void* toolData)
 
     	xiTrocarSetForce(0, &ff);
     	xiTrocarFlushForces();
-    	*/
+    */
 }
 
 
-bool isInitialized = false;
+SOFA_XITACTPLUGIN_API bool isInitialized = false;
 
-int initDevice(XiToolDataIHP& /*data*/)
+SOFA_XITACTPLUGIN_API int initDevice(XiToolDataIHP& /*data*/)
 {
     std::cout<<"initDevice called:"<<std::endl;////////////////////////////////////////////////////////////////////
 
@@ -236,6 +225,7 @@ IHPDriver::~IHPDriver()
 
 void IHPDriver::cleanup()
 {
+
     std::cout<<"IHPDriver::cleanup() called:"<<std::endl;/////////////////////////////////////////////////////////
 
     isInitialized = false;
