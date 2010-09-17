@@ -170,7 +170,9 @@ void TSphereModel<DataTypes>::drawColourPicking(const ColourCode method)
     if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
 
     helper::vector<core::CollisionModel*> listCollisionModel;
-    this->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
+    core::objectmodel::BaseContext* context;
+    context = this->getContext();
+    context->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
     const int totalCollisionModel = listCollisionModel.size();
     helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), this);
     const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
@@ -283,7 +285,7 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDe
                 else if (ptv[c] < minElem[c]) minElem[c] = ptv[c];
             }
 
-            TSphere<DataTypes>::Real r = p.r();
+            typename TSphere<DataTypes>::Real r = p.r();
             cubeModel->setParentOf(i, minElem - Vector3(r,r,r), maxElem + Vector3(r,r,r));
         }
         cubeModel->computeBoundingTree(maxDepth);
