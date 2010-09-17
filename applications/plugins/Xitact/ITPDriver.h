@@ -70,14 +70,15 @@ typedef SOFA_XITACTPLUGIN_API struct
     bool permanent_feedback;
 
     // API ITP //
-    XiToolState hapticState;  // for the haptic loop
+    XiToolState hapticState;     // for the haptic loop
     XiToolState simuState;		 // for the simulation loop
     XiToolForce hapticForce;
 
 } XiToolDataITP;
 
 /**
-* Omni driver
+* ITP Xitact driver
+* http://www.mentice.com/default.asp?viewset=1&on=%27Products%27&id=&initid=99&heading=Products&mainpage=templates/05.asp?sida=85
 */
 class SOFA_XITACTPLUGIN_API ITPDriver : public sofa::component::controller::Controller
 {

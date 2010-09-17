@@ -70,16 +70,17 @@ typedef struct
     bool permanent_feedback;
 
     // API IHP //
-    XiToolState hapticState;  // for the haptic loop
+    XiToolState hapticState;     // for the haptic loop
     XiToolState simuState;		 // for the simulation loop
-    XiToolState restState;  // for initial haptic state
+    XiToolState restState;       // for initial haptic state
     XiToolForce hapticForce;
 
 } XiToolDataIHP;
 
 
 /**
-* Omni driver
+* IHP Xitact driver
+* http://www.mentice.com/default.asp?viewset=1&on=%27Products%27&id=&initid=99&heading=Products&mainpage=templates/05.asp?sida=85
 */
 class SOFA_XITACTPLUGIN_API IHPDriver : public sofa::component::controller::Controller
 {

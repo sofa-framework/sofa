@@ -72,106 +72,115 @@ using namespace sofa::defaulttype;
 
 void UpdateForceFeedBack(void* toolData)
 {
-    XiToolDataIHP* myData = static_cast<XiToolDataIHP*>(toolData);
-
-    // Compute actual tool state:
-    xiTrocarAcquire();
-    XiToolState state;
-
-    xiTrocarQueryStates();
-    xiTrocarGetState(myData->indexTool, &state);
-
-    Vector3 dir;
-    dir[0] = (double)state.trocarDir[0];
-    dir[1] = (double)state.trocarDir[1];
-    dir[2] = (double)state.trocarDir[2];
-
-    double toolDpth = state.toolDepth;
-    double thetaX= asin(dir[2]);
-    double cx = cos(thetaX);
-    double thetaZ=0;
-
-    if (cx > 0.0001)
+    static unsigned int ffbCounter=0;/////////////////////////////////////////////////////////
+    ffbCounter++;
+    if((ffbCounter%1000) == 0)
     {
-        thetaZ = -asin(dir[0]/cx);
+        std::cout<<"UpdateForceFeedBack called :"<<ffbCounter<<std::endl;///////////////////////////////////////////////////////
     }
-    else
-    {
-//		this->f_printLog.setValue(true);
-        std::cerr<<"WARNING can not found the position thetaZ of the interface"<<std::endl;
-    }
-
-    // Call LCPForceFeedBack
-    sofa::helper::vector<sofa::defaulttype::Vector1 > currentState;
-    sofa::helper::vector<sofa::defaulttype::Vector1 > ForceBack;
-
-    currentState.resize(6);
-    currentState[0] = thetaX;
-    currentState[0] = thetaZ;
-    currentState[0] = state.toolRoll;
-    currentState[0] = toolDpth * myData->scale;
-    currentState[0] = state.opening;
-    currentState[0] = state.opening;
-
-    myData->forceFeedback->computeForce(currentState, ForceBack);
-
-
     /*
-    z = [0 -sin(state[0]) cos(state[0])];
-    x= [1 0 0];
-    Mx = forces[0]; //couple calculé selon X
-    Mz = forces[1]; //couple calculé selon Z
-    if (toolDepth > 0 {
-        OP = trocarDir*toolDepth ;
-        forceX = Mz/dot(cross(z,OP),x) ;  => normalement devrait etre tjrs egal a Mz /
-    toolDepth
-        forceZ = Mx/dot(cross(x,OP),z) ;  => attention pas tjs egal à Mx /toolDepth car
-    x et OP non tjs perpendiculaires
-    }
-    tipForce = trocarDir*forces[3]+  // translation (signe ?)
-    forceX*x+ // force "crée" au bout de la pince par le moment Mz
-    forceZ*z; // force "crée" au bout de la pince par le moement Mx
-    */
+
+    	XiToolDataIHP* myData = static_cast<XiToolDataIHP*>(toolData);
+
+    	// Compute actual tool state:
+    	xiTrocarAcquire();
+    	XiToolState state;
+
+    	xiTrocarQueryStates();
+    	xiTrocarGetState(myData->indexTool, &state);
+
+    	Vector3 dir;
+    	dir[0] = (double)state.trocarDir[0];
+    	dir[1] = (double)state.trocarDir[1];
+    	dir[2] = (double)state.trocarDir[2];
+
+    	double toolDpth = state.toolDepth;
+    	double thetaX= asin(dir[2]);
+    	double cx = cos(thetaX);
+    	double thetaZ=0;
+
+    	if (cx > 0.0001)
+    	{
+    		thetaZ = -asin(dir[0]/cx);
+    	}
+    	else
+    	{
+    		this->f_printLog.setValue(true);
+    		std::cerr<<"WARNING can not found the position thetaZ of the interface"<<std::endl;
+    	}
+
+    	// Call LCPForceFeedBack
+    	sofa::helper::vector<sofa::defaulttype::Vector1 > currentState;
+    	sofa::helper::vector<sofa::defaulttype::Vector1 > ForceBack;
+
+    	currentState.resize(6);
+    	currentState[0] = thetaX;
+    	currentState[1] = thetaZ;
+    	currentState[2] = state.toolRoll;
+    	currentState[3] = toolDpth * myData->scale;
+    	currentState[4] = state.opening;
+    	currentState[5] = state.opening;
+
+    	myData->forceFeedback->computeForce(currentState, ForceBack);
 
 
-    double forceX, forceZ; //Y?
-    Vector3 tipForce;
 
-    Vector3 z;
-    z[0] = 0;
-    z[1] = -sin(thetaX);
-    z[2] = cx;
-    Vector3 x;
-    x[0] = 1; x[1] = 0; x[2] = 0;
-    double Mx = ForceBack[0][0];
-    double Mz = ForceBack[1][0];
+    	// z = [0 -sin(state[0]) cos(state[0])];
+    	// x= [1 0 0];
+    	// Mx = forces[0]; //couple calculé selon X
+    	// Mz = forces[1]; //couple calculé selon Z
+    	// if (toolDepth > 0 {
+    	//  	OP = trocarDir*toolDepth ;
+    	//  	forceX = Mz/dot(cross(z,OP),x) ;  => normalement devrait etre tjrs egal a Mz /
+    	// toolDepth
+    	// 	forceZ = Mx/dot(cross(x,OP),z) ;  => attention pas tjs egal à Mx /toolDepth car
+    	// x et OP non tjs perpendiculaires
+    	// }
+    	// tipForce = trocarDir*forces[3]+  // translation (signe ?)
+    	// forceX*x+ // force "crée" au bout de la pince par le moment Mz
+    	// forceZ*z; // force "crée" au bout de la pince par le moement Mx
 
-    Vector3 OP;
 
-    if (toolDpth > 0.0)
-    {
-        OP = dir * toolDpth;
-        forceX = Mz/dot( cross(z,OP), x);
-        forceZ = Mx/dot( cross(x,OP), z);
-    }
 
-    tipForce = dir*ForceBack[3/*2?*/][0] + x * forceX + z *forceZ;
+    	double forceX, forceZ; //Y?
+    	Vector3 tipForce;
 
-    XiToolForce_ ff;
-    ff.tipForce[0] = (float)(tipForce[0] * myData->forceScale);
-    ff.tipForce[1] = (float)(tipForce[1] * myData->forceScale);
-    ff.tipForce[2] = (float)(tipForce[2] * myData->forceScale);
+    	Vector3 z;
+    	z[0] = 0;
+    	z[1] = -sin(thetaX);
+    	z[2] = cx;
+    	Vector3 x;
+    	x[0] = 1; x[1] = 0; x[2] = 0;
+    	double Mx = ForceBack[0][0];
+    	double Mz = ForceBack[1][0];
 
-    if ( (abs(ff.tipForce[0]) > FFthresholdX) || (abs(ff.tipForce[1]) > FFthresholdY) || (abs(ff.tipForce[2]) > FFthresholdZ) )
-    {
-        std::cout << "Error: Force FeedBack has reached a safety threshold! See header file IHPDriver.h." << std::endl;
-        std::cout << "F_X: " << ff.tipForce[0] << "F_Y: " << ff.tipForce[1] << "F_Z: " << ff.tipForce[2] << std::endl;
-        return;
-    }
-    ff.rollForce = 0.0f;
+    	Vector3 OP;
 
-    xiTrocarSetForce(0, &ff);
-    xiTrocarFlushForces();
+    	if (toolDpth > 0.0)
+    	{
+    		OP = dir * toolDpth;
+    		forceX = Mz/dot( cross(z,OP), x);
+    		forceZ = Mx/dot( cross(x,OP), z);
+    	}
+
+    	tipForce = dir*ForceBack[3][0] + x * forceX + z *forceZ;
+
+    	XiToolForce_ ff;
+    	ff.tipForce[0] = (float)(tipForce[0] * myData->forceScale);
+    	ff.tipForce[1] = (float)(tipForce[1] * myData->forceScale);
+    	ff.tipForce[2] = (float)(tipForce[2] * myData->forceScale);
+
+    	if ( (abs(ff.tipForce[0]) > FFthresholdX) || (abs(ff.tipForce[1]) > FFthresholdY) || (abs(ff.tipForce[2]) > FFthresholdZ) )
+    	{
+    		std::cout << "Error: Force FeedBack has reached a safety threshold! See header file IHPDriver.h." << std::endl;
+    		std::cout << "F_X: " << ff.tipForce[0] << "F_Y: " << ff.tipForce[1] << "F_Z: " << ff.tipForce[2] << std::endl;
+    		return;
+    	}
+    	ff.rollForce = 0.0f;
+
+    	xiTrocarSetForce(0, &ff);
+    	xiTrocarFlushForces();
+    	*/
 }
 
 
@@ -179,6 +188,8 @@ bool isInitialized = false;
 
 int initDevice(XiToolDataIHP& /*data*/)
 {
+    std::cout<<"initDevice called:"<<std::endl;////////////////////////////////////////////////////////////////////
+
     if (isInitialized) return 0;
     isInitialized = true;
 
@@ -200,32 +211,32 @@ int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact D
 IHPDriver::IHPDriver()
     : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
     , forceScale(initData(&forceScale, 0.0001, "forceScale","Default scale applied to the force feedback. "))
-    , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
+    , permanent(initData(&permanent, true, "permanent" , "Apply the force feedback permanently"))
     , indexTool(initData(&indexTool, (int)0,"toolIndex", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
     , graspThreshold(initData(&graspThreshold, 0.2, "graspThreshold","Threshold value under which grasping will launch an event."))
     , showToolStates(initData(&showToolStates, false, "showToolStates" , "Display states and forces from the tool."))
     , testFF(initData(&testFF, false, "testFF" , "If true will add force when closing handle. As if tool was entering an elastic body."))
 {
+    std::cout<<"IHPDriver::IHPDriver() called:"<<std::endl;/////////////////////////////////////////////////////////
+
     myPaceMaker = NULL;
     _mstate = NULL;
     this->f_listening.setValue(true);
-    //data.forceFeedback = new NullForceFeedback();
+
     noDevice = false;
     graspElasticMode = false;
 }
 
 IHPDriver::~IHPDriver()
 {
+    std::cout<<"IHPDriver::~IHPDriver() called:"<<std::endl;/////////////////////////////////////////////////////////
     xiTrocarRelease();
     this->deleteCallBack();
-//	if (data.forceFeedback)
-//		delete data.forceFeedback;
-
 }
 
 void IHPDriver::cleanup()
 {
-    sout << "IHPDriver::cleanup()" << sendl;
+    std::cout<<"IHPDriver::cleanup() called:"<<std::endl;/////////////////////////////////////////////////////////
 
     isInitialized = false;
 
@@ -235,7 +246,7 @@ void IHPDriver::cleanup()
 
 void IHPDriver::setForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff)
 {
-    // the forcefeedback is already set
+    std::cout<<"IHPDriver::setForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
     if(data.forceFeedback == ff)
     {
         return;
@@ -243,12 +254,12 @@ void IHPDriver::setForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff)
 
     if(data.forceFeedback)
         delete data.forceFeedback;
-    data.forceFeedback = ff;
+    data.forceFeedback =ff;
 };
 
 void IHPDriver::bwdInit()
 {
-
+    std::cout<<"IHPDriver::bwdInit() called:"<<std::endl;/////////////////////////////////////////////////////////
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
     if (dynamic_cast<core::behavior::MechanicalState<Vec1dTypes>*>(context->getMechanicalState()) == NULL)
     {
@@ -308,7 +319,7 @@ void IHPDriver::bwdInit()
 
 void IHPDriver::setDataValue()
 {
-
+    std::cout<<"IHPDriver::setDataValue() called:"<<std::endl;/////////////////////////////////////////////////////////
     data.scale = Scale.getValue();
     data.forceScale = forceScale.getValue();
     data.permanent_feedback = permanent.getValue();
@@ -326,17 +337,20 @@ void IHPDriver::setDataValue()
 
 void IHPDriver::reset()
 {
+    std::cout<<"IHPDriver::reset() called:"<<std::endl;/////////////////////////////////////////////////////////
     this->reinit();
 }
 
 void IHPDriver::reinitVisual()
 {
-
+    std::cout<<"IHPDriver::reinitVisual() called:"<<std::endl;/////////////////////////////////////////////////////////
 
 }
 
 void IHPDriver::reinit()
 {
+
+    std::cout<<"IHPDriver::reinit() called:"<<std::endl;/////////////////////////////////////////////////////////
     this->cleanup();
     this->bwdInit();
 
@@ -352,6 +366,8 @@ void IHPDriver::reinit()
 
 void IHPDriver::updateForce()
 {
+
+    std::cout<<"IHPDriver::updateForce() called:"<<std::endl;/////////////////////////////////////////////////////////
     // Quick FF test. Add force when using handle. Like in documentation.
     int tool = indexTool.getValue();
     float graspReferencePoint[3] = { 0.0f, 0.0f, 0.0f };
@@ -394,14 +410,15 @@ void IHPDriver::updateForce()
 
 void IHPDriver::displayState()
 {
+    std::cout<<"IHPDriver::displayState() called:"<<std::endl;/////////////////////////////////////////////////////////
     // simple function print the current device state to the screen.
     char toolID[16];
     xiTrocarGetSerialNumber(indexTool.getValue(),toolID);
     XiToolState state = data.simuState;
     std::cout << toolID
             << " => X = " << state.trocarDir[0]
-            << ", Y = " << state.trocarDir[1]
-            << ", Z = " << state.trocarDir[2]
+            << ", Y = "   << state.trocarDir[1]
+            << ", Z = "   << state.trocarDir[2]
             << ", Ins = " << state.toolDepth
             << ", Roll(rad) = " << state.toolRoll
             << ", Open = " << state.opening << std::endl;
@@ -409,6 +426,8 @@ void IHPDriver::displayState()
 
 void IHPDriver::handleEvent(core::objectmodel::Event *event)
 {
+    std::cout<<"IHPDriver::handleEvent() called:"<<std::endl;/////////////////////////////////////////////////////////
+
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
 
@@ -495,101 +514,11 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
             this->graspClosed();
 
     }
-    /*
-    	//std::cout<<"NewEvent detected !!"<<std::endl;
-
-
-    	if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
-    	{
-    		//getData(); // copy data->servoDeviceData to gDeviceData
-    		hdScheduleSynchronous(copyDeviceDataCallback, (void *) &data, HD_MIN_SCHEDULER_PRIORITY);
-    		if (data.deviceData.ready)
-    		{
-    			data.deviceData.quat.normalize();
-    			//sout << "driver is working ! " << data->servoDeviceData.transform[12+0] << endl;
-
-
-    			/// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
-    			SolidTypes<double>::Transform baseIHP_H_endIHP(data.deviceData.pos*data.scale, data.deviceData.quat);
-    			SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseIHP * baseIHP_H_endIHP * data.endIHP_H_virtualTool;
-
-
-    			/// TODO : SHOULD INCLUDE VELOCITY !!
-    			sofa::core::objectmodel::XitactEvent IHPEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
-
-    			this->getContext()->propagateEvent(&IHPEvent);
-
-    			if (moveIHPBase)
-    			{
-    				std::cout<<" new positionBase = "<<positionBase_buf<<std::endl;
-    				visu_base->applyTranslation(positionBase_buf[0] - positionBase.getValue()[0],
-    											positionBase_buf[1] - positionBase.getValue()[1],
-    											positionBase_buf[2] - positionBase.getValue()[2]);
-    				positionBase.setValue(positionBase_buf);
-    				setDataValue();
-    				//this->reinitVisual();
-    			}
-
-    		}
-    		else
-    			std::cout<<"data not ready"<<std::endl;
-
-
-
-    	}
-
-    	if (dynamic_cast<core::objectmodel::KeypressedEvent *>(event))
-    	{
-    		core::objectmodel::KeypressedEvent *kpe = dynamic_cast<core::objectmodel::KeypressedEvent *>(event);
-    		if (kpe->getKey()=='Z' ||kpe->getKey()=='z' )
-    		{
-    			moveIHPBase = !moveIHPBase;
-    			std::cout<<"key z detected "<<std::endl;
-    			visu.setValue(moveIHPBase);
-
-
-    			if(moveIHPBase)
-    			{
-    				this->cleanup();
-    				positionBase_buf = positionBase.getValue();
-
-    			}
-    			else
-    			{
-    				this->reinit();
-    			}
-    		}
-
-    		if(kpe->getKey()=='K' || kpe->getKey()=='k')
-    		{
-    			positionBase_buf.x()=0.0;
-    			positionBase_buf.y()=0.5;
-    			positionBase_buf.z()=2.6;
-    		}
-
-    		if(kpe->getKey()=='L' || kpe->getKey()=='l')
-    		{
-    			positionBase_buf.x()=-0.15;
-    			positionBase_buf.y()=1.5;
-    			positionBase_buf.z()=2.6;
-    		}
-
-    		if(kpe->getKey()=='M' || kpe->getKey()=='m')
-    		{
-    			positionBase_buf.x()=0.0;
-    			positionBase_buf.y()=2.5;
-    			positionBase_buf.z()=2.6;
-    		}
-
-
-
-    	}
-
-    */
 }
 
 void IHPDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 {
+    std::cout<<"IHPDriver::onKeyPressedEvent() called:"<<std::endl;/////////////////////////////////////////////////////////
     (void)kpe;
 
 
@@ -597,9 +526,8 @@ void IHPDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 
 void IHPDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
 {
+    std::cout<<"IHPDriver::onKeyReleasedEvent() called:"<<std::endl;/////////////////////////////////////////////////////////
     (void)kre;
-    //OmniVisu.setValue(false);
-
 }
 
 
@@ -608,6 +536,7 @@ void IHPDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
 
 Quat IHPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_quat)
 {
+    std::cout<<"IHPDriver::fromGivenDirection() called:"<<std::endl;/////////////////////////////////////////////////////////
     local_dir.normalize();
     Vector3 old_dir = old_quat.rotate(local_dir);
     dir.normalize();
@@ -635,11 +564,12 @@ Quat IHPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_
 
 void IHPDriver::createCallBack()
 {
+    std::cout<<"IHPDriver::createCallBack() called:"<<std::endl;/////////////////////////////////////////////////////////
     if (myPaceMaker)
         delete myPaceMaker;
 
     myPaceMaker = new sofa::component::controller::PaceMaker(1000);
-    myPaceMaker->pToFunc = &UpdateForceFeedBack;
+    myPaceMaker->pToFunc =  &UpdateForceFeedBack;
     myPaceMaker->Pdata = &data;
     myPaceMaker->createPace();
 
@@ -649,6 +579,7 @@ void IHPDriver::createCallBack()
 
 void IHPDriver::deleteCallBack()
 {
+    std::cout<<"IHPDriver::deleteCallBack() called:"<<std::endl;/////////////////////////////////////////////////////////
     if (myPaceMaker)
         delete myPaceMaker;
 }
@@ -656,21 +587,25 @@ void IHPDriver::deleteCallBack()
 
 void IHPDriver::stateCallBack()
 {
+    std::cout<<"IHPDriver::stateCallBack() called:"<<std::endl;/////////////////////////////////////////////////////////
     // this function delete thread
 }
 
 void IHPDriver::rightButtonPushed()
 {
+    std::cout<<"IHPDriver::rightButtonPushed() called:"<<std::endl;/////////////////////////////////////////////////////////
     this->operation = true;
 }
 
 void IHPDriver::leftButtonPushed()
 {
+    std::cout<<"IHPDriver::leftButtonPushed() called:"<<std::endl;/////////////////////////////////////////////////////////
     this->operation = false;
 }
 
 void IHPDriver::graspClosed()
 {
+    std::cout<<"IHPDriver::graspClosed() called:"<<std::endl;/////////////////////////////////////////////////////////
     if (operation)//Right pedal operation
     {
         return;
