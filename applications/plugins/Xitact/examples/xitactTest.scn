@@ -14,7 +14,7 @@
     <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid" position="0 0 0 0 0 0 1"/>
-    <RestShapeSpringsForceField points="0" stiffness="10000" angularStiffness="1000000000" external_rest_shape="toto"/>
+    <RestShapeSpringsForceField points="0" stiffness="10000" angularStiffness="1000000000"/> <!--external_rest_shape="toto"/>-->
     <UncoupledConstraintCorrection compliance="0.0001  0.000000001 0 0 0.000000001 0 0.000000001"/>
 
     <Node name="VisuOfXitactBase">
