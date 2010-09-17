@@ -126,15 +126,15 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
-    template<> bool MechanicalObject< T >::canPrefetch() const; \
-    template<> void MechanicalObject< T >::accumulateForce(); \
-    template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f); \
-    template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops); \
-    template<> double MechanicalObject< T >::vDot(VecId a, VecId b); \
-    template<> void MechanicalObject< T >::resetForce(); \
-    template<> void MechanicalObject< T >::addDxToCollisionModel(); \
-    template<> void MechanicalObject< T >::loadInBaseVector(defaulttype::BaseVector * dest, VecId src, unsigned int &offset); \
-    template<> void MechanicalObject< T >::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
+    template<> inline bool MechanicalObject< T >::canPrefetch() const; \
+    template<> inline void MechanicalObject< T >::accumulateForce(); \
+    template<> inline void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f); \
+    template<> inline void MechanicalObject< T >::vMultiOp(const VMultiOp& ops); \
+    template<> inline double MechanicalObject< T >::vDot(VecId a, VecId b); \
+    template<> inline void MechanicalObject< T >::resetForce(); \
+    template<> inline void MechanicalObject< T >::addDxToCollisionModel(); \
+    template<> inline void MechanicalObject< T >::loadInBaseVector(defaulttype::BaseVector * dest, VecId src, unsigned int &offset); \
+    template<> inline void MechanicalObject< T >::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);
