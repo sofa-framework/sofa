@@ -178,19 +178,19 @@ inline TSphere<DataTypes>::TSphere(core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TSphere<DataTypes>::center() const { return (*this->model->mstate->getX())[index]; }
+inline const typename DataTypes::Coord& TSphere<DataTypes>::center() const { return (*this->model->mstate->getX())[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TSphere<DataTypes>::p() const { return (*this->model->mstate->getX())[index]; }
+inline const typename DataTypes::Coord& TSphere<DataTypes>::p() const { return (*this->model->mstate->getX())[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->getXfree())[index]; }
+inline const typename DataTypes::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->getXfree())[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TSphere<DataTypes>::v() const { return (*this->model->mstate->getV())[index]; }
+inline const typename DataTypes::Coord& TSphere<DataTypes>::v() const { return (*this->model->mstate->getV())[this->index]; }
 
 template<class DataTypes>
-inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) this->model->getRadius((unsigned)index); }
+inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) this->model->getRadius((unsigned)this->index); }
 
 using namespace sofa::defaulttype;
 typedef TSphereModel<Vec3Types> SphereModel;
