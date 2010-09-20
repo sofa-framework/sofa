@@ -58,10 +58,10 @@ int SphereModelClass = core::RegisterObject("Collision model which represents a 
         ;
 
 #ifndef SOFA_FLOAT
-template class TSphereModel<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class TSphereModel<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
 #endif
 
 

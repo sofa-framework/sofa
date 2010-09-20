@@ -25,6 +25,7 @@
 #ifndef SOFA_GPU_CUDA_CUDASPHEREMODEL_H
 #define SOFA_GPU_CUDA_CUDASPHEREMODEL_H
 
+#include <sofa/gpu/cuda/gpucuda.h>
 #include "CudaTypes.h"
 
 #include <sofa/component/collision/SphereModel.h>
@@ -40,6 +41,15 @@ namespace cuda
 
 typedef sofa::component::collision::TSphereModel<gpu::cuda::CudaVec3Types> CudaSphereModel;
 typedef sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types> CudaSphere;
+
+#if defined(WIN32) && !defined(SOFA_BUILD_GPU_CUDA)
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif
 
 } // namespace cuda
 

@@ -72,7 +72,7 @@ template< class TDataTypes>
 class TSphereModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(TSphereModel, core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TSphereModel, TDataTypes), core::CollisionModel);
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -195,6 +195,15 @@ inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) th
 using namespace sofa::defaulttype;
 typedef TSphereModel<Vec3Types> SphereModel;
 typedef TSphere<Vec3Types> Sphere;
+
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace collision
 
