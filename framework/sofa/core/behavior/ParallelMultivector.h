@@ -57,7 +57,7 @@ public:
     ParallelMultiVector(Parent* parent, VecId v) : sofa::core::behavior::MultiVector<Parent>(parent,v)
     {}
 
-    /// Allocate a new temporary vector with the given type (VecId::V_COORD or VecId::V_DERIV).
+    /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
     ParallelMultiVector(Parent* parent, VecId::Type t, const char* name="") : sofa::core::behavior::MultiVector<Parent>(parent,t/*, name*/)
     {}
 
