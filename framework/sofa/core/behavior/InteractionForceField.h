@@ -75,7 +75,6 @@ public:
         if (r1) addKToMatrix(r1.matrix, mparams->kFactor(), r1.offset);
         if (r2) addKToMatrix(r2.matrix,  mparams->kFactor(), r2.offset);
     }
-
 };
 
 } // namespace behavior
