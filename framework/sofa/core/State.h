@@ -98,10 +98,10 @@ public:
     /// @{
 
     /// Return the current position vector.
-    /// @deprecated use readVecCoord(ConstVecCoodId::position()) instead.
+    /// @deprecated use readVecCoord(ConstVecCoordId::position()) instead.
     virtual const VecCoord* getX()  const
     {
-        const Data<VecCoord>* v = read(ConstVecCoodId::position());
+        const Data<VecCoord>* v = read(ConstVecCoordId::position());
         return (v == NULL) ? NULL : &(v->getValue());
     }
 
@@ -115,10 +115,10 @@ public:
 
     /// Return the current rest position vector
     /// (return NULL if the state does not store rest position).
-    /// @deprecated use readVecCoord(ConstVecCoodId::restPosition()) instead.
+    /// @deprecated use readVecCoord(ConstVecCoordId::restPosition()) instead.
     virtual const VecCoord* getX0() const
     {
-        const Data<VecCoord>* v = read(ConstVecCoodId::restPosition());
+        const Data<VecCoord>* v = read(ConstVecCoordId::restPosition());
         return (v == NULL) ? NULL : &(v->getValue());
     }
 
