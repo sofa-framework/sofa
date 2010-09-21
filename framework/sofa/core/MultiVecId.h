@@ -258,6 +258,12 @@ public:
             idMap[*it] = id;
     }
 
+    void assign(const MyVecId& id)
+    {
+        defaultId = id;
+        idMap.clear();
+    }
+
     const MyVecId& getId(const BaseState* s) const
     {
         IdMap_const_iterator it = idMap.find(s);
