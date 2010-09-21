@@ -315,8 +315,8 @@ typedef TMultiVecId<V_COORD, V_READ> ConstMultiVecCoordId;
 typedef TMultiVecId<V_COORD, V_WRITE>     MultiVecCoordId;
 typedef TMultiVecId<V_DERIV, V_READ> ConstMultiVecDerivId;
 typedef TMultiVecId<V_DERIV, V_WRITE>     MultiVecDerivId;
-typedef TMultiVecId<V_MATDERIV, V_READ> ConstMultiVecMatDerivId;
-typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiVecMatDerivId;
+typedef TMultiVecId<V_MATDERIV, V_READ> ConstMultiMatrixDerivId;
+typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 
 } // namespace core
 

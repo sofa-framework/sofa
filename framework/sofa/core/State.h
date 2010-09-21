@@ -89,8 +89,8 @@ public:
     virtual Data< VecDeriv >* write(VecDerivId v) = 0;
     virtual const Data< VecDeriv >* read(ConstVecDerivId v) const = 0;
 
-    virtual Data< MatrixDeriv >* write(VecMatDerivId v) = 0;
-    virtual const Data< MatrixDeriv >* read(ConstVecMatDerivId v) const = 0;
+    virtual Data< MatrixDeriv >* write(MatrixDerivId v) = 0;
+    virtual const Data< MatrixDeriv >* read(ConstMatrixDerivId v) const = 0;
 
     /// @}
 
