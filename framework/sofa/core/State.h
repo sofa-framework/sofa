@@ -62,11 +62,6 @@ class State : public virtual BaseState
 public:
     SOFA_CLASS(SOFA_TEMPLATE(State,TDataTypes), BaseState);
 
-    /// Identify one stored vector (with read-only access)
-    typedef sofa::core::ConstVecId ConstVecId;
-    /// Identify one stored vector (with read-write access)
-    typedef sofa::core::VecId VecId;
-
     typedef TDataTypes DataTypes;
     /// Scalar values (float or double).
     typedef typename DataTypes::Real Real;
@@ -88,14 +83,14 @@ public:
     /// @name New vectors access API based on VecId
     /// @{
 
-    virtual       Data<VecCoord>* writeVecCoord(     VecId v)       = 0;
-    virtual const Data<VecCoord>*  readVecCoord(ConstVecId v) const = 0;
+    virtual Data< VecCoord >* write(VecCoordId v) = 0;
+    virtual const Data< VecCoord >* read(ConstVecCoordId v) const = 0;
 
-    virtual       Data<VecDeriv>* writeVecDeriv(     VecId v)       = 0;
-    virtual const Data<VecDeriv>*  readVecDeriv(ConstVecId v) const = 0;
+    virtual Data< VecDeriv >* write(VecDerivId v) = 0;
+    virtual const Data< VecDeriv >* read(ConstVecDerivId v) const = 0;
 
-    virtual       Data<MatrixDeriv>* writeMatrixDeriv(     VecId v)       = 0;
-    virtual const Data<MatrixDeriv>*  readMatrixDeriv(ConstVecId v) const = 0;
+    virtual Data< MatrixDeriv >* write(VecMatDerivId v) = 0;
+    virtual const Data< MatrixDeriv >* read(ConstVecMatDerivId v) const = 0;
 
     /// @}
 
@@ -106,30 +101,33 @@ public:
     /// @deprecated use readVecCoord(ConstVecId::position()) instead.
     virtual const VecCoord* getX()  const
     {
-        const Data<VecCoord>* v = readVecCoord(ConstVecId::position());
+        const Data<VecCoord>* v = read(ConstVecId::position());
         return (v == NULL) ? NULL : &(v->getValue());
     }
+
     /// Return the current velocity vector.
     /// @deprecated use readVecDeriv(ConstVecId::velocity()) instead.
     virtual const VecDeriv* getV()  const
     {
-        const Data<VecDeriv>* v = readVecDeriv(ConstVecId::velocity());
+        const Data<VecDeriv>* v = read(ConstVecId::velocity());
         return (v == NULL) ? NULL : &(v->getValue());
     }
+
     /// Return the current rest position vector
     /// (return NULL if the state does not store rest position).
     /// @deprecated use readVecCoord(ConstVecId::restPosition()) instead.
     virtual const VecCoord* getX0() const
     {
-        const Data<VecCoord>* v = readVecCoord(ConstVecId::restPosition());
+        const Data<VecCoord>* v = read(ConstVecId::restPosition());
         return (v == NULL) ? NULL : &(v->getValue());
     }
+
     /// Return the current normal vector
     /// (return NULL if the state does not store normal).
     /// @deprecated use readVecDeriv(ConstVecId::velocity()) instead.
     virtual const VecDeriv* getN() const
     {
-        const Data<VecDeriv>* v = readVecDeriv(ConstVecId::normal());
+        const Data<VecDeriv>* v = read(ConstVecId::normal());
         return (v == NULL) ? NULL : &(v->getValue());
     }
 
