@@ -99,8 +99,8 @@ public:
     const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
-    MyVecId id;
     const State<DataTypes>* state;
+    MyVecId id;
 };
 
 template<class DataTypes>
@@ -116,8 +116,8 @@ public:
     MyDataVec* write() const {  return state->write(id);  }
 
 protected:
-    MyVecId id;
     State<DataTypes>* state;
+    MyVecId id;
 };
 
 template<class DataTypes>
@@ -132,8 +132,8 @@ public:
     const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
-    MyVecId id;
     const State<DataTypes>* state;
+    MyVecId id;
 };
 
 template<class DataTypes>
@@ -149,8 +149,8 @@ public:
     MyDataVec* write() const {  return state->write(id);  }
 
 protected:
-    MyVecId id;
     State<DataTypes>* state;
+    MyVecId id;
 };
 
 template<class DataTypes>
@@ -165,8 +165,8 @@ public:
     const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
-    MyVecId id;
     const State<DataTypes>* state;
+    MyVecId id;
 };
 
 template<class DataTypes>
@@ -182,8 +182,8 @@ public:
     MyDataVec* write() const {  return state->write(id);  }
 
 protected:
-    MyVecId id;
     State<DataTypes>* state;
+    MyVecId id;
 };
 
 template<class DataTypes>
@@ -198,8 +198,8 @@ public:
     //const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
-    MyVecId id;
     const State<DataTypes>* state;
+    MyVecId id;
 };
 
 template<class DataTypes>
@@ -215,8 +215,8 @@ public:
     //      MyDataVec* write() const {  return state->write(id);  }
 
 protected:
-    MyVecId id;
     State<DataTypes>* state;
+    MyVecId id;
 };
 
 
@@ -230,7 +230,7 @@ public:
 protected:
     MyVecId defaultId;
 
-    typedef std::map<BaseState*, MyVecId> IdMap;
+    typedef std::map<const BaseState*, MyVecId> IdMap;
     typedef typename IdMap::iterator IdMap_iterator;
     typedef typename IdMap::const_iterator IdMap_const_iterator;
     IdMap idMap;
