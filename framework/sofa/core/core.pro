@@ -205,8 +205,8 @@ HEADERS += \
 	 fem/BaseQuadratureFormular.h \
 	 fem/BaseFENodes.h			  \
  	 fem/BaseFENodes.inl		  \
-	 fem/QuadratureFormular.h     \
- 	 fem/QuadratureFormular.inl   \
+#	 fem/QuadratureFormular.h     \
+# 	 fem/QuadratureFormular.inl   \
 	 fem/BaseMaterial.h           \
 	 fem/BaseStrainTensor.h       \
 	 fem/BaseFiniteElement.h      \
@@ -215,7 +215,7 @@ HEADERS += \
  
 SOURCES +=  \
 	 fem/BaseFENodes.cpp		  \
-	 fem/QuadratureFormular.cpp   \
+#	 fem/QuadratureFormular.cpp   \
 	 fem/BaseMaterial.cpp         \
 	 fem/BaseFiniteElement.cpp    \
 	 fem/FiniteElement.cpp        \
