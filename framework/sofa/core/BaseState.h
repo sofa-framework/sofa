@@ -49,11 +49,6 @@ class BaseState : public virtual objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseState, objectmodel::BaseObject);
 
-    /// Identify one stored vector (with read-only access)
-    typedef sofa::core::ConstVecId ConstVecId;
-    /// Identify one stored vector (with read-write access)
-    typedef sofa::core::VecId VecId;
-
     virtual ~BaseState() { }
 
     /// Current size of all stored vectors
