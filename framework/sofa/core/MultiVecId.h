@@ -96,7 +96,7 @@ public:
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> readVecCoord(id);  }
+    const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
     MyVecId id;
@@ -112,8 +112,8 @@ public:
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> readVecCoord(id);  }
-    MyDataVec* write() const {  return state->writeVecCoord(id);  }
+    const MyDataVec* read()  const {  return state-> read(id);  }
+    MyDataVec* write() const {  return state->write(id);  }
 
 protected:
     MyVecId id;
@@ -129,7 +129,7 @@ public:
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> readVecDeriv(id);  }
+    const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
     MyVecId id;
@@ -145,8 +145,8 @@ public:
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> readVecDeriv(id);  }
-    MyDataVec* write() const {  return state->writeVecDeriv(id);  }
+    const MyDataVec* read()  const {  return state-> read(id);  }
+    MyDataVec* write() const {  return state->write(id);  }
 
 protected:
     MyVecId id;
@@ -162,7 +162,7 @@ public:
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> readVecMatDeriv(id);  }
+    const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
     MyVecId id;
@@ -178,8 +178,8 @@ public:
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> readMatrixDeriv(id);  }
-    MyDataVec* write() const {  return state->writeMatrixDeriv(id);  }
+    const MyDataVec* read()  const {  return state-> read(id);  }
+    MyDataVec* write() const {  return state->write(id);  }
 
 protected:
     MyVecId id;
