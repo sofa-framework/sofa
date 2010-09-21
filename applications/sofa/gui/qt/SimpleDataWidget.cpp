@@ -110,10 +110,10 @@ Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DW
 
 
 #ifdef SOFA_DEV
-using sofa::core::fem::QuadraturePoint;
+using sofa::component::fem::quadrature::QuadraturePoint;
 
-Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::fem::QuadraturePoint< Vec3f > > >DWClass_QPf("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::fem::QuadraturePoint< Vec3d > > >DWClass_QPd("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::quadrature::QuadraturePoint< Vec3f > > >DWClass_QPf("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::quadrature::QuadraturePoint< Vec3d > > >DWClass_QPd("default",true);
 #endif // SOFA_DEV
 
 using sofa::helper::Polynomial_LD;
