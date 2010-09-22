@@ -49,7 +49,7 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
 	       ElementDataTypes.h    \
-	       FENodesDataTypes.h     \
+	       FEDataTypes.h     \
 	       QuadratureDataTypes.h 
 
 SOURCES += 
