@@ -69,14 +69,13 @@ using namespace sofa::defaulttype;
 
 SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
 {
-    std::cout<<" UpdateForceFeedBack";
 
     bool display =false;
     static unsigned int ffbCounter=0;/////////////////////////////////////////////////////////
     ffbCounter++;
-    if((ffbCounter%10) == 0)
+    if((ffbCounter%500) == 0)
     {
-        //std::cout<<"Hep UpdateForceFeedBack called :"<<ffbCounter<<std::endl;///////////////////////////////////////////////////////
+        std::cout<<"Hep UpdateForceFeedBack called :"<<ffbCounter<<std::endl;///////////////////////////////////////////////////////
         display = true;
     }
 
@@ -89,7 +88,6 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
     xiTrocarQueryStates();
     xiTrocarGetState(myData->indexTool, &state);
 
-    std::cout<<" Aquisition ok";
 
     Vector3 dir;
     dir[0] = (double)state.trocarDir[0];
@@ -140,7 +138,6 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
     currentState[4][0] = state.opening;
     currentState[5][0] = state.opening;
 
-    std::cout<<" call compute force:";
 
     if (myData->lcp_true_vs_vm_false)
         myData->lcp_forceFeedback->computeForce(currentState, ForceBack);//Error here
@@ -171,13 +168,14 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
     }
 
     tipForce = dir*ForceBack[3][0] + x * forceX + z *forceZ;
-    std::cout<<" tipForce = "<<std::fixed << tipForce<<std::endl;
 
 
     XiToolForce_ ff;
     ff.tipForce[0] = (float)(tipForce[0] * myData->forceScale);
     ff.tipForce[1] = (float)(tipForce[1] * myData->forceScale);
     ff.tipForce[2] = (float)(tipForce[2] * myData->forceScale);
+
+
 
     if ( (abs(ff.tipForce[0]) > FFthresholdX) || (abs(ff.tipForce[1]) > FFthresholdY) || (abs(ff.tipForce[2]) > FFthresholdZ) )
     {
@@ -186,6 +184,8 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
         return;
     }
     ff.rollForce = 0.0f;  // 	ForceBack[2][0];  //=> desactivated for now !!
+
+    std::cout<<" tipForce = "<<std::fixed << ff.tipForce[0] <<" " << ff.tipForce[1] <<" " <<ff.tipForce[2] <<" " <<ff.rollForce<< '\xd';;
 
     xiTrocarSetForce(0, &ff);
     xiTrocarFlushForces();
@@ -237,6 +237,10 @@ IHPDriver::IHPDriver()
     noDevice = false;
     graspElasticMode = false;
     findForceFeedback= false;
+
+
+    data.vm_forceFeedback=NULL;
+    data.lcp_forceFeedback=NULL;
 }
 
 IHPDriver::~IHPDriver()
@@ -260,7 +264,7 @@ void IHPDriver::cleanup()
 
 void IHPDriver::setLCPForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff)
 {
-    std::cout<<"IHPDriver::setForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
+    std::cout<<"IHPDriver::setLCPForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
     if(data.lcp_forceFeedback == ff)
     {
         return;
@@ -275,7 +279,7 @@ void IHPDriver::setLCPForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* f
 
 void IHPDriver::setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff)
 {
-    std::cout<<"IHPDriver::setForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
+    std::cout<<"IHPDriver::setVMForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
     if(data.vm_forceFeedback == ff)
     {
         return;
@@ -285,6 +289,8 @@ void IHPDriver::setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTy
         delete data.vm_forceFeedback;
     data.vm_forceFeedback =ff;
     data.lcp_true_vs_vm_false=false;
+
+    std::cout<<"IHPDriver::setVMForceFeedback() ok:"<<std::endl;/////////////////////////////////////////////////////////
 };
 
 void IHPDriver::bwdInit()
