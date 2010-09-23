@@ -51,6 +51,8 @@
 
 #include <QGLViewer/qglviewer.h>
 
+#define TRACKING_MOUSE
+
 namespace sofa
 {
 
@@ -76,6 +78,10 @@ class QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::SofaViewer
     typedef Vector3::value_type Real;
     Q_OBJECT
 private:
+
+#ifdef TRACKING_MOUSE
+    bool m_grabActived;
+#endif
 
     QTimer* timerAnimate;
     int				_W, _H;
