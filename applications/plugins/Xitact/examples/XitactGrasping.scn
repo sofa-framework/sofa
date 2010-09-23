@@ -99,6 +99,8 @@
       <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000000 1000000 1000000 1000 1000000 1000000 " printLog="true"/>
       <UncoupledConstraintCorrection compliance="0.000001 0.000001 0.000001 0.001 0.000001 0.000001 " />
       <IHPDriver Scale="1000"/>
+
+      <LCPForceFeedback template="Vec1d" />
       
 
       <Node name="Jaws">

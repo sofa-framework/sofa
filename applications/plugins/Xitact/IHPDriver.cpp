@@ -48,6 +48,8 @@
 #include <stdlib.h>
 
 
+#include <sofa/helper/system/thread/CTime.h>
+
 
 namespace sofa
 {
@@ -65,18 +67,17 @@ using namespace sofa::defaulttype;
 
 
 
-
-
-
-
-
 SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
 {
+    std::cout<<" UpdateForceFeedBack";
+
+    bool display =false;
     static unsigned int ffbCounter=0;/////////////////////////////////////////////////////////
     ffbCounter++;
-    if((ffbCounter%100) == 0)
+    if((ffbCounter%10) == 0)
     {
-        std::cout<<"UpdateForceFeedBack called :"<<ffbCounter<<std::endl;///////////////////////////////////////////////////////
+        //std::cout<<"Hep UpdateForceFeedBack called :"<<ffbCounter<<std::endl;///////////////////////////////////////////////////////
+        display = true;
     }
 
 
@@ -85,14 +86,17 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
     // Compute actual tool state:
     xiTrocarAcquire();
     XiToolState state;
-
     xiTrocarQueryStates();
     xiTrocarGetState(myData->indexTool, &state);
+
+    std::cout<<" Aquisition ok";
 
     Vector3 dir;
     dir[0] = (double)state.trocarDir[0];
     dir[1] = (double)state.trocarDir[1];
     dir[2] = (double)state.trocarDir[2];
+    //std::cout<<"dir ="<<dir<<std::endl;
+
 
     double toolDpth = state.toolDepth;
     double thetaX= asin(dir[2]);
@@ -109,67 +113,84 @@ SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData)
         std::cerr<<"WARNING can not found the position thetaZ of the interface"<<std::endl;
     }
 
+    /*if (display)
+    	std::cout<<" pos found: toolDpth = "<<toolDpth<<"  thetaX ="<<thetaX<<"  thetaZ= "<<thetaZ<<std::endl;
+    */
+
     // Call LCPForceFeedBack
     sofa::defaulttype::Vec1dTypes::VecCoord currentState; //sofa::helper::vector<sofa::defaulttype::Vector1 > currentState;
     sofa::defaulttype::Vec1dTypes::VecDeriv ForceBack; //sofa::helper::vector<sofa::defaulttype::Vector1 > ForceBack;
+    sofa::defaulttype::Vec1dTypes::VecDeriv velocity;
+
+
+
 
     /* Here, in older version, currentState is declared as an vector<Vec1d> which
      * is not compatible in the use of LCPForceFeedback::computeForce(const  VecCoord& state,  VecDeriv& forces) below
      * In the other way, if currentState declare like a Vec1dTypes::VecCoord for compatibility in function computeForce,
      * it will not have a size of 6 double
-     * the interrogation point is : is it resonable to declare all LCPForceFeedback in the template Rigid3dTypes instead of Vec1d
-    currentState.resize(6);
-    currentState[0] = thetaX;
-    currentState[1] = thetaZ;
-    currentState[2] = state.toolRoll;
-    currentState[3] = toolDpth * myData->scale;
-    currentState[4] = state.opening;
-    currentState[5] = state.opening;
-    */
+     * the interrogation point is : is it resonable to declare all LCPForceFeedback in the template Rigid3dTypes instead of Vec1d */
+    ForceBack.clear(); velocity.clear();
+    currentState.resize(6); ForceBack.resize(6); velocity.resize(6);
 
-    myData->forceFeedback->computeForce(currentState, ForceBack);//Error here
+    currentState[0][0] = thetaX;
+    currentState[1][0] = thetaZ;
+    currentState[2][0] = state.toolRoll;
+    currentState[3][0] = toolDpth * myData->scale;
+    currentState[4][0] = state.opening;
+    currentState[5][0] = state.opening;
+
+    std::cout<<" call compute force:";
+
+    if (myData->lcp_true_vs_vm_false)
+        myData->lcp_forceFeedback->computeForce(currentState, ForceBack);//Error here
+    else
+        myData->vm_forceFeedback->computeForce(currentState, velocity, ForceBack);
 
 
-    /*
-    	double forceX, forceZ; //Y?
-    	Vector3 tipForce;
 
-    	Vector3 z;
-    	z[0] = 0;
-    	z[1] = -sin(thetaX);
-    	z[2] = cx;
-    	Vector3 x;
-    	x[0] = 1; x[1] = 0; x[2] = 0;
-    	double Mx = ForceBack[0][0];
-    	double Mz = ForceBack[1][0];
+    double forceX, forceZ; //Y?
+    Vector3 tipForce;
 
-    	Vector3 OP;
+    Vector3 z;
+    z[0] = 0;
+    z[1] = -sin(thetaX);
+    z[2] = cx;
+    Vector3 x;
+    x[0] = 1; x[1] = 0; x[2] = 0;
+    double Mx = ForceBack[0][0];
+    double Mz = ForceBack[1][0];
 
-    	if (toolDpth > 0.0)
-    	{
-    		OP = dir * toolDpth;
-    		forceX = Mz/dot( cross(z,OP), x);
-    		forceZ = Mx/dot( cross(x,OP), z);
-    	}
+    Vector3 OP;
 
-    	tipForce = dir*ForceBack[3][0] + x * forceX + z *forceZ;
+    if (toolDpth > 0.0)
+    {
+        OP = dir * toolDpth;
+        forceX = Mz/dot( cross(z,OP), x);
+        forceZ = Mx/dot( cross(x,OP), z);
+    }
 
-    	XiToolForce_ ff;
-    	ff.tipForce[0] = (float)(tipForce[0] * myData->forceScale);
-    	ff.tipForce[1] = (float)(tipForce[1] * myData->forceScale);
-    	ff.tipForce[2] = (float)(tipForce[2] * myData->forceScale);
+    tipForce = dir*ForceBack[3][0] + x * forceX + z *forceZ;
+    std::cout<<" tipForce = "<<std::fixed << tipForce<<std::endl;
 
-    	if ( (abs(ff.tipForce[0]) > FFthresholdX) || (abs(ff.tipForce[1]) > FFthresholdY) || (abs(ff.tipForce[2]) > FFthresholdZ) )
-    	{
-    		std::cout << "Error: Force FeedBack has reached a safety threshold! See header file IHPDriver.h." << std::endl;
-    		std::cout << "F_X: " << ff.tipForce[0] << "F_Y: " << ff.tipForce[1] << "F_Z: " << ff.tipForce[2] << std::endl;
-    		return;
-    	}
-    	ff.rollForce = 0.0f;
 
-    	xiTrocarSetForce(0, &ff);
-    	xiTrocarFlushForces();
-    */
+    XiToolForce_ ff;
+    ff.tipForce[0] = (float)(tipForce[0] * myData->forceScale);
+    ff.tipForce[1] = (float)(tipForce[1] * myData->forceScale);
+    ff.tipForce[2] = (float)(tipForce[2] * myData->forceScale);
+
+    if ( (abs(ff.tipForce[0]) > FFthresholdX) || (abs(ff.tipForce[1]) > FFthresholdY) || (abs(ff.tipForce[2]) > FFthresholdZ) )
+    {
+        std::cout << "Error: Force FeedBack has reached a safety threshold! See header file IHPDriver.h." << std::endl;
+        std::cout << "F_X: " << ff.tipForce[0] << "F_Y: " << ff.tipForce[1] << "F_Z: " << ff.tipForce[2] << std::endl;
+        return;
+    }
+    ff.rollForce = 0.0f;  // 	ForceBack[2][0];  //=> desactivated for now !!
+
+    xiTrocarSetForce(0, &ff);
+    xiTrocarFlushForces();
+
+
 }
 
 
@@ -205,6 +226,7 @@ IHPDriver::IHPDriver()
     , graspThreshold(initData(&graspThreshold, 0.2, "graspThreshold","Threshold value under which grasping will launch an event."))
     , showToolStates(initData(&showToolStates, false, "showToolStates" , "Display states and forces from the tool."))
     , testFF(initData(&testFF, false, "testFF" , "If true will add force when closing handle. As if tool was entering an elastic body."))
+    , RefreshFrequency(initData(&RefreshFrequency, (int)500,"RefreshFrequency", "Frequency of the haptic loop."))
 {
     std::cout<<"IHPDriver::IHPDriver() called:"<<std::endl;/////////////////////////////////////////////////////////
 
@@ -214,37 +236,55 @@ IHPDriver::IHPDriver()
 
     noDevice = false;
     graspElasticMode = false;
+    findForceFeedback= false;
 }
 
 IHPDriver::~IHPDriver()
 {
-    std::cout<<"IHPDriver::~IHPDriver() called:"<<std::endl;/////////////////////////////////////////////////////////
+    std::cerr<<"IHPDriver::~IHPDriver() called:"<<std::endl;/////////////////////////////////////////////////////////
     xiTrocarRelease();
     this->deleteCallBack();
 }
 
 void IHPDriver::cleanup()
 {
+    /*
+    	std::cout<<"IHPDriver::cleanup() called:"<<std::endl;/////////////////////////////////////////////////////////
 
-    std::cout<<"IHPDriver::cleanup() called:"<<std::endl;/////////////////////////////////////////////////////////
+        isInitialized = false;
+    	if (permanent.getValue())
+    		this->deleteCallBack();
+    */
 
-    isInitialized = false;
-
-    if (permanent.getValue())
-        this->deleteCallBack();
 }
 
-void IHPDriver::setForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff)
+void IHPDriver::setLCPForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff)
 {
     std::cout<<"IHPDriver::setForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
-    if(data.forceFeedback == ff)
+    if(data.lcp_forceFeedback == ff)
     {
         return;
     }
 
-    if(data.forceFeedback)
-        delete data.forceFeedback;
-    data.forceFeedback =ff;
+    if(data.lcp_forceFeedback)
+        delete data.lcp_forceFeedback;
+    data.lcp_forceFeedback=NULL;
+    data.lcp_forceFeedback =ff;
+    data.lcp_true_vs_vm_false = true;
+};
+
+void IHPDriver::setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff)
+{
+    std::cout<<"IHPDriver::setForceFeedback() called:"<<std::endl;/////////////////////////////////////////////////////////
+    if(data.vm_forceFeedback == ff)
+    {
+        return;
+    }
+
+    if(data.vm_forceFeedback)
+        delete data.vm_forceFeedback;
+    data.vm_forceFeedback =ff;
+    data.lcp_true_vs_vm_false=false;
 };
 
 void IHPDriver::bwdInit()
@@ -266,13 +306,26 @@ void IHPDriver::bwdInit()
 
     LCPForceFeedback<defaulttype::Vec1dTypes> *ff = context->get<LCPForceFeedback<defaulttype::Vec1dTypes>>();
 
+    findForceFeedback = false;
     if(ff)
     {
-        this->setForceFeedback(ff);
-        std::cout << "setForceFeedback(ff) ok" << std::endl;
+        this->setLCPForceFeedback(ff);
+        findForceFeedback = true;
+        sout << "setLCPForceFeedback(ff) ok" << sendl;
     }
     else
-        std::cout << " Error FF" << std::endl;
+    {
+
+        VMechanismsForceFeedback<defaulttype::Vec1dTypes> *ff = context->get<VMechanismsForceFeedback<defaulttype::Vec1dTypes>>();
+        if(ff)
+        {
+            this->setVMForceFeedback(ff);
+            findForceFeedback = true;
+            sout << "setVMForceFeedback(ff) ok" << sendl;
+        }
+        else
+            std::cout << " Error: no FF found" << std::endl;
+    }
 
 
     setDataValue();
@@ -295,14 +348,26 @@ void IHPDriver::bwdInit()
     //std::cout << "Tool: " << nbr << std::endl;
     //std::cout << "name: " << name << std::endl;
     //std::cout << "serial: " << serial << std::endl;
-    xiTrocarQueryStates();
+    //xiTrocarQueryStates();
     xiTrocarGetState(nbr, &data.restState);
     xiTrocarRelease();
 
     data.indexTool = nbr;
 
-    if (this->permanent.getValue() )
+    std::cout<<" CREATE CALLBACK CALL"<<std::endl;
+
+    if (this->permanent.getValue() && findForceFeedback)
+    {
         this->createCallBack();
+        std::cout<<" CREATE CALLBACK OK"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"no FF found or not permanent so no callback created"<<std::endl;
+        this->deleteCallBack();
+    }
+
+
 
 }
 
@@ -327,8 +392,8 @@ void IHPDriver::setDataValue()
 
 void IHPDriver::reset()
 {
-    std::cout<<"IHPDriver::reset() called:"<<std::endl;/////////////////////////////////////////////////////////
-    this->reinit();
+    //std::cout<<"IHPDriver::reset() called:"<<std::endl;/////////////////////////////////////////////////////////
+    //this->reinit();
 }
 
 void IHPDriver::reinitVisual()
@@ -347,10 +412,23 @@ void IHPDriver::reinit()
     this->reinitVisual();
     //this->updateForce();
 
-    if (permanent.getValue()) //if checkBox is changed
-        this->createCallBack();
-    else
-        this->deleteCallBack();
+
+
+    /*
+
+    	if (permanent.getValue() && this->findForceFeedback) //if checkBox is changed
+    	{
+    		std::cout<<" CREATE CALLBACK CALL"<<std::endl;
+    		this->createCallBack();
+    		std::cout<<" CREATE CALLBACK OK"<<std::endl;
+
+    	}
+    	else
+    	{
+    		std::cerr<<"deleteCallBack"<<std::endl;
+    		this->deleteCallBack();
+    	}
+    	*/
 }
 
 
@@ -395,6 +473,8 @@ void IHPDriver::updateForce()
         xiTrocarSetForce(tool, &manualForce);
         xiTrocarFlushForces();
     }
+
+    std::cout<<"IHPDriver::updateForce() ended:"<<std::endl;
 }
 
 
@@ -416,7 +496,24 @@ void IHPDriver::displayState()
 
 void IHPDriver::handleEvent(core::objectmodel::Event *event)
 {
-    std::cout<<"IHPDriver::handleEvent() called:"<<std::endl;/////////////////////////////////////////////////////////
+    //std::cout<<"IHPDriver::handleEvent() called:"<<std::endl;//////////////////////////////////////////////////////
+    static double time_prev;
+
+    if (dynamic_cast<sofa::simulation::AnimateEndEvent *> (event))
+    {
+        // force the simulation to be "real-time"
+        CTime *timer = new CTime();
+        double time = 0.001*timer->getRefTime()* PaceMaker::time_scale; // in sec
+
+        // if the computation time is shorter than the Dt set in the simulation... it waits !
+        if ((time- time_prev) < getContext()->getDt() )
+        {
+            double wait_time = getContext()->getDt() - time + time_prev;
+            timer->sleep(wait_time);
+        }
+
+        time_prev=time;
+    }
 
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
@@ -437,6 +534,7 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
 
         xiTrocarQueryStates();
         xiTrocarGetState(indexTool.getValue(), &state);
+
 
         // saving informations in class structure.
         data.simuState = state;
@@ -501,9 +599,13 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
             this->rightButtonPushed();
 
         if (state.opening < graspThreshold.getValue())
+        {
             this->graspClosed();
+        }
 
     }
+
+    //std::cout<<"IHPDriver::handleEvent() ended:"<<std::endl;
 }
 
 void IHPDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
@@ -554,24 +656,31 @@ Quat IHPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_
 
 void IHPDriver::createCallBack()
 {
-    std::cout<<"IHPDriver::createCallBack() called:"<<std::endl;/////////////////////////////////////////////////////////
+
+    std::cerr<<"IHPDriver::createCallBack() called:"<<std::endl;/////////////////////////////////////////////////////////
     if (myPaceMaker)
         delete myPaceMaker;
+    myPaceMaker=NULL;
 
-    myPaceMaker = new sofa::component::controller::PaceMaker(1000);
+    myPaceMaker = new sofa::component::controller::PaceMaker(RefreshFrequency.getValue());
     myPaceMaker->pToFunc =  &UpdateForceFeedBack;
     myPaceMaker->Pdata = &data;
     myPaceMaker->createPace();
 
+
     //This function create a thread calling stateCallBack() at a given frequence
+    std::cout<<"IHPDriver::createCallBack() ok:"<<std::endl;/////////////////////////////////////////////////////////
 }
 
 
 void IHPDriver::deleteCallBack()
 {
-    std::cout<<"IHPDriver::deleteCallBack() called:"<<std::endl;/////////////////////////////////////////////////////////
+    std::cerr<<"IHPDriver::deleteCallBack() called:"<<std::endl;/////////////////////////////////////////////////////////
     if (myPaceMaker)
+    {
         delete myPaceMaker;
+        myPaceMaker = NULL;
+    }
 }
 
 

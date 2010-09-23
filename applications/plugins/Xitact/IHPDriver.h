@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 #include <sofa/component/controller/LCPForceFeedback.h>
+#include <sofa/component/controller/VMechanismsForceFeedback.h>
 #include "PaceMaker.h"
 #include "initXitact.h"
 namespace sofa
@@ -61,13 +62,15 @@ static float FFthresholdRoll;
 
 typedef struct
 {
-    LCPForceFeedback<defaulttype::Vec1dTypes>* forceFeedback;
+    LCPForceFeedback<defaulttype::Vec1dTypes>* lcp_forceFeedback;
+    VMechanismsForceFeedback<defaulttype::Vec1dTypes>* vm_forceFeedback;
     simulation::Node *context;
 
     int indexTool;
     double scale;
     double forceScale;
     bool permanent_feedback;
+    bool lcp_true_vs_vm_false;
 
     // API IHP //
     XiToolState hapticState;     // for the haptic loop
@@ -96,6 +99,7 @@ public:
     Data<double> graspThreshold;
     Data<bool> showToolStates;
     Data<bool> testFF;
+    Data<int> RefreshFrequency;
 
 
     XiToolDataIHP	data;
@@ -110,7 +114,8 @@ public:
     void cleanup();
     //virtual void draw();
 
-    void setForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff);
+    void setLCPForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff);
+    void setVMForceFeedback(VMechanismsForceFeedback<defaulttype::Vec1dTypes>* ff);
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
@@ -143,6 +148,8 @@ private:
 
     bool graspElasticMode;
     sofa::component::controller::PaceMaker* myPaceMaker;
+
+    bool findForceFeedback;
 
 
 

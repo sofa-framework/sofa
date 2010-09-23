@@ -74,6 +74,8 @@ protected:
     double endTime;
     HANDLE handleThread;
 
+    int version;
+
 
 };
 
