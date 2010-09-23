@@ -62,8 +62,8 @@ static float FFthresholdRoll;
 
 typedef struct
 {
-    LCPForceFeedback<defaulttype::Vec1dTypes>* lcp_forceFeedback;
-    VMechanismsForceFeedback<defaulttype::Vec1dTypes>* vm_forceFeedback;
+    LCPForceFeedback<defaulttype::Vec1dTypes>* lcp_forceFeedback;//= NULL;
+    VMechanismsForceFeedback<defaulttype::Vec1dTypes>* vm_forceFeedback;// = NULL;
     simulation::Node *context;
 
     int indexTool;
