@@ -18,7 +18,7 @@ SOFA_DECL_CLASS(PaceMaker)
 using namespace sofa::helper::system::thread;
 
 const double PaceMaker::time_scale = 1000 / (double)CTime::getRefTicksPerSec();
-double PaceMaker::clockspeed = 0.1;
+double PaceMaker::clockspeed = 0.01;
 double PaceMaker::CLOCK = CTime::getRefTime()*time_scale;
 HANDLE PaceMaker::clockThread = NULL;
 
@@ -27,7 +27,7 @@ void PaceMaker::runclock()
     for(;;)
     {
         CLOCK = sofa::helper::system::thread::CTime::getRefTime()*time_scale;
-        Sleep((DWORD)clockspeed);
+        Sleep((DWORD)1);
 
     }
 }
@@ -71,9 +71,19 @@ void stimulus(void* param)
         				Sleep(0.01);
         		}*/
 
-        Sleep((DWORD)dt);
-        time1 = nextTime;
-        (*p)(myData);
+        if(time2>nextTime)
+        {
+            time1 = nextTime;
+            (*p)(myData);
+        }
+
+
+
+        /*
+        			dt*=0.1;
+        			Sleep((DWORD) dt);
+        			time1 = nextTime;
+        */
 
     }
 
@@ -89,6 +99,7 @@ PaceMaker::PaceMaker()
     , pToFunc(NULL)
     , Pdata(NULL)
 {
+    version=0;
 }
 
 // Constructor with a given frequency: will run a process with given frequency until no end.
@@ -99,6 +110,7 @@ PaceMaker::PaceMaker(double fr)
     , pToFunc(NULL)
     , Pdata(NULL)
 {
+    version=0;
 }
 
 
@@ -110,20 +122,34 @@ PaceMaker::PaceMaker(double fr, double end)
     , pToFunc(NULL)
     , Pdata(NULL)
 {
+    version=0;
 }
 
 PaceMaker::~PaceMaker()
 {
-    if (!handleThread)
-        TerminateThread(handleThread, NULL);
+    std::cerr<<" STOP PaceMaker version "<<version<<std::endl;
 
-    if (!clockThread)
+    if (handleThread)
+    {
+        TerminateThread(handleThread, NULL);
+    }
+
+    if (clockThread)
+    {
         TerminateThread(clockThread, NULL);
+    }
 }
 
 
 bool PaceMaker::createPace()
 {
+    static int numCreatePace=0;
+    numCreatePace++;
+    version=numCreatePace;
+
+    std::cout<<"createPace on version"<<version<<std::endl;
+
+
     //this->mydata.myPace = this;
 
     clockThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PaceMaker::runclock, NULL, 0, NULL);
@@ -137,7 +163,7 @@ bool PaceMaker::createPace()
         return false;
     }
 
-    Sleep(10);
+    Sleep(100);
     return true;
 }
 

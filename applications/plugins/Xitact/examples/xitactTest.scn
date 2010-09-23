@@ -1,17 +1,16 @@
 <?xml version="1.0"?>
-<Node name="root"  dt="0.005" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="0" gravity="0 0 -9810">
-	<MasterContactSolver />
-	<LCPConstraintSolver initial_guess="true" displayTime="0" mu="0.7" tolerance="0.0000000001" printLog="0" maxIt="3000" build_lcp="true"/>
+<Node name="root"  dt="0.05" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="0" gravity="0 0 -9810">
+	<MasterConstraintSolver printLog="0" doubleBuffer="true"/>
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
-	<LocalMinDistance name="Proximity" alarmDistance="6.0" contactDistance="1.5" coneFactor="0.5" angleCone="-0.001"/>
+	<LocalMinDistance name="Proximity" alarmDistance="0.06" contactDistance="0.02" coneFactor="0.5" angleCone="-0.001"/>
 	<CollisionResponse name="Response" response="FrictionContact" />
 
 
 
   <Node name="VirtualArticulatedXitact">
-    <EulerImplicit rayleighMass="0.1" rayleighStiffness="0.01"/>
-    <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15"/>
+    <EulerImplicit rayleighMass="0.1" rayleighStiffness="0.01" printLog="0"/>
+    <CGLinearSolver iterations="40" name="linear solver" tolerance="1.0e-9" threshold="1.0e-15" printLog="0"/>
     <!-- Modify this position in the scene -->
     <MechanicalObject name="bati" template="Rigid" position="0 0 0 0 0 0 1"/>
     <RestShapeSpringsForceField points="0" stiffness="10000" angularStiffness="1000000000"/> <!--external_rest_shape="toto"/>-->
@@ -29,7 +28,10 @@
       <!--	<UniformMass mass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
       <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000000 1000000 1000000 1000 1000000 1000000 " printLog="true"/>
       <UncoupledConstraintCorrection compliance="0.000001 0.000001 0.000001 0.001 0.000001 0.000001 " />
-      <IHPDriver toolIndex="0"/>
+      <IHPDriver toolIndex="0" permanent="true" RefreshFrequency="50"/>
+      <VMechanismsForceFeedback activate="true"/>
+      <!--<LCPForceFeedback /> -->
+      
 
       <Node name="Jaws">
         <MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
@@ -120,7 +122,15 @@
 
 
 
-
+  <Node name="BOX">
+    <MeshLoader name="meshLoader" filename="mesh/box_inside.obj" triangulate="true"/>
+    <Mesh/>
+    <MechanicalObject scale="0.1" dz="0.3"/>
+    <Triangle simulated="0" moving="0"/>
+    <Line simulated="0" moving="0"/>
+    <Point simulated="0" moving="0"/>
+    <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0.0 0.4 0.6 0.2" scale="0.1" dz="0.3"/>
+  </Node>
 
 
 
