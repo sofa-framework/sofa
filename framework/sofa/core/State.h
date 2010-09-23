@@ -98,7 +98,7 @@ public:
     /// @{
 
     /// Return the current position vector.
-    /// @deprecated use readVecCoord(ConstVecCoordId::position()) instead.
+    /// @deprecated use read(ConstVecCoordId::position()) instead.
     virtual const VecCoord* getX()  const
     {
         const Data<VecCoord>* v = read(ConstVecCoordId::position());
@@ -106,7 +106,7 @@ public:
     }
 
     /// Return the current velocity vector.
-    /// @deprecated use readVecDeriv(ConstVecDerivId::velocity()) instead.
+    /// @deprecated use read(ConstVecDerivId::velocity()) instead.
     virtual const VecDeriv* getV()  const
     {
         const Data<VecDeriv>* v = read(ConstVecDerivId::velocity());
@@ -115,7 +115,7 @@ public:
 
     /// Return the current rest position vector
     /// (return NULL if the state does not store rest position).
-    /// @deprecated use readVecCoord(ConstVecCoordId::restPosition()) instead.
+    /// @deprecated use read(ConstVecCoordId::restPosition()) instead.
     virtual const VecCoord* getX0() const
     {
         const Data<VecCoord>* v = read(ConstVecCoordId::restPosition());
@@ -124,7 +124,7 @@ public:
 
     /// Return the current normal vector
     /// (return NULL if the state does not store normal).
-    /// @deprecated use readVecDeriv(ConstVecDerivId::velocity()) instead.
+    /// @deprecated use read(ConstVecDerivId::velocity()) instead.
     virtual const VecDeriv* getN() const
     {
         const Data<VecDeriv>* v = read(ConstVecDerivId::normal());
