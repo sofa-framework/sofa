@@ -48,17 +48,12 @@ template<class Parent>
 class ParallelMultiVector: public  sofa::core::behavior::MultiVector<Parent>
 {
 public:
-    typedef BaseMechanicalState::VecId VecId;
-
-
-
-public:
-    /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
-    ParallelMultiVector(Parent* parent, VecId v) : sofa::core::behavior::MultiVector<Parent>(parent,v)
+    /// Refers to a state vector with the given ID (core::VecId::position(), core::VecId::velocity(), etc).
+    ParallelMultiVector(Parent* parent, core::VecId v) : sofa::core::behavior::MultiVector<Parent>(parent,v)
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    ParallelMultiVector(Parent* parent, VecId::Type t, const char* name="") : sofa::core::behavior::MultiVector<Parent>(parent,t/*, name*/)
+    ParallelMultiVector(Parent* parent, core::VecId::Type t, const char* name="") : sofa::core::behavior::MultiVector<Parent>(parent,t/*, name*/)
     {}
 
     ~ParallelMultiVector()
@@ -69,19 +64,19 @@ public:
     }
 
 
-    void peq(VecId a,Shared<double> &fSh, double f=1.0)
+    void peq(core::VecId a,Shared<double> &fSh, double f=1.0)
     {
         this->parent->v_peq(this->v, a, fSh,f);
     }
-    void peq(VecId a, double f=1.0)
+    void peq(core::VecId a, double f=1.0)
     {
         this->parent->v_peq(this->v, a, f);
     }
-    void meq(VecId a,Shared<double> &fSh)
+    void meq(core::VecId a,Shared<double> &fSh)
     {
         this->parent->v_meq(this->v, a, fSh);
     }
-    void dot(Shared<double> &r,VecId a)
+    void dot(Shared<double> &r,core::VecId a)
 
     {
 
@@ -92,7 +87,7 @@ public:
     {
         this->parent->print(this->v,std::cerr);
     }
-    operator VecId()
+    operator core::VecId()
     {
         return this->v;
     }
