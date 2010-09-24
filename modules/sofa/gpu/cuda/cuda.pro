@@ -255,6 +255,17 @@ contains(DEFINES,SOFA_HAVE_CSPARSE){
 	}
 }
 
+contains(DEFINES,SOFA_HAVE_TAUCS){ 
+	HEADERS += \
+		CudaSparseTaucsLUSolver.h
+
+	SOURCES += \	
+		CudaSparseTaucsLUSolver.cpp
+
+	CUDA_SOURCES += \
+		CudaSparseTaucsLUSolver.cu
+}
+
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += \
                 CudaLDIContactLMConstraint.h \
