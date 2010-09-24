@@ -51,7 +51,7 @@
 #endif
 
 #ifdef SOFA_DEV
-#include <sofa/component/fem/quadrature/QuadratureFormular.h>
+#include <sofa/component/fem/quadrature/DynamicQuadratureFormular.h>
 #include <sofa/core/fem/FiniteElement.h>
 #endif // SOFA_DEV
 
@@ -704,7 +704,7 @@ class data_widget_container < Quater<T> > : public fixed_vector_data_widget_cont
 
 #ifdef SOFA_DEV
 ////////////////////////////////////////////////////////////////
-/// sofa::component::fem::QuadratureFormular support
+/// sofa::component::fem::DynamicQuadratureFormular support
 ////////////////////////////////////////////////////////////////
 using sofa::component::fem::quadrature::QuadraturePoint;
 

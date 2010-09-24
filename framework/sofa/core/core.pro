@@ -202,9 +202,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
 	 fem/FEMRecipe.h              \
-	 fem/BaseQuadratureFormular.h \
-	 fem/BaseFENodes.h			  \
- 	 fem/BaseFENodes.inl		  \
+	 fem/QuadratureFormular.h     \
+	 fem/FENodes.h			      \
+ 	 fem/FENodes.inl		      \
 #	 fem/QuadratureFormular.h     \
 # 	 fem/QuadratureFormular.inl   \
 	 fem/BaseMaterial.h           \
@@ -214,7 +214,7 @@ HEADERS += \
 	 fem/DofContainer.h 
  
 SOURCES +=  \
-	 fem/BaseFENodes.cpp		  \
+	 fem/FENodes.cpp		      \
 #	 fem/QuadratureFormular.cpp   \
 	 fem/BaseMaterial.cpp         \
 	 fem/BaseFiniteElement.cpp    \
