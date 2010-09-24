@@ -111,7 +111,6 @@ Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DW
 
 #ifdef SOFA_DEV
 using sofa::component::fem::quadrature::QuadraturePoint;
-
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::quadrature::QuadraturePoint< Vec3f > > >DWClass_QPf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::quadrature::QuadraturePoint< Vec3d > > >DWClass_QPd("default",true);
 #endif // SOFA_DEV
