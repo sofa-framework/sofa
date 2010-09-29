@@ -24,11 +24,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
+#ifndef SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
+#define SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
 
 #include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
@@ -40,7 +40,7 @@ namespace behavior
 {
 
 /**
- *  \brief InteractionForceField is a force field linking several bodies (MechanicalState) together.
+ *  \brief BaseInteractionForceField is a force field linking several bodies (MechanicalState) together.
  *
  *  An interaction force field computes forces applied to several simulated
  *  bodies given their current positions and velocities.
@@ -48,10 +48,10 @@ namespace behavior
  *  For implicit integration schemes, it must also compute the derivative
  *  ( df, given a displacement dx ).
  */
-class SOFA_CORE_API InteractionForceField : public BaseForceField
+class SOFA_CORE_API BaseInteractionForceField : public BaseForceField
 {
 public:
-    SOFA_CLASS(InteractionForceField, BaseForceField);
+    SOFA_CLASS(BaseInteractionForceField, BaseForceField);
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
@@ -85,4 +85,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
