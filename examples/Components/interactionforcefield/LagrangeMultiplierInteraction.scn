@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showInteractionForceFields="1" gravity="0 -9.81 0">
 	<!--<Object type="MasterConstraintSolver"/>-->
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
