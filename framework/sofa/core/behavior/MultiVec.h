@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MULTIVECTOR_H
-#define SOFA_CORE_BEHAVIOR_MULTIVECTOR_H
+#ifndef SOFA_CORE_BEHAVIOR_MULTIVEC_H
+#define SOFA_CORE_BEHAVIOR_MULTIVEC_H
 
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/BaseVectorOperations.h>
@@ -191,4 +191,5 @@ typedef TMultiVec<V_MATDERIV> MultiVecMatrixDeriv;
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_BEHAVIOR_MULTIVEC_H
+

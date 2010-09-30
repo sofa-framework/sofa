@@ -50,3 +50,4 @@ public:
 }
 
 #endif //SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
+
