@@ -1,25 +1,35 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
 #define SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
 
-#include <sofa/core/ExecParams.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/core/objectmodel/Context.h>
 
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa
 {
 namespace core
 {
+
+class ExecParams;
+
+namespace objectmodel
+{
+class Context;
+}
 namespace behavior
 {
 
-class BaseVectorOperation
+class BaseVectorOperations
 {
+
+protected:
+    const core::ExecParams* execParams;
+    core::objectmodel::Context* ctx;
+
 public:
-    BaseVectorOperation(core::objectmodel::Context*, core::ExecParams* );
+    BaseVectorOperations( const core::ExecParams* execParams, core::objectmodel::Context* ctx):execParams(execParams),ctx(ctx) {};
 
     /// Allocate a temporary vector
-    virtual core::VecId v_alloc(core::VecType t) = 0;
+    virtual core::MultiVecId v_alloc(core::VecType t) = 0;
     /// Free a previously allocated temporary vector
     virtual void v_free(core::MultiVecId v) = 0;
 
@@ -40,6 +50,9 @@ public:
     virtual void v_dot(Shared<double> &result,core::MultiVecId a, core::MultiVecId b) = 0; ///< a dot b
 #endif
     virtual void v_threshold(core::MultiVecId a, double threshold) = 0; ///< nullify the values below the given threshold
+
+
+    virtual double finish() = 0;
 
     virtual void print( core::MultiVecId v, std::ostream& out );
 
