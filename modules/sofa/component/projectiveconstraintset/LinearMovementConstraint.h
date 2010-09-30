@@ -35,6 +35,8 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <set>
 
 namespace sofa
@@ -46,7 +48,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
 using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -59,6 +60,7 @@ class LinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(LinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -127,6 +129,10 @@ public :
     bool isHolonomic() {return true;}
 
 protected:
+    template <class MyCoord>
+    void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    template <class MyCoord>
+    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
 
     sofa::core::topology::BaseMeshTopology* topology;
 
