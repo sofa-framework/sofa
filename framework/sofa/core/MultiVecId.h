@@ -257,7 +257,7 @@ public:
         BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
         BOOST_STATIC_ASSERT( vtype == 0 || vtype2 == vtype );
 
-        idMap = mv.idMap;
+        std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
     }
 
     void setDefaultId(const MyVecId& id)
@@ -283,6 +283,11 @@ public:
         IdMap_const_iterator it = idMap.find(s);
         if (it != idMap.end()) return it->second;
         else                   return defaultId;
+    }
+
+    const std::map<const BaseState*, MyVecId>& getIdMap() const
+    {
+        return idMap;
     }
 
     const MyVecId& getDefaultId() const
