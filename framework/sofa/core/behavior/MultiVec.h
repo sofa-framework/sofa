@@ -129,7 +129,7 @@ public:
     double norm()
     {
         vop->v_dot(v, v);
-        return sqrt( parent->finish() );
+        return sqrt( vop->finish() );
     }
 
     /// v = a
