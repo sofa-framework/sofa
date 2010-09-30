@@ -246,19 +246,18 @@ public:
         BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
     }
 
-    // Only TMultiVecId< V_ALL , vaccess> can declare copy constructors with all
-    // other kinds of TMultiVecIds, namely MultiVecCoordId, MultiVecDerivId...
-    // In other cases, the copy constructor takes a TMultiVecId of the same type
-    // ie copy construct a MultiVecCoordId from a const MultiVecCoordId& or a
-    // ConstMultiVecCoordId&.
-    template< VecType vtype2, VecAccess vaccess2>
-    TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv)
-    {
-        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
-        BOOST_STATIC_ASSERT( vtype == 0 || vtype2 == vtype );
+    //// Only TMultiVecId< V_ALL , vaccess> can declare copy constructors with all
+    //// other kinds of TMultiVecIds, namely MultiVecCoordId, MultiVecDerivId...
+    //// In other cases, the copy constructor takes a TMultiVecId of the same type
+    //// ie copy construct a MultiVecCoordId from a const MultiVecCoordId& or a
+    //// ConstMultiVecCoordId&.
+    //template< VecType vtype2, VecAccess vaccess2>
+    //TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
+    //{
+    //  BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
 
-        std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
-    }
+    //  std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
+    //}
 
     void setDefaultId(const MyVecId& id)
     {

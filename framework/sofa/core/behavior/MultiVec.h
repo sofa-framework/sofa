@@ -68,8 +68,8 @@ public:
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    TMultiVec( BaseVectorOperations* vop, core::VecType t) : vop(vop), v(vop->v_alloc(t)), dynamic(true)
-    {}
+    //TMultiVec( BaseVectorOperations* vop, core::VecType t) : vop(vop), v(vop->v_alloc( t )), dynamic(true)
+    //{}
 
     ~TMultiVec()
     {
