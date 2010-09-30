@@ -246,6 +246,15 @@ public:
         BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
     }
 
+    template< VecType vtype2, VecAccess vaccess2>
+    TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv)
+    {
+        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
+        BOOST_STATIC_ASSERT( vtype2   >= vtype );
+
+        idMap = mv.idMap;
+    }
+
     void setDefaultId(const MyVecId& id)
     {
         defaultId = id;
