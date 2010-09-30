@@ -28,8 +28,8 @@
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -335,8 +335,9 @@ public:
         }
     };
 
-
+#ifndef SOFA_NEW_HEXA
     typedef GridTopology::Cube Cube;
+#endif
     MultiResSparseGridTopology();
     MultiResSparseGridTopology(const char* filevoxel, int resol,float scale);
 
@@ -367,7 +368,10 @@ public:
     /// get the indices of the voxel x y z
     int point(int x, int y, int z);
     /// get the cube of the voxel i for the mapping
+#ifndef SOFA_NEW_HEXA
     GridTopology::Cube getCube (int i);
+#endif
+
     /// get the indice of the cube at the coordinates pos and the barycentric coordinates
     int findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) const;
     /// get the indice of the nearest cube of the coordinates pos and the barycentric coordinates
