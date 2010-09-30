@@ -52,24 +52,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core::behavior;
 
-/*template<int N, typename R>
-const Vec<N, R>& vecCast(const RigidCoord<N, R>& r)
-{
-    return r.getCenter();
-}
-
-template<int N, typename R>
-const Vec<N, R>& vecCast(const RigidDeriv<N, R>& r)
-{
-    return r.getVCenter();
-}
-
-template<int N, typename R>
-const Vec<N, R>& vecCast(const Vec<N, R>& v)
-{
-    return v;
-}*/
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool LinearMovementConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
