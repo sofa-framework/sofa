@@ -255,7 +255,7 @@ public:
     TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv)
     {
         BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
-        BOOST_STATIC_ASSERT( vtype == 0 || vtype2 == vtype1 );
+        BOOST_STATIC_ASSERT( vtype == 0 || vtype2 == vtype );
 
         idMap = mv.idMap;
     }
