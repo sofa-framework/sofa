@@ -94,6 +94,8 @@ helper::Creator<SofaViewerFactory,QtGLViewer> QtGLViewer_class("qglviewer",false
 SOFA_DECL_CLASS ( QGLViewerGUI )
 
 static bool enabled = false;
+static bool LeftPressedForMove = false;
+static bool RightPressedForMove = false;
 
 /// Activate this class of viewer.
 /// This method is called before the viewer is actually created
@@ -1041,11 +1043,13 @@ void QtGLViewer::mousePressEvent ( QMouseEvent * e )
         {
             if (e->button() == Qt::LeftButton)
             {
+                LeftPressedForMove = true;
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
                 if (groot)groot->propagateEvent(&mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
+                RightPressedForMove = true;
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
                 if (groot)groot->propagateEvent(&mouseEvent);
             }
@@ -1062,6 +1066,9 @@ void QtGLViewer::mousePressEvent ( QMouseEvent * e )
         QGLViewer::mousePressEvent(e);
 }
 
+
+
+
 void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
 {
 #ifdef TRACKING_MOUSE
@@ -1071,11 +1078,13 @@ void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
         {
             if (e->button() == Qt::LeftButton)
             {
+                LeftPressedForMove = false;
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
                 if (groot) groot->propagateEvent(&mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
+                RightPressedForMove = false;
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
                 if (groot) groot->propagateEvent(&mouseEvent);
             }
@@ -1103,9 +1112,19 @@ void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
     {
         QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
         QPoint c = QCursor::pos();
-        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
+
+        sofa::core::objectmodel::MouseEvent mouseEvent1(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),c.y() - p.y());
+        sofa::core::objectmodel::MouseEvent mouseEvent2(sofa::core::objectmodel::MouseEvent::Move,p.x() - p.x(),c.y() - p.y());
+        sofa::core::objectmodel::MouseEvent mouseEvent3(sofa::core::objectmodel::MouseEvent::Move,c.x() - p.x(),p.y() - p.y());
+
+
         QCursor::setPos(p);
-        if (groot)groot->propagateEvent(&mouseEvent);
+        if((LeftPressedForMove == false && RightPressedForMove == false) || (LeftPressedForMove == true && RightPressedForMove == true))
+            if (groot)groot->propagateEvent(&mouseEvent1);
+        if(LeftPressedForMove == true)
+            if (groot)groot->propagateEvent(&mouseEvent2);
+        if(RightPressedForMove == true)
+            if (groot)groot->propagateEvent(&mouseEvent3);
         return;
     }
 #endif
