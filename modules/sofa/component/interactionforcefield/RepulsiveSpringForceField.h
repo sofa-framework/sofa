@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
 
-#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
 
 namespace sofa
 {
@@ -37,12 +37,13 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-class RepulsiveSpringForceField : public forcefield::StiffSpringForceField<DataTypes>
+class RepulsiveSpringForceField : public sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(RepulsiveSpringForceField,DataTypes), SOFA_TEMPLATE(forcefield::StiffSpringForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(RepulsiveSpringForceField,DataTypes),
+            SOFA_TEMPLATE(sofa::component::interactionforcefield::StiffSpringForceField,DataTypes));
 
-    typedef forcefield::StiffSpringForceField<DataTypes> Inherit;
+    typedef sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -55,7 +56,7 @@ public:
 public:
 
     RepulsiveSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
-        : forcefield::StiffSpringForceField<DataTypes>(object1, object2)
+        : sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>(object1, object2)
     {
     }
 
