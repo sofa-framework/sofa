@@ -50,25 +50,25 @@ public:
 
 protected:
     /// Solver who is using this vector
-    BaseVectorOperation* vop;
+    BaseVectorOperations* vop;
 
     /// Identifier of this vector
-    MyMultiVecId v
+    MyMultiVecId v;
 
     /// Flag indicating if this vector was dynamically allocated
     bool dynamic;
 
 private:
     /// Copy-constructor is forbidden
-    TMultiVec(const MultiVec<vtype>& ) {}
+    TMultiVec(const TMultiVec<vtype>& ) {}
 
 public:
     /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
-    TMultiVec( BaseVectorOperation* vop, MyMultiVecId v) : vop(vop), v(v), dynamic(false)
+    TMultiVec( BaseVectorOperations* vop, MyMultiVecId v) : vop(vop), v(v), dynamic(false)
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    TMultiVec( BaseVectorOperation* vop, core::VecType t) : vop(vop), v(vop->v_alloc(t)), dynamic(true)
+    TMultiVec( BaseVectorOperations* vop, core::VecType t) : vop(vop), v(vop->v_alloc(t)), dynamic(true)
     {}
 
     ~TMultiVec()
