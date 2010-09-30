@@ -52,20 +52,30 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core::behavior;
 
+/*template<int N, typename R>
+const Vec<N, R>& vecCast(const RigidCoord<N, R>& r)
+{
+    return r.getCenter();
+}
+
+template<int N, typename R>
+const Vec<N, R>& vecCast(const RigidDeriv<N, R>& r)
+{
+    return r.getVCenter();
+}
+
+template<int N, typename R>
+const Vec<N, R>& vecCast(const Vec<N, R>& v)
+{
+    return v;
+}*/
 
 // Define TestNewPointFunction
 template< class DataTypes>
 bool LinearMovementConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
-    LinearMovementConstraint<DataTypes> *fc= (LinearMovementConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    LinearMovementConstraint<DataTypes> *fc = (LinearMovementConstraint<DataTypes> *)param;
+    return fc != 0;
 }
 
 // Define RemovalFunction
@@ -107,7 +117,6 @@ template <class DataTypes> void LinearMovementConstraint<DataTypes>::handleTopol
     std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
 
     m_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-
 }
 
 template <class DataTypes>
@@ -192,7 +201,8 @@ void LinearMovementConstraint<DataTypes>::reset()
 }
 
 
-template <class DataTypes> template <class DataDeriv>
+template <class DataTypes>
+template <class DataDeriv>
 void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
@@ -256,9 +266,11 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
     if (x0.size() == 0)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
-        x0.resize( x.size() );
+        x0.resize(x.size());
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
             x0[*it] = x[*it];
+        }
     }
 
     if ((cT != currentTime) || !finished)
@@ -269,16 +281,42 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
     //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
     if(finished && nextT != prevT)
     {
-        const SetIndexArray & indices = m_indices.getValue().getArray();
+        interpolatePosition<Coord>(cT, x);
+    }
+}
 
-        Real dt = (cT - prevT) / (nextT - prevT);
-        Deriv m = prevM + (nextM-prevM)*dt;
+template <class DataTypes>
+template <class MyCoord>
+void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
+{
+    const SetIndexArray & indices = m_indices.getValue().getArray();
 
-        //set the motion to the Dofs
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        {
-            x[*it] = x0[*it] + m ;
-        }
+    Real dt = (cT - prevT) / (nextT - prevT);
+    Deriv m = prevM + (nextM-prevM)*dt;
+
+    //set the motion to the Dofs
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        x[*it] = x0[*it] + m ;
+    }
+}
+
+template <class DataTypes>
+template <class MyCoord>
+void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
+{
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+
+    Real dt = (cT - prevT) / (nextT - prevT);
+    Deriv m = prevM + (nextM-prevM)*dt;
+    Quater<Real> prevOrientation = Quater<Real>::createQuaterFromEuler(prevM.getVOrientation());
+    Quater<Real> nextOrientation = Quater<Real>::createQuaterFromEuler(nextM.getVOrientation());
+
+    //set the motion to the Dofs
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        x[*it].getCenter() = x0[*it].getCenter() + m.getVCenter() ;
+        x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
     }
 }
 
@@ -322,20 +360,21 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw()
 {
-    if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
+    if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
+        return;
     if (showMovement.getValue())
     {
-        glDisable (GL_LIGHTING);
+        glDisable(GL_LIGHTING);
         glPointSize(10);
-        glColor4f (1,0.5,0.5,1);
-        glBegin (GL_LINES);
+        glColor4f(1, 0.5, 0.5, 1);
+        glBegin(GL_LINES);
         const SetIndexArray & indices = m_indices.getValue().getArray();
-        for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
+        for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i]);
-                gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i+1]);
+                gl::glVertexT(DataTypes::toVec(x0[*it]) + DataTypes::toVec(m_keyMovements.getValue()[i]));
+                gl::glVertexT(DataTypes::toVec(x0[*it]) + DataTypes::toVec(m_keyMovements.getValue()[i + 1]));
             }
         }
         glEnd();
@@ -344,7 +383,7 @@ void LinearMovementConstraint<DataTypes>::draw()
     {
         const VecCoord& x = *this->mstate->getX();
 
-        sofa::helper::vector< Vector3 > points;
+        sofa::helper::vector<Vector3> points;
         Vector3 point;
         const SetIndexArray & indices = m_indices.getValue().getArray();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -352,15 +391,9 @@ void LinearMovementConstraint<DataTypes>::draw()
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
     }
 }
-
-// Specialization for rigids
-template <>
-void LinearMovementConstraint<Rigid3dTypes >::draw();
-template <>
-void LinearMovementConstraint<Rigid3fTypes >::draw();
 
 } // namespace constraint
 

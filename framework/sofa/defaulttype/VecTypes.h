@@ -88,6 +88,12 @@ public:
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
+    /// Conversion method to help writing generic code for RigidTypes and VectorTypes
+    static const Coord& toVec(const Coord& c)
+    {
+        return c;
+    }
+
     template<typename T>
     static void set(Coord& c, T x, T y, T z)
     {
