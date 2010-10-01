@@ -22,11 +22,10 @@ class BaseVectorOperations
 {
 
 protected:
-    const core::ExecParams* execParams;
+    const core::ExecParams* params;
     core::objectmodel::Context* ctx;
-
 public:
-    BaseVectorOperations( const core::ExecParams* execParams, core::objectmodel::Context* ctx):execParams(execParams),ctx(ctx) {};
+    BaseVectorOperations(const core::ExecParams* params, core::objectmodel::Context* ctx):params(params),ctx(ctx) {};
 
     /// Allocate a temporary vector
     virtual void v_alloc(sofa::core::MultiVecCoordId& id) = 0;

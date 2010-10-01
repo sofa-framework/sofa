@@ -11,7 +11,7 @@ namespace sofa
 {
 namespace core
 {
-class MechanicalParams;
+class ExecParams;
 }
 namespace simulation
 {
@@ -20,13 +20,10 @@ namespace common
 
 class VectorOperations : public sofa::core::behavior::BaseVectorOperations
 {
-protected:
-    const sofa::core::MechanicalParams* mparams;
 
 public:
 
-    VectorOperations(const sofa::core::MechanicalParams* mparams,
-            sofa::core::objectmodel::Context* ctx);
+    VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::Context* ctx);
 
     /// Allocate a temporary vector
     void v_alloc(sofa::core::MultiVecCoordId& v);
