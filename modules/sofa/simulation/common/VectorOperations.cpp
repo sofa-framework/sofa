@@ -37,8 +37,8 @@ void VectorOperations::prepareVisitor(sofa::simulation::MechanicalVisitor* v)
 }
 void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
 {
-    /* template < VecType vtype > MechanicalVAvailVisitor;
-    /* this can be probably merge in a single operation with the MultiVecId design */
+    /* template < VecType vtype > MechanicalVAvailVisitor;  */
+    /* this can be probably merged in a single operation with the MultiVecId design */
     VecCoordId id(VecCoordId::V_FIRST_DYNAMIC_INDEX);
     executeVisitor( MechanicalVAvailVisitor<V_COORD>(params, id) );
     v.assign(id);
