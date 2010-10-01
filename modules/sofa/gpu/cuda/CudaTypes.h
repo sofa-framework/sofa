@@ -674,6 +674,18 @@ public:
     //! All the Constraints applied to a state Vector
     typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
 
+    /// Conversion method to help writing generic code for RigidTypes and VectorTypes
+    static const Vec3& toVec(const Coord& c)
+    {
+        return c.getCenter();
+    }
+
+    /// Conversion method to help writing generic code for RigidTypes and VectorTypes
+    static const Vec3& toVec(const Deriv& c)
+    {
+        return c.getVCenter();
+    }
+
     template<typename T>
     static void set(Coord& r, T x, T y, T z)
     {
