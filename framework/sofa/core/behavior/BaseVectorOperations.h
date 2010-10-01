@@ -29,9 +29,11 @@ public:
     BaseVectorOperations( const core::ExecParams* execParams, core::objectmodel::Context* ctx):execParams(execParams),ctx(ctx) {};
 
     /// Allocate a temporary vector
-    virtual void v_alloc(sofa::core::MultiVecId& v) = 0;
+    virtual void v_alloc(sofa::core::MultiVecCoordId& id) = 0;
+    virtual void v_alloc(sofa::core::MultiVecDerivId& id) = 0;
     /// Free a previously allocated temporary vector
-    virtual void v_free(core::MultiVecId v) = 0;
+    virtual void v_free(sofa::core::MultiVecCoordId& id) = 0;
+    virtual void v_free(sofa::core::MultiVecDerivId& id) = 0;
 
     virtual void v_clear(core::MultiVecId v) = 0; ///< v=0
     virtual void v_eq(core::MultiVecId v, core::MultiVecId a) = 0; ///< v=a
