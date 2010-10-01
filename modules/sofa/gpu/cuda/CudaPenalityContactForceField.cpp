@@ -38,8 +38,8 @@ namespace cuda
 SOFA_DECL_CLASS(CudaPenalityContactForceField)
 
 int PenalityContactForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::forcefield::PenalityContactForceField<CudaVec3fTypes> >()
-        .add< component::forcefield::PenalityContactForceField<CudaVec3f1Types> >()
+        .add< component::interactionforcefield::PenalityContactForceField<CudaVec3fTypes> >()
+        .add< component::interactionforcefield::PenalityContactForceField<CudaVec3f1Types> >()
         ;
 
 } // namespace cuda
