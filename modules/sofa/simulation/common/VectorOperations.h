@@ -29,9 +29,11 @@ public:
             sofa::core::objectmodel::Context* ctx);
 
     /// Allocate a temporary vector
-    void v_alloc(core::MultiVecId& v);
+    void v_alloc(sofa::core::MultiVecCoordId& v);
+    void v_alloc(sofa::core::MultiVecDerivId& v);
     /// Free a previously allocated temporary vector
-    void v_free(core::MultiVecId v);
+    void v_free(sofa::core::MultiVecCoordId& id);
+    void v_free(sofa::core::MultiVecDerivId& id);
 
     void v_clear(core::MultiVecId v) = 0; ///< v=0
     void v_eq(core::MultiVecId v, core::MultiVecId a) = 0; ///< v=a
