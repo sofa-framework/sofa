@@ -31,13 +31,9 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-
-
-#include <sofa/helper/gl/BasicShapes.h>
-
-
 
 
 namespace sofa
@@ -61,14 +57,7 @@ template< class DataTypes>
 bool PartialFixedConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
     PartialFixedConstraint<DataTypes> *fc= (PartialFixedConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return fc != 0;
 }
 
 // Define RemovalFunction
@@ -80,7 +69,6 @@ void PartialFixedConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* 
     {
         fc->removeConstraint((unsigned int) pointIndex);
     }
-    return;
 }
 
 template <class DataTypes>
@@ -108,7 +96,6 @@ template <class DataTypes> void PartialFixedConstraint<DataTypes>::handleTopolog
     std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
 
     f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-
 }
 
 template <class DataTypes>
@@ -169,7 +156,6 @@ void PartialFixedConstraint<DataTypes>::init()
             removeConstraint(index);
         }
     }
-
 }
 
 template <class DataTypes> template <class DataDeriv>
@@ -178,26 +164,35 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res)
     const SetIndexArray & indices = f_indices.getValue().getArray();
     Vec6Bool blockedDirection = fixedDirections.getValue();
     //serr<<"PartialFixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )    // fix everyting
+    if (f_fixAll.getValue() == true)
     {
-        for( int i=0; i<topology->getNbPoints(); i++ )
+        // fix everyting
+        for (int i = 0; i < topology->getNbPoints(); i++)
         {
-            for( unsigned j=0; j<NumDimensions; j++ )
-                if( blockedDirection[j] ) res[i][j] = (Real) 0.0;
+            for (unsigned j = 0; j < NumDimensions; j++)
+            {
+                if (blockedDirection[j])
+                {
+                    res[i][j] = (Real) 0.0;
+                }
+            }
         }
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for( unsigned j=0; j<NumDimensions; j++ )
-                if( blockedDirection[j] )
+            for (unsigned j = 0; j < NumDimensions; j++)
+            {
+                if (blockedDirection[j])
+                {
                     res[*it][j] = (Real) 0.0;
+                }
+            }
         }
     }
 }
+
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
@@ -220,10 +215,13 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(VecDeriv&)
 #if 0 /// @TODO ADD A FLAG FOR THIS
     const SetIndexArray & indices = f_indices.getValue().getArray();
     //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )    // fix everyting
+    if( f_fixAll.getValue()==true )
     {
+        // fix everyting
         for( unsigned i=0; i<res.size(); i++ )
+        {
             res[i] = Deriv();
+        }
     }
     else
     {
@@ -250,10 +248,14 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix 
     {
         // Reset Fixed Row and Col
         for (unsigned int c=0; c<N; ++c)
+        {
             if( blockedDirection[c] ) mat->clearRowCol(offset + N * (*it) + c);
+        }
         // Set Fixed Vertex
         for (unsigned int c=0; c<N; ++c)
+        {
             if( blockedDirection[c] ) mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        }
     }
 }
 
@@ -267,8 +269,13 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
     const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        for (unsigned int c=0; c<N; ++c)
-            if( blockedDirection[c] ) vect->clear(offset + N * (*it) + c);
+        for (unsigned int c = 0; c < N; ++c)
+        {
+            if (blockedDirection[c])
+            {
+                vect->clear(offset + N * (*it) + c);
+            }
+        }
     }
 }
 
@@ -276,61 +283,63 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::draw()
 {
-    if (!this->getContext()->
-        getShowBehaviorModels()) return;
-    if (!this->isActive()) return;
+    if (!this->getContext()-> getShowBehaviorModels())
+        return;
+    if (!this->isActive())
+        return;
     const VecCoord& x = *this->mstate->getX();
     //serr<<"PartialFixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
 
-
-
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
-    if( _drawSize.getValue() == 0) // old classical drawing by points
+    if (_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< Vector3 > points;
+        std::vector<Vector3> points;
         Vector3 point;
         //serr<<"PartialFixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
-        if( f_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
+        if (f_fixAll.getValue() == true)
+        {
+            for (unsigned i = 0; i < x.size(); i++)
             {
                 point = DataTypes::getCPos(x[i]);
                 points.push_back(point);
             }
+        }
         else
-            for (SetIndexArray::const_iterator it = indices.begin();
-                    it != indices.end();
-                    ++it)
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it
+                    != indices.end(); ++it)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        }
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
     }
     else // new drawing by spheres
     {
-        std::vector< Vector3 > points;
+        std::vector<Vector3> points;
         Vector3 point;
-        glColor4f (1.0f,0.35f,0.35f,1.0f);
-        if( f_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
+        glColor4f(1.0f, 0.35f, 0.35f, 1.0f);
+        if (f_fixAll.getValue() == true)
+        {
+            for (unsigned i = 0; i < x.size(); i++)
             {
                 point = DataTypes::getCPos(x[i]);
                 points.push_back(point);
             }
+        }
         else
-            for (SetIndexArray::const_iterator it = indices.begin();
-                    it != indices.end();
-                    ++it)
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
-
+        }
+        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float) _drawSize.getValue(), Vec<4, float> (1.0f, 0.35f, 0.35f, 1.0f));
     }
-
 }
 
 // Specialization for rigids
