@@ -104,7 +104,7 @@ void VectorOperations::v_teq(sofa::core::MultiVecId v, double f)
     executeVisitor( MechanicalVOpVisitor(v, null,v,f, params) );
 }
 
-void VectorOperations::v_op(core::MultiVecId v, sofa::core::MultiVecId a, sofa::core::MultiVecId b, double f )
+void VectorOperations::v_op(core::MultiVecId v, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, double f )
 {
     executeVisitor( MechanicalVOpVisitor(v,a,b,f, params), true ); // enable prefetching
 }
@@ -116,7 +116,7 @@ void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, 
 }
 #endif // SOFA_SMP
 
-void VectorOperations::v_dot( sofa::core::MultiVecId a, sofa::core::MultiVecId b)
+void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b)
 {
     result = 0;
     MechanicalVDotVisitor(a,b,&result, params).setTags(ctx->getTags()).execute( ctx, true ); // enable prefetching
