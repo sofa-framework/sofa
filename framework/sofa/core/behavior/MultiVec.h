@@ -89,13 +89,13 @@ public:
     }
 
     /// v = a
-    void eq(VecId a)
+    void eq(MyMultiVecId a)
     {
         vop->v_eq(v, a);
     }
 
     /// v += a*f
-    void peq(VecId a, double f=1.0)
+    void peq(MyMultiVecId a, double f=1.0)
     {
         vop->v_peq(v, a, f);
     }
@@ -107,7 +107,7 @@ public:
     }
 
     /// v = a+b*f
-    void eq(VecId a, VecId b, double f=1.0)
+    void eq(MyMultiVecId a, MyMultiVecId b, double f=1.0)
     {
         vop->v_op(v, a, b, f);
     }

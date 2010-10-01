@@ -3,18 +3,15 @@
 
 
 #include <sofa/core/MultiVecId.h>
+#include <sofa/core/ExecParams.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 
 namespace sofa
 {
+
 namespace core
 {
 
-class ExecParams;
-
-namespace objectmodel
-{
-class Context;
-}
 namespace behavior
 {
 
@@ -23,10 +20,10 @@ class BaseVectorOperations
 
 protected:
     const core::ExecParams* params;
-    const core::objectmodel::Context* ctx;
+    core::objectmodel::BaseContext* ctx;
     double result;
 public:
-    BaseVectorOperations(const core::ExecParams* params, const core::objectmodel::Context* ctx):params(params),ctx(ctx) {};
+    BaseVectorOperations(const core::ExecParams* params, core::objectmodel::BaseContext* ctx):params(params),ctx(ctx) {};
 
     /// Allocate a temporary vector
     virtual void v_alloc(sofa::core::MultiVecCoordId& id) = 0;
@@ -60,9 +57,11 @@ public:
 
 };
 
-}
-}
-}
+} // namespace behavior
+
+} // namespace core
+
+} // namespace sofa
 
 #endif //SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
 

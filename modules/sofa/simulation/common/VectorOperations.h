@@ -2,7 +2,6 @@
 #define SOFA_SIMULATION_COMMON_VECTOROPERATIONS_H
 
 #include <sofa/core/behavior/BaseVectorOperations.h>
-#include <sofa/core/objectmodel/Context.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/common.h>
@@ -22,7 +21,7 @@ namespace common
   class VisitorExcute
   {
   public:
-    operator()(core::objectmodel::Context* ctx, bool prefetch = false) { Action act; preparVisitor(&act); act.execute(ctx,prefetch); }
+    operator()(core::objectmodel::BaseContext* ctx, bool prefetch = false) { Action act; preparVisitor(&act); act.execute(ctx,prefetch); }
   protected:
     void prepareVisitor( Visitor* v);
     void prepareVisitor( MechanicalVisitor* v);
@@ -35,7 +34,7 @@ class SOFA_SIMULATION_COMMON_API VectorOperations : public sofa::core::behavior:
 {
 public:
 
-    VectorOperations(const sofa::core::ExecParams* params, const sofa::core::objectmodel::Context* ctx);
+    VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext* ctx);
 
     /// Allocate a temporary vector
     void v_alloc(sofa::core::MultiVecCoordId& v);
