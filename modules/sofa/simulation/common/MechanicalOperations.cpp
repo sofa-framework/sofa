@@ -2,8 +2,10 @@
 
 namespace sofa
 {
+
 namespace simulation
 {
+
 namespace common
 {
 
@@ -11,6 +13,9 @@ MechanicalOperations::MechanicalOperations(sofa::core::MechanicalParams* mparams
     :mparams(mparams),ctx(ctx)
 {
 }
+
 }
+
 }
+
 }

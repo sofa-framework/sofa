@@ -8,12 +8,15 @@
 
 namespace sofa
 {
+
 namespace core
 {
 class ExecParams;
 }
+
 namespace simulation
 {
+
 namespace common
 {
 
