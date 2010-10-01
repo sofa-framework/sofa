@@ -42,11 +42,11 @@ public:
     virtual void v_meq(core::MultiVecId v, core::MultiVecId a, Shared<double> &fSh) = 0; ///< v+=f*a
 #endif
     virtual void v_teq(core::MultiVecId v, double f) = 0; ///< v*=f
-    virtual void v_op(core::MultiVecId v, core::MultiVecId a, core::MultiVecId b, double f=1.0) = 0; ///< v=a+b*f
+    virtual void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, double f=1.0) = 0; ///< v=a+b*f
 #ifdef SOFA_SMP
     virtual void v_op(core::MultiVecId v, core::MultiVecId a, core::MultiVecId b, Shared<double> &f) = 0; ///< v=a+b*f
 #endif
-    virtual void v_dot(core::MultiVecId a, core::MultiVecId b) = 0; ///< a dot b ( get result using finish )
+    virtual void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId b) = 0; ///< a dot b ( get result using finish )
 #ifdef SOFA_SMP
     virtual void v_dot(Shared<double> &result,core::MultiVecId a, core::MultiVecId b) = 0; ///< a dot b
 #endif
