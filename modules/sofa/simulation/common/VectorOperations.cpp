@@ -17,7 +17,7 @@ namespace simulation
 namespace common
 {
 
-VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::Context *ctx):
+VectorOperations::VectorOperations(const sofa::core::ExecParams* params, const sofa::core::objectmodel::Context *ctx):
     sofa::core::behavior::BaseVectorOperations(params,ctx)
 {
 }
@@ -133,6 +133,11 @@ void VectorOperations::print(sofa::core::MultiVecId v, std::ostream &out)
     executeVisitor( MechanicalVPrintVisitor( v,params,out ) );
 }
 
+double VectorOperations::finish()
+{
+    return result;
+
+}
 
 }
 }
