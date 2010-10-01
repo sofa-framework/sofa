@@ -56,9 +56,10 @@ class PartialFixedConstraintInternalData
 {
 };
 
-/** Attach given particles to their initial positions, in some directions only.
-The fixed and free directioons are the same for all the particles, defined  in the fixedDirections attribute.
-*/
+/**
+ * Attach given particles to their initial positions, in some directions only.
+ * The fixed and free directioons are the same for all the particles, defined  in the fixedDirections attribute.
+ **/
 template <class DataTypes>
 class PartialFixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
@@ -118,7 +119,7 @@ public:
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
-protected :
+protected:
 
     sofa::core::topology::BaseMeshTopology* topology;
 
@@ -127,7 +128,6 @@ protected :
 
     // Define RemovalFunction
     static void FCRemovalFunction ( int , void*);
-
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
