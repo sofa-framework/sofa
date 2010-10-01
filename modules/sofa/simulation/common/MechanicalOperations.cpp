@@ -9,8 +9,8 @@ namespace simulation
 namespace common
 {
 
-MechanicalOperations::MechanicalOperations(sofa::core::MechanicalParams* mparams, sofa::core::objectmodel::BaseContext* ctx)
-    :mparams(mparams),ctx(ctx)
+MechanicalOperations::MechanicalOperations(sofa::core::objectmodel::BaseContext* ctx, const sofa::core::MechanicalParams* mparams)
+    :mparams(*mparams),ctx(ctx)
 {
 }
 

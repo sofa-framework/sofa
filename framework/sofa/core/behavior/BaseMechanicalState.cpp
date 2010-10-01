@@ -56,8 +56,8 @@ void BaseMechanicalState::vMultiOp(const VMultiOp& ops)
 {
     for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
     {
-        VecId r = it->first;
-        const helper::vector< std::pair< ConstVecId, double > >& operands = it->second;
+        VecId r = it->first.getId(this);
+        const helper::vector< std::pair< ConstMultiVecId, double > >& operands = it->second;
         int nop = operands.size();
         if (nop==0)
         {
@@ -66,25 +66,25 @@ void BaseMechanicalState::vMultiOp(const VMultiOp& ops)
         else if (nop==1)
         {
             if (operands[0].second == 1.0)
-                vOp(r, operands[0].first);
+                vOp(r, operands[0].first.getId(this));
             else
-                vOp(r, ConstVecId::null(), operands[0].first, operands[0].second);
+                vOp(r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
         }
         else
         {
             int i;
             if (operands[0].second == 1.0)
             {
-                vOp(r, operands[0].first, operands[1].first, operands[1].second);
+                vOp(r, operands[0].first.getId(this), operands[1].first.getId(this), operands[1].second);
                 i = 2;
             }
             else
             {
-                vOp(r, ConstVecId::null(), operands[0].first, operands[0].second);
+                vOp(r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
                 i = 1;
             }
             for (; i<nop; ++i)
-                vOp(r, r, operands[i].first, operands[i].second);
+                vOp(r, r, operands[i].first.getId(this), operands[i].second);
         }
     }
 }
