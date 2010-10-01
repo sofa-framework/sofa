@@ -295,6 +295,21 @@ public:
         return defaultId;
     }
 
+    std::string getName() const
+    {
+        return defaultId.getName();
+    }
+
+
+    static TMultiVecId<vtype, vaccess> null() { return TMultiVecId(MyVecId::null()); }
+    bool isNull() const
+    {
+        if (!this->defaultId.isNull()) return false;
+        for (IdMap_const_iterator it = idMap.begin(), itend = idMap.end(); it != itend; ++it)
+            if (!it->second.isNull()) return false;
+        return true;
+    }
+
     // fId.write(mstate);
     // fId[mstate].write();   <- THE CURRENT API
     // mstate->write(fId.getId(mstate));
