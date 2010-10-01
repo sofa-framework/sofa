@@ -19,10 +19,9 @@ namespace common
 
 class SOFA_SIMULATION_COMMON_API MechanicalOperations
 {
-protected:
+public:
     core::MechanicalParams mparams;
     core::objectmodel::BaseContext* ctx;
-public:
 
     MechanicalOperations(core::objectmodel::BaseContext* ctx, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance());
     /// Propagate the given displacement through all mappings
