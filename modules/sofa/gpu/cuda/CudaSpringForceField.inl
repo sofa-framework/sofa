@@ -26,11 +26,11 @@
 #define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
 
 #include "CudaSpringForceField.h"
-#include <sofa/component/forcefield/SpringForceField.inl>
-#include <sofa/component/forcefield/StiffSpringForceField.inl>
-#include <sofa/component/forcefield/MeshSpringForceField.inl>
-#include <sofa/component/forcefield/TriangleBendingSprings.inl>
-#include <sofa/component/forcefield/QuadBendingSprings.inl>
+#include <sofa/component/interactionforcefield/SpringForceField.inl>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.inl>
+#include <sofa/component/interactionforcefield/TriangleBendingSprings.inl>
+#include <sofa/component/interactionforcefield/QuadBendingSprings.inl>
 
 namespace sofa
 {
@@ -190,7 +190,7 @@ public:
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 using namespace gpu::cuda;
@@ -504,7 +504,7 @@ CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #undef CudaSpringForceField_ImplMethods
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 

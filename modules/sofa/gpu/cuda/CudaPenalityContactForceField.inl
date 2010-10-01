@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_INL
 
 #include "CudaPenalityContactForceField.h"
-#include <sofa/component/forcefield/PenalityContactForceField.inl>
+#include <sofa/component/interactionforcefield/PenalityContactForceField.inl>
 
 
 namespace sofa
@@ -52,7 +52,7 @@ extern "C"
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 using namespace gpu::cuda;
@@ -250,7 +250,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw()
     }
 }
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 

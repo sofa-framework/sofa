@@ -26,9 +26,9 @@
 #define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_H
 
 #include "CudaTypes.h"
-#include <sofa/component/forcefield/SpringForceField.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/forcefield/MeshSpringForceField.h>
+#include <sofa/component/interactionforcefield/SpringForceField.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
 
 
 namespace sofa
@@ -52,7 +52,7 @@ struct SpringDForceOp;
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 template <class TCoord, class TDeriv, class TReal>
@@ -180,7 +180,7 @@ CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
 #undef CudaSpringForceField_DeclMethods
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 

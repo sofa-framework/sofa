@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_H
 
 #include "CudaTypes.h"
-#include <sofa/component/forcefield/PenalityContactForceField.h>
+#include <sofa/component/interactionforcefield/PenalityContactForceField.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 
 namespace sofa
@@ -45,7 +45,7 @@ namespace cuda
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 using sofa::gpu::cuda::CudaVec3fTypes;
@@ -112,7 +112,7 @@ public:
     void draw();
 };
 
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 
