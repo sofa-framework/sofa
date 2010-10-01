@@ -5,7 +5,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-
+#include <sofa/simulation/common/common.h>
 
 namespace sofa
 {
@@ -18,12 +18,24 @@ namespace simulation
 namespace common
 {
 
-class VectorOperations : public sofa::core::behavior::BaseVectorOperations
-{
+/*  template< class Action >
+  class VisitorExcute
+  {
+  public:
+    operator()(core::objectmodel::Context* ctx, bool prefetch = false) { Action act; preparVisitor(&act); act.execute(ctx,prefetch); }
+  protected:
+    void prepareVisitor( Visitor* v);
+    void prepareVisitor( MechanicalVisitor* v);
+  };*/
 
+
+
+
+class SOFA_SIMULATION_COMMON_API VectorOperations : public sofa::core::behavior::BaseVectorOperations
+{
 public:
 
-    VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::Context* ctx);
+    VectorOperations(const sofa::core::ExecParams* params, const sofa::core::objectmodel::Context* ctx);
 
     /// Allocate a temporary vector
     void v_alloc(sofa::core::MultiVecCoordId& v);
@@ -44,12 +56,13 @@ public:
 #ifdef SOFA_SMP
     void v_op(core::MultiVecId v, core::MultiVecId a, core::MultiVecId b, Shared<double> &f) ; ///< v=a+b*f
 #endif
-    void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId  b) = 0; ///< a dot b ( get result using finish )
+    void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId  b); ///< a dot b ( get result using finish )
 #ifdef SOFA_SMP
     void v_dot(Shared<double> &result,core::MultiVecId a, core::MultiVecId b) ; ///< a dot b
 #endif
     void v_threshold(core::MultiVecId a, double threshold); ///< nullify the values below the given threshold
 
+    double finish();
     void print( core::MultiVecId v, std::ostream& out );
 protected:
 
