@@ -25,9 +25,11 @@
 #ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
 
-#include "InteractionPerformer.h"
-#include "BaseContactMapper.h"
+#include <sofa/component/collision/InteractionPerformer.h>
+#include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/component/interactionforcefield/SpringForceField.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
 
 namespace sofa
 {

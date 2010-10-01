@@ -9,7 +9,6 @@
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
-#include <sofa/component/forcefield/SpringForceField.h>
 
 namespace sofa
 {

@@ -28,7 +28,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/forcefield/VectorSpringForceField.h>
+#include <sofa/component/interactionforcefield/VectorSpringForceField.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/component/collision/RigidContactMapper.inl>
@@ -61,7 +61,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-    typedef forcefield::VectorSpringForceField<ResponseDataTypes> ResponseForceField;
+    typedef interactionforcefield::VectorSpringForceField<ResponseDataTypes> ResponseForceField;
 
 protected:
     CollisionModel1* model1;

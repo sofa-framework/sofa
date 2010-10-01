@@ -25,14 +25,16 @@
 #ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP
 
-#include "AttachBodyPerformer.inl"
+#include <sofa/component/collision/AttachBodyPerformer.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/forcefield/JointSpringForceField.h>
+#include <sofa/component/interactionforcefield/JointSpringForceField.inl>
+#include <sofa/component/interactionforcefield/SpringForceField.inl>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
 
 
-using namespace sofa::component::forcefield;
+using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
 namespace sofa
 {
@@ -64,7 +66,7 @@ bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPic
     double restLength = picked.dist;
     mstateCollision = dynamic_cast< core::behavior::MechanicalState<Rigid3fTypes>*  >(picked.mstate);
     std::string name = "contactMouse";
-    sofa::component::forcefield::JointSpring<Rigid3fTypes> spring;
+    sofa::component::interactionforcefield::JointSpring<Rigid3fTypes> spring;
 
     forcefield = new JointSpringForceField<Rigid3fTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
     JointSpringForceField<Rigid3fTypes>* jointspringforcefield = static_cast<JointSpringForceField<Rigid3fTypes>*>(forcefield);
@@ -96,7 +98,7 @@ bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPic
     double restLength = picked.dist;
     mstateCollision = dynamic_cast< core::behavior::MechanicalState<Rigid3dTypes>*  >(picked.mstate);
     std::string name = "contactMouse";
-    sofa::component::forcefield::JointSpring<Rigid3dTypes> spring;
+    sofa::component::interactionforcefield::JointSpring<Rigid3dTypes> spring;
 
     forcefield = new JointSpringForceField<Rigid3dTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
     JointSpringForceField<Rigid3dTypes>* jointspringforcefield = static_cast<JointSpringForceField<Rigid3dTypes>*>(forcefield);

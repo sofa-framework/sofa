@@ -31,7 +31,7 @@
 #ifdef SOFA_TEST_FRICTION
 #include <sofa/component/forcefield/PenalityContactFrictionForceField.h>
 #else
-#include <sofa/component/forcefield/PenalityContactForceField.h>
+#include <sofa/component/interactionforcefield/PenalityContactForceField.h>
 #endif
 #include <sofa/helper/Factory.h>
 
@@ -69,7 +69,7 @@ public:
 #ifdef SOFA_TEST_FRICTION
     typedef forcefield::PenalityContactFrictionForceField<ResponseDataTypes> ResponseForceField;
 #else
-    typedef forcefield::PenalityContactForceField<ResponseDataTypes> ResponseForceField;
+    typedef interactionforcefield::PenalityContactForceField<ResponseDataTypes> ResponseForceField;
 #endif
 protected:
     CollisionModel1* model1;
