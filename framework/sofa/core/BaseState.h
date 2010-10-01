@@ -44,7 +44,7 @@ namespace core
  *  MechanicalState (storing other mechanical data) or MappedModel (if no
  *  mechanical data is used, such as for VisualModel).
  */
-class BaseState : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseState : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(BaseState, objectmodel::BaseObject);
