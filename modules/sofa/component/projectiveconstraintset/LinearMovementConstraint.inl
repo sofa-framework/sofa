@@ -355,8 +355,8 @@ void LinearMovementConstraint<DataTypes>::draw()
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                gl::glVertexT(DataTypes::toVec(x0[*it]) + DataTypes::toVec(m_keyMovements.getValue()[i]));
-                gl::glVertexT(DataTypes::toVec(x0[*it]) + DataTypes::toVec(m_keyMovements.getValue()[i + 1]));
+                gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
+                gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
             }
         }
         glEnd();
