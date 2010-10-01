@@ -85,6 +85,8 @@ public:
         return v;
     }
 
+    BaseVectorOperations* ops() { return vop; }
+
     /// v = 0
     void clear()
     {

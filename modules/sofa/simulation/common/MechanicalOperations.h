@@ -20,11 +20,11 @@ namespace common
 class SOFA_SIMULATION_COMMON_API MechanicalOperations
 {
 protected:
-    core::MechanicalParams* mparams;
+    core::MechanicalParams mparams;
     core::objectmodel::BaseContext* ctx;
 public:
 
-    MechanicalOperations(core::MechanicalParams* mparams, core::objectmodel::BaseContext* ctx);
+    MechanicalOperations(core::objectmodel::BaseContext* ctx, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance());
     /// Propagate the given displacement through all mappings
     void propagateDx(core::MultiVecDerivId dx);
     /// Propagate the given displacement through all mappings and reset the current force delta
