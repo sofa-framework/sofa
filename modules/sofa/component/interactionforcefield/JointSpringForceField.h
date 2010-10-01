@@ -44,15 +44,17 @@ namespace interactionforcefield
 {
 using namespace sofa::defaulttype;
 
-template<class DataTypes>
+template<typename DataTypes>
 class JointSpring
 {
 public:
+
+    typedef typename DataTypes::Coord    Coord   ;
+    typedef typename Coord::value_type   Real    ;
+    typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef Vec<N,Real> Vector;
