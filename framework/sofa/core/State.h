@@ -50,8 +50,7 @@ namespace core
  *  \li \code VecReal \endcode : container of scalar values with the same API as sofa::helper::vector.
  *  \li \code VecCoord \endcode : container of Coord values with the same API as sofa::helper::vector.
  *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::helper::vector
- *  \li \code SparseVecDeriv \endcode : sparse vector of Deriv values (defining coefficient of a constraint).
- *  \li \code VecConst \endcode : vector of constraints (i.e. of SparseVecDeriv).
+ *  \li \code MatrixDeriv \endcode : vector of constraints.
  *
  *  \todo sofa::core::behavior::State is related to sofa::core::Mapping, and not to sofa::core::behavior::MechanicalMapping. It should be moved to sofa::core ?
  *
