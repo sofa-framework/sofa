@@ -59,9 +59,11 @@ int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
         ;
 
 #ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpring<defaulttype::Rigid3dTypes>;
 template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpringForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpring<defaulttype::Rigid3fTypes>;
 template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API JointSpringForceField<defaulttype::Rigid3fTypes>;
 #endif
 

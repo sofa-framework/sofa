@@ -27,7 +27,7 @@
 
 #include <sofa/component/collision/InteractionPerformer.h>
 
-#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
 #include <sofa/component/collision/MouseInteractor.h>
 
 namespace sofa
@@ -50,7 +50,7 @@ protected:
 template <class DataTypes>
 class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
-    typedef sofa::component::forcefield::StiffSpringForceField< DataTypes >   MouseForceField;
+    typedef sofa::component::interactionforcefield::StiffSpringForceField< DataTypes >   MouseForceField;
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:

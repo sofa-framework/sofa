@@ -31,6 +31,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <vector>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/component/component.h>
+
 
 namespace sofa
 {

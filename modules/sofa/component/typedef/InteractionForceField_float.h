@@ -38,33 +38,33 @@
 
 
 
-#include <sofa/component/forcefield/BoxStiffSpringForceField.h>
-#include <sofa/component/forcefield/FrameSpringForceField.h>
+#include <sofa/component/interactionforcefield/BoxStiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/FrameSpringForceField.h>
 #include <sofa/component/interactionforcefield/InteractionEllipsoidForceField.h>
-#include <sofa/component/forcefield/JointSpringForceField.h>
-#include <sofa/component/forcefield/MeshSpringForceField.h>
-#include <sofa/component/forcefield/PenalityContactForceField.h>
-#include <sofa/component/forcefield/QuadBendingSprings.h>
-#include <sofa/component/forcefield/RegularGridSpringForceField.h>
+#include <sofa/component/interactionforcefield/JointSpringForceField.h>
+#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
+#include <sofa/component/interactionforcefield/PenalityContactForceField.h>
+#include <sofa/component/interactionforcefield/QuadBendingSprings.h>
+#include <sofa/component/interactionforcefield/RegularGridSpringForceField.h>
 #include <sofa/component/interactionforcefield/RepulsiveSpringForceField.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/forcefield/TriangleBendingSprings.h>
-#include <sofa/component/forcefield/VectorSpringForceField.h>
+#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/component/interactionforcefield/TriangleBendingSprings.h>
+#include <sofa/component/interactionforcefield/VectorSpringForceField.h>
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BoxStiffSpringForceField
-typedef sofa::component::forcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BoxStiffSpringForceField3f;
-typedef sofa::component::forcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > BoxStiffSpringForceField2f;
-typedef sofa::component::forcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > BoxStiffSpringForceField1f;
-typedef sofa::component::forcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > BoxStiffSpringForceField6f;
+typedef sofa::component::interactionforcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > BoxStiffSpringForceField3f;
+typedef sofa::component::interactionforcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > BoxStiffSpringForceField2f;
+typedef sofa::component::interactionforcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > BoxStiffSpringForceField1f;
+typedef sofa::component::interactionforcefield::BoxStiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > BoxStiffSpringForceField6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for FrameSpringForceField
-typedef sofa::component::forcefield::FrameSpringForceField<sofa::defaulttype::StdRigidTypes<3, float> > FrameSpringForceFieldRigid3f;
+typedef sofa::component::interactionforcefield::FrameSpringForceField<sofa::defaulttype::StdRigidTypes<3, float> > FrameSpringForceFieldRigid3f;
 
 
 
@@ -76,37 +76,37 @@ typedef sofa::component::interactionforcefield::InteractionEllipsoidForceField<s
 
 //---------------------------------------------------------------------------------------------
 //Typedef for JointSpringForceField
-typedef sofa::component::forcefield::JointSpringForceField<sofa::defaulttype::StdRigidTypes<3, float> > JointSpringForceFieldRigid3f;
+typedef sofa::component::interactionforcefield::JointSpringForceField<sofa::defaulttype::StdRigidTypes<3, float> > JointSpringForceFieldRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MeshSpringForceField
-typedef sofa::component::forcefield::MeshSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MeshSpringForceField3f;
-typedef sofa::component::forcefield::MeshSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MeshSpringForceField2f;
-typedef sofa::component::forcefield::MeshSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MeshSpringForceField1f;
+typedef sofa::component::interactionforcefield::MeshSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MeshSpringForceField3f;
+typedef sofa::component::interactionforcefield::MeshSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MeshSpringForceField2f;
+typedef sofa::component::interactionforcefield::MeshSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MeshSpringForceField1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PenalityContactForceField
-typedef sofa::component::forcefield::PenalityContactForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PenalityContactForceField3f;
+typedef sofa::component::interactionforcefield::PenalityContactForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PenalityContactForceField3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for QuadBendingSprings
-typedef sofa::component::forcefield::QuadBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > QuadBendingSprings3f;
-typedef sofa::component::forcefield::QuadBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > QuadBendingSprings2f;
+typedef sofa::component::interactionforcefield::QuadBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > QuadBendingSprings3f;
+typedef sofa::component::interactionforcefield::QuadBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > QuadBendingSprings2f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RegularGridSpringForceField
-typedef sofa::component::forcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RegularGridSpringForceField3f;
-typedef sofa::component::forcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > RegularGridSpringForceField2f;
-typedef sofa::component::forcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > RegularGridSpringForceField1f;
-typedef sofa::component::forcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > RegularGridSpringForceField6f;
+typedef sofa::component::interactionforcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RegularGridSpringForceField3f;
+typedef sofa::component::interactionforcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > RegularGridSpringForceField2f;
+typedef sofa::component::interactionforcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > RegularGridSpringForceField1f;
+typedef sofa::component::interactionforcefield::RegularGridSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > RegularGridSpringForceField6f;
 
 
 
@@ -120,23 +120,23 @@ typedef sofa::component::interactionforcefield::RepulsiveSpringForceField<sofa::
 
 //---------------------------------------------------------------------------------------------
 //Typedef for StiffSpringForceField
-typedef sofa::component::forcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > StiffSpringForceField3f;
-typedef sofa::component::forcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > StiffSpringForceField2f;
-typedef sofa::component::forcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > StiffSpringForceField1f;
-typedef sofa::component::forcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > StiffSpringForceField6f;
+typedef sofa::component::interactionforcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > StiffSpringForceField3f;
+typedef sofa::component::interactionforcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > StiffSpringForceField2f;
+typedef sofa::component::interactionforcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > StiffSpringForceField1f;
+typedef sofa::component::interactionforcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > StiffSpringForceField6f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TriangleBendingSprings
-typedef sofa::component::forcefield::TriangleBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TriangleBendingSprings3f;
-typedef sofa::component::forcefield::TriangleBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TriangleBendingSprings2f;
+typedef sofa::component::interactionforcefield::TriangleBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > TriangleBendingSprings3f;
+typedef sofa::component::interactionforcefield::TriangleBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > TriangleBendingSprings2f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for VectorSpringForceField
-typedef sofa::component::forcefield::VectorSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > VectorSpringForceField3f;
+typedef sofa::component::interactionforcefield::VectorSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > VectorSpringForceField3f;
 
 
 
