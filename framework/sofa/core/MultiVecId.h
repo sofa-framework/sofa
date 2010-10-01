@@ -251,13 +251,14 @@ public:
     //// In other cases, the copy constructor takes a TMultiVecId of the same type
     //// ie copy construct a MultiVecCoordId from a const MultiVecCoordId& or a
     //// ConstMultiVecCoordId&.
-    //template< VecType vtype2, VecAccess vaccess2>
-    //TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
-    //{
-    //  BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
+    template< VecType vtype2, VecAccess vaccess2>
+    TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
+    {
+        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
+        BOOST_STATIC_ASSERT( vtype == V_ALL || vtype2 == vtype );
 
-    //  std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
-    //}
+        std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
+    }
 
     void setDefaultId(const MyVecId& id)
     {
