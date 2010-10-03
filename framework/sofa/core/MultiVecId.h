@@ -219,8 +219,6 @@ protected:
     MyVecId id;
 };
 
-
-
 template <VecType vtype, VecAccess vaccess>
 class TMultiVecId
 {
@@ -236,6 +234,10 @@ protected:
     IdMap idMap;
 
 public:
+
+    TMultiVecId()
+    {
+    }
 
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
@@ -300,6 +302,11 @@ public:
         return defaultId.getName();
     }
 
+    friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<vtype, vaccess>& v )
+    {
+        out << v.getName();
+        return out;
+    }
 
     static TMultiVecId<vtype, vaccess> null() { return TMultiVecId(MyVecId::null()); }
     bool isNull() const
@@ -343,15 +350,181 @@ public:
 
 };
 
-typedef TMultiVecId<V_ALL, V_READ> ConstMultiVecId;
-typedef TMultiVecId<V_ALL, V_WRITE>     MultiVecId;
+
+
+template <VecAccess vaccess>
+class TMultiVecId<V_ALL, vaccess>
+{
+public:
+    typedef TVecId<V_ALL, vaccess> MyVecId;
+
+protected:
+    MyVecId defaultId;
+
+    typedef std::map<const BaseState*, MyVecId> IdMap;
+    typedef typename IdMap::iterator IdMap_iterator;
+    typedef typename IdMap::const_iterator IdMap_const_iterator;
+    IdMap idMap;
+
+public:
+
+    TMultiVecId()
+    {
+    }
+
+    /// Copy from another VecId, possibly with another type of access, with the
+    /// constraint that the access must be compatible (i.e. cannot create
+    /// a write-access VecId from a read-only VecId.
+    template<VecType vtype2, VecAccess vaccess2>
+    TMultiVecId(const TVecId<vtype2, vaccess2>& v) : defaultId(v)
+    {
+        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+    }
+
+    //// Only TMultiVecId< V_ALL , vaccess> can declare copy constructors with all
+    //// other kinds of TMultiVecIds, namely MultiVecCoordId, MultiVecDerivId...
+    //// In other cases, the copy constructor takes a TMultiVecId of the same type
+    //// ie copy construct a MultiVecCoordId from a const MultiVecCoordId& or a
+    //// ConstMultiVecCoordId&.
+    template< VecType vtype2, VecAccess vaccess2>
+    TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
+    {
+        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
+        //BOOST_STATIC_ASSERT( vtype == V_ALL || vtype2 == vtype );
+
+        std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(idMap, idMap.begin()) );
+    }
+
+    void setDefaultId(const MyVecId& id)
+    {
+        defaultId = id;
+    }
+
+    template<class StateSet>
+    void setId(const StateSet& states, const MyVecId& id)
+    {
+        for (typename StateSet::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
+            idMap[*it] = id;
+    }
+
+    void assign(const MyVecId& id)
+    {
+        defaultId = id;
+        idMap.clear();
+    }
+
+    const MyVecId& getId(const BaseState* s) const
+    {
+        IdMap_const_iterator it = idMap.find(s);
+        if (it != idMap.end()) return it->second;
+        else                   return defaultId;
+    }
+
+    const std::map<const BaseState*, MyVecId>& getIdMap() const
+    {
+        return idMap;
+    }
+
+    const MyVecId& getDefaultId() const
+    {
+        return defaultId;
+    }
+
+    std::string getName() const
+    {
+        return defaultId.getName();
+    }
+
+    friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<V_ALL, vaccess>& v )
+    {
+        out << v.getName();
+        return out;
+    }
+
+    static TMultiVecId<V_ALL, vaccess> null() { return TMultiVecId(MyVecId::null()); }
+    bool isNull() const
+    {
+        if (!this->defaultId.isNull()) return false;
+        for (IdMap_const_iterator it = idMap.begin(), itend = idMap.end(); it != itend; ++it)
+            if (!it->second.isNull()) return false;
+        return true;
+    }
+
+    // fId.write(mstate);
+    // fId[mstate].write();   <- THE CURRENT API
+    // mstate->write(fId.getId(mstate));
+
+    template <class DataTypes>
+    StateVecAccessor<DataTypes,V_ALL,vaccess> operator[](State<DataTypes>* s) const
+    {
+        return StateVecAccessor<DataTypes,V_ALL,vaccess>(s,getId(s));
+    }
+
+    template <class DataTypes>
+    StateVecAccessor<DataTypes,V_ALL,V_READ> operator[](const State<DataTypes>* s) const
+    {
+        return StateVecAccessor<DataTypes,V_ALL,V_READ>(s,getId(s));
+    }
+
+    /*
+        template<class DataTypes>
+        typename const typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* read(const State<DataTypes>* s) const
+        {
+            return s->read(getId(s));
+        }
+
+        template<class DataTypes>
+        typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* write(State<DataTypes>* s) const
+        {
+            BOOST_STATIC_ASSERT(vaccess >= V_WRITE);
+            return s->write(getId(s));
+        }
+    */
+
+};
+
+
 typedef TMultiVecId<V_COORD, V_READ> ConstMultiVecCoordId;
 typedef TMultiVecId<V_COORD, V_WRITE>     MultiVecCoordId;
 typedef TMultiVecId<V_DERIV, V_READ> ConstMultiVecDerivId;
 typedef TMultiVecId<V_DERIV, V_WRITE>     MultiVecDerivId;
 typedef TMultiVecId<V_MATDERIV, V_READ> ConstMultiMatrixDerivId;
 typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
+typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
+typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
+/*
+//typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
+class ConstMultiVecId : public TMultiVecId<V_ALL, V_READ>
+{
+    typedef TMultiVecId<V_ALL, V_READ> Inherit;
+public:
 
+    ConstMultiVecId()
+    {
+    }
+
+    template<VecType vtype2>
+    ConstMultiVecId(const TVecId<vtype2, V_READ>& v) : Inherit((ConstVecId)v)
+    {
+    }
+};
+
+//typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
+class MultiVecId : public TMultiVecId<V_ALL, V_WRITE>
+{
+    typedef TMultiVecId<V_ALL, V_WRITE> Inherit;
+public:
+
+    MultiVecId()
+    {
+    }
+
+    template<VecType vtype2, VecAccess vaccess2>
+    MultiVecId(const TVecId<vtype2, vaccess2>& v) : Inherit((TVecId<V_ALL,vaccess2>)v)
+    {
+    }
+};
+*/
 } // namespace core
 
 } // namespace sofa
