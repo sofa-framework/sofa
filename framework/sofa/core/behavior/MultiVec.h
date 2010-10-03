@@ -47,6 +47,9 @@ class TMultiVec
 public:
 
     typedef TMultiVecId<vtype, V_WRITE> MyMultiVecId;
+    typedef TMultiVecId<vtype, V_READ> ConstMyMultiVecId;
+    typedef TMultiVecId<V_ALL, V_WRITE> AllMultiVecId;
+    typedef TMultiVecId<V_ALL, V_READ> ConstAllMultiVecId;
 
 protected:
     /// Solver who is using this vector
@@ -80,12 +83,18 @@ public:
     }
 
     /// Automatic conversion to the underlying VecId
-    operator MyMultiVecId()
+    operator MyMultiVecId() {  return v;  }
+    operator ConstMyMultiVecId() {  return v;  }
+    operator AllMultiVecId() {  return v;  }
+    operator ConstAllMultiVecId() {  return v;  }
+
+    const MyMultiVecId& id()
     {
         return v;
     }
 
     BaseVectorOperations* ops() { return vop; }
+    void setOps(BaseVectorOperations* op) { vop = op; }
 
     /// v = 0
     void clear()
@@ -100,7 +109,7 @@ public:
     }
 
     /// v += a*f
-    void peq(MyMultiVecId a, double f=1.0)
+    void peq(AllMultiVecId a, double f=1.0)
     {
         vop->v_peq(v, a, f);
     }
@@ -112,7 +121,7 @@ public:
     }
 
     /// v = a+b*f
-    void eq(MyMultiVecId a, MyMultiVecId b, double f=1.0)
+    void eq(AllMultiVecId a, AllMultiVecId b, double f=1.0)
     {
         vop->v_op(v, a, b, f);
     }

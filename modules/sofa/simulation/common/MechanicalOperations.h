@@ -24,6 +24,15 @@ public:
     core::objectmodel::BaseContext* ctx;
 
     MechanicalOperations(core::objectmodel::BaseContext* ctx, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance());
+
+    MechanicalOperations(core::objectmodel::BaseContext* ctx, const core::ExecParams* params);
+
+    core::MechanicalParams* operator->() { return &mparams; }
+    operator const core::MechanicalParams*() { return &mparams; }
+
+    /// @name Mechanical Vector operations
+    /// @{
+
     /// Propagate the given displacement through all mappings
     void propagateDx(core::MultiVecDerivId dx);
     /// Propagate the given displacement through all mappings and reset the current force delta
@@ -49,10 +58,26 @@ public:
     /// accumulate $ df += (m M + b B + k K) velocity $
     void addMBKv(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
     /// Add dt*Gravity to the velocity
-    //void addSeparateGravity(double dt, core::MultiVecDerivId result( core::VecDerivId::velocity() ) );
+    void addSeparateGravity(double dt, core::MultiVecDerivId result = core::VecDerivId::velocity() );
 
     void computeContactForce(core::MultiVecDerivId result);
     void computeContactDf(core::MultiVecDerivId df);
+
+
+    void computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v);
+    void computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v);
+
+    /// @}
+
+    /// @name Matrix operations using LinearSolver components
+    /// @{
+
+    void m_resetSystem();
+    void m_setSystemMBKMatrix(double mFact, double bFact, double kFact);
+    void m_setSystemRHVector(core::MultiVecDerivId v);
+    void m_setSystemLHVector(core::MultiVecDerivId v);
+    void m_solveSystem();
+    void m_print( std::ostream& out );
 
     /// @}
 
@@ -60,16 +85,17 @@ public:
     /// @{
 
     // BaseMatrix & BaseVector Computations
-    virtual void getMatrixDimension(unsigned int * const, unsigned int * const, sofa::core::behavior::MultiMatrixAccessor* matrix = NULL);
+    void getMatrixDimension(unsigned int * const, unsigned int * const, sofa::core::behavior::MultiMatrixAccessor* matrix = NULL);
     void getMatrixDimension(sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         getMatrixDimension(NULL, NULL, matrix);
     }
 
     void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact);
-    void multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    void multiVectorPeqBaseVector(core::MultiVecId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-
+    /*
+            void multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+            void multiVectorPeqBaseVector(core::MultiVecId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    */
     /// @}
 
     /// @name Debug operations

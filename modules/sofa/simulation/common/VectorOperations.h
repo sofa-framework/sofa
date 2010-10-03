@@ -58,6 +58,7 @@ public:
 #ifdef SOFA_SMP
     void v_op(core::MultiVecId v, core::MultiVecId a, core::MultiVecId b, Shared<double> &f) ; ///< v=a+b*f
 #endif
+    void v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o);
     void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId  b); ///< a dot b ( get result using finish )
 #ifdef SOFA_SMP
     void v_dot(Shared<double> &result,core::MultiVecId a, core::MultiVecId b) ; ///< a dot b

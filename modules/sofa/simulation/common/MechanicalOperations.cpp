@@ -14,6 +14,11 @@ MechanicalOperations::MechanicalOperations(sofa::core::objectmodel::BaseContext*
 {
 }
 
+MechanicalOperations::MechanicalOperations(sofa::core::objectmodel::BaseContext* ctx, const sofa::core::ExecParams* params)
+    :mparams(*params),ctx(ctx)
+{
+}
+
 /// Propagate the given displacement through all mappings
 void MechanicalOperations::propagateDx(core::MultiVecDerivId dx)
 {
@@ -79,13 +84,52 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b,
 }
 
 /// Add dt*Gravity to the velocity
-//void addSeparateGravity(double dt, core::MultiVecDerivId result( core::VecDerivId::velocity() ) );
+void MechanicalOperations::addSeparateGravity(double dt, core::MultiVecDerivId result)
+{
+}
 
 void MechanicalOperations::computeContactForce(core::MultiVecDerivId result)
 {
 }
 
 void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
+{
+}
+
+void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
+{
+}
+
+void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
+{
+}
+
+/// @}
+
+/// @name Matrix operations using LinearSolver components
+/// @{
+
+void MechanicalOperations::m_resetSystem()
+{
+}
+
+void MechanicalOperations::m_setSystemMBKMatrix(double mFact, double bFact, double kFact)
+{
+}
+
+void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
+{
+}
+
+void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
+{
+}
+
+void MechanicalOperations::m_solveSystem()
+{
+}
+
+void MechanicalOperations::m_print( std::ostream& out )
 {
 }
 
@@ -104,6 +148,7 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
 }
 
 
+/*
 void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
 }
@@ -112,7 +157,7 @@ void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, def
 void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
 }
-
+*/
 
 
 /// @}
