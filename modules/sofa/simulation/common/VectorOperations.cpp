@@ -12,8 +12,10 @@
 
 namespace sofa
 {
+
 namespace simulation
 {
+
 namespace common
 {
 
@@ -67,17 +69,17 @@ void VectorOperations::v_free(sofa::core::MultiVecDerivId& id)
 
 void VectorOperations::v_clear(sofa::core::MultiVecId v) //v=0
 {
-    executeVisitor( MechanicalVOpVisitor(v, params) );
+    executeVisitor( MechanicalVOpVisitor(params, v) );
 }
 
 void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::MultiVecId a) // v=a
 {
-    executeVisitor( MechanicalVOpVisitor(v,a, params) );
+    executeVisitor( MechanicalVOpVisitor(params, v,a) );
 }
 #ifndef SOFA_SMP
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f)
 {
-    executeVisitor( MechanicalVOpVisitor(v,v,a,f,params), true ); // enable prefetching
+    executeVisitor( MechanicalVOpVisitor(params, v,v,a,f), true ); // enable prefetching
 }
 #else
 void VectorOperations::v_peq(VecId v, VecId a, Shared<double> &fSh,double f)
@@ -88,7 +90,6 @@ void VectorOperations::v_peq(VecId v, VecId a, Shared<double> &fSh,double f)
 void VectorOperations::v_peq(VecId v, VecId a, double f)
 {
     ParallelMechanicalVOpVisitor(v,v,a,f).execute( ctx );
-
 }
 
 void VectorOperations::v_meq(VecId v, VecId a, Shared<double> &fSh)
@@ -99,14 +100,17 @@ void VectorOperations::v_meq(VecId v, VecId a, Shared<double> &fSh)
 
 void VectorOperations::v_teq(sofa::core::MultiVecId v, double f)
 {
-    using namespace sofa::core;
-    MultiVecId null( VecId::null() );
-    executeVisitor( MechanicalVOpVisitor(v, null,v,f, params) );
+    executeVisitor( MechanicalVOpVisitor(params, v, core::MultiVecId::null(),v,f) );
 }
 
 void VectorOperations::v_op(core::MultiVecId v, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, double f )
 {
-    executeVisitor( MechanicalVOpVisitor(v,a,b,f, params), true ); // enable prefetching
+    executeVisitor( MechanicalVOpVisitor(params, v,a,b,f), true ); // enable prefetching
+}
+
+void VectorOperations::v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o)
+{
+    executeVisitor( MechanicalVMultiOpVisitor(o, params), true ); // enable prefetching
 }
 
 #ifdef SOFA_SMP
@@ -120,7 +124,6 @@ void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMu
 {
     result = 0;
     MechanicalVDotVisitor(a,b,&result, params).setTags(ctx->getTags()).execute( ctx, true ); // enable prefetching
-
 }
 
 void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)

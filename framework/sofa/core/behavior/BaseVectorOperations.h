@@ -1,10 +1,10 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
 #define SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
 
-
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -17,11 +17,11 @@ namespace behavior
 
 class BaseVectorOperations
 {
-
 protected:
     const core::ExecParams* params;
     core::objectmodel::BaseContext* ctx;
     double result;
+
 public:
     BaseVectorOperations(const core::ExecParams* params, core::objectmodel::BaseContext* ctx):params(params),ctx(ctx) {};
 
@@ -44,6 +44,7 @@ public:
 #ifdef SOFA_SMP
     virtual void v_op(core::MultiVecId v, core::MultiVecId a, core::MultiVecId b, Shared<double> &f) = 0; ///< v=a+b*f
 #endif
+    virtual void v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o) = 0;
     virtual void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId b) = 0; ///< a dot b ( get result using finish )
 #ifdef SOFA_SMP
     virtual void v_dot(Shared<double> &result,core::MultiVecId a, core::MultiVecId b) = 0; ///< a dot b
