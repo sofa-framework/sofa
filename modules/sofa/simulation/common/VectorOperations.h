@@ -50,8 +50,8 @@ public:
     void v_eq(core::MultiVecId v, core::MultiVecId a); ///< v=a
     void v_peq(core::MultiVecId v, core::MultiVecId a, double f=1.0); ///< v+=f*a
 #ifdef SOFA_SMP
-    void v_peq(core::MultiVecId v, core::VecId a, Shared<double> &fSh, double f=1.0) ; ///< v+=f*a
-    void v_meq(core::MultiVecIdv, core::VecId a, Shared<double> &fSh) ; ///< v+=f*a
+    void v_peq(core::MultiVecId v, core::MultiVecId a, Shared<double> &fSh, double f=1.0) ; ///< v+=f*a
+    void v_meq(core::MultiVecId v, core::MultiVecId a, Shared<double> &fSh) ; ///< v+=f*a
 #endif
     void v_teq(core::MultiVecId v, double f) ; ///< v*=f
     void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId  b, double f=1.0) ; ///< v=a+b*f

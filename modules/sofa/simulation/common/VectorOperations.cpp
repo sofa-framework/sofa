@@ -82,19 +82,19 @@ void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a,
     executeVisitor( MechanicalVOpVisitor(params, v,v,a,f), true ); // enable prefetching
 }
 #else
-void VectorOperations::v_peq(VecId v, VecId a, Shared<double> &fSh,double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, Shared<double> &fSh,double f)
 {
-    ParallelMechanicalVOpVisitor(v,v,a,f,&fSh).execute( ctx );
+    ParallelMechanicalVOpVisitor(params, v,v,a,f,&fSh).execute( ctx );
 }
 
-void VectorOperations::v_peq(VecId v, VecId a, double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f)
 {
-    ParallelMechanicalVOpVisitor(v,v,a,f).execute( ctx );
+    ParallelMechanicalVOpVisitor(params, v,v,a,f).execute( ctx );
 }
 
-void VectorOperations::v_meq(VecId v, VecId a, Shared<double> &fSh)
+void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, Shared<double> &fSh)
 {
-    ParallelMechanicalVOpMecVisitor(v,a,&fSh).execute( ctx );
+    ParallelMechanicalVOpMecVisitor(params, v,a,&fSh).execute( ctx );
 }
 #endif
 
@@ -116,7 +116,7 @@ void VectorOperations::v_multiop(const core::behavior::BaseMechanicalState::VMul
 #ifdef SOFA_SMP
 void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, sofa::core::MultiVecId b, Shared<double> &f) ///< v=a+b*f
 {
-    ParallelMechanicalVOpVisitor(v,a,b,1.0,&f).execute( getContext() );
+    ParallelMechanicalVOpVisitor(params, v,a,b,1.0,&f).execute( ctx );
 }
 #endif // SOFA_SMP
 
@@ -125,6 +125,13 @@ void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMu
     result = 0;
     MechanicalVDotVisitor(a,b,&result, params).setTags(ctx->getTags()).execute( ctx, true ); // enable prefetching
 }
+
+#ifdef SOFA_SMP
+void VectorOperations::v_dot( Shared<double> &result, core::MultiVecId a, core::MultiVecId b)
+{
+    ParallelMechanicalVDotVisitor(params, &result, a, b).execute( ctx );
+}
+#endif
 
 void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)
 {
