@@ -20,25 +20,11 @@ namespace common
 {
 
 VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext *ctx):
-    sofa::core::behavior::BaseVectorOperations(params,ctx)
+    sofa::core::behavior::BaseVectorOperations(params,ctx),
+    executeVisitor(*ctx)
 {
 }
 
-void VectorOperations::prepareVisitor(sofa::simulation::Visitor* v )
-{
-    v->setTags( ctx->getTags() );
-}
-
-// do not know what this is supposed to do
-void VectorOperations::prepareVisitor(sofa::simulation::MechanicalVisitor* v)
-{
-    /*     if (v->writeNodeData())
-            v->setNodeMap(this->getWriteNodeMap());
-        else
-            v->setNodeMap(this->getNodeMap());
-            */
-    prepareVisitor((Visitor*)v);
-}
 void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
 {
     /* template < VecType vtype > MechanicalVAvailVisitor;  */

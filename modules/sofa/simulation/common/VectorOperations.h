@@ -2,9 +2,8 @@
 #define SOFA_SIMULATION_COMMON_VECTOROPERATIONS_H
 
 #include <sofa/core/behavior/BaseVectorOperations.h>
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/common.h>
+#include <sofa/simulation/common/VisitorExecuteFunc.h>
 
 namespace sofa
 {
@@ -19,19 +18,6 @@ namespace simulation
 
 namespace common
 {
-
-/*  template< class Action >
-  class VisitorExcute
-  {
-  public:
-    operator()(core::objectmodel::BaseContext* ctx, bool prefetch = false) { Action act; preparVisitor(&act); act.execute(ctx,prefetch); }
-  protected:
-    void prepareVisitor( Visitor* v);
-    void prepareVisitor( MechanicalVisitor* v);
-  };*/
-
-
-
 
 class SOFA_SIMULATION_COMMON_API VectorOperations : public sofa::core::behavior::BaseVectorOperations
 {
@@ -68,38 +54,7 @@ public:
     double finish();
     void print( core::MultiVecId v, std::ostream& out );
 protected:
-
-    void prepareVisitor(Visitor* v);
-    void prepareVisitor(MechanicalVisitor* v);
-
-    template<class T>
-    void executeVisitor(T v, bool prefetch = false)
-    {
-        prepareVisitor(&v);
-        v.execute( ctx, prefetch );
-    }
-
-    //template<class T>
-    //void executeVisitor(T* v)
-    //{
-    //    prepareVisitor(v);
-    //    v->execute( this->getContext() );
-    //}
-
-    //template<class T>
-    //void executeVisitor(T v, bool prefetch)
-    //{
-    //    prepareVisitor(&v);
-    //    v.execute( this->getContext(), prefetch );
-    //}
-
-    //template<class T>
-    //void executeVisitor(T* v, bool prefetch)
-    //{
-    //    prepareVisitor(v);
-    //    v->execute( this->getContext(), prefetch );
-    //}
-
+    VisitorExecuteFunc executeVisitor;
     /// Result of latest v_dot operation
     double result;
 };

@@ -6,7 +6,7 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-
+#include <sofa/simulation/common/VisitorExecuteFunc.h>
 
 namespace sofa
 {
@@ -45,7 +45,7 @@ public:
     void projectResponse(core::MultiVecDerivId dx, double **W=NULL);
     void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx(core::VecDerivId() ) , double factor = 1.0); ///< res += factor M.dx
     void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, double dt); ///< res = x + v.dt
-    void accFromF(core::MultiVecDerivId a, core::MultiVecDerivId f); ///< a = M^-1 . f
+    void accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f); ///< a = M^-1 . f
 
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
@@ -106,6 +106,10 @@ public:
     virtual void printWithElapsedTime( core::ConstMultiVecId v,  unsigned time, std::ostream& out=std::cerr );
 
     /// @}
+
+protected:
+    VisitorExecuteFunc executeVisitor;
+
 
 };
 
