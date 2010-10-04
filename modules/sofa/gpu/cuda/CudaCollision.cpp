@@ -36,10 +36,10 @@
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
 #include <sofa/component/collision/BarycentricContactMapper.inl>
 
-#include <sofa/component/forcefield/PenalityContactForceField.h>
+#include <sofa/component/interactionforcefield/PenalityContactForceField.h>
 #include "CudaPenalityContactForceField.h"
 #include "CudaSpringForceField.h"
-#include <sofa/component/forcefield/VectorSpringForceField.h>
+#include <sofa/component/interactionforcefield/VectorSpringForceField.h>
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/Factory.inl>
