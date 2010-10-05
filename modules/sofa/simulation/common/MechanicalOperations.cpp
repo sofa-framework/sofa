@@ -49,9 +49,9 @@ void MechanicalOperations::projectResponse(core::MultiVecDerivId dx, double **W)
     executeVisitor( MechanicalApplyConstraintsVisitor(&mparams, dx, W) );
 }
 
-void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx(core::VecDerivId() ) , double factor)
+void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, double factor)
 {
-
+    executeVisitor( MechanicalAddMDxVisitor(res,dx,factor,&mparams) );
 }
 
 ///< res += factor M.dx

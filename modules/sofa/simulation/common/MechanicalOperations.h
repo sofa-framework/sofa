@@ -43,7 +43,7 @@ public:
     void propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f);
     /// Apply projective constraints to the given vector
     void projectResponse(core::MultiVecDerivId dx, double **W=NULL);
-    void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx(core::VecDerivId() ) , double factor = 1.0); ///< res += factor M.dx
+    void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, double factor = 1.0); ///< res += factor M.dx
     void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, double dt); ///< res = x + v.dt
     void accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f); ///< a = M^-1 . f
 
