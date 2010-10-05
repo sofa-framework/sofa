@@ -53,6 +53,8 @@ public:
 
     void update();
 
+    void draw();
+
     virtual std::string getTemplateName() const
     {
         return templateName(this);
@@ -72,12 +74,18 @@ public:
     Data<VecCoord> f_newX0;
     Data<SeqTetrahedra> f_tetrahedra;
 
+    Data<bool> frozen;
+
     //Parameters
     Data<double> facetAngle, facetSize, facetApproximation;
     Data<double> cellRatio, cellSize;
     Data<bool> odt, lloyd, perturb, exude;
     Data<int> odt_max_it, lloyd_max_it;
     Data<double> perturb_max_time, exude_max_time;
+
+    // Display
+    Data<bool> drawTetras;
+    Data<bool> drawSurface;
 
     // A modifier creating a triangle with the incremental builder.
     template <class HDS>
