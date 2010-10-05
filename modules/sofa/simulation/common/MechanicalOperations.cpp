@@ -1,6 +1,7 @@
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/VecId.h>
 namespace sofa
 {
 
@@ -23,24 +24,28 @@ MechanicalOperations::MechanicalOperations(sofa::core::objectmodel::BaseContext*
 /// Propagate the given displacement through all mappings
 void MechanicalOperations::propagateDx(core::MultiVecDerivId dx)
 {
+    executeVisitor( MechanicalPropagateDxVisitor(&mparams,dx,false) );
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
 void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df)
 {
-
+    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams,dx,df,false) );
 }
 
 /// Propagate the given position through all mappings
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
+    executeVisitor( MechanicalPropagateXVisitor(&mparams, x, false) //Don't ignore the masks
+                  );
+
 
 }
 
 /// Propagate the given position through all mappings and reset the current force delta
 void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f)
 {
-
+    executeVisitor( MechanicalPropagateXAndResetForceVisitor(&mparams,x,f,false) );
 }
 
 /// Apply projective constraints to the given vector
@@ -81,18 +86,39 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
 /// Compute the current force delta (given the latest propagated displacement)
 void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool accumulate)
 {
+    if (clear)
+    {
+        executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+//	finish();
+    }
+    executeVisitor( MechanicalComputeDfVisitor( df,  accumulate, &mparams) );
 
 }
 
 /// Compute the current force delta (given the latest propagated velocity)
 void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool accumulate)
 {
+    if (clear)
+    {
+        executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+        //finish();
+    }
+    executeVisitor( MechanicalComputeDfVisitor(df, accumulate, &mparams) );
 
 }
 
 /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)
 void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, double m, double b, double k, bool clear, bool accumulate)
 {
+    if (clear)
+    {
+        executeVisitor( MechanicalResetForceVisitor(&mparams, df, true) );
+        //finish();
+    }
+    mparams.setBFactor(b);
+    mparams.setKFactor(k);
+    mparams.setMFactor(m);
+    executeVisitor( MechanicalAddMBKdxVisitor(df, accumulate, &mparams) );
 }
 
 /// accumulate $ df += (m M + b B + k K) velocity $
@@ -106,35 +132,52 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b,
     mparams.setBFactor(b);
     mparams.setKFactor(k);
     mparams.setMFactor(m);
+    /* useV = true */
     executeVisitor( MechanicalAddMBKdxVisitor(df, accumulate, &mparams) );
 }
 
 /// Add dt*Gravity to the velocity
 void MechanicalOperations::addSeparateGravity(double dt, core::MultiVecDerivId result)
 {
-
-    /* should not dt be in mparams already ??? next line does not compile because visitor
-       takes dt as a parameter for object construct.
-    */
-// executeVisitor( MechanicalAddSeparateGravityVisitor(&mparams, result) );
+    mparams.setDt(dt);
+    executeVisitor( MechanicalAddSeparateGravityVisitor(&mparams, result) );
 }
 
 void MechanicalOperations::computeContactForce(core::MultiVecDerivId result)
 {
+    executeVisitor( MechanicalResetForceVisitor(&mparams, result) );
+    //finish();
+    executeVisitor( MechanicalComputeContactForceVisitor(&mparams, result) );
 
 }
 
 void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
 {
+    executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+    //finish();
 
 }
 
 void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
+    MultiVecDerivId f( VecDerivId::force() );
+    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams,t,x,v) );
+    computeForce(f);
+
+    accFromF(a,f);
+    projectResponse(a);
+
 }
 
 void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
+    MultiVecDerivId f( VecDerivId::force() );
+    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams,t,x,v) );
+    computeContactForce(f);
+
+    accFromF(a,f);
+    projectResponse(a);
+
 }
 
 /// @}
