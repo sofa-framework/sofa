@@ -38,7 +38,7 @@ namespace behavior
 
 BaseMechanicalState::BaseMechanicalState()
     : useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
-    , forceMask(helper::ParticleMask(useMask.getValue()))
+    , forceMask(&useMask)
 {
 }
 
