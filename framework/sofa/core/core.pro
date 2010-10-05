@@ -210,8 +210,8 @@ HEADERS += \
 	 fem/BaseFiniteElement.h         \
 	 fem/FiniteElement.h             \
 	 fem/DofContainer.h              \
- 	 fem/PolynomialInterpolation.h   \
- 	 fem/PolynomialInterpolation.inl           
+ 	 fem/PolynomialQuadratureInterpolation.h   \
+ 	 fem/PolynomialQuadratureInterpolation.inl           
  
 SOURCES +=  \
 	 fem/FENodes.cpp		         \
@@ -220,7 +220,7 @@ SOURCES +=  \
 	 fem/FiniteElement.cpp           \
 	 fem/DofContainer.cpp            \
  	 fem/BaseStrainTensor.cpp        \
- 	 fem/PolynomialInterpolation.cpp
+ 	 fem/PolynomialQuadratureInterpolation.cpp
  
 } # END SOFA_DEV
 
