@@ -210,6 +210,7 @@ HEADERS += \
 	 fem/BaseFiniteElement.h         \
 	 fem/FiniteElement.h             \
 	 fem/DofContainer.h              \
+  	 fem/PolynomialInterpolation.h   \
  	 fem/PolynomialQuadratureInterpolation.h   \
  	 fem/PolynomialQuadratureInterpolation.inl           
  
