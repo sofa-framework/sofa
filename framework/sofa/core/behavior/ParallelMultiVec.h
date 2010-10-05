@@ -60,7 +60,7 @@ public:
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    TParallelMultiVec( sofa::core::behavior::BaseVectorOperations* vop ) : TMultiVecId(vop)
+    TParallelMultiVec( sofa::core::behavior::BaseVectorOperations* vop ) : sofa::core::behavior::TMultiVec<vtype>(vop)
     {}
 
     ~TParallelMultiVec()
@@ -82,11 +82,8 @@ public:
         this->vop->v_meq(this->v, a, fSh);
     }
     void dot(Shared<double> &r, MyMultiVecId a)
-
     {
-
         this->vop->v_dot(r,this->v, a);
-
     }
     void print()
     {
@@ -99,12 +96,15 @@ public:
     operator ConstAllMultiVecId() { return this->v ; }
 };
 
+typedef TParallelMultiVec<V_COORD> ParallelMultiVecCoord;
+typedef TParallelMultiVec<V_DERIV> ParallelMultiVecDeriv;
+typedef TParallelMultiVec<V_MATDERIV> ParallelMultiVecMatrixDeriv;
 
+} // namespace behavior
 
 } // namespace core
 
 } // namespace sofa
-}
 
 
 #endif
