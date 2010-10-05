@@ -27,7 +27,7 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <iostream>
 #include <sofa/core/topology/Topology.h>
