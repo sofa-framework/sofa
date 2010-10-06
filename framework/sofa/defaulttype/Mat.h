@@ -29,7 +29,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
-#include <assert.h>
+#include <cassert>
 #include <boost/static_assert.hpp>
 #include <iostream>
 

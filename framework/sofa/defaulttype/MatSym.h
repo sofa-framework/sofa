@@ -1,35 +1,35 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                              SOFA :: Framework                              *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_DEFAULTTYPE_MATSYM_H
 #define SOFA_DEFAULTTYPE_MATSYM_H
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
-#include <assert.h>
+#include <cassert>
 #include <boost/static_assert.hpp>
 #include <iostream>
 #include <sofa/defaulttype/Mat.h>
@@ -47,11 +47,11 @@ using std::endl;
 
 template <int D,class real=float>
 class MatSym : public VecNoInit<D*(D+1)/2,real>
-    //class Mat : public Vec<L,Vec<C,real> >
+//class Mat : public Vec<L,Vec<C,real> >
 {
 public:
 
-// enum { N = L*C };
+    // enum { N = L*C };
 
     typedef real Real;
     typedef Vec<D,Real> Coord;
@@ -133,10 +133,9 @@ public:
         {return this->elems[(j*(j+1))/2+i];}
     }
 
-//convert matrix to sym
-//template<int D>
+    //convert matrix to sym
+    //template<int D>
     void Mat2Sym( const Mat<D,D,real>& M, MatSym<D,real>& W)
-
     {
         for (int j=0; j<D; j++)
             for (int i=0; i <= j; i++)
@@ -147,16 +146,16 @@ public:
     //convert into 3*3 matrix
 
     /*  Mat<D,D,real> convert() const
-      {
-    	  Mat<D,D,real> m;
-    	  for(int k=0; k<D;k++){
-    		for (int l=0;l<k;l++){
-    			m[k][l]=m[l][k]=(*this)(k,l);
-    		}
+    {
+      Mat<D,D,real> m;
+      for(int k=0; k<D;k++){
+    	for (int l=0;l<k;l++){
+    		m[k][l]=m[l][k]=(*this)(k,l);
     	}
-    	  return m;
-      }
-    */
+    }
+      return m;
+    }
+     */
     /// Set matrix to identity.
     void identity()
     {
@@ -211,7 +210,7 @@ public:
 
     //Multiplication by a non symmetric matrix on the right
 
-// template <int D>
+    // template <int D>
     Mat<D,D,real> SymMatMultiply(const Mat<D,D,real>& m) const
     {
         Mat<D,D,real> r(NOINIT);
@@ -231,7 +230,7 @@ public:
     }
     //Multiplication by a non symmetric matrix on the left
 
-// template <int D>
+    // template <int D>
     Mat<D,D,real> MatSymMultiply(const Mat<D,D,real>& m) const
     {
         Mat<D,D,real> r(NOINIT);
