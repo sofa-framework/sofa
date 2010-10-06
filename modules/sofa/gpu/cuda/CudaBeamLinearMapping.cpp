@@ -54,7 +54,7 @@ int BeamLinearMappingCudaClass = core::RegisterObject("Set the positions and vel
         .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3fTypes> > > >()
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3fTypes> > > >()
-#ifndef SOFA_GPU_CUDA_DOUBLE
+#ifdef SOFA_GPU_CUDA_DOUBLE
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3dTypes> > > >()
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
@@ -81,7 +81,7 @@ template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<sofa
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<sofa::gpu::cuda::CudaVec3fTypes> > >;
 template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<sofa::gpu::cuda::CudaVec3fTypes> > >;
 
-#ifndef SOFA_GPU_CUDA_DOUBLE
+#ifdef SOFA_GPU_CUDA_DOUBLE
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<sofa::gpu::cuda::CudaVec3dTypes> > >;
 template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<sofa::gpu::cuda::CudaVec3dTypes> > >;
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<sofa::gpu::cuda::CudaVec3dTypes> > >;
