@@ -52,7 +52,7 @@ BaseMechanicalState::~BaseMechanicalState()
 /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
 /// Note that if the result vector appears inside the expression, it must be the first operand.
 /// By default this method decompose the computation into multiple vOp calls.
-void BaseMechanicalState::vMultiOp(const VMultiOp& ops)
+void BaseMechanicalState::vMultiOp(const VMultiOp& ops, const ExecParams* /* params */)
 {
     for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
     {
