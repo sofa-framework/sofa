@@ -24,19 +24,19 @@ MechanicalOperations::MechanicalOperations(sofa::core::objectmodel::BaseContext*
 /// Propagate the given displacement through all mappings
 void MechanicalOperations::propagateDx(core::MultiVecDerivId dx)
 {
-    executeVisitor( MechanicalPropagateDxVisitor(&mparams,dx,false) );
+    executeVisitor( MechanicalPropagateDxVisitor(dx,false,&mparams) );
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
 void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df)
 {
-    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams,dx,df,false) );
+    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(dx,df,false,&mparams) );
 }
 
 /// Propagate the given position through all mappings
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
-    executeVisitor( MechanicalPropagateXVisitor(&mparams, x, false) //Don't ignore the masks
+    executeVisitor( MechanicalPropagateXVisitor(x, false,&mparams) //Don't ignore the masks
                   );
 
 
@@ -45,13 +45,13 @@ void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 /// Propagate the given position through all mappings and reset the current force delta
 void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f)
 {
-    executeVisitor( MechanicalPropagateXAndResetForceVisitor(&mparams,x,f,false) );
+    executeVisitor( MechanicalPropagateXAndResetForceVisitor(x,f,false,&mparams) );
 }
 
 /// Apply projective constraints to the given vector
 void MechanicalOperations::projectResponse(core::MultiVecDerivId dx, double **W)
 {
-    executeVisitor( MechanicalApplyConstraintsVisitor(&mparams, dx, W) );
+    executeVisitor( MechanicalApplyConstraintsVisitor(dx, W, &mparams) );
 }
 
 void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, double factor)
@@ -62,7 +62,7 @@ void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDeriv
 ///< res += factor M.dx
 void MechanicalOperations::integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, double dt)
 {
-    executeVisitor( MechanicalVOpVisitor(&mparams,res,x,v,dt) );
+    executeVisitor( MechanicalVOpVisitor(res,x,v,dt, &mparams) );
 }
 
 ///< res = x + v.dt
@@ -77,10 +77,10 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
 {
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, result, false), true ); // enable prefetching
+        executeVisitor( MechanicalResetForceVisitor(result, false, &mparams), true ); // enable prefetching
         //finish();
     }
-    executeVisitor( MechanicalComputeForceVisitor(&mparams,result, accumulate) , true ); // enable prefetching
+    executeVisitor( MechanicalComputeForceVisitor(result, accumulate, &mparams) , true ); // enable prefetching
 }
 
 /// Compute the current force delta (given the latest propagated displacement)
@@ -88,7 +88,7 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool 
 {
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+        executeVisitor( MechanicalResetForceVisitor(df, &mparams) );
 //	finish();
     }
     executeVisitor( MechanicalComputeDfVisitor( df,  accumulate, &mparams) );
@@ -100,7 +100,7 @@ void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool
 {
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+        executeVisitor( MechanicalResetForceVisitor(df, &mparams) );
         //finish();
     }
     executeVisitor( MechanicalComputeDfVisitor(df, accumulate, &mparams) );
@@ -112,7 +112,7 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, double m, double b
 {
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df, true) );
+        executeVisitor( MechanicalResetForceVisitor(df, true, &mparams) );
         //finish();
     }
     mparams.setBFactor(b);
@@ -126,7 +126,7 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b,
 {
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df, true) );
+        executeVisitor( MechanicalResetForceVisitor(df, true, &mparams) );
         //finish();
     }
     mparams.setBFactor(b);
@@ -140,20 +140,20 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b,
 void MechanicalOperations::addSeparateGravity(double dt, core::MultiVecDerivId result)
 {
     mparams.setDt(dt);
-    executeVisitor( MechanicalAddSeparateGravityVisitor(&mparams, result) );
+    executeVisitor( MechanicalAddSeparateGravityVisitor(result, &mparams) );
 }
 
 void MechanicalOperations::computeContactForce(core::MultiVecDerivId result)
 {
-    executeVisitor( MechanicalResetForceVisitor(&mparams, result) );
+    executeVisitor( MechanicalResetForceVisitor(result, &mparams) );
     //finish();
-    executeVisitor( MechanicalComputeContactForceVisitor(&mparams, result) );
+    executeVisitor( MechanicalComputeContactForceVisitor(result, &mparams) );
 
 }
 
 void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
 {
-    executeVisitor( MechanicalResetForceVisitor(&mparams, df) );
+    executeVisitor( MechanicalResetForceVisitor(df, &mparams) );
     //finish();
 
 }
@@ -161,7 +161,11 @@ void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
 void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     MultiVecDerivId f( VecDerivId::force() );
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams,t,x,v) );
+    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(t,x,v,
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+            a,
+#endif
+            true,&mparams) );
     computeForce(f);
 
     accFromF(a,f);
@@ -172,7 +176,11 @@ void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::M
 void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     MultiVecDerivId f( VecDerivId::force() );
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams,t,x,v) );
+    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(t,x,v,
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+            a,
+#endif
+            true,&mparams) );
     computeContactForce(f);
 
     accFromF(a,f);
