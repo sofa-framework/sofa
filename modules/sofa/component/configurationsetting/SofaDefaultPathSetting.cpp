@@ -25,7 +25,8 @@
 
 #include <sofa/component/configurationsetting/SofaDefaultPathSetting.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/vector.h>
 namespace sofa
 {
 
@@ -44,7 +45,21 @@ int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa A
 SofaDefaultPathSetting::SofaDefaultPathSetting():
     recordPath(initData(&recordPath, "recordPath", "Path where will be saved the data of the recorded simulation"))
     , gnuplotPath(initData(&gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
+    , envPath(initData(&envPath, "environmentPath", "Paths to add to the default DataRepository" ))
 {
+
+}
+
+void SofaDefaultPathSetting::parse(sofa::core::objectmodel::BaseObjectDescription* arg )
+{
+    BaseObject::parse(arg);
+    helper::vector<std::string>* vecPaths = envPath.beginEdit();
+    helper::vector<std::string>::const_iterator iter;
+    for( iter = vecPaths->begin(); iter != vecPaths->end(); ++iter)
+    {
+        helper::system::DataRepository.addLastPath(*iter);
+    }
+    envPath.endEdit();
 }
 
 }
