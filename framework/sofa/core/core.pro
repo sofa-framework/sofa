@@ -212,7 +212,9 @@ HEADERS += \
 	 fem/DofContainer.h              \
   	 fem/PolynomialInterpolation.h   \
  	 fem/PolynomialQuadratureInterpolation.h   \
- 	 fem/PolynomialQuadratureInterpolation.inl           
+ 	 fem/PolynomialQuadratureInterpolation.inl \   
+ 	 fem/StrainTensor.h              \    
+ 	 fem/Material.h                 
  
 SOURCES +=  \
 	 fem/FENodes.cpp		         \
