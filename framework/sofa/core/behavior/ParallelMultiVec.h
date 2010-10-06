@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SMP_CORE_PARALLELMULTIVECTOR_H
-#define SOFA_SMP_CORE_PARALLELMULTIVECTOR_H
+#ifndef SOFA_SMP_CORE_PARALLELMULTIVEC_H
+#define SOFA_SMP_CORE_PARALLELMULTIVEC_H
 
 #include <sofa/defaulttype/SharedTypes.h>
 #include <sofa/core/behavior/MultiVec.h>
