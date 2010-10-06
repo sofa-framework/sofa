@@ -55,43 +55,43 @@ void VectorOperations::v_free(sofa::core::MultiVecDerivId& id)
 
 void VectorOperations::v_clear(sofa::core::MultiVecId v) //v=0
 {
-    executeVisitor( MechanicalVOpVisitor(params, v) );
+    executeVisitor( MechanicalVOpVisitor(v, ConstMultiVecId::null(), ConstMultiVecId::null(), 1.0, params) );
 }
 
 void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::MultiVecId a) // v=a
 {
-    executeVisitor( MechanicalVOpVisitor(params, v,a) );
+    executeVisitor( MechanicalVOpVisitor(v, a, ConstMultiVecId::null(), 1.0, params) );
 }
 #ifndef SOFA_SMP
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f)
 {
-    executeVisitor( MechanicalVOpVisitor(params, v,v,a,f), true ); // enable prefetching
+    executeVisitor( MechanicalVOpVisitor(v, v, a, f, params), true ); // enable prefetching
 }
 #else
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, Shared<double> &fSh,double f)
 {
-    ParallelMechanicalVOpVisitor(params, v,v,a,f,&fSh).execute( ctx );
+    ParallelMechanicalVOpVisitor(v, v, a, f, &fSh, params).execute( ctx );
 }
 
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, double f)
 {
-    ParallelMechanicalVOpVisitor(params, v,v,a,f).execute( ctx );
+    // ParallelMechanicalVOpVisitor(v, v, a, f, params).execute( ctx );
 }
 
 void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::MultiVecId a, Shared<double> &fSh)
 {
-    ParallelMechanicalVOpMecVisitor(params, v,a,&fSh).execute( ctx );
+    ParallelMechanicalVOpMecVisitor(v, a, &fSh, params).execute( ctx );
 }
 #endif
 
 void VectorOperations::v_teq(sofa::core::MultiVecId v, double f)
 {
-    executeVisitor( MechanicalVOpVisitor(params, v, core::MultiVecId::null(),v,f) );
+    executeVisitor( MechanicalVOpVisitor(v, core::MultiVecId::null(), v, f, params) );
 }
 
 void VectorOperations::v_op(core::MultiVecId v, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, double f )
 {
-    executeVisitor( MechanicalVOpVisitor(params, v,a,b,f), true ); // enable prefetching
+    executeVisitor( MechanicalVOpVisitor(v, a, b, f, params), true ); // enable prefetching
 }
 
 void VectorOperations::v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o)
@@ -102,7 +102,7 @@ void VectorOperations::v_multiop(const core::behavior::BaseMechanicalState::VMul
 #ifdef SOFA_SMP
 void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, sofa::core::MultiVecId b, Shared<double> &f) ///< v=a+b*f
 {
-    ParallelMechanicalVOpVisitor(params, v,a,b,1.0,&f).execute( ctx );
+    ParallelMechanicalVOpVisitor(v, a, b, 1.0, &f, params).execute( ctx );
 }
 #endif // SOFA_SMP
 
@@ -115,7 +115,7 @@ void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMu
 #ifdef SOFA_SMP
 void VectorOperations::v_dot( Shared<double> &result, core::MultiVecId a, core::MultiVecId b)
 {
-    ParallelMechanicalVDotVisitor(params, &result, a, b).execute( ctx );
+    ParallelMechanicalVDotVisitor(&result, a, b, params).execute( ctx );
 }
 #endif
 
@@ -126,7 +126,7 @@ void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)
 
 void VectorOperations::print(sofa::core::MultiVecId v, std::ostream &out)
 {
-    executeVisitor( MechanicalVPrintVisitor( v,params,out ) );
+    executeVisitor( MechanicalVPrintVisitor( v, out, params ) );
 }
 
 double VectorOperations::finish()
