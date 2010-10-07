@@ -202,9 +202,9 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
 	 fem/FEMRecipe.h                 \
+	 fem/FENodes.h	                 \
+	 fem/FENodes.inl		         \  
 	 fem/QuadratureFormular.h        \
-	 fem/FENodes.h			         \
- 	 fem/FENodes.inl		         \
 	 fem/BaseMaterial.h              \
 	 fem/BaseStrainTensor.h          \
 	 fem/BaseFiniteElement.h         \
