@@ -267,7 +267,7 @@ void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
         ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
         return;
     }
-    s->setSystemRHVector(v);
+    s->setSystemLHVector(v);
 
 }
 
