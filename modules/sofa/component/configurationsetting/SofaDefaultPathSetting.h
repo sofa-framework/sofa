@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_SOFADEFAULTPATH_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/objectmodel/DataFilename.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/component.h>
 
 namespace sofa
