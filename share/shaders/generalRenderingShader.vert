@@ -17,6 +17,12 @@ varying vec3 halfVector;
 varying float dist;
 #endif //PHONG
 
+#if defined(PHONG2)
+varying vec3 lightDir2;
+varying vec3 halfVector2;
+varying float dist2;
+#endif //PHONG2
+
 #if defined(BORDER_OPACIFYING_V2) 
 varying vec3 lightDirWorld;
 #endif
@@ -88,14 +94,15 @@ void main()
 	lightDirWorld =  normalize(gl_LightSource[0].position.xyz - gl_Vertex.xyz);
 #endif
 
-#ifdef LIGHT2
-	diffuse2 = gl_FrontMaterial.diffuse * gl_LightSource[1].diffuse;
-	specular2 = gl_FrontMaterial.specular * gl_LightSource[1].specular;
+#if defined(PHONG2)
+	vec3 aux2 = vec3(gl_LightSource[1].position - ecPos);
 	
-	vec3 aux2 = vec3(gl_LightSource[1].position-ecPos);
-	lightDir = normalize(aux2);
+	//aux = (gl_ModelViewMatrixInverse*gl_LightSource[0].position).xyz - gl_Vertex.xyz;
+	lightDir2 = normalize(aux2);
+	dist2 = length(aux2);
+	halfVector2 = vec3(gl_LightSource[1].halfVector);
 	
-#endif //LIGHT2
+#endif //PHONG2
 
 
 }

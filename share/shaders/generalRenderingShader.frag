@@ -36,6 +36,13 @@ varying float dist;
 varying vec3 halfVector;
 #endif //PHONG
 
+#if defined(PHONG2)
+varying vec3 lightDir2;
+varying vec3 halfVector2;
+varying float dist2;
+#endif //PHONG2
+
+
 #if defined(BORDER_OPACIFYING_V2) 
 varying vec3 lightDirWorld;
 uniform float coeffAngle;
@@ -410,11 +417,30 @@ void main()
 					gl_LightSource[0].quadraticAttenuation * dist * dist);
 	
 			//phong_color += (diffuse * NdotL) /* * att */;
-			phong_color.rgb += (diffuse.rgb * NdotL)  * att ;
+			phong_color.rgb += (diffuse.rgb * NdotL);//  * att ;
 		}
 	}
 
+
+#ifdef PHONG2
+	NdotL = max(dot(n,normalize(lightDir2)),0.0);
 	
+	if (NdotL > 0.0)
+	{
+		float spotEffect = dot(normalize(gl_LightSource[1].spotDirection), normalize(-lightDir2));
+	
+		if (spotEffect > gl_LightSource[1].spotCosCutoff)
+		{
+			spotEffect = smoothstep(gl_LightSource[1].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
+			att = spotEffect / (gl_LightSource[1].constantAttenuation +
+					gl_LightSource[1].linearAttenuation * dist2 +
+					gl_LightSource[1].quadraticAttenuation * dist2 * dist2);
+	
+			//phong_color += (diffuse * NdotL) /* * att */;
+			phong_color.rgb += (diffuse.rgb * NdotL);//  * att ;
+		}
+	}
+#endif
 	
 #if defined(TEXTURE_UNIT_0) || defined(TRI_TEXTURING)
 	color.rgb *= phong_color.rgb;
@@ -437,6 +463,12 @@ void main()
 #if defined(SMOOTH_LAYER)
 	spec +=  smoothSpecular * pow( max(dot(normalize(normalW),halfV),0.0),smoothShininess);
 #endif //SMOOTH_LAYER
+
+#ifdef PHONG2
+	vec3 halfV2 = halfVector2;
+	NdotHV = max(dot(n,halfV2),0.0);
+	spec +=  specular * pow(NdotHV,gl_FrontMaterial.shininess) /* * att */;
+#endif
 	
 	color.rgb += spec.rgb;
 	color.a += spec.a;
