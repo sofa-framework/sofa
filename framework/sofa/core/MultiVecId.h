@@ -29,6 +29,8 @@
 
 #include <sofa/core/VecId.h>
 
+#include <boost/static_assert.hpp>
+
 #include <map>
 
 namespace sofa
