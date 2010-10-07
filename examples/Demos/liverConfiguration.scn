@@ -29,12 +29,7 @@
 			<BackgroundSetting color="0.2 0 0.2" />
 			<StatsSetting logTime="1" />
 		</Node>
-		<include href="Objects/envPath.xml" environmentPath="../applications/voxelcutting/examples 
-		../applications/voxelcutting/examples/mesh 
-		../appliactions/voxelcutting/examples/Objects 
-		../applications/voxelcutting/examples/oldScenes 
-		../applications/voxelcutting/examples/shaders 
-		../applications/voxelcutting/examples/" />
+		<include href="Objects/envPath.xml" environmentPath="../applications/voxelcutting/examples/mesh ../applications/voxelcutting/examples/shaders />
 		<Node 	name="MouseConfiguration" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<AttachBodyButtonSetting button="Left"  stiffness="1000"  arrowSize="0.15" />
 			<FixPickedParticleButtonSetting button="Middle"  stiffness="10000" />
