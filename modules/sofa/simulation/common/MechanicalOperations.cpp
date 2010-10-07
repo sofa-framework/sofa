@@ -1,8 +1,10 @@
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
-
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 namespace sofa
 {
 
@@ -218,28 +220,90 @@ void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, 
 /// @name Matrix operations using LinearSolver components
 /// @{
 
+using sofa::core::behavior::LinearSolver;
+using sofa::core::objectmodel::BaseContext;
+
 void MechanicalOperations::m_resetSystem()
 {
+    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
+    if (!s)
+    {
+        ctx->serr << "ERROR: requires a LinearSolver."<<ctx->sendl;
+        return;
+    }
+    s->resetSystem();
 }
 
-void MechanicalOperations::m_setSystemMBKMatrix(double /*mFact*/, double /*bFact*/, double /*kFact*/)
+void MechanicalOperations::m_setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
+    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
+    if (!s)
+    {
+        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        return;
+    }
+    mparams.setMFactor(mFact);
+    mparams.setBFactor(bFact);
+    mparams.setKFactor(kFact);
+    s->setSystemMBKMatrix(&mparams);
 }
 
-void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId /*v*/)
+void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
 {
+    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
+    if (!s)
+    {
+        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        return;
+    }
+    s->setSystemRHVector(v);
 }
 
-void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId /*v*/)
+void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
 {
+    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
+    if (!s)
+    {
+        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        return;
+    }
+    s->setSystemRHVector(v);
+
 }
 
 void MechanicalOperations::m_solveSystem()
 {
+    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
+    if (!s)
+    {
+        ctx->serr << "ERROR:  requires a LinearSolver."<<ctx->sendl;
+        return;
+    }
+    s->solveSystem();
 }
 
-void MechanicalOperations::m_print( std::ostream& /*out */)
+void MechanicalOperations::m_print( std::ostream& out )
 {
+    LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
+    if (!s)
+    {
+        ctx->serr << "ERROR: requires a LinearSolver."<<ctx->sendl;
+        return;
+    }
+    defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
+    if (!m) return;
+    //out << *m;
+    int ny = m->rowSize();
+    int nx = m->colSize();
+    out << "[";
+    for (int y=0; y<ny; ++y)
+    {
+        out << "[";
+        for (int x=0; x<nx; x++)
+            out << ' ' << m->element(x,y);
+        out << "]";
+    }
+    out << "]";
 }
 
 /// @}
@@ -248,25 +312,42 @@ void MechanicalOperations::m_print( std::ostream& /*out */)
 /// @{
 
 // BaseMatrix & BaseVector Computations
-void MechanicalOperations::getMatrixDimension(unsigned int * const, unsigned int * const, sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void MechanicalOperations::getMatrixDimension(unsigned int *  const nbRow, unsigned int * const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    executeVisitor( MechanicalGetMatrixDimensionVisitor(nbRow, nbCol, matrix,&mparams) );
 }
 
-void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*mFact*/, double /*bFact*/, double /*kFact*/)
+void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact)
 {
+    mparams.setMFactor(mFact);
+    mparams.setBFactor(bFact);
+    mparams.setKFactor(kFact);
+    if (matrix != NULL)
+    {
+        //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
+        executeVisitor( MechanicalAddMBK_ToMatrixVisitor(matrix,&mparams) );
+    }
 }
 
 
-/*
+
 void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    if (dest != NULL)
+    {
+        executeVisitor( MechanicalMultiVectorToBaseVectorVisitor(src, dest, matrix, &mparams) );
+    }
 }
 
 
-void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    if (src != NULL)
+    {
+        executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(dest, src, matrix, &mparams) );
+    }
 }
-*/
+
 
 
 /// @}
