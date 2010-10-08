@@ -18,7 +18,6 @@ EXAMPLE :
 
 OTHER COMMENTS :
  - Needs OpenCascade to run (http://www.opencascade.org/)
- - Add /DWNT for compilation
 
 
 PARAMETERS :
