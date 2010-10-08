@@ -1,0 +1,11 @@
+<Node 	name="Root" gravity="0 -9.81 0" dt="0.02" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="1" showMappings="1" showMechanicalMappings="1" showForceFields="1" showInteractionForceFields="1"  >
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
+	<DefaultContactManager name="Response"  response="default" />
+	<TreeCollisionGroupManager name="Group" />
+	<Node 	name="STEP file" gravity="0 -9.81 0" dt="0.01" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+		<MeshSTEPLoader name="STEPLoader"  filename="c:/sofa/applications/plugins/meshsteploader/example/cube.stp"  deflection="0.1"  debug="0"  keepDuplicate="1" />
+		<OglModel template="ExtVec3f" name="VisualModel"  useNormals="@STEPLoader.normals"  position="@STEPLoader.position"  triangles="@STEPLoader.triangles"  material="Default Diffuse 1 1 0.666667 1 1 Ambient 1 1 0.333333 0.498039 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
+	</Node>
+</Node>
