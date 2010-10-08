@@ -27,7 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/vector.h>
+
 namespace sofa
 {
 

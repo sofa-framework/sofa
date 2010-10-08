@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_SOFADEFAULTPATH_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -62,7 +61,7 @@ public:
 protected:
     Data<std::string> recordPath;
     Data<std::string> gnuplotPath;
-    core::objectmodel::DataFileNameVector envPath;
+    Data<helper::vector<std::string> > envPath;
 };
 
 }
