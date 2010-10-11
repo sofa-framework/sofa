@@ -198,35 +198,6 @@ SOURCES +=  \
           behavior/ProjectiveConstraintSet.cpp \
           loader/MeshLoader.cpp 
 
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-
-HEADERS += \
-	 fem/FEMRecipe.h                 \
-	 fem/FENodes.h	                 \
-	 fem/FENodes.inl		         \  
-	 fem/QuadratureFormular.h        \
-	 fem/BaseMaterial.h              \
-	 fem/BaseStrainTensor.h          \
-	 fem/BaseFiniteElement.h         \
-	 fem/FiniteElement.h             \
-	 fem/DofContainer.h              \
-  	 fem/PolynomialInterpolation.h   \
- 	 fem/PolynomialQuadratureInterpolation.h   \
- 	 fem/PolynomialQuadratureInterpolation.inl \   
- 	 fem/StrainTensor.h              \    
- 	 fem/Material.h                 
- 
-SOURCES +=  \
-	 fem/FENodes.cpp		         \
-	 fem/BaseMaterial.cpp            \
-	 fem/BaseFiniteElement.cpp       \
-	 fem/FiniteElement.cpp           \
-	 fem/DofContainer.cpp            \
- 	 fem/BaseStrainTensor.cpp        \
- 	 fem/PolynomialQuadratureInterpolation.cpp
- 
-} # END SOFA_DEV
-
 
 contains(DEFINES,SOFA_SMP){
 HEADERS +=  \
