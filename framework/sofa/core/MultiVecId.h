@@ -301,7 +301,34 @@ public:
 
     std::string getName() const
     {
-        return defaultId.getName();
+        if (idMap.empty())
+            return defaultId.getName();
+        else
+        {
+            std::ostringstream out;
+            out << '{';
+            out << defaultId.getName() << "[*";
+            MyVecId prev = defaultId;
+            for (IdMap_const_iterator it = idMap.begin(), itend = idMap.end(); it != itend; ++it)
+            {
+                if (it->second != prev) // new id
+                {
+                    out << "],";
+                    if (it->second.getType() == defaultId.getType())
+                        out << it->second.getIndex();
+                    else
+                        out << it->second.getName();
+                    out << '[';
+                    prev = it->second;
+                }
+                else out << ',';
+                if (it->first == NULL) out << "NULL";
+                else
+                    out << it->first->getName();
+            }
+            out << "]}";
+            return out.str();
+        }
     }
 
     friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<vtype, vaccess>& v )
