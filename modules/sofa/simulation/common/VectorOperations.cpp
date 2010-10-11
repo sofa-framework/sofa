@@ -30,16 +30,22 @@ void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
     /* template < VecType vtype > MechanicalVAvailVisitor;  */
     /* this can be probably merged in a single operation with the MultiVecId design */
     VecCoordId id(VecCoordId::V_FIRST_DYNAMIC_INDEX);
-    executeVisitor( MechanicalVAvailVisitor<V_COORD>( id, params) );
-    v.assign(id);
+    //executeVisitor( MechanicalVAvailVisitor<V_COORD>( id, params) );
+    //v.assign(id);
+    MechanicalVAvailVisitor<V_COORD> avail(id, params);
+    executeVisitor( &avail );
+    //v.assign(id);
+    v.setId(avail.states, id);
     executeVisitor( MechanicalVAllocVisitor<V_COORD>(v, params) );
 }
 
 void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v)
 {
     VecDerivId id(VecDerivId::V_FIRST_DYNAMIC_INDEX);
-    executeVisitor( MechanicalVAvailVisitor<V_DERIV>(id, params) );
-    v.assign(id);
+    MechanicalVAvailVisitor<V_DERIV> avail(id, params);
+    executeVisitor( &avail );
+    //v.assign(id);
+    v.setId(avail.states, id);
     executeVisitor(  MechanicalVAllocVisitor<V_DERIV>(v, params) );
 }
 

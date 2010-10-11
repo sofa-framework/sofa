@@ -110,6 +110,16 @@ public:
 protected:
     VisitorExecuteFunc executeVisitor;
 
+    void setX(core::MultiVecCoordId& v);
+    void setX(core::ConstMultiVecCoordId& v);
+    void setV(core::MultiVecDerivId& v);
+    void setV(core::ConstMultiVecDerivId& v);
+    void setF(core::MultiVecDerivId& v);
+    void setF(core::ConstMultiVecDerivId& v);
+    void setDx(core::MultiVecDerivId& v);
+    void setDx(core::ConstMultiVecDerivId& v);
+    void setDf(core::MultiVecDerivId& v);
+    void setDf(core::ConstMultiVecDerivId& v);
 
 };
 

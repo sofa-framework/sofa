@@ -21,6 +21,12 @@ public:
     VisitorExecuteFunc(core::objectmodel::BaseContext& ctx):ctx(ctx) {};
 
     template< class Visitor >
+    void operator()(Visitor* pv, bool prefetch = false )
+    {
+        prepareVisitor(pv);
+        pv->execute(&ctx, prefetch );
+    }
+    template< class Visitor >
     void operator()(Visitor v, bool prefetch = false )
     {
         prepareVisitor(&v);
