@@ -205,7 +205,6 @@ HEADERS += \
 	 fem/FENodes.h	                 \
 	 fem/FENodes.inl		         \  
 	 fem/QuadratureFormular.h        \
-	 fem/BaseMaterial.h              \
 	 fem/BaseStrainTensor.h          \
 	 fem/BaseFiniteElement.h         \
 	 fem/FiniteElement.h             \
@@ -218,7 +217,6 @@ HEADERS += \
  
 SOURCES +=  \
 	 fem/FENodes.cpp		         \
-	 fem/BaseMaterial.cpp            \
 	 fem/BaseFiniteElement.cpp       \
 	 fem/FiniteElement.cpp           \
 	 fem/DofContainer.cpp            \
