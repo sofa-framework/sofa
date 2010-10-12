@@ -117,6 +117,8 @@ protected:
             Real& totalMass,
             const int elementIndex);
 
+    virtual void computeCorrection(ElementMass& /*M*/) {};
+
     void initLarge(const int i);
 
     void initPolar(const int i);

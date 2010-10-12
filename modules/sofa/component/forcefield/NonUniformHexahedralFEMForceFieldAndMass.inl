@@ -191,6 +191,14 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
 
     HexahedralFEMForceFieldAndMassT::computeParticleMasses();
     HexahedralFEMForceFieldAndMassT::computeLumpedMasses();
+
+    helper::vector<ElementMass>* ElementMassMatrices = _elementMasses.beginEdit();
+    helper::vector<ElementMass>::iterator iter;
+    for ( iter = ElementMassMatrices->begin(); iter != ElementMassMatrices->end() ; ++iter)
+    {
+        computeCorrection(*iter);
+    }
+    _elementMasses.endEdit();
 }
 
 template<class T>
@@ -562,6 +570,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         //	std::cout << "Total masses don't match." << std::endl;
         //}
     }
+    computeCorrection(M);
 }
 
 template<class T>
