@@ -53,6 +53,7 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
 //	, _lumpedMasses(initData(&_lumpedMasses, "lumpedMasses", "Lumped masses"))
     , _useLumpedMass(initData(&_useLumpedMass, (bool)false, "lumpedMass", "Does it use lumped masses?"))
 {
+    _elementMasses.setDisplayed(false);
 }
 
 
