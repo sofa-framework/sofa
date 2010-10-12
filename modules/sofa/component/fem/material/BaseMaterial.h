@@ -34,10 +34,13 @@
 
 namespace sofa
 {
-namespace core
+namespace component
 {
 namespace fem
 {
+namespace material
+{
+
 
 using namespace sofa::defaulttype;
 /**
@@ -66,7 +69,7 @@ public:
     virtual void handleTopologyChange();
 };
 
-
+}
 
 } // namespace fem
 
