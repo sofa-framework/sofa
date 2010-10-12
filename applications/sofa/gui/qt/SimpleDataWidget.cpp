@@ -108,13 +108,15 @@ Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,8> > > DWClass_f
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<float> > > DWClass_Quatf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DWClass_Quatd("default",true);
 
-
+/*
 #ifdef SOFA_DEV
 using sofa::component::fem::quadrature::QuadraturePoint;
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::quadrature::QuadraturePoint< Vec3f > > >DWClass_QPf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::quadrature::QuadraturePoint< Vec3d > > >DWClass_QPd("default",true);
-#endif // SOFA_DEV
 
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::fem::FiniteElement::LocalNode > >DWClass_NodeFE("default",true);
+#endif // SOFA_DEV
+*/
 using sofa::helper::Polynomial_LD;
 
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,5> > >DWClass_PolynomialLD5d("default",true);
@@ -234,11 +236,6 @@ void RadioDataWidget::writeToData()
 
     this->getData()->virtualSetValue(m_radiotrick);
 }
-
-#ifdef SOFA_DEV
-Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::fem::FiniteElement::LocalNode > >DWClass_NodeFE("default",true);
-#endif // SOFA_DEV
-
 
 } // namespace qt
 

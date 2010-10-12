@@ -127,11 +127,12 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVecto
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Quater<float> > > > DWClass_vectorQuatf("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Quater<double> > > > DWClass_vectorQuatd("default",true);
 
+/*
 #ifdef SOFA_DEV
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::fem::quadrature::QuadraturePoint< Vec3f > > > > DWClass_vectorQPf("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::fem::quadrature::QuadraturePoint< Vec3d > > > > DWClass_vectorQPd("default",true);
 #endif // SOFA_DEV
-
+*/
 //Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Polynomial_LD<double,5> > > > DWClass_vectorPolynomialLD5d("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Polynomial_LD<double,4> > > > DWClass_vectorPolynomialLD4d("default",true);
 //Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::Polynomial_LD<double,3> > > > DWClass_vectorPolynomialLD3d("default",true);
