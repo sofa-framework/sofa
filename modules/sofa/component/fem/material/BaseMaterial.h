@@ -38,8 +38,6 @@ namespace component
 {
 namespace fem
 {
-namespace material
-{
 
 
 using namespace sofa::defaulttype;
@@ -51,10 +49,13 @@ class SOFA_CORE_API BaseMaterial : public virtual core::objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
 
-    BaseMaterial();
+    BaseMaterial() {}
     virtual ~BaseMaterial() {}
 
-    virtual void init();
+    virtual void init()
+    {
+        this->core::objectmodel::BaseObject::init();
+    }
 
 
     //virtual VecN computeStress (VecN & strain,int idElement,int id_QP){return stress in the i-th quadrature point}
@@ -66,10 +67,13 @@ public:
     virtual void computeDStress (Vector3 & ,Vector3 &) {}
 
     virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange()
+    {
+        serr<<"ERROR(BaseMaterial) this method handleTopologyChange() is not already implemented in base class"<<sendl;
+    }
 };
 
-}
+
 
 } // namespace fem
 
