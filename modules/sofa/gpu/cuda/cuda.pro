@@ -20,13 +20,7 @@ LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofatree$$LIBSUFFIX
 LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentmastersolver$$LIBSUFFIX
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-LIBS += -lsofacomponentfemfetype$$LIBSUFFIX
-LIBS += -lsofacomponentfemstraintensor$$LIBSUFFIX
-LIBS += -lsofacomponentfemmaterial$$LIBSUFFIX
 LIBS += -lsofacomponentfem$$LIBSUFFIX
-LIBS += -lsofacomponentfemforcefield$$LIBSUFFIX
-} # END SOFA_DEV
 LIBS += -lsofacomponentinteractionforcefield$$LIBSUFFIX
 LIBS += -lsofacomponentcontextobject$$LIBSUFFIX
 LIBS += -lsofacomponentbehaviormodel$$LIBSUFFIX
