@@ -193,7 +193,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     HexahedralFEMForceFieldAndMassT::computeLumpedMasses();
 
     helper::vector<ElementMass>* ElementMassMatrices = this->_elementMasses.beginEdit();
-    helper::vector<ElementMass>::iterator iter;
+    typename helper::vector<ElementMass>::iterator iter;
     for ( iter = ElementMassMatrices->begin(); iter != ElementMassMatrices->end() ; ++iter)
     {
         computeCorrection(*iter);
