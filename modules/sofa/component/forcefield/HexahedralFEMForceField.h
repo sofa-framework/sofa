@@ -90,17 +90,23 @@ public:
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
-    static const int LARGE = 0;   ///< Symbol of large displacements hexahedron solver
-    static const int POLAR = 1;   ///< Symbol of polar displacements hexahedron solver
-
-protected:
     typedef Vec<24, Real> Displacement;		///< the displacement vector
 
     typedef Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
     typedef vector<MaterialStiffness> VecMaterialStiffness;  ///< a vector of material stiffness matrices
+    typedef Mat<24, 24, Real> ElementMass;
 
     typedef Mat<24, 24, Real> ElementStiffness;
     typedef vector<ElementStiffness> VecElementStiffness;
+
+
+    static const int LARGE = 0;   ///< Symbol of large displacements hexahedron solver
+    static const int POLAR = 1;   ///< Symbol of polar displacements hexahedron solver
+
+protected:
+
+
+
 
     typedef Mat<3, 3, Real> Mat33;
     typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
