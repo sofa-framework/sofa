@@ -48,12 +48,14 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
     : MassT()
     , HexahedralFEMForceFieldT()
     , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
-    , _elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
-//	, _particleMasses(initData(&_particleMasses, "particleMasses", "Mass per particle"))
-//	, _lumpedMasses(initData(&_lumpedMasses, "lumpedMasses", "Lumped masses"))
     , _useLumpedMass(initData(&_useLumpedMass, (bool)false, "lumpedMass", "Does it use lumped masses?"))
+    , _elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
+    , _particleMasses(initData(&_particleMasses, "particleMasses", "Mass per particle"))
+    , _lumpedMasses(initData(&_lumpedMasses, "lumpedMasses", "Lumped masses"))
 {
     _elementMasses.setDisplayed(false);
+    _particleMasses.setDisplayed(false);
+    _lumpedMasses.setDisplayed(false);
 }
 
 
