@@ -74,13 +74,13 @@ void MechanicalOperations::setDx(core::ConstMultiVecDerivId& v)
 
 void MechanicalOperations::setDf(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
     mparams.setDf(v);
 }
 
 void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
     mparams.setDf(v);
 }
 
