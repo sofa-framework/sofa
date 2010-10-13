@@ -488,12 +488,12 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x )
+void TriangularFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x, const double &kFactor )
 {
     if (method == SMALL)
-        applyStiffnessSmall( v,h,x );
+        applyStiffnessSmall( v, h, x, kFactor );
     else
-        applyStiffnessLarge( v,h,x );
+        applyStiffnessLarge( v, h, x, kFactor );
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -961,7 +961,7 @@ void TriangularFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x)
+void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const double &kFactor)
 {
 
 #ifdef DEBUG_TRIANGLEFEM
@@ -995,9 +995,9 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
         computeStress(stress, triangleInf[i].materialMatrix, strain);
         F = J * stress * triangleInf[i].area;
 
-        v[a] += Coord(-h*F[0], -h*F[1], 0);
-        v[b] += Coord(-h*F[2], -h*F[3], 0);
-        v[c] += Coord(-h*F[4], -h*F[5], 0);
+        v[a] += (Coord(-h*F[0], -h*F[1], 0)) * kFactor;
+        v[b] += (Coord(-h*F[2], -h*F[3], 0)) * kFactor;
+        v[c] += (Coord(-h*F[4], -h*F[5], 0)) * kFactor;
     }
     triangleInfo.endEdit();
 }
@@ -1006,7 +1006,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x)
+void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const double &kFactor)
 {
 
 #ifdef DEBUG_TRIANGLEFEM
@@ -1067,9 +1067,9 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 
         F *= triangleInf[i].area;
 
-        v[a] += triangleInf[i].rotation * Coord(-h*F[0], -h*F[1], 0);
-        v[b] += triangleInf[i].rotation * Coord(-h*F[2], -h*F[3], 0);
-        v[c] += triangleInf[i].rotation * Coord(-h*F[4], -h*F[5], 0);
+        v[a] += (triangleInf[i].rotation * Coord(-h*F[0], -h*F[1], 0)) * kFactor;
+        v[b] += (triangleInf[i].rotation * Coord(-h*F[2], -h*F[3], 0)) * kFactor;
+        v[c] += (triangleInf[i].rotation * Coord(-h*F[4], -h*F[5], 0)) * kFactor;
     }
     triangleInfo.endEdit();
 }
@@ -1494,20 +1494,19 @@ void TriangularFEMForceField<DataTypes>::addForce(DataVecDeriv& f, const DataVec
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+void TriangularFEMForceField<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams)
 {
-    //sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
-    //sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
     VecDeriv& df1 = *df.beginEdit();
     const VecDeriv& dx1 = dx.getValue();
+    double kFactor = mparams->kFactor();
 
     Real h=1;
     df1.resize(dx1.size());
 
     if (method == SMALL)
-        applyStiffnessSmall( df1,h,dx1 );
+        applyStiffnessSmall( df1, h, dx1, kFactor );
     else
-        applyStiffnessLarge( df1,h,dx1 );
+        applyStiffnessLarge( df1, h, dx1, kFactor );
 
     df.endEdit();
 }
