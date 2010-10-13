@@ -22,14 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_FEM_BASEMATERIAL_H
-#define SOFA_CORE_FEM_BASEMATERIAL_H
+#ifndef SOFA_COMPONENT_FEM_BASEMATERIAL_H
+#define SOFA_COMPONENT_FEM_BASEMATERIAL_H
 
-#include <sofa/core/core.h>
+#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
 
 
 namespace sofa
@@ -39,12 +37,12 @@ namespace component
 namespace fem
 {
 
-
 using namespace sofa::defaulttype;
+
 /**
  * Generic material class
  */
-class SOFA_CORE_API BaseMaterial : public virtual core::objectmodel::BaseObject
+class SOFA_COMPONENT_FEM_API BaseMaterial : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
@@ -77,7 +75,8 @@ public:
 
 } // namespace fem
 
-} // namespace core
+} // namespace component
 
 } // namespace sofa
-#endif
+
+#endif // SOFA_COMPONENT_FEM_BASEMATERIAL_H
