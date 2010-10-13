@@ -79,6 +79,7 @@ HEADERS += helper.h \
     system/FileRepository.h \
     system/thread/CTime.h \
     system/thread/debug.h \
+    system/thread/TimeoutWatchdog.h \
     system/PipeProcess.h \
     system/SofaOStream.h \
     TagFactory.h \
@@ -128,6 +129,7 @@ SOURCES += ArgumentParser.cpp \
     system/FileRepository.cpp \
     system/thread/CTime.cpp \
     system/thread/debug.cpp \
+    system/thread/TimeoutWatchdog.cpp \
     system/PipeProcess.cpp \
     system/SofaOStream.cpp \
     TagFactory.cpp \
