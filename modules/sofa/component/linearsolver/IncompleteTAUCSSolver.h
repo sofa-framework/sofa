@@ -94,6 +94,11 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
+    MatrixInvertData * createInvertData()
+    {
+        return new IncompleteTAUCSSolverInvertData();
+    }
+
 protected:
     typedef struct
     {
@@ -106,7 +111,7 @@ protected:
         double          maxits;
     } recvaidya_args;
 
-    class IncompleteTAUCSSolverInvertData : public defaulttype::MatrixInvertData
+    class IncompleteTAUCSSolverInvertData : public MatrixInvertData
     {
     public :
         CompressedRowSparseMatrix<double> Mfiltered;

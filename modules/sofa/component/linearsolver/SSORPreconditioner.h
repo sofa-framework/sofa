@@ -50,12 +50,7 @@ namespace linearsolver
 //       $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b$
 //  , or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$
 
-class SSORPreconditionerInvertData : public defaulttype::MatrixInvertData
-{
-public :
-    unsigned bsize;
-    std::vector<double> inv_diag;
-};
+
 
 template<class TMatrix, class TVector>
 class SSORPreconditioner : public sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector>
@@ -75,6 +70,20 @@ public:
     SSORPreconditioner();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
+
+    MatrixInvertData * createInvertData()
+    {
+        return new SSORPreconditionerInvertData();
+    }
+
+protected :
+
+    class SSORPreconditionerInvertData : public MatrixInvertData
+    {
+    public :
+        unsigned bsize;
+        std::vector<double> inv_diag;
+    };
 
 };
 

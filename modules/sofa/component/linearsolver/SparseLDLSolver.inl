@@ -70,8 +70,7 @@ void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
     z = r;
 
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL) return;
+    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
 
     ldl_lsolve (data->n, &z[0], &data->Lp[0], &data->Li[0], &data->Lx[0]) ;
     ldl_dsolve (data->n, &z[0], &data->D[0]) ;
@@ -84,12 +83,7 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     M.compress();
 
-    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        M.setMatrixInvertData(new SparseLDLSolverInvertData());
-        data = (SparseLDLSolverInvertData *) M.getMatrixInvertData();
-    }
+    SparseLDLSolverInvertData * data = (SparseLDLSolverInvertData *) getMatrixInvertData(&M);
 
 // 	  printf("element\n");
 // 	  for (int j=0;j<12;j++) {

@@ -35,15 +35,10 @@ namespace sofa
 namespace defaulttype
 {
 
-BaseMatrix::BaseMatrix()
-{
-    invertData = NULL;
-}
+BaseMatrix::BaseMatrix() {}
 
 BaseMatrix::~BaseMatrix()
-{
-    delete invertData;
-}
+{}
 
 static inline void opVresize(defaulttype::BaseVector& vec, int n) { vec.resize(n); }
 template<class Real2> static inline void opVresize(Real2* vec, int n) { for (const Real2* end=vec+n; vec != end; ++vec) *vec = (Real2)0; }
@@ -457,20 +452,6 @@ void BaseMatrix::opMulTM(BaseMatrix * /*result*/,BaseMatrix * /*m*/) const
 {
     std::cerr <<"WARNING : BASEMATRIX::opMulTM not yet implemented"<<std::endl;
 }
-
-/// set the data needed to invert the matrix
-void BaseMatrix::setMatrixInvertData(MatrixInvertData * i)
-{
-    this->invertData = i;
-}
-
-/// return the data needed to invert the matrix
-MatrixInvertData * BaseMatrix::getMatrixInvertData() const
-{
-    return this->invertData;
-}
-
-
 
 } // nampespace defaulttype
 

@@ -39,18 +39,12 @@ namespace sofa
 namespace defaulttype
 {
 
-class MatrixInvertData {};
-
 /// Generic matrix API, allowing to fill and use a matrix independently of the linear algebra library in use.
 ///
 /// Note that accessing values using this class is rather slow and should only be used in codes where the
 /// provided genericity is necessary.
 class SOFA_DEFAULTTYPE_API BaseMatrix
 {
-protected :
-    /// this pointer can be use to store data needed to invert this matrix use method setMatrixInvertData and getMatrixInvertData
-    MatrixInvertData * invertData;
-
 public:
     BaseMatrix();
     virtual ~BaseMatrix();
@@ -81,12 +75,6 @@ public:
     virtual void clearCol(int j) { for (int i=0,n=rowSize(); i<n; ++i) clear(i,j); }
     /// Reset the value of both row and column i to 0
     virtual void clearRowCol(int i) { clearRow(i); clearCol(i); }
-
-    /// set the data needed to invert the matrix
-    void setMatrixInvertData(MatrixInvertData * );
-
-    /// return the data needed to invert the matrix
-    MatrixInvertData * getMatrixInvertData() const;
 
     /// @name Get information about the content and structure of this matrix (diagonal, band, sparse, full, block size, ...)
     /// @{
