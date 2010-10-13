@@ -81,8 +81,13 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
+    MatrixInvertData * createInvertData()
+    {
+        return new SparseTAUCSLUSolverInvertData();
+    }
+
 protected:
-    class SparseTAUCSLUSolverInvertData : public defaulttype::MatrixInvertData
+    class SparseTAUCSLUSolverInvertData : public MatrixInvertData
     {
     public :
         CompressedRowSparseMatrix<double> Mfiltered;

@@ -67,6 +67,16 @@ contains(DEFINES,SOFA_GUI_QGLVIEWER){
 	SUBDIRS += extlibs/libQGLViewer-2.3.3/QGLViewer
 }
 
+
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+#CUDPP
+contains(DEFINES,SOFA_GPU_CUDA){
+	contains(DEFINES,SOFA_GPU_CUDPP){
+		SUBDIRS += extlibs/cudpp
+	}
+}
+} # END SOFA_DEV
+
 contains(DEFINES,SOFA_HAVE_COLLADADOM){
 	SUBDIRS += extlibs/colladadom/dom/colladadom.pro
 }
@@ -97,15 +107,6 @@ contains(DEFINES,SOFA_HAVE_VRPN){
 	}
 	SUBDIRS += extlibs/VRPN
 }
-
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
-#CUDPP
-contains(DEFINES,SOFA_GPU_CUDA){
-	contains(DEFINES,SOFA_GPU_CUDPP){
-		SUBDIRS += extlibs/cudpp
-	}
-}
-} # END SOFA_DEV
 
 SUBDIRS += framework
 SUBDIRS += modules

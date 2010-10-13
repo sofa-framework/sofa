@@ -92,12 +92,7 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     M.compress();
 
-    IncompleteTAUCSSolverInvertData * data = (IncompleteTAUCSSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        M.setMatrixInvertData(new IncompleteTAUCSSolverInvertData());
-        data = (IncompleteTAUCSSolverInvertData *) M.getMatrixInvertData();
-    }
+    IncompleteTAUCSSolverInvertData * data = (IncompleteTAUCSSolverInvertData *) getMatrixInvertData(&M);
 
     if (data->perm) free(data->perm);
     if (data->invperm) free(data->invperm);
@@ -201,13 +196,7 @@ void IncompleteTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 template<class TMatrix, class TVector>
 void IncompleteTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    IncompleteTAUCSSolverInvertData * data = (IncompleteTAUCSSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        z = r;
-        std::cerr << "Error the matrix is not factorized" << std::endl;
-        return;
-    }
+    IncompleteTAUCSSolverInvertData * data = (IncompleteTAUCSSolverInvertData *) getMatrixInvertData(&M);
 
     for (int i=0; i<data->matrix_taucs.n; i++) data->B[i] = r[data->perm[i]];
     data->precond_fn(data->precond_args,&data->R[0],&data->B[0]);

@@ -79,12 +79,7 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     M.compress();
 
-    SparseTAUCSLUSolverInvertData * data = (SparseTAUCSLUSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        M.setMatrixInvertData(new SparseTAUCSLUSolverInvertData());
-        data = (SparseTAUCSLUSolverInvertData *) M.getMatrixInvertData();
-    }
+    SparseTAUCSLUSolverInvertData * data = (SparseTAUCSLUSolverInvertData *) getMatrixInvertData(&M);
 
     if (data->perm) free(data->perm);
     if (data->invperm) free(data->invperm);
@@ -124,12 +119,7 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
 template<class TMatrix, class TVector>
 void SparseTAUCSLUSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SparseTAUCSLUSolverInvertData * data = (SparseTAUCSLUSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        z = r;
-        return;
-    }
+    SparseTAUCSLUSolverInvertData * data = (SparseTAUCSLUSolverInvertData *) getMatrixInvertData(&M);
 
     // permutation according to metis
     for (int i=0; i<data->matrix_taucs.n; i++) data->B[i] = r[data->perm[i]];

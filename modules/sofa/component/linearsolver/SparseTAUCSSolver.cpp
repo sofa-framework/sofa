@@ -80,13 +80,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     M.compress();
 
-    SparseTAUCSSolverInvertData * data = (SparseTAUCSSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        M.setMatrixInvertData(new SparseTAUCSSolverInvertData());
-        data = (SparseTAUCSSolverInvertData *) M.getMatrixInvertData();
-    }
-
+    SparseTAUCSSolverInvertData * data = (SparseTAUCSSolverInvertData *) getMatrixInvertData(&M);
     if (f_symmetric.getValue())
     {
         data->Mfiltered.copyUpperNonZeros(M);
@@ -152,18 +146,12 @@ void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
         }
         serr << "TAUCS factorization failed: " << er << sendl;
     }
-
 }
 
 template<class TMatrix, class TVector>
 void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SparseTAUCSSolverInvertData * data = (SparseTAUCSSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        z = r;
-        return;
-    }
+    SparseTAUCSSolverInvertData * data = (SparseTAUCSSolverInvertData *) getMatrixInvertData(&M);
 
     helper::vector<char*> opts;
     const helper::vector<std::string>& options = f_options.getValue();

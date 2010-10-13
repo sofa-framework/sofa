@@ -83,8 +83,14 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
+    MatrixInvertData * createInvertData()
+    {
+        return new SparseTAUCSSolverInvertData();
+    }
+
 protected:
-    class SparseTAUCSSolverInvertData : public defaulttype::MatrixInvertData
+
+    class SparseTAUCSSolverInvertData : public MatrixInvertData
     {
     public :
         CompressedRowSparseMatrix<double> Mfiltered;
@@ -101,6 +107,8 @@ protected:
             if (factorization) taucs_linsolve(NULL, &factorization, 0, NULL, NULL, NULL, NULL);
         }
     };
+
+
 };
 
 } // namespace linearsolver
