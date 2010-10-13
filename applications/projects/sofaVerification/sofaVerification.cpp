@@ -33,6 +33,7 @@
 #include <sofa/component/misc/WriteTopology.h>
 #include <sofa/component/misc/CompareTopology.h>
 #include <sofa/component/init.h>
+#include <sofa/helper/system/thread/TimeoutWatchdog.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/ArgumentParser.h>
@@ -212,6 +213,7 @@ int main(int argc, char** argv)
     unsigned int iterations = 100;
     bool reinit = false;
     bool topology = false;
+    unsigned lifetime = 0;
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
@@ -223,8 +225,17 @@ int main(int argc, char** argv)
     .option(&reinit, 'r', "reinit", "Recreate the references state files")
     .option(&iterations, 'i', "iteration", "Number of iterations for testing")
     .option(&directory, 'd', "directory", "The directory for reference files")
-    .option(&topology, 't', "topology",
-            "Specific mode to run tests on topology")(argc, argv);
+    .option(&topology, 't', "topology", "Specific mode to run tests on topology")
+    .option(&lifetime, 'l', "lifetime", "Maximum execution time in seconds (default: 0 -> no limit")
+    (argc, argv);
+
+#ifdef SOFA_HAVE_BOOST
+    sofa::helper::system::thread::TimeoutWatchdog watchdog;
+    if(lifetime > 0)
+    {
+        watchdog.start(lifetime);
+    }
+#endif
 
     for(size_t i = 0; i < fileArguments.size(); ++i)
     {
