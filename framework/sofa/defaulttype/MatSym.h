@@ -987,6 +987,42 @@ inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
     return res;
 }*/
 
+
+/// Compute the scalar product of two matrix (sum of product of all terms)
+template <int D, typename real>
+inline real scalarProduct(const MatSym<D,real>& left, const MatSym<D,real>& right)
+{
+    real sympart(0.),dialpart(0.);
+    for(int i=0; i<D; i++)
+        for(int j=i+1; j<D; j++)
+            sympart += left(i,j) * right(i,j);
+
+    for(int d=0; d<D; d++)
+        dialpart += left(d,d) * right(d,d);
+
+
+    return 2. * sympart  + dialpart ;
+}
+
+template <int D, typename real>
+inline real scalarProduct(const MatSym<D,real>& left, const Mat<D,D,real>& right)
+{
+    real product(0.);
+    for(int i=0; i<D; i++)
+        for(int j=0; j<D; j++)
+            product += left(i,j) * right(i,j);
+    return product;
+}
+
+template <int D, typename real>
+inline real scalarProduct(const Mat<D,D,real>& left, const MatSym<D,real>& right)
+{
+    return scalarProduct(right, left);
+}
+
+
+
+
 } // namespace defaulttype
 
 } // namespace sofa

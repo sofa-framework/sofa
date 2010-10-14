@@ -45,7 +45,7 @@ SOURCES += \
           Frame.cpp \
           SolidTypes.cpp
 
-contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+contains(DEFINES,SOFA_HAVE_PLUGIN_FEM){ # BEGIN SOFA_HAVE_PLUGIN_FEM
 
 HEADERS += \
 	       ElementDataTypes.h    \
