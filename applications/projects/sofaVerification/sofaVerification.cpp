@@ -220,8 +220,8 @@ int main(int argc, char** argv)
     sofa::helper::parse(
         &fileArguments,
         "This is SOFA verification. "
-        "To use it, specify in the command line a \".ini\" file containing "
-        "the path to the scenes you want to test. ")
+        "To use it, specify in the command line the scene files you want to test, "
+        "or a \".ini\" file containing the path to the scenes.")
     .option(&reinit, 'r', "reinit", "Recreate the references state files")
     .option(&iterations, 'i', "iteration", "Number of iterations for testing")
     .option(&directory, 'd', "directory", "The directory for reference files")
