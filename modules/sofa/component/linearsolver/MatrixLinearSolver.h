@@ -43,6 +43,8 @@ namespace component
 namespace linearsolver
 {
 
+class MatrixInvertData {};
+
 template<class Matrix, class Vector>
 class SOFA_EXPORT_DYNAMIC_LIBRARY BaseMatrixLinearSolver : public sofa::core::behavior::LinearSolver
 {
@@ -330,7 +332,10 @@ protected:
     static void deleteMatrix(Matrix* v);
 
     MatrixLinearSolverInternalData<Matrix,Vector>* data;
+    MatrixInvertData * invertData;
 
+    MatrixInvertData * getMatrixInvertData(Matrix * m);
+    virtual MatrixInvertData * createInvertData();
 
     simulation::MultiNodeDataMap nodeMap;
     simulation::MultiNodeDataMap writeNodeMap;
@@ -371,6 +376,7 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
 //, needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL)
     , currentGroup(&defaultGroup)
 {
+    invertData = NULL;
     data = new MatrixLinearSolverInternalData<Matrix,Vector>(this);
 }
 
@@ -380,6 +386,22 @@ MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
     //if (systemMatrix) deleteMatrix(systemMatrix);
     //if (systemRHVector) deleteVector(systemRHVector);
     //if (systemLHVector) deleteVector(systemLHVector);
+    if (invertData) delete invertData;
+    invertData = NULL;
+}
+
+template<class Matrix, class Vector>
+MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(Matrix * m)
+{
+    if (invertData==NULL) invertData=createInvertData();
+    return invertData;
+}
+
+template<class Matrix, class Vector>
+MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::createInvertData()
+{
+    std::cerr << "ERROR the solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return" << std::endl;
+    return NULL;
 }
 
 template<class Matrix, class Vector>
