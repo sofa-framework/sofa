@@ -390,7 +390,13 @@ inline real determinant(const MatSym<3,real>& m)
             - m(1,0)*m(0,1)*m(2,2)
             - m(2,0)*m(1,1)*m(0,2);
 }
-
+/// Determinant of a 2x2 matrix.
+template<class real>
+inline real determinant(const MatSym<2,real>& m)
+{
+    //     m(0,0)*m(1,1) - m(1,0)*m(0,1);
+    return m(0,0)*m(1,1) - m(0,1)*m(0,1);
+}
 
 #define MIN_DETERMINANT  1.0e-100
 
@@ -497,27 +503,28 @@ bool invertMatrix(MatSym<3,real>& dest, const MatSym<3,real>& from)
 
     return true;
 }
-/*
+
 /// Matrix inversion (special case 2x2).
 template<class real>
-bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
+bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 {
-  real det=determinant(from);
+    real det=determinant(from);
 
-  if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT){
-    cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
-    return false;
-  }
+    if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
+    {
+        cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
+        return false;
+    }
 
-  dest(0,0)=  from(1,1)/det;
-  dest(0,1)= -from(0,1)/det;
-  dest(1,0)= -from(1,0)/det;
-  dest(1,1)=  from(0,0)/det;
+    dest(0,0)=  from(1,1)/det;
+    dest(0,1)= -from(0,1)/det;
+    //dest(1,0)= -from(1,0)/det;
+    dest(1,1)=  from(0,0)/det;
 
-  return true;
+    return true;
 }
 #undef MIN_DETERMINANT
-
+/*
 typedef Mat<2,2,float> Mat2x2f;
 typedef Mat<2,2,double> Mat2x2d;
 
@@ -539,51 +546,63 @@ typedef Mat2x2d Matrix2;
 typedef Mat3x3d Matrix3;
 typedef Mat4x4d Matrix4;
 #endif
-
-
-template <int L, int C, typename real>
-std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
+//////////////////////////////////////////////////////////
+*/
+template<int D,class real>
+std::ostream& operator<<(std::ostream& o, const MatSym<D,real>& m)
 {
-  o << '[' << m[0];
-  for (int i=1; i<L; i++)
-    o << ',' << m[i];
-  o << ']';
-  return o;
-}
-
-template <int L, int C, typename real>
-    std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
-{
-  int c;
-  c = in.peek();
-  while (c==' ' || c=='\n' || c=='[')
-  {
-    in.get();
-    c = in.peek();
-  }
-  in >> m[0];
-  for (int i=1; i<L; i++)
-  {
-    c = in.peek();
-    while (c==' ' || c==',')
+    o << '[' ;
+    for(int i=0; i<D; i++)
     {
-      in.get();
-      c = in.peek();
+        for(int j=0; j<D; j++)
+        {
+            o<<" "<<m(i,j);
+        }
+        o<<" ,";
     }
-    in >> m[i];
-  }
-  c = in.peek();
-  while (c==' ' || c=='\n' || c==']')
-  {
-    in.get();
+    o << ']';
+    return o;
+}
+
+template<int D,class real>
+std::istream& operator>>(std::istream& in, MatSym<D,real>& m)
+{
+    int c;
     c = in.peek();
-  }
-  return in;
+    while (c==' ' || c=='\n' || c=='[')
+    {
+        in.get();
+        c = in.peek();
+    }
+    ///////////////////////////////////////////////
+    for(int i=0; i<D; i++)
+    {
+        c = in.peek();
+        while (c==' ' || c==',')
+        {
+            in.get(); c = in.peek();
+        }
+
+        for(int j=0; j<D; j++)
+        {
+            in >> m(i,j);
+        }
+
+    }
+
+    ////////////////////////////////////////////////
+    c = in.peek();
+    while (c==' ' || c=='\n' || c==']')
+    {
+        in.get();
+        c = in.peek();
+    }
+    return in;
 }
 
 
-
-
+/*
+//////////////////////////////////////////////////////////////////////////////////
 /// printing in other software formats
 
 template <int L, int C, typename real>
