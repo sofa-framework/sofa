@@ -1207,6 +1207,19 @@ inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
     return res;
 }
 
+/// Compute the scalar product of two matrix (sum of product of all terms)
+template <int L, int C, typename real>
+inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
+{
+    real product(0.);
+    for(int i=0; i<L; i++)
+        for(int j=0; j<C; j++)
+            product += left(i,j) * right(i,j);
+    return product;
+}
+
+
+
 } // namespace defaulttype
 
 } // namespace sofa
