@@ -564,7 +564,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
-    _applyJT_Matrix<typename In::DataTypes>( out, in);
+    _applyJT_Matrix<In::DataTypes::MatrixDeriv>( out, in);
 }
 
 template <class BasicMapping>
@@ -2222,8 +2222,8 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType::
 #endif
 
 template <class BasicMapping>
-template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >::type SkinningMapping<BasicMapping>::_applyJT_Matrix( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+template<class TMatrixDeriv>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType::MatrixDeriv, TMatrixDeriv> >::type SkinningMapping<BasicMapping>::_applyJT_Matrix( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
@@ -2279,8 +2279,8 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::RigidType, T> >
 #ifdef SOFA_DEV
 
 template <class BasicMapping>
-template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> >::type SkinningMapping<BasicMapping>::_applyJT_Matrix( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+template<class TMatrixDeriv>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType::MatrixDeriv, TMatrixDeriv> >::type SkinningMapping<BasicMapping>::_applyJT_Matrix( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const unsigned int nbi = this->fromModel->getX()->size();
     typename In::Deriv::Affine omega;
@@ -2330,8 +2330,8 @@ typename enable_if<Equal<typename SkinningMapping<BasicMapping>::AffineType, T> 
 
 
 template <class BasicMapping>
-template<class T>
-typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType, T> >::type SkinningMapping<BasicMapping>::_applyJT_Matrix( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+template<class TMatrixDeriv>
+typename enable_if<Equal<typename SkinningMapping<BasicMapping>::QuadraticType::MatrixDeriv, TMatrixDeriv> >::type SkinningMapping<BasicMapping>::_applyJT_Matrix( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const unsigned int nbi = this->fromModel->getX()->size();
     typename In::Deriv::Quadratic omega;
