@@ -364,13 +364,13 @@ protected:
     inline typename enable_if<Equal<typename QuadraticType::Deriv, TDeriv> >::type _applyJT( sofa::helper::vector<typename QuadraticType::Deriv>& out, const typename Out::VecDeriv& in);
 #endif
 
-    template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type _applyJT_Matrix( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    template<class TMatrixDeriv>
+    inline typename enable_if<Equal<typename RigidType::MatrixDeriv, TMatrixDeriv> >::type _applyJT_Matrix( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 #ifdef SOFA_DEV
-    template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type _applyJT_Matrix( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
-    template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type _applyJT_Matrix( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    template<class TMatrixDeriv>
+    inline typename enable_if<Equal<typename AffineType::MatrixDeriv, TMatrixDeriv> >::type _applyJT_Matrix( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    template<class TMatrixDeriv>
+    inline typename enable_if<Equal<typename QuadraticType::MatrixDeriv, TMatrixDeriv> >::type _applyJT_Matrix( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 #endif
 };
 
