@@ -99,6 +99,68 @@ by filling in a double loop :
 %\subsection{Equations for elastodynamic: }
 %\paragraph{Governing equations and Boundary problem: }
 %\paragraph{Variational formulation: }
+\subsection{Coordinates definitions and notations: }
+This section talks about different notions of coordinates in different view point. One can see that in the mathematical view, a reference element are usually defined by the unit canonical element, which may give ease for a generic finite element type : quadrature points, nodes on element, interpolation functions ... All elements differ only by their coordinate and not by its behavior. It's the reason that for all computation (interpolation, integration on quadrature), all elements are transformed to this reference element, after computing, the result may be taken by the revert of this transformation. This manner comes from the fact that for all elements, there exist an invertible affine transform to the reference element. By the mecanical view, the reference configuration reffer to the initial coordinate of the material (Lagrangian coordinates). It make difference from the current configuration of the material (Eulerian coordinates). These two different definitions of coordinates in continium mechanic make sens when using different descriptions (Eulerian, Lagrangian, or mixted) and by consequence differ the mechanical equations. Therefor, one define here for these different coordiantes. 
+\begin{itemize}
+ \item \textbf{Barycentric coordinates in the reference element: }These coordinates will be noted with a hat above the variables $\hat{\textbf{X}}$.
+ \item \textbf{Lagrangian coordinates: }These reffer to the initial material coordinate without sollicitation \textbf{X}.
+ \item \textbf{Eulerian coordinates: }These reffer to the curent coordinate (or spatial coordinate) when subitted a sollicitation textbf{x}.
+\end{itemize}
+\subsection{Coordinates transformation: }
+\paragraph{Geometry affine mapping: }
+Mathematically, for all elements, there exist a invertible affine transform that map a element to the reference element : $ \hat{\textbf{X}} = \textbf{T(X)} =\textbf{A.X} + \textbf{b}$ or in matrix notation :
+\[
+\left[
+\begin{array}{c}
+               \\
+    \hat{X}_i  \\
+               \\
+\end{array}
+\right]
+=
+\left[
+\begin{array}{ccc}
+  &                 & \\
+  &  \text{A}_{ij}  & \\
+  &                 & 
+\end{array}
+\right]
+\left[
+\begin{array}{c}
+         \\
+    X_j  \\
+         \\     
+\end{array}
+\right]
++
+\left[
+\begin{array}{c}
+         \\
+    b_j  \\
+         \\      
+\end{array}
+\right]
+\]
+Because this is a affine transform, one can see by the differential computing :
+\[
+\text{A}_{ij} = \frac{\partial \hat{X}_i }{\partial X_i} 
+\]
+This differential formule give the meanner for evaluating values and derivative values of interpolation functions. In general, a real interpolation functions can be defined in two variables $p(\hat{\textbf{X}}) = p(T^{-1}\textbf{(X)})$ . For evaluating the differential, whe can have the chain rule :   
+\[
+  \frac{\partial p}{\partial X_j}  = \frac{\partial p}{\partial \hat{X}_i } . \frac{\partial \hat{X}_i }{\partial X_j}
+\]
+
+\paragraph{Deformation gradient (Jacobian): }
+Mechanically, for all admissible states, there exist a linear invertible transformation, which transform the initial material positions to the current material positions. This transformation are usually called Jacobian in the continium mechanic.
+ \[
+\begin{array}{ll}
+\text{Motion equation                : } & \textbf{x}=\phi(\textbf{X},t) \\
+\text{Deformation gradiant \textbf{F}: } & \textbf{F}=\frac{\partial \textbf{x}}{\partial \textbf{X}}  \text{   or d\textbf{x}=\textbf{F.} d\textbf{X} }
+\end{array}
+\]
+
+
+
 
 \subsection{Interpolation: } 
 To construct the stifness matrix, two components are needed to be defined in a generic elelemnt (master element): 
