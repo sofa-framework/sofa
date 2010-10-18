@@ -240,11 +240,11 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 {
     // Get the first DQStorage which has 'computeAllMatrices' to true
     dqStorage = NULL;
-    vector<DQStorage*> vDQStorage;
+    vector<FStorage*> vFStorage;
     sofa::core::objectmodel::BaseContext* context=  this->getContext();
-    context->get<DQStorage>( &vDQStorage, core::objectmodel::BaseContext::SearchDown);
-    DQStorage* tmpDqStorage = NULL;
-    for( typename vector<DQStorage *>::iterator it = vDQStorage.begin(); it != vDQStorage.end(); it++)
+    context->get<FStorage>( &vFStorage, core::objectmodel::BaseContext::SearchDown);
+    FStorage* tmpDqStorage = NULL;
+    for( typename vector<FStorage *>::iterator it = vFStorage.begin(); it != vFStorage.end(); it++)
     {
         tmpDqStorage = (*it);
         if( tmpDqStorage && tmpDqStorage->computeAllMatrices.getValue() )
