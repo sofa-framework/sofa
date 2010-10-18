@@ -445,7 +445,9 @@ public:
             {
                 wSize->setEnabled(false);
             }
-            parent->connect(wTableView, SIGNAL(activated(QModelIndex)) , parent, SLOT(setWidgetDirty()) );
+            parent->connect(wTableView, SIGNAL( activated(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
+            parent->connect(wTableView, SIGNAL( pressed(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
+            parent->connect(wTableView, SIGNAL( clicked(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
         }
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
