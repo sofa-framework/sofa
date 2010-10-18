@@ -41,7 +41,7 @@
 
 #ifdef SOFA_DEV
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
-#include "DualQuatStorage.h"
+#include "FrameStorage.h"
 #include <../applications/plugins/frame/AffineTypes.h>
 #include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
@@ -104,7 +104,7 @@ struct Equal
 
 template <class BasicMapping>
 #ifdef SOFA_DEV
-class SkinningMapping : public BasicMapping, public DualQuatStorage<typename BasicMapping::In::DataTypes, typename BasicMapping::In::Real>
+class SkinningMapping : public BasicMapping, public FrameStorage<typename BasicMapping::In::DataTypes, typename BasicMapping::In::Real>
 #else
 class SkinningMapping : public BasicMapping
 #endif
