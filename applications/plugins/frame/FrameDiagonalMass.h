@@ -40,7 +40,7 @@
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 #include "FrameMass.h"
-#include <sofa/component/mapping/DualQuatStorage.h>
+#include <sofa/component/mapping/FrameStorage.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include "initFrame.h"
 
@@ -53,7 +53,7 @@ namespace component
 namespace mass
 {
 
-using sofa::component::mapping::DualQuatStorage;
+using sofa::component::mapping::FrameStorage;
 using namespace sofa::defaulttype;
 
 template <class DataTypes, class TMassType>
@@ -107,7 +107,7 @@ public:
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef vector<double> VD;
-    typedef DualQuatStorage<DataTypes, Real> DQStorage;
+    typedef FrameStorage<DataTypes, Real> FStorage;
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3Mass;
@@ -203,7 +203,7 @@ public:
     }
 
 private:
-    DQStorage* dqStorage;
+    FStorage* dqStorage;
     VD* vol;
     VD* massDensity;
     VVMat3xIn* J;

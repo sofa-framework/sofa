@@ -151,8 +151,10 @@ void SkinningMapping<BasicMapping>::computeDistances ()
         for ( unsigned int i = 0; i < xfrom0.size(); i++ )
             tmpFrom[i] = xfrom0[i].getCenter();
 
-        if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC && this->computeAllMatrices.getValue()) geoDist->computeGeodesicalDistanceMap ( tmpFrom );
-        if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC && this->computeAllMatrices.getValue()) geoDist->computeHarmonicCoordsDistanceMap ( tmpFrom );
+        if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC && this->computeAllMatrices.getValue()) geoDist->distanceType.setValue( TYPE_GEODESIC );
+        if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC && this->computeAllMatrices.getValue()) geoDist->distanceType.setValue( TYPE_HARMONIC );
+        if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION && this->computeAllMatrices.getValue()) geoDist->distanceType.setValue( TYPE_STIFFNESS_DIFFUSION );
+        geoDist->computeDistanceMap ( tmpFrom );
     }
 #endif
 

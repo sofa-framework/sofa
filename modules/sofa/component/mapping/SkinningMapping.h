@@ -65,6 +65,7 @@ using sofa::component::topology::HexahedronGeodesicalDistance;
 #define DISTANCE_EUCLIDIAN 0
 #define DISTANCE_GEODESIC 1
 #define DISTANCE_HARMONIC 2
+#define DISTANCE_STIFFNESS_DIFFUSION 3
 
 #define WEIGHT_NONE 0
 #define WEIGHT_INVDIST_SQUARE 1

@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/mapping/DualQuatStorage.h>
+#include <sofa/component/mapping/FrameStorage.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
@@ -46,7 +46,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-using sofa::component::mapping::DualQuatStorage;
+using sofa::component::mapping::FrameStorage;
 
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -112,7 +112,7 @@ public:
     typedef vector<double> VD;
     typedef defaulttype::Vec<InDerivDim,Real> VecIn;
     typedef vector<vector<VecIn> > VVVecIn;
-    typedef DualQuatStorage<DataTypes, Real> DQStorage;
+    typedef FrameStorage<DataTypes, Real> FStorage;
 
     typedef struct
     {
@@ -179,7 +179,7 @@ public:
     }
 
 private:
-    DQStorage* dqInfos;
+    FStorage* dqInfos;
 
     void computeK0();
     void QtoR( Mat33& M, const Quat& q);
