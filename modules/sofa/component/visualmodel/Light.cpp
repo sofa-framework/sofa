@@ -166,10 +166,10 @@ void Light::preDrawShadow(helper::gl::VisualParameters* /* vp */)
     glPushMatrix();
 
 #ifdef SOFA_HAVE_GLEW
-    depthShader.start();
     depthShader.setFloat(0, "zFar", (GLfloat) p_zFar.getValue());
     depthShader.setFloat(0, "zNear", (GLfloat) p_zNear.getValue());
     depthShader.setFloat4(0, "lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
+    depthShader.start();
     shadowFBO.start();
 #endif
 }
@@ -214,9 +214,10 @@ void Light::blurDepthTexture()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, shadowFBO.getColorTexture());
 
-    blurShader.start();
     blurShader.setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
     blurShader.setInt(0, "orientation", 0);
+    blurShader.start();
+
     glBegin(GL_QUADS);
     {
         glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
@@ -234,9 +235,10 @@ void Light::blurDepthTexture()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, blurHFBO.getColorTexture());
 
-    blurShader.start();
     blurShader.setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
     blurShader.setInt(0, "orientation", 1);
+    blurShader.start();
+
     glBegin(GL_QUADS);
     {
         glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
