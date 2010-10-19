@@ -666,7 +666,6 @@ Polynomial_LD< FReal, FN > & operator*(const Monomial_LD< FReal, FN >   & a, Pol
 template<typename Real, unsigned int N>
 void Polynomial_LD<Real,N>::exchangeMonomial(unsigned int ithMono,unsigned  int jthMono)
 {
-    assert((ithMono<N) && (jthMono<N));
     Monomial_LD<Real,N> tempo;
     tempo=listOfMonoMial[ithMono];
     listOfMonoMial[ithMono]=listOfMonoMial[jthMono];
