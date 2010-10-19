@@ -35,7 +35,7 @@
 
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/FrameBufferObject.h>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/component/visualmodel/OglShader.h>
 #endif
 
 namespace sofa
@@ -76,8 +76,8 @@ protected:
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_VERTEX_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER;
-    helper::gl::GLSLShader depthShader;
-    helper::gl::GLSLShader blurShader;
+    OglShader depthShader;
+    OglShader blurShader;
 #endif
     GLfloat lightMatProj[16];
     GLfloat lightMatModelview[16];

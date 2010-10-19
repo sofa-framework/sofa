@@ -71,11 +71,11 @@ int SpotLightClass = core::RegisterObject("Spot Light")
 
 using sofa::defaulttype::Vector3;
 
-const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "share/shaders/softShadows/VSM/generate_depth_texture.vert";
-const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "share/shaders/softShadows/VSM/generate_depth_texture.frag";
+const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/generate_depth_texture.vert";
+const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/generate_depth_texture.frag";
 
-const std::string Light::PATH_TO_BLUR_TEXTURE_VERTEX_SHADER = "share/shaders/softShadows/VSM/blur_texture.vert";
-const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "share/shaders/softShadows/VSM/blur_texture.frag";
+const std::string Light::PATH_TO_BLUR_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/blur_texture.vert";
+const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/blur_texture.frag";
 
 Light::Light()
     : lightID(0), shadowTexWidth(0),shadowTexHeight(0)
@@ -128,10 +128,14 @@ void Light::initVisual()
     shadowFBO.init(shadowTexWidth, shadowTexHeight);
     blurHFBO.init(shadowTexWidth, shadowTexHeight);
     blurVFBO.init(shadowTexWidth, shadowTexHeight);
-    depthShader.InitShaders(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER,
-            PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
-    blurShader.InitShaders(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER,
-            PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
+    depthShader.vertFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
+    depthShader.fragFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
+    depthShader.init();
+    depthShader.initVisual();
+    blurShader.vertFilename.setValue(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
+    blurShader.fragFilename.setValue(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
+    blurShader.init();
+    blurShader.initVisual();
 #endif
 }
 
@@ -162,10 +166,10 @@ void Light::preDrawShadow(helper::gl::VisualParameters* /* vp */)
     glPushMatrix();
 
 #ifdef SOFA_HAVE_GLEW
-    depthShader.TurnOn();
-    depthShader.SetFloat(depthShader.GetVariable("zFar"), (GLfloat) p_zFar.getValue());
-    depthShader.SetFloat(depthShader.GetVariable("zNear"), (GLfloat) p_zNear.getValue());
-    depthShader.SetFloat4(depthShader.GetVariable("lightPosition"), (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
+    depthShader.start();
+    depthShader.setFloat(0, "zFar", (GLfloat) p_zFar.getValue());
+    depthShader.setFloat(0, "zNear", (GLfloat) p_zNear.getValue());
+    depthShader.setFloat4(0, "lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
     shadowFBO.start();
 #endif
 }
@@ -175,7 +179,7 @@ void Light::postDrawShadow()
 #ifdef SOFA_HAVE_GLEW
     //Unbind fbo
     shadowFBO.stop();
-    depthShader.TurnOff();
+    depthShader.stop();
 #endif
 
     glMatrixMode(GL_PROJECTION);
@@ -210,9 +214,9 @@ void Light::blurDepthTexture()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, shadowFBO.getColorTexture());
 
-    blurShader.TurnOn();
-    blurShader.SetFloat(blurShader.GetVariable("mapDimX"), (GLfloat) shadowTexWidth);
-    blurShader.SetInt(blurShader.GetVariable("orientation"), 0);
+    blurShader.start();
+    blurShader.setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
+    blurShader.setInt(0, "orientation", 0);
     glBegin(GL_QUADS);
     {
         glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
@@ -221,7 +225,7 @@ void Light::blurDepthTexture()
         glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
     }
     glEnd();
-    blurShader.TurnOff();
+    blurShader.stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
     blurHFBO.stop();
@@ -230,9 +234,9 @@ void Light::blurDepthTexture()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, blurHFBO.getColorTexture());
 
-    blurShader.TurnOn();
-    blurShader.SetFloat(blurShader.GetVariable("mapDimX"), (GLfloat) shadowTexWidth);
-    blurShader.SetInt(blurShader.GetVariable("orientation"), 1);
+    blurShader.start();
+    blurShader.setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
+    blurShader.setInt(0, "orientation", 1);
     glBegin(GL_QUADS);
     {
         glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
@@ -241,7 +245,7 @@ void Light::blurDepthTexture()
         glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
     }
     glEnd();
-    blurShader.TurnOff();
+    blurShader.stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
     blurVFBO.stop();
