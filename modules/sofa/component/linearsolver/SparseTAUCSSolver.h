@@ -33,6 +33,7 @@
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
+#include <taucs_lib.h>
 
 // include all headers included in taucs.h to fix errors on macx
 #ifndef WIN32
@@ -42,10 +43,6 @@
 #include <assert.h>
 #include <float.h>
 #include <stdlib.h>
-
-extern "C" {
-#include <taucs.h>
-}
 
 namespace sofa
 {
@@ -93,7 +90,7 @@ protected:
     class SparseTAUCSSolverInvertData : public MatrixInvertData
     {
     public :
-        CompressedRowSparseMatrix<double> Mfiltered;
+        CompressedRowSparseMatrix<Real> Mfiltered;
         void* factorization;
         taucs_ccs_matrix matrix_taucs;
 

@@ -33,6 +33,7 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <taucs_lib.h>
 
 // include all headers included in taucs.h to fix errors on macx
 #ifndef WIN32
@@ -42,10 +43,6 @@
 #include <assert.h>
 #include <float.h>
 #include <stdlib.h>
-
-extern "C" {
-#include <taucs.h>
-}
 
 namespace sofa
 {

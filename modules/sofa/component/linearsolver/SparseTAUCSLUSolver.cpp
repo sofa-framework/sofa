@@ -132,12 +132,12 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
         int end   = data->L->colptr[row+1];
 
         int diag = data->L->rowind[begin];
-        data->B[diag] /= data->L->values.d[begin];
+        data->B[diag] /= ((Real *)data->L->values.d)[begin];
 
         for (int i=begin+1; i<end; i++)
         {
             int col = data->L->rowind[i];
-            double val = data->L->values.d[i];
+            double val = ((Real *)data->L->values.d)[i];
 
             data->B[col] -= val * data->B[diag];
         }
@@ -154,12 +154,12 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
         for (int i=begin+1; i<end; i++)
         {
             int col = data->L->rowind[i];
-            double val = data->L->values.d[i];
+            double val = ((Real *)data->L->values.d)[i];
 
             data->B[diag] -= val * data->B[col];
         }
 
-        data->B[diag] /= data->L->values.d[begin];
+        data->B[diag] /= ((Real *)data->L->values.d)[begin];
     }
     for (int i=0; i<data->matrix_taucs.n; i++) z[i] = data->B[data->invperm[i]];
 }
@@ -170,6 +170,8 @@ SOFA_DECL_CLASS(SparseTAUCSLUSolver)
 int SparseTAUCSLUSolverClass = core::RegisterObject("Direct linear solvers implemented with the TAUCS library")
         .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
         .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >(true)
+        .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<float>,FullVector<float> > >()
+        .add< SparseTAUCSLUSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >,FullVector<float> > >()
         ;
 
 } // namespace linearsolver
