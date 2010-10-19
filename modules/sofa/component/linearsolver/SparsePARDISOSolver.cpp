@@ -73,6 +73,52 @@ namespace component
 namespace linearsolver
 {
 
+template<class TMatrix, class TVector>
+SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolverInvertData::SparsePARDISOSolverInvertData(int f_symmetric,std::ostream & sout,std::ostream & serr)
+    : solver(NULL)
+    , pardiso_initerr(1)
+    , pardiso_mtype(0)
+    , factorized(false)
+{
+    factorized = false;
+    pardiso_initerr = 0;
+
+    switch(f_symmetric)
+    {
+    case  0: pardiso_mtype = 11; break; // real and nonsymmetric
+    case  1: pardiso_mtype = -2; break; // real and symmetric indefinite
+    case  2: pardiso_mtype =  2; break; // real and symmetric positive definite
+    case -1: pardiso_mtype =  1; break; // real and structurally symmetric
+    default:
+        pardiso_mtype = 11; break; // real and nonsymmetric
+    }
+    pardiso_iparm[0] = 0;
+    int solver = 0; /* use sparse direct solver */
+    /* Numbers of processors, value of OMP_NUM_THREADS */
+    const char* var = getenv("OMP_NUM_THREADS");
+    if(var != NULL)
+        pardiso_iparm[2] = atoi(var);
+    else
+        pardiso_iparm[2] = 1;
+    sout << "Using " << pardiso_iparm[2] << " thread(s), set OMP_NUM_THREADS environment variable to change." << std::endl;
+    F77_FUNC(pardisoinit) (pardiso_pt,  &pardiso_mtype, &solver, pardiso_iparm, pardiso_dparm, &pardiso_initerr);
+
+    switch(pardiso_initerr)
+    {
+    case 0:   sout << "PARDISO: License check was successful" << std::endl; break;
+    case -10: serr << "PARDISO: No license file found" << std::endl; break;
+    case -11: serr << "PARDISO: License is expired" << std::endl; break;
+    case -12: serr << "PARDISO: Wrong username or hostname" << std::endl; break;
+    default:  serr << "PARDISO: Unknown error " << pardiso_initerr << std::endl; break;
+    }
+    //if (data->pardiso_initerr) return;
+    //if(var != NULL)
+    //    data->pardiso_iparm[2] = atoi(var);
+    //else
+    //    data->pardiso_iparm[2] = 1;
+
+}
+
 
 template<class TMatrix, class TVector>
 SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolver()
@@ -155,47 +201,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
 {
     M.compress();
 
-    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) M.getMatrixInvertData();
-    if (data==NULL)
-    {
-        M.setMatrixInvertData(new SparsePARDISOSolverInvertData());
-        data = (SparsePARDISOSolverInvertData *) M.getMatrixInvertData();
-
-        data->factorized = false;
-        data->pardiso_initerr = 0;
-        switch(f_symmetric.getValue())
-        {
-        case  0: data->pardiso_mtype = 11; break; // real and nonsymmetric
-        case  1: data->pardiso_mtype = -2; break; // real and symmetric indefinite
-        case  2: data->pardiso_mtype =  2; break; // real and symmetric positive definite
-        case -1: data->pardiso_mtype =  1; break; // real and structurally symmetric
-        default:
-            data->pardiso_mtype = 11; break; // real and nonsymmetric
-        }
-        data->pardiso_iparm[0] = 0;
-        int solver = 0; /* use sparse direct solver */
-        /* Numbers of processors, value of OMP_NUM_THREADS */
-        const char* var = getenv("OMP_NUM_THREADS");
-        if(var != NULL)
-            data->pardiso_iparm[2] = atoi(var);
-        else
-            data->pardiso_iparm[2] = 1;
-        sout << "Using " << data->pardiso_iparm[2] << " thread(s), set OMP_NUM_THREADS environment variable to change." << sendl;
-        F77_FUNC(pardisoinit) (data->pardiso_pt,  &data->pardiso_mtype, &solver, data->pardiso_iparm, data->pardiso_dparm, &data->pardiso_initerr);
-        switch(data->pardiso_initerr)
-        {
-        case 0:   sout << "PARDISO: License check was successful" << sendl; break;
-        case -10: serr << "PARDISO: No license file found" << sendl; break;
-        case -11: serr << "PARDISO: License is expired" << sendl; break;
-        case -12: serr << "PARDISO: Wrong username or hostname" << sendl; break;
-        default:  serr << "PARDISO: Unknown error " << data->pardiso_initerr << sendl; break;
-        }
-        //if (data->pardiso_initerr) return;
-        //if(var != NULL)
-        //    data->pardiso_iparm[2] = atoi(var);
-        //else
-        //    data->pardiso_iparm[2] = 1;
-    }
+    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) getMatrixInvertData(&M);
 
     if (data->pardiso_initerr) return;
     data->Mfiltered.clear();
@@ -244,12 +250,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
 template<class TMatrix, class TVector>
 void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) M.getMatrixInvertData();
-    if (data == NULL)
-    {
-        z = r;
-        return;
-    }
+    SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) getMatrixInvertData(&M);
 
     if (data->pardiso_initerr) return;
     if (!data->factorized) return;
