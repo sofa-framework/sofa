@@ -356,6 +356,8 @@ void MasterConstraintSolver::setConstraintEquations(simulation::Node *context)
         writeAndAccumulateAndCountConstraintDirections(context, numConstraints);
     }
 
+    simulation::MechanicalProjectJacobianMatrixVisitor().execute(context);
+
 
     /// calling GetConstraintValueVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
