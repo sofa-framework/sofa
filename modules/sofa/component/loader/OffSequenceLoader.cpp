@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <OffSequenceLoader.h>
+#include <sofa/component/loader/OffSequenceLoader.h>
 
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
