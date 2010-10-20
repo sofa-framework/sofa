@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <NewOmniDriver.h>
+#include "NewOmniDriver.h"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/OmniEvent.h>
