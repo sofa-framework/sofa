@@ -429,6 +429,54 @@ There for any real function on the tetrahedron, the numerical integration can be
 \end{array}
 \]
 Where $K$ is an arbitary element, $\hat{K}$ is a master element.
+\subsection{Complexity and data structure: }
+Assumption in a FEM computation context, there are needed several basic informations. 
+
+\paragraph{Element informations }
+\begin{itemize}
+\item nbVertices
+\item nbEdges
+\item nbFaces
+\item RdDIM
+\end{itemize}
+\paragraph{Finite element informations }
+\begin{itemize}
+\item nbNodes
+\end{itemize}
+\paragraph{Quadrature informations }
+\begin{itemize}
+\item nbQP 
+\end{itemize}
+\paragraph{Mesh informations }
+\begin{itemize}
+\item nbElements
+\end{itemize}
+By these informations, we can decide to stock or not for the data on all mesh, component by component. Goal numbers is nbElements (dynamic), nbNodes (static), RdDIM (static).
+\paragraph{FENodes }
+\paragraph{QuadratureInterpolation }
+\paragraph{StrainTensor }
+A interpolatedstrain is a symatric matrix [RdDIM]x[RdDIM], there are RdDIM*(RdDIM+1)/2 Real values.
+A interpolatedstress is a symatric matrix [RdDIM]x[RdDIM], there are RdDIM*(RdDIM+1)/2 Real values.
+ElementInterpolatedStrain is a Strain[RdDIM][nbNodes][nbQP], there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
+\paragraph{Material }
+ElementInterpolatedStress is a Stress[RdDIM][nbNodes][nbQP], there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
+
+For one Element there are also 2*ElementInterpolatedStrain (left and right in weak formulation), and ElementInterpolatedStress. 
+
+Therefor 3/2*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] Real values for one elements. Assumed a Real is a double (8bytes), for one elements, its needed 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] bytes.
+\paragraph{Element Memory comsum }
+\begin{itemize}
+\item 4NodesFETetraType  , 1pQuadratureTetraType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [4]*[1]*[3]*[4]=  1728 bytes ==  2kB
+\item 4NodesFETetraType  , 4pQuadratureTetraType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [4]*[4]*[3]*[4]=  6912 bytes ==  7kB
+\item 10NodesFETetraType  , 4pQuadratureTetraType :12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]*[10]*[4]*[3]*[4]= 17280 bytes == 17kB
+\item 8NodesFEHexaType   ,  4pQuadratureHexaType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [8]*[4]*[3]*[4]= 13824 bytes == 14kB
+\item 8NodesFEHexaType   ,  8pQuadratureHexaType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [8]*[8]*[3]*[4]= 27648 bytes == 28kB
+\item 8NodesFEHexaType   ,  27pQuadratureHexaType :12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]*[8]*[27]*[3]*[4]= 93312 bytes == 93kB
+\end{itemize}
+
+
+
+
 \subsection{Auto-test : }
 These function on FEM are mostly linear transformation which is invertible. So we can verify all the computation, or pre-computation by the its inverted transformation. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
