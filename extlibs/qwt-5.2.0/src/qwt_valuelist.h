@@ -36,7 +36,7 @@ typedef QValueList<double> QwtValueList;
 
 #if defined(QWT_TEMPLATEDLL)
 
-#if QT_VERSION < 0x040300
+#if QT_VERSION < 0x040700
 // Some compilers have problems, 
 // without a qHash(double) implementation
 #include <qset.h>
