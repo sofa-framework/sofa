@@ -64,6 +64,21 @@ public:
     /// Apply rotation using quaternion.
     virtual void applyRotation (const defaulttype::Quat q);
 
+    /// Apply Scale to the positions
+    virtual void applyScale (const SReal sx, const SReal sy, const SReal sz);
+
+    /// @name Initial transformations accessors.
+    /// @{
+    void setTranslation(double dx, double dy, double dz) {translation.setValue(Vector3(dx,dy,dz));}
+    void setRotation(double rx, double ry, double rz) {rotation.setValue(Vector3(rx,ry,rz));}
+    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));}
+
+    virtual Vector3 getTranslation() const {return translation.getValue();}
+    virtual Vector3 getRotation() const {return rotation.getValue();}
+    virtual Vector3 getScale() const {return scale.getValue();}
+    /// @}
+
+
 protected:
     void updateMesh();
 private:
@@ -104,6 +119,7 @@ protected:
 
     Data< Vector3 > translation;
     Data< Vector3 > rotation;
+    Data< Vector3 > scale;
 
     void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p);
     void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions,  SReal x, SReal y, SReal z);

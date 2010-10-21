@@ -55,6 +55,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     , onlyAttachedPoints(initData(&onlyAttachedPoints, false,"onlyAttachedPoints","Only keep points attached to elements of the mesh"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
+    , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
@@ -81,19 +82,23 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 
     updateMesh();
 
-    if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
+    if (translation.getValue() != Vector3(0.0,0.0,0.0))
         this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
-    if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
+    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
         this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
+    if (scale.getValue() != Vector3(1.0,1.0,1.0))
+        this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
 }
 
 
 void MeshLoader::reinit()
 {
-    if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
+    if (translation.getValue() != Vector3(0.0,0.0,0.0))
         this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
-    if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
+    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
         this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
+    if (scale.getValue() != Vector3(1.0,1.0,1.0))
+        this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
 }
 
 
@@ -321,6 +326,18 @@ void MeshLoader::applyRotation(const defaulttype::Quat q)
     {
         Vec<3,SReal> newposition = q.rotate(my_positions[i]);
         my_positions[i] = newposition;
+    }
+}
+
+
+void MeshLoader::applyScale(const SReal sx, const SReal sy, const SReal sz)
+{
+    sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > > my_positions = positions;
+    for (unsigned int i = 0; i < my_positions.size(); i++)
+    {
+        my_positions[i][0] *= sx;
+        my_positions[i][1] *= sy;
+        my_positions[i][2] *= sz;
     }
 }
 
