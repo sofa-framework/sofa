@@ -119,6 +119,11 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     _finerSparseGrid = NULL;
     _coarserSparseGrid = NULL;
     _usingMC = false;
+
+    //Add alias to use MeshLoader
+    addAlias(&vertices,"position");
+    addAlias(&input_triangles,"triangles");
+    addAlias(&input_quads,"quads");
 }
 
 
