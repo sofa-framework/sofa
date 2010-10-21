@@ -34,6 +34,8 @@ protected:
 
     int nbFiles;
 
+    std::string getMeshFilename(const char* ext);
+
 public:
     sofa::core::objectmodel::DataFileName meshFilename;
     Data<sofa::helper::OptionsGroup> fileFormat;
