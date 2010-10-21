@@ -39,6 +39,8 @@ namespace core
 namespace loader
 {
 
+using sofa::defaulttype::Vector3;
+
 class SOFA_CORE_API MeshLoader : public virtual BaseLoader
 {
 public:
@@ -50,6 +52,17 @@ public:
 
     //virtual void init();
     virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+
+    virtual void reinit();
+
+    /// Apply translation vector to the position.
+    virtual void applyTranslation (const SReal dx, const SReal dy, const SReal dz);
+
+    /// Apply rotation using Euler Angles in degree.
+    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz);
+
+    /// Apply rotation using quaternion.
+    virtual void applyRotation (const defaulttype::Quat q);
 
 protected:
     void updateMesh();
@@ -88,6 +101,9 @@ protected:
     Data< bool > flipNormals;
     Data< bool > triangulate;
     Data< bool > onlyAttachedPoints;
+
+    Data< Vector3 > translation;
+    Data< Vector3 > rotation;
 
     void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p);
     void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions,  SReal x, SReal y, SReal z);
