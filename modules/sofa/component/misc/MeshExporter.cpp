@@ -121,13 +121,57 @@ void MeshExporter::writeMesh()
     ++nbFiles;
 }
 
+std::string MeshExporter::getMeshFilename(const char* ext)
+{
+    int nbp = position.getValue().size();
+    unsigned int nbce;
+    nbce = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
+            + ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
+            + ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
+            + ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
+            + ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
+    unsigned int nbe = 0;
+    nbe = ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
+            + ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
+    if (!nbe)
+        nbe = ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
+                + ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 );
+    if (!nbe)
+        nbe = ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
+                + ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
+
+    std::ostringstream oss;
+    std::string filename = meshFilename.getFullPath();
+    std::size_t pos = 0;
+    while (pos != std::string::npos)
+    {
+        std::size_t newpos = filename.find('%',pos);
+        oss << filename.substr(pos, (newpos == std::string::npos) ? std::string::npos : newpos-pos);
+        pos = newpos;
+        if(pos != std::string::npos)
+        {
+            ++pos;
+            char c = filename[pos];
+            ++pos;
+            switch (c)
+            {
+            case 'n' : oss << nbFiles; break;
+            case 'p' : oss << nbp; break;
+            case 'E' : oss << nbce; break;
+            case 'e' : oss << nbe; break;
+            case '%' : oss << '%';
+            default:
+                serr << "Invalid special character %" << c << " in filename" << sendl;
+            }
+        }
+    }
+    oss << ext;
+    return oss.str();
+}
+
 void MeshExporter::writeMeshVTKXML()
 {
-    std::string filename;
-    std::ostringstream oss;
-    oss << meshFilename.getFullPath() << nbFiles;
-    filename = oss.str() + ".vtu";
-//	std::cout << filename << std::endl;
+    std::string filename = getMeshFilename(".vtu");
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -184,15 +228,9 @@ void MeshExporter::writeMeshVTKXML()
     //write points
     *outfile << "      <Points>" << std::endl;
     *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
-    if (mstate && mstate->getSize() == nbp)
+    for (int i=0 ; i<nbp; i++)
     {
-        for (int i = 0; i < mstate->getSize(); i++)
-            *outfile << "          " << mstate->getPX(i) << ' ' << mstate->getPY(i) << ' ' << mstate->getPZ(i) << std::endl;
-    }
-    else
-    {
-        for (int i = 0; i < nbp; i++)
-            *outfile << "          " << topology->getPX(i) << ' ' << topology->getPY(i) << ' ' << topology->getPZ(i) << std::endl;
+        *outfile << "          " << pointsPos[i] << std::endl;
     }
     *outfile << "        </DataArray>" << std::endl;
     *outfile << "      </Points>" << std::endl;
@@ -315,11 +353,7 @@ void MeshExporter::writeMeshVTKXML()
 
 void MeshExporter::writeMeshVTK()
 {
-    std::string filename;
-    std::ostringstream oss;
-    oss << meshFilename.getFullPath() << nbFiles;
-    filename = oss.str() + ".vtk";
-//	std::cout << filename << std::endl;
+    std::string filename = getMeshFilename(".vtk");
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -451,11 +485,7 @@ void MeshExporter::writeMeshVTK()
 /// http://geuz.org/gmsh/doc/texinfo/gmsh.html#File-formats
 void MeshExporter::writeMeshGmsh()
 {
-    std::string filename;
-    std::ostringstream oss;
-    oss << meshFilename.getFullPath() << nbFiles;
-    filename = oss.str() + ".gmsh";
-//	std::cout << filename << std::endl;
+    std::string filename = getMeshFilename(".gmsh");
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -572,11 +602,7 @@ void MeshExporter::writeMeshGmsh()
 
 void MeshExporter::writeMeshNetgen()
 {
-    std::string filename;
-    std::ostringstream oss;
-    oss << meshFilename.getFullPath() << nbFiles;
-    filename = oss.str() + ".mesh";
-//	std::cout << filename << std::endl;
+    std::string filename = getMeshFilename(".mesh");
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -667,11 +693,7 @@ void MeshExporter::writeMeshNetgen()
 /// http://tetgen.berlios.de/fformats.html
 void MeshExporter::writeMeshTetgen()
 {
-    std::string filename;
-    std::ostringstream oss;
-    oss << meshFilename.getFullPath() << nbFiles;
-    filename = oss.str() + ".node";
-//	std::cout << filename << std::endl;
+    std::string filename = getMeshFilename(".node");
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -709,7 +731,7 @@ void MeshExporter::writeMeshTetgen()
     {
         delete outfile;
         // http://tetgen.berlios.de/fformats.ele.html
-        filename = oss.str() + ".ele";
+        filename = getMeshFilename(".ele");
         outfile = new std::ofstream(filename.c_str());
         if( !outfile->is_open() )
         {
@@ -748,7 +770,7 @@ void MeshExporter::writeMeshTetgen()
     {
         delete outfile;
         // http://tetgen.berlios.de/fformats.face.html
-        filename = oss.str() + ".face";
+        filename = getMeshFilename(".face");
         outfile = new std::ofstream(filename.c_str());
         if( !outfile->is_open() )
         {
