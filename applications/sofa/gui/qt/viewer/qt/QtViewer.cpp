@@ -94,9 +94,13 @@ sofa::core::ObjectFactory::ClassEntry* classVisualModel;
 static  bool enabled = false;
 
 
-//Why would the QtViewer write its .view file with the qglviewer (a GPL library) extension?
-//const std::string QtViewer::VIEW_FILE_EXTENSION = "qglviewer.view";
-const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
+//Q:Why would the QtViewer write its .view file with the qglviewer (a GPL library) extension?
+//A:With the viewer, the QtViewer .view file is the same as QGLViewer.
+//  Consequently, the old .view file is now totally incorrect.
+
+///TODO: standardize .view file parameters
+const std::string QtViewer::VIEW_FILE_EXTENSION = "qglviewer.view";
+//const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
 // Mouse Interactor
 bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
