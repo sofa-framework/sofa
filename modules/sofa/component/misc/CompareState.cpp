@@ -95,6 +95,8 @@ void CompareState::processCompareState()
             dofError_V += currentError/(double)this->mmodel->getSize();
         }
     }
+
+    sout << "totalError_X = " << totalError_X << ", totalError_V = " << totalError_X << sendl;
 }
 
 
