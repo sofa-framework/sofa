@@ -39,7 +39,7 @@ unix {
 
 # The following create enables to start Modeler from the command line as well as graphically
 macx {
-	QMAKE_POST_LINK = ln -sf Modeler.app/Contents/MacOS/Modeler$$SUFFIX $$DESTDIR/Modeler$$SUFFIX
+	QMAKE_POST_LINK = ln -sf Modeler$$SUFFIX.app/Contents/MacOS/Modeler$$SUFFIX $$DESTDIR/Modeler$$SUFFIX
 }
 
 !macx : RC_FILE = sofa.rc

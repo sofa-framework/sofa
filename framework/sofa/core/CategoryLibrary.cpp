@@ -55,6 +55,7 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
     //It exists Mappings only Mechanical or only Visual. So, we must add the component if only a creator is available for the current category
     bool componentCreationPossible=false;
     //read all the template possible, and remove unused (for Mapping processing)
+    std::list<std::string> templates;
     for (itTemplate=entry->creatorList.begin(); itTemplate!= entry->creatorList.end(); itTemplate++)
     {
         const std::string &templateName = itTemplate->first;
@@ -71,8 +72,14 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
             if (mechanical == "MechanicalMapping") continue;
         }
         componentCreationPossible=true;
-        component->addTemplate(itTemplate->first);
+        //component->addTemplate(itTemplate->first);
+        if (templateName == (entry->defaultTemplate.empty() ? std::string("Vec3d") : entry->defaultTemplate))
+            templates.push_front(templateName); // make sure the default template is first
+        else
+            templates.push_back(templateName);
     }
+    for (std::list<std::string>::const_iterator it = templates.begin(); it != templates.end(); ++it)
+        component->addTemplate(*it);
     component->endConstruction();
 
     //If no constructor is available, we delete the component
