@@ -61,13 +61,17 @@ protected:
     Index cursize;
     Index allocsize;
 
+#if !defined(SOFA_NO_VECTOR_ACCESS_FAILURE) && !defined(NDEBUG)
     void checkIndex(Index n) const
     {
-#if !defined(SOFA_NO_VECTOR_ACCESS_FAILURE) && !defined(NDEBUG)
         if ((unsigned int)n >= (unsigned int)cursize)
             sofa::helper::vector_access_failure(this, cursize, n, typeid(*this));
-#endif
     }
+#else
+    void checkIndex(Index) const
+    {
+    }
+#endif
 
 
 public:
