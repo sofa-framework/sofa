@@ -30,6 +30,11 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
+
+
+#include <sofa/component/misc/ReadState.h>
+#include <sofa/component/misc/CompareState.h>
+
 #ifdef SOFA_DEV
 #include <sofa/simulation/bgl/BglSimulation.h>
 #endif
@@ -42,6 +47,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
@@ -83,6 +89,28 @@ bool loadPlugin(const char* filename)
 }
 #endif
 
+void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
+{
+    std::cout << "loadVerificationData from " << directory << " and file " << filename << std::endl;
+
+    std::string refFile;
+
+    refFile += directory;
+    refFile += '/';
+    refFile += sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
+
+    std::cout << "loadVerificationData " << refFile << std::endl;
+
+
+    sofa::component::misc::CompareStateCreator compareVisitor;
+    compareVisitor.setCreateInMapping(true);
+    compareVisitor.setSceneName(refFile);
+    compareVisitor.execute(node);
+
+    sofa::component::misc::ReadStateActivator v_read(true);
+    v_read.execute(node);
+}
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -101,6 +129,7 @@ int main(int argc, char** argv)
     int nbIterations=0;
 
     std::string gui = "";
+    std::string verif = "";
 #ifdef SOFA_SMP
     std::string simulationType = "smp";
 #else
@@ -127,6 +156,7 @@ int main(int argc, char** argv)
     .option(&plugins,'l',"load","load given plugins")
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
+    .option(&verif,'v',"verification","load verification data for the scene")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
@@ -211,6 +241,11 @@ int main(int argc, char** argv)
 
     sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
     if (groot==NULL)  groot = sofa::simulation::getSimulation()->newNode("");
+
+    if (!verif.empty())
+    {
+        loadVerificationData(verif, fileName, groot);
+    }
 
     sofa::simulation::getSimulation()->init(groot);
     sofa::gui::GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
