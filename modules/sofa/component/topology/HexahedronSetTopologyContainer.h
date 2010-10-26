@@ -202,19 +202,24 @@ public:
      * @return the position of this quad in the Hexahedron (i.e. either 0, 1, ..., 7).
      * @return -1 if none.
      */
-    int getQuadIndexInHexahedron(const QuadsInHexahedron &t, TriangleID quadIndex) const;
+    int getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID quadIndex) const;
 
 
-    /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge
+    /** \brief Returns for each index (between 0 and 11) the two vertex local indices that are adjacent to/forming that edge
      *
      */
-    virtual Edge getLocalEdgesInHexahedron (const unsigned int i) const;
+    virtual Edge getLocalEdgesInHexahedron (const EdgeID i) const;
 
 
-    /** \brief Returns for each index (between 0 and 6) the four vertices indices that are adjacent to that quad
+    /** \brief Returns for each index (between 0 and 5) the four vertices local indices that are adjacent to/forming that quad
      *
      */
-    virtual Quad getLocalQuadsInHexahedron (const PointID i) const;
+    virtual Quad getLocalQuadsInHexahedron (const QuadID i) const;
+
+    /** \brief Given an EdgesInQuad and a QuadsInHexahedron index in a hexahedron, returns the QuadsInHexahedron index of the quad sharing the same edge.
+     *
+     */
+    virtual QuadID getNextAdjacentQuad(const HexaID _hexaID, const QuadID _quadID, const EdgeID _edgeID);
 
     /// @}
 
