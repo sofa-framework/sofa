@@ -534,31 +534,32 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 #endif
 
     K *= (Real)stiffnessFactor;
-
-    std::cout<<"============================HexahedronFEMForceField<DataTypes>::computeElementStiffness:  Element "<<"   ===STIFNESSMATRIX===="<<std::endl;
-    for(int inode=0; inode<8; inode++)
+    if (verbose)
     {
-        for(int icomp=0; icomp<3; icomp++)
+        sout<<"============================HexahedronFEMForceField<DataTypes>::computeElementStiffness:  Element "<<"   ===STIFNESSMATRIX===="<<sendl;
+        for(int inode=0; inode<8; inode++)
         {
-            int imatrix=inode*3+icomp;
-
-            for(int jnode=0; jnode<8; jnode++)
+            for(int icomp=0; icomp<3; icomp++)
             {
-                std::cout<<"| ";
-                for(int jcomp=0; jcomp<3; jcomp++)
+                int imatrix=inode*3+icomp;
+
+                for(int jnode=0; jnode<8; jnode++)
                 {
-                    int jmatrix=jnode*3+jcomp;
-                    std::cout<<K[imatrix][jmatrix]<<" ";
+                    std::cout<<"| ";
+                    for(int jcomp=0; jcomp<3; jcomp++)
+                    {
+                        int jmatrix=jnode*3+jcomp;
+                        sout<<K[imatrix][jmatrix]<<" ";
+                    }
                 }
+                sout<<" |"<<sendl;
             }
-            std::cout<<" |"<<std::endl;
+            sout<<sendl;
         }
-        std::cout<<std::endl;
+
+        //<<K<<std::endl
+        sout<<"==============================================================="<<sendl;
     }
-
-    //<<K<<std::endl
-    std::cout<<"==============================================================="<<std::endl;
-
 
 }
 
