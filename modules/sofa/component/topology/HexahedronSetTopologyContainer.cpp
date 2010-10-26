@@ -574,20 +574,61 @@ const sofa::helper::vector< EdgesInHexahedron> &HexahedronSetTopologyContainer::
     return m_edgesInHexahedron;
 }
 
-Edge HexahedronSetTopologyContainer::getLocalEdgesInHexahedron (const unsigned int i) const
+Edge HexahedronSetTopologyContainer::getLocalEdgesInHexahedron (const EdgeID i) const
 {
     assert(i<12);
     return Edge (edgesInHexahedronArray[i][0], edgesInHexahedronArray[i][1]);
 }
 
 
-Quad HexahedronSetTopologyContainer::getLocalQuadsInHexahedron (const unsigned int i) const
+Quad HexahedronSetTopologyContainer::getLocalQuadsInHexahedron (const QuadID i) const
 {
     assert(i<6);
     return Quad (quadsInHexahedronArray[i][0],
             quadsInHexahedronArray[i][1],
             quadsInHexahedronArray[i][2],
             quadsInHexahedronArray[i][3]);
+}
+
+
+QuadID HexahedronSetTopologyContainer::getNextAdjacentQuad(const HexaID _hexaID, const QuadID _quadID, const EdgeID _edgeID)
+{
+    assert(_hexaID < d_hexahedron.getValue().size());
+    assert(_quadID<6);
+    assert(_edgeID<12);
+
+    EdgeID the_edgeID = this->getEdgesInHexahedron(_hexaID)[_edgeID];
+    const QuadsAroundEdge QaroundE = this->getQuadsAroundEdge(the_edgeID);
+
+    const QuadsInHexahedron QinH = this->getQuadsInHexahedron(_hexaID);
+    QuadID the_quadID = QinH[_quadID];
+    QuadID nextQuad = 0;
+
+    if (QaroundE.size() < 2)
+    {
+#ifndef NDEBUG
+        serr << "Error: getNextAdjacentQuad: no quad around edge: " << the_edgeID << endl;
+#endif
+        return nextQuad;
+    }
+    else if (QaroundE.size() == 2)
+    {
+        if (QaroundE[0] == the_quadID)
+            return (this->getQuadIndexInHexahedron(QinH, QaroundE[1]));
+        else
+            return (this->getQuadIndexInHexahedron(QinH, QaroundE[0]));
+    }
+    else
+    {
+        for (unsigned int i=0; i<QaroundE.size(); ++i)
+        {
+            int res = this->getQuadIndexInHexahedron(QinH, QaroundE[i]);
+            if (res != -1 && QaroundE[i] != the_quadID)
+                return (unsigned int)res;
+        }
+    }
+
+    return nextQuad;
 }
 
 
@@ -703,7 +744,7 @@ int HexahedronSetTopologyContainer::getEdgeIndexInHexahedron(const EdgesInHexahe
 }
 
 int HexahedronSetTopologyContainer::getQuadIndexInHexahedron(const QuadsInHexahedron &t,
-        const unsigned int quadIndex) const
+        const QuadID quadIndex) const
 {
     if(t[0]==quadIndex)
         return 0;
