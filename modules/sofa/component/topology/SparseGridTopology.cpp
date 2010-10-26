@@ -1419,9 +1419,9 @@ void SparseGridTopology::updateEdges()
 #ifdef SOFA_NEW_HEXA
         // horizontal
         edgesMap[pair<int,int>(c[0],c[1])]=0;
-        edgesMap[pair<int,int>(c[2],c[3])]=0;
+        edgesMap[pair<int,int>(c[3],c[2])]=0;
         edgesMap[pair<int,int>(c[4],c[5])]=0;
-        edgesMap[pair<int,int>(c[6],c[7])]=0;
+        edgesMap[pair<int,int>(c[7],c[6])]=0;
         // vertical
         edgesMap[pair<int,int>(c[0],c[3])]=0;
         edgesMap[pair<int,int>(c[1],c[2])]=0;
@@ -1435,9 +1435,9 @@ void SparseGridTopology::updateEdges()
 #else
         // horizontal
         edgesMap[pair<int,int>(c[0],c[1])]=0;
-        edgesMap[pair<int,int>(c[2],c[3])]=0;
+        edgesMap[pair<int,int>(c[3],c[2])]=0;
         edgesMap[pair<int,int>(c[4],c[5])]=0;
-        edgesMap[pair<int,int>(c[6],c[7])]=0;
+        edgesMap[pair<int,int>(c[7],c[6])]=0;
         // vertical
         edgesMap[pair<int,int>(c[0],c[2])]=0;
         edgesMap[pair<int,int>(c[1],c[3])]=0;
