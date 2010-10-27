@@ -28,6 +28,9 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
+#include <fstream>
+using namespace std;
+
 namespace sofa
 {
 
@@ -97,7 +100,7 @@ void CudaHexahedronTLEDForceField::init()
 void CudaHexahedronTLEDForceField::reinit()
 {
     // Gets the mesh
-    component::topology::MeshTopology* topology = getContext()->get<component::topology::MeshTopology>();
+    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     if (topology==NULL || topology->getNbHexahedra()==0)
     {
         serr << "ERROR(CudaHexahedronTLEDForceField): no elements found.\n";
