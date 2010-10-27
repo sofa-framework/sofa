@@ -99,7 +99,8 @@ void CudaTetrahedronTLEDForceField::init()
 void CudaTetrahedronTLEDForceField::reinit()
 {
     // Gets the mesh
-    component::topology::MeshTopology* topology = getContext()->get<component::topology::MeshTopology>();
+    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
+
     if (topology==NULL)
     {
         serr << "ERROR(CudaTetrahedronTLEDForceField): no topology found." << sendl;
