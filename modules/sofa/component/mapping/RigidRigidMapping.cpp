@@ -25,11 +25,8 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP
 
 #include <sofa/component/mapping/RigidRigidMapping.inl>
+
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {
@@ -43,51 +40,37 @@ namespace mapping
 SOFA_DECL_CLASS(RigidRigidMapping)
 
 using namespace defaulttype;
-using namespace core;
-using namespace core::behavior;
-
 
 // Register in the Factory
 int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
 #ifndef SOFA_FLOAT
-        .add< RigidRigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< RigidRigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > > >()
+        .add< RigidRigidMapping< Rigid3dTypes, Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< RigidRigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
-        .add< RigidRigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > > >()
+        .add< RigidRigidMapping< Rigid3fTypes, Rigid3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< RigidRigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > > >()
-        .add< RigidRigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< RigidRigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > > >()
-        .add< RigidRigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > > >()
+        .add< RigidRigidMapping< Rigid3dTypes, Rigid3fTypes > >()
+        .add< RigidRigidMapping< Rigid3fTypes, Rigid3dTypes > >()
 #endif
 #endif
         ;
+
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3dTypes, Rigid3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3fTypes, Rigid3dTypes >;
 #endif
 #endif
-
-
 
 
 } // namespace mapping

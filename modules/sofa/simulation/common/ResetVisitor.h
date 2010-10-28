@@ -28,7 +28,7 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <string>
-
+#include <sofa/core/ExecParams.h>
 
 namespace sofa
 {
@@ -39,7 +39,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API ResetVisitor : public Visitor
 {
 public:
-    ResetVisitor() {}
+    ResetVisitor(const core::ExecParams* params) : Visitor(params) {}
 
     void processObject(core::objectmodel::BaseObject* obj);
 
@@ -54,7 +54,7 @@ public:
 class SOFA_SIMULATION_COMMON_API StoreResetStateVisitor : public Visitor
 {
 public:
-    StoreResetStateVisitor() {}
+    StoreResetStateVisitor(const core::ExecParams* params) : Visitor(params) {}
 
     void processObject(core::objectmodel::BaseObject* obj);
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
 
-#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <iostream>
@@ -40,10 +40,10 @@ namespace constraintset
 {
 
 template<class DataTypes>
-class SlidingConstraint : public core::behavior::InteractionConstraint
+class SlidingConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SlidingConstraint,DataTypes), core::behavior::InteractionConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(SlidingConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -53,10 +53,14 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::PairInteractionConstraint<DataTypes> Inherit;
+
+    typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
 protected:
-    MechanicalState* object1;
-    MechanicalState* object2;
+
     bool yetIntegrated;
 
     unsigned int cid;
@@ -71,7 +75,8 @@ protected:
 public:
 
     SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
-        : object1(object1), object2(object2), yetIntegrated(false)
+        : Inherit(object1, object2)
+        , yetIntegrated(false)
         , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
         , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
         , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
@@ -79,7 +84,8 @@ public:
     }
 
     SlidingConstraint(MechanicalState* object)
-        : object1(object), object2(object), yetIntegrated(false)
+        : Inherit(object, object)
+        , yetIntegrated(false)
         , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
         , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
         , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
@@ -87,7 +93,7 @@ public:
     }
 
     SlidingConstraint()
-        : object1(NULL), object2(NULL), yetIntegrated(false)
+        : yetIntegrated(false)
         , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
         , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
         , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
@@ -98,73 +104,21 @@ public:
     {
     }
 
-    MechanicalState* getObject1() { return object1; }
-    MechanicalState* getObject2() { return object2; }
-    core::behavior::BaseMechanicalState* getMechModel1() { return object1; }
-    core::behavior::BaseMechanicalState* getMechModel2() { return object2; }
-
     virtual void init();
 
-    virtual void buildConstraintMatrix(unsigned int & /*constraintId*/, core::VecId);
+    virtual void buildConstraintMatrix(DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
+            , const DataVecCoord &x1, const DataVecCoord &x2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
 
-    virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true );
+    void getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+            , const DataVecDeriv &v1, const DataVecDeriv &v2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
 
-    virtual void getConstraintId(long* id, unsigned int &offset);
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif
 
-    /// Pre-construction check method called by ObjectFactory.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-        }
-        else
-        {
-            if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
-                return false;
-        }
-        return core::behavior::InteractionConstraint::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::behavior::InteractionConstraint::create(obj, context, arg);
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
-        {
-            obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->object2 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2","..")));
-        }
-        else if (context)
-        {
-            obj->object1 =
-                obj->object2 =
-                        dynamic_cast<MechanicalState*>(context->getMechanicalState());
-        }
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SlidingConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
     void draw();
-
-    /// this constraint is holonomic
-    bool isHolonomic() {return true;}
 };
+
 } // namespace constraintset
 
 } // namespace component

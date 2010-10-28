@@ -63,11 +63,15 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ConicalForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    typedef typename DataTypes::Real        Real        ;
+    typedef typename DataTypes::Coord       Coord       ;
+    typedef typename DataTypes::Deriv       Deriv       ;
+    typedef typename DataTypes::VecCoord    VecCoord    ;
+    typedef typename DataTypes::VecDeriv    VecDeriv    ;
+    typedef typename DataTypes::VecReal     VecReal     ;
+
+    typedef Data<VecCoord>                  DataVecCoord;
+    typedef Data<VecDeriv>                  DataVecDeriv;
 
 protected:
     class Contact
@@ -139,11 +143,9 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ ) ;
+    virtual void addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* /*mparams*/ ) ;
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
 
     virtual void updateStiffness( const VecCoord& x );
 
@@ -152,10 +154,20 @@ public:
     void draw();
 };
 
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConicalForceField<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConicalForceField<defaulttype::Vec3fTypes>;
+#endif
+#endif
+
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H

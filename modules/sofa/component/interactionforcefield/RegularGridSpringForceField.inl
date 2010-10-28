@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_INL
 
@@ -55,17 +55,19 @@ void RegularGridSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
+void RegularGridSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* mparams )
+//addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addForce(vf1, vf2, vx1, vx2, vv1, vv2);
+    this->StiffSpringForceField<DataTypes>::addForce(data_f1, data_f2, data_x1, data_x2, data_v1, data_v2, mparams);
     // Compute topological springs
-    WRefVecDeriv f1 = vf1;
-    RRefVecCoord x1 = vx1;
-    RRefVecDeriv v1 = vv1;
-    WRefVecDeriv f2 = vf2;
-    RRefVecCoord x2 = vx2;
-    RRefVecDeriv v2 = vv2;
+
+    VecDeriv& f1       = *data_f1.beginEdit();
+    const VecCoord& x1 =  data_x1.getValue();
+    const VecDeriv& v1 =  data_v1.getValue();
+    VecDeriv& f2       = *data_f2.beginEdit();
+    const VecCoord& x2 =  data_x2.getValue();
+    const VecDeriv& v2 =  data_v2.getValue();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -235,18 +237,25 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& v
             }
         }
     }
+    data_f1.endEdit();
+    data_f2.endEdit();
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& vdf1, VecDeriv& vdf2, const VecDeriv& vdx1, const VecDeriv& vdx2, double kFactor, double bFactor)
+void RegularGridSpringForceField<DataTypes>::addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams)
+//addDForce(VecDeriv& vdf1, VecDeriv& vdf2, const VecDeriv& vdx1, const VecDeriv& vdx2, double kFactor, double bFactor)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addDForce(vdf1, vdf2, vdx1, vdx2, kFactor, bFactor);
+    this->StiffSpringForceField<DataTypes>::addDForce(data_df1, data_df2, data_dx1, data_dx2, mparams);
     // Compute topological springs
-    WRefVecDeriv df1 = vdf1;
-    WRefVecDeriv df2 = vdf2;
-    RRefVecDeriv dx1 = vdx1;
-    RRefVecDeriv dx2 = vdx2;
+
+    VecDeriv&        df1 = *data_df1.beginEdit();
+    VecDeriv&        df2 = *data_df2.beginEdit();
+    const VecDeriv&  dx1 =  data_dx1.getValue();
+    const VecDeriv&  dx2 =  data_dx2.getValue();
+    double kFactor       =  mparams->kFactor();
+    double bFactor       =  mparams->bFactor();
+
     const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {
@@ -404,6 +413,8 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& vdf1, VecDeriv&
             }
         }
     }
+    data_df1.endEdit();
+    data_df2.endEdit();
 }
 
 

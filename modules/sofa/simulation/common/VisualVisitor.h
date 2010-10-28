@@ -25,6 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_VISUALACTION_H
 #define SOFA_SIMULATION_TREE_VISUALACTION_H
 
+#include <sofa/core/ExecParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/VisualModel.h>
@@ -45,6 +46,10 @@ using std::endl;
 class SOFA_SIMULATION_COMMON_API VisualVisitor : public Visitor
 {
 public:
+    VisualVisitor(const core::ExecParams* params)
+        : Visitor(params)
+    {}
+
     virtual void processVisualModel(simulation::Node* node, core::VisualModel* vm) = 0;
     virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o*/) {}
 
@@ -67,8 +72,12 @@ public:
     typedef core::VisualModel::Pass Pass;
     Pass pass;
     bool hasShader;
-    VisualDrawVisitor(Pass pass = core::VisualModel::Std)
-        : pass(pass)
+    VisualDrawVisitor(const core::ExecParams* params)
+        : VisualVisitor(params) , pass(core::VisualModel::Std)
+    {
+    }
+    VisualDrawVisitor(Pass pass, const core::ExecParams* params)
+        : VisualVisitor(params) , pass(pass)
     {
     }
     virtual Result processNodeTopDown(simulation::Node* node);
@@ -86,6 +95,8 @@ public:
 class SOFA_SIMULATION_COMMON_API VisualUpdateVisitor : public Visitor
 {
 public:
+    VisualUpdateVisitor(const core::ExecParams* params) : Visitor(params) {}
+
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
     virtual Result processNodeTopDown(simulation::Node* node);
 
@@ -95,14 +106,18 @@ public:
 class SOFA_SIMULATION_COMMON_API VisualInitVisitor : public Visitor
 {
 public:
+    VisualInitVisitor(const core::ExecParams* params):Visitor(params) {}
+
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "VisualInitVisitor"; }
 };
 #ifdef SOFA_SMP
-class SOFA_SIMULATION_COMMON_API ParallelVisualUpdateVisitor : public VisualVisitor
+class SOFA_SIMULATION_COMMON_API ParallelVisualUpdateVisitor : public Visitor
 {
 public:
+    ParallelVisualUpdateVisitor(const core::ExecParams* params) : Visitor(params) {}
+
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
     virtual const char* getClassName() const { return "ParallelVisualUpdateVisitor"; }
 };
@@ -114,7 +129,7 @@ class SOFA_SIMULATION_COMMON_API VisualComputeBBoxVisitor : public Visitor
 public:
     double minBBox[3];
     double maxBBox[3];
-    VisualComputeBBoxVisitor();
+    VisualComputeBBoxVisitor(const core::ExecParams* params);
 
     virtual void processBehaviorModel(simulation::Node*, core::BehaviorModel* vm);
     virtual void processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm);

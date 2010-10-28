@@ -31,8 +31,9 @@ namespace sofa
 namespace simulation
 {
 
-MechanicalVPrintVisitor::MechanicalVPrintVisitor( VecId v, std::ostream& out )
-    : v_(v)
+MechanicalVPrintVisitor::MechanicalVPrintVisitor(ConstMultiVecId v, std::ostream& out, const core::ExecParams* params )
+    : Visitor(params)
+    , v_(v)
     , out_(out)
 {
 }
@@ -41,16 +42,21 @@ Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* no
 {
     if( ! node->mechanicalState.empty() )
     {
-        out_<<"[ ";
-        (*node->mechanicalState).printDOF(v_,out_);
-        out_<<"] ";
+        ConstVecId id = v_.getId(node->mechanicalState);
+        if (!id.isNull())
+        {
+            out_<<"[ ";
+            (*node->mechanicalState).printDOF(id,out_);
+            out_<<"] ";
+        }
     }
     return Visitor::RESULT_CONTINUE;
 }
 
 
-MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor( VecId v, unsigned time, std::ostream& out )
-    : v_(v)
+MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor(ConstMultiVecId vid, unsigned time, std::ostream& out, const core::ExecParams* params )
+    : Visitor (params)
+    , v_(vid)
     , count_(0)
     , time_(time)
     , out_(out)
@@ -61,7 +67,11 @@ Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simul
 {
     if( ! node->mechanicalState.empty() )
     {
-        count_+=(*node->mechanicalState).printDOFWithElapsedTime(v_,count_,time_,out_);
+        ConstVecId id = v_.getId(node->mechanicalState);
+        if (!id.isNull())
+        {
+            count_+=(*node->mechanicalState).printDOFWithElapsedTime(id,count_,time_,out_);
+        }
     }
     return Visitor::RESULT_CONTINUE;
 }

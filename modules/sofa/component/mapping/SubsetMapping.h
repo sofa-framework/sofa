@@ -25,11 +25,14 @@
 #ifndef SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
 
+
+#include <sofa/core/Mapping.h>
+
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+
 #include <sofa/helper/vector.h>
+
 #include <memory>
 
 namespace sofa
@@ -52,24 +55,34 @@ public:
  * @class SubsetMapping
  * @brief Compute a subset of input points
  */
-template <class BasicMapping>
-class SubsetMapping : public BasicMapping
+template <class TIn, class TOut>
+class SubsetMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SubsetMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
+    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename InCoord::value_type Real;
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+
+    typedef typename In::Real         Real;
+    typedef typename In::VecCoord     InVecCoord;
+    typedef typename In::VecDeriv     InVecDeriv;
+    typedef typename In::MatrixDeriv  InMatrixDeriv;
+    typedef Data<InVecCoord>          InDataVecCoord;
+    typedef Data<InVecDeriv>          InDataVecDeriv;
+    typedef Data<InMatrixDeriv>       InDataMatrixDeriv;
+    typedef typename In::Coord        InCoord;
+    typedef typename In::Deriv        InDeriv;
+
+    typedef typename Out::VecCoord    OutVecCoord;
+    typedef typename Out::VecDeriv    OutVecDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef Data<OutVecCoord>         OutDataVecCoord;
+    typedef Data<OutVecDeriv>         OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv>      OutDataMatrixDeriv;
+    typedef typename Out::Coord       OutCoord;
+    typedef typename Out::Deriv       OutDeriv;
 
     enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
     enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
@@ -84,10 +97,10 @@ public:
     Data < int > f_first;
     Data < int > f_last;
     Data < Real > f_radius;
-    SubsetMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
+    SubsetMappingInternalData<In, Out> data;
     void postInit();
 
-    SubsetMapping(In* from, Out* to);
+    SubsetMapping(core::State<In>* from, core::State<Out>* to);
 
     void clear(int reserve);
 
@@ -100,13 +113,13 @@ public:
 
     virtual ~SubsetMapping();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    virtual void apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams );
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    virtual void applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams );
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    virtual void applyJT ( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    virtual void applyJT ( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams* /*cparams*/);
 
     const sofa::defaulttype::BaseMatrix* getJ();
 
@@ -114,6 +127,43 @@ protected:
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
 };
+
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec1fTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SubsetMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SubsetMapping< Vec1dTypes, Vec1dTypes >;
+extern template class SubsetMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SubsetMapping< Rigid3dTypes, Rigid3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SubsetMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SubsetMapping< Vec1fTypes, Vec1fTypes >;
+extern template class SubsetMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SubsetMapping< Rigid3fTypes, Rigid3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SubsetMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SubsetMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SubsetMapping< Vec1dTypes, Vec1fTypes >;
+extern template class SubsetMapping< Vec1fTypes, Vec1dTypes >;
+extern template class SubsetMapping< Rigid3dTypes, Rigid3fTypes >;
+extern template class SubsetMapping< Rigid3fTypes, Rigid3dTypes >;
+#endif
+#endif
+
+#endif
 
 } // namespace mapping
 

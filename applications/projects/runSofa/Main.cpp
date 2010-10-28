@@ -40,10 +40,11 @@
 #endif
 #ifdef SOFA_SMP
 #include <sofa/simulation/tree/SMPSimulation.h>
-#else
-#include <sofa/simulation/tree/TreeSimulation.h>
 #endif
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/init.h>
+#include <sofa/component/misc/ReadState.h>
+#include <sofa/component/misc/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -102,12 +103,12 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
     std::cout << "loadVerificationData " << refFile << std::endl;
 
 
-    sofa::component::misc::CompareStateCreator compareVisitor;
+    sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
     compareVisitor.setCreateInMapping(true);
     compareVisitor.setSceneName(refFile);
     compareVisitor.execute(node);
 
-    sofa::component::misc::ReadStateActivator v_read(true);
+    sofa::component::misc::ReadStateActivator v_read(true, sofa::core::ExecParams::defaultInstance());
     v_read.execute(node);
 }
 
@@ -126,7 +127,7 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    int nbIterations=0;
+    int			nbIterations = 0;
 
     std::string gui = "";
     std::string verif = "";
@@ -163,9 +164,10 @@ int main(int argc, char** argv)
     .option(&affinity,'f',"affinity","Enable aFfinity base Work Stealing")
 #endif
     (argc,argv);
+
 #ifdef SOFA_SMP
-    int ac=0;
-    char **av=NULL;
+    int ac = 0;
+    char **av = NULL;
 
     Util::KaapiComponentManager::prop["util.globalid"]="0";
     Util::KaapiComponentManager::prop["sched.strategy"]="I";
@@ -188,11 +190,13 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef SOFA_DEV
-    if (simulationType == "bgl")  sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
+    if (simulationType == "bgl")
+        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     else
 #endif
 #ifdef SOFA_SMP
-        if (simulationType == "smp")  sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
+        if (simulationType == "smp")
+            sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
         else
 #endif
             sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
@@ -200,7 +204,8 @@ int main(int argc, char** argv)
     sofa::component::init();
     sofa::simulation::xml::initXml();
 
-    if (!files.empty()) fileName = files[0];
+    if (!files.empty())
+        fileName = files[0];
 
     for (unsigned int i=0; i<plugins.size(); i++)
         loadPlugin(plugins[i].c_str());
@@ -213,7 +218,7 @@ int main(int argc, char** argv)
         sofa::gui::GUIManager::AddGUIOption(oss.str().c_str());
     }
 
-    if (int err=sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
+    if (int err = sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
         return err;
 
     if (fileName.empty())
@@ -240,7 +245,10 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::SetDimension(800,600);
 
     sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-    if (groot==NULL)  groot = sofa::simulation::getSimulation()->newNode("");
+    if (groot==NULL)
+    {
+        groot = sofa::simulation::getSimulation()->newNode("");
+    }
 
     if (!verif.empty())
     {
@@ -254,8 +262,8 @@ int main(int argc, char** argv)
     //=======================================
     //Apply Options
 
-    if (startAnim)  groot->setAnimate(true);
-
+    if (startAnim)
+        groot->setAnimate(true);
 
     if (printFactory)
     {
@@ -267,11 +275,13 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    if (int err=sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
+    if (int err = sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
+
     groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
 
+    if (groot!=NULL)
+        sofa::simulation::getSimulation()->unload(groot);
 
-    if (groot!=NULL) sofa::simulation::getSimulation()->unload(groot);
     return 0;
 }

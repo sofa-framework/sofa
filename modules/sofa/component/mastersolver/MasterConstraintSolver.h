@@ -25,14 +25,18 @@
 #ifndef SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
 
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/simulation/common/MasterSolverImpl.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
+
 #include <sofa/component/linearsolver/FullMatrix.h>
+
+#include <sofa/simulation/common/MasterSolverImpl.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/Node.h>
+
 
 #include <vector>
 
@@ -49,11 +53,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::MechanicalVisitor
+class SOFA_COMPONENT_MASTERSOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalGetConstraintResolutionVisitor(std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset = 0)
-        : _res(res),_offset(offset)
+    MechanicalGetConstraintResolutionVisitor(std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset, const core::ExecParams* params)
+        : simulation::BaseMechanicalVisitor(params), _res(res),_offset(offset)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -75,7 +79,7 @@ public:
     }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -90,11 +94,15 @@ private:
     unsigned int _offset;
 };
 
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalSetConstraint : public simulation::MechanicalVisitor
+
+class SOFA_COMPONENT_MASTERSOLVER_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalSetConstraint(unsigned int &_contactId)
-        :contactId(_contactId)
+    MechanicalSetConstraint(core::MultiMatrixDerivId _res, unsigned int &_contactId, const core::ConstraintParams* _cparams = sofa::core::ConstraintParams::defaultInstance())
+        : simulation::BaseMechanicalVisitor(_cparams)
+        , res(_res)
+        , contactId(_contactId)
+        , cparams(_cparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -104,24 +112,27 @@ public:
     virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
     {
         ctime_t t0 = begin(node, c);
-//		  unsigned int temp = contactId;
-        c->buildConstraintMatrix(contactId);
-//		  std::cout << node->getName() << " : " << contactId - temp << std::endl;
+
+        c->buildConstraintMatrix(res, contactId, cparams);
+
         end(node, c, t0);
         return RESULT_CONTINUE;
     }
 
-
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalSetConstraint"; }
+    virtual const char* getClassName() const
+    {
+        return "MechanicalSetConstraint";
+    }
 
     virtual bool isThreadSafe() const
     {
         return false;
     }
+
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -133,23 +144,30 @@ public:
 #endif
 
 protected:
+
+    sofa::core::MultiMatrixDerivId res;
     unsigned int &contactId;
+    const sofa::core::ConstraintParams *cparams;
 };
 
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalAccumulateConstraint2 : public simulation::MechanicalVisitor
+
+class SOFA_COMPONENT_MASTERSOLVER_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalAccumulateConstraint2()
+    MechanicalAccumulateConstraint2(core::MultiMatrixDerivId _res, const core::ConstraintParams* _cparams = sofa::core::ConstraintParams::defaultInstance())
+        : simulation::BaseMechanicalVisitor(_cparams)
+        , res(_res)
+        , cparams(_cparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
 
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
     {
         ctime_t t0 = begin(node, map);
-        map->accumulateConstraint();
+        map->applyJT(res, res, cparams);
         end(node, map, t0);
     }
 
@@ -162,7 +180,7 @@ public:
         return false;
     }
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -172,6 +190,10 @@ public:
     {
     }
 #endif
+
+protected:
+    core::MultiMatrixDerivId res;
+    const sofa::core::ConstraintParams *cparams;
 };
 
 
@@ -212,7 +234,7 @@ public:
     virtual ~MasterConstraintSolver();
     // virtual const char* getTypeName() const { return "MasterSolver"; }
 
-    void step(double dt);
+    void step(double dt, const core::ExecParams* params);
 
     //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 
@@ -233,24 +255,24 @@ public:
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;};
 
 private:
-    void launchCollisionDetection();
-    void freeMotion(simulation::Node *context, double &dt);
-    void setConstraintEquations(simulation::Node *context);
-    void correctiveMotion(simulation::Node *context);
+    void launchCollisionDetection(const core::ExecParams* params);
+    void freeMotion(simulation::Node *context, double &dt, const core::ExecParams* params);
+    void setConstraintEquations(simulation::Node *context, const core::ExecParams* params);
+    void correctiveMotion(simulation::Node *context, const core::ExecParams* params);
     void debugWithContact(int numConstraints);
 
     ///  Specific procedures that are called for setting the constraints:
 
     /// 1.calling resetConstraint & setConstraint & accumulateConstraint visitors
     /// and resize the constraint problem that will be solved
-    void writeAndAccumulateAndCountConstraintDirections(simulation::Node *context, unsigned int &numConstraints);
+    void writeAndAccumulateAndCountConstraintDirections(simulation::Node *context, unsigned int &numConstraints, const core::ExecParams* params);
 
     /// 2.calling GetConstraintValueVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
-    void getIndividualConstraintViolations(simulation::Node *context);
+    void getIndividualConstraintViolations(simulation::Node *context, const core::ExecParams* params);
 
     /// 3.calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
-    void getIndividualConstraintSolvingProcess(simulation::Node *context);
+    void getIndividualConstraintSolvingProcess(simulation::Node *context, const core::ExecParams* params);
 
     /// 4.calling getCompliance projected in the contact space => getDelassusOperator(_W) = H*C*Ht
     void computeComplianceInConstraintSpace();

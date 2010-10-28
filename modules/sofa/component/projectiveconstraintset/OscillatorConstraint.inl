@@ -40,40 +40,40 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-template <class DataTypes>
-OscillatorConstraint<DataTypes>::OscillatorConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::OscillatorConstraint()
+    : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
     , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, mean, amplitude, pulsation, phase]"))
 {
 }
 
 
-template <class DataTypes>
-OscillatorConstraint<DataTypes>::OscillatorConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate)
+    : core::behavior::ProjectiveConstraintSet<TDataTypes>(mstate)
     , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
 {
 }
 
-template <class DataTypes>
-OscillatorConstraint<DataTypes>::~OscillatorConstraint()
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>::~OscillatorConstraint()
 {
 }
 
-template <class DataTypes>
-OscillatorConstraint<DataTypes>*  OscillatorConstraint<DataTypes>::addConstraint(unsigned index, const Coord& mean, const Deriv& amplitude, Real pulsation, Real phase)
+template <class TDataTypes>
+OscillatorConstraint<TDataTypes>*  OscillatorConstraint<TDataTypes>::addConstraint(unsigned index, const Coord& mean, const Deriv& amplitude, Real pulsation, Real phase)
 {
     this->constraints.beginEdit()->push_back( Oscillator(index,mean,amplitude,pulsation,phase) );
     return this;
 }
 
 
-template <class DataTypes> template <class DataDeriv>
-void OscillatorConstraint<DataTypes>::projectResponseT(DataDeriv& res)
+template <class TDataTypes> template <class DataDeriv>
+void OscillatorConstraint<TDataTypes>::projectResponseT(DataDeriv& res, const core::MechanicalParams* /*mparams*/)
 {
-    const helper::vector< Oscillator > &oscillators = constraints.getValue();
+    const helper::vector<Oscillator> &oscillators = constraints.getValue();
     //Real t = (Real) this->getContext()->getTime();
-    for( unsigned i=0; i<oscillators.size(); ++i )
+    for (unsigned i = 0; i < oscillators.size(); ++i)
     {
         const unsigned& index = oscillators[i].index;
         //const Deriv& a = constraints[i].second.amplitude;
@@ -85,40 +85,37 @@ void OscillatorConstraint<DataTypes>::projectResponseT(DataDeriv& res)
     }
 }
 
-template <class DataTypes>
-void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
+template <class TDataTypes>
+void OscillatorConstraint<TDataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    projectResponseT(res);
-}
-template <class DataTypes>
-void OscillatorConstraint<DataTypes>::projectResponse(MatrixDerivRowType& res)
-{
-    projectResponseT(res);
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseT(res.wref(), mparams);
 }
 
-template <class DataTypes>
-void OscillatorConstraint<DataTypes>::projectVelocity(VecDeriv& res)
+template <class TDataTypes>
+void OscillatorConstraint<TDataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
 {
-    const helper::vector< Oscillator > &oscillators = constraints.getValue();
+    helper::WriteAccessor<DataVecDeriv> v = vData;
+    const helper::vector<Oscillator>& oscillators = constraints.getValue();
     Real t = (Real) this->getContext()->getTime();
-    for( unsigned i=0; i<oscillators.size(); ++i )
+    for (unsigned i = 0; i < oscillators.size(); ++i)
     {
         const unsigned& index = oscillators[i].index;
         const Deriv& a = oscillators[i].amplitude;
         const Real& w = oscillators[i].pulsation;
         const Real& p = oscillators[i].phase;
 
-        res[index] = a*w*cos(w*t+p);
+        v[index] = a * w * cos(w * t + p);
     }
 }
 
-template <class DataTypes>
-void OscillatorConstraint<DataTypes>::projectPosition(VecCoord& res)
+template <class TDataTypes>
+void OscillatorConstraint<TDataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
 {
-    const helper::vector< Oscillator > &oscillators = constraints.getValue();
+    helper::WriteAccessor<DataVecCoord> x = xData;
+    const helper::vector<Oscillator> &oscillators = constraints.getValue();
     Real t = (Real) this->getContext()->getTime();
-    //serr<<"OscillatorConstraint<DataTypes>::projectPosition, t = "<<t<<sendl;
-    for( unsigned i=0; i<oscillators.size(); ++i )
+    for (unsigned i = 0; i < oscillators.size(); ++i)
     {
         const unsigned& index = oscillators[i].index;
         const Coord& m = oscillators[i].mean;
@@ -126,16 +123,24 @@ void OscillatorConstraint<DataTypes>::projectPosition(VecCoord& res)
         const Real& w = oscillators[i].pulsation;
         const Real& p = oscillators[i].phase;
 
-        res[index] = m + a*sin(w*t+p);
+        x[index] = m + a * sin(w * t + p);
     }
 }
 
+template <class TDataTypes>
+void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+{
+    helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-//// Specialization for rigids
-//template <>
-//      void OscillatorConstraint<RigidTypes >::draw();
-//template <>
-//      void OscillatorConstraint<RigidTypes >::projectResponse(VecDeriv& dx);
+    MatrixDerivRowIterator rowIt = c->begin();
+    MatrixDerivRowIterator rowItEnd = c->end();
+
+    while (rowIt != rowItEnd)
+    {
+        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        ++rowIt;
+    }
+}
 
 } // namespace constraint
 

@@ -29,7 +29,7 @@
 #define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
+#include <sofa/component/component.h>
 
 
 namespace sofa
@@ -42,14 +42,14 @@ namespace odesolver
 {
 
 /** Finds the static equilibrium of a system. Can diverge when there are an infinity of solutions. */
-class SOFA_COMPONENT_ODESOLVER_API StaticSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
 {
 
 public:
-    SOFA_CLASS(StaticSolver, sofa::component::odesolver::OdeSolverImpl);
+    SOFA_CLASS(StaticSolver, sofa::core::behavior::OdeSolver);
     StaticSolver();
 
-    void solve (double dt);
+    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.

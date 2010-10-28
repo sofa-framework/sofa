@@ -55,6 +55,9 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
 protected:
 
     class TrianglePressureInformation
@@ -98,9 +101,8 @@ public:
 
     virtual void init();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/) {}
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
     // Handle topological changes
     virtual void handleTopologyChange();
@@ -112,6 +114,7 @@ public:
     {
         dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
     }
+
     void setNormal(const Coord n) { normal.setValue(n);}
 
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateTriangleInformation(); }
@@ -131,6 +134,21 @@ protected :
     }
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API TrianglePressureForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API TrianglePressureForceField<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP)
+
 
 } // namespace forcefield
 
@@ -138,4 +156,4 @@ protected :
 
 } // namespace sofa
 
-#endif /* _TRIANGLEPRESSUREFORCEFIELD_H_ */
+#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H

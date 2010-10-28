@@ -33,6 +33,8 @@
 #include <vector>
 #include <math.h>
 
+#include <sofa/component/component.h>
+
 
 
 namespace sofa
@@ -65,6 +67,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 public:
     Data< Real > particleRadius;
@@ -156,7 +161,7 @@ protected:
     Real constGradWd(Real h) const
     {
         return -6*constWd(h)/(h*h);
-//		return -6*constWd(h)/h;
+        //		return -6*constWd(h)/h;
     }
 
     Deriv gradWd(const Deriv& d, Real r_h, Real C)
@@ -164,7 +169,7 @@ protected:
         Real a = (1-r_h*r_h);
         if(a<=0)return Deriv();
         return d*(C*a*a);
-//		return d*(C*a*a)*r_h;
+        //		return d*(C*a*a)*r_h;
     }
 
 
@@ -413,14 +418,30 @@ public:
 
     virtual void init();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
     void draw();
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec2fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec2fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP)
 
 } // namespace forcefield
 
@@ -428,4 +449,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_H

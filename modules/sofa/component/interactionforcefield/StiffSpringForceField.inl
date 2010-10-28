@@ -48,7 +48,10 @@ void StiffSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int i, const Spring& spring)
+void StiffSpringForceField<DataTypes>::addSpringForce(double& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1,
+        VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2,
+        int i, const Spring& spring)
+//addSpringForce( double& potentialEnergy, RDataRefVecDeriv& f1, RDataRefVecCoord& p1, RDataRefVecDeriv& v1, RDataRefVecDeriv& f2, RDataRefVecCoord& p2, RDataRefVecDeriv& v2, int i, const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
@@ -99,28 +102,28 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringDForce(WRefVecDeriv& f1, RRefVecDeriv& dx1, WRefVecDeriv& f2, RRefVecDeriv& dx2, int i, const Spring& spring, double kFactor, double /*bFactor*/)
+void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double /*bFactor*/)
 {
     const int a = spring.m1;
     const int b = spring.m2;
     const Coord d = dx2[b]-dx1[a];
     Deriv dforce = this->dfdx[i]*d;
     dforce *= kFactor;
-    f1[a]+=dforce;
-    f2[b]-=dforce;
+    df1[a]+=dforce;
+    df2[b]-=dforce;
     //serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
+void StiffSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* /*mparams*/ )
 {
 
-    WRefVecDeriv f1 = vf1;
-    RRefVecCoord x1 = vx1;
-    RRefVecDeriv v1 = vv1;
-    WRefVecDeriv f2 = vf2;
-    RRefVecCoord x2 = vx2;
-    RRefVecDeriv v2 = vv2;
+    VecDeriv&       f1 = *data_f1.beginEdit();
+    const VecCoord& x1 =  data_x1.getValue();
+    const VecDeriv& v1 =  data_v1.getValue();
+    VecDeriv&       f2 = *data_f2.beginEdit();
+    const VecCoord& x2 =  data_x2.getValue();
+    const VecDeriv& v2 =  data_v2.getValue();
 
     const helper::vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
@@ -133,15 +136,21 @@ void StiffSpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, co
         //serr<<"StiffSpringForceField<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;
         this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
+
+    data_f1.endEdit();
+    data_f2.endEdit();
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addDForce(VecDeriv& vdf1, VecDeriv& vdf2, const VecDeriv& vdx1, const VecDeriv& vdx2, double kFactor, double bFactor)
+void StiffSpringForceField<DataTypes>::addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams)
 {
-    WRefVecDeriv df1 = vdf1;
-    WRefVecDeriv df2 = vdf2;
-    RRefVecDeriv dx1 = vdx1;
-    RRefVecDeriv dx2 = vdx2;
+    VecDeriv&        df1 = *data_df1.beginEdit();
+    VecDeriv&        df2 = *data_df2.beginEdit();
+    const VecDeriv&  dx1 =  data_dx1.getValue();
+    const VecDeriv&  dx2 =  data_dx2.getValue();
+    double kFactor       =  mparams->kFactor();
+    double bFactor       =  mparams->bFactor();
+
     const helper::vector<Spring>& springs = this->springs.getValue();
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -153,14 +162,18 @@ void StiffSpringForceField<DataTypes>::addDForce(VecDeriv& vdf1, VecDeriv& vdf2,
     }
     //serr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<sendl;
     //serr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<sendl;
+
+    data_df1.endEdit();
+    data_df2.endEdit();
 }
 
 
 
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact)
+void StiffSpringForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
 {
+    double kFact = mparams->kFactor();
     if (this->mstate1 == this->mstate2)
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);

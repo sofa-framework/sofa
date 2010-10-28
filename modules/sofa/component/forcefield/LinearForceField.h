@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARFORCEFIELD_H
-#define SOFA_COMPONENT_LINEARFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-// #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/topology/PointSubset.h>
 
 namespace sofa
@@ -38,7 +37,7 @@ namespace component
 namespace forcefield
 {
 /** Apply forces changing to given degres of freedom. Some keyTimes are given
- * and the force to be applied is linearly interpolated between keyTimes. */
+* and the force to be applied is linearly interpolated between keyTimes. */
 template<class DataTypes>
 class LinearForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -51,6 +50,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef topology::PointSubset VecIndex;
 
     /// concerned DOFs
@@ -78,23 +79,27 @@ public:
     void clearPoints();
 
     /**
-     * Add a new key force.
-     * Key force should be added in classified order.
-     *
-     * @param time  the simulation time you want to set a movement (in sec)
-     * @param force the corresponding force
-     */
+    * Add a new key force.
+    * Key force should be added in classified order.
+    *
+    * @param time  the simulation time you want to set a movement (in sec)
+    * @param force the corresponding force
+    */
     void addKeyForce(Real time, Deriv force);
     void clearKeyForces();
 
     // ForceField methods
     /// Add the forces
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce (DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
     /// Compute the force derivative
-    virtual void addDForce (VecDeriv& , const VecDeriv& , const VecDeriv&);
+    virtual void addDForce(DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */, const core::MechanicalParams* mparams)
+    {
+        //TODO: remove this line (avoid warning message) ...
+        mparams->kFactor();
+    };
 
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* mparams) const;
 
 private :
     /// the key times surrounding the current simulation time (for interpolation)
@@ -109,10 +114,42 @@ private :
 }; // definition of the LinearForceField class
 
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec1fTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec1dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec6dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3dTypes>;
+// template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec1fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Vec6fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3fTypes>;
+// template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid2fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
+
+
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_H

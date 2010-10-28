@@ -33,8 +33,7 @@
 #include <sofa/component/collision/BaseContactMapper.h>
 #include <sofa/component/collision/RigidContactMapper.inl>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <sofa/core/behavior/MechanicalMapping.inl>
+#include <sofa/core/BaseMapping.h>
 
 
 namespace sofa
@@ -190,8 +189,8 @@ protected:
     component::container::MechanicalObject<DataTypes1 >* constraintModel1;
     component::container::MechanicalObject<DataTypes2 >* constraintModel2;
 
-    sofa::core::behavior::BaseMechanicalMapping *map1;
-    sofa::core::behavior::BaseMechanicalMapping *map2;
+    sofa::core::BaseMapping *map1;
+    sofa::core::BaseMapping *map2;
 
     std::vector<Vector3> barycentricValues1;
     std::vector<Vector3> barycentricValues2;

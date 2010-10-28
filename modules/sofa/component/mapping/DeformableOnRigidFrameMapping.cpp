@@ -25,10 +25,6 @@
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP
 #include <sofa/component/mapping/DeformableOnRigidFrameMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {
@@ -42,55 +38,29 @@ namespace mapping
 SOFA_DECL_CLASS(DeformableOnRigidFrameMapping)
 
 using namespace defaulttype;
-using namespace core;
-using namespace core::behavior;
-
 
 // Register in the Factory
 int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
 #ifndef SOFA_FLOAT
-        .add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes > >()
+//.add< DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes > >()
+//.add< DeformableOnRigidFrameMapping< Vec3fTypes, ExtVec3fTypes > >()
 #endif
         ;
-//#ifndef SOFA_FLOAT
-//.add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
-//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
-//#endif
 
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3dTypes, Vec3fTypes >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
-
-//#ifndef SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
-//#endif
-//#endif
 
 
 } // namespace mapping

@@ -70,25 +70,25 @@ void WarpPreconditioner<DataTypes>::bwdInit()
 }
 
 template<class DataTypes>
-void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
+void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
     if (rotatedLHVId.isNull())
     {
-        rotatedLHVId = VecId(VecId::V_DERIV, VecId::V_FIRST_DYNAMIC_INDEX);
+        rotatedLHVId = core::VecDerivId(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
         mstate->vAvail(rotatedLHVId);
         mstate->vAlloc(rotatedLHVId);
         sout << "Allocated LH vector " << rotatedLHVId << sendl;
     }
     if (rotatedRHVId.isNull())
     {
-        rotatedRHVId = VecId(VecId::V_DERIV, VecId::V_FIRST_DYNAMIC_INDEX);
+        rotatedRHVId = core::VecDerivId(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
         mstate->vAvail(rotatedRHVId);
         mstate->vAlloc(rotatedRHVId);
         sout << "Allocated RH vector " << rotatedRHVId << sendl;
     }
 
     getRotations(Rinv);
-    realSolver->setSystemMBKMatrix(mFact, bFact, kFact);
+    realSolver->setSystemMBKMatrix(mparams);
 }
 
 template<class DataTypes>
@@ -105,7 +105,7 @@ void WarpPreconditioner<DataTypes>::invertSystem()
 
 /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
 template<class DataTypes>
-void WarpPreconditioner<DataTypes>::setSystemRHVector(VecId v)
+void WarpPreconditioner<DataTypes>::setSystemRHVector(core::MultiVecDerivId v)
 {
     systemRHVId = v;
 
@@ -115,7 +115,7 @@ void WarpPreconditioner<DataTypes>::setSystemRHVector(VecId v)
 /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
 /// This vector will be replaced by the solution of the system once solveSystem is called
 template<class DataTypes>
-void WarpPreconditioner<DataTypes>::setSystemLHVector(VecId v)
+void WarpPreconditioner<DataTypes>::setSystemLHVector(core::MultiVecDerivId v)
 {
     systemLHVId = v;
     //if (realSolver) realSolver->setSystemLHVector(v);
@@ -160,8 +160,13 @@ void WarpPreconditioner<DataTypes>::solveSystem()
     {
         //Solve lv = R * M-1 * R^t * rv
 
-        helper::ReadAccessor <VecDeriv> rv = *mstate->getVecDeriv(systemRHVId.index);
-        helper::WriteAccessor<VecDeriv> rvR = *mstate->getVecDeriv(rotatedRHVId.index);
+        //<TO REMOVE>
+        //helper::ReadAccessor <VecDeriv> rv = *mstate->getVecDeriv(systemRHVId.index);
+        //helper::WriteAccessor<VecDeriv> rvR = *mstate->getVecDeriv(rotatedRHVId.index);
+        const Data<VecDeriv>* dataRv = mstate->read(systemRHVId.getId(mstate));
+        const VecDeriv& rv = dataRv->getValue();
+        Data<VecDeriv>* dataRvR = mstate->write(rotatedRHVId);
+        VecDeriv& rvR = *dataRvR->beginEdit();
 
         //Solve rvR = Rcur^t * rv
         unsigned int k = 0,l = 0;
@@ -174,13 +179,21 @@ void WarpPreconditioner<DataTypes>::solveSystem()
             k+=9;
         }
 
+        dataRvR->endEdit();
+
         //Solve lvR = M-1 * rvR
         realSolver->setSystemRHVector(systemRHVId);
         realSolver->setSystemLHVector(rotatedLHVId);
         realSolver->solveSystem();
 
-        helper::WriteAccessor<VecDeriv> lv = *mstate->getVecDeriv(systemLHVId.index);
-        helper::ReadAccessor <VecDeriv> lvR = *mstate->getVecDeriv(rotatedLHVId.index);
+        //<TO REMOVE>
+        //helper::WriteAccessor<VecDeriv> lv = *mstate->getVecDeriv(systemLHVId.index);
+        //helper::ReadAccessor <VecDeriv> lvR = *mstate->getVecDeriv(rotatedLHVId.index);
+
+        Data<VecDeriv>* dataLv = mstate->write(systemLHVId.getId(mstate));
+        VecDeriv& lv = *dataLv->beginEdit();
+        const Data<VecDeriv>* dataLvR = mstate->read(rotatedRHVId);
+        const VecDeriv& lvR = dataLvR->getValue();
 
         //Solve lv = R * lvR
         k = 0; l = 0;
@@ -192,10 +205,10 @@ void WarpPreconditioner<DataTypes>::solveSystem()
             l++;
             k+=9;
         }
-
+        dataLv->endEdit();
 
     }
-    else mstate->vOp(systemLHVId, systemRHVId);     // systemLH = rotatedLH
+    else mstate->vOp(systemLHVId.getId(mstate), systemRHVId.getId(mstate));     // systemLH = rotatedLH
 }
 
 template<class TDataTypes>

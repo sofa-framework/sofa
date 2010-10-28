@@ -52,7 +52,7 @@ BaseObject::BaseObject()
     ,partition_(NULL)
 #endif
 /*        , m_isListening(false)
-        , m_printLog(false)*/
+, m_printLog(false)*/
 {
 }
 
@@ -158,8 +158,8 @@ void BaseObject::parse( BaseObjectDescription* arg )
             {
                 std::string valueString(val);
 
-                /* test if data is a link */
-                if (valueString[0] == '@')
+                // test if data is a link and can be linked
+                if (valueString[0] == '@' && dataModif[d]->canBeLinked())
                 {
                     dataModif[d]->setLinkPath(valueString);
                     std::size_t posPath = valueString.rfind('/');
@@ -339,7 +339,7 @@ void BaseObject::handleEvent( Event* /*e*/ )
     serr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<sendl;
     if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
     {
-        serr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<sendl;
+    serr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<sendl;
     }
     */
 }

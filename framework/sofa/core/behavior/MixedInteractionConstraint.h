@@ -28,7 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
 
 #include <sofa/core/core.h>
-#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -49,10 +49,10 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class  MixedInteractionConstraint : public InteractionConstraint
+class  MixedInteractionConstraint : public BaseInteractionConstraint
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MixedInteractionConstraint,TDataTypes1,TDataTypes2), InteractionConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE2(MixedInteractionConstraint,TDataTypes1,TDataTypes2), BaseInteractionConstraint);
 
     typedef TDataTypes1 DataTypes1;
     typedef typename DataTypes1::VecCoord VecCoord1;
@@ -84,76 +84,6 @@ public:
     MechanicalState<DataTypes2>* getMState2() { return mstate2; }
     BaseMechanicalState* getMechModel2() { return mstate2; }
 
-    /// @name Vector operations
-    /// @{
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method retrieves the dx vector from the MechanicalState and call
-    /// the internal projectResponse(VecDeriv1&,VecDeriv2&) method implemented by
-    /// the component.
-    virtual void projectResponse();
-
-    /// Project the L matrix of the Lagrange Multiplier equation system.
-    ///
-    /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
-    /// the internal projectResponse(SparseVecDeriv&) method implemented by
-    /// the component.
-    virtual void projectJacobianMatrix();
-
-    /// Project v to constrained space (v models a velocity).
-    ///
-    /// This method retrieves the v vector from the MechanicalState and call
-    /// the internal projectVelocity(VecDeriv1&,VecDeriv2&) method implemented by
-    /// the component.
-    virtual void projectVelocity();
-
-    /// Project x to constrained space (x models a position).
-    ///
-    /// This method retrieves the x vector from the MechanicalState and call
-    /// the internal projectPosition(VecCoord1&,VecCoord2&) method implemented by
-    /// the component.
-    virtual void projectPosition();
-
-    /// Project vFree to constrained space (vFree models a velocity).
-    ///
-    /// This method retrieves the vFree vector from the MechanicalState and call
-    /// the internal projectVelocity(VecDeriv1&,VecDeriv2&) method implemented by
-    /// the component.
-    virtual void projectFreeVelocity();
-
-    /// Project xFree to constrained space (xFree models a position).
-    ///
-    /// This method retrieves the xFree vector from the MechanicalState and call
-    /// the internal projectPosition(VecCoord1&,VecCoord2&) method implemented by
-    /// the component.
-    virtual void projectFreePosition();
-
-    /// Project dx to constrained space (dx models an acceleration).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectResponse() method.
-    virtual void projectResponse(VecDeriv1& dx1, VecDeriv2& dx2) = 0;
-
-    /// Project v to constrained space (v models a velocity).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectVelocity() method.
-    virtual void projectVelocity(VecDeriv1& v1, VecDeriv2& v2) = 0;
-
-    /// Project x to constrained space (x models a position).
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic Constraint::projectPosition() method.
-    virtual void projectPosition(VecCoord1& x1, VecCoord2& x2) = 0;
-
-    /// @}
-
-    /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&) ?
-    virtual void applyConstraint(unsigned int & contactId); // Pure virtual would be better
-
-    virtual void applyConstraint(MatrixDeriv1& /*c1*/, MatrixDeriv2& /*c2*/, unsigned int & /*contactId*/) {}
-
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
@@ -166,14 +96,14 @@ public:
             if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
                 return false;
         }
-        return InteractionConstraint::canCreate(obj, context, arg);
+        return BaseInteractionConstraint::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::behavior::InteractionConstraint::create(obj, context, arg);
+        core::behavior::BaseInteractionConstraint::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->mstate1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));

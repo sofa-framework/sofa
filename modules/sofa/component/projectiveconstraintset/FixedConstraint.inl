@@ -172,9 +172,8 @@ void FixedConstraint<DataTypes>::init()
 
 template <class DataTypes>
 template <class DataDeriv>
-void FixedConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
+void FixedConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const core::MechanicalParams* /*mparams*/)
 {
-//  projectResponseTest(dx);
     const SetIndexArray & indices = f_indices.getValue().getArray();
     //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<dx.size()<<sendl;
     if( f_fixAll.getValue()==true )    // fix everyting
@@ -194,15 +193,25 @@ void FixedConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+void FixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    projectResponseT<VecDeriv>(dx);
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseT<VecDeriv>(res.wref(), mparams);
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
+void FixedConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
 {
-    projectResponseT<MatrixDerivRowType>(dx);
+    helper::WriteAccessor<DataMatrixDeriv> c = cData;
+
+    MatrixDerivRowIterator rowIt = c->begin();
+    MatrixDerivRowIterator rowItEnd = c->end();
+
+    while (rowIt != rowItEnd)
+    {
+        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        ++rowIt;
+    }
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
@@ -210,7 +219,7 @@ void FixedConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectVelocity(VecDeriv&)
+void FixedConstraint<DataTypes>::projectVelocity(DataVecDeriv& /*vData*/, const core::MechanicalParams* /*mparams*/)
 {
 #if 0 /// @TODO ADD A FLAG FOR THIS
     const SetIndexArray & indices = f_indices.getValue().getArray();
@@ -230,6 +239,12 @@ void FixedConstraint<DataTypes>::projectVelocity(VecDeriv&)
         }
     }
 #endif
+}
+
+template <class DataTypes>
+void FixedConstraint<DataTypes>::projectPosition(DataVecCoord& /*xData*/, const core::MechanicalParams* /*mparams*/)
+{
+
 }
 
 // Matrix Integration interface

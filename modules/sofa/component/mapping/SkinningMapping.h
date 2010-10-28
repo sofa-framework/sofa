@@ -25,9 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/Mapping.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -103,37 +101,46 @@ struct Equal
 ///////////////////////////////////////////////////////////////////////////////
 
 
-template <class BasicMapping>
+template <class TIn, class TOut>
 #ifdef SOFA_DEV
-class SkinningMapping : public BasicMapping, public FrameStorage<typename BasicMapping::In::DataTypes, typename BasicMapping::In::Real>
+class SkinningMapping : public core::Mapping<TIn, TOut>, public FrameStorage<TIn, typename TIn::Real>
 #else
-class SkinningMapping : public BasicMapping
+class SkinningMapping : public core::Mapping<TIn, TOut>
 #endif
 {
 public:
-    SOFA_CLASS ( SOFA_TEMPLATE ( SkinningMapping,BasicMapping ), BasicMapping );
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::DataTypes DataTypes;
+#ifdef SOFA_DEV
+    SOFA_CLASS(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+#else
+    SOFA_CLASS2(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut), SOFA_TEMPLATE2(FrameStorage,TIn,TIn::Real));
+#endif
+
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+
+    typedef Out DataTypes;
+
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real Real;
+
 
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Real InReal;
-    typedef typename Out::Real Real;
+
     enum { N=DataTypes::spatial_dimensions };
     //enum { InDerivDim=In::DataTypes::deriv_total_size };
 #ifdef SOFA_DEV
-    enum { InDOFs=sofa::frame::DataTypesInfo<In::DataTypes::spatial_dimensions, typename In::DataTypes::Real, typename In::DataTypes>::degrees_of_freedom };
-    enum { InAt=sofa::frame::DataTypesInfo<In::DataTypes::spatial_dimensions, typename In::DataTypes::Real, typename In::DataTypes>::Atilde_nb_column };
+    enum { InDOFs=sofa::frame::DataTypesInfo<In::spatial_dimensions, InReal, In>::degrees_of_freedom };
+    enum { InAt=sofa::frame::DataTypesInfo<In::spatial_dimensions, InReal, In>::Atilde_nb_column };
 #else
     enum { InDOFs=In::DataTypes::deriv_total_size };
     enum { InAt=0 };
@@ -254,15 +261,15 @@ protected:
     inline void normalizeWeights();
 
 public:
-    SkinningMapping ( In* from, Out* to );
+    SkinningMapping (core::State<In>* from, core::State<Out>* to );
     virtual ~SkinningMapping();
 
     void init();
 
-    void apply ( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
+    void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
+    void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 
     void draw();
     void clear();
@@ -375,44 +382,26 @@ protected:
 #endif
 };
 
-using core::Mapping;
-using core::behavior::MechanicalMapping;
-using core::behavior::MappedModel;
-using core::behavior::State;
-using core::behavior::MechanicalState;
-
-using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec2fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
-using sofa::defaulttype::Rigid2dTypes;
 using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
-
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
 
@@ -426,23 +415,17 @@ using sofa::defaulttype::Affine3dTypes;
 using sofa::defaulttype::Affine3fTypes;
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<ExtVec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Vec3dTypes >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, ExtVec3fTypes >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Affine3fTypes>, MechanicalState<Vec3fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<Vec3fTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<ExtVec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<ExtVec3fTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Vec3fTypes >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, ExtVec3fTypes >;
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Affine3dTypes>, MechanicalState<Vec3fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Affine3fTypes>, MechanicalState<Vec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3dTypes>, MappedModel<Vec3fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Affine3fTypes>, MappedModel<Vec3dTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Vec3fTypes >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Vec3dTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 
@@ -455,26 +438,21 @@ using sofa::defaulttype::Quadratic3dTypes;
 using sofa::defaulttype::Quadratic3fTypes;
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Quadratic3dTypes>, MechanicalState<Vec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3dTypes>, MappedModel<ExtVec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3dTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Vec3dTypes >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, ExtVec3fTypes >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Quadratic3fTypes>, MechanicalState<Vec3fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3fTypes>, MappedModel<Vec3fTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3fTypes>, MappedModel<ExtVec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3fTypes>, MappedModel<ExtVec3fTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Vec3fTypes >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, ExtVec3fTypes >;
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Quadratic3dTypes>, MechanicalState<Vec3fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< MechanicalMapping< MechanicalState<Quadratic3fTypes>, MechanicalState<Vec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3dTypes>, MappedModel<Vec3fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Mapping< State<Quadratic3fTypes>, MappedModel<Vec3dTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Vec3fTypes >;
+//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Vec3dTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 #endif // SOFA_DEV
+
 #endif //defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 

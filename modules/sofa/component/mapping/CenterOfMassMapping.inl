@@ -26,18 +26,18 @@
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_INL
 
 #include <sofa/component/mapping/CenterOfMassMapping.h>
+
+#include <sofa/core/Mapping.inl>
+
 #include <sofa/simulation/common/Simulation.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
+
 #include <string>
 #include <iostream>
-
-
-
-
 
 namespace sofa
 {
@@ -51,10 +51,8 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 
-
-
-template <class BasicMapping>
-void CenterOfMassMapping<BasicMapping>::init()
+template <class TIn, class TOut>
+void CenterOfMassMapping<TIn, TOut>::init()
 {
     //get the pointer on the input dofs mass
     masses = dynamic_cast<BaseMass*> (this->fromModel->getContext()->getMass());
@@ -66,12 +64,11 @@ void CenterOfMassMapping<BasicMapping>::init()
     //compute the total mass of the object
     for (unsigned int i=0 ; i<this->fromModel->getX()->size() ; i++)
         totalMass += masses->getElementMass(i);
-
 }
 
 
-template <class BasicMapping>
-void CenterOfMassMapping<BasicMapping>::apply ( typename Out::VecCoord& childPositions, const typename In::VecCoord& parentPositions )
+template <class TIn, class TOut>
+void CenterOfMassMapping<TIn, TOut>::apply ( typename Out::VecCoord& childPositions, const typename In::VecCoord& parentPositions )
 {
     if(!masses || totalMass==0.0)
     {
@@ -92,8 +89,8 @@ void CenterOfMassMapping<BasicMapping>::apply ( typename Out::VecCoord& childPos
 }
 
 
-template <class BasicMapping>
-void CenterOfMassMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& childForces, const typename In::VecDeriv& parentForces )
+template <class TIn, class TOut>
+void CenterOfMassMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& childForces, const typename In::VecDeriv& parentForces )
 {
     if(!masses || totalMass==0.0)
     {
@@ -111,12 +108,11 @@ void CenterOfMassMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& childFo
     }
 
     childForces[0] = outF / totalMass;
-
 }
 
 
-template <class BasicMapping>
-void CenterOfMassMapping<BasicMapping>::applyJT ( typename In::VecDeriv& parentForces, const typename Out::VecDeriv& childForces )
+template <class TIn, class TOut>
+void CenterOfMassMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& parentForces, const typename Out::VecDeriv& childForces )
 {
     if(!masses || totalMass==0.0)
     {
@@ -132,9 +128,8 @@ void CenterOfMassMapping<BasicMapping>::applyJT ( typename In::VecDeriv& parentF
 }
 
 
-
-template <class BasicMapping>
-void CenterOfMassMapping<BasicMapping>::draw()
+template <class TIn, class TOut>
+void CenterOfMassMapping<TIn, TOut>::draw()
 {
     const typename Out::VecCoord &X = *this->toModel->getX();
 
@@ -149,8 +144,8 @@ void CenterOfMassMapping<BasicMapping>::draw()
         points.push_back(point1);
         points.push_back(point2);
     }
-    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
 
+    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
 }
 
 

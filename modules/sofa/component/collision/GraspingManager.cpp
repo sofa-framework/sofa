@@ -126,7 +126,8 @@ void GraspingManager::doGrasp()
     {
         double value = (newActive ? closedAngle.getValue() : openAngle.getValue());
         sout << value << sendl;
-        ToolDOFs::VecCoord& x = *mstateTool->getX();
+        helper::WriteAccessor<Data<ToolDOFs::VecCoord> > xData = *mstateTool->write(core::VecCoordId::position());
+        ToolDOFs::VecCoord& x = xData.wref();
         if (x.size() >= 1)
             x[0] = value;
         if (x.size() >= 2)

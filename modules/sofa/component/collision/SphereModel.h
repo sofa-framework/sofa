@@ -184,7 +184,7 @@ template<class DataTypes>
 inline const typename DataTypes::Coord& TSphere<DataTypes>::p() const { return (*this->model->mstate->getX())[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->getXfree())[this->index]; }
+inline const typename DataTypes::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition()))[this->index]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TSphere<DataTypes>::v() const { return (*this->model->mstate->getV())[this->index]; }

@@ -62,15 +62,15 @@ url          = "http://www-evasion.imag.fr/Publications/2006/NPF06"
 
 indices ordering (same as in HexahedronSetTopology):
 
-     Y  7---------6
-     ^ /         /|
-     |/    Z    / |
-     3----^----2  |
-     |   /     |  |
-     |  4------|--5
-     | /       | /
-     |/        |/
-     0---------1-->X
+Y  7---------6
+^ /         /|
+|/    Z    / |
+3----^----2  |
+|   /     |  |
+|  4------|--5
+| /       | /
+|/        |/
+0---------1-->X
 
 */
 
@@ -185,10 +185,25 @@ private:
     Data<bool>		_bRecursive;
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_H)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedralFEMForceFieldAndMass<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedralFEMForceFieldAndMass<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_H)
+
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_H

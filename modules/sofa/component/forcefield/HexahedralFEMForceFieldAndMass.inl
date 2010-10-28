@@ -119,7 +119,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topol
             const VecElement& hexahedra = this->_topology->getHexahedra();
             const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
 
-            VecCoord& initialPoints = *this->mstate->getX0();
+            const VecCoord& initialPoints = *this->mstate->getX0();
 
             helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
             helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
@@ -377,8 +377,11 @@ typename HexahedralFEMForceFieldAndMass<DataTypes>::Real HexahedralFEMForceField
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor< DataVecDeriv > _f = f;
+    const VecDeriv& _dx = dx.getValue();
+
     if( ! _useLumpedMass.getValue() )
     {
         const VecElement& hexahedra = this->_topology->getHexahedra();
@@ -390,26 +393,26 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
             {
                 int indice = k*3;
                 for(int j=0 ; j<3 ; ++j )
-                    actualDx[indice+j] = dx[hexahedra[i][k]][j];
+                    actualDx[indice+j] = _dx[hexahedra[i][k]][j];
             }
 
             actualF = _elementMasses.getValue()[i] * actualDx;
 
 
             for(unsigned int w=0; w<8; ++w)
-                f[hexahedra[i][w]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
+                _f[hexahedra[i][w]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
         }
     }
     else // lumped matrices
     {
         for(unsigned int i=0; i<_lumpedMasses.getValue().size(); ++i)
             for(unsigned int j=0; j<3; ++j)
-                f[i][j] += (Real)(_lumpedMasses.getValue()[i][j] * dx[i][j] *factor);
+                _f[i][j] += (Real)(_lumpedMasses.getValue()[i][j] * _dx[i][j] *factor);
     }
 }
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams)
 {
     // Build Matrix Block for this ForceField
     int i, j, n1, n2;
@@ -417,10 +420,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMa
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+
     for(unsigned int e=0; e<hexahedra.size(); ++e)
     {
         const ElementMass &Me = _elementMasses.getValue()[e];
 
+        Real mFactor = (Real)mparams->mFactor();
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -437,7 +443,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMa
                         Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        mat->add(offset+3*node1+i, offset+3*node2+j, tmp[i][j]*mFact);
+                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, tmp[i][j]*mFactor);
             }
         }
     }
@@ -445,7 +451,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMa
 
 ///// WARNING this method only add diagonal elements in the given matrix !
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+// void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, e;
@@ -456,11 +463,14 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::
     Index node1, node2;
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+
     for(it = this->hexahedronInfo.getValue().begin(), e=0 ; it != this->hexahedronInfo.getValue().end() ; ++it,++e)
     {
         const Element hexa = hexahedra[e];
         const ElementStiffness &Ke = it->stiffness;
 
+        Real kFactor = (Real)mparams->kFactor();
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -483,7 +493,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * it->rotation;
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
-                        mat->add(offset+3*node1+i, offset+3*node2+j, - tmp[i][j]*k);
+                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, - tmp[i][j]*kFactor);
             }
         }
     }
@@ -491,8 +501,9 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaulttype::BaseMatrix * matrix,
-        double mFact, double /*bFact*/, double kFact, unsigned int &offset )
+void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams)
+// void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaulttype::BaseMatrix * matrix,
+// double mFact, double /*bFact*/, double kFact, unsigned int &offset )
 {
     int i, j, n1, n2;
     Index node1, node2;
@@ -502,6 +513,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaultty
     //typename VecElement::const_iterator it;
     typename helper::vector<HexahedronInformation>::const_iterator it;
 
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+
     for ( unsigned int e = 0; e < hexahedra.size(); ++e )
     {
         const ElementMass &Me = _elementMasses.getValue() [e];
@@ -510,6 +523,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaultty
 
         // find index of node 1
 
+        Real mFactor = (Real)mparams->mFactor();
+        Real kFactor = (Real)mparams->kFactor();
         for ( n1 = 0; n1 < 8; n1++ )
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
@@ -532,7 +547,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaultty
                         Coord ( Me[3*n1+2][3*n2+0], Me[3*n1+2][3*n2+1], Me[3*n1+2][3*n2+2] ) );
                 for ( i = 0; i < 3; i++ )
                     for ( j = 0; j < 3; j++ )
-                        matrix->add ( offset + 3*node1 + i, offset + 3*node2 + j, tmp[i][j]*mFact );
+                        r.matrix->add ( r.offset + 3*node1 + i, r.offset + 3*node2 + j, tmp[i][j]*mFactor);
 
                 // add K to matrix
                 tmp = it->rotation.multTranspose ( Mat33 ( Coord ( Ke[3*n1+0][3*n2+0], Ke[3*n1+0][3*n2+1], Ke[3*n1+0][3*n2+2] ),
@@ -540,7 +555,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaultty
                         Coord ( Ke[3*n1+2][3*n2+0], Ke[3*n1+2][3*n2+1], Ke[3*n1+2][3*n2+2] ) ) ) * it->rotation;
                 for ( i = 0; i < 3; i++ )
                     for ( j = 0; j < 3; j++ )
-                        matrix->add ( offset + 3*node1 + i, offset + 3*node2 + j, - tmp[i][j]*kFact );
+                        r.matrix->add ( r.offset + 3*node1 + i, r.offset + 3*node2 + j, - tmp[i][j]*kFactor);
             }
         }
     }
@@ -548,7 +563,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaultty
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
+void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/, const core::MechanicalParams*)
 {
     serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<sendl;
     // need to built the big global mass matrix and to inverse it...
@@ -556,49 +571,58 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(VecDeriv& /*a*/, const 
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(double dt)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
 {
-    if(this->mstate)
+    if(this->mstate && mparams)
     {
-        VecDeriv& v = *this->mstate->getV();
+        helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
+
+        double _dt = mparams->dt();
+
         for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
         {
-            v[i] +=this->getContext()->getLocalGravity()*dt;
+            v[i] +=this->getContext()->getLocalGravity()*_dt;
         }
     }
 }
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams)
 {
-    HexahedralFEMForceFieldT::addForce(f,x,v);
+    HexahedralFEMForceFieldT::addForce(f,x,v, mparams);
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if (this->m_separateGravity.getValue())
         return;
 
+    helper::WriteAccessor< DataVecDeriv > _f = f;
     for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
     {
-        f[i] += this->getContext()->getLocalGravity()*_particleMasses.getValue()[i];
+        _f[i] += this->getContext()->getLocalGravity()*_particleMasses.getValue()[i];
     }
 }
 
 
-template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
-{
-    HexahedralFEMForceFieldT::addDForce(df,dx);
-}
-
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams)
 {
-    VecDeriv kdx(dx.size());// = dx * kFactor;
-    for(unsigned i=0; i<dx.size(); ++i)
-        kdx[i]=dx[i]*kFactor;
-    HexahedralFEMForceFieldT::addDForce(df,kdx);
+    //if (mparams->kFactor() != 1.0)
+    //{
+    //	helper::ReadAccessor< DataVecDeriv > _dx = dx;
+    //	DataVecDeriv kdx;// = dx * kFactor;
+    //	helper::WriteAccessor< DataVecDeriv > _kdx = kdx;
+    //	_kdx.resize(_dx.size());
+    //	Real _kFactor = (Real)mparams->kFactor();
+    //	for(unsigned i=0;i<_dx.size();++i)
+    //		_kdx[i]=_dx[i]*_kFactor;
+    //	HexahedralFEMForceFieldT::addDForce(df,kdx, mparams);
+    //}
+    //else
+    //{
+    HexahedralFEMForceFieldT::addDForce(df, dx, mparams);
+    //}
 }
 
 
@@ -646,9 +670,11 @@ bool HexahedralFEMForceFieldAndMass<DataTypes>::addBBox(double* minBBox, double*
     return true;
 }
 
-}
-}
-}
+} // namespace forcefield
+
+} // namespace component
+
+} // namespace sofa
 
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_INL

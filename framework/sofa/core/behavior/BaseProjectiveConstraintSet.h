@@ -63,51 +63,47 @@ public:
 
     virtual ~BaseProjectiveConstraintSet() {}
 
-    /// Get the ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
+    /// Get the ID of the group containing this constraint.
+    /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
     int getGroup() const { return group.getValue(); }
 
-    /// Set the ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
+    /// Set the ID of the group containing this constraint.
+    /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
     void setGroup(int g) { group.setValue(g); }
-
-
-
 
     /// @name Vector operations
     /// @{
 
     /// Project dx to constrained space (dx models an acceleration).
-    virtual void projectResponse() = 0;
+    /// \param dxId output vector
+    virtual void projectResponse(MultiVecDerivId dxId, const MechanicalParams* mparams) = 0;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
-    virtual void projectJacobianMatrix() = 0;
+    /// \param cId output vector
+    virtual void projectJacobianMatrix(MultiMatrixDerivId cId, const MechanicalParams* mparams) = 0;
 
     /// Project v to constrained space (v models a velocity).
-    virtual void projectVelocity() = 0;
+    /// \param vId output vector
+    virtual void projectVelocity(MultiVecDerivId vId, const MechanicalParams* mparams) = 0;
 
     /// Project x to constrained space (x models a position).
-    virtual void projectPosition() = 0;
-
-    /// Project vFree to constrained space (vFree models a velocity).
-    virtual void projectFreeVelocity() = 0;
-
-    /// Project xFree to constrained space (xFree models a position).
-    virtual void projectFreePosition() = 0;
+    /// \param xId output vector
+    virtual void projectPosition(MultiVecCoordId xId, const MechanicalParams* mparams) = 0;
 
     /// @}
+
 
     /// @name Matrix operations
     /// @{
 
     /// Project the compliance Matrix to constrained space.
-    virtual void projectResponse(double **) {};
+    virtual void projectResponse(double **, const MechanicalParams* /*mparams*/) {};
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) {};
+    virtual void applyConstraint(const behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/) {};
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) {};
-
-
+    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/) {};
 
     /// @}
 
@@ -117,13 +113,6 @@ public:
     /// Deactivated by default. The constraints using only a subset of particles should activate the mask,
     /// and during projectResponse(), insert the indices of the particles modified
     virtual bool useMask() const {return false;}
-
-
-    /// says if the constraint is holonomic or not
-    /// holonomic constraints can be processed using different methods such as :
-    /// projection - reducing the degrees of freedom - simple lagrange multiplier process
-    /// Non-holonomic constraints (like contact, friction...) need more specific treatments
-    virtual bool isHolonomic() {return false; }
 
 protected:
     Data<int> group;

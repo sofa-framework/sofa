@@ -22,15 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/TetrahedralTensorMassForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
 #include <sofa/defaulttype/Vec3Types.h>
-
-
 
 // #define DEBUG_TRIANGLEFEM
 
@@ -44,10 +40,6 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-
-
 
 SOFA_DECL_CLASS(TetrahedralTensorMassForceField)
 
@@ -75,7 +67,7 @@ template class SOFA_COMPONENT_FORCEFIELD_API TetrahedralTensorMassForceField<Vec
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 

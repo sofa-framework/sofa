@@ -46,7 +46,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::cleanup()
     if (child!=NULL)
     {
         child->detachFromGraph();
-        child->execute<simulation::DeleteVisitor>();
+        child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
         delete child;
         child = NULL;
     }

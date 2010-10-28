@@ -29,7 +29,7 @@
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {
@@ -74,7 +74,7 @@ public:
     };
 
     virtual void addMechanicalState(const BaseMechanicalState* mstate);
-    virtual void addMechanicalMapping(const BaseMechanicalMapping* mapping);
+    virtual void addMechanicalMapping(const BaseMapping* mapping);
     virtual void addMappedMechanicalState(const BaseMechanicalState* mstate);
 
     virtual int getGlobalDimension() const = 0;

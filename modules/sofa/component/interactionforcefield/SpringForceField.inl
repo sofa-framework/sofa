@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
@@ -124,7 +124,7 @@ void SpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(SReal& ener, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int /*i*/, const Spring& spring)
+void SpringForceField<DataTypes>::addSpringForce(double& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
@@ -150,14 +150,19 @@ void SpringForceField<DataTypes>::addSpringForce(SReal& ener, WRefVecDeriv& f1, 
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
+void SpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2,
+        const DataVecCoord& data_x1, const DataVecCoord& data_x2,
+        const DataVecDeriv& data_v1, const DataVecDeriv& data_v2,
+        const core::MechanicalParams* /* mparams */)
 {
-    WRefVecDeriv f1 = vf1;
-    RRefVecCoord x1 = vx1;
-    RRefVecDeriv v1 = vv1;
-    WRefVecDeriv f2 = vf2;
-    RRefVecCoord x2 = vx2;
-    RRefVecDeriv v2 = vv2;
+
+    VecDeriv&       f1 = *data_f1.beginEdit();
+    const VecCoord& x1 = data_x1.getValue();
+    const VecDeriv& v1 = data_v1.getValue();
+    VecDeriv&       f2 = *data_f2.beginEdit();
+    const VecCoord& x2 = data_x2.getValue();
+    const VecDeriv& v2 = data_v2.getValue();
+
 
     const helper::vector<Spring>& springs= this->springs.getValue();
 
@@ -168,10 +173,13 @@ void SpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, const V
     {
         this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
+
+    data_f1.endEdit();
+    data_f2.endEdit();
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addDForce(VecDeriv&, VecDeriv&, const VecDeriv&, const VecDeriv&)
+void SpringForceField<DataTypes>::addDForce(DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv&, const core::MechanicalParams* )
 {
     serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
 }

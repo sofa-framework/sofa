@@ -46,7 +46,8 @@ namespace behavior
  */
 class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject
 {
-    typedef BaseConstraintSet::ConstOrder ConstOrder;
+    typedef ConstraintParams::ConstOrder ConstOrder;
+
 public:
     SOFA_CLASS(ConstraintSolver, objectmodel::BaseObject);
 

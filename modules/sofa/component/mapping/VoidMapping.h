@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
 
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/helper/vector.h>
@@ -39,12 +38,12 @@ namespace component
 namespace mapping
 {
 
-class VoidMapping : public sofa::core::behavior::BaseMechanicalMapping, public sofa::core::BaseMapping
+class VoidMapping : public sofa::core::BaseMapping
 {
 public:
-    SOFA_CLASS2(VoidMapping, sofa::core::behavior::BaseMechanicalMapping, sofa::core::BaseMapping);
+    SOFA_CLASS(VoidMapping, sofa::core::BaseMapping);
 
-    typedef sofa::core::behavior::BaseMechanicalMapping Inherit;
+    typedef sofa::core::BaseMapping Inherit;
     typedef sofa::core::behavior::BaseMechanicalState In;
     typedef sofa::core::behavior::BaseMechanicalState Out;
 
@@ -66,22 +65,17 @@ public:
         toModel = dynamic_cast<Out*>(this->getContext()->getMechanicalState());
     }
 
-    /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void updateMapping()
-    {
-    }
-
     /// Accessor to the input model of this mapping
-    virtual  helper::vector<sofa::core::objectmodel::BaseObject*> getFrom()
+    virtual  helper::vector<core::BaseState*> getFrom()
     {
-        helper::vector<sofa::core::objectmodel::BaseObject*> vec(1,fromModel);
+        helper::vector<core::BaseState*> vec(1,fromModel);
         return vec;
     }
 
     /// Accessor to the output model of this mapping
-    virtual helper::vector<sofa::core::objectmodel::BaseObject*> getTo()
+    virtual helper::vector<core::BaseState*> getTo()
     {
-        helper::vector<sofa::core::objectmodel::BaseObject*> vec(1,toModel);
+        helper::vector<core::BaseState*> vec(1,toModel);
         return vec;
     }
 
@@ -116,21 +110,23 @@ public:
         this->f_isMechanical.setValue(b);
     }
 
-    /// Propagate position from the source model to the destination model.
-    ///
-    /// If the MechanicalMapping can be represented as a matrix J, this method computes
-    /// $ x_out = J x_in $
-    virtual void propagateX()
+    virtual void apply (core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */, const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */)
     {
     }
 
-    /// Propagate free-motion position from the source model to the destination model.
-    virtual void propagateXfree()
+    virtual void applyJ(core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */, const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */)
     {
     }
 
-    /// Propagate velocity from the source model to the destination model.
-    virtual void propagateV()
+    virtual void applyJT(core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */, const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */)
+    {
+    }
+
+    virtual void applyJT(core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */, const core::ConstraintParams * /*cparams*/)
+    {
+    }
+
+    virtual void computeAccFromMapping(core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */, const core::MechanicalParams* /*mparams = core::MechanicalParams::defaultInstance() */)
     {
     }
 

@@ -63,6 +63,8 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 
     class Mat3 : public fixed_array<Deriv,3>
@@ -123,11 +125,10 @@ public:
 
     virtual ~TriangularTensorMassForceField();
 
-    virtual double getPotentialEnergy(const VecCoord& x) const;
-
     virtual void init();
-    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
+
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
@@ -165,13 +166,28 @@ protected :
             void* param, vector<EdgeRestInformation> &edgeData);
 
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularTensorMassForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularTensorMassForceField<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
+
 } //namespace forcefield
 
-} // namespace Components
+} // namespace component
+
+} // namespace sofa
 
 
-} // namespace Sofa
 
-
-
-#endif /* _TriangularTensorMassForceField_H_ */
+#endif /* SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_H */

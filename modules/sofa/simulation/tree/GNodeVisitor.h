@@ -56,7 +56,7 @@ Base class for the Visitors which deal with GNodes specifically rather than Node
 class SOFA_SIMULATION_TREE_API GNodeVisitor : public sofa::simulation::Visitor
 {
 public:
-    GNodeVisitor();
+    GNodeVisitor(const sofa::core::ExecParams* params);
 
     ~GNodeVisitor();
 

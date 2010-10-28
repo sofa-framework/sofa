@@ -90,7 +90,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
 
     const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
 
-    VecCoord& x = *nodes->getX();
+    const VecCoord& x = *nodes->getX();
     Coord v;
 
     glBegin(GL_LINES_ADJACENCY_EXT);
@@ -148,7 +148,7 @@ bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
     {
         const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
         core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-        VecCoord& x = *nodes->getX();
+        const VecCoord& x = *nodes->getX();
         Coord v;
 
         for(it = vec.begin() ; it != vec.end() ; it++)

@@ -24,9 +24,9 @@
 ******************************************************************************/
 #include <sofa/component/mapping/HexahedronCompositeFEMMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
+//#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
+//#include <sofa/core/behavior/MechanicalMapping.inl>
 
 namespace sofa
 {
@@ -47,22 +47,18 @@ using namespace core::behavior;
 // Register in the Factory
 int HexahedronCompositeFEMMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
 #ifndef SOFA_FLOAT
-        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3fTypes > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes    > > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes    > > >()
 #endif
 //
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping<Vec3fTypes, Vec3dTypes > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping<Vec3dTypes, Vec3fTypes > > >()
 #endif
 #endif
         ;
@@ -70,25 +66,22 @@ int HexahedronCompositeFEMMappingClass = core::RegisterObject("Set the point to 
 
 
 #ifndef SOFA_FLOAT
-template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-template class HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3fTypes >  >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes    >  >;
 #endif
 #ifndef SOFA_DOUBLE
-template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes    > >;
 #endif
-//
+
+/*
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-template class HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
+	template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > >;
+	template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes    > >;
 #endif
 #endif
-;
+*/
 
 
 

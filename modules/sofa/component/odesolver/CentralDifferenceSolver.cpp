@@ -24,10 +24,12 @@
 ******************************************************************************/
 #include <sofa/component/odesolver/CentralDifferenceSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
+#include <sofa/helper/system/thread/CTime.h>
 
 
 
@@ -41,6 +43,7 @@ namespace component
 namespace odesolver
 {
 
+using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
@@ -84,36 +87,39 @@ CentralDifferenceSolver::CentralDifferenceSolver()
  *
  */
 
-void CentralDifferenceSolver::solve(double dt)
+void CentralDifferenceSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params)
 {
-    MultiVector pos(this, VecId::position());
-    MultiVector vel(this, VecId::velocity());
-    MultiVector f(this, VecId::force());
-    MultiVector dx(this, VecId::dx());
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    mop->setImplicit(false); // this solver is explicit only
+    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
+    MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
+    MultiVecDeriv dx (&vop, core::VecDerivId::dx() );
+    MultiVecDeriv f  (&vop, core::VecDerivId::force() );
+
     const double r = f_rayleighMass.getValue();
 
-
-    addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //projectVelocity(vel);                  // initial velocities are projected to the constrained space
 
     // compute the current force
-    computeForce(f);                       // f = P_n - K u_n
+    mop.computeForce(f);                       // f = P_n - K u_n
 
-    accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
+    mop.accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
+    mop.projectResponse(dx);                    // dx is projected to the constrained space
 
-
-    projectResponse(dx);                    // dx is projected to the constrained space
-
-    solveConstraint(dt,dx,core::behavior::BaseConstraintSet::ACC);
+    solveConstraint(dt,dx,core::ConstraintParams::ACC);
     // apply the solution
     if (r==0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
-        vel.peq( dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        solveConstraint(dt,vel, core::behavior::BaseConstraintSet::VEL);
-        pos.peq( vel, dt );                    // pos = pos + h vel
-        solveConstraint(dt,pos, core::behavior::BaseConstraintSet::POS);
+        vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
+        solveConstraint(dt,vel2, core::ConstraintParams::VEL);
+        pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
+        solveConstraint(dt,pos2, core::ConstraintParams::POS);
 
 #else // single-operation optimization
 
@@ -121,40 +127,40 @@ void CentralDifferenceSolver::solve(double dt)
         VMultiOp ops;
         ops.resize(2);
         // vel += dx * dt
-        ops[0].first = (VecId)vel;
-        ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
-        ops[0].second.push_back(std::make_pair((VecId)dx,dt));
+        ops[0].first = vel2;
+        ops[0].second.push_back(std::make_pair(vel.id(),1.0));
+        ops[0].second.push_back(std::make_pair(dx.id(),dt));
         // pos += vel * dt
-        ops[1].first = (VecId)pos;
-        ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-        ops[1].second.push_back(std::make_pair((VecId)vel,dt));
-        simulation::MechanicalVMultiOpVisitor vmop(ops);
-        vmop.execute(getContext());
+        ops[1].first = pos2;
+        ops[1].second.push_back(std::make_pair(pos.id(),1.0));
+        ops[1].second.push_back(std::make_pair(vel2.id(),dt));
+
+        vop.v_multiop(ops);
 #endif
     }
     else
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
-        vel.teq( (1/dt - r/2)/(1/dt + r/2) );
-        vel.peq( dx, 1/(1/dt + r/2) );     // vel = \frac{\frac{1}{dt} - \frac{r}{2}}{\frac{1}{dt} + \frac{r}{2}} vel + \frac{1}{\frac{1}{dt} + \frac{r}{2}} M^{-1} ( P_n - K u_n )
-        pos.peq( vel, dt );                    // pos = pos + h vel
+        vel2.eq( vel, (1/dt - r/2)/(1/dt + r/2) );
+        vel2.peq( dx, 1/(1/dt + r/2) );     // vel = \frac{\frac{1}{dt} - \frac{r}{2}}{\frac{1}{dt} + \frac{r}{2}} vel + \frac{1}{\frac{1}{dt} + \frac{r}{2}} M^{-1} ( P_n - K u_n )
+        pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
 #else // single-operation optimization
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
         // vel += dx * dt
-        ops[0].first = (VecId)vel;
-        ops[0].second.push_back(std::make_pair((VecId)vel,(1/dt - r/2)/(1/dt + r/2)));
-        ops[0].second.push_back(std::make_pair((VecId)dx,1/(1/dt + r/2)));
+        ops[0].first = vel2;
+        ops[0].second.push_back(std::make_pair(vel.id(),(1/dt - r/2)/(1/dt + r/2)));
+        ops[0].second.push_back(std::make_pair(dx.id(),1/(1/dt + r/2)));
         // pos += vel * dt
-        ops[1].first = (VecId)pos;
-        ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-        ops[1].second.push_back(std::make_pair((VecId)vel,dt));
-        simulation::MechanicalVMultiOpVisitor vmop(ops);
-        vmop.execute(getContext());
+        ops[1].first = pos2;
+        ops[1].second.push_back(std::make_pair(pos.id(),1.0));
+        ops[1].second.push_back(std::make_pair(vel2.id(),dt));
 
-        solveConstraint(dt,vel, core::behavior::BaseConstraintSet::VEL);
-        solveConstraint(dt,pos, core::behavior::BaseConstraintSet::POS);
+        vop.v_multiop(ops);
+
+        solveConstraint(dt,vel2, core::ConstraintParams::VEL);
+        solveConstraint(dt,pos2, core::ConstraintParams::POS);
 
 #endif
     }

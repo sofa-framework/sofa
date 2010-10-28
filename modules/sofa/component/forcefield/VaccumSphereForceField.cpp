@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/VaccumSphereForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -53,14 +55,14 @@ int VaccumSphereForceFieldClass = core::RegisterObject("Repulsion applied by a s
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class VaccumSphereForceField<Vec3dTypes>;
-template class VaccumSphereForceField<Vec2dTypes>;
-template class VaccumSphereForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class VaccumSphereForceField<Vec3fTypes>;
-template class VaccumSphereForceField<Vec2fTypes>;
-template class VaccumSphereForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1fTypes>;
 #endif
 
 } // namespace forcefield

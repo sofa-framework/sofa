@@ -1,32 +1,32 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_INTERACTION_ELLIPSOIDFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_INTERACTION_ELLIPSOIDFORCEFIELD_INL
 
-#include <sofa/core/behavior/ForceField.inl>
-#include "InteractionEllipsoidForceField.h"
+//#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/interactionforcefield/InteractionEllipsoidForceField.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/glut.h>
@@ -117,14 +117,23 @@ bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1&
 }
 
 template<class DataTypes1, class DataTypes2>
-void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(VecDeriv1& f1, VecDeriv2& f2,
-        const VecCoord1& p1, const VecCoord2& p2,
-        const VecDeriv1& v1, const VecDeriv2& v2)
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(DataVecDeriv1& dataf1, DataVecDeriv2& dataf2,
+        const DataVecCoord1& datax1, const DataVecCoord2& datax2,
+        const DataVecDeriv1& datav1, const DataVecDeriv2& datav2,
+        const MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor< DataVecDeriv1 > f1 = dataf1;
+    helper::WriteAccessor< DataVecDeriv2 > f2 = dataf2;
+
+    helper::ReadAccessor< DataVecCoord1 >  p1 = datax1;
+    helper::ReadAccessor< DataVecCoord2 >  p2 = datax2;
+    helper::ReadAccessor< DataVecDeriv1 >  v1 = datav1;
+    helper::ReadAccessor< DataVecDeriv2 >  v2 = datav2;
+
 
     // debug;
-    X1 = p1;
-    X2 = p2;
+    X1 = datax1.getValue();
+    X2 = datax2.getValue();
 
     vars.pos6D = p2[object2_dof_index.getValue()];
     Quat Cq = vars.pos6D.getOrientation();
@@ -185,22 +194,22 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(VecDeriv1&
             	c.bras_levier.x(), c.bras_levier.y(), c.bras_levier.z(),
             	f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
             	f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
-            */
+             */
 
         }
     }
     /*
-    	printf("\n f2 = %f %f %f - %f %f %f",
-    		f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
-    		f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
-    */
+    printf("\n f2 = %f %f %f - %f %f %f",
+    	f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
+    	f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
+     */
     /*
-    	printf("\n verify addForce2 : ");
-    	addForce2(f1, f2, p1, p2, v1, v2);
-    	printf("\n f2 = %f %f %f - %f %f %f",
-    		f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
-    		f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
-    */
+    printf("\n verify addForce2 : ");
+    addForce2(f1, f2, p1, p2, v1, v2);
+    printf("\n f2 = %f %f %f - %f %f %f",
+    	f2[object2_dof_index.getValue()].getVCenter().x(), f2[object2_dof_index.getValue()].getVCenter().y(), f2[object2_dof_index.getValue()].getVCenter().z(),
+    	f2[object2_dof_index.getValue()].getVOrientation().x(), f2[object2_dof_index.getValue()].getVOrientation().y(), f2[object2_dof_index.getValue()].getVOrientation().z());
+     */
 
 
     if(_update_pos_relative)
@@ -213,10 +222,15 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(VecDeriv1&
 }
 
 template<class DataTypes1, class DataTypes2>
-void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(VecDeriv1& f1, VecDeriv2& f2,
-        const VecCoord1& p1, const VecCoord2& p2,
-        const VecDeriv1& v1, const VecDeriv2& /* v2 */)
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDeriv1& dataf1, DataVecDeriv2& dataf2, const DataVecCoord1& datap1, const DataVecCoord2& datap2, const DataVecDeriv1& datav1, const DataVecDeriv2& /*datav2*/)
 {
+    helper::WriteAccessor< DataVecDeriv1 > f1 = dataf1;
+    helper::WriteAccessor< DataVecDeriv2 > f2 = dataf2;
+
+    helper::ReadAccessor< DataVecCoord1 >  p1 = datap1;
+    helper::ReadAccessor< DataVecCoord2 >  p2 = datap2;
+    helper::ReadAccessor< DataVecDeriv1 >  v1 = datav1;
+
 
     Quat Cq = p2[object2_dof_index.getValue()].getOrientation();
     Vec3d Cx = (Coord1) p2[object2_dof_index.getValue()].getCenter();
@@ -254,8 +268,15 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(VecDeriv1
 
 
 template<class DataTypes1, class DataTypes2>
-void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2)
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(DataVecDeriv1& datadf1, DataVecDeriv2& datadf2,
+        const DataVecDeriv1& datadx1, const DataVecDeriv2& datadx2,
+        const MechanicalParams* /*mparams*/)
+
 {
+    helper::WriteAccessor< DataVecDeriv1 > df1 = datadf1;
+    helper::WriteAccessor< DataVecDeriv2 > df2 = datadf2;
+    helper::ReadAccessor< DataVecDeriv1 >  dx1 = datadx1;
+    helper::ReadAccessor< DataVecDeriv2 >  dx2 = datadx2;
 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -279,7 +300,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1
 }
 
 template <class DataTypes1, class DataTypes2>
-double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& /* x1 */, const VecCoord2& /* x2 */) const
+double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/, const MechanicalParams* /*mparams*/) const
 {
     serr<<"InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

@@ -2,9 +2,11 @@
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_INL
 
 #include <sofa/component/mapping/CenterOfMassMultiMapping.h>
-#include <sofa/defaulttype/Vec.h>
-//#include <sofa/helper/gl/template.h>
+
+#include <sofa/core/MultiMapping.inl>
+
 #include <sofa/simulation/common/Simulation.h>
+
 #include <algorithm>
 #include <functional>
 
@@ -23,15 +25,14 @@ using namespace core::behavior;
 template < typename Model >
 struct Operation
 {
-
     typedef typename Model::VecCoord VecCoord;
     typedef typename Model::Coord    Coord;
     typedef typename Model::Deriv    Deriv;
     typedef typename Model::VecDeriv VecDeriv;
 
 public :
-    static inline const VecCoord* getVecCoord( const Model* m, const VecId& id) { return m->getVecCoord(id.index); };
-    static inline VecDeriv* getVecDeriv( Model* m, const VecId& id) { return m->getVecDeriv(id.index);};
+    static inline const VecCoord* getVecCoord( const Model* m, const VecId id) { return m->getVecCoord(id.index); };
+    static inline VecDeriv* getVecDeriv( Model* m, const VecId id) { return m->getVecDeriv(id.index);};
 
     static inline const BaseMass* fetchMass  ( const Model* m)
     {
@@ -69,13 +70,14 @@ public :
     }
 };
 
-template< class BasicMultiMapping  >
-void CenterOfMassMultiMapping< BasicMultiMapping >::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos )
+
+template <class TIn, class TOut>
+void CenterOfMassMultiMapping< TIn, TOut >::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos )
 {
     typedef typename InVecCoord::iterator iter_coord;
     assert( outPos.size() == 1); // we are dealing with a many to one mapping.
     InCoord COM;
-    std::transform(inPos.begin(), inPos.end(), inputBaseMass.begin(), inputWeightedCOM.begin(), Operation<In>::WeightedCoord );
+    std::transform(inPos.begin(), inPos.end(), inputBaseMass.begin(), inputWeightedCOM.begin(), Operation< core::State<In> >::WeightedCoord );
 
     for( iter_coord iter = inputWeightedCOM.begin() ; iter != inputWeightedCOM.end(); ++iter ) COM += *iter;
     COM *= invTotalMass;
@@ -87,8 +89,9 @@ void CenterOfMassMultiMapping< BasicMultiMapping >::apply(const vecOutVecCoord& 
     OutDataTypes::set((*outVecCoord)[0], x,y,z);
 }
 
-template< class BasicMultiMapping >
-void CenterOfMassMultiMapping< BasicMultiMapping >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
+
+template <class TIn, class TOut>
+void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
 {
     typedef typename InVecDeriv::iterator iter_deriv;
     assert( outDeriv.size() == 1 );
@@ -107,12 +110,10 @@ void CenterOfMassMultiMapping< BasicMultiMapping >::applyJ(const helper::vector<
 }
 
 
-
-template < class BasicMultiMapping >
-void CenterOfMassMultiMapping< BasicMultiMapping >::applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv )
+template < class TIn, class TOut >
+void CenterOfMassMultiMapping< TIn, TOut >::applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv )
 {
     assert( inDeriv.size() == 1 );
-
 
     OutDeriv gravityCenterForce;
     const OutVecDeriv* inForce = inDeriv[0];
@@ -139,8 +140,9 @@ void CenterOfMassMultiMapping< BasicMultiMapping >::applyJT( const helper::vecto
     }
 }
 
-template< class BasicMultiMapping >
-void CenterOfMassMultiMapping< BasicMultiMapping>::init()
+
+template <class TIn, class TOut>
+void CenterOfMassMultiMapping< TIn, TOut>::init()
 {
     typedef helper::vector<double>::iterator iter_double;
 
@@ -149,9 +151,9 @@ void CenterOfMassMultiMapping< BasicMultiMapping>::init()
     inputWeightedCOM.resize( this->getFromModels().size() );
     inputWeightedForce.resize( this->getFromModels().size() );
 
-    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), Operation<In>::fetchMass );
+    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), Operation< core::State<In> >::fetchMass );
 
-    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), inputTotalMass.begin(), Operation<In>::computeTotalMass );
+    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), inputTotalMass.begin(), Operation< core::State<In> >::computeTotalMass );
 
     invTotalMass = 0.0;
     for ( iter_double iter = inputTotalMass.begin() ; iter != inputTotalMass.end() ; ++ iter )
@@ -164,11 +166,12 @@ void CenterOfMassMultiMapping< BasicMultiMapping>::init()
     if (this->getToModels()[0]) this->getToModels()[0]->resize(1);
 }
 
-template< class BasicMultiMapping >
-void CenterOfMassMultiMapping< BasicMultiMapping >::draw()
+
+template <class TIn, class TOut>
+void CenterOfMassMultiMapping< TIn, TOut >::draw()
 {
     assert( this->toModels.size() == 1 );
-    const OutVecCoord* X = this->getToModels()[0]->getVecCoord( VecId::position().index );
+    const Data< OutVecCoord > *X = this->getToModels()[0]->read(VecCoordId::position());
 
     std::vector< Vector3 > points;
     Vector3 point1,point2;
@@ -177,13 +180,13 @@ void CenterOfMassMultiMapping< BasicMultiMapping >::draw()
     {
         OutCoord v;
         v[i] = (Real)0.1;
-        point1 = OutDataTypes::getCPos( (*X)[0] -v);
-        point2 = OutDataTypes::getCPos( (*X)[0] +v);
+        point1 = OutDataTypes::getCPos(X->getValue()[0] - v);
+        point2 = OutDataTypes::getCPos(X->getValue()[0] + v);
         points.push_back(point1);
         points.push_back(point2);
     }
-    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
 
+    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
 }
 
 

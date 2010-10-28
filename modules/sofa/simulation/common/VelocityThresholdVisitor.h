@@ -27,7 +27,7 @@
 
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa
 {
@@ -40,11 +40,9 @@ using namespace sofa::defaulttype;
 class SOFA_SIMULATION_COMMON_API VelocityThresholdVisitor : public Visitor
 {
 public:
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
-
     virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 
-    VelocityThresholdVisitor( VecId v, double threshold );
+    VelocityThresholdVisitor(core::MultiVecId v, double threshold, const core::ExecParams* params);
 
 
 
@@ -57,7 +55,7 @@ public:
     virtual const char* getClassName() const { return "VelocityThresholdVisitor"; }
 
 protected:
-    VecId vid; ///< Id of the vector to process
+    core::MultiVecId vid; ///< Id of the vector to process
     double threshold; ///< All the entries below this threshold will be set to 0.
 };
 

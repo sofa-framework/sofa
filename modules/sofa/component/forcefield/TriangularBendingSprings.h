@@ -79,13 +79,14 @@ public:
     typedef core::behavior::ForceField<DataTypes> Inherited;
     //typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
-
-
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    typedef typename DataTypes::Real Real;
     //typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
+
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
@@ -144,13 +145,12 @@ public:
 
     virtual ~TriangularBendingSprings();
 
-    virtual double getPotentialEnergy(const VecCoord& x) const;
-
     /// Searches triangle topology and creates the bending springs
     virtual void init();
 
-    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
+    virtual double getPotentialEnergy(const DataVecCoord& d_x, const core::MechanicalParams* mparams) const;
 
     virtual double getKs() const { return f_ks.getValue();}
     virtual double getKd() const { return f_kd.getValue();}
@@ -200,7 +200,7 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<def
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<defaulttype::Vec3fTypes>;
 #endif
-#endif
+#endif //defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
 
 
 } // namespace forcefield
@@ -209,4 +209,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<def
 
 } // namespace sofa
 
-#endif
+#endif //SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_H

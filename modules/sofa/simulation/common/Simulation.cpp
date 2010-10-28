@@ -111,24 +111,26 @@ Simulation* getSimulation()
 void Simulation::print ( Node* root )
 {
     if ( !root ) return;
-    root->execute<PrintVisitor>();
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    root->execute<PrintVisitor>(params);
 }
 
 /// Print all object in the graph
 void Simulation::exportXML ( Node* root, const char* fileName, bool compact )
 {
     if ( !root ) return;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     if ( fileName!=NULL )
     {
         std::ofstream out ( fileName );
         out << "<?xml version=\"1.0\"?>\n";
 
-        XMLPrintVisitor print ( out,compact );
+        XMLPrintVisitor print ( out,compact, params );
         root->execute ( print );
     }
     else
     {
-        XMLPrintVisitor print ( std::cout,compact );
+        XMLPrintVisitor print ( std::cout,compact, params );
         root->execute ( print );
     }
 }
@@ -138,13 +140,21 @@ void Simulation::init ( Node* root )
 {
     //cerr<<"Simulation::init"<<endl;
     if ( !root ) return;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+
     setContext( root->getContext());
     needToPrefetch = false;
-    root->execute<InitVisitor>();
+    root->execute<InitVisitor>(params);
     // Save reset state for later uses in reset()
-    root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
-    root->execute<MechanicalPropagateFreePositionVisitor>();
-    root->execute<StoreResetStateVisitor>();
+    {
+        sofa::core::MechanicalParams mparams(*params);
+        root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
+        mparams.x() = xfree;
+        MechanicalPropagatePositionVisitor act(0, xfree, true, &mparams);
+        root->execute(act);
+    }
+    root->execute<StoreResetStateVisitor>(params);
 
     //Get the list of instruments present in the scene graph
     getInstruments(root);
@@ -157,18 +167,28 @@ void Simulation::initNode( Node* node)
     {
         return;
     }
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     assert( getSimulation()->getContext() != NULL );
     needToPrefetch = false;
-    node->execute<InitVisitor>();
-    node->execute<MechanicalPropagatePositionAndVelocityVisitor>();
-    node->execute<MechanicalPropagateFreePositionVisitor>();
-    node->execute<StoreResetStateVisitor>();
+    node->execute<InitVisitor>(params);
+    //node->execute<MechanicalPropagatePositionAndVelocityVisitor>(params);
+    //node->execute<MechanicalPropagateFreePositionVisitor>(params);
+    {
+        sofa::core::MechanicalParams mparams(*params);
+        node->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
+        mparams.x() = xfree;
+        MechanicalPropagatePositionVisitor act(0, xfree, true, &mparams);
+        node->execute(act);
+    }
+    node->execute<StoreResetStateVisitor>(params);
     getInstruments(node);
 }
 
 void Simulation::getInstruments( Node *node)
 {
-    InstrumentVisitor fetchInstrument;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    InstrumentVisitor fetchInstrument(params);
     fetchInstrument.execute(node);
     instruments = fetchInstrument.getInstruments();
 }
@@ -177,6 +197,7 @@ void Simulation::getInstruments( Node *node)
 void Simulation::animate ( Node* root, double dt )
 {
     if ( !root ) return;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode(std::string("Step"));
@@ -186,7 +207,7 @@ void Simulation::animate ( Node* root, double dt )
 
     {
         AnimateBeginEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
 
@@ -196,35 +217,34 @@ void Simulation::animate ( Node* root, double dt )
     //double nextTime = root->getTime() + root->getDt();
 
     // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
-    //root->execute<CollisionVisitor>();
+    //root->execute<CollisionVisitor>(params);
 
-
-    AnimateVisitor act;
+    AnimateVisitor act(params);
     act.setDt ( mechanicalDt );
-    BehaviorUpdatePositionVisitor beh(root->getDt());
+    BehaviorUpdatePositionVisitor beh(root->getDt(), params);
     for( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
         root->execute ( beh );
         root->execute ( act );
         root->setTime ( startTime + (i+1)* act.getDt() );
         getVisualRoot()->setTime ( root->getTime() );
-        root->execute<UpdateSimulationContextVisitor>();
-        getVisualRoot()->execute<UpdateSimulationContextVisitor>();
+        root->execute<UpdateSimulationContextVisitor>(params);
+        getVisualRoot()->execute<UpdateSimulationContextVisitor>(params);
     }
 
     {
         AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    root->execute<UpdateMappingVisitor>();
+    root->execute<UpdateMappingVisitor>(params);
     sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
@@ -240,20 +260,21 @@ void Simulation::animate ( Node* root, double dt )
 
 void Simulation::updateVisual ( Node* root, double dt )
 {
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode(std::string("UpdateVisual"));
 #endif
     sofa::helper::AdvancedTimer::begin("UpdateVisual");
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
-    root->execute<UpdateMappingVisitor>();
+    root->execute<UpdateMappingVisitor>(params);
     sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
-    root->execute<VisualUpdateVisitor>();
+    root->execute<VisualUpdateVisitor>(params);
     sofa::helper::AdvancedTimer::end("UpdateVisual");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("UpdateVisual"));
@@ -264,32 +285,35 @@ void Simulation::updateVisual ( Node* root, double dt )
 void Simulation::reset ( Node* root )
 {
     if ( !root ) return;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
-    root->execute<CleanupVisitor>();
-    root->execute<ResetVisitor>();
-    root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
-    root->execute<UpdateMappingVisitor>();
-    root->execute<VisualUpdateVisitor>();
+    root->execute<CleanupVisitor>(params);
+    root->execute<ResetVisitor>(params);
+    sofa::core::MechanicalParams mparams(*params);
+    root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+    root->execute<UpdateMappingVisitor>(params);
+    root->execute<VisualUpdateVisitor>(params);
 
-    *(nbSteps.beginEdit()) = 0;
-    nbSteps.endEdit();
+    nbSteps.setValue(0);
 }
 
 /// Initialize the textures
 void Simulation::initTextures ( Node* root )
 {
     if ( !root ) return;
-    root->execute<VisualInitVisitor>();
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    root->execute<VisualInitVisitor>(params);
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
-    root->execute<VisualUpdateVisitor>();
+    root->execute<VisualUpdateVisitor>(params);
 }
 
 
 /// Compute the bounding box of the scene.
 void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
-    VisualComputeBBoxVisitor act;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    VisualComputeBBoxVisitor act(params);
     if ( root )
         root->execute ( act );
     if (init)
@@ -326,26 +350,29 @@ bool Simulation::getPaused()
 void Simulation::updateContext ( Node* root )
 {
     if ( !root ) return;
-    root->execute<UpdateContextVisitor>();
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    root->execute<UpdateContextVisitor>(params);
 }
 
 /// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
 void Simulation::updateVisualContext ( Node* root, Node::VISUAL_FLAG FILTER)
 {
     if ( !root ) return;
-    UpdateVisualContextVisitor vis(FILTER);
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    UpdateVisualContextVisitor vis(FILTER, params);
     vis.execute(root);
 }
 /// Render the scene
 void Simulation::draw ( Node* root, helper::gl::VisualParameters* params )
 {
     if ( !root ) return;
+    sofa::core::ExecParams* eparams = sofa::core::ExecParams::defaultInstance();
     if (root->visualManager.empty())
     {
-        VisualDrawVisitor act ( core::VisualModel::Std );
+        VisualDrawVisitor act ( core::VisualModel::Std, eparams );
         root->execute ( &act );
 
-        VisualDrawVisitor act2 ( core::VisualModel::Transparent );
+        VisualDrawVisitor act2 ( core::VisualModel::Transparent, eparams );
         root->execute ( &act2 );
     }
     else
@@ -362,10 +389,10 @@ void Simulation::draw ( Node* root, helper::gl::VisualParameters* params )
             }
         if (!rendered) // do the rendering
         {
-            VisualDrawVisitor act ( core::VisualModel::Std );
+            VisualDrawVisitor act ( core::VisualModel::Std, eparams );
             root->execute ( &act );
 
-            VisualDrawVisitor act2 ( core::VisualModel::Transparent );
+            VisualDrawVisitor act2 ( core::VisualModel::Transparent, eparams );
             root->execute ( &act2 );
         }
         Node::Sequence<core::VisualManager>::reverse_iterator rbegin = root->visualManager.rbegin(), rend = root->visualManager.rend(), rit;
@@ -383,17 +410,19 @@ void Simulation::drawShadows ( Node* root )
     //VisualDrawVisitor act ( core::VisualModel::Shadow );
     //root->execute ( &act );
 }
+
 /// Export a scene to an OBJ 3D Scene
 void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 {
     if ( !root ) return;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     std::ofstream fout ( filename );
 
     fout << "# Generated from SOFA Simulation" << std::endl;
 
     if ( !exportMTL )
     {
-        ExportOBJVisitor act ( &fout );
+        ExportOBJVisitor act ( &fout, params );
         root->execute ( &act );
     }
     else
@@ -413,15 +442,16 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
         mtl << "# Generated from SOFA Simulation" << std::endl;
         fout << "mtllib "<<mtlfilename<<'\n';
 
-        ExportOBJVisitor act ( &fout,&mtl );
+        ExportOBJVisitor act ( &fout,&mtl, params );
         root->execute ( &act );
     }
 }
 
 void Simulation::dumpState ( Node* root, std::ofstream& out )
 {
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     out<<root->getTime() <<" ";
-    WriteStateVisitor ( out ).execute ( root );
+    WriteStateVisitor ( out, params ).execute ( root );
     out<<endl;
 }
 
@@ -429,7 +459,8 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 void Simulation::initGnuplot ( Node* root )
 {
     if ( !root ) return;
-    InitGnuplotVisitor v(gnuplotDirectory.getFullPath());
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    InitGnuplotVisitor v(gnuplotDirectory.getFullPath(), params);
     root->execute( v );
 }
 
@@ -437,11 +468,10 @@ void Simulation::initGnuplot ( Node* root )
 void Simulation::exportGnuplot ( Node* root, double time )
 {
     if ( !root ) return;
-    ExportGnuplotVisitor expg ( time );
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    ExportGnuplotVisitor expg ( time, params);
     root->execute ( expg );
 }
-
-
 
 /// Load a scene from a file
 Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
@@ -450,6 +480,7 @@ Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
     {
         return NULL;
     }
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
 
     // We go the the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
@@ -478,14 +509,10 @@ Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
     // 				std::cout << "Initializing simulation "<<root->getName() <<std::endl;
 
     // Find the Simulation component in the scene
-    FindByTypeVisitor<Simulation> findSimu;
+    FindByTypeVisitor<Simulation> findSimu(params);
     findSimu.execute(root);
     if( !findSimu.found.empty() )
         setSimulation( findSimu.found[0] );
-
-    // As mappings might be initialized after visual models, it is necessary to update them
-    // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
-    //root->execute<VisualUpdateVisitor>();
 
     return root;
 }
@@ -576,6 +603,7 @@ Node* Simulation::load ( const char *filename )
 void Simulation::unload(Node * root)
 {
     if ( !root ) return;
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     if (dynamic_cast<Node*>(this->getContext()) == root)
     {
         instruments.clear();
@@ -583,8 +611,8 @@ void Simulation::unload(Node * root)
         this->setContext(0);
     }
     root->detachFromGraph();
-    root->execute<CleanupVisitor>();
-    root->execute<DeleteVisitor>();
+    root->execute<CleanupVisitor>(params);
+    root->execute<DeleteVisitor>(params);
     //delete root; //We unload only, and don't destrory the Node
 }
 //      void Simulation::addStep ( )

@@ -355,6 +355,7 @@ public:
      */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
+        , shared(NULL)
     {
     }
 
@@ -364,6 +365,7 @@ public:
     explicit Data(const InitData& init)
         : TData<T>(init)
         , m_value(init.value)
+        , shared(NULL)
     {
     }
 
@@ -373,6 +375,7 @@ public:
     Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
         : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
         , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
+        , shared(NULL)
     {
 
     }
@@ -384,12 +387,14 @@ public:
     Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
         : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
         , m_value(value)
+        , shared(NULL)
     {
     }
 
     Data(const Data& d)
         : TData<T>()
         , m_value(d.getValue())
+        , shared(NULL)
     {
     }
 
@@ -400,6 +405,7 @@ public:
     {
         this->updateIfDirty();
         ++this->m_counter;
+        this->m_isSet = true;
         BaseData::setDirtyOutputs();
         return m_value.beginEdit();
     }
@@ -453,6 +459,7 @@ public:
     {
         this->setValue(value);
     }
+
 protected:
 
     /// Value
@@ -460,6 +467,8 @@ protected:
     DataContainer<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> m_value;
     //DataContainer<T, false> m_value;
     //DataContainer<T, true> m_value;
+public:
+    mutable void* shared;
 };
 
 #if defined(WIN32) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
@@ -538,12 +547,6 @@ public:
     typedef WriteAccessor<T> Inherit;
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
-    typedef typename container_type::size_type size_type;
-    typedef typename container_type::value_type value_type;
-    typedef typename container_type::reference reference;
-    typedef typename container_type::const_reference const_reference;
-    typedef typename container_type::iterator iterator;
-    typedef typename container_type::const_iterator const_iterator;
 
 protected:
     data_container_type& data;

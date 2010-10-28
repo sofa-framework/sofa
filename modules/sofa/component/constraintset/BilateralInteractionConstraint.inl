@@ -30,6 +30,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
+
 namespace sofa
 {
 
@@ -42,22 +43,21 @@ namespace constraintset
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::init()
 {
-    assert(this->object1);
-    assert(this->object2);
+    assert(this->mstate1);
+    assert(this->mstate2);
     prevForces.clear();
 }
 
+
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId)
+void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
+        , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
 {
     int tm1 = m1.getValue();
     int tm2 = m2.getValue();
 
-    assert(this->object1);
-    assert(this->object2);
-
-    MatrixDeriv& c1 = *this->object1->getC();
-    MatrixDeriv& c2 = *this->object2->getC();
+    MatrixDeriv &c1 = *c1_d.beginEdit();
+    MatrixDeriv &c2 = *c2_d.beginEdit();
 
     const defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 
@@ -82,82 +82,30 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned i
     c2_it = c2.writeLine(cid + 2);
     c2_it.setCol(tm2, cz);
 
-    /*VecConst& c1 = *this->object1->getC();
-    VecConst& c2 = *this->object2->getC();
-
-    defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
-
-    cid = constraintId;
-    constraintId+=3;
-
-    SparseVecDeriv svd1;
-    SparseVecDeriv svd2;
-
-    this->object1->setConstraintId(cid);
-    svd1.add(tm1, -cx);
-    c1.push_back(svd1);
-
-    this->object2->setConstraintId(cid);
-    svd2.add(tm2, cx);
-    c2.push_back(svd2);
-
-    this->object1->setConstraintId(cid+1);
-    svd1.set(tm1, -cy);
-    c1.push_back(svd1);
-
-    this->object2->setConstraintId(cid+1);
-    svd2.set(tm2, cy);
-    c2.push_back(svd2);
-
-    this->object1->setConstraintId(cid+2);
-    svd1.set(tm1, -cz);
-    c1.push_back(svd1);
-
-    this->object2->setConstraintId(cid+2);
-    svd2.set(tm2, cz);
-    c2.push_back(svd2);*/
+    c1_d.endEdit();
+    c2_d.endEdit();
 }
 
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
-{
-    if (!freeMotion)
-        sout<<"WARNING has to be implemented for method based on non freeMotion"<<sendl;
 
-    if (freeMotion)
-        dfree = (*this->object2->getXfree())[m2.getValue()] - (*this->object1->getXfree())[m1.getValue()];
-    else
-        dfree = (*this->object2->getX())[m2.getValue()] - (*this->object1->getX())[m1.getValue()];
+template<class DataTypes>
+void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+        , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/, const core::ConstraintParams*)
+{
+    dfree = x2.getValue()[m2.getValue()] - x1.getValue()[m1.getValue()];
 
     v->set(cid, dfree[0]);
     v->set(cid+1, dfree[1]);
     v->set(cid+2, dfree[2]);
 }
 
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
-{
-    if (!yetIntegrated)
-    {
-        id[offset++] = -(int)cid;
-
-        yetIntegrated = true;
-    }
-    else
-    {
-        id[offset++] = cid;
-    }
-}
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces);
     offset += 3;
-
-//	for(int i=0; i<3; i++)
-//		resTab[offset++] = new BilateralConstraintResolution(); //&prevForces
 }
+
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw()
@@ -168,24 +116,30 @@ void BilateralInteractionConstraint<DataTypes>::draw()
     glPointSize(10);
     glBegin(GL_POINTS);
     glColor4f(1,0,1,1);
-    helper::gl::glVertexT((*this->object1->getX())[m1.getValue()]);
-    helper::gl::glVertexT((*this->object2->getX())[m2.getValue()]);
+    helper::gl::glVertexT((*this->mstate1->getX())[m1.getValue()]);
+    helper::gl::glVertexT((*this->mstate2->getX())[m2.getValue()]);
     glEnd();
     glPointSize(1);
 }
 
 #ifndef SOFA_FLOAT
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId);
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+        , const DataVecCoord &x1, const DataVecCoord &x2, const core::ConstraintParams *cParams);
+
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion);
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d, const core::ConstraintParams *cParams);
 #endif
 
 #ifndef SOFA_DOUBLE
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId);
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+        , const DataVecCoord &x1_d, const DataVecCoord &x2_d, const core::ConstraintParams *cParams);
+
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion);
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+        , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d, const core::ConstraintParams *cParams);
 #endif
 
 } // namespace constraintset
@@ -194,4 +148,4 @@ void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintVal
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_INL

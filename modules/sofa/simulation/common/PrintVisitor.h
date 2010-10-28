@@ -42,7 +42,7 @@ protected:
     int verbose;
     int level;
 public:
-    PrintVisitor() : verbose(0), level(0) {}
+    PrintVisitor(const sofa::core::ExecParams* params) : Visitor(params), verbose(0), level(0) {}
 
     void setVerbose(int v) { verbose = v; }
     int getVerbose() const { return verbose; }

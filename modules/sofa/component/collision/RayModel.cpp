@@ -99,9 +99,9 @@ int RayModel::addRay(const Vector3& origin, const Vector3& direction, SReal leng
     int i = size;
     resize(i);
     Ray r = getRay(i);
-    r.origin() = origin;
-    r.direction() = direction;
-    r.l() = length;
+    r.setOrigin(origin);
+    r.setDirection(direction);
+    r.setL(length);
     return i;
 }
 
@@ -172,7 +172,10 @@ void RayModel::applyTranslation(double dx, double dy, double dz)
 {
     Vector3 d(dx,dy,dz);
     for (int i = 0; i < getNbRay(); i++)
-        getRay(i).origin() += d;
+    {
+        Ray ray = getRay(i);
+        ray.setOrigin(ray.origin() + d);
+    }
 }
 
 } // namespace collision

@@ -201,8 +201,9 @@ public:
                 this->mstate->resize(i0 + nbParticlesToCreate * N);
             }
 
-            VecCoord& x = *this->mstate->getX();
-            VecDeriv& v = *this->mstate->getV();
+            //VecCoord& x = *this->mstate->getX();
+            helper::WriteAccessor< Data<VecCoord> > x = *this->mstate->write(core::VecCoordId::position());
+            helper::WriteAccessor< Data<VecDeriv> > v = *this->mstate->write(core::VecDerivId::velocity());
 
             for (int i = 0; i < nbParticlesToCreate; i++)
             {
@@ -353,9 +354,10 @@ protected :
             helper::removeValue(ps->lastparticles,(unsigned int)index);
         }
     }
+
 };
 
-}
+} // namespace misc
 
 } // namespace component
 

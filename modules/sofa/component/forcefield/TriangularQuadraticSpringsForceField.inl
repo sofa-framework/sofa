@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_INL
+
 #include <sofa/component/forcefield/TriangularQuadraticSpringsForceField.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -43,10 +46,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::topology;
-
-
-
-
 
 template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
@@ -201,7 +200,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     if (_initialPoints.getValue().size() == 0)
     {
         // get restPosition
-        VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = *this->mstate->getX0();
         _initialPoints.setValue(p);
     }
     int i;
@@ -230,16 +229,13 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     triangleInfo.endEdit();
 }
 
+template <class DataTypes>
+void TriangularQuadraticSpringsForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
 
-template <class DataTypes>
-double TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr<<"TriangularQuadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-template <class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
-{
     unsigned int j,k,l,v0,v1;
     int nbEdges=_topology->getNbEdges();
     int nbTriangles=_topology->getNbTriangles();
@@ -269,8 +265,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, cons
         L=einfo->currentLength=dp.norm();
         einfo->dl=einfo->currentLength-einfo->restLength +_dampingRatio*dot(dv,dp)/L;
         /*if (i==0) {
-        	serr << "dl= " <<  einfo->dl<<sendl;
-        	serr << "damping= " <<  (_dampingRatio*dot(dv,dp)*einfo->restLength/(L*L))<<sendl;
+        serr << "dl= " <<  einfo->dl<<sendl;
+        serr << "damping= " <<  (_dampingRatio*dot(dv,dp)*einfo->restLength/(L*L))<<sendl;
         }*/
         val=einfo->stiffness*(einfo->dl)/L;
         f[v1]+=dp*val;
@@ -304,25 +300,30 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, cons
     edgeInfo.endEdit();
     triangleInfo.endEdit();
     updateMatrix=true;
+    d_f.endEdit();
     //serr << "end addForce" << sendl;
 }
 
 
 template <class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
+void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     unsigned int i,j,k;
-    int nbTriangles=_topology->getNbTriangles();
+    int nbTriangles = _topology->getNbTriangles();
 
     TriangleRestInformation *tinfo;
 
     helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
 
-//	serr << "start addDForce" << sendl;
+    //	serr << "start addDForce" << sendl;
     helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     assert(this->mstate);
-    VecDeriv& x = *this->mstate->getX();
+    const VecDeriv& x = *this->mstate->getX();
 
 
     Deriv deltax,res;
@@ -420,12 +421,13 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, co
             j=(k+2)%3;
             deltax= dx[ta[i]] -dx[ta[j]];
             res=tinfo->DfDx[k]*deltax;
-            df[ta[i]]+=res;
-            df[ta[j]]-= tinfo->DfDx[k].transposeMultiply(deltax);
+            df[ta[i]]+= res * kFactor;
+            df[ta[j]]-= (tinfo->DfDx[k].transposeMultiply(deltax)) * kFactor;
         }
     }
     edgeInfo.endEdit();
     triangleInfo.endEdit();
+    d_df.endEdit();
 }
 
 
@@ -434,7 +436,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
+    //	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
@@ -447,7 +449,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
     int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);
@@ -475,6 +477,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw()
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
+
+#endif //SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_INL

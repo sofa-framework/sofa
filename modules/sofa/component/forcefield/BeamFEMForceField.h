@@ -57,13 +57,16 @@ class BeamFEMForceField : public core::behavior::ForceField<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BeamFEMForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecReal VecReal;
+    typedef typename DataTypes::Real        Real        ;
+    typedef typename DataTypes::Coord       Coord       ;
+    typedef typename DataTypes::Deriv       Deriv       ;
+    typedef typename DataTypes::VecCoord    VecCoord    ;
+    typedef typename DataTypes::VecDeriv    VecDeriv    ;
+    typedef typename DataTypes::VecReal     VecReal     ;
+    typedef Data<VecCoord>                  DataVecCoord;
+    typedef Data<VecDeriv>                  DataVecDeriv;
     typedef VecCoord Vector;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+
 
     typedef unsigned int Index;
     typedef topology::Edge Element;
@@ -213,13 +216,9 @@ public:
     virtual void reinitBeam(unsigned int i);
     virtual void handleTopologyChange();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-
-    virtual double getPotentialEnergy(const VecCoord&) const { return 0; }
-
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
+    virtual void addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ );
+    virtual void addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* /*mparams*/ );
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const sofa::core::MechanicalParams* mparams );
 
     void draw();
 
@@ -249,7 +248,7 @@ protected:
     //void computeRotationLarge( Transformation &r, const Vector &p, Index a, Index b);
     void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
     //void accumulateDampingLarge( Vector& f, Index elementIndex );
-    void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b );
+    void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
 
     //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
 
@@ -275,4 +274,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API BeamFEMForceField<defaulttyp
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H

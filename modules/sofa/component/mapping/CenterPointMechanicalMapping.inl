@@ -26,6 +26,9 @@
 #define SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_INL
 
 #include "CenterPointMechanicalMapping.h"
+
+#include <sofa/core/Mapping.inl>
+
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
@@ -39,30 +42,33 @@ namespace mapping
 {
 
 
-template <class BaseMapping>
-CenterPointMechanicalMapping<BaseMapping>::CenterPointMechanicalMapping(In* from, Out* to)
+template <class TIn, class TOut>
+CenterPointMechanicalMapping<TIn, TOut>::CenterPointMechanicalMapping(core::State<In>* from, core::State<Out>* to)
     : Inherit(from, to)
     , inputTopo(NULL)
     , outputTopo(NULL)
 {
 }
 
-template <class BaseMapping>
-CenterPointMechanicalMapping<BaseMapping>::~CenterPointMechanicalMapping()
+template <class TIn, class TOut>
+CenterPointMechanicalMapping<TIn, TOut>::~CenterPointMechanicalMapping()
 {
 }
 
-template <class BaseMapping>
-void CenterPointMechanicalMapping<BaseMapping>::init()
+template <class TIn, class TOut>
+void CenterPointMechanicalMapping<TIn, TOut>::init()
 {
     inputTopo = this->fromModel->getContext()->getMeshTopology();
     outputTopo = this->toModel->getContext()->getMeshTopology();
     this->Inherit::init();
 }
 
-template <class BaseMapping>
-void CenterPointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class TIn, class TOut>
+void CenterPointMechanicalMapping<TIn, TOut>::apply(Data< typename Out::VecCoord >& _out, const Data< typename In::VecCoord >& _in, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data< typename Out::VecCoord > > out = _out;
+    helper::ReadAccessor< Data< typename In::VecCoord > > in = _in;
+
     const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     if(out.size() < hexahedra.size())
@@ -81,9 +87,12 @@ void CenterPointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& o
     }
 }
 
-template <class BaseMapping>
-void CenterPointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class TIn, class TOut>
+void CenterPointMechanicalMapping<TIn, TOut>::applyJ(Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data< typename Out::VecDeriv > > out = _out;
+    helper::ReadAccessor< Data< typename In::VecDeriv > > in = _in;
+
     const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     if(out.size() < hexahedra.size())
@@ -102,9 +111,12 @@ void CenterPointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& 
     }
 }
 
-template <class BaseMapping>
-void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class TIn, class TOut>
+void CenterPointMechanicalMapping<TIn, TOut>::applyJT(Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data< typename In::VecDeriv > > out = _out;
+    helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
+
     const core::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     for(unsigned int i = 0; i <hexahedra.size(); ++i)
@@ -124,8 +136,8 @@ void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& 
     }
 }
 
-template <class BaseMapping>
-void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
+template <class TIn, class TOut>
+void CenterPointMechanicalMapping<TIn, TOut>::applyJT(Data< typename In::MatrixDeriv >& /*out*/, const Data< typename Out::MatrixDeriv >& /*in*/, const core::ConstraintParams * /*cparams*/)
 {
     // TODO
 

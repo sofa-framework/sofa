@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/ParticlesRepulsionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -54,12 +56,12 @@ int ParticlesRepulsionForceFieldClass = core::RegisterObject("ForceField using S
         ;
 
 #ifndef SOFA_FLOAT
-template class ParticlesRepulsionForceField<Vec3dTypes>;
-template class ParticlesRepulsionForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class ParticlesRepulsionForceField<Vec3fTypes>;
-template class ParticlesRepulsionForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ParticlesRepulsionForceField<Vec2fTypes>;
 #endif
 
 

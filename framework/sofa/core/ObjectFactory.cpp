@@ -38,12 +38,11 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
@@ -382,7 +381,7 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("MechanicalState");
     if (mclass->hasParent(core::behavior::BaseForceField::GetClass()))
         entry.baseClasses.insert("ForceField");
-    if (mclass->hasParent(core::behavior::InteractionForceField::GetClass()))
+    if (mclass->hasParent(core::behavior::BaseInteractionForceField::GetClass()))
         entry.baseClasses.insert("InteractionForceField");
     if (mclass->hasParent(core::behavior::BaseProjectiveConstraintSet::GetClass()))
         entry.baseClasses.insert("ProjectiveConstraintSet");
@@ -392,8 +391,6 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("Mapping");
     if (mclass->hasParent(core::DataEngine::GetClass()))
         entry.baseClasses.insert("Engine");
-    if (mclass->hasParent(core::behavior::BaseMechanicalMapping::GetClass()))
-        entry.baseClasses.insert("MechanicalMapping");
     if (mclass->hasParent(core::topology::TopologicalMapping::GetClass()))
         entry.baseClasses.insert("TopologicalMapping");
     if (mclass->hasParent(core::behavior::BaseMass::GetClass()))

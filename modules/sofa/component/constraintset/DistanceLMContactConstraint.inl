@@ -37,9 +37,6 @@
 #include <iostream>
 
 
-
-
-
 namespace sofa
 {
 
@@ -98,14 +95,19 @@ void DistanceLMContactConstraint<DataTypes>::computeTangentVectors( Deriv& T1, D
 
 
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId position)
+void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position)
 {
-//                cerr<<"DistanceLMContactConstraint<DataTypes>::buildJacobian"<<endl;
-    const VecCoord &x1=*(this->constrainedObject1->getVecCoord(position.index));
-    const VecCoord &x2=*(this->constrainedObject2->getVecCoord(position.index));
+    core::ConstVecCoordId id1 = position.getId(this->constrainedObject1);
+    core::ConstVecCoordId id2 = position.getId(this->constrainedObject2);
 
-    MatrixDeriv& c1 = *this->constrainedObject1->getC();
-    MatrixDeriv& c2 = *this->constrainedObject2->getC();
+    const VecCoord &x1 = this->constrainedObject1->read(id1)->getValue();
+    const VecCoord &x2 = this->constrainedObject2->read(id2)->getValue();
+
+    Data<MatrixDeriv> *dC1 = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv &c1 = *dC1->beginEdit();
+
+    Data<MatrixDeriv> *dC2 = this->constrainedObject2->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv &c2 = *dC2->beginEdit();
 
     const SeqEdges &edges =  pointPairs.getValue();
 
@@ -130,7 +132,7 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int 
 
         Deriv tgt1, tgt2;
         computeTangentVectors(tgt1,tgt2,normal);
-//                    cerr<<"DistanceLMContactConstraint<DataTypes>::buildJacobian, tgt1 = "<<tgt1<<", tgt2 = "<<tgt2<<endl;
+        //                    cerr<<"DistanceLMContactConstraint<DataTypes>::buildJacobian, tgt1 = "<<tgt1<<", tgt2 = "<<tgt2<<endl;
 
         MatrixDerivRowIterator c1_t1 = c1.writeLine(constraintId);
         c1_t1.addCol(idx1,tgt1);
@@ -150,14 +152,16 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int 
 
         edgeToContact[edges[i]] = Contact(normal,tgt1,tgt2);
     }
+
+    dC1->endEdit();
+    dC2->endEdit();
 }
 
 
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder Order)
+void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
 {
-//                cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, scalarConstraintsIndices.size() = "<<scalarConstraintsIndices.size()<<endl;
-    typedef core::behavior::BaseMechanicalState::VecId VecId;
+    //                cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, scalarConstraintsIndices.size() = "<<scalarConstraintsIndices.size()<<endl;
     const SeqEdges &edges =  pointPairs.getValue();
 
 
@@ -167,8 +171,8 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned i
     {
         switch(Order)
         {
-        case core::behavior::BaseConstraintSet::ACC :
-        case core::behavior::BaseConstraintSet::VEL :
+        case core::ConstraintParams::ACC :
+        case core::ConstraintParams::VEL :
         {
             core::behavior::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
             constraintGroupToContact[constraintGroup] = &edgeToContact[edges[i]];
@@ -178,36 +182,42 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned i
             correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 
-
             correction = 0;
             correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 
-
             correction = 0;
             correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
             constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
-//                            cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, constraint inserted "<<endl;
+            //                            cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, constraint inserted "<<endl;
             break;
         }
-        case core::behavior::BaseConstraintSet::POS :
+        case core::ConstraintParams::POS :
         {
-            SReal minDistance=0;
-            if (!intersection) this->getContext()->get(intersection);
-            if (intersection) minDistance=intersection->getContactDistance();
-            else serr << "No intersection component found!!" << sendl;
+            SReal minDistance = 0;
 
-            const VecCoord &x1=*(this->constrainedObject1->getVecCoord(id.index));
-            const VecCoord &x2=*(this->constrainedObject2->getVecCoord(id.index));
+            if (!intersection)
+                this->getContext()->get(intersection);
+
+            if (intersection)
+                minDistance=intersection->getContactDistance();
+            else
+                serr << "No intersection component found!!" << sendl;
+
+            const VecCoord &x1 = this->constrainedObject1->read(core::ConstVecCoordId(id))->getValue();
+            const VecCoord &x2 = this->constrainedObject2->read(core::ConstVecCoordId(id))->getValue();
+
             SReal correction  = minDistance-lengthEdge(edges[i],x1,x2); //Distance min-current length
+
             if (correction>0)
             {
                 core::behavior::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
                 constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex], correction);
             }
-            scalarConstraintIndex+=3;
+
+            scalarConstraintIndex += 3;
             break;
         }
         };
@@ -221,18 +231,18 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
 {
     switch (group->getOrder())
     {
-    case core::behavior::BaseConstraintSet::VEL :
+    case core::ConstraintParams::VEL :
     {
         Contact &out=*(this->constraintGroupToContact[group]);
         ContactDescription &contact=this->getContactDescription(group);
 
-//                        //The force cannot be attractive!
+        //                        //The force cannot be attractive!
         if (Lambda[0] <= 0)
         {
             contact.state=VANISHING;
             group->setActive(false);
             out.contactForce=Deriv();
-//                            std::cerr<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, deactivate attractive force"<<std::endl;
+            //                            std::cerr<<"DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation, deactivate attractive force"<<std::endl;
             return;
         }
 
@@ -289,7 +299,7 @@ void DistanceLMContactConstraint<DataTypes>::LagrangeMultiplierEvaluation(const 
 
         break;
     }
-    case core::behavior::BaseConstraintSet::POS :
+    case core::ConstraintParams::POS :
     {
         //The force cannot be attractive!
         if (Lambda[0] < 0)
@@ -310,9 +320,9 @@ bool DistanceLMContactConstraint<DataTypes>::isCorrectionComputedWithSimulatedDO
 {
     switch(order)
     {
-    case core::behavior::BaseConstraintSet::ACC :
-    case core::behavior::BaseConstraintSet::VEL : return true;
-    case core::behavior::BaseConstraintSet::POS : return false;
+    case core::ConstraintParams::ACC :
+    case core::ConstraintParams::VEL : return true;
+    case core::ConstraintParams::POS : return false;
     }
     return false;
 }
@@ -333,7 +343,7 @@ void DistanceLMContactConstraint<DataTypes>::draw()
         //Sliding: show direction of the new constraint
         helper::vector< Vector3 > slidingConstraints;
 
-        const helper::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::behavior::BaseConstraintSet::VEL);
+        const helper::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::ConstraintParams::VEL);
 
         const SeqEdges &edges =  pointPairs.getValue();
         for (unsigned int i=0; i<groups.size(); ++i)
@@ -367,9 +377,6 @@ void DistanceLMContactConstraint<DataTypes>::draw()
 
     }
 }
-
-
-
 
 } // namespace constraintset
 

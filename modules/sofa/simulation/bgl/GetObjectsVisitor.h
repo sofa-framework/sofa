@@ -45,8 +45,8 @@ public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
     typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
 
-    GetObjectsVisitor(const ClassInfo& class_inf, GetObjectsCallBack& cont)
-        : class_info(class_inf), container(cont)
+    GetObjectsVisitor(const ClassInfo& class_inf, GetObjectsCallBack& cont, const sofa::core::ExecParams* params)
+        : Visitor(params), class_info(class_inf), container(cont)
     {}
 
     void setTags(const sofa::core::objectmodel::TagSet& t) {tags=t;}
@@ -71,8 +71,8 @@ public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
     typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
     typedef sofa::core::objectmodel::BaseContext::SearchDirection SearchDirection;
-    GetObjectVisitor(const ClassInfo& class_inf)
-        : class_info(class_inf), result(NULL)
+    GetObjectVisitor(const ClassInfo& class_inf, const sofa::core::ExecParams* params)
+        : Visitor(params), class_info(class_inf), result(NULL)
     {}
 
     void setTags(const sofa::core::objectmodel::TagSet& t) {tags=t;}

@@ -30,6 +30,8 @@
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -62,10 +64,12 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField);
 
     typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Coord            Coord;
+    typedef typename DataTypes::Deriv            Deriv;
+    typedef typename DataTypes::VecCoord         VecCoord;
+    typedef typename DataTypes::VecDeriv         VecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
 
     ForceField(MechanicalState<DataTypes> *mm = NULL);
 
@@ -75,6 +79,7 @@ public:
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate; }
+
 
     /// @name Vector operations
     /// @{
@@ -87,9 +92,26 @@ public:
     /// $ f += B v + K x $
     ///
     /// This method retrieves the force, x and v vector from the MechanicalState
-    /// and call the internal addForce(VecDeriv&,const VecCoord&,const VecDeriv&)
+    /// and call the internal addForce(DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&, const MechanicalParams*)
     /// method implemented by the component.
-    virtual void addForce();
+    virtual void addForce(MultiVecDerivId fId , const MechanicalParams* mparams );
+
+    /// Given the current position and velocity states, update the current force
+    /// vector by computing and adding the forces associated with this
+    /// ForceField.
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ f += B v + K x $
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void addForce(DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v , const MechanicalParams* /*mparams*/)
+#ifdef SOFA_DEPRECATE_OLD_API
+        = 0;
+#else
+    ;
+    /// @deprecated use instead addForce(DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&, const MechanicalParams*)
+    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+#endif
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -104,74 +126,20 @@ public:
     /// This method retrieves the force and dx vector from the MechanicalState
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,double,double)
     /// method implemented by the component.
-    virtual void addDForce(double kFactor, double bFactor);
+    virtual void addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams );
 
-    /// Same as addDForce(), except the velocity vector should be used instead of dx.
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K v + bFactor B v $
-    ///
-    /// This method retrieves the force and velocity vector from the MechanicalState
-    /// and call the internal addDForce(VecDeriv&,const VecDeriv&,double,double)
-    /// method implemented by the component.
-    virtual void addDForceV(double kFactor, double bFactor);
+    virtual void addDForce(DataVecDeriv&   df , const DataVecDeriv&   dx , const MechanicalParams* mparams )
+#ifdef SOFA_DEPRECATE_OLD_API
+        = 0;
+#else
+    ;
+    /// @deprecated
+    virtual void addDForce(VecDeriv&       df , const VecDeriv&       dx , double kFactor, double bFactor);
+    /// @deprecated
+    virtual void addDForce(VecDeriv&       df , const VecDeriv&       dx );
+#endif
 
-    /// Get the potential energy associated to this ForceField.
-    ///
-    /// Used to extimate the total energy of the system by some
-    /// post-stabilization techniques.
-    ///
-    /// This method retrieves the x vector from the MechanicalState and call
-    /// the internal getPotentialEnergy(const VecCoord&) method implemented by
-    /// the component.
-    virtual double getPotentialEnergy() const;
 
-    /// Given the current position and velocity states, update the current force
-    /// vector by computing and adding the forces associated with this
-    /// ForceField.
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ f += B v + K x $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::addForce() method.
-    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) = 0;
-
-    /// Compute the force derivative given a small displacement from the
-    /// position and velocity used in the previous call to addForce().
-    ///
-    /// The derivative should be directly derived from the computations
-    /// done by addForce. Any forces neglected in addDForce will be integrated
-    /// explicitly (i.e. using its value at the beginning of the timestep).
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += K dx $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::addDForce() method.
-    ///
-    /// @deprecated to more efficiently accumulate contributions from all terms
-    ///   of the system equation, a new addDForce method allowing to pass two
-    ///   coefficients for the stiffness and damping terms should now be used.
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
-
-    /// Compute the force derivative given a small displacement from the
-    /// position and velocity used in the previous call to addForce().
-    ///
-    /// The derivative should be directly derived from the computations
-    /// done by addForce. Any forces neglected in addDForce will be integrated
-    /// explicitly (i.e. using its value at the beginning of the timestep).
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K dx + bFactor B dx $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::addDForce() method.
-    ///
-    /// To support old components that implement the deprecated addForce method
-    /// without scalar coefficients, it defaults to using a temporaty vector to
-    /// compute $ K dx $ and then manually scaling all values by kFactor.
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -179,35 +147,41 @@ public:
     /// post-stabilization techniques.
     ///
     /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const VecCoord& x) const =0;
+    /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
+
+    virtual double getPotentialEnergy(const MechanicalParams* mparams) const  ;
+
+    virtual double getPotentialEnergy(const DataVecCoord&   x, const MechanicalParams* /*mparams*/) const
+#ifdef SOFA_DEPRECATE_OLD_API
+        = 0;
+#else
+    ;
+    /// @deprecated
+    virtual double getPotentialEnergy(const VecCoord& x) const;
+#endif
 
     /// @}
 
     /// @name Matrix operations
     /// @{
 
-    /// @deprecated
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
-
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact)
-    {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-        if (r)
-            addKToMatrix(r.matrix, kFact, r.offset);
-    }
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams );
 
     /// @deprecated
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset)               ;
 
-    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double bFact)
-    {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-        if (r)
-            addBToMatrix(r.matrix, bFact, r.offset);
-    }
+
+
+    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams);
+
+    /// @deprecated
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset)              ;
 
     /// @}
+
+
+
+
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

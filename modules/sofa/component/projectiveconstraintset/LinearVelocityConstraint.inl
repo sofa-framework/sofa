@@ -53,35 +53,27 @@ using namespace sofa::core::objectmodel;
 
 
 // Define TestNewPointFunction
-template< class DataTypes>
-bool LinearVelocityConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+template< class TDataTypes>
+bool LinearVelocityConstraint<TDataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
-    LinearVelocityConstraint<DataTypes> *fc= (LinearVelocityConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    LinearVelocityConstraint<TDataTypes> *fc= (LinearVelocityConstraint<TDataTypes> *)param;
+    return fc != 0;
 }
 
 // Define RemovalFunction
-template< class DataTypes>
-void LinearVelocityConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+template< class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::FCRemovalFunction(int pointIndex, void* param)
 {
-    LinearVelocityConstraint<DataTypes> *fc= (LinearVelocityConstraint<DataTypes> *)param;
+    LinearVelocityConstraint<TDataTypes> *fc= (LinearVelocityConstraint<TDataTypes> *)param;
     if (fc)
     {
         fc->removeIndex((unsigned int) pointIndex);
     }
-    return;
 }
 
-template <class DataTypes>
-LinearVelocityConstraint<DataTypes>::LinearVelocityConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+template <class TDataTypes>
+LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
+    : core::behavior::ProjectiveConstraintSet<TDataTypes>(NULL)
     , m_indices( BaseObject::initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  BaseObject::initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyVelocities(  BaseObject::initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
@@ -100,43 +92,42 @@ LinearVelocityConstraint<DataTypes>::LinearVelocityConstraint()
 
 
 // Handle topological changes
-template <class DataTypes> void LinearVelocityConstraint<DataTypes>::handleTopologyChange()
+template <class TDataTypes> void LinearVelocityConstraint<TDataTypes>::handleTopologyChange()
 {
     std::list<const TopologyChange *>::const_iterator itBegin=topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
 
     m_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-
 }
 
-template <class DataTypes>
-LinearVelocityConstraint<DataTypes>::~LinearVelocityConstraint()
+template <class TDataTypes>
+LinearVelocityConstraint<TDataTypes>::~LinearVelocityConstraint()
 {
 }
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::clearIndices()
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::clearIndices()
 {
     m_indices.beginEdit()->clear();
     m_indices.endEdit();
 }
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::addIndex(unsigned int index)
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::addIndex(unsigned int index)
 {
     m_indices.beginEdit()->push_back(index);
     m_indices.endEdit();
 }
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::removeIndex(unsigned int index)
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::removeIndex(unsigned int index)
 {
     removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::clearKeyVelocities()
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::clearKeyVelocities()
 {
     m_keyTimes.beginEdit()->clear();
     m_keyTimes.endEdit();
@@ -144,8 +135,8 @@ void LinearVelocityConstraint<DataTypes>::clearKeyVelocities()
     m_keyVelocities.endEdit();
 }
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::addKeyVelocity(Real time, Deriv movement)
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::addKeyVelocity(Real time, Deriv movement)
 {
     m_keyTimes.beginEdit()->push_back( time );
     m_keyTimes.endEdit();
@@ -156,10 +147,10 @@ void LinearVelocityConstraint<DataTypes>::addKeyVelocity(Real time, Deriv moveme
 // -- Constraint interface
 
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::init()
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::init()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<TDataTypes>::init();
 
     topology = this->getContext()->getMeshTopology();
 
@@ -174,25 +165,19 @@ void LinearVelocityConstraint<DataTypes>::init()
 
     x0.resize(0);
     nextV = prevV = Deriv();
-
 }
 
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::projectResponse(VecDeriv& )
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::projectResponse(DataVecDeriv& /*resData*/, const core::MechanicalParams* /*mparams*/)
 {
 
 }
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::projectResponse(MatrixDerivRowType& )
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
 {
-
-}
-
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
-{
+    helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime();
 
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
@@ -258,9 +243,10 @@ void LinearVelocityConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 }
 
 
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor<DataVecCoord> x = xData;
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
@@ -342,9 +328,15 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
     }
 }
 
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(DataMatrixDeriv& /*cData*/, const core::MechanicalParams* /*mparams*/)
+{
+
+}
+
 //display the path the constrained dofs will go through
-template <class DataTypes>
-void LinearVelocityConstraint<DataTypes>::draw()
+template <class TDataTypes>
+void LinearVelocityConstraint<TDataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
     glDisable (GL_LIGHTING);

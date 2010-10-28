@@ -104,11 +104,13 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
-    typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
-    typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
-    typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
+    typedef helper::ReadAccessor< Data< VecCoord > > RDataRefVecCoord;
+    typedef helper::WriteAccessor< Data< VecCoord > > WDataRefVecCoord;
+    typedef helper::ReadAccessor< Data< VecDeriv > > RDataRefVecDeriv;
+    typedef helper::WriteAccessor< Data< VecDeriv > > WDataRefVecDeriv;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
@@ -128,7 +130,7 @@ protected:
     SpringForceFieldInternalData<DataTypes> data;
     friend class SpringForceFieldInternalData<DataTypes>;
 
-    void addSpringForce(SReal& potentialEnergy, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
     void updateMaskStatus();
 public:
 
@@ -148,9 +150,9 @@ public:
     virtual void reinit();
     virtual void init();
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const { return m_potentialEnergy; }
+    virtual void addForce(DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2, const core::MechanicalParams* );
+    virtual double getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const { return m_potentialEnergy; }
 
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);

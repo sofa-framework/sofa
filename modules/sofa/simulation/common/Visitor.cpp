@@ -160,9 +160,9 @@ double Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
 }
 
 
-void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::VecId id)
+void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::ConstVecId id)
 {
-    if (id.type != core::VecId::V_COORD && id.type != core::VecId::V_DERIV) return;
+    if (id.type != core::V_COORD && id.type != core::V_DERIV) return;
     std::ostringstream infoStream;
     TRACE_ARGUMENT arg;
     mm->printDOF(id, infoStream,firstIndexStateVector, rangeStateVector);
@@ -170,8 +170,8 @@ void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::VecId i
     if (vectorValue.empty()) return;
 
     infoStream.str("");
-    if      (id.type == core::VecId::V_COORD) infoStream << mm->getCoordDimension() << " ";
-    else if (id.type == core::VecId::V_DERIV) infoStream << mm->getDerivDimension() << " ";
+    if      (id.type == core::V_COORD) infoStream << mm->getCoordDimension() << " ";
+    else if (id.type == core::V_DERIV) infoStream << mm->getDerivDimension() << " ";
     vectorValue = infoStream.str()+vectorValue;
     arg.push_back(std::make_pair("value", vectorValue));
 

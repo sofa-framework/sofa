@@ -25,6 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_SMPSIMULATION_H
 #define SOFA_SIMULATION_TREE_SMPSIMULATION_H
 
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/ChangeListener.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
@@ -38,7 +39,9 @@ namespace simulation
 
 namespace tree
 {
+
 class MainLoopTask;
+
 /** Main controller of the scene.
 Defines how the scene is inited at the beginning, and updated at each time step.
 Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
@@ -51,6 +54,7 @@ private:
     common::ChangeListener *changeListener;
 public:
     SOFA_CLASS(SMPSimulation, Simulation);
+
     /** Load a scene from a file.
     Static method because at this point, the Simulation component is not yet created.
     If a Simulation component is found in the graph, then it is used.
@@ -73,8 +77,6 @@ public:
 protected:
     Node *visualNode;
     Data<bool> parallelCompile;
-
-
 };
 
 

@@ -100,10 +100,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename TDataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
     typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
 
 

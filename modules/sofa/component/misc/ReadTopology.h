@@ -116,8 +116,8 @@ public:
 class SOFA_COMPONENT_MISC_API ReadTopologyCreator: public Visitor
 {
 public:
-    ReadTopologyCreator();
-    ReadTopologyCreator(const std::string &n, bool _createInMapping, bool i=true, int c=0 );
+    ReadTopologyCreator(const core::ExecParams* params);
+    ReadTopologyCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i=true, int c=0 );
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
@@ -138,7 +138,8 @@ protected:
 class SOFA_COMPONENT_MISC_API ReadTopologyActivator: public Visitor
 {
 public:
-    ReadTopologyActivator( bool active):state(active) {}
+    ReadTopologyActivator(const core::ExecParams* params, bool active)
+        :Visitor(params), state(active) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     bool getTopology() const {return state;};
@@ -153,7 +154,9 @@ protected:
 class SOFA_COMPONENT_MISC_API ReadTopologyModifier: public simulation::Visitor
 {
 public:
-    ReadTopologyModifier( double _time):time(_time) {}
+    ReadTopologyModifier(double _time, const core::ExecParams* params)
+        :Visitor(params), time(_time) {}
+
     virtual Result processNodeTopDown( simulation::Node*  );
 
     double getTime() const { return time; }

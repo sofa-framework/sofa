@@ -51,6 +51,8 @@ class FindByTypeVisitor : public Visitor
 public:
     std::vector<T*> found; ///< The result of the search: contains pointers to all components of the given type found.
 
+    FindByTypeVisitor(const core::ExecParams* params) : Visitor(params) {}
+
     /// For each component, if it is of the given type, then put it in the list
     virtual Result processNodeTopDown(simulation::Node* node)
     {

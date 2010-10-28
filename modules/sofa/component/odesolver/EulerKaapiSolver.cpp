@@ -29,128 +29,106 @@
 #include <sofa/simulation/common/MechanicalKaapiAction.h>
 #include <sofa/simulation/common/MechanicalVPrintAction.h>
 
-
-using
-std::cerr;
-using
-std::endl;
+using std::cerr;
+using std::endl;
 using namespace sofa::simulation::tree;
 using namespace sofa::simulation;
 
-
-namespace
-        sofa
+namespace sofa
 {
 
-namespace
-        component
+namespace component
 {
 
-namespace
-        odesolver
+namespace odesolver
 {
+using core::VecId;
+using namespace sofa::defaulttype;
+using namespace core::behavior;
 
-using namespace
-        sofa::defaulttype;
-using namespace
-        core::behavior;
+int EulerKaapiSolverClass =
+    core::RegisterObject("A simple explicit time integrator with kaapi"). add<
+    EulerKaapiSolver> ().addAlias("EulerKaapi");
 
-int
-EulerKaapiSolverClass =
-    core::RegisterObject ("A simple explicit time integrator with kaapi").
-    add < EulerKaapiSolver > ().addAlias ("EulerKaapi");
+SOFA_DECL_CLASS (EulerKaapi)
+;
 
-SOFA_DECL_CLASS (EulerKaapi);
-
-EulerKaapiSolver::EulerKaapiSolver ():
-    symplectic (dataField
-            (&symplectic, true, "symplectic",
-                    "If true, the velocities are updated before the velocities and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust)."))
+EulerKaapiSolver::EulerKaapiSolver() :
+    symplectic(dataField(&symplectic,
+            true,
+            "symplectic",
+            "If true, the velocities are updated before the velocities and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust)."))
 {
 }
-
-
 
 EulerKaapiSolver::VecId EulerKaapiSolver::v_alloc(VecId::Type t)
 {
     VecId v(t, vectors[t].alloc());
-    MechanicalVAllocAction(v).execute( getContext() );
+    MechanicalVAllocAction(v).execute(getContext());
     return v;
 }
 void EulerKaapiSolver::v_clear(VecId v) ///< v=0
 {
-    MechanicalVOpAction(v).execute( getContext() );
+    MechanicalVOpAction(v).execute(getContext());
 }
 
 void EulerKaapiSolver::v_free(VecId v)
 {
     if (vectors[v.type].free(v.index))
-        MechanicalVFreeAction(v).execute( getContext() );
+        MechanicalVFreeAction(v).execute(getContext());
 }
-
-
 
 void EulerKaapiSolver::v_peq(VecId v, VecId a, double f) ///< v+=f*a
 {
-    std::cout<<"ve peque"<<std::endl;
-    MechanicalVOpAction(v,v,a,f).execute( getContext() );
+    std::cout << "ve peque" << std::endl;
+    MechanicalVOpAction(v, v, a, f).execute(getContext());
 }
 
 void EulerKaapiSolver::projectResponse(VecId dx, double **W)
 {
-    MechanicalApplyConstraintsAction(dx, W).execute( getContext() );
+    MechanicalApplyConstraintsAction(dx, W).execute(getContext());
 }
-
-
 
 void EulerKaapiSolver::accFromF(VecId a, VecId f)
 {
-    MechanicalAccFromFAction(a,f).execute( getContext() );
+    MechanicalAccFromFAction(a, f).execute(getContext());
 }
 
 void EulerKaapiSolver::propagatePositionAndVelocity(double t, VecId x, VecId v)
 {
-    MechanicalPropagatePositionAndVelocityAction(t,x,v).execute( getContext() );
+    MechanicalPropagatePositionAndVelocityAction(t, x, v).execute(getContext());
 }
 
 void EulerKaapiSolver::computeForce(VecId result)
 {
-    MechanicalResetForceAction(result).execute( getContext() );
+    MechanicalResetForceAction(result).execute(getContext());
     finish();
-    MechanicalComputeForceAction(result).execute( getContext() );
+    MechanicalComputeForceAction(result).execute(getContext());
 }
 
-
-void EulerKaapiSolver::computeAcc (double t, VecId a, VecId x, VecId v)
+void EulerKaapiSolver::computeAcc(double t, VecId a, VecId x, VecId v)
 {
-    MultiVector
-    f (this, VecId::force ());
-    std::cout<<"kaapi solver"<<std::endl;
-    propagatePositionAndVelocity (t, x, v);
-    computeForce (f);
-    if (this->f_printLog.getValue () == true)
+    MultiVector f(this, VecId::force());
+    std::cout << "kaapi solver" << std::endl;
+    propagatePositionAndVelocity(t, x, v);
+    computeForce(f);
+    if (this->f_printLog.getValue() == true)
     {
         cerr << "OdeSolver::computeAcc, f = " << f << endl;
     }
 
-    accFromF (a, f);
-    projectResponse (a);
+    accFromF(a, f);
+    projectResponse(a);
 }
 
-void
-EulerKaapiSolver::solve (double dt)
+void EulerKaapiSolver::solve(double dt)
 {
     //objectmodel::BaseContext* group = getContext();
-    OdeSolver *
-    group = this;
-    MultiVector
-    pos (group, VecId::position ());
-    MultiVector
-    vel (group, VecId::velocity ());
-    MultiVector
-    acc (group, VecId::dx ());
-    bool
-    printLog = 1;
+    OdeSolver * group = this;
+    MultiVector pos(group, VecId::position());
+    MultiVector vel(group, VecId::velocity());
+    MultiVector acc(group, VecId::dx());
+    bool printLog = 1;
     // f_printLog.getValue();
 
     if (printLog)
@@ -160,18 +138,18 @@ EulerKaapiSolver::solve (double dt)
         cerr << "EulerKaapiSolver, initial v = " << vel << endl;
     }
 
-    computeAcc (getTime (), acc, pos, vel);
+    computeAcc(getTime(), acc, pos, vel);
 
     // update state
-    if (symplectic.getValue ())
+    if (symplectic.getValue())
     {
-        vel.peq (acc, dt);
-        pos.peq (vel, dt);
+        vel.peq(acc, dt);
+        pos.peq(vel, dt);
     }
     else
     {
-        pos.peq (vel, dt);
-        vel.peq (acc, dt);
+        pos.peq(vel, dt);
+        vel.peq(acc, dt);
     }
 
     if (printLog)
@@ -182,8 +160,8 @@ EulerKaapiSolver::solve (double dt)
     }
 }
 
-}				// namespace odesolver
+} // namespace odesolver
 
-}				// namespace component
+} // namespace component
 
-}				// namespace sofa
+} // namespace sofa

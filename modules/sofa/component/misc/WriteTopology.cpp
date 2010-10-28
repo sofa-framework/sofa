@@ -45,8 +45,9 @@ int WriteTopologyClass = core::RegisterObject("Write topology containers informa
 
 
 
-WriteTopologyCreator::WriteTopologyCreator()
-    : sceneName("")
+WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
+    :Visitor(params)
+    ,sceneName("")
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else
@@ -59,8 +60,9 @@ WriteTopologyCreator::WriteTopologyCreator()
 {
 }
 
-WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, int c)
-    : sceneName(n)
+WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c)
+    :Visitor(params)
+    , sceneName(n)
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else

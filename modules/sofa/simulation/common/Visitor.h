@@ -30,6 +30,7 @@
 #include <sofa/simulation/common/LocalStorage.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/ExecParams.h>
 
 #include <sofa/helper/set.h>
 #include <iostream>
@@ -50,6 +51,7 @@ class LocalStorage;
 class SOFA_SIMULATION_COMMON_API Visitor
 {
 protected:
+    const core::ExecParams* params;
     bool prefetching;
 public:
 
@@ -64,14 +66,16 @@ public:
     typedef sofa::helper::system::thread::CTime CTime;
 #endif
 
-    Visitor()
-        : prefetching(false)
+    Visitor(const core::ExecParams* params)
+        : params(params), prefetching(false)
     {
+        //params = core::MechanicalParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
         enteringBase=NULL; infoPrinted=false;
 #endif
     }
     virtual ~Visitor() {}
+
     typedef simulation::Node::ctime_t ctime_t;
 
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
@@ -275,7 +279,7 @@ public:
     typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
     static void printComment(const std::string &s) ;
     static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() ) ;
-    static void printVector(core::behavior::BaseMechanicalState *mm, core::VecId id);
+    static void printVector(core::behavior::BaseMechanicalState *mm, core::ConstVecId id);
     static void printCloseNode(const std::string &type) ;
     virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
     void setNode(core::objectmodel::Base* c);

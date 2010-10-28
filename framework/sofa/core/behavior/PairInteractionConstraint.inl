@@ -44,7 +44,8 @@ PairInteractionConstraint<DataTypes>::PairInteractionConstraint(MechanicalState<
     : endTime( initData(&endTime,(double)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
     , object1( initData(&object1, "object1", "First Object to Constraint"))
     , object2( initData(&object2, "object2", "Second Object to Constraint"))
-    , mstate1(mm1), mstate2(mm2)
+    , mstate1(mm1)
+    , mstate2(mm2)
 {
 }
 
@@ -56,160 +57,42 @@ PairInteractionConstraint<DataTypes>::~PairInteractionConstraint()
 template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::init()
 {
-    InteractionConstraint::init();
+    BaseInteractionConstraint::init();
+
     if (mstate1 == NULL || mstate2 == NULL)
     {
         mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     }
-
-    this->mask1 = &mstate1->forceMask;
-    this->mask2 = &mstate2->forceMask;
 }
 
 template<class DataTypes>
 bool PairInteractionConstraint<DataTypes>::isActive() const
 {
-    if( endTime.getValue()<0 ) return true;
-    return endTime.getValue()>getContext()->getTime();
+    if (endTime.getValue() < 0)
+        return true;
+
+    return endTime.getValue() > getContext()->getTime();
 }
 
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectJacobianMatrix()
-{
-    serr << "NOT IMPLEMENTED YET" << sendl;
-}
 
-#ifndef SOFA_SMP
 template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectResponse()
+void PairInteractionConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams)
 {
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (cParams)
     {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectResponse(*mstate1->getDx(), *mstate2->getDx());
+        getConstraintViolation(v, *cParams->readX(mstate1), *cParams->readX(mstate2), *cParams->readV(mstate1), *cParams->readV(mstate2), cParams);
     }
 }
 
+
 template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectVelocity()
+void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams)
 {
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (cParams)
     {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectVelocity(*mstate1->getV(), *mstate2->getV());
+        buildConstraintMatrix(*cId[mstate1].write(), *cId[mstate2].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2), cParams);
     }
 }
-
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectPosition()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectPosition(*mstate1->getX(), *mstate2->getX());
-    }
-}
-#endif
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectFreeVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectVelocity(*mstate1->getVfree(), *mstate2->getVfree());
-    }
-}
-
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectFreePosition()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectPosition(*mstate1->getXfree(), *mstate2->getXfree());
-    }
-}
-
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::applyConstraint(unsigned int &contactId)
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        applyConstraint(*mstate1->getC(), *mstate2->getC(), contactId);
-    }
-}
-#ifdef SOFA_SMP
-template<class DataTypes>
-
-struct PairConstraintProjectResponseTask
-{
-    void operator()(   PairInteractionConstraint<DataTypes>  *c, Shared_rw< typename DataTypes::VecDeriv> dx1,Shared_rw< typename DataTypes::VecDeriv> dx2)
-    {
-        c->projectResponse(dx1.access(),dx2.access());
-
-
-    }
-};
-template<class DataTypes>
-
-struct PairConstraintProjectVelocityTask
-{
-    void operator()(   PairInteractionConstraint<DataTypes>  *c, Shared_rw< typename DataTypes::VecDeriv> v1, Shared_rw< typename DataTypes::VecDeriv> v2)
-    {
-        c->projectVelocity(v1.access(),v2.access());
-
-
-    }
-};
-template<class DataTypes>
-
-struct PairConstraintProjectPositionTask
-{
-    void operator()(   PairInteractionConstraint<DataTypes>  *c, Shared_rw< typename DataTypes::VecCoord> x1, Shared_rw< typename DataTypes::VecCoord> x2)
-    {
-        c->projectPosition(x1.access(),x2.access());
-
-
-    }
-};
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectResponse()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-        Task<PairConstraintProjectResponseTask<DataTypes> >(this,**mstate1->getDx(),**mstate2->getDx());
-
-}
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-        Task<PairConstraintProjectVelocityTask<DataTypes> >(this,**mstate1->getV(),**mstate2->getV());
-}
-
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::projectPosition()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-        Task<PairConstraintProjectPositionTask<DataTypes> >(this,**mstate1->getX(),**mstate2->getX());
-}
-#endif
-
 
 } // namespace behavior
 

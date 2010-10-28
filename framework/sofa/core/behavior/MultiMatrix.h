@@ -27,7 +27,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIX_H
 #define SOFA_CORE_BEHAVIOR_MULTIMATRIX_H
 
-#include <sofa/core/behavior/MultiVector.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa
 {
@@ -96,7 +96,7 @@ template<class Parent>
 class MultiMatrix
 {
 public:
-    typedef BaseMechanicalState::VecId VecId;
+    typedef sofa::core::VecId VecId;
 
 protected:
     /// Solver who is using this matrix
@@ -133,12 +133,13 @@ public:
         parent->m_setSystemMBKMatrix(m.getMFact(), m.getBFact(), m.getKFact());
     }
 
-    void solve(MultiVector<Parent>& solution, MultiVector<Parent>& rh)
+    void solve(MultiVecDerivId solution, MultiVecDerivId rh)
     {
         parent->m_setSystemRHVector(rh);
         parent->m_setSystemLHVector(solution);
         parent->m_solveSystem();
     }
+
     friend std::ostream& operator << (std::ostream& out, const MultiMatrix<Parent>& m )
     {
         m.parent->m_print(out);

@@ -204,20 +204,6 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
             }
         }
 
-        /*
-        for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-        {
-        	int indexC1 = id_buf[c1];
-        	ConstraintIterator itConstraint;
-        	std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-
-        	for(itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-        	{
-        		lcp->getDfree()[indexC1] += computeDot<DataTypes>(itConstraint->second, dx[itConstraint->first]);
-        	}
-        }
-        */
-
         double tol = lcp->getTolerance();
         int max = 100;
 
@@ -236,21 +222,6 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
             }
         }
 
-        /*
-        for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-        {
-        	int indexC1 = id_buf[c1];
-
-        	ConstraintIterator itConstraint;
-        	std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-
-        	for(itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-        	{
-        		lcp->getDfree()[indexC1] -= computeDot<DataTypes>(itConstraint->second, dx[itConstraint->first]);
-        	}
-        }
-        */
-
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
         {
             if (lcp->getF()[rowIt.index()] != 0.0)
@@ -263,21 +234,6 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
                 }
             }
         }
-
-        //for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-        //{
-        //	int indexC1 = id_buf[c1];
-        //	if (lcp->getF()[indexC1] != 0.0)
-        //	{
-        //		ConstraintIterator itConstraint;
-        //		std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-
-        //		for(itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-        //		{
-        //			forces[itConstraint->first]/*.x()*/ += itConstraint->second/*.x()*/ * lcp->getF()[indexC1];
-        //		}
-        //	}
-        //}
 
         for(unsigned int i = 0; i < stateSize; ++i)
         {
@@ -327,7 +283,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     mLcp[buf_index] = new_lcp;
 
     // Update Val
-    val = *mState->getXfree();
+    val = mState->read(sofa::core::VecCoordId::freePosition())->getValue();
 
     // Update constraints and id_buf
     constraints.clear();
@@ -341,24 +297,6 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     {
         constraints.addLine(rowIt.index(), rowIt.row());
     }
-
-    /*for(unsigned int c1 = 0; c1 < mState->getC()->size(); c1++)
-    {
-    	int indexC1 = mState->getConstraintId()[c1];
-    	id_buf.push_back(indexC1);
-    	typename DataTypes::SparseVecDeriv v;
-    	ConstraintIterator itConstraint;
-
-    	std::pair< ConstraintIterator, ConstraintIterator > iter;
-    	iter.first=(*mState->getC())[c1].data().first;
-    	iter.second=(*mState->getC())[c1].data().second;
-
-    	for(itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-    	{
-    		v.add(itConstraint->first, itConstraint->second);
-    	}
-    	constraints.push_back(v);
-    }*/
 
     // valid buffer
     mNextBufferId = buf_index;

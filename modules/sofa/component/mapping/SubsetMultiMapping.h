@@ -26,12 +26,10 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H
 
 #include <sofa/core/MultiMapping.h>
-#include <sofa/core/behavior/MechanicalMultiMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/map.h>
-#include <sofa/defaulttype/Vec3Types.h>
+
 #include <sofa/component/topology/PointSubset.h>
+
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
@@ -46,19 +44,20 @@ namespace mapping
  * @class SubsetMapping
  * @brief Compute a subset of input points
  */
-template <class BasicMapping>
-class SubsetMultiMapping : public BasicMapping
+template <class TIn, class TOut>
+class SubsetMultiMapping : public core::MultiMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SubsetMultiMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMultiMapping, TIn, TOut), SOFA_TEMPLATE2(core::MultiMapping, TIn, TOut));
+
+    typedef core::MultiMapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
-
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
@@ -70,9 +69,9 @@ public:
     //typedef helper::vector<unsigned int> IndexArray;
     inline unsigned int computeTotalInputPoints() const
     {
-        typename std::map<const  In* , IndexArray >::const_iterator iter;
+        typename std::map< const core::State<In>* , IndexArray >::const_iterator iter;
         unsigned int total = 0;
-        for ( iter = _indices.begin(); iter != _indices.end(); iter++)
+        for ( iter = m_indices.begin(); iter != m_indices.end(); iter++)
         {
             total += (*iter).second.size();
         }
@@ -81,37 +80,36 @@ public:
 
     virtual void init();
 
+    SubsetMultiMapping(helper::vector< core::State<In>* > in, helper::vector< core::State<Out>* > out)
+        : Inherit(in, out)
+    {
+    }
+
     virtual ~SubsetMultiMapping() {};
 
-    void addPoint(const In* fromModel, int index);
-
+    void addPoint(const core::State<In>* fromModel, int index);
 
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
-    virtual void applyJ (const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
+    virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
 
 protected :
     typedef topology::PointSubset IndexArray;
-    std::map<const In*,IndexArray>  _indices;
+    std::map<const core::State<In>*,IndexArray>  m_indices;
 };
 
 
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
-using namespace core::behavior;
+
 using namespace sofa::defaulttype;
-using namespace sofa::core;
 
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping<MechanicalMultiMapping< MechanicalState< Vec3dTypes>, MechanicalState< Vec3dTypes> > > ;
-extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping<MultiMapping< MechanicalState< Vec3dTypes>, MechanicalState< Vec3dTypes> > > ;
-
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping<MechanicalMultiMapping< MechanicalState< Vec3fTypes>, MechanicalState< Vec3fTypes> > > ;
-extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping<MultiMapping< MechanicalState< Vec3fTypes>, MechanicalState< Vec3fTypes> > > ;
-
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
 #endif
 #endif
 

@@ -55,10 +55,9 @@ public:
     const Vector3& direction() const;
     SReal l() const;
 
-    Vector3& origin();
-    Vector3& direction();
-    SReal& l();
-
+    void setOrigin(const Vector3& newOrigin);
+    void setDirection(const Vector3& newDirection);
+    void setL(SReal newL);
 };
 
 class BaseRayContact;
@@ -135,19 +134,21 @@ inline Vector3::value_type Ray::l() const
     return model->length[index];
 }
 
-inline Vector3& Ray::origin()
+inline void Ray::setOrigin(const Vector3& newOrigin)
 {
-    return (*model->getMechanicalState()->getX())[index];
+    helper::WriteAccessor<Data<helper::vector<Vector3> > > xData =
+        *model->getMechanicalState()->write(core::VecCoordId::position());
+    xData.wref()[index] = newOrigin;
 }
 
-inline Vector3& Ray::direction()
+inline void Ray::setDirection(const Vector3& newDirection)
 {
-    return model->direction[index];
+    model->direction[index] = newDirection;
 }
 
-inline Vector3::value_type& Ray::l()
+inline void Ray::setL(SReal newL)
 {
-    return model->length[index];
+    model->length[index] = newL;
 }
 
 } // namespace collision

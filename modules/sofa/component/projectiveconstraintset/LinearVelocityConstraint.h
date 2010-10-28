@@ -48,19 +48,23 @@ namespace projectiveconstraintset
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
 */
-template <class DataTypes>
-class LinearVelocityConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+template <class TDataTypes>
+class LinearVelocityConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LinearVelocityConstraint,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(LinearVelocityConstraint,TDataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,TDataTypes));
 
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
@@ -100,18 +104,15 @@ public :
 
     /// -- Constraint interface
     void init();
-    void projectResponse(VecDeriv& dx);
-    void projectResponse(MatrixDerivRowType& dx);
-    virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
+    void projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams);
+    void projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* mparams);
+    void projectPosition(DataVecCoord& xData, const core::MechanicalParams* mparams);
+    void projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams);
 
     /// Handle topological changes
     virtual void handleTopologyChange();
 
     virtual void draw();
-
-    /// this constraint is holonomic
-    bool isHolonomic() {return true;}
 
 protected:
 
@@ -122,7 +123,6 @@ protected:
 
     /// Define RemovalFunction (for topology changes)
     static void FCRemovalFunction ( int , void*);
-
 };
 
 

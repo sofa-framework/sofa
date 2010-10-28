@@ -37,7 +37,6 @@ namespace component
 namespace constraintset
 {
 
-
 enum ContactState {VANISHING, STICKING, SLIDING};
 
 /// ContactDescription is a class providing precise information about the state of a contact
@@ -73,11 +72,10 @@ protected:
     InternalData infos;
 };
 
+} // namespace constraintset
 
-}
+} // namespace component
 
-}
-
-}
+} // namespace sofa
 
 #endif

@@ -151,7 +151,7 @@ Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
         for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
         {
             simulation::Node *child=*itChild;
-            child->execute<VisualUpdateVisitor>();
+            child->execute<VisualUpdateVisitor>(params);
         }
     }
     return RESULT_CONTINUE;
@@ -177,7 +177,7 @@ Visitor::Result VisualInitVisitor::processNodeTopDown(simulation::Node* node)
         for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
         {
             simulation::Node *child=*itChild;
-            child->execute<VisualInitVisitor>();
+            child->execute<VisualInitVisitor>(params);
         }
     }
     return RESULT_CONTINUE;
@@ -187,7 +187,8 @@ void VisualInitVisitor::processVisualModel(simulation::Node*, core::VisualModel*
     vm->initVisual();
 }
 
-VisualComputeBBoxVisitor::VisualComputeBBoxVisitor()
+VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* params)
+    : Visitor(params)
 {
     minBBox[0] = minBBox[1] = minBBox[2] = 1e10;
     maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;

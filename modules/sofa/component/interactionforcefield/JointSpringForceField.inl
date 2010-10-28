@@ -177,7 +177,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , /*const*/ Spring& spring)
+void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , /*const*/ Spring& spring, Real kFactor)
 {
     const int a = spring.m1;
     const int b = spring.m2;
@@ -197,16 +197,24 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
 
     const Deriv dforce(df0,dR0);
 
-    f1[a]+=dforce;
-    f2[b]-=dforce;
+    f1[a] += dforce * kFactor;
+    f2[b] -= dforce * kFactor;
 
     //--
     spring.bloquage=Vector();
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+void JointSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* /*mparams*/ )
 {
+
+    VecDeriv&       f1 = *data_f1.beginEdit();
+    const VecCoord& x1 =  data_x1.getValue();
+    const VecDeriv& v1 =  data_v1.getValue();
+    VecDeriv&       f2 = *data_f2.beginEdit();
+    const VecCoord& x2 =  data_x2.getValue();
+    const VecDeriv& v2 =  data_v2.getValue();
+
     helper::vector<Spring>& springs = *this->springs.beginEdit();
 
     springRef.resize(x1.size());
@@ -219,21 +227,35 @@ void JointSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, cons
         this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
     this->springs.endEdit();
+
+    data_f1.endEdit();
+    data_f2.endEdit();
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
+void JointSpringForceField<DataTypes>::addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams *mparams)
 {
+    VecDeriv&        df1 = *data_df1.beginEdit();
+    VecDeriv&        df2 = *data_df2.beginEdit();
+    const VecDeriv&  dx1 =  data_dx1.getValue();
+    const VecDeriv&  dx2 =  data_dx2.getValue();
+
+
     df1.resize(dx1.size());
     df2.resize(dx2.size());
+
+    Real kFactor = (Real)mparams->kFactor();
 
     //const helper::vector<Spring>& springs = this->springs.getValue();
     helper::vector<Spring>& springs = *this->springs.beginEdit();
     for (unsigned int i=0; i<springs.size(); i++)
     {
-        this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i]);
+        this->addSpringDForce(df1, dx1, df2, dx2, i, springs[i], kFactor);
     }
     this->springs.endEdit();
+
+    data_df1.endEdit();
+    data_df2.endEdit();
 }
 
 template<class DataTypes>

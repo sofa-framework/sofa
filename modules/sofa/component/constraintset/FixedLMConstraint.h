@@ -51,7 +51,7 @@ class FixedLMConstraintInternalData
 
 
 /** Keep two particules at an initial distance
- */
+*/
 template <class DataTypes>
 class FixedLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>
 {
@@ -70,23 +70,23 @@ public:
     typedef sofa::component::topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
-    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef core::ConstraintParams::ConstOrder ConstOrder;
 
 protected:
     FixedLMConstraintInternalData<DataTypes> data;
     friend class FixedLMConstraintInternalData<DataTypes>;
 
 public:
-    FixedLMConstraint( MechanicalState *dof):
-        core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
-        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
-        _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    FixedLMConstraint( MechanicalState *dof)
+        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {};
-    FixedLMConstraint():
-        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
-        _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {}
+
+    FixedLMConstraint()
+        : f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    {};
 
     ~FixedLMConstraint() {};
 
@@ -103,8 +103,8 @@ public:
     void reset() {initFixedPosition();};
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::VecId position);
-    void writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder order);
+    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+    void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
 
 
     std::string getTemplateName() const
@@ -116,17 +116,15 @@ public:
         return DataTypes::Name();
     }
 
-
-
-
-
-    bool isCorrectionComputedWithSimulatedDOF(core::behavior::BaseLMConstraint::ConstOrder /*order*/) const
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;
         else return false;
     }
+
     bool useMask() const {return true;}
+
 protected :
 
     Deriv X,Y,Z;

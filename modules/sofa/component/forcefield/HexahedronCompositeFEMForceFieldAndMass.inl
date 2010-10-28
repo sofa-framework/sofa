@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_INL
 
@@ -40,7 +40,7 @@
 
 
 
-
+using namespace sofa::component::forcefield;
 
 namespace sofa
 {
@@ -459,7 +459,7 @@ template <class DataTypes>
 void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()
 {
 
-// 		  serr<<"HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()"<<sendl;
+    // 		  serr<<"HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()"<<sendl;
     // init topology, virtual levels, calls computeMechanicalMatricesByCondensation, handles masses
     NonUniformHexahedronFEMForceFieldAndMassT::init();
 
@@ -567,38 +567,38 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
     }
 
-// 			  	for( unsigned i=0;i<_weights.size();++i)
-// 				{
-// 					printMatlab(serr,_weights[i][0]);
-// 					serr<<"\n-----------------"<<sendl;
-// 				}
-// 				printMatlab(serr,_finalWeights[0].second);
-// 				serr<<sendl;
+    // 			  	for( unsigned i=0;i<_weights.size();++i)
+    // 				{
+    // 					printMatlab(serr,_weights[i][0]);
+    // 					serr<<"\n-----------------"<<sendl;
+    // 				}
+    // 				printMatlab(serr,_finalWeights[0].second);
+    // 				serr<<sendl;
 
 
-// 				//VERIF
-// 				for(int i=0;i<8*3;++i)
-// 				{
-// 					Real sum = 0.0;
-// 					for(int j=0;j<8*3;++j)
-// 					{
-// 						sum += _finalWeights[0].second[i][j];
-// 					}
-// 					if( fabs(sum-1.0)>1.0e-3 )
-// 						serr<<"WARNING HexahedronCompositeFEMForceFieldAndMass _finalWeights sum != 1  "<<sum<<sendl;
-// 				}
+    // 				//VERIF
+    // 				for(int i=0;i<8*3;++i)
+    // 				{
+    // 					Real sum = 0.0;
+    // 					for(int j=0;j<8*3;++j)
+    // 					{
+    // 						sum += _finalWeights[0].second[i][j];
+    // 					}
+    // 					if( fabs(sum-1.0)>1.0e-3 )
+    // 						serr<<"WARNING HexahedronCompositeFEMForceFieldAndMass _finalWeights sum != 1  "<<sum<<sendl;
+    // 				}
 
 
 
     _weights.resize(0);
 
-// 			  for(unsigned i=0;i<this->_elementStiffnesses.getValue().size();++i)
-// 			  {
-// 				  serr<<"K"<<i<<"=";
-// 				  printMatlab(serr,this->_elementStiffnesses.getValue()[i]);
-// 			  }
+    // 			  for(unsigned i=0;i<this->_elementStiffnesses.getValue().size();++i)
+    // 			  {
+    // 				  serr<<"K"<<i<<"=";
+    // 				  printMatlab(serr,this->_elementStiffnesses.getValue()[i]);
+    // 			  }
 
-// 			  printMatlab( serr,this->_elementStiffnesses.getValue()[0] );
+    // 			  printMatlab( serr,this->_elementStiffnesses.getValue()[0] );
 }
 
 
@@ -687,14 +687,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     helper::fixed_array<int,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
-// 		serr<<"BUILT"<<sendl;
+    // 		serr<<"BUILT"<<sendl;
 
     for(int i=0; i<sizeass; ++i)
     {
         for( std::map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
             if( (*it).second==i)
             {
-// 					serr<<(*it).first<<" "<<(*it).second<<sendl;
+                // 					serr<<(*it).first<<" "<<(*it).second<<sendl;
                 bool ok=false;
                 Coord finesommet = finestSparseGrid->getPointPos( (*it).first );
                 for( unsigned sc=0; sc<8; ++sc)
@@ -722,69 +722,69 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-// 		for( std::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
-// 		{
-// 			bool ok=false;
-// 			Coord finesommet = finestSparseGrid->getPointPos( (*it).first );
-// 			for( unsigned sc=0;sc<8;++sc)
-// 			{
-// 				Coord coarsesommet = this->_sparseGrid->getPointPos( coarsehexa[sc] );
-// 				if( coarsesommet == finesommet )
-// 				{
-// 					map_idxq_idxcutass[(*it).second] = sc;
-// 					map_idxq_coarse[  (*it).second] = true;
-// 					map_idxcoarse_idxfine[ sc ] = (*it).first;
-// 					ok=true;
-// 					break;
-// 				}
-// 			}
-// 			if( !ok )
-// 			{
-// 				map_idxq_idxcutass[ (*it).second] = idxcutass;
-// 				map_idxq_coarse[(*it).second] = false;
-// 				idxcutass++;
-// 			}
-// 		}
+    // 		for( std::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
+    // 		{
+    // 			bool ok=false;
+    // 			Coord finesommet = finestSparseGrid->getPointPos( (*it).first );
+    // 			for( unsigned sc=0;sc<8;++sc)
+    // 			{
+    // 				Coord coarsesommet = this->_sparseGrid->getPointPos( coarsehexa[sc] );
+    // 				if( coarsesommet == finesommet )
+    // 				{
+    // 					map_idxq_idxcutass[(*it).second] = sc;
+    // 					map_idxq_coarse[  (*it).second] = true;
+    // 					map_idxcoarse_idxfine[ sc ] = (*it).first;
+    // 					ok=true;
+    // 					break;
+    // 				}
+    // 			}
+    // 			if( !ok )
+    // 			{
+    // 				map_idxq_idxcutass[ (*it).second] = idxcutass;
+    // 				map_idxq_coarse[(*it).second] = false;
+    // 				idxcutass++;
+    // 			}
+    // 		}
 
 
 
 
 
-// 		for(unsigned i=0 ; i < finestChildren.size() ; ++i )
-// 		{
-// 			computeClassicalMechanicalMatrices(finestStiffnesses[i],finestMasses[i],finestChildren[i],this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue());
-//
-// 			const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexahedron( finestChildren[i] );
-//
-//
-// 			for(int w=0;w<8;++w) // sommets
-// 			{
-//
-// 				serr<<map_idxq_idxass[ hexa[w] ] <<",";
-// 			}
-// 			serr<<sendl;
-// 		}
+    // 		for(unsigned i=0 ; i < finestChildren.size() ; ++i )
+    // 		{
+    // 			computeClassicalMechanicalMatrices(finestStiffnesses[i],finestMasses[i],finestChildren[i],this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue());
+    //
+    // 			const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexahedron( finestChildren[i] );
+    //
+    //
+    // 			for(int w=0;w<8;++w) // sommets
+    // 			{
+    //
+    // 				serr<<map_idxq_idxass[ hexa[w] ] <<",";
+    // 			}
+    // 			serr<<sendl;
+    // 		}
 
 
-// 		for( std::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
-// 		{
-// 			serr<<(*it).first<<" "<<(*it).second<<sendl;
-// 		}
-//
-// 		for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it!=map_idxq_idxcutass.end();++it)
-// 		{
-// 			serr<<(*it).second<<",";
-// 		}
-// 		serr<<sendl;
-//
-// 		for( std::map<int,bool>::iterator it = map_idxq_coarse.begin();it!=map_idxq_coarse.end();++it)
-// 		{
-// 			serr<<(*it).second<<",";
-// 		}
-// 		serr<<sendl;
+    // 		for( std::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
+    // 		{
+    // 			serr<<(*it).first<<" "<<(*it).second<<sendl;
+    // 		}
+    //
+    // 		for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it!=map_idxq_idxcutass.end();++it)
+    // 		{
+    // 			serr<<(*it).second<<",";
+    // 		}
+    // 		serr<<sendl;
+    //
+    // 		for( std::map<int,bool>::iterator it = map_idxq_coarse.begin();it!=map_idxq_coarse.end();++it)
+    // 		{
+    // 			serr<<(*it).second<<",";
+    // 		}
+    // 		serr<<sendl;
 
 
-// 		serr<<map_idxcoarse_idxfine<<sendl;
+    // 		serr<<map_idxcoarse_idxfine<<sendl;
 
 
     NewMatMatrix Kg; // stiffness of contrained nodes
@@ -792,7 +792,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
     A.resize(sizeass*3,sizeass*3);
     NewMatMatrix  Ainv;
-// 		Ainv.resize(sizeass*3,sizeass*3);
+    // 		Ainv.resize(sizeass*3,sizeass*3);
 
 
 
@@ -824,7 +824,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-// 		  put -G entries into A
+    // 		  put -G entries into A
     for(int i=0; i<8; ++i) // for all constrained nodes
     {
         A.add( map_idxcoarse_idxfine[i]*3   , (sizeass-8+i)*3   , -1.0);
@@ -847,7 +847,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
     NewMatMatrix  Ainvf;
-// 		Ainvf.resize((sizeass-8)*3,sizeass*3);
+    // 		Ainvf.resize((sizeass-8)*3,sizeass*3);
     Ainv.getSubMatrix( 0,0, (sizeass-8)*3,sizeass*3,Ainvf);
 
 
@@ -856,7 +856,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
     NewMatMatrix  W;
-// 		W.resize((sizeass-8)*3,8*3);
+    // 		W.resize((sizeass-8)*3,8*3);
     W = - Ainvf * Kg;
 
 
@@ -879,27 +879,27 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     }
 
 
-// 		serr<<"KB2 = ";
-// 		assembledStiffness.printMatlab(serr);
-// 		serr<<"A2 = ";
-// 		A.printMatlab(serr);
-// 		serr<<"Kg2 = ";
-// 		Kg.printMatlab(serr);
-// 		serr<<"Ainv2 = ";
-// 		Ainv.printMatlab(serr);
-// 		serr<<"Ainvf2 = ";
-// 		Ainvf.printMatlab(serr);
-// 		serr<<"W2 = ";
-// 		W.printMatlab(serr);
-// 		serr<<"WB2 = ";
-// 		WB.printMatlab(serr);
+    // 		serr<<"KB2 = ";
+    // 		assembledStiffness.printMatlab(serr);
+    // 		serr<<"A2 = ";
+    // 		A.printMatlab(serr);
+    // 		serr<<"Kg2 = ";
+    // 		Kg.printMatlab(serr);
+    // 		serr<<"Ainv2 = ";
+    // 		Ainv.printMatlab(serr);
+    // 		serr<<"Ainvf2 = ";
+    // 		Ainvf.printMatlab(serr);
+    // 		serr<<"W2 = ";
+    // 		W.printMatlab(serr);
+    // 		serr<<"WB2 = ";
+    // 		WB.printMatlab(serr);
 
 
-// 		for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end();++it)
-// 		{
-// 			if( map_idxq_coarse[ (*it).second ] )
-// 				serr<< map_idxq_idxcutass[(*it).second] <<" "<<finestSparseGrid->getPointPos( (*it).first )<<sendl;
-// 		}
+    // 		for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end();++it)
+    // 		{
+    // 			if( map_idxq_coarse[ (*it).second ] )
+    // 				serr<< map_idxq_idxcutass[(*it).second] <<" "<<finestSparseGrid->getPointPos( (*it).first )<<sendl;
+    // 		}
 
 
     NewMatMatrix  mask;
@@ -916,7 +916,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
         if( map_idxq_coarse[ (*it).second ] )
         {
-// 				serr<<map_idxq_idxcutass[ (*it).second ]<<" "<<finestSparseGrid->getPointPos( (*it).first )<<sendl;
+            // 				serr<<map_idxq_idxcutass[ (*it).second ]<<" "<<finestSparseGrid->getPointPos( (*it).first )<<sendl;
             int localcoarseidx = map_idxq_idxcutass[ (*it).second ];
             mask.set( localidx*3  , localcoarseidx*3   , 1);
             mask.set( localidx*3+1, localcoarseidx*3+1 , 1);
@@ -944,139 +944,139 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
             baryCoefs[7] = (1-fx) * (fy) * fz;
 
 
-// 				serr<<localidx<<"        "<<baryCoefs<<sendl<<finestSparseGrid->getPointPos( (*it).first )<<" = ";
+            // 				serr<<localidx<<"        "<<baryCoefs<<sendl<<finestSparseGrid->getPointPos( (*it).first )<<" = ";
 
             for(int i=0; i<8; ++i)
             {
                 if( baryCoefs[i]>1.0e-5 )
                 {
-// 						serr<<"("<<i<<") "<<this->_sparseGrid->getPointPos( i )<<" + "<<sendl;
+                    // 						serr<<"("<<i<<") "<<this->_sparseGrid->getPointPos( i )<<" + "<<sendl;
                     mask.set( localidx*3  , i*3   , 1);
                     mask.set( localidx*3+1, i*3+1 , 1);
                     mask.set( localidx*3+2, i*3+2 , 1);
                 }
             }
-// 				serr<<sendl<<sendl<<sendl;
+            // 				serr<<sendl<<sendl<<sendl;
         }
     }
 
 
-// 		for(int i=0;i<sizeass*3;++i)
-// 		{
-// 			for(int j=0;j<8*3;++j)
-// 			{
-// 				if( mask.element(i,j) != WEIGHT_MASK[i][j])
-// 				{
-// 					serr<<"MASK ERROR "<<i/3<<" "<<mask.Row(i).Sum()<<""<<sendl;
-// 					break;
-// 				}
-// 			}
-// 		}
+    // 		for(int i=0;i<sizeass*3;++i)
+    // 		{
+    // 			for(int j=0;j<8*3;++j)
+    // 			{
+    // 				if( mask.element(i,j) != WEIGHT_MASK[i][j])
+    // 				{
+    // 					serr<<"MASK ERROR "<<i/3<<" "<<mask.Row(i).Sum()<<""<<sendl;
+    // 					break;
+    // 				}
+    // 			}
+    // 		}
 
 
 
-// 		Coord a = this->_sparseGrid->getPointPos(coarsehexa[0]);
-// 		Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
-//
-// 		helper::vector< defaulttype::Vector6 > inPlan(sizeass); // is a point in planes  0yz, 1yz, x0z, x1z, xy0, xy1
-//
-// 		for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end();++it)
-// 		{
-// 			Coord p = finestSparseGrid->getPointPos( (*it).first );
-// 			int localidx = (*it).second;
-//
-// // 			if( map_idxq_coarse[ (*it).second ] )
-// // 			{
-// // 				// GROSSIER
-// // 			}
-// // 			else
-// 			{
-// 				if( p[0] == a[0] ) // plan 0yz
-// 				{
-// 					inPlan[ localidx ][0] = 1;
-// 				}
-// 				if( p[0] == b[0] ) // plan 1yz
-// 				{
-// 					inPlan[ localidx ][1] = 1;
-// 				}
-// 				if( p[1] == a[1] ) // plan x0z
-// 				{
-// 					inPlan[ localidx ][2] = 1;
-// 				}
-// 				if( p[1] == b[1] ) // plan x1z
-// 				{
-// 					inPlan[ localidx ][3] = 1;
-// 				}
-// 				if( p[2] == a[2] ) // plan xy0
-// 				{
-// 					inPlan[ localidx ][4] = 1;
-// 				}
-// 				if( p[2] == b[2] ) // plan xy1
-// 				{
-// 					inPlan[ localidx ][5] = 1;
-// 				}
-//
-// 				switch( static_cast<int>(inPlan[ localidx ].sum()) )
-// 				{
-// 					case 0: // in the middle
-// 					{
-// 						for(int i=0;i<8;++i)
-// 						{
-// 							mask( localidx*3  , i*3   ) = 1;
-// 							mask( localidx*3+1, i*3+1 ) = 1;
-// 							mask( localidx*3+2, i*3+2 ) = 1;
-// 						}
-// 						break;
-// 					}
-// 					case 1: // on a plane
-// 					{
-// 						helper::fixed_array<int,4> whichCoarseNodesInLocalIndices;
-// 						for(int i=0;i<6;++i)
-// 						{
-// 							if( inPlan[ localidx ][i] )
-// 							{
-// 								switch(i)
-// 								{
-// 									case 0:
-// 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(0,3,4,7);
-// 										break;
-// 									case 1:
-// 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(1,2,5,6);
-// 										break;
-// 									case 2:
-// 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(0,1,4,5);
-// 										break;
-// 									case 3:
-// 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(2,3,6,7);
-// 										break;
-// 									case 4:
-// 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(0,1,2,3);
-// 										break;
-// 									case 5:
-// 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(4,5,6,7);
-// 										break;
-// 								}
-// 								break;
-// 							}
-// 						}
-//
-// 						for(int i=0;i<4;++i)
-// 						{
-//
-// 						}
-//
-// 						break;
-// 					}
-// 							case 2: // on an edge
-// 								break;
-// 								case 3: // a coarse node
-// 									break;
-// 					default:
-// 						serr<<"HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse   ERROR  WEIGHT_MASK"<<sendl;
-//  				}
-//
-// 			}
-// 		}
+    // 		Coord a = this->_sparseGrid->getPointPos(coarsehexa[0]);
+    // 		Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
+    //
+    // 		helper::vector< defaulttype::Vector6 > inPlan(sizeass); // is a point in planes  0yz, 1yz, x0z, x1z, xy0, xy1
+    //
+    // 		for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end();++it)
+    // 		{
+    // 			Coord p = finestSparseGrid->getPointPos( (*it).first );
+    // 			int localidx = (*it).second;
+    //
+    // // 			if( map_idxq_coarse[ (*it).second ] )
+    // // 			{
+    // // 				// GROSSIER
+    // // 			}
+    // // 			else
+    // 			{
+    // 				if( p[0] == a[0] ) // plan 0yz
+    // 				{
+    // 					inPlan[ localidx ][0] = 1;
+    // 				}
+    // 				if( p[0] == b[0] ) // plan 1yz
+    // 				{
+    // 					inPlan[ localidx ][1] = 1;
+    // 				}
+    // 				if( p[1] == a[1] ) // plan x0z
+    // 				{
+    // 					inPlan[ localidx ][2] = 1;
+    // 				}
+    // 				if( p[1] == b[1] ) // plan x1z
+    // 				{
+    // 					inPlan[ localidx ][3] = 1;
+    // 				}
+    // 				if( p[2] == a[2] ) // plan xy0
+    // 				{
+    // 					inPlan[ localidx ][4] = 1;
+    // 				}
+    // 				if( p[2] == b[2] ) // plan xy1
+    // 				{
+    // 					inPlan[ localidx ][5] = 1;
+    // 				}
+    //
+    // 				switch( static_cast<int>(inPlan[ localidx ].sum()) )
+    // 				{
+    // 					case 0: // in the middle
+    // 					{
+    // 						for(int i=0;i<8;++i)
+    // 						{
+    // 							mask( localidx*3  , i*3   ) = 1;
+    // 							mask( localidx*3+1, i*3+1 ) = 1;
+    // 							mask( localidx*3+2, i*3+2 ) = 1;
+    // 						}
+    // 						break;
+    // 					}
+    // 					case 1: // on a plane
+    // 					{
+    // 						helper::fixed_array<int,4> whichCoarseNodesInLocalIndices;
+    // 						for(int i=0;i<6;++i)
+    // 						{
+    // 							if( inPlan[ localidx ][i] )
+    // 							{
+    // 								switch(i)
+    // 								{
+    // 									case 0:
+    // 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(0,3,4,7);
+    // 										break;
+    // 									case 1:
+    // 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(1,2,5,6);
+    // 										break;
+    // 									case 2:
+    // 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(0,1,4,5);
+    // 										break;
+    // 									case 3:
+    // 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(2,3,6,7);
+    // 										break;
+    // 									case 4:
+    // 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(0,1,2,3);
+    // 										break;
+    // 									case 5:
+    // 										whichCoarseNodesInLocalIndices = helper::fixed_array<int,4>(4,5,6,7);
+    // 										break;
+    // 								}
+    // 								break;
+    // 							}
+    // 						}
+    //
+    // 						for(int i=0;i<4;++i)
+    // 						{
+    //
+    // 						}
+    //
+    // 						break;
+    // 					}
+    // 							case 2: // on an edge
+    // 								break;
+    // 								case 3: // a coarse node
+    // 									break;
+    // 					default:
+    // 						serr<<"HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse   ERROR  WEIGHT_MASK"<<sendl;
+    //  				}
+    //
+    // 			}
+    // 		}
 
 
 
@@ -1094,7 +1094,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     }
 
 
-// 		serr<<"WB : "<<WB<<sendl;
+    // 		serr<<"WB : "<<WB<<sendl;
     serr<<"WBmeca brut : "<<WBmeca<<sendl;
 
 
@@ -1110,19 +1110,19 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         for(int j=0; j<8*3; ++j)
         {
             WBmeca.set(i,j, WBmeca.element(i,j) / sum );
-// 				WB.set(i,j, WB.element(i,j) / sum );
+            // 				WB.set(i,j, WB.element(i,j) / sum );
         }
     }
 
     // 		serr<<"mask : "<<mask<<sendl;
-// 		serr<<"WB : "<<WB<<sendl;
+    // 		serr<<"WB : "<<WB<<sendl;
     serr<<"WBmeca normalized : "<<WBmeca<<sendl;
 
-// 		WBmeca=WB;
+    // 		WBmeca=WB;
 
     NewMatMatrix Kc, Mc; // coarse stiffness
-// 		Kc.resize(8*3,8*3);
-// 		Mc.resize(8*3,8*3);
+    // 		Kc.resize(8*3,8*3);
+    // 		Mc.resize(8*3,8*3);
     Kc = WBmeca.t() * assembledStiffness * WBmeca;
     Mc = WBmeca.t() * assembledMass * WBmeca;
 
@@ -1162,10 +1162,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     }
 
     /*
-    		serr<<"Kf = ";
-    		printMatlab( serr,finestStiffnesses[0] );
-    		serr<<"Kc = ";
-    		printMatlab( serr,K );*/
+    	serr<<"Kf = ";
+    	printMatlab( serr,finestStiffnesses[0] );
+    	serr<<"Kc = ";
+    	printMatlab( serr,K );*/
 
 
 }
@@ -1211,7 +1211,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
     if (level == this->_nbVirtualFinerLevels.getValue())
     {
         computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
-// 		  printMatlab( serr, K );
+        // 		  printMatlab( serr, K );
     }
     else
     {
@@ -1243,12 +1243,12 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 computeMechanicalMatricesRecursively(finerK[i], finerM[i], finerChildren[i], level+1);
             }
 
-// 			serr<<"K "<<i<<" : "<<finerK[i]<<sendl;
+            // 			serr<<"K "<<i<<" : "<<finerK[i]<<sendl;
 
         }
 
 
-//           serr<<"\n***LEVEL "<<level<<"    element "<<elementIndice<<sendl;
+        //           serr<<"\n***LEVEL "<<level<<"    element "<<elementIndice<<sendl;
 
 
 
@@ -1282,7 +1282,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             }
             else
             {
-// 				serr<<"WARNING: a child is void (during assembly)"<<sendl;
+                // 				serr<<"WARNING: a child is void (during assembly)"<<sendl;
                 for(int j=0; j<8; ++j) // vertices1
                 {
                     int v1 = FineHexa_FineNode_IndiceForAssembling[i][j];
@@ -1342,11 +1342,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-// 		  serr<<"KB = "; printMatlab( serr, assembledStiffness );
-// 		  serr<<"A = ";
-// 		  printMatlab( serr, A );
-// 		  serr<<"Kg = ";
-// 		  printMatlab( serr, Kg );
+        // 		  serr<<"KB = "; printMatlab( serr, assembledStiffness );
+        // 		  serr<<"A = ";
+        // 		  printMatlab( serr, A );
+        // 		  serr<<"Kg = ";
+        // 		  printMatlab( serr, Kg );
 
 
 
@@ -1356,15 +1356,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-// 		  Mat<8*3, 27*3, Real> Ainvg;
-// 		  for(int i=0;i<8;++i)
-// 		  {
-// 				  for(int m=0;m<3;++m)
-// 					  for(int n=0;n<3;++n)
-// 						  Ainvg[i*3+m] = - Ainv.line( (27-8+i)*3+m );
-// 		  }
-//
-// 		  K = Ainvg * Kg;
+        // 		  Mat<8*3, 27*3, Real> Ainvg;
+        // 		  for(int i=0;i<8;++i)
+        // 		  {
+        // 				  for(int m=0;m<3;++m)
+        // 					  for(int n=0;n<3;++n)
+        // 						  Ainvg[i*3+m] = - Ainv.line( (27-8+i)*3+m );
+        // 		  }
+        //
+        // 		  K = Ainvg * Kg;
 
 
 
@@ -1373,7 +1373,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         for(int i=0; i<27-8; ++i)
         {
             for(int m=0; m<3; ++m)
-// 				  for(int n=0;n<3;++n)
+                // 				  for(int n=0;n<3;++n)
                 Ainvf[i*3+m] = - Ainv.line( i*3+m );
         }
 
@@ -1397,14 +1397,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-// 		  serr<<"Ainv = ";
-// 		  printMatlab( serr, Ainv );
-// 		  serr<<"Ainvf = ";
-// 		  printMatlab( serr, Ainvf );
-// 		  serr<<"W = ";
-// 		  printMatlab( serr, W );
-// 		  serr<<"WB = ";
-// 		  printMatlab( serr, WB );
+        // 		  serr<<"Ainv = ";
+        // 		  printMatlab( serr, Ainv );
+        // 		  serr<<"Ainvf = ";
+        // 		  printMatlab( serr, Ainvf );
+        // 		  serr<<"W = ";
+        // 		  printMatlab( serr, W );
+        // 		  serr<<"WB = ";
+        // 		  printMatlab( serr, WB );
 
 
 
@@ -1424,7 +1424,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // normalize the coefficient to obtain sum(coefs)==1
         for(int i=0; i<27*3; ++i)
         {
-// 			  Real sum = 0.0;
+            // 			  Real sum = 0.0;
             for(int j=0; j<8*3; ++j)
             {
                 sum_wbmeca[i] += WBmeca[i][j];
@@ -1436,40 +1436,40 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-// 		  serr<<"\nWsofa = ";
-// 		  printMatlab( serr, WB );
+        // 		  serr<<"\nWsofa = ";
+        // 		  printMatlab( serr, WB );
 
 
         K = WBmeca.multTranspose( assembledStiffness * WBmeca );
 
 
-// 		  serr<<"\nWsofa = ";
-// 		  printMatlab( serr, W );
-// 		  serr<<"\nWBsofa = ";
-// 		  printMatlab( serr, WB );
+        // 		  serr<<"\nWsofa = ";
+        // 		  printMatlab( serr, W );
+        // 		  serr<<"\nWBsofa = ";
+        // 		  printMatlab( serr, WB );
 
 
 
-// 		  serr<<"K is sym : "<<K.isSymetric()<<sendl;
+        // 		  serr<<"K is sym : "<<K.isSymetric()<<sendl;
 
 
 
-// 		  serr<<"\nAinv1sofa = ";
-// 		  printMatlab( serr, Ainv1 );
-// 		  serr<<"\nKsofa = ";
-// 		  printMatlab( serr, K );
+        // 		  serr<<"\nAinv1sofa = ";
+        // 		  printMatlab( serr, Ainv1 );
+        // 		  serr<<"\nKsofa = ";
+        // 		  printMatlab( serr, K );
 
 
         M = WBmeca.multTranspose( assembledMass * WBmeca );
 
 
-// 		  for ( int i=0;i<8;++i) //for 8 virtual finer element
-// 		  {
-// 			  if (finerChildren[i] != -1)
-// 			  {
-// 				  this->addFineToCoarse(M, finerM[i], i);
-// 			  }
-// 		  }
+        // 		  for ( int i=0;i<8;++i) //for 8 virtual finer element
+        // 		  {
+        // 			  if (finerChildren[i] != -1)
+        // 			  {
+        // 				  this->addFineToCoarse(M, finerM[i], i);
+        // 			  }
+        // 		  }
 
 
 
@@ -1478,9 +1478,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-// 		  serr<<WB[16*3+1]<<sendl;
+        // 		  serr<<WB[16*3+1]<<sendl;
 
-// 		  helper::fixed_array< Mat<8*3, 8*3, Real>, 8 >  Welem; // weights matrices per elem : from the coarse elem to each fine element
+        // 		  helper::fixed_array< Mat<8*3, 8*3, Real>, 8 >  Welem; // weights matrices per elem : from the coarse elem to each fine element
 
 
 
@@ -1490,33 +1490,33 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
         else
         {
-// 			  for(int i=0;i<27*3;++i)
-// 			  {
-// 				  for(int j=0;j<8*3;++j)
-// 				  {
-// 						  WB[i][j] *= WEIGHT_MASK_CROSSED[i][j];
-// 				  }
-// 			  }
-//
-//
-// // 			  serr<<"WEIGHT_MASK_CROSSED : "<<sendl;
-// // 			  serr<<WB[16*3+1]<<sendl;
-//
-//
-// 		  // normalize the coefficient to obtain sum(coefs)==1
-// 			  for(int i=0;i<27*3;++i)
-// 			  {
-// // 				  Real sum = 0.0;
-// // 				  for(int j=0;j<8*3;++j)
-// // 				  {
-// // 					  sum += (WBmeca[i][j]);
-// // 				  }
-//
-// 				  for(int j=0;j<8*3;++j)
-// 				  {
-// 					  WB[i][j] /= sum_wbmeca[i];
-// 				  }
-// 			  }
+            // 			  for(int i=0;i<27*3;++i)
+            // 			  {
+            // 				  for(int j=0;j<8*3;++j)
+            // 				  {
+            // 						  WB[i][j] *= WEIGHT_MASK_CROSSED[i][j];
+            // 				  }
+            // 			  }
+            //
+            //
+            // // 			  serr<<"WEIGHT_MASK_CROSSED : "<<sendl;
+            // // 			  serr<<WB[16*3+1]<<sendl;
+            //
+            //
+            // 		  // normalize the coefficient to obtain sum(coefs)==1
+            // 			  for(int i=0;i<27*3;++i)
+            // 			  {
+            // // 				  Real sum = 0.0;
+            // // 				  for(int j=0;j<8*3;++j)
+            // // 				  {
+            // // 					  sum += (WBmeca[i][j]);
+            // // 				  }
+            //
+            // 				  for(int j=0;j<8*3;++j)
+            // 				  {
+            // 					  WB[i][j] /= sum_wbmeca[i];
+            // 				  }
+            // 			  }
 
 
 
@@ -1528,7 +1528,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                         WB[i][j] = WBmeca[i][j];
                     else
                     {
-// 						  WB[i][j] *= WEIGHT_MASK_CROSSED_DIFF[i][j]*2.5;
+                        // 						  WB[i][j] *= WEIGHT_MASK_CROSSED_DIFF[i][j]*2.5;
                         WB[i][j] = (Real)(WB[i][j]/fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->f_poissonRatio.getValue() * .3);
                     }
                 }
@@ -1538,8 +1538,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         }
 
-// 		  serr<<"normalize : "<<sendl;
-// 		  serr<<WB[16*3+1]<<sendl;
+        // 		  serr<<"normalize : "<<sendl;
+        // 		  serr<<WB[16*3+1]<<sendl;
 
 
         for(int elem=0; elem<8; ++elem)
@@ -1558,61 +1558,61 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 }
             }
 
-// 			  if(finerChildren[elem]==2)
-// 			  {
-// 				  serr<<"BUILD"<<sendl;
-// 				  serr<<this->_nbVirtualFinerLevels.getValue()-level-1<<sendl;
-// 				  serr<<_weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]]<<sendl;
-// 			  }
+            // 			  if(finerChildren[elem]==2)
+            // 			  {
+            // 				  serr<<"BUILD"<<sendl;
+            // 				  serr<<this->_nbVirtualFinerLevels.getValue()-level-1<<sendl;
+            // 				  serr<<_weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]]<<sendl;
+            // 			  }
         }
 
 
 
 
 
-// 		  serr<<FineHexa_FineNode_IndiceForAssembling[ 1 ][ 2 ]<<" : "<<WB [ FineHexa_FineNode_IndiceForAssembling[ 0 ][ 3 ]*3  ]<<sendl;
+        // 		  serr<<FineHexa_FineNode_IndiceForAssembling[ 1 ][ 2 ]<<" : "<<WB [ FineHexa_FineNode_IndiceForAssembling[ 0 ][ 3 ]*3  ]<<sendl;
 
 
 
 
-// 		  serr<<"\nWcsofa = ";
-// 		  printMatlab( serr, _weights[0][0] );
-// 		  serr<<"\nKcsofa = ";
-// 		  printMatlab( serr, finerK[0] );
+        // 		  serr<<"\nWcsofa = ";
+        // 		  printMatlab( serr, _weights[0][0] );
+        // 		  serr<<"\nKcsofa = ";
+        // 		  printMatlab( serr, finerK[0] );
 
-// // 		  std::map<int,helper::fixed_array<int,8> > maptmp;
-// //
-// // 		  for(int i=0;i<27;++i)
-// // 			  for(int j=0;j<8;++j)
-// // 				  maptmp[i][
-// //
-// // 		  for(int i=0;i<8;++i)
-// // 			  for(int j=0;j<8;++j)
-// // 				  maptmp[ FineHexa_FineNode_IndiceForAssembling[i][j] ][i] = j;
-// //
-// // 		  serr<<"MAP = {";
-// // 		  for( std::map<int,helper::fixed_array<int,8> >::iterator it = maptmp.begin();it != maptmp.end() ;++it)
-// // 		  {
-// // 			  serr<<"{";
-// // 			  for(int i=0;i<8;++i)
-// // 				  serr<<(*it).second[i]<<",";
-// // 			serr<<"},"<<sendl;
-// // 		  }
-// // 		  serr<<"}"<<sendl;
+        // // 		  std::map<int,helper::fixed_array<int,8> > maptmp;
+        // //
+        // // 		  for(int i=0;i<27;++i)
+        // // 			  for(int j=0;j<8;++j)
+        // // 				  maptmp[i][
+        // //
+        // // 		  for(int i=0;i<8;++i)
+        // // 			  for(int j=0;j<8;++j)
+        // // 				  maptmp[ FineHexa_FineNode_IndiceForAssembling[i][j] ][i] = j;
+        // //
+        // // 		  serr<<"MAP = {";
+        // // 		  for( std::map<int,helper::fixed_array<int,8> >::iterator it = maptmp.begin();it != maptmp.end() ;++it)
+        // // 		  {
+        // // 			  serr<<"{";
+        // // 			  for(int i=0;i<8;++i)
+        // // 				  serr<<(*it).second[i]<<",";
+        // // 			serr<<"},"<<sendl;
+        // // 		  }
+        // // 		  serr<<"}"<<sendl;
 
 
         // put weights into the mapping
-// 		  for(int i=0;i<8;++i)
-// 		  {
-// 			  for(int j=0;j<8;++j)
-// 			  {
-// 				  if( !IS_CONSTRAINED[i][j] )
-// 				  {
-// 					  _mapping->_weights[
-// 				  }
-//
-// 			  }
-// 		  }
+        // 		  for(int i=0;i<8;++i)
+        // 		  {
+        // 			  for(int j=0;j<8;++j)
+        // 			  {
+        // 				  if( !IS_CONSTRAINED[i][j] )
+        // 				  {
+        // 					  _mapping->_weights[
+        // 				  }
+        //
+        // 			  }
+        // 		  }
 
 
 
@@ -1707,14 +1707,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-// 			  serr<<"fineNodesPerPositions : "<<sendl;
-// 			  for(int i=0;i<27;++i)
-// 			  {
-// 				  serr<<i<<" : ";
-// 				  for(std::set<int>::iterator it=fineNodesPerPositions[i].begin();it!=fineNodesPerPositions[i].end();++it)
-// 					  serr<<*it<<", ";
-// 				  serr<<sendl;
-// 			  }
+        // 			  serr<<"fineNodesPerPositions : "<<sendl;
+        // 			  for(int i=0;i<27;++i)
+        // 			  {
+        // 				  serr<<i<<" : ";
+        // 				  for(std::set<int>::iterator it=fineNodesPerPositions[i].begin();it!=fineNodesPerPositions[i].end();++it)
+        // 					  serr<<*it<<", ";
+        // 				  serr<<sendl;
+        // 			  }
 
 
         helper::fixed_array<helper::vector<helper::fixed_array<int,8 > >,8 > finerChildrenRamification; // listes des hexahedra � chaque position, avec des indices fictifs pour les vides
@@ -1741,7 +1741,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     helper::fixed_array<int,8 > elem;
                     for(int k=0; k<8; ++k) // fine nodes
                     {
-// 							  serr<<i<<" "<<k<<" "<<finehexa[k]<<" "<<finerSparseGrid->getPointPos( finehexa[k] )<<sendl;
+                        // 							  serr<<i<<" "<<k<<" "<<finehexa[k]<<" "<<finerSparseGrid->getPointPos( finehexa[k] )<<sendl;
                         elem[k] = finehexa[k];
                     }
                     finerChildrenRamification[i].push_back(elem);
@@ -1752,16 +1752,16 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-// 			  serr<<"finerChildrenRamification :"<<sendl;
-// 			  for(int i=0 ; i < 8 ; ++i ) // finer places
-// 			  {
-// 				  for( unsigned c=0;c<finerChildrenRamification[i].size();++c)
-// 				  {
-// 					  serr<<finerChildrenRamification[i][c]<<sendl;
-// 				  }
-// 			  }
+        // 			  serr<<"finerChildrenRamification :"<<sendl;
+        // 			  for(int i=0 ; i < 8 ; ++i ) // finer places
+        // 			  {
+        // 				  for( unsigned c=0;c<finerChildrenRamification[i].size();++c)
+        // 				  {
+        // 					  serr<<finerChildrenRamification[i][c]<<sendl;
+        // 				  }
+        // 			  }
 
-// 			  helper::vector<int> finerChildren;
+        // 			  helper::vector<int> finerChildren;
 
 
 
@@ -1784,21 +1784,21 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-// 			  serr<<"map_idxq_idxass : "<<sendl;
-// 			  for(std::map<int,int>::iterator it = map_idxq_idxass.begin();it != map_idxq_idxass.end();++it)
-// 			  {
-// 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
-// 			  }
+        // 			  serr<<"map_idxq_idxass : "<<sendl;
+        // 			  for(std::map<int,int>::iterator it = map_idxq_idxass.begin();it != map_idxq_idxass.end();++it)
+        // 			  {
+        // 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
+        // 			  }
 
 
 
 
-// 			  serr<<"sizeass : "<<sizeass<<sendl;
+        // 			  serr<<"sizeass : "<<sizeass<<sendl;
         NewMatMatrix assembledStiffness,assembledStiffnessStatic,assembledMass;
         assembledStiffness.resize(sizeass*3,sizeass*3);
         assembledStiffnessStatic.resize(sizeass*3,sizeass*3);
         assembledMass.resize(sizeass*3,sizeass*3);
-// 			  serr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<sendl;
+        // 			  serr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<sendl;
 
 
 
@@ -1855,8 +1855,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-// 			  serr<<"KB2=";
-// 			  assembledStiffnessStatic.printMatlab( serr );
+        // 			  serr<<"KB2=";
+        // 			  assembledStiffnessStatic.printMatlab( serr );
 
 
         std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
@@ -1867,7 +1867,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         NewMatMatrix  mask;
         mask.resize(sizeass*3,8*3);
 
-// 			  std::map<int,std::pair< helper::vector<int>,unsigned > > map_mask; // for each fine node -> a list of depensing coase nodes and in which axes (0==all, 1==x, 2==y, 3==z)
+        // 			  std::map<int,std::pair< helper::vector<int>,unsigned > > map_mask; // for each fine node -> a list of depensing coase nodes and in which axes (0==all, 1==x, 2==y, 3==z)
 
 
         for(int i=0; i<27; ++i)
@@ -1917,8 +1917,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     mask.set( localidx*3+2, whichCoarseNode*3+2 , 1);
 
 
-// 						  helper::vector<int> coarsedepending; coarsedepending.push_back(whichCoarseNode);
-// 						  map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, 0 );
+                    // 						  helper::vector<int> coarsedepending; coarsedepending.push_back(whichCoarseNode);
+                    // 						  map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, 0 );
                 }
             }
             else
@@ -1929,9 +1929,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     map_idxq_coarse[*it] = -1;
                     idxcutass++;
 
-// 						helper::vector<int> coarsedepending;
+                    // 						helper::vector<int> coarsedepending;
 
-// 						mask
+                    // 						mask
                     int localidx = map_idxq_idxass[*it];
                     for(int j=0; j<8; ++j)
                     {
@@ -1941,22 +1941,22 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                             mask.set( localidx*3+1, j*3+1 , 1);
                             mask.set( localidx*3+2, j*3+2 , 1);
 
-// 								coarsedepending.push_back(j);
+                            // 								coarsedepending.push_back(j);
                         }
                     }
 
 
-// 						map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, MIDDLE_AXES[i] );
+                    // 						map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, MIDDLE_AXES[i] );
                 }
             }
         }
 
 
-// 			  serr<<"map_idxq_idxcutass : "<<sendl;
-// 			  for(std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it != map_idxq_idxcutass.end();++it)
-// 			  {
-// 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
-// 			  }
+        // 			  serr<<"map_idxq_idxcutass : "<<sendl;
+        // 			  for(std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it != map_idxq_idxcutass.end();++it)
+        // 			  {
+        // 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
+        // 			  }
 
 
         NewMatMatrix Kg; // stiffness of contrained nodes
@@ -1965,21 +1965,21 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         A.resize(sizeass*3,sizeass*3);
         NewMatMatrix  Ainv;
 
-// 			  serr<<"map_idxq_coarse : "<<sendl;
-// 			  for( std::map<int,int>::iterator it = map_idxq_coarse.begin();it!= map_idxq_coarse.end();++it)
-// 			  {
-// 				  serr<<(*it).second<<sendl;
-// 			  }
+        // 			  serr<<"map_idxq_coarse : "<<sendl;
+        // 			  for( std::map<int,int>::iterator it = map_idxq_coarse.begin();it!= map_idxq_coarse.end();++it)
+        // 			  {
+        // 				  serr<<(*it).second<<sendl;
+        // 			  }
 
-// 			  serr<<"cutting :"<<sendl;
-// 			  for ( int i=0;i<sizeass;++i)
+        // 			  serr<<"cutting :"<<sendl;
+        // 			  for ( int i=0;i<sizeass;++i)
         for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {
-// 				  int col = map_idxq_idxcutass[i];
+            // 				  int col = map_idxq_idxcutass[i];
             int colcut = (*it).second;
             int colnoncut = map_idxq_idxass[(*it).first];
 
-// 				  serr<<(*it).first<<" "<<colcut<<sendl;
+            // 				  serr<<(*it).first<<" "<<colcut<<sendl;
 
             if( map_idxq_coarse[(*it).first] != -1 )
             {
@@ -2002,7 +2002,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-// 		  put -G entries into A
+        // 		  put -G entries into A
         int d=0;
         for(int i=0; i<8; ++i) // for all constrained nodes
         {
@@ -2015,10 +2015,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             }
         }
 
-// 			  serr<<"A2 = ";
-// 			  A.printMatlab( serr );
-// 			  serr<<"Kg2 = ";
-// 			  Kg.printMatlab( serr );
+        // 			  serr<<"A2 = ";
+        // 			  A.printMatlab( serr );
+        // 			  serr<<"Kg2 = ";
+        // 			  Kg.printMatlab( serr );
 
         Ainv = A.i();
 
@@ -2034,19 +2034,19 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         {
             for(unsigned j=0; j<map_idxcoarse_idxfine[i].size(); ++j)
             {
-// 					  serr<<i<<" "<<j<<" "<<map_idxcoarse_idxfine[i]<<sendl;
+                // 					  serr<<i<<" "<<j<<" "<<map_idxcoarse_idxfine[i]<<sendl;
                 H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3  , i*3  ,1);
                 H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3+1, i*3+1,1);
                 H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3+2, i*3+2,1);
             }
         }
 
-// 			  serr<<"H = ";
-// 			  H.printMatlab(serr);
-// 			  NewMatMatrix HKg2;
-// 			  HKg2 = Kg*H;
-// 			  serr<<"HKg2 = ";
-// 			  HKg2.printMatlab(serr);
+        // 			  serr<<"H = ";
+        // 			  H.printMatlab(serr);
+        // 			  NewMatMatrix HKg2;
+        // 			  HKg2 = Kg*H;
+        // 			  serr<<"HKg2 = ";
+        // 			  HKg2.printMatlab(serr);
 
 
 
@@ -2054,23 +2054,23 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         NewMatMatrix  W;
         W = - Ainvf * Kg * H;
 
-// 			  serr<<"W"<<elementIndice<<"=";
-// 			  W.printMatlab( serr );
-//
-//
-// 			  serr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<sendl;
-//
-//
+        // 			  serr<<"W"<<elementIndice<<"=";
+        // 			  W.printMatlab( serr );
+        //
+        //
+        // 			  serr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<sendl;
+        //
+        //
         NewMatMatrix  WB;
         WB.resize(sizeass*3,8*3);
-// 			  serr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<sendl;
+        // 			  serr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<sendl;
 
 
         for( std::map<int,int>::iterator it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
         {
             if( it->second != -1 )
             {
-// 					  serr<<it->first<<" "<<it->second<<sendl;
+                // 					  serr<<it->first<<" "<<it->second<<sendl;
                 WB.add( map_idxq_idxass[it->first]*3  , it->second*3  , 1.0);
                 WB.add( map_idxq_idxass[it->first]*3+1, it->second*3+1, 1.0);
                 WB.add( map_idxq_idxass[it->first]*3+2, it->second*3+2, 1.0);
@@ -2087,13 +2087,13 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-// 			  serr<<"WB2 = ";
-// 			  WB.printMatlab( serr );
-//
-//
-//
-// 			  serr<<"mask = ";
-// 			  mask.printMatlab( serr );
+        // 			  serr<<"WB2 = ";
+        // 			  WB.printMatlab( serr );
+        //
+        //
+        //
+        // 			  serr<<"mask = ";
+        // 			  mask.printMatlab( serr );
 
 
 
@@ -2116,121 +2116,121 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-// 			  for(int i=0;i<27;++i)
-// 			  {
-// 					  for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
-// 					  {
-// 						  int localidx = map_idxq_idxass[ *it ];
-//
-// 						  int nbDependingCoarseNodes = 0;
-// 						  for(int j=0;j<8;++j)
-// 						  {
-// 							  if( MIDDLE_INTERPOLATION[i][j] )
-// 							  {
-// 								  ++nbDependingCoarseNodes;
-// 							  }
-// 						  }
-//
-//
-// 						  if( nbDependingCoarseNodes==1 || nbDependingCoarseNodes==8 ) // fine node on a coarse node or in the middle of the coarse cube
-// 						  {
-// 							for(int j=0;j<8;++j)
-// 							{
-// 								WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // directly copy all
-// 								WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
-// 								WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
-// 							}
-// 						  }
-// 						  else if( nbDependingCoarseNodes==2 ) // fine node on an edge
-// 						  {
-// 							  switch( MIDDLE_AXES[i] )
-// 							  {
-// 								  case 1: //x
-// 									  for(int j=0;j<8;++j)
-// 									  {
-// 										  if( MIDDLE_INTERPOLATION[i][j] )
-// 										  {
-// 											WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // copy just the right influence in the right axe
-// 										  	WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3, j*3) );
-// 										  	WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3, j*3) );
-// 										  }
-// 									  }
-// 									  break;
-// 									  case 2: //y
-// 									  for(int j=0;j<8;++j)
-// 									  {
-// 										  if( MIDDLE_INTERPOLATION[i][j] )
-// 										  {
-// 											  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+1  , j*3+1) );
-// 											  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
-// 											  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+1, j*3+1) );
-// 										  }
-// 									  }
-// 									  break;
-// 									  case 3: //z
-// 									  for(int j=0;j<8;++j)
-// 									  {
-// 											if( MIDDLE_INTERPOLATION[i][j] )
-// 											{
-// 												WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+2  , j*3+2) );
-// 												WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+2, j*3+2) );
-// 												WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
-// 											}
-// 									  }
-// 									  break;
-// 							  }
-// 						  }
-// 						  else if( nbDependingCoarseNodes==4 ) // fine node on a face
-// 						  {
-// 							  switch( MIDDLE_AXES[i] )
-// 							  {
-// 								  case 1: //x
-// 									  for(int j=0;j<8;++j)
-// 									  {
-// 										  if( MIDDLE_INTERPOLATION[i][j] )
-// 										  {
-// 											  Real coef = (WB.element(localidx*3+1, j*3+1)+WB.element(localidx*3+2, j*3+2))/2.0;
-// 											  WBmeca.set( localidx*3  , j*3, coef );
-// // 											  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
-// // 											  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
-// 											  WBmeca.set( localidx*3+1, j*3+1, coef );
-// 											  WBmeca.set( localidx*3+2, j*3+2, coef );
-// 										  }
-// 									  }
-// 									  break;
-// 									  case 2: //y
-// 										  for(int j=0;j<8;++j)
-// 										  {
-// 											  if( MIDDLE_INTERPOLATION[i][j] )
-// 											  {
-// 												  Real coef = (WB.element(localidx*3, j*3)+WB.element(localidx*3+2, j*3+2))/2.0;
-// // 												  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3, j*3) );
-// 												  WBmeca.set( localidx*3  , j*3, coef );
-// 												  WBmeca.set( localidx*3+1, j*3+1, coef );
-// // 												  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
-// 												  WBmeca.set( localidx*3+2, j*3+2, coef );
-//
-// 											  }
-// 										  }
-// 										  break;
-// 										  case 3: //z
-// 											  for(int j=0;j<8;++j)
-// 											  {
-// 												  if( MIDDLE_INTERPOLATION[i][j] )
-// 												  {
-// 													  Real coef = (WB.element(localidx*3, j*3)+WB.element(localidx*3+1, j*3+1))/2.0;
-// // 													  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3, j*3) );
-// // 													  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
-// 													  WBmeca.set( localidx*3  , j*3, coef );
-// 													  WBmeca.set( localidx*3+1, j*3+1, coef );
-// 													  WBmeca.set( localidx*3+2, j*3+2, coef );
-// 												  }
-// 											  }
-// 											  break;
-// 							  }
-// 						  }
-// 					  }
-// 			  }
+        // 			  for(int i=0;i<27;++i)
+        // 			  {
+        // 					  for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+        // 					  {
+        // 						  int localidx = map_idxq_idxass[ *it ];
+        //
+        // 						  int nbDependingCoarseNodes = 0;
+        // 						  for(int j=0;j<8;++j)
+        // 						  {
+        // 							  if( MIDDLE_INTERPOLATION[i][j] )
+        // 							  {
+        // 								  ++nbDependingCoarseNodes;
+        // 							  }
+        // 						  }
+        //
+        //
+        // 						  if( nbDependingCoarseNodes==1 || nbDependingCoarseNodes==8 ) // fine node on a coarse node or in the middle of the coarse cube
+        // 						  {
+        // 							for(int j=0;j<8;++j)
+        // 							{
+        // 								WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // directly copy all
+        // 								WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+        // 								WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+        // 							}
+        // 						  }
+        // 						  else if( nbDependingCoarseNodes==2 ) // fine node on an edge
+        // 						  {
+        // 							  switch( MIDDLE_AXES[i] )
+        // 							  {
+        // 								  case 1: //x
+        // 									  for(int j=0;j<8;++j)
+        // 									  {
+        // 										  if( MIDDLE_INTERPOLATION[i][j] )
+        // 										  {
+        // 											WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // copy just the right influence in the right axe
+        // 										  	WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3, j*3) );
+        // 										  	WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3, j*3) );
+        // 										  }
+        // 									  }
+        // 									  break;
+        // 									  case 2: //y
+        // 									  for(int j=0;j<8;++j)
+        // 									  {
+        // 										  if( MIDDLE_INTERPOLATION[i][j] )
+        // 										  {
+        // 											  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+1  , j*3+1) );
+        // 											  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+        // 											  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+1, j*3+1) );
+        // 										  }
+        // 									  }
+        // 									  break;
+        // 									  case 3: //z
+        // 									  for(int j=0;j<8;++j)
+        // 									  {
+        // 											if( MIDDLE_INTERPOLATION[i][j] )
+        // 											{
+        // 												WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+2  , j*3+2) );
+        // 												WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+2, j*3+2) );
+        // 												WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+        // 											}
+        // 									  }
+        // 									  break;
+        // 							  }
+        // 						  }
+        // 						  else if( nbDependingCoarseNodes==4 ) // fine node on a face
+        // 						  {
+        // 							  switch( MIDDLE_AXES[i] )
+        // 							  {
+        // 								  case 1: //x
+        // 									  for(int j=0;j<8;++j)
+        // 									  {
+        // 										  if( MIDDLE_INTERPOLATION[i][j] )
+        // 										  {
+        // 											  Real coef = (WB.element(localidx*3+1, j*3+1)+WB.element(localidx*3+2, j*3+2))/2.0;
+        // 											  WBmeca.set( localidx*3  , j*3, coef );
+        // // 											  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+        // // 											  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+        // 											  WBmeca.set( localidx*3+1, j*3+1, coef );
+        // 											  WBmeca.set( localidx*3+2, j*3+2, coef );
+        // 										  }
+        // 									  }
+        // 									  break;
+        // 									  case 2: //y
+        // 										  for(int j=0;j<8;++j)
+        // 										  {
+        // 											  if( MIDDLE_INTERPOLATION[i][j] )
+        // 											  {
+        // 												  Real coef = (WB.element(localidx*3, j*3)+WB.element(localidx*3+2, j*3+2))/2.0;
+        // // 												  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3, j*3) );
+        // 												  WBmeca.set( localidx*3  , j*3, coef );
+        // 												  WBmeca.set( localidx*3+1, j*3+1, coef );
+        // // 												  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+        // 												  WBmeca.set( localidx*3+2, j*3+2, coef );
+        //
+        // 											  }
+        // 										  }
+        // 										  break;
+        // 										  case 3: //z
+        // 											  for(int j=0;j<8;++j)
+        // 											  {
+        // 												  if( MIDDLE_INTERPOLATION[i][j] )
+        // 												  {
+        // 													  Real coef = (WB.element(localidx*3, j*3)+WB.element(localidx*3+1, j*3+1))/2.0;
+        // // 													  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3, j*3) );
+        // // 													  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+        // 													  WBmeca.set( localidx*3  , j*3, coef );
+        // 													  WBmeca.set( localidx*3+1, j*3+1, coef );
+        // 													  WBmeca.set( localidx*3+2, j*3+2, coef );
+        // 												  }
+        // 											  }
+        // 											  break;
+        // 							  }
+        // 						  }
+        // 					  }
+        // 			  }
 
 
         // normalize the coefficient to obtain sum(coefs)==1
@@ -2263,10 +2263,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 M[i][j]=(Real)Mc.element(i,j);
             }
 
-// 			  serr<<"K"<<elementIndice<<"=";
-// 			  printMatlab( serr, K);serr<<sendl;
-// 			  serr<<"M"<<elementIndice<<"=";
-// 			  printMatlab( serr, M);serr<<sendl;
+        // 			  serr<<"K"<<elementIndice<<"=";
+        // 			  printMatlab( serr, K);serr<<sendl;
+        // 			  serr<<"M"<<elementIndice<<"=";
+        // 			  printMatlab( serr, M);serr<<sendl;
 
 
 
@@ -2299,63 +2299,63 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-// 			  for(int i=0 ; i < 8 ; ++i ) // finer places
-// 			  {
-// 				  for(unsigned j=0;j<finerChildrenRamificationOriginal[i].size();++j) // finer element
-// 				  {
-// 					  serr<<"_weights"<<" "<<this->_nbVirtualFinerLevels.getValue()-level-1<<" "<<finerChildrenRamificationOriginal[i][j]<<"="<<sendl;
-// 					  printMatlab( serr, _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]] );
-// 				  }
-// 			  }
+        // 			  for(int i=0 ; i < 8 ; ++i ) // finer places
+        // 			  {
+        // 				  for(unsigned j=0;j<finerChildrenRamificationOriginal[i].size();++j) // finer element
+        // 				  {
+        // 					  serr<<"_weights"<<" "<<this->_nbVirtualFinerLevels.getValue()-level-1<<" "<<finerChildrenRamificationOriginal[i][j]<<"="<<sendl;
+        // 					  printMatlab( serr, _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]] );
+        // 				  }
+        // 			  }
 
 
 
 
-// 			  serr<<"WBmeca =";
-// 			  WBmeca.printMatlab(serr);
-// 			  serr<<"WB =";
-// 			  WB.printMatlab(serr);
+        // 			  serr<<"WBmeca =";
+        // 			  WBmeca.printMatlab(serr);
+        // 			  serr<<"WB =";
+        // 			  WB.printMatlab(serr);
 
 
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
-// 			  serr<<sendl;serr<<sendl;
-//
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
-// 			  serr<<sendl;serr<<sendl;
-//
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
-// 			  serr<<sendl;serr<<sendl;
-//
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
-// 			  serr<<sendl;
-// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
-// 			  serr<<sendl;serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
+        // 			  serr<<sendl;serr<<sendl;
+        //
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
+        // 			  serr<<sendl;serr<<sendl;
+        //
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
+        // 			  serr<<sendl;serr<<sendl;
+        //
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
+        // 			  serr<<sendl;
+        // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+        // 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
+        // 			  serr<<sendl;serr<<sendl;
 
 
     }
@@ -2369,8 +2369,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
 {
-// 		  for(int i=0;i<level*3;++i)serr<<" ";
-// 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
+    // 		  for(int i=0;i<level*3;++i)serr<<" ";
+    // 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
 
     if( elementIndice == -1 ) return;
 
@@ -2378,15 +2378,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
 
     if (level == this->_nbVirtualFinerLevels.getValue())
     {
-// 			  if( elementIndice==2 )
-// 			  {
-// 				  serr<<"COMPUTE_FINAL"<<sendl;
-// 				  serr<<this->_nbVirtualFinerLevels.getValue()-level<<sendl;
-// 				  printMatlab(serr,_weights[0][2]);
-// 				  printMatlab(serr,W);
-// 			  }
+        // 			  if( elementIndice==2 )
+        // 			  {
+        // 				  serr<<"COMPUTE_FINAL"<<sendl;
+        // 				  serr<<this->_nbVirtualFinerLevels.getValue()-level<<sendl;
+        // 				  printMatlab(serr,_weights[0][2]);
+        // 				  printMatlab(serr,W);
+        // 			  }
 
-// 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
+        // 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
         _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
 
     }
@@ -2408,8 +2408,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
 {
-// 		  for(int i=0;i<level*3;++i)serr<<" ";
-// 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
+    // 		  for(int i=0;i<level*3;++i)serr<<" ";
+    // 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
 
     if( elementIndice == -1 ) return;
 
@@ -2417,15 +2417,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification
 
     if (level == this->_nbVirtualFinerLevels.getValue())
     {
-// 			  if( elementIndice==2 )
-// 			  {
-// 				  serr<<"COMPUTE_FINAL"<<sendl;
-// 				  serr<<this->_nbVirtualFinerLevels.getValue()-level<<sendl;
-// 				  printMatlab(serr,_weights[0][2]);
-// 				  printMatlab(serr,W);
-// 			  }
+        // 			  if( elementIndice==2 )
+        // 			  {
+        // 				  serr<<"COMPUTE_FINAL"<<sendl;
+        // 				  serr<<this->_nbVirtualFinerLevels.getValue()-level<<sendl;
+        // 				  printMatlab(serr,_weights[0][2]);
+        // 				  printMatlab(serr,W);
+        // 			  }
 
-// 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
+        // 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
         _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
     }
     else
@@ -2512,11 +2512,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
 
     if (this->getContext()->getShowBehaviorModels())
     {
-// 					glColor3f(0.95, 0.95, 0.7);
-// 			  for(unsigned i=0;i<x.size();++i)
-// 			  {
-// 				  helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5 );
-// 			  }
+        // 					glColor3f(0.95, 0.95, 0.7);
+        // 			  for(unsigned i=0;i<x.size();++i)
+        // 			  {
+        // 				  helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5 );
+        // 			  }
 
         colour=Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
 

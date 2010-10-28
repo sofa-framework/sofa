@@ -41,8 +41,9 @@ using namespace defaulttype;
 int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")
         .add< ReadState >();
 
-ReadStateCreator::ReadStateCreator()
-    : sceneName("")
+ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
+    : Visitor(params)
+    , sceneName("")
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else
@@ -54,8 +55,9 @@ ReadStateCreator::ReadStateCreator()
 {
 }
 
-ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, bool i, int c)
-    : sceneName(n)
+ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i, int c)
+    : Visitor(params)
+    , sceneName(n)
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else

@@ -42,8 +42,8 @@ namespace simulation
 {
 
 
-PropagateEventVisitor::PropagateEventVisitor(sofa::core::objectmodel::Event* e)
-    : sofa::simulation::Visitor()
+PropagateEventVisitor::PropagateEventVisitor(sofa::core::objectmodel::Event* e, const core::ExecParams* params)
+    : sofa::simulation::Visitor(params)
     , m_event(e)
 {}
 
@@ -59,7 +59,7 @@ Visitor::Result PropagateEventVisitor::processNodeTopDown(simulation::Node* node
     {
         simulation::Node *child=*itChild;
 
-        PropagateEventVisitor visualProp(m_event);
+        PropagateEventVisitor visualProp(m_event, params);
         child->executeVisitor(&visualProp);
     }
 

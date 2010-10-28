@@ -156,7 +156,7 @@ inline Point::Point(core::CollisionElementIterator& i)
 
 inline const Vector3& Point::p() const { return (*model->mstate->getX())[index]; }
 
-inline const Vector3& Point::pFree() const { return (*model->mstate->getXfree())[index]; }
+inline const Vector3& Point::pFree() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[index]; }
 
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
 

@@ -42,8 +42,9 @@ using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
 
-/** Prevents rotation around X or Y or Z axis
-*/
+/**
+ * Prevents rotation around X or Y or Z axis
+ */
 template <class DataTypes>
 class FixedRotationConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
@@ -57,6 +58,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef Vec<3,Real> Vec3;
 
 public:
@@ -65,13 +69,11 @@ public:
     virtual ~FixedRotationConstraint();
 
     void init();
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& dx);
 
-    void projectResponse(VecDeriv& dx);
-    void projectResponse(MatrixDerivRowType& dx);
-    virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
+    void projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+    void projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+    void projectPosition(DataVecCoord& x,  const core::MechanicalParams* mparams);
+    void projectJacobianMatrix(DataMatrixDeriv& c, const core::MechanicalParams* mparams);
 
     virtual void draw();
 

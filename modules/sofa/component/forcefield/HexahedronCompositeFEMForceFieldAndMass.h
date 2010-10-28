@@ -54,10 +54,10 @@ using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
 template<class DataTypes>
-class HexahedronCompositeFEMForceFieldAndMass : public NonUniformHexahedronFEMForceFieldAndMass<DataTypes>
+class HexahedronCompositeFEMForceFieldAndMass : public sofa::component::forcefield::NonUniformHexahedronFEMForceFieldAndMass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HexahedronCompositeFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(NonUniformHexahedronFEMForceFieldAndMass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedronCompositeFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::component::forcefield::NonUniformHexahedronFEMForceFieldAndMass,DataTypes));
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
@@ -66,9 +66,9 @@ public:
     typedef typename Coord::value_type Real;
 
 
-    typedef NonUniformHexahedronFEMForceFieldAndMass<DataTypes> NonUniformHexahedronFEMForceFieldAndMassT;
-    typedef HexahedronFEMForceFieldAndMass<DataTypes> HexahedronFEMForceFieldAndMassT;
-    typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
+    typedef sofa::component::forcefield::NonUniformHexahedronFEMForceFieldAndMass<DataTypes> NonUniformHexahedronFEMForceFieldAndMassT;
+    typedef sofa::component::forcefield::HexahedronFEMForceFieldAndMass<DataTypes> HexahedronFEMForceFieldAndMassT;
+    typedef sofa::component::forcefield::HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
 
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::ElementStiffness ElementStiffness;
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::MaterialStiffness MaterialStiffness;

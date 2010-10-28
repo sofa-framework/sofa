@@ -28,6 +28,7 @@ HEADERS += common.h \
            MasterSolverImpl.h \
            MechanicalComputeEnergyVisitor.h \
 	   MechanicalMatrixVisitor.h \
+	       MechanicalOperations.h \
            MechanicalVPrintVisitor.h \
            MechanicalVisitor.h \  
            MutationListener.h \
@@ -46,8 +47,10 @@ HEADERS += common.h \
            UpdateContextVisitor.h \
            UpdateMappingEndEvent.h \
            UpdateMappingVisitor.h \
+		   VectorOperations.h \
            VelocityThresholdVisitor.h \
            Visitor.h \
+		   VisitorExecuteFunc.h \
            VisitorScheduler.h \
            VisualVisitor.h \
            WriteStateVisitor.h \
@@ -79,6 +82,7 @@ SOURCES += Node.cpp \
            InstrumentVisitor.cpp \
            MasterSolverImpl.cpp \
            MechanicalComputeEnergyVisitor.cpp \
+		   MechanicalOperations.cpp \
 	   MechanicalMatrixVisitor.cpp \
            MechanicalVPrintVisitor.cpp \
            MechanicalVisitor.cpp \   
@@ -91,13 +95,13 @@ SOURCES += Node.cpp \
            ResetVisitor.cpp \
            Simulation.cpp \  
            SolveVisitor.cpp \
-           SolverImpl.cpp \
            TopologyChangeVisitor.cpp \
            StateChangeVisitor.cpp \   
            TransformationVisitor.cpp \
            UpdateContextVisitor.cpp \
            UpdateMappingEndEvent.cpp \
            UpdateMappingVisitor.cpp \
+		   VectorOperations.cpp \
            VelocityThresholdVisitor.cpp \
            Visitor.cpp \
            VisitorScheduler.cpp \

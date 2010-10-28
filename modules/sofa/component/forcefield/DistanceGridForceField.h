@@ -55,11 +55,13 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(DistanceGridForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
     typedef container::DistanceGrid DistanceGrid;
 
 protected:
@@ -211,13 +213,9 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
-
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
+    virtual void addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ ) ;
+    virtual void addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* mparams ) ;
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const sofa::core::MechanicalParams* mparams) ;
 
     void draw();
     void drawDistanceGrid(float size=0.0f);
@@ -229,13 +227,13 @@ public:
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec1dTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec2dTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec1fTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec2fTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defaulttype::Vec1fTypes>;
 #endif
 #endif
 
@@ -245,4 +243,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API DistanceGridForceField<defau
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_H

@@ -219,7 +219,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     {
         simulation::Node *node=*it;
         node->detachFromGraph();
-        node->execute<simulation::DeleteVisitor>();
+        node->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
         delete *it;
     }
     removedGroup.clear();

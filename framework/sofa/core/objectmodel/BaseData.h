@@ -146,7 +146,7 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet() const { return m_counter > 0; }
+    bool isSet() const { return m_isSet; }
 
     /// True if the Data has to be displayed in the GUI
     bool isDisplayed() const { return m_isDisplayed; }
@@ -160,6 +160,12 @@ public:
     /// True if the counter of modification gives valid information.
     virtual bool isCounterValid() const =0;
 
+    /// Reset the isSet flag to false, to indicate that the current value is the default for this Data.
+    void unset() { m_isSet = false; }
+
+    /// Reset the isSet flag to true, to indicate that the current value has been modified.
+    void forceSet() { m_isSet = true; }
+
     /// Can dynamically change the status of a Data, by making it appear or disappear
     void setDisplayed(bool b) {m_isDisplayed = b;}
     /// Can dynamically change the status of a Data, by making it readOnly
@@ -169,6 +175,10 @@ public:
     /// If we use the Data as a link and not as value directly
     void setLinkPath(const std::string &path) {m_linkPath = path;};
     std::string getLinkPath() const {return m_linkPath;};
+    /// Can this data be used as a linkPath
+    /// True by default.
+    /// Useful if you want to customize the use of @ syntax (see ObjectRef and DataObjectRef)
+    virtual bool canBeLinked() const { return true; }
 
     /// Return the Base component owning this Data
     Base* getOwner() const { return m_owner; }
@@ -213,6 +223,8 @@ protected:
     const char* widget;
     /// Number of changes since creation
     int m_counter;
+    /// True if the Data is set, i.e. its value is different from the default value
+    bool m_isSet;
     /// True if the Data will be displayed in the GUI
     bool m_isDisplayed;
     /// True if the Data will be readable only in the GUI

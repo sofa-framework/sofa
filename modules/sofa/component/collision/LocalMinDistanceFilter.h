@@ -93,7 +93,7 @@ public:
 
     void setBaseMeshTopology( core::topology::BaseMeshTopology *bmt) {base_mesh_topology = bmt;};
 
-    void setPositionFiltering(sofa::helper::vector< sofa::defaulttype::Vector3 > *x) {position_filtering = x;};
+    void setPositionFiltering(const sofa::helper::vector< sofa::defaulttype::Vector3 > *x) {position_filtering = x;};
 
 
 protected:
@@ -110,7 +110,7 @@ protected:
     const LocalMinDistanceFilter	*m_lmdFilters; ///< The LocalMinDistanceFilters object that contains this InfoFilter.
 
     core::topology::BaseMeshTopology* base_mesh_topology;
-    sofa::helper::vector< sofa::defaulttype::Vector3 > *position_filtering;
+    const sofa::helper::vector< sofa::defaulttype::Vector3 > *position_filtering;
 };
 
 

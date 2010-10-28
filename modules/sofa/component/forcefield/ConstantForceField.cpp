@@ -22,8 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/ConstantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -35,6 +40,20 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
+
+#ifndef SOFA_FLOAT
+template <> SOFA_COMPONENT_FORCEFIELD_API
+double ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const DataVecCoord& , const core::MechanicalParams* ) const { return 0; }
+template <> SOFA_COMPONENT_FORCEFIELD_API
+double ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const DataVecCoord& , const core::MechanicalParams* ) const { return 0; }
+#endif
+
+#ifndef SOFA_DOUBLE
+template <> SOFA_COMPONENT_FORCEFIELD_API
+double ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const { return 0; }
+template <> SOFA_COMPONENT_FORCEFIELD_API
+double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const { return 0; }
+#endif
 
 
 SOFA_DECL_CLASS(ConstantForceField)
@@ -74,36 +93,6 @@ template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid3fTypes>;
 template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2fTypes>;
 #endif
 
-#ifndef SOFA_FLOAT
-template <>
-double ConstantForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& ) const
-{
-    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-template <>
-double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& ) const
-{
-    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template <>
-double ConstantForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& ) const
-{
-    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-
-template <>
-double ConstantForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& ) const
-{
-    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-#endif
 } // namespace forcefield
 
 } // namespace component

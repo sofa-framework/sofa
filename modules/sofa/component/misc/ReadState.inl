@@ -232,12 +232,16 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            mmodel->readX(str);
+            //<TO REMOVE>
+            //mmodel->readX(str);
+            mmodel->readVec(core::VecId::position(), str);
             updated = true;
         }
         else if (cmd == "V=")
         {
-            mmodel->readV(str);
+            //<TO REMOVE>
+            //mmodel->readV(str);
+            mmodel->readVec(core::VecId::velocity(), str);
             updated = true;
         }
     }
@@ -245,9 +249,9 @@ void ReadState::processReadState()
     if (updated)
     {
         //sout<<"update from file"<<sendl;
-        sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor action1;
+        sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor action1(core::MechanicalParams::defaultInstance());
         this->getContext()->executeVisitor(&action1);
-        sofa::simulation::UpdateMappingVisitor action2;
+        sofa::simulation::UpdateMappingVisitor action2(core::MechanicalParams::defaultInstance());
         this->getContext()->executeVisitor(&action2);
     }
 }

@@ -44,7 +44,7 @@ using sofa::helper::vector;
 using sofa::core::behavior::Mass;
 
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
- */
+*/
 template<class DataTypes>
 class HexahedronFEMForceFieldAndMass : virtual public Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
 {
@@ -54,13 +54,17 @@ public:
     typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
     typedef Mass<DataTypes> MassT;
 
-
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Real        Real        ;
+    typedef typename DataTypes::Coord       Coord       ;
+    typedef typename DataTypes::Deriv       Deriv       ;
+    typedef typename DataTypes::VecCoord    VecCoord    ;
+    typedef typename DataTypes::VecDeriv    VecDeriv    ;
+    typedef typename DataTypes::VecReal     VecReal     ;
     typedef VecCoord Vector;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+
     typedef typename HexahedronFEMForceFieldT::Mat33 Mat33;
     typedef typename HexahedronFEMForceFieldT::Displacement Displacement;
     typedef typename HexahedronFEMForceFieldT::VecElement VecElement;
@@ -82,29 +86,26 @@ public:
     virtual std::string getTemplateName() const;
 
     // -- Mass interface
-    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+    virtual  void addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* mparams);
 
-    virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
+    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams);
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+    void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams)
     {
-        HexahedronFEMForceFieldT::addKToMatrix(mat, k, offset);
+        HexahedronFEMForceFieldT::addKToMatrix(matrix, mparams);
     }
 
-    virtual  void accFromF(VecDeriv& a, const VecDeriv& f);
+    virtual  void accFromF(DataVecDeriv& a, const DataVecDeriv& f, const core::MechanicalParams* mparams);
 
-    virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual  void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
-    virtual double getKineticEnergy(const VecDeriv& /*v*/) const  ///< vMv/2 using dof->getV()
+    virtual double getKineticEnergy(const DataVecDeriv& /*v*/, const core::MechanicalParams* ) const  ///< vMv/2 using dof->getV()
     {serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
 
-    virtual double getPotentialEnergy(const VecCoord& /*x*/)  const  ///< Mgx potential in a uniform gravity field, null at origin
-    {serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getPotentialEnergy not yet implemented"<<sendl; return 0;}
+    virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
+    // virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, double kFactor, double);
 
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double);
-
-    virtual void addGravityToV(double dt);
+    virtual void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
 
     double getElementMass(unsigned int index);
     // visual model
@@ -152,4 +153,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API HexahedronFEMForceFieldAndMa
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONANDMASSFEMFORCEFIELD_H

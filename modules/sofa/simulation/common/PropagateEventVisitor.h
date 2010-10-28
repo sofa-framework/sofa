@@ -38,6 +38,7 @@
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/ExecParams.h>
 
 namespace sofa
 {
@@ -54,7 +55,7 @@ Propagation is done top-down until the event is handled.
 class SOFA_SIMULATION_COMMON_API PropagateEventVisitor : public sofa::simulation::Visitor
 {
 public:
-    PropagateEventVisitor(sofa::core::objectmodel::Event* e);
+    PropagateEventVisitor(sofa::core::objectmodel::Event* e, const core::ExecParams* params);
 
     ~PropagateEventVisitor();
 

@@ -31,6 +31,7 @@
 
 
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/ExecParams.h>
 
 namespace sofa
 {
@@ -44,7 +45,7 @@ class SOFA_SIMULATION_COMMON_API InitGnuplotVisitor : public simulation::Visitor
 public:
     std::string gnuplotDirectory;
 
-    InitGnuplotVisitor(std::string dir = std::string("")) : gnuplotDirectory(dir) {}
+    InitGnuplotVisitor(std::string dir, const core::ExecParams* params) : Visitor(params),gnuplotDirectory(dir) {}
 
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
     virtual Result processNodeTopDown(simulation::Node* node);
@@ -61,7 +62,7 @@ public:
 class SOFA_SIMULATION_COMMON_API ExportGnuplotVisitor : public simulation::Visitor
 {
 public:
-    ExportGnuplotVisitor( double time );
+    ExportGnuplotVisitor(double time, const core::ExecParams* params);
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
     virtual Result processNodeTopDown(simulation::Node* node);
 

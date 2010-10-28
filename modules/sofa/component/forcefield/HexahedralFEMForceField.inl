@@ -146,9 +146,12 @@ void HexahedralFEMForceField<DataTypes>::reinit()
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
+void HexahedralFEMForceField<DataTypes>::addForce (DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& /*v*/, const core::MechanicalParams* /*mparams*/)
 {
-    f.resize(p.size());
+    WDataRefVecDeriv _f = f;
+    RDataRefVecCoord _p = p;
+
+    _f.resize(_p.size());
 
     switch(method)
     {
@@ -156,7 +159,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     {
         for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
         {
-            accumulateForceLarge( f, p, i);
+            accumulateForceLarge( _f, _p, i);
         }
         break;
     }
@@ -164,7 +167,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     {
         for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
         {
-            accumulateForcePolar( f, p, i);
+            accumulateForcePolar( _f, _p, i);
         }
         break;
     }
@@ -173,9 +176,13 @@ void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
 }
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
+void HexahedralFEMForceField<DataTypes>::addDForce (DataVecDeriv& v, const DataVecDeriv& x, const core::MechanicalParams *mparams)
 {
-    if( v.size()!=x.size() ) v.resize(x.size());
+    helper::WriteAccessor< DataVecDeriv > _v = v;
+    const VecCoord& _x = x.getValue();
+    double kFactor = mparams->kFactor();
+
+    if( _v.size()!=_x.size() ) _v.resize(_x.size());
 
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
@@ -189,7 +196,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         for(int w=0; w<8; ++w)
         {
             Coord x_2;
-            x_2 = R_0_2 * x[_topology->getHexahedron(i)[w]];
+            x_2 = R_0_2 * _x[_topology->getHexahedron(i)[w]] * kFactor;
             X[w*3] = x_2[0];
             X[w*3+1] = x_2[1];
             X[w*3+2] = x_2[2];
@@ -199,17 +206,9 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         computeForce( F, X, hexahedronInf[i].stiffness );//computeForce( F, X, hexahedronInfo[i].stiffness );
 
         for(int w=0; w<8; ++w)
-            v[_topology->getHexahedron(i)[w]] -= hexahedronInf[i].rotation * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+            _v[_topology->getHexahedron(i)[w]] -= hexahedronInf[i].rotation * Deriv(F[w*3], F[w*3+1], F[w*3+2]);
     }
 }
-
-template <class DataTypes>
-double HexahedralFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"HexahedralFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-
 
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes)
@@ -466,7 +465,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 }
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const Vector & p, const int i)
+void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i)
 {
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -571,7 +570,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const Vector & p, const int i)
+void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i)
 {
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
@@ -711,4 +710,4 @@ void HexahedralFEMForceField<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_INL

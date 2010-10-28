@@ -88,40 +88,42 @@ void MatrixMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void MatrixMass<DataTypes, MassType>::addMDx(DataVecDeriv& res, const DataVecDeriv& dx, double factor, const core::MechanicalParams*)
 {
     const VecMass &masses= *_usedMassMatrices;
 
+    helper::WriteAccessor< DataVecDeriv > _res = res;
+    helper::ReadAccessor< DataVecDeriv > _dx = dx;
     if (factor == 1.0)
     {
-        for (unsigned int i=0; i<dx.size(); i++)
+        for (unsigned int i=0; i<_dx.size(); i++)
         {
-            res[i] += masses[i] * dx[i];
+            _res[i] += masses[i] * _dx[i];
         }
     }
     else
-        for (unsigned int i=0; i<dx.size(); i++)
+        for (unsigned int i=0; i<_dx.size(); i++)
         {
-            res[i] += masses[i] * dx[i] * factor;
+            _res[i] += masses[i] * _dx[i] * factor;
         }
 
 }
 
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& , const VecDeriv& )
+void MatrixMass<DataTypes, MassType>::accFromF(DataVecDeriv& , const DataVecDeriv& , const core::MechanicalParams*)
 {
     serr<<"void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)"<<sendl;
 }
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv&  ) const
+double MatrixMass<DataTypes, MassType>::getKineticEnergy( const DataVecDeriv& , const core::MechanicalParams* ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented"<<sendl;
     return 0;
 }
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  ) const
+double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const DataVecCoord& , const core::MechanicalParams* ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented"<<sendl;
     return 0;
@@ -129,17 +131,17 @@ double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  ) c
 
 
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addGravityToV(double dt)
+void MatrixMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
 {
-    if(this->mstate)
+    if(this->mstate && mparams)
     {
-        VecDeriv& v = *this->mstate->getV();
+        helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
 
         // gravity
-        Vec3d g ( this->getContext()->getLocalGravity() * dt );
+        Vec3d g ( this->getContext()->getLocalGravity() * (mparams->dt()) );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * dt;
+        Deriv hg = theGravity * (mparams->dt());
 
         // add weight and inertia force
         for (unsigned int i=0; i<v.size(); i++)
@@ -150,13 +152,16 @@ void MatrixMass<DataTypes, MassType>::addGravityToV(double dt)
 }
 
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void MatrixMass<DataTypes, MassType>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* /*mparams*/)
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())
         return;
 
     const VecMass &masses= *_usedMassMatrices;
+    helper::WriteAccessor< DataVecDeriv > _f = f;
+    helper::ReadAccessor< DataVecCoord > _x = x;
+    helper::ReadAccessor< DataVecDeriv > _v = v;
 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -174,18 +179,21 @@ void MatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, c
     // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        f[i] += masses[i]*theGravity + core::behavior::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
+        _f[i] += masses[i]*theGravity + core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
     }
 }
 
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
+void MatrixMass<DataTypes, MassType>::addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams)
+
 {
     const VecMass &masses= *_usedMassMatrices;
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    Real mFactor = (Real)mparams->mFactor();
     for (unsigned int i=0; i<masses.size(); i++)
-        calc(mat, masses[i], offset + N*i, mFact);
+        calc(r.matrix, masses[i], r.offset + N*i, mFactor);
 }
 
 

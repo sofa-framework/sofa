@@ -37,7 +37,8 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API UpdateContextVisitor : public Visitor
 {
 public:
-    UpdateContextVisitor():Visitor(), startingNode(NULL)
+    UpdateContextVisitor(const core::ExecParams* params)
+        : Visitor(params), startingNode(NULL)
     {
     }
 
@@ -57,17 +58,26 @@ protected:
 class SOFA_SIMULATION_COMMON_API UpdateSimulationContextVisitor : public UpdateContextVisitor
 {
 public:
+    UpdateSimulationContextVisitor(const core::ExecParams* params)
+        : UpdateContextVisitor(params)
+    {
+    }
+
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "UpdateSimulationContextVisitor"; }
 };
 
 class SOFA_SIMULATION_COMMON_API UpdateVisualContextVisitor : public UpdateContextVisitor
 {
-
 public:
     Node::VISUAL_FLAG filter;
-    UpdateVisualContextVisitor(Node::VISUAL_FLAG FILTER=Node::ALLFLAGS):filter(FILTER)
-    {};
+    UpdateVisualContextVisitor(const core::ExecParams* params)
+        : UpdateContextVisitor(params), filter(Node::ALLFLAGS)
+    {
+    }
+    UpdateVisualContextVisitor(Node::VISUAL_FLAG FILTER, const core::ExecParams* params)
+        : UpdateContextVisitor(params), filter(FILTER)
+    {}
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "UpdateVisualContextVisitor"; }
 

@@ -27,8 +27,6 @@
 #ifndef SOFA_CORE_EXEC_PARAMS_H
 #define SOFA_CORE_EXEC_PARAMS_H
 
-//#include <sofa/core/ExecParams.h>
-
 namespace sofa
 {
 
@@ -47,7 +45,8 @@ public:
         EXEC_DEFAULT,
         EXEC_DEBUG,
         EXEC_GPU,
-        EXEC_GRAPH
+        EXEC_GRAPH,
+        EXEC_KAAPI
     };
 
     /// Mode of execution requested
@@ -60,6 +59,14 @@ public:
         : m_execMode(EXEC_DEFAULT)
         , m_threadID(0)
     {
+    }
+
+    /// Get the default ExecParams, to be used to provide a default values for method parameters
+    static ExecParams* defaultInstance()
+    {
+        static ExecParams m_defaultInstance;
+
+        return &m_defaultInstance;
     }
 
     /// Request a specific mode of execution

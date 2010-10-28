@@ -30,11 +30,12 @@
 #endif
 
 #include <sofa/component/forcefield/SPHFluidForceField.h>
-#include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/MeshTopology.h>
-#include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
+
+#include <sofa/core/Mapping.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+
 #include <vector>
 
 namespace sofa
@@ -47,6 +48,7 @@ namespace mapping
 {
 
 using namespace sofa::component::container;
+
 
 template <class InDataTypes, class OutDataTypes>
 class SPHFluidSurfaceMappingGridTypes : public SpatialGridTypes<InDataTypes>
@@ -98,6 +100,7 @@ public:
     enum { GRIDDIM_LOG2 = 3 };
 };
 
+
 template <class In, class Out>
 class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology
 {
@@ -116,7 +119,7 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type InReal;
 
-    SPHFluidSurfaceMapping(In* from, Out* to)
+    SPHFluidSurfaceMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to),
           mStep(initData(&mStep,0.5,"step","Step")),
           mRadius(initData(&mRadius,2.0,"radius","Radius")),
@@ -157,11 +160,11 @@ public:
 
     void init();
 
-    void apply( OutVecCoord& out, const InVecCoord& in );
+    void apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams *mparams);
 
-    void applyJ( OutVecDeriv& out, const InVecDeriv& in );
+    void applyJ(Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn, const core::MechanicalParams *mparams);
 
-    //void applyJT( InVecDeriv& out, const OutVecDeriv& in );
+    //void applyJT(Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn, const core::MechanicalParams *mparams);
 
     void draw();
 
@@ -172,12 +175,12 @@ protected:
     Data< double > mIsoValue;
 
 
-    typedef forcefield::SPHFluidForceField<typename In::DataTypes> SPHForceField;
+    typedef forcefield::SPHFluidForceField<In> SPHForceField;
     SPHForceField* sph;
 
     // Marching cube data
 
-    typedef SPHFluidSurfaceMappingGridTypes<typename In::DataTypes, typename Out::DataTypes> GridTypes;
+    typedef SPHFluidSurfaceMappingGridTypes<In, Out> GridTypes;
 
     typedef SpatialGrid<GridTypes> Grid;
     typedef typename Grid::Cell Cell;
@@ -261,6 +264,31 @@ protected:
     }
 
 };
+
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SPHFluidSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SPHFluidSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SPHFluidSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SPHFluidSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SPHFluidSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SPHFluidSurfaceMapping< Vec3fTypes, Vec3dTypes >;
+#endif
+#endif
+#endif
+
 
 } // namespace mapping
 

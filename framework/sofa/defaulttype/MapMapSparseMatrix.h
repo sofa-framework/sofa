@@ -36,6 +36,15 @@ namespace sofa
 namespace defaulttype
 {
 
+template<class MatrixRow, class VecDeriv>
+typename VecDeriv::Real SparseMatrixVecDerivMult(const MatrixRow& row, const VecDeriv& vec)
+{
+    typename VecDeriv::Real r = 0;
+    for (typename MatrixRow::const_iterator it = row.begin(), itend = row.end(); it != itend; ++it)
+        r += it->second * vec[it->first];
+    return r;
+}
+
 template <class T>
 class MapMapSparseMatrix
 {
@@ -315,6 +324,12 @@ public:
         bool operator>(const RowConstIterator& it2) const
         {
             return m_internal > it2.m_internal;
+        }
+
+        template <class VecDeriv>
+        typename VecDeriv::Real operator*(const VecDeriv& v) const
+        {
+            return SparseMatrixVecDerivMult(row(), v);
         }
 
     private:

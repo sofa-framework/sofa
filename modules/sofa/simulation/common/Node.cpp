@@ -83,33 +83,33 @@ Node::~Node()
 }
 
 /// Initialize the components of this node and all the nodes which depend on it.
-void Node::init()
+void Node::init(const core::ExecParams* params)
 {
 //     cerr<<"Node::init() begin node "<<getName()<<endl;
-    execute<simulation::InitVisitor>();
+    execute<simulation::InitVisitor>(params);
 //     cerr<<"Node::init() end node "<<getName()<<endl;
 }
 
 /// ReInitialize the components of this node and all the nodes which depend on it.
-void Node::reinit()
+void Node::reinit(const core::ExecParams* params)
 {
-    sofa::simulation::DeactivationVisitor deactivate(isActive());
+    sofa::simulation::DeactivationVisitor deactivate(params, isActive());
     deactivate.execute( this );
 }
 
 /// Do one step forward in time
-void Node::animate( double dt )
+void Node::animate(double dt, const core::ExecParams* params)
 {
-    simulation::AnimateVisitor vis(dt);
+    simulation::AnimateVisitor vis(dt , params);
     //cerr<<"Node::animate, start execute"<<endl;
     execute(vis);
     //cerr<<"Node::animate, end execute"<<endl;
 }
 
-void Node::glDraw()
+void Node::glDraw(const core::ExecParams* params)
 {
-    execute<simulation::VisualUpdateVisitor>();
-    execute<simulation::VisualDrawVisitor>();
+    execute<simulation::VisualUpdateVisitor>(params);
+    execute<simulation::VisualDrawVisitor>(params);
 }
 
 
@@ -226,17 +226,25 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
     inserted+= linearSolver.add(dynamic_cast< core::behavior::LinearSolver* >(obj));
     inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
+    inserted+= state.add(dynamic_cast< core::BaseState* >(obj));
     inserted+= mechanicalState.add(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
-    bool isMechanicalMapping = mechanicalMapping.add(dynamic_cast< core::behavior::BaseMechanicalMapping* >(obj));
-    inserted+= isMechanicalMapping;
-    if (!isMechanicalMapping)
-        inserted+= mapping.add(dynamic_cast< core::BaseMapping* >(obj));
+    core::BaseMapping* bmap = dynamic_cast< core::BaseMapping* >(obj);
+    bool isMechanicalMapping = false;
+    if(bmap)
+    {
+        isMechanicalMapping = bmap->isMechanical();
+        if(isMechanicalMapping)
+            inserted += mechanicalMapping.add(bmap);
+        else
+            inserted += mapping.add(bmap);
+    }
+
     inserted+= mass.add(dynamic_cast< core::behavior::BaseMass* >(obj));
     inserted+= topology.add(dynamic_cast< core::topology::Topology* >(obj));
     inserted+= meshTopology.add(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
     inserted+= shader.add(dynamic_cast< sofa::core::Shader* >(obj));
 
-    bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::InteractionForceField* >(obj));
+    bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
     inserted+= isInteractionForceField;
     if (!isInteractionForceField)
         forceField.add(dynamic_cast< core::behavior::BaseForceField* >(obj));
@@ -271,15 +279,16 @@ void Node::doRemoveObject(BaseObject* obj)
     solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
     linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
     constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
+    state.remove(dynamic_cast< core::BaseState* >(obj));
     mechanicalState.remove(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
-    mechanicalMapping.remove(dynamic_cast< core::behavior::BaseMechanicalMapping* >(obj));
+    mechanicalMapping.remove(dynamic_cast< core::BaseMapping* >(obj));
     mass.remove(dynamic_cast< core::behavior::BaseMass* >(obj));
     topology.remove(dynamic_cast< core::topology::Topology* >(obj));
     meshTopology.remove(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
     shader.remove(dynamic_cast<sofa::core::Shader* >(obj));
 
     forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
-    interactionForceField.remove(dynamic_cast< core::behavior::InteractionForceField* >(obj));
+    interactionForceField.remove(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
     projectiveConstraintSet.remove(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
     constraintSet.remove(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
     mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
@@ -331,6 +340,16 @@ core::objectmodel::BaseObject* Node::getShader() const
         return shader;
     else
         return get<core::Shader>();
+}
+
+/// Degrees-of-Freedom
+core::objectmodel::BaseObject* Node::getState() const
+{
+    // return this->state;
+    if (this->state)
+        return this->state;
+    else
+        return get<core::BaseState>();
 }
 
 /// Mechanical Degrees-of-Freedom
@@ -620,9 +639,9 @@ void Node::executeVisitor(Visitor* action)
 }
 
 /// Propagate an event
-void Node::propagateEvent( core::objectmodel::Event* event )
+void Node::propagateEvent(core::objectmodel::Event* event, const core::ExecParams* params)
 {
-    simulation::PropagateEventVisitor act(event);
+    simulation::PropagateEventVisitor act(event, params);
     this->executeVisitor(&act);
 }
 
@@ -657,16 +676,19 @@ void Node::printComponents()
     for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"InteractionForceField: ";
-    for ( Sequence<InteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )
+    for ( Sequence<BaseInteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"ForceField: ";
     for ( Sequence<BaseForceField>::iterator i=forceField.begin(), iend=forceField.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"State: ";
+    for ( Single<BaseState>::iterator i=state.begin(), iend=state.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"MechanicalState: ";
     for ( Single<BaseMechanicalState>::iterator i=mechanicalState.begin(), iend=mechanicalState.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"Mechanical Mapping: ";
-    for ( Single<BaseMechanicalMapping>::iterator i=mechanicalMapping.begin(), iend=mechanicalMapping.end(); i!=iend; i++ )
+    for ( Single<BaseMapping>::iterator i=mechanicalMapping.begin(), iend=mechanicalMapping.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"Mapping: ";
     for ( Sequence<BaseMapping>::iterator i=mapping.begin(), iend=mapping.end(); i!=iend; i++ )

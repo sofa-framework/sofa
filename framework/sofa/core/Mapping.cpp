@@ -27,8 +27,6 @@
 #include "Mapping.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MappedModel.h>
 
 namespace sofa
 {
@@ -38,45 +36,19 @@ namespace core
 
 using namespace sofa::defaulttype;
 using namespace core;
-using namespace core::behavior;
 
+template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_CORE_API Mapping< Vec3dTypes, ExtVec3fTypes >;
 
-template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >;
-template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
-template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
-// template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
-template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3fTypes >;
+template class SOFA_CORE_API Mapping< Vec3fTypes, ExtVec3fTypes >;
 
-template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
-template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3fTypes> >;
-template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
-template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-// template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
-
-
-
-
-template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> >;
-template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > ;
-template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3fTypes> >;
-template class SOFA_CORE_API Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3dTypes> >;
-template class SOFA_CORE_API Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
-template class SOFA_CORE_API Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-
-
-
-// Mech -> Mapped
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> >;
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> >;
-
-// Mech -> ExtMapped
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
-//template class SOFA_CORE_API Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
-
+template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3dTypes > ;
+template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3fTypes >;
+template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3dTypes >;
 
 } // namespace core
 

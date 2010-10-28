@@ -97,7 +97,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
     for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
     {
         simulation::Node *child=*itChild;
-        child->execute<HandleTopologyChangeVisitor>();
+        child->execute<HandleTopologyChangeVisitor>(params);
     }
 
     return RESULT_CONTINUE;

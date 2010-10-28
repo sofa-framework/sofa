@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/ConicalForceField.h>
@@ -46,8 +46,13 @@ namespace forcefield
 {
 
 template<class DataTypes>
-void ConicalForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
+void ConicalForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ )
 {
+    VecDeriv& f1 = *(dataF.beginEdit());
+    const VecCoord& p1=dataX.getValue();
+    const VecDeriv& v1=dataV.getValue();
+
+
     const Coord center = coneCenter.getValue();
     Real d = 0.0;
     Real alpha = 0.0;
@@ -124,34 +129,36 @@ void ConicalForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, co
         }
     }
     this->contacts.endEdit();
+    dataF.endEdit();
 }
 
 template<class DataTypes>
-void ConicalForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
+void ConicalForceField<DataTypes>::addDForce(DataVecDeriv& datadF , const DataVecDeriv& datadX , const sofa::core::MechanicalParams* mparams)
 {
+    VecDeriv& df1 = *(datadF.beginEdit());
+    const VecCoord& dx1=datadX.getValue();
+
+    const Real kFact = mparams->kFactor();
+
     df1.resize(dx1.size());
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
     {
         const Contact& c = (*this->contacts.beginEdit())[i];
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
-        Deriv dforce; dforce = (c.normal * ((du*c.normal)))*(-this->stiffness.getValue());
-        df1[c.index] += dforce;
+        Deriv dforce;
+        dforce = (c.normal * ((du*c.normal)))*(-this->stiffness.getValue());
+        df1[c.index] += dforce * kFact;
     }
     this->contacts.endEdit();
+
+    datadF.endEdit();
 }
 
 template<class DataTypes>
 void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 {
     serr<<"SphereForceField::updateStiffness-not-implemented !!!"<<sendl;
-}
-
-template <class DataTypes>
-double ConicalForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"ConicalForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
 }
 
 template<class DataTypes>
@@ -234,4 +241,4 @@ bool ConicalForceField<DataTypes>::isIn(Coord p)
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_INL

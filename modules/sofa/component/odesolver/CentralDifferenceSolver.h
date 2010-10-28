@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -45,14 +45,14 @@ using namespace sofa::defaulttype;
  * @see http://en.wikipedia.org/wiki/Leapfrog_method
  *
  */
-class SOFA_COMPONENT_ODESOLVER_API CentralDifferenceSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API CentralDifferenceSolver : public sofa::core::behavior::OdeSolver
 {
 public:
-    SOFA_CLASS(CentralDifferenceSolver, sofa::component::odesolver::OdeSolverImpl);
+    SOFA_CLASS(CentralDifferenceSolver, sofa::core::behavior::OdeSolver);
 
     CentralDifferenceSolver();
 
-    void solve (double dt);
+    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
 
     Data<double> f_rayleighMass;
 

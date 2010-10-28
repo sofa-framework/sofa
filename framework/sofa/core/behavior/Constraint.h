@@ -63,8 +63,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-//    typedef typename DataTypes::VecConst VecConst;
-//    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+
+    typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
     Constraint(MechanicalState<DataTypes> *mm = NULL);
 
@@ -78,43 +80,51 @@ public:
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate; }
 
-    /// @name Matrix operations
-    /// @{
+    /// Construct the Constraint violations vector of each constraint
+    ///
+    /// \param v is the result vector that contains the whole constraints violations
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    virtual void getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams=ConstraintParams::defaultInstance());
 
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseMatrix* /*matrix*/, unsigned int & /*offset*/)
-    {
-    }
+    /// Construct the Constraint violations vector of each constraint
+    ///
+    /// \param resV is the result vector that contains the whole constraints violations
+    /// \param x is the position vector used to compute contraint position violation
+    /// \param v is the velocity vector used to compute contraint velocity violation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void getConstraintViolation(defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v, const ConstraintParams* cParams=ConstraintParams::defaultInstance())
+#ifdef SOFA_DEPRECATE_OLD_API
+        = 0;
+#else
+    ;
+    /// @deprecated use instead getConstraintViolation(defaulttype::BaseVector *, const DataVecCoord&, const DataVecDeriv&, const ConstraintParams*)
+    virtual void getConstraintValue(defaulttype::BaseVector *resV, bool /*freeMotion*/ = true);
+#endif
 
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix)
-    {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-        if (r)
-            applyConstraint(r.matrix, r.offset);
-    }
 
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, unsigned int & /*offset*/)
-    {
-    }
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param cId is the result constraint sparse matrix Id
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    virtual void buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams=ConstraintParams::defaultInstance());
 
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-    {
-        int o = matrix->getGlobalOffset(this->mstate);
-        if (o >= 0)
-        {
-            unsigned int offset = (unsigned int)o;
-            applyConstraint(vector, offset);
-        }
-    }
-
-    virtual void buildConstraintMatrix(unsigned int & contactId, core::VecId);
-
-    virtual void applyConstraint(MatrixDeriv& /*c*/, unsigned int & /*contactId*/) {}
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param c is the result constraint sparse matrix
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param x is the position vector used for contraint equation computation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void buildConstraintMatrix(DataMatrixDeriv &c, unsigned int &cIndex, const DataVecCoord &x, const ConstraintParams* cParams=ConstraintParams::defaultInstance())
+#ifdef SOFA_DEPRECATE_OLD_API
+        = 0;
+#else
+    ;
+#endif
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

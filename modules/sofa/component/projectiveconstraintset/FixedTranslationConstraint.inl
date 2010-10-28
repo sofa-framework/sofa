@@ -49,27 +49,19 @@ using namespace sofa::core::topology;
 template< class DataTypes>
 bool FixedTranslationConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
-    FixedTranslationConstraint<DataTypes> *fc= (FixedTranslationConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    FixedTranslationConstraint<DataTypes> *fc = (FixedTranslationConstraint<DataTypes> *) param;
+    return fc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
 void FixedTranslationConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
 {
-    FixedTranslationConstraint<DataTypes> *fc= (FixedTranslationConstraint<DataTypes> *)param;
+    FixedTranslationConstraint<DataTypes> *fc = (FixedTranslationConstraint<DataTypes> *) param;
     if (fc)
     {
         fc->removeIndex((unsigned int) pointIndex);
     }
-    return;
 }
 
 template< class DataTypes>
@@ -92,7 +84,6 @@ void FixedTranslationConstraint<DataTypes>::handleTopologyChange()
     std::list<const TopologyChange *>::const_iterator itEnd=topology->endChange();
 
     f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-
 }
 
 template <class DataTypes>
@@ -136,42 +127,66 @@ void FixedTranslationConstraint<DataTypes>::init()
     my_subset.setTestFunction(FCTestNewPointFunction);
     my_subset.setRemovalFunction(FCRemovalFunction);
 
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
+    my_subset.setTestParameter((void *) this);
+    my_subset.setRemovalParameter((void *) this);
 
-}// FixedTranslationConstraint::init
+}
 
 
 template <class DataTypes> template <class DataDeriv>
-void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& res)
+void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& res, const core::MechanicalParams* /*mparams*/)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
     if (f_fixAll.getValue() == true)
     {
-        for( int i=0; i<topology->getNbPoints(); ++i )
+        for (int i = 0; i < topology->getNbPoints(); ++i)
         {
             res[i].getVCenter() -= res[i].getVCenter();
         }
     }
     else
     {
-        for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (SetIndexArray::const_iterator it = indices.begin(); it
+                != indices.end(); ++it)
         {
             res[*it].getVCenter() -= res[*it].getVCenter();
         }
     }
-}// FixedTranslationConstraint::projectResponse
+}
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectResponse(VecDeriv& res)
+void FixedTranslationConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    projectResponseT(res);
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseT(res.wref(), mparams);
 }
+
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectResponse(MatrixDerivRowType& res)
+void FixedTranslationConstraint<DataTypes>::projectVelocity(DataVecDeriv& /*vData*/, const core::MechanicalParams* /*mparams*/)
 {
-    projectResponseT(res);
+
+}
+
+template <class DataTypes>
+void FixedTranslationConstraint<DataTypes>::projectPosition(DataVecCoord& /*xData*/, const core::MechanicalParams* /*mparams*/)
+{
+
+}
+
+template <class DataTypes>
+void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+{
+    helper::WriteAccessor<DataMatrixDeriv> c = cData;
+
+    MatrixDerivRowIterator rowIt = c->begin();
+    MatrixDerivRowIterator rowItEnd = c->end();
+
+    while (rowIt != rowItEnd)
+    {
+        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        ++rowIt;
+    }
 }
 
 
@@ -179,15 +194,16 @@ template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::draw()
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!this->getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *this->mstate->getX();
-    glDisable (GL_LIGHTING);
+    if (!this->getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *this->mstate->getX();
+    glDisable(GL_LIGHTING);
     glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
-    if( f_fixAll.getValue()==true )
+    glColor4f(1, 0.5, 0.5, 1);
+    glBegin(GL_POINTS);
+    if (f_fixAll.getValue() == true)
     {
-        for (unsigned i=0; i<x.size(); i++ )
+        for (unsigned i = 0; i < x.size(); i++)
         {
             gl::glVertexT(x[i].getCenter());
         }
@@ -200,8 +216,7 @@ void FixedTranslationConstraint<DataTypes>::draw()
         }
     }
     glEnd();
-
-}// FixedTranslationConstraint::draw
+}
 
 
 } // namespace constraint

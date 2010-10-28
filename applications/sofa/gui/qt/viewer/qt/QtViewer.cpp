@@ -699,7 +699,7 @@ void QtViewer::drawColourPicking(core::CollisionModel::ColourCode code)
     glMatrixMode(GL_MODELVIEW);
 
 
-    sofa::simulation::ColourPickingVisitor cpv(code);
+    sofa::simulation::ColourPickingVisitor cpv(sofa::core::ExecParams::defaultInstance(), code);
     cpv.execute(sofa::simulation::getSimulation()->getContext() );
 
     glMatrixMode(GL_PROJECTION);

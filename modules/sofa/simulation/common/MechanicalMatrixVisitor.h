@@ -30,19 +30,23 @@
 #endif
 
 
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/InteractionForceField.h>
-#include <sofa/core/behavior/InteractionConstraint.h>
-#include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
+
+#include <sofa/core/ExecParams.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/core/VecId.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa
 {
@@ -54,153 +58,21 @@ using std::cerr;
 using std::endl;
 
 using namespace sofa::defaulttype;
-/** Base class for easily creating new actions for mechanical matrix manipulation
-
-	During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
-
-	During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
-
-	The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
-
-*/
-class SOFA_SIMULATION_COMMON_API MechanicalMatrixVisitor : public Visitor
-{
-public:
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalMatrixVisitor"; }
-
-    /**@name Forward processing
-    Methods called during the forward (top-down) traversal of the data structure.
-     Method processNodeTopDown(simulation::Node*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
-     When there is no mapping, the BaseMechanicalState is processed first using method fwdMechanicalState.
-     Then, the other fwd* methods are applied in the given order.
-        */
-    ///@{
-
-    /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(simulation::Node* node);
-
-    /// Process the OdeSolver
-    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {
-        return RESULT_PRUNE;
-    }
-
-    /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* /*mass*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process all the BaseForceField
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* /*ff*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-
-    /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::InteractionForceField* ff)
-    {
-        return fwdForceField(node, ff);
-    }
-
-    /// Process all the BaseProjectiveConstraintSet
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
-    {
-        return RESULT_CONTINUE;
-    }
-    /// Process all the BaseConstraint
-    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process all the InteractionProjectiveConstraintSet
-    virtual Result fwdInteractionProjectiveConstraintSet(simulation::Node* node, core::behavior::InteractionProjectiveConstraintSet* c)
-    {
-        return fwdProjectiveConstraintSet(node, c);
-    }
-    /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(simulation::Node* node, core::behavior::InteractionConstraint* c)
-    {
-        return fwdConstraintSet(node, c);
-    }
-
-    ///@}
-
-    /**@name Backward processing
-    Methods called during the backward (bottom-up) traversal of the data structure.
-     Method processNodeBottomUp(simulation::Node*) calls the bwd* methods.
-     When there is a mapping, method bwdMappedMechanicalState is applied to the BaseMechanicalState.
-     When there is no mapping, the BaseMechanicalState is processed using method bwdMechanicalState.
-     Finally, the mapping (if any) is processed using method bwdMechanicalMapping.
-        */
-    ///@{
-
-    /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    virtual void processNodeBottomUp(simulation::Node* node);
-
-    /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {}
-
-    /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {}
-
-    /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
-    {}
-
-    /// Process the OdeSolver
-    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
-    {}
-
-    ///@}
-
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const
-    {
-        return "animate";
-    }
-
-};
+using namespace sofa::core;
 
 
 /** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
-class SOFA_SIMULATION_COMMON_API MechanicalGetMatrixDimensionVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalGetMatrixDimensionVisitor : public BaseMechanicalVisitor
 {
 public:
     unsigned int * const nbRow;
     unsigned int * const nbCol;
     sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    MechanicalGetMatrixDimensionVisitor(unsigned int * const _nbRow, unsigned int * const _nbCol, sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
-        : nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
+    MechanicalGetMatrixDimensionVisitor(unsigned int * const _nbRow, unsigned int * const _nbCol,
+            sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
+            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
@@ -213,7 +85,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* mm)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* mm)
     {
         if (matrix) matrix->addMechanicalMapping(mm);
         return RESULT_CONTINUE;
@@ -233,14 +105,13 @@ public:
 
 
 /** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
-class SOFA_SIMULATION_COMMON_API MechanicalAddMBK_ToMatrixVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
 {
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    double m, b, k;
 
-    MechanicalAddMBK_ToMatrixVisitor(const sofa::core::behavior::MultiMatrixAccessor* _matrix, double _m=0.0, double _b=0.0, double _k=0.0)
-        : matrix(_matrix),m(_m),b(_b),k(_k)
+    MechanicalAddMBK_ToMatrixVisitor(const sofa::core::behavior::MultiMatrixAccessor* _matrix, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance() )
+        : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
     }
 
@@ -258,7 +129,7 @@ public:
     {
         if (matrix != NULL)
         {
-            ff->addMBKToMatrix(matrix,m,b,k);
+            ff->addMBKToMatrix(matrix,this->mparams);
         }
 
         return RESULT_CONTINUE;
@@ -270,17 +141,17 @@ public:
     {
         if (matrix != NULL)
         {
-            c->applyConstraint(matrix);
+            c->applyConstraint(matrix,this->mparams);
         }
 
         return RESULT_CONTINUE;
     }
 };
 
-class SOFA_SIMULATION_COMMON_API MechanicalMultiVector2BaseVectorVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorToBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId src;
+    ConstMultiVecId src;
     BaseVector *vect;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
@@ -289,8 +160,10 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalMultiVector2BaseVectorVisitor"; }
 
-    MechanicalMultiVector2BaseVectorVisitor(VecId _src, defaulttype::BaseVector * _vect, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
-        : src(_src), vect(_vect), matrix(_matrix), offset(0)
+    MechanicalMultiVectorToBaseVectorVisitor( ConstMultiVecId _src, defaulttype::BaseVector * _vect,
+            const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
+            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(params) , src(_src), vect(_vect), matrix(_matrix), offset(0)
     {
     }
 
@@ -300,7 +173,7 @@ public:
         if (vect != NULL && offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
-            mm->loadInBaseVector(vect, src, o);
+            mm->copyToBaseVector(vect, src.getId(mm), o);
             offset = (int)o;
         }
         //if (!matrix) offset += mm->getMatrixSize();
@@ -308,11 +181,11 @@ public:
     }
 };
 
-class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorPeqBaseVectorVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorPeqBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
     BaseVector *src;
-    VecId dest;
+    MultiVecDerivId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
@@ -320,8 +193,10 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
 
-    MechanicalMultiVectorPeqBaseVectorVisitor(VecId _dest, defaulttype::BaseVector * _src, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
-        : src(_src), dest(_dest), matrix(_matrix), offset(0)
+    MechanicalMultiVectorPeqBaseVectorVisitor(MultiVecDerivId _dest, defaulttype::BaseVector * _src,
+            const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
+            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
     }
 
@@ -331,7 +206,42 @@ public:
         if (src!= NULL && offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
-            mm->addBaseVectorToState(dest, src, o);
+            mm->addFromBaseVector(dest.getId(mm), src, o);
+            offset = (int)o;
+        }
+        //if (!matrix) offset += mm->getMatrixSize();
+
+        return RESULT_CONTINUE;
+    }
+};
+
+class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorFromBaseVectorVisitor : public BaseMechanicalVisitor
+{
+public:
+    BaseVector *src;
+    MultiVecId dest;
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    int offset;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
+
+    MechanicalMultiVectorFromBaseVectorVisitor(MultiVecId _dest,
+            defaulttype::BaseVector * _src,
+            const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL,
+            const core::ExecParams* params = core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
+    {
+    }
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+    {
+        if (matrix) offset = matrix->getGlobalOffset(mm);
+        if (src!= NULL && offset >= 0)
+        {
+            unsigned int o = (unsigned int)offset;
+            mm->copyFromBaseVector(dest.getId(mm), src, o);
             offset = (int)o;
         }
         //if (!matrix) offset += mm->getMatrixSize();

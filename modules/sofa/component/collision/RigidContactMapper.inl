@@ -47,7 +47,7 @@ void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
     if (child!=NULL)
     {
         child->detachFromGraph();
-        child->execute<simulation::DeleteVisitor>();
+        child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
         delete child;
         child = NULL;
     }
@@ -92,6 +92,8 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
 template <class DataTypes>
 typename ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::MMechanicalState* ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::createMapping(const char* name)
 {
+    using sofa::component::mapping::IdentityMapping;
+
     MMechanicalState* outmodel = Inherit::createMapping(name);
     if (this->child!=NULL && this->mapping==NULL)
     {
@@ -100,7 +102,7 @@ typename ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::MMechanicalSt
         this->child->addObject(visu);
         visu->useAlpha.setValue(true);
         visu->vscale.setValue(this->model->getContext()->getDt());
-        sofa::component::mapping::IdentityMapping< core::Mapping< core::behavior::State<DataTypes>, core::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >* map = new sofa::component::mapping::IdentityMapping< core::Mapping< core::behavior::State<DataTypes> , core::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > > ( outmodel, visu );
+        IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
         this->child->addObject(map);
         visu->init();
         map->init();

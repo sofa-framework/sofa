@@ -122,8 +122,9 @@ void ParabolicConstraint<DataTypes>::reinit()
 }
 
 
-template <class DataTypes> template <class DataDeriv>
-void ParabolicConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
+template <class DataTypes>
+template <class DataDeriv>
+void ParabolicConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const core::MechanicalParams* /*mparams*/)
 {
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
@@ -135,20 +136,16 @@ void ParabolicConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 }
 
 template <class DataTypes>
-void ParabolicConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+void ParabolicConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    projectResponseT(dx);
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseT(res.wref(), mparams);
 }
 
 template <class DataTypes>
-void ParabolicConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
+void ParabolicConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
 {
-    projectResponseT(dx);
-}
-
-template <class DataTypes>
-void ParabolicConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
-{
+    helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real t = (Real) this->getContext()->getTime();
     Real dt = (Real) this->getContext()->getDt();
 
@@ -176,8 +173,9 @@ void ParabolicConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 }
 
 template <class DataTypes>
-void ParabolicConstraint<DataTypes>::projectPosition(VecCoord& x)
+void ParabolicConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor<DataVecCoord> x = xData;
     Real t = (Real) this->getContext()->getTime();
 
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
@@ -198,6 +196,21 @@ void ParabolicConstraint<DataTypes>::projectPosition(VecCoord& x)
 
             x[*it] = worldPos;
         }
+    }
+}
+
+template <class DataTypes>
+void ParabolicConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+{
+    helper::WriteAccessor<DataMatrixDeriv> c = cData;
+
+    MatrixDerivRowIterator rowIt = c->begin();
+    MatrixDerivRowIterator rowItEnd = c->end();
+
+    while (rowIt != rowItEnd)
+    {
+        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        ++rowIt;
     }
 }
 

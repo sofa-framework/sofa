@@ -33,6 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP
 #include <sofa/component/forcefield/ConicalForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>

@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
 
+#include <sofa/component/forcefield/EllipsoidForceField.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include "EllipsoidForceField.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/gl.h>
@@ -66,8 +66,14 @@ namespace forcefield
 
 
 template<class DataTypes>
-void EllipsoidForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
+void EllipsoidForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ )
 {
+
+    VecDeriv& f1        = *(dataF.beginEdit());
+    const VecCoord& p1  =   dataX.getValue()  ;
+    const VecDeriv& v1  =   dataV.getValue()  ;
+
+
     const Coord center = this->center.getValue();
     const Coord r = this->vradius.getValue();
     const Real stiffness = this->stiffness.getValue();
@@ -112,11 +118,18 @@ void EllipsoidForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, 
         }
     }
     this->contacts.endEdit();
+
+    dataF.endEdit();
 }
 
 template<class DataTypes>
-void EllipsoidForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
+void EllipsoidForceField<DataTypes>::addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* mparams )
 {
+    double kFactor     =   mparams->kFactor() ;
+    VecDeriv& df1       = *(datadF.beginEdit());
+    const VecCoord& dx1 =   datadX.getValue()  ;
+
+
     df1.resize(dx1.size());
     const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
     for (unsigned int i=0; i<contacts.size(); i++)
@@ -128,13 +141,9 @@ void EllipsoidForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx
         dforce *= kFactor;
         df1[c.index] += dforce;
     }
-}
 
-template <class DataTypes>
-double EllipsoidForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"EllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
+
+    datadF.endEdit();
 }
 
 template<class DataTypes>
@@ -168,4 +177,4 @@ void EllipsoidForceField<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL

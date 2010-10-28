@@ -295,25 +295,28 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void DiagonalMass<DataTypes, MassType>::addMDx(DataVecDeriv& res, const DataVecDeriv& dx, double factor, const core::MechanicalParams* /*mparams*/)
 {
     const MassVector &masses= f_mass.getValue();
     //std::cout << "DIAGONALMASS: dx size = " << dx.size() << " res size = " << res.size() << " masses size = " << masses.size() << std::endl;
+    helper::WriteAccessor< DataVecDeriv > _res = res;
+    helper::ReadAccessor< DataVecDeriv > _dx = dx;
+
     unsigned int n = masses.size();
-    if (dx.size() < n) n = dx.size();
-    if (res.size() < n) n = res.size();
+    if (_dx.size() < n) n = _dx.size();
+    if (_res.size() < n) n = _res.size();
     if (factor == 1.0)
     {
         for (unsigned int i=0; i<n; i++)
         {
-            res[i] += dx[i] * masses[i];
+            _res[i] += _dx[i] * masses[i];
         }
     }
     else
     {
         for (unsigned int i=0; i<n; i++)
         {
-            res[i] += (dx[i] * masses[i]) * (Real)factor;
+            _res[i] += (_dx[i] * masses[i]) * (Real)factor;
         }
     }
 }
@@ -321,34 +324,39 @@ void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
+void DiagonalMass<DataTypes, MassType>::accFromF(DataVecDeriv& a, const DataVecDeriv& f, const core::MechanicalParams* /*mparams*/)
 {
 
     const MassVector &masses= f_mass.getValue();
+    helper::WriteAccessor< DataVecDeriv > _a = a;
+    const VecDeriv& _f = f.getValue();
+
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        a[i] = f[i] / masses[i];
+        _a[i] = _f[i] / masses[i];
     }
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v ) const
+double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const DataVecDeriv& v, const core::MechanicalParams* /*mparams*/ ) const
 {
 
     const MassVector &masses= f_mass.getValue();
+    helper::ReadAccessor< DataVecDeriv > _v = v;
     double e = 0;
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        e += v[i]*masses[i]*v[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
+        e += _v[i]*masses[i]*_v[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
     }
     return e/2;
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x ) const
+double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* /*mparams*/ ) const
 {
 
     const MassVector &masses= f_mass.getValue();
+    helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -356,19 +364,21 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        e -= theGravity*masses[i]*x[i];
+        e -= theGravity*masses[i]*_x[i];
     }
     return e;
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
+void DiagonalMass<DataTypes, MassType>::addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams)
 {
     const MassVector &masses= f_mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    Real mFactor = (Real)mparams->mFactor();
     for (unsigned int i=0; i<masses.size(); i++)
-        calc(mat, masses[i], offset + N*i, mFact);
+        calc(r.matrix, masses[i], r.offset + N*i, mFactor);
 }
 
 
@@ -512,7 +522,8 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
-    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
+    if (!fileMass.getValue().empty())
+        load(fileMass.getFullPath().c_str());
 
     _topology = this->getContext()->getMeshTopology();
 
@@ -521,22 +532,12 @@ void DiagonalMass<DataTypes, MassType>::init()
     this->getContext()->get(quadGeo);
     this->getContext()->get(tetraGeo);
     this->getContext()->get(hexaGeo);
-    /*
-        std::cout << "DIAGONALMASS: found";
-        if (_topology) std::cout << " topology";
-        if (edgeGeo) std::cout << " edgeGeo";
-        if (triangleGeo) std::cout << " triangleGeo";
-        if (quadGeo) std::cout << " quadGeo";
-        if (tetraGeo) std::cout << " tetraGeo";
-        if (hexaGeo) std::cout << " hexaGeo";
-        std::cout << std::endl;
-    */
 
     Inherited::init();
 
     // add the functions to handle topology changes.
 
-//	VecMass& masses = *f_mass.beginEdit();
+    //	VecMass& masses = *f_mass.beginEdit();
     f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
     f_mass.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType,MassVector>);
     f_mass.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType,MassVector>);
@@ -547,7 +548,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 
     f_mass.setCreateParameter( (void *) this );
     f_mass.setDestroyParameter( (void *) this );
-//    f_mass.endEdit();
+    //    f_mass.endEdit();
 
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
@@ -559,26 +560,24 @@ void DiagonalMass<DataTypes, MassType>::init()
         f_mass.endEdit();
     }
 
-
     if ((f_mass.getValue().size()==0) && (_topology!=0))
     {
         reinit();
     }
-
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
+void DiagonalMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
 {
-    if(this->mstate)
+    if(this->mstate && mparams)
     {
-        VecDeriv& v = *this->mstate->getV();
+        helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
 
         // gravity
         Vec3d g ( this->getContext()->getLocalGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * (typename DataTypes::Real)dt;
+        Deriv hg = theGravity * (typename DataTypes::Real)mparams->dt();
 
         for (unsigned int i=0; i<v.size(); i++)
         {
@@ -588,13 +587,16 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void DiagonalMass<DataTypes, MassType>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* /*mparams*/)
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())
         return;
 
     const MassVector &masses= f_mass.getValue();
+    helper::WriteAccessor< DataVecDeriv > _f = f;
+    helper::ReadAccessor< DataVecCoord > _x = x;
+    helper::ReadAccessor< DataVecDeriv > _v = v;
 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -612,7 +614,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        f[i] += theGravity*masses[i] + core::behavior::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
+        _f[i] += theGravity*masses[i] + core::behavior::inertiaForce(vframe,aframe,masses[i],_x[i],_v[i]);
     }
 }
 
@@ -712,9 +714,9 @@ template <>
     void* , vector<Rigid3dMass> &);*/
 
 template <>
-double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x ) const;
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
 template <>
-double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x ) const;
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
@@ -722,9 +724,9 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x ) const;
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
 template <>
-double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x ) const;
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const DataVecCoord& x, const core::MechanicalParams* mparams) const;
 
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();

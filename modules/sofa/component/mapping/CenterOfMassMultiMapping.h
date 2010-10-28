@@ -3,11 +3,10 @@
 
 
 #include <sofa/core/MultiMapping.h>
-#include <sofa/core/behavior/MechanicalMultiMapping.h>
 #include <sofa/core/behavior/BaseMass.h>
-#include <sofa/core/VecId.h>
-#include <sofa/core/behavior/MechanicalState.h>
+
 #include <sofa/defaulttype/Vec3Types.h>
+
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -19,21 +18,23 @@ namespace component
 namespace mapping
 {
 
-template < class BasicMultiMapping >
-class CenterOfMassMultiMapping : public BasicMultiMapping
-{
-public :
-    SOFA_CLASS(SOFA_TEMPLATE(CenterOfMassMultiMapping,BasicMultiMapping), BasicMultiMapping);
 
-    typedef BasicMultiMapping     Inherit;
-    typedef typename Inherit::In  In;
-    typedef typename Inherit::Out Out;
-    typedef typename In::DataTypes InDataTypes;
+template <class TIn, class TOut>
+class CenterOfMassMultiMapping : public core::MultiMapping<TIn, TOut>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(CenterOfMassMultiMapping, TIn, TOut), SOFA_TEMPLATE2(core::MultiMapping, TIn, TOut));
+
+    typedef core::MultiMapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+
+    typedef In InDataTypes;
     typedef typename In::Coord    InCoord;
     typedef typename In::Deriv    InDeriv;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef typename Out::DataTypes OutDataTypes;
+    typedef Out OutDataTypes;
     typedef typename Out::Coord   OutCoord;
     typedef typename Out::Deriv   OutDeriv;
     typedef typename Out::VecCoord OutVecCoord;
@@ -43,7 +44,11 @@ public :
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
     typedef typename helper::vector<const InVecCoord*> vecConstInVecCoord;
 
-    CenterOfMassMultiMapping() {}
+    CenterOfMassMultiMapping(helper::vector< core::State<In>* > in, helper::vector< core::State<Out>* > out)
+        : Inherit(in, out)
+    {
+    }
+
     virtual ~CenterOfMassMultiMapping() {}
 
     virtual void apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos );
@@ -53,8 +58,6 @@ public :
     virtual void init();
     void draw();
 
-
-
 protected:
 
     helper::vector<const core::behavior::BaseMass*> inputBaseMass;
@@ -62,42 +65,21 @@ protected:
     InVecDeriv inputWeightedForce;
     helper::vector<double> inputTotalMass;
     double invTotalMass;
-
-
-
-
 };
 
 
-using namespace core::behavior;
 using namespace sofa::defaulttype;
-using namespace sofa::core;
+
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping<
-MultiMapping<
-MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes>
->
-> ;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping<
-MechanicalMultiMapping<
-MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >
-> ;
-
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern  template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping<
-MultiMapping<
-MechanicalState<Vec3fTypes>, MechanicalState< Vec3fTypes >
->
->;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping<
-MechanicalMultiMapping<
-MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes>
->
->;
-
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 #endif
 

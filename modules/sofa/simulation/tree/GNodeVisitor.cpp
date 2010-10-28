@@ -45,8 +45,8 @@ namespace simulation
 namespace tree
 {
 
-GNodeVisitor::GNodeVisitor()
-    : sofa::simulation::Visitor()
+GNodeVisitor::GNodeVisitor(const sofa::core::ExecParams* params)
+    : sofa::simulation::Visitor(params)
 {
 }
 

@@ -5,6 +5,7 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="ChainRigid">
+
 		<Node name="TorusFixed">
         		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
 			<Object type="Mesh" />

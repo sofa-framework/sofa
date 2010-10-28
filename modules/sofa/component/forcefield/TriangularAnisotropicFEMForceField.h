@@ -71,6 +71,9 @@ public:
     typedef typename Coord::value_type   Real    ;
     typedef typename Inherited::TriangleInformation   TriangleInformation  ;
 
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
     typedef sofa::core::topology::BaseMeshTopology::index_type Index;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;

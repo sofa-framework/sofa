@@ -45,7 +45,6 @@ namespace sofa
 namespace component
 {
 
-
 namespace forcefield
 {
 
@@ -60,11 +59,15 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord    Coord   ;
-    typedef typename DataTypes::Deriv    Deriv   ;
-    typedef typename Coord::value_type   Real    ;
+    typedef typename DataTypes::Real        Real        ;
+    typedef typename DataTypes::Coord       Coord       ;
+    typedef typename DataTypes::Deriv       Deriv       ;
+    typedef typename DataTypes::VecCoord    VecCoord    ;
+    typedef typename DataTypes::VecDeriv    VecDeriv    ;
+    typedef typename DataTypes::VecReal     VecReal     ;
+    typedef Data<VecCoord>                  DataVecCoord;
+    typedef Data<VecDeriv>                  DataVecDeriv;
+
     typedef Mat<3,3,Real>       Mat3x3  ;
 
     typedef enum
@@ -157,11 +160,11 @@ public:
 
     virtual ~FastTetrahedralCorotationalForceField();
 
-    virtual double  getPotentialEnergy(const VecCoord& x) const;
-
     virtual void init();
-    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
+
+
+    virtual void addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ ) ;
+    virtual void addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* /*mparams*/ ) ;
 
     void updateTopologyInformation();
 
@@ -198,15 +201,22 @@ protected :
     static void CorotationalTetrahedronCreationFunction (int , void* ,
             TetrahedronRestInformation &,
             const Tetrahedron& , const helper::vector< unsigned int > &, const helper::vector< double >&);
-
 };
-} //namespace forcefield
 
-} // namespace Components
+#if defined(WIN32) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API FastTetrahedralCorotationalForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API FastTetrahedralCorotationalForceField<Vec3fTypes>;
+#endif
+#endif
 
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
 
+} // namespace sofa
 
-
-#endif /* _TetrahedralTensorMassForceField_H_ */
+#endif // SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_H

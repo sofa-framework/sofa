@@ -56,7 +56,7 @@ ComponentMouseInteraction::~ComponentMouseInteraction()
 {
     if (nodeRayPick)
     {
-        nodeRayPick->execute< simulation::DeleteVisitor >();
+        nodeRayPick->execute< simulation::DeleteVisitor >(sofa::core::ExecParams::defaultInstance());
         delete nodeRayPick;
     }
 }

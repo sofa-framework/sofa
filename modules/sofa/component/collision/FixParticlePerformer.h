@@ -53,6 +53,7 @@ class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixP
     typedef sofa::component::interactionforcefield::StiffSpringForceField< DataTypes >   MouseForceField;
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
 public:
     FixParticlePerformer(BaseMouseInteractor *i);
 

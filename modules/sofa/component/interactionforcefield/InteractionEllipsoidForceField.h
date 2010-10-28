@@ -29,6 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/MechanicalParams.h>
 
 
 
@@ -41,6 +42,7 @@ namespace component
 namespace interactionforcefield
 {
 using namespace sofa::defaulttype;
+using namespace sofa::core;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes1, class DataTypes2>
@@ -49,23 +51,33 @@ class InteractionEllipsoidForceFieldInternalData
 public:
 };
 
-template<class DataTypes1, class DataTypes2>
-class InteractionEllipsoidForceField : public core::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>
+template<typename TDataTypes1, typename TDataTypes2>
+class InteractionEllipsoidForceField : public core::behavior::MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(InteractionEllipsoidForceField, DataTypes1, DataTypes2), SOFA_TEMPLATE2(core::behavior::MixedInteractionForceField, DataTypes1, DataTypes2));
+    SOFA_CLASS(SOFA_TEMPLATE2(InteractionEllipsoidForceField, TDataTypes1, TDataTypes2), SOFA_TEMPLATE2(core::behavior::MixedInteractionForceField, TDataTypes1, TDataTypes2));
 
-    typedef core::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
+    typedef core::behavior::MixedInteractionForceField<TDataTypes1, TDataTypes2> Inherit;
+    typedef TDataTypes1 DataTypes1;
     typedef typename DataTypes1::VecCoord VecCoord1;
     typedef typename DataTypes1::VecDeriv VecDeriv1;
-    typedef typename DataTypes1::Coord Coord1;
-    typedef typename DataTypes1::Deriv Deriv1;
-    typedef typename Coord1::value_type Real1;
+    typedef typename DataTypes1::Coord    Coord1;
+    typedef typename DataTypes1::Deriv    Deriv1;
+    typedef typename DataTypes1::Real     Real1;
+    typedef TDataTypes2 DataTypes2;
     typedef typename DataTypes2::VecCoord VecCoord2;
     typedef typename DataTypes2::VecDeriv VecDeriv2;
-    typedef typename DataTypes2::Coord Coord2;
-    typedef typename DataTypes2::Deriv Deriv2;
-    typedef typename Coord2::value_type Real2;
+    typedef typename DataTypes2::Coord    Coord2;
+    typedef typename DataTypes2::Deriv    Deriv2;
+    typedef typename DataTypes2::Real     Real2;
+    typedef sofa::helper::ParticleMask ParticleMask;
+
+    typedef core::objectmodel::Data<VecCoord1>    DataVecCoord1;
+    typedef core::objectmodel::Data<VecDeriv1>    DataVecDeriv1;
+    typedef core::objectmodel::Data<VecCoord2>    DataVecCoord2;
+    typedef core::objectmodel::Data<VecDeriv2>    DataVecDeriv2;
+
+
 
     enum { N=DataTypes1::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real1> Mat;
@@ -139,13 +151,17 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
+    virtual void addForce(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2, const MechanicalParams* mparams);
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
 
-    virtual void addForce2(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
+    virtual void addForce2(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& p1, const DataVecCoord2& p2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce2(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
 
-    virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
+    virtual void addDForce(DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2, const MechanicalParams* mparams);
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
 
-    virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
+    virtual double getPotentialEnergy(const DataVecCoord1& x1, const DataVecCoord2& x2, const MechanicalParams* mparams)const;
+    ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
 
     void reinit() {_update_pos_relative = true;}
 

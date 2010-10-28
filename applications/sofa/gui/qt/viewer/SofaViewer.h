@@ -675,43 +675,49 @@ protected:
             default:
                 break;
             }
-
-            if (_mouseInteractorMoving && _navigationMode == BTLEFT_MODE)
+            if (_mouseInteractorMoving)
             {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
                 {
-                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
+                    helper::WriteAccessor<Data<sofa::defaulttype::LaparoscopicRigidTypes::VecCoord> > instrumentX = *instrument->write(core::VecCoordId::position());
+                    if (_navigationMode == BTLEFT_MODE)
+                    {
+                        int dx = eventX - _mouseInteractorSavedPosX;
+                        int dy = eventY - _mouseInteractorSavedPosY;
+                        if (dx || dy)
+                        {
+                            instrumentX[0].getOrientation() = instrumentX[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
+                            _mouseInteractorSavedPosX = eventX;
+                            _mouseInteractorSavedPosY = eventY;
+                        }
+                    }
+                    else if (_navigationMode == BTMIDDLE_MODE)
+                    {
+                        int dx = eventX - _mouseInteractorSavedPosX;
+                        int dy = eventY - _mouseInteractorSavedPosY;
+                        if (dx || dy)
+                        {
+                            _mouseInteractorSavedPosX = eventX;
+                            _mouseInteractorSavedPosY = eventY;
+                        }
+                    }
+                    else if (_navigationMode == BTRIGHT_MODE)
+                    {
+                        int dx = eventX - _mouseInteractorSavedPosX;
+                        int dy = eventY - _mouseInteractorSavedPosY;
+                        if (dx || dy)
+                        {
+                            instrumentX[0].getTranslation() += (dy)*0.01;
+                            instrumentX[0].getOrientation() = instrumentX[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
+                            _mouseInteractorSavedPosX = eventX;
+                            _mouseInteractorSavedPosY = eventY;
+                        }
+                    }
                 }
+                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor(core::MechanicalParams::defaultInstance()).execute(instrument->getContext());
+                sofa::simulation::UpdateMappingVisitor(core::ExecParams::defaultInstance()).execute(instrument->getContext());
+                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
             }
-            else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
-            {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
-                {
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-            }
-            else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
-            {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
-                {
-                    (*instrument->getX())[0].getTranslation() += (dy)*0.01;
-                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-            }
-
-            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
             getQWidget()->update();
         }
         else

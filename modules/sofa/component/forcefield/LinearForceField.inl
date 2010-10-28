@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARFORCEFIELD_INL
-#define SOFA_COMPONENT_LINEARFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_INL
 
 #include "LinearForceField.h"
 #include <sofa/helper/vector.h>
@@ -98,8 +98,10 @@ void LinearForceField<DataTypes>::clearKeyForces()
 }// LinearForceField::clearKeyForces
 
 template<class DataTypes>
-void LinearForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& /*p1*/, const VecDeriv& )
+void LinearForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&, const core::MechanicalParams* /*mparams*/)
 {
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
+
     Real cT = (Real) this->getContext()->getTime();
 
     if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin())
@@ -141,23 +143,17 @@ void LinearForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& /*p1*/,
 
             for(unsigned i = 0; i < indices.size(); i++)
             {
-                f1[indices[i]] += ff*f;
+                _f1[indices[i]] += ff*f;
             }
         }
     }
 }// LinearForceField::addForce
 
 template<class DataTypes>
-void LinearForceField<DataTypes>::addDForce(VecDeriv& , const VecDeriv& , const VecDeriv& )
-{
-
-
-}// LinearForceField::addDForce
-
-template<class DataTypes>
-double LinearForceField<DataTypes>::getPotentialEnergy(const VecCoord& x) const
+double LinearForceField<DataTypes>::getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* /*mparams*/) const
 {
     Real cT = (Real) this->getContext()->getTime();
+    const VecCoord& _x = x.getValue();
     const VecIndex& indices = points.getValue();
     double e=0;
     if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin() && prevT != nextT)
@@ -169,7 +165,7 @@ double LinearForceField<DataTypes>::getPotentialEnergy(const VecCoord& x) const
 
         for(unsigned i = 0; i < indices.size(); i++)
         {
-            e -= ff*x[i]*f;
+            e -= ff*_x[i]*f;
         }
     }
 
@@ -178,16 +174,16 @@ double LinearForceField<DataTypes>::getPotentialEnergy(const VecCoord& x) const
 
 #ifndef SOFA_FLOAT
 template <>
-double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const VecCoord& ) const;
+double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
 template <>
-double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const VecCoord& ) const;
+double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const VecCoord& ) const;
+double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
 template <>
-double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const VecCoord& ) const;
+double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
 #endif
 
 
@@ -204,4 +200,4 @@ void LinearForceField<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_INL

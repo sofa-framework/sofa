@@ -191,11 +191,6 @@ private:
     int last_force, last_disp;
     bool _new_force;
     // et un indice permettant de pointer dans le vecteur
-
-    VecDeriv v_free;
-    VecCoord x_free;
-
-
 };
 
 

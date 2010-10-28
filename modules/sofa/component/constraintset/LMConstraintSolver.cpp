@@ -48,15 +48,17 @@ namespace constraintset
 
 using linearsolver::FullVector;
 using linearsolver::FullMatrix;
-LMConstraintSolver::LMConstraintSolver():
-    constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration")),
-    constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity")),
-    constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position")),
-    numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints")),
-    maxError( initData( &maxError, 0.0000001, "maxError", "threshold for the residue of the Gauss-Seidel algorithm")),
-    graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") ),
-    traceKineticEnergy( initData( &traceKineticEnergy, false, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system")),
-    graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the kinetic energy of the system") )
+
+LMConstraintSolver::LMConstraintSolver()
+    : constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration"))
+    , constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity"))
+    , constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position"))
+    , numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints"))
+    , maxError( initData( &maxError, 0.0000001, "maxError", "threshold for the residue of the Gauss-Seidel algorithm"))
+    , graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") )
+    , traceKineticEnergy( initData( &traceKineticEnergy, false, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system"))
+    , graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the kinetic energy of the system") )
+    , LMConstraintVisitor( sofa::core::ExecParams::defaultInstance() )
 {
     graphGSError.setGroup("Statistics");
     graphGSError.setWidget("graph");
@@ -67,7 +69,6 @@ LMConstraintSolver::LMConstraintSolver():
     traceKineticEnergy.setGroup("Statistics");
     this->f_listening.setValue(true);
 }
-
 
 void LMConstraintSolver::init()
 {
@@ -97,7 +98,7 @@ void LMConstraintSolver::convertSparseToDense(const SparseMatrixEigen& sparseM, 
         }
 }
 
-bool LMConstraintSolver::needPriorStatePropagation(core::behavior::BaseLMConstraint::ConstOrder order) const
+bool LMConstraintSolver::needPriorStatePropagation(core::ConstraintParams::ConstOrder order) const
 {
     using core::behavior::BaseLMConstraint;
     bool needPriorPropagation=false;
@@ -117,14 +118,13 @@ bool LMConstraintSolver::needPriorStatePropagation(core::behavior::BaseLMConstra
     return needPriorPropagation;
 }
 
-
-
-bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
+bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::ConstraintParams::ConstOrder order)
 {
     //Get the matrices through mappings
     //************************************************************
     // Update the State of the Mapped dofs                      //
     //************************************************************
+    core::MechanicalParams mparams;
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::TRACE_ARGUMENT arg;
 #endif
@@ -133,35 +133,35 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
 
     orderState=order;
     LMConstraintVisitor.setVecId(id);
-    if      (order==core::behavior::BaseConstraintSet::ACC)
+    if      (order==core::ConstraintParams::ACC)
     {
         if (!constraintAcc.getValue()) return false;
         if (needPriorStatePropagation(order))
         {
-            simulation::MechanicalPropagateDxVisitor propagateState(id,false);
+            simulation::MechanicalPropagateDxVisitor propagateState(core::VecDerivId(id), false, false, &mparams);
             propagateState.execute(this->getContext());
         }
         // calling writeConstraintEquations
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
 
-        simulation::MechanicalProjectJacobianMatrixVisitor().execute(this->getContext());
+        simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(this->getContext());
 #ifdef SOFA_DUMP_VISITOR_INFO
         arg.push_back(std::make_pair("Order", "Acceleration"));
 #endif
     }
-    else if (order==core::behavior::BaseConstraintSet::VEL)
+    else if (order==core::ConstraintParams::VEL)
     {
         if (!constraintVel.getValue()) return false;
         if (needPriorStatePropagation(order))
         {
-            simulation::MechanicalPropagateVVisitor propagateState(id,false);
+            simulation::MechanicalPropagateVVisitor propagateState(&mparams,core::VecDerivId(id),false);
             propagateState.execute(this->getContext());
         }
         else
         {
             //TODO: change ProjectVelocityVisitor to pass the VecId
-            simulation::MechanicalProjectVelocityVisitor projectVel(this->getContext()->getTime(), id);
+            simulation::MechanicalProjectVelocityVisitor projectVel(&mparams,this->getContext()->getTime(), core::VecDerivId(id));
             projectVel.execute(this->getContext());
         }
 
@@ -169,7 +169,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
 
-        simulation::MechanicalProjectJacobianMatrixVisitor().execute(this->getContext());
+        simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(this->getContext());
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         arg.push_back(std::make_pair("Order", "Velocity"));
@@ -182,12 +182,12 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
 
         if (needPriorStatePropagation(order))
         {
-            simulation::MechanicalPropagateXVisitor propagateState(id,false);
+            simulation::MechanicalPropagateXVisitor propagateState(core::VecCoordId(id), false, &mparams);
             propagateState.execute(this->getContext());
         }
         else
         {
-            simulation::MechanicalProjectPositionVisitor projectPos(this->getContext()->getTime(), id);
+            simulation::MechanicalProjectPositionVisitor projectPos(&mparams,this->getContext()->getTime(), core::VecCoordId(id));
             projectPos.execute(this->getContext());
         }
         // calling writeConstraintEquations
@@ -214,17 +214,17 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
     }
 
 
-    if      (orderState==core::behavior::BaseConstraintSet::POS)
+    if      (orderState==core::ConstraintParams::POS)
     {
         sofa::helper::AdvancedTimer::valSet("numConstraintsPosition", numConstraint);
         if (f_printLog.getValue()) sout << "Applying the constraint on the position"<<sendl;
     }
-    else if (orderState==core::behavior::BaseConstraintSet::VEL)
+    else if (orderState==core::ConstraintParams::VEL)
     {
         sofa::helper::AdvancedTimer::valSet("numConstraintsVelocity", numConstraint);
         if (f_printLog.getValue()) sout << "Applying the constraint on the velocity"<<sendl;
     }
-    else if (orderState==core::behavior::BaseConstraintSet::ACC)
+    else if (orderState==core::ConstraintParams::ACC)
     {
         sofa::helper::AdvancedTimer::valSet("numConstraintsAcceleration", numConstraint);
         if (f_printLog.getValue()) sout << "Applying the constraint on the acceleration"<<sendl;
@@ -237,9 +237,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId id, core::behavior::
     return true;
 }
 
-
-
-bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
+bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::ConstraintParams::ConstOrder order)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemCreation");
@@ -346,9 +344,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id, core::behavior::Ba
     return true;
 }
 
-
-
-bool LMConstraintSolver::solveSystem(double /*dt*/, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
+bool LMConstraintSolver::solveSystem(double /*dt*/, VecId id, core::ConstraintParams::ConstOrder order)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemConstraintSolution");
@@ -377,9 +373,7 @@ bool LMConstraintSolver::solveSystem(double /*dt*/, VecId id, core::behavior::Ba
     return solutionFound;
 }
 
-
-
-bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
+bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, core::ConstraintParams::ConstOrder order)
 {
     //************************************************************
     // Constraint Correction
@@ -412,11 +406,6 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, core::behavior
     return true;
 }
 
-
-
-
-
-
 //----------------------------------------------------------------------------------------------//
 // Specific method to build the matrices
 
@@ -436,7 +425,6 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
         LeftMatrix += L*invM_LTrans;
     }
 }
-
 
 void LMConstraintSolver::buildLMatrices( ConstOrder Order,
         const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
@@ -473,8 +461,6 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
         constraintOffset += equationsUsed.size();
     }
 }
-
-
 
 void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToMatrix& invMassMatrices)
 {
@@ -623,7 +609,6 @@ void LMConstraintSolver::buildRightHandTerm( const helper::vector< core::behavio
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)  LMConstraints[mat]->getConstraintViolation(&c_fullvector, id, Order);
 }
 
-
 bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstOrder Order,
         const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
         const MatrixEigen &W, const VectorEigen &c, VectorEigen &Lambda)
@@ -632,9 +617,15 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
     std::string orderName;
     switch (Order)
     {
-    case BaseLMConstraint::ACC: orderName="Acceleration"; break;
-    case BaseLMConstraint::VEL: orderName="Velocity"; break;
-    case BaseLMConstraint::POS: orderName="Position"; break;
+    case core::ConstraintParams::ACC :
+        orderName="Acceleration";
+        break;
+    case core::ConstraintParams::VEL :
+        orderName="Velocity";
+        break;
+    case core::ConstraintParams::POS :
+        orderName="Position";
+        break;
     }
 
     const SReal invNormC=1.0/c.norm();
@@ -753,7 +744,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
             }
         }
 
-        if (Order == BaseLMConstraint::VEL && traceKineticEnergy.getValue())
+        if (Order == core::ConstraintParams::VEL && traceKineticEnergy.getValue())
         {
             if (iteration == 0)
             {
@@ -783,11 +774,11 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstO
     if (f_printLog.getValue())
         sout << "Gauss-Seidel done in " << iteration << " iterations "<<sendl;
 
-    if (Order == BaseLMConstraint::VEL && traceKineticEnergy.getValue()) return false;
+    if (Order == core::ConstraintParams::VEL && traceKineticEnergy.getValue()) return false;
     return true;
 }
 
-void LMConstraintSolver::constraintStateCorrection(VecId id,  core::behavior::BaseConstraintSet::ConstOrder order,
+void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintParams::ConstOrder order,
         bool isPositionChangesUpdateVelocity,
         const SparseMatrixEigen  &invM_Ltrans,
         const VectorEigen  &c,
@@ -809,7 +800,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::behavior::Ba
 
     unsigned int offset=0;
     //In case of position correction, we need to update the velocities
-    if (order==core::behavior::BaseConstraintSet::POS)
+    if (order==core::ConstraintParams::POS)
     {
         //Detect Rigid Bodies
         if (dofs->getCoordDimension() == 7 && dofs->getDerivDimension() == 6)
@@ -836,7 +827,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::behavior::Ba
             FullVector<SReal> v(Acorrection.data(),Acorrection.rows());
 
             if (f_printLog.getValue())  sout << "Lambda Corrected for Rigid " << "\n" << Acorrection << sendl;
-            dofs->addBaseVectorToState(id,&v,offset );
+            dofs->addFromBaseVector(id,&v,offset );
 
         }
         else
@@ -846,7 +837,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::behavior::Ba
             {
                 unsigned int offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
-                dofs->addVectorToState(id,&v,offset );
+                dofs->addFromBaseVector(id,&v,offset );
             }
         }
 
@@ -860,7 +851,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::behavior::Ba
                 unsigned int offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
                 for (unsigned int i=0; i<dimensionDofs; ++i) v[i]*=h;
-                dofs->addVectorToState(id,&v,offset );
+                dofs->addFromBaseVector(id,&v,offset );
             }
         }
 
@@ -872,18 +863,17 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::behavior::Ba
         {
             unsigned int offset=(*it);
             FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
-            dofs->addVectorToState(id,&v,offset );
+            dofs->addFromBaseVector(id,&v,offset );
         }
 
     }
 }
 
-
 void LMConstraintSolver::computeKineticEnergy(VecId id)
 {
     helper::vector<double> &vError=(*graphKineticEnergy.beginEdit())["KineticEnergy"];
 
-    applyCorrection(0, id, core::behavior::BaseConstraintSet::VEL);
+    applyCorrection(0, id, core::ConstraintParams::VEL);
     double kineticEnergy=0;
     for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
     {

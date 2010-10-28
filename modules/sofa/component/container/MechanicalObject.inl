@@ -26,35 +26,28 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #ifdef SOFA_SMP
 #include <sofa/component/container/MechanicalObjectTasks.inl>
 #endif
+#include <sofa/component/container/MeshLoader.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
-
 #include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/helper/io/MassSpringLoader.h>
+
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <sofa/helper/accessor.h>
-
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/system/glut.h>
+
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
-
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/common/Visitor.h>
 #endif
 
-#include <sofa/component/linearsolver/SparseMatrix.h>
-
 #include <assert.h>
 #include <iostream>
-
-#include <sofa/component/container/MeshLoader.h>
 
 namespace
 {
@@ -75,6 +68,7 @@ void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
 
 } // anonymous namespace
 
+
 namespace sofa
 {
 
@@ -85,6 +79,7 @@ namespace container
 {
 
 using namespace topology;
+using namespace sofa::core;
 using namespace sofa::core::topology;
 using namespace sofa::defaulttype;
 
@@ -93,18 +88,17 @@ MechanicalObject<DataTypes>::MechanicalObject()
     : x(initData(&x, "position", "position coordinates of the degrees of freedom"))
     , v(initData(&v, "velocity", "velocity coordinates of the degrees of freedom"))
     , f(initData(&f, "force", "force vector of the degrees of freedom"))
-    , internalForces(initData(&internalForces, "internalForce", "internalForces vector of the degrees of freedom"))
     , externalForces(initData(&externalForces, "externalForce", "externalForces vector of the degrees of freedom"))
     , dx(initData(&dx, "derivX", "dx vector of the degrees of freedom"))
     , xfree(initData(&xfree, "free_position", "free position coordinates of the degrees of freedom"))
     , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))
     , x0(initData(&x0, "rest_position", "rest position coordinates of the degrees of freedom"))
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
+    , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
+    , reset_velocity(initData(&reset_velocity, "reset_velocity", "reset velocity coordinates of the degrees of freedom"))
     , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
     , debugViewIndices(initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices"))
     , debugViewIndicesScale(initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices"))
-    , reset_position(NULL)
-    , v0(NULL)
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -128,12 +122,14 @@ MechanicalObject<DataTypes>::MechanicalObject()
     x				.setGroup("Vector");
     v				.setGroup("Vector");
     f				.setGroup("Vector");
-    internalForces	.setGroup("Vector");
     externalForces	.setGroup("Vector");
     dx				.setGroup("Vector");
     xfree			.setGroup("Vector");
     vfree			.setGroup("Vector");
     x0				.setGroup("Vector");
+    c				.setGroup("Vector");
+    reset_position	.setGroup("Vector");
+    reset_velocity	.setGroup("Vector");
 
     translation		.setGroup("Transformation");
     translation2	.setGroup("Transformation");
@@ -145,33 +141,30 @@ MechanicalObject<DataTypes>::MechanicalObject()
     // MechanicalObjects created during the collision response must not use the filter as it will be empty
     this->forceMask.activate(false);
 
+    setVecCoord(core::VecCoordId::position().index, &x);
+    setVecCoord(core::VecCoordId::freePosition().index, &xfree);
+    setVecCoord(core::VecCoordId::restPosition().index, &x0);
+    setVecCoord(core::VecCoordId::resetPosition().index, &reset_position);
+    setVecDeriv(core::VecDerivId::velocity().index, &v);
+    setVecDeriv(core::VecDerivId::force().index, &f);
+    setVecDeriv(core::VecDerivId::externalForce().index, &externalForces);
+    setVecDeriv(core::VecDerivId::dx().index, &dx);
+    setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
+    setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
+    setVecMatrixDeriv(core::MatrixDerivId::holonomicC().index, &c);
+
+    // These vectors are set as modified as they are mandatory in the MechanicalObject.
+    x				.forceSet();
+    v				.forceSet();
+    dx				.forceSet();
+    f				.forceSet();
+    externalForces	.forceSet();
+
+    write(VecCoordId::null())->forceSet();
+    write(VecDerivId::null())->forceSet();
+
     // default size is 1
     resize(1);
-
-    m_posId				= VecId::position();
-    m_velId				= VecId::velocity();
-    m_forceId			= VecId::force();
-    m_internalForcesId	= VecId::internalForce();
-    m_externalForcesId	= VecId::externalForce();
-    m_dxId				= VecId::dx();
-    m_freePosId			= VecId::freePosition();
-    m_freeVelId			= VecId::freeVelocity();
-    m_x0Id				= VecId::restPosition();
-    m_constraintId		= VecId::holonomicC();
-
-    setVecCoord(m_posId.index, &x);
-    setVecDeriv(m_velId.index, &v);
-    setVecDeriv(m_forceId.index, &f);
-    setVecDeriv(m_internalForcesId.index, &internalForces);
-    setVecDeriv(m_externalForcesId.index, &externalForces);
-    setVecDeriv(m_dxId.index, &dx);
-    setVecCoord(m_freePosId.index, &xfree);
-    setVecDeriv(m_freeVelId.index, &vfree);
-    setVecCoord(m_x0Id.index, &x0);
-    setVecMatrixDeriv(m_constraintId.index, &c);
-
-    // Set f to internalForces.
-    m_forceId = m_internalForcesId;
 }
 
 template <class DataTypes>
@@ -208,16 +201,7 @@ template <class DataTypes>
 MechanicalObject<DataTypes> &MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
 {
     resize(obj.getSize());
-    /*    *getX() = *obj.getX();
-    if( obj.x0 != NULL ){
-    x0 = new VecCoord;
-    *x0 = *obj.x0;
-    }
-    *getV() = *obj.getV();
-    if( obj.v0 != NULL ){
-    v0 = new VecDeriv;
-    *v0 = *obj.v0;
-    }*/
+
     return *this;
 }
 
@@ -232,9 +216,16 @@ public:
     virtual void addMass(SReal px, SReal py, SReal pz, SReal vx, SReal vy, SReal vz, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
     {
         dest->resize(index+1);
-        DataTypes::set((*dest->getX())[index], px, py, pz);
-        DataTypes::set((*dest->getV())[index], vx, vy, vz);
+
+        Data<typename DataTypes::VecCoord> *x_d = dest->write(VecCoordId::position());
+        Data<typename DataTypes::VecDeriv> *v_d = dest->write(VecDerivId::velocity());
+
+        DataTypes::set((*x_d->beginEdit())[index], px, py, pz);
+        DataTypes::set((*v_d->beginEdit())[index], vx, vy, vz);
         ++index;
+
+        x_d->endEdit();
+        v_d->endEdit();
     }
 };
 
@@ -297,19 +288,12 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
 {
-    if (reset_position != NULL)
-        delete reset_position;
-
-    if (v0 != NULL)
-        delete v0;
-
     if (m_gnuplotFileV != NULL)
         delete m_gnuplotFileV;
 
     if (m_gnuplotFileX != NULL)
         delete m_gnuplotFileX;
 }
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
@@ -441,36 +425,6 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
 {
     const unsigned int maxIndex = std::max(inputIndex, outputIndex);
 
-    // standard state vectors
-    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
-    // not v0, reset_position, and externalForces) are present in the
-    // array of all vectors, so then don't need to be processed separatly.
-    //(*x) [outputIndex] = (*x) [inputIndex];
-    //if((*x0).size() > maxIndex)
-    //    (*x0)[outputIndex] = (*x0)[inputIndex];
-    //(*v) [outputIndex] = (*v) [inputIndex];
-    if (v0 != NULL && (*v0).size() > maxIndex)
-        (*v0)[outputIndex] = (*v0)[inputIndex];
-    //if ((*f).size()>0)
-    //    (*f) [outputIndex] = (*f) [inputIndex];
-    //if ((*dx).size()>0)
-    //    (*dx)[outputIndex] = (*dx)[inputIndex];
-    // forces
-    //if ((*internalForces).size()>0)
-    //    (*internalForces)[outputIndex] = (*internalForces)[inputIndex];
-
-    // PJB Modif : externalForces is in vectorsDeriv.
-    /*if (externalForces.getValue().size() > maxIndex)
-    {
-    	(*(externalForces.beginEdit()))[outputIndex] = externalForces.getValue()[inputIndex];
-    	externalForces.endEdit();
-    }*/
-
-    // Note: the following assumes that topological changes won't be reset
-    if (reset_position != NULL && (*reset_position).size() > maxIndex)
-        (*reset_position)[outputIndex] = (*reset_position)[inputIndex];
-
-    // temporary state vectors
     const unsigned int vecCoordSize = vectorsCoord.size();
     for (unsigned int i = 0; i < vecCoordSize; i++)
     {
@@ -505,66 +459,9 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
 {
     const unsigned int maxIndex = std::max(idx1, idx2);
 
-    // standard state vectors
-    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
-    // not v0, reset_position, and externalForces) are present in the
-    // array of all vectors, so then don't need to be processed separatly.
     Coord tmp;
     Deriv tmp2;
-    //tmp = (*x)[idx1];
-    //(*x) [idx1] = (*x) [idx2];
-    //(*x) [idx2] = tmp;
 
-    //if((*x0).size() > maxIndex)
-    //{
-    //	tmp = (*x0)[idx1];
-    //	(*x0)[idx1] = (*x0)[idx2];
-    //	(*x0)[idx2] = tmp;
-    //}
-    //tmp2 = (*v)[idx1];
-    //(*v) [idx1] = (*v) [idx2];
-    //(*v) [idx2] = tmp2;
-
-    if(v0 != NULL && (*v0).size() > maxIndex)
-    {
-        tmp2 = (*v0) [idx1];
-        (*v0)[idx1] = (*v0)[idx2];
-        (*v0)[idx2] = tmp2;
-    }
-    //tmp2 = (*f) [idx1];
-    //(*f) [idx1] = (*f)[idx2];
-    //(*f) [idx2] = tmp2;
-
-    //tmp2 = (*dx) [idx1];
-    //(*dx)[idx1] = (*dx)[idx2];
-    //(*dx)[idx2] = tmp2;
-
-    // forces
-    //tmp2 = (*internalForces)[idx1];
-    //(*internalForces)[idx1] = (*internalForces)[idx2];
-    //(*internalForces)[idx2] = tmp2;
-
-    // PJB Modif : externalForces is in vectorsDeriv.
-    /*if (externalForces.getValue().size() > maxIndex)
-    {
-    	VecDeriv *extForcesEdit = externalForces.beginEdit();
-
-    	tmp2 = (*extForcesEdit)[idx1];
-    	(*extForcesEdit)[idx1] = (*extForcesEdit)[idx2];
-    	(*extForcesEdit)[idx2] = tmp2;
-
-    	externalForces.endEdit();
-    }*/
-
-    // Note: the following assumes that topological changes won't be reset
-    if (reset_position != NULL && (*reset_position).size() > maxIndex)
-    {
-        tmp = (*reset_position)[idx1];
-        (*reset_position)[idx1] = (*reset_position)[idx2];
-        (*reset_position)[idx2] = tmp;
-    }
-
-    // temporary state vectors
     unsigned int i;
     for (i=0; i<vectorsCoord.size(); i++)
     {
@@ -601,24 +498,6 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
 {
     VecDeriv dtmp;
     VecCoord ctmp;
-    // standard state vectors
-    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
-    // not v0, reset_position, and externalForces) are present in the
-    // array of all vectors, so then don't need to be processed separatly.
-    //renumber(x, &ctmp, index);
-    //renumber(x0, &ctmp, index);
-    //renumber(v, &dtmp, index);
-    renumber(v0, &dtmp, index);
-    //renumber(f, &dtmp, index);
-    //renumber(dx, &dtmp, index);
-    //renumber(internalForces, &dtmp, index);
-
-    // PJB Modif : externalForces is now in vectorsDeriv.
-    //renumber(externalForces.beginEdit(), &dtmp, index);
-    //externalForces.endEdit();
-
-    // Note: the following assumes that topological changes won't be reset
-    renumber(reset_position, &ctmp, index);
 
     for (unsigned int i = 0; i < vectorsCoord.size(); ++i)
     {
@@ -639,8 +518,6 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
     }
 }
 
-
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const int size)
 {
@@ -649,121 +526,37 @@ void MechanicalObject<DataTypes>::resize(const int size)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
-    x.beginEdit()->resize(size);
-    x.endEdit();
-
-    if (m_initialized && !(x0.getValue().empty()))
-    {
-        x0.beginEdit()->resize(size);
-        x0.endEdit();
-    }
-
-    v.beginEdit()->resize(size);
-    v.endEdit();
-
-    if (v0 != NULL)
-        (*v0).resize(size);
-
-    f.beginEdit()->resize(size);
-    f.endEdit();
-
-    dx.beginEdit()->resize(size);
-    dx.endEdit();
-
-    xfree.beginEdit()->resize(size);
-    xfree.endEdit();
-
-    vfree.beginEdit()->resize(size);
-    vfree.endEdit();
-
-    if (externalForces.getValue().size() > 0)
-    {
-        externalForces.beginEdit()->resize(size);
-        externalForces.endEdit();
-    }
-
-    internalForces.beginEdit()->resize(size);
-    internalForces.endEdit();
-
-    // Note: the following assumes that topological changes won't be reset
-    if (reset_position != NULL)
-        (*reset_position).resize(size);
-
     //if (size!=vsize)
     {
         vsize = size;
         for (unsigned int i = 0; i < vectorsCoord.size(); i++)
         {
-            if (vectorsCoord[i] != NULL && vectorsCoord[i]->getValue().size() != 0)
+            if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
             {
                 vectorsCoord[i]->beginEdit()->resize(size);
                 vectorsCoord[i]->endEdit();
-
-#ifdef SOFA_SMP
-                vectorsCoordSharedAllocated[i] = true;
-#endif
             }
         }
 
         for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
         {
-            if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->getValue().size() != 0)
+            if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
             {
                 vectorsDeriv[i]->beginEdit()->resize(size);
                 vectorsDeriv[i]->endEdit();
-#ifdef SOFA_SMP
-                vectorsDerivSharedAllocated[i] = true;
-#endif
             }
         }
     }
 }
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reserve(const int size)
 {
     if (size == 0) return;
 
-    x.beginEdit()->reserve(size);
-    x.endEdit();
-
-    if (m_initialized && !x0.getValue().empty())
-    {
-        x0.beginEdit()->reserve(size);
-        x0.endEdit();
-    }
-
-    v.beginEdit()->reserve(size);
-    v.endEdit();
-
-    if (v0 != NULL)
-        (*v0).reserve(size);
-
-    f.beginEdit()->reserve(size);
-    f.endEdit();
-
-    dx.beginEdit()->reserve(size);
-    dx.endEdit();
-
-    xfree.beginEdit()->reserve(size);
-    xfree.endEdit();
-
-    vfree.beginEdit()->reserve(size);
-    vfree.endEdit();
-
-    externalForces.beginEdit()->reserve(size);
-    externalForces.endEdit();
-
-    internalForces.beginEdit()->reserve(size);
-    internalForces.endEdit();
-
-    if (reset_position != NULL)
-        (*reset_position).reserve(size);
-
     for (unsigned int i = 0; i < vectorsCoord.size(); i++)
     {
-        if (vectorsCoord[i] != NULL)
+        if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
         {
             vectorsCoord[i]->beginEdit()->reserve(size);
             vectorsCoord[i]->endEdit();
@@ -772,7 +565,7 @@ void MechanicalObject<DataTypes>::reserve(const int size)
 
     for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
     {
-        if (vectorsDeriv[i] != NULL)
+        if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
         {
             vectorsDeriv[i]->beginEdit()->reserve(size);
             vectorsDeriv[i]->endEdit();
@@ -780,18 +573,16 @@ void MechanicalObject<DataTypes>::reserve(const int size)
     }
 }
 
-
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyTranslation (const double dx,const double dy,const double dz)
+void MechanicalObject<DataTypes>::applyTranslation (const double dx, const double dy, const double dz)
 {
-    VecCoord& x = *this->getX();
-    for (unsigned int i = 0; i < x.size(); i++)
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+
+    for (unsigned int i = 0; i < x_wA.size(); i++)
     {
-        DataTypes::add(x[i], dx, dy, dz);
+        DataTypes::add(x_wA[i], dx, dy, dz);
     }
-
 }
-
 
 //Apply Rotation from Euler angles (in degree!)
 template <class DataTypes>
@@ -801,17 +592,17 @@ void MechanicalObject<DataTypes>::applyRotation (const double rx, const double r
     applyRotation(q);
 }
 
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 {
-    VecCoord& x = *this->getX();
-    for (unsigned int i = 0; i < x.size(); i++)
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+
+    for (unsigned int i = 0; i < x_wA.size(); i++)
     {
         Vec<3,Real> pos;
-        DataTypes::get(pos[0],pos[1],pos[2],x[i]);
+        DataTypes::get(pos[0], pos[1], pos[2], x_wA[i]);
         Vec<3,Real> newposition = q.rotate(pos);
-        DataTypes::set(x[i],newposition[0],newposition[1],newposition[2]);
+        DataTypes::set(x_wA[i], newposition[0], newposition[1], newposition[2]);
     }
 }
 
@@ -831,99 +622,32 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,const double sz)
 {
-    //       std::cout << "MechanicalObject : applyScale " << this->getName() << " s=" << s << "\n";
-    VecCoord& x = *this->getX();
-    const Vector3 s(sx,sy,sz);
-    for (unsigned int i=0; i<x.size(); i++)
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+
+    const Vector3 s(sx, sy, sz);
+    for (unsigned int i=0; i<x_wA.size(); i++)
     {
-        x[i][0] = x[i][0]*sx;
-        x[i][1] = x[i][1]*sy;
-        x[i][2] = x[i][2]*sz;
+        x_wA[i][0] = x_wA[i][0] * sx;
+        x_wA[i][1] = x_wA[i][1] * sy;
+        x_wA[i][2] = x_wA[i][2] * sz;
     }
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
-    //const VecCoord& X = *getX();
-    helper::ReadAccessor<VecCoord> X = *getX();
-    for( unsigned i=0; i<X.size(); ++i )
+    helper::ReadAccessor< Data<VecCoord> > x_rA = *this->read(ConstVecCoordId::position());
+
+    for( unsigned i=0; i<x_rA.size(); ++i )
     {
         Real x=0.0,y=0.0,z=0.0;
-        DataTypes::get(x,y,z,X[i]);
+        DataTypes::get(x,y,z,x_rA[i]);
         if( x >= xmin && x <= xmax && y >= ymin && y <= ymax && z >= zmin && z <= zmax )
         {
             indices.push_back(i);
         }
     }
 }
-
-/*
-template <class DataTypes>
-void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
-{
-// HD interpolate position, speed,force,...
-// assume all coef sum to 1.0
-unsigned int j;
-
-// Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
-// not v0, reset_position, and externalForces) are present in the
-// array of all vectors, so then don't need to be processed separatly.
-if (v0 != NULL)
-{
-(*v0)[i] = Deriv();
-for (j = 0; j < ancestors.size(); ++j)
-{
-(*v0)[i] += (*v0)[ancestors[j]] * (Real)coefs[j];
-}
-}
-
-// Note: the following assumes that topological changes won't be reset
-if (reset_position != NULL)
-{
-(*reset_position)[i] = Coord();
-for (j = 0; j < ancestors.size(); ++j)
-{
-(*reset_position)[i] += (*reset_position)[ancestors[j]] * (Real)coefs[j];
-}
-}
-
-if (externalForces->size() > 0)
-{
-(*externalForces)[i] = Deriv();
-for (j = 0; j < ancestors.size(); ++j)
-{
-(*externalForces)[i] += (*externalForces)[ancestors[j]] * (Real)coefs[j];
-}
-}
-
-
-for (unsigned int k = 0; k < vectorsCoord.size(); k++)
-{
-if (vectorsCoord[k]!=NULL && vectorsCoord[k]->size()!=0)
-{
-(*vectorsCoord[k])[i] = Coord();
-for (j = 0; j < ancestors.size(); ++j)
-{
-(*vectorsCoord[k])[i] += (*vectorsCoord[k])[ancestors[j]] * (Real)coefs[j];
-}
-}
-}
-
-for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
-{
-if (vectorsDeriv[k]!=NULL && vectorsDeriv[k]->size()!=0)
-{
-(*vectorsDeriv[k])[i] = Deriv();
-for (j = 0; j < ancestors.size(); ++j)
-{
-(*vectorsDeriv[k])[i] += (*vectorsDeriv[k])[ancestors[j]] * (Real)coefs[j];
-}
-}
-}
-}
-*/
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
@@ -937,50 +661,6 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     helper::vector< Coord > ancestorsCoord(ancestorsSize);
     helper::vector< Deriv > ancestorsDeriv(ancestorsSize);
     helper::vector< Real > ancestorsCoefs(ancestorsSize);
-
-
-    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
-    // not v0, reset_position, and externalForces) are present in the
-    // array of all vectors, so then don't need to be processed separatly.
-    if (v0 != NULL)
-    {
-        for (j = 0; j < ancestorsSize; ++j)
-        {
-            ancestorsDeriv[j] = (*v0)[ancestors[j]];
-            ancestorsCoefs[j] = coefs[j];
-        }
-
-        (*v0)[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
-    }
-
-    // Note: the following assumes that topological changes won't be reset
-    if (reset_position != NULL)
-    {
-        for (j = 0; j < ancestorsSize; ++j)
-        {
-            ancestorsCoord[j] = (*reset_position)[ancestors[j]];
-            ancestorsCoefs[j] = coefs[j];
-        }
-
-        (*reset_position)[i] = DataTypes::interpolate(ancestorsCoord, ancestorsCoefs);
-    }
-
-    // PJB Modif : externalForces is now in vectorsDeriv.
-    /*if (externalForces.getValue().size() > 0)
-    {
-    	VecDeriv *extForcesEdit = externalForces.beginEdit();
-
-    	for (j = 0; j < ancestorsSize; ++j)
-    	{
-    		ancestorsDeriv[j] = (*extForcesEdit)[ancestors[j]];
-    		ancestorsCoefs[j] = coefs[j];
-    	}
-
-    	(*extForcesEdit)[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
-
-    	externalForces.endEdit();
-    }*/
-
 
     for (unsigned int k = 0; k < vectorsCoord.size(); k++)
     {
@@ -1025,81 +705,23 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     }
 }
 
-
-//	template <class DataTypes>
-//    void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x)
-//	{
-//                  this->resize(i+1);
-//		  Vec<3,Real> pos(m_x[0], m_x[1], m_x[2]);
-//		  Vec<3,Real> restpos(pos);
-//
-//		  Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
-//		  pos = q.rotate(pos*scale.getValue());
-//		  pos += translation.getValue();
-//
-//		  restpos = q.rotate(restpos*restScale.getValue());
-//		  restpos += translation.getValue();
-//
-//		  DataTypes::set((*getX())[i], pos[0], pos[1], pos[2]);
-//		  DataTypes::set((*getXfree())[i], pos[0], pos[1], pos[2]);
-//		  DataTypes::set((*getX0())[i], restpos[0],restpos[1],restpos[2]);
-//
-//		  if (reset_position != NULL)
-//		    DataTypes::set((*reset_position)[i], pos[0], pos[1], pos[2]);
-//	}
-
 // Force the position of a point (and force its velocity to zero value)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::forcePointPosition(const unsigned int i, const sofa::helper::vector< double >& m_x)
 {
-    DataTypes::set((*getX())[i], m_x[0], m_x[1], m_x[2]);
-    DataTypes::set((*getV())[i], (Real) 0.0, (Real) 0.0, (Real) 0.0);
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+    helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+
+    DataTypes::set(x_wA[i], m_x[0], m_x[1], m_x[2]);
+    DataTypes::set(v_wA[i], (Real) 0.0, (Real) 0.0, (Real) 0.0);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, VecId src, unsigned int offset)
+void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * dest, ConstVecId src, unsigned int &offset)
 {
-    if (src.type == VecId::V_COORD)
+    if (src.type == sofa::core::V_COORD)
     {
-        helper::ReadAccessor<VecCoord> vSrc = *getVecCoord(src.index);
-
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
-        const unsigned int nbEntries = dest->size()/coordDim;
-
-        for (unsigned int i = 0; i < nbEntries; ++i)
-            for (unsigned int j = 0; j < coordDim; ++j)
-            {
-                Real tmp;
-                DataTypeInfo<Coord>::getValue(vSrc[offset + i], j, tmp);
-                dest->set(i * coordDim + j, tmp);
-            }
-        // offset += vSrc.size() * coordDim;
-    }
-    else
-    {
-        helper::ReadAccessor<VecDeriv> vSrc = *getVecDeriv(src.index);
-
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
-        const unsigned int nbEntries = dest->size()/derivDim;
-
-        for (unsigned int i = 0; i < nbEntries; i++)
-            for (unsigned int j = 0; j < derivDim; j++)
-            {
-                Real tmp;
-                DataTypeInfo<Deriv>::getValue(vSrc[i + offset], j, tmp);
-                dest->set(i * derivDim + j, tmp);
-            }
-        // offset += vSrc.size() * derivDim;
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * dest, VecId src, unsigned int &offset)
-{
-    if (src.type == VecId::V_COORD)
-    {
-        //const VecCoord* vSrc = getVecCoord(src.index);
-        helper::ReadAccessor<VecCoord> vSrc = *getVecCoord(src.index);
+        helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(ConstVecCoordId(src));
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
@@ -1116,8 +738,7 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * des
     }
     else
     {
-        //const VecDeriv* vSrc = getVecDeriv(src.index);
-        helper::ReadAccessor<VecDeriv> vSrc = *getVecDeriv(src.index);
+        helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(ConstVecDerivId(src));
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
 
         for (unsigned int i = 0; i < vSrc.size(); i++)
@@ -1134,22 +755,90 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * des
     }
 }
 
-#ifndef SOFA_FLOAT
-template <>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
-#endif
+template <class DataTypes>
+void MechanicalObject<DataTypes>::copyFromBaseVector(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == sofa::core::V_COORD)
+    {
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i = 0; i < vDest.size(); i++)
+        {
+            for (unsigned int j = 0; j < coordDim; j++)
+            {
+                Real tmp;
+                tmp = src->element(offset + i * coordDim + j);
+                DataTypeInfo<Coord>::setValue(vDest[i], j, tmp);
+            }
+        }
+
+        offset += vDest.size() * coordDim;
+    }
+    else
+    {
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+
+        for (unsigned int i = 0; i < vDest.size(); i++)
+        {
+            for (unsigned int j = 0; j < derivDim; j++)
+            {
+                Real tmp;
+                tmp = src->element(offset + i * derivDim + j);
+                DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp);
+            }
+        }
+
+        offset += vDest.size() * derivDim;
+    }
+}
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset)
 {
-    if (dest.type == VecId::V_COORD)
+    if (src.type == sofa::core::V_COORD)
     {
-        //VecCoord* vDest = getVecCoord(dest.index);
-        helper::WriteAccessor<VecCoord> vDest = *getVecCoord(dest.index);
+        helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(ConstVecCoordId(src));
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i = 0; i < vSrc.size(); i++)
+        {
+            for (unsigned int j = 0; j < coordDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
+                dest->add(offset + i * coordDim + j, tmp);
+            }
+        }
+
+        offset += vSrc.size() * coordDim;
+    }
+    else
+    {
+        helper::ReadAccessor< Data<VecDeriv> > vSrc = *this->read(ConstVecDerivId(src));
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+
+        for (unsigned int i = 0; i < vSrc.size(); i++)
+        {
+            for (unsigned int j = 0; j < derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue(vSrc[i], j, tmp);
+                dest->add(offset + i * derivDim + j, tmp);
+            }
+        }
+
+        offset += vSrc.size() * derivDim;
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::addFromBaseVector(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == sofa::core::V_COORD)
+    {
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
         for (unsigned int i = 0; i < vDest.size(); i++)
@@ -1166,8 +855,7 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
     }
     else
     {
-        //VecDeriv* vDest = getVecDeriv(dest.index);
-        helper::WriteAccessor<VecDeriv> vDest = *getVecDeriv(dest.index);
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
 
         for (unsigned int i = 0; i < vDest.size(); i++)
@@ -1184,60 +872,12 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
     }
 }
 
-
-#ifndef SOFA_FLOAT
-template <>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
-#endif
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
-{
-    if (dest.type == VecId::V_COORD)
-    {
-        helper::WriteAccessor<VecCoord> vDest = *getVecCoord(dest.index);
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
-        const unsigned int nbEntries = src->size()/coordDim;
-        for (unsigned int i=0; i<nbEntries; i++)
-        {
-            for (unsigned int j=0; j<coordDim; ++j)
-            {
-                Real tmp;
-                DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
-                DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
-            }
-        }
-        offset += nbEntries;
-    }
-    else
-    {
-        helper::WriteAccessor<VecDeriv> vDest = *getVecDeriv(dest.index);
-
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
-        const unsigned int nbEntries = src->size()/derivDim;
-        for (unsigned int i=0; i<nbEntries; i++)
-        {
-            for (unsigned int j=0; j<derivDim; ++j)
-            {
-                Real tmp;
-                DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
-                DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
-            }
-        }
-        offset += nbEntries;
-    }
-}
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addDxToCollisionModel()
 {
-    helper::WriteAccessor< VecCoord > x_wa = *(x.beginEdit());
-    helper::ReadAccessor< VecCoord > xfree_ra = xfree.getValue();
-    helper::ReadAccessor< VecDeriv > dx_ra = dx.getValue();
+    helper::WriteAccessor< Data<VecCoord> > x_wa = *this->write(VecCoordId::position());
+    helper::ReadAccessor< Data<VecCoord> > xfree_ra = *this->read(ConstVecCoordId::freePosition());
+    helper::ReadAccessor< Data<VecDeriv> > dx_ra =  *this->read(ConstVecDerivId::dx());
 
     for (unsigned int i = 0; i < xfree_ra.size(); i++)
     {
@@ -1248,97 +888,91 @@ void MechanicalObject<DataTypes>::addDxToCollisionModel()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-    //std::cout << "MechanicalObject::init " << this->getName() << std::endl;
 #ifdef SOFA_SMP_NUMA
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
     m_topology = this->getContext()->getMeshTopology();
 
-    /*f_X->beginEdit();
-    f_V->beginEdit();
-    f_F->beginEdit();
-    f_Dx->beginEdit();
-    f_Xfree->beginEdit();
-    f_Vfree->beginEdit();
-    f_X0->beginEdit();*/
+    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+    helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
 
     //case if X0 has been set but not X
-    if (getX0()->size() > getX()->size())
+    if (getX0()->size() > x_wA.size())
     {
-        //*x = *x0;
-        x.setValue(x0.getValue());
+        vOp(VecId::position(), VecId::restPosition());
     }
 
-    if (getX()->size() != (std::size_t)vsize || getV()->size() != (std::size_t)vsize)
+    if (x_wA.size() != (std::size_t)vsize || v_wA.size() != (std::size_t)vsize)
     {
         // X and/or V where user-specified
         // copy the last specified velocity to all points
-        if (getV()->size() >= 1 && getV()->size() < getX()->size())
-        {
-            unsigned int i = getV()->size();
-            Deriv v1 = (*getV())[i-1];
-            getV()->resize(getX()->size());
-            while (i < getV()->size())
-                (*getV())[i++] = v1;
-        }
-        resize(getX()->size()>getV()->size()?getX()->size():getV()->size());
-    }
-    else if (getX()->size() <= 1)
-    {
 
+        const unsigned int xSize = x_wA.size();
+
+        helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+
+        if (v_wA.size() >= 1 && v_wA.size() < xSize)
+        {
+            unsigned int i = v_wA.size();
+            Deriv v1 = v_wA[i-1];
+            v_wA.resize(xSize);
+            while (i < v_wA.size())
+                v_wA[i++] = v1;
+        }
+
+        resize(xSize > v_wA.size() ? xSize : v_wA.size());
+    }
+    else if (x_wA.size() <= 1)
+    {
         if (!ignoreLoader.getValue())
         {
             MeshLoader* m_loader;
             this->getContext()->get(m_loader);
 
-            if(m_loader && m_loader->getFillMState())
+            if (m_loader && m_loader->getFillMState())
             {
-
                 int nbp = m_loader->getNbPoints();
 
                 //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
 
                 // copy the last specified velocity to all points
-                if (getV()->size() >= 1 && getV()->size() < (unsigned)nbp)
+                if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
                 {
-                    unsigned int i = getV()->size();
-                    Deriv v1 = (*getV())[i-1];
-                    getV()->resize(nbp);
-                    while (i < getV()->size())
-                        (*getV())[i++] = v1;
+                    unsigned int i = v_wA.size();
+                    Deriv v1 = v_wA[i-1];
+                    v_wA.resize(nbp);
+                    while (i < v_wA.size())
+                        v_wA[i++] = v1;
                 }
                 this->resize(nbp);
                 for (int i=0; i<nbp; i++)
                 {
-                    (*getX())[i] = Coord();
-                    DataTypes::set((*getX())[i], m_loader->getPX(i), m_loader->getPY(i), m_loader->getPZ(i));
+                    x_wA[i] = Coord();
+                    DataTypes::set(x_wA[i], m_loader->getPX(i), m_loader->getPY(i), m_loader->getPZ(i));
                 }
-
             }
             else
             {
-
                 if (m_topology != NULL && m_topology->hasPos() && m_topology->getContext() == this->getContext())
                 {
                     int nbp = m_topology->getNbPoints();
                     //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
                     // copy the last specified velocity to all points
-                    if (getV()->size() >= 1 && getV()->size() < (unsigned)nbp)
+                    if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
                     {
-                        unsigned int i = getV()->size();
-                        Deriv v1 = (*getV())[i-1];
-                        getV()->resize(nbp);
-                        while (i < getV()->size())
-                            (*getV())[i++] = v1;
+                        unsigned int i = v_wA.size();
+                        Deriv v1 = v_wA[i-1];
+                        v_wA.resize(nbp);
+                        while (i < v_wA.size())
+                            v_wA[i++] = v1;
                     }
                     this->resize(nbp);
                     for (int i=0; i<nbp; i++)
                     {
-                        (*getX())[i] = Coord();
-                        DataTypes::set((*getX())[i], m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
+                        x_wA[i] = Coord();
+                        DataTypes::set(x_wA[i], m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
                     }
-
                 }
             }
         }
@@ -1346,24 +980,17 @@ void MechanicalObject<DataTypes>::init()
 
     reinit();
 
-    if (v0 == NULL)
-    {
-        this->v0 = new VecDeriv;
-    }
-
 //	*this->v0 = *v;
-    *this->v0 = v.getValue();
+//	*this->v0 = v.getValue();
 
-    // free position = position
-//	*this->xfree = *x;
-    this->xfree.setValue(x.getValue());
+    // Free motion position = position
+    vOp(VecId::freePosition(), VecId::position());
 
     VecCoord *x0_edit = x0.beginEdit();
 
-    //Rest position
+    // Rest position
     if (x0_edit->size() == 0)
     {
-        //	*x0 = *x;
         x0.setValue(x.getValue());
         if (restScale.getValue() != (Real)1)
         {
@@ -1389,16 +1016,7 @@ void MechanicalObject<DataTypes>::init()
 
     if (f_reserve.getValue() > 0)
         reserve(f_reserve.getValue());
-
-    /*f_X->endEdit();
-    f_V->endEdit();
-    f_F->endEdit();
-    f_Dx->endEdit();
-    f_Xfree->endEdit();
-    f_Vfree->endEdit();
-    f_X0->endEdit();*/
 }
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
@@ -1433,21 +1051,29 @@ void MechanicalObject<DataTypes>::reinit()
     }
 
 
-    if (grid) grid->setP0(p0);
-
-    /*
-    translation.setValue(Vector3());
-    rotation.setValue(Vector3());
-    scale.setValue(Vector3(1.0,1.0,1.0));
-    */
+    if (grid)
+        grid->setP0(p0);
 }
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::storeResetState()
 {
     // Save initial state for reset button
-    if (reset_position == NULL) this->reset_position = new VecCoord;
-//	*this->reset_position = *x;
-    *this->reset_position = x.getValue();
+    vOp(VecId::resetPosition(), VecId::position());
+
+    //vOp(VecId::resetVelocity(), VecId::velocity());
+    // we only store a resetVelocity if the velocity is not zero
+    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(VecDerivId::velocity());
+    bool zero = true;
+    for (unsigned int i=0; i<v.size(); ++i)
+    {
+        const Deriv& vi = v[i];
+        for (unsigned int j=0; j<vi.size(); ++j)
+            if (vi[j] != 0) zero = false;
+        if (!zero) break;
+    }
+    if (!zero)
+        vOp(VecId::resetVelocity(), VecId::velocity());
 }
 
 //
@@ -1457,38 +1083,22 @@ void MechanicalObject<DataTypes>::storeResetState()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
-    if (reset_position == NULL)
+    if (!reset_position.isSet())
         return;
 
-    // Back to initial state
-    this->resize(reset_position->size());
-    //std::cout << this->getName() << ": reset X"<<std::endl;
-    //*this->x = *reset_position;
-    *this->getVecCoord(VecId::position().index) = *this->reset_position;
-    //std::cout << this->getName() << ": reset V"<<std::endl;
-    //*this->v = *v0;
+    vOp(VecId::position(), VecId::resetPosition());
 
-    if (v0 == NULL)
+    if (!reset_velocity.isSet())
     {
-        VecDeriv *vEdit = this->v.beginEdit();
-
-        for( unsigned int i = 0; i < vEdit->size(); ++i )
-            (*vEdit)[i] = Deriv();
-
-        v.endEdit();
-
-        return;
+        vOp(VecId::velocity());
+    }
+    else
+    {
+        vOp(VecId::velocity(), VecId::resetVelocity());
     }
 
-    *this->getVecDeriv(VecId::velocity().index) = *this->v0;
-
-    //std::cout << this->getName() << ": reset Xfree"<<std::endl;
-    //*this->xfree = *x;
-
-    *this->getVecCoord(VecId::freePosition().index) = *this->getVecCoord(VecId::position().index);
-    //std::cout << this->getName() << ": reset Vfree"<<std::endl;
-    //*this->vfree = *v;
-    *this->getVecDeriv(VecId::freeVelocity().index) = *this->getVecDeriv(VecId::velocity().index);
+    vOp(VecId::freePosition(), VecId::position());
+    vOp(VecId::freeVelocity(), VecId::velocity());
 }
 
 template <class DataTypes>
@@ -1610,6 +1220,110 @@ void MechanicalObject<DataTypes>::writeDx(std::ostream &out)
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::writeVec(ConstVecId v, std::ostream &out)
+{
+    switch (v.type)
+    {
+    case sofa::core::V_COORD:
+        out << this->read(ConstVecCoordId(v))->getValue();
+        break;
+    case sofa::core::V_DERIV:
+        out << this->read(ConstVecDerivId(v))->getValue();
+        break;
+    case sofa::core::V_MATDERIV:
+        out << this->read(ConstMatrixDerivId(v))->getValue();
+        break;
+    default:
+        break;
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::readVec(VecId v, std::istream &in)
+{
+    int i = 0;
+
+    switch (v.type)
+    {
+    case sofa::core::V_COORD:
+    {
+        Coord coord;
+        helper::WriteAccessor< Data< VecCoord > > vec = *this->write(VecCoordId(v));
+
+        while (in >> coord)
+        {
+            if (i >= getSize())
+                resize(i+1);
+            vec[i++] = coord;
+        }
+
+        break;
+    }
+    case sofa::core::V_DERIV:
+    {
+        Deriv deriv;
+        helper::WriteAccessor< Data< VecDeriv > > vec = *this->write(VecDerivId(v));
+
+        while (in >> deriv)
+        {
+            if (i >= getSize())
+                resize(i+1);
+            vec[i++] = deriv;
+        }
+
+        break;
+    }
+    case sofa::core::V_MATDERIV:
+        //TODO
+        break;
+    default:
+        break;
+    }
+
+    if (i < getSize())
+        resize(i);
+}
+
+template <class DataTypes>
+double MechanicalObject<DataTypes>::compareVec(ConstVecId v, std::istream &in)
+{
+    std::string ref,cur;
+    getline(in, ref);
+
+    std::ostringstream out;
+
+    switch (v.type)
+    {
+    case sofa::core::V_COORD:
+        out << this->read(ConstVecCoordId(v))->getValue();
+        break;
+    case sofa::core::V_DERIV:
+        out << this->read(ConstVecDerivId(v))->getValue();
+        break;
+    case sofa::core::V_MATDERIV:
+        out << this->read(ConstMatrixDerivId(v))->getValue();
+        break;
+    default:
+        break;
+    }
+
+    cur = out.str();
+
+    double error=0;
+    std::istringstream compare_ref(ref);
+    std::istringstream compare_cur(cur);
+
+    Real value_ref, value_cur;
+    unsigned int count=0;
+    while (compare_ref >> value_ref && compare_cur >> value_cur )
+    {
+        error += fabs(value_ref-value_cur);
+        count ++;
+    }
+    return error/count;
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 {
     writeX(out); out << " "; writeV(out);
@@ -1618,61 +1332,188 @@ void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
 {
-    m_forceId = VecId::internalForce();
     this->forceMask.activate(false);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
+void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/, const core::ExecParams*
+#ifdef SOFA_SMP
+        params
+#endif
+                                                )
 {
-    m_forceId = VecId::externalForce();
-    getVecDeriv(VecId::externalForce().index )->clear();
-
     this->forceMask.clear();
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
     this->forceMask.setInUse(this->useMask.getValue());
+
 #ifdef SOFA_SMP
-    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**this->externalForces.beginEdit(),0);
-    this->externalForces.endEdit();
-#else
-    this->externalForces.beginEdit()->clear();
-    this->externalForces.endEdit();
-#endif
+    if (params->execMode() == core::ExecParams::EXEC_KAAPI)
+    {
+        BaseObject::Task<vClear<VecDeriv,Deriv> >
+        (this,**defaulttype::getShared(*this->write(VecDerivId::externalForce())),0);
+    }
+    else
+#endif /* SOFA_SMP */
+    {
+        this->externalForces.beginEdit()->clear();
+        this->externalForces.endEdit();
+    }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::accumulateForce()
+void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams*
+#ifdef SOFA_SMP
+        params
+#endif
+                                                 )
 {
 #ifdef SOFA_SMP
-    BaseObject::Task < vPEq2 <  VecDeriv,
-               VecDeriv >
-               >(this,**this->f.beginEdit(),
-                       **getVecDeriv(VecId::externalForce().index));
-    this->f.endEdit();
-#else
-    if (!getVecDeriv(VecId::externalForce().index)->empty())
+    if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        helper::WriteAccessor< VecDeriv > f = *getF();
-        helper::ReadAccessor< VecDeriv > externalForces = *getVecDeriv(VecId::externalForce().index);
+        BaseObject::Task < vPEq2 <  VecDeriv, VecDeriv > >
+        (this, **defaulttype::getShared(*this->write(VecDerivId::force())),
+         **defaulttype::getShared(*this->read(ConstVecDerivId::externalForce())));
+    }
+    else
+#endif /* SOFA_SMP */
+    {
+        helper::ReadAccessor< Data<VecDeriv> > extForces_rA = *this->read(ConstVecDerivId::externalForce());
 
-        if (!this->forceMask.isInUse())
+        if (!extForces_rA.empty())
         {
-            for (unsigned int i=0; i < externalForces.size(); i++)
-                f[i] += externalForces[i];
-        }
-        else
-        {
-            typedef helper::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
-            ParticleMask::InternalStorage::const_iterator it;
-            for (it = indices.begin(); it != indices.end(); it++)
+            helper::WriteAccessor< Data<VecDeriv> > f_wA = *this->write(VecDerivId::force());
+
+            if (!this->forceMask.isInUse())
             {
-                const int i = (*it);
-                f[i] += externalForces[i];
+                for (unsigned int i=0; i < extForces_rA.size(); i++)
+                    f_wA[i] += extForces_rA[i];
+            }
+            else
+            {
+                typedef helper::ParticleMask ParticleMask;
+                const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
+                ParticleMask::InternalStorage::const_iterator it;
+                for (it = indices.begin(); it != indices.end(); it++)
+                {
+                    const int i = (*it);
+                    f_wA[i] += extForces_rA[i];
+                }
             }
         }
     }
+}
+
+template <class DataTypes>
+Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(VecCoordId v)
+{
+#ifdef SOFA_SMP_NUMA
+//	if(this->getContext()->getProcessor()!=-1)
+//		numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
+
+    if (v.index >= vectorsCoord.size())
+    {
+        vectorsCoord.resize(v.index + 1, 0);
+    }
+
+    if (vectorsCoord[v.index] == NULL)
+    {
+        vectorsCoord[v.index] = new Data< VecCoord >;
+        if (f_reserve.getValue() > 0)
+        {
+            vectorsCoord[v.index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsCoord[v.index]->endEdit();
+        }
+    }
+
+    return vectorsCoord[v.index];
+}
+
+template <class DataTypes>
+const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::read(ConstVecCoordId v) const
+{
+    if (v.isNull())
+    {
+        serr << "Accessing null VecCoord" << sendl;
+    }
+    if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != NULL)
+        return vectorsCoord[v.index];
+    else
+    {
+        serr << "Vector " << v << " does not exist" << sendl;
+        return NULL;
+    }
+}
+
+template <class DataTypes>
+Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(VecDerivId v)
+{
+#ifdef SOFA_SMP_NUMA
+//	if(this->getContext()->getProcessor()!=-1)
+//		numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
+
+    if (v.index >= vectorsDeriv.size())
+    {
+        vectorsDeriv.resize(v.index + 1, 0);
+    }
+
+    if (vectorsDeriv[v.index] == NULL)
+    {
+        vectorsDeriv[v.index] = new Data< VecDeriv >;
+        if (f_reserve.getValue() > 0)
+        {
+            vectorsDeriv[v.index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsDeriv[v.index]->endEdit();
+        }
+    }
+
+    return vectorsDeriv[v.index];
+}
+
+template <class DataTypes>
+const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(ConstVecDerivId v) const
+{
+    if (v.index < vectorsDeriv.size())
+        return vectorsDeriv[v.index];
+    else
+    {
+        serr << "Vector " << v << "does not exist" << sendl;
+        return NULL;
+    }
+}
+
+template <class DataTypes>
+Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(MatrixDerivId v)
+{
+#ifdef SOFA_SMP_NUMA
+//	if(this->getContext()->getProcessor()!=-1)
+//		numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
+
+    if (v.index >= vectorsMatrixDeriv.size())
+    {
+        vectorsMatrixDeriv.resize(v.index + 1, 0);
+    }
+
+    if (vectorsMatrixDeriv[v.index] == NULL)
+    {
+        vectorsMatrixDeriv[v.index] = new Data< MatrixDeriv >;
+    }
+
+    return vectorsMatrixDeriv[v.index];
+}
+
+template <class DataTypes>
+const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(ConstMatrixDerivId v) const
+{
+    if (v.index < vectorsMatrixDeriv.size())
+        return vectorsMatrixDeriv[v.index];
+    else
+    {
+        serr << "Vector " << v << "does not exist" << sendl;
+        return NULL;
+    }
 }
 
 template <class DataTypes>
@@ -1681,16 +1522,9 @@ void MechanicalObject<DataTypes>::setVecCoord(unsigned int index, Data< VecCoord
     if (index >= vectorsCoord.size())
     {
         vectorsCoord.resize(index + 1, 0);
-#ifdef SOFA_SMP
-        vectorsCoordSharedAllocated.resize(index + 1);
-#endif
-
     }
 
     vectorsCoord[index] = v;
-#ifdef SOFA_SMP
-    vectorsCoordSharedAllocated[index] = true;
-#endif
 }
 
 template <class DataTypes>
@@ -1699,17 +1533,9 @@ void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, Data< VecDeriv
     if (index >= vectorsDeriv.size())
     {
         vectorsDeriv.resize(index + 1, 0);
-#ifdef SOFA_SMP
-        vectorsDerivSharedAllocated.resize(index + 1);
-#endif
-
     }
 
     vectorsDeriv[index] = v;
-#ifdef SOFA_SMP
-    vectorsDerivSharedAllocated[index] = true;
-#endif
-
 }
 
 template <class DataTypes>
@@ -1723,655 +1549,521 @@ void MechanicalObject<DataTypes>::setVecMatrixDeriv(unsigned int index, Data < M
     vectorsMatrixDeriv[index] = m;
 }
 
-
-template<class DataTypes>
-typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
-{
-#ifdef SOFA_SMP_NUMA
-    if(this->getContext()->getProcessor()!=-1)
-        numa_set_preferred(this->getContext()->getProcessor()/2);
-#endif
-    if (index >= vectorsCoord.size())
-    {
-        vectorsCoord.resize(index + 1, 0);
-#ifdef SOFA_SMP
-        vectorsCoordSharedAllocated.resize(index + 1);
-#endif
-    }
-
-    if (vectorsCoord[index] == NULL)
-    {
-        vectorsCoord[index] = new Data< VecCoord >;
-#ifdef SOFA_SMP
-        vectorsCoordSharedAllocated[index]=true;
-#endif
-        if (f_reserve.getValue() > 0)
-        {
-            vectorsCoord[index]->beginEdit()->reserve(f_reserve.getValue());
-            vectorsCoord[index]->endEdit();
-        }
-    }
-
-    return vectorsCoord[index]->beginEdit();
-    // @TODO endEdit has to be called.
-}
-
-template<class DataTypes>
-const typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index) const
-{
-    if (index >= vectorsCoord.size())
-        return NULL;
-
-    if (vectorsCoord[index] == NULL)
-        return NULL;
-
-    return &(vectorsCoord[index]->getValue());
-}
-
-template<class DataTypes>
-typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
-{
-#ifdef SOFA_SMP_NUMA
-    if(this->getContext()->getProcessor()!=-1)
-        numa_set_preferred(this->getContext()->getProcessor()/2);
-#endif
-    if (index >= vectorsDeriv.size())
-    {
-        vectorsDeriv.resize(index + 1, 0);
-#ifdef SOFA_SMP
-        vectorsDerivSharedAllocated.resize(index + 1);
-#endif
-    }
-
-    if (vectorsDeriv[index] == NULL)
-    {
-        vectorsDeriv[index] = new Data< VecDeriv >;
-#ifdef SOFA_SMP
-        vectorsDerivSharedAllocated[index] = true;
-#endif
-        if (f_reserve.getValue() > 0)
-        {
-            vectorsDeriv[index]->beginEdit()->reserve(f_reserve.getValue());
-            vectorsDeriv[index]->endEdit();
-        }
-    }
-
-    return vectorsDeriv[index]->beginEdit();
-    // @TODO endEdit has to be called.
-}
-
-template<class DataTypes>
-const typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index) const
-{
-    if (index >= vectorsDeriv.size())
-        return NULL;
-
-    if (vectorsDeriv[index] == NULL)
-        return NULL;
-
-    return &(vectorsDeriv[index]->getValue());
-}
-
-template<class DataTypes>
-typename MechanicalObject<DataTypes>::MatrixDeriv* MechanicalObject<DataTypes>::getMatrixDeriv(unsigned int index)
-{
-    if (index >= vectorsMatrixDeriv.size())
-        vectorsMatrixDeriv.resize(index + 1, 0);
-
-    if (vectorsMatrixDeriv[index] == NULL)
-        vectorsMatrixDeriv[index] = new Data< MatrixDeriv >;
-
-    return vectorsMatrixDeriv[index]->beginEdit();
-}
-
-template<class DataTypes>
-const typename MechanicalObject<DataTypes>::MatrixDeriv* MechanicalObject<DataTypes>::getMatrixDeriv(unsigned int index) const
-{
-    if (index >= vectorsMatrixDeriv.size())
-        return NULL;
-
-    if (vectorsMatrixDeriv[index] == NULL)
-        return NULL;
-
-    return &(vectorsMatrixDeriv[index]->getValue());
-}
-
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAvail(VecId& v)
+void MechanicalObject<DataTypes>::vAvail(core::VecCoordId& v, const core::ExecParams* /* params */)
 {
-    if (v.type == VecId::V_COORD)
+    for (unsigned int i = v.index; i < vectorsCoord.size(); ++i)
     {
-        for (unsigned int i=v.index; i < vectorsCoord.size(); ++i)
-#ifdef SOFA_SMP
-            if (vectorsCoord[i] &&   vectorsCoordSharedAllocated[i])
-#else
-            if ((vectorsCoord[i]) && !vectorsCoord[i]->getValue().empty())
-#endif
-                v.index = i+1;
-    }
-    else if (v.type == VecId::V_DERIV)
-    {
-        for (unsigned int i=v.index; i < vectorsDeriv.size(); ++i)
-#ifdef SOFA_SMP
-            if (vectorsDeriv[i] != NULL &&vectorsDerivSharedAllocated[i])
-#else
-            if ((vectorsDeriv[i] != NULL) && !vectorsDeriv[i]->getValue().empty())
-#endif
-                v.index = i+1;
+        if (vectorsCoord[i] && vectorsCoord[i]->isSet())
+            v.index = i+1;
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAlloc(VecId v)
+void MechanicalObject<DataTypes>::vAvail(core::VecDerivId& v, const core::ExecParams* /* params */)
+{
+    for (unsigned int i = v.index; i < vectorsDeriv.size(); ++i)
+    {
+        if (vectorsDeriv[i] && vectorsDeriv[i]->isSet())
+            v.index = i+1;
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::vAlloc(core::VecCoordId v, const core::ExecParams*
+#ifdef SOFA_SMP
+        params
+#endif
+                                        )
 {
 #ifdef SOFA_SMP_NUMA
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
+    if (v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
-        VecCoord* vec = getVecCoord(v.index);
-        vec->resize(vsize);
+        helper::WriteAccessor< Data<VecCoord> > vec = *this->write(v);
+
+        vec.resize(vsize);
+
 #ifdef SOFA_SMP
-        vectorsCoordSharedAllocated[v.index]=true;
-        BaseObject::Task< VecInitResize < VecCoord > >(this,**vec, this->vsize);
-#endif
+        if (params->execMode() == core::ExecParams::EXEC_KAAPI)
+        {
+            BaseObject::Task< VecInitResize < VecCoord > >(this,**defaulttype::getShared(*this->write(VecCoordId(v))), this->vsize);
+        }
+#endif /* SOFA_SMP */
     }
-    else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
-    {
-        VecDeriv* vec = getVecDeriv(v.index);
-        vec->resize(vsize);
-#ifdef SOFA_SMP
-        vectorsDerivSharedAllocated[v.index]=true;
-        BaseObject::Task < VecInitResize < VecDeriv > >(this,**vec, this->vsize);
-#endif
-    }
-    else
-    {
-        std::cerr << "Invalid alloc operation ("<<v<<")\n";
-        return;
-    }
+
     //vOp(v); // clear vector
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vFree(VecId vId)
-{
-    if (vId.type == VecId::V_COORD && vId.index >= VecId::V_FIRST_DYNAMIC_INDEX)
-    {
-        VecCoord* vec = getVecCoord(vId.index);
-        vec->resize(0);
-
-        // Check X is not pointing on the deleted Dynamic Vector
-        if (vec == &x.getValue())
-        {
-            if (this->f_printLog.getValue())
-            {
-                serr << "Warning! MechanicalObject " << this->getName() << " x vector is pointing on a deleted dynamic vector." << sendl;
-                serr << "Restoring X" << sendl;
-            }
-
-            setX(VecId::position());
-        }
-
-        // Check XFree is not pointing on the deleted Dynamic Vector
-        if (vec == &xfree.getValue())
-        {
-            if (this->f_printLog.getValue())
-            {
-                serr << "Warning! MechanicalObject " << this->getName() << " xfree vector is pointing on a deleted dynamic vector." << sendl;
-                serr << "Restoring XFree" << sendl;
-            }
-
-            setXfree(VecId::freePosition());
-        }
-
+void MechanicalObject<DataTypes>::vAlloc(core::VecDerivId v, const core::ExecParams*
 #ifdef SOFA_SMP
-        vectorsCoordSharedAllocated[vId.index]=false;
+        params
 #endif
-    }
-    else if (vId.type == VecId::V_DERIV && vId.index >= VecId::V_FIRST_DYNAMIC_INDEX)
-    {
-        VecDeriv* vec = getVecDeriv(vId.index);
-        vec->resize(0);
-
-        // Check V is not pointing on the deleted Dynamic Vector
-        if (vec == &v.getValue())
-        {
-            if (this->f_printLog.getValue())
-            {
-                serr << "Warning! MechanicalObject " << this->getName() << " v vector is pointing on a deleted dynamic vector." << sendl;
-                serr << "Restoring V" << sendl;
-            }
-
-            setV(VecId::velocity());
-        }
-
-        // Check VFree is not pointing on the deleted Dynamic Vector
-        if (vec == &vfree.getValue())
-        {
-            if (this->f_printLog.getValue())
-            {
-                serr << "Warning! MechanicalObject " << this->getName() << " vfree vector is pointing on a deleted dynamic vector." << sendl;
-                serr << "Restoring VFree" << sendl;
-            }
-
-            setVfree(VecId::freeVelocity());
-        }
-
-        // Check F is not pointing on the deleted Dynamic Vector
-        if (vec == getF())
-        {
-            if (this->f_printLog.getValue())
-            {
-                serr << "Warning! MechanicalObject " << this->getName() << " f vector is pointing on a deleted dynamic vector with vecId = " << vId.index << "." << sendl;
-                serr << "Restoring F" << sendl;
-            }
-
-            setF(VecId::force());
-        }
-
-        // Check InternalForces is not pointing on the deleted Dynamic Vector
-        if (vec == &internalForces.getValue())
-        {
-            if (this->f_printLog.getValue())
-            {
-                serr << "Warning! MechanicalObject " << this->getName() << " internalForces vector is pointing on a deleted dynamic vector." << sendl;
-                serr << "Restoring InternalForces" << sendl;
-            }
-
-            setF(VecId::internalForce());
-        }
-
-        // Check ExternalForces is not pointing on the deleted Dynamic Vector
-        if (vec == &externalForces.getValue())
-        {
-            if (this->f_printLog.getValue())
-            {
-                serr << "Warning! MechanicalObject " << this->getName() << " externalForces vector is pointing on a deleted dynamic vector." << sendl;
-                serr << "Restoring ExternalForces" << sendl;
-            }
-
-            setF(VecId::externalForce());
-        }
-
-
-#ifdef SOFA_SMP
-        vectorsDerivSharedAllocated[vId.index]=false;
-#endif
-    }
-    else
-    {
-        std::cerr << "Invalid free operation (" << vId << ")\n";
-        return;
-    }
-}
-
-
-#ifndef SOFA_SMP
-template <class DataTypes>
-void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
+                                        )
 {
 #ifdef SOFA_SMP_NUMA
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    if(v.isNull())
+
+    if (v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
-        // ERROR
-        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
-        return;
+        helper::WriteAccessor< Data<VecDeriv> > vec = *this->write(v);
+
+        vec.resize(vsize);
+#ifdef SOFA_SMP
+        if (params->execMode() == core::ExecParams::EXEC_KAAPI)
+        {
+            BaseObject::Task < VecInitResize < VecDeriv > >(this,**defaulttype::getShared(*this->write(VecDerivId(v))), this->vsize);
+        }
+#endif /* SOFA_SMP */
     }
-    if (a.isNull())
+
+    //vOp(v); // clear vector
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::vFree(VecCoordId vId, const core::ExecParams* /* params */)
+{
+    if (vId.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
-        if (b.isNull())
-        {
-            // v = 0
-            if (v.type == VecId::V_COORD)
-            {
-                VecCoord* vv = getVecCoord(v.index);
-                vv->resize(this->vsize);
-                for (unsigned int i=0; i<vv->size(); i++)
-                    (*vv)[i] = Coord();
-            }
-            else
-            {
-                VecDeriv* vv = getVecDeriv(v.index);
-                vv->resize(this->vsize);
-                for (unsigned int i=0; i<vv->size(); i++)
-                    (*vv)[i] = Deriv();
-            }
-        }
-        else
-        {
-            if (b.type != v.type)
-            {
-                // ERROR
-                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
-                return;
-            }
-            if (v == b)
-            {
-                // v *= f
-                if (v.type == VecId::V_COORD)
-                {
-                    VecCoord* vv = getVecCoord(v.index);
-                    for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] *= (Real)f;
-                }
-                else
-                {
-                    VecDeriv* vv = getVecDeriv(v.index);
-                    for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] *= (Real)f;
-                }
-            }
-            else
-            {
-                // v = b*f
-                if (v.type == VecId::V_COORD)
-                {
-                    VecCoord* vv = getVecCoord(v.index);
-                    VecCoord* vb = getVecCoord(b.index);
-                    vv->resize(vb->size());
-                    for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] = (*vb)[i] * (Real)f;
-                }
-                else
-                {
-                    VecDeriv* vv = getVecDeriv(v.index);
-                    VecDeriv* vb = getVecDeriv(b.index);
-                    vv->resize(vb->size());
-                    for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] = (*vb)[i] * (Real)f;
-                }
-            }
-        }
+        Data< VecCoord >* vec_d = this->write(vId);
+
+        VecCoord *vec = vec_d->beginEdit();
+        vec->resize(0);
+        vec_d->endEdit();
+
+        vec_d->unset();
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::vFree(VecDerivId vId, const core::ExecParams* /* params */)
+{
+    if (vId.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
+    {
+        Data< VecDeriv >* vec_d = this->write(vId);
+
+        VecDeriv *vec = vec_d->beginEdit();
+        vec->resize(0);
+        vec_d->endEdit();
+
+        vec_d->unset();
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::vOp(VecId v, ConstVecId a, ConstVecId b, double f, const core::ExecParams*
+#ifdef SOFA_SMP
+        params
+#endif
+                                     )
+{
+#ifdef SOFA_SMP
+    if (params->execMode() == core::ExecParams::EXEC_KAAPI)
+    {
+        vOp(v, a, b, f, NULL, params);
     }
     else
+#endif
     {
-        if (a.type != v.type)
+
+        if(v.isNull())
         {
             // ERROR
-            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
             return;
         }
-        if (b.isNull())
+        if (a.isNull())
         {
-            // v = a
-            if (v.type == VecId::V_COORD)
+            if (b.isNull())
             {
-                VecCoord* vv = getVecCoord(v.index);
-                VecCoord* va = getVecCoord(a.index);
-                vv->resize(va->size());
-                for (unsigned int i=0; i<vv->size(); i++)
-                    (*vv)[i] = (*va)[i];
+                // v = 0
+                if (v.type == sofa::core::V_COORD)
+                {
+                    helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                    vv.resize(this->vsize);
+                    for (unsigned int i=0; i<vv.size(); i++)
+                        vv[i] = Coord();
+                }
+                else
+                {
+                    helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                    vv.resize(this->vsize);
+                    for (unsigned int i=0; i<vv.size(); i++)
+                        vv[i] = Deriv();
+                }
             }
             else
             {
-                VecDeriv* vv = getVecDeriv(v.index);
-                VecDeriv* va = getVecDeriv(a.index);
-                vv->resize(va->size());
-                for (unsigned int i=0; i<vv->size(); i++)
-                    (*vv)[i] = (*va)[i];
+                if (b.type != v.type)
+                {
+                    // ERROR
+                    serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                    return;
+                }
+                if (v == b)
+                {
+                    // v *= f
+                    if (v.type == sofa::core::V_COORD)
+                    {
+                        helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                        for (unsigned int i=0; i<vv.size(); i++)
+                            vv[i] *= (Real)f;
+                    }
+                    else
+                    {
+                        helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                        for (unsigned int i=0; i<vv.size(); i++)
+                            vv[i] *= (Real)f;
+                    }
+                }
+                else
+                {
+                    // v = b*f
+                    if (v.type == sofa::core::V_COORD)
+                    {
+                        helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                        helper::ReadAccessor< Data<VecCoord> > vb = *this->read(ConstVecCoordId(b));
+                        vv.resize(vb.size());
+                        for (unsigned int i=0; i<vv.size(); i++)
+                            vv[i] = vb[i] * (Real)f;
+                    }
+                    else
+                    {
+                        helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                        helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+                        vv.resize(vb.size());
+                        for (unsigned int i=0; i<vv.size(); i++)
+                            vv[i] = vb[i] * (Real)f;
+                    }
+                }
             }
         }
         else
         {
-            if (v == a)
+            if (a.type != v.type)
             {
-                if (f==1.0)
-                {
-                    // v += b
-                    if (v.type == VecId::V_COORD)
-                    {
-                        VecCoord* vv = getVecCoord(v.index);
-                        if (b.type == VecId::V_COORD)
-                        {
-                            VecCoord* vb = getVecCoord(b.index);
-                            vv->resize(vb->size());
-                            for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*vb)[i];
-                        }
-                        else
-                        {
-                            VecDeriv* vb = getVecDeriv(b.index);
-                            vv->resize(vb->size());
-                            for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*vb)[i];
-                        }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-                        VecDeriv* vv = getVecDeriv(v.index);
-                        VecDeriv* vb = getVecDeriv(b.index);
-                        vv->resize(vb->size());
-                        for (unsigned int i=0; i<vv->size(); i++)
-                            (*vv)[i] += (*vb)[i];
-                    }
-                    else
-                    {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
-                        return;
-                    }
-                }
-                else
-                {
-                    // v += b*f
-                    if (v.type == VecId::V_COORD)
-                    {
-                        VecCoord* vv = getVecCoord(v.index);
-                        if (b.type == VecId::V_COORD)
-                        {
-                            VecCoord* vb = getVecCoord(b.index);
-                            vv->resize(vb->size());
-                            for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*vb)[i]*(Real)f;
-                        }
-                        else
-                        {
-                            VecDeriv* vb = getVecDeriv(b.index);
-                            vv->resize(vb->size());
-                            for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*vb)[i]*(Real)f;
-                        }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-                        VecDeriv* vv = getVecDeriv(v.index);
-                        VecDeriv* vb = getVecDeriv(b.index);
-                        vv->resize(vb->size());
-                        for (unsigned int i=0; i<vv->size(); i++)
-                            (*vv)[i] += (*vb)[i]*(Real)f;
-                    }
-                    else
-                    {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
-                        return;
-                    }
-                }
+                // ERROR
+                serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                return;
             }
-            else if (v == b)
+            if (b.isNull())
             {
-                if (f==1.0)
+                // v = a
+                if (v.type == sofa::core::V_COORD)
                 {
-                    // v += a
-                    if (v.type == VecId::V_COORD)
-                    {
-                        VecCoord* vv = getVecCoord(v.index);
-                        if (a.type == VecId::V_COORD)
-                        {
-                            VecCoord* va = getVecCoord(a.index);
-                            vv->resize(va->size());
-                            for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*va)[i];
-                        }
-                        else
-                        {
-                            VecDeriv* va = getVecDeriv(a.index);
-                            vv->resize(va->size());
-                            for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*va)[i];
-                        }
-                    }
-                    else if (a.type == VecId::V_DERIV)
-                    {
-                        VecDeriv* vv = getVecDeriv(v.index);
-                        VecDeriv* va = getVecDeriv(a.index);
-                        vv->resize(va->size());
-                        for (unsigned int i=0; i<vv->size(); i++)
-                            (*vv)[i] += (*va)[i];
-                    }
-                    else
-                    {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
-                        return;
-                    }
+                    helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                    helper::ReadAccessor< Data<VecCoord> > va = *this->read(ConstVecCoordId(a));
+                    vv.resize(va.size());
+                    for (unsigned int i=0; i<vv.size(); i++)
+                        vv[i] = va[i];
                 }
                 else
                 {
-                    // v = a+v*f
-                    if (v.type == VecId::V_COORD)
-                    {
-                        VecCoord* vv = getVecCoord(v.index);
-                        VecCoord* va = getVecCoord(a.index);
-                        vv->resize(va->size());
-                        for (unsigned int i=0; i<vv->size(); i++)
-                        {
-                            (*vv)[i] *= (Real)f;
-                            (*vv)[i] += (*va)[i];
-                        }
-                    }
-                    else
-                    {
-                        VecDeriv* vv = getVecDeriv(v.index);
-                        VecDeriv* va = getVecDeriv(a.index);
-                        vv->resize(va->size());
-                        for (unsigned int i=0; i<vv->size(); i++)
-                        {
-                            (*vv)[i] *= (Real)f;
-                            (*vv)[i] += (*va)[i];
-                        }
-                    }
+                    helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                    helper::ReadAccessor< Data<VecDeriv> > va = *this->read(ConstVecDerivId(a));
+                    vv.resize(va.size());
+                    for (unsigned int i=0; i<vv.size(); i++)
+                        vv[i] = va[i];
                 }
             }
             else
             {
-                if (f==1.0)
+                if (v == a)
                 {
-                    // v = a+b
-                    if (v.type == VecId::V_COORD)
+                    if (f==1.0)
                     {
-                        VecCoord* vv = getVecCoord(v.index);
-                        VecCoord* va = getVecCoord(a.index);
-                        vv->resize(va->size());
-                        if (b.type == VecId::V_COORD)
+                        // v += b
+                        if (v.type == sofa::core::V_COORD)
                         {
-                            VecCoord* vb = getVecCoord(b.index);
-                            for (unsigned int i=0; i<vv->size(); i++)
+                            helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                            if (b.type == sofa::core::V_COORD)
                             {
-                                (*vv)[i] = (*va)[i];
-                                (*vv)[i] += (*vb)[i];
+                                helper::ReadAccessor< Data<VecCoord> > vb = *this->read(ConstVecCoordId(b));
+
+                                if (vb.size() > vv.size())
+                                    vv.resize(vb.size());
+
+                                for (unsigned int i=0; i<vb.size(); i++)
+                                    vv[i] += vb[i];
                             }
+                            else
+                            {
+                                helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+
+                                if (vb.size() > vv.size())
+                                    vv.resize(vb.size());
+
+                                for (unsigned int i=0; i<vb.size(); i++)
+                                    vv[i] += vb[i];
+                            }
+                        }
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+                            helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                            helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+
+                            if (vb.size() > vv.size())
+                                vv.resize(vb.size());
+
+                            for (unsigned int i=0; i<vb.size(); i++)
+                                vv[i] += vb[i];
                         }
                         else
                         {
-                            VecDeriv* vb = getVecDeriv(b.index);
-                            for (unsigned int i=0; i<vv->size(); i++)
-                            {
-                                (*vv)[i] = (*va)[i];
-                                (*vv)[i] += (*vb)[i];
-                            }
-                        }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-                        VecDeriv* vv = getVecDeriv(v.index);
-                        VecDeriv* va = getVecDeriv(a.index);
-                        VecDeriv* vb = getVecDeriv(b.index);
-                        vv->resize(va->size());
-                        for (unsigned int i=0; i<vv->size(); i++)
-                        {
-                            (*vv)[i] = (*va)[i];
-                            (*vv)[i] += (*vb)[i];
+                            // ERROR
+                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            return;
                         }
                     }
                     else
                     {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
-                        return;
+                        // v += b*f
+                        if (v.type == sofa::core::V_COORD)
+                        {
+                            helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                            if (b.type == sofa::core::V_COORD)
+                            {
+                                helper::ReadAccessor< Data<VecCoord> > vb = *this->read(ConstVecCoordId(b));
+
+                                if (vb.size() > vv.size())
+                                    vv.resize(vb.size());
+
+                                for (unsigned int i=0; i<vb.size(); i++)
+                                    vv[i] += vb[i]*(Real)f;
+                            }
+                            else
+                            {
+                                helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+
+                                if (vb.size() > vv.size())
+                                    vv.resize(vb.size());
+
+                                for (unsigned int i=0; i<vb.size(); i++)
+                                    vv[i] += vb[i]*(Real)f;
+                            }
+                        }
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+                            helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                            helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+
+                            if (vb.size() > vv.size())
+                                vv.resize(vb.size());
+
+                            for (unsigned int i=0; i<vb.size(); i++)
+                                vv[i] += vb[i]*(Real)f;
+                        }
+                        else
+                        {
+                            // ERROR
+                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            return;
+                        }
+                    }
+                }
+                else if (v == b)
+                {
+                    if (f==1.0)
+                    {
+                        // v += a
+                        if (v.type == sofa::core::V_COORD)
+                        {
+                            helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                            if (a.type == sofa::core::V_COORD)
+                            {
+                                helper::ReadAccessor< Data<VecCoord> > va = *this->read(ConstVecCoordId(a));
+
+                                if (va.size() > vv.size())
+                                    vv.resize(va.size());
+
+                                for (unsigned int i=0; i<va.size(); i++)
+                                    vv[i] += va[i];
+                            }
+                            else
+                            {
+                                helper::ReadAccessor< Data<VecDeriv> > va = *this->read(ConstVecDerivId(a));
+
+                                if (va.size() > vv.size())
+                                    vv.resize(va.size());
+
+                                for (unsigned int i=0; i<va.size(); i++)
+                                    vv[i] += va[i];
+                            }
+                        }
+                        else if (a.type == sofa::core::V_DERIV)
+                        {
+                            helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                            helper::ReadAccessor< Data<VecDeriv> > va = *this->read(ConstVecDerivId(a));
+
+                            if (va.size() > vv.size())
+                                vv.resize(va.size());
+
+                            for (unsigned int i=0; i<va.size(); i++)
+                                vv[i] += va[i];
+                        }
+                        else
+                        {
+                            // ERROR
+                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // v = a+v*f
+                        if (v.type == sofa::core::V_COORD)
+                        {
+                            helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                            helper::ReadAccessor< Data<VecCoord> > va = *this->read(ConstVecCoordId(a));
+                            vv.resize(va.size());
+                            for (unsigned int i=0; i<vv.size(); i++)
+                            {
+                                vv[i] *= (Real)f;
+                                vv[i] += va[i];
+                            }
+                        }
+                        else
+                        {
+                            helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                            helper::ReadAccessor< Data<VecDeriv> > va = *this->read(ConstVecDerivId(a));
+                            vv.resize(va.size());
+                            for (unsigned int i=0; i<vv.size(); i++)
+                            {
+                                vv[i] *= (Real)f;
+                                vv[i] += va[i];
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    // v = a+b*f
-                    if (v.type == VecId::V_COORD)
+                    if (f==1.0)
                     {
-                        VecCoord* vv = getVecCoord(v.index);
-                        VecCoord* va = getVecCoord(a.index);
-                        vv->resize(va->size());
-                        if (b.type == VecId::V_COORD)
+                        // v = a+b
+                        if (v.type == sofa::core::V_COORD)
                         {
-                            VecCoord* vb = getVecCoord(b.index);
-                            for (unsigned int i=0; i<vv->size(); i++)
+                            helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                            helper::ReadAccessor< Data<VecCoord> > va = *this->read(ConstVecCoordId(a));
+                            vv.resize(va.size());
+                            if (b.type == sofa::core::V_COORD)
                             {
-                                (*vv)[i] = (*va)[i];
-                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                helper::ReadAccessor< Data<VecCoord> > vb = *this->read(ConstVecCoordId(b));
+                                for (unsigned int i=0; i<vv.size(); i++)
+                                {
+                                    vv[i] = va[i];
+                                    vv[i] += vb[i];
+                                }
+                            }
+                            else
+                            {
+                                helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+                                for (unsigned int i=0; i<vv.size(); i++)
+                                {
+                                    vv[i] = va[i];
+                                    vv[i] += vb[i];
+                                }
+                            }
+                        }
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+                            helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                            helper::ReadAccessor< Data<VecDeriv> > va = *this->read(ConstVecDerivId(a));
+                            helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+                            vv.resize(va.size());
+                            for (unsigned int i=0; i<vv.size(); i++)
+                            {
+                                vv[i] = va[i];
+                                vv[i] += vb[i];
                             }
                         }
                         else
                         {
-                            VecDeriv* vb = getVecDeriv(b.index);
-                            for (unsigned int i=0; i<vv->size(); i++)
-                            {
-                                (*vv)[i] = (*va)[i];
-                                (*vv)[i] += (*vb)[i]*(Real)f;
-                            }
-                        }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-                        VecDeriv* vv = getVecDeriv(v.index);
-                        VecDeriv* va = getVecDeriv(a.index);
-                        VecDeriv* vb = getVecDeriv(b.index);
-                        vv->resize(va->size());
-                        for (unsigned int i=0; i<vv->size(); i++)
-                        {
-                            (*vv)[i] = (*va)[i];
-                            (*vv)[i] += (*vb)[i]*(Real)f;
+                            // ERROR
+                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            return;
                         }
                     }
                     else
                     {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
-                        return;
+                        // v = a+b*f
+                        if (v.type == sofa::core::V_COORD)
+                        {
+                            helper::WriteAccessor< Data<VecCoord> > vv = *this->write(VecCoordId(v));
+                            helper::ReadAccessor< Data<VecCoord> > va = *this->read(ConstVecCoordId(a));
+                            vv.resize(va.size());
+                            if (b.type == sofa::core::V_COORD)
+                            {
+                                helper::ReadAccessor< Data<VecCoord> > vb = *this->read(ConstVecCoordId(b));
+                                for (unsigned int i=0; i<vv.size(); i++)
+                                {
+                                    vv[i] = va[i];
+                                    vv[i] += vb[i]*(Real)f;
+                                }
+                            }
+                            else
+                            {
+                                helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+                                for (unsigned int i=0; i<vv.size(); i++)
+                                {
+                                    vv[i] = va[i];
+                                    vv[i] += vb[i]*(Real)f;
+                                }
+                            }
+                        }
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+                            helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
+                            helper::ReadAccessor< Data<VecDeriv> > va = *this->read(ConstVecDerivId(a));
+                            helper::ReadAccessor< Data<VecDeriv> > vb = *this->read(ConstVecDerivId(b));
+                            vv.resize(va.size());
+                            for (unsigned int i=0; i<vv.size(); i++)
+                            {
+                                vv[i] = va[i];
+                                vv[i] += vb[i]*(Real)f;
+                            }
+                        }
+                        else
+                        {
+                            // ERROR
+                            serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                            return;
+                        }
                     }
                 }
             }
         }
     }
 }
-#endif
+
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
+void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops, const core::ExecParams* /* params */)
 {
     // optimize common integration case: v += a*dt, x += v*dt
-    if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].first.type == VecId::V_DERIV && ops[0].second[1].first.type == VecId::V_DERIV
-        && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[0].first == ops[1].second[1].first && ops[1].first.type == VecId::V_COORD)
+    if (ops.size() == 2
+        && ops[0].second.size() == 2
+        && ops[0].first.getId(this) == ops[0].second[0].first.getId(this)
+        && ops[0].first.getId(this).type == sofa::core::V_DERIV
+        && ops[0].second[1].first.getId(this).type == sofa::core::V_DERIV
+        && ops[1].second.size() == 2
+        && ops[1].first.getId(this) == ops[1].second[0].first.getId(this)
+        && ops[0].first.getId(this) == ops[1].second[1].first.getId(this)
+        && ops[1].first.getId(this).type == sofa::core::V_COORD)
     {
-        const VecDeriv& va = *getVecDeriv(ops[0].second[1].first.index);
-        VecDeriv& vv = *getVecDeriv(ops[0].first.index);
-        VecCoord& vx = *getVecCoord(ops[1].first.index);
+        helper::ReadAccessor< Data<VecDeriv> > va = *this->read(ConstVecDerivId(ops[0].second[1].first.getId(this)));
+        helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(ops[0].first.getId(this)));
+        helper::WriteAccessor< Data<VecCoord> > vx = *this->write(VecCoordId(ops[1].first.getId(this)));
+
         const unsigned int n = vx.size();
         const Real f_v_v = (Real)(ops[0].second[0].second);
         const Real f_v_a = (Real)(ops[0].second[1].second);
         const Real f_x_x = (Real)(ops[1].second[0].second);
         const Real f_x_v = (Real)(ops[1].second[1].second);
+
         if (f_v_v == 1.0 && f_x_x == 1.0) // very common case
         {
             if (f_v_a == 1.0) // used by euler implicit and other integrators that directly computes a*dt
@@ -2419,22 +2111,23 @@ template <class T> inline void clear( T& t )
 {
     t.clear();
 }
+
 template<> inline void clear( float& t )
 {
     t=0;
 }
+
 template<> inline void clear( double& t )
 {
     t=0;
 }
 
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
 {
-    if( v.type==VecId::V_DERIV)
+    if( v.type==sofa::core::V_DERIV)
     {
-        helper::WriteAccessor<VecDeriv> vv = *getVecDeriv(v.index);
+        helper::WriteAccessor< Data<VecDeriv> > vv = *this->write(VecDerivId(v));
         Real t2 = (Real)(t*t);
         for (unsigned int i=0; i<vv.size(); i++)
         {
@@ -2444,168 +2137,82 @@ void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
     }
     else
     {
-        std::cerr<<"MechanicalObject<DataTypes>::vThreshold does not apply to coordinate vectors"<<std::endl;
+        serr<<"vThreshold does not apply to coordinate vectors"<<sendl;
     }
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
+double MechanicalObject<DataTypes>::vDot(ConstVecId a, ConstVecId b, const core::ExecParams* /* params */)
 {
     Real r = 0.0;
-    if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
+
+    if (a.type == sofa::core::V_COORD && b.type == sofa::core::V_COORD)
     {
-        VecCoord* va = getVecCoord(a.index);
-        VecCoord* vb = getVecCoord(b.index);
-        for (unsigned int i=0; i<va->size(); i++)
-            r += (*va)[i] * (*vb)[i];
+        const VecCoord &va = this->read(ConstVecCoordId(a))->getValue();
+        const VecCoord &vb = this->read(ConstVecCoordId(b))->getValue();
+
+        for (unsigned int i=0; i<va.size(); i++)
+        {
+            r += va[i] * vb[i];
+        }
     }
-    else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
+    else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
     {
-        VecDeriv* va = getVecDeriv(a.index);
-        VecDeriv* vb = getVecDeriv(b.index);
-        for (unsigned int i=0; i<va->size(); i++)
-            r += (*va)[i] * (*vb)[i];
+        const VecDeriv &va = this->read(ConstVecDerivId(a))->getValue();
+        const VecDeriv &vb = this->read(ConstVecDerivId(b))->getValue();
+
+        for (unsigned int i=0; i<va.size(); i++)
+        {
+            r += va[i] * vb[i];
+        }
     }
     else
     {
-        std::cerr << "Invalid dot operation ("<<a<<','<<b<<")\n";
+        serr << "Invalid dot operation ("<<a<<','<<b<<")" << sendl;
     }
+
     return r;
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setX(VecId vId)
-{
-    if (vId.type == VecId::V_COORD)
-    {
-        if (this->f_printLog.getValue() == true)
-        {
-            std::cout << "setX (" << vId.index << ") is called" << std::endl;
-        }
-
-        this->m_posId = vId;
-    }
-    else
-    {
-        std::cerr << "Invalid setX operation (" << vId << ")\n";
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setXfree(VecId vId)
-{
-    if (vId.type == VecId::V_COORD)
-    {
-        if (this->f_printLog.getValue() == true)
-        {
-            std::cout << "setXfree (" << vId.index << ") is called" << std::endl;
-        }
-
-        this->m_freePosId = vId;
-    }
-    else
-    {
-        std::cerr << "Invalid setXfree operation (" << vId << ")\n";
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setVfree(VecId vId)
-{
-    if (vId.type == VecId::V_DERIV)
-    {
-        this->m_freeVelId = vId;
-    }
-    else
-    {
-        std::cerr << "Invalid setVfree operation (" << vId << ")\n";
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setV(VecId vId)
-{
-    if (vId.type == VecId::V_DERIV)
-    {
-        this->m_velId = vId;
-    }
-    else
-    {
-        std::cerr << "Invalid setV operation (" << vId << ")\n";
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setF(VecId vId)
-{
-    if (vId.type == VecId::V_DERIV)
-    {
-        this->m_forceId = vId;
-    }
-    else
-    {
-        std::cerr << "Invalid setF operation (" << vId << ")\n";
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setDx(VecId vId)
-{
-    if (vId.type == VecId::V_DERIV)
-    {
-        this->m_dxId = vId;
-    }
-    else
-    {
-        std::cerr << "Invalid setDx operation (" << vId << ")\n";
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setC(VecId vId)
-{
-    if (vId.type == VecId::V_CONST)
-    {
-        this->m_constraintId = vId;
-    }
-    else
-    {
-        std::cerr << "Invalid setC operation (" << vId << ")\n";
-    }
 }
 
 #ifndef SOFA_SMP
 template <class DataTypes>
-void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firstIndex, int range) const
+void MechanicalObject<DataTypes>::printDOF( ConstVecId v, std::ostream& out, int firstIndex, int range) const
 {
     const unsigned int size=this->getSize();
     if ((unsigned int) (abs(firstIndex)) >= size) return;
     const unsigned int first=((firstIndex>=0)?firstIndex:size+firstIndex);
     const unsigned int max=( ( (range >= 0) && ( (range+first)<size) ) ? (range+first):size);
-    if( v.type==VecId::V_COORD)
+
+    if( v.type==sofa::core::V_COORD)
     {
-        if (getVecCoord(v.index))
+        const Data<VecCoord>* d_x = this->read(ConstVecCoordId(v));
+        if (d_x == NULL) return;
+        helper::ReadAccessor< Data<VecCoord> > x = *d_x;
+
+        if (x.empty())
+            return;
+
+        for (unsigned i=first; i<max; ++i)
         {
-            const VecCoord& x= *getVecCoord(v.index);
-            if (x.empty()) return;
-            for( unsigned i=first; i<max; ++i )
-            {
-                out<<x[i];
-                if (i != max-1) out <<" ";
-            }
+            out << x[i];
+            if (i != max-1)
+                out <<" ";
         }
     }
-    else if( v.type==VecId::V_DERIV)
+    else if( v.type==sofa::core::V_DERIV)
     {
-        if (getVecDeriv(v.index))
+        const Data<VecDeriv>* d_x = this->read(ConstVecDerivId(v));
+        if (d_x == NULL) return;
+        helper::ReadAccessor< Data<VecDeriv> > x = *d_x;
+
+        if (x.empty())
+            return;
+
+        for (unsigned i=first; i<max; ++i)
         {
-            const VecDeriv& x= *getVecDeriv(v.index);
-            if (x.empty()) return;
-            for( unsigned i=first; i<max; ++i )
-            {
-                out<<x[i];
-                if (i != max-1) out <<" ";
-            }
+            out << x[i];
+            if (i != max-1)
+                out <<" ";
         }
     }
     else
@@ -2616,20 +2223,25 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firs
 template <class DataTypes>
 unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(VecId v, unsigned count, unsigned time, std::ostream& out)
 {
-    if (v.type == VecId::V_COORD)
+    if (v.type == sofa::core::V_COORD)
     {
-        VecCoord& x = *getVecCoord(v.index);
+        const Data<VecCoord>* d_x = this->read(ConstVecCoordId(v));
+        if (d_x == NULL) return 0;
+        helper::ReadAccessor< Data<VecCoord> > x = *d_x;
 
         for (unsigned i = 0; i < x.size(); ++i)
         {
             out << count + i << "\t" << time << "\t" << x[i] << std::endl;
         }
         out << std::endl << std::endl;
+
         return x.size();
     }
-    else if (v.type == VecId::V_DERIV)
+    else if (v.type == sofa::core::V_DERIV)
     {
-        VecDeriv& x = *getVecDeriv(v.index);
+        const Data<VecDeriv>* d_x = this->read(ConstVecDerivId(v));
+        if (d_x == NULL) return 0;
+        helper::ReadAccessor< Data<VecDeriv> > x = *d_x;
 
         for (unsigned i = 0; i < x.size(); ++i)
         {
@@ -2645,165 +2257,83 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(VecId v, unsigned 
     return 0;
 }
 
-
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetForce()
+void MechanicalObject<DataTypes>::resetForce(const core::ExecParams*
+#ifdef SOFA_SMP
+        params
+#endif
+                                            )
 {
 #ifdef SOFA_SMP
-    BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **getF());
-#else
-    helper::WriteAccessor<VecDeriv> f = *getF();
-
-    if (!this->forceMask.isInUse())
+    if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        for (unsigned i = 0; i < f.size(); ++i)
-        {
-            f[i] = Deriv();
-        }
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(VecDerivId::force())));
     }
     else
+#endif /* SOFA_SMP */
     {
-        typedef helper::ParticleMask ParticleMask;
+        helper::WriteAccessor< Data<VecDeriv> > f = *this->write(VecDerivId::force());
 
-        const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
-        ParticleMask::InternalStorage::const_iterator it;
-
-        for (it = indices.begin(); it != indices.end(); it++)
+        if (!this->forceMask.isInUse())
         {
-            f[(*it)] = Deriv();
+            for (unsigned i = 0; i < f.size(); ++i)
+            {
+                f[i] = Deriv();
+            }
+        }
+        else
+        {
+            typedef helper::ParticleMask ParticleMask;
+
+            const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
+            ParticleMask::InternalStorage::const_iterator it;
+
+            for (it = indices.begin(); it != indices.end(); it++)
+            {
+                f[(*it)] = Deriv();
+            }
         }
     }
-#endif
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetAcc()
+void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams*
+#ifdef SOFA_SMP
+        params
+#endif
+                                          )
 {
 #ifdef SOFA_SMP
-    BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **getDx());
-#else
-    helper::WriteAccessor<VecDeriv> a= *getDx();
-
-    for (unsigned i = 0; i < a.size(); ++i)
+    if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        a[i] = Deriv();
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(VecDerivId::dx())));
     }
-#endif
-}
-
-
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::resetConstraint()
-{
-    //	std::cout << "resetConstraint()\n";
-    // VecConst& c= *getC();
-    // c.clear();
-
-    MatrixDeriv *c = getC();
-    if (c != NULL)
+    else
+#endif /* SOFA_SMP */
     {
-        c->clear();
+        helper::WriteAccessor< Data<VecDeriv> > a = *this->write(VecDerivId::dx());
+
+        for (unsigned i = 0; i < a.size(); ++i)
+        {
+            a[i] = Deriv();
+        }
     }
-
-//	constraintId.clear();
-}
-
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setConstraintId(unsigned int i)
-{
-    constraintId.push_back(i);
-
-    //for (int j=0; j<constraintId.size(); j++)
-    //{
-    //	std::cout << "constraintId[j] = " << constraintId[j] << std::endl;
-    //}
 }
 
 template <class DataTypes>
-sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId()
+void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* /* params */)
 {
-    return constraintId;
+    Data<MatrixDeriv>& c_data = *this->write(MatrixDerivId::holonomicC());
+    MatrixDeriv *c = c_data.beginEdit();
+    c->clear();
+    c_data.endEdit();
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering)
+void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
 {
-    for (unsigned int i = 0; i < constraintId.size(); ++i)
-        constraintId[i] = renumbering[constraintId[i]];
+    this->serr << "MechanicalObject<DataTypes>::renumberConstraintId not implemented in the MatrixDeriv constraint API" << this->sendl;
 }
-//
-//template <class DataTypes>
-//std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
-//{
-//	const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
-//	assert( indices.size() > 0 );
-//	assert( dimensionDeriv > 0 );
-//
-//	// simple column/block map
-//
-//	typedef sofa::component::linearsolver::SparseMatrix<SReal> matrix_t;
-//	// typedef sofa::component::linearsolver::FullMatrix<SReal> matrix_t;
-//
-//	typedef std::map<unsigned int, matrix_t* > blocks_t;
-//	blocks_t blocks;
-//
-//	// for all row indices
-//	typedef std::list<unsigned int> indices_t;
-//
-//	unsigned int block_row = 0;
-//	for(indices_t::const_iterator rowIt = indices.begin(); rowIt != indices.end(); ++rowIt, ++block_row)
-//	{
-//		unsigned int row = getIdxConstraintFromId(*rowIt);
-//
-//		// for all sparse data in the row
-//		assert( row < c.getValue().size() );
-//		std::pair< ConstraintIterator, ConstraintIterator > range = c.getValue()[row].data();
-//		ConstraintIterator chunk = range.first, last = range.second;
-//		for( ; chunk != last; ++chunk)
-//		{
-//			const unsigned int column = chunk->first;
-//
-//			// do we already have a block for this column ?
-//			if( blocks.find( column ) == blocks.end() )
-//			{
-//				// nope: let's create it
-//				matrix_t* mat = new matrix_t(indices.size(), dimensionDeriv);
-//				blocks[column] = mat;
-//
-//				// for(unsigned int i = 0; i < mat->rowSize(); ++i) {
-//				//   for(unsigned int j = 0; j < mat->colSize(); ++j) {
-//				//     mat->set(i, j, 0);
-//				//   }
-//				// }
-//
-//			}
-//
-//			// now it's created no matter what \o/
-//			matrix_t& block = *blocks[column];
-//
-//			// fill the right line of the block
-//			const Deriv curValue = chunk->value();
-//
-//			for (unsigned int i = 0; i < dimensionDeriv; ++i)
-//			{
-//				SReal value;
-//				defaulttype::DataTypeInfo< Deriv >::getValue(curValue, i, value);
-//				block.set(block_row, i, value);
-//			}
-//		}
-//	}
-//
-//	// put all blocks in a list and we're done
-//	std::list<ConstraintBlock> res;
-//	for(blocks_t::const_iterator b = blocks.begin(); b != blocks.end(); ++b)
-//	{
-//		res.push_back( ConstraintBlock( b->first, b->second ) );
-//	}
-//
-//	return res;
-//}
 
 template <class DataTypes>
 std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
@@ -2871,46 +2401,8 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
     return res;
 }
 
-//template <class DataTypes>
-//SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id)
-//{
-//	SReal result = 0;
-//    if (std::find(constraintId.begin(), constraintId.end(), line) == constraintId.end()) return 0;
-//
-//    SparseVecDeriv &value = (*c.beginEdit())[getIdxConstraintFromId(line)];
-//
-//	VecDeriv *data = 0;
-//
-//	//Maybe we should extend this to restvelocity
-//	if (id == VecId::velocity())
-//	{
-//		data = v.beginEdit();
-//	}
-//	else if (id == VecId::dx())
-//	{
-//		data = dx.beginEdit();
-//	}
-//	else
-//	{
-//		this->serr << "getConstraintJacobianTimesVecDeriv " << "NOT IMPLEMENTED for " << id.getName() << this->sendl;
-//		return 0;
-//	}
-//
-//	std::pair< SparseVecDerivIterator, SparseVecDerivIterator > range = value.data();
-//
-//	for (SparseVecDerivIterator it = range.first; it != range.second; ++it)
-//	{
-//		result += it->second * (*data)[it->first];
-//	}
-//
-//	c.endEdit();
-//
-//	return result;
-//}
-
-
 template <class DataTypes>
-SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned int line, VecId id)
+SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned int line, core::ConstVecId id)
 {
     SReal result = 0;
 
@@ -2924,11 +2416,11 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     const VecDeriv *data = 0;
 
     // Maybe we should extend this to restvelocity
-    if (id == VecId::velocity())
+    if (id == ConstVecId::velocity())
     {
         data = &v.getValue();
     }
-    else if (id == VecId::dx())
+    else if (id == ConstVecId::dx())
     {
         data = &dx.getValue();
     }
@@ -2949,7 +2441,6 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 
     return result;
 }
-
 
 template <class DataTypes>
 bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
@@ -3025,459 +2516,412 @@ void MechanicalObject<DataTypes>::draw()
             }
 
             glPopMatrix();
-
         }
     }
-
 }
+
 #ifdef SOFA_SMP
 template < class DataTypes >
-void MechanicalObject < DataTypes >::vOpMEq (VecId v, VecId b,
-        a1::Shared <
-        double >*f)
+void MechanicalObject < DataTypes >::vOpMEq (VecId v, ConstVecId b, a1::Shared < double >*f, const core::ExecParams* /* params */)
 {
-
-    if (v.type == VecId::V_COORD)
+    if (v.type == sofa::core::V_COORD)
     {
-
-        if (b.type == VecId::V_COORD)
+        if (b.type == sofa::core::V_COORD)
         {
-
-
-            BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord,
-                       VecCoord > >(this,**getVecCoord (v.index),
-                               **getVecCoord(b.index), *f);
-
+            BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord, VecCoord > >
+            (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+             **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *f);
         }
         else
         {
-            BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord,
-                       VecDeriv > >(this,**getVecCoord (v.index),
-                               **getVecDeriv (b.index), *f);
-
+            BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord, VecDeriv > >
+            (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+             **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *f);
         }
     }
-    else if (b.type == VecId::V_DERIV)
+    else if (b.type == sofa::core::V_DERIV)
     {
-        BaseObject::Task < vOpMinusEqualMult < DataTypes, VecDeriv,
-                   VecDeriv > >(this,**getVecDeriv (v.index),
-                           **getVecDeriv (b.index), *f);
-
+        BaseObject::Task < vOpMinusEqualMult < DataTypes, VecDeriv, VecDeriv > >
+        (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+         **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *f);
+        // helper::ReadAccessor< Data<VecCoord> > vSrc = *this->read(ConstVecCoordId(src));
+        // helper::ReadAccessor< Data<VecCoord> > x_rA = *this->read(ConstVecCoordId::position());
     }
     else
     {
         // ERROR
-        //  std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+        //  serr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
         return;
     }
-
-
 }
-template < class DataTypes >
-void MechanicalObject < DataTypes >::vOp(VecId v, VecId a, VecId b , double f) { vOp(v,a,b,f,NULL);}
+
+// template < class DataTypes >
+// void MechanicalObject < DataTypes >::vOp(core::VecId v, core::ConstVecId a, core::ConstVecId b , double f, const core::ExecParams* params){ vOp(v,a,b,f,NULL, params); }
 
 template < class DataTypes >
-void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
-        VecId b, double f,
-        a1::Shared  < double >*fSh)
+void MechanicalObject < DataTypes >::vOp (core::VecId v, core::ConstVecId a, core::ConstVecId b, double f, a1::Shared  < double >*fSh, const core::ExecParams* params )
 {
-    if (v.isNull ())
+    if (params->execMode() != core::ExecParams::EXEC_KAAPI)
     {
-        // ERROR
-        std::cerr << "Invalid vOp operation (" << v << ',' << a << ','
-                << b << ',' << f << ")\n";
-        return;
-    }
-    if (a.isNull ())
-    {
-        if (b.isNull ())
-        {
-            // v = 0
-            if (v.type == VecId::V_COORD)
-            {
-                //VecCoord* vv = getVecCoord(v.index);
-                BaseObject::Task < vClear < VecDeriv,Deriv >
-                >(this,**getVecCoord (v.index), (unsigned) (this->vsize));
-
-                /*unsigned int vt=ExecutionGraph::add_operation("v=0");
-                ExecutionGraph::read_var(vt,vv);
-                ExecutionGraph::write_var(vt,vv); */
-
-
-
-
-            }
-            else
-            {
-                //  VecDeriv* vv = getVecDeriv(v.index);
-                BaseObject::Task < vClear < VecCoord,Coord >
-                >(this,**getVecDeriv (v.index), (unsigned) (this->vsize));
-                /*unsigned int vt=ExecutionGraph::add_operation("v=0");
-                ExecutionGraph::read_var(vt,vv);
-                ExecutionGraph::write_var(vt,vv);
-                vv->resize(this->this->vsize);
-                for (unsigned int i=0; i<vv->size(); i++)
-                (*vv)[i] = Deriv();
-                */
-            }
-
-        }
-        else
-        {
-            if (b.type != v.type)
-            {
-                // ERROR
-                std::cerr << "Invalid vOp operation (" << v << ',' << a
-                        << ',' << b << ',' << f << ")\n";
-                return;
-            }
-            if (v == b)
-            {
-                // v *= f
-                if (v.type == VecId::V_COORD)
-                {
-
-                    /*VecCoord* vv = getVecCoord(v.index);
-                    unsigned int vt=ExecutionGraph::add_operation("v*=f");
-                    ExecutionGraph::read_var(vt,vv);
-                    ExecutionGraph::write_var(vt,vv); */
-                    BaseObject::Task < vTEq < VecCoord, Real >
-                    >(this,**getVecCoord (v.index), f);
-                }
-                else
-                {
-                    /*            VecDeriv* vv = getVecDeriv(v.index);
-                    unsigned int vt=ExecutionGraph::add_operation("v*=f");
-                    ExecutionGraph::read_var(vt,vv);
-                    ExecutionGraph::write_var(vt,vv);
-                    */
-
-
-
-
-                    BaseObject::Task < vTEq < VecDeriv, Real >
-                    >(this,**getVecDeriv (v.index), f);
-
-
-
-
-
-                }
-            }
-            else
-            {
-                // v = b*f
-                if (v.type == VecId::V_COORD)
-                {
-                    BaseObject::Task < vEqBF < VecCoord,Real >
-                    >(this,**getVecCoord (b.index),
-                      **getVecCoord (v.index), f);
-                }
-                else
-                {
-                    BaseObject::Task < vEqBF < VecDeriv,Real >
-                    >(this,**getVecDeriv (b.index),
-                      **getVecDeriv (v.index), f);
-                }
-            }
-        }
+        vOp(v, a, b, f, params);
     }
     else
     {
-        if (a.type != v.type)
+#ifdef SOFA_SMP_NUMA
+        if(this->getContext()->getProcessor()!=-1)
+            numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
+        if (v.isNull ())
         {
             // ERROR
-            std::cerr << "Invalid vOp operation (" << v << ',' << a <<
-                    ',' << b << ',' << f << ")\n";
+            serr << "Invalid vOp operation (" << v << ',' << a << ','
+                    << b << ',' << f << ")" << sendl;
             return;
         }
-        if (b.isNull ())
+        if (a.isNull ())
         {
-            // v = a
-            if (v.type == VecId::V_COORD)
+            if (b.isNull ())
             {
-                BaseObject::Task < vAssign <
-                VecCoord > >(this,**getVecCoord (v.index),
-                        **getVecCoord (a.index));
+                // v = 0
+                if (v.type == sofa::core::V_COORD)
+                {
+                    BaseObject::Task < vClear < VecCoord,Coord > >
+                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                     (unsigned) (this->vsize));
+
+                    /*unsigned int vt=ExecutionGraph::add_operation("v=0");
+                    ExecutionGraph::read_var(vt,vv);
+                    ExecutionGraph::write_var(vt,vv); */
+                }
+                else
+                {
+                    BaseObject::Task < vClear < VecDeriv,Deriv > >
+                    (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                     (unsigned) (this->vsize));
+                    /*unsigned int vt=ExecutionGraph::add_operation("v=0");
+                    ExecutionGraph::read_var(vt,vv);
+                    ExecutionGraph::write_var(vt,vv);
+                    vv->resize(this->this->vsize);
+                    */
+                }
             }
             else
             {
-                BaseObject::Task < vAssign <
-                VecDeriv > >(this,**getVecDeriv (v.index),
-                        **getVecDeriv (a.index));
+                if (b.type != v.type)
+                {
+                    // ERROR
+                    serr << "Invalid vOp operation (" << v << ',' << a << ',' << b << ',' << f << ")" << sendl;
+                    return;
+                }
+                if (v == b)
+                {
+                    // v *= f
+                    if (v.type == sofa::core::V_COORD)
+                    {
+
+                        /*VecCoord* vv = getVecCoord(v.index);
+                        unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                        ExecutionGraph::read_var(vt,vv);
+                        ExecutionGraph::write_var(vt,vv); */
+                        BaseObject::Task < vTEq < VecCoord, Real > >
+                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))), f);
+                    }
+                    else
+                    {
+                        /*
+                        unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                        ExecutionGraph::read_var(vt,vv);
+                        ExecutionGraph::write_var(vt,vv);
+                        */
+                        BaseObject::Task < vTEq < VecDeriv, Real > >
+                        (this,**defaulttype::getShared(*this->write(VecDerivId(v))), f);
+                    }
+                }
+                else
+                {
+                    // v = b*f
+                    if (v.type == sofa::core::V_COORD)
+                    {
+                        BaseObject::Task < vEqBF < VecCoord,Real > >
+                        (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                         **defaulttype::getShared(*this->read(ConstVecCoordId(b))), f);
+                        // >(this,**getVecCoord (b.index), TODO : check order
+                        // **getVecCoord (v.index), f);
+                    }
+                    else
+                    {
+                        BaseObject::Task < vEqBF < VecDeriv,Real > >
+                        (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                         **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
+                        // *getVecDeriv (b.index), TODO : check order
+                        // **getVecDeriv (v.index), f);
+                    }
+                }
             }
         }
         else
         {
-            if (v == a)
+            if (a.type != v.type)
             {
-                if (f == 1.0 && !fSh)
-                {
-                    // v += b
-                    if (v.type == VecId::V_COORD)
-                    {
-
-                        if (b.type == VecId::V_COORD)
-                        {
-
-                            BaseObject::Task < vPEq < VecCoord,
-                                       VecCoord >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (b.index));
-
-                        }
-                        else
-                        {
-                            BaseObject::Task < vPEq < VecCoord,
-                                       VecDeriv >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecDeriv (b.index));
-
-                        }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-
-                        BaseObject::Task < vPEq <  VecDeriv,
-                                   VecDeriv >
-                                   >(this,**getVecDeriv (v.index),
-                                           **getVecDeriv (b.index));
-
-                    }
-                    else
-                    {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation (" << v <<
-                                ',' << a << ',' << b << ',' << f << ")\n";
-                        return;
-                    }
-                }
-                else
-                {
-                    // v += b*f
-                    if (v.type == VecId::V_COORD)
-                    {
-                        if (b.type == VecId::V_COORD)
-                        {
-
-                            if (fSh)
-                            {
-                                BaseObject::Task < vPEqBF < DataTypes,
-                                           VecCoord,
-                                           VecCoord >
-                                           >(this,**getVecCoord (v.index),
-                                                   **getVecCoord (b.index), *fSh, f);
-                            }
-                            else
-                            {
-                                BaseObject::Task < vPEqBF < DataTypes,
-                                           VecCoord,
-                                           VecCoord >
-                                           >(this,**getVecCoord (v.index),
-                                                   **getVecCoord (b.index), f);
-                            }
-                        }
-                        else
-                        {
-                            if (fSh)
-                            {
-                                BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >(this,**getVecCoord (v.index), **getVecDeriv (b.index), *fSh, f);
-                            }
-                            else
-                            {
-                                BaseObject::Task < vPEqBF < DataTypes,
-                                           VecCoord,
-                                           VecDeriv >
-                                           >(this,**getVecCoord (v.index),
-                                                   **getVecDeriv (b.index), f);
-                            }
-                        }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-                        if (fSh)
-                        {
-                            BaseObject::Task < vPEqBF < DataTypes,
-                                       VecDeriv,
-                                       VecDeriv >
-                                       >(this,**getVecDeriv (v.index),
-                                               **getVecDeriv (b.index), *fSh, f);
-                        }
-                        else
-                        {
-                            BaseObject::Task < vPEqBF < DataTypes,
-                                       VecDeriv,
-                                       VecDeriv >
-                                       >(this,**getVecDeriv (v.index),
-                                               **getVecDeriv (b.index), f);
-                        }
-                    }
-                    else
-                    {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation (" << v <<
-                                ',' << a << ',' << b << ',' << f << ")\n";
-                        return;
-                    }
-                }
+                // ERROR
+                serr << "Invalid vOp operation (" << v << ',' << a <<
+                        ',' << b << ',' << f << ")" << sendl;
+                return;
             }
-            else if (v == b)
+            if (b.isNull ())
             {
-                if (f == 1.0 && !fSh)
+                // v = a
+                if (v.type == sofa::core::V_COORD)
                 {
-                    // v += a
-                    if (v.type == VecId::V_COORD)
-                    {
-
-                        if (a.type == VecId::V_COORD)
-                        {
-                            BaseObject::Task < vPEq < VecCoord,
-                                       VecCoord >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (a.index));
-
-                        }
-                        else
-                        {
-                            BaseObject::Task < vPEq <  VecCoord,
-                                       VecDeriv >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecDeriv (a.index));
-
-                        }
-                    }
-                    else if (a.type == VecId::V_DERIV)
-                    {
-                        BaseObject::Task<vPEq <VecCoord,VecDeriv> > (this,**getVecDeriv(v.index),**getVecDeriv(a.index));
-                    }
-                    else
-                    {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation (" << v <<
-                                ',' << a << ',' << b << ',' << f << ")\n";
-                        return;
-                    }
+                    BaseObject::Task < vAssign < VecCoord > >
+                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                     **defaulttype::getShared(*this->read(ConstVecCoordId(a))));
                 }
                 else
                 {
-                    // v = a+v*f
-                    if (v.type == VecId::V_COORD)
-                    {
-                        if (fSh)
-                        {
-                            BaseObject::Task < vOpSumMult < DataTypes, VecCoord,
-                                       VecCoord >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (a.index), *fSh,
-                                               (Real) f);
-                        }
-                        else
-                        {
-                            BaseObject::Task < vOpSumMult < DataTypes, VecCoord,
-                                       VecCoord >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (a.index), (Real) f);
-                        }
-                    }
-                    else
-                    {
-                        if (fSh)
-                        {
-                            BaseObject::Task < vOpSumMult < DataTypes, VecDeriv,
-                                       VecDeriv >
-                                       >(this,**getVecDeriv (v.index),
-                                               **getVecDeriv (a.index), *fSh,
-                                               (Real) f);
-                        }
-                        else
-                        {
-                            BaseObject::Task < vOpSumMult < DataTypes, VecDeriv,
-                                       VecDeriv >
-                                       >(this,**getVecDeriv (v.index),
-                                               **getVecDeriv (a.index), (Real) f);
-                        }
-                    }
+                    BaseObject::Task < vAssign < VecDeriv > >
+                    (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                     **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
                 }
             }
             else
             {
-                if (f == 1.0 && !fSh)
+                if (v == a)
                 {
-                    // v = a+b
-                    if (v.type == VecId::V_COORD)
+                    if (f == 1.0 && !fSh)
                     {
-                        if (b.type == VecId::V_COORD)
+                        // v += b
+                        if (v.type == sofa::core::V_COORD)
                         {
-                            BaseObject::Task < vAdd < VecCoord,
-                                       VecCoord, VecCoord >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (a.index),
-                                               **getVecCoord (b.index));
+
+                            if (b.type == sofa::core::V_COORD)
+                            {
+                                BaseObject::Task < vPEq < VecCoord, VecCoord > >
+                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(v))));
+                            }
+                            else
+                            {
+                                BaseObject::Task < vPEq < VecCoord, VecDeriv > >
+                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(v))));
+                            }
+                        }
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+
+                            BaseObject::Task < vPEq <  VecDeriv, VecDeriv >	>
+                            (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                             **defaulttype::getShared(*this->read(ConstVecDerivId(v))));
                         }
                         else
                         {
-                            BaseObject::Task < vAdd <  VecCoord,
-                                       VecCoord, VecDeriv >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (a.index),
-                                               **getVecDeriv (b.index));
+                            // ERROR
+                            serr << "Invalid vOp operation (" << v <<
+                                    ',' << a << ',' << b << ',' << f << ")" << sendl;
+                            return;
                         }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-                        BaseObject::Task < vAdd < VecDeriv,
-                                   VecDeriv, VecDeriv >
-                                   >(this,**getVecDeriv (v.index),
-                                           **getVecDeriv (a.index),
-                                           **getVecDeriv (b.index));
                     }
                     else
                     {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation (" << v <<
-                                ',' << a << ',' << b << ',' << f << ")\n";
-                        return;
+                        // v += b*f
+                        if (v.type == sofa::core::V_COORD)
+                        {
+                            if (b.type == sofa::core::V_COORD)
+                            {
+                                if (fSh)
+                                {
+                                    BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecCoord > >
+                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *fSh, f);
+                                }
+                                else
+                                {
+                                    BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecCoord > >
+                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecCoordId(b))), f);
+                                }
+                            }
+                            else
+                            {
+                                if (fSh)
+                                {
+                                    BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >
+                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))),*fSh, f);
+                                }
+                                else
+                                {
+                                    BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >
+                                    (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                     **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
+                                }
+                            }
+                        }// v.type == sofa::core::V_COORD
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+                            if (fSh)
+                            {
+                                BaseObject::Task < vPEqBF < DataTypes, VecDeriv, VecDeriv > >
+                                (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))),*fSh, f);
+                            }
+                            else
+                            {
+                                BaseObject::Task < vPEqBF < DataTypes, VecDeriv, VecDeriv > >
+                                (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))), f);
+                            }
+                        }
+                        else
+                        {
+                            // ERROR
+                            serr << "Invalid vOp operation (" << v <<
+                                    ',' << a << ',' << b << ',' << f << ")" << sendl;
+                            return;
+                        }
+                    }
+                }
+                else if (v == b)
+                {
+                    if (f == 1.0 && !fSh)
+                    {
+                        // v += a
+                        if (v.type == sofa::core::V_COORD)
+                        {
+
+                            if (a.type == sofa::core::V_COORD)
+                            {
+                                BaseObject::Task < vPEq < VecCoord, VecCoord > >
+                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))));
+                            }
+                            else
+                            {
+                                BaseObject::Task < vPEq < VecCoord, VecDeriv > >
+                                (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
+                            }
+                        }
+                        else if (a.type == sofa::core::V_DERIV)
+                        {
+                            BaseObject::Task< vPEq <VecDeriv, VecDeriv > >
+                            (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                             **defaulttype::getShared(*this->read(ConstVecDerivId(a))));
+                            // BaseObject::Task<vPEq <VecCoord,VecDeriv> >  TODO CHECK
+                            // 		(this,**getVecDeriv(v.index),**getVecDeriv(a.index));
+                        }
+                        else
+                        {
+                            // ERROR
+                            serr << "Invalid vOp operation (" << v << ',' << a << ',' << b << ',' << f << ")" << sendl;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // v = a+v*f
+                        if (v.type == sofa::core::V_COORD)
+                        {
+                            if (fSh)
+                            {
+                                BaseObject::Task < vOpSumMult < DataTypes, VecCoord, VecCoord > >
+                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))), *fSh, (Real) f);
+                            }
+                            else
+                            {
+                                BaseObject::Task < vOpSumMult < DataTypes, VecCoord, VecCoord > >
+                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))), (Real) f);
+                            }
+                        }
+                        else
+                        {
+                            if (fSh)
+                            {
+                                BaseObject::Task < vOpSumMult < DataTypes, VecDeriv, VecDeriv > >
+                                (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(a))), *fSh, (Real) f);
+                            }
+                            else
+                            {
+                                BaseObject::Task < vOpSumMult < DataTypes, VecDeriv, VecDeriv > >
+                                (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(a))), (Real) f);
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    // v = a+b*f
-                    if (v.type == VecId::V_COORD)
+                    if (f == 1.0 && !fSh)
                     {
-                        if (b.type == VecId::V_COORD)
+                        // v = a+b
+                        if (v.type == sofa::core::V_COORD)
                         {
-                            BaseObject::Task < vOpVeqAplusBmultF < DataTypes,
-                                       VecCoord,
-                                       VecCoord >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (a.index),
-                                               **getVecCoord (b.index), (Real) f);
+                            if (b.type == sofa::core::V_COORD)
+                            {
+                                BaseObject::Task < vAdd < VecCoord, VecCoord, VecCoord > >
+                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(b))));
+                            }
+                            else
+                            {
+                                BaseObject::Task < vAdd < VecCoord, VecCoord, VecDeriv > >
+                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))));
+                            }
+                        }
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+                            BaseObject::Task < vAdd < VecDeriv, VecDeriv, VecDeriv > >
+                            (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                             **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
+                             **defaulttype::getShared(*this->read(ConstVecDerivId(b))));
                         }
                         else
                         {
-                            BaseObject::Task < vOpVeqAplusBmultF < DataTypes,
-                                       VecCoord,
-                                       VecDeriv >
-                                       >(this,**getVecCoord (v.index),
-                                               **getVecCoord (a.index),
-                                               **getVecDeriv (b.index), (Real) f);
+                            // ERROR
+                            serr << "Invalid vOp operation (" << v << ',' << a << ',' << b << ',' << f << ")" << sendl;
+                            return;
                         }
-                    }
-                    else if (b.type == VecId::V_DERIV)
-                    {
-                        BaseObject::Task < vOpVeqAplusBmultF < DataTypes,
-                                   VecDeriv,
-                                   VecDeriv >
-                                   >(this,**getVecDeriv (v.index),
-                                           **getVecDeriv (a.index),
-                                           **getVecDeriv (b.index), (Real) f);
                     }
                     else
                     {
-                        // ERROR
-                        std::cerr << "Invalid vOp operation (" << v <<
-                                ',' << a << ',' << b << ',' << f << ")\n";
-                        return;
+                        // v = a+b*f
+                        if (v.type == sofa::core::V_COORD)
+                        {
+                            if (b.type == sofa::core::V_COORD)
+                            {
+                                BaseObject::Task < vOpVeqAplusBmultF < DataTypes, VecCoord, VecCoord > >
+                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(b))), (Real) f);
+                            }
+                            else
+                            {
+                                BaseObject::Task < vOpVeqAplusBmultF < DataTypes, VecCoord, VecDeriv > >
+                                (this, **defaulttype::getShared(*this->write(VecCoordId(v))),
+                                 **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+                                 **defaulttype::getShared(*this->read(ConstVecDerivId(b))), (Real) f);
+                            }
+                        }
+                        else if (b.type == sofa::core::V_DERIV)
+                        {
+                            BaseObject::Task < vOpVeqAplusBmultF < DataTypes, VecDeriv, VecDeriv > >
+                            (this, **defaulttype::getShared(*this->write(VecDerivId(v))),
+                             **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
+                             **defaulttype::getShared(*this->read(ConstVecDerivId(b))), (Real) f);
+                        }
+                        else
+                        {
+                            // ERROR
+                            serr << "Invalid vOp operation (" << v << ',' << a << ',' << b << ',' << f << ")" << sendl;
+                            return;
+                        }
                     }
                 }
             }
@@ -3485,43 +2929,41 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
     }
 }
 
-
-
 template < class DataTypes >
-void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, VecId b)
+void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res, core::ConstVecId a,  core::ConstVecId b, const core::ExecParams* /* params */)
 {
     //      double r = 0.0;
-    if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
+    if (a.type == sofa::core::V_COORD && b.type == sofa::core::V_COORD)
     {
         if (a.index == b.index)
         {
-            BaseObject::Task < vDotOp < DataTypes,
-                       VecCoord > >(this,**getVecCoord (a.index), *res);
+            BaseObject::Task < vDotOp < DataTypes, VecCoord > >
+            (this, **defaulttype::getShared(*this->read(ConstVecCoordId(a))), *res);
         }
         else
         {
-            BaseObject::Task < vDotOp < DataTypes,
-                       VecCoord > >(this,**getVecCoord (a.index),
-                               **getVecCoord (b.index), *res);
+            BaseObject::Task < vDotOp < DataTypes, VecCoord > >
+            (this, **defaulttype::getShared(*this->read(ConstVecCoordId(a))),
+             **defaulttype::getShared(*this->read(ConstVecCoordId(b))), *res);
         }
     }
-    else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
+    else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
     {
         if (a.index == b.index)
         {
-            BaseObject::Task < vDotOp < DataTypes,
-                       VecDeriv > >(this,**getVecDeriv (a.index), *res);
+            BaseObject::Task < vDotOp < DataTypes, VecDeriv > >
+            (this, **defaulttype::getShared(*this->read(ConstVecDerivId(a))), *res);
         }
         else
         {
-            BaseObject::Task < vDotOp < DataTypes,
-                       VecDeriv > >(this,**getVecDeriv (a.index),
-                               **getVecDeriv (b.index), *res);
+            BaseObject::Task < vDotOp < DataTypes, VecDeriv > >
+            (this, **defaulttype::getShared(*this->read(ConstVecDerivId(a))),
+             **defaulttype::getShared(*this->read(ConstVecDerivId(b))), *res);
         }
     }
     else
     {
-        std::cerr << "Invalid dot operation (" << a << ',' << b << ")\n";
+        serr << "Invalid dot operation (" << a << ',' << b << ")" << sendl;
     }
     // return r;
 }
@@ -3529,7 +2971,7 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //     template < class DataTypes >
 //       void MechanicalObject < DataTypes >::setX (VecId v)
 //     {
-//       if (v.type == VecId::V_COORD)
+//       if (v.type == sofa::core::V_COORD)
 // 	{
 //
 // 	  this->xSh = *getVecCoord (v.index);
@@ -3546,7 +2988,7 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //     template < class DataTypes >
 //       void ParallelMechanicalObject < DataTypes >::setXfree (VecId v)
 //     {
-//       if (v.type == VecId::V_COORD)
+//       if (v.type == sofa::core::V_COORD)
 // 	{
 // 	  this->xfreeSh = *getVecCoord (v.index);
 //
@@ -3562,7 +3004,7 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //     template < class DataTypes >
 //       void ParallelMechanicalObject < DataTypes >::setVfree (VecId v)
 //     {
-//       if (v.type == VecId::V_DERIV)
+//       if (v.type == sofa::core::V_DERIV)
 // 	{
 //
 // 	  this->vfreeSh = *getVecDeriv (v.index);
@@ -3579,7 +3021,7 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //     template < class DataTypes >
 //       void ParallelMechanicalObject < DataTypes >::setV (VecId v)
 //     {
-//       if (v.type == VecId::V_DERIV)
+//       if (v.type == sofa::core::V_DERIV)
 // 	{
 // 	  this->vSh = *getVecDeriv (v.index);
 //
@@ -3595,7 +3037,7 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //     template < class DataTypes >
 //       void ParallelMechanicalObject < DataTypes >::setF (VecId v)
 //     {
-//       if (v.type == VecId::V_DERIV)
+//       if (v.type == sofa::core::V_DERIV)
 // 	{
 //
 // 	  this->fSh = *getVecDeriv (v.index);
@@ -3612,7 +3054,7 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //     template < class DataTypes >
 //       void ParallelMechanicalObject < DataTypes >::setDx (VecId v)
 //     {
-//       if (v.type == VecId::V_DERIV)
+//       if (v.type == sofa::core::V_DERIV)
 // 	{
 // 	  this->dxSh = *getVecDeriv (v.index);
 //
@@ -3628,16 +3070,14 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //
 //
 template < class DataTypes >
-void MechanicalObject < DataTypes >::printDOF (VecId /*v*/,
-        std::
-        ostream & /*out*/, int /* firstIndex */, int /* range */) const
+void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostream & /*out*/, int /* firstIndex */, int /* range */) const
 {
-    // 	if (v.type == VecId::V_COORD)
+    // 	if (v.type == sofa::core::V_COORD)
     // 	{
     // 		VecCoord & x = *getVecCoord (v.index);
     // 		Task < printDOFSh < VecCoord > >(this,*x);
     // 	}
-    // 	else if (v.type == VecId::V_DERIV)
+    // 	else if (v.type == sofa::core::V_DERIV)
     // 	{
     // 		VecDeriv & x = *getVecDeriv (v.index);
     // 		Task < printDOFSh < VecDeriv > >(this,*x);
@@ -3647,15 +3087,14 @@ void MechanicalObject < DataTypes >::printDOF (VecId /*v*/,
     // 			v.type << std::endl;
 
 }
-#endif
-
+#endif /* SOFA_SMP */
 
 /// Find mechanical particles hit by the given ray.
 /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
 /// Returns false if this object does not support picking
 template <class DataTypes>
 bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-        std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
+        std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles, const core::ExecParams* /* params */)
 {
     if (DataTypeInfo<Coord>::size() == 2 || DataTypeInfo<Coord>::size() == 3
         || (DataTypeInfo<Coord>::size() == 7 && DataTypeInfo<Deriv>::size() == 6))
@@ -3685,24 +3124,6 @@ bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, doub
     else
         return false;
 }
-
-//
-//template <class DataTypes>
-//unsigned int  MechanicalObject<DataTypes>::getIdxConstraintFromId(unsigned int id) const
-//{
-//	const unsigned int constraintIdSize = constraintId.size();
-//
-//	for (unsigned int i = 0; i < constraintIdSize; ++i)
-//	{
-//		if (constraintId[i] == id)
-//			return i;
-//	}
-//
-//	serr << "Constraint Equation " << id << " Was not found!" << sendl;
-//
-//	return 0;
-//}
-
 
 } // namespace container
 

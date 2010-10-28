@@ -282,9 +282,10 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw()
 }
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const Rigid3dTypes::VecCoord& x ) const
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams* ) const
 {
     double e = 0;
+    helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     for (unsigned int i=0; i<x.size(); i++)
@@ -296,9 +297,10 @@ double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const Rigid3dT
 
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const Rigid2dTypes::VecCoord& x ) const
+double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams* ) const
 {
     double e = 0;
+    helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec2d g; g = this->getContext()->getLocalGravity();
     for (unsigned int i=0; i<x.size(); i++)
@@ -562,9 +564,10 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw()
 }
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const Rigid3fTypes::VecCoord& x ) const
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams* ) const
 {
     double e = 0;
+    helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     for (unsigned int i=0; i<x.size(); i++)
@@ -575,9 +578,10 @@ double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const Rigid3fT
 }
 
 template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fTypes::VecCoord& x ) const
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const DataVecCoord& vx, const core::MechanicalParams*) const
 {
     double e = 0;
+    helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec2d g; g = this->getContext()->getLocalGravity();
     for (unsigned int i=0; i<x.size(); i++)

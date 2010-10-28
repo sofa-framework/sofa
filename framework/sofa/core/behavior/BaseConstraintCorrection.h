@@ -28,8 +28,15 @@
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINTCORRECTION_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
+
+namespace sofa
+{
+namespace defaulttype
+{
+class BaseMatrix;
+class BaseVector;
+} // namespace defaulttype
+} // namespace sofa
 
 namespace sofa
 {
@@ -48,21 +55,20 @@ namespace behavior
 class BaseConstraintCorrection : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(BaseConstraintCorrection, BaseObject);
+    SOFA_CLASS(BaseConstraintCorrection, objectmodel::BaseObject);
 
     virtual ~BaseConstraintCorrection() {}
 
     virtual void getCompliance(defaulttype::BaseMatrix* W) = 0;
+
     //Fill the matrix m with the full Compliance Matrix
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const=0;
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const = 0;
 
     // for multigrid approach => constraints are merged
     virtual void  getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
     {
-        sout<<"getComplianceWithConstraintMerge is not implemented yet "<<sendl;
+        sout << "getComplianceWithConstraintMerge is not implemented yet " << sendl;
     }
-
-
 
     virtual void CudaGetCompliance(defaulttype::BaseMatrix* W)
     {
@@ -81,17 +87,15 @@ public:
 
     virtual void resetForUnbuiltResolution(double * /*f*/, std::list<int>& /*renumbering*/) {}
 
-    virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/,int /*end*/) { }
+    virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/) {}
 
-    virtual void setConstraintDForce(double * /*df*/, int /*begin*/,int /*end*/, bool /*update*/) { }	  // f += df
+    virtual void setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
 
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
     {
         sout << "warning : getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
     }
-
     /////////////////////////////////////////////////////////////////////////////////
-
 };
 
 } // namespace behavior

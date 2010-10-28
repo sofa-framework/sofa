@@ -71,35 +71,42 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
-    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef core::ConstraintParams::ConstOrder ConstOrder;
     typedef core::behavior::ConstraintGroup ConstraintGroup;
 
 
 public:
-    DistanceLMContactConstraint( MechanicalState *dof):
-        core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        ,pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        ,contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        ,intersection(0)
-    {initColorContactState();};
-    DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2):
-        core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
-        ,pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        ,contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        ,intersection(0)
-    {initColorContactState();};
-    DistanceLMContactConstraint():
-        pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
-        ,contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
-        ,intersection(0)
-    {initColorContactState();}
+    DistanceLMContactConstraint( MechanicalState *dof)
+        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+        , pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
+        , contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
+        , intersection(0)
+    {
+        initColorContactState();
+    };
+
+    DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2)
+        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
+        , pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
+        , contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
+        , intersection(0)
+    {
+        initColorContactState();
+    };
+
+    DistanceLMContactConstraint()
+        : pointPairs(Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
+        , contactFriction(Base::initData(&contactFriction, "contactFriction", "Coulomb friction coefficient (same for all)"))
+        , intersection(0)
+    {
+        initColorContactState();
+    }
 
     ~DistanceLMContactConstraint() {};
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::VecId position);
-    void writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder order);
+    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+    void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
     void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
             core::behavior::ConstraintGroup * group);
 

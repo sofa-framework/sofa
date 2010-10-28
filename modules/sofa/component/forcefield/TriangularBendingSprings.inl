@@ -504,7 +504,7 @@ void TriangularBendingSprings<DataTypes>::init()
 }
 
 template <class DataTypes>
-double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
+double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const DataVecCoord& /* d_x */, const core::MechanicalParams* /* mparams */) const
 {
     serr<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -512,12 +512,14 @@ double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void TriangularBendingSprings<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     int nbEdges=_topology->getNbEdges();
-
     EdgeInformation *einfo;
-
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     //const helper::vector<Spring>& m_springs= this->springs.getValue();
@@ -624,6 +626,7 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
     }
 
     edgeInfo.endEdit();
+    d_f.endEdit();
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
     /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
@@ -632,12 +635,14 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
 }
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
+void TriangularBendingSprings<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     int nbEdges=_topology->getNbEdges();
-
     const EdgeInformation *einfo;
-
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
     df.resize(dx.size());
@@ -659,18 +664,16 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
             const int b = einfo->m2;
             const Coord d = dx[b]-dx[a];
             const Deriv dforce = einfo->DfDx*d; //this->dfdx[i]*d;
-            df[a]+=dforce;
-            df[b]-=dforce;
+            df[a]+= dforce * kFactor;
+            df[b]-= dforce * kFactor;
             //serr<<"TriangularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
 
-            if(updateMatrix)
-            {
-
-            }
+            //if(updateMatrix){
+            //}
             updateMatrix=false;
         }
     }
-
+    d_df.endEdit();
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
     //    this->addSpringDForce(df,dx, i, springs[i]);
@@ -700,7 +703,7 @@ void TriangularBendingSprings<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
     //VecCoord& x_rest = *this->mstate->getX0();
     //int nbTriangles=_topology->getNbTriangles();
 
@@ -773,4 +776,5 @@ void TriangularBendingSprings<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif //#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
+

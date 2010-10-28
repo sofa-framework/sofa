@@ -28,7 +28,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/gl/DrawManager.h>
 #include <sofa/helper/gl/VisualParameters.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/simulation/common/xml/XML.h>

@@ -26,9 +26,13 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 HEADERS += \
           core.h \
           VecId.h \
+		  ConstraintParams.h \
           ExecParams.h \
           MechanicalParams.h \
+		  MultiVecId.h \
           BaseMapping.h \
+          BaseState.h \
+          State.h \
           BehaviorModel.h \
           CollisionElement.h \
           CollisionModel.h \
@@ -38,19 +42,19 @@ HEADERS += \
           behavior/BaseConstraintSet.h \
           behavior/BaseConstraintCorrection.h \
           behavior/BaseForceField.h \
+		  behavior/BaseInteractionForceField.h \
+          behavior/BaseInteractionProjectiveConstraintSet.h \
+          behavior/BaseInteractionConstraint.h \
           behavior/BaseLMConstraint.h \
           behavior/BaseMass.h \
-          behavior/BaseMechanicalMapping.h \
           behavior/BaseMechanicalState.h \ 
           behavior/BaseProjectiveConstraintSet.h \
+		  behavior/BaseVectorOperations.h \
           behavior/Constraint.h \
           behavior/Constraint.inl \
           behavior/ConstraintSolver.h \
           behavior/ForceField.h \
           behavior/ForceField.inl \
-          behavior/InteractionForceField.h \
-          behavior/InteractionProjectiveConstraintSet.h \
-          behavior/InteractionConstraint.h \
           behavior/LinearSolver.h \
           behavior/LMConstraint.h \
           behavior/LMConstraint.inl \
@@ -68,20 +72,13 @@ HEADERS += \
           behavior/Mass.h \
           behavior/Mass.inl \
           behavior/MasterSolver.h \
-          behavior/MechanicalMapping.h \
-          behavior/MechanicalMapping.inl \
-		  behavior/MechanicalMultiMapping.h \
-		  behavior/MechanicalMultiMapping.inl \
-		  behavior/MechanicalMulti2Mapping.h \
-		  behavior/MechanicalMulti2Mapping.inl \
           behavior/MechanicalState.h \
-          behavior/MultiVector.h \
+          behavior/MultiVec.h \
           behavior/MultiMatrix.h \
           behavior/MultiMatrixAccessor.h \
           behavior/ProjectiveConstraintSet.h \
           behavior/ProjectiveConstraintSet.inl \
           behavior/OdeSolver.h \
-          behavior/State.h \
           collision/BroadPhaseDetection.h \
           collision/CollisionAlgorithm.h \
           collision/CollisionGroupManager.h \
@@ -125,12 +122,13 @@ HEADERS += \
           objectmodel/DetachNodeEvent.h \
           objectmodel/Event.h \
           objectmodel/BaseData.h \
-	  objectmodel/JoystickEvent.h \
+	 	  objectmodel/JoystickEvent.h \
           objectmodel/KeypressedEvent.h \
-	  objectmodel/KeyreleasedEvent.h \
-	  objectmodel/MouseEvent.h \
-	  objectmodel/OmniEvent.h \
-	  objectmodel/GLInitializedEvent.h \
+	  	  objectmodel/KeyreleasedEvent.h \
+	  	  objectmodel/MouseEvent.h \
+  	  	  objectmodel/ObjectRef.h \
+	  	  objectmodel/OmniEvent.h \
+	  	  objectmodel/GLInitializedEvent.h \
           objectmodel/Tag.h \
           VisualModel.h \
           VisualManager.h \
@@ -150,15 +148,16 @@ SOURCES +=  \
           objectmodel/ConfigurationSetting.cpp \
           objectmodel/Context.cpp \
           objectmodel/Data.cpp \
-	  objectmodel/DDGNode.cpp \
+	      objectmodel/DDGNode.cpp \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
           objectmodel/DataFileName.cpp \
-	  objectmodel/JoystickEvent.cpp \
+	      objectmodel/JoystickEvent.cpp \
           objectmodel/KeypressedEvent.cpp \
           objectmodel/KeyreleasedEvent.cpp \
-	  objectmodel/MouseEvent.cpp \
-  	  objectmodel/OmniEvent.cpp \
+	      objectmodel/MouseEvent.cpp \
+  	      objectmodel/OmniEvent.cpp \
+		  objectmodel/ObjectRef.cpp \
           objectmodel/Tag.cpp \
           ObjectFactory.cpp \
           SofaLibrary.cpp \
@@ -183,13 +182,11 @@ SOURCES +=  \
           behavior/BaseConstraint.cpp \
           behavior/BaseForceField.cpp \   
           behavior/BaseLMConstraint.cpp \
+          behavior/BaseMechanicalState.cpp \
           behavior/ForceField.cpp \
           behavior/LMConstraint.cpp \
           behavior/Mass.cpp \
           behavior/Constraint.cpp \
-          behavior/MechanicalMapping.cpp \
-		  behavior/MechanicalMultiMapping.cpp \
-		  behavior/MechanicalMulti2Mapping.cpp \
           behavior/PairInteractionForceField.cpp \
           behavior/MixedInteractionForceField.cpp \
           behavior/PairInteractionConstraint.cpp \
@@ -204,7 +201,7 @@ HEADERS +=  \
 					CallContext.h \
           objectmodel/BaseObjectTasks.h \
           ParallelCollisionModel.h \
-          behavior/ParallelMultiVector.h \
+          behavior/ParallelMultiVec.h \
           collision/ParallelPipeline.h \
           collision/ParallelNarrowPhaseDetection.h
 

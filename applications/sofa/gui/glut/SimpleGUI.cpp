@@ -65,7 +65,7 @@
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <athapascan-1>
 #include "Multigraph.inl"
-#endif
+#endif /* SOFA_SMP */
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
 
@@ -90,12 +90,12 @@ struct doCollideTask
 {
     void operator()()
     {
-//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
         // groot->execute<CollisionVisitor>();
-        SimpleGUI::instance->getScene()->execute<CollisionVisitor>();
-        AnimateBeginEvent ev ( 0.0 );
-        PropagateEventVisitor act ( &ev );
-        SimpleGUI::instance->getScene()->execute ( act );
+        // TODO SimpleGUI::instance->getScene()->execute<CollisionVisitor>();
+        // TODO AnimateBeginEvent ev ( 0.0 );
+        // TODO PropagateEventVisitor act ( &ev );
+        // TODO SimpleGUI::instance->getScene()->execute ( act );
         //	sofa::simulation::tree::getSimulation()->animate(groot);
 
     }
@@ -104,7 +104,7 @@ struct animateTask
 {
     void operator()()
     {
-//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
 
         getSimulation()->animate( SimpleGUI::instance->getScene());
 
@@ -115,7 +115,7 @@ struct collideTask
 {
     void operator()()
     {
-//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
 
         //   a1::Fork<doCollideTask>()();
         //	sofa::simulation::tree::getSimulation()->animate(groot);
@@ -126,11 +126,11 @@ struct visuTask
 {
     void operator()()
     {
-//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        AnimateEndEvent ev ( 0.0 );
-        PropagateEventVisitor act ( &ev );
-        SimpleGUI::instance->getScene()->execute ( act );
-        SimpleGUI::instance->getScene()->execute<VisualUpdateVisitor>();
+        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        // TODO AnimateEndEvent ev ( 0.0 );
+        // TODO PropagateEventVisitor act ( &ev );
+        // TODO SimpleGUI::instance->getScene()->execute ( act );
+        // TODO SimpleGUI::instance->getScene()->execute<VisualUpdateVisitor>();
 
     }
 };
@@ -139,20 +139,15 @@ struct MainLoopTask
 
     void operator()()
     {
-//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
         Iterative::Fork<doCollideTask>()();
         Iterative::Fork<animateTask >(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
         Iterative::Fork<visuTask>()();
-
-
         //a1::Fork<collideTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-
-
-
     }
 };
+#endif /* SOFA_SMP */
 
-#endif
 SimpleGUI* SimpleGUI::instance = NULL;
 
 int SimpleGUI::mainLoop()
@@ -160,14 +155,14 @@ int SimpleGUI::mainLoop()
 #ifdef SOFA_SMP
     if(groot)
     {
-        getScene()->execute<CollisionVisitor>();
+// TODO	getScene()->execute<CollisionVisitor>();
         a1::Sync();
         mg=new Iterative::Multigraph<MainLoopTask>();
         mg->compile();
         mg->deploy();
 
     }
-#endif
+#endif /* SOFA_SMP */
     glutMainLoop();
     return 0;
 }
@@ -2378,46 +2373,54 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             default:
                 break;
             }
-            if (_mouseInteractorMoving && _navigationMode == BTLEFT_MODE)
+            if (_mouseInteractorMoving)
             {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
                 {
-                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
-                    redraw();
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
+                    helper::WriteAccessor<Data<sofa::defaulttype::LaparoscopicRigidTypes::VecCoord> > instrumentX = *instrument->write(core::VecCoordId::position());
+                    if (_navigationMode == BTLEFT_MODE)
+                    {
+                        int dx = eventX - _mouseInteractorSavedPosX;
+                        int dy = eventY - _mouseInteractorSavedPosY;
+                        if (dx || dy)
+                        {
+                            instrumentX[0].getOrientation() = instrumentX[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
+                            redraw();
+                            _mouseInteractorSavedPosX = eventX;
+                            _mouseInteractorSavedPosY = eventY;
+                        }
+                    }
+                    else if (_navigationMode == BTMIDDLE_MODE)
+                    {
+                        int dx = eventX - _mouseInteractorSavedPosX;
+                        int dy = eventY - _mouseInteractorSavedPosY;
+                        if (dx || dy)
+                        {
+                            if (!groot || !groot->getContext()->getAnimate())
+                                redraw();
+                            _mouseInteractorSavedPosX = eventX;
+                            _mouseInteractorSavedPosY = eventY;
+                        }
+                    }
+                    else if (_navigationMode == BTRIGHT_MODE)
+                    {
+                        int dx = eventX - _mouseInteractorSavedPosX;
+                        int dy = eventY - _mouseInteractorSavedPosY;
+                        if (dx || dy)
+                        {
+                            instrumentX[0].getTranslation() += (dy)*0.01;
+                            instrumentX[0].getOrientation() = instrumentX[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
+                            if (!groot || !groot->getContext()->getAnimate())
+                                redraw();
+                            _mouseInteractorSavedPosX = eventX;
+                            _mouseInteractorSavedPosY = eventY;
+                        }
+                    }
                 }
+                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor(core::MechanicalParams::defaultInstance()).execute(instrument->getContext());
+                sofa::simulation::UpdateMappingVisitor(core::ExecParams::defaultInstance()).execute(instrument->getContext());
+                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
             }
-            else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
-            {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
-                {
-                    if (!groot || !groot->getContext()->getAnimate())
-                        redraw();
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-            }
-            else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
-            {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
-                {
-                    (*instrument->getX())[0].getTranslation() += (dy)*0.01;
-                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
-                    if (!groot || !groot->getContext()->getAnimate())
-                        redraw();
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-            }
-            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
         }
     }
     else

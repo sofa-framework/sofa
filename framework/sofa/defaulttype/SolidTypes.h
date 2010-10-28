@@ -39,11 +39,9 @@
 
 #include <sofa/defaulttype/defaulttype.h>
 
-//#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
@@ -391,15 +389,6 @@ public:
     typedef Coord VecCoord;
     typedef Deriv VecDeriv;
     typedef Real  VecReal;
-    //         typedef std::vector<Coord> VecCoord;
-    //         typedef std::vector<SpatialVector> VecDeriv;
-
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
-
-    //! All the Constraints applied to a state Vector
-    typedef	helper::vector<SparseVecDeriv> VecConst;
-
 
     static Mat dyad( const Vec& u, const Vec& v );
 

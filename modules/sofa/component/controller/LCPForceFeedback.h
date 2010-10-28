@@ -125,7 +125,6 @@ protected:
     MatrixDeriv mConstraints[3];
     std::vector<int> mId_buf[3];
     component::constraintset::LCP* mLcp[3];
-    /* 	typename DataType::VecConst *constraint; */
     /* 	std::vector<int> *id_buf; */
     /* 	typename DataType::VecCoord *val; */
     unsigned char mNextBufferId; // Next buffer id to be use

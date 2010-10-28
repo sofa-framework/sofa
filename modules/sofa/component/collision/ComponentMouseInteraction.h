@@ -78,11 +78,11 @@ public:
 
 
     //Components
-    simulation::Node                                            *parentNode;
-    simulation::Node                                            *nodeRayPick;
-    sofa::core::behavior::BaseMechanicalState   *mouseInSofa;
-    sofa::core::behavior::BaseMechanicalMapping *mouseMapping;
-    sofa::component::collision::BaseMouseInteractor             *mouseInteractor;
+    simulation::Node* parentNode;
+    simulation::Node* nodeRayPick;
+    sofa::core::behavior::BaseMechanicalState* mouseInSofa;
+    sofa::core::BaseMapping* mouseMapping;
+    sofa::component::collision::BaseMouseInteractor* mouseInteractor;
 };
 
 
@@ -93,7 +93,7 @@ class TComponentMouseInteraction : public ComponentMouseInteraction
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MousePosition;
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef sofa::component::collision::MouseInteractor< DataTypes > Interactor;
-    typedef sofa::component::mapping::IdentityMapping<sofa::core::behavior::MechanicalMapping<sofa::core::behavior::MechanicalState< defaulttype::Vec3Types>, sofa::core::behavior::MechanicalState< DataTypes > > > IdentityMechanicalMapping;
+    typedef sofa::component::mapping::IdentityMapping< defaulttype::Vec3Types, DataTypes > IdentityMechanicalMapping;
 
 public:
 

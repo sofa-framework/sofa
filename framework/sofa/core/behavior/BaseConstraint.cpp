@@ -36,29 +36,6 @@ namespace behavior
 {
 
 
-void BaseConstraint::getConstraintViolation(defaulttype::BaseVector *v, VecId vId, ConstOrder /*order*/ )
-{
-    if (vId.type == VecId::V_COORD)
-    {
-        bool freePos = false;
-
-        if (vId == VecId::freePosition())
-            freePos = true;
-
-        getConstraintValue(v, freePos);
-    }
-    else if (vId.type == VecId::V_DERIV)
-    {
-
-    }
-}
-
-void BaseConstraint::projectResponse(double **)
-{
-}
-
-
-
 } // namespace behavior
 
 } // namespace core

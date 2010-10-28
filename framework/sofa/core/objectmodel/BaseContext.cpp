@@ -273,6 +273,12 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
     std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
 }
 
+/// Degrees-of-Freedom
+BaseObject* BaseContext::getState() const
+{
+    return this->get<sofa::core::BaseState>();
+}
+
 /// Mechanical Degrees-of-Freedom
 BaseObject* BaseContext::getMechanicalState() const
 {
@@ -305,7 +311,7 @@ BaseObject* BaseContext::getShader() const
 }
 
 /// Propagate an event
-void BaseContext::propagateEvent( Event* )
+void BaseContext::propagateEvent( Event*, const core::ExecParams* )
 {
     serr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<sendl;
 }

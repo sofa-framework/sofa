@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/topology/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/helper/vector.h>
@@ -40,47 +40,78 @@ namespace mapping
 {
 
 
-template <class BasicMapping>
-class SimpleTesselatedTetraMechanicalMapping : public BasicMapping
+template <class TIn, class TOut>
+class SimpleTesselatedTetraMechanicalMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SimpleTesselatedTetraMechanicalMapping,BasicMapping),BasicMapping);
-    typedef BasicMapping Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE2(SimpleTesselatedTetraMechanicalMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    typedef core::Mapping<TIn, TOut> Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    //typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    //typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename InCoord::value_type Real;
+    typedef typename In::Real         Real;
+    typedef typename In::VecCoord     InVecCoord;
+    typedef typename In::VecDeriv     InVecDeriv;
+    typedef typename In::MatrixDeriv  InMatrixDeriv;
+    typedef Data<InVecCoord>          InDataVecCoord;
+    typedef Data<InVecDeriv>          InDataVecDeriv;
+    typedef Data<InMatrixDeriv>       InDataMatrixDeriv;
+    typedef typename In::Coord        InCoord;
+    typedef typename In::Deriv        InDeriv;
 
-    SimpleTesselatedTetraMechanicalMapping(In* from, Out* to);
+    typedef typename Out::VecCoord    OutVecCoord;
+    typedef typename Out::VecDeriv    OutVecDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef Data<OutVecCoord>         OutDataVecCoord;
+    typedef Data<OutVecDeriv>         OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv>      OutDataMatrixDeriv;
+    typedef typename Out::Coord       OutCoord;
+    typedef typename Out::Deriv       OutDeriv;
+
+    SimpleTesselatedTetraMechanicalMapping(core::State<In>* from, core::State<Out>* to);
 
     void init();
 
     virtual ~SimpleTesselatedTetraMechanicalMapping();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    virtual void apply(OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams);
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    virtual void applyJ(OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams);
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    virtual void applyJT(InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams);
 
-    //void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    virtual void applyJT(InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams* cparams);
 
 protected:
     topology::SimpleTesselatedTetraTopologicalMapping* topoMap;
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3fTypes, Rigid3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< Vec3dTypes, Rigid3fTypes >;
+#endif
+#endif
+
+#endif
 
 } // namespace mapping
 

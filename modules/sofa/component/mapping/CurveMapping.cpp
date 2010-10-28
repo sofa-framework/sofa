@@ -33,13 +33,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#define SOFA_COMPONENT_MAPPING_CURVEMAPPING_CPP
+
 #include <sofa/component/mapping/CurveMapping.inl>
+
+#include <sofa/core/ObjectFactory.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
 
 namespace sofa
 {
@@ -51,9 +52,6 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
-
 
 SOFA_DECL_CLASS(CurveMapping)
 
@@ -61,31 +59,31 @@ SOFA_DECL_CLASS(CurveMapping)
 int CurveMappingClass = core::RegisterObject("Mapping allowing one or more rigid objects follow a trajectory determined by a set of points")
 
 #ifndef SOFA_FLOAT
-        .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< CurveMapping< Vec3dTypes, Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes> > > >()
+        .add< CurveMapping< Vec3fTypes, Rigid3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes> > > >()
-        .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< CurveMapping< Vec3dTypes, Rigid3fTypes > >()
+        .add< CurveMapping< Vec3fTypes, Rigid3dTypes > >()
 #endif
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class CurveMapping< Vec3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes> > >;
+template class CurveMapping< Vec3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes> > >;
-template class CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes> > >;
+template class CurveMapping< Vec3dTypes, Rigid3fTypes >;
+template class CurveMapping< Vec3fTypes, Rigid3dTypes >;
 #endif
 #endif
 

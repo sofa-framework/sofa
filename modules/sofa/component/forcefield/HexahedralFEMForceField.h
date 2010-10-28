@@ -85,6 +85,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef helper::ReadAccessor< DataVecCoord > RDataRefVecCoord;
+    typedef helper::WriteAccessor< DataVecDeriv > WDataRefVecDeriv;
 
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Hexa Element;
@@ -169,11 +173,9 @@ public:
     virtual void init();
     virtual void reinit();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce (DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addDForce (DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
 
     // handle topological changes
     virtual void handleTopologyChange();
@@ -194,12 +196,12 @@ protected:
     ////////////// large displacements method
     void initLarge(const int i);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
-    virtual void accumulateForceLarge( Vector& f, const Vector & p, const int i);
+    virtual void accumulateForceLarge( WDataRefVecDeriv& f, RDataRefVecCoord& p, const int i);
 
     ////////////// polar decomposition method
     void initPolar(const int i);
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
-    virtual void accumulateForcePolar( Vector& f, const Vector & p, const int i);
+    virtual void accumulateForcePolar( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i);
 
     /// the callback function called when a hexahedron is created
     static void FHexahedronCreationFunction (int , void* ,
@@ -239,4 +241,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API HexahedralFEMForceField<defa
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_H

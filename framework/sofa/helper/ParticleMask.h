@@ -46,7 +46,7 @@ class ParticleMask
 {
 public:
     typedef std::set< unsigned int > InternalStorage;
-    ParticleMask(const Data<bool> &activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {};
+    ParticleMask(Data<bool> *activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {};
 
     /// Insert an entry in the mask
     void insertEntry(unsigned int index)
@@ -77,7 +77,7 @@ public:
     ///    * all the components of the node must use the mask. If a single one has deactivated its mask, we can't use the mask for the whole node.
     bool isInUse() const
     {
-        return inUse.getValue() && activated && allComponentsAreUsingMask;
+        return inUse->getValue() && activated && allComponentsAreUsingMask;
     }
 
     void clear() {indices.clear(); activated=true; allComponentsAreUsingMask=true;}
@@ -85,7 +85,7 @@ public:
 protected:
     InternalStorage indices;
     // Act as a switch, to enable or not the mask.
-    const Data<bool> &inUse;
+    Data<bool> *inUse;
     bool activated;
     bool allComponentsAreUsingMask;
 

@@ -22,15 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/EdgePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
-
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 
 namespace sofa
 {
@@ -42,10 +38,6 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-
-
 
 SOFA_DECL_CLASS(EdgePressureForceField)
 
@@ -59,12 +51,11 @@ int EdgePressureForceFieldClass = core::RegisterObject("EdgePressure")
         ;
 
 #ifndef SOFA_FLOAT
-template class EdgePressureForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EdgePressureForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class EdgePressureForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EdgePressureForceField<Vec3fTypes>;
 #endif
-
 
 } // namespace forcefield
 

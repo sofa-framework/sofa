@@ -26,6 +26,7 @@
 
 
 #include <sofa/simulation/common/VelocityThresholdVisitor.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 
 namespace sofa
@@ -37,16 +38,18 @@ namespace simulation
 using std::cerr;
 using std::endl;
 
-VelocityThresholdVisitor::VelocityThresholdVisitor( VecId v, double t )
-    : vid(v), threshold(t)
+VelocityThresholdVisitor::VelocityThresholdVisitor( core::MultiVecId v, double t, const core::ExecParams* params  )
+    : Visitor(params), vid(v), threshold(t)
 {
 }
 
 Visitor::Result VelocityThresholdVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (node->mechanicalState != NULL)
+    sofa::core::behavior::BaseMechanicalState* state = node->mechanicalState;
+
+    if (state != NULL)
     {
-        node->mechanicalState->vThreshold(vid,threshold);
+        state->vThreshold(vid.getId(state),threshold);
     }
     return Visitor::RESULT_CONTINUE;
 }

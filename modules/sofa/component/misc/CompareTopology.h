@@ -93,8 +93,8 @@ protected :
 class SOFA_COMPONENT_MISC_API CompareTopologyCreator: public Visitor
 {
 public:
-    CompareTopologyCreator();
-    CompareTopologyCreator(const std::string &n, bool i=true, int c=0);
+    CompareTopologyCreator(const core::ExecParams* params);
+    CompareTopologyCreator(const std::string &n, const core::ExecParams* params, bool i=true, int c=0);
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n; }
@@ -115,7 +115,7 @@ protected:
 class SOFA_COMPONENT_MISC_API CompareTopologyResult: public Visitor
 {
 public:
-    CompareTopologyResult();
+    CompareTopologyResult(const core::ExecParams* params);
     virtual Result processNodeTopDown( simulation::Node*  );
 
     unsigned int getTotalError() {return TotalError;}

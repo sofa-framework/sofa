@@ -23,6 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/odesolver/DampVelocitySolver.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -54,9 +56,11 @@ DampVelocitySolver::DampVelocitySolver()
     , threshold( initData( &threshold, 0.0, "threshold", "Threshold under which the velocities are canceled.") )
 {}
 
-void DampVelocitySolver::solve(double dt)
+void DampVelocitySolver::solve(double dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params)
 {
-    MultiVector vel(this, VecId::velocity());
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    //sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    MultiVecDeriv vel(&vop, vResult /*core::VecDerivId::velocity()*/ );
     bool printLog = f_printLog.getValue();
 
     if( printLog )
@@ -65,7 +69,7 @@ void DampVelocitySolver::solve(double dt)
         serr<<"DampVelocitySolver, initial v = "<< vel <<sendl;
     }
 
-    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    //mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     vel.teq( exp(-rate.getValue()*dt) );
     if( threshold.getValue() != 0.0 )

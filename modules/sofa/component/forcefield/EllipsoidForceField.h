@@ -29,6 +29,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 
+#include <sofa/component/component.h>
+
 namespace sofa
 {
 
@@ -52,11 +54,15 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(EllipsoidForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    typedef typename DataTypes::Real        Real        ;
+    typedef typename DataTypes::Coord       Coord       ;
+    typedef typename DataTypes::Deriv       Deriv       ;
+    typedef typename DataTypes::VecCoord    VecCoord    ;
+    typedef typename DataTypes::VecDeriv    VecDeriv    ;
+    typedef typename DataTypes::VecReal     VecReal     ;
+    typedef Data<VecCoord>                  DataVecCoord;
+    typedef Data<VecDeriv>                  DataVecDeriv;
+
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
@@ -119,14 +125,37 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV, const sofa::core::MechanicalParams* /*mparams*/ ) ;
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* /*mparams*/ ) ;
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
     void draw();
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec1fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec1dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec1fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
 
 } // namespace forcefield
 
@@ -134,4 +163,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_H

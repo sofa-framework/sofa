@@ -22,16 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP
 #include "SubsetMapping.inl"
 
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/Mapping.inl>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -43,80 +40,59 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
 
 SOFA_DECL_CLASS(SubsetMapping)
 
 int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
 #ifndef SOFA_FLOAT
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > > >()
-        .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
-// .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< SubsetMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< SubsetMapping< Vec1dTypes, Vec1dTypes > >()
+        .add< SubsetMapping< Vec3dTypes, ExtVec3fTypes > >()
+        .add< SubsetMapping< Rigid3dTypes, Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > > >()
-        .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-// .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
+        .add< SubsetMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< SubsetMapping< Vec1fTypes, Vec1fTypes > >()
+        .add< SubsetMapping< Vec3fTypes, ExtVec3fTypes > >()
+        .add< SubsetMapping< Rigid3fTypes, Rigid3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > > >()
-        .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > > >()
+        .add< SubsetMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< SubsetMapping< Vec3dTypes, Vec3fTypes > >()
+        .add< SubsetMapping< Vec1fTypes, Vec1dTypes > >()
+        .add< SubsetMapping< Vec1dTypes, Vec1fTypes > >()
+        .add< SubsetMapping< Rigid3fTypes, Rigid3dTypes > >()
+        .add< SubsetMapping< Rigid3dTypes, Rigid3fTypes > >()
 #endif
 #endif
         .addAlias("SurfaceIdentityMapping")
         ;
 
-
 #ifndef SOFA_FLOAT
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
-template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class SubsetMapping< Vec3dTypes, Vec3dTypes >;
+template class SubsetMapping< Vec1dTypes, Vec1dTypes >;
+template class SubsetMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SubsetMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
-template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-// template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
+template class SubsetMapping< Vec3fTypes, Vec3fTypes >;
+template class SubsetMapping< Vec1fTypes, Vec1fTypes >;
+template class SubsetMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SubsetMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > >;
-template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > >;
+template class SubsetMapping< Vec3dTypes, Vec3fTypes >;
+template class SubsetMapping< Vec3fTypes, Vec3dTypes >;
+template class SubsetMapping< Vec1dTypes, Vec1fTypes >;
+template class SubsetMapping< Vec1fTypes, Vec1dTypes >;
+template class SubsetMapping< Rigid3dTypes, Rigid3fTypes >;
+template class SubsetMapping< Rigid3fTypes, Rigid3dTypes >;
 #endif
 #endif
-
-// Mech -> Mech
-
-// Mech -> Mapped
-
-// Mech -> ExtMapped
 
 } // namespace mapping
 

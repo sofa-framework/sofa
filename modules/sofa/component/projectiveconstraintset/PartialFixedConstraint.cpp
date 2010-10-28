@@ -88,7 +88,7 @@ void PartialFixedConstraint<Rigid3dTypes>::draw()
     if (!getContext()->getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     if( f_fixAll.getValue()==true )
         for (unsigned i=0; i<x.size(); i++ )
             points.push_back(x[i].getCenter());
@@ -109,7 +109,7 @@ void PartialFixedConstraint<Rigid2dTypes>::draw()
     if (!getContext()->getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
@@ -133,7 +133,7 @@ void PartialFixedConstraint<Rigid3fTypes>::draw()
     if (!getContext()->getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
 
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     if( f_fixAll.getValue()==true )
         for (unsigned i=0; i<x.size(); i++ )
             points.push_back(x[i].getCenter());
@@ -152,7 +152,7 @@ void PartialFixedConstraint<Rigid2fTypes>::draw()
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);

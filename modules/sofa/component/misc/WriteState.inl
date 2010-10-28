@@ -211,22 +211,28 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 if (f_writeX.getValue())
                 {
                     str << "  X= ";
-                    mmodel->writeX(str);
+                    //<TO REMOVE>
+                    //mmodel->writeX(str);
+                    mmodel->writeVec(core::VecId::position(), str);
                     str << "\n";
                 }
                 if (f_writeX0.getValue())
                 {
                     str << "  X0= ";
-                    mmodel->setX(core::VecId::restPosition());
-                    mmodel->writeX(str);
-                    mmodel->setX(core::VecId::position());
+                    //<TO REMOVE>
+                    //mmodel->setX(core::VecId::restPosition());
+                    //mmodel->writeX(str);
+                    //mmodel->setX(core::VecId::position());
+                    mmodel->writeVec(core::VecId::restPosition(), str);
                     str << "\n";
                 }
                 //write the V state
                 if (f_writeV.getValue())
                 {
                     str << "  V= ";
-                    mmodel->writeV(str);
+                    //<TO REMOVE>
+                    //mmodel->writeV(str);
+                    mmodel->writeVec(core::VecId::velocity(), str);
                     str << "\n";
                 }
                 gzputs(gzfile, str.str().c_str());
@@ -241,22 +247,28 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     if (f_writeX.getValue())
                     {
                         (*outfile) << "  X= ";
-                        mmodel->writeX(*outfile);
+                        //<TO REMOVE>
+                        //mmodel->writeX(*outfile);
+                        mmodel->writeVec(core::VecId::position(), *outfile);
                         (*outfile) << "\n";
                     }
                     if (f_writeX0.getValue())
                     {
                         (*outfile) << "  X0= ";
-                        mmodel->setX(core::VecId::restPosition());
-                        mmodel->writeX((*outfile));
-                        mmodel->setX(core::VecId::position());
+                        //<TO REMOVE>
+                        //mmodel->setX(core::VecId::restPosition());
+                        //mmodel->writeX((*outfile));
+                        //mmodel->setX(core::VecId::position());
+                        mmodel->writeVec(core::VecId::restPosition(), *outfile);
                         (*outfile) << "\n";
                     }
                     //write the V state
                     if (f_writeV.getValue())
                     {
                         (*outfile) << "  V= ";
-                        mmodel->writeV(*outfile);
+                        //<TO REMOVE>
+                        //mmodel->writeV(*outfile);
+                        mmodel->writeVec(core::VecId::velocity(), *outfile);
                         (*outfile) << "\n";
                     }
                     outfile->flush();

@@ -25,25 +25,20 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
-#include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/HexahedronData.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+
 #include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/MechanicalParams.h>
+
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
 #include <sofa/defaulttype/Quat.h>
-
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/helper/vector.h>
 
 
 // forward declarations
@@ -113,13 +108,9 @@ public:
 
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Deriv InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
 
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
     enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
     enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
@@ -197,6 +188,8 @@ public:
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapper< In, Out > &  ) { return out; }
 };
 
+
+
 /// Template class for barycentric mapping topology-specific mappers.
 template<class In, class Out>
 class TopologyBarycentricMapper : public BarycentricMapper<In,Out>
@@ -241,6 +234,7 @@ protected:
 };
 
 
+
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
 class BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
@@ -250,12 +244,8 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData1D MappingData1D;
     typedef typename Inherit::MappingData2D MappingData2D;
     typedef typename Inherit::MappingData3D MappingData3D;
@@ -377,6 +367,8 @@ private:
 
 };
 
+
+
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
 class BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In,Out>
@@ -386,11 +378,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::CubeData CubeData;
 
     enum { NIn = Inherit::NIn };
@@ -461,6 +449,7 @@ public:
 };
 
 
+
 /// Class allowing barycentric mapping computation on a SparseGridTopology
 template<class In, class Out>
 class BarycentricMapperSparseGridTopology : public TopologyBarycentricMapper<In,Out>
@@ -470,11 +459,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
 
     typedef typename Inherit::CubeData CubeData;
 
@@ -541,6 +526,7 @@ public:
 };
 
 
+
 /// Base class for barycentric mapping topology-specific mappers. Enables topological changes.
 class BarycentricMapperDynamicTopology
 {
@@ -558,6 +544,7 @@ protected:
 };
 
 
+
 /// Class allowing barycentric mapping computation on a EdgeSetTopology
 template<class In, class Out>
 class BarycentricMapperEdgeSetTopology : public TopologyBarycentricMapper<In,Out>,
@@ -569,11 +556,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData1D MappingData;
 
 protected:
@@ -642,9 +625,8 @@ public:
 
         return out;
     }
-
-
 };
+
 
 
 /// Class allowing barycentric mapping computation on a TriangleSetTopology
@@ -657,11 +639,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >		map;
@@ -729,9 +707,8 @@ public:
 
         return out;
     }
-
-
 };
+
 
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
@@ -744,11 +721,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
@@ -818,6 +791,8 @@ public:
 
 };
 
+
+
 /// Class allowing barycentric mapping computation on a TetrehedronSetTopology
 template<class In, class Out>
 class BarycentricMapperTetrahedronSetTopology : public TopologyBarycentricMapper<In,Out>,
@@ -828,11 +803,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData3D MappingData;
 
     typedef typename In::VecCoord VecCoord;
@@ -871,16 +842,16 @@ public:
 
     /*  //IPB
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology,
-                                         helper::ParticleMask *_maskFrom,
-                                         helper::ParticleMask *_maskTo,
-                                         core::objectmodel::BaseContext *_mappingContext)
-     : TopologyBarycentricMapper<In,Out>(topology),
+    helper::ParticleMask *_maskFrom,
+    helper::ParticleMask *_maskTo,
+    core::objectmodel::BaseContext *_mappingContext)
+    : TopologyBarycentricMapper<In,Out>(topology),
     _container(topology),
     _geomAlgo(NULL),
-      maskFrom(_maskFrom), maskTo(_maskTo),
-      mappingContext(_mappingContext)
+    maskFrom(_maskFrom), maskTo(_maskTo),
+    mappingContext(_mappingContext)
     {
-        //mappingContext->get(forceField);
+    //mappingContext->get(forceField);
     }
     //IPE*/
 
@@ -939,6 +910,7 @@ public:
 };
 
 
+
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
 template<class In, class Out>
 class BarycentricMapperHexahedronSetTopology : public TopologyBarycentricMapper<In,Out>,
@@ -949,11 +921,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
-    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
-    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData3D MappingData;
 
 
@@ -1039,22 +1007,24 @@ public:
     }
 };
 
-template <class BasicMapping>
-class BarycentricMapping : public BasicMapping
+
+
+template <class TIn, class TOut>
+class BarycentricMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BarycentricMapping,BasicMapping), BasicMapping);
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename In::DataTypes InDataTypes;
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+    typedef In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
     typedef typename InDataTypes::VecDeriv InVecDeriv;
     typedef typename InDataTypes::Coord InCoord;
     typedef typename InDataTypes::Deriv InDeriv;
     typedef typename InDataTypes::Real Real;
-    typedef typename Out::DataTypes OutDataTypes;
+    typedef Out OutDataTypes;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
     typedef typename OutDataTypes::Coord OutCoord;
@@ -1066,8 +1036,6 @@ public:
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
     typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
     typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
-
-    //typedef forcefield::TetrahedronFEMForceField<InDataTypes> TetraFF;
 
 protected:
 
@@ -1086,7 +1054,7 @@ public:
     Data< bool > sleeping;
 #endif
 
-    BarycentricMapping(In* from, Out* to)
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to), mapper(NULL)
         , f_grid(new RegularGridMapper(NULL, NULL, NULL, NULL))
         , f_hexaMapper(new HexaMapper())
@@ -1097,7 +1065,7 @@ public:
     {
     }
 
-    BarycentricMapping(In* from, Out* to, Mapper* mapper)
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
         , f_grid(0)
         , f_hexaMapper(0)
@@ -1115,7 +1083,7 @@ public:
         }
     }
 
-    BarycentricMapping(In* from, Out* to, BaseMeshTopology * topology );
+    BarycentricMapping(core::State<In>* from, core::State<Out>* to, BaseMeshTopology * topology );
 
     virtual ~BarycentricMapping()
     {
@@ -1127,13 +1095,13 @@ public:
 
     void reinit();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply(Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in, const core::MechanicalParams *mparams);
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJ(Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT(Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void applyJT(Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in, const core::ConstraintParams *cparams);
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
@@ -1142,7 +1110,10 @@ public:
     // handle topology changes depending on the topology
     virtual void handleTopologyChange(core::topology::Topology* t);
 
-    TopologyBarycentricMapper<InDataTypes,OutDataTypes>*	getMapper() {return mapper;}
+    TopologyBarycentricMapper<InDataTypes,OutDataTypes> *getMapper()
+    {
+        return mapper;
+    }
 
 protected:
     sofa::core::topology::BaseMeshTopology* topology_from;
@@ -1152,120 +1123,84 @@ private:
     void createMapperFromTopology(BaseMeshTopology * topology);
 };
 
-using sofa::defaulttype::Vec1dTypes;
-using sofa::defaulttype::Vec2dTypes;
+
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec1fTypes;
-using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec1fTypes;
-using sofa::defaulttype::ExtVec2fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
-using core::Mapping;
-using core::behavior::MechanicalMapping;
-using core::behavior::MappedModel;
-using core::behavior::State;
-using core::behavior::MechanicalState;
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3dTypes, Vec3dTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3dTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3fTypes, ExtVec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3fTypes, ExtVec3fTypes >;
-// extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3fTypes, ExtVec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3fTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology<Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology<Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 #endif

@@ -25,14 +25,16 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
 #define SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
 
-#include <sofa/simulation/common/SolverImpl.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+//#include <sofa/simulation/common/SolverImpl.h>
+//#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/component.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #ifdef SOFA_SMP
-#include <sofa/core/behavior/ParallelMultivector.h>
+#include <sofa/core/behavior/ParallelMultiVec.h>
 #endif
 
 namespace sofa
@@ -60,19 +62,19 @@ public:
 
 class SOFA_COMPONENT_LINEARSOLVER_API GraphScatteredMatrix
 {
-protected:
-    simulation::SolverImpl* parent;
-    double mFact, bFact, kFact;
 public:
-    GraphScatteredMatrix(simulation::SolverImpl* p)
-        : parent(p), mFact(0.0), bFact(0.0), kFact(0.0)
+    //simulation::SolverImpl* parent;
+    //double mFact, bFact, kFact;
+    core::MechanicalParams mparams;
+    simulation::common::MechanicalOperations* parent;
+public:
+    GraphScatteredMatrix()
+        : parent(NULL) //, mFact(0.0), bFact(0.0), kFact(0.0)
     {
     }
-    void setMBKFacts(double m, double b, double k)
+    void setMBKFacts(const core::MechanicalParams* mparams)
     {
-        mFact = m;
-        bFact = b;
-        kFact = k;
+        this->mparams = *mparams;
     }
     MultExpr<GraphScatteredMatrix,GraphScatteredVector> operator*(GraphScatteredVector& v)
     {
@@ -109,26 +111,25 @@ public:
     static const char* Name() { return "GraphScattered"; }
 };
 
-
-class SOFA_COMPONENT_LINEARSOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVector<simulation::SolverImpl>
+class SOFA_COMPONENT_LINEARSOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
 {
 public:
-    typedef sofa::core::behavior::MultiVector<simulation::SolverImpl> Inherit;
-    GraphScatteredVector(simulation::SolverImpl* p, VecId id)
+    typedef sofa::core::behavior::MultiVecDeriv Inherit;
+    GraphScatteredVector(core::behavior::BaseVectorOperations* p, core::VecDerivId id)
         : Inherit(p, id)
     {
     }
-    GraphScatteredVector(simulation::SolverImpl* p, VecId::Type t = VecId::V_DERIV)
-        : Inherit(p, t)
+    GraphScatteredVector(core::behavior::BaseVectorOperations* p)
+        : Inherit(p)
     {
     }
-    void set(VecId id)
+    void set(core::MultiVecDerivId id)
     {
         this->v = id;
     }
     void reset()
     {
-        this->v = VecId();
+        this->v = core::VecDerivId::null();
     }
 
 
@@ -143,8 +144,6 @@ public:
         std::cerr<<"WARNING : get a single element is not supported in MultiVector"<<std::endl;
         return 0;
     }
-
-
 
     friend class GraphScatteredMatrix;
 
@@ -162,27 +161,26 @@ public:
 };
 
 #ifdef SOFA_SMP
-class SOFA_COMPONENT_LINEARSOLVER_API ParallelGraphScatteredVector : public sofa::core::behavior::ParallelMultiVector<simulation::SolverImpl>
+class SOFA_COMPONENT_LINEARSOLVER_API ParallelGraphScatteredVector : public sofa::core::behavior::ParallelMultiVecDeriv
 {
 public:
-    typedef sofa::core::behavior::ParallelMultiVector<simulation::SolverImpl> Inherit;
-    ParallelGraphScatteredVector(simulation::SolverImpl* p, VecId id)
+    typedef sofa::core::behavior::ParallelMultiVecDeriv Inherit;
+    ParallelGraphScatteredVector(core::behavior::BaseVectorOperations* p, core::VecDerivId id)
         : Inherit(p, id)
     {
     }
-    ParallelGraphScatteredVector(simulation::SolverImpl* p, VecId::Type t = VecId::V_DERIV)
-        : Inherit(p, t)
+    ParallelGraphScatteredVector(core::behavior::BaseVectorOperations* p)
+        : Inherit(p)
     {
     }
-    void set(VecId id)
+    void set(core::MultiVecDerivId id)
     {
         this->v = id;
     }
     void reset()
     {
-        this->v = VecId();
+        this->v = core::VecDerivId::null();
     }
-
 
     /// TO IMPLEMENT
     void add(int /*row*/, SReal /*v*/)
@@ -196,8 +194,6 @@ public:
         return 0;
     }
 
-
-
     friend class GraphScatteredMatrix;
 
     void operator=(const MultExpr<GraphScatteredMatrix,ParallelGraphScatteredVector>& expr)
@@ -207,7 +203,7 @@ public:
 
     static const char* Name() { return "ParallelGraphScattered"; }
 };
-#endif
+#endif /* SOFA_SMP */
 
 } // namespace linearsolver
 

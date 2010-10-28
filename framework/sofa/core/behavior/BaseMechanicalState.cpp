@@ -24,11 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_INTERACTIONCONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_INTERACTIONCONSTRAINT_H
-
-#include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+
 
 namespace sofa
 {
@@ -39,33 +36,61 @@ namespace core
 namespace behavior
 {
 
-/**
- *  \brief InteractionConstraint is a constraint linking several bodies (MechanicalState) together.
- *
- *  An InteractionConstraint computes constraints applied to several simulated
- *  bodies given their current positions and velocities.
- *
- */
-class SOFA_CORE_API InteractionConstraint : public BaseConstraint
+BaseMechanicalState::BaseMechanicalState()
+    : useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
+    , forceMask(&useMask)
 {
-public:
-    SOFA_CLASS(InteractionConstraint, BaseConstraint);
+}
 
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState1()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel1() = 0;
+BaseMechanicalState::~BaseMechanicalState()
+{
+}
 
-    /// Get the first MechanicalState
-    /// \todo Rename to getMechState2()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel2() = 0;
-};
+
+/// Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
+///
+/// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
+/// Note that if the result vector appears inside the expression, it must be the first operand.
+/// By default this method decompose the computation into multiple vOp calls.
+void BaseMechanicalState::vMultiOp(const VMultiOp& ops, const ExecParams* /* params */)
+{
+    for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
+    {
+        VecId r = it->first.getId(this);
+        const helper::vector< std::pair< ConstMultiVecId, double > >& operands = it->second;
+        int nop = operands.size();
+        if (nop==0)
+        {
+            vOp(r);
+        }
+        else if (nop==1)
+        {
+            if (operands[0].second == 1.0)
+                vOp(r, operands[0].first.getId(this));
+            else
+                vOp(r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
+        }
+        else
+        {
+            int i;
+            if (operands[0].second == 1.0)
+            {
+                vOp(r, operands[0].first.getId(this), operands[1].first.getId(this), operands[1].second);
+                i = 2;
+            }
+            else
+            {
+                vOp(r, ConstVecId::null(), operands[0].first.getId(this), operands[0].second);
+                i = 1;
+            }
+            for (; i<nop; ++i)
+                vOp(r, r, operands[i].first.getId(this), operands[i].second);
+        }
+    }
+}
 
 } // namespace behavior
 
 } // namespace core
 
 } // namespace sofa
-
-#endif

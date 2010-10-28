@@ -22,14 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_CENTERPOINTMECHANICALMAPPING_CPP
 #include "CenterPointMechanicalMapping.inl"
 
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
@@ -41,51 +38,41 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
 
 SOFA_DECL_CLASS(CenterPointMechanicalMapping)
 
 int CenterPointMechanicalMappingClass = core::RegisterObject("TODO-CenterPointMechanicalMappingClass")
 #ifndef SOFA_FLOAT
-        .add< CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< CenterPointMechanicalMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< CenterPointMechanicalMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< CenterPointMechanicalMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< CenterPointMechanicalMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< CenterPointMechanicalMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< CenterPointMechanicalMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes > >()
 #endif
 #endif
         ;
 
 
 #ifndef SOFA_FLOAT
-template class CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class CenterPointMechanicalMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-template class CenterPointMechanicalMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+template class CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class CenterPointMechanicalMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class CenterPointMechanicalMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
+template class CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class CenterPointMechanicalMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class CenterPointMechanicalMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-template class CenterPointMechanicalMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
+template class CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
+template class CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 

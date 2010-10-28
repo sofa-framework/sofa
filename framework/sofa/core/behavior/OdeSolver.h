@@ -28,8 +28,9 @@
 #define SOFA_CORE_BEHAVIOR_ODESOLVER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/MultiVector.h>
+#include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/defaulttype/BaseMatrix.h>
@@ -66,34 +67,26 @@ class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
 public:
     SOFA_CLASS(OdeSolver, objectmodel::BaseObject);
 
-    typedef BaseMechanicalState::VecId VecId;
-
     OdeSolver();
 
     virtual ~OdeSolver();
-
 
     /// Main computation method.
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt, putting the resulting position and velocity in the provided vectors.
-    virtual void solve(double /*dt*/, BaseMechanicalState::VecId /*xResult*/, BaseMechanicalState::VecId /*vResult*/) { serr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << sendl; }
+    virtual void solve(double /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/, const core::ExecParams* /*params*/) = 0; // { serr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << sendl; }
 
     /// Main computation method.
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt.
-    virtual void solve (double dt) { solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity()); }
+    virtual void solve (double dt, const core::ExecParams* params) { solve(dt, VecCoordId::position(), VecDerivId::velocity(), params); }
 
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
      **/
-    virtual void solveConstraint(double /*dt*/, VecId, core::behavior::BaseConstraintSet::ConstOrder) {};
-
-    /// Propagate the given state (time, position and velocity) through all mappings
-    ///
-    /// @TODO Why is this necessary in the OdeSolver API ? (Jeremie A. 03/02/2008)
-    virtual void propagatePositionAndVelocity(double t, BaseMechanicalState::VecId x, BaseMechanicalState::VecId v) = 0;
+    virtual void solveConstraint(double /*dt*/, MultiVecId, ConstraintParams::ConstOrder) {};
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.

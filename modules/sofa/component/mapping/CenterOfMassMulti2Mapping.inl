@@ -2,9 +2,11 @@
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_INL
 
 #include <sofa/component/mapping/CenterOfMassMulti2Mapping.h>
-#include <sofa/defaulttype/Vec.h>
-//#include <sofa/helper/gl/template.h>
+
+#include <sofa/core/Multi2Mapping.inl>
+
 #include <sofa/simulation/common/Simulation.h>
+
 #include <algorithm>
 #include <functional>
 
@@ -23,15 +25,14 @@ using namespace core::behavior;
 template < typename Model >
 struct Operation
 {
-
     typedef typename Model::VecCoord VecCoord;
     typedef typename Model::Coord    Coord;
     typedef typename Model::Deriv    Deriv;
     typedef typename Model::VecDeriv VecDeriv;
 
 public :
-    static inline const VecCoord* getVecCoord( const Model* m, const VecId& id) { return m->getVecCoord(id.index); };
-    static inline VecDeriv* getVecDeriv( Model* m, const VecId& id) { return m->getVecDeriv(id.index);};
+    static inline const VecCoord* getVecCoord( const Model* m, const VecId id) { return m->getVecCoord(id.index); };
+    static inline VecDeriv* getVecDeriv( Model* m, const VecId id) { return m->getVecDeriv(id.index);};
 
     static inline const BaseMass* fetchMass  ( const Model* m)
     {
@@ -69,8 +70,8 @@ public :
     }
 };
 
-template< class BasicMulti2Mapping  >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 )
+template< class TIn1, class TIn2, class TOut  >
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 )
 {
     assert( outPos.size() == 1); // we are dealing with a many to one mapping.
     typedef typename helper::vector<In1Coord>::iterator iter_coord1;
@@ -80,7 +81,7 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const vecOutVecCoord
 
     {
         In1Coord COM;
-        std::transform(inPos1.begin(), inPos1.end(), inputBaseMass1.begin(), inputWeightedCOM1.begin(), Operation<In1>::WeightedCoord );
+        std::transform(inPos1.begin(), inPos1.end(), inputBaseMass1.begin(), inputWeightedCOM1.begin(), Operation< core::State<In1> >::WeightedCoord );
 
         for( iter_coord1 iter = inputWeightedCOM1.begin() ; iter != inputWeightedCOM1.end(); ++iter ) COM += *iter;
         COM *= invTotalMass;
@@ -94,7 +95,7 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const vecOutVecCoord
 
     {
         In2Coord COM;
-        std::transform(inPos2.begin(), inPos2.end(), inputBaseMass2.begin(), inputWeightedCOM2.begin(), Operation<In2>::WeightedCoord );
+        std::transform(inPos2.begin(), inPos2.end(), inputBaseMass2.begin(), inputWeightedCOM2.begin(), Operation< core::State<In2> >::WeightedCoord );
 
         for( iter_coord2 iter = inputWeightedCOM2.begin() ; iter != inputWeightedCOM2.end(); ++iter ) COM += *iter;
         COM *= invTotalMass;
@@ -111,8 +112,8 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::apply(const vecOutVecCoord
     OutDataTypes::set((*outVecCoord)[0], px,py,pz);
 }
 
-template< class BasicMulti2Mapping >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2)
+template <class TIn1, class TIn2, class TOut>
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2)
 {
     assert( outDeriv.size() == 1 );
     typedef typename helper::vector<In1Deriv>::iterator                     iter_deriv1;
@@ -122,7 +123,7 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJ(const helper::vecto
 
     {
         In1Deriv Velocity;
-        std::transform(inDeriv1.begin(), inDeriv1.end(), inputBaseMass1.begin(), inputWeightedForce1.begin(), Operation<In1>::WeightedDeriv );
+        std::transform(inDeriv1.begin(), inDeriv1.end(), inputBaseMass1.begin(), inputWeightedForce1.begin(), Operation< core::State<In1> >::WeightedDeriv );
 
         for ( iter_deriv1 iter = inputWeightedForce1.begin() ; iter != inputWeightedForce1.end() ; ++iter ) Velocity += *iter;
         Velocity *= invTotalMass;
@@ -136,7 +137,7 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJ(const helper::vecto
 
     {
         In2Deriv Velocity;
-        std::transform(inDeriv2.begin(), inDeriv2.end(), inputBaseMass2.begin(), inputWeightedForce2.begin(), Operation<In2>::WeightedDeriv );
+        std::transform(inDeriv2.begin(), inDeriv2.end(), inputBaseMass2.begin(), inputWeightedForce2.begin(), Operation< core::State<In2> >::WeightedDeriv );
 
         for ( iter_deriv2 iter = inputWeightedForce2.begin() ; iter != inputWeightedForce2.end() ; ++iter ) Velocity += *iter;
         Velocity *= invTotalMass;
@@ -155,8 +156,8 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJ(const helper::vecto
 
 
 
-template < class BasicMulti2Mapping >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )
+template < class TIn1, class TIn2, class TOut >
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )
 {
     assert( inDeriv.size() == 1 );
     typedef helper::vector<const BaseMass*>::iterator iter_mass;
@@ -204,8 +205,8 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::applyJT( const helper::vec
     }
 }
 
-template< class BasicMulti2Mapping >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping>::init()
+template <class TIn1, class TIn2, class TOut>
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut>::init()
 {
     typedef helper::vector<double>::iterator  iter_double;
 
@@ -219,10 +220,10 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping>::init()
     inputWeightedCOM2  .resize( this->fromModels2.size() );
     inputWeightedForce2.resize( this->fromModels2.size() );
 
-    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), Operation<In1>::fetchMass );
-    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), Operation<In2>::fetchMass );
-    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), inputTotalMass1.begin(), Operation<In1>::computeTotalMass );
-    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), inputTotalMass2.begin(), Operation<In2>::computeTotalMass );
+    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), Operation< core::State<In1> >::fetchMass );
+    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), Operation< core::State<In2> >::fetchMass );
+    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), inputTotalMass1.begin(), Operation< core::State<In1> >::computeTotalMass );
+    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), inputTotalMass2.begin(), Operation< core::State<In2> >::computeTotalMass );
     invTotalMass = 0.0;
     for ( iter_double iter = inputTotalMass1.begin() ; iter != inputTotalMass1.end() ; ++ iter ) invTotalMass += *iter;
     for ( iter_double iter = inputTotalMass2.begin() ; iter != inputTotalMass2.end() ; ++ iter ) invTotalMass += *iter;
@@ -232,11 +233,11 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping>::init()
     if (this->getToModels()[0]) this->getToModels()[0]->resize(1);
 }
 
-template< class BasicMulti2Mapping >
-void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::draw()
+template <class TIn1, class TIn2, class TOut>
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::draw()
 {
     assert( this->toModels.size() == 1 );
-    const OutVecCoord* X = this->getToModels()[0]->getVecCoord( VecId::position().index );
+    const Data< OutVecCoord > *X = this->getToModels()[0]->read(VecCoordId::position());
 
     std::vector< Vector3 > points;
     Vector3 point1,point2;
@@ -245,13 +246,12 @@ void CenterOfMassMulti2Mapping< BasicMulti2Mapping >::draw()
     {
         OutCoord v;
         v[i] = (Real)0.1;
-        point1 = OutDataTypes::getCPos( (*X)[0] -v);
-        point2 = OutDataTypes::getCPos( (*X)[0] +v);
+        point1 = OutDataTypes::getCPos(X->getValue()[0] - v);
+        point2 = OutDataTypes::getCPos(X->getValue()[0] + v);
         points.push_back(point1);
         points.push_back(point2);
     }
     simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
-
 }
 
 

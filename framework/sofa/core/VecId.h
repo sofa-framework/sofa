@@ -29,6 +29,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <boost/static_assert.hpp>
 
 #include <sstream>
 #include <iostream>
@@ -39,138 +40,318 @@ namespace sofa
 namespace core
 {
 
-/// Identify one vector stored in State
-class VecId
+/// Types of vectors that can be stored in State
+enum VecType
+{
+    V_ALL = 0,
+    V_COORD,
+    V_DERIV,
+    V_MATDERIV,
+    V_CONST = V_MATDERIV ///< @deprecated
+};
+
+/// Types of vectors that can be stored in State
+enum VecAccess
+{
+    V_READ=0,
+    V_WRITE,
+};
+
+template <VecType vtype, VecAccess vaccess>
+class TVecId;
+
+template <VecType vtype, VecAccess vaccess>
+class TStandardVec;
+
+
+template <VecAccess vaccess>
+class TStandardVec<V_COORD, vaccess>
 {
 public:
-    enum { V_FIRST_DYNAMIC_INDEX = 9 }; ///< This is the first index used for dynamically allocated vectors
-    enum Type
-    {
-        V_NULL=0,
-        V_COORD,
-        V_DERIV,
-        V_CONST
-    };
-    Type type;
-    unsigned int index;
-    VecId(Type t, unsigned int i) : type(t), index(i) { }
-    VecId() : type(V_NULL), index(0) { }
-    bool isNull() const { return type==V_NULL; }
-    static VecId null()          { return VecId(V_NULL, 0);}
+    typedef TVecId<V_COORD, vaccess> MyVecId;
+    static MyVecId position()      { return MyVecId(1);}
+    static MyVecId restPosition()  { return MyVecId(2);}
+    static MyVecId freePosition()  { return MyVecId(3);}
+    static MyVecId resetPosition() { return MyVecId(4);}
+    enum { V_FIRST_DYNAMIC_INDEX = 5 }; ///< This is the first index used for dynamically allocated vectors
 
-    static VecId position()      { return VecId(V_COORD,0);}
-    static VecId restPosition()  { return VecId(V_COORD,1);}
-    static VecId freePosition()  { return VecId(V_COORD,2);}
-
-    static VecId velocity()      { return VecId(V_DERIV,0);}
-    static VecId restVelocity()  { return VecId(V_DERIV,1);}
-    static VecId freeVelocity()  { return VecId(V_DERIV,2);}
-    static VecId force()         { return VecId(V_DERIV,3);}
-    static VecId internalForce() { return VecId(V_DERIV,4);}
-    static VecId externalForce() { return VecId(V_DERIV,5);}
-    static VecId dx()            { return VecId(V_DERIV,6);}
-    static VecId dforce()        { return VecId(V_DERIV,7);}
-    static VecId accFromFrame()  { return VecId(V_DERIV,8);}
-
-    static VecId holonomicC()    { return VecId(V_CONST,0);}
-    static VecId nonHolonomicC() { return VecId(V_CONST,1);}
-
-    /// Test if two VecId identify the same vector
-    bool operator==(const VecId& v) const
-    {
-        return type == v.type && index == v.index;
-    }
-    /// Test if two VecId identify the same vector
-    bool operator!=(const VecId& v) const
-    {
-        return type != v.type || index != v.index;
-    }
-
-    std::string getName() const
+    static std::string getName(const MyVecId& v)
     {
         std::string result;
-        switch (type)
+        switch(v.getIndex())
         {
-        case VecId::V_NULL:
-        {
-            result+="NULL";
+        case 0: result+= "null";
+            break;
+        case 1: result+= "position";
+            break;
+        case 2: result+= "restPosition";
+            break;
+        case 3: result+= "freePosition";
+            break;
+        case 4: result+= "resetPosition";
+            break;
+        default:
+            std::ostringstream out;
+            out << v.getIndex();
+            result+= out.str();
             break;
         }
-        case VecId::V_COORD:
-        {
-            switch(index)
-            {
-            case 0: result+= "position";
-                break;
-            case 1: result+= "restPosition";
-                break;
-            case 2: result+= "freePosition";
-                break;
-                std::ostringstream out;
-                out << index;
-                result+= out.str();
-                break;
-            }
-            result+= "(V_COORD)";
-            break;
-        }
-        case VecId::V_DERIV:
-        {
-            switch(index)
-            {
-            case 0: result+= "velocity";
-                break;
-            case 1: result+= "restVelocity";
-                break;
-            case 2: result+= "freeVelocity";
-                break;
-            case 3: result+= "force";
-                break;
-            case 4: result+= "internalForce";
-                break;
-            case 5: result+= "externalForce";
-                break;
-            case 6: result+= "dx";
-                break;
-            case 7: result+= "dforce";
-                break;
-            case 8: result+= "accFromFrame";
-                break;
-            default:
-                std::ostringstream out;
-                out << index;
-                result+= out.str();
-                break;
-            }
-            result+= "(V_DERIV)";
-            break;
-        }
-        case VecId::V_CONST:
-        {
-            switch(index)
-            {
-            case 0: result+= "holonomic";
-                break;
-            case 1: result+= "nonHolonomic";
-                break;
-                std::ostringstream out;
-                out << index;
-                result+= out.str();
-                break;
-            }
-            result+= "(V_CONST)";
-            break;
-        }
-        }
+        result+= "(V_COORD)";
         return result;
     }
 };
 
-inline std::ostream& operator << ( std::ostream& out, const VecId& v )
+template <VecAccess vaccess>
+class TStandardVec<V_DERIV, vaccess>
 {
-    out << v.getName();
-    return out;
-}
+public:
+    typedef TVecId<V_DERIV, vaccess> MyVecId;
+
+    static MyVecId velocity()      { return MyVecId(1);}
+    static MyVecId resetVelocity()  { return MyVecId(2);}
+    static MyVecId freeVelocity()  { return MyVecId(3);}
+    static MyVecId normal()        { return MyVecId(4);}
+    static MyVecId force()         { return MyVecId(5);}
+    static MyVecId externalForce() { return MyVecId(6);}
+    static MyVecId dx()            { return MyVecId(7);}
+    static MyVecId dforce()        { return MyVecId(8);}
+    static MyVecId accFromFrame()  { return MyVecId(9);}
+    enum { V_FIRST_DYNAMIC_INDEX = 10 }; ///< This is the first index used for dynamically allocated vectors
+
+    static std::string getName(const MyVecId& v)
+    {
+        std::string result;
+        switch(v.getIndex())
+        {
+        case 0: result+= "null";
+            break;
+        case 1: result+= "velocity";
+            break;
+        case 2: result+= "resetVelocity";
+            break;
+        case 3: result+= "freeVelocity";
+            break;
+        case 4: result+= "normal";
+            break;
+        case 5: result+= "force";
+            break;
+        case 6: result+= "externalForce";
+            break;
+        case 7: result+= "dx";
+            break;
+        case 8: result+= "dforce";
+            break;
+        case 9: result+= "accFromFrame";
+            break;
+        default:
+            std::ostringstream out;
+            out << v.getIndex();
+            result+= out.str();
+            break;
+        }
+        result+= "(V_DERIV)";
+        return result;
+    }
+};
+
+template <VecAccess vaccess>
+class TStandardVec<V_MATDERIV, vaccess>
+{
+public:
+    typedef TVecId<V_MATDERIV, vaccess> MyVecId;
+
+    static MyVecId holonomicC()    { return MyVecId(1);}
+    static MyVecId nonHolonomicC() { return MyVecId(2);}
+    enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
+
+    static std::string getName(const MyVecId& v)
+    {
+        std::string result;
+        switch(v.getIndex())
+        {
+        case 0: result+= "null";
+            break;
+        case 1: result+= "holonomic";
+            break;
+        case 2: result+= "nonHolonomic";
+            break;
+        default:
+            std::ostringstream out;
+            out << v.getIndex();
+            result+= out.str();
+            break;
+        }
+        result+= "(V_MATDERIV)";
+        return result;
+    }
+};
+
+template <VecAccess vaccess>
+class TStandardVec<V_ALL, vaccess>
+    : public TStandardVec<V_COORD,vaccess>
+    , public TStandardVec<V_DERIV,vaccess>
+    , public TStandardVec<V_MATDERIV,vaccess>
+{
+public:
+    typedef TVecId<V_ALL, vaccess> MyVecId;
+
+    static unsigned int getFirstDynamicIndex(VecType t)
+    {
+        switch(t)
+        {
+        case V_COORD:
+            return TStandardVec<V_COORD,vaccess>::V_FIRST_DYNAMIC_INDEX;
+        case V_DERIV:
+            return TStandardVec<V_DERIV,vaccess>::V_FIRST_DYNAMIC_INDEX;
+        case V_MATDERIV:
+            return TStandardVec<V_MATDERIV,vaccess>::V_FIRST_DYNAMIC_INDEX;
+        default:
+            return 0;
+        }
+    }
+
+    static std::string getName(const MyVecId& v)
+    {
+        switch(v.getType())
+        {
+        case V_COORD:
+            return TStandardVec<V_COORD,vaccess>::getName((TVecId<V_COORD,vaccess>)v);
+        case V_DERIV:
+            return TStandardVec<V_DERIV,vaccess>::getName((TVecId<V_DERIV,vaccess>)v);
+        case V_MATDERIV:
+            return TStandardVec<V_MATDERIV,vaccess>::getName((TVecId<V_MATDERIV,vaccess>)v);
+        default:
+            std::string result;
+            std::ostringstream out;
+            out << v.getIndex() << "(" << v.getType() << ")";
+            result = out.str();
+            return result;
+        }
+    }
+};
+
+/// Identify a vector of a given type stored in State
+/// This class is templated in order to create different variations (generic versus specific type, read-only vs write access)
+template <VecType vtype, VecAccess vaccess>
+class TVecId : public TStandardVec<vtype, vaccess>
+{
+public:
+    unsigned int index;
+    TVecId() : index(0) { }
+    TVecId(unsigned int i) : index(i) { }
+    /// Copy from another VecId, possibly with another type of access, with the
+    /// constraint that the access must be compatible (i.e. cannot create
+    /// a write-access VecId from a read-only VecId.
+    template<VecAccess vaccess2>
+    TVecId(const TVecId<vtype, vaccess2>& v) : index(v.getIndex())
+    {
+        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+    }
+
+    TVecId(const TVecId<vtype, V_WRITE>& v) : index(v.getIndex()) { }
+
+    explicit TVecId(const TVecId<V_ALL, vaccess>& v) : index(v.getIndex())
+    {
+#ifndef NDEBUG
+        assert(v.getType() == vtype);
+#endif
+    }
+
+    VecType getType() const { return vtype; }
+    unsigned int getIndex() const { return index; }
+
+    template<VecType vtype2, VecAccess vaccess2>
+    bool operator==(const TVecId<vtype2, vaccess2>& v) const
+    {
+        return getType() == v.getType() && getIndex() == v.getIndex();
+    }
+
+    template<VecType vtype2, VecAccess vaccess2>
+    bool operator!=(const TVecId<vtype2, vaccess2>& v) const
+    {
+        return getType() != v.getType() || getIndex() != v.getIndex();
+    }
+
+    static TVecId null() { return TVecId(0);}
+    bool isNull() const { return this->index == 0; }
+
+    std::string getName() const
+    {
+        return TStandardVec<vtype, vaccess>::getName(*this);
+    }
+    friend inline std::ostream& operator << ( std::ostream& out, const TVecId& v )
+    {
+        out << v.getName();
+        return out;
+    }
+};
+
+/// Identify any vector stored in State
+template<VecAccess vaccess>
+class TVecId<V_ALL, vaccess> : public TStandardVec<V_ALL, vaccess>
+{
+public:
+    typedef VecType Type;
+    VecType type;
+    unsigned int index;
+    TVecId() : type(V_ALL), index(0) { }
+    TVecId(VecType t, unsigned int i) : type(t), index(i) { }
+    template<VecType vtype2, VecAccess vaccess2>
+    /// Create a generic VecId from a specific or generic one, with the
+    /// constraint that the access must be compatible (i.e. cannot create
+    /// a write-access VecId from a read-only VecId.
+    TVecId(const TVecId<vtype2, vaccess2>& v) : type(v.getType()), index(v.getIndex())
+    {
+        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+    }
+
+    //operator TVecId<V_ALL, V_READ>() const { return TVecId<V_ALL, V_READ>(getType(), getIndex()); }
+
+    VecType getType() const { return type; }
+    unsigned int getIndex() const { return index; }
+
+    template<VecType vtype2, VecAccess vaccess2>
+    bool operator==(const TVecId<vtype2, vaccess2>& v) const
+    {
+        return getType() == v.getType() && getIndex() == v.getIndex();
+    }
+
+    template<VecType vtype2, VecAccess vaccess2>
+    bool operator!=(const TVecId<vtype2, vaccess2>& v) const
+    {
+        return getType() != v.getType() || getIndex() != v.getIndex();
+    }
+
+    static TVecId null() { return TVecId(V_ALL, 0);}
+    bool isNull() const { return this->index == 0; }
+
+    std::string getName() const
+    {
+        return TStandardVec<V_ALL, vaccess>::getName(*this);
+    }
+    friend inline std::ostream& operator << ( std::ostream& out, const TVecId& v )
+    {
+        out << v.getName();
+        return out;
+    }
+};
+
+
+/// Identify one vector stored in State
+/// A ConstVecId only provides a read-only access to the underlying vector.
+typedef TVecId<V_ALL, V_READ> ConstVecId;
+
+/// Identify one vector stored in State
+/// A VecId only provides a read-write access to the underlying vector.
+/// It derives from ConstVecId so that it can be used in all methods requiring read access
+typedef TVecId<V_ALL, V_WRITE> VecId;
+
+typedef TVecId<V_COORD, V_READ> ConstVecCoordId;
+typedef TVecId<V_COORD, V_WRITE>     VecCoordId;
+typedef TVecId<V_DERIV, V_READ> ConstVecDerivId;
+typedef TVecId<V_DERIV, V_WRITE>     VecDerivId;
+typedef TVecId<V_MATDERIV, V_READ> ConstMatrixDerivId;
+typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
 
 } // namespace core
 

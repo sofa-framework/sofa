@@ -22,15 +22,12 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SMP_CORE_PARALLELMULTIVECTOR_H
-#define SOFA_SMP_CORE_PARALLELMULTIVECTOR_H
+#ifndef SOFA_SMP_CORE_PARALLELMULTIVEC_H
+#define SOFA_SMP_CORE_PARALLELMULTIVEC_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/SharedTypes.h>
-#include <sofa/core/behavior/MultiVector.h>
+#include <sofa/core/behavior/MultiVec.h>
+
 namespace sofa
 {
 
@@ -39,71 +36,75 @@ namespace core
 
 namespace behavior
 {
-using namespace sofa::core::behavior;
 
 /// Helper class providing a high-level view of underlying state vectors.
 ///
 /// It is used to convert math-like operations to call to computation methods.
-template<class Parent>
-class ParallelMultiVector: public  sofa::core::behavior::MultiVector<Parent>
+template<VecType vtype>
+class TParallelMultiVec: public TMultiVec<vtype>
 {
 public:
-    typedef BaseMechanicalState::VecId VecId;
 
+    typedef TMultiVecId<vtype, V_WRITE> MyMultiVecId;
+    typedef TMultiVecId<vtype, V_READ> ConstMyMultiVecId;
+    typedef TMultiVecId<V_ALL, V_WRITE> AllMultiVecId;
+    typedef TMultiVecId<V_ALL, V_READ> ConstAllMultiVecId;
 
+private:
+    /// Copy-constructor is forbidden
+    TParallelMultiVec(const TParallelMultiVec<vtype>& ) {}
 
 public:
-    /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
-    ParallelMultiVector(Parent* parent, VecId v) : sofa::core::behavior::MultiVector<Parent>(parent,v)
+    /// Refers to a state vector with the given ID (core::VecId::position(), core::VecId::velocity(), etc).
+    TParallelMultiVec( sofa::core::behavior::BaseVectorOperations* vop, MyMultiVecId v) : sofa::core::behavior::TMultiVec<vtype>(vop, v)
     {}
 
-    /// Allocate a new temporary vector with the given type (VecId::V_COORD or VecId::V_DERIV).
-    ParallelMultiVector(Parent* parent, VecId::Type t, const char* name="") : sofa::core::behavior::MultiVector<Parent>(parent,t/*, name*/)
+    /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
+    TParallelMultiVec( sofa::core::behavior::BaseVectorOperations* vop ) : sofa::core::behavior::TMultiVec<vtype>(vop)
     {}
 
-    ~ParallelMultiVector()
+    ~TParallelMultiVec()
     {
-        if (this->dynamic) this->parent->v_free(this->v);
-
-
+        if (this->dynamic) this->vop->v_free(this->v);
     }
 
 
-    void peq(VecId a,Shared<double> &fSh, double f=1.0)
+    void peq(AllMultiVecId a,Shared<double> &fSh, double f=1.0)
     {
-        this->parent->v_peq(this->v, a, fSh,f);
+        this->vop->v_peq(this->v, a, fSh,f);
     }
-    void peq(VecId a, double f=1.0)
+    void peq(AllMultiVecId a, double f=1.0)
     {
-        this->parent->v_peq(this->v, a, f);
+        this->vop->v_peq(this->v, a, f);
     }
-    void meq(VecId a,Shared<double> &fSh)
+    void meq(AllMultiVecId a,Shared<double> &fSh)
     {
-        this->parent->v_meq(this->v, a, fSh);
+        this->vop->v_meq(this->v, a, fSh);
     }
-    void dot(Shared<double> &r,VecId a)
-
+    void dot(Shared<double> &r, MyMultiVecId a)
     {
-
-        this->parent->v_dot(r,this->v, a);
-
+        this->vop->v_dot(r,this->v, a);
     }
     void print()
     {
-        this->parent->print(this->v,std::cerr);
+        this->vop->print(this->v,std::cerr);
     }
-    operator VecId()
-    {
-        return this->v;
-    }
+
+    operator MyMultiVecId()	{	return this->v ; }
+    operator ConstMyMultiVecId() { return this->v ; }
+    operator AllMultiVecId()	{	return this->v ; }
+    operator ConstAllMultiVecId() { return this->v ; }
 };
 
+typedef TParallelMultiVec<V_COORD> ParallelMultiVecCoord;
+typedef TParallelMultiVec<V_DERIV> ParallelMultiVecDeriv;
+typedef TParallelMultiVec<V_MATDERIV> ParallelMultiVecMatrixDeriv;
 
+} // namespace behavior
 
 } // namespace core
 
 } // namespace sofa
-}
 
 
 #endif

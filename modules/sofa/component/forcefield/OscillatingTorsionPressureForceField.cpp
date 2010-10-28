@@ -22,17 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/OscillatingTorsionPressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <set>
 #include <sofa/defaulttype/Vec3Types.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 // #define DEBUG_TRIANGLEFEM
 
@@ -47,12 +41,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-
-
-
-
-
-using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(OscillatingTorsionPressureForceField)
 

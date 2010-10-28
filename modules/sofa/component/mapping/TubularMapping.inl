@@ -26,11 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_INL
 
 #include <sofa/component/mapping/TubularMapping.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
 
+#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {
@@ -41,8 +38,8 @@ namespace component
 namespace mapping
 {
 
-template <class BasicMapping>
-void TubularMapping<BasicMapping>::init()
+template <class TIn, class TOut>
+void TubularMapping<TIn, TOut>::init()
 {
     if (!m_radius.isSet())
     {
@@ -53,16 +50,17 @@ void TubularMapping<BasicMapping>::init()
     }
     else sout << "get Radius tout court" << std::endl;
 
-    this->BasicMapping::init();
+    Inherit::init();
 
 }
 
-
-
-template <class BasicMapping>
-void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class TIn, class TOut>
+void TubularMapping<TIn, TOut>::apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* /* mparams */)
 {
     // Propagation of positions from the input DOFs to the output DOFs
+
+    const InVecCoord& in = dIn.getValue();
+    OutVecCoord& out = *dOut.beginEdit();
 
     unsigned int N = m_nbPointsOnEachCircle.getValue();
     double rho = m_radius.getValue();
@@ -126,15 +124,17 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
             out[i*N+j] = x;
         }
     }
+    dOut.endEdit();
 }
 
 
 
-template <class BasicMapping>
-void TubularMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class TIn, class TOut>
+void TubularMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* /* mparams */ )
 {
-
     // Propagation of velocities from the input DOFs to the output DOFs
+    const InVecDeriv& in = dIn.getValue();
+    OutVecDeriv& out = *dOut.beginEdit();
 
     if(out.size() != rotatedPoints.size())
     {
@@ -144,7 +144,7 @@ void TubularMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const ty
     unsigned int N = m_nbPointsOnEachCircle.getValue();
 
     out.resize(in.size() * N);
-    Deriv v,omega;
+    OutDeriv v,omega;
 
     for (unsigned int i=0; i<in.size(); i++)
     {
@@ -158,15 +158,17 @@ void TubularMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const ty
             //sout << "INFO_print : TubularMapping  DO moveJ point - j = " << j << " , curPos = " << v <<  " , x = " << out[i*N+j] << sendl;
         }
     }
+
+    dOut.endEdit();
 }
 
 
-template <class BasicMapping>
-void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class TIn, class TOut>
+void TubularMapping<TIn, TOut>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* /* mparams */ )
 {
-    // usefull for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
-
-    //sout << "INFO_print : pass HERE applyJT !!!" << sendl;
+    // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
+    const OutVecDeriv& in = dIn.getValue();
+    InVecDeriv& out = *dOut.beginEdit();
 
     if(in.size() != rotatedPoints.size())
     {
@@ -175,14 +177,14 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const ty
 
     unsigned int N = m_nbPointsOnEachCircle.getValue();
 
-    Deriv v,omega;
+    OutDeriv v,omega;
 
     for (unsigned int i=0; i<out.size(); i++)
     {
         for(unsigned int j=0; j<N; j++)
         {
 
-            Deriv f = in[i*N+j];
+            OutDeriv f = in[i*N+j];
             v += f;
             omega += cross(rotatedPoints[i*N+j],f);
         }
@@ -192,12 +194,16 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const ty
         //sout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << sendl;
     }
 
+    dOut.endEdit();
 }
 
-template <class BasicMapping>
-void TubularMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+template <class TIn, class TOut>
+void TubularMapping<TIn, TOut>::applyJT( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams * /*cparams*/)
 {
     // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
+    const OutMatrixDeriv& in = dIn.getValue();
+    InMatrixDeriv& out = *dOut.beginEdit();
+
     unsigned int N = m_nbPointsOnEachCircle.getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
@@ -216,8 +222,8 @@ void TubularMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const
             {
                 // index of the node
                 const unsigned int iIn = colIt.index();
-                const Deriv f = (Deriv) colIt.val();
-                Deriv v, omega;
+                const OutDeriv f = (OutDeriv) colIt.val();
+                OutDeriv v, omega;
                 v+=f;
                 omega += cross(rotatedPoints[iIn],f);
                 unsigned int Iout = iIn/N;
@@ -227,63 +233,9 @@ void TubularMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const
             }
         }
     }
+
+    dOut.endEdit();
 }
-
-/*
-template <class BasicMapping>
-void TubularMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in)
-{
-	// usefull for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
-
-	//sout << "INFO_print : pass HERE applyJT !!!" << sendl;
-
-	//std::cerr<< "INFO_print : pass HERE applyJT : numConstraint= " <<in.size()<<std::endl;
-
-	unsigned int N = m_nbPointsOnEachCircle.getValue();
-
-
-	int outSize = out.size();
-	out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
-
-	//std::cerr<<"Resize ok"<<std::endl;
-	for(unsigned int i=0; i<in.size(); i++)
-	{
-		OutConstraintIterator itIn;
-		std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-		//std::cerr<<"iter ok"<<std::endl;
-
-
-		for (itIn=iter.first;itIn!=iter.second;itIn++)
-		{
-			const unsigned int iIn = itIn->first;// index of the node
-			const Deriv f = (Deriv) itIn->second;
-			Deriv v, omega;
-
-			//std::cerr<<"calcul omega"<<std::endl;
-			v+=f;
-			omega += cross(rotatedPoints[iIn],f);
-
-			//std::cerr<<"omega ok"<<std::endl;
-
-			unsigned int Iout = iIn/N;
-
-			//std::cerr<<"io="<<io<<"  Iout="<<Iout<<std::endl;
-
-			InDeriv result(v, omega);
-
-			out[outSize+i].add(Iout, result);
-
-
-		}
-	}
-
-	//std::cerr<< " applyJT ended !!!" <<std::endl;
-
-}
-*/
-
-
 
 } // namespace mapping
 

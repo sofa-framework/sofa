@@ -29,6 +29,8 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
 
+#include <sofa/component/component.h>
+
 namespace sofa
 {
 namespace core
@@ -36,6 +38,7 @@ namespace core
 namespace behavior
 {
 template< class T > class MechanicalState;
+
 } // namespace behavior
 } // namespace core
 } // namespace sofa
@@ -50,11 +53,11 @@ namespace forcefield
 {
 
 /**
- * @brief This class describes a simple elastic springs ForceField between DOFs positions and rest positions.
- *
- * Springs are applied to given degrees of freedom between their current positions and their rest shape positions.
- * An external MechanicalState reference can also be passed to the ForceField as rest shape position.
- */
+* @brief This class describes a simple elastic springs ForceField between DOFs positions and rest positions.
+*
+* Springs are applied to given degrees of freedom between their current positions and their rest shape positions.
+* An external MechanicalState reference can also be passed to the ForceField as rest shape position.
+*/
 template<class DataTypes>
 class RestShapeSpringsForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -69,6 +72,9 @@ public:
     typedef typename Coord::value_type Real;
     typedef helper::vector< unsigned int > VecIndex;
     typedef helper::vector< Real >	 VecReal;
+
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     Data< VecIndex > points;
     Data< VecReal > stiffness;
@@ -87,32 +93,49 @@ public:
     void init();
 
     /// Add the forces.
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
     /// Constant force has null variation.
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double );
-
-    virtual double getPotentialEnergy(const VecCoord& ) const
-    {
-        sout << "getPotentialEnergy not implemented" << sendl;
-        return 0.0;
-    };
+    virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
 
     /// Brings ForceField contribution to the global system stiffness matrix.
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams );
 
     virtual void draw();
     bool addBBox(double* minBBox, double* maxBBox);
 
 protected :
+
     VecIndex indices;
     VecReal k;
     VecIndex ext_indices;
-    VecCoord * pp_0;
+    const VecCoord* pp_0;
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec3dTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec1dTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec6dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid3dTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec3fTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec1fTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec6fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid3fTypes>;
+//extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Rigid2fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
 
 } // namespace forcefield
 
@@ -120,4 +143,4 @@ private :
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H

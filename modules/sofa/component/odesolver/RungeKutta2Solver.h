@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA2SOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -38,11 +38,12 @@ namespace odesolver
 {
 
 /** A popular time integration method, much more precise than the EulerSolver */
-class SOFA_COMPONENT_ODESOLVER_API RungeKutta2Solver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API RungeKutta2Solver : public sofa::core::behavior::OdeSolver
 {
 public:
-    SOFA_CLASS(RungeKutta2Solver, sofa::component::odesolver::OdeSolverImpl);
-    void solve (double dt);
+    SOFA_CLASS(RungeKutta2Solver, sofa::core::behavior::OdeSolver);
+
+    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.

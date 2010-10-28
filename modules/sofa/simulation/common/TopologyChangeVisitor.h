@@ -39,8 +39,8 @@ class SOFA_SIMULATION_COMMON_API TopologyChangeVisitor : public Visitor
 {
 
 public:
-    TopologyChangeVisitor(core::topology::Topology* source)
-        : /*root(NULL),*/ source(source)
+    TopologyChangeVisitor(core::topology::Topology* source, const sofa::core::ExecParams* params)
+        : Visitor(params), /*root(NULL),*/ source(source)
     {}
 
     virtual ~TopologyChangeVisitor() {}
@@ -66,11 +66,15 @@ protected:
 
     core::topology::Topology* source;
 };
+
 //Only triggers the handleTopologyChange method
 class SOFA_SIMULATION_COMMON_API HandleTopologyChangeVisitor: public Visitor
 {
-
 public:
+    HandleTopologyChangeVisitor(const sofa::core::ExecParams* params)
+        : Visitor(params)
+    {}
+
     virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Return a category name for this action.

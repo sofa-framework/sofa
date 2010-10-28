@@ -36,6 +36,7 @@
 #ifndef SOFA_SIMULATION_COMMON_NODE_H
 #define SOFA_SIMULATION_COMMON_NODE_H
 
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
 #include <sofa/core/objectmodel/BaseNode.h>
@@ -48,9 +49,8 @@
 #include <sofa/core/Shader.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/MechanicalMapping.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
@@ -114,13 +114,13 @@ public:
     /// @name High-level interface
     /// @{
     /// Initialize the components
-    void init();
+    void init(const core::ExecParams* params);
     /// Apply modifications to the components
-    void reinit();
+    void reinit(const core::ExecParams* params);
     /// Do one step forward in time
-    void animate( double dt );
+    void animate(double dt, const core::ExecParams* params);
     /// Draw the objects in an OpenGl context
-    void glDraw();
+    void glDraw(const core::ExecParams* params);
     /// @}
 
     /// @name Visitor handling
@@ -147,10 +147,10 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act>
-    void execute()
+    template<class Act, class Params>
+    void execute(const Params* params)
     {
-        Act action;
+        Act action(params);
         simulation::Visitor* p = &action;
         executeVisitor(p);
     }
@@ -313,8 +313,9 @@ public:
     Sequence<core::behavior::OdeSolver> solver;
     Sequence<core::behavior::ConstraintSolver> constraintSolver;
     Sequence<core::behavior::LinearSolver> linearSolver;
+    Single<core::BaseState> state;
     Single<core::behavior::BaseMechanicalState> mechanicalState;
-    Single<core::behavior::BaseMechanicalMapping> mechanicalMapping;
+    Single<core::BaseMapping> mechanicalMapping;
     Single<core::behavior::BaseMass> mass;
     Single<core::topology::Topology> topology;
     Single<core::topology::BaseMeshTopology> meshTopology;
@@ -324,7 +325,7 @@ public:
     Sequence<core::topology::BaseTopology> basicTopology;
 
     Sequence<core::behavior::BaseForceField> forceField;
-    Sequence<core::behavior::InteractionForceField> interactionForceField;
+    Sequence<core::behavior::BaseInteractionForceField> interactionForceField;
     Sequence<core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
     Sequence<core::behavior::BaseConstraintSet> constraintSet;
     Sequence<core::objectmodel::ContextObject> contextObject;
@@ -450,6 +451,9 @@ public:
     /// Mesh Topology (unified interface for both static and dynamic topologies)
     virtual core::topology::BaseMeshTopology* getMeshTopology() const;
 
+    /// Degrees-of-Freedom
+    virtual core::objectmodel::BaseObject* getState() const;
+
     /// Mechanical Degrees-of-Freedom
     virtual core::objectmodel::BaseObject* getMechanicalState() const;
 
@@ -553,7 +557,7 @@ public:
     virtual void initVisualContext() {}
 
     /// Propagate an event
-    virtual void propagateEvent( core::objectmodel::Event* event );
+    virtual void propagateEvent(core::objectmodel::Event* event, const core::ExecParams* params = sofa::core::ExecParams::defaultInstance());
 
     /// Update the visual context values, based on parent and local ContextObjects
     virtual void updateVisualContext(VISUAL_FLAG FILTER=ALLFLAGS);

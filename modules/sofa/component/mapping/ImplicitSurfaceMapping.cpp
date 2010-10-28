@@ -22,12 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP
 #include <sofa/component/mapping/ImplicitSurfaceMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.h>
+
 
 namespace sofa
 {
@@ -39,53 +38,46 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace core::behavior;
 
 SOFA_DECL_CLASS(ImplicitSurfaceMapping)
 
 // Register in the Factory
 int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface from a set of particles")
 #ifndef SOFA_FLOAT
-        .add< ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >()
-// .add< ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >()
-        .add< ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >()
+        .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >()
-// .add< ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >()
-        .add< ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >()
+        .add< ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes > >()
 #endif
 
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >()
-        .add< ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >()
+        .add< ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes > >()
 #endif
 #endif
         ;
 
 
 #ifndef SOFA_FLOAT
-template class ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
-// template class ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
-template class ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+template class ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+template class ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
-template class ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-// template class ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+template class ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+template class ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class ImplicitSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-template class ImplicitSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+template class ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+template class ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
-// Mech -> Mapped
 
-// Mech -> ExtMapped
 
 } // namespace mapping
 

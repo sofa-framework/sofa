@@ -146,10 +146,10 @@ inline const Vector3& Tetrahedron::p2() const { return (*model->mstate->getX())[
 inline const Vector3& Tetrahedron::p3() const { return (*model->mstate->getX())[(*(model->tetra))[index][2]]; }
 inline const Vector3& Tetrahedron::p4() const { return (*model->mstate->getX())[(*(model->tetra))[index][3]]; }
 
-inline const Vector3& Tetrahedron::p1Free() const { return (*model->mstate->getXfree())[(*(model->tetra))[index][0]]; }
-inline const Vector3& Tetrahedron::p2Free() const { return (*model->mstate->getXfree())[(*(model->tetra))[index][1]]; }
-inline const Vector3& Tetrahedron::p3Free() const { return (*model->mstate->getXfree())[(*(model->tetra))[index][2]]; }
-inline const Vector3& Tetrahedron::p4Free() const { return (*model->mstate->getXfree())[(*(model->tetra))[index][3]]; }
+inline const Vector3& Tetrahedron::p1Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][0]]; }
+inline const Vector3& Tetrahedron::p2Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][1]]; }
+inline const Vector3& Tetrahedron::p3Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][2]]; }
+inline const Vector3& Tetrahedron::p4Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][3]]; }
 
 inline int Tetrahedron::p1Index() const { return (*(model->tetra))[index][0]; }
 inline int Tetrahedron::p2Index() const { return (*(model->tetra))[index][1]; }

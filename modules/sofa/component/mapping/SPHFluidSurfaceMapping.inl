@@ -27,11 +27,16 @@
 
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
 #include <sofa/component/container/SpatialGridContainer.inl>
-#include <sofa/simulation/common/Simulation.h>
+
 #include <sofa/core/Mapping.inl>
+
 #include <sofa/helper/rmath.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
 #include <sofa/helper/gl/template.h>
+
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
+
 #include <map>
 #include <list>
 
@@ -150,16 +155,36 @@ void SPHFluidSurfaceMapping<In,Out>::createFaces(OutVecCoord& out, OutVecDeriv* 
 }
 
 template <class In, class Out>
-void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& in )
+void SPHFluidSurfaceMapping<In,Out>::apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    OutVecCoord& out = *dOut.beginEdit();
+    helper::ReadAccessor< Data<InVecCoord> > in = dIn;
+
     //if (!sph) return;
     if (!grid) return;
     //const InReal invStep = (InReal)(1/mStep.getValue());
-    OutVecDeriv* normals = this->toModel->getN();
+    Data< OutVecDeriv > *normals_data = this->toModel->write(core::VecDerivId::normal());
+    OutVecDeriv *normals;
+    //if toModel is not a VisualModelImpl
+    //(consequently, it does not have any normal vector)
+
+    if(normals_data == NULL)
+    {
+        normals = new OutVecDeriv();
+    }
+    else
+        normals = normals_data->beginEdit();
+
     out.resize(0);
-    if (normals) normals->resize(0);
+
+    if (normals)
+        normals->resize(0);
+
     clear();
-    if (in.size()==0) return;
+
+    if (in.size()==0)
+        return;
+
     const InReal r = (InReal)(getRadius()); // / mStep.getValue());
     grid->begin();
     for (unsigned int ip=0; ip<in.size(); ip++)
@@ -357,16 +382,23 @@ void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
             for(unsigned int i=0 ; i<out.size() ; i++)
                 tempRest.push_back(out[i]);
             oglsvm->putRestPositions(tempRest);
-            std::cout << "void SPHFluidSurfaceMapping<In,Out>::apply" << std::endl;
+            //std::cout << "void SPHFluidSurfaceMapping<In,Out>::apply" << std::endl;
         }
 
         firstApply = false;
 #endif
     }
+
+    if(normals_data == NULL)
+        delete normals;
+    else
+        normals_data->endEdit();
+
+    dOut.endEdit();
 }
 
 template <class In, class Out>
-void SPHFluidSurfaceMapping<In,Out>::applyJ( OutVecDeriv& /*out*/, const InVecDeriv& /*in*/ )
+void SPHFluidSurfaceMapping<In,Out>::applyJ(Data<OutVecDeriv>& /*dOut*/, const Data<InVecDeriv>& /*dIn*/, const core::MechanicalParams * /*mparams*/)
 {
 }
 

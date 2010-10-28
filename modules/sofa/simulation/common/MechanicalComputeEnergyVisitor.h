@@ -38,7 +38,7 @@
 
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/defaulttype/Vec.h>
-
+#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 
@@ -56,7 +56,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalComputeEnergyVisitor : public sofa::s
     SReal m_potentialEnergy;
 
 public:
-    MechanicalComputeEnergyVisitor();
+    MechanicalComputeEnergyVisitor(const core::MechanicalParams* mparams);
 
     ~MechanicalComputeEnergyVisitor();
 

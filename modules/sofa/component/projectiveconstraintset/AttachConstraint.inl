@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
 
-#include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/component/projectiveconstraintset/AttachConstraint.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -450,8 +449,8 @@ void AttachConstraint<DataTypes>::init()
     if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
     {
         const Real maxR = f_radius.getValue();
-        VecCoord& x1 = *this->mstate1->getX();
-        VecCoord& x2 = *this->mstate2->getX();
+        const VecCoord& x1 = *this->mstate1->getX();
+        const VecCoord& x2 = *this->mstate2->getX();
         for (unsigned int i2=0; i2<x2.size(); ++i2)
         {
             int best = -1;
@@ -715,8 +714,8 @@ void AttachConstraint<DataTypes>::draw()
         return;
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
-    VecCoord& x1 = *this->mstate1->getX();
-    VecCoord& x2 = *this->mstate2->getX();
+    const VecCoord& x1 = *this->mstate1->getX();
+    const VecCoord& x2 = *this->mstate2->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);

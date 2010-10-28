@@ -53,7 +53,6 @@ namespace mass
 
 using namespace sofa::defaulttype;
 
-
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : mass ( initData ( &mass, MassType ( 1.0f ), "mass", "Mass of each particle" ) )
@@ -158,10 +157,10 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx ( VecDeriv& vres, const VecDeriv& vdx, double factor )
+void UniformMass<DataTypes, MassType>::addMDx ( DataVecDeriv& vres, const DataVecDeriv& vdx, double factor , const core::MechanicalParams*)
 {
-    helper::WriteAccessor<VecDeriv> res = vres;
-    helper::ReadAccessor<VecDeriv> dx = vdx;
+    helper::WriteAccessor<DataVecDeriv> res = vres;
+    helper::ReadAccessor<DataVecDeriv> dx = vdx;
 
     unsigned int ibegin = 0;
     unsigned int iend = dx.size();
@@ -184,10 +183,10 @@ void UniformMass<DataTypes, MassType>::addMDx ( VecDeriv& vres, const VecDeriv& 
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::accFromF ( VecDeriv& va, const VecDeriv& vf )
+void UniformMass<DataTypes, MassType>::accFromF ( DataVecDeriv& va, const DataVecDeriv& vf, const core::MechanicalParams* )
 {
-    helper::WriteAccessor<VecDeriv> a = va;
-    helper::ReadAccessor<VecDeriv> f = vf;
+    helper::WriteAccessor<DataVecDeriv> a = va;
+    helper::ReadAccessor<DataVecDeriv> f = vf;
 
     unsigned int ibegin = 0;
     unsigned int iend = f.size();
@@ -214,17 +213,18 @@ void UniformMass<DataTypes, MassType>::addMDxToVector ( defaulttype::BaseVector 
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addGravityToV ( double dt )
+void UniformMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
 {
-    if ( this->mstate )
+    if ( this->mstate && mparams)
     {
-        helper::WriteAccessor<VecDeriv> v = *this->mstate->getV();
+        helper::WriteAccessor<DataVecDeriv> v = *vid[this->mstate].write();
+
         const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
-        Deriv hg = theGravity * ( Real ) dt;
+        Deriv hg = theGravity * ( Real ) (mparams->dt());
         if ( this->f_printLog.getValue() )
-            serr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<dt<<"="<<hg<<sendl;
+            serr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg<<sendl;
         for ( unsigned int i=0; i<v.size(); i++ )
         {
             v[i] += hg;
@@ -234,9 +234,9 @@ void UniformMass<DataTypes, MassType>::addGravityToV ( double dt )
 
 template <class DataTypes, class MassType>
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
-void UniformMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCoord& x, const VecDeriv& v )
+void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v , const core::MechanicalParams* )
 #else
-void UniformMass<DataTypes, MassType>::addForce ( VecDeriv& vf, const VecCoord& /*x*/, const VecDeriv& /*v*/ )
+void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams* )
 #endif
 {
 
@@ -244,7 +244,7 @@ void UniformMass<DataTypes, MassType>::addForce ( VecDeriv& vf, const VecCoord& 
     if ( this->m_separateGravity.getValue() )
         return;
 
-    helper::WriteAccessor<VecDeriv> f = vf;
+    helper::WriteAccessor<DataVecDeriv> f = vf;
 
     unsigned int ibegin = 0;
     unsigned int iend = f.size();
@@ -273,16 +273,16 @@ void UniformMass<DataTypes, MassType>::addForce ( VecDeriv& vf, const VecCoord& 
     // velocity-based stuff
     core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
     core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<sendl;
+    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<sendl;
     //serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<sendl;
-//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), this->getContext()->getLocalToWorld() = "<<this->getContext()->getPositionInWorld()<<sendl;
+    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), this->getContext()->getLocalToWorld() = "<<this->getContext()->getPositionInWorld()<<sendl;
 
     // project back to local frame
     vframe = this->getContext()->getPositionInWorld() / vframe;
     aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
-//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<sendl;
-//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<sendl;
-//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<sendl;
+    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<sendl;
+    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<sendl;
+    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<sendl;
 #endif
 
 
@@ -315,9 +315,9 @@ void UniformMass<DataTypes, MassType>::addForce ( VecDeriv& vf, const VecCoord& 
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& vv ) const
+double UniformMass<DataTypes, MassType>::getKineticEnergy ( const DataVecDeriv& vv, const core::MechanicalParams*  ) const
 {
-    helper::ReadAccessor<VecDeriv> v = vv;
+    helper::ReadAccessor<DataVecDeriv> v = vv;
 
     unsigned int ibegin = 0;
     unsigned int iend = v.size();
@@ -339,9 +339,9 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& vv )
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& vx ) const
+double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const DataVecCoord& vx, const core::MechanicalParams*  ) const
 {
-    helper::ReadAccessor<VecCoord> x = vx;
+    helper::ReadAccessor<DataVecCoord> x = vx;
 
     unsigned int ibegin = 0;
     unsigned int iend = x.size();
@@ -364,8 +364,8 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& vx
     for ( unsigned int i=ibegin; i<iend; i++ )
     {
         /*        serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<sendl;
-                serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<sendl;
-                serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<sendl;*/
+        serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<sendl;
+        serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<sendl;*/
         e -= mg*x[i];
     }
     return e;
@@ -373,14 +373,16 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& vx
 
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMToMatrix ( defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset )
+void UniformMass<DataTypes, MassType>::addMToMatrix (const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams)
 {
     const MassType& m = mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     const unsigned int size = this->mstate->getSize();
     AddMToMatrixFunctor<Deriv,MassType> calc;
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    Real mFactor = (Real)mparams->mFactor();
     for ( unsigned int i=0; i<size; i++ )
-        calc ( mat, m, offset + N*i, mFact );
+        calc ( r.matrix, m, r.offset + N*i, mFactor);
 }
 
 
@@ -513,9 +515,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
 void UniformMass<Rigid2dTypes, Rigid2dMass>::draw();
 template <>
-double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy ( const VecCoord& x ) const;
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy ( const DataVecCoord& x, const core::MechanicalParams* ) const;
 template <>
-double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy ( const VecCoord& x ) const;
+double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy ( const DataVecCoord& x, const core::MechanicalParams* ) const;
 template <>
 void UniformMass<Vec6dTypes,double>::draw();
 #endif
@@ -529,9 +531,9 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw();
 template <>
 void UniformMass<Rigid2fTypes, Rigid2fMass>::draw();
 template <>
-double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy ( const VecCoord& x ) const;
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy ( const DataVecCoord& x, const core::MechanicalParams* ) const;
 template <>
-double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy ( const VecCoord& x ) const;
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy ( const DataVecCoord& x, const core::MechanicalParams* ) const;
 template <>
 void UniformMass<Vec6fTypes,float>::draw();
 #endif
@@ -544,4 +546,4 @@ void UniformMass<Vec6fTypes,float>::draw();
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_MASS_UNIFORMMASS_INL

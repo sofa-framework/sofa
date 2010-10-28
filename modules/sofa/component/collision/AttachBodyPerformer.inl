@@ -52,10 +52,12 @@ void AttachBodyPerformer<DataTypes>::start()
 
     double distanceFromMouse=picked.rayLength;
     this->interactor->setDistanceFromMouse(distanceFromMouse);
-    this->interactor->getMouseRayModel()->getRay(0).origin() += this->interactor->getMouseRayModel()->getRay(0).direction()*distanceFromMouse;
+    Ray ray = this->interactor->getMouseRayModel()->getRay(0);
+    ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
     sofa::core::BaseMapping *mapping;
     this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->updateMapping();
+    mapping->apply();
+    mapping->applyJ();
     forcefield->init();
     this->interactor->setMouseAttached(true);
 }

@@ -62,7 +62,9 @@ public:
     typedef T container_type;
     typedef T value_type;
     typedef value_type& reference;
+    typedef value_type* pointer;
     typedef const value_type& const_reference;
+    typedef const value_type* const_pointer;
 
 protected:
     const container_type& vref;
@@ -73,10 +75,9 @@ public:
 
     const_reference ref() const { return vref; }
 
-    operator value_type() const
-    {
-        return vref;
-    }
+    operator  const_reference () const { return  vref; }
+    const_pointer   operator->() const { return &vref; }
+    const_reference operator* () const { return  vref; }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<T>& vec )
     {
@@ -107,7 +108,9 @@ public:
     typedef T container_type;
     typedef T value_type;
     typedef value_type& reference;
+    typedef value_type* pointer;
     typedef const value_type& const_reference;
+    typedef const value_type* const_pointer;
 
 protected:
     container_type& vref;
@@ -119,10 +122,13 @@ public:
     const_reference ref() const { return vref; }
     reference wref() { return vref; }
 
-    operator value_type() const
-    {
-        return vref;
-    }
+    operator  const_reference () const { return  vref; }
+    const_pointer   operator->() const { return &vref; }
+    const_reference operator* () const { return  vref; }
+
+    operator  reference () { return  vref; }
+    pointer   operator->() { return &vref; }
+    reference operator* () { return  vref; }
 
     template<class T2>
     void operator=(const T2& v)

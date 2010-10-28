@@ -53,17 +53,17 @@ using namespace sofa::component::topology;
 
 
 /** corotational triangle from
- * @InProceedings{NPF05,
- *   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
- *   title        = "Efficient, Physically Plausible Finite Elements",
- *   booktitle    = "Eurographics (short papers)",
- *   month        = "august",
- *   year         = "2005",
- *   editor       = "J. Dingliana and F. Ganovelli",
- *   keywords     = "animation, physical model, elasticity, finite elements",
- *   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
- * }
- */
+* @InProceedings{NPF05,
+*   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
+*   title        = "Efficient, Physically Plausible Finite Elements",
+*   booktitle    = "Eurographics (short papers)",
+*   month        = "august",
+*   year         = "2005",
+*   editor       = "J. Dingliana and F. Ganovelli",
+*   keywords     = "animation, physical model, elasticity, finite elements",
+*   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
+* }
+*/
 template<class DataTypes>
 class TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -78,6 +78,9 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
+
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     typedef sofa::core::topology::BaseMeshTopology::index_type Index;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
@@ -187,7 +190,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* _topology;
     //const VecElement *_indexedElements;
     //Data< VecCoord > _initialPoints; ///< the intial positions of the points
-    VecCoord* _initialPoints;
+    const VecCoord* _initialPoints;
     //     int _method; ///< the computation method of the displacements
 
 
@@ -203,9 +206,9 @@ public:
     virtual ~TriangularFEMForceField();
     virtual void init();
     virtual void reinit();
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
+    virtual double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* mparams) const;
     virtual void handleTopologyChange();
 
     void draw();
@@ -269,14 +272,14 @@ protected :
     static void TRQSTriangleCreationFunction (int , void* , TriangleInformation &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
     /// f += Kx where K is the stiffness matrix and x a displacement
-    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x );
+    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
     virtual void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c);
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex);
     void accumulateDampingSmall( VecCoord& f, Index elementIndex );
-    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x );
+    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
 
     ////////////// large displacements method
     //sofa::helper::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
@@ -285,19 +288,22 @@ protected :
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
     void accumulateDampingLarge( VecCoord& f, Index elementIndex );
-    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x );
+    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
 };
 
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
+
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
 #endif
+
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
 #endif
-#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
 } // namespace forcefield
 
@@ -305,4 +311,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<defa
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_H

@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL
+
 #include <sofa/component/forcefield/TriangularTensorMassForceField.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -42,9 +45,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::topology;
-
-
-
 
 
 using core::topology::BaseMeshTopology;
@@ -298,7 +298,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = *this->mstate->getX0();
         _initialPoints=p;
     }
 
@@ -327,26 +327,20 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     edgeInfo.endEdit();
 }
 
+template <class DataTypes>
+void TriangularTensorMassForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
 
-template <class DataTypes>
-double TriangularTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr<<"TriangularTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-template <class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
-{
     unsigned int i,v0,v1;
     unsigned int nbEdges=_topology->getNbEdges();
-
     EdgeRestInformation *einfo;
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     Deriv force;
     Coord dp0,dp1,dp;
-
 
     for(i=0; i<nbEdges; i++ )
     {
@@ -362,15 +356,19 @@ void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecC
     }
 
     edgeInfo.endEdit();
+    d_f.endEdit();
 }
 
 
 template <class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
+void TriangularTensorMassForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     unsigned int v0,v1;
     int nbEdges=_topology->getNbEdges();
-
     EdgeRestInformation *einfo;
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
@@ -387,11 +385,12 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const Ve
         dp1=dx[v1];
         dp = dp1-dp0;
 
-        df[v1]+=einfo->DfDx*dp;
-        df[v0]-=einfo->DfDx.transposeMultiply(dp);
+        df[v1]+= (einfo->DfDx*dp) * kFactor;
+        df[v0]-= (einfo->DfDx.transposeMultiply(dp)) * kFactor;
     }
 
     edgeInfo.endEdit();
+    d_df.endEdit();
 }
 
 
@@ -400,7 +399,7 @@ void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
+    //	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
@@ -414,7 +413,7 @@ void TriangularTensorMassForceField<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
     int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);
@@ -442,6 +441,8 @@ void TriangularTensorMassForceField<DataTypes>::draw()
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
+
+#endif //#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL

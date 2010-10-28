@@ -156,11 +156,11 @@ void OglModel::drawGroups(bool transparent)
 {
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
 
-    for (unsigned int i=0; i<xforms.size(); i++)
+    //for (unsigned int i=0; i<xforms.size(); i++)
     {
-        float matrix[16];
-        xforms[i].writeOpenGlMatrix(matrix);
-        pushTransformMatrix(matrix);
+        //    float matrix[16];
+        //    xforms[i].writeOpenGlMatrix(matrix);
+        //    pushTransformMatrix(matrix);
 
         if (groups.empty())
             drawGroup(-1, transparent);
@@ -170,14 +170,13 @@ void OglModel::drawGroups(bool transparent)
                 drawGroup(i, transparent);
         }
 
-        popTransformMatrix();
+        //    popTransformMatrix();
     }
 }
 
 void OglModel::internalDraw(bool transparent)
 {
-
-    field_vtexcoords.updateIfDirty();
+    m_vtexcoords.updateIfDirty();
     //serr<<" OglModel::internalDraw()"<<sendl;
     if (!getContext()->getShowVisualModels()) return;
 
@@ -185,7 +184,7 @@ void OglModel::internalDraw(bool transparent)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const ResizableExtVector<Coord>& vertices = this->getVertices();
-    const ResizableExtVector<Coord>& vnormals = this->getVnormals();
+    const ResizableExtVector<Deriv>& vnormals = this->getVnormals();
     const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
     const ResizableExtVector<Coord>& vtangents= this->getVtangents();
     const ResizableExtVector<Coord>& vbitangents= this->getVbitangents();
@@ -380,7 +379,7 @@ void OglModel::internalDraw(bool transparent)
             glPopMatrix();
         }
     }
-    field_vtexcoords.updateIfDirty();
+    m_vtexcoords.updateIfDirty();
 }
 
 bool OglModel::loadTexture(const std::string& filename)

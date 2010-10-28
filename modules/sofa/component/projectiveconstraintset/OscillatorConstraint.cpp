@@ -42,43 +42,6 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-//template <>
-//void OscillatorConstraint<RigidTypes>::draw()
-//{
-///*	if (!getContext()->getShowBehaviorModels()) return;
-//	VecCoord& x = *mstate->getX();
-//	for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
-//	{
-//		int i = *it;
-//		Quat orient = x[i].getOrientation();
-//		RigidTypes::Vec3& center = x[i].getCenter();
-//		orient[3] = -orient[3];
-//
-//		static GL::Axis *axis = new GL::Axis(center, orient, 5);
-//
-//		axis->update(center, orient);
-//		axis->draw();
-//	}*/
-//	if (!getContext()->getShowBehaviorModels()) return;
-//	VecCoord& x = *mstate->getX();
-//	glDisable (GL_LIGHTING);
-//	glPointSize(10);
-//	glColor4f (1,0.5,0.5,1);
-//	glBegin (GL_POINTS);
-//	for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
-//	{
-//	   helper::gl::glVertexT(x[0].getCenter());
-//	}
-//	glEnd();
-//}
-//
-//template <>
-//      void OscillatorConstraint<RigidTypes>::projectResponse(VecDeriv& res)
-//{
-//   res[0] = Deriv();
-//}
-
-
 SOFA_DECL_CLASS(OscillatorConstraint)
 
 

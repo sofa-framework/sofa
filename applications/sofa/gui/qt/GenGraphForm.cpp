@@ -254,7 +254,7 @@ void GenGraphForm::doExport()
         return;
     }
     {
-        sofa::simulation::tree::ExportDotVisitor act(&fdot);
+        sofa::simulation::tree::ExportDotVisitor act(&fdot, sofa::core::ExecParams::defaultInstance());
         act.showNode = this->showNodes->isOn();
         act.showObject = this->showObjects->isOn();
         act.showBehaviorModel = this->showBehaviorModels->isOn();

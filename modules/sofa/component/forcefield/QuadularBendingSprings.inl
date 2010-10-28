@@ -572,16 +572,13 @@ void QuadularBendingSprings<DataTypes>::init()
     */
 }
 
-template <class DataTypes>
-double QuadularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr<<"QuadularBendingSprings::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void QuadularBendingSprings<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     int nbEdges=_topology->getNbEdges();
 
     EdgeInformation *einfo;
@@ -699,6 +696,7 @@ void QuadularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& x,
     }
 
     edgeInfo.endEdit();
+    d_f.endEdit();
 
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
@@ -708,8 +706,12 @@ void QuadularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& x,
 }
 
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
+void QuadularBendingSprings<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     int nbEdges=_topology->getNbEdges();
 
     const EdgeInformation *einfo;
@@ -737,21 +739,21 @@ void QuadularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& 
             const int a2 = einfo->m3;
             const int b2 = einfo->m4;
             const Coord d2 = dx[b2]-dx[a2];
-            const Deriv dforce1 = einfo->DfDx*d1;
-            const Deriv dforce2 = einfo->DfDx*d2;
+            const Deriv dforce1 = (einfo->DfDx*d1) * kFactor;
+            const Deriv dforce2 = (einfo->DfDx*d2) * kFactor;
             df[a1]+=dforce1;
             df[b1]-=dforce1;
             df[a2]+=dforce2;
             df[b2]-=dforce2;
             //serr<<"QuadularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
 
-            if(updateMatrix)
-            {
-
-            }
+            //if(updateMatrix)
+            //{
+            //}
             updateMatrix=false;
         }
     }
+    d_df.endEdit();
 
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
@@ -781,7 +783,7 @@ void QuadularBendingSprings<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
 
     glDisable(GL_LIGHTING);
 
@@ -876,4 +878,4 @@ void QuadularBendingSprings<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL

@@ -120,9 +120,9 @@ void PostProcessManager::preDrawScene(helper::gl::VisualParameters* vp)
         gluPerspective(60.0,1.0, zNear.getValue(), zFar.getValue());
 
         glMatrixMode(GL_MODELVIEW);
-        simulation::VisualDrawVisitor vdv( core::VisualModel::Std );
+        simulation::VisualDrawVisitor vdv( core::VisualModel::Std, core::ExecParams::defaultInstance() );
         vdv.execute ( getContext() );
-        simulation::VisualDrawVisitor vdvt( core::VisualModel::Transparent );
+        simulation::VisualDrawVisitor vdvt( core::VisualModel::Transparent, core::ExecParams::defaultInstance() );
         vdvt.execute ( getContext() );
 
         glMatrixMode(GL_PROJECTION);

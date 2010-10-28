@@ -26,18 +26,17 @@
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_INL
 
 #include <sofa/component/mapping/BeamLinearMapping.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+
+#include <sofa/core/Mapping.inl>
+
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
+
+#include <sofa/simulation/common/Simulation.h>
+
 #include <string>
-
-
 
 namespace sofa
 {
@@ -50,21 +49,27 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::init()
+template <class TIn, class TOut>
+void BeamLinearMapping<TIn, TOut>::init()
 {
     bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=NULL)
     {
-        typename In::VecCoord& xfrom = *this->fromModel->getX();
+        const typename In::VecCoord& xfrom = *this->fromModel->getX();
         beamLength.resize(xfrom.size());
+
         for (unsigned int i=0; i<xfrom.size()-1; i++)
+        {
             beamLength[i] = (Real)((xfrom[i]-xfrom[i+1]).norm());
+        }
+
         if (xfrom.size()>=2)
             beamLength[xfrom.size()-1] = beamLength[xfrom.size()-2];
-        VecCoord& x = *this->toModel->getX();
+
+        const VecCoord& x = *this->toModel->getX();
         sout << "BeamLinearMapping: init "<<x.size()<<" points."<<sendl;
         points.resize(x.size());
+
         if (local)
         {
             for (unsigned int i=0; i<x.size(); i++)
@@ -87,14 +92,16 @@ void BeamLinearMapping<BasicMapping>::init()
             }
         }
     }
-    this->BasicMapping::init();
+
+    Inherit::init();
 }
 
-template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class TIn, class TOut>
+void BeamLinearMapping<TIn, TOut>::apply(Data< typename Out::VecCoord >& _out, const Data< typename In::VecCoord >& _in, const core::MechanicalParams * /*mparams*/)
 {
-    //translation = in[index.getValue()].getCenter();
-    //in[index.getValue()].writeRotationMatrix(rotation);
+    helper::WriteAccessor< Data< typename Out::VecCoord > > out = _out;
+    helper::ReadAccessor< Data< typename In::VecCoord > > in = _in;
+
     rotatedPoints0.resize(points.size());
     rotatedPoints1.resize(points.size());
     out.resize(points.size());
@@ -115,13 +122,12 @@ void BeamLinearMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
     }
 }
 
-template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class TIn, class TOut>
+void BeamLinearMapping<TIn, TOut>::applyJ(Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in, const core::MechanicalParams * /*mparams*/)
 {
-    //const typename In::VecCoord& x = *this->fromModel->getX();
-    //Deriv v,omega;
-    //v = in[index.getValue()].getVCenter();
-    //omega = in[index.getValue()].getVOrientation();
+    helper::WriteAccessor< Data< typename Out::VecDeriv > > out = _out;
+    helper::ReadAccessor< Data< typename In::VecDeriv > > in = _in;
+
     out.resize(points.size());
     for(unsigned int i=0; i<points.size(); i++)
     {
@@ -143,9 +149,12 @@ void BeamLinearMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const
     }
 }
 
-template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class TIn, class TOut>
+void BeamLinearMapping<TIn, TOut>::applyJT(Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data< typename In::VecDeriv > > out = _out;
+    helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
+
     //Deriv v,omega;
     for(unsigned int i=0; i<points.size(); i++)
     {
@@ -175,15 +184,18 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const
 }
 
 
-// BeamLinearMapping::applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) //
+// BeamLinearMapping::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) //
 // this function propagate the constraint through the rigid mapping :
 // if one constraint along (vector n) with a value (v) is applied on the childModel (like collision model)
 // then this constraint is transformed by (Jt.n) with value (v) for the rigid model
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
-template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class TIn, class TOut>
+void BeamLinearMapping<TIn, TOut>::applyJT(Data< typename In::MatrixDeriv >& _out, const Data< typename Out::MatrixDeriv >& _in, const core::ConstraintParams * /*cparams*/)
 {
+    typename In::MatrixDeriv* out = _out.beginEdit();
+    const typename Out::MatrixDeriv& in = _in.getValue();
+
     const typename In::VecCoord& x = *this->fromModel->getX();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
@@ -195,7 +207,7 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, co
 
         if (colIt != colItEnd)
         {
-            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+            typename In::MatrixDeriv::RowIterator o = out->writeLine(rowIt.index());
 
             // computation of (Jt.n)
             for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
@@ -232,53 +244,9 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::MatrixDeriv& out, co
     }
 }
 
-/*
-template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
-{
-	const typename In::VecCoord& x = *this->fromModel->getX();
-	int outSize = out.size();
-	out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
 
-	for(unsigned int i=0; i<in.size(); i++)
-	{
-		// computation of (Jt.n) //
-		// in[i].size() = num node involved in the constraint
-
-                OutConstraintIterator itOut;
-                std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-                for (itOut=iter.first;itOut!=iter.second;itOut++)
-                {
-                        unsigned int indexIn = itOut->first;
-                        Deriv data = (Deriv) itOut->second;
-			// interpolation//////////
-			defaulttype::Vec<N, typename In::Real> inpos = points[indexIn];
-			int in0 = helper::rfloor(inpos[0]);
-			if (in0<0) in0 = 0; else if (in0 > (int)x.size()-2) in0 = x.size()-2;
-			inpos[0] -= in0;
-                        Real fact = (Real)inpos[0];
-                        fact = 3*(fact*fact)-2*(fact*fact*fact);
-			/////////////////////////
-			Deriv w_n = data;	// weighted value of the constraint direction
-
-			// Compute the mapped Constraint on the beam nodes ///
-			InDeriv direction0;
-			direction0.getVCenter() = w_n * (1-fact);
-			direction0.getVOrientation() = cross(rotatedPoints0[indexIn], w_n) * (1-fact);
-			InDeriv direction1;
-			direction1.getVCenter() = w_n * (fact);
-			direction1.getVOrientation() = cross(rotatedPoints1[indexIn], w_n) * (fact);
-                        out[outSize+i].add(in0, direction0);
-                        out[outSize+i].add(in0+1, direction1);
-		}
-
-	}
-}
-*/
-
-template <class BasicMapping>
-void BeamLinearMapping<BasicMapping>::draw()
+template <class TIn, class TOut>
+void BeamLinearMapping<TIn, TOut>::draw()
 {
     if (!this->getShow()) return;
     std::vector< Vector3 > points;
@@ -290,8 +258,8 @@ void BeamLinearMapping<BasicMapping>::draw()
         point = OutDataTypes::getCPos(x[i]);
         points.push_back(point);
     }
-    simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 
+    simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 }
 
 } // namespace mapping

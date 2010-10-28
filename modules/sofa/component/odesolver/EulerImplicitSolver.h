@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
+#include <sofa/component/component.h>
 
 
 namespace sofa
@@ -91,10 +91,10 @@ using namespace sofa::defaulttype;
  *   $ ( M + h K ) v_{t+h} = f_ext $
  *
  */
-class SOFA_COMPONENT_ODESOLVER_API EulerImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
 {
 public:
-    SOFA_CLASS(EulerImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
+    SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);
 
     Data<double> f_rayleighStiffness;
     Data<double> f_rayleighMass;
@@ -106,7 +106,7 @@ public:
 
     void init();
 
-    void solve (double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult);
+    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     ///

@@ -27,6 +27,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMASS_H
 #define SOFA_CORE_BEHAVIOR_BASEMASS_H
 
+#include <sofa/core/core.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/BaseMatrix.h>
@@ -68,16 +71,19 @@ public:
     /// @{
 
     /// f += factor M dx
-    virtual void addMDx(double factor = 1.0) = 0;
+    virtual void addMDx(MultiVecDerivId fid, double factor, const MechanicalParams* mparams) =0;
 
     /// dx = M^-1 f
-    virtual void accFromF() = 0;
+    virtual void accFromF(MultiVecDerivId aid, const MechanicalParams* mparams) = 0;
 
-    /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
-    virtual void addGravityToV(double dt)=0;
+    /// Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
+    /// \param mparams->dt() time step of for temporal discretization.
+    virtual void addGravityToV(MultiVecDerivId vid, const MechanicalParams* mparams) = 0;
 
     /// vMv/2
-    virtual double getKineticEnergy() const = 0 ;
+    virtual double getKineticEnergy(const MechanicalParams* mparams = MechanicalParams::defaultInstance()) const = 0;
+    /// Mgx
+    virtual double getPotentialEnergy(const MechanicalParams* mparams = MechanicalParams::defaultInstance()) const = 0;
 
     /// @}
 
@@ -88,9 +94,8 @@ public:
     ///
     /// This method must be implemented by the component.
     /// \param matrix matrix to add the result to
-    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact) = 0;
-    //virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset) = 0;
+    /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams) = 0;
 
     /// @}
 
@@ -98,14 +103,14 @@ public:
     virtual void initGnuplot(const std::string path)=0;
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(double time)=0;
+    virtual void exportGnuplot(double time, const MechanicalParams* mparams = MechanicalParams::defaultInstance())=0;
 
     /// return the mass relative to the DOF #index
-    virtual double getElementMass(unsigned int index)const =0;
+    virtual double getElementMass(unsigned int index) const =0;
     /// return the matrix relative to the DOF #index
-    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m)const =0;
+    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const = 0;
 
-    virtual bool isDiagonal() {return false;}
+    virtual bool isDiagonal() { return false; }
 
     /// Member specifying if the gravity is added separately to the DOFs velocities (in solve method),
     /// or if is added with the other forces(addForceMethod)

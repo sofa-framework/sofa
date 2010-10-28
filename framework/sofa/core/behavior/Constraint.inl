@@ -50,12 +50,14 @@ Constraint<DataTypes>::~Constraint()
 {
 }
 
+
 template <class DataTypes>
 bool Constraint<DataTypes>::isActive() const
 {
     if( endTime.getValue()<0 ) return true;
     return endTime.getValue()>getContext()->getTime();
 }
+
 
 template<class DataTypes>
 void Constraint<DataTypes>::init()
@@ -64,16 +66,58 @@ void Constraint<DataTypes>::init()
     mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
+
 template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(unsigned int &contactId, core::VecId)
+void Constraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams)
 {
-    if( !isActive() ) return;
-    if (mstate)
+    if (cParams)
     {
-        mstate->forceMask.setInUse(this->useMask());
-        applyConstraint(*mstate->getC(), contactId);
+        getConstraintViolation(v, *cParams->readX(mstate), *cParams->readV(mstate), cParams);
     }
 }
+
+
+#ifndef SOFA_DEPRECATE_OLD_API
+template<class DataTypes>
+void Constraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/, const ConstraintParams* /*cParams*/)
+{
+    if (mstate)
+    {
+        bool freePos = false;
+
+        if (&x.getValue() == mstate->getXfree())
+            freePos = true;
+
+        getConstraintValue(resV, freePos);
+    }
+}
+
+template<class DataTypes>
+void Constraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * /*resV*/, bool /*freeMotion*/)
+{
+    serr << "ERROR(" << getClassName() << "): getConstraintViolation(defaulttype::BaseVector *, bool freeMotion) not implemented." << sendl;
+}
+#endif // SOFA_DEPRECATE_OLD_API
+
+
+template<class DataTypes>
+void Constraint<DataTypes>::buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams)
+{
+    if (cParams)
+    {
+        buildConstraintMatrix(*cId[mstate].write(), cIndex, *cParams->readX(mstate), cParams);
+    }
+}
+
+
+#ifndef SOFA_DEPRECATE_OLD_API
+template<class DataTypes>
+void Constraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &/*c*/, unsigned int &/*cIndex*/, const DataVecCoord &/*x*/, const ConstraintParams* /*cParams*/)
+{
+    serr << "ERROR(" << getClassName()
+            << "): buildConstraintMatrix(DataMatrixDeriv *c, unsigned int &cIndex, const DataVecCoord &x, const ConstraintParams* cParams) not implemented." << sendl;
+}
+#endif
 
 } // namespace behavior
 
@@ -81,4 +125,4 @@ void Constraint<DataTypes>::buildConstraintMatrix(unsigned int &contactId, core:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_BEHAVIOR_CONSTRAINT_INL

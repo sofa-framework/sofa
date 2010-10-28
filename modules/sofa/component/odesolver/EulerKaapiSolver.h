@@ -48,17 +48,17 @@ public:
     SOFA_CLASS(EulerKaapiSolver, sofa::component::odesolver::OdeSolverImpl);
     EulerKaapiSolver();
     void solve (double dt);
-    void computeAcc (double t, VecId a, VecId x, VecId v);
+    void computeAcc (double t, core::VecId a, core::VecId x, core::VecId v);
     DataField<bool> symplectic;
-    void v_free(VecId v);
-    void v_clear(VecId v); ///< v=0
-    VecId v_alloc(VecId::Type t);
+    void v_free(core::VecId v);
+    void v_clear(core::VecId v); ///< v=0
+    core::VecId v_alloc(core::VecId::Type t);
 
-    void propagatePositionAndVelocity(double t, VecId x, VecId v);
-    void computeForce(VecId result);
-    void accFromF(VecId a, VecId f);
-    void projectResponse(VecId dx, double **W=NULL);
-    void v_peq(VecId v, VecId a, double f); ///< v+=f*a
+    void propagatePositionAndVelocity(double t, core::VecId x, core::VecId v);
+    void computeForce(core::VecId result);
+    void accFromF(core::VecId a, core::VecId f);
+    void projectResponse(core::VecId dx, double **W=NULL);
+    void v_peq(core::VecId v, core::VecId a, double f); ///< v+=f*a
 
 
 };
