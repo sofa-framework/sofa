@@ -76,13 +76,13 @@ Node *_root=NULL;
 double _dt;
 struct doCollideTask
 {
-
-    void operator()()
+    void operator()(const sofa::core::ExecParams *params)
     {
-        _root->execute<CollisionVisitor>();
+        _root->execute<CollisionVisitor>(params);
 
     }
 };
+
 #ifdef SOFA_SMP_WEIGHT
 struct compileGraphTask
 {
@@ -92,12 +92,14 @@ struct compileGraphTask
         static   Iterative::Multigraph<MainLoopTask> *mg=0;
         return mg;
     }
+
     static void setMultigraph(Iterative::Multigraph<MainLoopTask>* _mg)
     {
         Iterative::Multigraph<MainLoopTask> *&mg=getMultigraph();
         mg=_mg;
     }
-    void operator()()
+
+    void operator()(const sofa::core::ExecParams *params)
     {
 
         ctime_t  t0 = CTime::getRefTime ();
@@ -111,17 +113,16 @@ struct compileGraphTask
             getMultigraph()->compiled=true;
             getMultigraph()->deployed=false;
         }
-        ctime_t
-        t1 = CTime::getRefTime ();
-        std::cerr << "Compiling Time: " <<
-                ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001<< std::endl;
+        ctime_t t1 = CTime::getRefTime ();
+        std::cerr << "Compiling Time: " << ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001<< std::endl;
 
     }
 };
 #endif
+
 struct animateTask
 {
-    void operator()()
+    void operator()(const sofa::core::ExecParams* /* *params */)
     {
         sofa::simulation::tree::SMPSimulation* simulation=dynamic_cast<SMPSimulation *>(sofa::simulation::tree::getSimulation());
         simulation->generateTasks( _root);
@@ -134,16 +135,16 @@ struct animateTask
 
 struct collideTask
 {
-    void operator()()
+    void operator()(const sofa::core::ExecParams *params)
     {
 
-        a1::Fork<doCollideTask>()();
+        a1::Fork<doCollideTask>()(params);
 
     }
 };
 struct visuTask
 {
-    void operator()()
+    void operator()(const sofa::core::ExecParams* /**params*/)
     {
         //ColisonBeginEvent!!
         //_root->execute<CollisionVisitor>();
@@ -154,15 +155,13 @@ struct MainLoopTask
 
     void operator()()
     {
-        a1::Fork<animateTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-        a1::Fork<visuTask>()();
+        sofa::core::ExecParams* params = new sofa::core::ExecParams();
+        params->setExecMode(sofa::core::ExecParams::EXEC_KAAPI);
+        a1::Fork<animateTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))(params);
+        a1::Fork<visuTask>()(params);
 
     }
 };
-
-
-
-
 
 
 #ifdef SOFA_SMP_WEIGHT
@@ -196,16 +195,19 @@ void SMPSimulation::init( Node* root )
     changeListener->addChild ( NULL,  dynamic_cast< GNode *>(root) );
 }
 
-
 /// Create a new node
 Node* SMPSimulation::newNode(const std::string& name)
 {
     return new GNode(name);
 }
+
 // Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void SMPSimulation::animate ( Node* root, double dt )
 {
     if ( !root ) return;
+
+    sofa::core::ExecParams* params = new sofa::core::ExecParams();
+    params->setExecMode(sofa::core::ExecParams::EXEC_KAAPI);
 
     _root=root;
     _dt=dt;
@@ -214,11 +216,11 @@ void SMPSimulation::animate ( Node* root, double dt )
 
     {
         AnimateBeginEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
 
-    BehaviorUpdatePositionVisitor beh(_root->getDt());
+    BehaviorUpdatePositionVisitor beh(_root->getDt(), params);
     _root->execute ( beh );
 
     if (changeListener->changed()||nbSteps.getValue()<2)
@@ -238,27 +240,30 @@ void SMPSimulation::animate ( Node* root, double dt )
     }
 
     multiGraph->step();
-    _root->execute<CollisionVisitor>();
+    _root->execute<CollisionVisitor>(params);
 
     _root->setTime(nextTime);
-    _root->execute<VisualUpdateVisitor>();
-    _root->execute<UpdateSimulationContextVisitor>();
+    _root->execute<VisualUpdateVisitor>(params);
+    _root->execute<UpdateSimulationContextVisitor>(params);
     {
         AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
     *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
     nbSteps.endEdit();
+}// SMPASimulation::animate
 
-}
 void SMPSimulation::generateTasks ( Node* root, double dt )
 {
     if ( !root ) return;
 
+    sofa::core::ExecParams* params = new sofa::core::ExecParams();
+    params->setExecMode(sofa::core::ExecParams::EXEC_KAAPI);
+
     {
         AnimateBeginEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
 
@@ -270,32 +275,33 @@ void SMPSimulation::generateTasks ( Node* root, double dt )
     // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
     //root->execute<CollisionVisitor>();
 
-    AnimateVisitor act;
+    AnimateVisitor act( params );
     act.setDt ( mechanicalDt );
-    BehaviorUpdatePositionVisitor beh(root->getDt());
+    BehaviorUpdatePositionVisitor beh(root->getDt(), params);
     for ( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
         root->execute ( act );
         root->execute ( beh );
         root->setTime ( startTime + (i+1)* act.getDt() );
-        root->execute<UpdateSimulationContextVisitor>();
+        root->execute<UpdateSimulationContextVisitor>(params);
     }
 
     {
         AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
 
-    root->execute<UpdateMappingVisitor>();
+    root->execute<UpdateMappingVisitor>(params);
     {
         UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
+        PropagateEventVisitor act ( &ev, params );
         root->execute ( act );
     }
-    root->execute<ParallelVisualUpdateVisitor>();
-    root->execute<ParallelCollisionVisitor>();
-}
+    root->execute<ParallelVisualUpdateVisitor>(params);
+    root->execute<ParallelCollisionVisitor>(params);
+}// SMPSimulation::generateTasks
+
 Node *SMPSimulation::getVisualRoot()
 {
     if (visualNode) return visualNode;
@@ -305,7 +311,7 @@ Node *SMPSimulation::getVisualRoot()
         visualNode->addTag(core::objectmodel::Tag("Visual"));
         return visualNode;
     }
-}
+}// SMPSimulation::getVisualRoot
 
 
 

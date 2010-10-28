@@ -69,6 +69,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
 #ifdef SOFA_NEW_HEXA
     typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 #else
@@ -103,11 +106,9 @@ public:
     virtual void init();
     virtual void reinit()  { serr<<"WARNING : non-uniform mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl; }
 
-
-
-    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
-    virtual void addGravityToV(double dt);
-    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* mparams);
+    virtual void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    virtual void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
 
 protected:
@@ -133,10 +134,26 @@ protected:
 
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedronFEMForceFieldAndMass<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedronFEMForceFieldAndMass<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_CPP)
+
+
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_H

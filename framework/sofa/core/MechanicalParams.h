@@ -28,9 +28,7 @@
 #define SOFA_CORE_MECHANICAL_PARAMS_H
 
 #include <sofa/core/ExecParams.h>
-#include <sofa/core/VecId.h>
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa
 {
@@ -43,72 +41,14 @@ class MechanicalParams : public sofa::core::ExecParams
 {
 public:
 
-    enum StateGroup
-    {
-        SGROUP_DEFAULT = 0,
-        SGROUP_ACTIVE  = 1,
-    };
+    /// @name Flags and parameters getters
+    /// @{
 
     /// Time step
     double dt() const { return m_dt; }
 
     /// Is the time integration scheme implicit ?
     bool implicit() const { return m_implicit; }
-
-    /// Get the "group" of a given State, depending on whether it is controlled by the current solver
-    template<class StateContainer>
-    StateGroup getGroup(const StateContainer* state) const
-    {
-        bool isActive = (m_solverContext && state->getContext()->hasAncestor(m_solverContext));
-        return isActive ? SGROUP_ACTIVE:SGROUP_DEFAULT;
-    }
-
-    /// Read access to current position vector
-    template<class S>
-    const typename S::VecCoord* getX(const S* state) const
-    {   return state->getVCoord(m_x[getGroup(state)]);    }
-    /// Write access to current position vector
-    template<class S>
-    typename S::VecCoord* getX(S* state) const
-    {   return state->getVCoord(m_x[getGroup(state)]);    }
-
-    /// Read access to current velocity vector
-    template<class S>
-    const typename S::VecDeriv* getV(const S* state) const
-    {   return state->getVDeriv(m_v[getGroup(state)]);    }
-    /// Write access to current velocity vector
-    template<class S>
-    typename S::VecDeriv* getV(S* state) const
-    {   return state->getVDeriv(m_v[getGroup(state)]);    }
-
-    /// Read access to current force vector
-    template<class S>
-    const typename S::VecDeriv* getF(const S* state) const
-    {   return state->getVDeriv(m_f[getGroup(state)]);    }
-    /// Write access to current force vector
-    template<class S>
-    typename S::VecDeriv* getF(S* state) const
-    {   return state->getVDeriv(m_f[getGroup(state)]);    }
-
-    /// Read access to current dx vector (for implicit schemes)
-    template<class S>
-    const typename S::VecDeriv* getDx(const S* state) const
-    {   return state->getVDeriv(m_dx[getGroup(state)]);    }
-    /// Write access to current dx vector (for implicit schemes)
-    template<class S>
-    typename S::VecDeriv* getDx(S* state) const
-    {   return state->getVDeriv(m_dx[getGroup(state)]);    }
-
-    /// Read access to current df vector (for implicit schemes)
-    template<class S>
-    const typename S::VecDeriv* getDf(const S* state) const
-    {
-        return state->getVDeriv(m_df[getGroup(state)]);
-    }
-    /// Write access to current dx vector (for implicit schemes)
-    template<class S>
-    typename S::VecDeriv* getDf(S* state) const
-    {   return state->getVDeriv(m_df[getGroup(state)]);    }
 
     /// Mass matrix contributions factor (for implicit schemes)
     double mFactor() const { return m_mFactor; }
@@ -117,52 +57,54 @@ public:
     double bFactor() const { return m_bFactor; }
 
     /// Stiffness matrix contributions factor (for implicit schemes)
-    double kFactor() const { return m_kFactor; }
+    double kFactor() const { setKFactorUsed(true); return m_kFactor; }
 
-    MechanicalParams(const sofa::core::ExecParams& p = sofa::core::ExecParams() )
-        : sofa::core::ExecParams(p)
-        , m_dt(0.0)
-        , m_implicit(true)
-        , m_solverContext(NULL)
-        , m_x(VecId::position(), VecId::position())
-        , m_v(VecId::velocity(), VecId::velocity())
-        , m_f(VecId::force(), VecId::force())
-        , m_dx(VecId::dx(), VecId::dx())
-        , m_df(VecId::dforce(), VecId::dforce())
-        , m_mFactor(0)
-        , m_bFactor(0)
-        , m_kFactor(0)
-    {
-    }
+    /// Should the kinematic and potential energies be computed ?
+    bool energy() const { return m_energy; }
+
+    /// @}
+
+    /// @name Access to vectors from a given state container (i.e. State or MechanicalState)
+    /// @{
+
+    /// Read access to current position vector
+    template<class S>
+    const Data<typename S::VecCoord>* readX(const S* state) const
+    {   return m_x[state].read();    }
+
+    /// Read access to current velocity vector
+    template<class S>
+    const Data<typename S::VecDeriv>* readV(const S* state) const
+    {   return m_v[state].read();    }
+
+    /// Read access to current force vector
+    template<class S>
+    const Data<typename S::VecDeriv>* readF(const S* state) const
+    {   return m_f[state].read();    }
+
+    /// Read access to current dx vector (for implicit schemes)
+    template<class S>
+    const Data<typename S::VecDeriv>* readDx(const S* state) const
+    {   return m_dx[state].read();    }
+
+    /// Read access to current df vector (for implicit schemes)
+    template<class S>
+    const Data<typename S::VecDeriv>* readDf(const S* state) const
+    {   return m_df[state].read();    }
+
+    /// @}
+
+    /// @name Setup methods
+    /// Called by the OdeSolver from which the mechanical computations originate.
+    /// They all return a reference to this MechanicalParam instance, to ease chaining multiple setup calls.
+
+    /// @{
 
     /// Set time step
     MechanicalParams& setDt(double v) { m_dt = v; return *this; }
 
     /// Specify if the time integration scheme implicit
     MechanicalParams& setImplicit(bool v) { m_implicit = v; return *this; }
-
-    /// Set the context of the current solver, used to determine which states are "active"
-    MechanicalParams& setSolverContext(core::objectmodel::BaseContext* v) { m_solverContext = v; return *this; }
-
-    /// Set the IDs of position vector
-    MechanicalParams& setX(VecId v)               { m_x.assign(v); return *this; }
-    MechanicalParams& setX(VecId v, StateGroup g) { m_x[g]  =  v ; return *this; }
-
-    /// Set the IDs of velocity vector
-    MechanicalParams& setV(VecId v)               { m_v.assign(v); return *this; }
-    MechanicalParams& setV(VecId v, StateGroup g) { m_v[g]  =  v ; return *this; }
-
-    /// Set the IDs of force vector
-    MechanicalParams& setF(VecId v)               { m_f.assign(v); return *this; }
-    MechanicalParams& setF(VecId v, StateGroup g) { m_f[g]  =  v ; return *this; }
-
-    /// Set the IDs of dx vector (for implicit schemes)
-    MechanicalParams& setDx(VecId v)               { m_dx.assign(v); return *this; }
-    MechanicalParams& setDx(VecId v, StateGroup g) { m_dx[g]  =  v ; return *this; }
-
-    /// Set the IDs of df vector (for implicit schemes)
-    MechanicalParams& setDf(VecId v)               { m_df.assign(v); return *this; }
-    MechanicalParams& setDf(VecId v, StateGroup g) { m_df[g]  =  v ; return *this; }
 
     /// Set Mass matrix contributions factor (for implicit schemes)
     MechanicalParams& setMFactor(double v) { m_mFactor = v; return *this; }
@@ -173,9 +115,92 @@ public:
     /// Set Stiffness matrix contributions factor (for implicit schemes)
     MechanicalParams& setKFactor(double v) { m_kFactor = v; return *this; }
 
-protected:
+    /// Checks wether or nor kFactor is used in ForceFields. Temporary here for compatiblity reasons
+    void setKFactorUsed(bool b) const { m_kFactorUsed = b; }
+    bool getKFactorUsed() const { return m_kFactorUsed; }
 
-    enum { NGROUPS = 2 };
+    /// Should the kinematic and potential energies be computed ?
+    MechanicalParams& setEnergy(bool v) { m_energy = v; return *this; }
+
+    const ConstMultiVecCoordId& x() const { return m_x; }
+    ConstMultiVecCoordId& x()       { return m_x; }
+
+    const ConstMultiVecDerivId& v() const { return m_v; }
+    ConstMultiVecDerivId& v()       { return m_v; }
+
+    const ConstMultiVecDerivId& f() const { return m_f; }
+    ConstMultiVecDerivId& f()       { return m_f; }
+
+    const ConstMultiVecDerivId& dx() const { return m_dx; }
+    ConstMultiVecDerivId& dx()       { return m_dx; }
+
+    const ConstMultiVecDerivId& df() const { return m_df; }
+    ConstMultiVecDerivId& df()       { return m_df; }
+
+    /// Set the IDs of position vector
+    MechanicalParams& setX(                   ConstVecCoordId v) { m_x.assign(v);   return *this; }
+    MechanicalParams& setX(                   ConstMultiVecCoordId v) { m_x = v;   return *this; }
+    template<class StateSet>
+    MechanicalParams& setX(const StateSet& g, ConstVecCoordId v) { m_x.setId(g, v); return *this; }
+
+    /// Set the IDs of velocity vector
+    MechanicalParams& setV(                   ConstVecDerivId v) { m_v.assign(v);   return *this; }
+    MechanicalParams& setV(                   ConstMultiVecDerivId v) { m_v = v;   return *this; }
+    template<class StateSet>
+    MechanicalParams& setV(const StateSet& g, ConstVecDerivId v) { m_v.setId(g, v); return *this; }
+
+    /// Set the IDs of force vector
+    MechanicalParams& setF(                   ConstVecDerivId v) { m_f.assign(v);   return *this; }
+    MechanicalParams& setF(                   ConstMultiVecDerivId v) { m_f = v;   return *this; }
+    template<class StateSet>
+    MechanicalParams& setF(const StateSet& g, ConstVecDerivId v) { m_f.setId(g, v); return *this; }
+
+    /// Set the IDs of dx vector (for implicit schemes)
+    MechanicalParams& setDx(                   ConstVecDerivId v) { m_dx.assign(v);   return *this; }
+    MechanicalParams& setDx(                   ConstMultiVecDerivId v) { m_dx = v;   return *this; }
+    template<class StateSet>
+    MechanicalParams& setDx(const StateSet& g, ConstVecDerivId v) { m_dx.setId(g, v); return *this; }
+
+    /// Set the IDs of df vector (for implicit schemes)
+    MechanicalParams& setDf(                   ConstVecDerivId v) { m_df.assign(v);   return *this; }
+    MechanicalParams& setDf(                   ConstMultiVecDerivId v) { m_df = v;   return *this; }
+    template<class StateSet>
+    MechanicalParams& setDf(const StateSet& g, ConstVecDerivId v) { m_df.setId(g, v); return *this; }
+
+    /// @}
+
+    /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
+    MechanicalParams(const sofa::core::ExecParams& p = sofa::core::ExecParams() )
+        : sofa::core::ExecParams(p)
+        , m_dt(0.0)
+        , m_implicit(false)
+        , m_energy(false)
+        , m_x (ConstVecCoordId::position())
+        , m_v (ConstVecDerivId::velocity())
+        , m_f (ConstVecDerivId::force())
+        , m_dx(ConstVecDerivId::dx())
+        , m_df(ConstVecDerivId::dforce())
+        , m_mFactor(0)
+        , m_bFactor(0)
+        , m_kFactor(0)
+    {
+    }
+
+    /// Get the default MechanicalParams, to be used to provide a default values for method parameters
+    static MechanicalParams* defaultInstance()
+    {
+        static MechanicalParams m_defaultInstance;
+
+        return &m_defaultInstance;
+    }
+
+    MechanicalParams* setExecParams(const core::ExecParams* params)
+    {
+        sofa::core::ExecParams::operator=(*params);
+        return this;
+    }
+
+protected:
 
     /// Time step
     double m_dt;
@@ -183,23 +208,23 @@ protected:
     /// Is the time integration scheme implicit ?
     bool m_implicit;
 
-    /// Context of the current solver, used to determine which states are "active"
-    core::objectmodel::BaseContext* m_solverContext;
+    /// Should the kinematic and potential energies be computed ?
+    bool m_energy;
 
     /// Ids of position vector
-    helper::fixed_array<VecId,NGROUPS> m_x;
+    ConstMultiVecCoordId m_x;
 
     /// Ids of velocity vector
-    helper::fixed_array<VecId,NGROUPS> m_v;
+    ConstMultiVecDerivId m_v;
 
     /// Ids of force vector
-    helper::fixed_array<VecId,NGROUPS> m_f;
+    ConstMultiVecDerivId m_f;
 
     /// Ids of dx vector (for implicit schemes)
-    helper::fixed_array<VecId,NGROUPS> m_dx;
+    ConstMultiVecDerivId m_dx;
 
     /// Ids of df vector (for implicit schemes)
-    helper::fixed_array<VecId,NGROUPS> m_df;
+    ConstMultiVecDerivId m_df;
 
     /// Mass matrix contributions factor (for implicit schemes)
     double m_mFactor;
@@ -210,6 +235,8 @@ protected:
     /// Stiffness matrix contributions factor (for implicit schemes)
     double m_kFactor;
 
+    /// Checks if the stiffness matrix contributions factor has been accessed
+    mutable bool m_kFactorUsed;
 };
 
 } // namespace core

@@ -26,12 +26,12 @@
 #define SOFA_COMPONENT_LINEARSOLVER_PARALLELCGLINEARSOLVER_H
 
 #ifdef SOFA_SMP
-#include <sofa/core/behavior/ParallelMultivector.h>
+#include <sofa/core/behavior/ParallelMultiVec.h>
 using namespace sofa::defaulttype::SharedTypes;
 #endif
 
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/SolverImpl.h>
+// #include <sofa/simulation/common/SolverImpl.h>
 
 namespace sofa
 {
@@ -56,7 +56,6 @@ public:
     typedef TVector Vector;
     typedef TVector MultiVector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     ParallelCGLinearSolver();
     ~ParallelCGLinearSolver();

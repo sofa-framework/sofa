@@ -62,6 +62,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     typedef helper::vector<MassType> VecMass;
 
@@ -97,20 +99,21 @@ public:
 
 
     // -- Mass interface
-    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+    void addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* mparams);
 
-    void accFromF(VecDeriv& a, const VecDeriv& f);
+    void accFromF(DataVecDeriv& a, const DataVecDeriv& f, const core::MechanicalParams* mparams);
 
-    void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
-    void addGravityToV(double dt/*, defaulttype::BaseVector& v*/);
+    void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
 
-    double getKineticEnergy(const VecDeriv& v) const;  ///< vMv/2 using dof->getV()
+    double getKineticEnergy(const DataVecDeriv& v, const core::MechanicalParams* mparams) const;  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const VecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* mparams) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
+    //void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
+    void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams);
 
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;

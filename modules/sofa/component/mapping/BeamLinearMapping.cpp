@@ -22,12 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP
 #include <sofa/component/mapping/BeamLinearMapping.inl>
+
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <sofa/core/behavior/MechanicalMapping.inl>
+
 
 namespace sofa
 {
@@ -41,70 +40,42 @@ namespace mapping
 SOFA_DECL_CLASS(BeamLinearMapping)
 
 using namespace defaulttype;
-using namespace core;
-using namespace core::behavior;
-
 
 // Register in the Factory
 int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
 #ifndef SOFA_FLOAT
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
-// .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BeamLinearMapping< Rigid3dTypes, Vec3dTypes > >()
+        .add< BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
-// .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BeamLinearMapping< Rigid3fTypes, Vec3fTypes > >()
+        .add< BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< BeamLinearMapping< Rigid3dTypes, Vec3fTypes > >()
+        .add< BeamLinearMapping< Rigid3fTypes, Vec3dTypes > >()
 #endif
 #endif
-// .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
-// .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
-// .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
-// .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
-// // .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-// .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-// .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
-// .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > > >()
-// .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2dTypes> > > >()
-// .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
         ;
 
 #ifndef SOFA_FLOAT
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BeamLinearMapping< Rigid3dTypes, Vec3dTypes >;
+template class BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-// template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BeamLinearMapping< Rigid3fTypes, Vec3fTypes >;
+template class BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
+template class BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
+template class BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
-
-
-
 
 } // namespace mapping
 

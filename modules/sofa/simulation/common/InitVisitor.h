@@ -30,9 +30,6 @@
 #endif
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/behavior/InteractionForceField.h>
-#include <sofa/core/behavior/OdeSolver.h>
 
 namespace sofa
 {
@@ -51,7 +48,7 @@ class SOFA_SIMULATION_COMMON_API InitVisitor : public Visitor
 {
 
 public:
-    InitVisitor():rootNode(NULL) {}
+    InitVisitor(const core::ExecParams* params):Visitor(params),rootNode(NULL) {}
 
 
     virtual Result processNodeTopDown(simulation::Node* node);

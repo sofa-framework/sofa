@@ -30,9 +30,6 @@
 #include <sofa/helper/gl/template.h>
 
 
-
-
-
 namespace sofa
 {
 
@@ -49,7 +46,7 @@ using namespace sofa::helper;
 template< class DataTypes>
 bool FixedLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
-    FixedLMConstraint<DataTypes> *fc= (FixedLMConstraint<DataTypes> *)param;
+    FixedLMConstraint<DataTypes> *fc = (FixedLMConstraint<DataTypes> *)param;
     if (fc)
     {
         return true;
@@ -64,7 +61,7 @@ bool FixedLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void
 template< class DataTypes>
 void FixedLMConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
 {
-    FixedLMConstraint<DataTypes> *fc= (FixedLMConstraint<DataTypes> *)param;
+    FixedLMConstraint<DataTypes> *fc = (FixedLMConstraint<DataTypes> *)param;
     if (fc)
     {
         fc->removeConstraint((unsigned int) pointIndex);
@@ -143,9 +140,11 @@ template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChan
 
 
 template<class DataTypes>
-void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId /*position*/)
+void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId /*position*/)
 {
-    MatrixDeriv& c = *this->constrainedObject1->getC();
+    Data<MatrixDeriv> *dC = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv &c = *dC->beginEdit();
+
     idxX.clear();
     idxY.clear();
     idxZ.clear();
@@ -169,14 +168,14 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
 
         this->constrainedObject1->forceMask.insertEntry(index);
     }
+
+    dC->endEdit();
 }
 
 
 template<class DataTypes>
-void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder Order)
+void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
 {
-
-    typedef core::behavior::BaseMechanicalState::VecId VecId;
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
     unsigned int counter=0;
@@ -188,17 +187,17 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
         SReal correctionX=0,correctionY=0,correctionZ=0;
         switch(Order)
         {
-        case core::behavior::BaseLMConstraint::ACC :
-        case core::behavior::BaseLMConstraint::VEL :
+        case core::ConstraintParams::ACC :
+        case core::ConstraintParams::VEL :
         {
             correctionX = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],id);
             correctionY = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],id);
             correctionZ = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],id);
             break;
         }
-        case core::behavior::BaseLMConstraint::POS :
+        case core::ConstraintParams::POS :
         {
-            const VecCoord &x =*(this->constrainedObject1->getVecCoord(id.index));
+            const VecCoord &x = this->constrainedObject1->read(core::ConstVecCoordId(id))->getValue();
 
             //If a new particle has to be fixed, we add its current position as rest position
             if (restPosition.find(index) == this->restPosition.end())
@@ -218,7 +217,6 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
         constraint->addConstraint( lineNumber, idxX[counter], -correctionX);
         constraint->addConstraint( lineNumber, idxY[counter], -correctionY);
         constraint->addConstraint( lineNumber, idxZ[counter], -correctionZ);
-
     }
 }
 
@@ -230,9 +228,6 @@ void FixedLMConstraint<DataTypes>::draw()
     if (!this->getContext()->getShowBehaviorModels()) return;
     const VecCoord& x = *this->constrainedObject1->getX();
     //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
-
-
 
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
@@ -265,9 +260,6 @@ void FixedLMConstraint<Rigid3dTypes >::draw();
 template <>
 void FixedLMConstraint<Rigid3fTypes >::draw();
 #endif
-
-
-
 
 
 } // namespace constraintset

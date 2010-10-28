@@ -62,6 +62,9 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
     enum State { INCREASE, DECREASE };
 
 protected:
@@ -88,9 +91,12 @@ public:
 
     virtual void init();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/) {}
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */, const core::MechanicalParams* mparams)
+    {
+        //TODO: remove this line (avoid warning message) ...
+        mparams->kFactor();
+    };
 
     void draw();
 
@@ -136,13 +142,14 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
+
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_FORCEFIELD_API SurfacePressureForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_FORCEFIELD_API SurfacePressureForceField<defaulttype::Vec3fTypes>;
 #endif
-#endif
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
 
 } // namespace forcefield
@@ -151,4 +158,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API SurfacePressureForceField<de
 
 } // namespace sofa
 
-#endif /* _SURFACEPRESSUREFORCEFIELD_H_ */
+#endif // SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_H

@@ -65,187 +65,151 @@ void ProjectiveConstraintSet<DataTypes>::init()
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix()
+void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(MultiMatrixDerivId cId, const MechanicalParams* mparams)
 {
     if (!isActive())
         return;
 
     if (mstate)
     {
-        MatrixDeriv *c = mstate->getC();
-
-        MatrixDerivRowIterator rowIt = c->begin();
-        MatrixDerivRowIterator rowItEnd = c->end();
-
-        while (rowIt != rowItEnd)
-        {
-            projectResponse(rowIt.row());
-            ++rowIt;
-        }
+        projectJacobianMatrix(*cId[mstate].write(), mparams);
     }
 }
-
-#ifndef SOFA_SMP
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectResponse()
-{
-    if( !isActive() ) return;
-    if (mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        projectResponse(*mstate->getDx());
-    }
-}
-
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        projectVelocity(*mstate->getV());
-    }
-}
-
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectPosition()
-{
-    if( !isActive() ) return;
-    if (mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        projectPosition(*mstate->getX());
-    }
-}
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectFreeVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        projectVelocity(*mstate->getVfree());
-    }
-}
-
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectFreePosition()
-{
-    if( !isActive() ) return;
-    if (mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        projectPosition(*mstate->getXfree());
-    }
-}
-
-#endif
 
 #ifdef SOFA_SMP
-
 template<class T>
 struct projectResponseTask
 {
-    void operator()(  void *c, Shared_rw< typename T::VecDeriv> dx)
+    void operator()(void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > dx, const MechanicalParams* mparams)
     {
-        ((T *)c)->T::projectResponse(dx.access());
+        ((T *)c)->T::projectResponse(dx.access(), mparams);
     }
 };
 
 template<class T>
 struct projectVelocityTask
 {
-    void operator()(  void *c, Shared_rw< typename T::VecDeriv> v)
+    void operator()(void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > v, const MechanicalParams* mparams)
     {
-        ((T *)c)->T::projectVelocity(v.access());
+        ((T *)c)->T::projectVelocity(v.access(), mparams);
     }
 };
 
 template<class T>
 struct projectPositionTask
 {
-    void operator()(  void *c, Shared_rw< typename T::VecCoord> x)
+    void operator()(void *c, Shared_rw< objectmodel::Data< typename T::VecCoord> > x, const MechanicalParams* mparams)
     {
-        ((T *)c)->T::projectPosition(x.access());
+        ((T *)c)->T::projectPosition(x.access(), mparams);
     }
 };
-
-
-
 
 template<class DataTypes>
 struct projectResponseTask<ProjectiveConstraintSet< DataTypes > >
 {
-    void operator()(   ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< typename DataTypes::VecDeriv> dx)
+    void operator()(ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx, const MechanicalParams* mparams)
     {
-        c->projectResponse(dx.access());
-
-
+        c->projectResponse(dx.access(), mparams);
     }
 };
 
 template<class DataTypes>
 struct projectVelocityTask<ProjectiveConstraintSet< DataTypes > >
 {
-    void operator()(   ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< typename DataTypes::VecDeriv> v)
+    void operator()(ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v, const MechanicalParams* mparams)
     {
-        c->projectVelocity(v.access());
-
-
+        c->projectVelocity(v.access(), mparams);
     }
 };
 
 template<class DataTypes>
 struct projectPositionTask<ProjectiveConstraintSet< DataTypes > >
 {
-    void operator()(   ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< typename DataTypes::VecCoord> x)
+    void operator()(ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x, const MechanicalParams* mparams)
     {
-        c->projectPosition(x.access());
-
-
+        c->projectPosition(x.access(), mparams);
     }
 };
+#endif /* SOFA_SMP */
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectResponse()
+void ProjectiveConstraintSet<DataTypes>::projectResponse(MultiVecDerivId dxId, const MechanicalParams* mparams)
 {
-    if( !isActive() ) return;
-    if (mstate)
-        Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getDx());
+    if (!isActive())
+        return;
 
-}
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectVelocity()
-{
-    if( !isActive() ) return;
     if (mstate)
-        Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getV());
-}
-
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectPosition()
-{
-    if( !isActive() ) return;
-    if (mstate)
-        Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getX());
-}
-template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectFreeVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate)
-        Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getVfree());
+    {
+        mstate->forceMask.setInUse(this->useMask());
+#ifdef SOFA_SMP
+        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
+            Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(this,
+                    **defaulttype::getShared(*dxId[mstate].write()), mparams);
+        else
+#endif /* SOFA_SMP */
+            projectResponse(*dxId[mstate].write(), mparams);
+    }
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectFreePosition()
+void ProjectiveConstraintSet<DataTypes>::projectVelocity(MultiVecDerivId vId, const MechanicalParams* mparams)
 {
-    if( !isActive() ) return;
+    if (!isActive())
+        return;
+
     if (mstate)
-        Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getXfree());
+    {
+        mstate->forceMask.setInUse(this->useMask());
+#ifdef SOFA_SMP
+        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
+            Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(this,
+                    **defaulttype::getShared(*vId[mstate].write()), mparams);
+        else
+#endif /* SOFA_SMP */
+            projectVelocity(*vId[mstate].write(), mparams);
+    }
 }
-#endif
+
+template<class DataTypes>
+void ProjectiveConstraintSet<DataTypes>::projectPosition(MultiVecCoordId xId, const MechanicalParams* mparams)
+{
+    if (!isActive())
+        return;
+
+    if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
+#ifdef SOFA_SMP
+        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
+            Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,
+                    **defaulttype::getShared(*xId[mstate].write()), mparams);
+        else
+#endif /* SOFA_SMP */
+            projectPosition(*xId[mstate].write(), mparams);
+    }
+}
+
+#ifdef SOFA_SMP
+
+// TODO
+// template<class DataTypes>
+// void ProjectiveConstraintSet<DataTypes>::projectFreeVelocity()
+// {
+// 	if( !isActive() ) return;
+// 	if (mstate)
+// 		Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getVfree());
+// }
+//
+// template<class DataTypes>
+// void ProjectiveConstraintSet<DataTypes>::projectFreePosition()
+// {
+// 	if( !isActive() ) return;
+// 	if (mstate)
+// 		Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getXfree());
+// }
+
+#endif /* SOFA_SMP */
+
 } // namespace behavior
 
 } // namespace core

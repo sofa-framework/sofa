@@ -25,9 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/Mapping.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -44,29 +42,30 @@ namespace component
 namespace mapping
 {
 
-template <class BasicMapping>
-class IdentityMapping : public BasicMapping
+template <class TIn, class TOut>
+class IdentityMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(IdentityMapping,BasicMapping), BasicMapping);
+    SOFA_CLASS(SOFA_TEMPLATE2(IdentityMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
 
-    typedef typename In::DataTypes InDataTypes;
-    typedef typename In::Real      Real;
-    typedef typename In::VecCoord  InVecCoord;
-    typedef typename In::VecDeriv  InVecDeriv;
-    typedef typename In::Coord     InCoord;
-    typedef typename In::Deriv     InDeriv;
+    typedef typename In::Real			Real;
+    typedef typename In::VecCoord		InVecCoord;
+    typedef typename In::VecDeriv		InVecDeriv;
+    typedef typename In::Coord			InCoord;
+    typedef typename In::Deriv			InDeriv;
+    typedef typename In::MatrixDeriv	InMatrixDeriv;
 
-    typedef typename Out::VecCoord VecCoord;
-    typedef typename Out::VecDeriv VecDeriv;
-    typedef typename Out::Coord    Coord;
-    typedef typename Out::Deriv    Deriv;
+    typedef typename Out::VecCoord		VecCoord;
+    typedef typename Out::VecDeriv		VecDeriv;
+    typedef typename Out::Coord			Coord;
+    typedef typename Out::Deriv			Deriv;
+    typedef typename Out::MatrixDeriv	MatrixDeriv;
 
-    typedef typename Out::DataTypes        OutDataTypes;
+    typedef Out OutDataTypes;
     typedef typename OutDataTypes::Real     OutReal;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
@@ -95,7 +94,7 @@ public:
     core::behavior::BaseMechanicalState *stateFrom;
     core::behavior::BaseMechanicalState *stateTo;
 
-    IdentityMapping(In* from, Out* to)
+    IdentityMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to),
           matrixJ(),
           updateJ(false)
@@ -118,13 +117,13 @@ public:
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return true; }
 
-    void apply(VecCoord& out, const InVecCoord& in);
+    void apply(Data<VecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
 
-    void applyJ(VecDeriv& out, const InVecDeriv& in);
+    void applyJ(Data<VecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJT(InVecDeriv& out, const VecDeriv& in);
+    void applyJT(Data<InVecDeriv>& out, const Data<VecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    void applyJT(Data<InMatrixDeriv>& out, const Data<MatrixDeriv>& in, const core::ConstraintParams *cparams);
 
     const sofa::defaulttype::BaseMatrix* getJ();
 
@@ -137,12 +136,6 @@ protected:
 
 template <int N, int M, class Real>
 struct IdentityMappingMatrixHelper;
-
-using core::Mapping;
-using core::behavior::MechanicalMapping;
-using core::behavior::MappedModel;
-using core::behavior::State;
-using core::behavior::MechanicalState;
 
 using sofa::defaulttype::Vec1dTypes;
 using sofa::defaulttype::Vec2dTypes;
@@ -164,61 +157,44 @@ using sofa::defaulttype::Rigid3fTypes;
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-// extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-// extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Vec2dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Vec2dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-// extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Vec2fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Vec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2dTypes, Vec2fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2fTypes, Rigid2dTypes >;
 #endif
 #endif
 

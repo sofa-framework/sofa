@@ -26,9 +26,7 @@
 ******************************************************************************/
 
 #include <sofa/core/Multi2Mapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -42,37 +40,45 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
+template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Vec3dTypes >;
+template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Vec3fTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> >;
+template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
+template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Vec3dTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> >;
+template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Vec3fTypes >;
+template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Vec3fTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> >;
+template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Vec3dTypes >;
+template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3dTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> >;
+template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Vec3fTypes >;
+template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
 
+template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec3dTypes, Vec3fTypes, Rigid3fTypes >;
 
+template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Rigid3dTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes> >;
+template class Multi2Mapping< Vec3dTypes, Rigid3dTypes, Rigid3fTypes >;
+template class Multi2Mapping< Vec3dTypes, Rigid3fTypes, Rigid3fTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> >;
+template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Rigid3dTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> >;
+template class Multi2Mapping< Vec3fTypes, Rigid3dTypes, Rigid3fTypes >;
+template class Multi2Mapping< Vec3fTypes, Rigid3fTypes, Rigid3fTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> >;
+template class Multi2Mapping< Vec1dTypes, Rigid3dTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec1fTypes, Rigid3fTypes, Rigid3fTypes >;
 
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> >;
-template class Multi2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> >;
+template class Multi2Mapping< Vec1fTypes, Rigid3fTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec1fTypes, Rigid3dTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec1dTypes, Rigid3fTypes, Rigid3dTypes >;
+template class Multi2Mapping< Vec1fTypes, Rigid3dTypes, Rigid3fTypes >;
+template class Multi2Mapping< Vec1dTypes, Rigid3fTypes, Rigid3fTypes >;
+template class Multi2Mapping< Vec1dTypes, Rigid3dTypes, Rigid3fTypes >;
 }
 
 }

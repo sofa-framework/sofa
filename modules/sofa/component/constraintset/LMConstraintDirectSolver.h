@@ -37,31 +37,30 @@ namespace component
 namespace constraintset
 {
 
-
 using core::behavior::BaseLMConstraint;
 using core::behavior::ConstraintGroup;
+
 class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintDirectSolver : public LMConstraintSolver
 {
     typedef Eigen::DynamicSparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
 
     typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
+
 public:
     SOFA_CLASS(LMConstraintDirectSolver, LMConstraintSolver);
     LMConstraintDirectSolver();
 
-
-    virtual bool buildSystem(double dt, VecId, core::behavior::BaseConstraintSet::ConstOrder);
-    virtual bool solveSystem(double dt, VecId, core::behavior::BaseConstraintSet::ConstOrder);
+    virtual bool buildSystem(double dt, VecId, core::ConstraintParams::ConstOrder);
+    virtual bool solveSystem(double dt, VecId, core::ConstraintParams::ConstOrder);
 
 protected:
 
-    void analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::behavior::BaseConstraintSet::ConstOrder order,
+    void analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
             JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const;
 
     void buildLeftRectangularMatrix(const DofToMatrix& invMassMatrix,
             DofToMatrix& LMatrix, DofToMatrix& LTMatrix,
             SparseColMajorMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
-
 
     Data<sofa::helper::OptionsGroup> solverAlgorithm;
 };

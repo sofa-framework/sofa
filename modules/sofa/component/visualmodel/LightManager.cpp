@@ -373,7 +373,7 @@ void LightManager::preDrawScene(VisualParameters* vp)
         {
             (*itl)->preDrawShadow(vp);
 
-            simulation::VisualDrawVisitor vdv( core::VisualModel::Shadow );
+            simulation::VisualDrawVisitor vdv( core::VisualModel::Shadow, core::ExecParams::defaultInstance());
 
             vdv.execute ( getContext() );
 

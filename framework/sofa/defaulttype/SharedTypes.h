@@ -73,7 +73,15 @@ struct sparseCumul
     }
 };
 
-
+template<class T>
+Shared< Data<T> >* getShared(const Data<T> &data)
+{
+    if (data.shared == NULL)
+    {
+        data.shared = new Shared< Data<T> >((Data<T>*) &data);
+    }
+    return (Shared< Data<T> >*)&data.shared;
+}
 
 template< class T, class MemoryManager = helper::CPUMemoryManager<T> >
 class SharedVector: public helper::vector<T,MemoryManager>

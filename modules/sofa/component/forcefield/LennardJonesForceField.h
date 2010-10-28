@@ -29,6 +29,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <vector>
 
+#include <sofa/component/component.h>
+
 namespace sofa
 {
 
@@ -50,6 +52,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 protected:
     Real a,b;
@@ -90,15 +95,28 @@ public:
 
     virtual void init();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
     void draw();
 
 };
+
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 
 } // namespace forcefield
 
@@ -106,4 +124,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_H

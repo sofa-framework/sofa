@@ -41,8 +41,7 @@ namespace constraintset
 template<class DataTypes>
 void StopperConstraint<DataTypes>::init()
 {
-    assert(this->object);
-    pathObject.setValue(this->object->getName());
+    assert(this->mstate);
 
     this->getContext()->get(ode_integrator);
 
@@ -51,45 +50,31 @@ void StopperConstraint<DataTypes>::init()
     else
         std::cout<<"no ode_integrator found"<<std::endl;
 
-    if ((*this->object->getX())[index.getValue()].x() < min.getValue())
-        (*this->object->getX())[index.getValue()].x() = (Real) min.getValue();
-    if ((*this->object->getX())[index.getValue()].x() > max.getValue())
-        (*this->object->getX())[index.getValue()].x() = (Real) max.getValue();
-
-
+    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
+    VecCoord& x = xData.wref();
+    if (x[index.getValue()].x() < min.getValue())
+        x[index.getValue()].x() = (Real) min.getValue();
+    if (x[index.getValue()].x() > max.getValue())
+        x[index.getValue()].x() = (Real) max.getValue();
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId)
+void StopperConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId)
 {
     int tm;
     Coord cx = Coord(1.0);
 
     tm = index.getValue();
 
-    assert(this->object);
+    assert(this->mstate);
 
-    MatrixDeriv& c = *this->object->getC();
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv& c = cData.wref();
 
     cid = constraintId;
     constraintId += 1;
 
     c.writeLine(cid).addCol(tm, cx);
-
-    //for (unsigned int i=0; i< c.size(); i++)
-    //{
-    //	ConstraintIterator itConstraint;
-    //	std::pair< ConstraintIterator, ConstraintIterator > iter=c[i].data();
-
-    //	for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-    //	{
-    //		unsigned int dof = itConstraint->first;
-    //		Deriv n = itConstraint->second;
-    //		//std::cout<<"  ["<<dof<<"] = "<< n;
-    //	}
-    //}
-//
-    ////std::cout<<" "<<std::endl;
 }
 
 template<class DataTypes>
@@ -100,7 +85,7 @@ void StopperConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v
 
     if (freeMotion)
     {
-        dfree = (*this->object->getXfree())[index.getValue()];
+        dfree = (*this->mstate->getXfree())[index.getValue()];
     }
     else
     {
@@ -120,11 +105,11 @@ void StopperConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v
     v->set(cid, dfree[0]);
 }
 
-template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
-{
-    id[offset++] = cid;
-}
+//template<class DataTypes>
+//void StopperConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
+//{
+//	id[offset++] = cid;
+//}
 
 #ifdef SOFA_DEV
 template<class DataTypes>

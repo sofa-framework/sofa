@@ -25,10 +25,8 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
 
-#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
-#include <sofa/helper/map.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -38,20 +36,19 @@ namespace component
 
 namespace odesolver
 {
-using namespace sofa::component::linearsolver;
+//using namespace sofa::component::linearsolver;
 /** The simplest time integration.
-Two variants are available, depending on the value of field "symplectic".
-If true (the default), the symplectic variant of Euler's method is applied:
-If false, the basic Euler's method is applied (less robust)
-*/
-class SOFA_COMPONENT_ODESOLVER_API EulerSolver : public OdeSolverImpl
+ Two variants are available, depending on the value of field "symplectic".
+ If true (the default), the symplectic variant of Euler's method is applied:
+ If false, the basic Euler's method is applied (less robust)
+ */
+class SOFA_COMPONENT_ODESOLVER_API EulerSolver : public sofa::core::behavior::OdeSolver
 {
 public:
-    SOFA_CLASS(EulerSolver, sofa::component::odesolver::OdeSolverImpl);
+    SOFA_CLASS(EulerSolver, sofa::core::behavior::OdeSolver);
 
     EulerSolver();
-    void solve (double dt);
-
+    void solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
 
     Data<bool> symplectic;
 
@@ -78,7 +75,7 @@ public:
     virtual double getSolutionIntegrationFactor(int outputDerivative) const
     {
         const double dt = getContext()->getDt();
-        double vect[3] = { ((symplectic.getValue())?dt*dt:0.0), dt, 1};
+        double vect[3] = {((symplectic.getValue()) ? dt * dt : 0.0), dt, 1};
         if (outputDerivative >= 3)
             return 0;
         else
@@ -86,7 +83,7 @@ public:
     }
     void init()
     {
-        OdeSolverImpl::init();
+        OdeSolver::init();
         reinit();
     }
 

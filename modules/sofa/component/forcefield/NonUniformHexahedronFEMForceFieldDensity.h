@@ -55,7 +55,7 @@ url          = "http://www-evasion.imag.fr/Publications/2006/NPF06"
 }
 
 
- */
+*/
 
 
 template<class DataTypes>
@@ -70,6 +70,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
 #ifdef SOFA_NEW_HEXA
     typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 #else
@@ -94,18 +95,33 @@ public:
 
     void init();
     void draw();
-// 	virtual void rein
+    // 	virtual void rein
     void drawSphere(double r, int lats, int longs, const Coord &pos);
 
 protected:
     sofa::core::objectmodel::DataFileName densityFile;
     Data< Vec<3,unsigned int> > dimensionDensityFile;
     vector< vector < vector<unsigned char > > >voxels;
-// 	  vector< int > stiffnessFactor;
+    // 	  vector< int > stiffnessFactor;
     void computeCoarseElementStiffness( ElementStiffness &K, ElementMass &coarseMassElement, const int elementIndice,  int level);
 
     void computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio);
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedronFEMForceFieldDensity<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedronFEMForceFieldDensity<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_CPP)
 
 } // namespace forcefield
 
@@ -113,4 +129,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_H

@@ -75,7 +75,7 @@ void TComponentMouseInteraction<DataTypes>::createRayPickObjects(Node* node)
     mouseMapping = new IdentityMechanicalMapping(mecha, static_cast<MouseContainer*>(mouseInSofa));
     nodeRayPick->addObject(mouseMapping);
 
-    mouseMapping->setMechanical(false);
+    mouseMapping->setNonMechanical();
 
     mouseInSofa->init();
     mouseInteractor->init();

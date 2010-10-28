@@ -25,10 +25,11 @@
 #ifndef SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.h>
+
 #include <sofa/defaulttype/RigidTypes.h>
-#include <vector>
+#include <sofa/defaulttype/VecTypes.h>
+
 
 namespace sofa
 {
@@ -39,29 +40,27 @@ namespace component
 namespace mapping
 {
 
-template <class BasicMapping>
-class BeamLinearMapping : public BasicMapping
+template <class TIn, class TOut>
+class BeamLinearMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BeamLinearMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::DataTypes OutDataTypes;
+    SOFA_CLASS(SOFA_TEMPLATE2(BeamLinearMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+    typedef Out OutDataTypes;
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
 
-    typedef typename In::DataTypes InDataTypes;
+    typedef In InDataTypes;
     typedef typename In::Deriv InDeriv;
 
     typedef typename Coord::value_type Real;
     enum { N=OutDataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-
-    //typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
-    //typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
 protected:
     helper::vector<Coord> points;
@@ -75,7 +74,7 @@ public:
     //Data<unsigned> index;
     Data<bool> localCoord;
 
-    BeamLinearMapping(In* from, Out* to)
+    BeamLinearMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         //, index(initData(&index,(unsigned)0,"index","input DOF index"))
         , localCoord(initData(&localCoord,true,"localCoord","true if initial coordinates are in the beam local coordinate system (i.e. a point at (10,0,0) is on the DOF number 10, whereas if this is false it is at whatever position on the beam where the distance from the initial DOF is 10)"))
@@ -88,17 +87,44 @@ public:
 
     void init();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply(Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in, const core::MechanicalParams *mparams);
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJ(Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT(Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void applyJT(Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in, const core::ConstraintParams *cparams);
 
     void draw();
-
 };
+
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class BeamLinearMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class BeamLinearMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
+#endif
+#endif
+#endif
 
 } // namespace mapping
 

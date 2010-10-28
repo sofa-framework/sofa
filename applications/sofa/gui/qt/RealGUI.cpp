@@ -1666,9 +1666,9 @@ void RealGUI::resetScene()
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
         simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
 #endif
-        UpdateSimulationContextVisitor().execute(root);
+        UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
-        UpdateSimulationContextVisitor().execute(simulation::getSimulation()->getVisualRoot());
+        UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(simulation::getSimulation()->getVisualRoot());
 #endif
         emit newStep();
     }
@@ -2043,7 +2043,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     QSofaListView* sofalistview = (QSofaListView*)sender();
 
     if (activate) node->setActive(true);
-    simulation::DeactivationVisitor v(activate);
+    simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), activate);
     node->executeVisitor(&v);
 
 

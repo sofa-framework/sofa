@@ -62,8 +62,9 @@ int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL di
 
 OglShaderVisualModel::OglShaderVisualModel()
 {
-    inputNormals = vrestpositions.beginEdit();
-    vrestpositions.endEdit();
+    //???
+    //inputNormals = vrestpositions.beginEdit();
+    //vrestpositions.endEdit();
 }
 
 OglShaderVisualModel::~OglShaderVisualModel()
@@ -115,7 +116,7 @@ void OglShaderVisualModel::init()
         vrestpositions.init();
 
         ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
-        const ResizableExtVector<Coord>& vertices = field_vertices.getValue();
+        const ResizableExtVector<Coord>& vertices = m_vertices.getValue();
         vrestpos.resize (vertices.size() );
         for ( unsigned int i = 0; i < vertices.size(); i++ )
         {
@@ -130,7 +131,7 @@ void OglShaderVisualModel::init()
         vrestnormals.init();
 
         ResizableExtVector<Coord>& vrestnorm = * ( vrestnormals.beginEdit() );
-        const ResizableExtVector<Coord>& vnormals = field_vnormals.getValue();
+        const ResizableExtVector<Coord>& vnormals = m_vnormals.getValue();
         vrestnorm.resize ( vnormals.size() );
         for ( unsigned int i = 0; i < vnormals.size(); i++ )
         {
@@ -181,11 +182,11 @@ void OglShaderVisualModel::handleTopologyChange()
     vrestnormals.handleTopologyChange();
 
     VisualModelImpl::handleTopologyChange();
-    if (_topology)
+    if (m_topology)
     {
         bool update=false;
-        std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
+        std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
         while( itBegin != itEnd )
         {
@@ -224,8 +225,8 @@ void OglShaderVisualModel::fwdDraw(Pass pass)
 void OglShaderVisualModel::computeRestNormals()
 {
     const ResizableExtVector<Coord>& vrestpos = vrestpositions.getValue();
-    const ResizableExtVector<Triangle>& triangles = field_triangles.getValue();
-    const ResizableExtVector<Quad>& quads = field_quads.getValue();
+    const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
+    const ResizableExtVector<Quad>& quads = m_quads.getValue();
     ResizableExtVector<Coord>& restNormals = * ( vrestnormals.beginEdit() );
 
     for (unsigned int i = 0; i < triangles.size() ; i++)

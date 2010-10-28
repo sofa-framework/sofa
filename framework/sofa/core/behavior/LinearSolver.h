@@ -29,6 +29,8 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 
@@ -50,8 +52,6 @@ class SOFA_CORE_API LinearSolver : public virtual objectmodel::BaseObject
 public:
     SOFA_CLASS(LinearSolver, objectmodel::BaseObject);
 
-    typedef BaseMechanicalState::VecId VecId;
-
     LinearSolver();
 
     virtual ~LinearSolver();
@@ -62,14 +62,14 @@ public:
     /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
     ///
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
-    virtual void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0) = 0;
+    virtual void setSystemMBKMatrix(const MechanicalParams* mparams) = 0;
 
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    virtual void setSystemRHVector(VecId v) = 0;
+    virtual void setSystemRHVector(core::MultiVecDerivId v) = 0;
 
     /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     /// This vector will be replaced by the solution of the system once solveSystem is called
-    virtual void setSystemLHVector(VecId v) = 0;
+    virtual void setSystemLHVector(core::MultiVecDerivId v) = 0;
 
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
@@ -77,7 +77,7 @@ public:
     ///
     virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) {serr<<"WARNING : partial_solve is not implemented yet"<<sendl; }
 
-    /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
+    /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
     virtual void invertSystem() {}
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix J

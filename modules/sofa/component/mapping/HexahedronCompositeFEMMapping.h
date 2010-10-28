@@ -25,9 +25,10 @@
 #ifndef SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_H
 #define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_H
 
-//#include <sofa/core/behavior/MechanicalMapping.h>
 //#include <sofa/core/behavior/MechanicalState.h>
 
+#include <sofa/core/Mapping.h>
+#include <sofa/core/State.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
 
@@ -55,14 +56,18 @@ class HexahedronCompositeFEMMapping : public BasicMapping
 public:
     SOFA_CLASS(SOFA_TEMPLATE(HexahedronCompositeFEMMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::DataTypes OutDataTypes;
+    typedef typename Inherit::In            In;
+    typedef sofa::core::State<In>*  ptrStateIn;
+    typedef typename Inherit::Out           Out;
+    typedef sofa::core::State<Out>* ptrStateOut;
+    //typedef typename Out::DataTypes OutDataTypes;
+    typedef Out OutDataTypes;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename In::DataTypes InDataTypes;
+    //typedef typename In::DataTypes InDataTypes;
+    typedef In InDataTypes;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord InVecCoord;
@@ -70,7 +75,7 @@ public:
     typedef typename OutCoord::value_type Real;
 
     typedef topology::SparseGridTopology SparseGridTopologyT;
-    typedef typename forcefield::HexahedronCompositeFEMForceFieldAndMass<typename In::DataTypes> HexahedronCompositeFEMForceFieldAndMassT;
+    typedef sofa::component::forcefield::HexahedronCompositeFEMForceFieldAndMass<In> HexahedronCompositeFEMForceFieldAndMassT;
 
 
     typedef Mat<3,8*3> Weight;
@@ -78,7 +83,7 @@ public:
     typedef helper::fixed_array< InCoord, 8 > Nodes;
 
 
-    HexahedronCompositeFEMMapping ( In* from, Out* to ): Inherit ( from, to )
+    HexahedronCompositeFEMMapping ( ptrStateIn from, ptrStateOut to ): Inherit ( from, to )
     {
 // 		_method = initData(&this->_method,0,"method","0: auto, 1: coarseNodes->surface, 2: coarseNodes->finestNodes->surface");
         _alreadyInit=false;

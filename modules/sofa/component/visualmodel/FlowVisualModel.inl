@@ -191,7 +191,8 @@ void FlowVisualModel<DataTypes>::initVisual()
     {
         unsigned int nbPoints = m_triTopo->getNbPoints();
         unsigned int nbTetrahedra = (*this->tetraCenters->getX()).size();
-        (*this->tetraCenters->getV()).resize(nbTetrahedra);
+        (this->tetraCenters->write(core::VecDerivId::velocity()))->beginEdit()->resize(nbTetrahedra);
+        (this->tetraCenters->write(core::VecDerivId::velocity()))->endEdit();
         tetraShellPerTriangleVertex.resize(nbPoints);
         isPointInTetra.resize(nbPoints);
         tetraSize.resize(nbTetrahedra);
@@ -458,8 +459,8 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
 template <class DataTypes>
 typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsigned int index, Coord p, bool &atEnd)
 {
-    VecDeriv* velocities;
-    VecCoord* geometry;
+    const VecDeriv* velocities;
+    const VecCoord* geometry;
 
     if (!m_tetraTopo)
     {

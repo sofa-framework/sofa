@@ -77,8 +77,6 @@ double DistanceLMConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord
     return (x2[e[1]] -  x1[e[0]]).norm();
 }
 
-
-
 template <class DataTypes>
 void DistanceLMConstraint<DataTypes>::updateRestLength()
 {
@@ -111,31 +109,37 @@ typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Ed
 
 
 template<class DataTypes>
-void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId position)
+void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position)
 {
-    const VecCoord &x1=*(this->constrainedObject1->getVecCoord(position.index));
-    const VecCoord &x2=*(this->constrainedObject2->getVecCoord(position.index));
+    core::ConstVecCoordId id1 = position.getId(this->constrainedObject1);
+    core::ConstVecCoordId id2 = position.getId(this->constrainedObject2);
 
-    MatrixDeriv& c1 = *this->constrainedObject1->getC();
-    MatrixDeriv& c2 = *this->constrainedObject2->getC();
+    const VecCoord &x1 = this->constrainedObject1->read(id1)->getValue();
+    const VecCoord &x2 = this->constrainedObject2->read(id2)->getValue();
 
-    const SeqEdges &edges =  vecConstraint.getValue();
+    Data<MatrixDeriv> *dC1 = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv &c1 = *dC1->beginEdit();
+
+    Data<MatrixDeriv> *dC2 = this->constrainedObject2->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv &c2 = *dC2->beginEdit();
+
+    const SeqEdges &edges = vecConstraint.getValue();
 
     if (this->l0.size() != edges.size()) updateRestLength();
 
     registeredConstraints.clear();
 
-    for (unsigned int i=0; i<edges.size(); ++i)
+    for (unsigned int i = 0; i < edges.size(); ++i)
     {
-        unsigned int idx1=edges[i][0];
-        unsigned int idx2=edges[i][1];
+        unsigned int idx1 = edges[i][0];
+        unsigned int idx2 = edges[i][1];
 
         const Deriv V12 = getDirection(edges[i], x1, x2);
 
         MatrixDerivRowIterator c1_it = c1.writeLine(constraintId);
-        c1_it.addCol(idx1,V12);
+        c1_it.addCol(idx1, V12);
         MatrixDerivRowIterator c2_it = c2.writeLine(constraintId);
-        c2_it.addCol(idx2,-V12);
+        c2_it.addCol(idx2, -V12);
 
         registeredConstraints.push_back(constraintId);
         constraintId++;
@@ -143,13 +147,15 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constr
         this->constrainedObject1->forceMask.insertEntry(idx1);
         this->constrainedObject2->forceMask.insertEntry(idx2);
     }
+
+    dC1->endEdit();
+    dC2->endEdit();
 }
 
 
 template<class DataTypes>
-void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder Order)
+void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
 {
-    typedef core::behavior::BaseMechanicalState::VecId VecId;
     const SeqEdges &edges =  vecConstraint.getValue();
 
     if (registeredConstraints.empty()) return;
@@ -159,17 +165,17 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lin
         SReal correction=0;
         switch(Order)
         {
-        case core::behavior::BaseConstraintSet::ACC :
-        case core::behavior::BaseConstraintSet::VEL :
+        case core::ConstraintParams::ACC :
+        case core::ConstraintParams::VEL :
         {
             correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],id);
-            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],id);
+            correction += this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],id);
             break;
         }
-        case core::behavior::BaseConstraintSet::POS :
+        case core::ConstraintParams::POS :
         {
-            const VecCoord &x1=*(this->constrainedObject1->getVecCoord(id.index));
-            const VecCoord &x2=*(this->constrainedObject2->getVecCoord(id.index));
+            const VecCoord &x1 = this->constrainedObject1->read(core::ConstVecCoordId(id))->getValue();
+            const VecCoord &x2 = this->constrainedObject2->read(core::ConstVecCoordId(id))->getValue();
             SReal length     = lengthEdge(edges[i],x1,x2);
             SReal restLength = this->l0[i];
             correction= restLength-length;
@@ -210,9 +216,6 @@ void DistanceLMConstraint<DataTypes>::draw()
         simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
 }
-
-
-
 
 } // namespace constraintset
 

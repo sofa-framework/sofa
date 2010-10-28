@@ -56,7 +56,7 @@ Visitor::Result TransformationVisitor::processNodeTopDown(simulation::Node* node
 
     if (!node->childInVisualGraph.empty())
     {
-        TransformationVisitor transform;
+        TransformationVisitor transform(params);
         transform.setTranslation(translation[0], translation[1], translation[2]);
         transform.setRotation(rotation[0], rotation[1], rotation[2]);
         transform.setScale(scale[0], scale[1], scale[2]);

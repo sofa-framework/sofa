@@ -141,10 +141,12 @@ void Edge2QuadTopologicalMapping::init()
                     Y = rotation * Y0;
                     Z = rotation * Z0;
 
+                    helper::WriteAccessor< Data< Vec3Types::VecCoord > > to_x = *to_mstate->write(core::VecCoordId::position());
+
                     for(unsigned int j=0; j<N; ++j)
                     {
                         Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
-                        (*to_mstate->getX())[p0*N+j]=x;
+                        to_x[p0*N+j] = x;
                     }
                 }
             }

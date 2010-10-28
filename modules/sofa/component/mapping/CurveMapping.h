@@ -36,10 +36,24 @@
 #ifndef SOFA_COMPONENT_MAPPING_CURVEMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CURVEMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.h>
+
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/core/objectmodel/Event.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+
+namespace sofa
+{
+namespace core
+{
+namespace objectmodel
+{
+class Event;
+} // namespace objectmodel
+} // namespace core
+} // namespace sofa
+
 
 namespace sofa
 {
@@ -50,22 +64,29 @@ namespace component
 namespace mapping
 {
 
-template <class BasicMapping>
-class CurveMapping : public BasicMapping
+template <class TIn, class TOut>
+class CurveMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CurveMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::DataTypes DataTypes;
+    SOFA_CLASS(SOFA_TEMPLATE2(CurveMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+    typedef Out DataTypes;
     typedef typename Out::VecCoord VecCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename Out::VecDeriv VecDeriv;
+    typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
     typedef typename Out::Real Real;
+
+    typedef Data< typename Out::VecCoord > OutDataVecCoord;
+    typedef Data< typename In::VecCoord > InDataVecCoord;
+    typedef Data< typename Out::VecDeriv > OutDataVecDeriv;
+    typedef Data< typename In::VecDeriv > InDataVecDeriv;
 
     Data < helper::vector<Real> > abscissa;
     Data < helper::vector<Real> > angle;
@@ -85,7 +106,7 @@ public:
 
     helper::vector<Real> reset_abscissa;
 
-    CurveMapping(In* from, Out* to)
+    CurveMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to),
           abscissa( initData(&abscissa, "abscissa", "")),
           angle( initData(&angle, "angle", "")),
@@ -107,13 +128,13 @@ public:
     void storeResetState();
     void reset();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply(OutDataVecCoord& out, const InDataVecCoord& in, const core::MechanicalParams* mparams);
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJ(OutDataVecDeriv& out, const InDataVecDeriv& in, const core::MechanicalParams* mparams);
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT(InDataVecDeriv& out, const OutDataVecDeriv& in, const core::MechanicalParams* mparams);
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void applyJT(Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in, const core::ConstraintParams *cparams);
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 
@@ -123,10 +144,32 @@ public:
     void rotateElements();
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CURVEMAPPING_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class CurveMapping< Vec3dTypes, Rigid3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class CurveMapping< Vec3fTypes, Rigid3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class CurveMapping< Vec3dTypes, Rigid3fTypes >;
+extern template class CurveMapping< Vec3fTypes, Rigid3dTypes >;
+#endif
+#endif
+#endif
+
 } // namespace mapping
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_MAPPING_CURVEMAPPING_H

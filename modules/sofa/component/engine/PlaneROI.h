@@ -88,9 +88,6 @@ public:
 
     void draw();
 
-    /// this constraint is holonomic
-    bool isHolonomic() {return true;}
-
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>

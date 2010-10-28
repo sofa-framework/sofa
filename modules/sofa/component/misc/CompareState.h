@@ -86,8 +86,8 @@ protected :
 class SOFA_COMPONENT_MISC_API CompareStateCreator: public Visitor
 {
 public:
-    CompareStateCreator();
-    CompareStateCreator(const std::string &n, bool i=true, int c=0);
+    CompareStateCreator(const core::ExecParams* params);
+    CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i=true, int c=0);
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n; }
@@ -107,7 +107,8 @@ protected:
 class SOFA_COMPONENT_MISC_API CompareStateResult: public Visitor
 {
 public:
-    CompareStateResult() { error=errorByDof=0; numCompareState=0;}
+    CompareStateResult(const core::ExecParams* params) : Visitor(params)
+    { error=errorByDof=0; numCompareState=0;}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     double getTotalError() { return error; }

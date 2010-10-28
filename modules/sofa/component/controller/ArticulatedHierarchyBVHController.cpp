@@ -135,14 +135,19 @@ void ArticulatedHierarchyBVHController::applyController(void)
                     if ((*it)->translation.getValue())
                     {
                         double diffMotions = (*it)->motion[frame+1] - (*it)->motion[frame];
-                        (*(*articulatedObjIt)->getX())[(*it)->articulationIndex.getValue()] = (*it)->motion[frame] + alpha*diffMotions;
-                        (*(*articulatedObjIt)->getXfree())[(*it)->articulationIndex.getValue()] = (*it)->motion[frame] + alpha*diffMotions;
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+
+                        x[(*it)->articulationIndex.getValue()] = (*it)->motion[frame] + alpha*diffMotions;
+                        xfree[(*it)->articulationIndex.getValue()] = (*it)->motion[frame] + alpha*diffMotions;
                     }
                     else
                     {
                         double diffMotions = (((*it)->motion[frame+1]/180.0)*3.14) - (((*it)->motion[frame]/180.0)*3.14);
-                        (*(*articulatedObjIt)->getX())[(*it)->articulationIndex.getValue()] = (((*it)->motion[frame]/180.0)*3.14) + alpha*diffMotions;
-                        (*(*articulatedObjIt)->getXfree())[(*it)->articulationIndex.getValue()] = (((*it)->motion[frame]/180.0)*3.14) + alpha*diffMotions;
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
+                        helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+                        x[(*it)->articulationIndex.getValue()] = (((*it)->motion[frame]/180.0)*3.14) + alpha*diffMotions;
+                        xfree[(*it)->articulationIndex.getValue()] = (((*it)->motion[frame]/180.0)*3.14) + alpha*diffMotions;
                     }
                 }
                 ++it;

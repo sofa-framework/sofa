@@ -98,6 +98,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
@@ -322,11 +325,8 @@ public:
     virtual void init();
     virtual void reinit();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 

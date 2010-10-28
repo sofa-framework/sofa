@@ -268,11 +268,10 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 #endif
 
         //complianceLoaded = true;
-        VecDeriv& force = *mstate->getExternalForces();
+        helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
+        VecDeriv& force = forceData.wref();
         force.clear();
         force.resize(nbNodes);
-        //v.clear();
-        //v.resize(v0.size());//computeDf
 
         ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
         double buf_tolerance = 0, buf_threshold = 0;
@@ -289,17 +288,20 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        VecDeriv& velocity = *mstate->getV();
-        VecDeriv velocity0 = *mstate->getV();
-        VecCoord& pos = *mstate->getX();
-        VecCoord  pos0 = *mstate->getX();
+        helper::WriteAccessor<Data<VecDeriv> > velocityData = *mstate->write(core::VecDerivId::velocity());
+        VecDeriv& velocity = velocityData.wref();
+        VecDeriv velocity0 = velocity;
+
+        helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::VecCoordId::position());
+        VecCoord& pos = posData.wref();
+        VecCoord  pos0 = pos;
 
         /// christian : it seems necessary to called the integration one time for initialization
         /// (avoid to have a line of 0 at the top of the matrix)
         if (eulerSolver)
         {
             using core::behavior::BaseMechanicalState;
-            eulerSolver->solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity());
+            eulerSolver->solve(dt, core::VecCoordId::position(), core::VecDerivId::velocity(), core::ExecParams::defaultInstance());
         }
 
         for (unsigned int f = 0; f < nbNodes; f++)
@@ -340,7 +342,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 if(eulerSolver)
                 {
                     using core::behavior::BaseMechanicalState;
-                    eulerSolver->solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity());
+                    eulerSolver->solve(dt, core::VecCoordId::position(), core::VecDerivId::velocity(), core::ExecParams::defaultInstance());
                     if (linearSolver)
                         linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
                 }
@@ -352,7 +354,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 /*	if (f*dof_on_node+i < 2)
                 	{
-                		//eulerSolver->solve(dt, core::behavior::BaseMechanicalState::VecId::position(), core::behavior::BaseMechanicalState::VecId::velocity());
+                		//eulerSolver->solve(dt, core::VecCoordId::position(), core::VecDerivId::velocity(), core::ExecParams::defaultInstance());
                 		eulerSolver->f_verbose.setValue(false);
                 		eulerSolver->f_printLog.setValue(false);
                 	//	serr<<"getV : "<<velocity<<sendl;
@@ -603,170 +605,21 @@ void PrecomputedConstraintCorrection< DataTypes >::getCompliance(defaulttype::Ba
 }
 
 
-//template<class DataTypes>
-//void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix* W)
-//{
-//	const VecConst& constraints = *mstate->getC();
-//
-//	unsigned int numConstraints = constraints.size();
-//
-//	/////////// The constraints on the same nodes are gathered //////////////////////
-//	//gatherConstraints();
-//	/////////////////////////////////////////////////////////////////////////////////
-//
-//	/////////// The constraints are modified using a rotation value at each node/////
-//	if (m_rotations.getValue())
-//        rotateConstraints(false);
-//	/////////////////////////////////////////////////////////////////////////////////
-//
-//
-//	/////////// Which node are involved with the contact ?/////
-//	//std::list<int> activeDof;
-//
-//	unsigned int noSparseComplianceSize = _indexNodeSparseCompliance.size();
-//
-//	for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
-//	{
-//		_indexNodeSparseCompliance[i] = -1;
-//	}
-//
-//	int nActiveDof = 0;
-//
-//	for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-//	{
-//		ConstConstraintIterator itConstraint;
-//		std::pair< ConstConstraintIterator, ConstConstraintIterator > iter = constraints[c1].data();
-//
-//		for (itConstraint = iter.first; itConstraint != iter.second; itConstraint++)
-//		{
-//			unsigned int dof = itConstraint->first;
-//			//activeDof.push_back(dof);
-//
-//			if (_indexNodeSparseCompliance[dof] != 0)
-//			{
-//				++nActiveDof;
-//				_indexNodeSparseCompliance[dof] = 0;
-//			}
-//		}
-//	}
-//	//unsigned int numNodes1 = activeDof.size();
-//	//sout<< "numNodes : avant = "<<numNodes1;
-//	//activeDof.sort();
-//	//activeDof.unique();
-//	//	unsigned int numNodes = activeDof.size();
-//	//sout<< " apres = "<<numNodes<<sendl;
-//
-//	// Commented by PJ
-//	/*
-//	int nActiveDof = 0;
-//	for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
-//	{
-//		if (_indexNodeSparseCompliance[i] == 0)
-//			++nActiveDof;
-//	}
-//	*/
-//
-//	////////////////////////////////////////////////////////////
-//	unsigned int offset, offset2;
-//	unsigned int ii,jj, curRowConst, curColConst, it;
-//	Deriv Vbuf;
-//	int indexCurColConst, indexCurRowConst;
-//	it=0;
-//
-//	//////////////////////////////////////////
-//	//std::vector<Deriv> sparseCompliance;
-//	_sparseCompliance.resize(nActiveDof * numConstraints);
-//
-//	//std::list<int>::iterator IterateurListe;
-//	//for(IterateurListe=activeDof.begin();IterateurListe!=activeDof.end();IterateurListe++)
-//	//  {
-//	//  int NodeIdx = (*IterateurListe);
-//
-//	for (int NodeIdx = 0; NodeIdx < (int)noSparseComplianceSize; ++NodeIdx)
-//	{
-//		if (_indexNodeSparseCompliance[NodeIdx] == -1)
-//			continue;
-//
-//		_indexNodeSparseCompliance[NodeIdx] = it;
-//
-//		for (curColConst = 0; curColConst < numConstraints; curColConst++)
-//		{
-//			indexCurColConst = mstate->getConstraintId()[curColConst];
-//
-//			Vbuf.clear();
-//			ConstConstraintIterator itConstraint;
-//
-//			std::pair< ConstConstraintIterator, ConstConstraintIterator > iter = constraints[curColConst].data();
-//
-//			for (itConstraint = iter.first; itConstraint != iter.second; itConstraint++)
-//			{
-//				unsigned int dof = itConstraint->first;
-//				const Deriv n2 = itConstraint->second;
-//				offset = dof_on_node*(NodeIdx * nbCols +  dof);
-//
-//				for (ii = 0; ii < dof_on_node; ii++)
-//				{
-//					offset2 = offset+ii*nbCols;
-//					for (jj = 0; jj < dof_on_node; jj++)
-//					{
-//						Vbuf[ii] += appCompliance[offset2 + jj] * n2[jj];
-//					}
-//				}
-//			}
-//			_sparseCompliance[it]=Vbuf;
-//			it++;
-//		}
-//	}
-//
-//
-//	for(curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-//	{
-//		indexCurRowConst = mstate->getConstraintId()[curRowConst];//global index of constraint
-//
-//		ConstConstraintIterator itConstraint;
-//
-//		std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curRowConst].data();
-//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//		{
-//			const int NodeIdx = itConstraint->first;
-//			const Deriv n1 = itConstraint->second;
-//
-//			unsigned int temp =(unsigned int) _indexNodeSparseCompliance[NodeIdx];
-//
-//			for(curColConst = curRowConst; curColConst < numConstraints; curColConst++)
-//			{
-//				indexCurColConst = mstate->getConstraintId()[curColConst];
-//				double w = _sparseCompliance[temp + curColConst]*n1;
-//				//W[indexCurRowConst][indexCurColConst] += w;
-//				//sout << "W("<<indexCurRowConst<<","<<indexCurColConst<<") = "<<w<<sendl;
-//				W->add(indexCurRowConst, indexCurColConst, w);
-//				if (indexCurRowConst != indexCurColConst)
-//					W->add(indexCurColConst, indexCurRowConst, w);
-//			}
-//		}
-//		/*
-//		//Compliance matrix is symetric ?
-//		for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-//		{
-//		int indexCurColConst = mstate->getConstraintId()[curColConst];
-//		W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-//		}
-//		*/
-//	}
-//}
-
-
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
-    VecDeriv& force = *mstate->getF();
-    VecDeriv& dx = *mstate->getDx();
-    VecCoord& x = *mstate->getX();
-    VecDeriv& v = *mstate->getV();
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::force());
+    helper::WriteAccessor<Data<VecDeriv> > dxData    = *mstate->write(core::VecDerivId::dx());
+    helper::WriteAccessor<Data<VecCoord> > xData     = *mstate->write(core::VecCoordId::position());
+    helper::WriteAccessor<Data<VecDeriv> > vData     = *mstate->write(core::VecDerivId::velocity());
+    VecDeriv& force = forceData.wref();
+    VecDeriv& dx = dxData.wref();
+    VecCoord& x = xData.wref();
+    VecDeriv& v = vData.wref();
 
-    const VecDeriv& v_free = *mstate->getVfree();
-    const VecCoord& x_free = *mstate->getXfree();
-    const MatrixDeriv& c = *mstate->getC();
+    const VecDeriv& v_free = mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    const VecCoord& x_free = mstate->read(core::ConstVecCoordId::freePosition())->getValue();
+    const MatrixDeriv& c = mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     double dt = this->getContext()->getDt();
 
@@ -864,129 +717,12 @@ void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype
     }
 }
 
-/*
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(double *f)
-{
-	VecDeriv& force = *mstate->getExternalForces();
-	const VecConst& constraints = *mstate->getC();
-	Deriv weighedNormal;
-
-	const sofa::defaulttype::Rigid3Mass* massValue;
-
-	simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
-
-	if (node != NULL)
-	{
-		core::behavior::BaseMass*_m = node->mass;
-		component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
-		massValue = &( m->getMass());
-	}
-	else
-	{
-		massValue = new sofa::defaulttype::Rigid3Mass();
-		printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
-	}
-
-
-	double dt = this->getContext()->getDt();
-
-	force.resize(0);
-	force.resize(1);
-	force[0] = Deriv();
-
-	int numConstraints = constraints.size();
-
-	for(int c1 = 0; c1 < numConstraints; c1++)
-	{
-		int indexC1 = mstate->getConstraintId()[c1];
-
-		if (f[indexC1] != 0.0)
-		{
-			int sizeC1 = constraints[c1].size();
-			for(int i = 0; i < sizeC1; i++)
-			{
-				weighedNormal = constraints[c1][i].data; // weighted normal
-				force[0].getVCenter() += weighedNormal.getVCenter() * f[indexC1];
-				force[0].getVOrientation() += weighedNormal.getVOrientation() * f[indexC1];
-			}
-		}
-	}
-
-
-	VecDeriv& dx = *mstate->getDx();
-	VecCoord& x = *mstate->getX();
-	VecDeriv& v = *mstate->getV();
-	VecDeriv& v_free = *mstate->getVfree();
-	VecCoord& x_free = *mstate->getXfree();
-
-
-	//	mstate->setX(x_free);
-	//	mstate->setV(v_free);
-	x[0]=x_free[0];
-	v[0]=v_free[0];
-
-	// Euler integration... will be done in the "integrator" as soon as it exists !
-	dx.resize(v.size());
-	dx[0] = force[0] / (*massValue);
-	dx[0] *= dt;
-	v[0] += dx[0];
-	dx[0] *= dt;
-	x[0] += dx[0];
-	//	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
-}
-
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(double *f)
-{
-	VecDeriv& force = *mstate->getExternalForces();
-	const VecConst& constraints = *mstate->getC();
-	unsigned int numConstraints = constraints.size();
-
-	force.resize((*mstate->getX()).size());
-
-	for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-	{
-		int indexC1 = mstate->getConstraintId()[c1];
-
-		if (f[indexC1] != 0.0)
-		{
-			int sizeC1 = constraints[c1].size();
-			for(int i = 0; i < sizeC1; i++)
-			{
-				force[constraints[c1][i].index] += constraints[c1][i].data * f[indexC1];
-			}
-		}
-	}
-
-	VecDeriv& dx = *mstate->getDx();
-	VecCoord& x = *mstate->getX();
-	VecDeriv& v = *mstate->getV();
-	VecDeriv& v_free = *mstate->getVfree();
-	VecCoord& x_free = *mstate->getXfree();
-	double dt = this->getContext()->getDt();
-
-
-	// Euler integration... will be done in the "integrator" as soon as it exists !
-	dx.resize(v.size());
-
-	for (unsigned int i=0; i<dx.size(); i++)
-	{
-		x[i] = x_free[i];
-		v[i] = v_free[i];
-		dx[i] = force[i]/10000.0;
-		x[i] += dx[i];
-		v[i] += dx[i]/dt;
-	}
-}
-*/
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
 {
-    VecDeriv& force = *mstate->getExternalForces();
-//	VecDeriv& force = *mstate->getF();
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
+    VecDeriv& force = forceData.wref();
 
     const unsigned int numDOFs = mstate->getSize();
 
@@ -1027,7 +763,8 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 {
-    VecDeriv& force = *mstate->getF();
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::force());
+    VecDeriv& force = forceData.wref();
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
 }
@@ -1063,7 +800,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw()
         }
     }
 
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     for (unsigned int i=0; i< x.size(); i++)
     {
         Transformation Ri;
@@ -1099,7 +836,8 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     using sofa::component::forcefield::TetrahedronFEMForceField;
     using sofa::component::container::RotationFinder;
 
-    MatrixDeriv& c = *mstate->getC();
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *mstate->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv& c = cData.wref();
 
     simulation::Node *node = dynamic_cast< simulation::Node * >(getContext());
 
@@ -1188,7 +926,8 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
         return;
     }
 
-    VecDeriv& dx = *mstate->getDx();
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *mstate->write(core::VecDerivId::dx());
+    VecDeriv& dx = dxData.wref();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         Transformation Rj;
@@ -1201,7 +940,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
             Rj = rotationFinder->getRotations()[j];
         }
         // on passe les deplacements du repere local au repere global
-        const Deriv& temp = Rj * dx[j];
+        Deriv temp = Rj * dx[j];
         dx[j] = temp;
     }
 }
@@ -1393,187 +1132,6 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     }
 #endif
 }
-
-
-//// new API for non building the constraint system during solving process //
-//template<class DataTypes>
-//void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)
-//{
-//	constraint_force = f;
-//	VecConst& constraints = *mstate->getC();
-//	localConstraintId = &(mstate->getConstraintId());
-//	unsigned int numConstraints = constraints.size();
-//
-//#ifdef NEW_METHOD_UNBUILT
-//	constraint_D.clear();
-//	constraint_D.resize(mstate->getSize());
-//
-//	constraint_F.clear();
-//	constraint_F.resize(mstate->getSize());
-//
-//	constraint_dofs.clear();
-//
-//	bool error_message_not_displayed=true;
-//#endif
-//
-//	/////////// The constraints on the same nodes are gathered //////////////////////
-//	//gatherConstraints();
-//	/////////////////////////////////////////////////////////////////////////////////
-//
-//	/////////// The constraints are modified using a rotation value at each node/////
-//	if (m_rotations.getValue())
-//        rotateConstraints(false);
-//	/////////////////////////////////////////////////////////////////////////////////
-//
-//
-//	/////////// Which node are involved with the contact ?/////
-//
-//	for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-//	{
-//		ConstConstraintIterator itConstraint;
-//		std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c1].data();
-//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//		{
-//			unsigned int dof = itConstraint->first;
-//                        constraint_dofs.push_back(dof);
-//		}
-//	}
-//
-////	unsigned int numNodes1 = constraint_dofs.size();
-////	sout<< "numNodes : avant = "<<numNodes1;
-//	constraint_dofs.sort();
-//	constraint_dofs.unique();
-////	unsigned int numNodes = constraint_dofs.size();
-////	sout<< " apres = "<<numNodes<<sendl;
-////	sout<< "numConstraints = "<< numConstraints<<sendl;
-//
-//	id_to_localIndex.clear();
-//
-//	for(unsigned int i=0;i<numConstraints;++i)
-//	{
-//		unsigned int c = (*localConstraintId)[i];
-//		if (c >= id_to_localIndex.size()) id_to_localIndex.resize(c+1,-1);
-//		if (id_to_localIndex[c] != -1)
-//			serr << "duplicate entry in constraints for id " << c << " : " << id_to_localIndex[c] << " + " << i << sendl;
-//		id_to_localIndex[c] = i;
-//
-//#ifdef NEW_METHOD_UNBUILT  // Fill constraint_F => provide the present constraint forces
-//		double fC = f[c];
-//		// debug
-//		//std::cout<<"f["<<indexC<<"] = "<<fC<<std::endl;
-//
-//		if (fC != 0.0)
-//		{
-//			if(error_message_not_displayed)
-//			{
-//				serr<<"Initial_guess not supported yet in unbuilt mode with NEW_METHOD_UNBUILT!=> PUT F to 0"<<sendl;
-//				error_message_not_displayed = false;
-//			}
-//
-//			f[c] = 0.0;
-//			/*
-//			ConstraintIterator itConstraint;
-//			std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
-//
-//			for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//			{
-//				unsigned int dof = itConstraint->first;
-//				Deriv n = itConstraint->second;
-//				constraint_F[dof] +=n * fC;
-//
-//				// TODO : remplacer pour faire + rapide !!
-//			//	setConstraintDForce(&fC, (int)c, (int)c, true);
-//
-//			}
-//			*/
-//		}
-//#endif
-//	}
-//
-//
-//#ifndef NEW_METHOD_UNBUILT
-//	////////////////////////////////////////////////////////////
-//	unsigned int offset, offset2;
-//	unsigned int ii,jj, curRowConst, curColConst, it;
-//	Deriv Vbuf;
-//	//int indexCurColConst, indexCurRowConst;
-//	it=0;
-//	//////////////////////////////////////////
-//
-//	//std::vector<Deriv> sparseCompliance;
-//	_sparseCompliance.resize(constraint_dofs.size()*numConstraints);
-//	std::list<int>::iterator IterateurListe;
-//	for(IterateurListe=constraint_dofs.begin();IterateurListe!=constraint_dofs.end();IterateurListe++)
-//	{
-//		int NodeIdx = (*IterateurListe);
-//		_indexNodeSparseCompliance[NodeIdx]=it;
-//		for(curColConst = 0; curColConst < numConstraints; curColConst++)
-//		{
-//			//indexCurColConst = mstate->getConstraintId()[curColConst];
-//
-//			Vbuf.clear();
-//			ConstConstraintIterator itConstraint;
-//			std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curColConst].data();
-//			for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//			{
-//				unsigned int dof = itConstraint->first;
-//				const Deriv n2 = itConstraint->second;
-//				offset = dof_on_node*(NodeIdx * nbCols +  dof);
-//
-//				for (ii=0; ii<dof_on_node; ii++)
-//				{
-//					offset2 = offset+ii*nbCols;
-//					for (jj=0; jj<dof_on_node; jj++)
-//					{
-//						Vbuf[ii] += appCompliance[offset2 + jj] * n2[jj];
-//					}
-//				}
-//			}
-//			_sparseCompliance[it]=Vbuf;
-//			it++;
-//		}
-//	}
-//
-//	localW.resize(numConstraints,numConstraints);
-//
-//	for(curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-//	{
-//		//indexCurRowConst = mstate->getConstraintId()[curRowConst];//global index of constraint
-//
-//		ConstConstraintIterator itConstraint;
-//
-//		std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curRowConst].data();
-//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//		{
-//			const int NodeIdx = itConstraint->first;
-//			const Deriv n1 = itConstraint->second;
-//
-//			unsigned int temp =(unsigned int) _indexNodeSparseCompliance[NodeIdx];
-//			for(curColConst = curRowConst; curColConst < numConstraints; curColConst++)
-//			{
-//				//indexCurColConst = mstate->getConstraintId()[curColConst];
-//				double w = _sparseCompliance[temp + curColConst]*n1;
-//				//W[indexCurRowConst][indexCurColConst] += w;
-//				//sout << "W("<<indexCurRowConst<<","<<indexCurColConst<<") = "<<w<<sendl;
-//				//W->add(indexCurRowConst, indexCurColConst, w);
-//				//if (indexCurRowConst != indexCurColConst)
-//				//  W->add(indexCurColConst, indexCurRowConst, w);
-//				localW.add(curRowConst, curColConst, w);
-//				if (curRowConst != curColConst)
-//					localW.add(curColConst, curRowConst, w);
-//			}
-//		}
-//		/*
-//		//Compliance matrix is symetric ?
-//		for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-//		{
-//			int indexCurColConst = mstate->getConstraintId()[curColConst];
-//			W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-//		}
-//		*/
-//	}
-//#endif
-//}
 
 
 template<class DataTypes>

@@ -1459,7 +1459,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 new_triangles_id.push_back(next_triangle++);
 
                 // Triangularize the remaining quad according to the delaunay criteria
-                typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
+                const typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
                 for (unsigned int j = 0; j<2; j++)
                 {
                     //Vec<3,double> pos[4];
@@ -1714,7 +1714,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         return;
     }
 
-    typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
+    const typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
 
 
     //// STEP 3 - Second loop necessary to find object on the neighborhood of a snaped point

@@ -30,6 +30,8 @@
 
 #include <sofa/component/interactionforcefield/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/core/MechanicalParams.h>
+
 
 namespace sofa
 {
@@ -45,6 +47,9 @@ This allows to perform implicit integration.
 Stiffness is evaluated and stored by the addForce method.
 When explicit integration is used, SpringForceField is slightly more efficient.
 */
+
+using namespace sofa::core;
+
 template<class DataTypes>
 class StiffSpringForceField : public sofa::component::interactionforcefield::SpringForceField<DataTypes>
 {
@@ -58,10 +63,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
-    typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
-    typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
-    typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
 
     typedef typename Inherit::Spring Spring;
 
@@ -74,10 +78,10 @@ protected:
     double m_potentialEnergy;
 
     /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce(double& potentialEnergy, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(double& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, int i, const Spring& spring);
 
     /// Apply the stiffness, i.e. accumulate df given dx
-    void addSpringDForce(WRefVecDeriv& df1, RRefVecDeriv& dx1, WRefVecDeriv& df2, RRefVecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
+    void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
 
 public:
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0)
@@ -93,13 +97,17 @@ public:
     virtual void init();
 
     /// Accumulate f corresponding to x,v
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    virtual void addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* mparams );
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
     /// Accumulate df corresponding to dx
-    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
+    virtual void addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams);
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact);
+    virtual double getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const { return m_potentialEnergy; }
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact);
 
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams);
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_INTERACTIONFORCEFIELD)

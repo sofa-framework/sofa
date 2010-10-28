@@ -29,6 +29,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
 #include <sofa/simulation/common/Node.h>
+
 namespace sofa
 {
 
@@ -52,7 +53,7 @@ class DistanceLMConstraintInternalData
 
 
 /** Keep two particules at an initial distance
- */
+*/
 template <class DataTypes>
 class DistanceLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>
 {
@@ -69,25 +70,26 @@ public:
     typedef typename sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 
-
-    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef core::ConstraintParams::ConstOrder ConstOrder;
 
 protected:
     DistanceLMConstraintInternalData<DataTypes> data;
     friend class DistanceLMConstraintInternalData<DataTypes>;
 
 public:
-    DistanceLMConstraint( MechanicalState *dof):
-        core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
-        vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+    DistanceLMConstraint( MechanicalState *dof)
+        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+        , vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
-    DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2):
-        core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2),
-        vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+
+    DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
+        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
+        , vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
-    DistanceLMConstraint():
-        vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain")) {}
+
+    DistanceLMConstraint()
+        : vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+    {}
 
     ~DistanceLMConstraint() {};
 
@@ -95,24 +97,20 @@ public:
     void reinit();
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::VecId position);
-    void writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder order);
-
-
+    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+    void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
 
     virtual void draw();
 
-    bool isCorrectionComputedWithSimulatedDOF(core::behavior::BaseLMConstraint::ConstOrder /*order*/) const
+    bool isCorrectionComputedWithSimulatedDOF(core::ConstraintParams::ConstOrder /*order*/) const
     {
         simulation::Node* node1=(simulation::Node*) this->constrainedObject1->getContext();
         simulation::Node* node2=(simulation::Node*) this->constrainedObject2->getContext();
         if (node1->mechanicalMapping.empty() && node2->mechanicalMapping.empty()) return true;
         else return false;
     }
+
     bool useMask() const {return true;}
-
-
-
 
     std::string getTemplateName() const
     {
@@ -122,10 +120,6 @@ public:
     {
         return DataTypes::Name();
     }
-
-
-
-
 
 protected :
     //Edges involving a distance constraint

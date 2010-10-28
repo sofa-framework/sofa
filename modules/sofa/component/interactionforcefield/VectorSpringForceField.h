@@ -36,6 +36,7 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
+#include <sofa/core/MechanicalParams.h>
 
 
 namespace sofa
@@ -49,11 +50,10 @@ namespace interactionforcefield
 
 using namespace sofa::defaulttype;
 using sofa::core::objectmodel::Event;
+using namespace sofa::core;
 
 template<class DataTypes>
-class VectorSpringForceField
-    : public core::behavior::PairInteractionForceField<DataTypes>
-//: public core::behavior::ForceField<DataTypes>
+class VectorSpringForceField: public core::behavior::PairInteractionForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(VectorSpringForceField, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
@@ -64,6 +64,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     struct Spring
@@ -141,15 +145,15 @@ public:
 
     virtual void handleEvent( Event* e );
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    //virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* mparams );
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
-    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
-    //virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
+    virtual void addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams);
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
     //virtual double getPotentialEnergy(const VecCoord& ) const
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const
-    { return m_potentialEnergy; }
+    virtual double getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const { return m_potentialEnergy; }
+    ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const  { return m_potentialEnergy; }
 
     Real getStiffness() const
     {

@@ -321,8 +321,8 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
         serr<<"PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
         return;
     }
-    VecId lhId = core::behavior::BaseMechanicalState::VecId::velocity();
-    VecId rhId = core::behavior::BaseMechanicalState::VecId::force();
+    VecDerivId lhId = core::VecDerivId::velocity();
+    VecDerivId rhId = core::VecDerivId::force();
 
 
     mstate->vAvail(lhId);
@@ -333,10 +333,18 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
     if (linearSolver)
     {
         std::cout << "System Init Solver: " << linearSolver->getName() << " (" << linearSolver->getClassName() << ")" << std::endl;
-        linearSolver->setSystemMBKMatrix(init_mFact, init_bFact, init_kFact);
+        core::MechanicalParams mparams;
+        mparams.setMFactor(init_mFact);
+        mparams.setBFactor(init_bFact);
+        mparams.setKFactor(init_kFact);
+        linearSolver->setSystemMBKMatrix(&mparams);
     }
 
-    VecDeriv& force = *mstate->getVecDeriv(rhId.index);
+    //<TO REMOVE>
+    //VecDeriv& force = *mstate->getVecDeriv(rhId.index);
+    Data<VecDeriv>* dataForce = mstate->writeVecDeriv(rhId);
+    VecDeriv& force = *dataForce->beginEdit();
+
     force.clear();
     force.resize(nbNodes);
 
@@ -363,7 +371,11 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    VecDeriv& velocity = *mstate->getVecDeriv(lhId.index);
+    //<TO REMOVE>
+    //VecDeriv& velocity = *mstate->getVecDeriv(lhId.index);
+    Data<VecDeriv>* dataVelocity = mstate->writeVecDeriv(lhId);
+    VecDeriv& velocity = *dataVelocity->beginEdit();
+
     VecDeriv velocity0 = velocity;
     VecCoord& pos = *mstate->getX();
     VecCoord pos0 = pos;
@@ -445,6 +457,9 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
     for (unsigned int i=0; i<velocity0.size(); i++) velocity[i]=velocity0[i];
     //Reset the position
     for (unsigned int i=0; i<pos0.size(); i++) pos[i]=pos0[i];
+
+    dataForce->endEdit();
+    dataVelocity->endEdit();
 
     mstate->vFree(lhId);
     mstate->vFree(rhId);

@@ -71,8 +71,12 @@ void LennardJonesForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
+void LennardJonesForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f1 = *d_f.beginEdit();
+    const VecCoord& p1 = d_x.getValue();
+    const VecDeriv& v1 = d_v.getValue();
+
     Real dmax2 = dmax.getValue()*dmax.getValue();
     this->dforces.clear();
     f1.resize(p1.size());
@@ -112,13 +116,18 @@ void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
             f1[ib]-=force;
         }
     }
+    d_f.endEdit();
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
+void LennardJonesForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df1 = *d_df.beginEdit();
+    const VecDeriv& dx1 = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     const VecCoord& p1 = *this->mstate->getX();
-    f1.resize(dx1.size());
+    df1.resize(dx1.size());
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
         const DForce& df = this->dforces[i];
@@ -126,19 +135,12 @@ void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& 
         const unsigned int ib = df.b;
         const Deriv u = p1[ib]-p1[ia];
         const Deriv du = dx1[ib]-dx1[ia];
-        const Deriv dforce = u * (df.df * (du*u));
-        f1[ia] += dforce;
-        f1[ib] -= dforce;
+        const Deriv dforce = (u * (df.df * (du*u))) * kFactor;
+        df1[ia] += dforce;
+        df1[ib] -= dforce;
     }
+    d_df.endEdit();
 }
-
-template <class DataTypes>
-double LennardJonesForceField<DataTypes>::getPotentialEnergy(const VecCoord& ) const
-{
-    serr<<"LennardJonesForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-
 
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw()
@@ -174,4 +176,4 @@ void LennardJonesForceField<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL

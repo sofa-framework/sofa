@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/container/MechanicalObject.h>

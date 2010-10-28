@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_VECTORSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_VECTORSPRINGFORCEFIELD_INL
 
@@ -66,7 +66,7 @@ void VectorSpringForceField<DataTypes>::springCreationFunction(int /*index*/,
         if (ancestors.size()>0)
         {
             t.kd=t.ks=0;
-//            const topology::EdgeData<Spring> &sa=ff->getSpringArray();
+            //            const topology::EdgeData<Spring> &sa=ff->getSpringArray();
             const helper::vector<Spring> &sa=ff->getSpringArray().getValue();
             unsigned int i;
             for (i=0; i<ancestors.size(); ++i)
@@ -275,8 +275,16 @@ void VectorSpringForceField<DataTypes>::handleEvent( Event* e )
 
 template<class DataTypes>
 //void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& v)
-void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+void VectorSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* /*mparams*/ )
 {
+
+    VecDeriv&       f1 = *data_f1.beginEdit();
+    const VecCoord& x1 =  data_x1.getValue();
+    const VecDeriv& v1 =  data_v1.getValue();
+    VecDeriv&       f2 = *data_f2.beginEdit();
+    const VecCoord& x2 =  data_x2.getValue();
+    const VecDeriv& v2 =  data_v2.getValue();
+
     //assert(this->mstate);
     m_potentialEnergy = 0;
 
@@ -329,12 +337,20 @@ void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, con
         }
     }
     springArray.endEdit();
+
+    data_f1.endEdit();
+    data_f2.endEdit();
 }
 
 template<class DataTypes>
-//void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
-void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
+void VectorSpringForceField<DataTypes>::addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams)
 {
+    VecDeriv&        df1 = *data_df1.beginEdit();
+    VecDeriv&        df2 = *data_df2.beginEdit();
+    const VecDeriv&  dx1 =  data_dx1.getValue();
+    const VecDeriv&  dx2 =  data_dx2.getValue();
+    double kFactor       =  mparams->kFactor();
+
     Deriv dforce,d;
 
     df1.resize(dx1.size());
@@ -369,6 +385,10 @@ void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, 
             df2[e[1]]-=dforce;
         }
     }
+
+    data_df1.endEdit();
+    data_df2.endEdit();
+
 }
 
 template<class DataTypes>

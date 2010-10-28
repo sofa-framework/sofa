@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_INL
 
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
+#include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
 namespace sofa
@@ -235,14 +236,15 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned int &contactId, core::VecId)
+void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &contactId
+        , const DataVecCoord &, const DataVecCoord &, const core::ConstraintParams*)
 {
-    assert(this->object1);
-    assert(this->object2);
+    assert(this->mstate1);
+    assert(this->mstate2);
 
-    if (this->object1 == this->object2)
+    if (this->mstate1 == this->mstate2)
     {
-        MatrixDeriv& c1 = *this->object1->getC();
+        MatrixDeriv& c1 = *c1_d.beginEdit();
 
         for (unsigned int i = 0; i < contacts.size(); i++)
         {
@@ -268,44 +270,12 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned 
             }
         }
 
-        /*
-        VecConst& c1 = *this->object1->getC();
-
-        for (unsigned int i=0; i<contacts.size(); i++)
-        {
-        	Contact& c = contacts[i];
-
-        	//mu = c.mu;
-        	//c.mu = mu;
-        	c.id = contactId++;
-
-        	SparseVecDeriv svd1;
-
-        	this->object1->setConstraintId(c.id);
-        	svd1.add(c.m1, -c.norm);
-        	svd1.add(c.m2, c.norm);
-        	c1.push_back(svd1);
-
-        	if (c.mu > 0.0)
-        	{
-        		contactId += 2;
-        		this->object1->setConstraintId(c.id+1);
-        		svd1.set(c.m1, -c.t);
-        		svd1.set(c.m2, c.t);
-        		c1.push_back(svd1);
-
-        		this->object1->setConstraintId(c.id+2);
-        		svd1.set(c.m1, -c.s);
-        		svd1.set(c.m2, c.s);
-        		c1.push_back(svd1);
-        	}
-        }
-        */
+        c1_d.endEdit();
     }
     else
     {
-        MatrixDeriv& c1 = *this->object1->getC();
-        MatrixDeriv& c2 = *this->object2->getC();
+        MatrixDeriv& c1 = *c1_d.beginEdit();
+        MatrixDeriv& c2 = *c2_d.beginEdit();
 
         for (unsigned int i = 0; i < contacts.size(); i++)
         {
@@ -337,59 +307,16 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(unsigned 
             }
         }
 
-        /*
-        VecConst& c1 = *this->object1->getC();
-        VecConst& c2 = *this->object2->getC();
-
-        for (unsigned int i=0; i<contacts.size(); i++)
-        {
-        	Contact& c = contacts[i];
-
-        	//mu = c.mu;
-        	//c.mu = mu;
-        	c.id = contactId++;
-
-        	SparseVecDeriv svd1;
-        	SparseVecDeriv svd2;
-
-        	this->object1->setConstraintId(c.id);
-        	svd1.add(c.m1, -c.norm);
-        	c1.push_back(svd1);
-
-        	this->object2->setConstraintId(c.id);
-        	svd2.add(c.m2, c.norm);
-        	c2.push_back(svd2);
-
-        	if (c.mu > 0.0)
-        	{
-        		contactId += 2;
-        		this->object1->setConstraintId(c.id+1);
-        		svd1.set(c.m1, -c.t);
-        		c1.push_back(svd1);
-
-        		this->object1->setConstraintId(c.id+2);
-        		svd1.set(c.m1, -c.s);
-        		c1.push_back(svd1);
-
-        		this->object2->setConstraintId(c.id+1);
-        		svd2.set(c.m2, c.t);
-        		c2.push_back(svd2);
-
-        		this->object2->setConstraintId(c.id+2);
-        		svd2.set(c.m2, c.s);
-        		c2.push_back(svd2);
-        	}
-        }
-        */
+        c1_d.endEdit();
+        c2_d.endEdit();
     }
 }
 
-template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * v, bool freeMotion)
-{
-    if (!freeMotion)
-        sout<<"WARNING Not Implemented for resolution non based on freeMotion"<<sendl;
 
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+        , const DataVecDeriv &, const DataVecDeriv &, const core::ConstraintParams*)
+{
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i]; // get each contact detected
@@ -404,28 +331,6 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype:
     }
 }
 
-template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
-{
-    if (!yetIntegrated)
-    {
-        for (unsigned int i=0; i<contacts.size(); i++)
-        {
-            Contact& c = contacts[i];
-            id[offset++] = -c.contactId;
-        }
-
-        yetIntegrated = true;
-    }
-    else
-    {
-        for (unsigned int i=0; i<contacts.size(); i++)
-        {
-            Contact& c = contacts[i];
-            id[offset++] = c.contactId;
-        }
-    }
-}
 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& /*positions*/, VecConstDeriv& directions, VecConstArea& /*areas*/)
@@ -482,7 +387,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowInteractionForceFields()) return;
+    if (!this->getContext()->getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);

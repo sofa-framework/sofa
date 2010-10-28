@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/core/VecId.h>
 //#include <sofa/component/System.h>
 
 namespace sofa
@@ -33,10 +34,11 @@ namespace simulation
 
 void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
 {
-    obj->updateMapping();
+    obj->apply(core::VecCoordId::position(), core::ConstVecCoordId::position());
+    obj->applyJ(core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
 }
 
-void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::behavior::BaseMechanicalMapping* /*obj*/)
+void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::BaseMapping* /*obj*/)
 {
     // mechanical mappings with isMechanical flag not set are now processed by the MechanicalPropagatePositionVisitor visitor
     /*

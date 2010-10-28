@@ -36,6 +36,9 @@ namespace core
 namespace objectmodel
 {
 
+BaseObjectTasks::~BaseObjectTasks()
+{}
+
 Iterative::IterativePartition* BaseObject::prepareTask()
 {
     Iterative::IterativePartition *p=NULL;

@@ -93,24 +93,24 @@ void apply(const std::string& directory, std::vector<std::string>& files,
         {
             if (useTopology)
             {
-                sofa::component::misc::WriteTopologyCreator writeVisitor;
+                sofa::component::misc::WriteTopologyCreator writeVisitor(sofa::core::ExecParams::defaultInstance());
 
                 writeVisitor.setCreateInMapping(true);
                 writeVisitor.setSceneName(refFile);
                 writeVisitor.execute(groot);
 
-                sofa::component::misc::WriteTopologyActivator v_write(true);
+                sofa::component::misc::WriteTopologyActivator v_write(true,sofa::core::ExecParams::defaultInstance());
                 v_write.execute(groot);
             }
             else
             {
-                sofa::component::misc::WriteStateCreator writeVisitor;
+                sofa::component::misc::WriteStateCreator writeVisitor(sofa::core::ExecParams::defaultInstance());
 
                 writeVisitor.setCreateInMapping(true);
                 writeVisitor.setSceneName(refFile);
                 writeVisitor.execute(groot);
 
-                sofa::component::misc::WriteStateActivator v_write(true);
+                sofa::component::misc::WriteStateActivator v_write(true,sofa::core::ExecParams::defaultInstance());
                 v_write.execute(groot);
             }
 
@@ -120,23 +120,23 @@ void apply(const std::string& directory, std::vector<std::string>& files,
             if (useTopology)
             {
                 //We add CompareTopology components: as it derives from the ReadTopology, we use the ReadTopologyActivator to enable them.
-                sofa::component::misc::CompareTopologyCreator compareVisitor;
+                sofa::component::misc::CompareTopologyCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
                 compareVisitor.setCreateInMapping(true);
                 compareVisitor.setSceneName(refFile);
                 compareVisitor.execute(groot);
 
-                sofa::component::misc::ReadTopologyActivator v_read(true);
+                sofa::component::misc::ReadTopologyActivator v_read(sofa::core::ExecParams::defaultInstance(),true);
                 v_read.execute(groot);
             }
             else
             {
                 //We add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
-                sofa::component::misc::CompareStateCreator compareVisitor;
+                sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
                 compareVisitor.setCreateInMapping(true);
                 compareVisitor.setSceneName(refFile);
                 compareVisitor.execute(groot);
 
-                sofa::component::misc::ReadStateActivator v_read(true);
+                sofa::component::misc::ReadStateActivator v_read(true,sofa::core::ExecParams::defaultInstance());
                 v_read.execute(groot);
             }
         }
@@ -159,7 +159,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
         {
             if (useTopology)
             {
-                sofa::component::misc::CompareTopologyResult result;
+                sofa::component::misc::CompareTopologyResult result(sofa::core::ExecParams::defaultInstance());
                 result.execute(groot);
                 std::cout << "ERROR " << result.getTotalError() << ' ';
 
@@ -187,7 +187,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
             }
             else
             {
-                sofa::component::misc::CompareStateResult result;
+                sofa::component::misc::CompareStateResult result(sofa::core::ExecParams::defaultInstance());
                 result.execute(groot);
                 std::cout
                         << "ERROR " << result.getTotalError() << " ERRORBYDOF "

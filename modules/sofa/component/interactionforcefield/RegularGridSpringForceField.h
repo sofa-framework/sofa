@@ -27,6 +27,8 @@
 
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
 #include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/core/MechanicalParams.h>
+
 
 namespace sofa
 {
@@ -36,6 +38,8 @@ namespace component
 
 namespace interactionforcefield
 {
+
+using namespace sofa::core;
 
 template<class DataTypes>
 class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
@@ -52,11 +56,15 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
+    /*
     typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
     typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
     typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
     typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
-
+    */
     //virtual const char* getTypeName() const { return "RegularGridSpringForceField"; }
 
 protected:
@@ -146,9 +154,11 @@ public:
 
     virtual void init();
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    virtual void addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* mparams );
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
-    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
+    virtual void addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams);
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
     virtual void draw();
 

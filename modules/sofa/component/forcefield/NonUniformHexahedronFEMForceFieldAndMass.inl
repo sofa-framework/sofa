@@ -92,7 +92,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     if (this->_initialPoints.getValue().size() == 0)
     {
-        VecCoord& p = *this->mstate->getX();
+        const VecCoord& p = *this->mstate->getX();
         this->_initialPoints.setValue(p);
     }
 
@@ -169,14 +169,14 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
     // 	post-traitement of non-uniform stiffness
-//         if( this->_nbVirtualFinerLevels.getValue() )
-//         {
-//           this->_sparseGrid->setNbVirtualFinerLevels(0);
-//           //delete undesirable sparsegrids and hexa
-//           for(int i=0;i<this->_sparseGrid->getNbVirtualFinerLevels();++i)
-//             delete this->_sparseGrid->_virtualFinerLevels[i];
-//           this->_sparseGrid->_virtualFinerLevels.resize(0);
-//         }
+    //         if( this->_nbVirtualFinerLevels.getValue() )
+    //         {
+    //           this->_sparseGrid->setNbVirtualFinerLevels(0);
+    //           //delete undesirable sparsegrids and hexa
+    //           for(int i=0;i<this->_sparseGrid->getNbVirtualFinerLevels();++i)
+    //             delete this->_sparseGrid->_virtualFinerLevels[i];
+    //           this->_sparseGrid->_virtualFinerLevels.resize(0);
+    //         }
 
 
 
@@ -243,7 +243,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 for(int k=0; k<3; ++k)
                     if( this->_lumpedMasses[j][k] < 0 )
                     {
-// 					  serr<<"WARNING lumped mass"<<sendl;
+                        // 					  serr<<"WARNING lumped mass"<<sendl;
                         this->_lumpedMasses[ j ][k] = -this->_lumpedMasses[ j ][k];
                     }
             }
@@ -344,10 +344,10 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
     helper::fixed_array<Coord,8> nodes;
 
 #ifndef SOFA_NEW_HEXA
-//           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[this->_indices[k]]);
+    //           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[this->_indices[k]]);
     for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[this->_indices[k]]).linearProduct(this->mstate->getScale());
 #else
-//           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]);
+    //           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]);
     for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]).linearProduct(this->mstate->getScale());
 #endif
 
@@ -359,10 +359,10 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
     //Nodes are found using Sparse Grid
     Real stiffnessCoef = this->_sparseGrid->_virtualFinerLevels[level]->getStiffnessCoef(elementIndice);
     Real massCoef = this->_sparseGrid->_virtualFinerLevels[level]->getStiffnessCoef(elementIndice);
-// 		  if (SparseGridMultipleTopology* sgmt =  dynamic_cast<SparseGridMultipleTopology*>( this->_sparseGrid->_virtualFinerLevels[level] ) )
-// 			  stiffnessCoef = sgmt->getStiffnessCoef( elementIndice );
-// 		  else if( this->_sparseGrid->_virtualFinerLevels[level]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY )
-// 			  stiffnessCoef = .5;
+    // 		  if (SparseGridMultipleTopology* sgmt =  dynamic_cast<SparseGridMultipleTopology*>( this->_sparseGrid->_virtualFinerLevels[level] ) )
+    // 			  stiffnessCoef = sgmt->getStiffnessCoef( elementIndice );
+    // 		  else if( this->_sparseGrid->_virtualFinerLevels[level]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY )
+    // 			  stiffnessCoef = .5;
 
 
     HexahedronFEMForceFieldAndMassT::computeElementStiffness(K,material,nodes,elementIndice, stiffnessCoef); // classical stiffness
@@ -508,31 +508,35 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMaterialStiffness(Mater
 /////////////////////////////////////////////////
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* mparams)
 {
     if(_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addMDx(f,dx,factor);
+        HexahedronFEMForceFieldAndMassT::addMDx(f,dx,factor, mparams);
     else
     {
-        for (unsigned int i=0; i<dx.size(); i++)
+        helper::WriteAccessor<DataVecDeriv> _f = f;
+        helper::ReadAccessor<DataVecDeriv> _dx = dx;
+
+        for (unsigned int i=0; i<_dx.size(); i++)
         {
-            f[i] += dx[i] * this->_particleMasses[i] * (Real)factor;
+            _f[i] += _dx[i] * this->_particleMasses[i] * (Real)factor;
         }
     }
 }
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(double dt)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
 {
     if(_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addGravityToV(dt);
+        HexahedronFEMForceFieldAndMassT::addGravityToV(vid, mparams);
     else
     {
-        VecDeriv& v = *this->mstate->getV();
+        helper::WriteAccessor<DataVecDeriv> v = *vid[this->mstate].write();
+
         const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
-        Deriv hg = theGravity * dt;
+        Deriv hg = theGravity * (mparams->dt());
         for (unsigned int i=0; i<v.size(); i++)
         {
             v[i] += hg;
@@ -541,21 +545,23 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(double dt)
 }
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams)
 {
     if(_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addForce(f,x,v);
+        HexahedronFEMForceFieldAndMassT::addForce(f,x,v, mparams);
     else
     {
-        HexahedronFEMForceFieldT::addForce(f,x,v);
+        HexahedronFEMForceFieldT::addForce(f,x,v, mparams);
+
+        helper::WriteAccessor<DataVecDeriv> _f = f;
 
         const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         T::set( theGravity, g[0], g[1], g[2]);
 
-        for (unsigned int i=0; i<f.size(); i++)
+        for (unsigned int i=0; i<_f.size(); i++)
         {
-            f[i] += theGravity * this->_particleMasses[i];
+            _f[i] += theGravity * this->_particleMasses[i];
         }
     }
 }
@@ -568,4 +574,4 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(VecDeriv& f, const Ve
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_INL

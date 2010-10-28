@@ -81,8 +81,8 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             flags |= 1 << PROJECTIVECONSTRAINTSET;
         if (dynamic_cast<core::behavior::BaseConstraintSet*>(obj))
             flags |= 1 << CONSTRAINTSET;
-        if (dynamic_cast<core::behavior::InteractionForceField*>(obj) &&
-            dynamic_cast<core::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::behavior::InteractionForceField*>(obj)->getMechModel2())
+        if (dynamic_cast<core::behavior::BaseInteractionForceField*>(obj) &&
+            dynamic_cast<core::behavior::BaseInteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::behavior::BaseInteractionForceField*>(obj)->getMechModel2())
             flags |= 1 << IFFIELD;
         else if (dynamic_cast<core::behavior::BaseForceField*>(obj))
             flags |= 1 << FFIELD;
@@ -95,10 +95,8 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             || dynamic_cast<core::collision::ContactManager*>(obj)
             || dynamic_cast<core::collision::CollisionGroupManager*>(obj))
             flags |= 1 << COLLISION;
-        if (dynamic_cast<core::behavior::BaseMechanicalMapping*>(obj))
-            flags |= 1 << MMAPPING;
-        else if (dynamic_cast<core::BaseMapping*>(obj))
-            flags |= 1 << MAPPING;
+        if (dynamic_cast<core::BaseMapping*>(obj))
+            flags |= 1 << ((dynamic_cast<core::BaseMapping*>(obj))->isMechanical()?MMAPPING:MAPPING);
         if (dynamic_cast<core::behavior::BaseMass*>(obj))
             flags |= 1 << MASS;
         if (dynamic_cast<core::topology::Topology *>(obj)

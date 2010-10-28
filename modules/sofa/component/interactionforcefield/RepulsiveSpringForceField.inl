@@ -40,8 +40,16 @@ namespace interactionforcefield
 
 
 template<class DataTypes>
-void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+void RepulsiveSpringForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* /*mparams*/ )
 {
+
+    VecDeriv&       f1 = *data_f1.beginEdit();
+    const VecCoord& x1 =  data_x1.getValue();
+    const VecDeriv& v1 =  data_v1.getValue();
+    VecDeriv&       f2 = *data_f2.beginEdit();
+    const VecCoord& x2 =  data_x2.getValue();
+    const VecDeriv& v2 =  data_v2.getValue();
+
     const helper::vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
     f1.resize(x1.size());
@@ -90,10 +98,13 @@ void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
                     m[j][k] = 0.0;
         }
     }
+
+    data_f1.endEdit();
+    data_f2.endEdit();
 }
 
 template <class DataTypes>
-double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy() const
+double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const
 {
     serr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

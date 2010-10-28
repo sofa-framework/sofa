@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/SPHFluidForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -54,12 +56,12 @@ int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamic
         ;
 
 #ifndef SOFA_FLOAT
-template class SPHFluidForceField<Vec3dTypes>;
-template class SPHFluidForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SPHFluidForceField<Vec3fTypes>;
-template class SPHFluidForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SPHFluidForceField<Vec2fTypes>;
 #endif
 
 

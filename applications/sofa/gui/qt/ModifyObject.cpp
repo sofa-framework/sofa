@@ -377,7 +377,7 @@ void ModifyObject::updateValues()
             {
                 obj->reinit();
             }
-            else if (simulation::Node *n = dynamic_cast< simulation::Node *>(node)) n->reinit();
+            else if (simulation::Node *n = dynamic_cast< simulation::Node *>(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
         }
 
     }

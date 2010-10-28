@@ -26,10 +26,9 @@
 #define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
 
 #include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
-#include <vector>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -58,7 +57,7 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type InReal;
 
-    ImplicitSurfaceMapping(In* from, Out* to)
+    ImplicitSurfaceMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to),
           mStep(initData(&mStep,0.5,"step","Step")),
           mRadius(initData(&mRadius,2.0,"radius","Radius")),
@@ -93,9 +92,8 @@ public:
     void setGridMax(const InCoord& val) { mGridMax.setValue(val); }
     void setGridMax(double x, double y, double z) { mGridMax.setValue( InCoord((InReal)x,(InReal)y,(InReal)z)); }
 
-    void apply( OutVecCoord& out, const InVecCoord& in );
-
-    void applyJ( OutVecDeriv& out, const InVecDeriv& in );
+    void apply(Data<OutVecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
+    void applyJ(Data<OutVecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
 
     //void applyJT( InVecDeriv& out, const OutVecDeriv& in );
 protected:
@@ -191,6 +189,30 @@ protected:
 Y
 
 */
+
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+extern template class ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+extern template class ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+extern template class ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
+#endif
+#endif
+#endif
 
 
 } // namespace mapping

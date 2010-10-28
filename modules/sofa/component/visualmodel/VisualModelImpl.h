@@ -25,19 +25,20 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_VISUALMODELIMPL_H
 #define SOFA_COMPONENT_VISUALMODEL_VISUALMODELIMPL_H
 
-#include <string>
+#include <sofa/core/State.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
+
 #include <sofa/component/component.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
 
 #include <map>
+#include <string>
+
 
 namespace sofa
 {
@@ -52,18 +53,19 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
 
-class RigidMappedModel : public core::behavior::MappedModel< Rigid3fTypes >
+class RigidState : public core::State< Rigid3fTypes >
 {
 public:
     VecCoord xforms;
     bool xformsModified;
 
-    RigidMappedModel()
+    RigidState()
         : xformsModified(false)
     {
     }
 
     virtual void resize(int vsize) { xformsModified = true; xforms.resize( vsize); }
+    virtual int getSize() const { return 0; }
 
     const VecCoord* getX()  const { return &xforms; }
     const VecDeriv* getV()  const { return NULL; }
@@ -73,39 +75,87 @@ public:
 
     const VecCoord* getRigidX()  const { return getX(); }
     VecCoord* getRigidX()  { return getX(); }
+
+    virtual       Data<VecCoord>* write(     core::VecCoordId /* v */) { return NULL; }
+    virtual const Data<VecCoord>*  read(core::ConstVecCoordId /* v */) const { return NULL; }
+
+    virtual       Data<VecDeriv>* write(     core::VecDerivId /* v */) { return NULL; }
+    virtual const Data<VecDeriv>*  read(core::ConstVecDerivId /* v */) const { return NULL; }
+
+    virtual       Data<MatrixDeriv>* write(     core::MatrixDerivId /* v */) { return NULL; }
+    virtual const Data<MatrixDeriv>*  read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
 };
 
-class ExtVec3fMappedModel : public core::behavior::MappedModel< ExtVec3fTypes >
+class ExtVec3fState : public core::State< ExtVec3fTypes >
 {
 public:
-    ResizableExtVector<Coord>* inputVertices;
-    ResizableExtVector<Coord>* inputRestVertices;
-    ResizableExtVector<Coord>* inputNormals;
+    Data< ResizableExtVector<Coord> > m_positions;
+    Data< ResizableExtVector<Coord> > m_restPositions;
+    Data< ResizableExtVector<Deriv> > m_vnormals;
     bool modified; ///< True if input vertices modified since last rendering
 
-    ExtVec3fMappedModel()
-        : inputVertices(NULL), inputRestVertices(NULL), inputNormals(NULL), modified(false)
+    ExtVec3fState()
+        : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
+        , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
+        , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
+        , modified(false)
     {
     }
 
-    virtual void resize(int vsize) { modified = true; if( inputVertices)inputVertices->resize( vsize); if( inputRestVertices)inputRestVertices->resize( vsize); if( inputNormals)inputNormals->resize( vsize);}
+    virtual void resize(int vsize)
+    {
+        modified = true;
+        helper::WriteAccessor< Data<ResizableExtVector<Coord> > > positions = m_positions;
+        helper::WriteAccessor< Data<ResizableExtVector<Coord> > > restPositions = m_restPositions;
+        helper::WriteAccessor< Data<ResizableExtVector<Deriv> > > normals = m_vnormals;
 
-    const VecCoord* getX()  const { return inputVertices; }
-    const VecDeriv* getV()  const { return NULL; }
+        positions.resize(vsize);
+        restPositions.resize(vsize);
+        normals.resize(vsize);
+    }
 
-    VecCoord* getX()  { modified = true; return inputVertices; }
-    VecDeriv* getV()  { return NULL; }
+    virtual int getSize() const { return m_positions.getValue().size(); }
 
-    const VecCoord* getVecX()  const { return getX(); }
-    VecCoord* getVecX()  { return getX(); }
+    //State API
+    virtual       Data<VecCoord>* write(     core::VecCoordId  v )
+    {
+        modified = true;
 
-    virtual VecCoord* getX0() { return inputRestVertices ? inputRestVertices : inputVertices; };
-    virtual VecCoord* getN() { return inputNormals; };
+        if( v == core::VecCoordId::position() )
+            return &m_positions;
+        if( v == core::VecCoordId::restPosition() )
+            return &m_restPositions;
 
-    virtual const VecCoord* getX0() const { return inputRestVertices ? inputRestVertices : inputVertices; };
-    virtual const VecCoord* getN() const { return inputNormals; };
+        return NULL;
+    }
+    virtual const Data<VecCoord>*  read(core::ConstVecCoordId  v )  const
+    {
+        if( v == core::VecCoordId::position() )
+            return &m_positions;
+        if( v == core::VecCoordId::restPosition() )
+            return &m_restPositions;
 
+        return NULL;
+    }
 
+    virtual Data<VecDeriv>*	write(core::VecDerivId v )
+    {
+        if( v == core::VecDerivId::normal() )
+            return &m_vnormals;
+
+        return NULL;
+    }
+
+    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const
+    {
+        if( v == core::VecDerivId::normal() )
+            return &m_vnormals;
+
+        return NULL;
+    }
+
+    virtual       Data<MatrixDeriv>*	write(     core::MatrixDerivId /* v */) { return NULL; }
+    virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
 };
 
 /**
@@ -118,25 +168,25 @@ public:
  *
  */
 
-class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::VisualModel, public ExtVec3fMappedModel, public RigidMappedModel
+class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::VisualModel, public ExtVec3fState //, public RigidState
 {
 public:
-    SOFA_CLASS3(VisualModelImpl, core::VisualModel, ExtVec3fMappedModel, RigidMappedModel);
+    SOFA_CLASS2(VisualModelImpl, core::VisualModel, ExtVec3fState);
+//    SOFA_CLASS3(VisualModelImpl, core::VisualModel, ExtVec3fState , RigidState);
 
     typedef Vec<2, float> TexCoord;
-    typedef helper::fixed_array<int, 3> Triangle;
-    typedef helper::fixed_array<int, 4> Quad;
+
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
+
 protected:
-    // use types from ExtVec3fTypes
 
-    typedef ExtVec3fTypes::Real Real;
-    typedef ExtVec3fTypes::Coord Coord;
-    typedef ExtVec3fTypes::VecCoord VecCoord;
-    typedef ExtVec3fTypes::Deriv Deriv;
-    typedef ExtVec3fTypes::VecDeriv VecDeriv;
-
-
-    //typedef helper::fixed_array<int, 4> Tetrahedron;
+    typedef ExtVec3fTypes DataTypes;
+    typedef DataTypes::Real Real;
+    typedef DataTypes::Coord Coord;
+    typedef DataTypes::VecCoord VecCoord;
+    typedef DataTypes::Deriv Deriv;
+    typedef DataTypes::VecDeriv VecDeriv;
 
     //ResizableExtVector<Coord>* inputVertices;
 
@@ -144,28 +194,19 @@ protected:
     int lastMeshRev; ///< Time stamps from the last time the mesh was updated from the topology
     bool castShadow; ///< True if object cast shadows
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
-    Data<bool> useNormals; ///< True if normals should be read from file
-    Data<bool> updateNormals; ///< True if normals should be updated at each iteration
-    Data<bool> computeTangents_; ///< True if tangents should be computed at startup
-    Data<bool> updateTangents; ///< True if tangents should be updated at each iteration
+    Data<bool> m_useNormals; ///< True if normals should be read from file
+    Data<bool> m_updateNormals; ///< True if normals should be updated at each iteration
+    Data<bool> m_computeTangents; ///< True if tangents should be computed at startup
+    Data<bool> m_updateTangents; ///< True if tangents should be updated at each iteration
 
-    /*     Data< ResizableExtVector<Coord> > vertices; */
-    Data< ResizableExtVector<Coord> > field_vertices;
-    //ResizableExtVector<Coord> vertices;
-
-    Data< ResizableExtVector<Coord> > field_vnormals;
-    //ResizableExtVector<Coord> vnormals;
-    Data< ResizableExtVector<TexCoord> > field_vtexcoords;
-    //ResizableExtVector<TexCoord> vtexcoords;
-    Data< ResizableExtVector<Coord> > field_vtangents;
-    Data< ResizableExtVector<Coord> > field_vbitangents;
-
-    Data< ResizableExtVector<Triangle> > field_triangles;
-    //ResizableExtVector<Triangle> triangles;
-    Data< ResizableExtVector<Quad> > field_quads;
-    //ResizableExtVector<Quad> quads;
+    Data< ResizableExtVector< Coord > > m_vertices;
+    Data< ResizableExtVector< TexCoord > > m_vtexcoords;
+    Data< ResizableExtVector< Coord > > m_vtangents;
+    Data< ResizableExtVector< Coord > > m_vbitangents;
+    Data< ResizableExtVector< Triangle > > m_triangles;
+    Data< ResizableExtVector< Quad > > m_quads;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertice
@@ -176,21 +217,53 @@ protected:
     /// If it is empty then each vertex correspond to one normal
     ResizableExtVector<int> vertNormIdx;
 
-    virtual void internalDraw(bool /*transparent*/)
-    {}
+    /// Rendering method.
+    virtual void internalDraw(bool /*transparent*/) {};
 
 public:
 
-
-
     sofa::core::objectmodel::DataFileName fileMesh;
     sofa::core::objectmodel::DataFileName texturename;
-    Data< Vector3 > translation;
-    Data< Vector3 > rotation;
-    Data< Vector3 > scale;
 
-    Data< TexCoord >  scaleTex;
-    Data< TexCoord >  translationTex;
+    /// @name Initial transformation attributes
+    /// @{
+    Data< Vector3 > m_translation;
+    Data< Vector3 > m_rotation;
+    Data< Vector3 > m_scale;
+
+    Data< TexCoord > m_scaleTex;
+    Data< TexCoord > m_translationTex;
+
+    void applyTranslation(const double dx, const double dy, const double dz);
+
+    /// Apply Rotation from Euler angles (in degree!)
+    void applyRotation (const double rx, const double ry, const double rz);
+
+    void applyRotation(const Quat q);
+
+    void applyScale(const double sx, const double sy, const double sz);
+
+    virtual void applyUVTransformation();
+
+    void applyUVTranslation(const double dU, const double dV);
+
+    void applyUVScale(const double su, const double sv);
+
+    void setTranslation(double dx, double dy, double dz)
+    {
+        m_translation.setValue(Vector3(dx,dy,dz));
+    };
+
+    void setRotation(double rx, double ry, double rz)
+    {
+        m_rotation.setValue(Vector3(rx,ry,rz));
+    };
+
+    void setScale(double sx, double sy, double sz)
+    {
+        m_scale.setValue(Vector3(sx,sy,sz));
+    };
+    /// @}
 
     Vec3f bbox[2];
     Data< Material > material;
@@ -226,8 +299,10 @@ public:
     Data< helper::vector<Material> > materials;
     Data< helper::vector<FaceGroup> > groups;
 
+    /// Default constructor.
     VisualModelImpl();
 
+    /// Default destructor.
     ~VisualModelImpl();
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
@@ -243,100 +318,121 @@ public:
 
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
 
-    void applyTranslation(const double dx, const double dy, const double dz);
-    //Apply Rotation from Euler angles (in degree!)
-    void applyRotation (const double rx, const double ry, const double rz);
-    void applyRotation(const Quat q);
-    void applyScale(const double sx, const double sy, const double sz);
-    virtual void applyUVTransformation();
-    void applyUVTranslation(const double dU, const double dV);
-    void applyUVScale(const double su, const double sv);
-
     void flipFaces();
 
-    void setFilename(std::string s) {fileMesh.setValue(s);}
-    void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};
-    void setRotation(double rx,double ry,double rz) {rotation.setValue(Vector3(rx,ry,rz));};
-    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));};
+    void setFilename(std::string s)
+    {
+        fileMesh.setValue(s);
+    };
 
     std::string getFilename() {return fileMesh.getValue();}
 
     void setColor(float r, float g, float b, float a);
+
     void setColor(std::string color);
 
-    void setUseNormals(bool val) { useNormals.setValue(val);  }
-    bool getUseNormals() const   { return useNormals.getValue(); }
+    void setUseNormals(bool val)
+    {
+        m_useNormals.setValue(val);
+    };
 
-    void setCastShadow(bool val) { castShadow = val;  }
-    bool getCastShadow() const   { return castShadow; }
+    bool getUseNormals() const
+    {
+        return m_useNormals.getValue();
+    };
+
+    void setCastShadow(bool val)
+    {
+        castShadow = val;
+    };
+
+    bool getCastShadow() const
+    {
+        return castShadow;
+    };
 
     void setMesh(helper::io::Mesh &m, bool tex=false);
-    bool isUsingTopology() const {return useTopology;};
 
+    bool isUsingTopology() const
+    {
+        return useTopology;
+    };
 
-    const ResizableExtVector<Coord>& getVertices() {return field_vertices.getValue();}
+    const ResizableExtVector<Coord>& getVertices() const
+    {
+        if (!vertPosIdx.empty())
+        {
+            // Splitted vertices for multiple texture or normal coordinates per vertex.
+            return m_vertices.getValue();
+        }
 
-    const ResizableExtVector<Coord>& getVnormals() {return field_vnormals.getValue();}
+        return m_positions.getValue();
+    };
 
-    const ResizableExtVector<TexCoord>& getVtexcoords() {return field_vtexcoords.getValue();}
+    const ResizableExtVector<Deriv>& getVnormals() const
+    {
+        return m_vnormals.getValue();
+    };
 
-    const ResizableExtVector<Coord>& getVtangents() {return field_vtangents.getValue();}
+    const ResizableExtVector<TexCoord>& getVtexcoords() const
+    {
+        return m_vtexcoords.getValue();
+    };
 
-    const ResizableExtVector<Coord>& getVbitangents() {return field_vbitangents.getValue();}
+    const ResizableExtVector<Coord>& getVtangents() const
+    {
+        return m_vtangents.getValue();
+    };
 
-    const ResizableExtVector<Triangle>& getTriangles() {return field_triangles.getValue();}
+    const ResizableExtVector<Coord>& getVbitangents() const
+    {
+        return m_vbitangents.getValue();
+    };
 
-    const ResizableExtVector<Quad>& getQuads() {return field_quads.getValue();}
+    const ResizableExtVector<Triangle>& getTriangles() const
+    {
+        return m_triangles.getValue();
+    };
+
+    const ResizableExtVector<Quad>& getQuads() const
+    {
+        return m_quads.getValue();
+    };
 
     void setVertices(ResizableExtVector<Coord> * x)
     {
-        ResizableExtVector<Coord>& vertices = *(field_vertices.beginEdit());
-        vertices = *x;
-        field_vertices.endEdit();
-    }
+        m_vertices.setValue(*x);
+    };
 
-    void setVnormals(ResizableExtVector<Coord> * vn)
+    void setVnormals(ResizableExtVector<Deriv> * vn)
     {
-        ResizableExtVector<Coord>& vnormals = *(field_vnormals.beginEdit());
-        vnormals = *vn;
-        field_vnormals.endEdit();
-    }
+        m_vnormals.setValue(*vn);
+    };
 
     void setVtexcoords(ResizableExtVector<TexCoord> * vt)
     {
-        ResizableExtVector<TexCoord>& vtexcoords = *(field_vtexcoords.beginEdit());
-        vtexcoords = *vt;
-        field_vtexcoords.endEdit();
-    }
+        m_vtexcoords.setValue(*vt);
+    };
 
     void setVtangents(ResizableExtVector<Coord> * v)
     {
-        ResizableExtVector<Coord>& vec = *(field_vtangents.beginEdit());
-        vec = *v;
-        field_vtangents.endEdit();
-    }
+        m_vtangents.setValue(*v);
+    };
 
     void setVbitangents(ResizableExtVector<Coord> * v)
     {
-        ResizableExtVector<Coord>& vec = *(field_vbitangents.beginEdit());
-        vec = *v;
-        field_vbitangents.endEdit();
-    }
+        m_vbitangents.setValue(*v);
+    };
 
     void setTriangles(ResizableExtVector<Triangle> * t)
     {
-        ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
-        triangles = *t;
-        field_triangles.endEdit();
-    }
+        m_triangles.setValue(*t);
+    };
 
     void setQuads(ResizableExtVector<Quad> * q)
     {
-        ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
-        quads = *q;
-        field_quads.endEdit();
-    }
-
+        m_quads.setValue(*q);
+    };
 
     virtual void computePositions();
     virtual void computeMesh();
@@ -344,11 +440,11 @@ public:
     virtual void computeTangents();
     virtual void computeBBox();
 
-    virtual void updateBuffers() { };
+    virtual void updateBuffers() {};
 
     virtual void updateVisual();
 
-    // handle topological changes
+    // Handle topological changes
     virtual void handleTopologyChange();
 
     void init();
@@ -357,7 +453,6 @@ public:
 
     bool addBBox(double* minBBox, double* maxBBox);
 
-
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them
@@ -365,23 +460,26 @@ public:
 
     virtual std::string getTemplateName() const
     {
-        return ExtVec3fMappedModel::getTemplateName();
+        return ExtVec3fState::getTemplateName();
     }
 
     static std::string templateName(const VisualModelImpl* p = NULL)
     {
-        return ExtVec3fMappedModel::templateName(p);
+        return ExtVec3fState::templateName(p);
     }
 
-    static Coord compTangent(const Coord &v1, const Coord &v2, const Coord &v3,
+    /// Utility method to compute tangent from vertices and texture coordinates.
+    static Coord computeTangent(const Coord &v1, const Coord &v2, const Coord &v3,
             const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
-    static Coord compBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
+    /// Utility method to compute bitangent from vertices and texture coordinates.
+    static Coord computeBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
             const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
+
+    /// Temporary added here from RigidState deprecated inheritance
+    Rigid3fTypes::VecCoord xforms;
+    bool xformsModified;
 };
-
-//typedef Vec<3,GLfloat> GLVec3f;
-//typedef ExtVectorTypes<GLVec3f,GLVec3f> GLExtVec3fTypes;
 
 } // namespace visualmodel
 

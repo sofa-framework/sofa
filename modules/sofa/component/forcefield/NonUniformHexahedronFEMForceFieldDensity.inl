@@ -32,10 +32,6 @@
 #include <fstream>
 
 
-
-
-
-
 namespace sofa
 {
 
@@ -53,12 +49,12 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 {
-//  	serr<<"NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()"<<sendl;
+    //  	serr<<"NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()"<<sendl;
 
     if(this->_alreadyInit)return;
     else this->_alreadyInit=true;
 
-// 	NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init();
+    // 	NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init();
 
     this->core::behavior::ForceField<DataTypes>::init();
 
@@ -78,7 +74,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
     else if( this->_mesh->getNbHexahedra()<=0 )
 #else
     else if( this->_mesh->getNbCubes()<=0 )
-#endif
+#endif // SOFA_NEW_HEXA
     {
         serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a hexahedric MeshTopology."<<sendl;
         serr << this->_mesh->getName()<<sendl;
@@ -98,22 +94,22 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
     if (this->_initialPoints.getValue().size() == 0)
     {
-        VecCoord& p = *this->mstate->getX();
+        const VecCoord& p = *this->mstate->getX0();
         this->_initialPoints.setValue(p);
     }
 
     this->_materialsStiffnesses.resize(this->_indexedElements->size() );
     this->_rotations.resize( this->_indexedElements->size() );
     this->_rotatedInitialElements.resize(this->_indexedElements->size());
-// 	stiffnessFactor.resize(this->_indexedElements->size());
+    // 	stiffnessFactor.resize(this->_indexedElements->size());
 
 
-// 	NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init();
+    // 	NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init();
 
     // verify if it is wanted and possible to compute non-uniform stiffness
     if( !this->_nbVirtualFinerLevels.getValue() || !this->_sparseGrid || this->_sparseGrid->getNbVirtualFinerLevels() < this->_nbVirtualFinerLevels.getValue()  )
     {
-// 		this->_nbVirtualFinerLevels.setValue(0);
+        // 		this->_nbVirtualFinerLevels.setValue(0);
         serr<<"Conflict in nb of virtual levels between ForceField "<<this->getName()<<" and SparseGrid "<<this->_sparseGrid->getName()<<" -> classical uniform properties are used" << sendl;
     }
     else
@@ -198,7 +194,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
     //////////////////////
 
 
-// 	post-traitement of non-uniform stiffness
+    // 	post-traitement of non-uniform stiffness
     if( this->_nbVirtualFinerLevels.getValue() )
     {
         this->_sparseGrid->setNbVirtualFinerLevels(0);
@@ -276,8 +272,8 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
 #endif
 
 
-//       //given an elementIndice, find the 8 others from the sparse grid
-//       //compute MaterialStiffness
+        //       //given an elementIndice, find the 8 others from the sparse grid
+        //       //compute MaterialStiffness
         MaterialStiffness mat;
 
         double grayScale=1.0;
@@ -294,7 +290,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             {
                 grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
             }
-//       sout << grayScale << " "<<sendl;
+            //       sout << grayScale << " "<<sendl;
         }
         computeMaterialStiffness(mat,  this->f_youngModulus.getValue()*grayScale,this->f_poissonRatio.getValue());
 
@@ -315,7 +311,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             finerChildren = this->_sparseGrid->_virtualFinerLevels[this->_nbVirtualFinerLevels.getValue()-level]->_hierarchicalCubeMap[elementIndice];
         }
 
-//     serr<<finerChildren<<""<<sendl;
+        //     serr<<finerChildren<<""<<sendl;
         //Get the 8 points of the coarser Hexa
         for ( int i=0; i<8; ++i)
         {
@@ -449,8 +445,8 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-//   if(this->_sparseGrid )
-//     glDisable(GL_BLEND);
+    //   if(this->_sparseGrid )
+    //     glDisable(GL_BLEND);
 }
 
 } // namespace forcefield
@@ -459,4 +455,4 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_INL

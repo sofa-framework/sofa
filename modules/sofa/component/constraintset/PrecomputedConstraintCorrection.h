@@ -167,7 +167,7 @@ public:
 
 
 
-    /* optimization : buf of result = Compliance * VecConst on a sparse structure
+    /* optimization : buf of result = Compliance * MatrixDeriv on a sparse structure
     	typedef struct {
     		Deriv Cn;
     		int nodeId;

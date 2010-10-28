@@ -48,7 +48,6 @@ using namespace sofa::component::topology;
 template<class DataTypes>
 class OscillatingTorsionPressureForceField : public core::behavior::ForceField<DataTypes>
 {
-
 public:
 
     SOFA_CLASS(SOFA_TEMPLATE(OscillatingTorsionPressureForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
@@ -59,6 +58,8 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 protected:
 
@@ -120,9 +121,12 @@ public:
 
     virtual void init();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */, const core::MechanicalParams* mparams)
+    {
+        //TODO: remove this line (avoid warning message) ...
+        mparams->kFactor();
+    };
 
     // Handle topological changes
     virtual void handleTopologyChange();
@@ -181,6 +185,21 @@ protected :
 
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API OscillatingTorsionPressureForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API OscillatingTorsionPressureForceField<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
+
 
 } // namespace forcefield
 
@@ -188,4 +207,4 @@ protected :
 
 } // namespace sofa
 
-#endif /* _TRIANGLEPRESSUREFORCEFIELD_H_ */
+#endif // SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_H

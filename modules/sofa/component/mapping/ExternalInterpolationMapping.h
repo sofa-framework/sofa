@@ -25,10 +25,13 @@
 #ifndef SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_H
 #define SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.inl>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
 #include <sofa/helper/vector.h>
-#include <sofa/component/topology/PointSubset.h>
+
 
 namespace sofa
 {
@@ -44,14 +47,15 @@ namespace mapping
  * @class ExternalInterpolationMapping
  * @brief Compute the mapping of points based on a given interpolation table
  */
-template <class BasicMapping>
-class ExternalInterpolationMapping : public BasicMapping
+template <class TIn, class TOut>
+class ExternalInterpolationMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ExternalInterpolationMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(ExternalInterpolationMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
 
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
@@ -69,7 +73,7 @@ public:
     Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices;
     Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues;
 
-    ExternalInterpolationMapping(In* from, Out* to);
+    ExternalInterpolationMapping(core::State<In>* from, core::State<Out>* to);
 
     void clear(int /*reserve*/) {}
 
@@ -92,6 +96,44 @@ public:
 private:
     bool doNotMap;
 };
+
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec1fTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec2fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class ExternalInterpolationMapping< Vec3dTypes, Vec3dTypes >;
+extern template class ExternalInterpolationMapping< Vec2dTypes, Vec2dTypes >;
+extern template class ExternalInterpolationMapping< Vec1dTypes, Vec1dTypes >;
+extern template class ExternalInterpolationMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class ExternalInterpolationMapping< Vec2dTypes, ExtVec2fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class ExternalInterpolationMapping< Vec3fTypes, Vec3fTypes >;
+extern template class ExternalInterpolationMapping< Vec2fTypes, Vec2fTypes >;
+extern template class ExternalInterpolationMapping< Vec1fTypes, Vec1fTypes >;
+extern template class ExternalInterpolationMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class ExternalInterpolationMapping< Vec2fTypes, ExtVec2fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class ExternalInterpolationMapping< Vec3dTypes, Vec3fTypes >;
+extern template class ExternalInterpolationMapping< Vec3fTypes, Vec3dTypes >;
+extern template class ExternalInterpolationMapping< Vec2dTypes, Vec2fTypes >;
+extern template class ExternalInterpolationMapping< Vec2fTypes, Vec2dTypes >;
+extern template class ExternalInterpolationMapping< Vec1dTypes, Vec1fTypes >;
+extern template class ExternalInterpolationMapping< Vec1fTypes, Vec1dTypes >;
+#endif
+#endif
+#endif
 
 } // namespace mapping
 

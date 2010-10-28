@@ -54,14 +54,14 @@ int SphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere 
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SphereForceField<Vec3dTypes>;
-template class SphereForceField<Vec2dTypes>;
-template class SphereForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SphereForceField<Vec3fTypes>;
-template class SphereForceField<Vec2fTypes>;
-template class SphereForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<Vec1fTypes>;
 #endif
 
 } // namespace forcefield

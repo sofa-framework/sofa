@@ -40,7 +40,6 @@
 
 #include <vector>
 #include <fstream>
-#include <assert.h>
 
 namespace sofa
 {
@@ -71,21 +70,27 @@ class MechanicalObject : public MechanicalState<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MechanicalObject, DataTypes),SOFA_TEMPLATE(MechanicalState, DataTypes));
 
-    typedef MechanicalState<DataTypes> Inherited;
-    typedef typename Inherited::VecId VecId;
-    typedef typename Inherited::VMultiOp VMultiOp;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
-    typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
-    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
+    typedef MechanicalState<DataTypes>      Inherited;
+    typedef typename Inherited::VMultiOp    VMultiOp;
+    typedef typename DataTypes::Real        Real;
+    typedef typename DataTypes::Coord       Coord;
+    typedef typename DataTypes::Deriv       Deriv;
+    typedef typename DataTypes::VecCoord    VecCoord;
+    typedef typename DataTypes::VecDeriv    VecDeriv;
+    typedef typename DataTypes::MatrixDeriv						MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowConstIterator	MatrixDerivRowConstIterator;
+    typedef typename DataTypes::MatrixDeriv::ColConstIterator	MatrixDerivColConstIterator;
+    typedef typename DataTypes::MatrixDeriv::RowIterator		MatrixDerivRowIterator;
+    typedef typename DataTypes::MatrixDeriv::ColIterator		MatrixDerivColIterator;
 
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
+
+    using Inherited::getX;
+    using Inherited::getV;
+    using Inherited::getF;
+    using Inherited::getX0;
+    using Inherited::getN;
+    using Inherited::getDx;
 
     MechanicalObject();
 
@@ -102,13 +107,14 @@ public:
     Data< VecCoord > x;
     Data< VecDeriv > v;
     Data< VecDeriv > f;
-    Data< VecDeriv > internalForces;
     Data< VecDeriv > externalForces;
     Data< VecDeriv > dx;
     Data< VecCoord > xfree;
     Data< VecDeriv > vfree;
     Data< VecCoord > x0;
     Data< MatrixDeriv > c;
+    Data< VecCoord > reset_position;
+    Data< VecDeriv > reset_velocity;
 
     defaulttype::MapMapSparseMatrix< Deriv > c2;
 
@@ -116,29 +122,6 @@ public:
 
     Data< bool >	debugViewIndices;
     Data< float >	debugViewIndicesScale;
-
-    virtual VecCoord*		getX()				{ return getVecCoord(m_posId.index); }
-    virtual VecDeriv*		getV()				{ return getVecDeriv(m_velId.index); }
-    virtual VecDeriv*		getF()				{ return getVecDeriv(m_forceId.index); }
-    virtual VecDeriv*		getExternalForces()	{ return getVecDeriv(m_externalForcesId.index); }
-    virtual VecDeriv*		getDx()				{ return getVecDeriv(m_dxId.index); }
-    virtual MatrixDeriv*	getC()				{ return getMatrixDeriv(m_constraintId.index); }
-    virtual VecCoord*		getXfree()			{ return getVecCoord(m_freePosId.index); }
-    virtual VecDeriv*		getVfree()			{ return getVecDeriv(m_freeVelId.index); }
-    virtual VecCoord*		getX0()				{ return getVecCoord(m_x0Id.index); }
-    virtual VecCoord*		getXReset()			{ return reset_position; }
-
-    virtual const VecCoord*			getX()				const	{ return getVecCoord(m_posId.index); }
-    virtual const VecDeriv*			getV()				const	{ return getVecDeriv(m_velId.index); }
-    virtual const VecDeriv*			getF()				const	{ return getVecDeriv(m_forceId.index); }
-    virtual const VecDeriv*			getExternalForces() const	{ return getVecDeriv(m_externalForcesId.index); }
-    virtual const VecDeriv*			getDx()				const	{ return getVecDeriv(m_dxId.index); }
-    virtual const MatrixDeriv*		getC()				const	{ return getMatrixDeriv(m_constraintId.index);}
-    virtual const VecCoord*			getXfree()			const	{ return getVecCoord(m_freePosId.index); }
-    virtual const VecDeriv*			getVfree()			const	{ return getVecDeriv(m_freeVelId.index); }
-    virtual const VecCoord*			getX0()				const	{ return getVecCoord(m_x0Id.index); }
-    virtual const VecCoord*			getXReset()			const	{ return reset_position; }
-    virtual const VecDeriv*			getV0()				const	{ return v0;  }
 
     virtual void init();
     virtual void reinit();
@@ -156,7 +139,25 @@ public:
     virtual void writeF(std::ostream& out);
     virtual void writeDx(std::ostream& out);
 
+    virtual void writeVec(core::ConstVecId v, std::ostream &out);
+    virtual void readVec(core::VecId v, std::istream &in);
+    virtual double compareVec(core::ConstVecId v, std::istream &in);
+
     virtual void writeState( std::ostream& out );
+
+    /// @name New vectors access API based on VecId
+    /// @{
+
+    virtual Data< VecCoord >* write(core::VecCoordId v);
+    virtual const Data< VecCoord >* read(core::ConstVecCoordId v) const;
+
+    virtual Data< VecDeriv >* write(core::VecDerivId v);
+    virtual const Data< VecDeriv >* read(core::ConstVecDerivId v) const;
+
+    virtual Data< MatrixDeriv >* write(core::MatrixDerivId v);
+    virtual const Data< MatrixDeriv >* read(core::ConstMatrixDerivId v) const;
+
+    /// @}
 
     virtual void initGnuplot(const std::string path);
     virtual void exportGnuplot(Real time);
@@ -195,12 +196,7 @@ public:
      */
     void computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs);
 
-    /** \brief Compute the values attached to a new point.
-     *
-     */
-//	void computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x);
-
-    // Force the position of a point (and force its velocity to zero value)
+    /// Force the position of a point (and force its velocity to zero value)
     void forcePointPosition( const unsigned int i, const sofa::helper::vector< double >& m_x);
 
     /// @name Initial transformations application methods.
@@ -224,23 +220,27 @@ public:
     /// @name Base Matrices and Vectors Interface
     /// @{
 
-    /// Load local mechanical data stored in the state in a (possibly smaller) vector
-    virtual void loadInVector(defaulttype::BaseVector *, VecId , unsigned int);
+    /// Copy data to a global BaseVector the state stored in a local vector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void copyToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset);
 
-    /// Load local mechanical data stored in the state in a global BaseVector basically stored in solvers
-    virtual void loadInBaseVector(defaulttype::BaseVector *, VecId , unsigned int &);
+    /// Copy data to a local vector the state stored in a global BaseVector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset);
 
-    /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
-    virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &);
+    /// Add data to a global BaseVector from the state stored in a local vector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void addToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset);
 
-    /// Add data stored in a Vector (whose size is smaller or equal to the State vector)  to a local mechanical vector of the MechanicalState
-    virtual void addVectorToState(VecId , defaulttype::BaseVector *, unsigned int &);
+    /// Add data to a local vector the state stored in a global BaseVector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. Ti will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void addFromBaseVector(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset);
 
     /// @}
 
-    /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
+    /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
-    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id);
+    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id);
 
     void setFilename(std::string s) {filename.setValue(s);};
 
@@ -263,9 +263,6 @@ public:
 
     virtual void addDxToCollisionModel(void);
 
-    void setConstraintId(unsigned int);
-    sofa::helper::vector< unsigned int >& getConstraintId();
-
     /// Renumber the constraint ids with the given permutation vector
     void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering);
 
@@ -275,69 +272,61 @@ public:
 
     virtual void beginIntegration(Real dt);
 
-    virtual void endIntegration(Real dt);
+    virtual void endIntegration(Real dt, const core::ExecParams* params);
 
-    virtual void accumulateForce();
+    virtual void accumulateForce(const core::ExecParams* params);
 
-    VecCoord* getVecCoord(unsigned int index);
-    const VecCoord* getVecCoord(unsigned int index) const;
+    /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
+    virtual void vAvail(core::VecCoordId& v, const core::ExecParams* params);
+    /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
+    virtual void vAvail(core::VecDerivId& v, const core::ExecParams* params);
+    /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
+    //virtual void vAvail(core::MatrixDerivId& v);
 
-    VecDeriv* getVecDeriv(unsigned int index);
-    const VecDeriv* getVecDeriv(unsigned int index) const;
+    /// Allocate a new temporary vector
+    virtual void vAlloc(core::VecCoordId v, const core::ExecParams* params);
+    /// Allocate a new temporary vector
+    virtual void vAlloc(core::VecDerivId v, const core::ExecParams* params);
+    /// Allocate a new temporary vector
+    //virtual void vAlloc(core::MatrixDerivId v);
 
-    MatrixDeriv* getMatrixDeriv(unsigned int index);
-    const MatrixDeriv* getMatrixDeriv(unsigned int index) const;
+    /// Free a temporary vector
+    virtual void vFree(core::VecCoordId v, const core::ExecParams* params);
+    /// Free a temporary vector
+    virtual void vFree(core::VecDerivId v, const core::ExecParams* params);
+    /// Free a temporary vector
+    //virtual void vFree(core::MatrixDerivId v);
 
-    virtual void vAvail(VecId& v);
-
-    virtual void vAlloc(VecId v);
-
-    virtual void vFree(VecId v);
+    virtual void vOp(core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), double f=1.0, const core::ExecParams* params= core::ExecParams::defaultInstance());
 
 #ifdef SOFA_SMP
-    virtual void vOp(VecId , VecId  = VecId::null(), VecId  = VecId::null(), double =1.0,a1::Shared<double> * =NULL);
-    virtual void vOpMEq(VecId , VecId  = VecId::null(),a1::Shared<double> * =NULL);
-    virtual void vDot(a1::Shared<double> *,VecId , VecId );
+    virtual void vOp(core::VecId, core::ConstVecId, core::ConstVecId, double f, a1::Shared<double> *fSh, const core::ExecParams* params);
+    virtual void vOpMEq(core::VecId, core::ConstVecId  = core::ConstVecId::null(), a1::Shared<double> * =NULL, const core::ExecParams* params = core::ExecParams::defaultInstance());
+    virtual void vDot(a1::Shared<double> *, core::ConstVecId , core::ConstVecId, const core::ExecParams* params);
 #endif
-    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0);
 
-    virtual void vMultiOp(const VMultiOp& ops);
+    virtual void vMultiOp(const VMultiOp& ops, const core::ExecParams* params);
 
-    virtual void vThreshold( VecId a, double threshold );
+    virtual void vThreshold(core::VecId a, double threshold );
 
-    virtual double vDot(VecId a, VecId b);
+    virtual double vDot(core::ConstVecId a, core::ConstVecId b, const core::ExecParams* params);
 
-    virtual void setX(VecId v);
+    virtual void resetForce(const core::ExecParams* params);
 
-    virtual void setXfree(VecId v);
+    virtual void resetAcc(const core::ExecParams* params);
 
-    virtual void setVfree(VecId v);
-
-    virtual void setV(VecId v);
-
-    virtual void setF(VecId v);
-
-    virtual void setDx(VecId v);
-
-    virtual void setC(VecId v);
-
-    virtual void resetForce();
-
-    virtual void resetAcc();
-
-    virtual void resetConstraint();
-
-    virtual sofa::core::VecId getForceId() const { return m_forceId; }
-
+    virtual void resetConstraint(const core::ExecParams* params);
 
     /// @}
 
     /// @name Debug
     /// @{
-    virtual void printDOF( VecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const ;
-    virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
-    //
+
+    virtual void printDOF(core::ConstVecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const ;
+    virtual unsigned printDOFWithElapsedTime(core::VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
+
     void draw();
+
     /// @}
 
     // handle state changes
@@ -347,14 +336,9 @@ public:
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
     virtual bool pickParticles(double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
+            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles, const core::ExecParams* params);
 
 protected :
-
-    VecCoord* reset_position;
-    VecDeriv* v0;
-
-    sofa::helper::vector< unsigned int > constraintId;
 
     /// @name Initial geometric transformations
     /// @{
@@ -376,9 +360,9 @@ protected :
     /// @name Integration-related data
     /// @{
 
-    sofa::helper::vector< Data< VecCoord > * > vectorsCoord; ///< Coordinates DOFs vectors table (static and dynamic allocated)
-    sofa::helper::vector< Data< VecDeriv > * > vectorsDeriv; ///< Derivates DOFs vectors table (static and dynamic allocated)
-    sofa::helper::vector< Data< MatrixDeriv > * > vectorsMatrixDeriv; ///< Constraint vectors table
+    sofa::helper::vector< Data< VecCoord >		* > vectorsCoord;		///< Coordinates DOFs vectors table (static and dynamic allocated)
+    sofa::helper::vector< Data< VecDeriv >		* > vectorsDeriv;		///< Derivates DOFs vectors table (static and dynamic allocated)
+    sofa::helper::vector< Data< MatrixDeriv >	* > vectorsMatrixDeriv; ///< Constraint vectors table
 
     int vsize; ///< Number of elements to allocate in vectors
 
@@ -397,14 +381,9 @@ protected :
      */
     void setVecMatrixDeriv(unsigned int /*index*/, Data< MatrixDeriv> * /*mDeriv*/);
 
-#ifdef SOFA_SMP
-    sofa::helper::vector< bool > vectorsCoordSharedAllocated;
-    sofa::helper::vector< bool > vectorsDerivSharedAllocated;
-#endif
-
     /// @}
 
-    /// Given the number of a constraint Equation, find the index in the VecConst C, where the constraint is actually stored
+    /// Given the number of a constraint Equation, find the index in the MatrixDeriv C, where the constraint is actually stored
     // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
     MechanicalObjectInternalData<DataTypes> data;
@@ -417,17 +396,6 @@ protected :
     class Loader;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
-
-    sofa::core::VecId m_posId;
-    sofa::core::VecId m_velId;
-    sofa::core::VecId m_forceId;
-    sofa::core::VecId m_internalForcesId;
-    sofa::core::VecId m_externalForcesId;
-    sofa::core::VecId m_dxId;
-    sofa::core::VecId m_freePosId;
-    sofa::core::VecId m_freeVelId;
-    sofa::core::VecId m_x0Id;
-    sofa::core::VecId m_constraintId;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)

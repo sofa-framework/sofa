@@ -22,12 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_CPP
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.h>
+
 
 namespace sofa
 {
@@ -39,7 +38,6 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace core::behavior;
 
 SOFA_DECL_CLASS(SPHFluidSurfaceMapping)
 
@@ -47,45 +45,37 @@ SOFA_DECL_CLASS(SPHFluidSurfaceMapping)
 int SPHFluidSurfaceMappingClass = core::RegisterObject("TODO-SPHFluidSurfaceMappingClass")
         .addAlias("MarchingCubeMapping")
 #ifndef SOFA_FLOAT
-        .add< SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >()
-// .add< SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >()
-        .add< SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >()
+        .add< SPHFluidSurfaceMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< SPHFluidSurfaceMapping< Vec3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >()
-// .add< SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >()
-        .add< SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >()
+        .add< SPHFluidSurfaceMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< SPHFluidSurfaceMapping< Vec3fTypes, ExtVec3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >()
-        .add< SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >()
+        .add< SPHFluidSurfaceMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< SPHFluidSurfaceMapping< Vec3dTypes, Vec3fTypes > >()
 #endif
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
-// template class SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
-template class SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+template class SPHFluidSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+template class SPHFluidSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
-template class SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-// template class SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+template class SPHFluidSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+template class SPHFluidSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-template class SPHFluidSurfaceMapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+template class SPHFluidSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+template class SPHFluidSurfaceMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
-
-// Mech -> Mapped
-
-// Mech -> ExtMapped
 
 } // namespace mapping
 

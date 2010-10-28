@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
 
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -35,6 +36,10 @@ namespace component
 
 namespace interactionforcefield
 {
+
+using namespace sofa::core;
+
+
 
 template<class DataTypes>
 class RepulsiveSpringForceField : public sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>
@@ -52,6 +57,9 @@ public:
     typedef typename Inherit::Mat Mat;
     typedef typename Inherit::Spring Spring;
 
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
     enum { N = Inherit::N };
 public:
 
@@ -64,8 +72,11 @@ public:
     {
     }
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    virtual double getPotentialEnergy() const;
+    virtual void addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* mparams );
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+
+    virtual double getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const ;
+    ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy() const;
 };
 
 } // namespace interactionforcefield

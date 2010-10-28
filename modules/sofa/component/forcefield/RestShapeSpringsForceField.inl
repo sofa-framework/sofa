@@ -146,16 +146,19 @@ void RestShapeSpringsForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& )
+void RestShapeSpringsForceField<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */, const core::MechanicalParams* /* mparams */)
 {
     if (recomput_indices.getValue()) pp_0 = this->mstate->getX0();
 
-    VecCoord& p_0 = *pp_0;
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
+
+    const VecCoord* p_0 = pp_0;
 
     if (useRestMState)
-        p_0 = *restMState->getX();
+        p_0 = restMState->getX();
 
-    f.resize(p.size());
+    f1.resize(p1.size());
 
     if (recomput_indices.getValue())
     {
@@ -174,10 +177,10 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
             const unsigned int index = indices[i];
             const unsigned int ext_index = ext_indices[i];
 
-            Deriv dx = p[index] - p_0[ext_index];
-            Springs_dir[i] = p[index] - p_0[ext_index];
+            Deriv dx = p1[index] - (*p_0)[ext_index];
+            Springs_dir[i] = p1[index] - (*p_0)[ext_index];
             Springs_dir[i].normalize();
-            f[index] -=  dx * k[0] ;
+            f1[index] -=  dx * k[0] ;
 
             //	if (dx.norm()>0.00000001)
             //		std::cout<<"force on point "<<index<<std::endl;
@@ -193,10 +196,10 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
             const unsigned int index = indices[i];
             const unsigned int ext_index = ext_indices[i];
 
-            Deriv dx = p[index] - p_0[ext_index];
-            Springs_dir[i] = p[index] - p_0[ext_index];
+            Deriv dx = p1[index] - (*p_0)[ext_index];
+            Springs_dir[i] = p1[index] - (*p_0)[ext_index];
             Springs_dir[i].normalize();
-            f[index] -=  dx * k[index] ;
+            f1[index] -=  dx * k[index] ;
 
             //	if (dx.norm()>0.00000001)
             //		std::cout<<"force on point "<<index<<std::endl;
@@ -209,11 +212,15 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv &dx, double kFactor, double )
+void RestShapeSpringsForceField<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams)
 {
-//      remove to be able to build in parallel
-// 	const VecIndex& indices = points.getValue();
-// 	const VecReal& k = stiffness.getValue();
+    //  remove to be able to build in parallel
+    // 	const VecIndex& indices = points.getValue();
+    // 	const VecReal& k = stiffness.getValue();
+
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
+    double kFactor = mparams->kFactor();
 
     if (k.size()!= indices.size() )
     {
@@ -221,26 +228,30 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDer
 
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            df[indices[i]] -=  dx[indices[i]] * k[0] * kFactor;
+            df1[indices[i]] -=  dx1[indices[i]] * k[0] * kFactor;
         }
     }
     else
     {
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            //	df[ indices[i] ] -=  dx[indices[i]] * k[i] * kFactor ;
-            df[indices[i]] -=  dx[indices[i]] * k[indices[i]] * kFactor ;
+            df1[indices[i]] -=  dx1[indices[i]] * k[indices[i]] * kFactor ;
         }
     }
 }
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, double kFact, unsigned int &offset)
+void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams )
 {
-//      remove to be able to build in parallel
-// 	const VecIndex& indices = points.getValue();
-// 	const VecReal& k = stiffness.getValue();
+    //      remove to be able to build in parallel
+    // 	const VecIndex& indices = points.getValue();
+    // 	const VecReal& k = stiffness.getValue();
+
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    unsigned int offset = mref.offset;
+    double kFact = mparams->kFactor();
 
     const int N = Coord::total_size;
 
@@ -304,7 +315,7 @@ bool RestShapeSpringsForceField<DataTypes>::addBBox(double*, double* )
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_INL
 
 
 

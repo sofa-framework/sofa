@@ -36,7 +36,7 @@ namespace simulation
 Visitor::Result ParallelMechanicalVOpVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)
 {
 
-    mm->vOp(v,a,b,f,fSh);
+    mm->vOp(v.getId(mm), a.getId(mm), b.getId(mm), f, fSh,this->params);
     return RESULT_CONTINUE;
 }
 Visitor::Result ParallelMechanicalVOpVisitor::fwdMappedMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* )
@@ -49,7 +49,7 @@ Visitor::Result ParallelMechanicalVOpVisitor::fwdMappedMechanicalState(Node* /*n
 Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)
 {
 
-    mm->vOpMEq(v,a,fSh);
+    mm->vOpMEq(v.getId(mm), a.getId(mm), fSh, this->params);
 
     return RESULT_CONTINUE;
 }
@@ -63,7 +63,7 @@ Visitor::Result ParallelMechanicalVOpMecVisitor::fwdMappedMechanicalState(Node* 
 }
 Visitor::Result ParallelMechanicalVDotVisitor::fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm)
 {
-    mm->vDot(totalSh,a,b);
+    mm->vDot(totalSh, a.getId(mm), b.getId(mm), this->params);
     return RESULT_CONTINUE;
 }
 

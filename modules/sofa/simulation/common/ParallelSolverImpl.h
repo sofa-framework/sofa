@@ -48,8 +48,6 @@ namespace common
 class ParallelSolverImpl : public virtual sofa::simulation::SolverImpl
 {
 public:
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
-
     ParallelSolverImpl();
 
     virtual ~ParallelSolverImpl();
@@ -68,13 +66,13 @@ public:
     /// Note that currently all methods are blocking so finish simply return the result of the last v_dot call.
 
 
-    virtual void v_op(VecId v, VecId a, VecId b, Shared<double> &f); ///< v=a+b*f
+    virtual void v_op(core::VecId v, core::VecId a, core::VecId b, Shared<double> &f); ///< v=a+b*f
 
-    virtual void v_dot(Shared<double> &result,VecId a, VecId b); ///< a dot b
-    virtual void v_peq(VecId v, VecId a, Shared<double> &fSh, double f=1.0); ///< v+=f*a
-    virtual void v_peq(VecId v, VecId a, double f=1.0); ///< v+=f*a
+    virtual void v_dot(Shared<double> &result,core::VecId a, core::VecId b); ///< a dot b
+    virtual void v_peq(core::VecId v, core::VecId a, Shared<double> &fSh, double f=1.0); ///< v+=f*a
+    virtual void v_peq(core::VecId v, core::VecId a, double f=1.0); ///< v+=f*a
 
-    virtual void v_meq(VecId v, VecId a, Shared<double> &fSh); ///< v+=f*a
+    virtual void v_meq(core::VecId v, core::VecId a, Shared<double> &fSh); ///< v+=f*a
 
 
 

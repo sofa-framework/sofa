@@ -101,32 +101,33 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     {
         if(mState)
         {
+            helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
 
             if(buttonOmni)
             {
-                if ((*mState->getX0())[0].x() < -0.001)
-                    (*mState->getX0())[0].x() += 0.05;
+                if (x0[0].x() < -0.001)
+                    x0[0].x() += 0.05;
                 else
-                    (*mState->getX0())[0].x() =  -0.001;
+                    x0[0].x() =  -0.001;
 
-                if ((*mState->getX0())[1].x() > 0.001)
-                    (*mState->getX0())[1].x() -= 0.05;
+                if (x0[1].x() > 0.001)
+                    x0[1].x() -= 0.05;
                 else
-                    (*mState->getX0())[1].x() = 0.001;
+                    x0[1].x() = 0.001;
             }
             else
             {
                 //sout<<"mouseMode==Release"<<sendl;
 
-                if ((*mState->getX0())[0].x() > -0.3)
-                    (*mState->getX0())[0].x() -= 0.05;
+                if (x0[0].x() > -0.3)
+                    x0[0].x() -= 0.05;
                 else
-                    (*mState->getX0())[0].x() = -0.3;
+                    x0[0].x() = -0.3;
 
-                if ((*mState->getX0())[1].x() < 0.3)
-                    (*mState->getX0())[1].x() += 0.05;
+                if (x0[1].x() < 0.3)
+                    x0[1].x() += 0.05;
                 else
-                    (*mState->getX0())[1].x() = 0.3;
+                    x0[1].x() = 0.3;
 
             }
 
@@ -138,34 +139,35 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     {
         //if (mState)
         //{
+        //  helper::WriteAccessor<Data<VecCoord> > xfree = *mState->write(sofa::core::VecCoordId::restPosition());
         //	if (mouseMode==BtLeft || mouseMode==BtRight)
         //	{
         //			//sout<<"mouseMode==BtLeft"<<sendl;
 
-        //			if ((*mState->getX0())[0].x() < -0.01)
-        //				(*mState->getX0())[0].x() += 0.01;
+        //			if (x0[0].x() < -0.01)
+        //				x0[0].x() += 0.01;
         //			else
-        //				(*mState->getX0())[0].x() =  -0.01;
+        //				x0[0].x() =  -0.01;
         //
-        //			if ((*mState->getX0())[1].x() > 0.01)
-        //				(*mState->getX0())[1].x() -= 0.01;
+        //			if (x0[1].x() > 0.01)
+        //				x0[1].x() -= 0.01;
         //			else
-        //				(*mState->getX0())[1].x() = 0.01;
+        //				x0[1].x() = 0.01;
 
         //	}
         //	else
         //	{
         //			//sout<<"mouseMode==Release"<<sendl;
 
-        //			if ((*mState->getX0())[0].x() > -0.7)
-        //				(*mState->getX0())[0].x() -= 0.01;
+        //			if (x0[0].x() > -0.7)
+        //				x0[0].x() -= 0.01;
         //			else
-        //				(*mState->getX0())[0].x() = -0.7;
+        //				x0[0].x() = -0.7;
         //
-        //			if ((*mState->getX0())[1].x() < 0.7)
-        //				(*mState->getX0())[1].x() += 0.01;
+        //			if (x0[1].x() < 0.7)
+        //				x0[1].x() += 0.01;
         //			else
-        //				(*mState->getX0())[1].x() = 0.7;
+        //				x0[1].x() = 0.7;
 
         //	}
         //}
@@ -195,32 +197,33 @@ void MechanicalStateController<Vec1fTypes>::applyController()
     {
         if(mState)
         {
+            helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
 
             if(buttonOmni)
             {
-                if ((*mState->getX0())[0].x() < -0.001f)
-                    (*mState->getX0())[0].x() += 0.05f;
+                if (x0[0].x() < -0.001f)
+                    x0[0].x() += 0.05f;
                 else
-                    (*mState->getX0())[0].x() =  -0.001f;
+                    x0[0].x() =  -0.001f;
 
-                if ((*mState->getX0())[1].x() > 0.001f)
-                    (*mState->getX0())[1].x() -= 0.05f;
+                if (x0[1].x() > 0.001f)
+                    x0[1].x() -= 0.05f;
                 else
-                    (*mState->getX0())[1].x() = 0.001f;
+                    x0[1].x() = 0.001f;
             }
             else
             {
                 //sout<<"mouseMode==Release"<<sendl;
 
-                if ((*mState->getX0())[0].x() > -0.7f)
-                    (*mState->getX0())[0].x() -= 0.05f;
+                if (x0[0].x() > -0.7f)
+                    x0[0].x() -= 0.05f;
                 else
-                    (*mState->getX0())[0].x() = -0.7f;
+                    x0[0].x() = -0.7f;
 
-                if ((*mState->getX0())[1].x() < 0.7f)
-                    (*mState->getX0())[1].x() += 0.05f;
+                if (x0[1].x() < 0.7f)
+                    x0[1].x() += 0.05f;
                 else
-                    (*mState->getX0())[1].x() = 0.7f;
+                    x0[1].x() = 0.7f;
 
             }
 
@@ -236,30 +239,30 @@ void MechanicalStateController<Vec1fTypes>::applyController()
         //	{
         //			//sout<<"mouseMode==BtLeft"<<sendl;
 
-        //			if ((*mState->getX0())[0].x() < -0.01f)
-        //				(*mState->getX0())[0].x() += 0.01f;
+        //			if (x0[0].x() < -0.01f)
+        //				x0[0].x() += 0.01f;
         //			else
-        //				(*mState->getX0())[0].x() =  -0.01f;
+        //				x0[0].x() =  -0.01f;
         //
-        //			if ((*mState->getX0())[1].x() > 0.01f)
-        //				(*mState->getX0())[1].x() -= 0.01f;
+        //			if (x0[1].x() > 0.01f)
+        //				x0[1].x() -= 0.01f;
         //			else
-        //				(*mState->getX0())[1].x() = 0.01f;
+        //				x0[1].x() = 0.01f;
 
         //	}
         //	else
         //	{
         //			//sout<<"mouseMode==Release"<<sendl;
 
-        //			if ((*mState->getX0())[0].x() > -0.7f)
-        //				(*mState->getX0())[0].x() -= 0.01f;
+        //			if (x0[0].x() > -0.7f)
+        //				x0[0].x() -= 0.01f;
         //			else
-        //				(*mState->getX0())[0].x() = -0.7f;
+        //				x0[0].x() = -0.7f;
         //
-        //			if ((*mState->getX0())[1].x() < 0.7f)
-        //				(*mState->getX0())[1].x() += 0.01f;
+        //			if (x0[1].x() < 0.7f)
+        //				x0[1].x() += 0.01f;
         //			else
-        //				(*mState->getX0())[1].x() = 0.7f;
+        //				x0[1].x() = 0.7f;
 
         //	}
         //}

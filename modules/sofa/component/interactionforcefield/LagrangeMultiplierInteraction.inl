@@ -25,10 +25,10 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_LAGRANGEMULTIPLIERINTERACTION_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LAGRANGEMULTIPLIERINTERACTION_INL
 
-#include "LagrangeMultiplierInteraction.h"
+#include <sofa/component/interactionforcefield/LagrangeMultiplierInteraction.h>
 
 #include <sofa/component/linearsolver/FullVector.h>
-
+#include <sofa/helper/system/config.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/Node.h>
@@ -48,7 +48,7 @@ namespace interactionforcefield
 template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 {
-    core::behavior::InteractionForceField::init();
+    core::behavior::BaseInteractionForceField::init();
 
     core::objectmodel::BaseContext* test = this->getContext();
 
@@ -57,7 +57,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
 
     // nouveau mécanisme: plusieurs contraintes
-    simulation::FindByTypeVisitor< core::behavior::BaseConstraint > findConstraint;
+    simulation::FindByTypeVisitor< core::behavior::BaseConstraint > findConstraint(ExecParams::defaultInstance());
     findConstraint.execute(this->getContext());
     list_base_constraint = findConstraint.found;
 
@@ -80,7 +80,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
             list_constraint.push_back(sc);
         }
 
-        InteractionConstraint* ic= dynamic_cast<InteractionConstraint*> (bc);
+        BaseInteractionConstraint* ic= dynamic_cast<BaseInteractionConstraint*> (bc);
         if (ic != NULL)
         {
             // debug
@@ -95,7 +95,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
                 list_interaction_constraint.push_back(ic);
 
                 offset=0;
-                ic->getConstraintId(id, offset);
+                //	ic->getConstraintId(id, offset);
                 sout<< "constraint offset"<<offset<<sendl;
             }
         }
@@ -109,33 +109,37 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
 
 template<class DataTypes1, class DataTypes2>
-void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& violation, VecDeriv2& ,
-        const VecCoord1& , const VecCoord2& ,
-        const VecDeriv1& , const VecDeriv2& )
+void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(DataVecDeriv1& data_violation, DataVecDeriv2& /*data_f2*/,
+        const DataVecCoord1& /*data_lambda*/ , const DataVecCoord2& /*data_p2*/,
+        const DataVecDeriv1& , const DataVecDeriv2& /*data_v2*/,
+        const MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor< DataVecDeriv1 > violation = data_violation;
     using linearsolver::FullVector;
 
     unsigned int count=0;
 
     for (unsigned int i=0; i<list_interaction_constraint.size(); i++)
     {
-        list_interaction_constraint[i]->buildConstraintMatrix(count, core::VecId::position());
+        list_interaction_constraint[i]->buildConstraintMatrix(count, core::VecCoordId::position());
         sout<< "constraint count"<<count<<sendl;
     }
 
     unsigned int count1=0;
-    constraint->buildConstraintMatrix(count1, core::VecId::position());
+    constraint->buildConstraintMatrix(count1, core::VecCoordId::position());
 
 
     /// @TODO clear the MechanicalState of the lagrange Multiplier during Begin visitor
     // clear the mechanical state of lagrange Multiplier
     // should be done elsewhere //
-    VecCoord1& lambda= *this->mstate1->getX();
+    helper::WriteAccessor<Data<VecCoord1> > lambda = *this->mstate1->write(sofa::core::VecCoordId::position());
+    //VecCoord1& lambda= *this->mstate1->getX();
     unsigned int numLagMult = lambda.size();
     lambda.clear();
     lambda.resize(numLagMult);
     // clear the Velocity ? useful ?
-    VecDeriv1& Dlambda= *this->mstate1->getV();
+    helper::WriteAccessor<Data<VecDeriv1> > Dlambda = *this->mstate1->write(sofa::core::VecDerivId::velocity());
+    //VecDeriv1& Dlambda= *this->mstate1->getV();
     Dlambda.clear();
     Dlambda.resize(numLagMult);
 
@@ -145,7 +149,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     _violation.resize(numLagMult);
 
 //	constraint->getConstraintValue(&_violation, false);
-    constraint->getConstraintViolation(&_violation, core::VecId::position());
+    constraint->getConstraintViolation(&_violation, (VecId)core::VecCoordId::position());
     //sout<<"violation:" <<_violation[0] << " "<<_violation[1] << " "<<_violation[2] << " "<<sendl;
 
     for (unsigned int i=0; i<lambda.size(); i++)
@@ -154,24 +158,24 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     }
 }
 
-/*
-template<class DataTypes1, class DataTypes2>
-void LagranintgeMultiplierInteraction<DataTypes1, DataTypes2>::addForce2(VecDeriv1& f1, VecDeriv2& f2,
-																	  const VecCoord1& p1, const VecCoord2& p2,
-																	  const VecDeriv1& v1, const VecDeriv2& v2)
-{
-
-}
-*/
 
 template<class DataTypes1, class DataTypes2>
-void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1& dViolation, VecDeriv2& df2, const VecDeriv1& dLambda, const VecDeriv2& dx2)
+void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(DataVecDeriv1& data_dViolation, DataVecDeriv2& data_df2,
+        const DataVecDeriv1& data_dLambda, const DataVecDeriv2& data_dx2,
+        const MechanicalParams* mparams)
 {
+
+    helper::WriteAccessor< DataVecDeriv1 > dViolation = data_dViolation;
+    helper::WriteAccessor< DataVecDeriv2 > df2        = data_df2;
+    helper::ReadAccessor< DataVecDeriv1 >  dLambda    = data_dLambda;
+    helper::ReadAccessor< DataVecDeriv2 >  dx2        = data_dx2;
+
+
     using sofa::simulation::Node;
     //sout<<"addDForce : dLambda "<< dLambda << " -  dx2:" << dx2 <<sendl;
 
     Node *context = dynamic_cast< Node* >(this->getContext()); // access to current node (which is supposed to be the root)
-    sofa::simulation::MechanicalResetConstraintVisitor().execute(context);
+    sofa::simulation::MechanicalResetConstraintVisitor(mparams).execute(context);
 
     const MatrixDeriv2& c2 = *this->mstate2->getC();
 
@@ -199,26 +203,6 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
         i++;
         ++rowIt;
     }
-
-    //ConstraintIterator it;
-
-    //for (unsigned int i = 0; i < c2.size(); i++)
-    //{
-    //	SparseVecDeriv2 constraint = c2[i];
-
-    //	std::pair< ConstraintIterator, ConstraintIterator > iter = constraint.data();
-    //	//sout<<" i= "<<i <<"   constraint size= "<< constraint.size() <<sendl;
-    //	for (it=iter.first;it!=iter.second;it++)
-    //	{
-    //		//sout<<" constraint : i "<< constraint[j].index  << "  data"<< constraint[j].data << sendl;
-    //		/// @TODO : use the constraint ID
-    //		//Deriv2 dV0 = constraint[j].data * dx2[constraint[j].index];
-    //		unsigned int  index=it->first;
-    //		Deriv2 value=it->second;
-    //		dViolation[i].x() += value * dx2[index];
-    //		df2[index] += value * dLambda[i].x();
-    //	}
-    //}
 
     //sout<<"addDForce : dViolation "<< dViolation << " -  df2:" << df2 <<sendl;
 }

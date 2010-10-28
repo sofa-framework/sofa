@@ -22,23 +22,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALACTION_H
-#define SOFA_SIMULATION_MECHANICALACTION_H
+#ifndef SOFA_SIMULATION_MECHANICALVISITOR_H
+#define SOFA_SIMULATION_MECHANICALVISITOR_H
 #define SOFA_SUPPORT_MAPPED_MASS
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/VecId.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/InteractionForceField.h>
-#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #ifdef SOFA_HAVE_EIGEN2
 //TO REMOVE ONCE THE CONVERGENCE IS DONE
@@ -60,20 +62,22 @@ namespace simulation
 using std::cerr;
 using std::endl;
 
+using namespace sofa::core;
 using namespace sofa::defaulttype;
 
 typedef std::map<core::objectmodel::BaseContext*, double> MultiNodeDataMap;
 
 /** Base class for easily creating new actions for mechanical simulation.
 
-During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
-
-During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
-
-The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
+During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node.
+Each component attached to this node is processed using the appropriate method, prefixed by fwd.
+During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node.
+Each component attached to this node is processed using the appropriate method, prefixed by bwd.
+The default behavior of the fwd* and bwd* is to do nothing.
+Derived actions typically overload these methods to implement the desired processing.
 
 */
-class SOFA_SIMULATION_COMMON_API MechanicalVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API BaseMechanicalVisitor : public Visitor
 {
 
 protected:
@@ -98,9 +102,12 @@ protected:
 
 public:
 
-    MechanicalVisitor() : prefetching(false), root(NULL), rootData(NULL), nodeMap(NULL) {}
+    BaseMechanicalVisitor(const core::ExecParams* params)
+        : Visitor(params)
+        , prefetching(false), root(NULL), rootData(NULL), nodeMap(NULL)
+    {}
 
-    MechanicalVisitor& setNodeMap(MultiNodeDataMap* m) { nodeMap = m; return *this; }
+    BaseMechanicalVisitor& setNodeMap(MultiNodeDataMap* m) { nodeMap = m; return *this; }
 
     MultiNodeDataMap* getNodeMap() { return nodeMap; }
 
@@ -136,7 +143,6 @@ public:
     //virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch) { Visitor::execute(node, doPrefetch); }
     //virtual void execute(core::objectmodel::BaseContext* node) { Visitor::execute(node, true); }
 
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -147,7 +153,7 @@ public:
     Method processNodeTopDown(simulation::Node*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
     When there is no mapping, the BaseMechanicalState is processed first using method fwdMechanicalState.
     Then, the other fwd* methods are applied in the given order.
-     */
+    */
     ///@{
 
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
@@ -182,13 +188,13 @@ public:
     }
 
     /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(VisitorContext* ctx, core::behavior::BaseMechanicalMapping* map)
+    virtual Result fwdMechanicalMapping(VisitorContext* ctx, core::BaseMapping* map)
     {
         return fwdMechanicalMapping(ctx->node, map);
     }
@@ -243,13 +249,13 @@ public:
     }
 
     /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::InteractionForceField* ff)
+    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff)
     {
         return fwdForceField(node, ff);
     }
 
     /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(VisitorContext* ctx, core::behavior::InteractionForceField* ff)
+    virtual Result fwdInteractionForceField(VisitorContext* ctx, core::behavior::BaseInteractionForceField* ff)
     {
         return fwdInteractionForceField(ctx->node, ff);
     }
@@ -279,25 +285,25 @@ public:
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionProjectiveConstraintSet(simulation::Node* node, core::behavior::InteractionProjectiveConstraintSet* c)
+    virtual Result fwdInteractionProjectiveConstraintSet(simulation::Node* node, core::behavior::BaseInteractionProjectiveConstraintSet* c)
     {
         return fwdInteractionProjectiveConstraintSet(node, c);
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(simulation::Node* node, core::behavior::InteractionConstraint* c)
+    virtual Result fwdInteractionConstraint(simulation::Node* node, core::behavior::BaseInteractionConstraint* c)
     {
         return fwdInteractionConstraint(node, c);
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::InteractionProjectiveConstraintSet* c)
+    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c)
     {
         return fwdProjectiveConstraintSet(ctx->node, c);
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::InteractionConstraint* c)
+    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c)
     {
         return fwdConstraintSet(ctx->node, c);
     }
@@ -310,7 +316,7 @@ public:
     When there is a mapping, method bwdMappedMechanicalState is applied to the BaseMechanicalState.
     When there is no mapping, the BaseMechanicalState is processed using method bwdMechanicalState.
     Finally, the mapping (if any) is processed using method bwdMechanicalMapping.
-     */
+    */
     ///@{
 
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
@@ -337,11 +343,11 @@ public:
     { bwdMappedMechanicalState(ctx->node, mm); }
 
     /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {}
 
     /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(VisitorContext* ctx, core::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(VisitorContext* ctx, core::BaseMapping* map)
     { bwdMechanicalMapping(ctx->node, map); }
 
     /// Process the OdeSolver
@@ -386,9 +392,9 @@ public:
         return "animate";
     }
 
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
     {
-        return !map->isMechanical();
+        return !map->areForcesMapped();
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -397,25 +403,40 @@ public:
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setReadWriteVectors()=0;
-    virtual void addReadVector(VecId &id) {readVector.push_back(id);}
-    virtual void addWriteVector(VecId &id) {writeVector.push_back(id);}
-    virtual void addReadWriteVector(VecId &id) {readVector.push_back(id); writeVector.push_back(id);}
+    virtual void setReadWriteVectors() {}
+    virtual void addReadVector(ConstMultiVecId id) {  readVector.push_back(id);  }
+    virtual void addWriteVector(MultiVecId id) {  writeVector.push_back(id);  }
+    virtual void addReadWriteVector(MultiVecId id) {  readVector.push_back(ConstMultiVecId(id)); writeVector.push_back(id);  }
     void printReadVectors(core::behavior::BaseMechanicalState* mm);
     void printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
     void printWriteVectors(core::behavior::BaseMechanicalState* mm);
     void printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
 protected:
-    sofa::helper::vector< VecId > readVector;
-    sofa::helper::vector< VecId > writeVector;
+    sofa::helper::vector< ConstMultiVecId > readVector;
+    sofa::helper::vector< MultiVecId > writeVector;
 #endif
+};
+
+class SOFA_SIMULATION_COMMON_API MechanicalVisitor : public BaseMechanicalVisitor
+{
+
+protected:
+    const core::MechanicalParams* mparams;
+
+public:
+
+    MechanicalVisitor(const core::MechanicalParams* m_mparams)
+        : BaseMechanicalVisitor(m_mparams)
+        , mparams(m_mparams)
+    {}
 };
 
 /** Compute the total number of DOFs */
 class SOFA_SIMULATION_COMMON_API MechanicalGetDimensionVisitor : public MechanicalVisitor
 {
 public:
-    MechanicalGetDimensionVisitor(double* result)
+    MechanicalGetDimensionVisitor(double* result, const core::MechanicalParams* mparams)
+        : MechanicalVisitor(mparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -443,11 +464,17 @@ public:
 
 /** Find the first available index for a VecId
 */
-class SOFA_SIMULATION_COMMON_API MechanicalVAvailVisitor : public MechanicalVisitor
+template <VecType vtype>
+class SOFA_SIMULATION_COMMON_API MechanicalVAvailVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId& v;
-    MechanicalVAvailVisitor(VecId& v) : v(v)
+    typedef sofa::core::TVecId<vtype,V_WRITE> MyVecId;
+    typedef sofa::core::TMultiVecId<vtype,V_WRITE> MyMultiVecId;
+    typedef std::set<sofa::core::BaseState*> StateSet;
+    MyVecId& v;
+    StateSet states;
+    MechanicalVAvailVisitor( MyVecId& v, const core::ExecParams* params)
+        : BaseMechanicalVisitor(params), v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -467,18 +494,22 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadWriteVector(v);
+        MyMultiVecId mv(v);
+        addReadWriteVector( mv );
     }
 #endif
 };
 
 /** Reserve an auxiliary vector identified by a symbolic constant.
 */
-class SOFA_SIMULATION_COMMON_API MechanicalVAllocVisitor : public MechanicalVisitor
+template <VecType vtype>
+class SOFA_SIMULATION_COMMON_API MechanicalVAllocVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId v;
-    MechanicalVAllocVisitor(VecId v) : v(v)
+    typedef sofa::core::TMultiVecId<vtype, V_WRITE> MyMultiVecId;
+    MyMultiVecId v;
+    MechanicalVAllocVisitor( MyMultiVecId v, const core::ExecParams* params )
+        : BaseMechanicalVisitor(params) , v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -504,11 +535,14 @@ public:
 };
 
 /** Free an auxiliary vector identified by a symbolic constant */
-class SOFA_SIMULATION_COMMON_API MechanicalVFreeVisitor : public MechanicalVisitor
+template< VecType vtype >
+class SOFA_SIMULATION_COMMON_API MechanicalVFreeVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId v;
-    MechanicalVFreeVisitor(VecId v) : v(v)
+    typedef sofa::core::TMultiVecId<vtype,V_WRITE> MyMultiVecId;
+    MyMultiVecId v;
+    MechanicalVFreeVisitor( MyMultiVecId v, const sofa::core::ExecParams* params)
+        : BaseMechanicalVisitor(params) , v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -534,20 +568,23 @@ public:
 
 /** Perform a vector operation v=a+b*f
 */
-class SOFA_SIMULATION_COMMON_API MechanicalVOpVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalVOpVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId v;
-    VecId a;
-    VecId b;
+    MultiVecId v;
+    ConstMultiVecId a;
+    ConstMultiVecId b;
     double f;
-    MechanicalVOpVisitor(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0)
-        : v(v), a(a), b(b), f(f)
+    bool mapped;
+    MechanicalVOpVisitor(MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(), ConstMultiVecId b = ConstMultiVecId::null(), double f=1.0, const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(params) , v(v), a(a), b(b), f(f), mapped(false)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
+
+    MechanicalVOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
 
     virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
@@ -564,11 +601,11 @@ public:
         out << "f["<<f<<"]";
         fLabel+= out.str();
 
-        if (a != VecId::null())
+        if (!a.isNull())
         {
             info+="a";
             aLabel="a[" + a.getName() + "] ";
-            if (b != VecId::null() )
+            if (!b.isNull())
             {
                 info += "+b*f";
                 bLabel += "b[" + b.getName() + "] ";
@@ -576,7 +613,7 @@ public:
         }
         else
         {
-            if (b != VecId::null())
+            if (!b.isNull())
             {
                 info += "b*f";
                 bLabel += "b[" + b.getName() + "] ";
@@ -603,31 +640,34 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        if (a!=VecId::null()) addReadVector(a);
-        if (b!=VecId::null()) addReadVector(b);
+        addReadVector(a);
+        addReadVector(b);
         addWriteVector(v);
     }
 #endif
 };
 
 /** Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})
- *
- *  This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
- *  Note that if the result vector appears inside the expression, it must be the first operand.
- */
-class SOFA_SIMULATION_COMMON_API MechanicalVMultiOpVisitor : public MechanicalVisitor
+*
+*  This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
+*  Note that if the result vector appears inside the expression, it must be the first operand.
+*/
+class SOFA_SIMULATION_COMMON_API MechanicalVMultiOpVisitor : public BaseMechanicalVisitor
 {
 public:
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-//     MechanicalVMultiOpVisitor()
-//     {}
-    MechanicalVMultiOpVisitor(const VMultiOp& o)
-        : ops(o)
+    bool mapped;
+    //     MechanicalVMultiOpVisitor()
+    //     {}
+    MechanicalVMultiOpVisitor(const VMultiOp& o, const sofa::core::ExecParams* params)
+        : BaseMechanicalVisitor(params), mapped(false), ops(o)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
+
+    MechanicalVMultiOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
 
     virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm);
@@ -635,6 +675,57 @@ public:
     //virtual void processNodeBottomUp(simulation::Node* node);
 
     virtual const char* getClassName() const { return "MechanicalVMultiOpVisitor"; }
+    virtual std::string getInfos() const
+    {
+        std::ostringstream out;
+        for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
+        {
+            if (it != ops.begin())
+                out << " ;   ";
+            core::MultiVecId r = it->first;
+            out << r.getName();
+            const helper::vector< std::pair< core::ConstMultiVecId, double > >& operands = it->second;
+            int nop = operands.size();
+            if (nop==0)
+            {
+                out << " = 0";
+            }
+            else if (nop==1)
+            {
+                if (operands[0].first.getName() == r.getName())
+                    out << " *= " << operands[0].second;
+                else
+                {
+                    out << " = " << operands[0].first.getName();
+                    if (operands[0].second != 1.0)
+                        out << "*"<<operands[0].second;
+                }
+            }
+            else
+            {
+                int i;
+                if (operands[0].first.getName() == r.getName() && operands[0].second == 1.0)
+                {
+                    out << " +=";
+                    i = 1;
+                }
+                else
+                {
+                    out << " =";
+                    i = 0;
+                }
+                for (; i<nop; ++i)
+                {
+                    out << " " << operands[i].first.getName();
+                    if (operands[i].second != 1.0)
+                        out << "*"<<operands[i].second;
+                    if (i < nop-1)
+                        out << " +";
+                }
+            }
+        }
+        return out.str();
+    }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -669,12 +760,13 @@ protected:
 };
 
 /** Compute the dot product of two vectors */
-class SOFA_SIMULATION_COMMON_API MechanicalVDotVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalVDotVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId a;
-    VecId b;
-    MechanicalVDotVisitor(VecId a, VecId b, double* t) : a(a), b(b) //, total(t)
+    ConstMultiVecId a;
+    ConstMultiVecId b;
+    MechanicalVDotVisitor(ConstMultiVecId a, ConstMultiVecId b, double* t, const sofa::core::ExecParams* params)
+        : BaseMechanicalVisitor(params) , a(a), b(b) //, total(t)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -716,30 +808,32 @@ public:
 This action does not modify the state (i.e. positions and velocities) of the objects.
 It is typically applied before a MechanicalComputeDfVisitor, in order to compute the df corresponding to a given dx (i.e. apply stiffness).
 Dx is propagated to all the layers through the mappings.
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateDxVisitor : public MechanicalVisitor
 {
 public:
-    VecId dx;
+    MultiVecDerivId dx;
+
     bool ignoreMask;
     bool ignoreFlag;
-    MechanicalPropagateDxVisitor(VecId dx, bool m, bool f = false) : dx(dx), ignoreMask(m), ignoreFlag(f)
+    MechanicalPropagateDxVisitor( MultiVecDerivId dx, bool m, bool f = false, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+        : MechanicalVisitor(mparams) , dx(dx), ignoreMask(m), ignoreFlag(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
     {
         if (ignoreFlag)
             return false;
         else
-            return !map->isMechanical();
+            return !map->areForcesMapped();
     }
 
     /// Return a class name for this visitor
@@ -757,31 +851,32 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(dx);
+        addReadWriteVector(dx);
     }
 #endif
 };
 
 /** V is propagated to all the layers through the mappings.
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateVVisitor : public MechanicalVisitor
 {
 public:
-    VecId v;
+    MultiVecDerivId v;
     bool ignoreMask;
 
-    MechanicalPropagateVVisitor(VecId _v, bool m) : v(_v), ignoreMask(m)
+    MechanicalPropagateVVisitor(const sofa::core::MechanicalParams* mparams , MultiVecDerivId _v, bool m)
+        : MechanicalVisitor(mparams) , v(_v), ignoreMask(m)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -801,21 +896,22 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(v);
+        addReadWriteVector(v);
     }
 #endif
 };
 
 
 /** Same as MechanicalPropagateDxVisitor followed by MechanicalResetForceVisitor
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateDxAndResetForceVisitor : public MechanicalVisitor
 {
 public:
-    VecId dx,f;
+    MultiVecDerivId dx,f;
     bool ignoreMask;
 
-    MechanicalPropagateDxAndResetForceVisitor(VecId dx, VecId f, bool m) : dx(dx), f(f), ignoreMask(m)
+    MechanicalPropagateDxAndResetForceVisitor(MultiVecDerivId dx, MultiVecDerivId f, bool m, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance())
+        : MechanicalVisitor(mparams) , dx(dx), f(f), ignoreMask(m)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -823,7 +919,7 @@ public:
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
@@ -839,8 +935,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(dx);
-        addReadVector(f);
+        addReadWriteVector(dx);
+        addWriteVector(f);
     }
 #endif
 };
@@ -849,17 +945,18 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateXVisitor : public MechanicalVisitor
 {
 public:
-    VecId x;
+    MultiVecCoordId x;
     bool ignoreMask;
 
-    MechanicalPropagateXVisitor(VecId x, bool m) : x(x), ignoreMask(m)
+    MechanicalPropagateXVisitor( MultiVecCoordId x, bool m, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+        : MechanicalVisitor(mparams) , x(x), ignoreMask(m)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -878,25 +975,27 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(x);
+        addReadWriteVector(x);
     }
 #endif
 };
 
 
 /** Same as MechanicalPropagateXVisitor followed by MechanicalResetForceVisitor
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateXAndResetForceVisitor : public MechanicalVisitor
 {
 public:
-    VecId x,f;
+    MultiVecCoordId x;
+    MultiVecDerivId f;
     bool ignoreMask;
 
-    MechanicalPropagateXAndResetForceVisitor(VecId x, VecId f, bool m) : x(x), f(f), ignoreMask(m)
+    MechanicalPropagateXAndResetForceVisitor(MultiVecCoordId x, MultiVecDerivId f, bool m, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance())
+        : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
@@ -911,8 +1010,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(x);
-        addReadWriteVector(f);
+        addReadWriteVector(x);
+        addWriteVector(f);
     }
 #endif
 };
@@ -922,10 +1021,11 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateAndAddDxVisitor : public MechanicalVisitor
 {
 public:
-    VecId dx, v;
+    MultiVecDerivId dx, v;
     bool ignoreMask;
 
-    MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx(), VecId v =VecId::velocity(), bool m=true) : dx(dx) , v(v),ignoreMask(m)
+    MechanicalPropagateAndAddDxVisitor(const sofa::core::MechanicalParams* mparams , MultiVecDerivId dx = VecDerivId::dx(), MultiVecDerivId v =VecDerivId::velocity(), bool m=true)
+        : MechanicalVisitor(mparams) , dx(dx) , v(v),ignoreMask(m)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -938,12 +1038,12 @@ public:
     virtual std::string getInfos() const { std::string name= "["+dx.getName()+"]"; return name; }
 
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -956,7 +1056,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(v);
+        addReadWriteVector(v);
         addReadWriteVector(dx);
     }
 #endif
@@ -970,11 +1070,11 @@ Note that if a dx vector is given, it is used and propagated by the mappings, Ot
 class SOFA_SIMULATION_COMMON_API MechanicalAddMDxVisitor : public MechanicalVisitor
 {
 public:
-    VecId res;
-    VecId dx;
+    MultiVecDerivId res;
+    MultiVecDerivId dx;
     double factor;
-    MechanicalAddMDxVisitor(VecId res, VecId dx=VecId(), double factor = 1.0)
-        : res(res), dx(dx), factor(factor)
+    MechanicalAddMDxVisitor(MultiVecDerivId res, MultiVecDerivId dx, double factor, const sofa::core::MechanicalParams* mparams)
+        : MechanicalVisitor(mparams), res(res), dx(dx), factor(factor)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -989,11 +1089,11 @@ public:
     virtual std::string getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
 #else
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
 #endif
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
@@ -1009,7 +1109,7 @@ public:
         addReadVector(res);
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-        if (dx != VecId::null()) addReadWriteVector(dx);
+        if (!dx.isNull()) addReadWriteVector(dx);
         else addReadVector(dx);
 #else
         addReadVector(dx);
@@ -1019,13 +1119,14 @@ public:
 };
 
 /** Compute accelerations generated by given forces
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalAccFromFVisitor : public MechanicalVisitor
 {
 public:
-    VecId a;
-    VecId f;
-    MechanicalAccFromFVisitor(VecId a, VecId f) : a(a), f(f)
+    MultiVecDerivId a;
+    //ConstMultiVecDerivId f; // in MechanicalParams
+    MechanicalAccFromFVisitor(MultiVecDerivId a, const sofa::core::MechanicalParams* mparams)
+        : MechanicalVisitor(mparams), a(a) //, f(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1037,7 +1138,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAccFromFVisitor"; }
-    virtual std::string getInfos() const { std::string name="a["+a.getName()+"] f["+f.getName()+"]"; return name; }
+    virtual std::string getInfos() const { std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1048,7 +1149,7 @@ public:
     void setReadWriteVectors()
     {
         addWriteVector(a);
-        addReadVector(f);
+        addReadVector(mparams->f());
     }
 #endif
 };
@@ -1056,15 +1157,17 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalProjectJacobianMatrixVisitor : public MechanicalVisitor
 {
 public:
+    MultiMatrixDerivId cId;
     double t;
-    MechanicalProjectJacobianMatrixVisitor(double time=0) : t(time)
+    MechanicalProjectJacobianMatrixVisitor(const sofa::core::MechanicalParams* mparams, MultiMatrixDerivId c = MatrixDerivId::holonomicC(), double time = 0.0)
+        : MechanicalVisitor(mparams), cId(c), t(time)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
 
 
@@ -1087,15 +1190,16 @@ class SOFA_SIMULATION_COMMON_API MechanicalProjectVelocityVisitor : public Mecha
 {
 public:
     double t;
-    VecId vel;
-    MechanicalProjectVelocityVisitor(double time=0, VecId v = VecId::velocity()) : t(time),vel(v)
+    MultiVecDerivId vel;
+    MechanicalProjectVelocityVisitor(const sofa::core::MechanicalParams* mparams , double time=0, MultiVecDerivId v = VecDerivId::velocity())
+        : MechanicalVisitor(mparams) , t(time),vel(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
 
 
@@ -1114,7 +1218,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(vel);
+        addReadWriteVector(vel);
     }
 #endif
 };
@@ -1123,15 +1227,16 @@ class SOFA_SIMULATION_COMMON_API MechanicalProjectPositionVisitor : public Mecha
 {
 public:
     double t;
-    VecId pos;
-    MechanicalProjectPositionVisitor(double time=0, VecId x = VecId::position()) : t(time), pos(x)
+    MultiVecCoordId pos;
+    MechanicalProjectPositionVisitor(const sofa::core::MechanicalParams* mparams , double time=0, MultiVecCoordId x = VecCoordId::position())
+        : MechanicalVisitor(mparams) , t(time), pos(x)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
 
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
 
 
@@ -1150,30 +1255,30 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(pos);
+        addReadWriteVector(pos);
     }
 #endif
 };
 
 /** Propagate positions  to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalPropagatePositionVisitor : public MechanicalVisitor
 {
 public:
     double t;
-    VecId x;
+    MultiVecCoordId x;
     bool ignoreMask;
 
-    MechanicalPropagatePositionVisitor(double time=0, VecId x = VecId::position(), bool m=true);
+    MechanicalPropagatePositionVisitor( double time=0, MultiVecCoordId x = VecCoordId::position(), bool m=true, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance());
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1197,7 +1302,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(x);
+        addReadWriteVector(x);
     }
 #endif
 };
@@ -1205,30 +1310,35 @@ public:
 At each level, the mappings form the parent to the child is applied.
 After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
 This action is typically applied after time integration of the independent degrees of freedom.
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalPropagatePositionAndVelocityVisitor : public MechanicalVisitor
 {
 public:
     double t;
-    VecId x;
-    VecId v;
+    MultiVecCoordId x;
+    MultiVecDerivId v;
 
+    MechanicalPropagatePositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams);
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
-    VecId a;
-    MechanicalPropagatePositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity(), VecId a = VecId::dx(), bool m=true); //
+    MultiVecDerivId a;
+    MechanicalPropagatePositionAndVelocityVisitor(double time=0,
+            MultiVecCoordId x = VecCoordId::position(), MultiVecDerivId v = VecDerivId::velocity(),
+            MultiVecDerivId a = VecDerivId::dx() , bool m=true,
+            const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance()); //
 #else
-    MechanicalPropagatePositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity(), bool m=true);
+    MechanicalPropagatePositionAndVelocityVisitor(double time=0, VecCoordId x = VecId::position(), VecDerivId v = VecId::velocity(),
+            bool m=true, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() );
 #endif
     bool ignoreMask;
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1246,29 +1356,33 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addReadVector(x);
-        addReadVector(v);
+        addReadWriteVector(x);
+        addReadWriteVector(v);
     }
 #endif
 };
 
 
 /**
- * @brief Visitor class used to set positions and velocities of the top level MechanicalStates of the hierarchy.
- */
+* @brief Visitor class used to set positions and velocities of the top level MechanicalStates of the hierarchy.
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalSetPositionAndVelocityVisitor : public MechanicalVisitor
 {
 public:
     double t;
-    VecId x;
-    VecId v;
+    MultiVecCoordId x;
+    MultiVecDerivId v;
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
-    VecId a;
-    MechanicalSetPositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity(), VecId a = VecId::dx()); //
+    MultiVecDerivId a;
+    MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
+            double time=0, MultiVecCoordId x = VecCoordId::position() ,
+            MultiVecDerivId v = VecDerivId::velocity() ,
+            MultiVecDerivId a = VecDerivId::dx()); //
 #else
-    MechanicalSetPositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity());
+    MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
+            double time=0, MultiVecCoordId x = VecCoordId::position(), MultiVecDerivId v = VecDerivId::velocity());
 #endif
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
@@ -1293,65 +1407,18 @@ public:
 };
 
 
-/** Propagate free positions to all the levels of the hierarchy.
-At each level, the mappings form the parent to the child is applied.
-After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
-This action is typically applied after time integration of the independent degrees of freedom.
- */
-class SOFA_SIMULATION_COMMON_API MechanicalPropagateFreePositionVisitor : public MechanicalVisitor
-{
-public:
-    double t;
-    VecId x;
-    VecId v;
-    bool ignoreMask;
-    MechanicalPropagateFreePositionVisitor(double time=0, VecId x = VecId::freePosition(), VecId v = VecId::freeVelocity(), bool m=true): t(time), x(x), v(v), ignoreMask(m)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateFreePositionVisitor";}
-    virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
-    {
-        return true;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addReadVector(x);
-        addReadVector(v);
-    }
-#endif
-};
-
 
 /** Reset the force in all the MechanicalModel
 This action is typically applied before accumulating all the forces.
- */
-class SOFA_SIMULATION_COMMON_API MechanicalResetForceVisitor : public MechanicalVisitor
+*/
+class SOFA_SIMULATION_COMMON_API MechanicalResetForceVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId res;
+    MultiVecDerivId res;
     bool onlyMapped;
 
-    MechanicalResetForceVisitor(VecId res, bool onlyMapped = false) : res(res), onlyMapped(onlyMapped)
+    MechanicalResetForceVisitor(MultiVecDerivId res, bool onlyMapped = false, const sofa::core::ExecParams* mparams = sofa::core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(mparams) , res(res), onlyMapped(onlyMapped)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1385,14 +1452,15 @@ public:
 
 /** Accumulate the forces (internal and interactions).
 This action is typically called after a MechanicalResetForceVisitor.
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalComputeForceVisitor : public MechanicalVisitor
 {
 public:
-    VecId res;
+    MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
-    MechanicalComputeForceVisitor(VecId res, bool accumulate = true) : res(res), accumulate(accumulate)
+    MechanicalComputeForceVisitor(MultiVecDerivId res, bool accumulate = true, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+        : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1401,7 +1469,7 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
 
@@ -1431,14 +1499,21 @@ public:
 
 /** Compute the variation of force corresponding to a variation of position.
 This action is typically called after a MechanicalPropagateDxVisitor.
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalComputeDfVisitor : public MechanicalVisitor
 {
 public:
-    VecId res;
-    bool useV;
+    MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
-    MechanicalComputeDfVisitor(VecId res, bool useV=false, bool accumulate=true) : res(res), useV(useV), accumulate(accumulate)
+    MechanicalComputeDfVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* mparams)
+        : MechanicalVisitor(mparams) , res(res), accumulate(true)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    MechanicalComputeDfVisitor(MultiVecDerivId res, bool accumulate, const sofa::core::MechanicalParams* mparams)
+        : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1447,7 +1522,7 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
@@ -1456,8 +1531,6 @@ public:
     virtual std::string getInfos() const
     {
         std::string name="["+res.getName()+"]";
-        if (useV) name+= " Using V";
-        else      name+= " Not Using V";
         if (accumulate) name+= " Accumulating";
         else            name+= " Not Accumulating";
         return name;
@@ -1485,14 +1558,19 @@ This action is typically called after a MechanicalPropagateDxAndResetForceVisito
 class SOFA_SIMULATION_COMMON_API MechanicalAddMBKdxVisitor : public MechanicalVisitor
 {
 public:
-    VecId res;
-    double mFactor;
-    double bFactor;
-    double kFactor;
-    bool useV;
+    MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
-    MechanicalAddMBKdxVisitor(VecId res, double mFactor, double bFactor, double kFactor, bool useV=false, bool accumulate = true)
-        : res(res), mFactor(mFactor), bFactor(bFactor), kFactor(kFactor), useV(useV), accumulate(accumulate)
+
+    MechanicalAddMBKdxVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* mparams)
+        : MechanicalVisitor(mparams) , res(res), accumulate(true)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    MechanicalAddMBKdxVisitor(MultiVecDerivId res, bool accumulate, const sofa::core::MechanicalParams* mparams)
+        : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1501,7 +1579,7 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
@@ -1522,11 +1600,12 @@ public:
 #endif
 };
 
-class SOFA_SIMULATION_COMMON_API MechanicalResetConstraintVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalResetConstraintVisitor : public BaseMechanicalVisitor
 {
 public:
     //VecId res;
-    MechanicalResetConstraintVisitor(/*VecId res*/) //: res(res)
+    MechanicalResetConstraintVisitor(const sofa::core::ExecParams* params)
+        : BaseMechanicalVisitor(params)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1538,7 +1617,7 @@ public:
     virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1565,11 +1644,11 @@ public:
 //{
 //public:
 //    MechanicalExpressJacobianVisitor(simulation::Node* n);
-//    virtual void bwdMechanicalMapping(simulation::Node* node, core::behavior::BaseMechanicalMapping* map);
+//    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
 //    virtual Result fwdLMConstraint(simulation::Node* node, core::behavior::BaseLMConstraint* c);
 
 //    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-//    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+//    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
 //    {
 //        return false; // !map->isMechanical();
 //    }
@@ -1600,7 +1679,7 @@ public:
 
 //  virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s);
 //    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-//  virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+//  virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
 //    {
 //        return false; // !map->isMechanical();
 //    }
@@ -1625,10 +1704,12 @@ public:
 //    bool isPositionChangeUpdateVelocity;
 //};
 
-class SOFA_SIMULATION_COMMON_API MechanicalWriteLMConstraint : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalWriteLMConstraint : public BaseMechanicalVisitor
 {
 public:
-    MechanicalWriteLMConstraint():offset(0)
+    MechanicalWriteLMConstraint(const sofa::core::ExecParams* params)
+        : BaseMechanicalVisitor(params)
+        , offset(0)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1637,7 +1718,7 @@ public:
 
     virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1648,11 +1729,11 @@ public:
     virtual std::string getInfos() const
     {
         std::string name;
-        if      (order == core::behavior::BaseLMConstraint::ACC)
+        if      (order == core::ConstraintParams::ACC)
             name= "["+VecId::dx().getName()+"]";
-        else if (order == core::behavior::BaseLMConstraint::VEL)
+        else if (order == core::ConstraintParams::VEL)
             name= "["+VecId::velocity().getName()+"]";
-        else if (order == core::behavior::BaseLMConstraint::POS)
+        else if (order == core::ConstraintParams::POS)
             name= "["+VecId::position().getName()+"]";
         return name;
     }
@@ -1662,8 +1743,8 @@ public:
     virtual const std::vector< core::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
     virtual unsigned int numConstraint() {return datasC.size();}
 
-    virtual void setOrder(core::behavior::BaseLMConstraint::ConstOrder i) {order=i;}
-    core::behavior::BaseLMConstraint::ConstOrder getOrder() const { return order; }
+    virtual void setOrder(core::ConstraintParams::ConstOrder i) {order=i;}
+    core::ConstraintParams::ConstOrder getOrder() const { return order; }
 
     virtual void setVecId(core::VecId i) {id=i;}
     core::VecId getVecId() const { return id; }
@@ -1680,7 +1761,7 @@ public:
 
 protected:
     unsigned int offset;
-    core::behavior::BaseLMConstraint::ConstOrder order;
+    core::ConstraintParams::ConstOrder order;
     core::VecId id;
     helper::vector< core::behavior::BaseLMConstraint *> datasC;
 
@@ -1688,11 +1769,14 @@ protected:
 
 #endif
 
-class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
 {
 public:
-    MechanicalAccumulateConstraint(unsigned int &_contactId, core::VecId pos=core::VecId::position())
-        :contactId(_contactId), position(pos)
+    MechanicalAccumulateConstraint(MultiMatrixDerivId _res, unsigned int &_contactId, const sofa::core::ConstraintParams* _cparams = sofa::core::ConstraintParams::defaultInstance())
+        : BaseMechanicalVisitor(cparams)
+        , res(_res)
+        , contactId(_contactId)
+        , cparams(_cparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1701,13 +1785,13 @@ public:
 
     virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
 
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+
+    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
-
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1717,6 +1801,7 @@ public:
     {
         return false;
     }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
@@ -1724,15 +1809,16 @@ public:
 #endif
 
 protected:
+    MultiMatrixDerivId res;
     unsigned int &contactId;
-    core::VecId position;
+    const sofa::core::ConstraintParams *cparams;
 };
 
 class SOFA_SIMULATION_COMMON_API MechanicalRenumberConstraint : public MechanicalVisitor
 {
 public:
-    MechanicalRenumberConstraint(const sofa::helper::vector<unsigned> &renumbering)
-        : renumbering(renumbering)
+    MechanicalRenumberConstraint(const sofa::core::MechanicalParams* mparams , const sofa::helper::vector<unsigned> &renumbering)
+        : MechanicalVisitor(mparams) , renumbering(renumbering)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1744,7 +1830,7 @@ public:
         return RESULT_PRUNE;
     }
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1774,9 +1860,10 @@ This works for simple independent constraints, like maintaining a fixed point.
 class SOFA_SIMULATION_COMMON_API MechanicalApplyConstraintsVisitor : public MechanicalVisitor
 {
 public:
-    VecId res;
+    MultiVecDerivId res;
     double **W;
-    MechanicalApplyConstraintsVisitor(VecId res, double **W = NULL) : res(res), W(W)
+    MechanicalApplyConstraintsVisitor(MultiVecDerivId res, double **W = NULL, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance())
+        : MechanicalVisitor(mparams) , res(res), W(W)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1786,7 +1873,7 @@ public:
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
     virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1811,12 +1898,12 @@ public:
 
 /** Visitor used to prepare a time integration step. Typically, does nothing.
 */
-class SOFA_SIMULATION_COMMON_API MechanicalBeginIntegrationVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalBeginIntegrationVisitor : public BaseMechanicalVisitor
 {
 public:
     double dt;
-    MechanicalBeginIntegrationVisitor (double dt)
-        : dt(dt)
+    MechanicalBeginIntegrationVisitor (double _dt, const sofa::core::ExecParams* _params)
+        : BaseMechanicalVisitor(_params) , dt(_dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1829,7 +1916,7 @@ public:
     virtual const char* getClassName() const { return "MechanicalBeginIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1848,12 +1935,12 @@ public:
 
 /** Visitor applied after a time step has been applied. Does typically nothing.
 */
-class SOFA_SIMULATION_COMMON_API MechanicalEndIntegrationVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalEndIntegrationVisitor : public BaseMechanicalVisitor
 {
 public:
     double dt;
-    MechanicalEndIntegrationVisitor (double dt)
-        : dt(dt)
+    MechanicalEndIntegrationVisitor (double _dt, const sofa::core::ExecParams* _params)
+        : BaseMechanicalVisitor(_params) , dt(_dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1867,7 +1954,7 @@ public:
     virtual const char* getClassName() const { return "MechanicalEndIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1886,19 +1973,19 @@ public:
 
 /** Visitor used to do a time integration step using OdeSolvers
 */
-class SOFA_SIMULATION_COMMON_API MechanicalIntegrationVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalIntegrationVisitor : public BaseMechanicalVisitor
 {
 public:
     double dt;
-    MechanicalIntegrationVisitor (double dt)
-        : dt(dt)
+    MechanicalIntegrationVisitor (double _dt, const sofa::core::ExecParams* m_params)
+        : BaseMechanicalVisitor(m_params) , dt(_dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
     virtual Result fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
-    virtual Result fwdInteractionForceField(simulation::Node*, core::behavior::InteractionForceField* obj);
+    virtual Result fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj);
     virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*obj*/)
     {
     }
@@ -1925,7 +2012,8 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalComputeComplianceVisitor : public MechanicalVisitor
 {
 public:
-    MechanicalComputeComplianceVisitor( double **W):_W(W)
+    MechanicalComputeComplianceVisitor(const sofa::core::MechanicalParams* m_mparams , double **W)
+        : MechanicalVisitor(m_mparams) , _W(W)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1934,7 +2022,7 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* /*map*/)
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
         return false; // !map->isMechanical();
     }
@@ -1955,12 +2043,13 @@ private:
 
 /** Accumulate only the contact forces computed in applyContactForce.
 This action is typically called after a MechanicalResetForceVisitor.
- */
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalComputeContactForceVisitor : public MechanicalVisitor
 {
 public:
-    VecId res;
-    MechanicalComputeContactForceVisitor(VecId res) : res(res)
+    MultiVecDerivId res;
+    MechanicalComputeContactForceVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() )
+        : MechanicalVisitor(mparams) , res(res)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1968,7 +2057,7 @@ public:
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1988,15 +2077,14 @@ public:
 };
 
 /** Add dt*mass*Gravity to the velocity
-	This is called if the mass wants to be added separately to the mm from the other forces
- */
+This is called if the mass wants to be added separately to the mm from the other forces
+*/
 class SOFA_SIMULATION_COMMON_API MechanicalAddSeparateGravityVisitor : public MechanicalVisitor
 {
 public:
-
-    double dt;
-    VecId res;
-    MechanicalAddSeparateGravityVisitor(double dt, VecId res) : dt(dt), res(res)
+    MultiVecDerivId res;
+    MechanicalAddSeparateGravityVisitor(MultiVecDerivId res, const sofa::core::MechanicalParams* m_mparams = sofa::core::MechanicalParams::defaultInstance() )
+        : MechanicalVisitor(m_mparams) , res(res)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -2019,23 +2107,23 @@ public:
 };
 
 /** Find mechanical particles hit by the given ray.
- *
- *  A mechanical particle is defined as a 2D or 3D, position or rigid DOF
- *  which is linked to the free mechanical DOFs by mechanical mappings
- */
-class SOFA_SIMULATION_COMMON_API MechanicalPickParticlesVisitor : public MechanicalVisitor
+*
+*  A mechanical particle is defined as a 2D or 3D, position or rigid DOF
+*  which is linked to the free mechanical DOFs by mechanical mappings
+*/
+class SOFA_SIMULATION_COMMON_API MechanicalPickParticlesVisitor : public BaseMechanicalVisitor
 {
 public:
     defaulttype::Vec3d rayOrigin, rayDirection;
     double radius0, dRadius;
     std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > particles;
-    MechanicalPickParticlesVisitor(const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0)
-        : rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr)
+    MechanicalPickParticlesVisitor(const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, const sofa::core::ExecParams* mparams = sofa::core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr)
     {
     }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
@@ -2048,6 +2136,14 @@ public:
     }
 #endif
 };
+#if defined(WIN32) && !defined(SOFA_BUILD_SIMULATION_COMMON)
+extern template class MechanicalVAvailVisitor<V_COORD>;
+extern template class MechanicalVAvailVisitor<V_DERIV>;
+extern template class MechanicalVAllocVisitor<V_COORD>;
+extern template class MechanicalVAllocVisitor<V_DERIV>;
+extern template class MechanicalVFreeVisitor<V_COORD>;
+extern template class MechanicalVFreeVisitor<V_DERIV>;
+#endif
 
 } // namespace simulation
 

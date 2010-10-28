@@ -47,11 +47,11 @@ Visitor::Result ResetVisitor::processNodeTopDown(simulation::Node* node)
     }
 
     {
-        if (!node->nodeInVisualGraph.empty()) node->nodeInVisualGraph->execute<ResetVisitor>();
+        if (!node->nodeInVisualGraph.empty()) node->nodeInVisualGraph->execute<ResetVisitor>(this->params);
         for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
         {
             simulation::Node *child=*itChild;
-            child->execute<ResetVisitor>();
+            child->execute<ResetVisitor>(this->params);
         }
     }
 
@@ -76,11 +76,11 @@ Visitor::Result StoreResetStateVisitor::processNodeTopDown(simulation::Node* nod
     }
 
     {
-        if (!node->nodeInVisualGraph.empty()) node->nodeInVisualGraph->execute<StoreResetStateVisitor>();
+        if (!node->nodeInVisualGraph.empty()) node->nodeInVisualGraph->execute<StoreResetStateVisitor>(this->params);
         for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
         {
             simulation::Node *child=*itChild;
-            child->execute<StoreResetStateVisitor>();
+            child->execute<StoreResetStateVisitor>(this->params);
         }
     }
     return RESULT_CONTINUE;

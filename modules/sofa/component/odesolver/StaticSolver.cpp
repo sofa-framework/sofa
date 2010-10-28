@@ -26,6 +26,9 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/StaticSolver.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -42,7 +45,7 @@ namespace component
 
 namespace odesolver
 {
-
+using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
@@ -53,22 +56,28 @@ StaticSolver::StaticSolver()
 {
 }
 
-void StaticSolver::solve(double dt)
+void StaticSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId /*vResult*/, const core::ExecParams* params)
 {
-    MultiVector b(this, VecId::V_DERIV);
-    MultiVector x(this, VecId::V_DERIV);
-    MultiVector pos(this, VecId::position());
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    //MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
+    //MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
-    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    MultiVecDeriv b(&vop);
+    MultiVecDeriv x(&vop);
+
+    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // compute the right-hand term of the equation system
-    this->computeForce(b);             // b = f0
-    this->projectResponse(b);         // b is projected to the constrained space
+    mop.computeForce(b);             // b = f0
+    mop.projectResponse(b);         // b is projected to the constrained space
     b.teq(-1);
 
     if( f_printLog.getValue() )
         serr<<"StaticSolver, f0 = "<< b <<sendl;
-    MultiMatrix matrix(this);
+    core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
     //matrix = MechanicalMatrix::K;
     matrix = MechanicalMatrix(massCoef.getValue(),dampingCoef.getValue(),stiffnessCoef.getValue());
 
@@ -84,12 +93,11 @@ void StaticSolver::solve(double dt)
 
     if( f_printLog.getValue() )
         serr<<"StaticSolver, solution = "<< x <<sendl;
-    pos.peq( x );
+    pos2.eq( pos, x );
 
-    solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
+    solveConstraint(dt,pos2,core::ConstraintParams::POS);
 
-
-    /*    serr<<"StaticSolver::solve, new pos = "<<pos<<sendl;*/
+    /*    serr<<"StaticSolver::solve, new pos = "<<pos2<<sendl;*/
 }
 
 int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")

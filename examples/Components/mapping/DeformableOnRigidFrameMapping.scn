@@ -28,19 +28,20 @@
 				<TetrahedronFEMForceField youngModulus="125" />
 				<BoxConstraint box="-1 -1 -1 1 1 1"/>
 				
-				<Node name="MappedModel" >
+				<Node name="DeformableMappedModel" >
 					<SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
-					<MechanicalObject  />
-					<DeformableOnRigidFrameMapping rootModel="../rigidframe" printLog="0"/>	
+					<MechanicalObject name="deformedMO" />
+					<DeformableOnRigidFrameMapping input1="@.." input2="@../../rigidframe" output="@deformedMO" printLog="0"/>	
 					
-					<Node name="TorusCollisLocal">
+					 <Node name="TorusCollisLocal">
 						<MeshLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
 						<Mesh />
-						<Triangle group="2"/>
+						
 						<MechanicalObject />
+						<Triangle group="2"/>
 						<BarycentricMapping/>
 						<PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" draw="1" />
-					</Node>	
+					</Node> 
 					
 					<Node name="Visu">
 						<OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray"   />

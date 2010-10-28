@@ -27,6 +27,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEFORCEFIELD_H
 #define SOFA_CORE_BEHAVIOR_BASEFORCEFIELD_H
 
+#include <sofa/core/core.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/BaseMatrix.h>
@@ -72,8 +75,18 @@ public:
     /// ForceField.
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ f += B v + K x $
-    virtual void addForce() = 0;
+    ///                          $ f += B v + K x $
+
+    /// \param mparams defines the state vectors to use for positions, velocities, forces: mparams->getX(), mparams->getV(), and mparams->getF(), respectively.
+    /// If mparams->energy() is true, compute and internally store the potential energy, which will be subsequently returned by method getPotentialEnergy()
+
+    /// K is the stiffness matrix (associated with forces which derive from a potential),
+    /// B is the damping matrix (associated with viscous forces),
+    /// Very often, at least one of these matrices is null.
+    /// \param mparams->getX() input vector of position
+    /// \param mparams->getV() input vector of velocity
+    /// \param fId output vector of forces
+    virtual void addForce(MultiVecDerivId fId , const MechanicalParams* mparams )=0;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -83,14 +96,14 @@ public:
     /// explicitly (i.e. using its value at the beginning of the timestep).
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K dx + bFactor B dx $
-    virtual void addDForce(double kFactor = 1.0, double bFactor = 0.0) = 0;
-
-    /// Same as addDForce(), except the velocity vector should be used instead of dx.
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K v + bFactor B v $
-    virtual void addDForceV(double kFactor = 1.0, double bFactor = 0.0) = 0;
+    ///                    $ df += kFactor K dx + bFactor B dx $
+    /// K is the stiffness matrix (associated with forces which derive from a potential),
+    /// B is the damping matrix (associated with viscous forces)
+    /// \param mparams->getDx() input vector
+    /// \param dfId output vector
+    /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams )=0;
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -100,31 +113,24 @@ public:
     /// In most cases only one of these matrices will be non-null for a given
     /// component. For forcefields without mass it simply calls addDForce.
     ///
-    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKdx(double mFactor, double bFactor, double kFactor);
+    /// M is the mass matrix (associated with inertial forces),
+    /// K is the stiffness matrix (associated with forces which derive from a potential),
+    /// B is the damping matrix (associated with viscous forces),
+    /// Very often, at least one of these matrices is null.
+    /// \param mparams->getDx() input vector
+    /// \param dfId output vector
+    /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param mparams->bFactor() coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addMBKdx(MultiVecDerivId dfId , const MechanicalParams* mparams);
 
-    /// Accumulate the contribution of M, B, and/or K matrices multiplied
-    /// by the v vector with the given coefficients.
-    ///
-    /// This method computes
-    /// $ df += mFactor M v + bFactor B v + kFactor K v $
-    /// In most cases only one of these matrices will be non-null for a given
-    /// component. For forcefields without mass it simply calls addDForceV.
-    ///
-    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKv(double mFactor, double bFactor, double kFactor);
-
-    /// Get the potential energy associated to this ForceField.
+    /// Get the potential energy associated to this ForceField during the last call of addForce( const MechanicalParams* mparams );
     ///
     /// Used to extimate the total energy of the system by some
     /// post-stabilization techniques.
-    virtual double getPotentialEnergy() const=0;
-
+    virtual double getPotentialEnergy( const MechanicalParams* mparams = MechanicalParams::defaultInstance() ) const=0;
     /// @}
+
 
     /// @name Matrix operations
     /// @{
@@ -132,37 +138,34 @@ public:
     /// Compute the system matrix corresponding to k K
     ///
     /// \param matrix matrix to add the result to
-    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact) = 0;
+    /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams ) = 0;
     //virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to b B
     ///
     /// \param matrix matrix to add the result to
-    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double bFact);
+    /// \param mparams->bFactor() coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    virtual void addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams );
     //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
+
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
     /// \param matrix matrix to add the result to
-    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact);
-    //virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
+    /// \param mparams->mFactor() coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param mparams->bFactor() coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param mparams->kFactor() coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams );
+    ////virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
 
     /// @}
-
-    // TEMPORARY there... allow to get from the ForceField the fractured Edge index
-    // When its computation is in the forcefield itself
-    virtual int getFracturedEdge() {return -1;}
 
     /// If the forcefield is applied only on a subset of particles.
     /// That way, we can optimize the time spent to transfer forces through the mechanical mappings
     /// Deactivated by default. The forcefields using only a subset of particles should activate the mask,
     /// and during addForce(), insert the indices of the particles modified
-    virtual bool useMask() const {return false;}
+    virtual bool useMask() const { return false; }
 };
 
 } // namespace behavior
@@ -171,4 +174,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif  /* SOFA_CORE_BEHAVIOR_BASEFORCEFIELD_H */

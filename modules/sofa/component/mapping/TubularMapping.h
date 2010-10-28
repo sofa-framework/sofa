@@ -25,7 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
+#include <sofa/component/component.h>
+
+#include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/container/RadiusContainer.h>
@@ -40,29 +42,51 @@ namespace component
 namespace mapping
 {
 
-template <class BasicMapping>
-class TubularMapping : public BasicMapping
+template <class TIn, class TOut>
+class TubularMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TubularMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE2(TubularMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    typedef core::Mapping<TIn, TOut> Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
-    typedef typename Out::DataTypes DataTypes;
-    typedef typename Out::VecCoord VecCoord;
-    typedef typename Out::VecDeriv VecDeriv;
-    typedef typename Out::Coord Coord;
-    typedef typename Out::Deriv Deriv;
-    //typedef typename std::map<unsigned int, Deriv>::const_iterator OutConstraintIterator;
 
-    typedef typename In::Deriv InDeriv;
-    typedef typename Coord::value_type Real;
-    enum { M=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<M,M,Real> Mat;
+    typedef typename In::Real         Real;
+    typedef typename In::VecCoord     InVecCoord;
+    typedef typename In::VecDeriv     InVecDeriv;
+    typedef typename In::MatrixDeriv  InMatrixDeriv;
+    typedef Data<InVecCoord>          InDataVecCoord;
+    typedef Data<InVecDeriv>          InDataVecDeriv;
+    typedef Data<InMatrixDeriv>       InDataMatrixDeriv;
+    typedef typename In::Coord        InCoord;
+    typedef typename In::Deriv        InDeriv;
 
-    typedef defaulttype::Vec<M,Real> Vec;
+    typedef typename Out::VecCoord    OutVecCoord;
+    typedef typename Out::VecDeriv    OutVecDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef Data<OutVecCoord>         OutDataVecCoord;
+    typedef Data<OutVecDeriv>         OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv>      OutDataMatrixDeriv;
+    typedef typename Out::Coord       OutCoord;
+    typedef typename Out::Deriv       OutDeriv;
 
-    TubularMapping ( In* from, Out* to )
+    enum
+    {
+        N = Out::spatial_dimensions
+    };
+    enum
+    {
+        NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size
+    };
+    enum
+    {
+        NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size
+    };
+
+    typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef defaulttype::Vec<N,Real> Vec;
+
+    TubularMapping ( core::State<In>* from, core::State<Out>* to )
         : Inherit ( from, to )
         , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
         , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
@@ -76,14 +100,13 @@ public:
 
     void init();
 
-    virtual void apply ( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    virtual void apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams );
 
-    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    virtual void applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams );
 
-    virtual void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    virtual void applyJT ( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
 
-    //void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    virtual void applyJT ( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams* /*cparams*/ );
 
     Data<unsigned int> m_nbPointsOnEachCircle; // number of points along the circles around each point of the input object (10 by default)
     Data<double> m_radius; // radius of the circles around each point of the input object (1 by default)
@@ -92,9 +115,36 @@ public:
     container::RadiusContainer* radiusContainer;
 protected:
 
-    VecCoord rotatedPoints;
+    OutVecCoord rotatedPoints;
 
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_MAPPING_API TubularMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TubularMapping< Rigid3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_MAPPING_API TubularMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TubularMapping< Rigid3fTypes, ExtVec3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_MAPPING_API TubularMapping< Rigid3fTypes, Rigid3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API TubularMapping< Rigid3dTypes, Rigid3fTypes >;
+#endif
+#endif
+
+#endif
 
 } // namespace mapping
 

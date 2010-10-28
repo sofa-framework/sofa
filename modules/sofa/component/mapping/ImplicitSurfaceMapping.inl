@@ -73,12 +73,21 @@ Real sqr(Real r)
 }
 
 template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& in )
+void ImplicitSurfaceMapping<In,Out>::apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    OutVecCoord &out = *dOut.beginEdit();
+    const InVecCoord& in = dIn.getValue();
+
     InReal invStep = (InReal)(1/mStep.getValue());
     out.resize(0);
     clear();
-    if (in.size()==0) return;
+
+    if (in.size()==0)
+    {
+        dOut.endEdit();
+        return;
+    }
+
     InReal xmin, xmax;
     InReal ymin, ymax;
     xmin = xmax = in[0][0]*invStep;
@@ -244,7 +253,8 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
             }
         }
     }
-    //        sout << out.size() << " points, "<<seqTriangles.getValue().size()<<" faces."<<sendl;
+
+    dOut.endEdit();
 }
 
 template <class In, class Out>
@@ -267,7 +277,7 @@ void ImplicitSurfaceMapping<In,Out>::newPlane()
 
 
 template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::applyJ( OutVecDeriv& /*out*/, const InVecDeriv& /*in*/ )
+void ImplicitSurfaceMapping<In,Out>::applyJ(Data<OutVecDeriv>& /*dOut*/, const Data<InVecDeriv>& /*dIn*/, const core::MechanicalParams * /*mparams*/)
 {
 }
 

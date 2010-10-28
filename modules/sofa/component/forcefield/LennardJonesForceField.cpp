@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/LennardJonesForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -51,10 +53,10 @@ int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for
         ;
 
 #ifndef SOFA_FLOAT
-template class LennardJonesForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class LennardJonesForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
 #endif
 
 

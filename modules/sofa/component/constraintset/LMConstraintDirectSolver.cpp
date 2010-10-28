@@ -39,8 +39,8 @@ namespace component
 namespace constraintset
 {
 
-LMConstraintDirectSolver::LMConstraintDirectSolver():
-    solverAlgorithm(initData(&solverAlgorithm, "solverAlgorithm", "Algorithm used to solve the system W.Lambda=c"))
+LMConstraintDirectSolver::LMConstraintDirectSolver()
+    : solverAlgorithm(initData(&solverAlgorithm, "solverAlgorithm", "Algorithm used to solve the system W.Lambda=c"))
 {
     //Add here other algo
     sofa::helper::OptionsGroup algo(1,"SVD");
@@ -48,20 +48,20 @@ LMConstraintDirectSolver::LMConstraintDirectSolver():
 }
 
 
-bool LMConstraintDirectSolver::buildSystem(double dt, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
+bool LMConstraintDirectSolver::buildSystem(double dt, VecId id, core::ConstraintParams::ConstOrder order)
 {
     bool sucess=LMConstraintSolver::buildSystem(dt,id,order);
 
     return sucess;
 }
 
-bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::behavior::BaseConstraintSet::ConstOrder order)
+bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::ConstraintParams::ConstOrder order)
 {
     //First, do n iterations of Gauss Seidel
     bool success=LMConstraintSolver::solveSystem(dt,id,order);
 
 
-    if (order != core::behavior::BaseConstraintSet::VEL) return success;
+    if (order != core::ConstraintParams::VEL) return success;
 
 
     //Then process to a direct solution of the system
@@ -213,7 +213,7 @@ bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::behavior::
 }
 
 
-void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::behavior::BaseConstraintSet::ConstOrder order,
+void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
         JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const
 {
     //Iterate among all the Sofa LMConstraint
@@ -236,13 +236,13 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMCo
                 {
                 case VANISHING:
                 {
-//                    serr <<"Constraint " << idxEquation << " VANISHING" << sendl;
+                    //                    serr <<"Constraint " << idxEquation << " VANISHING" << sendl;
                     //0 equation
                     break;
                 }
                 case STICKING:
                 {
-//                    serr << "Constraint " <<idxEquation << " STICKING" << sendl;
+                    //                    serr << "Constraint " <<idxEquation << " STICKING" << sendl;
                     const unsigned int i=rowsL.size();
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation  ));
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+1));
@@ -260,7 +260,7 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMCo
                 }
                 case SLIDING:
                 {
-//                    serr << "Constraint " <<idxEquation << " SLIDING" << sendl;
+                    //                    serr << "Constraint " <<idxEquation << " SLIDING" << sendl;
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation  ));
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+1));
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+2));

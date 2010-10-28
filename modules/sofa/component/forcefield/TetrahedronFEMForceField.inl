@@ -1391,8 +1391,10 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
+void TetrahedronFEMForceField<DataTypes>::addForce (DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& p = d_x.getValue();
 
     if (parallelDataInit[1] && parallelDataSimu == parallelDataThrd)
     {
@@ -1437,12 +1439,18 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
         break;
     }
     }
+
+    d_f.endEdit();
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x, double kFactor, double /*bFactor*/)
+void TetrahedronFEMForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
-    v.resize(x.size());
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
+    df.resize(dx.size());
     unsigned int i;
     typename VecElement::const_iterator it;
 
@@ -1457,7 +1465,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
             Index c = (*it)[2];
             Index d = (*it)[3];
 
-            applyStiffnessSmall( v,x, i, a,b,c,d, kFactor );
+            applyStiffnessSmall( df,dx, i, a,b,c,d, kFactor );
         }
         break;
     }
@@ -1470,7 +1478,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
             Index c = (*it)[2];
             Index d = (*it)[3];
 
-            applyStiffnessLarge( v,x, i, a,b,c,d, kFactor );
+            applyStiffnessLarge( df,dx, i, a,b,c,d, kFactor );
         }
 
         break;
@@ -1484,18 +1492,13 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
             Index c = (*it)[2];
             Index d = (*it)[3];
 
-            applyStiffnessPolar( v,x, i, a,b,c,d, kFactor );
+            applyStiffnessPolar( df, dx, i, a,b,c,d, kFactor );
         }
         break;
     }
     }
-}
 
-template <class DataTypes>
-double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"TetrahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
+    d_df.endEdit();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1734,4 +1737,4 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(sofa::core::objectmodel::E
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL

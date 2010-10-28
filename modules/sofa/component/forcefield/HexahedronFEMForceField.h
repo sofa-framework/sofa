@@ -51,29 +51,29 @@ public:
 };
 
 /** Compute Finite Element forces based on hexahedral elements.
- *
- * Corotational hexahedron from
- * @Article{NMPCPF05,
- *   author       = "Nesme, Matthieu and Marchal, Maud and Promayon, Emmanuel and Chabanas, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
- *   title        = "Physically Realistic Interactive Simulation for Biological Soft Tissues",
- *   journal      = "Recent Research Developments in Biomechanics",
- *   volume       = "2",
- *   year         = "2005",
- *   keywords     = "surgical simulation physical animation truth cube",
- *   url          = "http://www-evasion.imag.fr/Publications/2005/NMPCPF05"
- * }
- *
- * WARNING: indices ordering is different than in topology node
- *
- *     Y  7---------6
- *     ^ /         /|
- *     |/    Z    / |
- *     3----^----2  |
- *     |   /     |  |
- *     |  4------|--5
- *     | /       | /
- *     |/        |/
- *     0---------1-->X
+*
+* Corotational hexahedron from
+* @Article{NMPCPF05,
+*   author       = "Nesme, Matthieu and Marchal, Maud and Promayon, Emmanuel and Chabanas, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
+*   title        = "Physically Realistic Interactive Simulation for Biological Soft Tissues",
+*   journal      = "Recent Research Developments in Biomechanics",
+*   volume       = "2",
+*   year         = "2005",
+*   keywords     = "surgical simulation physical animation truth cube",
+*   url          = "http://www-evasion.imag.fr/Publications/2005/NMPCPF05"
+* }
+*
+* WARNING: indices ordering is different than in topology node
+*
+*     Y  7---------6
+*     ^ /         /|
+*     |/    Z    / |
+*     3----^----2  |
+*     |   /     |  |
+*     |  4------|--5
+*     | /       | /
+*     |/        |/
+*     0---------1-->X
 */
 template<class DataTypes>
 class HexahedronFEMForceField : virtual public core::behavior::ForceField<DataTypes>
@@ -87,6 +87,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef helper::ReadAccessor< Data< VecCoord > > RDataRefVecCoord;
+    typedef helper::WriteAccessor< Data< VecDeriv > > WDataRefVecDeriv;
 
     typedef core::topology::BaseMeshTopology::index_type Index;
 #ifdef SOFA_NEW_HEXA
@@ -215,15 +219,13 @@ public:
     virtual void init();
     virtual void reinit();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce (DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addDForce (DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
 
     const Transformation& getRotation(const unsigned elemidx);
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
+    void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams);
 
 
     void draw();
@@ -244,12 +246,12 @@ protected:
     vector<Transformation> _rotations;
     void initLarge(int i, const Element&elem);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
-    virtual void accumulateForceLarge( Vector& f, const Vector & p, int i, const Element&elem  );
+    virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
 
     ////////////// polar decomposition method
     void initPolar(int i, const Element&elem);
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
-    virtual void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
+    virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
 
 
     bool _alreadyInit;
@@ -271,4 +273,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API HexahedronFEMForceField<defa
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H

@@ -77,9 +77,13 @@ void VaccumSphereForceField<DataTypes>::init()
 // df = -stiffness * ( (x-c)/|x-c| * dot(dx,(x-c)/|x-c|) * r/|x-c|   + dx * (1 - r/|x-c|) )
 
 template<class DataTypes>
-void VaccumSphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
+void VaccumSphereForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
 {
     if (!active.getValue()) return;
+
+    VecDeriv& f1 = *d_f.beginEdit();
+    const VecCoord& p1 = d_x.getValue();
+    const VecDeriv& v1 = d_v.getValue();
 
     if (centerDOF)
         sphereCenter.setValue((*centerDOF->getX())[0]);
@@ -110,14 +114,19 @@ void VaccumSphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
         }
     }
     this->contacts.endEdit();
+    d_f.endEdit();
 }
 
 template<class DataTypes>
-void VaccumSphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
+void VaccumSphereForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
     if (!active.getValue()) return;
 
+    VecDeriv& df1 = *d_df.beginEdit();
+    const VecDeriv& dx1 = d_dx.getValue();
+
     df1.resize(dx1.size());
+    double kFactor = mparams->kFactor();
     const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
     {
@@ -127,6 +136,8 @@ void VaccumSphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv&
         Deriv dforce; dforce = (c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact))*fact;
         df1[c.index] += dforce;
     }
+
+    d_df.endEdit();
 }
 
 template<class DataTypes>
@@ -156,13 +167,6 @@ void VaccumSphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
         }
     }
     this->contacts.endEdit();
-}
-
-template <class DataTypes>
-double VaccumSphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"VaccumSphereForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
 }
 
 template <class DataTypes>
@@ -214,4 +218,4 @@ void VaccumSphereForceField<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif //SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_INL

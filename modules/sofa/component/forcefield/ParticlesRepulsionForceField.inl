@@ -70,8 +70,12 @@ void ParticlesRepulsionForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void ParticlesRepulsionForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     const Real h = distance.getValue();
     const Real h2 = h*h;
     const Real ks = stiffness.getValue();
@@ -137,15 +141,19 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(VecDeriv& f, const VecCoo
             f[j] -= force;
         }
     }
+    d_f.endEdit();
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/)
+void ParticlesRepulsionForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+
     const VecCoord& x = *this->mstate->getX();
     const Real h = distance.getValue();
     const Real h2 = h*h;
-    const Real ks = (Real)(stiffness.getValue()*kFactor);
+    const Real ks = (Real)(stiffness.getValue() * mparams->kFactor());
     //const Real kd = damping.getValue()*bFactor;
     const int n = x.size();
     df.resize(dx.size());
@@ -174,15 +182,9 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(VecDeriv& df, const VecD
             df[j] -= dforce;
         }
     }
-}
 
-template <class DataTypes>
-double ParticlesRepulsionForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"ParticlesRepulsionForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
+    d_df.endEdit();
 }
-
 
 template<class DataTypes>
 void ParticlesRepulsionForceField<DataTypes>::draw()
@@ -230,4 +232,4 @@ void ParticlesRepulsionForceField<DataTypes>::draw()
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_INL

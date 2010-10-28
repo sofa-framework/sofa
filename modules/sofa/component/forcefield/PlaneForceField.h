@@ -58,6 +58,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 protected:
     sofa::helper::vector<unsigned int> contacts;
@@ -115,15 +117,13 @@ public:
 
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
 
     virtual void updateStiffness( const VecCoord& x );
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams );
 
     void draw();
     void drawPlane(float size=0.0f);

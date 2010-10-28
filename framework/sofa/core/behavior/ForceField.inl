@@ -28,7 +28,11 @@
 #define SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.h>
+#ifdef SOFA_SMP
+#include <sofa/defaulttype/SharedTypes.h>
+#endif
 #include <iostream>
+
 namespace sofa
 {
 
@@ -53,41 +57,98 @@ ForceField<DataTypes>::~ForceField()
 template<class DataTypes>
 void ForceField<DataTypes>::init()
 {
-    //serr<<"ForceField<DataTypes>::init() "<<getName()<<" start"<<sendl;
     BaseForceField::init();
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    //serr<<"ForceField<DataTypes>::init() "<<getName()<<" done"<<sendl;
+
+    if (!mstate)
+        mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
-#ifndef SOFA_SMP
+#ifdef SOFA_SMP
 template<class DataTypes>
-void ForceField<DataTypes>::addForce()
+struct ParallelForceFieldAddForce
+{
+    void operator()(ForceField< DataTypes > *ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv > > _f,Shared_r< objectmodel::Data< typename DataTypes::VecCoord > > _x,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _v, const MechanicalParams *mparams)
+    {
+        ff->addForce(_f.access(),_x.read(),_v.read(), mparams);
+    }
+};
+
+template<class DataTypes>
+struct ParallelForceFieldAddDForce
+{
+    void operator()(ForceField< DataTypes >*ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _df,Shared_r<objectmodel::Data< typename DataTypes::VecDeriv> > _dx, const MechanicalParams *mparams)
+    {
+        ff->addDForce(_df.access(),_dx.read(), mparams);
+    }
+};
+#endif /* SOFA_SMP */
+
+
+template<class DataTypes>
+void ForceField<DataTypes>::addForce(MultiVecDerivId fId , const MechanicalParams* mparams )
+{
+    if (mparams)
+    {
+#ifdef SOFA_SMP
+        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
+            // Task<ParallelForceFieldAddForce< DataTypes > >(this, sofa::defaulttype::getShared(*fId[mstate].write()),
+            // 	defaulttype::getShared(*mparams->readX(mstate)), defaulttype::getShared(*mparams->readV(mstate)), mparams);
+            Task<ParallelForceFieldAddForce< DataTypes > >(this, **defaulttype::getShared(*fId[mstate].write()),
+                    **defaulttype::getShared(*mparams->readX(mstate)), **defaulttype::getShared(*mparams->readV(mstate)), mparams);
+        else
+#endif /* SOFA_SMP */
+            addForce(*fId[mstate].write() , *mparams->readX(mstate), *mparams->readV(mstate) , mparams);
+    }
+}
+#ifndef SOFA_DEPRECATE_OLD_API
+template<class DataTypes>
+void ForceField<DataTypes>::addForce(DataVecDeriv &  f, const DataVecCoord &  x , const DataVecDeriv & v, const MechanicalParams* /*mparams*/ )
 {
     if (mstate)
     {
         mstate->forceMask.setInUse(this->useMask());
-        addForce(*mstate->getF(), *mstate->getX(), *mstate->getV());
+        addForce( *f.beginEdit() , x.getValue(), v.getValue());
+        f.endEdit();
+    }
+}
+template<class DataTypes>
+void ForceField<DataTypes>::addForce(VecDeriv& , const VecCoord& , const VecDeriv& )
+{
+    serr << "ERROR("<<getClassName()<<"): addForce(VecDeriv& , const VecCoord& , const VecDeriv& ) not implemented." << sendl;
+}
+#endif
+
+
+
+template<class DataTypes>
+void ForceField<DataTypes>::addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams )
+{
+    if (mparams)
+    {
+#ifdef SOFA_SMP
+        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
+            Task<ParallelForceFieldAddDForce< DataTypes > >(this, **defaulttype::getShared(*dfId[mstate].write()), **defaulttype::getShared(*mparams->readDx(mstate)), mparams);
+        else
+#endif /* SOFA_SMP */
+
+            mparams->setKFactorUsed(false);
+
+        addDForce(*dfId[mstate].write(), *mparams->readDx(mstate), mparams);
+
+        if (!mparams->getKFactorUsed())
+            serr << "WARNING " << getClassName() << " addDForce doesn't take Stiffness Matrix contribution into account" << sendl;
     }
 }
 
+#ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(double kFactor, double bFactor)
+void ForceField<DataTypes>::addDForce(DataVecDeriv & df, const DataVecDeriv & dx , const MechanicalParams* mparams )
 {
     if (mstate)
-        addDForce(*mstate->getF(), *mstate->getDx(), kFactor, bFactor);
-}
-
-template<class DataTypes>
-void ForceField<DataTypes>::addDForceV(double kFactor, double bFactor)
-{
-    if (mstate)
-        addDForce(*mstate->getF(), *mstate->getV(), kFactor, bFactor);
-}
-#endif
-template<class DataTypes>
-void ForceField<DataTypes>::addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
-{
-    serr << "ERROR("<<getClassName()<<"): addDForce not implemented." << sendl;
+    {
+        addDForce( *df.beginEdit() , dx.getValue(), mparams->kFactor() ,mparams->bFactor());
+        df.endEdit();
+    }
 }
 
 template<class DataTypes>
@@ -97,95 +158,89 @@ void ForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double k
         addDForce(df, dx);
     else if (kFactor != 0.0)
     {
-        BaseMechanicalState::VecId vtmp(BaseMechanicalState::VecId::V_DERIV,BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX);
+        VecDerivId vtmp( VecDerivId::V_FIRST_DYNAMIC_INDEX);
         mstate->vAvail(vtmp);
         mstate->vAlloc(vtmp);
-        BaseMechanicalState::VecId vdx(BaseMechanicalState::VecId::V_DERIV,0);
+        VecDerivId vdx(0);
         /// @TODO: Add a better way to get the current VecId of dx
         for (vdx.index=0; vdx.index<vtmp.index; ++vdx.index)
-            if (mstate->getVecDeriv(vdx.index) == &dx)
-                break;
-        mstate->vOp(vtmp,BaseMechanicalState::VecId::null(),vdx,kFactor);
-        addDForce(df, *mstate->getVecDeriv(vtmp.index));
+        {
+            const Data<VecDeriv> *d_vdx = mstate->read(ConstVecDerivId(vdx));
+            if (d_vdx)
+            {
+                if (&d_vdx->getValue() == &dx)
+                    break;
+            }
+        }
+
+        mstate->vOp(vtmp, VecId::null(), vdx, kFactor);
+        //addDForce(df, *mstate->getVecDeriv(vtmp.index));
+        addDForce(df, mstate->read(ConstVecDerivId(vtmp))->getValue());
+
         mstate->vFree(vtmp);
     }
 }
 
 template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy() const
+void ForceField<DataTypes>::addDForce(VecDeriv& , const VecDeriv& )
 {
-    if (mstate)
-        return getPotentialEnergy(*mstate->getX());
-    else return 0;
+    serr << "ERROR("<<getClassName()<<"): addDForce(VecDeriv& , const VecDeriv& ) not implemented." << sendl;
+}
+#endif
+
+template<class DataTypes>
+double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+{
+    if (this->mstate)
+        return getPotentialEnergy(*mparams->readX(mstate), mparams);
+    return 0;
 }
 
+#ifndef SOFA_DEPRECATE_OLD_API
+template<class DataTypes>
+double ForceField<DataTypes>::getPotentialEnergy( const DataVecCoord& x, const MechanicalParams* /*mparams*/ ) const
+{
+    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const DataVecCoord&, const MechanicalParams*) not implemented." << sendl;
+    return getPotentialEnergy(x.getValue());
+}
+template<class DataTypes>
+double ForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
+{
+    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const VecCoord&) not implemented." << sendl;
+    return 0.0;
+}
+#endif
+
+
+template<class DataTypes>
+void ForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams )
+{
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    if (r)
+        addKToMatrix(r.matrix, mparams->kFactor(), r.offset);
+}
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
 {
-    serr << "addKToMatrix not implemented by " << this->getClassName() << sendl;
+    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
 }
 
+
+
+template<class DataTypes>
+void ForceField<DataTypes>::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
+{
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    if (r)
+        addBToMatrix(r.matrix, mparams->kFactor() , r.offset);
+}
 template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
 {
-
+    serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
 }
 
-#ifdef SOFA_SMP
-template<class DataTypes>
-struct ParallelForceFieldAddForceCPU
-{
-    void	operator()(ForceField< DataTypes > *ff,Shared_rw< typename DataTypes::VecDeriv> _f,Shared_r< typename DataTypes::VecCoord> _x,Shared_r< typename DataTypes::VecDeriv> _v)
-    {
-        ff->addForce(_f.access(),_x.read(),_v.read());
-    }
-};
 
-template<class DataTypes>
-struct ParallelForceFieldAddDForceCPU
-{
-    void	operator()(ForceField< DataTypes > *ff,Shared_rw<typename DataTypes::VecDeriv> _df,Shared_r<typename  DataTypes::VecDeriv> _dx,double kFactor, double bFactor)
-    {
-        ff->addDForce(_df.access(),_dx.read(),kFactor,bFactor);
-    }
-};
-
-template<class DataTypes>
-struct ParallelForceFieldAddForce
-{
-    void    operator()(ForceField< DataTypes > *ff,Shared_rw< typename DataTypes::VecDeriv> _f,Shared_r< typename DataTypes::VecCoord> _x,Shared_r< typename DataTypes::VecDeriv> _v)
-    {
-        ff->addForce(_f.access(),_x.read(),_v.read());
-    }
-};
-
-template<class DataTypes>
-struct ParallelForceFieldAddDForce
-{
-    void    operator()(ForceField< DataTypes >*ff,Shared_rw<typename DataTypes::VecDeriv> _df,Shared_r<typename  DataTypes::VecDeriv> _dx,double kFactor, double bFactor)
-    {
-        ff->addDForce(_df.access(),_dx.read(),kFactor,bFactor);
-    }
-};
-
-template<class DataTypes>
-void ForceField< DataTypes >::addForce()
-{
-    Task<ParallelForceFieldAddForceCPU< DataTypes  > ,ParallelForceFieldAddForce< DataTypes  > >(this,**mstate->getF(), **mstate->getX(), **mstate->getV());
-}
-
-template<class DataTypes>
-void ForceField< DataTypes >::addDForce(double kFactor, double bFactor)
-{
-    Task<ParallelForceFieldAddDForceCPU< DataTypes  >,ParallelForceFieldAddDForce< DataTypes  > >(this,**mstate->getF(), **mstate->getDx(),kFactor,bFactor);
-}
-
-template<class DataTypes>
-void ForceField< DataTypes >::addDForceV(double kFactor, double bFactor)
-{
-    Task<ParallelForceFieldAddDForceCPU< DataTypes  > ,ParallelForceFieldAddDForce< DataTypes  > >(this,**mstate->getF(), **mstate->getV(),kFactor,bFactor);
-}
-#endif
 } // namespace behavior
 
 } // namespace core

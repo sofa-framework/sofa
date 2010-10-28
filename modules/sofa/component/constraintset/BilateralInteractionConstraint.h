@@ -27,7 +27,7 @@
 
 #include <sofa/component/component.h>
 
-#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 
@@ -147,10 +147,10 @@ protected:
 };
 
 template<class DataTypes>
-class BilateralInteractionConstraint : public core::behavior::InteractionConstraint
+class BilateralInteractionConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes),sofa::core::behavior::InteractionConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::PairInteractionConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -160,10 +160,14 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename core::behavior::PairInteractionConstraint<DataTypes> Inherit;
+
+    typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
 protected:
-    MechanicalState* object1;
-    MechanicalState* object2;
+
     bool yetIntegrated;
 
     Deriv dfree;
@@ -173,36 +177,30 @@ protected:
 
     Data<int> m1;
     Data<int> m2;
-    Data<std::string> pathObject1;
-    Data<std::string> pathObject2;
 
     std::vector<double> prevForces;
 public:
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
-        : object1(object1), object2(object2), yetIntegrated(false)
+        : Inherit(object1, object2)
+        , yetIntegrated(false)
         , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
-        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
-        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
     {
     }
 
     BilateralInteractionConstraint(MechanicalState* object)
-        : object1(object), object2(object), yetIntegrated(false)
+        : Inherit(object, object)
+        , yetIntegrated(false)
         , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
-        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
-        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
     {
     }
 
     BilateralInteractionConstraint()
-        : object1(NULL), object2(NULL), yetIntegrated(false)
+        : yetIntegrated(false)
         , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
-        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
-        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
     {
     }
 
@@ -210,74 +208,27 @@ public:
     {
     }
 
-    MechanicalState* getObject1() { return object1; }
-    MechanicalState* getObject2() { return object2; }
-    core::behavior::BaseMechanicalState* getMechModel1() { return object1; }
-    core::behavior::BaseMechanicalState* getMechModel2() { return object2; }
-
     virtual void init();
-    virtual void reinit() {init();}
-    virtual void reset() {init();}
 
-    virtual void buildConstraintMatrix(unsigned int & /*constraintId*/, core::VecId);
+    virtual void reinit()
+    {
+        init();
+    }
 
-    virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true );
+    virtual void reset()
+    {
+        init();
+    }
 
-    virtual void getConstraintId(long* id, unsigned int &offset);
+    void buildConstraintMatrix(DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
+            , const DataVecCoord &x1, const DataVecCoord &x2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
+
+    void getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+            , const DataVecDeriv &v1, const DataVecDeriv &v2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
 
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 
-
-    /// Pre-construction check method called by ObjectFactory.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-        }
-        else
-        {
-            if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
-                return false;
-        }
-        return core::behavior::InteractionConstraint::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::behavior::InteractionConstraint::create(obj, context, arg);
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
-        {
-            obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->object2 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2","..")));
-        }
-        else if (context)
-        {
-            obj->object1 =
-                obj->object2 =
-                        dynamic_cast<MechanicalState*>(context->getMechanicalState());
-        }
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const BilateralInteractionConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
     void draw();
-
-    /// this constraint is holonomic
-    bool isHolonomic() {return true;}
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)

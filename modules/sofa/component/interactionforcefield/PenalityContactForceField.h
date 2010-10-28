@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/component.h>
 #include <vector>
-
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -41,6 +41,8 @@ namespace component
 
 namespace interactionforcefield
 {
+
+using namespace sofa::core;
 
 template<class DataTypes>
 class PenalityContactForceField : public core::behavior::PairInteractionForceField<DataTypes>
@@ -56,6 +58,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 protected:
 
@@ -112,11 +118,14 @@ public:
 
     void addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    virtual void addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 , const MechanicalParams* mparams );
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
-    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
+    virtual void addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams);
+    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const;
+    virtual double getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const ;
+    ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const;
 
     const helper::vector< Contact >& getContact() const { return contacts.getValue();};
 

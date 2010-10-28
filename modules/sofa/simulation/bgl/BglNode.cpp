@@ -41,9 +41,9 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 
 //Components of the core to detect during the addition of objects in a node
-#include <sofa/core/behavior/InteractionForceField.h>
-#include <sofa/core/behavior/InteractionConstraint.h>
-#include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 
 #include <boost/version.hpp>
 
@@ -96,7 +96,8 @@ unsigned int BglNode::getUniqueId()
 bool BglNode::addObject(core::objectmodel::BaseObject* obj)
 {
     using sofa::core::objectmodel::Tag;
-    if (sofa::core::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::behavior::BaseMechanicalMapping*>(obj))
+    sofa::core::BaseMapping* mm = dynamic_cast<sofa::core::BaseMapping*>(obj);
+    if (mm && mm->isMechanical() )
     {
         sofa::core::behavior::BaseMechanicalState
         *msFrom=mm->getMechFrom()[0],
@@ -109,7 +110,7 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
             BglGraphManager::getInstance()->addInteraction( from, to, mm);
         }
     }
-    else if (sofa::core::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::behavior::InteractionForceField*>(obj))
+    else if (sofa::core::behavior::BaseInteractionForceField* iff = dynamic_cast<sofa::core::behavior::BaseInteractionForceField*>(obj))
     {
         sofa::core::behavior::BaseMechanicalState
         *ms1=iff->getMechModel1(),
@@ -122,7 +123,7 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
             if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
         }
     }
-    else if (sofa::core::behavior::InteractionProjectiveConstraintSet* ic = dynamic_cast<sofa::core::behavior::InteractionProjectiveConstraintSet*>(obj))
+    else if (sofa::core::behavior::BaseInteractionProjectiveConstraintSet* ic = dynamic_cast<sofa::core::behavior::BaseInteractionProjectiveConstraintSet*>(obj))
     {
         sofa::core::behavior::BaseMechanicalState
         *ms1=ic->getMechModel1(),
@@ -135,7 +136,7 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
             if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
         }
     }
-    else if (sofa::core::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::behavior::InteractionConstraint*>(obj))
+    else if (sofa::core::behavior::BaseInteractionConstraint* ic = dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*>(obj))
     {
         sofa::core::behavior::BaseMechanicalState
         *ms1=ic->getMechModel1(),
@@ -153,15 +154,16 @@ bool BglNode::addObject(core::objectmodel::BaseObject* obj)
 
 bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
 {
-    if (sofa::core::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::behavior::BaseMechanicalMapping*>(obj))
+    if (sofa::core::BaseMapping* mm = dynamic_cast<sofa::core::BaseMapping*>(obj))
     {
-        BglGraphManager::getInstance()->removeInteraction(mm);
+        if(mm->isMechanical())
+            BglGraphManager::getInstance()->removeInteraction(mm);
     }
-    else if (sofa::core::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::behavior::InteractionForceField*>(obj))
+    else if (sofa::core::behavior::BaseInteractionForceField* iff = dynamic_cast<sofa::core::behavior::BaseInteractionForceField*>(obj))
     {
         BglGraphManager::getInstance()->removeInteraction(iff);
     }
-    else if (sofa::core::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::behavior::InteractionConstraint*>(obj))
+    else if (sofa::core::behavior::BaseInteractionConstraint* ic = dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*>(obj))
     {
         BglGraphManager::getInstance()->removeInteraction(ic);
     }
@@ -298,7 +300,8 @@ void BglNode::doExecuteVisitor( Visitor* visit )
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
-    GetObjectVisitor getobj(class_info);
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    GetObjectVisitor getobj(class_info, params);
     getobj.setTags(tags);
     if (dir == Local)
     {
@@ -328,7 +331,8 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
-    GetObjectsVisitor getobjs(class_info, container);
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    GetObjectsVisitor getobjs(class_info, container, params);
     getobjs.setTags(tags);
     if (dir == Local)
     {
@@ -348,8 +352,6 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 #endif
     }
 }
-
-
 
 /// Generic object access, given a path from the current context
 ///
@@ -606,8 +608,9 @@ void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
 SOFA_DECL_CLASS(BglNode)
 
 helper::Creator<simulation::xml::NodeElement::Factory, BglNode> BglNodeClass("BglNode");
-}
-}
-}
 
+} // namespace bgl
 
+} // namespace simulation
+
+} // namespace sofa

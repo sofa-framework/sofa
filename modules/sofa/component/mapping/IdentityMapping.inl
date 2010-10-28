@@ -26,9 +26,10 @@
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_INL
 
 #include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/core/Mapping.inl>
 
 
 namespace sofa
@@ -156,36 +157,32 @@ extern void peq(defaulttype::RigidDeriv<N,real1>& dest, const defaulttype::Vec<N
     dest.getVCenter() += src;
 }
 
-template <class BasicMapping>
-void IdentityMapping<BasicMapping>::apply( VecCoord& out, const InVecCoord& in )
+template <class TIn, class TOut>
+void IdentityMapping<TIn, TOut>::apply(Data<VecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<VecCoord> > out = dOut;
+    helper::ReadAccessor< Data<InVecCoord> > in = dIn;
 
-
-    //const unsigned int N = Coord::size() < InCoord::size() ? Coord::size() : InCoord::size();
     out.resize(in.size());
+
     for(unsigned int i=0; i<out.size(); i++)
     {
-        //for (unsigned int j=0;j < N;++j)
-        //    out[i][j] = (OutReal)in[i][j];
-        //out[i] = in[i];
         eq(out[i], in[i]);
     }
 }
 
-template <class BasicMapping>
-void IdentityMapping<BasicMapping>::applyJ( VecDeriv& out, const InVecDeriv& in )
+template <class TIn, class TOut>
+void IdentityMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<VecDeriv> > out = dOut;
+    helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
-
-    //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
     out.resize(in.size());
 
     if ( !(maskTo->isInUse()) )
     {
         for(unsigned int i=0; i<out.size(); i++)
         {
-            //for (unsigned int j=0;j < N;++j)
-            //    out[i][j] = (OutReal)in[i][j];
             eq(out[i], in[i]);
         }
     }
@@ -202,18 +199,17 @@ void IdentityMapping<BasicMapping>::applyJ( VecDeriv& out, const InVecDeriv& in 
     }
 }
 
-template <class BasicMapping>
-void IdentityMapping<BasicMapping>::applyJT( InVecDeriv& out, const VecDeriv& in )
+template<class TIn, class TOut>
+void IdentityMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
 {
-    //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
+    helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
+    helper::ReadAccessor< Data<VecDeriv> > in = dIn;
 
     if ( !(maskTo->isInUse()) )
     {
         maskFrom->setInUse(false);
         for(unsigned int i=0; i<in.size(); i++)
         {
-            //for (unsigned int j=0;j < N;++j)
-            //    out[i][j] += (Real)in[i][j];
             peq(out[i], in[i]);
         }
     }
@@ -231,9 +227,12 @@ void IdentityMapping<BasicMapping>::applyJT( InVecDeriv& out, const VecDeriv& in
     }
 }
 
-template <class BaseMapping>
-void IdentityMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class TIn, class TOut>
+void IdentityMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data<MatrixDeriv>& dIn, const core::ConstraintParams * /*cparams*/)
 {
+    InMatrixDeriv& out = *dOut.beginEdit();
+    const MatrixDeriv& in = dIn.getValue();
+
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
@@ -257,16 +256,18 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const
             }
         }
     }
+
+    dOut.endEdit();
 }
 
-template <class BaseMapping>
-void IdentityMapping<BaseMapping>::handleTopologyChange()
+template <class TIn, class TOut>
+void IdentityMapping<TIn, TOut>::handleTopologyChange()
 {
     if ( stateTo && stateFrom && stateTo->getSize() != stateFrom->getSize()) this->init();
 }
 
-template <class BaseMapping>
-const sofa::defaulttype::BaseMatrix* IdentityMapping<BaseMapping>::getJ()
+template <class TIn, class TOut>
+const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
     const VecCoord& out = *this->toModel->getX();
     const InVecCoord& in = *this->fromModel->getX();

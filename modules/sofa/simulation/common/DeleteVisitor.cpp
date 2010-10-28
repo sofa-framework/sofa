@@ -51,7 +51,7 @@ Visitor::Result DeleteVisitor::processNodeTopDown(Node* node)
         }
         else
         {
-            DeleteVisitor deleteV;
+            DeleteVisitor deleteV(params);
             node->nodeInVisualGraph->executeVisitor(&deleteV);
             node->nodeInVisualGraph->detachFromGraph();
             delete node->nodeInVisualGraph;
@@ -60,7 +60,7 @@ Visitor::Result DeleteVisitor::processNodeTopDown(Node* node)
     for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
     {
         simulation::Node *child=*itChild;
-        DeleteVisitor deleteV;
+        DeleteVisitor deleteV(params);
         child->executeVisitor(&deleteV);
         child->detachFromGraph();
         delete child;

@@ -62,7 +62,7 @@ void PointInfo::buildFilter(unsigned int p_index)
 
 
     // get the positions:
-    sofa::helper::vector<sofa::defaulttype::Vector3>& x = (* this->position_filtering);
+    const sofa::helper::vector<sofa::defaulttype::Vector3>& x = *this->position_filtering;
     const Vector3 &pt = x[p_index];
 
     //std::cout<<"  pt"<<pt<<std::endl;

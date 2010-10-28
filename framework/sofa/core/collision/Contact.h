@@ -32,7 +32,6 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/Factory.h>
 
-#include <sofa/core/behavior/InteractionForceField.h>
 #include <vector>
 
 namespace sofa

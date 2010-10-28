@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_INL
+
 #include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -42,10 +45,6 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::topology;
-
-
-
-
 
 using core::topology::BaseMeshTopology;
 
@@ -303,7 +302,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = *this->mstate->getX0();
         _initialPoints=p;
     }
 
@@ -332,16 +331,12 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     edgeInfo.endEdit();
 }
 
+template <class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
 
-template <class DataTypes>
-double TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr<<"TetrahedralTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
-{
     unsigned int v0,v1;
     int nbEdges=_topology->getNbEdges();
 
@@ -366,12 +361,17 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const Vec
     }
 
     edgeInfo.endEdit();
+    d_f.endEdit();
 }
 
 
 template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
+void TetrahedralTensorMassForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     unsigned int v0,v1;
     int nbEdges=_topology->getNbEdges();
 
@@ -391,10 +391,12 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const V
         dp1=dx[v1];
         dp = dp1-dp0;
 
-        df[v1]+=einfo->DfDx*dp;
-        df[v0]-=einfo->DfDx.transposeMultiply(dp);
+        df[v1]+= (einfo->DfDx*dp) * kFactor;
+        df[v0]-= (einfo->DfDx.transposeMultiply(dp)) * kFactor;
     }
     edgeInfo.endEdit();
+
+    d_df.endEdit();
 }
 
 
@@ -445,6 +447,8 @@ void TetrahedralTensorMassForceField<DataTypes>::draw()
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
+
+#endif // SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_INL

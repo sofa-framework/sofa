@@ -22,15 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP
+
 #include <sofa/component/mapping/TubularMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
-
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -41,61 +38,44 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(TubularMapping)
-
-using namespace defaulttype;
+using namespace sofa::defaulttype;
 using namespace core;
 using namespace core::behavior;
 
+SOFA_DECL_CLASS(TubularMapping)
 
 // Register in the Factory
-int TubularMappingClass = core::RegisterObject(" ")
+int TubularMappingClass = core::RegisterObject("Create a Tube around rigid points")
 #ifndef SOFA_FLOAT
-        .add< TubularMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
-//.add< TubularMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
-        .add< TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< TubularMapping< Rigid3dTypes, Vec3dTypes > > ()
+        .add< TubularMapping< Rigid3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< TubularMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
-//.add< TubularMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
-        .add< TubularMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< TubularMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< TubularMapping< Rigid3fTypes, Vec3fTypes > >()
+        .add< TubularMapping< Rigid3fTypes, ExtVec3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< TubularMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< TubularMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
-//.add< TubularMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > > >()
-//.add< TubularMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2dTypes> > > >()
-        .add< TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< TubularMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< TubularMapping< Rigid3dTypes, Vec3fTypes > >()
+        .add< TubularMapping< Rigid3fTypes, Vec3dTypes > >()
 #endif
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class TubularMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-//template class TubularMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
-template class TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-template class TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class TubularMapping< Rigid3dTypes, Vec3dTypes >;
+template class TubularMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class TubularMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-//template class TubularMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
-template class TubularMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-template class TubularMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class TubularMapping< Rigid3fTypes, Vec3fTypes >;
+template class TubularMapping< Rigid3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class TubularMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class TubularMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
-//template class TubularMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > >;
-//template class TubularMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2dTypes> > >;
-template class TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-template class TubularMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
+template class TubularMapping< Rigid3dTypes, Vec3fTypes >;
+template class TubularMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
 

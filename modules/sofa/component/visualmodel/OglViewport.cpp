@@ -165,9 +165,9 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
     helper::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
 
     //gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],0 ,0 ,0, cameraDirection[0], cameraDirection[1], cameraDirection[2]);
-    simulation::VisualDrawVisitor vdv( core::VisualModel::Std );
+    simulation::VisualDrawVisitor vdv( core::VisualModel::Std, core::ExecParams::defaultInstance() );
     vdv.execute ( getContext() );
-    simulation::VisualDrawVisitor vdvt( core::VisualModel::Transparent );
+    simulation::VisualDrawVisitor vdvt( core::VisualModel::Transparent, core::ExecParams::defaultInstance() );
     vdvt.execute ( getContext() );
 
     glMatrixMode(GL_PROJECTION);

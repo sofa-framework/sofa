@@ -22,15 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_CPP
+
 #include "ExternalInterpolationMapping.inl"
 
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/Mapping.inl>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -43,79 +38,62 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::behavior;
+
 
 SOFA_DECL_CLASS(ExternalInterpolationMapping)
 
 int ExternalInterpolationMappingClass = core::RegisterObject("TODO-ExternalInterpolationMappingClass")
 #ifndef SOFA_FLOAT
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2dTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec2dTypes>, MappedModel<ExtVec2fTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< ExternalInterpolationMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< ExternalInterpolationMapping< Vec2dTypes, Vec2dTypes > >()
+        .add< ExternalInterpolationMapping< Vec1dTypes, Vec1dTypes > >()
+        .add< ExternalInterpolationMapping< Vec2dTypes, ExtVec2fTypes > >()
+        .add< ExternalInterpolationMapping< Vec3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2fTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec2fTypes>, MappedModel<ExtVec2fTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< ExternalInterpolationMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< ExternalInterpolationMapping< Vec2fTypes, Vec2fTypes > >()
+        .add< ExternalInterpolationMapping< Vec1fTypes, Vec1fTypes > >()
+        .add< ExternalInterpolationMapping< Vec2fTypes, ExtVec2fTypes > >()
+        .add< ExternalInterpolationMapping< Vec3fTypes, ExtVec3fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > > >()
-        .add< ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2dTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2fTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< ExternalInterpolationMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< ExternalInterpolationMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< ExternalInterpolationMapping< Vec3dTypes, Vec3fTypes > >()
+        .add< ExternalInterpolationMapping< Vec2fTypes, Vec2dTypes > >()
+        .add< ExternalInterpolationMapping< Vec2dTypes, Vec2fTypes > >()
+        .add< ExternalInterpolationMapping< Vec1fTypes, Vec1dTypes > >()
+        .add< ExternalInterpolationMapping< Vec1dTypes, Vec1fTypes > >()
 #endif
 #endif
         ;
 
 
 #ifndef SOFA_FLOAT
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2dTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec2dTypes>, MappedModel<ExtVec2fTypes> > >;
+template class ExternalInterpolationMapping< Vec3dTypes, Vec3dTypes >;
+template class ExternalInterpolationMapping< Vec2dTypes, Vec2dTypes >;
+template class ExternalInterpolationMapping< Vec1dTypes, Vec1dTypes >;
+template class ExternalInterpolationMapping< Vec3dTypes, ExtVec3fTypes >;
+template class ExternalInterpolationMapping< Vec2dTypes, ExtVec2fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2fTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec2fTypes>, MappedModel<ExtVec2fTypes> > >;
+template class ExternalInterpolationMapping< Vec3fTypes, Vec3fTypes >;
+template class ExternalInterpolationMapping< Vec2fTypes, Vec2fTypes >;
+template class ExternalInterpolationMapping< Vec1fTypes, Vec1fTypes >;
+template class ExternalInterpolationMapping< Vec3fTypes, ExtVec3fTypes >;
+template class ExternalInterpolationMapping< Vec2fTypes, ExtVec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > >;
-template class ExternalInterpolationMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2fTypes> > >;
-template class ExternalInterpolationMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2dTypes> > >;
+template class ExternalInterpolationMapping< Vec3dTypes, Vec3fTypes >;
+template class ExternalInterpolationMapping< Vec3fTypes, Vec3dTypes >;
+template class ExternalInterpolationMapping< Vec2dTypes, Vec2fTypes >;
+template class ExternalInterpolationMapping< Vec2fTypes, Vec2dTypes >;
+template class ExternalInterpolationMapping< Vec1dTypes, Vec1fTypes >;
+template class ExternalInterpolationMapping< Vec1fTypes, Vec1dTypes >;
 #endif
 #endif
 

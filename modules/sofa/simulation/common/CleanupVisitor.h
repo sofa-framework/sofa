@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_COMMON_CLEANUPVISITOR_H
 
 #include <sofa/simulation/common/Visitor.h>
-
+#include <sofa/core/ExecParams.h>
 namespace sofa
 {
 
@@ -37,7 +37,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API CleanupVisitor : public Visitor
 {
 public:
-    CleanupVisitor() {}
+    CleanupVisitor(const core::ExecParams* params ) :Visitor(params) {}
 
     virtual Result processNodeTopDown(Node* node);
     virtual void processNodeBottomUp(Node* node);

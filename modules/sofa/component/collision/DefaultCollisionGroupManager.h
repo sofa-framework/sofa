@@ -82,7 +82,7 @@ protected:
         NodeType* parent = *inNodes.begin();
         while(!group->child.empty()) parent->moveChild(*group->child.begin());
 
-        simulation::DeleteVisitor vis;
+        simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
         vis.execute(group);
         group->detachFromGraph();
         delete group;

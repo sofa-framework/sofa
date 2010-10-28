@@ -74,6 +74,9 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
     typedef sofa::core::topology::BaseMeshTopology::index_type Index;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
@@ -82,8 +85,6 @@ public:
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
 
 protected:
-//    component::container::MechanicalObject<DataTypes>* _object;
-
     typedef Vec<6, Real> Displacement;								///< the displacement vector
 
     typedef Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
@@ -100,10 +101,6 @@ protected:
     sofa::core::topology::BaseMeshTopology* _mesh;
     const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
-//     int _method; ///< the computation method of the displacements
-//     Real _poissonRatio;
-//     Real _youngModulus;
-//     Real _dampingRatio;
 
 public:
 
@@ -116,12 +113,8 @@ public:
 
     virtual void init();
     virtual void reinit();
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
-
+    virtual void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
 
     void draw();
 
@@ -140,15 +133,10 @@ public:
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
 
-//     component::container::MechanicalObject<DataTypes>* getObject()
-//     {
-//         return _object;
-//     }
-
 protected :
 
     /// f += Kx where K is the stiffness matrix and x a displacement
-    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x );
+    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c);
     void computeMaterialStiffnesses();
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
@@ -157,7 +145,7 @@ protected :
     void initSmall();
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit = false );
     void accumulateDampingSmall( VecCoord& f, Index elementIndex );
-    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x );
+    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
 
     ////////////// large displacements method
     sofa::helper::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
@@ -166,9 +154,23 @@ protected :
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit=false );
     void accumulateDampingLarge( VecCoord& f, Index elementIndex );
-    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x );
+    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangleFEMForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangleFEMForceField<Vec3fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
 } // namespace forcefield
 
@@ -176,4 +178,4 @@ protected :
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_H

@@ -45,7 +45,7 @@ namespace component
 
 namespace linearsolver
 {
-
+using core::VecId;
 using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 using namespace sofa::simulation;
@@ -80,14 +80,14 @@ void CGLinearSolver<TMatrix,TVector>::resetSystem()
 }
 
 template<class TMatrix, class TVector>
-void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
+void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
 #ifdef DISPLAY_TIME
     CTime * timer;
     time2 = (double) timer->getTime();
 #endif
 
-    Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+    Inherit::setSystemMBKMatrix(mparams);
 
 #ifdef DISPLAY_TIME
     time2 = ((double) timer->getTime() - time2)  * timeStamp;
@@ -105,9 +105,11 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("VectorAllocation");
 #endif
-    Vector& p = *this->createVector();
-    Vector& q = *this->createVector();
-    Vector& r = *this->createVector();
+    const core::ExecParams* params = core::ExecParams::defaultInstance();
+    typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
+    Vector& p = *vtmp.createTempVector();
+    Vector& q = *vtmp.createTempVector();
+    Vector& r = *vtmp.createTempVector();
 
     const bool printLog = this->f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
@@ -175,7 +177,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         {
             beta = rho / rho_1;
             //p = p*beta + r; //z;
-            cgstep_beta(p,r,beta);
+            cgstep_beta(p,r,beta, params);
         }
 
         if( verbose )
@@ -210,7 +212,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         alpha = rho/den;
         //x.peq(p,alpha);                 // x = x + alpha p
         //r.peq(q,-alpha);                // r = r - alpha q
-        cgstep_alpha(x,r,p,q,alpha);
+        cgstep_alpha(x,r,p,q,alpha, params);
         if( verbose )
         {
             serr<<"den = "<<den<<", alpha = "<<alpha<<sendl;
@@ -244,20 +246,19 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     {
         serr<<"CGLinearSolver::solve, solution = "<<x<<sendl;
     }
-    this->deleteVector(&p);
-    this->deleteVector(&q);
-    this->deleteVector(&r);
-
+    vtmp.deleteTempVector(&p);
+    vtmp.deleteTempVector(&q);
+    vtmp.deleteTempVector(&r);
 }
 
 template<>
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* /*params*/)
 {
-    this->v_op(p,r,p,beta); // p = p*beta + r
+    p.eq(r,p,beta); // p = p*beta + r
 }
 
 template<>
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* params)
 {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     x.peq(p,alpha);                 // x = x + alpha p
@@ -266,13 +267,13 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp ops;
     ops.resize(2);
-    ops[0].first = (VecId)x;
-    ops[0].second.push_back(std::make_pair((VecId)x,1.0));
-    ops[0].second.push_back(std::make_pair((VecId)p,alpha));
-    ops[1].first = (VecId)r;
-    ops[1].second.push_back(std::make_pair((VecId)r,1.0));
-    ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
-    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(ops));
+    ops[0].first = (MultiVecDerivId)x;
+    ops[0].second.push_back(std::make_pair((MultiVecDerivId)x,1.0));
+    ops[0].second.push_back(std::make_pair((MultiVecDerivId)p,alpha));
+    ops[1].first = (MultiVecDerivId)r;
+    ops[1].second.push_back(std::make_pair((MultiVecDerivId)r,1.0));
+    ops[1].second.push_back(std::make_pair((MultiVecDerivId)q,-alpha));
+    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(ops, params));
 #endif
 }
 

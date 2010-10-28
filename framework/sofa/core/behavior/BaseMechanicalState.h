@@ -27,15 +27,14 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/VecId.h>
+#include <sofa/core/BaseState.h>
+#include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/ParticleMask.h>
 
-#include <sstream>
 #include <iostream>
 
 
@@ -47,8 +46,6 @@ namespace core
 
 namespace behavior
 {
-
-class BaseMechanicalMapping;
 
 /**
  *  \brief Component storing all state vectors of a simulated body (position, velocity, etc).
@@ -77,79 +74,134 @@ class BaseMechanicalMapping;
  *  in this body.
  *
  */
-class BaseMechanicalState : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
-    SOFA_CLASS(BaseMechanicalState, objectmodel::BaseObject);
+    SOFA_CLASS(BaseMechanicalState, BaseState);
 
-    BaseMechanicalState():useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings")), forceMask(helper::ParticleMask(useMask))
-    {
-        useMask.endEdit();
-    }
-    virtual ~BaseMechanicalState()
-    { }
+    BaseMechanicalState();
 
-    /// Resize all stored vector
-    virtual void resize(int vsize) = 0;
+    virtual ~BaseMechanicalState();
 
-    /// functions that allows to have access to the geometry without a template class : not efficient
-    virtual int getSize() const { return 0; }
-    virtual unsigned int getCoordDimension() const { return 0; }
-    virtual unsigned int getDerivDimension() const { return 0; }
+    /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
+    /// @{
     virtual double getPX(int /*i*/) const { return 0.0; }
     virtual double getPY(int /*i*/) const { return 0.0; }
     virtual double getPZ(int /*i*/) const { return 0.0; }
-    virtual defaulttype::Vector3 getScale() const { return defaulttype::Vector3(1.0,1.0,1.0); }
 
-    /// @name Integration related methods
+    /// @}
+
+    /// @name Vectors allocation and generic operations (based on VecId)
+    /// @{
+    /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
+    virtual void vAvail(VecCoordId& v, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
+    virtual void vAvail(VecDerivId& v, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
+    //virtual void vAvail(MatrixDerivId& v) = 0;
+
+    /// Allocate a new temporary vector
+    virtual void vAlloc(VecCoordId v, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Allocate a new temporary vector
+    virtual void vAlloc(VecDerivId v, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Allocate a new temporary vector
+    //virtual void vAlloc(MatrixDerivId v) = 0;
+
+    /// Free a temporary vector
+    virtual void vFree(VecCoordId v, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Free a temporary vector
+    virtual void vFree(VecDerivId v, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Free a temporary vector
+    //virtual void vFree(MatrixDerivId v) = 0;
+
+    /// Compute a linear operation on vectors : v = a + b * f.
+    ///
+    /// This generic operation can be used for many simpler cases :
+    /// \li v = 0
+    /// \li v = a
+    /// \li v = a + b
+    /// \li v = b * f
+    virtual void vOp(VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), double f = 1.0, const ExecParams* params = ExecParams::defaultInstance() ) = 0;
+#ifdef SOFA_SMP
+    virtual void vOp(VecId v, ConstVecId a, ConstVecId b, double f, a1::Shared<double> * fSh, const ExecParams* params = ExecParams::defaultInstance() ) = 0;
+    virtual void vOpMEq(VecId v, ConstVecId a = ConstVecId::null(), a1::Shared<double> * fSh=NULL, const ExecParams* params = ExecParams::defaultInstance() ) = 0;
+    virtual void vDot(a1::Shared<double> *result,ConstVecId a, ConstVecId b, const ExecParams* params = ExecParams::defaultInstance() ) = 0;
+#endif
+    /// Data structure describing a set of linear operation on vectors
+    /// \see vMultiOp
+    class VMultiOpEntry : public std::pair< MultiVecId, helper::vector< std::pair< ConstMultiVecId, double > > >
+    {
+    public:
+        typedef std::pair< ConstMultiVecId, double > Fact;
+        typedef helper::vector< Fact > VecFact;
+        typedef std::pair< MultiVecId, VecFact > Inherit;
+        VMultiOpEntry() : Inherit(MultiVecId::null(), VecFact()) {}
+        VMultiOpEntry(MultiVecId v) : Inherit(v, VecFact()) {}
+        VMultiOpEntry(MultiVecId v, ConstMultiVecId a, double af = 1.0) : Inherit(v, VecFact())
+        { this->second.push_back(Fact(a, af)); }
+        VMultiOpEntry(MultiVecId v, ConstMultiVecId a, ConstMultiVecId b, double bf = 1.0) : Inherit(v, VecFact())
+        { this->second.push_back(Fact(a,1.0));  this->second.push_back(Fact(b, bf)); }
+        VMultiOpEntry(MultiVecId v, ConstMultiVecId a, double af, ConstMultiVecId b, double bf = 1.0) : Inherit(v, VecFact())
+        { this->second.push_back(Fact(a, af));  this->second.push_back(Fact(b, bf)); }
+    };
+
+    typedef helper::vector< VMultiOpEntry > VMultiOp;
+
+    /// Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
+    ///
+    /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
+    /// Note that if the result vector appears inside the expression, it must be the first operand.
+    /// By default this method decompose the computation into multiple vOp calls.
+    virtual void vMultiOp(const VMultiOp& ops, const ExecParams* params = ExecParams::defaultInstance());
+
+    /// Compute the scalar products between two vectors.
+    virtual double vDot(ConstVecId a, ConstVecId b, const ExecParams* params = ExecParams::defaultInstance()) = 0; //{ return 0; }
+
+    /// Apply a threshold to all entries
+    virtual void vThreshold( VecId a, double threshold ) = 0;
+
+    /// @}
+
+    /// @name Mechanical integration related methods
+    /// Note: all these methods can now be implemented generically using VecId-based operations
     /// @{
 
     /// Called at the beginning of each integration step.
-    virtual void beginIntegration(double /*dt*/) { }
+    virtual void beginIntegration(double /*dt*/)
+    {
+        // it is no longer necessary to switch forceId to internalForce here...
+    }
 
-    /// Called at the end of each iteration step.
-    virtual void endIntegration(double /*dt*/) { }
+    /// Called at the end of each integration step.
+    virtual void endIntegration(double /*dt*/, const ExecParams* params)
+    {
+        vOp(VecId::externalForce(), ConstVecId::null(), ConstVecId::null(), 1.0, params); // externalForce = 0
+    }
 
     /// Set F = 0
-    virtual void resetForce() =0;//{ vOp( VecId::force() ); }
+    virtual void resetForce( VecId f = VecId::force(), const ExecParams* params = ExecParams::defaultInstance())
+    { vOp( f, ConstVecId::null(), ConstVecId::null(), 1.0, params ); }
 
     /// Set Acc =0
-    virtual void resetAcc() =0; //{ vOp( VecId::accFromFrame() ); }
-
-    /// Reset the constraint matrix
-    virtual void resetConstraint() =0;
+    virtual void resetAcc( VecId a = VecId::dx() /* VecId::accFromFrame() */, const ExecParams* params  = ExecParams::defaultInstance() )
+    { vOp( a, ConstVecId::null(), ConstVecId::null(), 1.0, params ); }
 
     /// Add stored external forces to F
-    virtual void accumulateForce() { }
+    virtual void accumulateForce( VecId f = VecId::force(), const ExecParams* params = ExecParams::defaultInstance() )
+    {
+        vOp( f, f, ConstVecId::externalForce(), 1.0, params ); // f += externalForce
+    }
 
-    /// Add external forces derivatives to F
-    virtual void accumulateDf() { }
+    /// @}
 
-    /// Translate the current state
-    virtual void applyTranslation(const double dx, const double dy, const double dz)=0;
+    /// @name Constraints related methods
+    /// @{
 
-
-    /// Rotate the current state
-    /// This method is optional, it is used when the user want to interactively change the position of an object using Euler angles
-    virtual void applyRotation (const double /*rx*/, const double /*ry*/, const double /*rz*/) {};
-
-    /// Rotate the current state
-    virtual void applyRotation(const defaulttype::Quat q)=0;
-
-    /// Scale the current state
-    virtual void applyScale(const double /*sx*/,const double /*sy*/,const double /*sz*/)=0;
+    /// Reset the constraint matrix
+    virtual void resetConstraint(const ExecParams* params = ExecParams::defaultInstance()) = 0;
 
     /// Renumber the constraint ids with the given permutation vector
     virtual void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering) = 0;
-
-
-    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
-    {
-        return false;
-    }
-
-    /// Identify one vector stored in MechanicalState
-    typedef sofa::core::VecId VecId;
 
     class ConstraintBlock
     {
@@ -164,133 +216,13 @@ public:
         defaulttype::BaseMatrix *matrix;
     };
 
-
-    /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
-    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */) const {return std::list<ConstraintBlock>();};
-
+    /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
+    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */) const
+    {  return std::list<ConstraintBlock>();  }
 
     /// Compute the error given a state vector and a line of the Jacobian (line in vector C)
-    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, VecId /*id*/) {this->serr << "NOT IMPLEMENTED YET" << this->sendl; return (SReal)0;};
-
-    Data<bool> useMask;
-    /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
-    helper::ParticleMask forceMask;
-
-
-    /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
-    virtual void vAvail(VecId& v) = 0;
-
-    /// Allocate a new temporary vector
-    virtual void vAlloc(VecId v) = 0;
-
-    /// Free a temporary vector
-    virtual void vFree(VecId v) = 0;
-
-    /// Compute a linear operation on vectors : v = a + b * f.
-    ///
-    /// This generic operation can be used for many simpler cases :
-    /// \li v = 0
-    /// \li v = a
-    /// \li v = a + b
-    /// \li v = b * f
-    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0) = 0; // {}
-#ifdef SOFA_SMP
-    virtual void vOp(VecId v, VecId a, VecId b, double f, a1::Shared<double> * fSh) = 0; // {}
-    virtual void vOpMEq(VecId v, VecId a = VecId::null(), a1::Shared<double> * fSh=NULL) = 0; // {}
-    virtual void vDot(a1::Shared<double> *result,VecId a, VecId b) = 0; //{ return 0; }
-#endif
-    /// Data structure describing a set of linear operation on vectors
-    /// \see vMultiOp
-    typedef helper::vector< std::pair< VecId, helper::vector< std::pair< VecId, double > > > > VMultiOp;
-
-    /// Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
-    ///
-    /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
-    /// Note that if the result vector appears inside the expression, it must be the first operand.
-    /// By default this method decompose the computation into multiple vOp calls.
-    virtual void vMultiOp(const VMultiOp& ops)
-    {
-        for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
-        {
-            VecId r = it->first;
-            const helper::vector< std::pair< VecId, double > >& operands = it->second;
-            int nop = operands.size();
-            if (nop==0)
-            {
-                vOp(r);
-            }
-            else if (nop==1)
-            {
-                if (operands[0].second == 1.0)
-                    vOp(r, operands[0].first);
-                else
-                    vOp(r, VecId::null(), operands[0].first, operands[0].second);
-            }
-            else
-            {
-                int i;
-                if (operands[0].second == 1.0)
-                {
-                    vOp(r, operands[0].first, operands[1].first, operands[1].second);
-                    i = 2;
-                }
-                else
-                {
-                    vOp(r, VecId::null(), operands[0].first, operands[0].second);
-                    i = 1;
-                }
-                for (; i<nop; ++i)
-                    vOp(r, r, operands[i].first, operands[i].second);
-            }
-        }
-    }
-
-    /// Compute the scalar products between two vectors.
-    virtual double vDot(VecId a, VecId b) = 0; //{ return 0; }
-
-    /// Apply a threshold to all entries
-    virtual void vThreshold( VecId a, double threshold )=0;
-
-    /// Make the position vector point to the identified vector.
-    ///
-    /// To reset it to the default storage use \code setX(VecId::position()) \endcode
-    virtual void setX(VecId v) = 0; //{}
-
-    /// Make the free-motion position vector point to the identified vector.
-    ///
-    /// To reset it to the default storage use \code setV(VecId::freePosition()) \endcode
-    virtual void setXfree(VecId v) = 0; //{}
-
-    /// Make the free-motion velocity vector point to the identified vector.
-    ///
-    /// To reset it to the default storage use \code setV(VecId::freeVelocity()) \endcode
-    virtual void setVfree(VecId v) = 0; //{}
-
-    /// Make the velocity vector point to the identified vector.
-    ///
-    /// To reset it to the default storage use \code setV(VecId::velocity()) \endcode
-    virtual void setV(VecId v) = 0; //{}
-
-    /// Make the force vector point to the identified vector.
-    ///
-    /// To reset it to the default storage use \code setF(VecId::force()) \endcode
-    virtual void setF(VecId v) = 0; //{}
-
-    /// Make the displacement vector point to the identified vector.
-    ///
-    /// To reset it to the default storage use \code setDx(VecId::dx()) \endcode
-    /// to make it point to accFromFrame use \code setDx(VecId::accFromFrame()) \endcode
-    virtual void setDx(VecId v) = 0; //{}
-
-    /// Make the holonomic constraint system matrix point to either holonomic Constraints or nonHolonomic Constraints.
-    ///
-    /// To reset it to the default storage or to make it point to holonomicConstraints use \code setDx(VecId::holonomicC()) \endcode
-    /// To make it point to nonNolonomicConstraints use \code setC(VecId::NonHolonomicC()) \endcode
-    virtual void setC(VecId v) = 0;
-
-
-    /// new: get the size of the vecconst (used when mapping constraints)
-    virtual unsigned int getCSize() const = 0;
+    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, ConstVecId /*id*/)
+    {  this->serr << "NOT IMPLEMENTED YET" << this->sendl; return (SReal)0;  }
 
     /// new : get compliance on the constraints
     virtual void getCompliance(double ** /*w*/) { }
@@ -299,7 +231,61 @@ public:
 
     virtual void resetContactForce(void) {}
 
-    virtual void addDxToCollisionModel(void) = 0; //{}
+    virtual void addDxToCollisionModel( ConstVecId dx = ConstVecId::dx() )
+    { vOp( VecId::position(), ConstVecId::freePosition(), dx ); }
+
+    /// @}
+
+    /// @name Misc properties and actions
+    /// @{
+
+    virtual unsigned int getCoordDimension() const { return 0; }
+    virtual unsigned int getDerivDimension() const { return 0; }
+
+    /// Translate the current state
+    virtual void applyTranslation(const double dx, const double dy, const double dz)=0;
+
+    /// Rotate the current state
+    /// This method is optional, it is used when the user want to interactively change the position of an object using Euler angles
+    virtual void applyRotation (const double /*rx*/, const double /*ry*/, const double /*rz*/) {};
+
+    /// Rotate the current state
+    virtual void applyRotation(const defaulttype::Quat q)=0;
+
+    /// Scale the current state
+    virtual void applyScale(const double /*sx*/,const double /*sy*/,const double /*sz*/)=0;
+
+    virtual defaulttype::Vector3 getScale() const { return defaulttype::Vector3(1.0,1.0,1.0); }
+
+    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+    {
+        return false;
+    }
+
+    /// Find mechanical particles hit by the given ray.
+    /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
+    /// Returns false if this object does not support picking
+    virtual bool pickParticles(double /*rayOx*/, double /*rayOy*/, double /*rayOz*/,
+            double /*rayDx*/, double /*rayDy*/, double /*rayDz*/,
+            double /*radius0*/, double /*dRadius*/,
+            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& /*particles*/, const ExecParams* /* params */)
+    {
+        return false;
+    }
+
+    /// @}
+
+    /// @name Mask-based optimized computations (by only updating a subset of the DOFs)
+    /// @{
+
+    Data<bool> useMask;
+    /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
+    helper::ParticleMask forceMask;
+
+    /// @}
+
+    /// @name Interface with BaseMatrix / BaseVector
+    /// @{
 
     /// Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
     /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
@@ -309,47 +295,37 @@ public:
     /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
     virtual unsigned int getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
-    /// Load local mechanical data stored in the state in a global BaseVector basically stored in solvers
-    virtual void loadInBaseVector(defaulttype::BaseVector *, VecId , unsigned int &) = 0;
+    /// Copy data to a global BaseVector from the state stored in a local vector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void copyToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
 
-    /// Load local mechanical data stored in the state in a (possibly smaller) BaseVector
-    virtual void loadInVector(defaulttype::BaseVector *, VecId , unsigned int) = 0;
+    /// Copy data to a local vector from the state stored in a global BaseVector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void copyFromBaseVector(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
 
-    /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
-    virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
+    /// Add data to a global BaseVector from the state stored in a local vector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
 
-    /// Add data stored in a Vector (whose size is smaller or equal to the State vector)  to a local mechanical vector of the MechanicalState
-    virtual void addVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
+    /// Add data to a local vector from the state stored in a global BaseVector
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void addFromBaseVector(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
 
     /// @}
 
     /// @name Data output
     /// @{
-    virtual void printDOF( VecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const = 0;
-    virtual void initGnuplot(const std::string) {}
-    virtual void exportGnuplot(double) {}
-    virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) {return 0;};
 
-    virtual void writeX(std::ostream &out)=0;
-    virtual void readX(std::istream &in)=0;
-    virtual double compareX(std::istream &in)=0;
+    virtual void printDOF( ConstVecId v, std::ostream& out = std::cerr, int firstIndex = 0, int range = -1 ) const = 0;
+    virtual unsigned printDOFWithElapsedTime(ConstVecId /*v*/, unsigned /*count*/ = 0, unsigned /*time*/ = 0, std::ostream& /*out*/ = std::cerr ) { return 0; }
+    virtual void initGnuplot(const std::string /*filepath*/) {}
+    virtual void exportGnuplot(double /*time*/) {}
 
-    virtual void writeV(std::ostream &out)=0;
-    virtual void readV(std::istream &in)=0;
-    virtual double compareV(std::istream &in)=0;
+    virtual void writeVec(ConstVecId v, std::ostream &out) = 0;
+    virtual void readVec(VecId v, std::istream &in) = 0;
+    virtual double compareVec(ConstVecId v, std::istream &in) = 0;
 
-    virtual void writeF(std::ostream &out)=0;
-    virtual void writeDx(std::ostream &out)=0;
     /// @}
-
-    /// Find mechanical particles hit by the given ray.
-    /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
-    /// Returns false if this object does not support picking
-    virtual bool pickParticles(double /*rayOx*/, double /*rayOy*/, double /*rayOz*/, double /*rayDx*/, double /*rayDy*/, double /*rayDz*/, double /*radius0*/, double /*dRadius*/,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& /*particles*/)
-    {
-        return false;
-    }
 };
 
 } // namespace behavior

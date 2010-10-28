@@ -2,12 +2,12 @@
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_H
 
 #include <sofa/core/Multi2Mapping.h>
-#include <sofa/core/behavior/MechanicalMulti2Mapping.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/behavior/MechanicalState.h>
+
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+
 #include <sofa/component/component.h>
 
 namespace sofa
@@ -19,29 +19,30 @@ namespace component
 namespace mapping
 {
 
-template < class BasicMulti2Mapping >
-class CenterOfMassMulti2Mapping : public BasicMulti2Mapping
+template <class TIn1, class TIn2, class TOut>
+class CenterOfMassMulti2Mapping : public core::Multi2Mapping<TIn1, TIn2, TOut>
 {
-public :
-    SOFA_CLASS(SOFA_TEMPLATE(CenterOfMassMulti2Mapping,BasicMulti2Mapping), BasicMulti2Mapping);
+public:
+    SOFA_CLASS(SOFA_TEMPLATE3(CenterOfMassMulti2Mapping, TIn1, TIn2, TOut), SOFA_TEMPLATE3(core::Multi2Mapping, TIn1, TIn2, TOut));
 
-    typedef BasicMulti2Mapping     Inherit;
-    typedef typename Inherit::In1  In1;
-    typedef typename In1::DataTypes In1DataTypes;
+    typedef core::Multi2Mapping<TIn1, TIn2, TOut> Inherit;
+    typedef TIn1 In1;
+    typedef TIn2 In2;
+    typedef TOut Out;
+
+    typedef In1 In1DataTypes;
     typedef typename In1::Coord    In1Coord;
     typedef typename In1::Deriv    In1Deriv;
     typedef typename In1::VecCoord In1VecCoord;
     typedef typename In1::VecDeriv In1VecDeriv;
 
-    typedef typename Inherit::In2  In2;
-    typedef typename In2::DataTypes In2DataTypes;
+    typedef In2 In2DataTypes;
     typedef typename In2::Coord    In2Coord;
     typedef typename In2::Deriv    In2Deriv;
     typedef typename In2::VecCoord In2VecCoord;
     typedef typename In2::VecDeriv In2VecDeriv;
 
-    typedef typename Inherit::Out Out;
-    typedef typename Out::DataTypes OutDataTypes;
+    typedef Out OutDataTypes;
     typedef typename Out::Coord   OutCoord;
     typedef typename Out::Deriv   OutDeriv;
     typedef typename Out::VecCoord OutVecCoord;
@@ -52,7 +53,12 @@ public :
     typedef typename helper::vector<const In1VecCoord*> vecConstIn1VecCoord;
     typedef typename helper::vector<const In2VecCoord*> vecConstIn2VecCoord;
 
-    CenterOfMassMulti2Mapping():Inherit() {}
+    CenterOfMassMulti2Mapping(helper::vector< core::State<In1>* > in1,
+            helper::vector< core::State<In2>* > in2,
+            helper::vector< core::State<Out>* > out)
+        : Inherit(in1, in2, out)
+    {
+    }
 
     virtual ~CenterOfMassMulti2Mapping()
     {}
@@ -62,8 +68,6 @@ public :
 
     virtual void init();
     void draw();
-
-
 
 protected:
 
@@ -80,29 +84,17 @@ protected:
     double invTotalMass;
 };
 
-
-using namespace core::behavior;
 using namespace sofa::defaulttype;
-using namespace sofa::core;
+
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping<
-MechanicalMulti2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> >
-> ;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping<
-MechanicalMulti2Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> >
-> ;
-
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern  template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping<
-MechanicalMulti2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> >
->;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping<
-MechanicalMulti2Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> >
->;
-
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMulti2Mapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
 #endif
 #endif
 

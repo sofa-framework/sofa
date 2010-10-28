@@ -28,9 +28,12 @@
 #define SOFA_CORE_BEHAVIOR_MASS_H
 
 #include <sofa/core/core.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -61,45 +64,51 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    //Constraint typedef
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-//    typedef typename DataTypes::VecConst VecConst;
-//    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
 
     Mass(MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~Mass();
 
+    virtual void init();
+
+    /// Retrieve the associated MechanicalState
+    MechanicalState<DataTypes>* getMState() { return this->mstate; }
+
+
     /// @name Vector operations
     /// @{
 
-    /// f += factor M dx
+    ///                         $ f += factor M dx $
     ///
     /// This method retrieves the force and dx vector and call the internal
-    /// addMDx(VecDeriv&,const VecDeriv&) method implemented by the component.
-    virtual void addMDx(double factor = 1.0);
+    /// addMDx(DataVecDeriv&, const DataVecDeriv&, double, const MechanicalParams*) method implemented by the component.
+    virtual void addMDx(MultiVecDerivId fid, double factor, const MechanicalParams* mparams);
 
-    /// dx = M^-1 f
+    virtual void addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const MechanicalParams* mparams);
+
+    /// @deprecated
+    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+
+
+    ///                            $ dx = M^-1 f $
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
-    virtual void accFromF();
+    virtual void accFromF(MultiVecDerivId aid, const MechanicalParams* mparams);
 
-    /// f += factor M dx
-    ///
-    /// This method must be implemented by the component.
-    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0) = 0;
+    virtual void accFromF(DataVecDeriv& a, const DataVecDeriv& f, const MechanicalParams* mparams);
 
-    /// dx = M^-1 f
-    ///
-    /// This method must be implemented by the component.
-    virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0;
+    /// @deprecated
+    virtual void accFromF(VecDeriv& a, const VecDeriv& f);
+
 
     /// Mass forces (gravity) often have null derivative
-    virtual void addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/, double /*kFactor*/, double /*bFactor*/)
-    {}
+    virtual void addDForce(DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ , const MechanicalParams* /*mparams*/ );
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -111,32 +120,28 @@ public:
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKdx(double mFactor, double bFactor, double kFactor);
+    virtual void addMBKdx(MultiVecDerivId dfId , const MechanicalParams* mparams);
+    //virtual void addMBKdx(double mFactor, double bFactor, double kFactor);
 
-    /// Accumulate the contribution of M, B, and/or K matrices multiplied
-    /// by the v vector with the given coefficients.
-    ///
-    /// This method computes
-    /// $ df += mFactor M v + bFactor B v + kFactor K v $
-    /// For masses, it calls both addMdx and addDForce (which is often empty).
-    ///
-    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKv(double mFactor, double bFactor, double kFactor);
-
-    /// vMv/2 using dof->getV()
+    ///                         $ e = 1/2  v^t M v $
     ///
     /// This method retrieves the velocity vector and call the internal
-    /// getKineticEnergy(const VecDeriv&) method implemented by the component.
-    virtual double getKineticEnergy() const;
+    /// getKineticEnergy(const DataVecDeriv&, const MechanicalParams*) method implemented by the component.
+    virtual double getKineticEnergy( const MechanicalParams* mparams) const;
+    virtual double getKineticEnergy( const DataVecDeriv& v   , const MechanicalParams* mparams) const;
 
-    //virtual double getPotentialEnergy();
+    /// @deprecated
+    virtual double getKineticEnergy( const VecDeriv& v       ) const;
 
-    /// vMv/2
+    ///                         $ e = M g x $
     ///
-    /// This method must be implemented by the component.
-    virtual double getKineticEnergy( const VecDeriv& v ) const=0;
+    /// This method retrieves the positions vector and call the internal
+    /// getPotentialEnergy(const VecCoord&, const MechanicalParams*) method implemented by the component.
+    virtual double getPotentialEnergy( const MechanicalParams* mparams) const;
+    virtual double getPotentialEnergy( const DataVecCoord& x , const MechanicalParams* mparams  ) const;
+
+    /// @deprecated
+    virtual double getPotentialEnergy( const VecCoord& x       ) const;
 
     /// @}
 
@@ -144,17 +149,12 @@ public:
     /// @{
 
     /// @deprecated
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams);
+    //virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     /// @deprecated
     virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
-
-    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact)
-    {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-        if (r)
-            addMToMatrix(r.matrix, mFact, r.offset);
-    }
+    virtual void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams);
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -162,7 +162,8 @@ public:
     /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact);
+    virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams);
+    //virtual void addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact);
     //virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
 
     /// @}
@@ -171,30 +172,30 @@ public:
     virtual void initGnuplot(const std::string path);
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(double time);
+    virtual void exportGnuplot(double time, const MechanicalParams* mparams = MechanicalParams::defaultInstance());
 
     /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
-    virtual void addGravityToV(double dt)=0;
-
+    virtual void addGravityToV(MultiVecDerivId /*vid*/, const MechanicalParams* /*mparams*/) {}
+    //virtual void addGravityToV(double dt)=0;
 
     virtual double getElementMass(unsigned int) const;
-    virtual void getElementMass(unsigned int , defaulttype::BaseMatrix *m) const;
+    virtual void   getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;
-
     /// @}
 };
 
+
 /** Return the inertia force applied to a body referenced in a moving coordinate system.
-\param sv spatial velocity (omega, vorigin) of the coordinate system
-\param a acceleration of the origin of the coordinate system
-\param m mass of the body
-\param x position of the body in the moving coordinate system
-\param v velocity of the body in the moving coordinate system
-This default implementation returns no inertia.
-*/
+ *  \param sv spatial velocity (omega, vorigin) of the coordinate system
+ *  \param a acceleration of the origin of the coordinate system
+ *  \param m mass of the body
+ *  \param x position of the body in the moving coordinate system
+ *  \param v velocity of the body in the moving coordinate system
+ *         This default implementation returns no inertia.
+ */
 template<class Coord, class Deriv, class Vec, class M, class SV>
 Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ )
 {

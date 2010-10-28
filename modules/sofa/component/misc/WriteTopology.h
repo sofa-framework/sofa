@@ -117,8 +117,8 @@ public:
 class SOFA_COMPONENT_MISC_API WriteTopologyCreator: public Visitor
 {
 public:
-    WriteTopologyCreator();
-    WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, int c=0);
+    WriteTopologyCreator(const core::ExecParams* params);
+    WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c=0);
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n)                  { sceneName = n; }
@@ -144,7 +144,7 @@ protected:
 class SOFA_COMPONENT_MISC_API WriteTopologyActivator: public simulation::Visitor
 {
 public:
-    WriteTopologyActivator( bool active) : state(active) {}
+    WriteTopologyActivator( bool active, const core::ExecParams* params) : Visitor(params), state(active) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     bool getState() const { return state; }

@@ -50,23 +50,23 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
 #if 1
     // new more powerful visitors
     parent->propagateDxAndResetDf(x,res);
-    parent->addMBKdx(res,mFact,bFact,kFact, false); // df = (m M + b B + k K) dx
+    parent->addMBKdx(res,parent->mparams.mFactor(),parent->mparams.bFactor(),parent->mparams.kFactor(), false); // df = (m M + b B + k K) dx
 
 #else
     parent->propagateDx(x);          // dx = p
     parent->computeDf(res);            // q = K p
 
-    if (kFact != 1.0)
-        res *= kFact; // q = k K p
+    if (parent->mparams.kFactor() != 1.0)
+        res *= parent->mparams.kFactor(); // q = k K p
 
     // apply global Rayleigh damping
-    if (mFact == 1.0)
+    if (parent->mparams.mFactor() == 1.0)
     {
         parent->addMdx(res); // no need to propagate p as dx again
     }
-    else if (mFact != 0.0)
+    else if (parent->mparams.mFactor() != 0.0)
     {
-        parent->addMdx(res,simulation::SolverImpl::VecId(),mFact); // no need to propagate p as dx again
+        parent->addMdx(res,core::MultiVecDerivId(),parent->mparams.mFactor()); // no need to propagate p as dx again
     }
     // q = (m M + k K) p
 
@@ -92,17 +92,18 @@ void GraphScatteredMatrix::apply(ParallelGraphScatteredVector& res, ParallelGrap
     parent->propagateDx(x);          // dx = p
     parent->computeDf(res);            // q = K p
 
-    if (kFact != 1.0)
-        res *= kFact; // q = k K p
+    if (parent->mparams.kFactor() != 1.0)
+        res *= parent->mparams.kFactor(); // q = k K p
 
     // apply global Rayleigh damping
-    if (mFact == 1.0)
+    // TODO : check
+//    if (parent->mparams.kFactor() == 1.0)
+//    {
+//        parent->addMdx(res); // no need to propagate p as dx again
+//    }
+    /* else */ if (parent->mparams.mFactor() != 0.0)
     {
-        parent->addMdx(res); // no need to propagate p as dx again
-    }
-    else if (mFact != 0.0)
-    {
-        parent->addMdx(res,simulation::SolverImpl::VecId(),mFact); // no need to propagate p as dx again
+        parent->addMdx(res,core::MultiVecDerivId::null(),parent->mparams.mFactor()); // no need to propagate p as dx again
     }
     // q = (m M + k K) p
 

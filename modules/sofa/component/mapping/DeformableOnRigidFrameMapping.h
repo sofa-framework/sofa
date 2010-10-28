@@ -25,15 +25,14 @@
 #ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MappedModel.h>
-#include <sofa/component/component.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/Multi2Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+
+#include <sofa/component/component.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+
 #include <vector>
-#include <sofa/core/behavior/BaseMass.h>
 
 namespace sofa
 {
@@ -51,43 +50,57 @@ class DeformableOnRigidFrameMappingInternalData
 public:
 };
 
-
-template <class BasicMapping>
-class DeformableOnRigidFrameMapping : public BasicMapping
+template <class TIn, class TInRoot, class TOut>
+class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DeformableOnRigidFrameMapping,BasicMapping), BasicMapping);
+    SOFA_CLASS(SOFA_TEMPLATE3(DeformableOnRigidFrameMapping, TIn, TInRoot, TOut), SOFA_TEMPLATE3(core::Multi2Mapping, TIn, TInRoot, TOut));
 
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::DataTypes OutDataTypes;
-    typedef typename Out::VecCoord VecCoord;
-    typedef typename Out::VecDeriv VecDeriv;
-    typedef typename Out::Coord Coord;
-    typedef typename Out::Deriv Deriv;
+    typedef core::Multi2Mapping<TIn, TInRoot, TOut> Inherit;
+
+    typedef TIn In;
+    typedef TInRoot InRoot;
+    typedef TOut Out;
+
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename OutCoord::value_type OutReal;
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
+
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
-    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
-    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
-    typedef typename Coord::value_type Real;
-    enum { N=OutDataTypes::spatial_dimensions };
+    typedef typename In::Real InReal;
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    typedef typename InRoot::VecCoord InRootVecCoord;
+    typedef typename InRoot::VecDeriv InRootVecDeriv;
+    typedef typename InRoot::MatrixDeriv InRootMatrixDeriv;
+    typedef typename InRoot::Coord InRootCoord;
+    typedef typename InRoot::Deriv InRootDeriv;
+    typedef typename InRoot::Real InRootReal;
+    typedef Data<InRootVecCoord> InRootDataVecCoord;
+    typedef Data<InRootVecDeriv> InRootDataVecDeriv;
+    typedef Data<InRootMatrixDeriv> InRootDataMatrixDeriv;
+
+    typedef typename OutCoord::value_type Real;
+    typedef OutCoord Coord;
+    typedef OutDeriv Deriv;
+    enum { N=Out::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Vec<N,Real> Vector ;
 
-    typedef sofa::core::behavior::MechanicalState<defaulttype::Rigid3dTypes> InRoot;
-    typedef typename InRoot::Coord InRootCoord;
-    typedef typename InRoot::VecCoord InRootVecCoord;
-    typedef typename InRoot::Deriv InRootDeriv;
-    typedef typename InRoot::VecDeriv InRootVecDeriv;
-
-    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
-
-    InRoot* rootModel;
-    Data<std::string> m_rootModelName;
-
-    //Data< VecCoord > points;
-    VecCoord rotatedPoints;
-    DeformableOnRigidFrameMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
+    OutVecCoord rotatedPoints;
+    DeformableOnRigidFrameMappingInternalData<In, Out> data;
     Data<unsigned int> index;
     sofa::core::objectmodel::DataFileName fileDeformableOnRigidFrameMapping;
     Data< bool > useX0;
@@ -98,86 +111,157 @@ public:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-
-    DeformableOnRigidFrameMapping ( In* from, Out* to );
+    DeformableOnRigidFrameMapping(helper::vector< core::State<In>* > from,
+            helper::vector< core::State<InRoot>* > fromRoot,
+            helper::vector< core::State<Out>* > to);
 
     virtual ~DeformableOnRigidFrameMapping()
     {}
 
-    int addPoint ( const Coord& c );
-    int addPoint ( const Coord& c, int indexFrom );
+    int addPoint ( const OutCoord& c );
+    int addPoint ( const OutCoord& c, int indexFrom );
 
     void init();
 
-    //override mapping methods to handle a second "In" component
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord * inroot  );
-
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot );
-
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot );
-
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in, typename InRoot::MatrixDeriv* outroot );
-
-
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+    //Apply
+    void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
+    void apply( const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+            const helper::vector<const InDataVecCoord*>& dataVecInPos ,
+            const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos,
+            const core::MechanicalParams* /* mparams */)
     {
-        //serr<<"WARNING apply without rigid frame is called "<<sendl;
-        apply(out, in, NULL);
-    }
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
-    {
-        applyJ(out,in, NULL);
-    }
+        if(dataVecOutPos.empty() || dataVecInPos.empty())
+            return;
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
-    {
-        applyJT(out,in, NULL);
-    }
+        const InRootVecCoord* inroot = NULL;
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
-    {
-        applyJT(out,in, NULL);
+        //We need only one input In model and input Root model (if present)
+        OutVecCoord& out = *dataVecOutPos[0]->beginEdit();
+        const InVecCoord& in = dataVecInPos[0]->getValue();
+
+        if (!dataVecInRootPos.empty())
+            inroot = &dataVecInRootPos[0]->getValue();
+
+        apply(out, in, inroot);
+
+        dataVecOutPos[0]->endEdit();
     }
 
-    /**
-    	 * @name
-    	 */
-    //@{
-    /**
-     * @brief
-     */
-    void propagateX();
+    //ApplyJ
+    void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
+    void applyJ( const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+            const helper::vector<const InDataVecDeriv*>& dataVecInVel,
+            const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel,
+            const core::MechanicalParams* /* mparams */)
+    {
+        if(dataVecOutVel.empty() || dataVecInVel.empty())
+            return;
 
-    /**
-     * @brief
-     */
-    void propagateXfree();
+        const InRootVecDeriv* inroot = NULL;
 
+        //We need only one input In model and input Root model (if present)
+        OutVecDeriv& out = *dataVecOutVel[0]->beginEdit();
+        const InVecDeriv& in = dataVecInVel[0]->getValue();
 
-    /**
-     * @brief
-     */
-    void propagateV();
+        if (!dataVecInRootVel.empty())
+            inroot = &dataVecInRootVel[0]->getValue();
 
-    /**
-     * @brief
-     */
-    void propagateDx();
+        applyJ(out,in, inroot);
 
-    /**
-     * @brief
-     */
-    void accumulateForce();
+        dataVecOutVel[0]->endEdit();
+    }
 
-    /**
-     * @brief
-     */
-    void accumulateDf();
+    //ApplyJT Force
+    void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
+    void applyJT( const helper::vector< InDataVecDeriv*>& dataVecOutForce,
+            const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
+            const helper::vector<const OutDataVecDeriv*>& dataVecInForce,
+            const core::MechanicalParams* /* mparams */)
+    {
+        if(dataVecOutForce.empty() || dataVecInForce.empty())
+            return;
 
-    /**
-     * @brief
-     */
-    void accumulateConstraint();
+        InRootVecDeriv* outroot = NULL;
+
+        //We need only one input In model and input Root model (if present)
+        InVecDeriv& out = *dataVecOutForce[0]->beginEdit();
+        const OutVecDeriv& in = dataVecInForce[0]->getValue();
+
+        if (!dataVecOutRootForce.empty())
+            outroot = dataVecOutRootForce[0]->beginEdit();
+
+        applyJT(out,in, outroot);
+
+        dataVecOutForce[0]->endEdit();
+        if (outroot != NULL)
+            dataVecOutRootForce[0]->endEdit();
+    }
+
+    //ApplyJT Constraint
+    void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
+    void applyJT( const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
+            const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
+            const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst ,
+            const core::MechanicalParams* /* mparams */)
+    {
+        if(dataMatOutConst.empty() || dataMatInConst.empty())
+            return;
+
+        InRootMatrixDeriv* outroot = NULL;
+
+        //We need only one input In model and input Root model (if present)
+        InMatrixDeriv& out = *dataMatOutConst[0]->beginEdit();
+        const OutMatrixDeriv& in = dataMatInConst[0]->getValue();
+
+        if (!dataMatOutRootConst.empty())
+            outroot = dataMatOutRootConst[0]->beginEdit();
+
+        applyJT(out,in, outroot);
+
+        dataMatOutConst[0]->endEdit();
+        if (outroot != NULL)
+            dataMatOutRootConst[0]->endEdit();
+    }
+//
+///**
+//	 * @name
+//	 */
+//	//@{
+//	/**
+//	 * @brief
+//	 */
+//	void propagateX();
+//
+//	/**
+//	 * @brief
+//	 */
+//	void propagateXfree();
+//
+//
+//	/**
+//	 * @brief
+//	 */
+//	void propagateV();
+//
+//	/**
+//	 * @brief
+//	 */
+//	void propagateDx();
+//
+//	/**
+//	 * @brief
+//	 */
+//	void accumulateForce();
+//
+//	/**
+//	 * @brief
+//	 */
+//	void accumulateDf();
+//
+//	/**
+//	 * @brief
+//	 */
+//	void accumulateConstraint();
 
     /**
       * @brief
@@ -195,59 +279,77 @@ public:
     void setRepartition ( unsigned int value );
     void setRepartition ( sofa::helper::vector<unsigned int> values );
 
+
+    //We have to overload canCreate & create because input2 can be empty
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        bool createResult = true;
+
+        helper::vector< core::State<In>* > stin1;
+        helper::vector< core::State<InRoot>* > stin2;
+        helper::vector< core::State<Out>* > stout;
+
+        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<In> >("input1", arg, stin1);
+        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<Out> >("output", arg, stout);
+
+        //If one of the parsing failed
+        if(!createResult)
+            return false;
+
+        return core::BaseMapping::canCreate(obj, context, arg);
+    }
+
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        bool createResult = true;
+        helper::vector< core::State<In>* > stin1;
+        helper::vector< core::State<InRoot>* > stin2;
+        helper::vector< core::State<Out>* > stout;
+
+        createResult = sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<In> >("input1", arg, stin1);
+        createResult = createResult && sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<Out> >("output", arg, stout);
+
+        //If one of the parsing failed
+        if(!createResult)
+            return;
+
+        sofa::core::objectmodel::VectorObjectRef::parseAll< core::State<InRoot> >("input2", arg, stin2);
+
+        obj = new T( stin1, stin2, stout);
+
+        if (context)
+            context->addObject(obj);
+
+        if (arg)
+            obj->parse(arg);
+    }
+
 protected:
+    core::State<In>* m_fromModel;
+    core::State<Out>* m_toModel;
+    core::State<InRoot>* m_fromRootModel;
+
     class Loader;
     void load ( const char* filename );  /// SUPRESS ? ///
     //const VecCoord& getPoints();         /// SUPRESS ? ///
-    InRoot::Coord rootX;
+    InRootCoord rootX;
 };
 
-using core::Mapping;
-using core::behavior::MechanicalMapping;
-using core::behavior::MappedModel;
-using core::behavior::State;
-using core::behavior::MechanicalState;
 
-using sofa::defaulttype::Vec2dTypes;
 using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec2fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
-using sofa::defaulttype::Rigid2dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::Rigid2fTypes;
-using sofa::defaulttype::Rigid3fTypes;
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP)  //// ATTENTION PB COMPIL WIN3Z
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-// extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-// extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
-//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Vec3fTypes, Rigid3fTypes, Vec3fTypes >;
 #endif
-
-/*
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
-#endif
-#endif
-*/
 #endif
 
 } // namespace mapping

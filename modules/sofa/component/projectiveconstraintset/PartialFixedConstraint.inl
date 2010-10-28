@@ -158,8 +158,9 @@ void PartialFixedConstraint<DataTypes>::init()
     }
 }
 
-template <class DataTypes> template <class DataDeriv>
-void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res)
+template <class DataTypes>
+template <class DataDeriv>
+void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res, const core::MechanicalParams* /*mparams*/)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     Vec6Bool blockedDirection = fixedDirections.getValue();
@@ -194,25 +195,21 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res)
 }
 
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
+void PartialFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    projectResponseT(res);
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseT(res.wref(), mparams);
 }
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectResponse(MatrixDerivRowType& res)
-{
-    projectResponseT(res);
-}
-
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectVelocity(VecDeriv&)
+void PartialFixedConstraint<DataTypes>::projectVelocity(DataVecDeriv& /*vData*/, const core::MechanicalParams* /*mparams*/)
 {
 #if 0 /// @TODO ADD A FLAG FOR THIS
+    helper::WriteAccessor<DataVecDeriv> res = vData;
     const SetIndexArray & indices = f_indices.getValue().getArray();
     //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )
@@ -233,6 +230,27 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(VecDeriv&)
         }
     }
 #endif
+}
+
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::projectPosition(DataVecCoord& /*xData*/, const core::MechanicalParams* /*mparams*/)
+{
+
+}
+
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+{
+    helper::WriteAccessor<DataMatrixDeriv> c = cData;
+
+    MatrixDerivRowIterator rowIt = c->begin();
+    MatrixDerivRowIterator rowItEnd = c->end();
+
+    while (rowIt != rowItEnd)
+    {
+        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        ++rowIt;
+    }
 }
 
 // Matrix Integration interface

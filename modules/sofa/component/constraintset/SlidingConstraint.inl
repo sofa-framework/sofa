@@ -31,6 +31,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
+
 namespace sofa
 {
 
@@ -43,29 +44,27 @@ namespace constraintset
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::init()
 {
-    assert(this->object1);
-    assert(this->object2);
+    assert(this->mstate1);
+    assert(this->mstate2);
 
     thirdConstraint = 0;
 }
 
+
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId)
+void SlidingConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+        , const DataVecCoord &x1, const DataVecCoord &x2, const core::ConstraintParams*)
 {
-    int tm1, tm2a, tm2b;
-    tm1 = m1.getValue();
-    tm2a = m2a.getValue();
-    tm2b = m2b.getValue();
+    int tm1 = m1.getValue();
+    int tm2a = m2a.getValue();
+    int tm2b = m2b.getValue();
 
-    assert(this->object1);
-    assert(this->object2);
+    MatrixDeriv &c1 = *c1_d.beginEdit();
+    MatrixDeriv &c2 = *c2_d.beginEdit();
 
-    MatrixDeriv& c1 = *this->object1->getC();
-    MatrixDeriv& c2 = *this->object2->getC();
-
-    const Coord P = (*this->object1->getXfree())[tm1];
-    const Coord A = (*this->object2->getXfree())[tm2a];
-    const Coord B = (*this->object2->getXfree())[tm2b];
+    const Coord P = x1.getValue()[tm1];
+    const Coord A = x2.getValue()[tm2a];
+    const Coord B = x2.getValue()[tm2b];
 
     // the axis
     Coord uniAB = B - A;
@@ -85,8 +84,8 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
     Coord dir2 = cross(dir1, uniAB);
     dir2.normalize();
 
-    cid = constraintId;
-    constraintId += 2;
+    cid = cIndex;
+    cIndex += 2;
 
     MatrixDerivRowIterator c1_it = c1.writeLine(cid);
     c1_it.addCol(tm1, dir1);
@@ -107,7 +106,7 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
     if (r < 0)
     {
         thirdConstraint = r;
-        constraintId++;
+        cIndex++;
 
         c1_it = c1.writeLine(cid + 2);
         c1_it.setCol(tm1, uniAB);
@@ -118,7 +117,7 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
     else if (r > ab)
     {
         thirdConstraint = r - ab;
-        constraintId++;
+        cIndex++;
 
         c1_it = c1.writeLine(cid + 2);
         c1_it.setCol(tm1, -uniAB);
@@ -126,14 +125,16 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
         c2_it = c2.writeLine(cid + 2);
         c2_it.addCol(tm2b, uniAB);
     }
+
+    c1_d.endEdit();
+    c2_d.endEdit();
 }
 
-template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
-{
-    if (!freeMotion)
-        sout<<"WARNING has to be implemented for method based on non freeMotion"<<sendl;
 
+template<class DataTypes>
+void SlidingConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+        , const DataVecDeriv &, const DataVecDeriv &, const core::ConstraintParams *)
+{
     v->set(cid, m_dist);
     v->set(cid+1, 0.0);
 
@@ -146,20 +147,6 @@ void SlidingConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v
     }
 }
 
-template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
-{
-    if (!yetIntegrated)
-    {
-        id[offset++] = -(int)cid;
-
-        yetIntegrated =  true;
-    }
-    else
-    {
-        id[offset++] = cid;
-    }
-}
 
 #ifdef SOFA_DEV
 template<class DataTypes>
@@ -172,6 +159,7 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::beh
         resTab[offset++] = new UnilateralConstraintResolution();
 }
 #endif
+
 
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::draw()
@@ -187,15 +175,15 @@ void SlidingConstraint<DataTypes>::draw()
         glColor4f(0,1,0,1);
     else
         glColor4f(1,0,1,1);
-    helper::gl::glVertexT((*this->object1->getX())[m1.getValue()]);
+    helper::gl::glVertexT((*this->mstate1->getX())[m1.getValue()]);
     //      helper::gl::glVertexT((*this->object2->getX())[m3]);
     //      helper::gl::glVertexT(proj);
     glEnd();
 
     glBegin(GL_LINES);
     glColor4f(0,0,1,1);
-    helper::gl::glVertexT((*this->object2->getX())[m2a.getValue()]);
-    helper::gl::glVertexT((*this->object2->getX())[m2b.getValue()]);
+    helper::gl::glVertexT((*this->mstate2->getX())[m2a.getValue()]);
+    helper::gl::glVertexT((*this->mstate2->getX())[m2b.getValue()]);
     glEnd();
     glPointSize(1);
 }

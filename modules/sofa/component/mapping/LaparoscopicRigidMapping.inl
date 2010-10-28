@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_INL
 
 #include <sofa/component/mapping/LaparoscopicRigidMapping.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/gl/template.h>
+
+#include <sofa/core/Mapping.inl>
+
 #include <string>
 
 
@@ -41,40 +41,50 @@ namespace component
 namespace mapping
 {
 
-template <class BasicMapping>
-void LaparoscopicRigidMapping<BasicMapping>::init()
+template <class TIn, class TOut>
+void LaparoscopicRigidMapping<TIn, TOut>::init()
 {
-    this->BasicMapping::init();
+    Inherit::init();
 }
 
-template <class BasicMapping>
-void LaparoscopicRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class TIn, class TOut>
+void LaparoscopicRigidMapping<TIn, TOut>::apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<OutVecCoord> > out = dOut;
+    helper::ReadAccessor< Data<InVecCoord> > in = dIn;
+
     out.resize(1);
     out[0].getOrientation() = in[0].getOrientation(); // * rotation.getValue();
     out[0].getCenter() = pivot.getValue() + in[0].getOrientation().rotate(sofa::defaulttype::Vector3(0,0,in[0].getTranslation()));
     currentRotation = in[0].getOrientation();
 }
 
-template <class BasicMapping>
-void LaparoscopicRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class TIn, class TOut>
+void LaparoscopicRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<OutVecDeriv> > out = dOut;
+    helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
+
     out.resize(1);
     out[0].getVOrientation() = in[0].getVOrientation(); //rotation * in[0].getVOrientation();
     out[0].getVCenter() = currentRotation.rotate(sofa::defaulttype::Vector3(0,0,in[0].getVTranslation()));
 }
 
-template <class BasicMapping>
-void LaparoscopicRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class TIn, class TOut>
+void LaparoscopicRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
+    helper::ReadAccessor< Data<OutVecDeriv> > in = dIn;
+
     out[0].getVOrientation() += in[0].getVOrientation(); //rotation * in[0].getVOrientation();
     out[0].getVTranslation() += dot(currentRotation.rotate(sofa::defaulttype::Vector3(0,0,1)), in[0].getVCenter());
 }
 
-template <class BasicMapping>
-void LaparoscopicRigidMapping<BasicMapping>::draw()
+template <class TIn, class TOut>
+void LaparoscopicRigidMapping<TIn, TOut>::draw()
 {
-    if (!this->getShow()) return;
+    if (!this->getShow())
+        return;
 }
 
 } // namespace mapping

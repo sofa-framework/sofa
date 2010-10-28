@@ -3,6 +3,8 @@
 
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 
+#include <sofa/core/MultiMapping.inl>
+
 
 namespace sofa
 {
@@ -16,20 +18,21 @@ namespace mapping
 using namespace sofa::core;
 
 
-template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::init()
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::init()
 {
     Inherit::init();
     unsigned int total = computeTotalInputPoints();
     this->toModels[0]->resize(total);
 }
 
-template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::addPoint( const In* fromModel, int index)
-{
-    typename std::map<const In*, IndexArray>::iterator cur  = _indices.find(fromModel);
 
-    if ( cur != _indices.end() )
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::addPoint( const core::State<In>* fromModel, int index)
+{
+    typename std::map<const core::State<In>*, IndexArray>::iterator cur  = m_indices.find(fromModel);
+
+    if ( cur != m_indices.end() )
     {
         (*cur).second.push_back(index);
     }
@@ -37,17 +40,16 @@ void SubsetMultiMapping<BasicMapping>::addPoint( const In* fromModel, int index)
     {
         IndexArray ptSubset;
         ptSubset.push_back(index);
-        _indices[fromModel] = ptSubset;
+        m_indices[fromModel] = ptSubset;
     }
 }
 
 
-
-template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
 {
-    typename std::map<const In* , IndexArray >::iterator iterMap;
-    Out* output = this->toModels[0];
+    typename std::map<const core::State<In>* , IndexArray >::iterator iterMap;
+    core::State<Out>* output = this->toModels[0];
     unsigned int total = computeTotalInputPoints();
     output->resize(total);
 
@@ -55,10 +57,10 @@ void SubsetMultiMapping<BasicMapping>::apply(const vecOutVecCoord& outPos, const
     unsigned int size = 0;
     for( unsigned int i = 0; i < inPos.size() ; i++)
     {
-        In* current = this->fromModels[i];
+        core::State<In>* current = this->fromModels[i];
         const InVecCoord* currentVecCoord = inPos[i];
-        iterMap = _indices.find( current );
-        if ( iterMap != _indices.end() )
+        iterMap = m_indices.find( current );
+        if ( iterMap != m_indices.end() )
         {
             IndexArray indices = (*iterMap).second;
             for( unsigned int j = 0; j < indices.size() ; j++)
@@ -71,23 +73,24 @@ void SubsetMultiMapping<BasicMapping>::apply(const vecOutVecCoord& outPos, const
     }
 }
 
-template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
 {
-    Out* output = this->toModels[0];
+    core::State<Out>* output = this->toModels[0];
     unsigned int total = computeTotalInputPoints();
     output->resize(total);
 
-    typename std::map<const In* , IndexArray >::iterator iterMap;
+    typename std::map<const core::State<In>* , IndexArray >::iterator iterMap;
     OutVecDeriv* outVecDeriv = outDeriv[0];
     unsigned int size = 0;
 
     for( unsigned int i = 0; i < inDeriv.size() ; i++)
     {
-        In* current = this->fromModels[i];
+        core::State<In>* current = this->fromModels[i];
         const InVecDeriv* currentVecDeriv = inDeriv[i];
-        iterMap = _indices.find( current );
-        if ( iterMap != _indices.end() )
+        iterMap = m_indices.find( current );
+        if ( iterMap != m_indices.end() )
         {
             IndexArray indices = (*iterMap).second;
             for( unsigned int j = 0; j < indices.size() ; j++)
@@ -100,19 +103,20 @@ void SubsetMultiMapping<BasicMapping>::applyJ(const helper::vector< OutVecDeriv*
     }
 }
 
-template < class BasicMapping>
-void SubsetMultiMapping<BasicMapping>::applyJT(const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv )
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv )
 {
-    typename std::map<const In* , IndexArray >::iterator iterMap;
+    typename std::map<const core::State<In>* , IndexArray >::iterator iterMap;
     const OutVecDeriv* mappedVecDeriv = inDeriv[0];
 
     unsigned int size = 0;
     for( unsigned int i = 0; i < outDeriv.size() ; i++)
     {
-        In* current = this->fromModels[i];
+        core::State<In>* current = this->fromModels[i];
         InVecDeriv* currentVecDeriv = outDeriv[i];
-        iterMap = _indices.find( current );
-        if ( iterMap != _indices.end() )
+        iterMap = m_indices.find( current );
+        if ( iterMap != m_indices.end() )
         {
             IndexArray indices = (*iterMap).second;
             for( unsigned int j = 0; j < indices.size() ; j++)

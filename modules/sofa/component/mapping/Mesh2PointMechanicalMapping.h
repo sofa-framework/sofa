@@ -25,10 +25,12 @@
 #ifndef SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
 #define SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/topology/Mesh2PointTopologicalMapping.h>
-#include <sofa/helper/vector.h>
+#include <sofa/core/Mapping.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
+namespace sofa { namespace component { namespace topology { class Mesh2PointTopologicalMapping; } } }
 
 namespace sofa
 {
@@ -39,46 +41,72 @@ namespace component
 namespace mapping
 {
 
-
-template <class BasicMapping>
-class Mesh2PointMechanicalMapping : public BasicMapping
+template <class TIn, class TOut>
+class Mesh2PointMechanicalMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Mesh2PointMechanicalMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(Mesh2PointMechanicalMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
 
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
 
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename InCoord::value_type Real;
 
-    Mesh2PointMechanicalMapping(In* from, Out* to);
+    Mesh2PointMechanicalMapping(core::State<In>* from, core::State<Out>* to);
 
     void init();
 
     virtual ~Mesh2PointMechanicalMapping();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply(Data<OutVecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJ(Data<OutVecDeriv>& out, const Data<InVecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT(Data<InVecDeriv>& out, const Data<OutVecDeriv>& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams);
 
 protected:
     topology::Mesh2PointTopologicalMapping* topoMap;
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };
+
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class Mesh2PointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+extern template class Mesh2PointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class Mesh2PointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
+extern template class Mesh2PointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class Mesh2PointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
+extern template class Mesh2PointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
+#endif
+#endif
+#endif
 
 } // namespace mapping
 

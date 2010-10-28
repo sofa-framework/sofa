@@ -31,12 +31,7 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-//#include <sofa/core/behavior/Mass.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
@@ -102,6 +97,11 @@ public:
     {
         vCenter = c.getVCenter();
         vOrientation = c.getVOrientation();
+    }
+
+    void operator =(const Vec3& v)
+    {
+        vCenter = v;
     }
 
     void operator +=(const RigidDeriv& a)
@@ -262,6 +262,11 @@ public:
     {
         center = c.getCenter();
         orientation = c.getOrientation();
+    }
+
+    void operator =(const Vec3& p)
+    {
+        center = p;
     }
 
     //template<typename real2>
@@ -598,27 +603,11 @@ public:
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
-//	typedef SparseConstraint<Coord> SparseVecCoord;
-//	typedef SparseConstraint<Deriv> SparseVecDeriv;
-//
-//    //! All the Constraints applied to a state Vector
-//#ifndef SOFA_SMP
-//    typedef	vector<SparseVecDeriv> VecConst;
-//#else /* SOFA_SMP */
-//    typedef	SharedVector<SparseVecDeriv> VecConst;
-//#endif /* SOFA_SMP */
-
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-#ifndef SOFA_SMP
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
-#else /* SOFA_SMP */
-    typedef SharedVector<Coord> VecCoord;
-    typedef SharedVector<Deriv> VecDeriv;
-    typedef SharedVector<Real> VecReal;
-#endif /* SOFA_SMP */
 
     template<typename T>
     static void set(Coord& c, T x, T y, T z)
@@ -1232,29 +1221,9 @@ public:
 
     static const char* Name();
 
-#ifndef SOFA_SMP
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
-#else /* SOFA_SMP */
-    typedef SharedVector<Coord> VecCoord;
-    typedef SharedVector<Deriv> VecDeriv;
-#endif /* SOFA_SMP */
-
-
-#ifndef SOFA_SMP
     typedef vector<Real> VecReal;
-#else /* SOFA_SMP */
-    typedef SharedVector<Real> VecReal;
-#endif /* SOFA_SMP */
-
-//    typedef SparseConstraint<Coord> SparseVecCoord;
-//    typedef SparseConstraint<Deriv> SparseVecDeriv;
-//
-//#ifndef SOFA_SMP
-//    typedef	vector<SparseVecDeriv> VecConst;
-//#else /* SOFA_SMP */
-//    typedef	SharedVector<SparseVecDeriv> VecConst;
-//#endif /* SOFA_SMP */
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 

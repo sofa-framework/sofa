@@ -24,7 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseForceField.h"
+#include <sofa/core/behavior/BaseForceField.h>
 
 namespace sofa
 {
@@ -35,28 +35,24 @@ namespace core
 namespace behavior
 {
 
-void BaseForceField::addMBKdx(double /*mFactor*/, double bFactor, double kFactor)
+
+
+void BaseForceField::addMBKdx(MultiVecDerivId dfId , const MechanicalParams* mparams)
 {
-    if (kFactor != 0.0 || bFactor != 0.0)
-        addDForce(kFactor, bFactor);
+    if (mparams->kFactor() != 0.0 || mparams->bFactor() != 0.0)
+        addDForce(dfId, mparams);
 }
 
-void BaseForceField::addMBKv(double /*mFactor*/, double bFactor, double kFactor)
-{
-    if (kFactor != 0.0 || bFactor != 0.0)
-        addDForceV(kFactor, bFactor);
-}
-
-void BaseForceField::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*bFact*/)
+void BaseForceField::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/)
 {
 }
 
-void BaseForceField::addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double /*mFact*/, double bFact, double kFact)
+void BaseForceField::addMBKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
 {
-    if (kFact != 0.0)
-        addKToMatrix(matrix, kFact);
-    if (bFact != 0.0)
-        addBToMatrix(matrix, bFact);
+    if (mparams->kFactor() != 0.0)
+        addKToMatrix(matrix, mparams);
+    if (mparams->bFactor() != 0.0)
+        addBToMatrix(matrix, mparams);
 }
 
 } // namespace behavior

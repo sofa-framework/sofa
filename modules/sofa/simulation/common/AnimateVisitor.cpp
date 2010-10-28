@@ -41,11 +41,23 @@ namespace simulation
 {
 
 
-AnimateVisitor::AnimateVisitor(double dt) : dt(dt)
+AnimateVisitor::AnimateVisitor(double dt , const core::ExecParams* params)
+    : Visitor(params)
+    , dt(dt)
 #ifdef SOFA_HAVE_EIGEN2
     , firstNodeVisited(false)
 #endif
-{}
+{
+}
+
+AnimateVisitor::AnimateVisitor(const core::ExecParams* params)
+    : Visitor(params)
+    , dt(0)
+#ifdef SOFA_HAVE_EIGEN2
+    , firstNodeVisited(false)
+#endif
+{
+}
 
 void AnimateVisitor::processMasterSolver(simulation::Node*, core::behavior::MasterSolver* obj)
 {
@@ -57,22 +69,28 @@ void AnimateVisitor::processMasterSolver(simulation::Node*, core::behavior::Mast
 void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* obj)
 {
     sofa::helper::AdvancedTimer::stepBegin("BehaviorModel",obj);
+
     obj->updatePosition(getDt());
     sofa::helper::AdvancedTimer::stepEnd("BehaviorModel",obj);
 }
 
-void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior::InteractionForceField* obj)
+void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj)
 {
     //cerr<<"AnimateVisitor::IFF "<<obj->getName()<<endl;
     sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
-    obj->addForce();
+
+    MultiVecDerivId   ffId      = VecDerivId::externalForce();
+    MechanicalParams* m_mparams = MechanicalParams::defaultInstance();
+    m_mparams->setDt(this->dt);
+    obj->addForce(ffId,m_mparams);
+
     sofa::helper::AdvancedTimer::stepEnd("InteractionFF",obj);
 }
 
 void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
 {
     sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
-    CollisionVisitor act;
+    CollisionVisitor act(this->params);
     node->execute(&act);
     sofa::helper::AdvancedTimer::stepEnd("Collision",obj);
 }
@@ -83,12 +101,13 @@ void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::Od
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
 //  cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
-    solver->solve(getDt());
+    solver->solve(getDt(), params);
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
 Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 {
+
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->is_activated.getValue()) return Visitor::RESULT_PRUNE;
 #ifdef SOFA_HAVE_EIGEN2
@@ -101,7 +120,10 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         node->get(presenceMasterSolver, core::objectmodel::BaseContext::SearchDown);
         if (!presenceMasterSolver)
         {
-            MechanicalResetConstraintVisitor resetConstraint;
+            sofa::core::MechanicalParams mparams(*this->params);
+            mparams.setDt(dt);
+
+            MechanicalResetConstraintVisitor resetConstraint(&mparams);
             node->execute(&resetConstraint);
         }
     }
@@ -123,13 +145,13 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 #ifndef SOFA_SMP
         {
             CollisionBeginEvent evBegin;
-            PropagateEventVisitor eventPropagation(&evBegin);
+            PropagateEventVisitor eventPropagation(&evBegin, this->params);
             eventPropagation.execute(node);
         }
         processCollisionPipeline(node, node->collisionPipeline);
         {
             CollisionEndEvent evEnd;
-            PropagateEventVisitor eventPropagation(&evEnd);
+            PropagateEventVisitor eventPropagation(&evEnd, this->params);
             eventPropagation.execute(node);
         }
 #endif
@@ -147,13 +169,17 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         sofa::helper::AdvancedTimer::StepVar timer("Mechanical",node);
         double nextTime = node->getTime() + dt;
 
-        MechanicalBeginIntegrationVisitor beginVisitor(dt);
+
+        MechanicalBeginIntegrationVisitor beginVisitor(dt, params);
         node->execute(&beginVisitor);
+
+        sofa::core::MechanicalParams m_mparams(*this->params);
+        m_mparams.setDt(dt);
 
 #ifdef SOFA_HAVE_EIGEN2
         {
             unsigned int constraintId=0;
-            MechanicalAccumulateConstraint(constraintId).execute(node);
+            MechanicalAccumulateConstraint(constraintId, VecCoordId::position(), &m_mparams).execute(node);
         }
 #endif
 
@@ -161,14 +187,17 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             ctime_t t0 = begin(node, node->solver[i]);
             //cerr<<"AnimateVisitor::processNodeTpDown  solver  "<<node->solver[i]->getName()<<endl;
-            node->solver[i]->solve(getDt());
+            node->solver[i]->solve(getDt(), params);
             end(node, node->solver[i], t0);
         }
 
-        MechanicalPropagatePositionAndVelocityVisitor(nextTime,core::behavior::OdeSolver::VecId::position(),core::behavior::OdeSolver::VecId::velocity()).execute( node );
+        MechanicalPropagatePositionAndVelocityVisitor(nextTime,VecCoordId::position(),VecDerivId::velocity(),
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+                VecDerivId::dx(),
+#endif
+                true, &m_mparams).execute( node );
 
-
-        MechanicalEndIntegrationVisitor endVisitor(dt);
+        MechanicalEndIntegrationVisitor endVisitor(dt, params);
         node->execute(&endVisitor);
         return RESULT_PRUNE;
     }

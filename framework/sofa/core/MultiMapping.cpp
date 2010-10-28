@@ -27,8 +27,6 @@
 
 
 #include <sofa/core/MultiMapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -42,26 +40,18 @@ namespace core
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
+template class MultiMapping< Vec3dTypes, Vec3dTypes >;
+template class MultiMapping< Rigid3dTypes, Vec3dTypes >;
 
-template class MultiMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >;
-template class MultiMapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
-
-template class MultiMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
-template class MultiMapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3fTypes> >;
-
-
-template class MultiMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> >;
-template class MultiMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > ;
-template class MultiMapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3fTypes> >;
-template class MultiMapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3dTypes> >;
+template class MultiMapping< Vec3fTypes, Vec3fTypes >;
+template class MultiMapping< Rigid3fTypes, Vec3fTypes >;
 
 
-//  template class MultiMapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
-//  template class MultiMapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
-//  template class MultiMapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
-//  template class MultiMapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-//  template class MultiMapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
-//  template class MultiMapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-}
+template class MultiMapping< Vec3dTypes, Vec3fTypes >;
+template class MultiMapping< Vec3fTypes, Vec3dTypes > ;
+template class MultiMapping< Rigid3dTypes, Vec3fTypes >;
+template class MultiMapping< Rigid3fTypes, Vec3dTypes >;
 
-}
+} // namespace core
+
+} // namespace sofa

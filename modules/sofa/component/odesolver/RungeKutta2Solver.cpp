@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/odesolver/RungeKutta2Solver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -39,7 +41,7 @@ namespace component
 
 namespace odesolver
 {
-
+using core::VecId;
 using namespace core::behavior;
 using namespace sofa::defaulttype;
 
@@ -51,23 +53,28 @@ int RungeKutta2SolverClass = core::RegisterObject("A popular explicit time integ
 SOFA_DECL_CLASS(RungeKutta2);
 
 
-void RungeKutta2Solver::solve(double dt)
+void RungeKutta2Solver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params)
 {
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    mop->setImplicit(false); // this solver is explicit only
     // Get the Ids of the state vectors
-    MultiVector pos(this, VecId::position());
-    MultiVector vel(this, VecId::velocity());
+    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
+    MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
     // Allocate auxiliary vectors
-    MultiVector acc(this, VecId::V_DERIV);
-    MultiVector newX(this, VecId::V_COORD);
-    MultiVector newV(this, VecId::V_DERIV);
+    MultiVecDeriv acc(&vop);
+    MultiVecCoord newX(&vop);
+    MultiVecDeriv newV(&vop);
 
     double startTime = this->getTime();
 
-    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // Compute state derivative. vel is the derivative of pos
-    computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
+    mop.computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
 
     // Perform a dt/2 step along the derivative
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
@@ -81,43 +88,41 @@ void RungeKutta2Solver::solve(double dt)
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
-        ops[0].first = (VecId)newX;
-        ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
-        ops[0].second.push_back(std::make_pair((VecId)vel,dt/2));
-        ops[1].first = (VecId)newV;
-        ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
-        ops[1].second.push_back(std::make_pair((VecId)acc,dt/2));
+        ops[0].first = newX;
+        ops[0].second.push_back(std::make_pair(pos.id(),1.0));
+        ops[0].second.push_back(std::make_pair(vel.id(),dt/2));
+        ops[1].first = newV;
+        ops[1].second.push_back(std::make_pair(vel.id(),1.0));
+        ops[1].second.push_back(std::make_pair(acc.id(),dt/2));
 
-        simulation::MechanicalVMultiOpVisitor vmop(ops);
-        vmop.execute(this->getContext());
+        vop.v_multiop(ops);
     }
 #endif
 
     // Compute the derivative at newX, newV
-    computeAcc ( startTime+dt/2., acc, newX, newV);
+    mop.computeAcc ( startTime+dt/2., acc, newX, newV);
 
     // Use the derivative at newX, newV to update the state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
-    pos.peq(newV,dt);
-    solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
-    vel.peq(acc,dt);
-    solveConstraint(dt,vel,core::behavior::BaseConstraintSet::VEL);
+    pos2.eq(pos,newV,dt);
+    solveConstraint(dt,pos2,core::ConstraintParams::POS);
+    vel2.eq(vel,acc,dt);
+    solveConstraint(dt,vel2,core::ConstraintParams::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
-        ops[0].first = (VecId)pos;
-        ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
-        ops[0].second.push_back(std::make_pair((VecId)newV,dt));
-        ops[1].first = (VecId)vel;
-        ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
-        ops[1].second.push_back(std::make_pair((VecId)acc,dt));
-        simulation::MechanicalVMultiOpVisitor vmop(ops);
-        vmop.execute(this->getContext());
+        ops[0].first = pos2;
+        ops[0].second.push_back(std::make_pair(pos.id(),1.0));
+        ops[0].second.push_back(std::make_pair(newV.id(),dt));
+        ops[1].first = vel2;
+        ops[1].second.push_back(std::make_pair(vel.id(),1.0));
+        ops[1].second.push_back(std::make_pair(acc.id(),dt));
+        vop.v_multiop(ops);
 
-        solveConstraint(dt,vel,core::behavior::BaseConstraintSet::VEL);
-        solveConstraint(dt,pos,core::behavior::BaseConstraintSet::POS);
+        solveConstraint(dt,vel2,core::ConstraintParams::VEL);
+        solveConstraint(dt,pos2,core::ConstraintParams::POS);
     }
 #endif
 

@@ -51,7 +51,7 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
+
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<bool> f_verbose;
@@ -66,7 +66,7 @@ public:
 
     void solve (Matrix& M, Vector& x, Vector& b);
     void init();
-    void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     //void setSystemRHVector(VecId v);
     //void setSystemLHVector(VecId v);
 

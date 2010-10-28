@@ -37,15 +37,19 @@
 #define SOFA_COMPONENT_MAPPING_CURVEMAPPING_INL
 
 #include <sofa/component/mapping/CurveMapping.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/rmath.h>
+
+#include <sofa/core/Mapping.inl>
+#include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
+
+#include <sofa/defaulttype/Mat.h>
+
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/gl/template.h>
+
 #include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/Simulation.h>
 
 
 namespace sofa
@@ -59,8 +63,8 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-template <class BasicMapping>
-typename CurveMapping<BasicMapping>::Real CurveMapping<BasicMapping>::advanceAbscissa(Real ab, Real dist)
+template <class TIn, class TOut>
+typename CurveMapping<TIn, TOut>::Real CurveMapping<TIn, TOut>::advanceAbscissa(Real ab, Real dist)
 {
     int integer = helper::rfloor(ab);
     if (integer < 0) integer = 0;
@@ -107,8 +111,8 @@ inline Quat computeOrientation(const Vec3d& AB, const Quat& Q)
     return (qaux * quat);
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::init()
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::init()
 {
     int nin = this->fromModel->getSize();
     int nout = numNodes.getValue();
@@ -163,8 +167,13 @@ void CurveMapping<BasicMapping>::init()
 
     old_angle.resize(nout);
     fill(old_angle.begin(), old_angle.end(), 0.0);
-    apply(*this->toModel->getX(), *this->fromModel->getX());
-    apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
+
+    //apply(*this->toModel->getX(), *this->fromModel->getX());
+    //apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
+
+    Inherit::apply(core::VecCoordId::position(),     core::ConstVecCoordId::position());
+    Inherit::apply(core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+
     /*
 
      	VecCoord& xto = *this->toModel->getX();
@@ -214,17 +223,17 @@ void CurveMapping<BasicMapping>::init()
     */
     old_integer.resize(this->toModel->getSize());
     fill(old_integer.begin(), old_integer.end(), -1);
-    this->BasicMapping::init();
+    this->Inherit::init();
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::reinit()
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::reinit()
 {
     rotateElements();
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::rotateElements()
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::rotateElements()
 {
     int nin = this->fromModel->getSize();
     rotatedQuatElements.resize(nin-1);
@@ -237,23 +246,26 @@ void CurveMapping<BasicMapping>::rotateElements()
     }
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::storeResetState()
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::storeResetState()
 {
     reset_abscissa = abscissa.getValue();
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::reset()
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::reset()
 {
     abscissa.setValue(reset_abscissa );
     fill(old_integer.begin(), old_integer.end(), -1);
     fill(old_angle.begin(), old_angle.end(), 0.0);
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::apply(OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor< OutDataVecCoord > out = dOut;
+    helper::ReadAccessor< InDataVecCoord > in = dIn;
+
     out.resize(abscissa.getValue().size());
     for (unsigned int i=0; i<out.size(); i++)
     {
@@ -286,28 +298,31 @@ void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
     }
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams)
 {
+    VecDeriv &out = *dOut.beginEdit();
+    const InVecDeriv &in = dIn.getValue();
+
     out.resize(abscissa.getValue().size());
     bool isV = false;
-    const typename In::VecCoord* x = NULL;
-    if (&in == this->fromModel->getV())
+    const typename In::VecCoord x = mparams->readX(this->fromModel)->getValue();
+
+    if (&in == &(mparams->readV(this->fromModel)->getValue()))
     {
         isV = true;
-        x = this->fromModel->getX();
     }
-    else if (&in == this->fromModel->getVfree())
-    {
-        isV = true;
-        x = this->fromModel->getXfree();
-    }
+
     for (unsigned int i=0; i<out.size(); i++)
     {
         out[i] = typename Out::Deriv();
         int integer = helper::rfloor(abscissa.getValue()[i]);
-        if (integer < 0) integer = 0;
-        else if (integer > (int)in.size()-2) integer = in.size()-2;
+        if (integer < 0)
+            integer = 0;
+        else if (integer > (int)in.size()-2)
+            integer = in.size()-2;
+
         double fraction = abscissa.getValue()[i] - integer;
         //if (fraction > 1.0) fraction = 1.0;
         {
@@ -317,16 +332,21 @@ void CurveMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
             AB = B - A;
             out[i].getVCenter() = A + (AB * fraction);
             if (isV)
-                out[i].getVCenter() += ((*x)[integer+1]-(*x)[integer])*(velocity.getValue()/lengthElements[integer]);
+                out[i].getVCenter() += (x[integer+1] - x[integer]) * (velocity.getValue()/lengthElements[integer]);
             out[i].getVOrientation().clear();
             //out[i].getOrientation() = computeOrientation(AB, out[i].getOrientation());
         }
     }
+
+    dOut.endEdit();
 }
 
-template <class BasicMapping>
-void CurveMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::applyJT(InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor< InDataVecDeriv > out = dOut;
+    helper::ReadAccessor< OutDataVecDeriv > in = dIn;
+
     const unsigned int pathsize = this->fromModel->getSize();
     out.resize(pathsize);
     for (unsigned int i=0; i<in.size(); i++)
@@ -343,13 +363,13 @@ void CurveMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     }
 }
 
-template <class BaseMapping>
-void CurveMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::applyJT(Data< typename In::MatrixDeriv >& /*out*/, const Data< typename Out::MatrixDeriv >& /*in*/, const core::ConstraintParams * /*cparams*/)
 {
 }
 
-template <class BaseMapping>
-void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* event)
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (/*sofa::simulation::AnimateBeginEvent* ev = */dynamic_cast<sofa::simulation::AnimateBeginEvent*>(event))
     {
@@ -456,8 +476,8 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
     }
 }
 
-template <class BaseMapping>
-void CurveMapping<BaseMapping>::draw()
+template <class TIn, class TOut>
+void CurveMapping<TIn, TOut>::draw()
 {
     if (!this->getShow()) return;
     std::vector< Vector3 > points;

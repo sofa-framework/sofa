@@ -181,11 +181,17 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
 //    MultiVector pos(this, VecId::position());
 //    MultiVector vel(this, VecId::velocity());
 //    MultiVector f(this, VecId::force());
-//    MultiVector b2(this, VecId::V_DERIV);
-    MultiVector p(this, VecId::V_DERIV);
-    MultiVector q(this, VecId::V_DERIV);
-    MultiVector r(this, VecId::V_DERIV);
-//    MultiVector x2(this, VecId::V_DERIV);
+//    MultiVector b2(this, sofa::core::V_DERIV);
+    core::ExecParams* params = new core::ExecParams();
+    params->setExecMode(core::ExecParams::EXEC_KAAPI);
+    typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
+    Vector& p = *vtmp.createTempVector();
+    Vector& q = *vtmp.createTempVector();
+    Vector& r = *vtmp.createTempVector();
+    // MultiVector p(this, sofa::core::V_DERIV);
+    // MultiVector q(this, sofa::core::V_DERIV);
+    // MultiVector r(this, sofa::core::V_DERIV);
+//    MultiVector x2(this, sofa::core::V_DERIV);
 
 
     OPERATION_BEGIN("Reset rho");
@@ -199,7 +205,8 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
     if ( verbose )
         cerr<<"CGLinearSolver, projected f0 = "<< b <<endl;
 
-    v_clear( x );
+    // v_clear( x );
+    x.clear();
 
     r = b;
 
@@ -284,11 +291,11 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
         p.print();
     }
 
-    v_op(p,r,p,*betaSh); // p = p*beta + r
+// TODO : TODO reput this : this->v_op(p,r,p,*betaSh,params); // p = p*beta + r
 
     // matrix-vector product
-//  	  propagateDx(p);          // dx = p
-//  	  computeDf(q);            // q = df/dx p
+    //  	  propagateDx(p);          // dx = p
+    //  	  computeDf(q);            // q = df/dx p
     q=M*p;
 
     if ( verbose )
@@ -336,6 +343,9 @@ void ParallelCGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector
     {
         cerr<<"CGLinearSolver::solve, solution = "<<x<<endl;
     }
+    vtmp.deleteTempVector(&p);
+    vtmp.deleteTempVector(&q);
+    vtmp.deleteTempVector(&r);
 }// ParallelCGLinearSolver::solve
 
 template<class TMatrix, class TVector>

@@ -44,6 +44,7 @@
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/visualmodel/DrawV.h>
+#include <sofa/core/VecId.h>
 #include <iostream>
 
 
@@ -66,12 +67,15 @@ class RigidContactMapper : public BaseContactMapper<DataTypes>
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<typename RigidContactMapper::DataTypes> MMechanicalState;
     typedef component::container::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::RigidMapping< core::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    typedef mapping::RigidMapping< InDataTypes, typename RigidContactMapper::DataTypes > MMapping;
+
     MCollisionModel* model;
     simulation::Node* child;
     MMapping* mapping;
@@ -112,7 +116,8 @@ public:
         }
         else
         {
-            (*outmodel->getX())[i] = P;
+            helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::VecCoordId::position());
+            xData.wref()[i] = P;
         }
         return i;
     }
@@ -121,7 +126,8 @@ public:
     {
         if (mapping!=NULL)
         {
-            mapping->updateMapping();
+            ((core::BaseMapping*)mapping)->apply(core::VecCoordId::position(), core::ConstVecCoordId::position());
+            ((core::BaseMapping*)mapping)->applyJ(core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -129,10 +135,9 @@ public:
     {
         if (mapping!=NULL)
         {
-            mapping->propagateXfree();
+            ((core::BaseMapping*)mapping)->apply(core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
-
 };
 
 /// Mapper for RigidDistanceGridCollisionModel
@@ -142,6 +147,9 @@ class ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidCon
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
@@ -155,13 +163,20 @@ public:
         {
             MCollisionModel* model = this->model;
             MMechanicalState* outmodel = this->outmodel;
-            typename DataTypes::Coord& x = (*outmodel->getX())[i];
-            typename DataTypes::Deriv& v = (*outmodel->getV())[i];
-            if (model->isTransformed(index))
-                x = model->getTranslation(index) + model->getRotation(index) * P;
-            else
-                x = P;
-            v = typename DataTypes::Deriv();
+            {
+                helper::WriteAccessor<Data<VecCoord> > xData = *outmodel->write(core::VecCoordId::position());
+                Coord& x = xData.wref()[i];
+
+                if (model->isTransformed(index))
+                    x = model->getTranslation(index) + model->getRotation(index) * P;
+                else
+                    x = P;
+            }
+            helper::ReadAccessor<Data<VecCoord> >  xData = *outmodel->read(core::ConstVecCoordId::position());
+            helper::WriteAccessor<Data<VecDeriv> > vData = *outmodel->write(core::VecDerivId::velocity());
+            const Coord& x = xData.ref()[i];
+            Deriv& v       = vData.wref()[i];
+            v.clear();
 
             // estimating velocity
             double gdt = model->getPrevDt(index);

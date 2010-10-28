@@ -38,8 +38,8 @@ namespace mapping
 {
 
 
-template <class BaseMapping>
-ExternalInterpolationMapping<BaseMapping>::ExternalInterpolationMapping(In* from, Out* to)
+template <class TIn, class TOut>
+ExternalInterpolationMapping<TIn, TOut>::ExternalInterpolationMapping(core::State<In>* from, core::State<Out>* to)
     : Inherit(from, to)
     , f_interpolationIndices( initData(&f_interpolationIndices, "InterpolationIndices", "Table that provides interpolation Indices"))
     , f_interpolationValues( initData(&f_interpolationValues, "InterpolationValues", "Table that provides interpolation Values"))
@@ -47,8 +47,8 @@ ExternalInterpolationMapping<BaseMapping>::ExternalInterpolationMapping(In* from
 {
 }
 
-template <class BaseMapping>
-ExternalInterpolationMapping<BaseMapping>::~ExternalInterpolationMapping()
+template <class TIn, class TOut>
+ExternalInterpolationMapping<TIn, TOut>::~ExternalInterpolationMapping()
 {
 }
 
@@ -56,8 +56,8 @@ ExternalInterpolationMapping<BaseMapping>::~ExternalInterpolationMapping()
 
 
 // Handle topological changes
-template <class BaseMapping>
-void ExternalInterpolationMapping<BaseMapping>::handleTopologyChange(core::topology::Topology* /*t*/)
+template <class TIn, class TOut>
+void ExternalInterpolationMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* /*t*/)
 {
     /*
      core::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
@@ -69,8 +69,8 @@ void ExternalInterpolationMapping<BaseMapping>::handleTopologyChange(core::topol
     */
 }
 
-template <class BaseMapping>
-void ExternalInterpolationMapping<BaseMapping>::init()
+template <class TIn, class TOut>
+void ExternalInterpolationMapping<TIn, TOut>::init()
 {
     // verification of the input table:
 
@@ -103,8 +103,8 @@ void ExternalInterpolationMapping<BaseMapping>::init()
 }
 
 
-template <class BaseMapping>
-void ExternalInterpolationMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class TIn, class TOut>
+void ExternalInterpolationMapping<TIn, TOut>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     if(doNotMap)
         return;
@@ -124,8 +124,8 @@ void ExternalInterpolationMapping<BaseMapping>::apply( typename Out::VecCoord& o
     }
 }
 
-template <class BaseMapping>
-void ExternalInterpolationMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class TIn, class TOut>
+void ExternalInterpolationMapping<TIn, TOut>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     if(doNotMap)
         return;
@@ -146,8 +146,8 @@ void ExternalInterpolationMapping<BaseMapping>::applyJ( typename Out::VecDeriv& 
     }
 }
 
-template <class BaseMapping>
-void ExternalInterpolationMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class TIn, class TOut>
+void ExternalInterpolationMapping<TIn, TOut>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     if(doNotMap)
         return;
@@ -167,8 +167,8 @@ void ExternalInterpolationMapping<BaseMapping>::applyJT( typename In::VecDeriv& 
 
 }
 
-template <class BaseMapping>
-void ExternalInterpolationMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class TIn, class TOut>
+void ExternalInterpolationMapping<TIn, TOut>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     using sofa::helper::vector;
 

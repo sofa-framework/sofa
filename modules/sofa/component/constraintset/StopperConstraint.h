@@ -25,14 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_H
 
-#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
-#include <iostream>
 #include <sofa/core/behavior/OdeSolver.h>
-
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -87,10 +82,10 @@ public:
 #endif
 
 template< class DataTypes >
-class StopperConstraint : public core::behavior::BaseConstraint
+class StopperConstraint : public core::behavior::Constraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(StopperConstraint,DataTypes), core::behavior::BaseConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(StopperConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -99,16 +94,16 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename core::behavior::Constraint<DataTypes> Inherit;
 
 protected:
-    MechanicalState* object;
+
     bool yetIntegrated;
 
     Coord dfree;
     unsigned int cid;
 
     Data<int> index;
-    Data<std::string> pathObject;
     Data<double> min;
     Data<double> max;
 
@@ -117,20 +112,19 @@ protected:
 public:
 
     StopperConstraint(MechanicalState* object)
-        : object(object), yetIntegrated(false)
-        , index(initData(&index, 0, "index","index of the stop constraint"))
-        , pathObject(initData(&pathObject,  "object","path of object in interaction"))
-        , min(initData(&min,-100.0, "min", "minimum value accepted"))
+        : Inherit(object)
+        , yetIntegrated(false)
+        , index(initData(&index, 0, "index", "index of the stop constraint"))
+        , min(initData(&min, -100.0, "min", "minimum value accepted"))
         , max(initData(&max, 100.0, "max", "maximum value accepted"))
     {
     }
 
 
     StopperConstraint()
-        : object(object), yetIntegrated(false)
-        , index(initData(&index, 0, "index","index of the stop constraint"))
-        , pathObject(initData(&pathObject,  "object","path of object in interaction"))
-        , min(initData(&min,-100.0, "min", "minimum value accepted"))
+        : yetIntegrated(false)
+        , index(initData(&index, 0, "index", "index of the stop constraint"))
+        , min(initData(&min, -100.0, "min", "minimum value accepted"))
         , max(initData(&max, 100.0, "max", "maximum value accepted"))
     {
 
@@ -140,16 +134,11 @@ public:
     {
     }
 
-    MechanicalState* getObject() { return object; }
-    core::behavior::BaseMechanicalState* getMechModel() { return object; }
-
     virtual void init();
 
-    virtual void buildConstraintMatrix(unsigned int & /*constraintId*/, core::VecId);
+    virtual void buildConstraintMatrix(unsigned int & /*constraintId*/, core::ConstMultiVecCoordId);
 
     virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true );
-
-    virtual void getConstraintId(long* id, unsigned int &offset);
 
     int getIndex()
     {
@@ -170,54 +159,7 @@ public:
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif
 
-    /// Pre-construction check method called by ObjectFactory.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("object"))
-        {
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object",".."))) == NULL)
-                return false;
-        }
-        else
-        {
-            if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
-                return false;
-        }
-        return core::behavior::BaseConstraint::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::behavior::BaseConstraint::create(obj, context, arg);
-        if (arg && (arg->getAttribute("object") ))
-        {
-            obj->object = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object","..")));
-
-        }
-        else if (context)
-        {
-            obj->object =dynamic_cast<MechanicalState*>(context->getMechanicalState());
-
-
-        }
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const StopperConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
     void draw();
-
-    /// this constraint is holonomic
-    bool isHolonomic() {return true;}
 };
 } // namespace constraintset
 

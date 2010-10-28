@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
+
 #include <sofa/component/forcefield/SurfacePressureForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
@@ -87,8 +90,12 @@ void SurfacePressureForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void SurfacePressureForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     Real p = m_pulseMode.getValue() ? computePulseModePressure() : m_pressure.getValue();
 
     if (m_topology)
@@ -115,6 +122,8 @@ void SurfacePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord&
             addQuadSurfacePressure(f,x,v,p);
         }
     }
+
+    d_f.endEdit();
 }
 
 
@@ -230,17 +239,6 @@ bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) cons
             && (x[2] <= m_max.getValue()[2]) );
 }
 
-
-
-template <class DataTypes>
-double SurfacePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr << "TrianglePressureForceField::getPotentialEnergy-not-implemented !!!" << endl;
-    return 0;
-}
-
-
-
 template<class DataTypes>
 const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computePulseModePressure()
 {
@@ -333,3 +331,5 @@ void SurfacePressureForceField<DataTypes>::draw()
 } // namespace component
 
 } // namespace sofa
+
+#endif // SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL

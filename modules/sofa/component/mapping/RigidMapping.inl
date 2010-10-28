@@ -26,18 +26,22 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
 
 #include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/component/container/MultiMeshLoader.h>
+
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.inl>
+#include <sofa/core/State.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/component/container/MultiMeshLoader.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/MappedModel.h>
+
 #include <sofa/simulation/common/Simulation.h>
+
 #include <string.h>
 #include <iostream>
 
@@ -52,14 +56,14 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-template<class BasicMapping>
-class RigidMapping<BasicMapping>::Loader : public helper::io::MassSpringLoader,
+template <class TIn, class TOut>
+class RigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader,
     public helper::io::SphereLoader
 {
 public:
 
-    RigidMapping<BasicMapping>* dest;
-    Loader(RigidMapping<BasicMapping>* dest) :
+    RigidMapping<TIn, TOut>* dest;
+    Loader(RigidMapping<TIn, TOut>* dest) :
         dest(dest)
     {
     }
@@ -67,19 +71,19 @@ public:
             SReal, SReal, bool, bool)
     {
         Coord c;
-        Out::DataTypes::set(c, px, py, pz);
+        Out::set(c, px, py, pz);
         dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
     virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
     {
         Coord c;
-        Out::DataTypes::set(c, px, py, pz);
+        Out::set(c, px, py, pz);
         dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
 };
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::load(const char *filename)
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::load(const char *filename)
 {
     points.beginEdit()->resize(0);
 
@@ -104,7 +108,7 @@ void RigidMapping<BasicMapping>::load(const char *filename)
             points.beginEdit()->resize(mesh->getVertices().size());
             for (unsigned int i = 0; i < mesh->getVertices().size(); i++)
             {
-                Out::DataTypes::set((*points.beginEdit())[i],
+                Out::set((*points.beginEdit())[i],
                         mesh->getVertices()[i][0],
                         mesh->getVertices()[i][1],
                         mesh->getVertices()[i][2]);
@@ -114,16 +118,47 @@ void RigidMapping<BasicMapping>::load(const char *filename)
     }
 }
 
-template<class BasicMapping>
-int RigidMapping<BasicMapping>::addPoint(const Coord& c)
+
+template <class TIn, class TOut>
+RigidMapping<TIn, TOut>::RigidMapping(core::State< In >* from, core::State< Out >* to)
+    : Inherit(from, to)
+    , points(initData(&points, "initialPoints", "Local Coordinates of the points"))
+    , index(initData(&index, (unsigned)0, "index", "input DOF index"))
+    , fileRigidMapping(initData(&fileRigidMapping, "fileRigidMapping", "Filename"))
+    , useX0(initData(&useX0, false, "useX0", "Use x0 instead of local copy of initial positions (to support topo changes)"))
+    , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
+    , repartition(initData(&repartition, "repartition", "number of dest dofs per entry dof"))
+    , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
+    , contactDuplicate(initData(&contactDuplicate, false, "contactDuplicate", "if true, this mapping is a copy of an input mapping and is used to gather contact points (ContinuousFrictionContact Response)"))
+    , nameOfInputMap(initData(&nameOfInputMap, "nameOfInputMap", "if contactDuplicate==true, it provides the name of the input mapping"))
+    , matrixJ()
+    , updateJ(false)
+{
+    std::cout << "RigidMapping Creation\n";
+
+    this->addAlias(&fileRigidMapping, "filename");
+    maskFrom = NULL;
+    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(from))
+    {
+        maskFrom = &stateFrom->forceMask;
+    }
+    maskTo = NULL;
+    if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(to))
+    {
+        maskTo = &stateTo->forceMask;
+    }
+}
+
+template <class TIn, class TOut>
+int RigidMapping<TIn, TOut>::addPoint(const Coord& c)
 {
     int i = points.getValue().size();
     points.beginEdit()->push_back(c);
     return i;
 }
 
-template<class BasicMapping>
-int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
+template <class TIn, class TOut>
+int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 {
     int i = points.getValue().size();
     points.beginEdit()->push_back(c);
@@ -148,45 +183,38 @@ int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
     return i;
 }
 
-template <class BasicMapping>
-void RigidMapping<BasicMapping>::beginAddContactPoint()
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::beginAddContactPoint()
 {
-
     this->clear(0);
     this->toModel->resize(0);
-
 }
 
-template <class BasicMapping>
-int RigidMapping<BasicMapping>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+template <class TIn, class TOut>
+int RigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
-
-
-    typename In::VecCoord& xfrom = *this->fromModel->getX();
+    const typename In::VecCoord& xfrom = *this->fromModel->getX();
 
     Coord posContact;
-    for (unsigned int i=0; i<3; i++)
+    for (unsigned int i = 0; i < 3; i++)
         posContact[i] = (Real) pos[i];
 
-
-
-    unsigned int inputIdx=_inputMapping->index.getValue();
+    unsigned int inputIdx = _inputMapping->index.getValue();
 
     this->index.setValue(inputIdx);
     this->repartition.setValue(_inputMapping->repartition.getValue());
     Coord x_local = xfrom[inputIdx].inverseRotate(posContact - xfrom[inputIdx].getCenter());
 
-
     this->addPoint(x_local, inputIdx);
 
     int index= points.getValue().size() -1;
     this->toModel->resize(index+1);
-    return index;
 
+    return index;
 }
 
-template <class BasicMapping>
-void RigidMapping<BasicMapping>::init()
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::init()
 {
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
@@ -194,13 +222,13 @@ void RigidMapping<BasicMapping>::init()
     if (this->points.getValue().empty() && this->toModel != NULL
         && !useX0.getValue())
     {
-        VecCoord& x = *this->toModel->getX();
+        const VecCoord& x = *this->toModel->getX();
         points.beginEdit()->resize(x.size());
         unsigned int i = 0, cpt = 0;
         if (globalToLocalCoords.getValue() == true)
         {
             //test booleen fromWorldCoord
-            InVecCoord& xfrom = *this->fromModel->getX();
+            const InVecCoord& xfrom = *this->fromModel->getX();
             switch (repartition.getValue().size())
             {
             case 0:
@@ -243,7 +271,7 @@ void RigidMapping<BasicMapping>::init()
         }
     }
 
-    this->BasicMapping::init();
+    this->Inherit::init();
 
     sofa::component::container::MultiMeshLoader * loader;
     this->getContext()->get(loader);
@@ -251,8 +279,9 @@ void RigidMapping<BasicMapping>::init()
     {
         sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
         unsigned int cpt = 0;
-        InVecCoord& xfrom = *this->fromModel->getX();
-        VecCoord& xto = *this->toModel->getX();
+        const InVecCoord& xfrom = *this->fromModel->getX();
+        const VecCoord& xto = *this->toModel->getX();
+
         for (unsigned int i = 0; i < loader->getNbMeshs(); i++)
         {
             rep.push_back(loader->getNbPoints(i));
@@ -269,8 +298,8 @@ void RigidMapping<BasicMapping>::init()
     }
 }
 
-template <class BasicMapping>
-void RigidMapping<BasicMapping>::bwdInit()
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::bwdInit()
 {
     if(contactDuplicate.getValue()==true)
     {
@@ -284,10 +313,9 @@ void RigidMapping<BasicMapping>::bwdInit()
 }
 
 /*
-template <class BasicMapping>
-void RigidMapping<BasicMapping>::disable()
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::disable()
 {
-
 	if (!this->points.getValue().empty() && this->toModel!=NULL)
 	{
 		VecCoord& x = *this->toModel->getX();
@@ -297,8 +325,9 @@ void RigidMapping<BasicMapping>::disable()
 	}
 }
 */
-template <class BasicMapping>
-void RigidMapping<BasicMapping>::clear(int reserve)
+
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::clear(int reserve)
 {
     this->points.beginEdit()->clear();
     if (reserve)
@@ -307,8 +336,8 @@ void RigidMapping<BasicMapping>::clear(int reserve)
     this->repartition.endEdit();
 }
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::setRepartition(unsigned int value)
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 {
     vector<unsigned int>& rep = *this->repartition.beginEdit();
     rep.clear();
@@ -316,8 +345,8 @@ void RigidMapping<BasicMapping>::setRepartition(unsigned int value)
     this->repartition.endEdit();
 }
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::setRepartition(sofa::helper::vector<
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
         unsigned int> values)
 {
     vector<unsigned int>& rep = *this->repartition.beginEdit();
@@ -333,20 +362,20 @@ void RigidMapping<BasicMapping>::setRepartition(sofa::helper::vector<
     this->repartition.endEdit();
 }
 
-template<class DataTypes>
+template <class DataTypes>
 const typename DataTypes::VecCoord* M_getX0(core::behavior::MechanicalState<DataTypes>* model)
 {
     return model->getX0();
 }
 
-template<class DataTypes>
-const typename DataTypes::VecCoord* M_getX0(core::behavior::MappedModel<DataTypes>* /*model*/)
+template <class DataTypes>
+const typename DataTypes::VecCoord* M_getX0(core::State<DataTypes>* /*model*/)
 {
     return NULL;
 }
 
-template<class BasicMapping>
-const typename RigidMapping<BasicMapping>::VecCoord & RigidMapping<BasicMapping>::getPoints()
+template <class TIn, class TOut>
+const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getPoints()
 {
     if (useX0.getValue())
     {
@@ -361,9 +390,12 @@ const typename RigidMapping<BasicMapping>::VecCoord & RigidMapping<BasicMapping>
     return points.getValue();
 }
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::apply(VecCoord& out, const InVecCoord& in)
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::apply(Data<VecCoord>& dOut, const Data<InVecCoord>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<VecCoord> > out = dOut;
+    helper::ReadAccessor< Data<InVecCoord> > in = dIn;
+
     const VecCoord& pts = this->getPoints();
 
     updateJ = true;
@@ -431,9 +463,12 @@ void RigidMapping<BasicMapping>::apply(VecCoord& out, const InVecCoord& in)
     }
 }
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<VecDeriv> > out = dOut;
+    helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
+
     const VecCoord& pts = this->getPoints();
     out.resize(pts.size());
 
@@ -502,9 +537,12 @@ void RigidMapping<BasicMapping>::applyJ(VecDeriv& out, const InVecDeriv& in)
     }
 }
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn, const core::MechanicalParams * /*mparams*/)
 {
+    helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
+    helper::ReadAccessor< Data<VecDeriv> > in = dIn;
+
     const VecCoord& pts = this->getPoints();
 
     bool isMaskInUse = maskTo->isInUse();
@@ -580,15 +618,24 @@ void RigidMapping<BasicMapping>::applyJT(InVecDeriv& out, const VecDeriv& in)
     }
 }
 
-// RigidMapping::applyJT( InVecConst& out, const VecConst& in ) //
+// RigidMapping::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in ) //
 // this function propagate the constraint through the rigid mapping :
 // if one constraint along (vector n) with a value (v) is applied on the childModel (like collision model)
 // then this constraint is transformed by (Jt.n) with value (v) for the rigid model
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
-template<class BaseMapping>
-void RigidMapping<BaseMapping>::applyJT(InMatrixDeriv& out, const OutMatrixDeriv& in)
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn, const core::ConstraintParams * /*cparams*/)
 {
+    InMatrixDeriv& out = *dOut.beginEdit();
+    const OutMatrixDeriv& in = dIn.getValue();
+
+    if (this->f_printLog.getValue())
+    {
+        sout << "J on mapped DOFs = " << in << sendl;
+        sout << "J on input  DOFs = " << out << sendl;
+    }
+
     switch (repartition.getValue().size())
     {
     case 0:
@@ -718,10 +765,17 @@ void RigidMapping<BaseMapping>::applyJT(InMatrixDeriv& out, const OutMatrixDeriv
         break;
     }
     }
+
+    if (this->f_printLog.getValue())
+    {
+        sout << "new J on input  DOFs = " << out << sendl;
+    }
+
+    dOut.endEdit();
 }
 
-template <class BaseMapping>
-const sofa::defaulttype::BaseMatrix* RigidMapping<BaseMapping>::getJ()
+template <class TIn, class TOut>
+const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 {
     const VecCoord& out = *this->toModel->getX();
     const InVecCoord& in = *this->fromModel->getX();
@@ -840,15 +894,15 @@ struct RigidMappingMatrixHelper<3, Real>
     }
 };
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 {
     MBloc& block = *matrixJ->wbloc(outIdx, inIdx, true);
     RigidMappingMatrixHelper<N, Real>::setMatrix(block, rotatedPoints[outIdx]);
 }
 
-template<class BasicMapping>
-void RigidMapping<BasicMapping>::draw()
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::draw()
 {
     if (!this->getShow())
         return;

@@ -31,9 +31,6 @@
 #include <sofa/helper/gl/template.h>
 
 
-
-
-
 namespace sofa
 {
 
@@ -45,12 +42,12 @@ namespace constraintset
 
 using namespace sofa::helper;
 
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool DOFBlockerLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
-    DOFBlockerLMConstraint<DataTypes> *fc= (DOFBlockerLMConstraint<DataTypes> *)param;
+    DOFBlockerLMConstraint<DataTypes> *fc = (DOFBlockerLMConstraint<DataTypes> *)param;
+
     if (fc)
     {
         return true;
@@ -65,7 +62,8 @@ bool DOFBlockerLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/,
 template< class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
 {
-    DOFBlockerLMConstraint<DataTypes> *fc= (DOFBlockerLMConstraint<DataTypes> *)param;
+    DOFBlockerLMConstraint<DataTypes> *fc = (DOFBlockerLMConstraint<DataTypes> *)param;
+
     if (fc)
     {
         fc->removeConstraint((unsigned int) pointIndex);
@@ -130,15 +128,18 @@ void DOFBlockerLMConstraint<DataTypes>::resetConstraint()
 }
 
 template<class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::VecId /*position*/)
+void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId /*position*/)
 {
     if (!idxEquations.empty()) return;
 
-    MatrixDeriv& c = *this->constrainedObject1->getC();
+    Data<MatrixDeriv> *dC = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv &c = *dC->beginEdit();
+
     const SetIndexArray &indices = f_indices.getValue().getArray();
     const helper::vector<Deriv> &axis=BlockedAxis.getValue();
     idxEquations.resize(indices.size());
     unsigned int numParticle=0;
+
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++numParticle)
     {
         const unsigned int index=*it;
@@ -149,18 +150,17 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &cons
         }
         this->constrainedObject1->forceMask.insertEntry(index);
     }
+
+    dC->endEdit();
 }
 
 
 template<class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder Order)
+void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
 {
-
-    typedef core::behavior::BaseMechanicalState::VecId VecId;
     //We don't constrain the Position, only the velocities and accelerations
     if (idxEquations.empty() ||
-        Order==core::behavior::BaseLMConstraint::POS) return;
-
+        Order==core::ConstraintParams::POS) return;
 
     const SetIndexArray & indices = f_indices.getValue().getArray();
     const helper::vector<SReal> &factor=factorAxis.getValue();
@@ -173,8 +173,8 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
             SReal correction=0;
             switch(Order)
             {
-            case core::behavior::BaseLMConstraint::ACC :
-            case core::behavior::BaseLMConstraint::VEL :
+            case core::ConstraintParams::ACC :
+            case core::ConstraintParams::VEL :
             {
                 correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxEquations[numParticle][i],id);
                 break;
@@ -188,12 +188,8 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
             }
             constraint->addConstraint( lineNumber, idxEquations[numParticle][i], -correction);
         }
-
     }
-
 }
-
-
 
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::draw()
@@ -220,14 +216,8 @@ void DOFBlockerLMConstraint<DataTypes>::draw()
             helper::gl::Axis::draw(position,position+direction*showSizeAxis.getValue(),
                     showSizeAxis.getValue()*0.03);
         }
-
     }
-
 }
-
-
-
-
 
 } // namespace constraintset
 

@@ -42,8 +42,8 @@ namespace simulation
 {
 
 
-MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor()
-    : sofa::simulation::MechanicalVisitor()
+MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(const core::MechanicalParams* mparams)
+    : sofa::simulation::MechanicalVisitor(mparams)
     , m_kineticEnergy(0.)
     , m_potentialEnergy(0.)
 {

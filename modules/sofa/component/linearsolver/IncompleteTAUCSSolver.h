@@ -66,7 +66,6 @@ public:
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
     typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
 #ifdef VAIDYA
     Data<int>    f_incompleteType;

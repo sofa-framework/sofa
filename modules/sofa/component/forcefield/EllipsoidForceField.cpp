@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/EllipsoidForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -53,14 +55,14 @@ int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ell
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class EllipsoidForceField<Vec3dTypes>;
-template class EllipsoidForceField<Vec2dTypes>;
-template class EllipsoidForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class EllipsoidForceField<Vec3fTypes>;
-template class EllipsoidForceField<Vec2fTypes>;
-template class EllipsoidForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec1fTypes>;
 #endif
 
 } // namespace forcefield

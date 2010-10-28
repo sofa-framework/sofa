@@ -114,13 +114,13 @@ void SuturePointPerformer<DataTypes>::start()
 
         for (unsigned int i=0; i<3; i++)
         {
-            sofa::defaulttype::Vector3& tmp = (*MechanicalObject->getX())[ Triangle1[i] ];
+            const sofa::defaulttype::Vector3& tmp = (*MechanicalObject->getX())[ Triangle1[i] ];
             listCoords.push_back (tmp);
         }
 
         for (unsigned int i=0; i<3; i++)
         {
-            sofa::defaulttype::Vector3& tmp = (*MechanicalObject->getX())[ Triangle2[i] ];
+            const sofa::defaulttype::Vector3& tmp = (*MechanicalObject->getX())[ Triangle2[i] ];
             listCoords.push_back (tmp);
         }
 

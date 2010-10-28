@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPEDOBJECT_H
 #define SOFA_COMPONENT_MAPPEDOBJECT_H
 
-#include <sofa/core/behavior/MappedModel.h>
+#include <sofa/core/State.h>
 #include <sofa/component/component.h>
 #include <vector>
 #include <assert.h>
@@ -40,7 +40,6 @@ namespace component
 namespace container
 {
 
-using namespace core::behavior;
 using namespace core::objectmodel;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -51,13 +50,14 @@ public:
 };
 
 template <class DataTypes>
-class MappedObject : public MappedModel<DataTypes>
+class MappedObject : public core::State<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MappedObject,DataTypes), SOFA_TEMPLATE(MappedModel,DataTypes));
-    typedef MappedModel<DataTypes> Inherited;
+    SOFA_CLASS(SOFA_TEMPLATE(MappedObject,DataTypes), SOFA_TEMPLATE(core::State,DataTypes));
+    typedef core::State<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
@@ -85,6 +85,52 @@ public:
     const VecCoord* getX()  const { return &f_X.getValue();  }
     const VecDeriv* getV()  const { return &f_V.getValue();  }
 
+    int getSize() const
+    {
+        return f_X.getValue().size();
+    }
+
+    Data< VecCoord >* write(core::VecCoordId v)
+    {
+        if(v == core::VecCoordId::position())
+            return &f_X;
+
+        return NULL;
+    }
+
+    const Data< VecCoord >* read(core::ConstVecCoordId v) const
+    {
+        if(v == core::ConstVecCoordId::position())
+            return &f_X;
+        else
+            return NULL;
+    }
+
+    Data< VecDeriv >* write(core::VecDerivId v)
+    {
+        if(v == core::VecDerivId::velocity())
+            return &f_V;
+        else
+            return NULL;
+    }
+
+    const Data< VecDeriv >* read(core::ConstVecDerivId v) const
+    {
+        if(v == core::ConstVecDerivId::velocity())
+            return &f_V;
+        else
+            return NULL;
+    }
+
+    Data< MatrixDeriv >* write(core::MatrixDerivId /*v*/)
+    {
+        return NULL;
+    }
+
+    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId /*v*/) const
+    {
+        return NULL;
+    }
 };
 
 }

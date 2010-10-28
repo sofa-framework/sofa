@@ -68,7 +68,10 @@ void FixParticlePerformer<DataTypes>::start()
     mstateFixation->setIgnoreLoader(true);
 
     mstateFixation->resize(1);
-    (*mstateFixation->getX())[0] = fixPoint;
+    {
+        helper::WriteAccessor<Data<VecCoord> > xData = *mstateFixation->write(core::VecCoordId::position());
+        xData.wref()[0] = fixPoint;
+    }
     nodeFixation->addObject(mstateFixation);
 
 
@@ -88,7 +91,7 @@ void FixParticlePerformer<DataTypes>::start()
     //Add the nodes
     nodeCollision->addChild(nodeFixation);
     nodeFixation->updateContext();
-    nodeFixation->execute<simulation::InitVisitor>();
+    nodeFixation->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
 }
 
 template <class DataTypes>

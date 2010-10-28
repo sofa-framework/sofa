@@ -28,12 +28,13 @@
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_H
 
 #include <sofa/core/core.h>
-#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 
@@ -50,22 +51,29 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class MixedInteractionForceField : public InteractionForceField
+class MixedInteractionForceField : public BaseInteractionForceField
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MixedInteractionForceField,TDataTypes1,TDataTypes2), InteractionForceField);
+    SOFA_CLASS(SOFA_TEMPLATE2(MixedInteractionForceField,TDataTypes1,TDataTypes2), BaseInteractionForceField);
 
     typedef TDataTypes1 DataTypes1;
     typedef typename DataTypes1::VecCoord VecCoord1;
     typedef typename DataTypes1::VecDeriv VecDeriv1;
-    typedef typename DataTypes1::Coord Coord1;
-    typedef typename DataTypes1::Deriv Deriv1;
+    typedef typename DataTypes1::Coord    Coord1;
+    typedef typename DataTypes1::Deriv    Deriv1;
+    typedef typename DataTypes1::Real     Real1;
     typedef TDataTypes2 DataTypes2;
     typedef typename DataTypes2::VecCoord VecCoord2;
     typedef typename DataTypes2::VecDeriv VecDeriv2;
-    typedef typename DataTypes2::Coord Coord2;
-    typedef typename DataTypes2::Deriv Deriv2;
+    typedef typename DataTypes2::Coord    Coord2;
+    typedef typename DataTypes2::Deriv    Deriv2;
+    typedef typename DataTypes2::Real     Real2;
     typedef helper::ParticleMask ParticleMask;
+
+    typedef core::objectmodel::Data<VecCoord1>    DataVecCoord1;
+    typedef core::objectmodel::Data<VecDeriv1>    DataVecDeriv1;
+    typedef core::objectmodel::Data<VecCoord2>    DataVecCoord2;
+    typedef core::objectmodel::Data<VecDeriv2>    DataVecDeriv2;
 
     MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
@@ -93,7 +101,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    virtual void addForce();
+    virtual void addForce(MultiVecDerivId fId , const MechanicalParams* mparams );
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -108,17 +116,8 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,double,double)
     /// method implemented by the component.
-    virtual void addDForce(double kFactor, double bFactor);
+    virtual void addDForce(MultiVecDerivId dfId , const MechanicalParams* mparams );
 
-    /// Same as addDForce(), except the velocity vector should be used instead of dx.
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K v + bFactor B v $
-    ///
-    /// This method retrieves the force and velocity vector from the two MechanicalState
-    /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,double,double)
-    /// method implemented by the component.
-    virtual void addDForceV(double kFactor, double bFactor);
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -128,7 +127,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    virtual double getPotentialEnergy() const;
+    virtual double getPotentialEnergy(const MechanicalParams* mparams) const;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -139,7 +138,10 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::addForce() method.
-    virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& x1, const VecCoord2& x2, const VecDeriv1& v1, const VecDeriv2& v2) = 0;
+
+    virtual void addForce(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2, const MechanicalParams* mparams)=0;
+    /// @deprecated
+    //virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& x1, const VecCoord2& x2, const VecDeriv1& v1, const VecDeriv2& v2);
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -157,7 +159,12 @@ public:
     /// @deprecated to more efficiently accumulate contributions from all terms
     ///   of the system equation, a new addDForce method allowing to pass two
     ///   coefficients for the stiffness and damping terms should now be used.
-    virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
+    virtual void addDForce(DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2, const MechanicalParams* mparams)=0;
+
+    /// @deprecated
+    //virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2, double kFactor, double /*bFactor*/);
+    //virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
+
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -175,7 +182,7 @@ public:
     /// To support old components that implement the deprecated addForce method
     /// without scalar coefficients, it defaults to using a temporaty vector to
     /// compute $ K dx $ and then manually scaling all values by kFactor.
-    virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2, double kFactor, double bFactor);
+    /// @deprecated
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -184,7 +191,11 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const =0;
+    virtual double getPotentialEnergy(const DataVecCoord1& x1, const DataVecCoord2& x2, const MechanicalParams* mparams) const =0;
+
+    /// @deprecated
+    //virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
+
 
     /// @}
 
@@ -200,14 +211,14 @@ public:
             if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
                 return false;
         }
-        return InteractionForceField::canCreate(obj, context, arg);
+        return BaseInteractionForceField::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::behavior::InteractionForceField::create(obj, context, arg);
+        core::behavior::BaseInteractionForceField::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->mstate1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));

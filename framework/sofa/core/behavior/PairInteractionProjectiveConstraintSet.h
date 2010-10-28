@@ -28,7 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_H
 
 #include <sofa/core/core.h>
-#include <sofa/core/behavior/InteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -50,10 +50,10 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes>
-class PairInteractionProjectiveConstraintSet : public InteractionProjectiveConstraintSet
+class PairInteractionProjectiveConstraintSet : public BaseInteractionProjectiveConstraintSet
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PairInteractionProjectiveConstraintSet,TDataTypes), InteractionProjectiveConstraintSet);
+    SOFA_CLASS(SOFA_TEMPLATE(PairInteractionProjectiveConstraintSet,TDataTypes), BaseInteractionProjectiveConstraintSet);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -61,6 +61,8 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef objectmodel::Data<VecCoord> DataVecCoord;
+    typedef objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Real Real;
     typedef helper::ParticleMask ParticleMask;
 
@@ -88,42 +90,37 @@ public:
     /// This method retrieves the dx vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&,VecDeriv&) method implemented by
     /// the component.
-    virtual void projectResponse();
+    void projectResponse(MultiVecDerivId dxId, const MechanicalParams* mparams);
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
     /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
-    /// the internal projectResponse(SparseVecDeriv&) method implemented by
+    /// the internal projectResponse(MatrixDeriv&) method implemented by
     /// the component.
-    virtual void projectJacobianMatrix();
+    void projectJacobianMatrix(MultiMatrixDerivId cId, const MechanicalParams* mparams);
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the v vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&,VecDeriv&) method implemented by
     /// the component.
-    virtual void projectVelocity();
+    void projectVelocity(MultiVecDerivId vId, const MechanicalParams* mparams);
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&,VecCoord&) method implemented by
     /// the component.
-    virtual void projectPosition();
+    void projectPosition(MultiVecCoordId xId, const MechanicalParams* mparams);
 
-    /// Project vFree to constrained space (vFree models a velocity).
-    ///
-    /// This method retrieves the vFree vector from the MechanicalState and call
-    /// the internal projectVelocity(VecDeriv&,VecDeriv&) method implemented by
-    /// the component.
-    virtual void projectFreeVelocity();
+    /// Project dx to constrained space (dx models an acceleration).
+    void projectResponse(DataVecDeriv& dx1, DataVecDeriv& dx2, const MechanicalParams* mparams);
 
-    /// Project xFree to constrained space (xFree models a position).
-    ///
-    /// This method retrieves the xFree vector from the MechanicalState and call
-    /// the internal projectPosition(VecCoord&,VecCoord&) method implemented by
-    /// the component.
-    virtual void projectFreePosition();
+    /// Project v to constrained space (v models a velocity).
+    void projectVelocity(DataVecDeriv& v1, DataVecDeriv& v2, const MechanicalParams* mparams);
+
+    /// Project x to constrained space (x models a position).
+    void projectPosition(DataVecCoord& x1, DataVecCoord& x2, const MechanicalParams* mparams);
 
     /// Project dx to constrained space (dx models an acceleration).
     ///
@@ -145,11 +142,6 @@ public:
 
     /// @}
 
-    /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&) ?
-    virtual void applyConstraint(unsigned int & contactId); // Pure virtual would be better
-
-    virtual void applyConstraint(MatrixDeriv& /*c1*/, MatrixDeriv& /*c2*/, unsigned int & /*contactId*/) {}
-
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
@@ -167,14 +159,14 @@ public:
             if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
                 return false;
         }
-        return InteractionProjectiveConstraintSet::canCreate(obj, context, arg);
+        return BaseInteractionProjectiveConstraintSet::canCreate(obj, context, arg);
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        core::behavior::InteractionProjectiveConstraintSet::create(obj, context, arg);
+        core::behavior::BaseInteractionProjectiveConstraintSet::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->mstate1 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));

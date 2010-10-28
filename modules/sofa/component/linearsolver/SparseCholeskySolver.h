@@ -55,7 +55,6 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     Data<bool> f_verbose;
 

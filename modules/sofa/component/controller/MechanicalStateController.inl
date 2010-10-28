@@ -91,11 +91,13 @@ void MechanicalStateController<DataTypes>::applyController()
         {
 //			if(mState->getXfree())
             {
-                (*mState->getXfree())[0].getCenter() = position;
-                (*mState->getX())[0].getCenter() = position;
+                helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
+                helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
+                xfree[0].getCenter() = position;
+                x[0].getCenter() = position;
 
-                (*mState->getXfree())[0].getOrientation() = orientation;
-                (*mState->getX())[0].getOrientation() = orientation;
+                xfree[0].getOrientation() = orientation;
+                x[0].getOrientation() = orientation;
             }
         }
         omni = false;
@@ -110,33 +112,36 @@ void MechanicalStateController<DataTypes>::applyController()
 
         if (mState)
         {
+            helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
+            helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
+
             unsigned int i = index.getValue();
 
-            Vec<3,Real> x(1,0,0);
-            Vec<3,Real> y(0,1,0);
-            Vec<3,Real> z(0,0,1);
+            Vec<3,Real> vx(1,0,0);
+            Vec<3,Real> vy(0,1,0);
+            Vec<3,Real> vz(0,0,1);
 
             if (mouseMode==BtLeft)
             {
-                (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(y, dx * (Real)0.001) * Quat(z, dy * (Real)0.001);
-                (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(y, dx * (Real)0.001) * Quat(z, dy * (Real)0.001);
+                xfree[i].getOrientation() = x[i].getOrientation() * Quat(vy, dx * (Real)0.001) * Quat(vz, dy * (Real)0.001);
+                x[i].getOrientation() = x[i].getOrientation() * Quat(vy, dx * (Real)0.001) * Quat(vz, dy * (Real)0.001);
             }
             else
             {
-                sofa::helper::Quater<Real>& quatrot = (*mState->getX())[i].getOrientation();
+                sofa::helper::Quater<Real>& quatrot = x[i].getOrientation();
                 sofa::defaulttype::Vec<3,Real> vectrans(dy * mainDirection.getValue()[0] * (Real)0.05, dy * mainDirection.getValue()[1] * (Real)0.05, dy * mainDirection.getValue()[2] * (Real)0.05);
                 vectrans = quatrot.rotate(vectrans);
 
-                (*mState->getX())[i].getCenter() += vectrans;
-                (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+                x[i].getCenter() += vectrans;
+                x[i].getOrientation() = x[i].getOrientation() * Quat(vx, dx * (Real)0.001);
 
-                //	(*mState->getX0())[i].getCenter() += vectrans;
-                //	(*mState->getX0())[i].getOrientation() = (*mState->getX0())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+                //	x0[i].getCenter() += vectrans;
+                //	x0[i].getOrientation() = x0[i].getOrientation() * Quat(vx, dx * (Real)0.001);
 
-                if(mState->getXfree())
+                if(xfree.size() > 0)
                 {
-                    (*mState->getXfree())[i].getCenter() += vectrans;
-                    (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+                    xfree[i].getCenter() += vectrans;
+                    xfree[i].getOrientation() = x[i].getOrientation() * Quat(vx, dx * (Real)0.001);
                 }
             }
         }
@@ -155,18 +160,20 @@ void MechanicalStateController<DataTypes>::applyController()
 
             if (mState)
             {
+                helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
+
                 unsigned int i = index.getValue();
 
                 switch( mouseMode )
                 {
                 case BtLeft:
-                    (*mState->getX())[i].getCenter() += Vec<3,Real>((Real)dx,(Real)0,(Real)0);
+                    x[i].getCenter() += Vec<3,Real>((Real)dx,(Real)0,(Real)0);
                     break;
                 case BtRight :
-                    (*mState->getX())[i].getCenter() += Vec<3,Real>((Real)0,(Real)dy,(Real)0);
+                    x[i].getCenter() += Vec<3,Real>((Real)0,(Real)dy,(Real)0);
                     break;
                 case BtMiddle :
-                    (*mState->getX())[i].getCenter() += Vec<3,Real>((Real)0,(Real)0,(Real)dy);
+                    x[i].getCenter() += Vec<3,Real>((Real)0,(Real)0,(Real)dy);
                     break;
                 default :
                     break;
@@ -177,8 +184,8 @@ void MechanicalStateController<DataTypes>::applyController()
 
 
     sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-    sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
-    sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+    sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+    sofa::simulation::UpdateMappingVisitor updateVisitor(core::ExecParams::defaultInstance()); updateVisitor.execute(node);
 };
 
 

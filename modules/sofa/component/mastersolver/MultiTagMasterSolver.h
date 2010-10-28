@@ -53,7 +53,7 @@ public:
 
     virtual ~MultiTagMasterSolver();
 
-    void step (double dt);
+    void step (double dt, const sofa::core::ExecParams* params);
 
 public:
     sofa::core::objectmodel::TagSet tagList;

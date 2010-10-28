@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
+
 #include <sofa/component/forcefield/TriangularBiquadraticSpringsForceField.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -213,7 +216,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     // get restPosition
     if (_initialPoints.getValue().size() == 0)
     {
-        VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = *this->mstate->getX0();
         _initialPoints.setValue(p);
     }
     int i;
@@ -242,16 +245,13 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     triangleInfo.endEdit();
 }
 
+template <class DataTypes>
+void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
 
-template <class DataTypes>
-double TriangularBiquadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr<<"TriangularBiquadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-template <class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
-{
     unsigned int j,k,l,v0,v1;
     int nbEdges=_topology->getNbEdges();
     int nbTriangles=_topology->getNbTriangles();
@@ -352,25 +352,22 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     edgeInfo.endEdit();
     triangleInfo.endEdit();
     updateMatrix=true;
-
+    d_f.endEdit();
 }
 
 
 template <class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
+void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     unsigned int i,j,k;
     int nbTriangles=_topology->getNbTriangles();
     bool compressible=f_compressible.getValue();
     Real areaStiffness=(getLambda()+getMu())*3;
     TriangleRestInformation *tinfo;
-
-//	serr << "start addDForce" << sendl;
-
-
-//	assert(this->mstate);
-//	VecDeriv& x = *this->mstate->getX();
-
 
     Deriv deltax,res;
 
@@ -513,12 +510,13 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
             j=(k+2)%3;
             deltax= dx[ta[i]] -dx[ta[j]];
             res=tinfo->DfDx[k]*deltax;
-            df[ta[i]]+=res;
-            df[ta[j]]-= tinfo->DfDx[k].transposeMultiply(deltax);
+            df[ta[i]]+= res * kFactor;
+            df[ta[j]]-= (tinfo->DfDx[k].transposeMultiply(deltax)) * kFactor;
         }
     }
     edgeInfo.endEdit();
     triangleInfo.endEdit();
+    d_df.endEdit();
 }
 
 
@@ -540,7 +538,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw()
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
     int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);
@@ -568,6 +566,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw()
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
+
+#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL

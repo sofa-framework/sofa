@@ -41,8 +41,9 @@ using namespace defaulttype;
 int ReadTopologyClass = core::RegisterObject("Read topology containers informations from file at each timestep")
         .add< ReadTopology >();
 
-ReadTopologyCreator::ReadTopologyCreator()
-    : sceneName("")
+ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
+    :Visitor(params)
+    , sceneName("")
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else
@@ -54,8 +55,9 @@ ReadTopologyCreator::ReadTopologyCreator()
 {
 }
 
-ReadTopologyCreator::ReadTopologyCreator(const std::string &n, bool _createInMapping, bool i, int c)
-    : sceneName(n)
+ReadTopologyCreator::ReadTopologyCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i, int c)
+    :Visitor(params)
+    , sceneName(n)
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else

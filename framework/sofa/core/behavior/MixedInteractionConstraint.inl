@@ -56,7 +56,7 @@ MixedInteractionConstraint<DataTypes1, DataTypes2>::~MixedInteractionConstraint(
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionConstraint<DataTypes1, DataTypes2>::init()
 {
-    InteractionConstraint::init();
+    BaseInteractionConstraint::init();
     this->mask1 = &mstate1->forceMask;
     this->mask2 = &mstate2->forceMask;
 }
@@ -66,84 +66,6 @@ bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
 {
     if( endTime.getValue()<0 ) return true;
     return endTime.getValue()>getContext()->getTime();
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectResponse()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        mstate1->forceMask.setInUse(this->useMask());
-        mstate2->forceMask.setInUse(this->useMask());
-        projectResponse(*mstate1->getDx(), *mstate2->getDx());
-    }
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectJacobianMatrix()
-{
-    serr << "NOT IMPLEMENTED YET" << sendl;
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectVelocity(*mstate1->getV(), *mstate2->getV());
-    }
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectPosition()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectPosition(*mstate1->getX(), *mstate2->getX());
-    }
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectFreeVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectVelocity(*mstate1->getVfree(), *mstate2->getVfree());
-    }
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectFreePosition()
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        projectPosition(*mstate1->getXfree(), *mstate2->getXfree());
-    }
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::applyConstraint(unsigned int &contactId)
-{
-    if( !isActive() ) return;
-    if (mstate1 && mstate2)
-    {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-        applyConstraint(*mstate1->getC(), *mstate2->getC(), contactId);
-    }
 }
 
 } // namespace behavior

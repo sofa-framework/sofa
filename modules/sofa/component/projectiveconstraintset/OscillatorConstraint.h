@@ -39,22 +39,29 @@ namespace component
 namespace projectiveconstraintset
 {
 
-/** Apply sinusoidal trajectories to particles. Defined as \f$ x = x_m A \sin ( \omega t + \phi )\f$
-	where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
-	*/
-template <class DataTypes>
-class OscillatorConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+/**
+ * Apply sinusoidal trajectories to particles.
+ * Defined as \f$ x = x_m A \sin ( \omega t + \phi )\f$
+ * where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
+ */
+template <class TDataTypes>
+class OscillatorConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OscillatorConstraint,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(OscillatorConstraint,TDataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,TDataTypes));
 
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
 
 protected:
     struct Oscillator
@@ -65,20 +72,26 @@ protected:
         Real pulsation;
         Real phase;
 
-        Oscillator() {}
-
-        Oscillator( unsigned int i, const Coord& m, const Deriv& a, const Real& w, const Real& p )
-            : index(i), mean(m), amplitude(a), pulsation(w), phase(p) {}
-
-        inline friend std::istream& operator >> ( std::istream& in, Oscillator& o )
+        Oscillator()
         {
-            in>>o.index>>o.mean>>o.amplitude>>o.pulsation>>o.phase;
+        }
+
+        Oscillator(unsigned int i, const Coord& m, const Deriv& a,
+                const Real& w, const Real& p) :
+            index(i), mean(m), amplitude(a), pulsation(w), phase(p)
+        {
+        }
+
+        inline friend std::istream& operator >>(std::istream& in, Oscillator& o)
+        {
+            in >> o.index >> o.mean >> o.amplitude >> o.pulsation >> o.phase;
             return in;
         }
 
-        inline friend std::ostream& operator << ( std::ostream& out, const Oscillator& o )
+        inline friend std::ostream& operator <<(std::ostream& out, const Oscillator& o)
         {
-            out << o.index<< " " <<o.mean<< " " <<o.amplitude<< " " <<o.pulsation<< " " <<o.phase<<"\n";
+            out << o.index << " " << o.mean << " " << o.amplitude << " "
+                << o.pulsation << " " << o.phase << "\n";
             return out;
         }
     };
@@ -89,26 +102,25 @@ protected:
 public:
     OscillatorConstraint();
 
-    OscillatorConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
+    OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate);
 
     ~OscillatorConstraint();
 
-    OscillatorConstraint<DataTypes>* addConstraint(unsigned index, const Coord& mean, const Deriv& amplitude, Real pulsation, Real phase);
+    OscillatorConstraint<TDataTypes>* addConstraint(unsigned index, const Coord& mean, const Deriv& amplitude, Real pulsation, Real phase);
 
     // -- Constraint interface
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& dx);
 
-    void projectResponse(VecDeriv& dx);
-    void projectResponse(MatrixDerivRowType& dx);
 
-    virtual void projectVelocity(VecDeriv& /*dx*/); ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& /*x*/); ///< project x to constrained space (x models a position)
+    void projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams);
+    void projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* mparams);
+    void projectPosition(DataVecCoord& xData, const core::MechanicalParams* mparams);
+    void projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams);
 
     void draw() {}
 
-    /// this constraint is holonomic
-    bool isHolonomic() {return true;}
+protected:
+    template <class DataDeriv>
+    void projectResponseT(DataDeriv& dx, const core::MechanicalParams* mparams);
 };
 
 } // namespace projectiveconstraintset

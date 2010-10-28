@@ -178,7 +178,8 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
 {
-    MatrixDeriv& constraints = *mstate->getC();
+    helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *mstate->write(core::MatrixDerivId::holonomicC());
+    MatrixDeriv& constraints = constraintsData.wref();
 
     MatrixDeriv constraintCopy;
 
@@ -242,119 +243,6 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
         ++rowIt;
     }
 }
-
-
-//template<class DataTypes>
-//void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
-//{
-//	std::cout<<"getComplianceWithConstraintMerge is called"<<std::endl;
-//	VecConst& constraints = *mstate->getC();
-//	sofa::helper::vector<unsigned int> &constraintId =  mstate->getConstraintId();
-//
-//	ConstraintIterator itConstraint;
-//	/////////// COPY OF THE CURRENT CONSTRAINT SET//////////////
-//	unsigned int numConstraints = constraints.size();
-//	VecConst constraintCopy;
-//	sofa::helper::vector<unsigned int> constraintIdCopy;
-//
-//	std::cout<<"******\n Constraint before Merge  \n *******"<<std::endl;
-//	for(unsigned int c = 0; c < numConstraints; c++)
-//	{
-//		constraintIdCopy.push_back(constraintId[c]);
-//		SparseVecDeriv svd;
-//		std::cout<<"constraint["<<c<<"] : "<<std::endl;
-//
-//		std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
-//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//		{
-//			unsigned int dof = itConstraint->first;
-//			Deriv n = itConstraint->second;
-//
-//			svd.add(dof,n);
-//			std::cout<<"       [ "<<dof<<"]="<<n<<std::endl;
-//		}
-//		constraintCopy.push_back(svd);
-//	}
-//
-//	/////////// MERGE OF THE CONSTRAINTS //////////////
-//	constraints.clear();
-//	constraintId.clear();
-//
-//	// look for the number of group;
-//	unsigned int numGroup=0;
-//	for (unsigned int cm=0; cm<constraint_merge.size(); cm++)
-//	{
-//		if(constraint_merge[cm]>(int) numGroup)
-//		numGroup = (unsigned int) constraint_merge[cm];
-//	}
-//	numGroup+=1;
-//
-//	std::cout<<"******\n Constraint after Merge  \n *******"<<std::endl;
-//	for (unsigned int group=0; group<numGroup; group++)
-//	{
-//		bool isProjected=false;
-//		SparseVecDeriv svd;
-//
-//		std::cout<<"constraint["<<group<<"] : "<<std::endl;
-//
-//		for(unsigned int c = 0; c < numConstraints; c++)
-//		{
-//			unsigned int cId = constraintIdCopy[c];
-//
-//			//std::cerr<<"for constraint "<<c<<" on a total of "<<numConstraints<<"call constraint_merge["<<cId<<"] and  constraint_merge.size ="<< constraint_merge.size()<<std::endl;
-//
-//			unsigned int group_projection = constraint_merge[cId];
-//
-//			if (group_projection == group)
-//			{
-//				isProjected=true;
-//
-//				std::pair< ConstraintIterator, ConstraintIterator > iter=constraintCopy[c].data();
-//				for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//				{
-//					unsigned int dof = itConstraint->first;
-//					Deriv n = itConstraint->second;
-//
-//					svd.add(dof,n);
-//					std::cout<<"       [ "<<dof<<"]="<<n<<std::endl;
-//				}
-//			}
-//		}
-//
-//		if (isProjected)
-//		{
-//			constraintId.push_back(group);
-//			constraints.push_back(svd);
-//		}
-//	}
-//
-//	//////////// compliance computation call //////////
-//	this->getCompliance(Wmerged);
-//
-//	/////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
-//	unsigned int numConstraintsCopy = constraintCopy.size();
-//
-//	constraintId.clear();
-//	constraints.clear();
-//	std::cout<<"******\n Constraint back to initial values  \n *******"<<std::endl;
-//	for(unsigned int c = 0; c < numConstraintsCopy; c++)
-//	{
-//		std::cout<<"constraint["<<c<<"] : "<<std::endl;
-//		constraintId.push_back(constraintIdCopy[c]);
-//		SparseVecDeriv svd;
-//
-//		std::pair< ConstraintIterator, ConstraintIterator > iter=constraintCopy[c].data();
-//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//		{
-//			unsigned int dof = itConstraint->first;
-//			Deriv n = itConstraint->second;
-//
-//			svd.add(dof,n);
-//			std::cout<<"       [ "<<dof<<"]="<<n<<std::endl;
-//		}
-//		constraints.push_back(svd);
-//	}
-//}
 
 
 template<class DataTypes>
@@ -425,81 +313,6 @@ void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMa
 }
 
 
-//template<class DataTypes>
-//void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix *W)
-//{
-//	const VecConst& constraints = *mstate->getC();
-//	unsigned int numConstraints = constraints.size();
-//	//  std::cout<<"UncoupledConstraintCorrection ("<<this->getName()<<")::getCompliance is called on "<< mstate->getName()<<std::endl;
-//
-//#ifdef DEBUG
-//	std::cout<<"numConstraints ="<<numConstraints<<std::endl;
-//#endif
-//
-//	for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-//	{
-//		int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-//#ifdef DEBUG
-//		std::cout<<"constraint["<<curRowConst<<"] : ";
-//#endif
-//		ConstraintIterator itConstraint;
-//		std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
-//
-//		for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-//		{
-//			unsigned int dof = itConstraint->first;
-//			Deriv n = itConstraint->second;
-//
-//			int indexCurColConst;
-//#ifdef DEBUG
-//			std::cout<<" [ "<<dof<<"]="<<n<<std::endl;
-//#endif
-//			for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
-//			{
-//				indexCurColConst = mstate->getConstraintId()[curColConst];
-//
-//				ConstraintIterator itConstraint2;
-//				std::pair< ConstraintIterator, ConstraintIterator > iter2=constraints[curColConst].data();
-//
-//				for (itConstraint2=iter2.first;itConstraint2!=iter2.second;itConstraint2++)
-//				{
-//					unsigned int dof2 = itConstraint2->first;
-//					Deriv n2 = itConstraint2->second;
-//					if (dof == dof2)
-//					{
-//						//W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
-//						double w = n * n2 * compliance.getValue()[dof] ;
-//						W->add(indexCurRowConst, indexCurColConst, w);
-//						if (indexCurRowConst != indexCurColConst)
-//						W->add(indexCurColConst, indexCurRowConst, w);
-//					}
-//				}
-//			}
-//			/*
-//			for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-//			{
-//				indexCurColConst = mstate->getConstraintId()[curColConst];
-//				W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-//			}
-//			*/
-//		}
-//	}
-//
-//	/*debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
-//	printf("\n index : ");
-//	for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-//	{
-//		int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-//		printf(" %d ",indexCurRowConst);
-//		if(abs(W[indexCurRowConst][indexCurRowConst]) < 0.000000001)
-//			printf("\n WARNING : there is a 0 on the diagonal of matrix W");
-//
-//		if(abs(W[curRowConst][curRowConst]) <0.000000001)
-//			printf("\n stop");
-//	}*/
-//}
-
-
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
@@ -520,7 +333,8 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
-    VecDeriv& force = *mstate->getExternalForces();
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
+    VecDeriv& force = forceData.wref();
     const MatrixDeriv& constraints = *mstate->getC();
 
     force.resize((*mstate->getX()).size());
@@ -542,11 +356,15 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
         }
     }
 
-    VecDeriv& dx = *mstate->getDx();
-    VecCoord& x = *mstate->getX();
-    VecDeriv& v = *mstate->getV();
-    VecDeriv& v_free = *mstate->getVfree();
-    VecCoord& x_free = *mstate->getXfree();
+
+    helper::WriteAccessor<Data<VecDeriv> > dxData = *mstate->write(core::VecDerivId::dx());
+    VecDeriv& dx = dxData.wref();
+    helper::WriteAccessor<Data<VecCoord> > xData = *mstate->write(core::VecCoordId::position());
+    VecCoord& x = xData.wref();
+    helper::WriteAccessor<Data<VecDeriv> > vData = *mstate->write(core::VecDerivId::velocity());
+    VecDeriv& v = vData.wref();
+    const VecDeriv& v_free = *mstate->getVfree();
+    const VecCoord& x_free = *mstate->getXfree();
     const double invDt = 1.0/this->getContext()->getDt();
 
     // Euler integration... will be done in the "integrator" as soon as it exists !
@@ -562,10 +380,12 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     }
 }
 
+
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
 {
-    VecDeriv& force = *mstate->getExternalForces();
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
+    VecDeriv& force = forceData.wref();
 
     const unsigned int numDOFs = mstate->getSize();
 
@@ -600,39 +420,14 @@ void UncoupledConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(co
 
         ++rowIt;
     }
-
-    /*
-    const VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
-
-    for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-    {
-        int indexC1 = mstate->getConstraintId()[c1];
-        double fC1 = f->element(indexC1);
-        //sout << "fC("<<indexC1<<")="<<fC1<<sendl;
-        if (fC1 != 0.0)
-        {
-          ConstraintIterator itConstraint;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-          for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-            {
-              unsigned int dof = itConstraint->first;
-              Deriv n = itConstraint->second;
-
-                //sout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << sendl;
-                force[dof] += n * fC1;
-            }
-        }
-    }
-    */
 }
-
 
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::resetContactForce()
 {
-    VecDeriv& force = *mstate->getExternalForces();
+    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
+    VecDeriv& force = forceData.wref();
 
     for (unsigned i = 0; i < force.size(); ++i)
     {
@@ -648,19 +443,6 @@ bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
     const MatrixDeriv &constraints = *mstate->getC();
 
     return (constraints.readLine(index) != constraints.end());
-
-    /*
-    const VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
-
-    for(unsigned int c = 0; c < numConstraints; c++)
-    {
-    	int indexC = mstate->getConstraintId()[c];
-    	if (indexC == index)
-    		return true;
-    }
-    return false;
-    */
 }
 
 
@@ -744,24 +526,6 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double 
             }
         }
     }
-
-
-    //const VecConst& constraints = *mstate->getC();
-
-    //for (int id_=begin; id_<=end; id_++)
-    //{
-    //	int c = id_to_localIndex[id_];
-
-    //	ConstraintIterator itConstraint;
-    //	std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
-
-    //	for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-    //	{
-    //		//Deriv DX =  constraint_force[constraints[c][i].index] * compliance.getValue()[constraints[c][i].index];
-    //		Deriv n = itConstraint->second;
-    //		d[id_] += n * constraint_disp[itConstraint->first];
-    //	}
-    //}
 }
 
 
@@ -803,30 +567,6 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
             }
         }
     }
-
-    /*const VecConst& constraints = *mstate->getC();
-
-    if (!update)
-    	return;
-
-    for ( int id_=begin; id_<=end; id_++)
-    {
-    	int c = id_to_localIndex[id_];
-
-    	ConstraintIterator itConstraint;
-                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
-    	for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-    	{
-    		Deriv n = itConstraint->second;
-    		unsigned int dof = itConstraint->first;
-
-    		constraint_force[dof] += n * df[id_];
-
-    		Deriv DX =  constraint_force[dof] * compliance.getValue()[dof];
-
-    		constraint_disp[dof] = DX;
-    	}
-    }*/
 }
 
 
@@ -883,44 +623,6 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
             }
         }
     }
-
-    /*
-    const VecConst& constraints = *mstate->getC();
-
-    for (int id1=begin; id1<=end; id1++)
-    {
-    	int c1 = id_to_localIndex[id1];
-    	ConstraintIterator itConstraint1;
-    	std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
-
-    	for (itConstraint1=iter.first;itConstraint1!=iter.second;itConstraint1++)
-    	{
-    		Deriv n1 = itConstraint1->second;
-    		unsigned int dof1 = itConstraint1->first;
-
-    		for (int id2= id1; id2<=end; id2++)
-    		{
-    			int c2 = id_to_localIndex[id2];
-
-    			ConstraintIterator itConstraint2;
-    			std::pair< ConstraintIterator, ConstraintIterator > iter2=constraints[c2].data();
-    			for (itConstraint2=iter2.first;itConstraint2!=iter2.second;itConstraint2++)
-    			{
-    				unsigned int dof2 = itConstraint2->first;
-
-    				if (dof1 == dof2)
-    				{
-    					Deriv n2 = itConstraint2->second;
-    					double w = n1 * n2 * compliance.getValue()[dof1];
-    					W->add(id1, id2, w);
-    					if (id1 != id2)
-    						W->add(id2, id1, w);
-    				}
-    			}
-    		}
-    	}
-    }
-    */
 }
 
 

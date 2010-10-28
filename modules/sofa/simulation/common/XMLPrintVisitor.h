@@ -48,7 +48,8 @@ protected:
     //Print in compact mode or expanded mode
     bool compact;
 public:
-    XMLPrintVisitor(std::ostream& out, bool c=false) : m_out(out),level(0), compact(c) {}
+    XMLPrintVisitor(std::ostream& out, const sofa::core::ExecParams* params) : Visitor(params), m_out(out),level(0), compact(false) {}
+    XMLPrintVisitor(std::ostream& out, bool compact, const sofa::core::ExecParams* ) : Visitor(params), m_out(out),level(0), compact(compact) {}
 
     template<class T>
     void processObject(T obj);

@@ -44,6 +44,7 @@ public:
     virtual Iterative::IterativePartition*  getPartition()=0;
     virtual Iterative::IterativePartition*  prepareTask()=0;
 
+    virtual ~BaseObjectTasks();
 
 
 

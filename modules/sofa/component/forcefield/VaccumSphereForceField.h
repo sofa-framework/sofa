@@ -30,6 +30,8 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Event.h>
 
+#include <sofa/component/component.h>
+
 namespace sofa
 {
 
@@ -58,6 +60,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 protected:
     class Contact
@@ -138,11 +142,8 @@ public:
 
     virtual void init();
 
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual void addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
+    virtual void addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
     virtual void updateStiffness( const VecCoord& x );
 
@@ -151,10 +152,34 @@ public:
     void draw();
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec1fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1dTypes>;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API VaccumSphereForceField<Vec1fTypes>;
+#endif
+
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
+
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_H

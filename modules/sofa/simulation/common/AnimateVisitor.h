@@ -27,11 +27,18 @@
 
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/VecId.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/core/ExecParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/BehaviorModel.h>
-#include <sofa/core/behavior/InteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/MasterSolver.h>
 #include <sofa/core/collision/Pipeline.h>
+
+using namespace sofa::core;
+
 
 namespace sofa
 {
@@ -41,20 +48,22 @@ namespace simulation
 
 class SOFA_SIMULATION_COMMON_API AnimateVisitor : public Visitor
 {
-protected:
+
+protected :
     double dt;
 #ifdef SOFA_HAVE_EIGEN2
     bool firstNodeVisited;
 #endif
 public:
-    AnimateVisitor(double dt=0.0);
+    AnimateVisitor(const core::ExecParams* params = ExecParams::defaultInstance());
+    AnimateVisitor(double dt, const core::ExecParams* params = ExecParams::defaultInstance());
 
     void setDt(double v) { dt = v; }
     double getDt() const { return dt; }
 
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
     virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
-    virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::InteractionForceField* obj);
+    virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* obj);
     virtual void processMasterSolver(simulation::Node* node, core::behavior::MasterSolver* obj);
     virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 

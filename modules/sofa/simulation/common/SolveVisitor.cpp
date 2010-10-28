@@ -37,9 +37,9 @@ void SolveVisitor::processSolver(simulation::Node* node, core::behavior::OdeSolv
 {
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     if (freeMotion)
-        s->solve(dt, sofa::core::behavior::BaseMechanicalState::VecId::freePosition(), sofa::core::behavior::BaseMechanicalState::VecId::freeVelocity());
+        s->solve(dt, core::VecCoordId::freePosition(), core::VecDerivId::freeVelocity(), params);
     else
-        s->solve(dt);
+        s->solve(dt, params);
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 

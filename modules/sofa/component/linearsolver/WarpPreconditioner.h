@@ -66,13 +66,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
     typedef typename WarpPreconditionerInternalData<DataTypes>::TBaseVector TBaseVector;
     typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
     typedef sofa::core::behavior::LinearSolver Inherit;
-
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
-
 
     Data<bool> f_verbose;
     Data <std::string> solverName;
@@ -91,14 +87,14 @@ public:
     /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
     ///
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
-    virtual void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
+    virtual void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams);
 
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    virtual void setSystemRHVector(VecId v);
+    virtual void setSystemRHVector(core::MultiVecDerivId v);
 
     /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     /// This vector will be replaced by the solution of the system once solveSystem is called
-    virtual void setSystemLHVector(VecId v);
+    virtual void setSystemLHVector(core::MultiVecDerivId v);
 
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem();
@@ -193,10 +189,10 @@ private :
     core::behavior::MechanicalState<DataTypes>* mstate;
     component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField;
 
-    VecId systemLHVId;
-    VecId systemRHVId;
-    VecId rotatedLHVId;
-    VecId rotatedRHVId;
+    core::MultiVecDerivId systemLHVId;
+    core::MultiVecDerivId systemRHVId;
+    core::VecDerivId rotatedLHVId;
+    core::VecDerivId rotatedRHVId;
 
     WarpPreconditionerInternalData<DataTypes> data;
 

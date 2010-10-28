@@ -22,12 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/TrianglePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <set>
 #include <sofa/defaulttype/Vec3Types.h>
 
 #ifdef _WIN32
@@ -46,11 +44,6 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-
-
-
 
 using namespace sofa::defaulttype;
 

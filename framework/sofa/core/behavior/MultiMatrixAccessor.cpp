@@ -44,7 +44,7 @@ void MultiMatrixAccessor::addMechanicalState(const BaseMechanicalState* /*mstate
 {
 }
 
-void MultiMatrixAccessor::addMechanicalMapping(const BaseMechanicalMapping* /*mapping*/)
+void MultiMatrixAccessor::addMechanicalMapping(const BaseMapping* /*mapping*/)
 {
 }
 

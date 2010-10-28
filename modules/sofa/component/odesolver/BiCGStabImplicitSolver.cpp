@@ -42,6 +42,7 @@ namespace component
 namespace odesolver
 {
 
+using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
@@ -66,16 +67,16 @@ void BiCGStabImplicitSolver::solve(double dt)
     MultiVector vel(group, VecId::velocity());
     MultiVector dx(group, VecId::dx());
     MultiVector f(group, VecId::force());
-    MultiVector b(group, VecId::V_DERIV);
-    MultiVector p(group, VecId::V_DERIV);
-    //MultiVector q(group, VecId::V_DERIV);
-    MultiVector r(group, VecId::V_DERIV);
-    MultiVector rtilde(group, VecId::V_DERIV);
-    MultiVector s(group, VecId::V_DERIV);
-    MultiVector t(group, VecId::V_DERIV);
-    MultiVector x(group, VecId::V_DERIV);
-    MultiVector v(group, VecId::V_DERIV);
-    //MultiVector z(group, VecId::V_DERIV);
+    MultiVector b(group, sofa::core::V_DERIV);
+    MultiVector p(group, sofa::core::V_DERIV);
+    //MultiVector q(group, sofa::core::V_DERIV);
+    MultiVector r(group, sofa::core::V_DERIV);
+    MultiVector rtilde(group, sofa::core::V_DERIV);
+    MultiVector s(group, sofa::core::V_DERIV);
+    MultiVector t(group, sofa::core::V_DERIV);
+    MultiVector x(group, sofa::core::V_DERIV);
+    MultiVector v(group, sofa::core::V_DERIV);
+    //MultiVector z(group, sofa::core::V_DERIV);
     double h = dt;
 
 

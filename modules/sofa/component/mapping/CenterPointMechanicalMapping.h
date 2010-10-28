@@ -25,10 +25,21 @@
 #ifndef SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa
+{
+namespace core
+{
+namespace topology
+{
+class BaseMeshTopology;
+}//namespace topology
+} // namespace core
+} // namespace sofa
+
 
 namespace sofa
 {
@@ -39,15 +50,15 @@ namespace component
 namespace mapping
 {
 
-
-template <class BasicMapping>
-class CenterPointMechanicalMapping : public BasicMapping
+template <class TIn, class TOut>
+class CenterPointMechanicalMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CenterPointMechanicalMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(CenterPointMechanicalMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
@@ -58,24 +69,47 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
 
-    CenterPointMechanicalMapping(In* from, Out* to);
+    CenterPointMechanicalMapping(core::State<In>* from, core::State<Out>* to);
 
     void init();
 
     virtual ~CenterPointMechanicalMapping();
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply(Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in, const core::MechanicalParams *mparams);
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJ(Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT(Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in, const core::MechanicalParams *mparams);
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void applyJT(Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in, const core::ConstraintParams *cparams);
 
 protected:
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CENTERPOINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+extern template class CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
+extern template class CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
+extern template class CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
+#endif
+#endif
+#endif
 
 } // namespace mapping
 

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_H
 
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixExpr.h>
 #include <sofa/component/linearsolver/matrix_bloc_traits.h>
 #include "FullVector.h"
 #include <algorithm>

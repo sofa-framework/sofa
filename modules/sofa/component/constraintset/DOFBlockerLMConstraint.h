@@ -51,7 +51,7 @@ class DOFBlockerLMConstraintInternalData
 
 
 /** Keep two particules at an initial distance
- */
+*/
 template <class DataTypes>
 class DOFBlockerLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTypes>
 {
@@ -70,8 +70,7 @@ public:
     typedef sofa::component::topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
-    typedef typename core::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+    typedef core::ConstraintParams::ConstOrder ConstOrder;
 
 
 protected:
@@ -79,19 +78,22 @@ protected:
     friend class DOFBlockerLMConstraintInternalData<DataTypes>;
 
 public:
-    DOFBlockerLMConstraint( MechanicalState *dof):
-        core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
-        BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain")),
-        factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis")),
-        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
-        showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
-    { };
-    DOFBlockerLMConstraint():
-        BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain")),
-        factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis")),
-        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
-        showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
-    { };
+    DOFBlockerLMConstraint( MechanicalState *dof)
+        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+        , BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
+        , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
+        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
+    {
+    };
+
+    DOFBlockerLMConstraint()
+        : BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain"))
+        , factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis"))
+        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+        , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
+    {
+    };
 
     ~DOFBlockerLMConstraint() {};
 
@@ -107,28 +109,26 @@ public:
     void resetConstraint();
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::VecId position);
-    void writeConstraintEquations(unsigned int& lineNumber, VecId id, ConstOrder order);
-
-
-
+    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+    void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
 
     std::string getTemplateName() const
     {
         return templateName(this);
     }
+
     static std::string templateName(const DOFBlockerLMConstraint<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
 
-
-    bool isCorrectionComputedWithSimulatedDOF(core::behavior::BaseLMConstraint::ConstOrder /*order*/)
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/)
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;
         else return false;
     }
+
     bool useMask() const {return true;}
 
     Data<helper::vector<Deriv> > BlockedAxis;
@@ -139,16 +139,13 @@ protected :
     helper::vector<SetIndexArray> idxEquations;
     Data<SReal> showSizeAxis;
 
-
     sofa::core::topology::BaseMeshTopology* topology;
-
 
     // Define TestNewPointFunction
     static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
 
     // Define RemovalFunction
     static void FCRemovalFunction ( int , void*);
-
 };
 
 } // namespace constraintset

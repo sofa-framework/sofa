@@ -31,12 +31,14 @@
 
 
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
+// #include <sofa/core/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/InteractionForceField.h>
-#include <sofa/core/behavior/InteractionConstraint.h>
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/SharedTypes.h>
 
 //#include <sofa/defaulttype/BaseMatrix.h>
@@ -70,12 +72,12 @@ The default behavior of the fwd* and bwd* is to do nothing. Derived actions typi
 
 /** Perform a vector operation v=a-b*f
 */
-class ParallelMechanicalVOpMecVisitor : virtual public MechanicalVisitor
+class ParallelMechanicalVOpMecVisitor : virtual public BaseMechanicalVisitor
 {
 public:
-    VecId v;
-    VecId a;
-    VecId b;
+    MultiVecId v;
+    ConstMultiVecId a;
+    ConstMultiVecId b;
     double f;
     Shared<double> *fSh;
 
@@ -98,11 +100,11 @@ public:
         out << "f["<<f<<"]";
         fLabel+= out.str();
 
-        if (a != VecId::null())
+        if (!a.isNull())
         {
             info+="a";
             aLabel="a[" + a.getName() + "] ";
-            if (b != VecId::null() )
+            if (!b.isNull() )
             {
                 info += "+b*f";
                 bLabel += "b[" + b.getName() + "] ";
@@ -110,7 +112,7 @@ public:
         }
         else
         {
-            if (b != VecId::null())
+            if (!b.isNull())
             {
                 info += "b*f";
                 bLabel += "b[" + b.getName() + "] ";
@@ -123,8 +125,8 @@ public:
         info += " : with v[" + v.getName() + "] " + aLabel + bLabel + fLabel;
         return info;
     }
-    ParallelMechanicalVOpMecVisitor(VecId v, VecId a = VecId::null(),Shared<double> *fSh=NULL)
-        : v(v), a(a),fSh(fSh)
+    ParallelMechanicalVOpMecVisitor(MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(),Shared<double> *fSh=NULL, const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(params), v(v), a(a),fSh(fSh)
     {}
 
     virtual Result fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);
@@ -141,12 +143,12 @@ public:
 
 /** Perform a vector operation v=a+b*f
 */
-class ParallelMechanicalVOpVisitor : virtual public MechanicalVisitor
+class ParallelMechanicalVOpVisitor : virtual public BaseMechanicalVisitor
 {
 public:
-    VecId v;
-    VecId a;
-    VecId b;
+    MultiVecId v;
+    ConstMultiVecId a;
+    ConstMultiVecId b;
     double f;
     Shared<double> *fSh;
 
@@ -169,11 +171,11 @@ public:
         out << "f["<<f<<"]";
         fLabel+= out.str();
 
-        if (a != VecId::null())
+        if (!a.isNull())
         {
             info+="a";
             aLabel="a[" + a.getName() + "] ";
-            if (b != VecId::null() )
+            if (!b.isNull())
             {
                 info += "+b*f";
                 bLabel += "b[" + b.getName() + "] ";
@@ -181,7 +183,7 @@ public:
         }
         else
         {
-            if (b != VecId::null())
+            if (!b.isNull())
             {
                 info += "b*f";
                 bLabel += "b[" + b.getName() + "] ";
@@ -195,8 +197,8 @@ public:
         return info;
     }
 
-    ParallelMechanicalVOpVisitor(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0,Shared<double> *fSh=NULL)
-        : v(v), a(a), b(b), f(f),fSh(fSh)
+    ParallelMechanicalVOpVisitor(MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(), ConstMultiVecId b = ConstMultiVecId::null(), double f=1.0, Shared<double> *fSh=NULL, const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance() )
+        : BaseMechanicalVisitor(params), v(v), a(a), b(b), f(f),fSh(fSh)
     {}
 
     Result fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);
@@ -214,11 +216,11 @@ public:
 
 /** Compute the dot product of two vectors */
 /** Compute the dot product of two vectors */
-class ParallelMechanicalVDotVisitor : public MechanicalVisitor
+class ParallelMechanicalVDotVisitor : public BaseMechanicalVisitor
 {
 public:
-    VecId a;
-    VecId b;
+    ConstMultiVecId a;
+    ConstMultiVecId b;
     double* total;
     Shared<double>* totalSh;
 
@@ -227,7 +229,7 @@ public:
 #endif
 
 
-    ParallelMechanicalVDotVisitor(Shared<double>* t,VecId a, VecId b) : a(a), b(b), totalSh(t)
+    ParallelMechanicalVDotVisitor( Shared<double>* t, ConstMultiVecId a, ConstMultiVecId b, const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance()) : BaseMechanicalVisitor(params), a(a), b(b), totalSh(t)
     {}
     /// Sequential code
     Result fwdMechanicalState(simulation::Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);

@@ -389,8 +389,10 @@ void ArticulatedHierarchyController::applyController(void)
 
                                 //	while (articulatedObjIt != articulatedObjItEnd)
                                 {
-                                    (*(*articulatedObjIt)->getX())[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
-                                    (*(*articulatedObjIt)->getXfree())[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
+                                    helper::WriteAccessor<Data<sofa::defaulttype::Vec1dTypes::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
+                                    x[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
+                                    xfree[(*it)->articulationIndex.getValue()].x() += signFactor * distributedAngleDelta;
                                     ++articulatedObjIt;
                                 }
                             }
@@ -407,8 +409,8 @@ void ArticulatedHierarchyController::applyController(void)
                     articulationIndex = articulationPropagationChain[j];
             }
 
-            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>(sofa::core::ExecParams::defaultInstance());
         }
     }
 }

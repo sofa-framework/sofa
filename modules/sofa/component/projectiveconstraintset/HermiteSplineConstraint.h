@@ -60,15 +60,19 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
+    typedef typename Coord::value_type Real;
+    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef typename defaulttype::Vec<3, Real> Vec3R;
     typedef typename defaulttype::Vec<2, Real> Vec2R;
-    typedef typename  helper::Quater<Real> QuatR;
+    typedef typename helper::Quater<Real> QuatR;
 
 public:
     ///indices of the DOFs constraints
@@ -116,16 +120,18 @@ public:
     /// -- Constraint interface
     void init();
     void reinit();
-    template <class DataDeriv>
-    void projectResponseT(DataDeriv& dx);
 
-    void projectResponse(VecDeriv& dx);
-    void projectResponse(MatrixDerivRowType& dx);
 
-    virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
+    void projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams);
+    void projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* mparams);
+    void projectPosition(DataVecCoord& xData, const core::MechanicalParams* mparams);
+    void projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams);
 
     void draw();
+
+protected:
+    template <class DataDeriv>
+    void projectResponseT(DataDeriv& dx, const core::MechanicalParams* mparams);
 };
 
 } // namespace projectiveconstraintset

@@ -60,17 +60,17 @@ ComplianceCGImplicitSolver::ComplianceCGImplicitSolver()
 
 void ComplianceCGImplicitSolver::solve(double dt)
 {
-    MultiVector pos(this, VecId::position());
-    MultiVector vel(this, VecId::velocity());
-    MultiVector freePos(this, VecId::freePosition());
-    MultiVector freeVel(this, VecId::freeVelocity());
-    MultiVector f(this, VecId::force());
-    MultiVector b(this, VecId::V_DERIV);
-    MultiVector p(this, VecId::V_DERIV);
-    MultiVector q(this, VecId::V_DERIV);
-    MultiVector q2(this, VecId::V_DERIV);
-    MultiVector r(this, VecId::V_DERIV);
-    MultiVector x(this, VecId::V_DERIV);
+    MultiVector pos(this, core::VecCoordId::position());
+    MultiVector vel(this, core::VecDerivId::velocity());
+    MultiVector freePos(this, core::VecCoordId::freePosition());
+    MultiVector freeVel(this, core::VecDerivId::freeVelocity());
+    MultiVector f (this, core::VecDerivId::force());
+    MultiVector b (this, core::V_DERIV);
+    MultiVector p (this, core::V_DERIV);
+    MultiVector q (this, core::V_DERIV);
+    MultiVector q2(this, core::V_DERIV);
+    MultiVector r (this, core::V_DERIV);
+    MultiVector x (this, core::V_DERIV);
 
     if (!firstCallToSolve)
     {

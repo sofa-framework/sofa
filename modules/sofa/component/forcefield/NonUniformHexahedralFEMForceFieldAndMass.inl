@@ -1008,4 +1008,4 @@ typename NonUniformHexahedralFEMForceFieldAndMass<T>::Vec3i NonUniformHexahedral
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_INL

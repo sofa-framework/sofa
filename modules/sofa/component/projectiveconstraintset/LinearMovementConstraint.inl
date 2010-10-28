@@ -185,7 +185,7 @@ void LinearMovementConstraint<DataTypes>::reset()
 
 template <class DataTypes>
 template <class DataDeriv>
-void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
+void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const core::MechanicalParams* /*mparams*/)
 {
     Real cT = (Real) this->getContext()->getTime();
     if ((cT != currentTime) || !finished)
@@ -206,20 +206,16 @@ void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx)
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+void LinearMovementConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    projectResponseT(dx);
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseT<VecDeriv>(res.wref(), mparams);
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectResponse(MatrixDerivRowType& dx)
+void LinearMovementConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* /*mparams*/)
 {
-    projectResponseT(dx);
-}
-
-template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
-{
+    helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime();
     if ((cT != currentTime) || !finished)
     {
@@ -240,8 +236,9 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
+void LinearMovementConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
 {
+    helper::WriteAccessor<DataVecCoord> x = xData;
     Real cT = (Real) this->getContext()->getTime();
 
     //initialize initial Dofs positions, if it's not done
@@ -263,7 +260,7 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
     //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
     if(finished && nextT != prevT)
     {
-        interpolatePosition<Coord>(cT, x);
+        interpolatePosition<Coord>(cT, x.wref());
     }
 }
 
@@ -299,6 +296,21 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     {
         x[*it].getCenter() = x0[*it].getCenter() + m.getVCenter() ;
         x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
+    }
+}
+
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams)
+{
+    helper::WriteAccessor<DataMatrixDeriv> c = cData;
+
+    MatrixDerivRowIterator rowIt = c->begin();
+    MatrixDerivRowIterator rowItEnd = c->end();
+
+    while (rowIt != rowItEnd)
+    {
+        projectResponseT<MatrixDerivRowType>(rowIt.row(), mparams);
+        ++rowIt;
     }
 }
 

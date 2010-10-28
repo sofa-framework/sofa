@@ -24,12 +24,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_INTERACTIONFORCEFIELD_H
+#ifndef SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
+#define SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
 
 #include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
-
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 
@@ -40,7 +40,7 @@ namespace behavior
 {
 
 /**
- *  \brief InteractionForceField is a force field linking several bodies (MechanicalState) together.
+ *  \brief BaseInteractionForceField is a force field linking several bodies (MechanicalState) together.
  *
  *  An interaction force field computes forces applied to several simulated
  *  bodies given their current positions and velocities.
@@ -48,10 +48,10 @@ namespace behavior
  *  For implicit integration schemes, it must also compute the derivative
  *  ( df, given a displacement dx ).
  */
-class SOFA_CORE_API InteractionForceField : public BaseForceField
+class SOFA_CORE_API BaseInteractionForceField : public BaseForceField
 {
 public:
-    SOFA_CLASS(InteractionForceField, BaseForceField);
+    SOFA_CLASS(BaseInteractionForceField, BaseForceField);
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
@@ -63,17 +63,18 @@ public:
     /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
     virtual BaseMechanicalState* getMechModel2() = 0;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, double /*kFact*/, unsigned int &/*offset*/)
-    {
-        serr << "addKToMatrix not implemented by " << this->getClassName() << sendl;
-    }
-
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact)
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const MechanicalParams* mparams)
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r1 = matrix->getMatrix(getMechModel1());
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r2 = matrix->getMatrix(getMechModel2());
-        if (r1) addKToMatrix(r1.matrix, kFact, r1.offset);
-        if (r2) addKToMatrix(r2.matrix, kFact, r2.offset);
+        if (r1) addKToMatrix(r1.matrix, mparams->kFactor(), r1.offset);
+        if (r2) addKToMatrix(r2.matrix,  mparams->kFactor(), r2.offset);
+    }
+
+    /// @deprecated
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, double /*kFact*/, unsigned int &/*offset*/)
+    {
+        serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
     }
 
 };
@@ -84,4 +85,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H

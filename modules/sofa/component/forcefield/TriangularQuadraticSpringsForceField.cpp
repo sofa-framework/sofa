@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/TriangularQuadraticSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -44,9 +46,6 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-
 
 
 SOFA_DECL_CLASS(TriangularQuadraticSpringsForceField)
@@ -76,7 +75,7 @@ template class SOFA_COMPONENT_FORCEFIELD_API TriangularQuadraticSpringsForceFiel
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 

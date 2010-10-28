@@ -1,27 +1,30 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
+#ifndef SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL
+
 #include <sofa/component/forcefield/FastTetrahedralCorotationalForceField.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -30,6 +33,7 @@
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/PolarDecompose.h>
+
 namespace sofa
 {
 
@@ -63,7 +67,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCr
     if (ff)
     {
         const std::vector< Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
-//		const std::vector< Edge> &edgeArray=ff->_topology->getEdges() ;
+        //		const std::vector< Edge> &edgeArray=ff->_topology->getEdges() ;
 
         unsigned int j,k,l,m,n;
         typename DataTypes::Real lambda=ff->getLambda();
@@ -106,7 +110,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::CorotationalTetrahedronCr
             // store the rest edge vector
             tinfo.restEdgeVector[j]=point[l]-point[k];
 
-            // the linear stiffness matrix using shape vectors and Lamé coefficients
+            // the linear stiffness matrix using shape vectors and Lamï¿½ coefficients
             val=mu*dot(tinfo.shapeVector[l],tinfo.shapeVector[k]);
             for(m=0; m<3; ++m)
             {
@@ -158,7 +162,7 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::~Fa
 
 template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>::init()
 {
-//	serr << "initializing FastTetrahedralCorotationalForceField" << sendl;
+    //	serr << "initializing FastTetrahedralCorotationalForceField" << sendl;
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
@@ -194,7 +198,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = *this->mstate->getX0();
         _initialPoints=p;
     }
 
@@ -297,16 +301,14 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
     r[2][2] = edgez[2];
 }
 
+template <class DataTypes>
+void FastTetrahedralCorotationalForceField<DataTypes>::addForce(DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/, const sofa::core::MechanicalParams* /*mparams*/ )
+{
 
-template <class DataTypes>
-double FastTetrahedralCorotationalForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr<<"FastTetrahedralCorotationalForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-template <class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
-{
+    VecDeriv& f        = *(dataF.beginEdit());
+    const VecCoord& x  =   dataX.getValue()  ;
+
+
     unsigned int j,k,l;
     int nbTetrahedra=_topology->getNbTetrahedra();
     int i;
@@ -394,15 +396,22 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(VecDeriv& f, con
 
     updateMatrix=true; // next time assemble the matrix
     tetrahedronInfo.endEdit();
+
+    dataF.endEdit();
+
 }
 
 
 template <class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
+void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(DataVecDeriv&   datadF , const DataVecDeriv&   datadX , const sofa::core::MechanicalParams* mparams )
 {
+    VecDeriv& df       = *(datadF.beginEdit());
+    const VecCoord& dx =   datadX.getValue()  ;
+    double kFactor = mparams->kFactor();
+
     unsigned int j;
     int i;
-//	const std::vector< Edge> &edgeArray=_topology->getEdges() ;
+    //	const std::vector< Edge> &edgeArray=_topology->getEdges() ;
     int nbEdges=_topology->getNbEdges();
 
     if (updateMatrix==true)
@@ -471,10 +480,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(VecDeriv& df, c
 
         deltax= dx[v1] -dx[v0];
         // einfo->reverseDfDx is not the transposed of einfo->DfDx
-        df[v1]+=einfo->DfDx*deltax;
-        df[v0]-= einfo->reverseDfDx*deltax;
-
+        df[v1]+= (einfo->DfDx*deltax) * kFactor;
+        df[v0]-= (einfo->reverseDfDx*deltax) * kFactor;
     }
+
+    datadF.endEdit();
 }
 
 
@@ -503,6 +513,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw()
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
+
+#endif // SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL

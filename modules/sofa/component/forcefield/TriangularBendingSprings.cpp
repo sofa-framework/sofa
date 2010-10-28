@@ -38,11 +38,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-
 // #define DEBUG_TRIANGLEBS
 
 namespace sofa

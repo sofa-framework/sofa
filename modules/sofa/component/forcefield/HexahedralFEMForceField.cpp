@@ -26,7 +26,6 @@
 #include <sofa/component/forcefield/HexahedralFEMForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
 
 
 namespace sofa

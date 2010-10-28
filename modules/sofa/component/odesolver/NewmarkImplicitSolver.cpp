@@ -24,10 +24,12 @@
 ******************************************************************************/
 #include <sofa/component/odesolver/NewmarkImplicitSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
+#include <sofa/helper/system/thread/CTime.h>
 
 
 
@@ -40,7 +42,7 @@ namespace component
 
 namespace odesolver
 {
-
+using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
@@ -56,16 +58,18 @@ NewmarkImplicitSolver::NewmarkImplicitSolver()
 }
 
 
-void NewmarkImplicitSolver::solve(double dt,sofa::core::behavior::BaseMechanicalState::VecId xResult,sofa::core::behavior::BaseMechanicalState::VecId vResult)
+void NewmarkImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params)
 {
-    MultiVector pos(this, VecId::position());
-    MultiVector vel(this, VecId::velocity());
-    MultiVector f(this, VecId::force());
-    MultiVector b(this, VecId::V_DERIV);
-    MultiVector a(this, VecId::V_DERIV);
-    MultiVector aResult(this, VecId(VecId::V_DERIV,14));
-    //MultiVector dx(this,VecId::dx());
-
+    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+    sofa::simulation::common::MechanicalOperations mop( this->getContext() );
+    MultiVecCoord pos(&vop, core::VecCoordId::position() );
+    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecDeriv f(&vop, core::VecDerivId::force() );
+    MultiVecDeriv b(&vop);
+    MultiVecDeriv a(&vop);
+    MultiVecDeriv aResult(&vop);
+    MultiVecCoord newPos(&vop, xResult );
+    MultiVecDeriv newVel(&vop, vResult );
 
     const double h = dt;
     const double gamma = f_gamma.getValue();
@@ -109,32 +113,32 @@ void NewmarkImplicitSolver::solve(double dt,sofa::core::behavior::BaseMechanical
     cpt++;
     // 2. Compute right hand term of equation on a_{t+h}
 
-    computeForce(b,true,false);
+    mop.computeForce(b,true,false);
     //b = f;
-// b = M a
+    // b = M a
     if (rM != 0.0 || rK != 0.0 || beta != 0.5)
     {
-        propagateDx(a);
+        mop.propagateDx(a);
 
-        addMBKdx(b, -h*(1-gamma)*rM, h*(1-gamma), h*(1-gamma)*rK + h*h*(1-2*beta)/2.0,true,true);
+        mop.addMBKdx(b, -h*(1-gamma)*rM, h*(1-gamma), h*(1-gamma)*rK + h*h*(1-2*beta)/2.0,true,true);
         // b += ( -h (1-\gamma)(r_M M + r_K K) - h^2/2 (1-2\beta) K ) a
 
     }
 
-    addMBKv(b, -rM, 1,rK+h);
+    mop.addMBKv(b, -rM, 1,rK+h);
     // b += -h K v
 
     if( verbose )
         serr<<"NewmarkImplicitSolver, b = "<< b <<sendl;
 
-    projectResponse(b);          // b is projected to the constrained space
+    mop.projectResponse(b);          // b is projected to the constrained space
 
     if( verbose )
         serr<<"NewmarkImplicitSolver, projected b = "<< b <<sendl;
 
     // 3. Solve system of equations on a_{t+h}
 
-    MultiMatrix matrix(this);
+    core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
     matrix = MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
 
@@ -142,7 +146,7 @@ void NewmarkImplicitSolver::solve(double dt,sofa::core::behavior::BaseMechanical
     //	serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *(h*h*beta + h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
 
     matrix.solve(aResult, b);
-    projectResponse(aResult);
+    mop.projectResponse(aResult);
 
     if( verbose )
         serr<<"NewmarkImplicitSolver, a1 = "<< aResult <<sendl;
@@ -150,44 +154,40 @@ void NewmarkImplicitSolver::solve(double dt,sofa::core::behavior::BaseMechanical
 
     // 4. Compute the new position and velocity
 
-    MultiVector newPos(this, xResult);
-    MultiVector newVel(this, vResult);
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     // x_{t+h} = x_t + h v_t + h^2/2 ( (1-2\beta) a_t + 2\beta a_{t+h} )
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
     std::cout<<"there"<<std::endl;
-    solveConstraint(dt,xResult,core::behavior::BaseConstraintSet::POS);
+    solveConstraint(dt,xResult,core::ConstraintParams::POS);
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
-    solveConstraint(dt,vResult,core::behavior::BaseConstraintSet::VEL);
+    solveConstraint(dt,vResult,core::ConstraintParams::VEL);
 
 #else // single-operation optimization
     typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
 
     VMultiOp ops;
     ops.resize(2);
-    ops[0].first = (VecId)newPos;
-    ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
-    ops[0].second.push_back(std::make_pair((VecId)vel, h));
-    ops[0].second.push_back(std::make_pair((VecId)a, h*h*(0.5-beta)));
-    ops[0].second.push_back(std::make_pair((VecId)aResult,h*h*beta));//b=vt+at*h/2(1-2*beta)+a(t+h)*h*beta
-    ops[1].first = (VecId)newVel;
-    ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
-    ops[1].second.push_back(std::make_pair((VecId)a, h*(1-gamma)));
-    ops[1].second.push_back(std::make_pair((VecId)aResult,h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
-    simulation::MechanicalVMultiOpVisitor vmop(ops);
-    vmop.setTags(this->getTags());
-    vmop.execute(this->getContext());
+    ops[0].first = newPos;
+    ops[0].second.push_back(std::make_pair(pos.id(),1.0));
+    ops[0].second.push_back(std::make_pair(vel.id(), h));
+    ops[0].second.push_back(std::make_pair(a.id(), h*h*(0.5-beta)));
+    ops[0].second.push_back(std::make_pair(aResult.id(),h*h*beta));//b=vt+at*h/2(1-2*beta)+a(t+h)*h*beta
+    ops[1].first = newVel;
+    ops[1].second.push_back(std::make_pair(vel.id(),1.0));
+    ops[1].second.push_back(std::make_pair(a.id(), h*(1-gamma)));
+    ops[1].second.push_back(std::make_pair(aResult.id(),h*gamma));//v(t+h)=vt+at*h*(1-gamma)+a(t+h)*h*gamma
+    vop.v_multiop(ops);
 
-    solveConstraint(dt,vResult,core::behavior::BaseConstraintSet::VEL);
-    solveConstraint(dt,xResult,core::behavior::BaseConstraintSet::POS);
+    solveConstraint(dt,vResult,core::ConstraintParams::VEL);
+    solveConstraint(dt,xResult,core::ConstraintParams::POS);
 
 #endif
 
-    addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to add G separately from the other forces to v.
+    mop.addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to add G separately from the other forces to v.
     if (f_velocityDamping.getValue()!=0.0)
         newVel *= exp(-h*f_velocityDamping.getValue());
 

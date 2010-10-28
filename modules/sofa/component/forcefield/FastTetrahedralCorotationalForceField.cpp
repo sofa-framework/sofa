@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP
 #include <sofa/component/forcefield/FastTetrahedralCorotationalForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 
@@ -62,11 +62,9 @@ template class SOFA_COMPONENT_FORCEFIELD_API FastTetrahedralCorotationalForceFie
 template class SOFA_COMPONENT_FORCEFIELD_API FastTetrahedralCorotationalForceField<Vec3fTypes>;
 #endif
 
-
-
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 

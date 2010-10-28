@@ -48,11 +48,11 @@ namespace forcefield
 
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addForce(VecDeriv& vf1, const VecCoord& vp1, const VecDeriv& vv1)
+void PlaneForceField<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* /* mparams */)
 {
-    helper::WriteAccessor<VecDeriv> f1 = vf1;
-    helper::ReadAccessor<VecCoord> p1 = vp1;
-    helper::ReadAccessor<VecDeriv> v1 = vv1;
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v1 = v;
 
     //this->dfdd.resize(p1.size());
     this->contacts.clear();
@@ -87,26 +87,30 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& vf1, const VecCoord& vp1, co
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addDForce(VecDeriv& vf1, const VecDeriv& vdx1, double kFactor, double /*bFactor*/)
+void PlaneForceField<DataTypes>::addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams)
 {
-    helper::WriteAccessor<VecDeriv> f1 = vf1;
-    helper::ReadAccessor<VecDeriv> dx1 = vdx1;
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
 
-    f1.resize(dx1.size());
-    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
+    df1.resize(dx1.size());
+    const Real fact = (Real)(-this->stiffness.getValue() * mparams->kFactor());
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
         unsigned int p = this->contacts[i];
         assert(p<dx1.size());
-        f1[p] += planeNormal.getValue() * (fact * (dx1[p]*planeNormal.getValue()));
+        df1[p] += planeNormal.getValue() * (fact * (dx1[p]*planeNormal.getValue()));
     }
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal kFactor, unsigned int &offset)
+void PlaneForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams* mparams )
 {
-    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
+    const Real fact = (Real)(-this->stiffness.getValue()*mparams->kFactor());
     const Deriv& normal = planeNormal.getValue();
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    unsigned int offset = mref.offset;
+
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
         unsigned int p = this->contacts[i];
@@ -142,14 +146,6 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
             this->contacts.push_back(i);
         }
     }
-}
-
-
-template <class DataTypes>
-double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"PlaneForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
 }
 
 

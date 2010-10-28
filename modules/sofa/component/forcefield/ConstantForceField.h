@@ -22,13 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTANTFORCEFIELD_H
-#define SOFA_COMPONENT_CONSTANTFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vector.h>
+
 #include <sofa/component/component.h>
 #include <sofa/component/topology/PointSubset.h>
 
@@ -42,7 +40,7 @@ namespace component
 namespace forcefield
 {
 
-/** Apply constant forces to given degrees of freedom.  */
+/// Apply constant forces to given degrees of freedom.
 template<class DataTypes>
 class ConstantForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -56,6 +54,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef topology::PointSubset VecIndex;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
 public:
 
     Data< VecIndex > points;
@@ -72,19 +73,43 @@ public:
     void setForce( unsigned i, const Deriv& f );
 
     /// Add the forces
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addForce (DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* params);
 
     /// Constant force has null variation
-    virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
+    virtual void addDForce(DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */, const core::MechanicalParams* mparams)
+    {
+        //TODO: remove this line (avoid warning message) ...
+        mparams->kFactor();
+    };
 
     /// Constant force has null variation
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/) {}
 
-    virtual double getPotentialEnergy(const VecCoord& x) const;
+    virtual double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* params) const;
 
     void draw();
     bool addBBox(double* minBBox, double* maxBBox);
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec1dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec6dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec1fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec6fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 
@@ -92,4 +117,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H

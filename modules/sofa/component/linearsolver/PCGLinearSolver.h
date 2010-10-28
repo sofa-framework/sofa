@@ -51,7 +51,7 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
+
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
@@ -66,7 +66,7 @@ public:
 
     void solve (Matrix& M, Vector& x, Vector& b);
     void init();
-    void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     //void setSystemRHVector(VecId v);
     //void setSystemLHVector(VecId v);
 
@@ -78,31 +78,31 @@ private :
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: p = p*beta + r
-    inline void cgstep_beta(Vector& p, Vector& r, double beta);
+    inline void cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* params);
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: x += p*alpha, r -= q*alpha
-    inline void cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
+    inline void cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* params);
 };
 
 template<class TMatrix, class TVector>
-inline void PCGLinearSolver<TMatrix,TVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+inline void PCGLinearSolver<TMatrix,TVector>::cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* /*params*/)
 {
     p *= beta;
     p += r; //z;
 }
 
 template<class TMatrix, class TVector>
-inline void PCGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+inline void PCGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* /*params*/)
 {
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q
 }
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta);
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta, const core::ExecParams* params);
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha, const core::ExecParams* params);
 
 } // namespace linearsolver
 

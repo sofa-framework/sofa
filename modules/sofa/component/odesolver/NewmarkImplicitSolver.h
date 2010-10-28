@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_NEWMARKIMPLICITSOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -57,13 +57,13 @@ using namespace sofa::defaulttype;
  * The current implementation first computes $a_t$ directly (as in the explicit solvers), then solves the previous system to compute $a_{t+dt}$, and finally computes the new position and velocity.
  *
 */
-class SOFA_COMPONENT_ODESOLVER_API NewmarkImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API NewmarkImplicitSolver : public sofa::core::behavior::OdeSolver
 {
 protected:
     unsigned int cpt;
 
 public:
-    SOFA_CLASS(NewmarkImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
+    SOFA_CLASS(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver);
     Data<double> f_rayleighStiffness;
     Data<double> f_rayleighMass;
     Data<double> f_velocityDamping;
@@ -74,7 +74,7 @@ public:
 
     NewmarkImplicitSolver();
 
-    void solve (double dt, sofa::core::behavior::BaseMechanicalState::VecId xResult, sofa::core::behavior::BaseMechanicalState::VecId vResult);
+    void solve (double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult, const core::ExecParams* params);
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     virtual double getVelocityIntegrationFactor() const

@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
+
 #include <sofa/component/forcefield/OscillatingTorsionPressureForceField.h>
 #include <sofa/component/topology/TriangleSubsetData.inl>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
@@ -42,10 +45,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using namespace core::topology;
-
-
-
-
 
 
 template <class DataTypes> OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForceField()
@@ -105,12 +104,13 @@ double OscillatingTorsionPressureForceField<DataTypes>::getAmplitude()
 
 
 template <class DataTypes>
-void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
+void OscillatingTorsionPressureForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
 
     Deriv force;
     Coord forceDir, deltaPos;
-//  const VecCoord& x0 = *this->mstate->getX0();
     Real avgRotAngle = 0;
     Real totalDist = 0;
 
@@ -128,13 +128,12 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, cons
             }
         }
     avgRotAngle /= totalDist;
-    std::cout << "Angle = " << 57.295779513 * avgRotAngle;
 
     rotationAngle = avgRotAngle;
 
 
     //double da = 360.0 / 6.2831853 * rotationAngle;
-//  file <<this->getContext()->getTime() << " " << getAmplitude()*0.01 << " " << avgRotAngle << std::endl;
+    //  file <<this->getContext()->getTime() << " " << getAmplitude()*0.01 << " " << avgRotAngle << std::endl;
 
 
     // calculate and apply penalty forces to ideal positions
@@ -176,27 +175,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, cons
             }
         }
     //std::cout << "RM=" << remainingMoment << "  CHK=" << check << std::endl;
-    std::cout << "  RM = " << remainingMoment << "  ME = " << maxError << "  AM = " << appliedMoment << std::endl;
+    //std::cout << "  RM = " << remainingMoment << "  ME = " << maxError << "  AM = " << appliedMoment << std::endl;
 }
-
-
-template <class DataTypes>
-void OscillatingTorsionPressureForceField<DataTypes>::addDForce (VecDeriv& , const VecDeriv& , double , double )
-{
-    /*for (int i=0; i<dx.size(); i++) if (pointActive[i])
-    {
-      df[i] -= dx[i] * penalty.getValue() * kFactor;
-    }*/
-}
-
-
-template <class DataTypes>
-double OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
-{
-    serr<<"OscillatingTorsionPressureForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-
 
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
@@ -332,3 +312,5 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw()
 } // namespace component
 
 } // namespace sofa
+
+#endif // SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL

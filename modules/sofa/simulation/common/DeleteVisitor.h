@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_COMMON_DELETEVISITOR_H
 
 #include <sofa/simulation/common/Visitor.h>
-
+#include <sofa/core/ExecParams.h>
 namespace sofa
 {
 
@@ -36,7 +36,7 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API DeleteVisitor : public Visitor
 {
 public:
-    DeleteVisitor() {}
+    DeleteVisitor(const core::ExecParams* params) : Visitor(params) {}
 
     virtual Result processNodeTopDown(Node* node);
     virtual void processNodeBottomUp(Node* node);

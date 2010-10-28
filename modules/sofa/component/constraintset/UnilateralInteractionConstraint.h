@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_H
 
-#include <sofa/core/behavior/InteractionConstraint.h>
+#include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -79,13 +79,14 @@ protected:
     double _delta;
 };
 
-#endif // SOFA_DEV	
+#endif // SOFA_DEV
+
 
 template<class DataTypes>
-class UnilateralInteractionConstraint : public core::behavior::InteractionConstraint
+class UnilateralInteractionConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UnilateralInteractionConstraint,DataTypes), core::behavior::InteractionConstraint);
+    SOFA_CLASS(SOFA_TEMPLATE(UnilateralInteractionConstraint,DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -111,9 +112,13 @@ public:
     typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
     typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
+    typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
+
+    typedef typename core::behavior::PairInteractionConstraint<DataTypes> Inherit;
+
 protected:
-    MechanicalState* object1;
-    MechanicalState* object2;
 
     struct Contact
     {
@@ -147,28 +152,28 @@ public:
     unsigned int constraintId;
 
     UnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
-        : object1(object1), object2(object2), epsilon(Real(0.001)),yetIntegrated(false)
+        : Inherit(object1, object2)
+        , epsilon(Real(0.001))
+        , yetIntegrated(false)
     {
     }
 
     UnilateralInteractionConstraint(MechanicalState* object)
-        : object1(object), object2(object), epsilon(Real(0.001)),yetIntegrated(false)
+        : Inherit(object, object)
+        , epsilon(Real(0.001))
+        , yetIntegrated(false)
     {
     }
 
     UnilateralInteractionConstraint()
-        : object1(NULL), object2(NULL), epsilon(Real(0.001)),yetIntegrated(false)
+        : epsilon(Real(0.001))
+        , yetIntegrated(false)
     {
     }
 
     virtual ~UnilateralInteractionConstraint()
     {
     }
-
-    MechanicalState* getObject1() { return object1; }
-    MechanicalState* getObject2() { return object2; }
-    core::behavior::BaseMechanicalState* getMechModel1() { return object1; }
-    core::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     void clear(int reserve = 0)
     {
@@ -177,79 +182,40 @@ public:
             contacts.reserve(reserve);
     }
 
-    virtual void buildConstraintMatrix(unsigned int & /*contactId*/, core::VecId);
-
     virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
 
     void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
     {
-        addContact(mu, norm, P, Q, contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id, localid);
+        addContact(mu, norm, P, Q, contactDistance, m1, m2,
+                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+                id, localid);
     }
 
     void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
     {
-        addContact(mu, norm, (*getObject2()->getX())[m2], (*getObject1()->getX())[m1], contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id, localid);
+        addContact(mu, norm,
+                this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
+                contactDistance, m1, m2,
+                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+                id, localid);
     }
 
-    virtual void getConstraintValue(defaulttype::BaseVector *, bool freeMotion);
+    void buildConstraintMatrix(DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
+            , const DataVecCoord &x1, const DataVecCoord &x2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
 
-    virtual void getConstraintId(long* id, unsigned int &offset);
+    void getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+            , const DataVecDeriv &v1, const DataVecDeriv &v2, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
+
     virtual void getConstraintInfo(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas);
 
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif
 
-    /// Pre-construction check method called by ObjectFactory.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-        }
-        else
-        {
-            if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
-                return false;
-        }
-        return core::behavior::InteractionConstraint::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::behavior::InteractionConstraint::create(obj, context, arg);
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
-        {
-            obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->object2 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2","..")));
-        }
-        else if (context)
-        {
-            obj->object1 =
-                obj->object2 =
-                        dynamic_cast<MechanicalState*>(context->getMechanicalState());
-        }
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const UnilateralInteractionConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
     void draw();
-
-    /// this constraint is NOT holonomic
-    bool isHolonomic() {return false;}
 };
 
 

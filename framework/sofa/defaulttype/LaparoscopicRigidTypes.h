@@ -29,7 +29,6 @@
 
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -38,10 +37,6 @@
 #include <sofa/helper/vector.h>
 #include <iostream>
 
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
-
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
@@ -49,10 +44,6 @@ namespace sofa
 
 namespace defaulttype
 {
-
-#ifndef SOFA_SMP
-using sofa::helper::vector;
-#endif /* SOFA_SMP */
 
 class LaparoscopicRigid3Types
 {
@@ -308,29 +299,11 @@ public:
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
-
-//	typedef SparseConstraint<Coord> SparseVecCoord;
-//	typedef SparseConstraint<Deriv> SparseVecDeriv;
-//
-//	//! All the Constraints applied to a state Vector
-//#ifndef SOFA_SMP
-//	typedef	vector<SparseVecDeriv> VecConst;
-//#else /* SOFA_SMP */
-//	typedef	SharedVector<SparseVecDeriv> VecConst;
-//#endif /* SOFA_SMP */
-//
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
-
-#ifndef SOFA_SMP
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
-#else /* SOFA_SMP */
-    typedef SharedVector<Coord> VecCoord;
-    typedef SharedVector<Deriv> VecDeriv;
-    typedef SharedVector<Real> VecReal;
-#endif /* SOFA_SMP */
 
     template<typename T>
     static void set(Coord& c, T x, T, T)

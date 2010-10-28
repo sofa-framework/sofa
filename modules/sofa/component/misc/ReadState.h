@@ -34,6 +34,7 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/ExecParams.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>
@@ -49,7 +50,7 @@ namespace component
 
 namespace misc
 {
-
+using namespace sofa::simulation;
 /** Read State vectors from file at each timestep
 */
 class SOFA_COMPONENT_MISC_API ReadState: public core::objectmodel::BaseObject
@@ -108,8 +109,8 @@ public:
 class SOFA_COMPONENT_MISC_API ReadStateCreator: public Visitor
 {
 public:
-    ReadStateCreator();
-    ReadStateCreator(const std::string &n, bool _createInMapping, bool i=true, int c=0 );
+    ReadStateCreator(const core::ExecParams* params);
+    ReadStateCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i=true, int c=0);
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
@@ -128,7 +129,7 @@ protected:
 class SOFA_COMPONENT_MISC_API ReadStateActivator: public Visitor
 {
 public:
-    ReadStateActivator( bool active):state(active) {}
+    ReadStateActivator(bool active, const core::ExecParams* params) : Visitor(params), state(active) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     bool getState() const {return state;};
@@ -143,7 +144,7 @@ protected:
 class SOFA_COMPONENT_MISC_API ReadStateModifier: public simulation::Visitor
 {
 public:
-    ReadStateModifier( double _time):time(_time) {}
+    ReadStateModifier(double _time, const core::ExecParams* params) : Visitor(params), time(_time) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     double getTime() const { return time; }

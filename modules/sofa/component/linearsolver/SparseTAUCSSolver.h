@@ -66,7 +66,6 @@ public:
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
     typedef sofa::component::linearsolver::ParallelMatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::behavior::BaseMechanicalState::VecId VecId;
 
     Data< helper::vector<std::string> > f_options;
     Data<bool> f_symmetric;

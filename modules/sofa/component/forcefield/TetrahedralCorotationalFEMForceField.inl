@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
@@ -148,8 +148,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
 
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
+void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */, const core::MechanicalParams* /* mparams */)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& p = d_x.getValue();
 
     switch(method)
     {
@@ -178,11 +180,17 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce (VecDeriv& f, con
         break;
     }
     }
+    d_f.endEdit();
 }
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x, double kFactor, double /*bFactor*/)
+void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+
+    double kFactor = mparams->kFactor();
+
     switch(method)
     {
     case SMALL :
@@ -195,7 +203,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, co
             Index c = t[2];
             Index d = t[3];
 
-            applyStiffnessSmall( v,x, i, a,b,c,d, kFactor );
+            applyStiffnessSmall( df, dx, i, a,b,c,d, kFactor );
         }
         break;
     }
@@ -209,7 +217,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, co
             Index c = t[2];
             Index d = t[3];
 
-            applyStiffnessLarge( v,x, i, a,b,c,d, kFactor );
+            applyStiffnessLarge( df, dx, i, a,b,c,d, kFactor );
         }
         break;
     }
@@ -223,18 +231,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, co
             Index c = t[2];
             Index d = t[3];
 
-            applyStiffnessPolar( v,x, i, a,b,c,d, kFactor );
+            applyStiffnessPolar( df, dx, i, a,b,c,d, kFactor );
         }
         break;
     }
     }
-}
 
-template <class DataTypes>
-double TetrahedralCorotationalFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr<<"TetrahedralCorotationalFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
+    d_df.endEdit();
 }
 
 template<class DataTypes>
@@ -1433,20 +1436,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::printStiffnessMatrix(int i
 
 }
 
-
-
-
-
-
-
-
-
-
-
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_INL

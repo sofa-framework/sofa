@@ -83,8 +83,17 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& /*v1*/, const VecDeriv& /*v2*/)
+void PenalityContactForceField<DataTypes>::addForce(DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& /*data_v1*/, const DataVecDeriv& /*data_v2*/ , const MechanicalParams* /*mparams*/ )
 {
+
+    VecDeriv&       f1 = *data_f1.beginEdit();
+    const VecCoord& x1 =  data_x1.getValue();
+    //const VecDeriv& v1 =  data_v1.getValue();
+    VecDeriv&       f2 = *data_f2.beginEdit();
+    const VecCoord& x2 =  data_x2.getValue();
+    //const VecDeriv& v2 =  data_v2.getValue();
+
+
     f1.resize(x1.size());
     f2.resize(x2.size());
 
@@ -105,11 +114,21 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
         }
     }
     contacts.endEdit();
+
+    data_f1.endEdit();
+    data_f2.endEdit();
+
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
+void PenalityContactForceField<DataTypes>::addDForce(DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2, const core::MechanicalParams* mparams)
 {
+    VecDeriv&        df1 = *data_df1.beginEdit();
+    VecDeriv&        df2 = *data_df2.beginEdit();
+    const VecDeriv&  dx1 =  data_dx1.getValue();
+    const VecDeriv&  dx2 =  data_dx2.getValue();
+    double kFactor = mparams->kFactor();
+
     df1.resize(dx1.size());
     df2.resize(dx2.size());
     for (unsigned int i=0; i<contacts.getValue().size(); i++)
@@ -126,10 +145,14 @@ void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
             df2[c.m2]-=dforce;
         }
     }
+
+    data_df1.endEdit();
+    data_df2.endEdit();
+
 }
 
 template <class DataTypes>
-double PenalityContactForceField<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&) const
+double PenalityContactForceField<DataTypes>::getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const
 {
     serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

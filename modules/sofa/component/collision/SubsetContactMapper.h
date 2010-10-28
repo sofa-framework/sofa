@@ -71,7 +71,7 @@ public:
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<typename SubsetContactMapper::DataTypes> MMechanicalState;
     typedef component::container::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::SubsetMapping< core::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    typedef mapping::SubsetMapping< InDataTypes, typename SubsetContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
     simulation::Node* child;
     MMapping* mapping;
@@ -128,7 +128,9 @@ public:
                 mapping->init();
                 needInit = false;
             }
-            mapping->updateMapping();
+
+            ((core::BaseMapping*)mapping)->apply(core::VecCoordId::position(), core::ConstVecCoordId::position());
+            ((core::BaseMapping*)mapping)->applyJ(core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -141,7 +143,8 @@ public:
                 mapping->init();
                 needInit = false;
             }
-            mapping->propagateXfree();
+
+            ((core::BaseMapping*)mapping)->apply(core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
 

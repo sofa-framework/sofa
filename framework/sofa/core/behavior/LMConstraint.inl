@@ -28,7 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_LMCONSTRAINT_INL
 
 #include <sofa/core/behavior/LMConstraint.h>
-#include <sofa/core/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
@@ -82,9 +82,11 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
 
         while (simulatedObject1)
         {
-            core::behavior::BaseMechanicalMapping* mapping;
+            core::BaseMapping* mapping;
             simulatedObject1->getContext()->get(mapping);
             if (!mapping)
+                break;
+            if(!mapping->isMechanical())
                 break;
             simulatedObject1 = mapping->getMechFrom()[0];
         }
@@ -93,9 +95,11 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
 
         while (simulatedObject2)
         {
-            core::behavior::BaseMechanicalMapping* mapping;
+            core::BaseMapping* mapping;
             simulatedObject2->getContext()->get(mapping);
             if (!mapping)
+                break;
+            if(!mapping->isMechanical())
                 break;
             simulatedObject2 = mapping->getMechFrom()[0];
         }

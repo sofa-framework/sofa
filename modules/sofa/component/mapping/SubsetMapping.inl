@@ -26,6 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
 
 #include "SubsetMapping.h"
+
+#include <sofa/core/Mapping.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
@@ -38,8 +40,8 @@ namespace mapping
 {
 
 
-template <class BaseMapping>
-SubsetMapping<BaseMapping>::SubsetMapping(In* from, Out* to)
+template <class TIn, class TOut>
+SubsetMapping<TIn, TOut>::SubsetMapping(core::State<In>* from, core::State<Out>* to)
     : Inherit(from, to)
     , f_indices( initData(&f_indices, "indices", "list of input indices"))
     , f_first( initData(&f_first, -1, "first", "first index (use if indices are sequential)"))
@@ -50,14 +52,14 @@ SubsetMapping<BaseMapping>::SubsetMapping(In* from, Out* to)
 {
 }
 
-template <class BaseMapping>
-SubsetMapping<BaseMapping>::~SubsetMapping()
+template <class TIn, class TOut>
+SubsetMapping<TIn, TOut>::~SubsetMapping()
 {
 }
 
 
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::clear(int reserve)
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::clear(int reserve)
 {
     IndexArray& indices = *f_indices.beginEdit();
     indices.clear();
@@ -65,8 +67,8 @@ void SubsetMapping<BaseMapping>::clear(int reserve)
     f_indices.endEdit();
 }
 
-template <class BaseMapping>
-int SubsetMapping<BaseMapping>::addPoint(int index)
+template <class TIn, class TOut>
+int SubsetMapping<TIn, TOut>::addPoint(int index)
 {
     IndexArray& indices = *f_indices.beginEdit();
     int i = indices.size();
@@ -76,19 +78,20 @@ int SubsetMapping<BaseMapping>::addPoint(int index)
 }
 
 // Handle topological changes
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::handleTopologyChange(core::topology::Topology* t)
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
 {
     core::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
     if (t != topoFrom) return;
+
     std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->beginChange();
     std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->endChange();
     f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getX()->size());
     f_indices.endEdit();
 }
 
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::init()
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::init()
 {
     unsigned int inSize = this->fromModel->getX()->size();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
@@ -156,48 +159,71 @@ void SubsetMapping<BaseMapping>::init()
     postInit();
 }
 
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::postInit()
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::postInit()
 {
 }
 
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::apply ( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* /*mparams*/ )
 {
     const IndexArray& indices = f_indices.getValue();
+
+    const InVecCoord& in = dIn.getValue();
+    OutVecCoord& out = *dOut.beginEdit();
+
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
         out[i] = in[ indices[i] ];
     }
+
+    dOut.endEdit();
 }
 
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* /*mparams*/ )
 {
     const IndexArray& indices = f_indices.getValue();
+
+    const InVecDeriv& in = dIn.getValue();
+    OutVecDeriv& out = *dOut.beginEdit();
+
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
         out[i] = in[ indices[i] ];
     }
+
+    dOut.endEdit();
 }
 
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::applyJT ( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* /*mparams*/ )
 {
     const IndexArray& indices = f_indices.getValue();
-    if (indices.empty()) return;
+
+    const OutVecDeriv& in = dIn.getValue();
+    InVecDeriv& out = *dOut.beginEdit();
+
+    if (indices.empty())
+        return;
+
     for(unsigned int i = 0; i < in.size(); ++i)
     {
         out[indices[i]] += in[ i ];
     }
+
+    dOut.endEdit();
 }
 
-template <class BaseMapping>
-void SubsetMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+template <class TIn, class TOut>
+void SubsetMapping<TIn, TOut>::applyJT ( InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn, const core::ConstraintParams * /*cparams*/)
 {
     const IndexArray& indices = f_indices.getValue();
+
+    InMatrixDeriv& out = *dOut.beginEdit();
+    const OutMatrixDeriv& in = dIn.getValue();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -218,7 +244,7 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const t
             }
         }
     }
-
+    dOut.endEdit();
     //int offset = out.size();
     //out.resize(offset+in.size());
 
@@ -237,8 +263,8 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::MatrixDeriv& out, const t
     //}
 }
 
-template<class BaseMapping>
-const sofa::defaulttype::BaseMatrix* SubsetMapping<BaseMapping>::getJ()
+template<class TIn, class TOut>
+const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
 {
     if (matrixJ.get() == 0 || updateJ)
     {

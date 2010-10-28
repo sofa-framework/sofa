@@ -94,7 +94,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
         return;
     }
 
-    sofa::helper::vector<sofa::defaulttype::Vector3>& x = (* this->position_filtering);
+    const sofa::helper::vector<sofa::defaulttype::Vector3>& x = *this->position_filtering;
 
 
 

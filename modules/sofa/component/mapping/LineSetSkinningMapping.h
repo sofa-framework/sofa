@@ -26,8 +26,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
 #define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
 
-#include <sofa/core/behavior/MechanicalMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
@@ -45,14 +44,15 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-template <class BasicMapping>
-class LineSetSkinningMapping : public BasicMapping
+template <class TIn, class TOut>
+class LineSetSkinningMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LineSetSkinningMapping,BasicMapping), BasicMapping);
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(LineSetSkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
 
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
@@ -67,7 +67,7 @@ public:
     typedef typename In::Real Real;
 
 
-    LineSetSkinningMapping(In* from, Out* to)
+    LineSetSkinningMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         , nvNeighborhood(initData(&nvNeighborhood,(unsigned int)3,"neighborhoodLevel","Set the neighborhood line level"))
         , numberInfluencedLines(initData(&numberInfluencedLines,(unsigned int)4,"numberInfluencedLines","Set the number of most influenced lines by each vertice"))
@@ -93,46 +93,6 @@ public:
 
     void draw();
 
-    /**
-     * @name
-     */
-    //@{
-    /**
-     * @brief
-     */
-    void propagateX();
-
-    /**
-     * @brief
-     */
-    void propagateXfree();
-
-
-    /**
-     * @brief
-     */
-    void propagateV();
-
-    /**
-     * @brief
-     */
-    void propagateDx();
-
-    /**
-     * @brief
-     */
-    void accumulateForce();
-
-    /**
-     * @brief
-     */
-    void accumulateDf();
-
-    /**
-     * @brief
-     */
-    void accumulateConstraint();
-
 protected:
 
     sofa::core::topology::BaseMeshTopology* t;
@@ -151,10 +111,6 @@ protected:
     	Set the coefficient used to compute the weight of lines
     */
     Data<int> weightCoef;
-
-    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
-
-    bool getShow(const core::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 
 private:
 
@@ -193,12 +149,12 @@ private:
     /*!
     	Compute the perpendicular distance from a vertice to a line
     */
-    Vec<3,double> projectToSegment(Vec<3,Real>& first, Vec<3,Real>& last, OutCoord& vertice);
+    Vec<3,double> projectToSegment(const Vec<3,Real>& first, const Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Compute the weight betwewen a vertice and a line
     */
-    double convolutionSegment(Vec<3,Real>& first, Vec<3,Real>& last, OutCoord& vertice);
+    double convolutionSegment(const Vec<3,Real>& first, const Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Stores the lines influenced by each vertice

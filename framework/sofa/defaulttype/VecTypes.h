@@ -29,11 +29,8 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
+#include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
-//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <iostream>
 #include <algorithm>
@@ -55,15 +52,9 @@ public:
     typedef TCoord Coord;
     typedef TDeriv Deriv;
     typedef TReal Real;
-#ifndef SOFA_SMP
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
-#else /* SOFA_SMP */
-    typedef SharedVector<Coord> VecCoord;
-    typedef SharedVector<Deriv> VecDeriv;
-    typedef SharedVector<Real> VecReal;
-#endif /* SOFA_SMP */
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };
@@ -76,22 +67,11 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
-//	typedef SparseConstraint<Coord> SparseVecCoord;
-//	typedef SparseConstraint<Deriv> SparseVecDeriv;
-//
-//	//! All the Constraints applied to a state Vector
-//#ifndef SOFA_SMP
-//	typedef	vector<SparseVecDeriv> VecConst;
-//#else /* SOFA_SMP */
-//	typedef	SharedVector<SparseVecDeriv> VecConst;
-//#endif /* SOFA_SMP */
-
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     template<typename T>
     static void set(Coord& c, T x, T y, T z)
     {
-
         if (c.size() > 0)
             c[0] = (Real)x;
         if (c.size() > 1)
@@ -155,37 +135,26 @@ template<class T>
 class ExtVector
 {
 public:
-    typedef T              value_type;
-    typedef unsigned int   size_type;
+    typedef T				value_type;
+    typedef unsigned int	size_type;
+    typedef T&				reference;
+    typedef const T&		const_reference;
+    typedef T*				iterator;
+    typedef const T*		const_iterator;
 
 protected:
     value_type* data;
     size_type   maxsize;
     size_type   cursize;
     ExtVectorAllocator<T>* allocator;
-#ifdef SOFA_SMP
-    Shared<ExtVector<T> > * sharedData;
-#endif /* SOFA_SMP */
+
 public:
-#ifndef SOFA_SMP
     explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL),  maxsize(0), cursize(0), allocator(alloc) {}
     ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { resize(size); }
-#else /* SOFA_SMP */
-    explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {init();}
-    ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { init(); resize(size); }
-#endif /* SOFA_SMP */
     ~ExtVector() { if (allocator) allocator->close(data); }
-#ifdef SOFA_SMP
-    a1::Shared<ExtVector<T>  >& operator*() const {return *sharedData;}
 
-    void init()
-    {
-        sharedData=new Shared<ExtVector<T> >(this);
-    }
-
-#else
     void init() {}
-#endif /* SOFA_SMP */
+
     void setAllocator(ExtVectorAllocator<T>* alloc)
     {
         if (alloc != allocator)
@@ -376,16 +345,6 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
-//	typedef SparseConstraint<Coord> SparseVecCoord;
-//	typedef SparseConstraint<Deriv> SparseVecDeriv;
-//
-//	//! All the Constraints applied to a state Vector
-//#ifndef SOFA_SMP
-//	typedef	vector<SparseVecDeriv> VecConst;
-//#else /* SOFA_SMP */
-//	typedef	SharedVector<SparseVecDeriv> VecConst;
-//#endif /* SOFA_SMP */
-
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     template<typename T>
@@ -575,6 +534,49 @@ struct DataTypeInfo< sofa::defaulttype::ResizableExtVector<T> > : public VectorT
 
 } // namespace defaulttype
 
+
+namespace helper
+{
+
+template<class T>
+class ReadAccessor< defaulttype::ExtVector<T> > : public ReadAccessorVector< defaulttype::ExtVector<T> >
+{
+public:
+    typedef ReadAccessorVector< defaulttype::ExtVector<T> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    ReadAccessor(const container_type& c) : Inherit(c) {}
+};
+
+template<class T>
+class WriteAccessor< defaulttype::ExtVector<T> > : public WriteAccessorVector< defaulttype::ExtVector<T> >
+{
+public:
+    typedef WriteAccessorVector< defaulttype::ExtVector<T> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteAccessor(container_type& c) : Inherit(c) {}
+};
+
+template<class T>
+class ReadAccessor< defaulttype::ResizableExtVector<T> > : public ReadAccessorVector< defaulttype::ResizableExtVector<T> >
+{
+public:
+    typedef ReadAccessorVector< defaulttype::ResizableExtVector<T> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    ReadAccessor(const container_type& c) : Inherit(c) {}
+};
+
+template<class T>
+class WriteAccessor< defaulttype::ResizableExtVector<T> > : public WriteAccessorVector< defaulttype::ResizableExtVector<T> >
+{
+public:
+    typedef WriteAccessorVector< defaulttype::ResizableExtVector<T> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteAccessor(container_type& c) : Inherit(c) {}
+};
+
+} // namespace helper
+
+
 namespace core
 {
 namespace behavior
@@ -679,7 +681,7 @@ defaulttype::Vec<2, float>,
     return -( a2 -( x*omega + v*2 )*omega )*m;
 }
 
-} // namespace behavoir
+} // namespace behavior
 
 } // namespace core
 

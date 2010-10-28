@@ -77,28 +77,27 @@ void FixedRotationConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectResponse(VecDeriv& /*res*/)
+void FixedRotationConstraint<DataTypes>::projectResponse(DataVecDeriv& /*res*/, const core::MechanicalParams* /*mparams*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectResponse(MatrixDerivRowType& /*res*/)
+void FixedRotationConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& /*res*/, const core::MechanicalParams* /*mparams*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectVelocity(VecDeriv& /*dx*/)
+void FixedRotationConstraint<DataTypes>::projectVelocity(DataVecDeriv& /*dx*/, const core::MechanicalParams* /*mparams*/)
 {
 
 }
 
-
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectPosition(VecCoord& x)
+void FixedRotationConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
 {
-
+    helper::WriteAccessor<DataVecCoord> x = xData;
     if (FixedXRotation.getValue() == true)
     {
         for (unsigned int i = 0; i < x.size(); i++)
@@ -129,7 +128,6 @@ void FixedRotationConstraint<DataTypes>::projectPosition(VecCoord& x)
             previousOrientation[i] = newOrientation;
         }
     }
-
     if (FixedYRotation.getValue() == true)
     {
         for (unsigned int i = 0; i < x.size(); i++)
@@ -190,7 +188,6 @@ void FixedRotationConstraint<DataTypes>::projectPosition(VecCoord& x)
             previousOrientation[i] = newOrientation;
         }
     }
-
 }
 
 

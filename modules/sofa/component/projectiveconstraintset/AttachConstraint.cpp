@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP
 #include <sofa/component/projectiveconstraintset/AttachConstraint.inl>
-#include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>

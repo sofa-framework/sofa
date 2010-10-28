@@ -22,12 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP
+
 #include <sofa/component/forcefield/TriangularBiquadraticSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
 #include <sofa/defaulttype/Vec3Types.h>
 
 
@@ -44,10 +42,6 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-
-
 
 SOFA_DECL_CLASS(TriangularBiquadraticSpringsForceField)
 

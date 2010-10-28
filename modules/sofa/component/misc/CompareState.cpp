@@ -65,6 +65,7 @@ void CompareState::handleEvent(sofa::core::objectmodel::Event* event)
     }
     if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
+
     }
 }
 
@@ -85,13 +86,18 @@ void CompareState::processCompareState()
         double currentError=0;
         if (cmd.compare("X=") == 0)
         {
-            currentError = mmodel->compareX(str);
+            //<TO REMOVE>
+            //currentError = mmodel->compareX(str);
+            currentError = mmodel->compareVec(core::VecId::position(), str);
+
             totalError_X +=currentError;
             dofError_X +=currentError/(double)this->mmodel->getSize();
         }
         else if (cmd.compare("V=") == 0)
         {
-            currentError = mmodel->compareV(str);
+            //<TO REMOVE>
+            //currentError = mmodel->compareV(str);
+            currentError = mmodel->compareVec(core::VecId::velocity(), str);
             totalError_V +=currentError;
             dofError_V += currentError/(double)this->mmodel->getSize();
         }
@@ -105,8 +111,9 @@ void CompareState::processCompareState()
 
 
 
-CompareStateCreator::CompareStateCreator()
-    : sceneName("")
+CompareStateCreator::CompareStateCreator(const core::ExecParams* params)
+    : Visitor(params)
+    , sceneName("")
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else
@@ -118,8 +125,9 @@ CompareStateCreator::CompareStateCreator()
 {
 }
 
-CompareStateCreator::CompareStateCreator(const std::string &n, bool i, int c)
-    : sceneName(n)
+CompareStateCreator::CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i, int c)
+    : Visitor(params)
+    , sceneName(n)
 #ifdef SOFA_HAVE_ZLIB
     , extension(".txt.gz")
 #else
