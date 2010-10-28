@@ -2,7 +2,7 @@
   <Node name="M1">
     <MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
 <!--    <MeshObjLoader name="surface" filename="mesh/raptor8k1.obj" />-->
-    <EulerImplicit />
+    <EulerImplicit rayleighMass="0.01" rayleighStiffness="0.01" />
     <CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
 <!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioners="precond" />
 	<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->
@@ -23,6 +23,7 @@
 
 	<BoxROI name="boxF" box="-2.2 -1 6.88 2.2  10  10" drawBoxes="true" />
     <ConstantForceField points="@boxF.indices" force="7.5 -6.63 -15" arrowSizeCoef="0.1" />
+    <PlaneForceField 
 <!--
 		<Node name="Surf">
 			<Mesh filename="mesh/raptor_35kp.obj"/>
