@@ -48,7 +48,7 @@ namespace component
 
 namespace constraintset
 {
-
+using namespace core;
 using namespace core::topology;
 
 using namespace sofa::defaulttype;
@@ -109,19 +109,16 @@ typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Ed
 
 
 template<class DataTypes>
-void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position)
+void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams/* =ConstraintParams::defaultInstance */)
 {
-    core::ConstVecCoordId id1 = position.getId(this->constrainedObject1);
-    core::ConstVecCoordId id2 = position.getId(this->constrainedObject2);
+    Data<MatrixDeriv>* dC1 = cId[this->constrainedObject1].write();
+    helper::WriteAccessor<objectmodel::Data<MatrixDeriv> > c1 = *dC1;
 
-    const VecCoord &x1 = this->constrainedObject1->read(id1)->getValue();
-    const VecCoord &x2 = this->constrainedObject2->read(id2)->getValue();
+    Data<MatrixDeriv>* dC2 = cId[this->constrainedObject2].write();
+    helper::WriteAccessor<objectmodel::Data<MatrixDeriv> > c2 = *dC2;
 
-    Data<MatrixDeriv> *dC1 = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
-    MatrixDeriv &c1 = *dC1->beginEdit();
-
-    Data<MatrixDeriv> *dC2 = this->constrainedObject2->write(core::MatrixDerivId::holonomicC());
-    MatrixDeriv &c2 = *dC2->beginEdit();
+    helper::ReadAccessor<objectmodel::Data<VecCoord> > x1 = *cParams->readX(this->constrainedObject1);
+    helper::ReadAccessor<objectmodel::Data<VecCoord> > x2 = *cParams->readX(this->constrainedObject2);
 
     const SeqEdges &edges = vecConstraint.getValue();
 
@@ -134,24 +131,20 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constr
         unsigned int idx1 = edges[i][0];
         unsigned int idx2 = edges[i][1];
 
-        const Deriv V12 = getDirection(edges[i], x1, x2);
+        const Deriv V12 = getDirection(edges[i], x1.ref() , x2.ref() );
 
-        MatrixDerivRowIterator c1_it = c1.writeLine(constraintId);
+        MatrixDerivRowIterator c1_it = c1->writeLine(cIndex);
         c1_it.addCol(idx1, V12);
-        MatrixDerivRowIterator c2_it = c2.writeLine(constraintId);
+        MatrixDerivRowIterator c2_it = c1->writeLine(cIndex);
         c2_it.addCol(idx2, -V12);
 
-        registeredConstraints.push_back(constraintId);
-        constraintId++;
+        registeredConstraints.push_back(cIndex);
+        cIndex++;
 
         this->constrainedObject1->forceMask.insertEntry(idx1);
         this->constrainedObject2->forceMask.insertEntry(idx2);
     }
-
-    dC1->endEdit();
-    dC2->endEdit();
 }
-
 
 template<class DataTypes>
 void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)

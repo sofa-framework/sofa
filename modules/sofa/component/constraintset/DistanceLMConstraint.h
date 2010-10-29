@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_DISTANCELMCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_DISTANCELMCONSTRAINT_H
 
+#include <sofa/core/VecId.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
@@ -97,7 +99,8 @@ public:
     void reinit();
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+
+    void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
     void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
 
     virtual void draw();
