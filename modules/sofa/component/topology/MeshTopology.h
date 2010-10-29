@@ -89,6 +89,17 @@ public:
     virtual const Tetra getTetrahedron(TetraID i);
     virtual const Hexa getHexahedron(HexaID i);
 
+    // If using STEP loader, include also uv coordinates
+    typedef index_type					UVID;
+    typedef Vector2						UV;
+    typedef vector<Vector2>				SeqUV;
+    virtual const SeqUV& getUVs();
+    virtual int getNbUVs();
+    virtual const UV getUV(UVID i);
+    void addUV(double u, double v);
+    virtual void updateUVs();
+    //
+
     /// @name neighbors queries
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
@@ -240,6 +251,9 @@ protected:
     Data<SeqCubes>       seqHexahedra;
 #endif
     bool         validHexahedra;
+
+    Data<SeqUV>	seqUVs;
+    bool	validUVs;
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     vector< EdgesAroundVertex > m_edgesAroundVertex;
