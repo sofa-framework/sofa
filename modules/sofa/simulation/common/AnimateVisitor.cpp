@@ -179,7 +179,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 #ifdef SOFA_HAVE_EIGEN2
         {
             unsigned int constraintId=0;
-            MechanicalAccumulateConstraint(constraintId, VecCoordId::position(), &m_mparams).execute(node);
+            core::ConstraintParams cparams;
+            //MechanicalAccumulateConstraint(constraintId, VecCoordId::position(), &m_mparams).execute(node);
+            simulation::MechanicalAccumulateConstraint(core::MatrixDerivId::holonomicC(),constraintId,&cparams).execute(node);
         }
 #endif
 
