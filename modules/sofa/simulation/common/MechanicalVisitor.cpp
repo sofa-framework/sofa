@@ -597,7 +597,9 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
 #ifdef SOFA_HAVE_EIGEN2
     {
         unsigned int constraintId=0;
-        MechanicalAccumulateConstraint(constraintId, VecCoordId::position(), &mparams).execute(node);
+        core::ConstraintParams cparams;
+        simulation::MechanicalAccumulateConstraint(core::MatrixDerivId::holonomicC(), constraintId, &cparams).execute(node);
+
     }
 #endif
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
