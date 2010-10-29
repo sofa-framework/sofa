@@ -182,7 +182,9 @@ HEADERS += \
 		CudaDiagonalMass.h \
 		CudaDiagonalMass.inl \
            PairwiseCudaRasterizer.h \
-           PairwiseCudaRasterizer.inl 
+           PairwiseCudaRasterizer.inl \
+           ProximityRasterizer.h \
+           ProximityRasterizer.inl 
 		
 		
 SOURCES += \
@@ -216,7 +218,8 @@ SOURCES += \
 	CudaTetrahedronCuttingManager.cpp \
 	CudaDiagonalMass.cpp \
 	CudaBilateralInteractionConstraint.cpp \
-           PairwiseCudaRasterizer.cpp
+           PairwiseCudaRasterizer.cpp \
+           ProximityRasterizer.cpp
 
 CUDA_SOURCES += \
            CudaFixedPlaneConstraint.cu \

@@ -59,6 +59,7 @@ MeshTopology::MeshTopology()
     , seqQuads(initData(&seqQuads,"quads","List of quad indices")), validQuads(false)
     , seqTetrahedra(initData(&seqTetrahedra,"tetrahedra","List of tetrahedron indices")), validTetrahedra(false)
     , seqHexahedra(initData(&seqHexahedra,"hexahedra","List of hexahedron indices")), validHexahedra(false)
+    , seqUVs(initData(&seqUVs,"uv","List of uv coordinates")), validUVs(false)
     , revision(0)
     , _draw(initData(&_draw, false, "drawHexahedra","if true, draw the topology hexahedra"))
     , UpperTopology(sofa::core::topology::EDGE)
@@ -139,6 +140,16 @@ void MeshTopology::init()
                     n = 1 + seqHexahedra.getValue()[i][j];
             }
         }
+
+        for (unsigned int i=0; i<seqUVs.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<seqUVs.getValue()[i].size(); j++)
+            {
+                if (n <= seqUVs.getValue()[i][j])
+                    n = 1 + seqUVs.getValue()[i][j];
+            }
+        }
+
         nbPoints = n;
     }
 }
@@ -169,6 +180,9 @@ void MeshTopology::clear()
     seqQuads.beginEdit()->clear(); seqQuads.endEdit();
     seqTetrahedra.beginEdit()->clear(); seqTetrahedra.endEdit();
     seqHexahedra.beginEdit()->clear(); seqHexahedra.endEdit();
+
+    seqUVs.beginEdit()->clear(); seqUVs.endEdit();
+
     invalidate();
 }
 
@@ -236,6 +250,14 @@ void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p
     if (p8 >= (int)nbPoints) nbPoints = p8+1;
 }
 
+void MeshTopology::addUV(double u, double v)
+{
+    seqUVs.beginEdit()->push_back(defaulttype::Vec<2,SReal>((SReal)u, (SReal)v));
+    seqUVs.endEdit();
+    if (seqUVs.getValue().size() > (unsigned)nbPoints)
+        nbPoints = seqUVs.getValue().size();
+}
+
 const MeshTopology::SeqEdges& MeshTopology::getEdges()
 {
     if (!validEdges)
@@ -286,6 +308,16 @@ const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
     return seqHexahedra.getValue();
 }
 
+const MeshTopology::SeqUV& MeshTopology::getUVs()
+{
+    if (!validUVs)
+    {
+        updateUVs();
+        validUVs = true;
+    }
+    return seqUVs.getValue();
+}
+
 int MeshTopology::getNbPoints() const
 {
     return nbPoints;
@@ -321,6 +353,11 @@ int MeshTopology::getNbHexahedra()
     return getHexahedra().size();
 }
 
+int MeshTopology::getNbUVs()
+{
+    return getUVs().size();
+}
+
 const MeshTopology::Edge MeshTopology::getEdge(index_type i)
 {
     return getEdges()[i];
@@ -344,6 +381,11 @@ const MeshTopology::Tetra MeshTopology::getTetrahedron(index_type i)
 const MeshTopology::Hexa MeshTopology::getHexahedron(index_type i)
 {
     return getHexahedra()[i];
+}
+
+const MeshTopology::UV MeshTopology::getUV(index_type i)
+{
+    return getUVs()[i];
 }
 
 void MeshTopology::createEdgesAroundVertexArray ()
@@ -1754,6 +1796,9 @@ void MeshTopology::invalidate()
     validQuads = false;
     validTetrahedra = false;
     validHexahedra = false;
+
+    validUVs = false;
+
     m_edgesAroundVertex.clear();
     m_edgesInTriangle.clear();
     m_edgesInQuad.clear();
@@ -2188,6 +2233,11 @@ void MeshTopology::updateTetrahedra()
 {
     if (!seqTetrahedra.getValue().empty()) return; // tetrahedra already defined
     // No 4D elements yet! ;)
+}
+
+void MeshTopology::updateUVs()
+{
+    if (!seqUVs.getValue().empty()) return; // UVs already defined
 }
 
 
