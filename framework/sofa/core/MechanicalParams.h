@@ -103,7 +103,7 @@ public:
     /// Set time step
     MechanicalParams& setDt(double v) { m_dt = v; return *this; }
 
-    /// Specify if the time integration scheme implicit
+    /// Specify if the time integration scheme is implicit
     MechanicalParams& setImplicit(bool v) { m_implicit = v; return *this; }
 
     /// Set Mass matrix contributions factor (for implicit schemes)
@@ -119,7 +119,7 @@ public:
     void setKFactorUsed(bool b) const { m_kFactorUsed = b; }
     bool getKFactorUsed() const { return m_kFactorUsed; }
 
-    /// Should the kinematic and potential energies be computed ?
+    /// Specify if the potential and kinematic energies should be computed ?
     MechanicalParams& setEnergy(bool v) { m_energy = v; return *this; }
 
     const ConstMultiVecCoordId& x() const { return m_x; }

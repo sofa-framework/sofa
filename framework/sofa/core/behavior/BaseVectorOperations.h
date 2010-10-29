@@ -23,7 +23,12 @@ protected:
     double result;
 
 public:
-    BaseVectorOperations(const core::ExecParams* params, core::objectmodel::BaseContext* ctx):params(params),ctx(ctx) {};
+    BaseVectorOperations(const core::ExecParams* params, core::objectmodel::BaseContext* ctx)
+        : params(params),ctx(ctx)
+    {}
+
+    virtual ~BaseVectorOperations()
+    {}
 
     /// Allocate a temporary vector
     virtual void v_alloc(sofa::core::MultiVecCoordId& id) = 0;
