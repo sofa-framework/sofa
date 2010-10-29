@@ -233,12 +233,11 @@ public:
 #endif
 
 private:
+    /// Constraint parameters
+    const sofa::core::ConstraintParams *cparams;
 
     /// Vector for constraint values
     BaseVector* m_v;
-
-    /// Constraint parameters
-    const sofa::core::ConstraintParams *cparams;
 };
 
 
