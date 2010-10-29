@@ -158,7 +158,7 @@ public:
 
 
     /// Get Right Hand Term
-    virtual void getConstraintViolation(defaulttype::BaseVector * /*v*/, ConstMultiVecId /*vId*/, ConstraintParams::ConstOrder /*order*/ = ConstraintParams::POS);
+    virtual void getConstraintViolation(defaulttype::BaseVector * /*v*/, const sofa::core::ConstraintParams* );
 
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
