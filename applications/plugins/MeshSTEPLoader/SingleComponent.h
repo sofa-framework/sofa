@@ -22,69 +22,76 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_MESHSTEPLOADERPLUGIN_API
-#else
-#ifdef SOFA_BUILD_MESHSTEPLOADERPLUGIN
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_MESHSTEPLOADERPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_MESHSTEPLOADERPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-#endif
+#ifndef SOFA_COMPONENT_ENGINE_SINGLECOMPONENT_H
+#define SOFA_COMPONENT_ENGINE_SINGLECOMPONENT_H
+
+#include <vector>
+
+#include <sofa/component/component.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
 
 namespace component
 {
-//Here are just several convenient functions to help user to know what contains the plugin
 
-extern "C" {
-    SOFA_MESHSTEPLOADERPLUGIN_API void initExternalModule();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleName();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleVersion();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleDescription();
-    SOFA_MESHSTEPLOADERPLUGIN_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace engine
 {
-    static bool first = true;
-    if (first)
+
+using namespace sofa::defaulttype;
+
+template <class DataTypes>
+class SingleComponent : public sofa::core::DataEngine
+{
+public:
+    SOFA_CLASS(SingleComponent,sofa::core::DataEngine);
+
+    SingleComponent();
+
+    virtual void init();
+    virtual void reinit();
+    virtual void update();
+
+    template <class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        first = false;
+        return core::DataEngine::canCreate(obj, context, arg);
     }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const SingleComponent<DataTypes>*)
+    {
+        return "int";
+    }
+
+protected:
+    void loadMesh();
+
+public:
+    Data<helper::vector<sofa::defaulttype::Vector3> > _positionsI;
+    Data<helper::vector<sofa::defaulttype::Vector3> > _positionsO;
+    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesI;
+    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesO;
+    Data<helper::vector<sofa::defaulttype::Vector3> > _normalsI;
+    Data<helper::vector<sofa::defaulttype::Vector3> > _normalsO;
+    Data<helper::vector<sofa::defaulttype::Vector2> > _uvI;
+    Data<helper::vector<sofa::defaulttype::Vector2> > _uvO;
+    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _indicesComponents;
+    Data<int> _numberShape;
+};
+
 }
 
-const char* getModuleName()
-{
-    return "Plugin MeshSTEPLoader";
-}
-
-const char* getModuleVersion()
-{
-    return "0.5";
-}
-
-const char* getModuleDescription()
-{
-    return "Load STEP files into SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "MeshSTEPLoader";
-}
 }
 
 }
 
-SOFA_LINK_CLASS(MeshSTEPLoader)
-SOFA_LINK_CLASS(SingleComponent)
-
+#endif
