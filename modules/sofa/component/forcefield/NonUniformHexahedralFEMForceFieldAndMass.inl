@@ -51,6 +51,7 @@ template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
     : HexahedralFEMForceFieldAndMassT()
     , _bRecursive(core::objectmodel::Base::initData(&_bRecursive, false, "recursive", "Use recursive matrix computation"))
+    , _useMBK(initData(&_useMBK, false, "useMBK", "compute MBK and use it in addMBKdx, instead of using addDForce and addMDx."))
 {}
 
 template <class DataTypes>
@@ -117,7 +118,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     HexahedralFEMForceField<T>::computeMaterialStiffness(_material.C, this->f_youngModulus.getValue(), this->f_poissonRatio.getValue());
     HexahedralFEMForceField<T>::computeElementStiffness(_material.K, _material.C, nodesFine);
 
-//	HexahedralFEMForceFieldAndMass<T>::computeElementMass(_material.M, _material.mass, nodesFine);
+    //	HexahedralFEMForceFieldAndMass<T>::computeElementMass(_material.M, _material.mass, nodesFine);
 
     const Real volume = (nodesFine[1]-nodesFine[0]).norm()*(nodesFine[3]-nodesFine[0]).norm()*(nodesFine[4]-nodesFine[0]).norm();
     _material.mass = volume * this->_density.getValue();
@@ -192,7 +193,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     HexahedralFEMForceFieldAndMassT::computeParticleMasses();
     HexahedralFEMForceFieldAndMassT::computeLumpedMasses();
 
-
+//                helper::vector<ElementMass>* ElementMassMatrices = this->_elementMasses.beginEdit();
+//                typename helper::vector<ElementMass>::iterator iter;
+//                for ( iter = ElementMassMatrices->begin(); iter != ElementMassMatrices->end() ; ++iter)
+//                {
+//                    computeCorrection(*iter);
+//                }
+//                this->_elementMasses.endEdit();
 }
 
 template<class T>
@@ -513,10 +520,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( ElementStiffness &K,
-        ElementMass &M,
-        Real& totalMass,
-        const int elementIndex)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation(
+    ElementStiffness &K,
+    ElementMass &M,
+    Real& totalMass,
+    const int elementIndex)
 {
     K.clear();
     M.clear();
@@ -564,18 +572,19 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         //	std::cout << "Total masses don't match." << std::endl;
         //}
     }
-    computeCorrection(M);
+//                computeCorrection(M);
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_IntervalAnalysis(ElementStiffness &K,
-        ElementMass &M,
-        Real& totalMass,
-        const ElementStiffness &K_fine,
-        const ElementMass &M_fine,
-        const Real& mass_fine,
-        const unsigned int level,
-        const std::set<Vec3i>& voxels) const
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_IntervalAnalysis(
+    ElementStiffness &K,
+    ElementMass &M,
+    Real& totalMass,
+    const ElementStiffness &K_fine,
+    const ElementMass &M_fine,
+    const Real& mass_fine,
+    const unsigned int level,
+    const std::set<Vec3i>& voxels) const
 {
     if(voxels.size() == (unsigned int) (1 << (3*level))) // full element
     {
@@ -604,45 +613,45 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         }
         /*
         std::cout << "M_fine" << std::endl;
-        for( int i = 0; i < 24; i++)
-        {
-        	for( int j = 0; j < 24; j++)
-        		std::cout << M_fine[i][j]*8 << " ";
-        	std::cout << endl;
-        }
+        	for( int i = 0; i < 24; i++)
+        	{
+        		for( int j = 0; j < 24; j++)
+        			std::cout << M_fine[i][j]*8 << " ";
+        		std::cout << endl;
+        	}
 
-        std::cout << "M" << std::endl;
-        for( int i = 0; i < 24; i++)
-        {
-        	for( int j = 0; j < 24; j++)
-        		std::cout << M[i][j] << " ";
-        	std::cout << endl;
-        }
+        	std::cout << "M" << std::endl;
+        	for( int i = 0; i < 24; i++)
+        	{
+        		for( int j = 0; j < 24; j++)
+        			std::cout << M[i][j] << " ";
+        		std::cout << endl;
+        	}
 
-        std::cout << "K_fine" << std::endl;
-        for( int i = 0; i < 24; i++)
-        {
-        	for( int j = 0; j < 24; j++)
-        		std::cout << K_fine[i][j]*2 << " ";
-        	std::cout << endl;
-        }
+        	std::cout << "K_fine" << std::endl;
+        	for( int i = 0; i < 24; i++)
+        	{
+        		for( int j = 0; j < 24; j++)
+        			std::cout << K_fine[i][j]*2 << " ";
+        		std::cout << endl;
+        	}
 
-        std::cout << "K" << std::endl;
-        for( int i = 0; i < 24; i++)
-        {
-        	for( int j = 0; j < 24; j++)
-        		std::cout << K[i][j] << " ";
-        	std::cout << endl;
-        }
+        	std::cout << "K" << std::endl;
+        	for( int i = 0; i < 24; i++)
+        	{
+        		for( int j = 0; j < 24; j++)
+        			std::cout << K[i][j] << " ";
+        		std::cout << endl;
+        	}
 
-        for( int i = 0; i < 24; i++)
-        	for( int j = 0; j < 24; j++)
-        		if ((float)(M_fine[i][j]*8) != (float)(M[i][j])) std::cout << "diff en M["<<i<<"]["<<j<<"]: " << M_fine[i][j]*8 << ", " << M[i][j] << std::endl;
+        	for( int i = 0; i < 24; i++)
+        		for( int j = 0; j < 24; j++)
+        			if ((float)(M_fine[i][j]*8) != (float)(M[i][j])) std::cout << "diff en M["<<i<<"]["<<j<<"]: " << M_fine[i][j]*8 << ", " << M[i][j] << std::endl;
 
-        for( int i = 0; i < 24; i++)
-        	for( int j = 0; j < 24; j++)
-        		if ((float)(K_fine[i][j]*2) != (float)(K[i][j])) std::cout << "diff en K["<<i<<"]["<<j<<"]: " << K_fine[i][j]*2 << ", " << K[i][j] << std::endl;
-        */
+        	for( int i = 0; i < 24; i++)
+        		for( int j = 0; j < 24; j++)
+        			if ((float)(K_fine[i][j]*2) != (float)(K[i][j])) std::cout << "diff en K["<<i<<"]["<<j<<"]: " << K_fine[i][j]*2 << ", " << K[i][j] << std::endl;
+        	*/
     }
     else
     {
@@ -796,14 +805,15 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_Direct( ElementStiffness &K,
-        ElementMass &M,
-        Real& totalMass,
-        const ElementStiffness &K_fine,
-        const ElementMass &M_fine,
-        const Real& mass_fine,
-        const unsigned int level,
-        const std::set<Vec3i>& voxels) const
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_Direct(
+    ElementStiffness &K,
+    ElementMass &M,
+    Real& totalMass,
+    const ElementStiffness &K_fine,
+    const ElementMass &M_fine,
+    const Real& mass_fine,
+    const unsigned int level,
+    const std::set<Vec3i>& voxels) const
 {
     const int coarseNodeSize = (1 << level);
 
@@ -821,15 +831,16 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_Recursive( ElementStiffness &K,
-        ElementMass &M,
-        Real& totalMass,
-        const ElementStiffness &K_fine,
-        const ElementMass &M_fine,
-        const Real& mass_fine,
-        const unsigned int level,
-        const unsigned int startIdx,
-        const std::set<unsigned int>& fineChildren) const
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_Recursive(
+    ElementStiffness &K,
+    ElementMass &M,
+    Real& totalMass,
+    const ElementStiffness &K_fine,
+    const ElementMass &M_fine,
+    const Real& mass_fine,
+    const unsigned int level,
+    const unsigned int startIdx,
+    const std::set<unsigned int>& fineChildren) const
 {
     if(level == 0)
     {
@@ -868,9 +879,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::addHtfineHtoCoarse(const Mat88& H,
-        const ElementStiffness& fine,
-        ElementStiffness& coarse) const
+void NonUniformHexahedralFEMForceFieldAndMass<T>::addHtfineHtoCoarse(
+    const Mat88& H,
+    const ElementStiffness& fine,
+    ElementStiffness& coarse) const
 {
     ElementStiffness A;
 
@@ -892,9 +904,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::addHtfineHtoCoarse(const Mat88
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::subtractHtfineHfromCoarse(const Mat88& H,
-        const ElementStiffness& fine,
-        ElementStiffness& coarse) const
+void NonUniformHexahedralFEMForceFieldAndMass<T>::subtractHtfineHfromCoarse(
+    const Mat88& H,
+    const ElementStiffness& fine,
+    ElementStiffness& coarse) const
 {
     ElementStiffness A;
 
@@ -916,9 +929,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::subtractHtfineHfromCoarse(cons
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(const Mat88& H,
-        const ElementStiffness& fine,
-        ElementStiffness& HtfineH) const
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(
+    const Mat88& H,
+    const ElementStiffness& fine,
+    ElementStiffness& HtfineH) const
 {
     HtfineH.clear();
     ElementStiffness A;
@@ -942,9 +956,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(const Mat88& H,
 
 
 template<class T>
-int NonUniformHexahedralFEMForceFieldAndMass<T>::ijk2octree(const int i,
-        const int j,
-        const int k) const
+int NonUniformHexahedralFEMForceFieldAndMass<T>::ijk2octree(
+    const int i,
+    const int j,
+    const int k) const
 {
     unsigned int I = i;
     unsigned int J = j;
@@ -969,10 +984,11 @@ int NonUniformHexahedralFEMForceFieldAndMass<T>::ijk2octree(const int i,
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::octree2ijk(const int octreeIdx,
-        int &i,
-        int &j,
-        int &k) const
+void NonUniformHexahedralFEMForceFieldAndMass<T>::octree2ijk(
+    const int octreeIdx,
+    int &i,
+    int &j,
+    int &k) const
 {
     i = j = k = 0;
 
@@ -1002,10 +1018,158 @@ typename NonUniformHexahedralFEMForceFieldAndMass<T>::Vec3i NonUniformHexahedral
 }
 
 
+//            template <class DataTypes>
+//            void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams)
+//            {
+//                matrixIsDirty = true;
+//                Inherited::addForce(f,x,v,mparams);
+//            }
+
+
+
+template <class DataTypes>
+void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVecDerivId dfId , const core::MechanicalParams* mparams)
+{
+    Real mFactor=mparams->mFactor();
+    Real kFactor=mparams->kFactor();
+    helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(this->mstate);
+    helper::WriteAccessor< DataVecDeriv > df = *dfId[this->mstate].write();
+    const VecElement& hexahedra = this->_topology->getHexahedra();
+    const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = this->hexahedronInfo.getValue();
+
+    if( !_useMBK.getValue() || mFactor<=0 )
+    {
+
+        matrixIsDirty = true;
+
+        for(unsigned int i=0; i<hexahedra.size(); ++i)
+        {
+            Displacement rdx, rdf;
+            const Mat33& Re = hexahedronInf[i].rotation;
+            Mat33 Ret = Re.transposed();
+
+            for(int k=0 ; k<8 ; ++k )
+            {
+                Deriv x_2 = Ret * dx[hexahedra[i][k]];
+
+                int indice = k*3;
+                for(int j=0 ; j<3 ; ++j )
+                    rdx[indice+j] = x_2[j];
+            }
+
+            rdf = this->_elementMasses.getValue()[i] * rdx * mFactor - hexahedronInf[i].stiffness * rdx * kFactor;
+
+            for(unsigned int w=0; w<8; ++w)
+                df[hexahedra[i][w]] += Re * Deriv( rdf[w*3],  rdf[w*3+1],   rdf[w*3+2]  );
+        }
+
+
+
+//                    Inherited::addMBKdx(dfId,mparams);
+//                    cerr<< "NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx standard way" << endl;
+        return;
+    }
+//                cerr<< "NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx MBK way" << endl;
+
+
+    if( matrixIsDirty )
+    {
+//                    serr<<"NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx, recomputation of the matrix" << sendl;
+
+        // Compute the matrix
+        this->mbkMatrix.resize(hexahedra.size());
+
+        for ( unsigned int e = 0; e < hexahedra.size(); ++e )
+        {
+            const ElementMass &Me = this->_elementMasses.getValue() [e];
+            const Element hexa = hexahedra[e];
+            const ElementStiffness &Ke = hexahedronInf[e].stiffness;
+            const Mat33& Re = hexahedronInf[e].rotation;
+            Mat33 Ret = Re.transposed();
+            ElementStiffness MBKe(0.);
+
+            for ( unsigned n1 = 0; n1 < 8; n1++ )
+            {
+                for (unsigned n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
+//                            unsigned n2 = n1; /////////// WARNING Changed to compute only diag elements
+                {
+                    // add M to matrix
+                    Mat33 tmp( Deriv ( Me[3*n1+0][3*n2+0]*mFactor, Me[3*n1+0][3*n2+1]*mFactor, Me[3*n1+0][3*n2+2]*mFactor ),
+                            Deriv ( Me[3*n1+1][3*n2+0]*mFactor, Me[3*n1+1][3*n2+1]*mFactor, Me[3*n1+1][3*n2+2]*mFactor ),
+                            Deriv ( Me[3*n1+2][3*n2+0]*mFactor, Me[3*n1+2][3*n2+1]*mFactor, Me[3*n1+2][3*n2+2]*mFactor )
+                             );
+
+                    // sub K to matrix
+                    tmp -= Mat33(
+                            Deriv ( Ke[3*n1+0][3*n2+0]*kFactor, Ke[3*n1+0][3*n2+1]*kFactor, Ke[3*n1+0][3*n2+2]*kFactor ),
+                            Deriv ( Ke[3*n1+1][3*n2+0]*kFactor, Ke[3*n1+1][3*n2+1]*kFactor, Ke[3*n1+1][3*n2+2]*kFactor ),
+                            Deriv ( Ke[3*n1+2][3*n2+0]*kFactor, Ke[3*n1+2][3*n2+1]*kFactor, Ke[3*n1+2][3*n2+2]*kFactor ) );
+
+                    // rotate the matrix
+                    tmp = Re * tmp * Ret;
+
+                    // store the matrix
+                    MBKe[3*n1+0][3*n2+0] = tmp[0][0], MBKe[3*n1+0][3*n2+1] = tmp[0][1], MBKe[3*n1+0][3*n2+2] = tmp[0][2];
+                    MBKe[3*n1+1][3*n2+0] = tmp[1][0], MBKe[3*n1+1][3*n2+1] = tmp[1][1], MBKe[3*n1+1][3*n2+2] = tmp[1][2];
+                    MBKe[3*n1+2][3*n2+0] = tmp[2][0], MBKe[3*n1+2][3*n2+1] = tmp[2][1], MBKe[3*n1+2][3*n2+2] = tmp[2][2];
+                }
+            }
+
+            // Filter singular values to (hopefully) avoid conditionning problems
+//                        computeCorrection(MBKe);
+
+            // store
+            this->mbkMatrix[e] = MBKe;
+//                        cerr << "Re = " << Re << endl << endl;
+//                        cerr << "Me = " << Me << endl << endl;
+//                        cerr << "Ke = " << Ke << endl << endl;
+//                        cerr << "mFactor = " << mFactor << endl;
+//                        cerr << "kFactor = " << kFactor << endl;
+//                        cerr << "MBKe = " << MBKe << endl << endl;
+        }
+
+        this->matrixIsDirty = false;
+    }
+
+    for ( unsigned int e = 0; e < hexahedra.size(); ++e )
+    {
+        Displacement X;
+
+        for(int w=0; w<8; ++w)
+        {
+            const Deriv& x_2 = dx[hexahedra[e][w]];
+            X[w*3] = x_2[0];
+            X[w*3+1] = x_2[1];
+            X[w*3+2] = x_2[2];
+        }
+        Displacement F;
+//                   cerr << "dx = " << X << endl;
+        F = this->mbkMatrix[e] * X;
+//                   cerr << "MBKdx = " << F << endl;
+////                   F = this->_elementMasses.getValue()[e] * X * mFactor;
+//                   F = Mfoo * X * mFactor;
+////                   cerr << "M = " << this->_elementMasses.getValue()[e] << endl<< endl;
+//                   cerr << "M = " << Mfoo << endl<< endl;
+//                   cerr << "Mfoo * X  = " << Mfoo * X << endl<< endl;
+//                   cerr << "mFactor  = " << mFactor << endl<< endl;
+//                   cerr << "Mfoo * X * mFactor  = " << Mfoo * X * mFactor << endl<< endl;
+//                   cerr << "Mdx = " << F << endl ;
+//                   F += hexahedronInf[e].stiffness * X * kFactor;
+//                   cerr << "(M+K)dx = " << F << endl;
+
+
+        for(int w=0; w<8; ++w)
+            df[hexahedra[e][w]] += Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+    }
+
+}
+
+
+
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_INL
+#endif
