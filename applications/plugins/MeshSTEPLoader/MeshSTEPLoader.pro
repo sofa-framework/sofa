@@ -23,21 +23,33 @@ DEFINES += SOFA_BUILD_MESHSTEPLOADERPLUGIN
 LIBS += $$SOFA_LIBS
 LIBS += $$SOFA_EXT_LIBS
 
-LIBS += -l$$OPEN_CASCADE_DIR/win32/lib/*
 
 INCLUDEPATH += $$SOFA_DIR/extlibs
-INCLUDEPATH += $$OPEN_CASCADE_DIR/inc
+
 
 SOURCES = \
 MeshSTEPLoader.cpp \
+SingleComponent.cpp \
           initMeshSTEPLoader.cpp
 
 HEADERS = \
-MeshSTEPLoader.h
+MeshSTEPLoader.h\
+SingleComponent.inl\
+SingleComponent.h
 
-QMAKE_CXXFLAGS += /DWNT
+
 
 README_FILE = PluginMeshSTEPLoader.txt
 
-unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
-win32 : QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
+unix {
+    INCLUDEPATH += /usr/include/opencascade
+    LIBS += -lTKernel -lTKMath -lTKAdvTools -lTKjcas -lGL -lTKG2d -lTKG3d -lTKGeomBase -lTKBRep -lTKGeomAlgo -lTKTopAlgo -lTKPrim -lTKBO -lTKHLR -lTKMesh -lTKShHealing -lTKBool -lTKXMesh -lTKFillet -lTKFeat -lTKOffset -lTKSTL -lTKXSBase -lTKSTEPBase -lTKIGES -lTKSTEPAttr -lTKSTEP209 -lTKSTEP    -lTKService -lTKV2d -lTKV3d -lTKOpenGl -lTKMeshVS -lTKNIS -lTKVRML
+    QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR
+}
+
+win32 {
+    INCLUDEPATH += $$OPEN_CASCADE_DIR/inc
+    LIBS += -l$$OPEN_CASCADE_DIR/win32/lib/*
+    QMAKE_CXXFLAGS += /DWNT
+    QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
+}
