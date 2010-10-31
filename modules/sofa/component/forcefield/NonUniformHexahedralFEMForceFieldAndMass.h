@@ -62,15 +62,15 @@ url          = "http://www-evasion.imag.fr/Publications/2006/NPF06"
 
 indices ordering (same as in HexahedronSetTopology):
 
-Y  7---------6
-^ /         /|
-|/    Z    / |
-3----^----2  |
-|   /     |  |
-|  4------|--5
-| /       | /
-|/        |/
-0---------1-->X
+     Y  7---------6
+     ^ /         /|
+     |/    Z    / |
+     3----^----2  |
+     |   /     |  |
+     |  4------|--5
+     | /       | /
+     |/        |/
+     0---------1-->X
 
 */
 
@@ -112,12 +112,12 @@ public:
 
 protected:
     /// condensate matrice from finest level to the actual mechanical level
-    virtual void computeMechanicalMatricesByCondensation( ElementStiffness &K,
-            ElementMass &M,
-            Real& totalMass,
-            const int elementIndex);
+    virtual void computeMechanicalMatricesByCondensation(
+        ElementStiffness &K,
+        ElementMass &M,
+        Real& totalMass,const int elementIndex);
 
-    virtual void computeCorrection(ElementMass& /*M*/) {};
+//  virtual void computeCorrection(ElementMass& /*M*/) {};
 
     void initLarge(const int i);
 
@@ -134,33 +134,36 @@ private:
     void addHtfineHtoCoarse(const Mat88& H, const ElementStiffness& fine, ElementStiffness& coarse ) const;
     void subtractHtfineHfromCoarse(const Mat88& H, const ElementStiffness& fine, ElementStiffness& coarse ) const;
 
-    void computeMechanicalMatricesByCondensation_IntervalAnalysis(ElementStiffness &K,
-            ElementMass &M,
-            Real& totalMass,
-            const ElementStiffness &K_fine,
-            const ElementMass &M_fine,
-            const Real& mass_fine,
-            const unsigned int level,
-            const std::set<Vec3i>& voxels) const;
+    void computeMechanicalMatricesByCondensation_IntervalAnalysis(
+        ElementStiffness &K,
+        ElementMass &M,
+        Real& totalMass,
+        const ElementStiffness &K_fine,
+        const ElementMass &M_fine,
+        const Real& mass_fine,
+        const unsigned int level,
+        const std::set<Vec3i>& voxels) const;
 
-    void computeMechanicalMatricesByCondensation_Recursive( ElementStiffness &K,
-            ElementMass &M,
-            Real& totalMass,
-            const ElementStiffness &K_fine,
-            const ElementMass &M_fine,
-            const Real& mass_fine,
-            const unsigned int level,
-            const unsigned int startIdx,
-            const std::set<unsigned int>& fineChildren) const;
+    void computeMechanicalMatricesByCondensation_Recursive(
+        ElementStiffness &K,
+        ElementMass &M,
+        Real& totalMass,
+        const ElementStiffness &K_fine,
+        const ElementMass &M_fine,
+        const Real& mass_fine,
+        const unsigned int level,
+        const unsigned int startIdx,
+        const std::set<unsigned int>& fineChildren) const;
 
-    void computeMechanicalMatricesByCondensation_Direct( ElementStiffness &K,
-            ElementMass &M,
-            Real& totalMass,
-            const ElementStiffness &K_fine,
-            const ElementMass &M_fine,
-            const Real& mass_fine,
-            const unsigned int level,
-            const std::set<Vec3i>& voxels) const;
+    void computeMechanicalMatricesByCondensation_Direct(
+        ElementStiffness &K,
+        ElementMass &M,
+        Real& totalMass,
+        const ElementStiffness &K_fine,
+        const ElementMass &M_fine,
+        const Real& mass_fine,
+        const unsigned int level,
+        const std::set<Vec3i>& voxels) const;
 
 
     int ijk2octree(const int i, const int j, const int k) const;
@@ -174,8 +177,8 @@ private:
     {
         MaterialStiffness	C;	// Mat<6, 6, Real>
         ElementStiffness	K;	// Mat<24, 24, Real>
-        ElementMass			M;	// Mat<24, 24, Real>
-        Real				mass;
+        ElementMass		M;	// Mat<24, 24, Real>
+        Real			mass;
     } Material;
 
     Material _material; // TODO: enable combination of multiple materials
@@ -183,22 +186,29 @@ private:
     MultilevelHexahedronSetTopologyContainer*	_multilevelTopology;
 
     Data<bool>		_bRecursive;
+
+
+    // ---------------  Modified method: compute and re-use MBK
+    typedef HexahedralFEMForceFieldAndMass<DataTypes> Inherited;
+    typedef typename Inherited::HexahedronInformation HexahedronInformation;
+    typedef typename Inherited::Mat33 Mat33;
+    typedef typename Inherited::Displacement Displacement;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
+    Data<bool> _useMBK; ///< if true, compute and use MBK matrix
+
+//        /// Compute force and set MBK matrix dirty
+//        virtual  void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+
+    /** Matrix-vector product for implicit methods with iterative solvers.
+        If the MBK matrix is ill-conditionned, recompute it, and correct it to avoid too small singular values.
+    */
+    virtual void addMBKdx(core::MultiVecDerivId dfId , const core::MechanicalParams* mparams);
+
+    bool matrixIsDirty;                      ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$ needs to be recomputed
+    helper::vector< ElementMass > mbkMatrix; ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$
 };
-
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_H)
-#pragma warning(disable : 4231)
-
-#ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedralFEMForceFieldAndMass<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedralFEMForceFieldAndMass<Vec3fTypes>;
-#endif
-
-#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_H)
 
 } // namespace forcefield
 
@@ -206,4 +216,4 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API NonUniformHexahedralFEMForce
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_H
+#endif
