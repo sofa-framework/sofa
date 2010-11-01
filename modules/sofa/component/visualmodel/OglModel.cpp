@@ -177,7 +177,7 @@ void OglModel::drawGroups(bool transparent)
 void OglModel::internalDraw(bool transparent)
 {
     m_vtexcoords.updateIfDirty();
-    //serr<<" OglModel::internalDraw()"<<sendl;
+//    serr<<" OglModel::internalDraw()"<<sendl;
     if (!getContext()->getShowVisualModels()) return;
 
     if (getContext()->getShowWireFrame())

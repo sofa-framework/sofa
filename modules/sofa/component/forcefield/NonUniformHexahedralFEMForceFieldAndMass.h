@@ -187,6 +187,7 @@ private:
 
     Data<bool>		_bRecursive;
 
+protected:
 
     // ---------------  Modified method: compute and re-use MBK
     typedef HexahedralFEMForceFieldAndMass<DataTypes> Inherited;
@@ -196,10 +197,7 @@ private:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<bool> _useMBK; ///< if true, compute and use MBK matrix
-
-//        /// Compute force and set MBK matrix dirty
-//        virtual  void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+    Data<bool> useMBK; ///< if true, compute and use MBK matrix
 
     /** Matrix-vector product for implicit methods with iterative solvers.
         If the MBK matrix is ill-conditionned, recompute it, and correct it to avoid too small singular values.
@@ -208,6 +206,9 @@ private:
 
     bool matrixIsDirty;                      ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$ needs to be recomputed
     helper::vector< ElementMass > mbkMatrix; ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$
+
+protected:
+    virtual void computeCorrection( ElementMass& ) {} ///< Limit the conditioning number of each mbkMatrix as defined by maxConditioning (in derived classes).
 };
 
 } // namespace forcefield

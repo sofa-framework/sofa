@@ -197,6 +197,7 @@ void FixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const co
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
     projectResponseT<VecDeriv>(res.wref(), mparams);
+//  serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<dx.size()<<sendl;
 }
 
 template <class DataTypes>
