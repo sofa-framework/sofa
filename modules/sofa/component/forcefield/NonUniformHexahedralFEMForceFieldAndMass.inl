@@ -27,13 +27,11 @@
 
 #include <sofa/component/forcefield/NonUniformHexahedralFEMForceFieldAndMass.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
-
 #include <sofa/component/topology/MultilevelHexahedronSetTopologyContainer.h>
-
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/HexahedronData.inl>
-
 #include <sofa/core/objectmodel/Base.h>
+
 
 namespace sofa
 {
@@ -51,7 +49,7 @@ template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
     : HexahedralFEMForceFieldAndMassT()
     , _bRecursive(core::objectmodel::Base::initData(&_bRecursive, false, "recursive", "Use recursive matrix computation"))
-    , _useMBK(initData(&_useMBK, false, "useMBK", "compute MBK and use it in addMBKdx, instead of using addDForce and addMDx."))
+    , useMBK(initData(&useMBK, true, "useMBK", "compute MBK and use it in addMBKdx, instead of using addDForce and addMDx."))
 {}
 
 template <class DataTypes>
@@ -1018,14 +1016,6 @@ typename NonUniformHexahedralFEMForceFieldAndMass<T>::Vec3i NonUniformHexahedral
 }
 
 
-//            template <class DataTypes>
-//            void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams)
-//            {
-//                matrixIsDirty = true;
-//                Inherited::addForce(f,x,v,mparams);
-//            }
-
-
 
 template <class DataTypes>
 void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVecDerivId dfId , const core::MechanicalParams* mparams)
@@ -1037,9 +1027,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVe
     const VecElement& hexahedra = this->_topology->getHexahedra();
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = this->hexahedronInfo.getValue();
 
-    if( !_useMBK.getValue() || mFactor<=0 )
+    // WARNING !  MBK is used not only in the equation matrix, but also in the right-hand term, with different coefficients.
+    // We want to correct it only in the equation matrix, and we assume that mFactor<=0 correspond to the right-hand term.
+    if( !useMBK.getValue() || mFactor<=0 )
     {
-
+        // Do not compute the weighted sum of the matrices explicitly.
         matrixIsDirty = true;
 
         for(unsigned int i=0; i<hexahedra.size(); ++i)
@@ -1062,16 +1054,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVe
             for(unsigned int w=0; w<8; ++w)
                 df[hexahedra[i][w]] += Re * Deriv( rdf[w*3],  rdf[w*3+1],   rdf[w*3+2]  );
         }
-
-
-
-//                    Inherited::addMBKdx(dfId,mparams);
-//                    cerr<< "NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx standard way" << endl;
         return;
     }
-//                cerr<< "NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx MBK way" << endl;
 
-
+    // mFactor > 0 , so we assume this is a product of the equation matrix done by an implicit solver
     if( matrixIsDirty )
     {
 //                    serr<<"NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx, recomputation of the matrix" << sendl;
@@ -1090,7 +1076,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVe
 
             for ( unsigned n1 = 0; n1 < 8; n1++ )
             {
-                for (unsigned n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
+                for (unsigned n2=0; n2<8; n2++)
 //                            unsigned n2 = n1; /////////// WARNING Changed to compute only diag elements
                 {
                     // add M to matrix
@@ -1116,7 +1102,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVe
             }
 
             // Filter singular values to (hopefully) avoid conditionning problems
-//                        computeCorrection(MBKe);
+            computeCorrection(MBKe);
 
             // store
             this->mbkMatrix[e] = MBKe;
@@ -1131,6 +1117,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVe
         this->matrixIsDirty = false;
     }
 
+    // MBK matrix product
     for ( unsigned int e = 0; e < hexahedra.size(); ++e )
     {
         Displacement X;
@@ -1163,7 +1150,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(core::MultiVe
     }
 
 }
-
 
 
 } // namespace forcefield

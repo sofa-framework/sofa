@@ -180,7 +180,7 @@ public:
                 groot->addObject(currentCamera);
                 //std::cout << "Create Default Camera" << std::endl;
             }
-            sofa::defaulttype::Vec3d minBBox, maxBBox;
+            sofa::defaulttype::Vector3 minBBox, maxBBox;
 
             sofa::simulation::getSimulation()->computeBBox(groot, minBBox.ptr(),maxBBox.ptr());
 
