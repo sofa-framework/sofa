@@ -77,7 +77,12 @@ ConstraintGroup* BaseLMConstraint::addGroupConstraint(ConstraintParams::ConstOrd
 
 void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector *v, const core::ConstraintParams* cparams)
 {
-    const helper::vector< ConstraintGroup* > &constraints = constraintOrder[cparams->constOrder()];
+    getConstraintViolation(v,cparams->constOrder());
+}
+
+void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector * v, const sofa::core::ConstraintParams::ConstOrder Order)
+{
+    const helper::vector< ConstraintGroup* > &constraints = constraintOrder[Order];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
         ConstraintGroup *group=constraints[idxGroupConstraint];
@@ -88,8 +93,8 @@ void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector *v, const 
             v->set(equation->constraintId, equation->correction);
         }
     }
-}
 
+}
 
 void BaseLMConstraint::resetConstraint()
 {

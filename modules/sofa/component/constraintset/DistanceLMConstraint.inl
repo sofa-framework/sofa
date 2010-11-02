@@ -109,7 +109,7 @@ typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Ed
 
 
 template<class DataTypes>
-void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams/* =ConstraintParams::defaultInstance */)
+void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams)
 {
     Data<MatrixDeriv>* dC1 = cId[this->constrainedObject1].write();
     helper::WriteAccessor<objectmodel::Data<MatrixDeriv> > c1 = *dC1;
@@ -135,7 +135,7 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDer
 
         MatrixDerivRowIterator c1_it = c1->writeLine(cIndex);
         c1_it.addCol(idx1, V12);
-        MatrixDerivRowIterator c2_it = c1->writeLine(cIndex);
+        MatrixDerivRowIterator c2_it = c2->writeLine(cIndex);
         c2_it.addCol(idx2, -V12);
 
         registeredConstraints.push_back(cIndex);

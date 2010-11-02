@@ -160,6 +160,9 @@ public:
     /// Get Right Hand Term
     virtual void getConstraintViolation(defaulttype::BaseVector * /*v*/, const sofa::core::ConstraintParams* );
 
+    // Override used in LMConstraintSolver::buildSystem method
+    void getConstraintViolation(defaulttype::BaseVector *v, const core::ConstraintParams::ConstOrder );
+
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
     virtual void getConstraints( std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > >  &i) { i=constraintOrder;}

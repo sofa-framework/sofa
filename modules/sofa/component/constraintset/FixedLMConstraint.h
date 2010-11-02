@@ -103,7 +103,7 @@ public:
     void reset() {initFixedPosition();};
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+    void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams);
     void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
 
 
@@ -125,14 +125,16 @@ public:
 
     bool useMask() const {return true;}
 
+    Data<SetIndex> f_indices;
+    Data<double> _drawSize;
+
 protected :
 
     Deriv X,Y,Z;
     SetIndexArray idxX, idxY, idxZ;
     std::map< unsigned int, Coord> restPosition;
 
-    Data<SetIndex> f_indices;
-    Data<double> _drawSize;
+
 
 
     sofa::core::topology::BaseMeshTopology* topology;
@@ -145,6 +147,20 @@ protected :
     static void FCRemovalFunction ( int , void*);
 
 };
+
+
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_CONSTRAINTSET)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<defaulttype::Rigid3fTypes>;
+#endif
+#endif
+
 
 } // namespace constraintset
 

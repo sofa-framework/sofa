@@ -53,12 +53,12 @@ int FixedLMConstraintClass = core::RegisterObject("Maintain a set of particle to
         ;
 
 #ifndef SOFA_FLOAT
-template class FixedLMConstraint<Vec3dTypes>;
-template class FixedLMConstraint<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class FixedLMConstraint<Vec3fTypes>;
-template class FixedLMConstraint<Rigid3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API FixedLMConstraint<Rigid3fTypes>;
 #endif
 
 

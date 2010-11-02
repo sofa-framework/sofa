@@ -114,7 +114,6 @@ public:
     /// get Mechanical State 2 where the constraint will be solved
     virtual BaseMechanicalState* getSimulatedMechModel2() const {return simulatedObject2;}
 
-
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)

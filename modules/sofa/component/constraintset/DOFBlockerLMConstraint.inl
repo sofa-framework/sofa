@@ -128,12 +128,13 @@ void DOFBlockerLMConstraint<DataTypes>::resetConstraint()
 }
 
 template<class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId /*position*/)
+void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* /*cParams*/)
 {
-    if (!idxEquations.empty()) return;
+    if(!idxEquations.empty() ) return;
 
-    Data<MatrixDeriv> *dC = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
-    MatrixDeriv &c = *dC->beginEdit();
+    using namespace core::objectmodel;
+    Data<MatrixDeriv>* dC = cId[this->constrainedObject1].write();
+    helper::WriteAccessor<Data<MatrixDeriv> > c = *dC;
 
     const SetIndexArray &indices = f_indices.getValue().getArray();
     const helper::vector<Deriv> &axis=BlockedAxis.getValue();
@@ -145,15 +146,14 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &cons
         const unsigned int index=*it;
         for (unsigned int i=0; i<axis.size(); ++i)
         {
-            c.writeLine(constraintId).addCol(index,axis[i]);
-            idxEquations[numParticle].push_back(constraintId++);
+            c->writeLine(cIndex).addCol(index,axis[i]);
+            idxEquations[numParticle].push_back(cIndex++);
         }
         this->constrainedObject1->forceMask.insertEntry(index);
     }
 
-    dC->endEdit();
-}
 
+}
 
 template<class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)

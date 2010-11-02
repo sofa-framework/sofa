@@ -100,7 +100,7 @@ public:
 
     // -- LMConstraint interface
 
-    void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
+    void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams);
     void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
 
     virtual void draw();
@@ -124,9 +124,11 @@ public:
         return DataTypes::Name();
     }
 
-protected :
     //Edges involving a distance constraint
     Data< SeqEdges > vecConstraint;
+
+protected :
+
     ///Compute the length of an edge given the vector of coordinates corresponding
     double lengthEdge(const Edge &e, const VecCoord &x1,const VecCoord &x2) const;
     ///Compute the direction of the constraint
