@@ -129,21 +129,22 @@ public:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
 #pragma warning(disable : 4231)
+using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec3dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec2dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec1dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec6dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec3dTypes, double>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec2dTypes, double>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec1dTypes, double>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec6dTypes, double>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Rigid3dTypes, Rigid3dMass>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Rigid2dTypes, Rigid2dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec3fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec2fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec1fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec6fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
-extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec3fTypes, float>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec2fTypes, float>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec1fTypes, float>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Vec6fTypes, float>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Rigid3fTypes, Rigid3fMass>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<Rigid2fTypes, Rigid2fMass>;
 #endif
 #endif
 
