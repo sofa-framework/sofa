@@ -189,7 +189,7 @@ bool LMConstraintDirectSolver::solveSystem(double dt, VecId id, core::Constraint
         Eigen::JacobiSVD< MatrixEigen > solverSVD(W);
         VectorEigen invSingularValues(solverSVD.singularValues());
 
-        for (unsigned int i=0; i<invSingularValues.size(); ++i)
+        for (int i=0; i<invSingularValues.size(); ++i)
         {
             if (invSingularValues[i] < 1e-10) invSingularValues[i]=0;
             else invSingularValues[i]=1/invSingularValues[i];

@@ -25,6 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_DistanceLMContactConstraint_H
 #define SOFA_COMPONENT_CONSTRAINT_DistanceLMContactConstraint_H
 
+
+#include <sofa/core/VecId.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
@@ -105,7 +108,8 @@ public:
     ~DistanceLMContactConstraint() {};
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+    void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams);
+
     void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
     void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
             core::behavior::ConstraintGroup * group);
@@ -129,13 +133,14 @@ public:
 
 
 protected :
-    /// Contacts are represented by pairs of point indices
-    Data< SeqEdges > pointPairs;
 
     /// Each scalar constraint (up to three per contact) has an associated index
     helper::vector<  unsigned int > scalarConstraintsIndices;
 
 public:
+    /// Contacts are represented by pairs of point indices
+    Data< SeqEdges > pointPairs;
+
     /// Friction coefficients (same for all contacts)
     Data< SReal > contactFriction;
 

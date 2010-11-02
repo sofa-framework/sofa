@@ -34,6 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/accessor.h>
 #include <iostream>
 
 
@@ -95,19 +96,17 @@ void DistanceLMContactConstraint<DataTypes>::computeTangentVectors( Deriv& T1, D
 
 
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position)
+void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams)
 {
-    core::ConstVecCoordId id1 = position.getId(this->constrainedObject1);
-    core::ConstVecCoordId id2 = position.getId(this->constrainedObject2);
+    using namespace core::objectmodel;
+    Data<MatrixDeriv>* dC1 = cId[this->constrainedObject1].write();
+    helper::WriteAccessor<Data<MatrixDeriv> > c1 = *dC1;
 
-    const VecCoord &x1 = this->constrainedObject1->read(id1)->getValue();
-    const VecCoord &x2 = this->constrainedObject2->read(id2)->getValue();
+    Data<MatrixDeriv>* dC2 = cId[this->constrainedObject2].write();
+    helper::WriteAccessor<Data<MatrixDeriv> > c2 = *dC2;
 
-    Data<MatrixDeriv> *dC1 = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
-    MatrixDeriv &c1 = *dC1->beginEdit();
-
-    Data<MatrixDeriv> *dC2 = this->constrainedObject2->write(core::MatrixDerivId::holonomicC());
-    MatrixDeriv &c2 = *dC2->beginEdit();
+    helper::ReadAccessor<Data<VecCoord> > x1 = *cParams->readX(this->constrainedObject1);
+    helper::ReadAccessor<Data<VecCoord> > x2 = *cParams->readX(this->constrainedObject2);
 
     const SeqEdges &edges =  pointPairs.getValue();
 
@@ -122,30 +121,30 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int 
         unsigned int idx1=edges[i][0];
         unsigned int idx2=edges[i][1];
 
-        const Deriv normal = computeNormal(edges[i], x1, x2);
+        const Deriv normal = computeNormal(edges[i], x1.ref(), x2.ref());
 
-        MatrixDerivRowIterator c1_normal = c1.writeLine(constraintId);
+        MatrixDerivRowIterator c1_normal = c1->writeLine(cIndex);
         c1_normal.addCol(idx1,normal);
-        MatrixDerivRowIterator c2_normal = c2.writeLine(constraintId);
+        MatrixDerivRowIterator c2_normal = c2->writeLine(cIndex);
         c2_normal.addCol(idx2,-normal);
-        scalarConstraintsIndices.push_back(constraintId++);
+        scalarConstraintsIndices.push_back(cIndex++);
 
         Deriv tgt1, tgt2;
         computeTangentVectors(tgt1,tgt2,normal);
         //                    cerr<<"DistanceLMContactConstraint<DataTypes>::buildJacobian, tgt1 = "<<tgt1<<", tgt2 = "<<tgt2<<endl;
 
-        MatrixDerivRowIterator c1_t1 = c1.writeLine(constraintId);
+        MatrixDerivRowIterator c1_t1 = c1->writeLine(cIndex);
         c1_t1.addCol(idx1,tgt1);
-        MatrixDerivRowIterator c2_t1 = c2.writeLine(constraintId);
+        MatrixDerivRowIterator c2_t1 = c2->writeLine(cIndex);
         c2_t1.addCol(idx2,-tgt1);
-        scalarConstraintsIndices.push_back(constraintId++);
+        scalarConstraintsIndices.push_back(cIndex++);
 
 
-        MatrixDerivRowIterator c1_t2 = c1.writeLine(constraintId);
+        MatrixDerivRowIterator c1_t2 = c1->writeLine(cIndex);
         c1_t2.addCol(idx1,tgt2);
-        MatrixDerivRowIterator c2_t2 = c2.writeLine(constraintId);
+        MatrixDerivRowIterator c2_t2 = c2->writeLine(cIndex);
         c2_t2.addCol(idx2,-tgt2);
-        scalarConstraintsIndices.push_back(constraintId++);
+        scalarConstraintsIndices.push_back(cIndex++);
 
         this->constrainedObject1->forceMask.insertEntry(idx1);
         this->constrainedObject2->forceMask.insertEntry(idx2);
@@ -153,11 +152,7 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(unsigned int 
         edgeToContact[edges[i]] = Contact(normal,tgt1,tgt2);
     }
 
-    dC1->endEdit();
-    dC2->endEdit();
 }
-
-
 template<class DataTypes>
 void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
 {

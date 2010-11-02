@@ -605,8 +605,9 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
 void LMConstraintSolver::buildRightHandTerm( const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints, VectorEigen &c,
         VecId id, ConstOrder Order) const
 {
+
     FullVector<SReal> c_fullvector(c.data(), c.rows());
-    for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)  LMConstraints[mat]->getConstraintViolation(&c_fullvector, id, Order);
+    for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)  LMConstraints[mat]->getConstraintViolation(&c_fullvector, Order);
 }
 
 bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( VecId id, ConstOrder Order,

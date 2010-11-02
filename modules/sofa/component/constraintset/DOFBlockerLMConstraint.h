@@ -109,7 +109,7 @@ public:
     void resetConstraint();
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId position);
+    void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams);
     void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
 
     std::string getTemplateName() const
@@ -134,10 +134,11 @@ public:
     Data<helper::vector<Deriv> > BlockedAxis;
     Data<helper::vector<SReal> > factorAxis;
     Data<SetIndex> f_indices;
+    Data<SReal> showSizeAxis;
 
 protected :
     helper::vector<SetIndexArray> idxEquations;
-    Data<SReal> showSizeAxis;
+
 
     sofa::core::topology::BaseMeshTopology* topology;
 

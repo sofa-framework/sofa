@@ -140,11 +140,11 @@ template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChan
 
 
 template<class DataTypes>
-void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId /*position*/)
+void FixedLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* /* cParams*/)
 {
-    Data<MatrixDeriv> *dC = this->constrainedObject1->write(core::MatrixDerivId::holonomicC());
-    MatrixDeriv &c = *dC->beginEdit();
-
+    using namespace core::objectmodel;
+    Data<MatrixDeriv>* dC = cId[this->constrainedObject1].write();
+    helper::WriteAccessor<Data<MatrixDeriv> > c = *dC;
     idxX.clear();
     idxY.clear();
     idxZ.clear();
@@ -155,23 +155,20 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constrain
         const unsigned int index=*it;
 
         //Constraint degree of freedom along X direction
-        c.writeLine(constraintId).addCol(index,X);
-        idxX.push_back(constraintId++);
+        c->writeLine(cIndex).addCol(index,X);
+        idxX.push_back(cIndex++);
 
         //Constraint degree of freedom along X direction
-        c.writeLine(constraintId).addCol(index,Y);
-        idxY.push_back(constraintId++);
+        c->writeLine(cIndex).addCol(index,Y);
+        idxY.push_back(cIndex++);
 
         //Constraint degree of freedom along Z direction
-        c.writeLine(constraintId).addCol(index,Z);
-        idxZ.push_back(constraintId++);
+        c->writeLine(cIndex).addCol(index,Z);
+        idxZ.push_back(cIndex++);
 
         this->constrainedObject1->forceMask.insertEntry(index);
     }
-
-    dC->endEdit();
 }
-
 
 template<class DataTypes>
 void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
