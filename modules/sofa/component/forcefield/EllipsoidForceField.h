@@ -141,7 +141,7 @@ using sofa::defaulttype::Vec2fTypes;
 using sofa::defaulttype::Vec1dTypes;
 using sofa::defaulttype::Vec1fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
@@ -155,7 +155,7 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec2fTyp
 extern template class SOFA_COMPONENT_FORCEFIELD_API EllipsoidForceField<Vec1fTypes>;
 #endif
 
-#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)
+#endif // defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
 
 } // namespace forcefield
 

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP
+#define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP
 
 #include <sofa/component/forcefield/EdgePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
