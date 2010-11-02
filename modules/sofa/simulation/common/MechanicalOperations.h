@@ -102,8 +102,8 @@ public:
     /// @{
 
     /// Dump the content of the given vector.
-    virtual void print( core::ConstMultiVecId v, std::ostream& out );
-    virtual void printWithElapsedTime( core::ConstMultiVecId v,  unsigned time, std::ostream& out=std::cerr );
+    void print( core::ConstMultiVecId v, std::ostream& out );
+    void printWithElapsedTime( core::ConstMultiVecId v,  unsigned time, std::ostream& out=std::cerr );
 
     /// @}
 
