@@ -118,6 +118,8 @@ private :
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 
+using namespace sofa::defaulttype;
+
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec3dTypes>;
 //extern template class SOFA_COMPONENT_FORCEFIELD_API RestShapeSpringsForceField<Vec2dTypes>;
