@@ -140,14 +140,11 @@ protected :
     }
 };
 
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
 
-} // namespace forcefield
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
 
-} // namespace component
-
-} // namespace sofa
-
-#if defined(WIN32) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_FORCEFIELD_API EdgePressureForceField<Vec3dTypes>;
@@ -155,6 +152,13 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API EdgePressureForceField<Vec3d
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_FORCEFIELD_API EdgePressureForceField<Vec3fTypes>;
 #endif
-#endif
+
+#endif //defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
+
+} // namespace forcefield
+
+} // namespace component
+
+} // namespace sofa
 
 #endif // SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_H
