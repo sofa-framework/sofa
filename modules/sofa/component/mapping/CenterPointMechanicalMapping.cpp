@@ -61,18 +61,18 @@ int CenterPointMechanicalMappingClass = core::RegisterObject("TODO-CenterPointMe
 
 
 #ifndef SOFA_FLOAT
-template class CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
-template class CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
-template class CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
-template class CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 

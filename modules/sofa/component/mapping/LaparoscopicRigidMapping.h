@@ -27,6 +27,8 @@
 
 #include <sofa/core/Mapping.h>
 
+#include <sofa/component/component.h>
+
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -93,7 +95,7 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)
 #pragma warning(disable : 4231)
-extern template class LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
 #endif
 
 } // namespace mapping

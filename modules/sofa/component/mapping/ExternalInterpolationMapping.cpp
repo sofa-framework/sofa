@@ -72,28 +72,28 @@ int ExternalInterpolationMappingClass = core::RegisterObject("TODO-ExternalInter
 
 
 #ifndef SOFA_FLOAT
-template class ExternalInterpolationMapping< Vec3dTypes, Vec3dTypes >;
-template class ExternalInterpolationMapping< Vec2dTypes, Vec2dTypes >;
-template class ExternalInterpolationMapping< Vec1dTypes, Vec1dTypes >;
-template class ExternalInterpolationMapping< Vec3dTypes, ExtVec3fTypes >;
-template class ExternalInterpolationMapping< Vec2dTypes, ExtVec2fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec2dTypes, Vec2dTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec3dTypes, ExtVec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec2dTypes, ExtVec2fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class ExternalInterpolationMapping< Vec3fTypes, Vec3fTypes >;
-template class ExternalInterpolationMapping< Vec2fTypes, Vec2fTypes >;
-template class ExternalInterpolationMapping< Vec1fTypes, Vec1fTypes >;
-template class ExternalInterpolationMapping< Vec3fTypes, ExtVec3fTypes >;
-template class ExternalInterpolationMapping< Vec2fTypes, ExtVec2fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec2fTypes, Vec2fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec1fTypes, Vec1fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec2fTypes, ExtVec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class ExternalInterpolationMapping< Vec3dTypes, Vec3fTypes >;
-template class ExternalInterpolationMapping< Vec3fTypes, Vec3dTypes >;
-template class ExternalInterpolationMapping< Vec2dTypes, Vec2fTypes >;
-template class ExternalInterpolationMapping< Vec2fTypes, Vec2dTypes >;
-template class ExternalInterpolationMapping< Vec1dTypes, Vec1fTypes >;
-template class ExternalInterpolationMapping< Vec1fTypes, Vec1dTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec2dTypes, Vec2fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec2fTypes, Vec2dTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec1dTypes, Vec1fTypes >;
+template class SOFA_COMPONENT_MAPPING_API ExternalInterpolationMapping< Vec1fTypes, Vec1dTypes >;
 #endif
 #endif
 

@@ -198,18 +198,18 @@ using sofa::defaulttype::ExtVec3fTypes;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
-extern template class ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
-extern template class ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
-extern template class ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 #endif

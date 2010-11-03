@@ -31,6 +31,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec3Types.h>
+
+#include <sofa/component/component.h>
+
 #include <vector>
 
 namespace sofa

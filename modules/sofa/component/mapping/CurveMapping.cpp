@@ -74,16 +74,16 @@ int CurveMappingClass = core::RegisterObject("Mapping allowing one or more rigid
         ;
 
 #ifndef SOFA_FLOAT
-template class CurveMapping< Vec3dTypes, Rigid3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class CurveMapping< Vec3fTypes, Rigid3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class CurveMapping< Vec3dTypes, Rigid3fTypes >;
-template class CurveMapping< Vec3fTypes, Rigid3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3dTypes, Rigid3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API CurveMapping< Vec3fTypes, Rigid3dTypes >;
 #endif
 #endif
 
