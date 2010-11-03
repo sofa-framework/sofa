@@ -834,7 +834,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addFromBaseVector(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -870,6 +870,46 @@ void MechanicalObject<DataTypes>::addFromBaseVector(VecId dest, const defaulttyp
 
         offset += vDest.size() * derivDim;
     }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+{
+    if (dest.type == sofa::core::V_COORD)
+    {
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int nbEntries = src->size()/coordDim;
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<coordDim; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
+            }
+        }
+        offset += nbEntries;
+    }
+    else
+    {
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int nbEntries = src->size()/derivDim;
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<derivDim; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
+            }
+        }
+        offset += nbEntries;
+    }
+
+
 }
 
 template <class DataTypes>

@@ -111,15 +111,15 @@ void CentralDifferenceSolver::solve(double dt, sofa::core::MultiVecCoordId xResu
     mop.accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
     mop.projectResponse(dx);                    // dx is projected to the constrained space
 
-    solveConstraint(dt,dx,core::ConstraintParams::ACC);
+    mop.solveConstraint(dt,dx,core::ConstraintParams::ACC);
     // apply the solution
     if (r==0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        solveConstraint(dt,vel2, core::ConstraintParams::VEL);
+        mop.solveConstraint(dt,vel2, core::ConstraintParams::VEL);
         pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
-        solveConstraint(dt,pos2, core::ConstraintParams::POS);
+        mop.solveConstraint(dt,pos2, core::ConstraintParams::POS);
 
 #else // single-operation optimization
 
@@ -159,8 +159,8 @@ void CentralDifferenceSolver::solve(double dt, sofa::core::MultiVecCoordId xResu
 
         vop.v_multiop(ops);
 
-        solveConstraint(dt,vel2, core::ConstraintParams::VEL);
-        solveConstraint(dt,pos2, core::ConstraintParams::POS);
+        mop.solveConstraint(dt,vel2, core::ConstraintParams::VEL);
+        mop.solveConstraint(dt,pos2, core::ConstraintParams::POS);
 
 #endif
     }

@@ -212,11 +212,11 @@ void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, 
         sofa::helper::AdvancedTimer::stepBegin("UpdateV");
         newVel.eq(x);                         // vel = x
         sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
-        solveConstraint(dt,newVel,core::ConstraintParams::VEL);
+        mop.solveConstraint(dt,newVel,core::ConstraintParams::VEL);
         sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
         newPos.eq(pos, newVel, h);            // pos = pos + h vel
         sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
-        solveConstraint(dt,newPos,core::ConstraintParams::POS);
+        mop.solveConstraint(dt,newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
     else
@@ -225,12 +225,12 @@ void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, 
         //vel.peq( x );                       // vel = vel + x
         newVel.eq(vel, x);
         sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
-        solveConstraint(dt,newVel,core::ConstraintParams::VEL);
+        mop.solveConstraint(dt,newVel,core::ConstraintParams::VEL);
         sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
         //pos.peq( vel, h );                  // pos = pos + h vel
         newPos.eq(pos, newVel, h);
         sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
-        solveConstraint(dt,newPos,core::ConstraintParams::POS);
+        mop.solveConstraint(dt,newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
 
@@ -263,9 +263,9 @@ void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, 
 
         vop.v_multiop(ops);
         sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
-        solveConstraint(dt,newVel,core::ConstraintParams::VEL);
+        mop.solveConstraint(dt,newVel,core::ConstraintParams::VEL);
         sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
-        solveConstraint(dt,newPos,core::ConstraintParams::POS);
+        mop.solveConstraint(dt,newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
 #endif

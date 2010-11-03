@@ -121,8 +121,8 @@ void RungeKutta2Solver::solve(double dt, sofa::core::MultiVecCoordId xResult, so
         ops[1].second.push_back(std::make_pair(acc.id(),dt));
         vop.v_multiop(ops);
 
-        solveConstraint(dt,vel2,core::ConstraintParams::VEL);
-        solveConstraint(dt,pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(dt,vel2,core::ConstraintParams::VEL);
+        mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
     }
 #endif
 

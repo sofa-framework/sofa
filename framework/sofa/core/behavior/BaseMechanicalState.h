@@ -307,10 +307,14 @@ public:
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
 
-    /// Add data to a local vector from the state stored in a global BaseVector
+    /// Performs dest[i][j] += src[offset + i][j] 0<= i < src_entries 0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addFromBaseVector(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
+    virtual void addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
 
+
+    /// Performs dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
+    /// @param offset the offset in the MechanicalObject local vector specified by VecId dest. It will be updated to the first scalar value after the ones used by this operation when this method returns.
+    virtual void addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset ) = 0;
     /// @}
 
     /// @name Data output

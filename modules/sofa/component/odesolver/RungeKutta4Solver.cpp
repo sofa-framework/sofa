@@ -200,8 +200,8 @@ void RungeKutta4Solver::solve(double dt, sofa::core::MultiVecCoordId xResult, so
         ops[1].second.push_back(std::make_pair(k4a.id(),stepBy6));
         vop.v_multiop(ops);
 
-        solveConstraint(dt, pos, core::ConstraintParams::POS);
-        solveConstraint(dt, vel, core::ConstraintParams::VEL);
+        mop.solveConstraint(dt, pos, core::ConstraintParams::POS);
+        mop.solveConstraint(dt, vel, core::ConstraintParams::VEL);
     }
 #endif
 

@@ -84,9 +84,7 @@ public:
     virtual void solve (double dt, const core::ExecParams* params) { solve(dt, VecCoordId::position(), VecDerivId::velocity(), params); }
 
 
-    /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
-     **/
-    virtual void solveConstraint(double /*dt*/, MultiVecId, ConstraintParams::ConstOrder) {};
+
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
