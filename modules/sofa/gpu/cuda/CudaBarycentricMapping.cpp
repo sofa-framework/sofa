@@ -24,8 +24,6 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaBarycentricMapping.inl"
-//#include <sofa/component/mapping/BarycentricMapping.inl>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -45,33 +43,27 @@ using namespace sofa::gpu::cuda;
 #ifndef SOFA_FLOAT
 #endif
 #ifndef SOFA_DOUBLE
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-// template class BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > >;
+template class BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes>;
+template class BarycentricMapping< Vec3fTypes, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, Vec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes>;
+// template class BarycentricMapping< CudaVec3fTypes, ExtVec3dTypes>;
+template class BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types>;
+template class BarycentricMapping< Vec3fTypes, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3fTypes>;
+template class BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes>;
+
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3fTypes> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > >;
-// template class BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
-template class BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > >;
+template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
+template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
+template class BarycentricMapping< Vec3dTypes, CudaVec3f1Types>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3dTypes>;
+// template class BarycentricMapping< CudaVec3f1Types, ExtVec3dTypes>;
+template class BarycentricMapping< CudaVec3f1Types, Vec3dTypes>;
 #endif
 #endif
 }
@@ -93,47 +85,39 @@ int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side comput
 #ifndef SOFA_FLOAT
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-// .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > > >()
+        .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, Vec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, ExtVec3fTypes> >()
+// .add< BarycentricMapping< CudaVec3fTypes, ExtVec3dTypes> >()
+        .add< BarycentricMapping< CudaVec3f1Types, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3f1Types, ExtVec3fTypes> >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > > >()
-// .add< BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > > >()
+        .add< BarycentricMapping< Vec3dTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, Vec3dTypes> >()
+        .add< BarycentricMapping< Vec3dTypes, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3dTypes> >()
+// .add< BarycentricMapping< CudaVec3f1Types, ExtVec3dTypes> >()
 #endif
 #endif
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
-//.add< BarycentricMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3fTypes> > > >()
-//.add< BarycentricMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BarycentricMapping< CudaVec3fTypes, CudaVec3dTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, CudaVec3dTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, Vec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3dTypes, Vec3dTypes> >()
+        .add< BarycentricMapping< Vec3fTypes, CudaVec3dTypes> >()
+        .add< BarycentricMapping< Vec3dTypes, CudaVec3dTypes> >()
+//.add< BarycentricMapping< CudaVec3d1Types, ExtVec3fTypes> >()
+//.add< BarycentricMapping< CudaVec3dTypes, ExtVec3fTypes> >()
 #endif
         ;
 
