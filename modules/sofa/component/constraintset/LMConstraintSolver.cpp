@@ -603,7 +603,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
 }
 
 void LMConstraintSolver::buildRightHandTerm( const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints, VectorEigen &c,
-        VecId id, ConstOrder Order) const
+        VecId /*id*/, ConstOrder Order) const
 {
 
     FullVector<SReal> c_fullvector(c.data(), c.rows());
@@ -828,7 +828,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
             FullVector<SReal> v(Acorrection.data(),Acorrection.rows());
 
             if (f_printLog.getValue())  sout << "Lambda Corrected for Rigid " << "\n" << Acorrection << sendl;
-            dofs->addFromBaseVector(id,&v,offset );
+            dofs->addFromBaseVectorSameSize(id,&v,offset );
 
         }
         else
@@ -838,7 +838,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
             {
                 unsigned int offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
-                dofs->addFromBaseVector(id,&v,offset );
+                dofs->addFromBaseVectorDifferentSize(id,&v,offset );
             }
         }
 
@@ -852,7 +852,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
                 unsigned int offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
                 for (unsigned int i=0; i<dimensionDofs; ++i) v[i]*=h;
-                dofs->addFromBaseVector(id,&v,offset );
+                dofs->addFromBaseVectorDifferentSize(id,&v,offset );
             }
         }
 
@@ -864,7 +864,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         {
             unsigned int offset=(*it);
             FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
-            dofs->addFromBaseVector(id,&v,offset );
+            dofs->addFromBaseVectorDifferentSize(id,&v,offset );
         }
 
     }

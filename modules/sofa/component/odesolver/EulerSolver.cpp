@@ -84,7 +84,7 @@ void EulerSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::co
     mop.accFromF(acc, f);
     mop.projectResponse(acc);
 
-    solveConstraint(dt, acc.id(), core::ConstraintParams::ACC);
+    mop.solveConstraint(dt, acc.id(), core::ConstraintParams::ACC);
 #ifdef SOFA_SMP
     // For SofaSMP we would need VMultiOp to be implemented in a SofaSMP compatible way
 #define SOFA_NO_VMULTIOP
@@ -95,16 +95,16 @@ void EulerSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::co
     if (symplectic.getValue())
     {
         vel2.eq(vel, acc, dt);
-        solveConstraint(dt, vel2.id(), core::ConstraintParams::VEL);
+        mop.solveConstraint(dt, vel2.id(), core::ConstraintParams::VEL);
         pos2.eq(pos, vel2, dt);
-        solveConstraint(dt, pos2.id(), core::ConstraintParams::POS);
+        mop.solveConstraint(dt, pos2.id(), core::ConstraintParams::POS);
     }
     else
     {
         pos2.eq(pos, vel, dt);
-        solveConstraint(dt, pos2.id(), core::ConstraintParams::POS);
+        mop.solveConstraint(dt, pos2.id(), core::ConstraintParams::POS);
         vel2.eq(vel, acc, dt);
-        solveConstraint(dt, vel2.id(), core::ConstraintParams::VEL);
+        mop.solveConstraint(dt, vel2.id(), core::ConstraintParams::VEL);
     }
 #else // single-operation optimization
     {
@@ -123,8 +123,8 @@ void EulerSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::co
 
         vop.v_multiop(ops);
 
-        solveConstraint(dt,vel2,core::ConstraintParams::VEL);
-        solveConstraint(dt,pos2,core::ConstraintParams::POS);
+        mop.solveConstraint(dt,vel2,core::ConstraintParams::VEL);
+        mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
     }
 #endif
 }

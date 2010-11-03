@@ -206,7 +206,7 @@ public:
         if (src!= NULL && offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
-            mm->addFromBaseVector(dest.getId(mm), src, o);
+            mm->addFromBaseVectorSameSize(dest.getId(mm), src, o);
             offset = (int)o;
         }
         //if (!matrix) offset += mm->getMatrixSize();

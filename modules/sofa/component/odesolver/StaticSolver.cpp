@@ -95,7 +95,7 @@ void StaticSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::c
         serr<<"StaticSolver, solution = "<< x <<sendl;
     pos2.eq( pos, x );
 
-    solveConstraint(dt,pos2,core::ConstraintParams::POS);
+    mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
 
     /*    serr<<"StaticSolver::solve, new pos = "<<pos2<<sendl;*/
 }

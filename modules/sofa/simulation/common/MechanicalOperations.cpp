@@ -276,6 +276,9 @@ void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, 
     projectResponse(a);
 }
 
+
+
+
 /// @}
 
 /// @name Matrix operations using LinearSolver components
@@ -283,6 +286,23 @@ void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, 
 
 using sofa::core::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
+
+
+void MechanicalOperations::solveConstraint(double dt, MultiVecId id, ConstraintParams::ConstOrder order)
+{
+    helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
+
+    ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
+    if (constraintSolverList.empty())
+    {
+        ctx->sout << "No ConstraintSolver found."<<ctx->sendl;
+        return;
+    }
+    for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
+    {
+        (*it)->solveConstraint(dt, id.getDefaultId(), order);
+    }
+}
 
 void MechanicalOperations::m_resetSystem()
 {

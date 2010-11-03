@@ -81,6 +81,10 @@ public:
 
     /// @}
 
+    /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
+    **/
+    void solveConstraint(double dt, MultiVecId id, ConstraintParams::ConstOrder);
+
     /// @name Matrix operations
     /// @{
 
