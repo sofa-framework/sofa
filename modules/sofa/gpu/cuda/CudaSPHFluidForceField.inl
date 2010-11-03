@@ -85,9 +85,14 @@ void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::Kernels_addDForc
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
     if (grid == NULL) return;
+
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     grid->updateGrid(x);
     data.fillParams(this);
     f.resize(x.size());
@@ -99,22 +104,31 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const 
     data.Kernels_addForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double bFactor)
+void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    //?
     return;
     if (grid == NULL) return;
-    sout << "addDForce(" << kFactor << "," << bFactor << ")" << sendl;
+
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+
+    sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
     //const VecCoord& x = *this->mstate->getX();
     const VecDeriv& v = *this->mstate->getV();
-    data.fillParams(this, kFactor, bFactor);
+    data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     data.Kernels_addDForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
+
+    d_df.endEdit();
 }
 
 
@@ -140,9 +154,14 @@ void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3dTypes>::Kernels_addDForc
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
     if (grid == NULL) return;
+
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     grid->updateGrid(x);
     data.fillParams(this);
     f.resize(x.size());
@@ -154,20 +173,25 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(VecDeriv& f, const 
     data.Kernels_addForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double bFactor)
+void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
     if (grid == NULL) return;
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
     //const VecCoord& x = *this->mstate->getX();
     const VecDeriv& v = *this->mstate->getV();
-    data.fillParams(this, kFactor, bFactor);
+    data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     data.Kernels_addDForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
+    d_df.endEdit();
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

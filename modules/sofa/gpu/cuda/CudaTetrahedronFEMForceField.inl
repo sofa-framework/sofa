@@ -212,7 +212,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
     const VecElement& elems = *m->_indexedElements;
 
-    VecCoord& p = *m->mstate->getX0();
+    const VecCoord& p = *m->mstate->getX0();
     m->_initialPoints.setValue(p);
 
     m->parallelDataSimu->rotations.resize( m->_indexedElements->size() );
@@ -783,14 +783,25 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     { return true; }						       \
     template<> void TetrahedronFEMForceField< T >::reinit() \
     { data.reinit(this); } \
-    template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) \
-    { data.addForce(this, f, x, v, this->isPrefetching()); }		\
+    template<> void TetrahedronFEMForceField< T >::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams) \
+    { \
+		VecDeriv& f = *d_f.beginEdit(); \
+		const VecCoord& x = d_x.getValue(); \
+		const VecDeriv& v = d_v.getValue(); \
+		data.addForce(this, f, x, v, this->isPrefetching()); \
+		d_f.endEdit(); \
+	} \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal & rotations) \
     { data.getRotations(this, rotations, this->isPrefetching()); } \
     template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * rotations,int offset) \
     { data.getRotations(this, rotations,offset, this->isPrefetching()); } \
-    template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor) \
-    { data.addDForce(this, df, dx, kFactor, bFactor, this->isPrefetching()); } \
+    template<> void TetrahedronFEMForceField< T >::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams) \
+    { \
+		VecDeriv& df = *d_df.beginEdit(); \
+		const VecDeriv& dx = d_dx.getValue(); \
+		data.addDForce(this, df, dx, mparams->kFactor(), mparams->bFactor(), this->isPrefetching()); \
+		d_df.endEdit(); \
+	} \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
     { data.addKToMatrix(this, mat, kFactor, offset); } \
     template<> void TetrahedronFEMForceField< T >::handleEvent(sofa::core::objectmodel::Event* event) \

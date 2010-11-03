@@ -73,7 +73,7 @@ namespace mapping
 using namespace gpu::cuda;
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::postInit()
 {
     const IndexArray& indices = this->f_indices.getValue();
     if (!indices.empty())
@@ -86,62 +86,44 @@ void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior
 }
 
 template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams )
 {
-    const IndexArray& indices = this->f_indices.getValue();
-    if (!indices.empty())
-    {
-        this->data.clear(indices.size());
-        for (unsigned int i=0; i<indices.size(); i++)
-            this->data.addPoint(indices[i]);
-        this->data.init(this->fromModel->getX()->size());
-    }
-}
-
-template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
+    OutVecCoord& out = *dOut.beginEdit();
+    const InVecCoord& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
+    OutVecDeriv& out = *dOut.beginEdit();
+    const InVecDeriv& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f_applyJ(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
     if (data.map.size() == 0) return;
+
+    InVecDeriv& out = *dOut.beginEdit();
+    const OutVecDeriv& in = dIn.getValue();
     unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f_applyJT1(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else
         SubsetMappingCuda3f_applyJT(insize, data.maxNOut, data.mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
-
-template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
 
 //////// CudaVec3f1
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::postInit()
 {
     const IndexArray& indices = this->f_indices.getValue();
     if (!indices.empty())
@@ -154,61 +136,42 @@ void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior
 }
 
 template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3f1Types> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams )
 {
-    const IndexArray& indices = this->f_indices.getValue();
-    if (!indices.empty())
-    {
-        this->data.clear(indices.size());
-        for (unsigned int i=0; i<indices.size(); i++)
-            this->data.addPoint(indices[i]);
-        this->data.init(this->fromModel->getX()->size());
-    }
-}
-
-template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
+    OutVecCoord& out = *dOut.beginEdit();
+    const InVecCoord& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f1_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
+    OutVecDeriv& out = *dOut.beginEdit();
+    const InVecDeriv& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f1_applyJ(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
     if (data.map.size() == 0) return;
+
+    InVecDeriv& out = *dOut.beginEdit();
+    const OutVecDeriv& in = dIn.getValue();
     unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f1_applyJT1(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else
         SubsetMappingCuda3f1_applyJT(insize, data.maxNOut, data.mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f1_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f1_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-
-
-template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::postInit()
 {
     const IndexArray& indices = this->f_indices.getValue();
     if (!indices.empty())
@@ -221,61 +184,42 @@ void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior
 }
 
 template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams )
 {
-    const IndexArray& indices = this->f_indices.getValue();
-    if (!indices.empty())
-    {
-        this->data.clear(indices.size());
-        for (unsigned int i=0; i<indices.size(); i++)
-            this->data.addPoint(indices[i]);
-        this->data.init(this->fromModel->getX()->size());
-    }
-}
-
-template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
+    OutVecCoord& out = *dOut.beginEdit();
+    const InVecCoord& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f1_3f_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
+    OutVecDeriv& out = *dOut.beginEdit();
+    const InVecDeriv& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f1_3f_applyJ(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
     if (data.map.size() == 0) return;
+
+    InVecDeriv& out = *dOut.beginEdit();
+    const OutVecDeriv& in = dIn.getValue();
     unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f1_3f_applyJT1(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else
         SubsetMappingCuda3f1_3f_applyJT(insize, data.maxNOut, data.mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f1_3f_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3f1Types>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f1_3f_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-
-
-template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::postInit()
 {
     const IndexArray& indices = this->f_indices.getValue();
     if (!indices.empty())
@@ -288,55 +232,38 @@ void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior
 }
 
 template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3f1Types> > >::postInit()
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams )
 {
-    const IndexArray& indices = this->f_indices.getValue();
-    if (!indices.empty())
-    {
-        this->data.clear(indices.size());
-        for (unsigned int i=0; i<indices.size(); i++)
-            this->data.addPoint(indices[i]);
-        this->data.init(this->fromModel->getX()->size());
-    }
-}
-
-template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
+    OutVecCoord& out = *dOut.beginEdit();
+    const InVecCoord& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f_3f1_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
+    OutVecDeriv& out = *dOut.beginEdit();
+    const InVecDeriv& in = dIn.getValue();
     out.fastResize(data.map.size());
     SubsetMappingCuda3f_3f1_applyJ(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 template <>
-void SubsetMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MechanicalState<gpu::cuda::CudaVec3f1Types> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams )
 {
     if (data.map.size() == 0) return;
+
+    InVecDeriv& out = *dOut.beginEdit();
+    const OutVecDeriv& in = dIn.getValue();
     unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f_3f1_applyJT1(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else
         SubsetMappingCuda3f_3f1_applyJT(insize, data.maxNOut, data.mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3f1Types> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f_3f1_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-template <>
-void SubsetMapping<sofa::core::Mapping< sofa::core::behavior::State<gpu::cuda::CudaVec3fTypes>, sofa::core::behavior::MappedModel<gpu::cuda::CudaVec3f1Types> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    out.fastResize(data.map.size());
-    SubsetMappingCuda3f_3f1_apply(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    dOut.endEdit();
 }
 
 } // namespace mapping

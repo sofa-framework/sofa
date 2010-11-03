@@ -353,10 +353,10 @@ public:
 #define CudaTetrahedronFEMForceField_DeclMethods(T) \
     template<> bool TetrahedronFEMForceField< T >::canPrefetch() const; \
     template<> void TetrahedronFEMForceField< T >::reinit(); \
-    template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v); \
+    template<> void TetrahedronFEMForceField< T >::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams); \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
     template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * vecR,int offset); \
-    template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor); \
+    template<> void TetrahedronFEMForceField< T >::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams); \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset); \
     template<> void TetrahedronFEMForceField< T >::handleEvent(sofa::core::objectmodel::Event* event);
 

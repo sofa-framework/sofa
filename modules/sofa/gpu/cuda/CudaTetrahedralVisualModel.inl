@@ -96,7 +96,10 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::dra
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 #ifdef GL_LINES_ADJACENCY_EXT
-    VecCoord& x = *nodes->getX();
+    //TODO: Const ? Read-Only ?
+    //VecCoord& x = *nodes->getX();
+    Data<VecCoord>* d_x = nodes->write(core::VecCoordId::position());
+    VecCoord& x = *d_x->beginEdit();
 
     bool vbo = useVBO.getValue();
 
@@ -131,6 +134,7 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::dra
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
+    d_x->endEdit();
 #endif
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
@@ -141,7 +145,7 @@ bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::add
 {
     const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
     core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-    VecCoord& x = *nodes->getX();
+    const VecCoord& x = *nodes->getX();
     Coord v;
 
     for(it = vec.begin() ; it != vec.end() ; it++)
