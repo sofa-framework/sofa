@@ -68,7 +68,6 @@ HEADERS += \
           behavior/PairInteractionProjectiveConstraintSet.inl \
           behavior/MixedInteractionConstraint.h \
           behavior/MixedInteractionConstraint.inl \
-          behavior/MappedModel.h \
           behavior/Mass.h \
           behavior/Mass.inl \
           behavior/MasterSolver.h \

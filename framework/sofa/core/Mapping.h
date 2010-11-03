@@ -465,18 +465,17 @@ protected:
 using namespace sofa::defaulttype;
 
 extern template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_CORE_API Mapping< StdRigidTypes<3, double>, Vec3dTypes >;
+extern template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3dTypes >;
 extern template class SOFA_CORE_API Mapping< Vec3dTypes, ExtVec3fTypes >;
 
 extern template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_CORE_API Mapping< StdRigidTypes<3, float>, Vec3fTypes >;
+extern template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3fTypes >;
 extern template class SOFA_CORE_API Mapping< Vec3fTypes, ExtVec3fTypes >;
 
 extern template class SOFA_CORE_API Mapping< Vec3dTypes, Vec3fTypes >;
 extern template class SOFA_CORE_API Mapping< Vec3fTypes, Vec3dTypes > ;
-extern template class SOFA_CORE_API Mapping< StdRigidTypes<3, double>, Vec3fTypes >;
-extern template class SOFA_CORE_API Mapping< StdRigidTypes<3, float>, Vec3dTypes >;
-
+extern template class SOFA_CORE_API Mapping< Rigid3dTypes, Vec3fTypes >;
+extern template class SOFA_CORE_API Mapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 
 } // namespace core
