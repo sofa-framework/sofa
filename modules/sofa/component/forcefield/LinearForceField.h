@@ -113,7 +113,8 @@ private :
 
 }; // definition of the LinearForceField class
 
-
+using sofa::defaulttype::Vec6dTypes;
+using sofa::defaulttype::Vec6fTypes;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::Vec2dTypes;

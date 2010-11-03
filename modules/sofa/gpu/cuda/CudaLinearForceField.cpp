@@ -40,7 +40,7 @@ namespace forcefield
 {
 
 template<>
-double LinearForceField<gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const VecCoord& ) const
+double LinearForceField<gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const DataVecCoord& /* x */, const core::MechanicalParams* /*mparams*/) const
 {
     serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
