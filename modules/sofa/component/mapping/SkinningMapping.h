@@ -409,7 +409,7 @@ extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, 
 
 #ifdef SOFA_DEV
 ///////////////////////////////////////////////////////////////////////////////
-//                           Affine Specialization                         //
+//                           Affine Specialization                           //
 ///////////////////////////////////////////////////////////////////////////////
 
 using sofa::defaulttype::Affine3dTypes;
