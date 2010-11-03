@@ -1571,7 +1571,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
         }
 
 #ifdef SOFA_DEV
-        if ( !(this->computeJ.getValue() || this->computeAllMatrices.getValue())) continue;
+        if ( !(this->isMechanical() || this->computeAllMatrices.getValue())) continue;
 
         // update J
         Mat37 Q;
