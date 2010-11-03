@@ -1091,11 +1091,11 @@ public:
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 #else
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/);
 #endif
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1326,7 +1326,7 @@ public:
             MultiVecDerivId a = VecDerivId::dx() , bool m=true,
             const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance()); //
 #else
-    MechanicalPropagatePositionAndVelocityVisitor(double time=0, VecCoordId x = VecId::position(), VecDerivId v = VecId::velocity(),
+    MechanicalPropagatePositionAndVelocityVisitor(double time=0, MultiVecCoordId x = VecId::position(), MultiVecDerivId v = VecId::velocity(),
             bool m=true, const sofa::core::MechanicalParams* mparams = sofa::core::MechanicalParams::defaultInstance() );
 #endif
     bool ignoreMask;
