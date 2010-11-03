@@ -110,7 +110,7 @@ SkinningMapping<TIn, TOut>::SkinningMapping (core::State<In>* from, core::State<
     wheightingTypeOptions.setSelectedItem(WEIGHT_INVDIST_SQUARE);
     wheightingType.setValue(wheightingTypeOptions);
 
-    sofa::helper::OptionsGroup distanceTypeOptions(4,"Euclidian","Geodesic", "Harmonic", "StiffnessDiffusion");
+    sofa::helper::OptionsGroup distanceTypeOptions(5,"Euclidian","Geodesic", "Harmonic", "StiffnessDiffusion", "HarmonicWithStiffness");
     distanceTypeOptions.setSelectedItem(DISTANCE_EUCLIDIAN);
     distanceType.setValue(distanceTypeOptions);
 }
@@ -152,9 +152,13 @@ void SkinningMapping<TIn, TOut>::computeDistances ()
         for ( unsigned int i = 0; i < xfrom0.size(); i++ )
             tmpFrom[i] = xfrom0[i].getCenter();
 
-        if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC && this->computeAllMatrices.getValue()) geoDist->distanceType.setValue( TYPE_GEODESIC );
-        if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC && this->computeAllMatrices.getValue()) geoDist->distanceType.setValue( TYPE_HARMONIC );
-        if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION && this->computeAllMatrices.getValue()) geoDist->distanceType.setValue( TYPE_STIFFNESS_DIFFUSION );
+        if (this->computeAllMatrices.getValue())
+        {
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC) geoDist->distanceType.setValue( TYPE_GEODESIC );
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC) geoDist->distanceType.setValue( TYPE_HARMONIC );
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION) geoDist->distanceType.setValue( TYPE_STIFFNESS_DIFFUSION );
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC_STIFFNESS) geoDist->distanceType.setValue( TYPE_HARMONIC_STIFFNESS );
+        }
         geoDist->computeDistanceMap ( tmpFrom );
     }
 #endif
@@ -191,6 +195,7 @@ void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
     case DISTANCE_GEODESIC:
     case DISTANCE_HARMONIC:
     case DISTANCE_STIFFNESS_DIFFUSION:
+    case DISTANCE_HARMONIC_STIFFNESS:
     {
         GeoVecCoord goals;
         goals.resize ( xto0.size() );
@@ -834,7 +839,7 @@ void SkinningMapping<TIn, TOut>::insertFrame( const Coord& pos, const Quat& rot,
         distMax = this->newFrameDefaultCutOffDistance.getValue();
 
     // Compute geodesical/euclidian distance for this frame.
-    if ( this->distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC || this->distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC || this->distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION)
+    if ( this->distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC || this->distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC || this->distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION || this->distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS)
         this->geoDist->addElt( newX0.getCenter(), beginPointSet, distMax);
     vector<double>& vRadius = (*this->newFrameWeightingRadius.beginEdit());
     vRadius.resize( indexFrom + 1);
@@ -985,6 +990,7 @@ void SkinningMapping<TIn, TOut>::computeWeight( VVD& w, VecVecCoord& dw, const C
     case DISTANCE_GEODESIC:
     case DISTANCE_HARMONIC:
     case DISTANCE_STIFFNESS_DIFFUSION:
+    case DISTANCE_HARMONIC_STIFFNESS:
     {
         GeoVecCoord goals;
         goals.push_back( x0);

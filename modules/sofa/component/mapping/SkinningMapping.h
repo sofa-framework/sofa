@@ -64,6 +64,7 @@ using sofa::component::topology::HexahedronGeodesicalDistance;
 #define DISTANCE_GEODESIC 1
 #define DISTANCE_HARMONIC 2
 #define DISTANCE_STIFFNESS_DIFFUSION 3
+#define DISTANCE_HARMONIC_STIFFNESS 4
 
 #define WEIGHT_NONE 0
 #define WEIGHT_INVDIST_SQUARE 1
@@ -110,9 +111,9 @@ class SkinningMapping : public core::Mapping<TIn, TOut>
 {
 public:
 #ifdef SOFA_DEV
-    SOFA_CLASS(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS2(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut), SOFA_TEMPLATE2(FrameStorage,TIn, typename TIn::Real));
 #else
-    SOFA_CLASS2(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut), SOFA_TEMPLATE2(FrameStorage,TIn,TIn::Real));
+    SOFA_CLASS(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 #endif
 
     typedef core::Mapping<TIn, TOut> Inherit;
