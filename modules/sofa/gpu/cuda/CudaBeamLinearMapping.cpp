@@ -24,10 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/mapping/BeamLinearMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.inl>
-#include <sofa/core/behavior/MechanicalMapping.inl>
 #include "CudaTypes.h"
 
 namespace sofa
@@ -50,15 +48,11 @@ using namespace core::behavior;
 // Register in the Factory
 int BeamLinearMappingCudaClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3fTypes> > > >()
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3fTypes> > > >()
+        .add< BeamLinearMapping<Rigid3fTypes, CudaVec3fTypes> >()
+        .add< BeamLinearMapping<Rigid3dTypes, CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3dTypes> > > >()
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3dTypes> > > >()
+        .add< BeamLinearMapping<Rigid3fTypes, CudaVec3dTypes> >()
+        .add< BeamLinearMapping<Rigid3dTypes, CudaVec3dTypes> >()
 #endif
         ;
 
@@ -76,16 +70,12 @@ using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;
 
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<sofa::gpu::cuda::CudaVec3fTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<sofa::gpu::cuda::CudaVec3fTypes> > >;
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<sofa::gpu::cuda::CudaVec3fTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<sofa::gpu::cuda::CudaVec3fTypes> > >;
+template class BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3fTypes>;
+template class BeamLinearMapping< Rigid3dTypes, sofa::gpu::cuda::CudaVec3fTypes>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<sofa::gpu::cuda::CudaVec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<sofa::gpu::cuda::CudaVec3dTypes> > >;
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<sofa::gpu::cuda::CudaVec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<sofa::gpu::cuda::CudaVec3dTypes> > >;
+template class BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3dTypes>;
+template class BeamLinearMapping< Rigid3dTypes, sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
 

@@ -27,9 +27,7 @@
 
 #include "CudaTypes.h"
 #include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.h>
 
 namespace sofa
 {

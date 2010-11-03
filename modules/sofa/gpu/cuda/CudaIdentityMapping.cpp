@@ -26,9 +26,7 @@
 #include "CudaIdentityMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MappedModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/Mapping.inl>
 
 namespace sofa
@@ -45,53 +43,45 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class  IdentityMapping< CudaVec3fTypes, CudaVec3fTypes>;
 #ifndef SOFA_DOUBLE
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class  IdentityMapping< CudaVec3fTypes, Vec3fTypes>;
+template class  IdentityMapping< Vec3fTypes, CudaVec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class  IdentityMapping< CudaVec3fTypes, Vec3dTypes>;
+template class  IdentityMapping< Vec3dTypes, CudaVec3fTypes>;
 #endif
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class  IdentityMapping< CudaVec3fTypes, CudaVec3dTypes>;
+template class  IdentityMapping< CudaVec3dTypes, CudaVec3fTypes>;
+template class  IdentityMapping< CudaVec3dTypes, CudaVec3dTypes>;
+template class  IdentityMapping< CudaVec3dTypes, Vec3fTypes>;
+template class  IdentityMapping< CudaVec3dTypes, Vec3dTypes>;
 #ifndef SOFA_DOUBLE
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > >;
+template class  IdentityMapping< Vec3dTypes, CudaVec3dTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > >;
+template class  IdentityMapping< Vec3fTypes, CudaVec3dTypes>;
 #endif
 
-template class  IdentityMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3dTypes> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class  IdentityMapping< CudaVec3d1Types, ExtVec3dTypes >;
+template class  IdentityMapping< CudaVec3dTypes, ExtVec3dTypes >;
 #endif
-
-// template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > >;
+template class  IdentityMapping< CudaVec3f1Types, ExtVec3fTypes >;
+template class  IdentityMapping< CudaVec3f1Types, CudaVec3f1Types>;
+template class  IdentityMapping< CudaVec3f1Types, Vec3dTypes>;
+template class  IdentityMapping< CudaVec3f1Types, Vec3fTypes>;
 #ifndef SOFA_FLOAT
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > >;
+template class  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
 #endif
 #ifndef SOFA_DOUBLE
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > >;
+template class  IdentityMapping< Vec3fTypes, ExtVec3fTypes>;
 #endif
-template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > >;
-// template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > >;
+template class  IdentityMapping< CudaVec3f1Types, ExtVec3dTypes >;
+template class  IdentityMapping< CudaVec3f1Types, CudaVec3fTypes>;
+template class  IdentityMapping< CudaVec3fTypes, CudaVec3f1Types>;
 
 } // namespace mapping
 
@@ -110,41 +100,33 @@ using namespace sofa::component::mapping;
 SOFA_DECL_CLASS(CudaIdentityMapping)
 
 int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
+        .add< IdentityMapping< CudaVec3fTypes, CudaVec3fTypes> >()
+        .add< IdentityMapping< CudaVec3fTypes, Vec3fTypes> >()
+        .add< IdentityMapping< CudaVec3fTypes, Vec3dTypes> >()
+        .add< IdentityMapping< Vec3fTypes, CudaVec3fTypes> >()
+        .add< IdentityMapping< Vec3dTypes, CudaVec3fTypes> >()
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
-
-        .add< IdentityMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< IdentityMapping< CudaVec3fTypes, CudaVec3dTypes> >()
+        .add< IdentityMapping< CudaVec3dTypes, CudaVec3fTypes> >()
+        .add< IdentityMapping< CudaVec3dTypes, CudaVec3dTypes> >()
+        .add< IdentityMapping< CudaVec3dTypes, Vec3fTypes> >()
+        .add< IdentityMapping< CudaVec3dTypes, Vec3dTypes> >()
+        .add< IdentityMapping< Vec3fTypes, CudaVec3dTypes> >()
+        .add< IdentityMapping< Vec3dTypes, CudaVec3dTypes> >()
+        .add< IdentityMapping< CudaVec3d1Types, ExtVec3fTypes> >()
+        .add< IdentityMapping< CudaVec3dTypes, ExtVec3fTypes> >()
 #endif
 
-// .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > > >()
+        .add< IdentityMapping< CudaVec3fTypes, ExtVec3fTypes> >()
+        .add< IdentityMapping< CudaVec3f1Types, CudaVec3f1Types> >()
+        .add< IdentityMapping< CudaVec3f1Types, Vec3dTypes> >()
+        .add< IdentityMapping< CudaVec3f1Types, Vec3fTypes> >()
+        .add< IdentityMapping< Vec3dTypes, CudaVec3f1Types> >()
+        .add< IdentityMapping< Vec3fTypes, CudaVec3f1Types> >()
+        .add< IdentityMapping< CudaVec3f1Types, ExtVec3fTypes> >()
+        .add< IdentityMapping< CudaVec3f1Types, CudaVec3fTypes> >()
+        .add< IdentityMapping< CudaVec3fTypes, CudaVec3f1Types> >()
         ;
 
 } // namespace cuda
