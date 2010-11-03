@@ -27,6 +27,8 @@
 
 #include <sofa/core/Mapping.h>
 
+#include <sofa/component/component.h>
+
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -108,20 +110,20 @@ using sofa::defaulttype::Rigid3fTypes;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class BeamLinearMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class BeamLinearMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
-extern template class BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
 #endif

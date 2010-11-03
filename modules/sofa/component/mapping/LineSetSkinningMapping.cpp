@@ -57,16 +57,16 @@ int HandMappingClass = core::RegisterObject("skin a model from a set of rigid li
 
 
 #ifndef SOFA_FLOAT
-template class LineSetSkinningMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API LineSetSkinningMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class LineSetSkinningMapping< Rigid3fTypes, Vec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API LineSetSkinningMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class LineSetSkinningMapping< Rigid3dTypes, Vec3fTypes >;
-template class LineSetSkinningMapping< Rigid3fTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API LineSetSkinningMapping< Rigid3dTypes, Vec3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API LineSetSkinningMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
 
