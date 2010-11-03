@@ -134,8 +134,15 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+void PenalityContactForceField<CudaVec3fTypes>::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams)
 {
+    VecDeriv& f1 = *d_f1.beginEdit();
+    const VecCoord& x1 = d_x1.getValue();
+    const VecDeriv& v1 = d_v1.getValue();
+    VecDeriv& f2 = *d_f2.beginEdit();
+    const VecCoord& x2 = d_x2.getValue();
+    const VecDeriv& v2 = d_v2.getValue();
+
     pen.resize(contacts.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -162,11 +169,19 @@ void PenalityContactForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv&
             f1.deviceWrite(), x1.deviceRead(), v1.deviceRead(),
             f2.deviceWrite(), x2.deviceRead(), v2.deviceRead());
 #endif
+    d_f1.endEdit();
+    d_f2.endEdit();
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
+void PenalityContactForceField<CudaVec3fTypes>::addDForce(DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df1 = *d_df1.beginEdit();
+    const VecDeriv& dx1 = d_dx1.getValue();
+    VecDeriv& df2 = *d_df2.beginEdit();
+    const VecDeriv& dx2 = d_dx2.getValue();
+    double kFactor = mparams->kFactor();
+
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 #if 0
@@ -191,12 +206,14 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeri
             df1.deviceWrite(), dx1.deviceRead(),
             df2.deviceWrite(), dx2.deviceRead(), kFactor);
 #endif
+    d_df1.endEdit();
+    d_df2.endEdit();
 }
 
 //template<>
-double PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&) const
+double PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const DataVecCoord&, const DataVecCoord&, const core::MechanicalParams* ) const
 {
-    serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

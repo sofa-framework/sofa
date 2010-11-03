@@ -61,18 +61,18 @@ namespace forcefield
 {
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 

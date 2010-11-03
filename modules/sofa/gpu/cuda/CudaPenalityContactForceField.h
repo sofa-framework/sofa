@@ -103,11 +103,11 @@ public:
 
     void setContacts(Real distance, Real ks, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm = NULL);
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    virtual void addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams);
 
-    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
+    virtual void addDForce(DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2, const core::MechanicalParams* mparams);
 
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const;
+    virtual double getPotentialEnergy(const DataVecCoord& x1, const DataVecCoord& x2, const MechanicalParams* mparams) const;
 
     void draw();
 };
