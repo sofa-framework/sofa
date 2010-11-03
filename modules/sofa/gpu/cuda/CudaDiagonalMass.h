@@ -59,13 +59,13 @@ public :
 
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addMDx(DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor, const core::MechanicalParams* mparams);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(VecDeriv& a, const VecDeriv& f);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(DataVecDeriv& d_a, const DataVecDeriv& d_f, const core::MechanicalParams* mparams);
 
 template<>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
 template<>
 bool DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
@@ -75,13 +75,13 @@ bool DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, do
 
 // -- Mass interface
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addMDx(DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor, const core::MechanicalParams* mparams);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::accFromF(VecDeriv& a, const VecDeriv& f);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::accFromF(DataVecDeriv& d_a, const DataVecDeriv& d_f, const core::MechanicalParams* mparams);
 
 template<>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
 template<>
 bool DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);
