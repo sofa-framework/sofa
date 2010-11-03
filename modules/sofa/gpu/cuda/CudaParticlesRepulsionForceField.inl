@@ -66,9 +66,14 @@ using namespace gpu::cuda;
 
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
     if (grid == NULL) return;
+
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     grid->updateGrid(x);
     GPURepulsion3f repulsion;
     repulsion.d = distance.getValue();
@@ -80,12 +85,20 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv&
     ParticlesRepulsionForceFieldCuda3f_addForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double bFactor)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
     if (grid == NULL) return;
+
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+    double bFactor = mparams->bFactor();
+
     const VecCoord& x = *this->mstate->getX();
     GPURepulsion3f repulsion;
     repulsion.d = distance.getValue();
@@ -97,15 +110,22 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv
     ParticlesRepulsionForceFieldCuda3f_addDForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, df.deviceWrite(), x.deviceRead(), dx.deviceRead());
+
+    d_df.endEdit();
 }
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
     if (grid == NULL) return;
+
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     grid->updateGrid(x);
     GPURepulsion3d repulsion;
     repulsion.d = distance.getValue();
@@ -117,12 +137,20 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(VecDeriv&
     ParticlesRepulsionForceFieldCuda3d_addForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double bFactor)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
     if (grid == NULL) return;
+
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+    double bFactor = mparams->bFactor();
+
     const VecCoord& x = *this->mstate->getX();
     GPURepulsion3d repulsion;
     repulsion.d = distance.getValue();
@@ -134,6 +162,8 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv
     ParticlesRepulsionForceFieldCuda3d_addDForce(
         g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, df.deviceWrite(), x.deviceRead(), dx.deviceRead());
+
+    d_df.endEdit();
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

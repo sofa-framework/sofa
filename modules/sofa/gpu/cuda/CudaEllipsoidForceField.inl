@@ -62,8 +62,12 @@ using namespace gpu::cuda;
 
 
 template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     const Coord center = this->center.getValue();
     const Coord r = this->vradius.getValue();
     const Real stiffness = this->stiffness.getValue();
@@ -76,19 +80,31 @@ void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const
     f.resize(x.size());
     data.tmp.resize((x.size()+BSIZE*2)*EllipsoidForceFieldCuda3f_getNTmp());
     EllipsoidForceFieldCuda3f_addForce(x.size(), &data.ellipsoid, data.tmp.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     df.resize(dx.size());
     EllipsoidForceFieldCuda3f_addDForce(dx.size(), &data.ellipsoid, data.tmp.deviceRead(), df.deviceWrite(), dx.deviceRead(), kFactor);
+
+    d_df.endEdit();
 }
 
 
 template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
     const Coord center = this->center.getValue();
     const Coord r = this->vradius.getValue();
     const Real stiffness = this->stiffness.getValue();
@@ -101,13 +117,21 @@ void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f, cons
     f.resize(x.size());
     data.tmp.resize((x.size()+BSIZE*2)*EllipsoidForceFieldCuda3f_getNTmp());
     EllipsoidForceFieldCuda3f1_addForce(x.size(), &data.ellipsoid, data.tmp.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+
+    d_f.endEdit();
 }
 
 template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce(DataVecDeriv& d_df, const DataVecDeriv& d_dx, const core::MechanicalParams* mparams)
 {
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    double kFactor = mparams->kFactor();
+
     df.resize(dx.size());
     EllipsoidForceFieldCuda3f1_addDForce(dx.size(), &data.ellipsoid, data.tmp.deviceRead(), df.deviceWrite(), dx.deviceRead(), kFactor);
+
+    d_df.endEdit();
 }
 
 } // namespace forcefield

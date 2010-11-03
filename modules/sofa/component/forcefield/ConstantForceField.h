@@ -91,6 +91,19 @@ public:
     bool addBBox(double* minBBox, double* maxBBox);
 };
 
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec6dTypes;
+using sofa::defaulttype::Vec1fTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec6fTypes;
+using sofa::defaulttype::Rigid2dTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid2fTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
