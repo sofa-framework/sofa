@@ -163,10 +163,10 @@ public:
 #define CudaSpringForceField_DeclMethods(T) \
     template<> bool SpringForceField< T >::canPrefetch() const; \
     template<> void SpringForceField< T >::init(); \
-    template<> void SpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2); \
+    template<> void SpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams); \
     template<> void StiffSpringForceField< T >::init(); \
-    template<> void StiffSpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2); \
-    template<> void StiffSpringForceField< T >::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
+    template<> void StiffSpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams); \
+    template<> void StiffSpringForceField< T >::addDForce(DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2, const core::MechanicalParams* );
 
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);

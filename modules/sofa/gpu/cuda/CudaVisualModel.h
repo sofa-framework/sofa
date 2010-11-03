@@ -27,7 +27,7 @@
 
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/State.h>
+#include <sofa/core/State.h>
 #include "CudaTypes.h"
 
 namespace sofa
@@ -72,7 +72,7 @@ public:
     typedef core::topology::BaseMeshTopology::Quad Quad;
     typedef core::topology::BaseMeshTopology::SeqQuads SeqQuads;
 
-    typedef core::behavior::State<DataTypes> TState;
+    typedef core::State<DataTypes> TState;
 
     typedef gpu::cuda::CudaKernelsCudaVisualModel<DataTypes> Kernels;
 

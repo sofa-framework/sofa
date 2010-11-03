@@ -483,14 +483,42 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     { return true; } \
     template<> void SpringForceField< T >::init() \
     { data.init(this, false); } \
-    template<> void SpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2) \
-    { data.addForce(this, false, f1, f2, x1, x2, v1, v2, this->isPrefetching()); } \
+    template<> void SpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams) \
+    { \
+		VecDeriv& f1 = *d_f1.beginEdit(); \
+		const VecCoord& x1 = d_x1.getValue(); \
+		const VecDeriv& v1 = d_v1.getValue(); \
+		VecDeriv& f2 = *d_f2.beginEdit(); \
+		const VecCoord& x2 = d_x2.getValue(); \
+		const VecDeriv& v2 = d_v2.getValue(); \
+		data.addForce(this, false, f1, f2, x1, x2, v1, v2, this->isPrefetching());\
+		d_f1.endEdit(); \
+		d_f2.endEdit(); \
+	} \
     template<> void StiffSpringForceField< T >::init() \
     { data.init(this, true); } \
-    template<> void StiffSpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2) \
-    { data.addForce(this, true, f1, f2, x1, x2, v1, v2, this->isPrefetching()); } \
-    template<> void StiffSpringForceField< T >::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor) \
-    { data.addDForce(this, true, df1, df2, dx1, dx2, kFactor, bFactor, this->isPrefetching()); }
+    template<> void StiffSpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams) \
+    { \
+		VecDeriv& f1 = *d_f1.beginEdit(); \
+		const VecCoord& x1 = d_x1.getValue(); \
+		const VecDeriv& v1 = d_v1.getValue(); \
+		VecDeriv& f2 = *d_f2.beginEdit(); \
+		const VecCoord& x2 = d_x2.getValue(); \
+		const VecDeriv& v2 = d_v2.getValue(); \
+		data.addForce(this, true, f1, f2, x1, x2, v1, v2, this->isPrefetching()); \
+		d_f1.endEdit(); \
+		d_f2.endEdit(); \
+	} \
+    template<> void StiffSpringForceField< T >::addDForce(DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2, const core::MechanicalParams* mparams) \
+    { \
+		VecDeriv& df1 = *d_df1.beginEdit(); \
+		const VecDeriv& dx1 = d_dx1.getValue(); \
+		VecDeriv& df2 = *d_df2.beginEdit(); \
+		const VecDeriv& dx2 = d_dx2.getValue(); \
+		data.addDForce(this, true, df1, df2, dx1, dx2, mparams->kFactor(), mparams->bFactor(), this->isPrefetching()); \
+		d_df1.endEdit(); \
+		d_df2.endEdit(); \
+	}
 
 CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);

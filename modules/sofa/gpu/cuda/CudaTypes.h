@@ -37,7 +37,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/SparseConstraintTypes.h>
+//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <iostream>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
 
@@ -347,12 +347,6 @@ public:
     typedef Deriv DPos;
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
-
-    typedef sofa::defaulttype::SparseConstraint<Coord> SparseVecCoord;
-    typedef sofa::defaulttype::SparseConstraint<Deriv> SparseVecDeriv;
-
-    //! All the Constraints applied to a state Vector
-    typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
 
     template<class C, typename T>
     static void set( C& c, T x, T y, T z )
@@ -666,13 +660,6 @@ public:
     static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
-
-    typedef sofa::defaulttype::SparseConstraint<Coord> SparseVecCoord;
-    typedef sofa::defaulttype::SparseConstraint<Deriv> SparseVecDeriv;
-
-
-    //! All the Constraints applied to a state Vector
-    typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
 
     template<typename T>
     static void set(Coord& r, T x, T y, T z)
