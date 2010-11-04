@@ -179,7 +179,7 @@ public:
     void applyJT( const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
             const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
             const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst ,
-            const core::MechanicalParams* /* mparams */)
+            const core::ConstraintParams* /* cparams */)
     {
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;
