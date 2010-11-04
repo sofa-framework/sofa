@@ -114,7 +114,10 @@ public:
         }
         else
         {
-            (*outmodel->getX())[i] = P;
+            Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
+            VecCoord& x = *d_x->beginEdit();
+            x[i] = P;
+            d_x->endEdit();
         }
         return i;
     }

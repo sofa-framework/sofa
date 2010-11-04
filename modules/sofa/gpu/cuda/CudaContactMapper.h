@@ -83,8 +83,13 @@ public:
         {
             MCollisionModel* model = this->model;
             MMechanicalState* outmodel = this->outmodel;
-            typename DataTypes::Coord& x = (*outmodel->getX())[i];
-            typename DataTypes::Deriv& v = (*outmodel->getV())[i];
+            Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
+            VecDeriv& vx = *d_x->beginEdit();
+            Data<VecDeriv>* d_v = outmodel->write(core::VecDerivId::velocity());
+            VecCoord& vv = *d_v->beginEdit();
+
+            typename DataTypes::Coord& x = vx[i];
+            typename DataTypes::Deriv& v = vv[i];
             if (model->isTransformed(index))
             {
                 x = model->getTranslation(index) + model->getRotation(index) * P;
@@ -94,6 +99,9 @@ public:
                 x = P;
             }
             v = typename DataTypes::Deriv();
+
+            d_x->endEdit();
+            d_v->endEdit();
         }
         return i;
     }
@@ -115,7 +123,10 @@ public:
         }
         else
         {
-            RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->outmodel->getX()->deviceWrite());
+            Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
+            VecCoord& vx = *d_x->beginEdit();
+            RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), vx.deviceWrite());
+            d_x->endEdit();
         }
     }
 };
