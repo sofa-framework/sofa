@@ -69,8 +69,10 @@ void FixParticlePerformer<DataTypes>::start()
 
     mstateFixation->resize(1);
     {
-        helper::WriteAccessor<Data<VecCoord> > xData = *mstateFixation->write(core::VecCoordId::position());
-        xData.wref()[0] = fixPoint;
+        Data<VecCoord>* d_x = mstateFixation->write(core::VecCoordId::position());
+        VecCoord& x = *d_x->beginEdit();
+        x[0] = fixPoint;
+        d_x->endEdit();
     }
     nodeFixation->addObject(mstateFixation);
 

@@ -64,9 +64,9 @@ JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
 }
 
 template<class TMatrix, class TVector>
-void JacobiPreconditioner<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
+void JacobiPreconditioner<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
-    Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+    Inherit::setSystemMBKMatrix(mparams);
 }
 
 /// Solve P^-1 Mx= P^-1 b
