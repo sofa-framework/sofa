@@ -143,7 +143,7 @@ public:
     enum { InDOFs=sofa::frame::DataTypesInfo<In::spatial_dimensions, InReal, In>::degrees_of_freedom };
     enum { InAt=sofa::frame::DataTypesInfo<In::spatial_dimensions, InReal, In>::Atilde_nb_column };
 #else
-    enum { InDOFs=In::DataTypes::deriv_total_size };
+    enum { InDOFs=In::deriv_total_size };
     enum { InAt=0 };
 #endif
     typedef defaulttype::Mat<N,N,InReal> Mat;
@@ -293,19 +293,19 @@ public:
     {
         computeWeights=val;
     }
-    unsigned int getNbRefs()
+    unsigned int getNbRefs() const
     {
         return nbRefs.getValue();
     }
-    const VVD& getWeightCoefs()
+    const VVD& getWeightCoefs() const
     {
         return weights.getValue();
     }
-    const vector<int>& getRepartition()
+    const vector<int>& getRepartition() const
     {
         return repartition.getValue();
     }
-    bool getComputeWeights()
+    bool getComputeWeights() const
     {
         return computeWeights;
     }
