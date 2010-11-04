@@ -154,7 +154,7 @@ HEADERS += \
 	   	CudaMatrixUtils.h \
 	   	CudaDiagonalMatrix.h \
         CudaRotationMatrix.h \
-       	CudaMasterContactSolver.h \
+       	#CudaMasterContactSolver.h \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
 		CudaBlockJacobiPreconditioner.h \
@@ -193,7 +193,7 @@ SOURCES += \
 	   	CudaLinearSolverConstraintCorrection.cpp \
 	   	CudaRotationFinder.cpp \
 	   	CudaLCP.cpp \
-       	CudaMasterContactSolver.cpp \
+       	#CudaMasterContactSolver.cpp \
        	CudaSpatialGridContainer.cpp \
 	   	CudaUnilateralInteractionConstraint.cpp \
 	   	CudaPrecomputedWarpPreconditioner.cpp \

@@ -158,8 +158,9 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& res, con
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(res.wref(), mparams);
+    VecDeriv& res = *resData.beginEdit();
+    projectResponseT(res, mparams);
+    resData.endEdit();
 }
 
 template <class DataTypes>
