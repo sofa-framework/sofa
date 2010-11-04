@@ -66,6 +66,7 @@ class SubsetContactMapper : public BaseContactMapper<DataTypes>
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
