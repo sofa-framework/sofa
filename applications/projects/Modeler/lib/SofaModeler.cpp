@@ -521,12 +521,7 @@ void SofaModeler::fileOpen(std::string filename)
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
         GNode *root = NULL;
-        xml::BaseElement* newXML=NULL;
-        sofa::helper::system::SetDirectory chdir ( filename );
-        newXML = xml::loadFromFile ( filename.c_str() );
-        if (newXML == NULL) return;
-        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-        root = dynamic_cast<GNode*> ( newXML->getObject() );
+        root = dynamic_cast<GNode*> ( sofa::simulation::getSimulation()->load(filename.c_str()) );
         if (root)
         {
             createTab();
@@ -776,6 +771,13 @@ void SofaModeler::dropEvent(QDropEvent* event)
     }
 }
 
+void SofaModeler::editTutorial(const std::string& filename)
+{
+    std::string tutorialFilename(filename);
+    fileOpen(tutorialFilename);
+    //this->setActiveWindow();
+}
+
 void SofaModeler::openTutorial()
 {
     if (tuto)
@@ -786,7 +788,7 @@ void SofaModeler::openTutorial()
 
     tuto=new SofaTutorialManager(this, "tutorial");
     connect(tuto, SIGNAL(runInSofa(const std::string&, GNode*)), this, SLOT(runInSofa(const std::string&, GNode*)));
-
+    connect(tuto, SIGNAL(editInModeler(const std::string&)), this, SLOT(editTutorial(const std::string& ) ));
     GraphModeler *graphTuto=tuto->getGraph();
     graphTuto->setSofaLibrary(library);
     graphTuto->setPreset(preset);

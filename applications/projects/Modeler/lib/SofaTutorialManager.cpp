@@ -103,6 +103,8 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
     buttonRunInSofa = new QPushButton(QString("Launch scene in Sofa"), toolBar);
     connect(buttonRunInSofa, SIGNAL(clicked()), this, SLOT(launchScene()));
 
+    buttonEditInModeler = new QPushButton(QString("Edit in Modeler"), toolBar);
+    connect(buttonEditInModeler, SIGNAL(clicked()), this, SLOT(editScene()));
 
     //Set up the list of tutorials
     selector->init();
@@ -128,6 +130,12 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
 #endif
 }
 
+void SofaTutorialManager::editScene()
+{
+    emit( editInModeler(graph->getFilename() ) );
+
+}
+
 
 
 void SofaTutorialManager::openTutorial(const std::string& filename)
@@ -138,9 +146,11 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
     {
         graph->hide();
         buttonRunInSofa->hide();
+        buttonEditInModeler->hide();
         return;
     }
     buttonRunInSofa->show();
+    buttonEditInModeler->show();
     graph->show();
     std::string file=filename;
     const std::string &dirSofa = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());

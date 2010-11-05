@@ -74,6 +74,7 @@ public slots:
     void openTutorial(const std::string &filename);
     void openHTML(const std::string &filename);
     void launchScene();
+    void editScene();
 #ifdef SOFA_QT4
     void dynamicChangeOfScene( const QUrl&);
 #else
@@ -83,12 +84,14 @@ signals:
     void runInSofa(const std::string& sceneFilename, GNode *root);
     void undo();
     void redo();
+    void editInModeler(const std::string& sceneFilename);
 protected:
     TutorialSelector *selector;
     GraphModeler *graph;
     QTextBrowser* descriptionPage;
     QPushButton *buttonRunInSofa;
     QComboBox *tutorialList;
+    QPushButton* buttonEditInModeler;
 };
 
 }

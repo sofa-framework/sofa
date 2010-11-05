@@ -125,6 +125,8 @@ public slots:
     ///Each time a message must be displayed in the status bar (undo/redo, ...)
     void displayMessage(const std::string &m);
 
+
+
     /// Change the content of the description box. Happens when the user has clicked on a component
 #ifdef SOFA_QT4
     void changeInformation(Q3ListViewItem *);
@@ -220,6 +222,7 @@ protected slots:
     void redirectStderr();
     void redirectStdout();
 protected:
+
     void displayHelpModeler();
 
     QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
@@ -268,6 +271,9 @@ protected:
 
     /// Number of components currently displayed in the library
     unsigned int displayComponents;
+
+protected slots:
+    void editTutorial(const std::string& );
 
 
 private:
