@@ -156,8 +156,10 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixD
 }
 
 template<class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
+void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder Order)
 {
+    using namespace core;
+    using namespace core::objectmodel;
     //We don't constrain the Position, only the velocities and accelerations
     if (idxEquations.empty() ||
         Order==core::ConstraintParams::POS) return;
@@ -176,7 +178,8 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
             case core::ConstraintParams::ACC :
             case core::ConstraintParams::VEL :
             {
-                correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxEquations[numParticle][i],id);
+                ConstVecId v1 = id.getId(this->constrainedObject1);
+                correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxEquations[numParticle][i],v1);
                 break;
             }
             default: break;

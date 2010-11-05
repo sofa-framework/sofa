@@ -171,8 +171,10 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDerivI
 }
 
 template<class DataTypes>
-void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
+void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder Order)
 {
+    using namespace core;
+    using namespace core::objectmodel;
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
     unsigned int counter=0;
@@ -187,14 +189,16 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
         case core::ConstraintParams::ACC :
         case core::ConstraintParams::VEL :
         {
-            correctionX = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],id);
-            correctionY = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],id);
-            correctionZ = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],id);
+            ConstVecId v1 = id.getId(this->constrainedObject1);
+            correctionX = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],v1);
+            correctionY = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],v1);
+            correctionZ = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],v1);
             break;
         }
         case core::ConstraintParams::POS :
         {
-            const VecCoord &x = this->constrainedObject1->read(core::ConstVecCoordId(id))->getValue();
+            ConstVecId xid = id.getId(this->constrainedObject1);
+            helper::ReadAccessor<Data<VecCoord> > x = *this->constrainedObject1->read((ConstVecCoordId)xid);
 
             //If a new particle has to be fixed, we add its current position as rest position
             if (restPosition.find(index) == this->restPosition.end())

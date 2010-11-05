@@ -147,8 +147,10 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(core::MultiMatrixDer
 }
 
 template<class DataTypes>
-void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
+void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder Order)
 {
+    using namespace core;
+    using namespace core::objectmodel;
     const SeqEdges &edges =  vecConstraint.getValue();
 
     if (registeredConstraints.empty()) return;
@@ -161,14 +163,16 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lin
         case core::ConstraintParams::ACC :
         case core::ConstraintParams::VEL :
         {
-            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],id);
-            correction += this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],id);
+            ConstVecId v1 = id.getId(this->constrainedObject1);
+            ConstVecId v2 = id.getId(this->constrainedObject2);
+            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],v1);
+            correction += this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],v2);
             break;
         }
         case core::ConstraintParams::POS :
         {
-            const VecCoord &x1 = this->constrainedObject1->read(core::ConstVecCoordId(id))->getValue();
-            const VecCoord &x2 = this->constrainedObject2->read(core::ConstVecCoordId(id))->getValue();
+            const VecCoord &x1 = this->constrainedObject1->read(core::ConstVecCoordId(id.getId(this->constrainedObject1) ))->getValue();
+            const VecCoord &x2 = this->constrainedObject2->read(core::ConstVecCoordId(id.getId(this->constrainedObject2) ))->getValue();
             SReal length     = lengthEdge(edges[i],x1,x2);
             SReal restLength = this->l0[i];
             correction= restLength-length;

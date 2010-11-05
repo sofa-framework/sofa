@@ -154,8 +154,10 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(core::MultiMa
 
 }
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder Order)
+void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder Order)
 {
+    using namespace core;
+    using namespace core::objectmodel;
     //                cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, scalarConstraintsIndices.size() = "<<scalarConstraintsIndices.size()<<endl;
     const SeqEdges &edges =  pointPairs.getValue();
 
@@ -169,22 +171,24 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned i
         case core::ConstraintParams::ACC :
         case core::ConstraintParams::VEL :
         {
+            ConstVecId v1 = id.getId(this->simulatedObject1);
+            ConstVecId v2 = id.getId(this->simulatedObject2);
             core::behavior::ConstraintGroup *constraintGroup = this->addGroupConstraint(Order);
             constraintGroupToContact[constraintGroup] = &edgeToContact[edges[i]];
 
             SReal correction = 0;
-            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v1);
+            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v2);
             constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 
             correction = 0;
-            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v1);
+            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v2);
             constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
 
             correction = 0;
-            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
-            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],id);
+            correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v1);
+            correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v2);
             constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
             //                            cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, constraint inserted "<<endl;
             break;
@@ -201,8 +205,8 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned i
             else
                 serr << "No intersection component found!!" << sendl;
 
-            const VecCoord &x1 = this->constrainedObject1->read(core::ConstVecCoordId(id))->getValue();
-            const VecCoord &x2 = this->constrainedObject2->read(core::ConstVecCoordId(id))->getValue();
+            const VecCoord &x1 = this->constrainedObject1->read(core::ConstVecCoordId(id.getId(this->constrainedObject1)))->getValue();
+            const VecCoord &x2 = this->constrainedObject2->read(core::ConstVecCoordId(id.getId(this->constrainedObject2)))->getValue();
 
             SReal correction  = minDistance-lengthEdge(edges[i],x1,x2); //Distance min-current length
 

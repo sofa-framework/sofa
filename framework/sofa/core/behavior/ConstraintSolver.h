@@ -58,29 +58,29 @@ public:
      * @param Id order of the constraint to be solved
      * @param isPositionChangesUpdateVelocity boolean indication if we need to propagate the change of position to a modification of velocity dv=dx/dt
      **/
-    virtual void solveConstraint(double /*dt*/, VecId, ConstOrder order);
+    virtual void solveConstraint(double /*dt*/, MultiVecId, ConstOrder order);
 
 
 
     /**
      * Do the precomputation: compute free state, or propagate the states to the mapped mechanical states, where the constraint can be expressed
      */
-    virtual bool prepareStates(double /*dt*/, VecId, ConstOrder order)=0;
+    virtual bool prepareStates(double /*dt*/, MultiVecId, ConstOrder order)=0;
 
     /**
      * Create the system corresponding to the constraints
      */
-    virtual bool buildSystem(double /*dt*/, VecId, ConstOrder order)=0;
+    virtual bool buildSystem(double /*dt*/, MultiVecId, ConstOrder order)=0;
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
      */
-    virtual bool solveSystem(double /*dt*/, VecId, ConstOrder order)=0;
+    virtual bool solveSystem(double /*dt*/, MultiVecId, ConstOrder order)=0;
 
     /**
      * Correct the Mechanical State with the solution found
      */
-    virtual bool applyCorrection(double /*dt*/, VecId, ConstOrder order)=0;
+    virtual bool applyCorrection(double /*dt*/, MultiVecId, ConstOrder order)=0;
 };
 
 } // namespace behavior

@@ -57,6 +57,26 @@ public:
 
     /// @}
 
+    std::string getName() const
+    {
+        std::string result;
+        switch ( m_constOrder )
+        {
+        case POS :
+            result += "POSITION";
+            break;
+        case VEL :
+            result += "VELOCITY";
+            break;
+        case ACC :
+            result += "ACCELERATION";
+            break;
+        default :
+            assert(false);
+        }
+        return result;
+    }
+
     /// @name Access to vectors from a given state container (i.e. State or MechanicalState)
     /// @{
 
@@ -98,6 +118,7 @@ public:
 
     /// @}
 
+
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
     ConstraintParams(const sofa::core::ExecParams& p = sofa::core::ExecParams() )
         : sofa::core::ExecParams(p)
@@ -114,14 +135,13 @@ public:
         return &m_defaultInstance;
     }
 
-    ConstraintParams* setExecParams(const core::ExecParams* params)
+    ConstraintParams& setExecParams(const core::ExecParams* params)
     {
         sofa::core::ExecParams::operator=(*params);
-        return this;
+        return *this;
     }
 
 protected:
-
     /// Ids of position vector
     ConstMultiVecCoordId m_x;
 
