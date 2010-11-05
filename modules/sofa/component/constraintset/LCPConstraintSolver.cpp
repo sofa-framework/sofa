@@ -76,9 +76,9 @@ void LCP::reset(void)
     dFree.clear();
 }
 
-bool LCPConstraintSolver::prepareStates(double /*dt*/, core::VecId id, core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder)
 {
-    if (id != VecId::freePosition()) return false;
+    if (id.getDefaultId() != VecId::freePosition()) return false;
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
     // const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     last_lcp = lcp;
@@ -106,7 +106,7 @@ bool LCPConstraintSolver::prepareStates(double /*dt*/, core::VecId id, core::Con
     return true;
 }
 
-bool LCPConstraintSolver::buildSystem(double /*dt*/, VecId, core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
 {
     //sout<<"constraintCorrections is called"<<sendl;
 
@@ -134,7 +134,7 @@ bool LCPConstraintSolver::buildSystem(double /*dt*/, VecId, core::ConstraintPara
     return true;
 }
 
-bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId, core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
 {
     if (build_lcp.getValue())
     {
@@ -249,7 +249,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId, core::ConstraintPara
     return true;
 }
 
-bool LCPConstraintSolver::applyCorrection(double /*dt*/, VecId , core::ConstraintParams::ConstOrder)
+bool LCPConstraintSolver::applyCorrection(double /*dt*/, core::MultiVecId , core::ConstraintParams::ConstOrder)
 {
     if (initial_guess.getValue())
         keepContactForcesValue();
@@ -332,7 +332,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     constraintGroups.endEdit();
 
     f_graph.setWidget("graph");
-    //	f_graph.setReadOnly(true);
+    //f_graph.setReadOnly(true);
 
     //_numPreviousContact=0;
     //_PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));

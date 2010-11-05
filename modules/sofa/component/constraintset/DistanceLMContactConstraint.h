@@ -110,7 +110,7 @@ public:
     // -- LMConstraint interface
     void buildConstraintMatrix(core::MultiMatrixDerivId cId, unsigned int &cIndex, const core::ConstraintParams* cParams);
 
-    void writeConstraintEquations(unsigned int& lineNumber, core::VecId id, ConstOrder order);
+    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order);
     void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
             core::behavior::ConstraintGroup * group);
 

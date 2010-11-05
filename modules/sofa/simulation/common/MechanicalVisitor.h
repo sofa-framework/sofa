@@ -1706,7 +1706,7 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalWriteLMConstraint : public BaseMechanicalVisitor
 {
 public:
-    MechanicalWriteLMConstraint(const sofa::core::ExecParams* params)
+    MechanicalWriteLMConstraint(const sofa::core::ExecParams * params)
         : BaseMechanicalVisitor(params)
         , offset(0)
     {
@@ -1742,11 +1742,12 @@ public:
     virtual const std::vector< core::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
     virtual unsigned int numConstraint() {return datasC.size();}
 
+    virtual void setMultiVecId(core::MultiVecId i) {id=i;}
+    core::MultiVecId getMultiVecId() const { return id; }
+
+
     virtual void setOrder(core::ConstraintParams::ConstOrder i) {order=i;}
     core::ConstraintParams::ConstOrder getOrder() const { return order; }
-
-    virtual void setVecId(core::VecId i) {id=i;}
-    core::VecId getVecId() const { return id; }
 
     virtual bool isThreadSafe() const
     {
@@ -1760,8 +1761,8 @@ public:
 
 protected:
     unsigned int offset;
-    core::ConstraintParams::ConstOrder order;
-    core::VecId id;
+    sofa::core::ConstraintParams::ConstOrder order;
+    core::MultiVecId id;
     helper::vector< core::behavior::BaseLMConstraint *> datasC;
 
 };

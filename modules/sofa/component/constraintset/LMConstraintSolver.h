@@ -54,6 +54,7 @@ class SOFA_COMPONENT_CONSTRAINTSET_API LMConstraintSolver : public sofa::core::b
 {
 protected:
     typedef sofa::core::VecId VecId;
+    typedef sofa::core::MultiVecId MultiVecId;
     typedef sofa::core::ConstraintParams::ConstOrder ConstOrder;
 
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
@@ -74,10 +75,10 @@ public:
     virtual void reinit() {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
 
 
-    virtual bool prepareStates(double dt, VecId, core::ConstraintParams::ConstOrder);
-    virtual bool buildSystem(double dt, VecId, core::ConstraintParams::ConstOrder);
-    virtual bool solveSystem(double dt, VecId, core::ConstraintParams::ConstOrder);
-    virtual bool applyCorrection(double dt, VecId, core::ConstraintParams::ConstOrder);
+    virtual bool prepareStates(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
+    virtual bool buildSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
+    virtual bool solveSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
+    virtual bool applyCorrection(double dt, MultiVecId, core::ConstraintParams::ConstOrder);
 
     virtual void handleEvent( core::objectmodel::Event *e);
 
@@ -109,7 +110,7 @@ protected:
 
     /// Construct the Right hand term of the system
     virtual void buildRightHandTerm      ( const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
-            VectorEigen &c, VecId, ConstOrder Order ) const;
+            VectorEigen &c, MultiVecId, ConstOrder Order ) const;
     /// Construct the Inverse of the mass matrix for a set of Dofs
     virtual void buildInverseMassMatrices( const SetDof &setDofs,
             DofToMatrix& invMassMatrices);
@@ -120,14 +121,14 @@ protected:
     virtual void buildLeftMatrix         ( const DofToMatrix& invMassMatrices,
             DofToMatrix& LMatrices, SparseMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
     /// Solve the System using a projective Gauss-Seidel algorithm: compute the Lagrange Multipliers Lambda
-    virtual bool solveConstraintSystemUsingGaussSeidel(VecId id, ConstOrder Order,
+    virtual bool solveConstraintSystemUsingGaussSeidel(MultiVecId id, ConstOrder Order,
             const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             const MatrixEigen &W,
             const VectorEigen &c,
             VectorEigen &Lambda);
 
     /// Compute Kinetic Energy
-    virtual void computeKineticEnergy(VecId id);
+    virtual void computeKineticEnergy(MultiVecId id);
 
     /** Apply the correction to the state corresponding
      * @param id nature of the constraint, and correction to apply

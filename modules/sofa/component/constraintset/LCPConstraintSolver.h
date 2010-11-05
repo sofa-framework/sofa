@@ -303,7 +303,7 @@ class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolver : public sofa::core::
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
-    typedef sofa::core::VecId VecId;
+    typedef sofa::core::MultiVecId MultiVecId;
 
 public:
     SOFA_CLASS(LCPConstraintSolver, sofa::core::behavior::ConstraintSolver);
@@ -321,10 +321,10 @@ public:
 
     void init();
 
-    bool prepareStates(double dt, VecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    bool buildSystem(double dt, VecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    bool solveSystem(double dt, VecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
-    bool applyCorrection(double dt, VecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
+    bool prepareStates(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
+    bool buildSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
+    bool solveSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
+    bool applyCorrection(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
 
     void draw();
 

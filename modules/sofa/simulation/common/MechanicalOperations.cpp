@@ -3,6 +3,7 @@
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 namespace sofa
@@ -287,9 +288,30 @@ void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, 
 using sofa::core::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
 
-
-void MechanicalOperations::solveConstraint(double dt, MultiVecId id, ConstraintParams::ConstOrder order)
+/*
+void MechanicalOperations::solveConstraint(double dt, MultiVecDerivId id, core::ConstraintParams::ConstOrder order )
 {
+  core::ConstraintParams cparams(order,mparams);
+  mparams.setDt(dt);
+  assert( order == core::ConstraintParams::VEL || order == core::ConstraintParams::ACC);
+  cparams.setV( id);
+  solveConstraint(id, &cparams);
+}
+
+void MechanicalOperations::solveConstraint(double dt, MultiVecCoordId id, core::ConstraintParams::ConstOrder order)
+{
+  core::ConstraintParams cparams(order,mparams);
+  mparams.setDt(dt);
+  assert( order == core::ConstraintParams::POS);
+  cparams.setX( id);
+  solveConstraint(id, &cparams);
+}
+*/
+
+void MechanicalOperations::solveConstraint(double dt, MultiVecId id, core::ConstraintParams::ConstOrder order)
+{
+    mparams.setDt(dt);
+
     helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
@@ -300,10 +322,9 @@ void MechanicalOperations::solveConstraint(double dt, MultiVecId id, ConstraintP
     }
     for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
     {
-        (*it)->solveConstraint(dt, id.getDefaultId(), order);
+        (*it)->solveConstraint(dt, id,  order);
     }
 }
-
 void MechanicalOperations::m_resetSystem()
 {
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
