@@ -27,7 +27,7 @@
 #endif
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
 #include <sofa/component/container/MechanicalObject.inl>
-
+#include <sofa/helper/Quater.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -106,6 +106,120 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
     }
 }
 
+template<> SOFA_COMPONENT_CONTAINER_API
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+{
+
+    if (dest.type == sofa::core::V_COORD)
+    {
+
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int nbEntries = src->size()/coordDim;
+
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<3; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i+offset],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src->element(i * coordDim + j+3);
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue(vDest[i+offset], j+3, tmp);
+            }
+        }
+        offset += nbEntries;
+    }
+    else
+    {
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int nbEntries = src->size()/derivDim;
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<derivDim; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
+            }
+        }
+        offset += nbEntries;
+    }
+
+
+}
+
+template<> SOFA_COMPONENT_CONTAINER_API
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
+{
+    if (dest.type == sofa::core::V_COORD)
+    {
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i=0; i<vDest.size(); i++)
+        {
+            for (unsigned int j=0; j<3; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i],j,tmp);
+                DataTypeInfo<Coord>::setValue(vDest[i],j,tmp + src->element(offset + i * coordDim + j));
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src->element(offset + i * coordDim + j+3);
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue(vDest[i], j+3, tmp);
+            }
+        }
+
+        offset += vDest.size() * coordDim;
+    }
+    else
+    {
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        for (unsigned int i=0; i<vDest.size(); i++)
+        {
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue(vDest[i],j,tmp);
+                DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(offset + i * derivDim + j));
+            }
+        }
+        offset += vDest.size() * derivDim;
+    }
+
+}
 // template <>
 //     bool MechanicalObject<Vec1dTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
 // {
@@ -125,6 +239,120 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
         x[i].getCenter() = q.rotate(x[i].getCenter());
         x[i].getOrientation() *= q;
     }
+}
+
+
+template<> SOFA_COMPONENT_CONTAINER_API
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+{
+    if (dest.type == sofa::core::V_COORD)
+    {
+
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int nbEntries = src->size()/coordDim;
+
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<3; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i+offset],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src->element(i * coordDim + j+3);
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue(vDest[i+offset], j+3, tmp);
+            }
+        }
+        offset += nbEntries;
+    }
+    else
+    {
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int nbEntries = src->size()/derivDim;
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<derivDim; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
+            }
+        }
+        offset += nbEntries;
+    }
+
+}
+
+template<> SOFA_COMPONENT_CONTAINER_API
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
+{
+    if (dest.type == sofa::core::V_COORD)
+    {
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i=0; i<vDest.size(); i++)
+        {
+            for (unsigned int j=0; j<3; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i],j,tmp);
+                DataTypeInfo<Coord>::setValue(vDest[i],j,tmp + src->element(offset + i * coordDim + j));
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue(vDest[i],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src->element(offset + i * coordDim + j+3);
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue(vDest[i], j+3, tmp);
+            }
+        }
+
+        offset += vDest.size() * coordDim;
+    }
+    else
+    {
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        for (unsigned int i=0; i<vDest.size(); i++)
+        {
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue(vDest[i],j,tmp);
+                DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(offset + i * derivDim + j));
+            }
+        }
+        offset += vDest.size() * derivDim;
+    }
+
 }
 
 // template <>

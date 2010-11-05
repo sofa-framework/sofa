@@ -833,6 +833,16 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
     }
 }
 
+
+#ifndef SOFA_FLOAT
+template<>
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
 {
@@ -871,6 +881,15 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const de
         offset += vDest.size() * derivDim;
     }
 }
+
+#ifndef SOFA_FLOAT
+template<>
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
