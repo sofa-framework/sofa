@@ -289,17 +289,17 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 }
 
 template <class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::addGravityToV ( double dt )
+void FrameDiagonalMass<DataTypes, MassType>::addGravityToV (core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
 {
     if ( this->mstate )
     {
-        VecDeriv& v = *this->mstate->getV();
+        helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
 
         // gravity
         Vec3d g ( this->getContext()->getLocalGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
-        Deriv hg = theGravity * ( typename DataTypes::Real ) dt;
+        Deriv hg = theGravity * ( typename DataTypes::Real ) mparams->dt();
 
         for ( unsigned int i=0; i<v.size(); i++ )
         {
@@ -388,7 +388,7 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
 {
     const MassVector &masses= f_mass.getValue();
     if ( !this->getContext()->getShowBehaviorModels() ) return;
-    VecCoord& x = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
     if( x.size() != masses.size()) return;
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;

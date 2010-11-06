@@ -65,6 +65,7 @@ public:
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
@@ -175,7 +176,7 @@ public:
 
     double getPotentialEnergy(const VecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    void addGravityToV(double dt/*, defaulttype::BaseVector& v*/);
+    void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
 
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);

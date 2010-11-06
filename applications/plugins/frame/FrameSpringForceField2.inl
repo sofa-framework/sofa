@@ -144,7 +144,7 @@ void FrameSpringForceField2<DataTypes>::computeK0()
 
 
 // update KSpring (K expressed at the joint location)
-    VecCoord& xiref = *this->getMState()->getX0();
+    helper::ReadAccessor<VecCoord> xiref = *this->getMState()->getX0();
     Mat33 crossi,crossj;
     Mat66 Kbackup;
     Vec3 tpref;
@@ -247,7 +247,7 @@ template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMatInxIn& K, const VecCoord& xi, const VVMatInxIn& Kref )
 {
     // generalized spring joint network based on precomputed FrameHooke stiffness matrices
-    VecCoord& xiref = *this->getMState()->getX0();
+    helper::ReadAccessor<VecCoord> xiref = *this->getMState()->getX0();
     int i,j,k,l,m,nbDOF=xi.size();
     double n;
     Coord MI,MJ,M;
