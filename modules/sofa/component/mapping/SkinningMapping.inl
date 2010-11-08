@@ -160,8 +160,8 @@ void SkinningMapping<TIn, TOut>::computeDistances ()
             if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC) geoDistanceTypeOption->setSelectedItem(TYPE_HARMONIC);
             if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION) geoDistanceTypeOption->setSelectedItem(TYPE_STIFFNESS_DIFFUSION);
             if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC_STIFFNESS) geoDistanceTypeOption->setSelectedItem(TYPE_HARMONIC_STIFFNESS);
+            geoDist->distanceType.endEdit();
         }
-        geoDist->distanceType.endEdit();
         geoDist->computeDistanceMap ( tmpFrom );
     }
 #endif
