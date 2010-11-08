@@ -65,31 +65,36 @@ public:
     bool useInitialF;
     double mu;
     int dim;
+
 private:
     bool lok;
 
+protected:
+    LCP() : maxConst(0), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0), lok(false) {}
+
 public:
     LCP(unsigned int maxConstraint);
-    ~LCP();
+    virtual ~LCP();
     void reset(void);
     //LCP& operator=(LCP& lcp);
-    inline double** getW(void) {return W.lptr();};
-    inline double& getMu(void) { return mu;};
-    inline double* getDfree(void) {return dFree.ptr();};
-    inline int getDfreeSize(void) {return dFree.size();};
-    inline double getTolerance(void) {return tol;};
-    inline void setTol(double t) {tol = t;};
-    inline double getMaxIter(void) {return numItMax;};
-    inline double* getF(void) {return f.ptr();};
-    inline bool useInitialGuess(void) {return useInitialF;};
-    inline unsigned int getNbConst(void) {return nbConst;};
-    inline void setNbConst(unsigned int nbC) {nbConst = nbC;};
-    inline unsigned int getMaxConst(void) {return maxConst;};
-    void setMaxConst(unsigned int nbC);
+    inline double** getW(void) {return W.lptr();}
+    inline double& getMu(void) { return mu;}
+    inline double* getDfree(void) {return dFree.ptr();}
+    inline int getDfreeSize(void) {return dFree.size();}
+    inline double getTolerance(void) {return tol;}
+    inline void setTolerance(double t) {tol = t;}
+    inline int getMaxIter(void) {return numItMax;}
+    inline void setMaxIter(int m) {numItMax = m;}
+    inline double* getF(void) {return f.ptr();}
+    inline bool useInitialGuess(void) {return useInitialF;}
+    inline unsigned int getNbConst(void) {return nbConst;}
+    virtual void setNbConst(unsigned int nbC) {nbConst = nbC;}
+    inline unsigned int getMaxConst(void) {return maxConst;}
+    virtual void setMaxConst(unsigned int nbC);
 
-    inline bool isLocked(void) {return false;};
-    inline void lock(void) {lok = true;};
-    inline void unlock(void) {lok = false;};
+    inline bool isLocked(void) {return false;}
+    inline void lock(void) {lok = true;}
+    inline void unlock(void) {lok = false;}
     inline void wait(void) {while(lok) ; } //infinite loop?
 };
 
@@ -298,8 +303,14 @@ private:
     VecConstArea& _areas;
 };
 
+class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolverInterface : public sofa::core::behavior::ConstraintSolver
+{
+public:
+    virtual LCP* getLCP() = 0;
+    virtual void lockLCP(LCP* l1, LCP* l2=0) = 0; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
+};
 
-class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolver : public sofa::core::behavior::ConstraintSolver
+class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolver : public LCPConstraintSolverInterface
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
