@@ -50,7 +50,6 @@ namespace component
 namespace constraintset
 {
 
-
 LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0), lok(false)
 {
     W.resize(maxConst,maxConst);
@@ -148,7 +147,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::Constrain
         if (_mu > 0.0)
         {
             lcp->setNbConst(_numConstraints);
-            lcp->setTol(_tol);
+            lcp->setTolerance(_tol);
 
             if (multi_grid.getValue())
             {
