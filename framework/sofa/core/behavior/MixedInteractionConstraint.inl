@@ -68,6 +68,24 @@ bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
     return endTime.getValue()>getContext()->getTime();
 }
 
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams)
+{
+    if (cParams)
+    {
+        getConstraintViolation(v, *cParams->readX(mstate1), *cParams->readX(mstate2), *cParams->readV(mstate1), *cParams->readV(mstate2), cParams);
+    }
+}
+
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams)
+{
+    if (cParams)
+    {
+        buildConstraintMatrix(*cId[mstate1].write(), *cId[mstate2].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2), cParams);
+    }
+}
+
 } // namespace behavior
 
 } // namespace core
