@@ -155,7 +155,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x				.forceSet();
-    x0				.forceSet();
+//	x0				.forceSet();
     v				.forceSet();
     dx				.forceSet();
     f				.forceSet();
