@@ -110,9 +110,10 @@ SkinningMapping<TIn, TOut>::SkinningMapping (core::State<In>* from, core::State<
     wheightingTypeOptions.setSelectedItem(WEIGHT_INVDIST_SQUARE);
     wheightingType.setValue(wheightingTypeOptions);
 
-    sofa::helper::OptionsGroup distanceTypeOptions(5,"Euclidian","Geodesic", "Harmonic", "StiffnessDiffusion", "HarmonicWithStiffness");
-    distanceTypeOptions.setSelectedItem(DISTANCE_EUCLIDIAN);
-    distanceType.setValue(distanceTypeOptions);
+    sofa::helper::OptionsGroup* distanceTypeOptions = distanceType.beginEdit();
+    distanceTypeOptions->setNames(5,"Euclidian","Geodesic", "Harmonic", "StiffnessDiffusion", "HarmonicWithStiffness");
+    distanceTypeOptions->setSelectedItem(0);
+    distanceType.endEdit();
 }
 
 template <class TIn, class TOut>
@@ -154,11 +155,13 @@ void SkinningMapping<TIn, TOut>::computeDistances ()
 
         if (this->computeAllMatrices.getValue())
         {
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC) geoDist->distanceType.setValue( TYPE_GEODESIC );
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC) geoDist->distanceType.setValue( TYPE_HARMONIC );
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION) geoDist->distanceType.setValue( TYPE_STIFFNESS_DIFFUSION );
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC_STIFFNESS) geoDist->distanceType.setValue( TYPE_HARMONIC_STIFFNESS );
+            sofa::helper::OptionsGroup* geoDistanceTypeOption = geoDist->distanceType.beginEdit();
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC) geoDistanceTypeOption->setSelectedItem(TYPE_GEODESIC);
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC) geoDistanceTypeOption->setSelectedItem(TYPE_HARMONIC);
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION) geoDistanceTypeOption->setSelectedItem(TYPE_STIFFNESS_DIFFUSION);
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC_STIFFNESS) geoDistanceTypeOption->setSelectedItem(TYPE_HARMONIC_STIFFNESS);
         }
+        geoDist->distanceType.endEdit();
         geoDist->computeDistanceMap ( tmpFrom );
     }
 #endif
