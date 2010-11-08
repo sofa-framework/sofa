@@ -28,6 +28,7 @@
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
 
 #include <sofa/core/core.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -68,6 +69,14 @@ public:
     typedef typename DataTypes2::Deriv Deriv2;
     typedef helper::ParticleMask ParticleMask;
 
+    typedef core::objectmodel::Data< VecCoord1 >		DataVecCoord1;
+    typedef core::objectmodel::Data< VecDeriv1 >		DataVecDeriv1;
+    typedef core::objectmodel::Data< MatrixDeriv1 >		DataMatrixDeriv1;
+
+    typedef core::objectmodel::Data< VecCoord2 >		DataVecCoord2;
+    typedef core::objectmodel::Data< VecDeriv2 >		DataVecDeriv2;
+    typedef core::objectmodel::Data< MatrixDeriv2 >		DataMatrixDeriv2;
+
     MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
     virtual ~MixedInteractionConstraint();
@@ -83,6 +92,41 @@ public:
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes2>* getMState2() { return mstate2; }
     BaseMechanicalState* getMechModel2() { return mstate2; }
+
+    /// Construct the Constraint violations vector of each constraint
+    ///
+    /// \param v is the result vector that contains the whole constraints violations
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    virtual void getConstraintViolation(defaulttype::BaseVector *v, const ConstraintParams* cParams=ConstraintParams::defaultInstance());
+
+    /// Construct the Constraint violations vector of each constraint
+    ///
+    /// \param v is the result vector that contains the whole constraints violations
+    /// \param x1 and x2 are the position vectors used to compute contraint position violation
+    /// \param v1 and v2 are the velocity vectors used to compute contraint velocity violation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
+            , const DataVecDeriv1 &v1, const DataVecDeriv2 &v2, const ConstraintParams* cParams=ConstraintParams::defaultInstance()) = 0;
+
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param cId is the result constraint sparse matrix Id
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    virtual void buildConstraintMatrix(MultiMatrixDerivId cId, unsigned int &cIndex, const ConstraintParams* cParams=ConstraintParams::defaultInstance());
+
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param c1 and c2 are the results constraint sparse matrix
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param x1 and x2 are the position vectors used for contraint equation computation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// This is the method that should be implemented by the component
+    virtual void buildConstraintMatrix(DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
+            , const DataVecCoord1 &x1, const DataVecCoord2 &x2, const ConstraintParams* cParams=ConstraintParams::defaultInstance()) = 0;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
