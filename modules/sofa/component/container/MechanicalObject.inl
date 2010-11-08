@@ -155,6 +155,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x				.forceSet();
+    x0				.forceSet();
     v				.forceSet();
     dx				.forceSet();
     f				.forceSet();
@@ -1043,7 +1044,7 @@ void MechanicalObject<DataTypes>::init()
 //	*this->v0 = v.getValue();
 
     // Free motion position = position
-    vOp(VecId::freePosition(), VecId::position());
+//	vOp(VecId::freePosition(), VecId::position());
 
     VecCoord *x0_edit = x0.beginEdit();
 
