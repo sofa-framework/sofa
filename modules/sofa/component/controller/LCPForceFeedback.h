@@ -116,8 +116,6 @@ public:
         return DataTypes::Name();
     }
 
-
-
 protected:
     //component::constraintset::LCP* lcp, *next_lcp;
     core::behavior::MechanicalState<DataTypes> *mState; ///< The omni try to follow this mechanical state.
@@ -133,7 +131,7 @@ protected:
 
 
     //core::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.
-    sofa::component::constraintset::LCPConstraintSolver* lcpconstraintSolver;
+    sofa::component::constraintset::LCPConstraintSolverInterface* lcpconstraintSolver;
     // timer: verifies the time rates of the haptic loop
     CTime *_timer;
     double time_buf;
