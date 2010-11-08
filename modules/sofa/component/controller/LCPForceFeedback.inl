@@ -5,6 +5,7 @@
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/constraintset/LCPConstraintSolver.h>
+#include <sofa/component/constraintset/GenericLCPConstraintSolver.h>
 
 #include <sofa/core/objectmodel/BaseContext.h>
 
@@ -185,7 +186,8 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
         return;
     }
 
-    if((lcp->getMu() > 0.0) && (!constraints.empty()))
+    component::constraintset::GenericLCP* glcp = dynamic_cast<component::constraintset::GenericLCP*>(lcp);
+    if((lcp->getMu() > 0.0 || glcp) && (!constraints.empty()))
     {
         VecDeriv dx;
 
@@ -209,7 +211,14 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
 
         tol *= 0.001;
 
-        helper::nlcp_gaussseidelTimed(lcp->getNbConst(), lcp->getDfree(), lcp->getW(), lcp->getF(), lcp->getMu(), tol, max, true, 0.0008);
+        if(glcp != NULL)
+        {
+            glcp->setTolerance(tol);
+            glcp->setMaxIter(max);
+            glcp->gaussSeidel(0.0008);
+        }
+        else
+            helper::nlcp_gaussseidelTimed(lcp->getNbConst(), lcp->getDfree(), lcp->getW(), lcp->getF(), lcp->getMu(), tol, max, true, 0.0008);
 
         // Restore Dfree
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
@@ -222,6 +231,9 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
             }
         }
 
+        VecDeriv tempForces;
+        tempForces.resize(val.size());
+
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
         {
             if (lcp->getF()[rowIt.index()] != 0.0)
@@ -230,14 +242,14 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
 
                 for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
                 {
-                    forces[colIt.index()] += colIt.val() * lcp->getF()[rowIt.index()];
+                    tempForces[colIt.index()] += colIt.val() * lcp->getF()[rowIt.index()];
                 }
             }
         }
 
         for(unsigned int i = 0; i < stateSize; ++i)
         {
-            forces[i] *= forceCoef.getValue();
+            forces[i] = tempForces[i] * forceCoef.getValue();
         }
     }
 
