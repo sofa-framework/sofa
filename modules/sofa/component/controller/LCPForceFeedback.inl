@@ -5,8 +5,9 @@
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/constraintset/LCPConstraintSolver.h>
+#ifdef SOFA_DEV
 #include <sofa/component/constraintset/GenericLCPConstraintSolver.h>
-
+#endif // SOFA_DEV
 #include <sofa/core/objectmodel/BaseContext.h>
 
 #include <algorithm>
@@ -186,8 +187,14 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
         return;
     }
 
+#ifdef SOFA_DEV
     component::constraintset::GenericLCP* glcp = dynamic_cast<component::constraintset::GenericLCP*>(lcp);
-    if((lcp->getMu() > 0.0 || glcp) && (!constraints.empty()))
+#endif // SOFA_DEV
+    if( (lcp->getMu() > 0.0
+#ifdef SOFA_DEV
+            || glcp
+#endif // SOFA_DEV
+        ) && (!constraints.empty()))
     {
         VecDeriv dx;
 
@@ -210,7 +217,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
         int max = 100;
 
         tol *= 0.001;
-
+#ifdef SOFA_DEV
         if(glcp != NULL)
         {
             glcp->setTolerance(tol);
@@ -218,6 +225,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
             glcp->gaussSeidel(0.0008);
         }
         else
+#endif // SOFA_DEV
             helper::nlcp_gaussseidelTimed(lcp->getNbConst(), lcp->getDfree(), lcp->getW(), lcp->getF(), lcp->getMu(), tol, max, true, 0.0008);
 
         // Restore Dfree
