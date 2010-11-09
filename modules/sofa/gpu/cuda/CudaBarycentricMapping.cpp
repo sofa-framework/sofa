@@ -62,8 +62,6 @@ template class BarycentricMapping< Vec3dTypes, CudaVec3fTypes>;
 template class BarycentricMapping< CudaVec3fTypes, Vec3dTypes>;
 template class BarycentricMapping< Vec3dTypes, CudaVec3f1Types>;
 template class BarycentricMapping< CudaVec3f1Types, Vec3dTypes>;
-// template class BarycentricMapping< CudaVec3f1Types, ExtVec3dTypes>;
-template class BarycentricMapping< CudaVec3f1Types, Vec3dTypes>;
 #endif
 #endif
 }

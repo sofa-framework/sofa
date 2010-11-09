@@ -72,6 +72,8 @@ class ContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTyp
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
@@ -123,7 +125,7 @@ public:
         }
         else
         {
-            Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
+            Data<VecCoord>* d_x = this->outmodel->write(core::VecCoordId::position());
             VecCoord& vx = *d_x->beginEdit();
             RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), vx.deviceWrite());
             d_x->endEdit();
