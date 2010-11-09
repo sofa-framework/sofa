@@ -144,7 +144,7 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::computeDistances ()
 {
 #ifdef SOFA_DEV
-    if( this->computeAllMatrices.getValue())
+    if( this->computeAllMatrices.getValue() && distanceType.getValue().getSelectedId() != DISTANCE_EUCLIDIAN)
     {
         const VecInCoord& xfrom0 = *this->fromModel->getX0();
 

@@ -148,6 +148,9 @@ template<class DataTypes>
 void Distances< DataTypes >::update()
 {
 
+    // tester les data dirty
+    cleanDirty();
+
     /*
     if( true)
       computeDistanceMap
