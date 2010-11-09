@@ -208,9 +208,8 @@ void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx, const 
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams)
 {
-    VecDeriv& res = *resData.beginEdit();
-    projectResponseT<VecDeriv>(res, mparams);
-    resData.endEdit();
+    helper::WriteAccessor<DataVecDeriv> res = resData;
+    projectResponseT<VecDeriv>(res.wref(), mparams);
 }
 
 template <class DataTypes>
@@ -239,7 +238,7 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, c
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const core::MechanicalParams* /*mparams*/)
 {
-    VecCoord& x = *xData.beginEdit();
+    helper::WriteAccessor<DataVecCoord> x = xData;
     Real cT = (Real) this->getContext()->getTime();
 
     //initialize initial Dofs positions, if it's not done
@@ -261,9 +260,8 @@ void LinearMovementConstraint<DataTypes>::projectPosition(DataVecCoord& xData, c
     //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
     if(finished && nextT != prevT)
     {
-        interpolatePosition<Coord>(cT, x);
+        interpolatePosition<Coord>(cT, x.wref());
     }
-    xData.endEdit();
 }
 
 template <class DataTypes>

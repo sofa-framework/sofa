@@ -444,8 +444,12 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(M
     { data.addConstraint(this, index); } \
     template<> void FixedConstraint< T >::removeConstraint(unsigned int index) \
     { data.removeConstraint(this, index); } \
-    template<> void FixedConstraint< T >::projectResponse(VecDeriv& dx) \
-    { data.projectResponse(this, dx); }
+    template<> void FixedConstraint< T >::projectResponse(DataVecDeriv& d_resData, const core::MechanicalParams* /* mparams */) \
+    {  \
+		VecDeriv &resData = *d_resData.beginEdit(); \
+		data.projectResponse(this, resData);  \
+		d_resData.endEdit(); \
+	}
 
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3f1Types);

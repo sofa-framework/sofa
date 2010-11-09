@@ -98,7 +98,8 @@ void CudaMasterContactSolver<real>::build_LCP()
     _numConstraints = 0;
 
     // mechanical action executed from root node to propagate the constraints
-    simulation::MechanicalResetConstraintVisitor().execute(context);
+    simulation::MechanicalResetConstraintVisitor(params).execute(context);
+
     _mu = mu.getValue();
     simulation::MechanicalAccumulateConstraint(_numConstraints).execute(context);
     _mu = mu.getValue();
@@ -124,7 +125,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     if (_mu > 0.0)
     {
-        simulation::MechanicalRenumberConstraint(constraintRenumbering).execute(context);
+        simulation::MechanicalRenumberConstraint(constraintRenumbering, params).execute(context);
 
         _realNumConstraints += _realNumConstraints/15;
     }
@@ -244,7 +245,7 @@ void CudaMasterContactSolver<real>::keepContactForcesValue()
 }
 
 template<class real>
-void CudaMasterContactSolver<real>::step(double dt)
+void CudaMasterContactSolver<real>::step(double dt, const core::ExecParams* params)
 {
 
     context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
@@ -257,21 +258,27 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
-    simulation::BehaviorUpdatePositionVisitor updatePos(dt);
+    simulation::BehaviorUpdatePositionVisitor updatePos(dt, params);
     context->execute(&updatePos);
 
-    simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
+    simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt, params);
     context->execute(&beginVisitor);
 
     // Free Motion
-    simulation::SolveVisitor freeMotion(dt, true);
+    simulation::SolveVisitor freeMotion(dt, true, params);
     context->execute(&freeMotion);
-    simulation::MechanicalPropagateFreePositionVisitor().execute(context);
+    //simulation::MechanicalPropagateFreePositionVisitor().execute(context);
+    {
+        sofa::core::MechanicalParams mparams(*params);
+        sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
+        mparams.x() = xfree;
+        simulation::MechanicalPropagatePositionVisitor(0, xfree, true, &mparams).execute(context);
+    }
 
-    core::behavior::BaseMechanicalState::VecId dx_id = core::behavior::BaseMechanicalState::VecId::dx();
-    simulation::MechanicalVOpVisitor(dx_id).execute( context);
-    simulation::MechanicalPropagateDxVisitor(dx_id,true).execute( context); //ignore the masks (is it necessary?)
-    simulation::MechanicalVOpVisitor(dx_id).execute( context);
+    //core::VecId dx_id = (VecId)core::VecDerivId::dx();
+    //simulation::MechanicalVOpVisitor(dx_id, params).execute( context);
+    //simulation::MechanicalPropagateDxVisitor(dx_id, true, params).execute( context); //ignore the masks (is it necessary?)
+    //simulation::MechanicalVOpVisitor(dx_id, params).execute( context);
 
 #ifdef DISPLAY_TIME
     time_Free_Motion = ((double) timer->getTime() - time_Free_Motion)*timeScale;
@@ -404,7 +411,8 @@ void CudaMasterContactSolver<real>::step(double dt)
         cc->applyContactForce(&_f);
     }
 
-    simulation::MechanicalPropagateAndAddDxVisitor().execute( context);
+    core::MechanicalParams mparams(*params);
+    simulation::MechanicalPropagateAndAddDxVisitor(&mparams).execute(context);
 
     //simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
@@ -443,7 +451,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     }
 #endif
 
-    simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
+    simulation::MechanicalEndIntegrationVisitor endVisitor(dt, params);
     context->execute(&endVisitor);
 }
 

@@ -115,10 +115,9 @@ public:
         }
         else
         {
-            Data<VecCoord>* d_x = outmodel->write(core::VecCoordId::position());
-            VecCoord& x = *d_x->beginEdit();
+            helper::WriteAccessor<Data<VecCoord> > d_x = *outmodel->write(core::VecCoordId::position());
+            VecCoord& x = d_x.wref();
             x[i] = P;
-            d_x->endEdit();
         }
         return i;
     }
