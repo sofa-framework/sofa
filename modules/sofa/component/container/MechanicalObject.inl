@@ -954,8 +954,12 @@ void MechanicalObject<DataTypes>::init()
 #endif
     m_topology = this->getContext()->getMeshTopology();
 
-    helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
-    helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+    //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
+    //helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+    Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
+    Data<VecDeriv>* v_wAData = this->write(VecDerivId::velocity());
+    VecCoord& x_wA = *x_wAData->beginEdit();
+    VecDeriv& v_wA = *v_wAData->beginEdit();
 
     //case if X0 has been set but not X
     if (getX0()->size() > x_wA.size())
@@ -1006,6 +1010,7 @@ void MechanicalObject<DataTypes>::init()
                         v_wA[i++] = v1;
                 }
                 this->resize(nbp);
+
                 for (int i=0; i<nbp; i++)
                 {
                     x_wA[i] = Coord();
