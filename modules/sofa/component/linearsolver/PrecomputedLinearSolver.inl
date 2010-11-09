@@ -77,13 +77,13 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
+void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
     // Update the matrix only the first time
 
     if (first)
     {
-        Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+        Inherit::setSystemMBKMatrix(mparams);
         loadMatrix();
         first = false;
     }

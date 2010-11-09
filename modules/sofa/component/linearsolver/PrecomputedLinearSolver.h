@@ -88,7 +88,7 @@ public:
     PrecomputedLinearSolver();
     void solve (TMatrix& M, TVector& x, TVector& b);
     void invert(TMatrix& M);
-    void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     void loadMatrix();
     void loadMatrixWithCSparse();
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);

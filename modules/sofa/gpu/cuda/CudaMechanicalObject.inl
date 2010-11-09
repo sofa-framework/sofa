@@ -392,12 +392,12 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::vAlloc(Main* m, VecId v)
 {
-    if (v.type == sofa::core::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
+    if (v.type == sofa::core::V_COORD && v.index >= VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
         VecCoord* vec = m->getVecCoord(v.index);
         vec->recreate(m->vsize);
     }
-    else if (v.type == sofa::core::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
+    else if (v.type == sofa::core::V_DERIV && v.index >= VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
         VecDeriv* vec = m->getVecDeriv(v.index);
         vec->recreate(m->vsize);
