@@ -125,7 +125,7 @@ SkinningMapping<TIn, TOut>::~SkinningMapping ()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::computeInitPos ( )
 {
-    const VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
+    const VecCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
     const VecInCoord& xfrom = *this->fromModel->getX0();
 
     const vector<int>& m_reps = repartition.getValue();
@@ -172,7 +172,7 @@ void SkinningMapping<TIn, TOut>::computeDistances ()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
 {
-    const VecCoord& xto0 = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
+    const VecCoord& xto0 = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
 
     switch ( distanceType.getValue().getSelectedId() )
@@ -215,7 +215,7 @@ void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::sortReferences( vector<int>& references)
 {
-    const VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
+    const VecCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
     const VecInCoord& xfrom = *this->fromModel->getX0();
     const unsigned int& nbRef = nbRefs.getValue();
 
@@ -352,7 +352,7 @@ void SkinningMapping<TIn, TOut>::setWeightsToInvDist()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::updateWeights ()
 {
-    const VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
+    const VecCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
     const VecInCoord& xfrom = *this->fromModel->getX0();
 
     VVD& m_weights = * ( weights.beginEdit() );
