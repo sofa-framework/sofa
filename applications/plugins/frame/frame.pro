@@ -32,6 +32,8 @@ HEADERS += \
            FrameForceField.h \
            FrameHookeForceField.h \
            FrameHookeForceField.inl \
+           FrameLoydAlgo.h \
+           FrameLoydAlgo.inl \
            FrameMass.h \
            FrameMechanicalObject.h \
            FrameSpringForceField2.h \
@@ -45,6 +47,7 @@ SOURCES += \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
            FrameHookeForceField.cpp \
+           FrameLoydAlgo.cpp \
            FrameMechanicalObject.cpp \
            FrameSpringForceField2.cpp \
            initFrame.cpp
