@@ -66,6 +66,7 @@ public:
     const Coord& p1() const;
     const Coord& p2() const;
     const Coord& p3() const;
+
     int p1Index() const;
     int p2Index() const;
     int p3Index() const;
@@ -80,6 +81,9 @@ public:
 
     const Deriv& n() const;
     Deriv& n();
+
+    /// Return true if the element stores a free position vector
+    bool hasFreePosition() const;
 
     int flags() const;
 };
@@ -271,6 +275,9 @@ inline       typename DataTypes::Deriv& TTriangle<DataTypes>::n()       { return
 
 template<class DataTypes>
 inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangleFlags(this->index); }
+
+template<class DataTypes>
+inline bool TTriangle<DataTypes>::hasFreePosition() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 typedef TTriangleModel<Vec3Types> TriangleModel;
 typedef TTriangle<Vec3Types> Triangle;

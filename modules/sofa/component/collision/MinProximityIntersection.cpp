@@ -189,30 +189,32 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
+
 #ifdef DETECTIONOUTPUT_FREEMOTION
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 Pfree,Qfree,ABfree,CDfree;
+        ABfree = e1.p2Free()-e1.p1Free();
+        CDfree = e2.p2Free()-e2.p1Free();
+        Pfree = e1.p1Free() + ABfree * alpha;
+        Qfree = e2.p1Free() + CDfree * beta;
 
-    Vector3 Pfree,Qfree,ABfree,CDfree;
-    ABfree = e1.p2Free()-e1.p1Free();
-    CDfree = e2.p2Free()-e2.p1Free();
-    Pfree = e1.p1Free() + ABfree * alpha;
-    Qfree = e2.p1Free() + CDfree * beta;
-
+        detection->freePoint[0] = Pfree;
+        detection->freePoint[1] = Qfree;
+    }
 #endif
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection->point[0]=P;
-    detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Pfree;
-    detection->freePoint[1]=Qfree;
-#endif
-    detection->normal=PQ;
+    detection->point[0] = P;
+    detection->point[1] = Q;
+    detection->normal = PQ;
     detection->value = detection->normal.norm();
+
     if(detection->value>1e-15)
     {
         detection->normal /= detection->value;
@@ -318,29 +320,29 @@ int MinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, Outpu
 
     Vector3 PQ = Q-P;
 
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 Pfree,Qfree,ABfree,ACfree;
+        ABfree = e2.p2Free()-e2.p1Free();
+        ACfree = e2.p3Free()-e2.p1Free();
+        Pfree = e1.pFree();
+        Qfree = e2.p1Free() + ABfree * alpha + ACfree * beta;
 
-    Vector3 Pfree,Qfree,ABfree,ACfree;
-    ABfree = e2.p2Free()-e2.p1Free();
-    ACfree = e2.p3Free()-e2.p1Free();
-    Pfree = e1.pFree();
-    Qfree = e2.p1Free() + ABfree * alpha + ACfree * beta;
-
+        detection->freePoint[0] = Qfree;
+        detection->freePoint[1] = Pfree;
+    }
 #endif
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Qfree;
-    detection->freePoint[1]=Pfree;
-#endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
     if(detection->value>1e-15)
@@ -418,28 +420,26 @@ int MinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVec
 
     Vector3 PQ = Q-P;
 
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
+
 #ifdef DETECTIONOUTPUT_FREEMOTION
-
-
-    Vector3 ABfree = e2.p2Free()-e2.p1Free();
-    Vector3 Pfree = e1.pFree();
-    Vector3 Qfree = e2.p1Free() + ABfree * alpha;
-
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 ABfree = e2.p2Free()-e2.p1Free();
+        Vector3 Pfree = e1.pFree();
+        Vector3 Qfree = e2.p1Free() + ABfree * alpha;
+        detection->freePoint[0] = Qfree;
+        detection->freePoint[1] = Pfree;
+    }
 #endif
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Qfree;
-    detection->freePoint[1]=Pfree;
-#endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
     if(detection->value>1e-15)
@@ -469,7 +469,6 @@ bool MinProximityIntersection::testIntersection(Point& e1, Point& e2)
 
 int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
-
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     Vector3 P,Q,PQ;
@@ -477,30 +476,33 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
     Q = e2.p();
     PQ = Q-P;
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    Vector3 Pfree,Qfree;
-    Pfree = e1.pFree();
-    Qfree = e2.pFree();
-#endif
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
+#ifdef DETECTIONOUTPUT_FREEMOTION
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 Pfree, Qfree;
+        Pfree = e1.pFree();
+        Qfree = e2.pFree();
+
+        detection->freePoint[0] = Pfree;
+        detection->freePoint[1] = Qfree;
+    }
+#endif
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Pfree;
-    detection->freePoint[1]=Qfree;
-#endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
+
     if(detection->value>1e-15)
     {
         detection->normal /= detection->value;
