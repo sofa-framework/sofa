@@ -277,7 +277,7 @@ template<class DataTypes>
 inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangleFlags(this->index); }
 
 template<class DataTypes>
-inline bool TTriangle<DataTypes>::hasFreePosition() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 typedef TTriangleModel<Vec3Types> TriangleModel;
 typedef TTriangle<Vec3Types> Triangle;
