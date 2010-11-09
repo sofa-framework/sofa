@@ -887,6 +887,8 @@ public:
     size_type size() const { return vref.size(); }
     bool empty() const { return vref.empty(); }
 
+    const container_type& ref() const { return vref; }
+
     const_reference operator[](size_type i) const { return data[i]; }
 
     const_iterator begin() const { return data; }
@@ -923,6 +925,9 @@ public:
 
     const_reference operator[](size_type i) const { return data[i]; }
     reference operator[](size_type i) { return data[i]; }
+
+    const container_type& ref() const { return vref; }
+    container_type& wref() { return vref; }
 
     const_iterator begin() const { return data; }
     iterator begin() { return data; }

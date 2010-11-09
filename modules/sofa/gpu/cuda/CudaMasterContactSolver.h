@@ -54,11 +54,12 @@ using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 using namespace sofa::gpu::cuda;
 
-class MechanicalResetContactForceVisitor : public simulation::MechanicalVisitor
+class MechanicalResetContactForceVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    VecId force;
-    MechanicalResetContactForceVisitor()
+    //core::MultiVecDerivId force;
+    MechanicalResetContactForceVisitor(const core::ExecParams* params)
+        : simulation::BaseMechanicalVisitor(params)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -84,11 +85,13 @@ public:
 };
 
 /* ACTION 2 : Apply the Contact Forces on mechanical models & Compute displacements */
-class MechanicalApplyContactForceVisitor : public simulation::MechanicalVisitor
+class MechanicalApplyContactForceVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    VecId force;
-    MechanicalApplyContactForceVisitor(double *f):_f(f)
+    //core::MultiVecDerivId force;
+    MechanicalApplyContactForceVisitor(double *f, const core::ExecParams* params)
+        : simulation::BaseMechanicalVisitor(params)
+        ,_f(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -120,11 +123,13 @@ private:
 /* ACTION 3 : gets the vector of constraint values */
 /* ACTION 3 : gets the vector of constraint values */
 template<class real>
-class MechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
+class MechanicalGetConstraintValueVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
 
-    MechanicalGetConstraintValueVisitor(BaseVector * v)  // , _numContacts(numContacts)
+    MechanicalGetConstraintValueVisitor(BaseVector * v, const core::ConstraintParams* params)
+        : simulation::BaseMechanicalVisitor(params)
+        , cparams(params)
     {
         real * data = ((CudaBaseVector<real> *) v)->getCudaVector().hostWrite();
         _v = new FullVector<real>(data,0);
@@ -152,10 +157,13 @@ private:
     // unsigned int &_numContacts; // we need an offset to fill the vector _v if differents contact class are created
 };
 
-class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
+class CudaMechanicalGetConstraintValueVisitor  : public simulation::BaseMechanicalVisitor
 {
 public:
-    CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v)
+    CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v, const core::ConstraintParams* params)
+        : simulation::BaseMechanicalVisitor(params)
+        , cparams(params)
+        , _v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -167,7 +175,7 @@ public:
 
         if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
         {
-            c->getConstraintValue(_v);
+            c->getConstraintViolation(_v, cparams);
         }
         return RESULT_CONTINUE;
     }
@@ -177,10 +185,13 @@ public:
     }
 #endif
 private:
+    /// Constraint parameters
+    const sofa::core::ConstraintParams *cparams;
+
     defaulttype::BaseVector * _v;
 };
 
-class MechanicalGetConstraintInfoVisitor : public simulation::MechanicalVisitor
+class MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
     typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
@@ -189,8 +200,8 @@ public:
     typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
     typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
-    MechanicalGetConstraintInfoVisitor(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
-        : _blocks(blocks), _ids(ids), _positions(positions), _directions(directions), _areas(areas)
+    MechanicalGetConstraintInfoVisitor(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas, const core::ExecParams* params)
+        : simulation::BaseMechanicalVisitor(params), _blocks(blocks), _ids(ids), _positions(positions), _directions(directions), _areas(areas)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -242,7 +253,7 @@ public:
     CudaMasterContactSolver();
     // virtual const char* getTypeName() const { return "MasterSolver"; }
 
-    void step (double dt);
+    void step (double dt, const core::ExecParams* params = core::ExecParams::defaultInstance());
 
     //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 

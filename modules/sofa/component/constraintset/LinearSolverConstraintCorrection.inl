@@ -233,16 +233,16 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
     const unsigned int numDOFs = mstate->getSize();
 
-    helper::WriteAccessor<Data<VecDeriv> > dataDx = *mstate->write(dxID);
-    VecDeriv& dx = dataDx.wref();
+    Data<VecDeriv> dataDx = *mstate->write(dxID);
+    VecDeriv& dx = *dataDx.beginEdit();
 
     dx.clear();
     dx.resize(numDOFs);
     for (unsigned int i=0; i< numDOFs; i++)
         dx[i] = Deriv();
 
-    helper::WriteAccessor<Data<VecDeriv> > dataForce = *mstate->write(forceID);
-    VecDeriv& force = dataForce.wref();
+    Data<VecDeriv> dataForce = *mstate->write(forceID);
+    VecDeriv& force = *dataForce.beginEdit();
 
     force.clear();
     force.resize(numDOFs);
@@ -294,14 +294,14 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 
 
-    helper::WriteAccessor<Data<VecCoord> > xData     = *mstate->write(core::VecCoordId::position());
-    helper::WriteAccessor<Data<VecDeriv> > vData     = *mstate->write(core::VecDerivId::velocity());
-    helper::ReadAccessor<Data<VecCoord> >  xfreeData = *mstate->read(core::ConstVecCoordId::freePosition());
-    helper::ReadAccessor<Data<VecDeriv> >  vfreeData = *mstate->read(core::ConstVecDerivId::freeVelocity());
-    VecCoord& x = xData.wref();
-    VecDeriv& v = vData.wref();
-    const VecCoord& x_free = xfreeData.ref();
-    const VecDeriv& v_free = vfreeData.ref();
+    Data<VecCoord> xData     = *mstate->write(core::VecCoordId::position());
+    Data<VecDeriv> vData     = *mstate->write(core::VecDerivId::velocity());
+    Data<VecCoord> xfreeData = *mstate->read(core::ConstVecCoordId::freePosition());
+    Data<VecDeriv> vfreeData = *mstate->read(core::ConstVecDerivId::freeVelocity());
+    VecCoord& x = *xData.beginEdit();
+    VecDeriv& v = *vData.beginEdit();
+    const VecCoord& x_free = xfreeData.getValue();
+    const VecDeriv& v_free = vfreeData.getValue();
 
     for (unsigned int i=0; i< numDOFs; i++)
     {
@@ -314,6 +314,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
         if (this->f_printLog.getValue()) std::cout << "dx[" << i << "] = " << dx[i] << std::endl;
     }
+    dataDx.endEdit();
+    dataForce.endEdit();
+    xData.beginEdit();
+    vData.beginEdit();
 
     mstate->vFree(forceID);
 }
@@ -322,8 +326,8 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
 {
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::externalForce());
-    VecDeriv& force = forceData.wref();
+    Data<VecDeriv> forceData = *mstate->write(core::VecDerivId::externalForce());
+    VecDeriv& force = *forceData.beginEdit();
 
     const unsigned int numDOFs = mstate->getSize();
 
@@ -350,16 +354,18 @@ void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce
             }
         }
     }
+    forceData.endEdit();
 }
 
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 {
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *mstate->write(core::VecDerivId::force());
-    VecDeriv& force = forceData.wref();
+    Data<VecDeriv> forceData = *mstate->write(core::VecDerivId::force());
+    VecDeriv& force = *forceData.beginEdit();
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
+    forceData.endEdit();
 }
 
 

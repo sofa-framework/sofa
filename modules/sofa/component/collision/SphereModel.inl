@@ -372,11 +372,9 @@ int TSphereModel<DataTypes>::addSphere(const Vector3& pos, Real r)
 template <class DataTypes>
 void TSphereModel<DataTypes>::setSphere(int i, const Vector3& pos, Real r)
 {
-    Data<VecCoord>* xData = mstate->write(core::VecCoordId::position());
-    VecCoord& x = *xData->beginEdit();
-    x[i] = pos;
+    helper::WriteAccessor<Data<VecCoord> > xData = *mstate->write(core::VecCoordId::position());
+    xData.wref()[i] = pos;
     setRadius(i,r);
-    xData->endEdit();
 }
 
 } // namespace collision

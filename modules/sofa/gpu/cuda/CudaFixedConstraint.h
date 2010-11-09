@@ -98,7 +98,7 @@ public:
     template<> void FixedConstraint< T >::init(); \
     template<> void FixedConstraint< T >::addConstraint(unsigned int index); \
     template<> void FixedConstraint< T >::removeConstraint(unsigned int index); \
-    template<> void FixedConstraint< T >::projectResponse(VecDeriv& dx);
+    template<> void FixedConstraint< T >::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams);
 
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3f1Types);

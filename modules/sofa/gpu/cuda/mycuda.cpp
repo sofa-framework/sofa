@@ -67,7 +67,7 @@ SOFA_LINK_CLASS(CudaOglTetrahedralModel)
 SOFA_LINK_CLASS(CudaTetrahedronTLEDForceField)
 SOFA_LINK_CLASS(CudaHexahedronTLEDForceField)
 SOFA_LINK_CLASS(CudaTetrahedronSuperTLEDForceField)
-SOFA_LINK_CLASS(CudaMasterContactSolver)
+//SOFA_LINK_CLASS(CudaMasterContactSolver)
 SOFA_LINK_CLASS(CudaSpatialGridContainer)
 
 #endif // SOFA_DEV
