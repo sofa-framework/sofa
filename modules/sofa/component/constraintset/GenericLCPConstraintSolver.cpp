@@ -56,11 +56,11 @@ namespace constraintset
 
 GenericLCPConstraintSolver::GenericLCPConstraintSolver()
     : displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of GenericLCPConstraintSolver."))
-    , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
+    , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
     , scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
-    , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
     , schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection", "Apply new scheme where compliance is progressively corrected"))
     , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
     , graphConstraints( initData(&graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
@@ -317,7 +317,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
         i += constraintsResolutions[i]->nbLines;
     }
 
-    sofa::helper::vector<double>* graph_residuals;
+    sofa::helper::vector<double>* graph_residuals = NULL;
     sofa::helper::vector<double> tabErrors;
 
     if(solver)

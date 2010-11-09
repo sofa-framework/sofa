@@ -89,9 +89,10 @@ public:
     bool solveSystem(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
     bool applyCorrection(double dt, MultiVecId, core::ConstraintParams::ConstOrder = core::ConstraintParams::POS);
 
-    Data<bool> displayTime, scaleTolerance, allVerified, schemeCorrection;
-    Data<double> tolerance, sor;
+    Data<bool> displayTime;
     Data<int> maxIt;
+    Data<double> tolerance, sor;
+    Data<bool> scaleTolerance, allVerified, schemeCorrection;
     Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints /*, graphForces */;
 
     LCP* getLCP();
