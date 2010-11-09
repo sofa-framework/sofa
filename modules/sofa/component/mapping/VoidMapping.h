@@ -47,12 +47,13 @@ public:
     typedef sofa::core::behavior::BaseMechanicalState In;
     typedef sofa::core::behavior::BaseMechanicalState Out;
 
-    Data<bool> f_isMechanical;
 
-    VoidMapping()
-        : f_isMechanical( initData( &f_isMechanical, true, "isMechanical", "set to false if this mapping should only be used as a regular mapping instead of a mechanical mapping" ) )
-        , fromModel(NULL), toModel(NULL)
+
+    VoidMapping():Inherit(),fromModel(NULL),toModel(NULL)
     {
+        this->f_mapForces.setValue(false);
+        this->f_mapConstraints.setValue(false);
+        this->f_mapMasses.setValue(false);
     }
 
     virtual ~VoidMapping()
@@ -96,18 +97,6 @@ public:
     {
         helper::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, toModel);
         return vec;
-    }
-
-    /// Return false if this mapping should only be used as a regular mapping instead of a mechanical mapping.
-    bool isMechanical()
-    {
-        return this->f_isMechanical.getValue();
-    }
-
-    /// Determine if this mapping should only be used as a regular mapping instead of a mechanical mapping.
-    void setMechanical(bool b)
-    {
-        this->f_isMechanical.setValue(b);
     }
 
     virtual void apply (core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */, const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */)
