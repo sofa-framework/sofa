@@ -58,6 +58,9 @@ public:
     const Vector3& v() const;
     Vector3 n() const;
 
+    /// Return true if the element stores a free position vector
+    bool hasFreePosition() const;
+
     bool testLMD(const Vector3 &, double &, double &);
 
     bool activated(core::CollisionModel *cm = 0) const;
@@ -161,6 +164,8 @@ inline const Vector3& Point::pFree() const { return model->mstate->read(core::Co
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
 
 inline Vector3 Point::n() const { return ((unsigned)index<model->normals.size()) ? model->normals[index] : Vector3(); }
+
+inline bool Point::hasFreePosition() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 inline bool Point::activated(core::CollisionModel *cm) const
 {

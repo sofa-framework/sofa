@@ -262,13 +262,10 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
-// filter for LMD //
+    // filter for LMD //
 
     if (!useLMDFilters.getValue())
     {
-
-
-
         if (!testValidity(e1, PQ))
         {
             if(debug)
@@ -279,13 +276,11 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         Vector3 QP = -PQ;
 
         if (!testValidity(e2, QP))
-
         {
             if(debug)
                 std::cout<<" testValidity rejected for the second segment"<<std::endl;
             return 0;
         }
-
     }
     else
     {
@@ -306,37 +301,39 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
     //std::cout<<" contact line line detected with alpha ="<<alpha<<" and beta ="<<beta<<std::endl;
 
+    contacts->resize(contacts->size() + 1);
+    DetectionOutput *detection = &*(contacts->end() - 1);
+
 #ifdef DETECTIONOUTPUT_FREEMOTION
 
-    Vector3 Pfree,Qfree,ABfree,CDfree;
-    ABfree = e1.p2Free()-e1.p1Free();
-    CDfree = e2.p2Free()-e2.p1Free();
-    Pfree = e1.p1Free() + ABfree * alpha;
-    Qfree = e2.p1Free() + CDfree * beta;
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 Pfree, Qfree, ABfree, CDfree;
+        ABfree = e1.p2Free()-e1.p1Free();
+        CDfree = e2.p2Free()-e2.p1Free();
+        Pfree = e1.p1Free() + ABfree * alpha;
+        Qfree = e2.p1Free() + CDfree * beta;
+        detection->freePoint[0] = Pfree;
+        detection->freePoint[1] = Qfree;
+    }
 
 #endif
-
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
-    detection->point[0]=P;
-    detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Pfree;
-    detection->freePoint[1]=Qfree;
-#endif
+    detection->point[0] = P;
+    detection->point[1] = Q;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=alpha;
-    detection->baryCoords[1][0]=beta;
+    detection->baryCoords[0][0] = alpha;
+    detection->baryCoords[1][0] = beta;
 #endif
-    detection->normal=PQ;
+    detection->normal = PQ;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
     detection->value -= contactDist;
+
     return 1;
 }
 
@@ -504,34 +501,33 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 
     //end filter
 
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 Pfree,Qfree,ABfree,ACfree;
+        ABfree = e2.p2Free()-e2.p1Free();
+        ACfree = e2.p3Free()-e2.p1Free();
+        Pfree = e1.pFree();
+        Qfree = e2.p1Free() + ABfree * alpha + ACfree * beta;
 
-    Vector3 Pfree,Qfree,ABfree,ACfree;
-    ABfree = e2.p2Free()-e2.p1Free();
-    ACfree = e2.p3Free()-e2.p1Free();
-    Pfree = e1.pFree();
-    Qfree = e2.p1Free() + ABfree * alpha + ACfree * beta;
-
+        detection->freePoint[0] = Qfree;
+        detection->freePoint[1] = Pfree;
+    }
 #endif
-
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
-    detection->point[0]=Q;
-    detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Qfree;
-    detection->freePoint[1]=Pfree;
-#endif
+    detection->point[0] = Q;
+    detection->point[1] = P;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    detection->baryCoords[0][0]=0;
-    detection->baryCoords[1][0]=alpha;
-    detection->baryCoords[1][1]=beta;
+    detection->baryCoords[0][0] = 0;
+    detection->baryCoords[1][0] = alpha;
+    detection->baryCoords[1][1] = beta;
 #endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
@@ -679,30 +675,27 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
     // end filter
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
-
-    Vector3 ABfree = e2.p2Free()-e2.p1Free();
-    Vector3 Pfree = e1.pFree();
-    Vector3 Qfree = e2.p1Free() + ABfree * alpha;
-
-#endif
-
-
-
-
-    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
+
+#ifdef DETECTIONOUTPUT_FREEMOTION
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 ABfree = e2.p2Free() - e2.p1Free();
+        Vector3 Pfree = e1.pFree();
+        Vector3 Qfree = e2.p1Free() + ABfree * alpha;
+
+        detection->freePoint[0] = Qfree;
+        detection->freePoint[1] = Pfree;
+    }
+#endif
+
+    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Qfree;
-    detection->freePoint[1]=Pfree;
-#endif
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
     detection->baryCoords[0][0]=0;
     detection->baryCoords[1][0]=alpha;
@@ -711,6 +704,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
     detection->value -= contactDist;
+
     return 1;
 }
 
@@ -811,25 +805,28 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     }
 
     // end filter
-#ifdef DETECTIONOUTPUT_FREEMOTION
-
-    Vector3 Pfree,Qfree;
-    Pfree = e1.pFree();
-    Qfree = e2.pFree();
-
-#endif
-    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
+
+#ifdef DETECTIONOUTPUT_FREEMOTION
+    if (e1.hasFreePosition() && e2.hasFreePosition())
+    {
+        Vector3 Pfree,Qfree;
+        Pfree = e1.pFree();
+        Qfree = e2.pFree();
+
+        detection->freePoint[0] = Pfree;
+        detection->freePoint[1] = Qfree;
+    }
+#endif
+
+    const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
-#ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0]=Pfree;
-    detection->freePoint[1]=Qfree;
-#endif
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
     detection->baryCoords[0][0]=0;
     detection->baryCoords[1][0]=0;
@@ -1247,8 +1244,8 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
             return false;
         }
     }
-    return true;
 
+    return true;
 }
 
 bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
@@ -1393,8 +1390,6 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     }
     //sout<<"trianglesAroundEdge.size()"<<trianglesAroundEdge.size()<<sendl;
     return true;
-
-
 }
 
 bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ)
@@ -1419,10 +1414,6 @@ void LocalMinDistance::draw()
 {
     if (!getContext()->getShowCollisionModels())
         return;
-
-
-
-
 }
 
 

@@ -65,6 +65,9 @@ public:
     const Vector3& v1() const;
     const Vector3& v2() const;
 
+    /// Return true if the element stores a free position vector
+    bool hasFreePosition() const;
+
     bool activated(core::CollisionModel *cm = 0) const;
 
     // Return respectively the Vertex composing the neighbor Rigt and Left Triangle
@@ -187,6 +190,8 @@ inline const Vector3& Line::p2Free() const { return model->mstate->read(core::Co
 
 inline const Vector3& Line::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
 inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }
+
+inline bool Line::hasFreePosition() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 inline bool Line::activated(core::CollisionModel *cm) const
 {
