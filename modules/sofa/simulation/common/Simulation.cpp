@@ -146,14 +146,14 @@ void Simulation::init ( Node* root )
     needToPrefetch = false;
     root->execute<InitVisitor>(params);
 
-    //{
-    //    sofa::core::MechanicalParams mparams(*params);
-    //    root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
-    //    sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
-    //    mparams.x() = xfree;
-    //    MechanicalPropagatePositionVisitor act(0, xfree, true, &mparams);
-    //    root->execute(act);
-    //}
+    {
+        sofa::core::MechanicalParams mparams(*params);
+        root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
+        mparams.x() = xfree;
+        MechanicalPropagatePositionVisitor act(0, xfree, true, &mparams);
+        root->execute(act);*/
+    }
 
     // Save reset state for later uses in reset()
     root->execute<StoreResetStateVisitor>(params);
@@ -176,14 +176,14 @@ void Simulation::initNode( Node* node)
 
     //node->execute<MechanicalPropagatePositionAndVelocityVisitor>(params);
     //node->execute<MechanicalPropagateFreePositionVisitor>(params);
-    //{
-    //	sofa::core::MechanicalParams mparams(*params);
-    //	node->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
-    //	sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
-    //	mparams.x() = xfree;
-    //	MechanicalPropagatePositionVisitor act(0, xfree, true, &mparams);
-    //	node->execute(act);
-    //}
+    {
+        sofa::core::MechanicalParams mparams(*params);
+        node->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
+        mparams.x() = xfree;
+        MechanicalPropagatePositionVisitor act(0, xfree, true, &mparams);
+        node->execute(act);*/
+    }
 
     node->execute<StoreResetStateVisitor>(params);
     getInstruments(node);
