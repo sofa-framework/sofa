@@ -88,6 +88,7 @@ SkinningMapping<TIn, TOut>::SkinningMapping (core::State<In>* from, core::State<
     , newFrameDistanceToMaximizeWeight ( initData ( &newFrameDistanceToMaximizeWeight, 0.0, "newFrameDistanceToMaximizeWeight","new frame distance used to maximize weights." ) )
     , enableSkinning ( initData ( &enableSkinning, true, "enableSkinning","enable skinning." ) )
     , voxelVolume ( initData ( &voxelVolume, 1.0, "voxelVolume","default volume voxel. Use if no hexa topo is found." ) )
+    , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to compute all physical matrices." ) )
 #endif
     , wheightingType ( initData ( &wheightingType, "wheightingType","Weighting computation method.\n0 - none (distance is used).\n1 - inverse distance square.\n2 - linear.\n3 - hermite (on groups of four dofs).\n4 - spline (on groups of four dofs)." ) )
     , distanceType ( initData ( &distanceType, "distanceType","Distance computation method.\n0 - euclidian distance.\n1 - geodesic distance.\n2 - harmonic diffusion." ) )
