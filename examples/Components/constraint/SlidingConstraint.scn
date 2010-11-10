@@ -7,7 +7,7 @@
 	<Object type="CollisionGroup" name="Group" />
 
 	<Node name="SlidingPoint">
-		<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 -0.2	1 1.25 0.2"/>
+		<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 -0.2 	1 1.25 0.2" free_position="1 1.25 -0.2 	1 1.25 0.2"/>
 	</Node>
 	
 	<Node name="CUBE_1">
@@ -36,11 +36,9 @@
 	</Node>
 	
 	<Object type="SlidingConstraint" object1="SlidingPoint/points" object2="CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
-<!--	<Object type="SlidingConstraint" object1="CUBE_1/Constraints/points" object2="CUBE_0/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />	
-	 <Object type="PlaneConstraint" object1="CUBE_1/Constraints/points" object2="CUBE_0/Constraints/points" sliding_point="0" plane_1="0" plane_2="1" plane_3="2" /> -->
 	 
-	 <Node name="Line">
-		<Object type="MechanicalObject" name="points" template="Vec3d" position="6 1.25 1	6 1.25 -1"/>
+	<Node name="Line">
+		<Object type="MechanicalObject" name="points" template="Vec3d" position="6 1.25 1	6 1.25 -1" free_position="6 1.25 1	6 1.25 -1"/>
 	</Node>
 	
 	<Node name="CUBE_2">
