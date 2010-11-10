@@ -161,6 +161,9 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     m_translation	.setGroup("Transformation");
     m_rotation		.setGroup("Transformation");
     m_scale			.setGroup("Transformation");
+
+    // add one identity matrix
+    xforms.resize(1);
 }
 
 VisualModelImpl::~VisualModelImpl()

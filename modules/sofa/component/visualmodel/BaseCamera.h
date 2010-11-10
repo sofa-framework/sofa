@@ -155,12 +155,12 @@ public:
 
     double getZNear()
     {
-        return p_zNear.getValue();
+        return currentZNear;
     }
 
     double getZFar()
     {
-        return p_zFar.getValue();
+        return currentZFar;
     }
 
     void setView(const Vec3& position, const Quat &orientation);
@@ -186,6 +186,7 @@ protected:
     //better way to do that ?
     Vec3 currentLookAt;
     double currentDistance;
+    double currentZNear, currentZFar;
 
     void computeZ();
 };

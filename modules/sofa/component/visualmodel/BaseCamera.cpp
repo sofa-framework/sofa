@@ -51,8 +51,8 @@ BaseCamera::BaseCamera()
     ,p_lookAt(initData(&p_lookAt, "lookAt", "Camera's look at"))
     ,p_distance(initData(&p_distance, "distance", "Distance between camera and look at"))
     ,p_fieldOfView(initData(&p_fieldOfView, (double) 45.0 , "fieldOfView", "Camera's FOV"))
-    ,p_zNear(initData(&p_zNear, (double) 0.1 , "zNear", "Camera's zNear"))
-    ,p_zFar(initData(&p_zFar, (double) 1000.0 , "zFar", "Camera's zFar"))
+    ,p_zNear(initData(&p_zNear, (double) 0.0 , "zNear", "Camera's zNear (value <= 0.0 == computed from bounding box)"))
+    ,p_zFar(initData(&p_zFar, (double) 0.0 , "zFar", "Camera's zFar (value <= 0.0 == computed from bounding box)"))
     ,p_minBBox(initData(&p_minBBox, Vec3(0.0,0.0,0.0) , "minBBox", "minBBox"))
     ,p_maxBBox(initData(&p_maxBBox, Vec3(1.0,1.0,1.0) , "maxBBox", "maaxBBox"))
     ,p_widthViewport(initData(&p_widthViewport, (unsigned int) 800 , "widthViewport", "widthViewport"))
@@ -112,7 +112,8 @@ void BaseCamera::init()
 
     currentLookAt = p_lookAt.getValue();
     currentDistance = p_distance.getValue();
-
+    currentZNear = p_zNear.getValue();
+    currentZFar = p_zFar.getValue();
 }
 
 void BaseCamera::translate(const Vec3& t)
@@ -319,11 +320,23 @@ void BaseCamera::computeZ()
         if (zNear < zMin)
             zNear = zMin;
 
-        zNear = 0.1;
-        zFar = 1000.0;
+        if(p_zNear.getValue() >= p_zFar.getValue())
+        {
+            currentZNear = zNear;
+            currentZFar = zFar;
+        }
+        else
+        {
+            if (p_zNear.getValue() <= 0.0)
+                currentZNear = zNear;
+            else
+                currentZNear = p_zNear.getValue();
 
-        p_zNear.setValue(zNear);
-        p_zFar.setValue(zFar);
+            if (p_zFar.getValue() <= 0.0)
+                currentZFar = zFar;
+            else
+                currentZFar = p_zFar.getValue();
+        }
 
     }
 }
