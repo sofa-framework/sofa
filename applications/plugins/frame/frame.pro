@@ -25,6 +25,7 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
            AffineTypes.h \
+           ElastonTypes.h \
            FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \

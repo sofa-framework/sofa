@@ -41,6 +41,7 @@
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
 #include "FrameStorage.h"
 #include <../applications/plugins/frame/AffineTypes.h>
+#include <../applications/plugins/frame/ElastonTypes.h>
 #include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
 
@@ -207,6 +208,7 @@ public:
 #ifdef SOFA_DEV
     typedef defaulttype::StdAffineTypes<N,InReal> AffineType;
     typedef defaulttype::StdQuadraticTypes<N,InReal> QuadraticType;
+    typedef defaulttype::StdElastonTypes<Coord, Deriv, Real> ElastonType;
 #endif
 protected:
     vector<Coord> initPos; // pos: point coord in the local reference frame of In[i].
@@ -346,6 +348,8 @@ protected:
     inline typename enable_if<Equal<QuadraticType, T> >::type precomputeMatrices(const QuadraticType&); // Useless parameter here to be compatible with gcc-4.0
 #endif
 
+
+    // Samples (default)
     template<class TCoord>
     inline typename enable_if<Equal<typename RigidType::Coord, TCoord> >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename RigidType::Coord>& in);
 #ifdef SOFA_DEV
@@ -354,6 +358,7 @@ protected:
     template<class TCoord>
     inline typename enable_if<Equal<typename QuadraticType::Coord, TCoord> >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename QuadraticType::Coord>& in);
 #endif
+
 
     template<class TDeriv>
     inline typename enable_if<Equal<typename RigidType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename RigidType::Deriv>& in);

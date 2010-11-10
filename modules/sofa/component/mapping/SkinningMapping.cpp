@@ -62,21 +62,42 @@ int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigi
 #endif
 #endif
 
+// Rigid with Elastons
+#ifdef SOFA_DEV
+#ifndef SOFA_FLOAT
+        .add< SkinningMapping< Rigid3dTypes, Elaston3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< SkinningMapping< Rigid3fTypes, Elaston3fTypes > >()
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< SkinningMapping< Rigid3dTypes, Elaston3fTypes > >()
+        .add< SkinningMapping< Rigid3fTypes, Elaston3dTypes > >()
+#endif
+#endif
+#endif
+
 
 // Affine Types
 #ifdef SOFA_DEV
 #ifndef SOFA_FLOAT
         .add< SkinningMapping< Affine3dTypes, Vec3dTypes > >()
+        .add< SkinningMapping< Affine3dTypes, Elaston3dTypes > >()
 // .add< SkinningMapping< Affine3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
 // .add< SkinningMapping< Affine3fTypes, Vec3fTypes > >()
+// .add< SkinningMapping< Affine3fTypes, Elaston3fTypes > >()
 // .add< SkinningMapping< Affine3fTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 // .add< SkinningMapping< Affine3dTypes, Vec3fTypes > >()
 // .add< SkinningMapping< Affine3fTypes, Vec3dTypes > >()
+// .add< SkinningMapping< Affine3dTypes, Elaston3fTypes > >()
+// .add< SkinningMapping< Affine3fTypes, Elaston3dTypes > >()
 #endif
 #endif
 #endif
@@ -86,10 +107,12 @@ int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigi
 #ifdef SOFA_DEV
 #ifndef SOFA_FLOAT
         .add< SkinningMapping< Quadratic3dTypes, Vec3dTypes > >()
+        .add< SkinningMapping< Quadratic3dTypes, Elaston3dTypes > >()
 // .add< SkinningMapping< Quadratic3dTypes, ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
 // .add< SkinningMapping< Quadratic3fTypes, Vec3fTypes > >()
+// .add< SkinningMapping< Quadratic3fTypes, Elaston3fTypes > >()
 // .add< SkinningMapping< Quadratic3fTypes, ExtVec3fTypes > >()
 #endif
 
@@ -97,6 +120,8 @@ int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigi
 #ifndef SOFA_DOUBLE
 // .add< SkinningMapping< Quadratic3dTypes, Vec3fTypes > >()
 // .add< SkinningMapping< Quadratic3fTypes, Vec3dTypes > >()
+// .add< SkinningMapping< Quadratic3dTypes, Elaston3fTypes > >()
+// .add< SkinningMapping< Quadratic3fTypes, Elaston3dTypes > >()
 #endif
 #endif
 #endif
@@ -117,37 +142,61 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, Vec3dTy
 #endif
 #endif
 
-
 #ifdef SOFA_DEV
+
+
+// Rigid with Elastons
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3dTypes, Elaston3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, Elaston3fTypes >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3dTypes, Elaston3fTypes >;
+template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, Elaston3dTypes >;
+#endif
+#endif
+
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Elaston3dTypes >;
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, ExtVec3fTypes >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Vec3fTypes >;
+//template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Elaston3fTypes >;
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, ExtVec3fTypes >;
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Vec3fTypes >;
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Vec3dTypes >;
+//template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Elaston3fTypes >;
+//template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Elaston3dTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Vec3dTypes >;
+template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Elaston3dTypes >;
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, ExtVec3fTypes >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Vec3fTypes >;
+//template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Elaston3fTypes >;
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, ExtVec3fTypes >;
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Vec3fTypes >;
 //template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Vec3dTypes >;
+//template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Elaston3fTypes >;
+//template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Elaston3dTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 
