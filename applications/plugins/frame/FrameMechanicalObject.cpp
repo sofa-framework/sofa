@@ -46,10 +46,12 @@ using namespace sofa::defaulttype;
 int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 #ifndef SOFA_FLOAT
         .add< MechanicalObject<Affine3dTypes> >()
+        .add< MechanicalObject<Elaston3dTypes> >()
         .add< MechanicalObject<Quadratic3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< MechanicalObject<Affine3fTypes> >()
+        .add< MechanicalObject<Elaston3fTypes> >()
         .add< MechanicalObject<Quadratic3fTypes> >()
 #endif
         ;
@@ -58,10 +60,12 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API MechanicalObject<Affine3fTypes>;
+template class SOFA_FRAME_API MechanicalObject<Elaston3fTypes>;
 template class SOFA_FRAME_API MechanicalObject<Quadratic3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_FRAME_API MechanicalObject<Affine3dTypes>;
+template class SOFA_FRAME_API MechanicalObject<Elaston3dTypes>;
 template class SOFA_FRAME_API MechanicalObject<Quadratic3fTypes>;
 #endif
 } // namespace behavior
