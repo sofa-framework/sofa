@@ -476,6 +476,9 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
     Q = e2.p();
     PQ = Q-P;
 
+    if (PQ.norm2() >= alarmDist*alarmDist)
+        return 0;
+
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -490,9 +493,6 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
         detection->freePoint[1] = Qfree;
     }
 #endif
-
-    if (PQ.norm2() >= alarmDist*alarmDist)
-        return 0;
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
