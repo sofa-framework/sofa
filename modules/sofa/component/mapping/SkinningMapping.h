@@ -245,6 +245,7 @@ public:
     Data<double> newFrameDistanceToMaximizeWeight;
     Data<bool> enableSkinning;
     Data<double> voxelVolume;
+    Data<bool> useElastons;
 #endif
 
 protected:
