@@ -571,11 +571,11 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(DataVecDeriv& /*a*/, co
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
-    if(this->mstate && mparams)
+    if(mparams)
     {
-        helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
+        VecDeriv& v = *d_v.beginEdit();
 
         double _dt = mparams->dt();
 
@@ -583,6 +583,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(core::MultiVecDeri
         {
             v[i] +=this->getContext()->getLocalGravity()*_dt;
         }
+        d_v.beginEdit();
     }
 }
 

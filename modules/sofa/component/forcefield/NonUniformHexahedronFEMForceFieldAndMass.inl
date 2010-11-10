@@ -525,21 +525,25 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(DataVecDeriv& f, const 
 }
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
     if(_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addGravityToV(vid, mparams);
+        HexahedronFEMForceFieldAndMassT::addGravityToV(d_v, mparams);
     else
     {
-        helper::WriteAccessor<DataVecDeriv> v = *vid[this->mstate].write();
-
-        const SReal* g = this->getContext()->getLocalGravity().ptr();
-        Deriv theGravity;
-        T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
-        Deriv hg = theGravity * (mparams->dt());
-        for (unsigned int i=0; i<v.size(); i++)
+        if(mparams)
         {
-            v[i] += hg;
+            VecDeriv& v = *d_v.beginEdit();
+
+            const SReal* g = this->getContext()->getLocalGravity().ptr();
+            Deriv theGravity;
+            T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
+            Deriv hg = theGravity * (mparams->dt());
+            for (unsigned int i=0; i<v.size(); i++)
+            {
+                v[i] += hg;
+            }
+            d_v.endEdit();
         }
     }
 }

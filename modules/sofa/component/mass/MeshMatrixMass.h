@@ -165,7 +165,7 @@ public:
 
     double getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams*) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
     bool isDiagonal() {return false;}
 

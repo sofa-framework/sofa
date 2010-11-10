@@ -243,6 +243,16 @@ void Mass<DataTypes>::addMBKToMatrix(const sofa::core::behavior::MultiMatrixAcce
 }
 
 template<class DataTypes>
+void Mass<DataTypes>::addGravityToV(MultiVecDerivId vid, const MechanicalParams* mparams)
+{
+    if(this->mstate)
+    {
+        DataVecDeriv& v = *vid[this->mstate].write();
+        addGravityToV(v, mparams);
+    }
+}
+
+template<class DataTypes>
 void Mass<DataTypes>::initGnuplot(const std::string path)
 {
     if (!this->getName().empty())

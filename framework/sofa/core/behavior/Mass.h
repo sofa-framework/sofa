@@ -175,7 +175,10 @@ public:
     virtual void exportGnuplot(double time, const MechanicalParams* mparams = MechanicalParams::defaultInstance());
 
     /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
-    virtual void addGravityToV(MultiVecDerivId /*vid*/, const MechanicalParams* /*mparams*/) {}
+    virtual void addGravityToV(MultiVecDerivId /*vid*/, const MechanicalParams* mparams);
+
+    virtual void addGravityToV(DataVecDeriv& /* d_v */, const MechanicalParams* /* mparams */) { };
+
     //virtual void addGravityToV(double dt)=0;
 
     virtual double getElementMass(unsigned int) const;

@@ -105,7 +105,7 @@ public:
 
     void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
-    void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
     double getKineticEnergy(const DataVecDeriv& v, const core::MechanicalParams* mparams) const;  ///< vMv/2 using dof->getV()
 

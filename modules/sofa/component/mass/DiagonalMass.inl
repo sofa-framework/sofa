@@ -567,12 +567,11 @@ void DiagonalMass<DataTypes, MassType>::init()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
+void DiagonalMass<DataTypes, MassType>::addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
-    if(this->mstate && mparams)
+    if(mparams)
     {
-        helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
-
+        VecDeriv& v = *d_v.beginEdit();
         // gravity
         Vec3d g ( this->getContext()->getLocalGravity() );
         Deriv theGravity;
@@ -583,6 +582,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid,
         {
             v[i] += hg;
         }
+        d_v.endEdit();
     }
 }
 
