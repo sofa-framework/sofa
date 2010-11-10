@@ -47,8 +47,8 @@
       <Object type="RigidMapping" object1="../.." object2="VisualModel" name="visual mapping"/>
     </Node>
     <Node name="Surf">
-      <Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph" />
 	  <Object type="MechanicalObject" />
+	  <Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph" />
       <Object type="RigidMapping" name="sphere mapping"/>
     </Node>
   </Node>
