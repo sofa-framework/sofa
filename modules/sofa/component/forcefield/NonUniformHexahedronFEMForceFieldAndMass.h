@@ -107,7 +107,7 @@ public:
     virtual void reinit()  { serr<<"WARNING : non-uniform mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl; }
 
     virtual void addMDx(DataVecDeriv& f, const DataVecDeriv& dx, double factor, const core::MechanicalParams* mparams);
-    virtual void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    virtual void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
     virtual void addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
 
 

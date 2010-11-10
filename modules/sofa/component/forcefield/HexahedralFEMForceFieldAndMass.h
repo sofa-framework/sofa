@@ -112,7 +112,7 @@ public:
     // virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
     // virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double);
 
-    virtual void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    virtual void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
     virtual void draw();
 

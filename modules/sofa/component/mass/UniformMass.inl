@@ -213,11 +213,11 @@ void UniformMass<DataTypes, MassType>::addMDxToVector ( defaulttype::BaseVector 
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
+void UniformMass<DataTypes, MassType>::addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
-    if ( this->mstate && mparams)
+    if (mparams)
     {
-        helper::WriteAccessor<DataVecDeriv> v = *vid[this->mstate].write();
+        VecDeriv& v = *d_v.beginEdit();
 
         const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
@@ -229,6 +229,8 @@ void UniformMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, 
         {
             v[i] += hg;
         }
+
+        d_v.endEdit();
     }
 }
 

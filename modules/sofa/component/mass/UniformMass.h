@@ -112,7 +112,7 @@ public:
 
     void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
-    void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams);

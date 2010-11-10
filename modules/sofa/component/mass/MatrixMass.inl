@@ -131,11 +131,11 @@ double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const DataVecCoord& 
 
 
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams)
+void MatrixMass<DataTypes, MassType>::addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams)
 {
-    if(this->mstate && mparams)
+    if(mparams)
     {
-        helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
+        VecDeriv& v = *d_v.beginEdit();
 
         // gravity
         Vec3d g ( this->getContext()->getLocalGravity() * (mparams->dt()) );
@@ -148,6 +148,7 @@ void MatrixMass<DataTypes, MassType>::addGravityToV(core::MultiVecDerivId vid, c
         {
             v[i] += hg;
         }
+        d_v.endEdit();
     }
 }
 

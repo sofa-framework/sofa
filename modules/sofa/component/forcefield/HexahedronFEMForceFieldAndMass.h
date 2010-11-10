@@ -105,7 +105,7 @@ public:
     virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, const core::MechanicalParams* mparams);
     // virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, double kFactor, double);
 
-    virtual void addGravityToV(core::MultiVecDerivId vid, const core::MechanicalParams* mparams);
+    virtual void addGravityToV(DataVecDeriv& d_v, const core::MechanicalParams* mparams);
 
     double getElementMass(unsigned int index);
     // visual model
