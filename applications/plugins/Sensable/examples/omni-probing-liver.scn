@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 -9.81 0" dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0"  >
+	<NewOmniDriver name="default38"  listening="1"  scale="15"  positionBase="0 5.5 0"  omniVisu="1" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
+	<DefaultContactManager name="Response"  response="default" />
+	<TreeCollisionGroupManager name="Group" />
+	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  >
+		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />
+		<TetrahedronSetTopologyContainer name="topo" />
+		<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1" />
+		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
+		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="500"  computeGlobalMatrix="0" />
+		<FixedConstraint template="Vec3d" name="FixedConstraint"  indices="3 39 64" />
+		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-009"  threshold="1e-009" />
+		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0"  >
+			<OglModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smooth.obj" />
+			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping"  object1="../.."  object2="VisualModel" />
+		</Node>
+		<Node 	name="Surf" gravity="0 -9.81 0"  >
+			<TSphereModel template="Vec3d" name="CollisionModel"  fileSphere="mesh/liver.sph" />
+			<MechanicalObject template="Vec3d" name="default0"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1" />
+			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="sphere mapping" />
+		</Node>
+	</Node>
+	<Node 	name="Instrument" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+		<MechanicalObject template="Rigid" name="rigidDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  internalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1"  translation="0 6 0" />
+		<MechanicalStateController template="Rigid" name="default40"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
+		<Node 	name="Collision" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<MeshLoader name="loader"  filename="mesh/blade_instrument_centered.obj" />
+			<MeshTopology name="topology" />
+			<MechanicalObject template="Vec3d" name="collisionDOF"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0"  filename="mesh/blade_instrument_centered.obj" />
+			<TTriangleModel template="Vec3d" name="instrument"  contactStiffness="10" />
+			<LineModel name="instrument"  contactStiffness="10" />
+			<PointModel name="instrument"  contactStiffness="10" />
+			<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="MM->CM mapping"  object1="Instrument/rigidDOF"  object2="Instrument/Collision/collisionDOF" />
+		</Node>
+		<Node 	name="Visual-blade-tooltip" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<OglModel template="ExtVec3f" name="visual"  fileMesh="mesh/blade_instrument_tip.obj"  translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 0.666667 0 0 1 Ambient 1 0.2 0.0392157 0.0392157 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="MM->VM mapping"  object1="Instrument/rigidDOF"  object2="Instrument/Visual-blade-tooltip/visual" />
+		</Node>
+		<Node 	name="Visual-blade-handle" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<OglModel template="ExtVec3f" name="visual"  fileMesh="mesh/blade_instrument_handle.obj"  translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 1 0 1 Ambient 1 0.2 0.0392157 0.0392157 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="MM->VM mapping"  object1="Instrument/rigidDOF"  object2="Instrument/Visual-blade-handle/visual" />
+		</Node>
+	</Node>
+</Node>
