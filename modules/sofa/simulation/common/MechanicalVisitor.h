@@ -499,6 +499,61 @@ public:
 #endif
 };
 
+
+/**
+ * Initialize unset destVecId vectors with srcVecId vectors value or 0 if srcVecId is NULL.
+ */
+template< VecType vtype >
+class SOFA_SIMULATION_COMMON_API MechanicalVInitVisitor : public BaseMechanicalVisitor
+{
+public:
+    typedef sofa::core::TMultiVecId<vtype,V_WRITE> DestMultiVecId;
+    typedef sofa::core::TMultiVecId<vtype,V_READ> SrcMultiVecId;
+
+    DestMultiVecId& vDest;
+    SrcMultiVecId& vSrc;
+
+    MechanicalVInitVisitor(DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), const core::ExecParams* params=core::ExecParams::defaultInstance())
+        : BaseMechanicalVisitor(params)
+        , vDest(_vDest)
+        , vSrc(_vSrc)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const
+    {
+        return "MechanicalVInitVisitor";
+    }
+
+    virtual std::string getInfos() const
+    {
+        std::string name = "[" + vDest.getName() + "]";
+        return name;
+    }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadVector(vSrc);
+        addWriteVector(vDest);
+    }
+#endif
+};
+
+
 /** Reserve an auxiliary vector identified by a symbolic constant.
 */
 template <VecType vtype>
@@ -2143,6 +2198,8 @@ extern template class MechanicalVAllocVisitor<V_COORD>;
 extern template class MechanicalVAllocVisitor<V_DERIV>;
 extern template class MechanicalVFreeVisitor<V_COORD>;
 extern template class MechanicalVFreeVisitor<V_DERIV>;
+extern template class MechanicalVInitVisitor<V_COORD>;
+extern template class MechanicalVInitVisitor<V_DERIV>;
 #endif
 
 } // namespace simulation

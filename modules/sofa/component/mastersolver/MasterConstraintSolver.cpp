@@ -530,12 +530,12 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
         bufCP1 = !bufCP1;
     }
 
-    debug =this->f_printLog.getValue();
+    debug = this->f_printLog.getValue();
 
     if (debug)
-        sout<<"MasterConstraintSolver::step is called"<<sendl;
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
+        sout << "MasterConstraintSolver::step is called" << sendl;
 
+    simulation::Node *context = dynamic_cast< simulation::Node * >(this->getContext());
 
     if (doCollisionsFirst.getValue())
     {
@@ -554,25 +554,26 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
     {
         // Compute the predictive force:
         numConstraints = 0;
-        //1. find the new constraint direction
+
+        //1. Find the new constraint direction
         writeAndAccumulateAndCountConstraintDirections(context, numConstraints, params);
 
-        //2 get the constraint solving process:
+        //2. Get the constraint solving process:
         getIndividualConstraintSolvingProcess(context, params);
 
-        //3. use the stored forces to compute
+        //3. Use the stored forces to compute
         if (debug)
         {
             if (doubleBuffer.getValue() && bufCP1)
             {
                 computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
-                std::cout<<"getF() after computePredictiveForce:"<<std::endl;
+                std::cout << "getF() after computePredictiveForce:" << std::endl;
                 helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
             }
             else
             {
                 computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
-                std::cout<<"getF() after computePredictiveForce:"<<std::endl;
+                std::cout << "getF() after computePredictiveForce:" << std::endl;
                 helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
             }
         }
@@ -584,14 +585,14 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
         {
             (*CP2.getF())*=0.0;
             computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
-            std::cout<<"getF() after re-computePredictiveForce:"<<std::endl;
+            std::cout << "getF() after re-computePredictiveForce:" << std::endl;
             helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
         }
         else
         {
             (*CP1.getF())*=0.0;
             computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
-            std::cout<<"getF() after re-computePredictiveForce:"<<std::endl;
+            std::cout << "getF() after re-computePredictiveForce:" << std::endl;
             helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
         }
     }
@@ -622,25 +623,22 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
     {
         if (doubleBuffer.getValue() && bufCP1)
         {
-            std::cout<<"getF() after setConstraintEquations:"<<std::endl;
+            std::cout << "getF() after setConstraintEquations:" << std::endl;
             helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
         }
         else
         {
-            std::cout<<"getF() after setConstraintEquations:"<<std::endl;
+            std::cout << "getF() after setConstraintEquations:" << std::endl;
             helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
         }
     }
-
-
-
 
     sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
 
     if (doubleBuffer.getValue() && bufCP1)
     {
         if (debug)
-            sout<<"Gauss-Seidel solver is called on problem of size"<<CP2.getSize()<<sendl;
+            sout << "Gauss-Seidel solver is called on problem of size" << CP2.getSize() << sendl;
         if(schemeCorrection.getValue())
             (*CP2.getF())*=0.0;
 
@@ -649,12 +647,13 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
     else
     {
         if (debug)
-            sout<<"Gauss-Seidel solver is called on problem of size"<<CP2.getSize()<<sendl;
+            sout << "Gauss-Seidel solver is called on problem of size" << CP2.getSize() << sendl;
         if(schemeCorrection.getValue())
             (*CP1.getF())*=0.0;
 
         gaussSeidelConstraint(CP1.getSize(), CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions(), CP1.getdF()->ptr());
     }
+
     sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
 
     if (debug)
@@ -665,36 +664,29 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
             helper::afficheLCP(CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(),  CP1.getSize());
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if ( displayTime.getValue() )
     {
-        sout<<" Solve with GaussSeidel                " <<( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
+        sout << " Solve with GaussSeidel                " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
         time = (double) timer->getTime();
     }
-
-
 
     /// CORRECTIVE MOTION
     correctiveMotion(context, params);
 
-
-
     if ( displayTime.getValue() )
     {
-        sout<<" ContactCorrections                    " <<( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-        sout<<"  = Total                              " <<( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
+        sout << " ContactCorrections                    " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
+        sout << "  = Total                              " << ( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
         if (doubleBuffer.getValue() && bufCP1)
-            sout<<" With : " << CP2.getSize() << " constraints" << sendl;
+            sout << " With : " << CP2.getSize() << " constraints" << sendl;
         else
-            sout<<" With : " << CP1.getSize() << " constraints" << sendl;
+            sout << " With : " << CP1.getSize() << " constraints" << sendl;
 
         sout << "<<<<< End display MasterContactSolver time." << sendl;
     }
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(dt, params);
     context->execute(&endVisitor);
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
 void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res)
@@ -704,7 +696,6 @@ void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std:
         res[i]->initForce(i, force);
         i += res[i]->nbLines;
     }
-
 }
 
 void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,

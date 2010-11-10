@@ -633,6 +633,13 @@ Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulatio
 }
 
 template< VecType vtype>
+Visitor::Result MechanicalVInitVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    // mm->vInit(vDest.getId(mm) ,vSrc.getId(mm), this->params );
+    return RESULT_CONTINUE;
+}
+
+template< VecType vtype>
 Visitor::Result  MechanicalVAvailVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->vAvail( v, this->params );
@@ -1619,6 +1626,8 @@ template class SOFA_SIMULATION_COMMON_API MechanicalVAllocVisitor<V_COORD>;
 template class SOFA_SIMULATION_COMMON_API MechanicalVAllocVisitor<V_DERIV>;
 template class SOFA_SIMULATION_COMMON_API MechanicalVFreeVisitor<V_COORD>;
 template class SOFA_SIMULATION_COMMON_API MechanicalVFreeVisitor<V_DERIV>;
+template class SOFA_SIMULATION_COMMON_API MechanicalVInitVisitor<V_COORD>;
+template class SOFA_SIMULATION_COMMON_API MechanicalVInitVisitor<V_DERIV>;
 
 
 } // namespace simulation
