@@ -233,7 +233,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
     const unsigned int numDOFs = mstate->getSize();
 
-    Data<VecDeriv> dataDx = *mstate->write(dxID);
+    Data<VecDeriv>& dataDx = *mstate->write(dxID);
     VecDeriv& dx = *dataDx.beginEdit();
 
     dx.clear();
@@ -241,7 +241,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     for (unsigned int i=0; i< numDOFs; i++)
         dx[i] = Deriv();
 
-    Data<VecDeriv> dataForce = *mstate->write(forceID);
+    Data<VecDeriv>& dataForce = *mstate->write(forceID);
     VecDeriv& force = *dataForce.beginEdit();
 
     force.clear();
@@ -326,7 +326,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
 {
-    Data<VecDeriv> forceData = *mstate->write(core::VecDerivId::externalForce());
+    Data<VecDeriv>& forceData = *mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = *forceData.beginEdit();
 
     const unsigned int numDOFs = mstate->getSize();
@@ -361,7 +361,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 {
-    Data<VecDeriv> forceData = *mstate->write(core::VecDerivId::force());
+    Data<VecDeriv>& forceData = *mstate->write(core::VecDerivId::force());
     VecDeriv& force = *forceData.beginEdit();
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
