@@ -135,8 +135,6 @@
 		</Node>
 	</Node>
 	
-	<BilateralInteractionConstraint object1="CUBE_2/Constraints/points" object2="CUBE_4/Constraints/points" first_point="1" second_point="0" />	
-
-	<!--	<SlidingConstraint object1="CUBE_2/Constraints/points" object2="CUBE_4/Constraints/points" sliding_point="1" axis_1="0" axis_2="1" />-->
-
+	<BilateralInteractionConstraint object1="CUBE_2/Constraints/points" object2="CUBE_4/Constraints/points" first_point="1" second_point="0" />
+	
 </Node>
