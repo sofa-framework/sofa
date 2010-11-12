@@ -633,9 +633,9 @@ Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulatio
 }
 
 template< VecType vtype>
-Visitor::Result MechanicalVInitVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalVInitVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState *mm)
 {
-    // mm->vInit(vDest.getId(mm) ,vSrc.getId(mm), this->params );
+    mm->vInit(vDest.getId(mm), vSrc.getId(mm), this->params);
     return RESULT_CONTINUE;
 }
 

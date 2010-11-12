@@ -114,6 +114,13 @@ public:
     /// Free a temporary vector
     //virtual void vFree(MatrixDerivId v) = 0;
 
+    /// Initialize an unset vector
+    virtual void vInit(VecCoordId v, ConstVecCoordId vSrc, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Initialize an unset vector
+    virtual void vInit(VecDerivId v, ConstVecDerivId vSrc, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    /// Initialize an unset vector
+    //virtual void vInit(MatrixDerivId v, ConstMatrixDerivId vSrc, const ExecParams* params = ExecParams::defaultInstance()) = 0;
+
     /// Compute a linear operation on vectors : v = a + b * f.
     ///
     /// This generic operation can be used for many simpler cases :

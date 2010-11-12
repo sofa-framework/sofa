@@ -304,6 +304,13 @@ public:
     /// Free a temporary vector
     //virtual void vFree(core::MatrixDerivId v);
 
+    /// Initialize an unset vector
+    virtual void vInit(core::VecCoordId v, core::ConstVecCoordId vSrc, const core::ExecParams* params);
+    /// Initialize an unset vector
+    virtual void vInit(core::VecDerivId v, core::ConstVecDerivId vSrc, const core::ExecParams* params);
+    /// Initialize an unset vector
+    //virtual void vInit(core::MatrixDerivId v, core::ConstMatrixDerivId vSrc, const core::ExecParams* params);
+
     virtual void vOp(core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), double f=1.0, const core::ExecParams* params= core::ExecParams::defaultInstance());
 
 #ifdef SOFA_SMP

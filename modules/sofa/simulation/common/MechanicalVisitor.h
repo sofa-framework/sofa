@@ -510,8 +510,8 @@ public:
     typedef sofa::core::TMultiVecId<vtype,V_WRITE> DestMultiVecId;
     typedef sofa::core::TMultiVecId<vtype,V_READ> SrcMultiVecId;
 
-    DestMultiVecId& vDest;
-    SrcMultiVecId& vSrc;
+    DestMultiVecId vDest;
+    SrcMultiVecId vSrc;
 
     MechanicalVInitVisitor(DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), const core::ExecParams* params=core::ExecParams::defaultInstance())
         : BaseMechanicalVisitor(params)
