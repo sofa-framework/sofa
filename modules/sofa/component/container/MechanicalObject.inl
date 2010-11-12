@@ -1721,6 +1721,34 @@ void MechanicalObject<DataTypes>::vFree(VecDerivId vId, const core::ExecParams* 
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::vInit(VecCoordId vId, ConstVecCoordId vSrcId, const core::ExecParams* /* params */)
+{
+    Data< VecCoord >* vec_d = this->write(vId);
+
+    if (!vec_d->isSet())
+    {
+        vec_d->forceSet();
+
+        if (vSrcId != ConstVecCoordId::null())
+            vOp(vId, vSrcId);
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::vInit(VecDerivId vId, ConstVecDerivId vSrcId, const core::ExecParams* /* params */)
+{
+    Data< VecDeriv >* vec_d = this->write(vId);
+
+    if (!vec_d->isSet())
+    {
+        vec_d->forceSet();
+
+        if (vSrcId != ConstVecDerivId::null())
+            vOp(vId, vSrcId);
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::vOp(VecId v, ConstVecId a, ConstVecId b, double f, const core::ExecParams*
 #ifdef SOFA_SMP
         params

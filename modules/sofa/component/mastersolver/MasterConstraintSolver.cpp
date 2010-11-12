@@ -537,6 +537,11 @@ void MasterConstraintSolver::step ( double dt, const core::ExecParams* params )
 
     simulation::Node *context = dynamic_cast< simulation::Node * >(this->getContext());
 
+    // This solver will work in freePosition and freeVelocity vectors.
+    // We need to initialize them if it's not already done.
+    simulation::MechanicalVInitVisitor<V_COORD>(VecCoordId::freePosition(), ConstVecCoordId::position()).execute(context);
+    simulation::MechanicalVInitVisitor<V_DERIV>(VecDerivId::freeVelocity(), ConstVecDerivId::velocity()).execute(context);
+
     if (doCollisionsFirst.getValue())
     {
         /// COLLISION
