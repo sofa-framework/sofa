@@ -129,6 +129,86 @@ public:
     static void addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset);
 };
 
+
+template< int N, class real>
+class MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real > >
+{
+public:
+    typedef gpu::cuda::CudaRigidTypes<N, real> DataTypes;
+    typedef MechanicalObject<DataTypes> Main;
+    typedef core::VecId VecId;
+    typedef core::ConstVecId ConstVecId;
+    typedef typename Main::VMultiOp VMultiOp;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+
+
+    typedef gpu::cuda::CudaKernelsMechanicalObject<DataTypes> Kernels;
+
+    /// Temporary storate for dot product operation
+    VecDeriv tmpdot;
+
+    template<class T>
+    class PrefetchOp : public T
+    {
+    public:
+        int id; ///< ID in multi-operation, or -1 if inactive
+        static helper::vector < Main* >& objects()
+        {
+            static helper::vector < Main* > v;
+            return v;
+        }
+        PrefetchOp() : id(-1) {}
+    };
+
+    struct VDot
+    {
+        ConstVecId a;
+        ConstVecId b;
+        int size;
+        double result;
+    };
+    PrefetchOp<VDot> preVDot;
+
+    struct VOp
+    {
+        VecId v;
+        ConstVecId a;
+        ConstVecId b;
+        double f;
+        int size;
+    };
+    PrefetchOp< helper::vector<VOp> > preVOp;
+
+    struct VResetForce
+    {
+        int size;
+    };
+    PrefetchOp< VResetForce > preVResetForce;
+
+    static void accumulateForce(Main* m, bool prefetch = false);
+    static void addDxToCollisionModel(Main* m, bool prefetch = false);
+    static void vAlloc(Main* m, VecId v);
+    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f, bool prefetch = false);
+    static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
+    static double vDot(Main* m, ConstVecId a, ConstVecId b, bool prefetch = false);
+    static void resetForce(Main* m, bool prefetch = false);
+
+//    static void loadInBaseVector(Main* m,defaulttype::BaseVector * dest, VecId src, unsigned int &offset);
+    static void copyToBaseVector(Main* m,defaulttype::BaseVector * dest, ConstVecId src, unsigned int &offset);
+    // static void loadInCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVector<Real> * dest, VecId src, unsigned int &offset);
+    static void copyToCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVector<Real> * dest, ConstVecId src, unsigned int &offset);
+
+//    static void addBaseVectorToState(Main* m, VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
+    static void addFromBaseVectorSameSize(Main* m, VecId dest, const defaulttype::BaseVector *src, unsigned int &offset);
+//    static void addCudaBaseVectorToState(Main* m, VecId dest, sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset);
+    static void addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset);
+};
+
+
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
     template<> inline bool MechanicalObject< T >::canPrefetch() const; \
@@ -143,11 +223,13 @@ public:
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3fTypes);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3dTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3d1Types);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 

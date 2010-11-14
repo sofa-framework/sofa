@@ -303,12 +303,21 @@ __device__ real norm2(CudaVec3<real> a)
     return a.x*a.x+a.y*a.y+a.z*a.z;
 }
 
+#ifndef SOFA_GPU_CUDA_PRECISE
 template<class real>
 __device__ real norm(CudaVec3<real> a)
 {
     return sqrtf(norm2(a));
 }
+#else
+template<class real>
+__device__ real norm(CudaVec3<real> a)
+{
+    return __fsqrt_rn(norm2(a));
+}
+#endif
 
+#ifndef SOFA_GPU_CUDA_PRECISE
 template<class real>
 __device__ real invnorm(CudaVec3<real> a)
 {
@@ -316,6 +325,15 @@ __device__ real invnorm(CudaVec3<real> a)
         return rsqrtf(norm2(a));
     return 0.0;
 }
+#else
+template<class real>
+__device__ real invnorm(CudaVec3<real> a)
+{
+    if (norm2(a) > 0.0)
+        return __fdiv_rn(1.0f, __fsqrt_rn(norm2(a)));
+    return 0.0;
+}
+#endif
 
 template<class real>
 __device__ real norm2(CudaVec4<real> a)
@@ -323,6 +341,7 @@ __device__ real norm2(CudaVec4<real> a)
     return a.x*a.x+a.y*a.y+a.z*a.z+a.w*a.w;
 }
 
+#ifndef SOFA_GPU_CUDA_PRECISE
 template<class real>
 __device__ real invnorm(CudaVec4<real> a)
 {
@@ -330,6 +349,15 @@ __device__ real invnorm(CudaVec4<real> a)
         return rsqrtf(norm2(a));
     return 0.0;
 }
+#else
+template<class real>
+__device__ real invnorm(CudaVec4<real> a)
+{
+    if (norm2(a) > 0.0)
+        return __fdiv_rn(1.0f, __fsqrt_rn(norm2(a)));
+    return 0.0;
+}
+#endif
 
 template<class real>
 __device__ CudaVec4<real> inv(CudaVec4<real> a)
@@ -383,6 +411,20 @@ __device__ CudaVec4<real> createQuaterFromEuler(CudaVec3<real> v)
     quat.z = cos(a0)*cos(a1)*sin(a2) - sin(a0)*sin(a1)*cos(a2);
     return quat;
 }
+
+template<class real>
+__device__ CudaVec4<real> vectQuatMult(CudaVec4<real> a, const CudaVec3<real> vect)
+{
+    CudaVec4<real>	ret;
+
+    ret.w = (real) (-(vect.x * a.x + vect.y * a.y + vect.z * a.z));
+    ret.x = (real) (vect.x * a.w + vect.y * a.z - vect.z * a.y);
+    ret.y = (real) (vect.y * a.w + vect.z * a.x - vect.x * a.z);
+    ret.z = (real) (vect.z * a.w + vect.x * a.y - vect.y * a.x);
+
+    return ret;
+}
+
 
 template<class real>
 class /*__align__(4)*/ matrix3
