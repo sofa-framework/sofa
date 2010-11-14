@@ -142,6 +142,9 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
 {
     //std::cout<<" ArticulatedSystemMapping<TIn, TOut>::apply called with in: "<<in<<"  -- inroot"<<(*inroot)<<std::endl;
 
+    const Data< OutVecCoord > &xtoData = *m_toModel->read(core::VecCoordId::position());
+    out.resize(xtoData.getValue().size());
+
     using container::ArticulatedHierarchyContainer;
 
     // Copy the root position if a rigid root model is present
