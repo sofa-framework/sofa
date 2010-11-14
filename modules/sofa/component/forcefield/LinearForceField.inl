@@ -44,7 +44,8 @@ using namespace sofa::core::objectmodel;
 
 template<class DataTypes>
 LinearForceField<DataTypes>::LinearForceField()
-    : points(initData(&points, "points", "points where the force is applied"))
+    : data(new LinearForceFieldInternalData<DataTypes>())
+    , points(initData(&points, "points", "points where the force is applied"))
     , force(initData(&force, (Real)1.0, "force", "applied force to all points"))
     , keyTimes(initData(&keyTimes, "times", "key times for the interpolation"))
     , keyForces(initData(&keyForces, "forces", "forces corresponding to the key times"))
