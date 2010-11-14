@@ -23,27 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include "CudaLinearForceField.inl"
+#include <sofa/component/forcefield/LinearForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
-template class LinearForceField<gpu::cuda::CudaRigid3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class LinearForceField<gpu::cuda::CudaRigid3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-}// namespace forcefield
-
-}// namespace component
 
 namespace gpu
 {
@@ -51,17 +35,70 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaLinearForceField)
-
-int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
-        .add< component::forcefield::LinearForceField<CudaRigid3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::forcefield::LinearForceField<CudaRigid3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+template<class DataTypes>
+class CudaKernelsLinearForceField;
 
 }// namespace cuda
 
 }// namespace gpu
 
-}// namespace sofa
+namespace component
+{
+
+namespace forcefield
+{
+
+
+template<int N, class real>
+class LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >
+{
+public:
+    typedef LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> > Data;
+    typedef gpu::cuda::CudaRigidTypes<N, real> DataTypes;
+    typedef LinearForceField<DataTypes> Main;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef topology::PointSubset VecIndex;
+
+    typedef gpu::cuda::CudaKernelsLinearForceField<DataTypes> Kernels;
+
+    // vector indices of concerned dofs
+    gpu::cuda::CudaVector< int > indices;
+
+    int size;
+
+    static void init(Main* m);
+
+    static void addForce(Main* m, VecDeriv& f);
+
+};// LinearForceFieldInternalData< CudaRigidTypes >
+
+
+template<>
+void LinearForceField< gpu::cuda::CudaRigid3fTypes >::init();
+
+template<>
+void LinearForceField< gpu::cuda::CudaRigid3fTypes >::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+
+template<>
+double LinearForceField< gpu::cuda::CudaRigid3fTypes >::getPotentialEnergy(const DataVecCoord&, const core::MechanicalParams* ) const;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template<>
+void LinearForceField< gpu::cuda::CudaRigid3dTypes >::init();
+
+template<>
+void LinearForceField< gpu::cuda::CudaRigid3dTypes >::addForce(DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const core::MechanicalParams* mparams);
+
+template<>
+double LinearForceField< gpu::cuda::CudaRigid3dTypes >::getPotentialEnergy(const DataVecCoord& , const core::MechanicalParams* ) const;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace forcefield
+
+} // namespace component
+
+} // namespace sofa

@@ -53,6 +53,8 @@ HEADERS += mycuda.h \
            CudaUniformMass.inl \
            CudaFixedConstraint.h \
            CudaFixedConstraint.inl \
+	   CudaLinearForceField.h \
+	   CudaLinearForceField.inl \
            CudaSpringForceField.h \
            CudaSpringForceField.inl \
            CudaTetrahedronFEMForceField.h \
@@ -103,6 +105,7 @@ SOURCES += mycuda.cpp \
            CudaFixedConstraint.cpp \
            CudaFixedTranslationConstraint.cpp \
            CudaLinearMovementConstraint.cpp \
+	   CudaLinearForceField.cpp \
            CudaSpringForceField.cpp \
            CudaTetrahedronFEMForceField.cpp \
            CudaPlaneForceField.cpp \
@@ -130,6 +133,7 @@ CUDA_SOURCES += mycuda.cu \
            CudaUniformMass.cu \
 	   CudaTypesBase.cu \
            CudaFixedConstraint.cu \
+	   CudaLinearForceField.cu \
            CudaSpringForceField.cu \
            CudaTetrahedronFEMForceField.cu \
            CudaPlaneForceField.cu \
@@ -203,7 +207,6 @@ SOURCES += \
 		CudaBlockJacobiPreconditioner.cpp \
 		CudaHexahedronFEMForceField.cpp \
 		#CudaHexahedronGeodesicalDistance.cpp \
-           	CudaLinearForceField.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \
                CudaJointSpringForceField.cpp \

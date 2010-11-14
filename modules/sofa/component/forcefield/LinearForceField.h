@@ -36,6 +36,13 @@ namespace component
 
 namespace forcefield
 {
+
+template<class DataTypes>
+class LinearForceFieldInternalData
+{
+public:
+};
+
 /** Apply forces changing to given degres of freedom. Some keyTimes are given
 * and the force to be applied is linearly interpolated between keyTimes. */
 template<class DataTypes>
@@ -54,6 +61,12 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef topology::PointSubset VecIndex;
 
+protected:
+
+    LinearForceFieldInternalData<DataTypes> *data;
+    friend class LinearForceFieldInternalData<DataTypes>;
+
+public:
     /// concerned DOFs
     Data< VecIndex > points;
 
@@ -87,6 +100,8 @@ public:
     */
     void addKeyForce(Real time, Deriv force);
     void clearKeyForces();
+
+    virtual void init() { Inherit::init(); };
 
     // ForceField methods
     /// Add the forces
