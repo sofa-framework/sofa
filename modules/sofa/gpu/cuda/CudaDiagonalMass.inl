@@ -151,7 +151,8 @@ bool DiagonalMass<CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBB
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template<>
-void DiagonalMass<CudaVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+//void DiagonalMass<CudaVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void DiagonalMass<CudaVec3dTypes, double>::addMDx(DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor, const core::MechanicalParams* mparams)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

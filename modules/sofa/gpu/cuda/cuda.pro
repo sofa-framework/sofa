@@ -244,13 +244,6 @@ contains(DEFINES,SOFA_HAVE_CSPARSE){
 	SOURCES += \	
 		  CudaPrecomputedLinearSolver.cpp \
 		  CudaSparseLDLSolver.cpp
-
-	contains(DEFINES,SOFA_HAVE_BOOST){
-		  HEADERS += \
-			    CudaUpdatePrecomputedPreconditioner.h				  
-		  SOURCES += \	
-			    CudaUpdatePrecomputedPreconditioner.cpp
-	}
 }
 
 contains(DEFINES,SOFA_HAVE_TAUCS){ 
