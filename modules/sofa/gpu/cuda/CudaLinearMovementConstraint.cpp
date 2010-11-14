@@ -23,26 +23,24 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
-#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.inl>
-
+#include "CudaLinearMovementConstraint.inl"
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
-namespace component
-{
-
-namespace projectiveconstraintset
-{
-
-template class LinearMovementConstraint<gpu::cuda::CudaRigid3fTypes>;
-
-}// namespace projectiveconstraintset
-
-}// namespace component
+// namespace component
+// {
+//
+// namespace projectiveconstraintset
+// {
+//
+// template class LinearMovementConstraint<gpu::cuda::CudaRigid3fTypes>;
+//
+// }// namespace projectiveconstraintset
+//
+// }// namespace component
 
 namespace gpu
 {

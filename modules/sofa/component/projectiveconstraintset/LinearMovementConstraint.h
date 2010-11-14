@@ -52,6 +52,11 @@ using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
+template<class DataTypes>
+class LinearMovementConstraintInternalData
+{
+};
+
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
 */
@@ -75,6 +80,10 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+
+protected:
+    LinearMovementConstraintInternalData<DataTypes> *data;
+    friend class LinearMovementConstraintInternalData<DataTypes>;
 
 public :
     /// indices of the DOFs the constraint is applied to

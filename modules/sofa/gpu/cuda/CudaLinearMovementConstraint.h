@@ -1,0 +1,150 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#ifndef SOFA_GPU_CUDA_CUDALINEARMOVEMENTCONSTRAINT_H
+#define SOFA_GPU_CUDA_CUDALINEARMOVEMENTCONSTRAINT_H
+
+#include "CudaTypes.h"
+#include <sofa/component/projectiveconstraintset/LinearMovementConstraint.h>
+
+namespace sofa
+{
+
+namespace gpu
+{
+
+namespace cuda
+{
+
+template<class DataTypes>
+class CudaKernelsLinearMovementConstraint;
+
+}// namespace cuda
+
+}// namespace gpu
+
+namespace component
+{
+
+namespace projectiveconstraintset
+{
+
+template<int N, class real>
+class LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >
+{
+public:
+    typedef LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> > Data;
+    typedef gpu::cuda::CudaRigidTypes<N, real> DataTypes;
+    typedef LinearMovementConstraint<DataTypes> Main;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef topology::PointSubset SetIndex;
+    typedef helper::vector<unsigned int> SetIndexArray;
+
+    typedef sofa::core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef sofa::core::objectmodel::Data<MatrixDeriv> DataMatrixDeriv;
+
+    typedef gpu::cuda::CudaKernelsLinearMovementConstraint<DataTypes> Kernels;
+
+    // vector of indices for general case
+    gpu::cuda::CudaVector<int> indices;
+
+    // initial positions
+    gpu::cuda::CudaVector<Coord> x0;
+
+    int size;
+
+    static void init(Main* m, VecCoord& x);
+
+    static void addIndex(Main* m, unsigned int index);
+
+    static void removeIndex(Main* m, unsigned int index);
+
+    static void projectResponse(Main* m, VecDeriv& dx);
+    static void projectPosition(Main* m, VecCoord& x);
+    static void projectVelocity(Main* m, VecDeriv& dx);
+
+};
+
+
+// template<>
+// void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::init();
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::addIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::removeIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+// template<>
+// void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::init();
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::addIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::removeIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+
+
+} // namespace projectiveconstraintset
+
+} // namespace component
+
+} // namespace sofa
+
+#endif

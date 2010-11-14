@@ -75,6 +75,7 @@ void LinearMovementConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    , data(new LinearMovementConstraintInternalData<DataTypes>)
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
