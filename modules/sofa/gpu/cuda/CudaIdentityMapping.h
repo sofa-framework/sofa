@@ -38,25 +38,31 @@ namespace component
 namespace mapping
 {
 
-template <>
-void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams );
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::gpu::cuda;
 
 template <>
-void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+inline void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams );
 
 template <>
-void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+inline void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+
+template <>
+inline void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
 
 //////// CudaVec3f1
 
 template <>
-void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams );
+inline void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::apply( OutDataVecCoord& dOut, const InDataVecCoord& dIn, const core::MechanicalParams* mparams );
 
 template <>
-void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+inline void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeriv& dIn, const core::MechanicalParams* mparams );
 
 template <>
-void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+inline void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
+
 
 } // namespace mapping
 

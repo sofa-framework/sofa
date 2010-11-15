@@ -22,13 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "CudaMechanicalObject.inl"
+#include "CudaIdentityMapping.inl"
+#include <sofa/component/collision/MouseInteractor.inl>
 #include "CudaDistanceGridCollisionModel.h"
 #include "CudaSphereModel.h"
 #include "CudaPointModel.h"
 #include <sofa/component/collision/NewProximityIntersection.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
-#include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/component/collision/AttachBodyPerformer.inl>
 #include <sofa/component/collision/FixParticlePerformer.inl>
 #include <sofa/component/collision/RayContact.h>
@@ -60,6 +62,13 @@ template class MouseInteractor<CudaVec3fTypes>;
 template class TComponentMouseInteraction< CudaVec3fTypes >;
 template class AttachBodyPerformer< CudaVec3fTypes >;
 template class FixParticlePerformer< CudaVec3fTypes >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class MouseInteractor<CudaVec3dTypes>;
+template class TComponentMouseInteraction< CudaVec3dTypes >;
+template class AttachBodyPerformer< CudaVec3dTypes >;
+template class FixParticlePerformer< CudaVec3dTypes >;
+#endif
 
 template <>
 void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
@@ -171,6 +180,12 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<CudaVec3fTypes> >  FixParticlePerformerCudaVec3fClass("FixParticle",true);
 
+#ifdef SOFA_GPU_CUDA_DOUBLE
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3dTypes> > ComponentMouseInteractionCudaVec3dClass ("MouseSpringCudaVec3d",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3dTypes> >  AttachBodyPerformerCudaVec3dClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<CudaVec3dTypes> >  FixParticlePerformerCudaVec3dClass("FixParticle",true);
+#endif
+
 } //namespace collision
 
 
@@ -187,7 +202,11 @@ namespace cuda
 SOFA_DECL_CLASS(CudaMouseInteractor)
 
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
-        .add< component::collision::MouseInteractor<CudaVec3fTypes> >();
+        .add< component::collision::MouseInteractor<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::collision::MouseInteractor<CudaVec3dTypes> >()
+#endif
+        ;
 
 
 SOFA_DECL_CLASS(CudaCollision)
