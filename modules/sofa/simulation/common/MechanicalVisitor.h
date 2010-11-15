@@ -501,7 +501,8 @@ public:
 
 
 /**
- * Initialize unset destVecId vectors with srcVecId vectors value or 0 if srcVecId is NULL.
+ * Initialize unset MState destVecId vectors with srcVecId vectors value or 0 if srcVecId is NULL.
+ *
  */
 template< VecType vtype >
 class SOFA_SIMULATION_COMMON_API MechanicalVInitVisitor : public BaseMechanicalVisitor
@@ -512,11 +513,17 @@ public:
 
     DestMultiVecId vDest;
     SrcMultiVecId vSrc;
+    bool m_propagate;
 
-    MechanicalVInitVisitor(DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), const core::ExecParams* params=core::ExecParams::defaultInstance())
+    /// Default constructor
+    /// \param _vDest output vector
+    /// \param _vSrc input vector
+    /// \param propagate sets to true propagates vector initialization to mapped mechanical states
+    MechanicalVInitVisitor(DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false, const core::ExecParams* params=core::ExecParams::defaultInstance())
         : BaseMechanicalVisitor(params)
         , vDest(_vDest)
         , vSrc(_vSrc)
+        , m_propagate(propagate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -524,6 +531,8 @@ public:
     }
 
     virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
+
+    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

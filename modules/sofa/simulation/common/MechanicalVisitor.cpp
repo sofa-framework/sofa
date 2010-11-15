@@ -640,6 +640,18 @@ Visitor::Result MechanicalVInitVisitor<vtype>::fwdMechanicalState(simulation::No
 }
 
 template< VecType vtype>
+Visitor::Result MechanicalVInitVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    if (m_propagate)
+    {
+        mm->vInit(vDest.getId(mm), vSrc.getId(mm), this->params);
+    }
+
+    return RESULT_CONTINUE;
+}
+
+
+template< VecType vtype>
 Visitor::Result  MechanicalVAvailVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->vAvail( v, this->params );
