@@ -184,7 +184,6 @@ HEADERS += \
 		CudaRasterizer.inl \
 		CudaLDIPenalityContactForceField.h \
 		CudaLDISimpleContactConstraint.h \
-		CudaLDICuttingContactConstraint.h \
 		CudaComplianceMatrixUpdateManager.h \
 		CudaDiagonalMass.h \
 		CudaDiagonalMass.inl \
@@ -219,7 +218,6 @@ SOURCES += \
 		CudaRasterizer.cpp \
 		CudaLDIPenalityContactForceField.cpp \
 		CudaLDISimpleContactConstraint.cpp \
-		CudaLDICuttingContactConstraint.cpp \
 	CudaComplianceMatrixUpdateManager.cpp \
 	CudaTetrahedronCuttingManager.cpp \
 	CudaDiagonalMass.cpp \
