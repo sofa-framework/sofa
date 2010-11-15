@@ -294,8 +294,8 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 
 
-    Data<VecCoord> xData     = *mstate->write(core::VecCoordId::position());
-    Data<VecDeriv> vData     = *mstate->write(core::VecDerivId::velocity());
+    Data<VecCoord>& xData     = *mstate->write(core::VecCoordId::position());
+    Data<VecDeriv>& vData     = *mstate->write(core::VecDerivId::velocity());
     Data<VecCoord> xfreeData = *mstate->read(core::ConstVecCoordId::freePosition());
     Data<VecDeriv> vfreeData = *mstate->read(core::ConstVecDerivId::freeVelocity());
     VecCoord& x = *xData.beginEdit();
