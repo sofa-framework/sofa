@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/interactionforcefield/QuadBendingSprings.inl>
 #include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <sofa/component/component.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -54,13 +55,14 @@ int QuadBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh
 #endif
         ;
 
+
 #ifndef SOFA_FLOAT
-template class QuadBendingSprings<Vec3dTypes>;
-template class QuadBendingSprings<Vec2dTypes>;
+template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec3dTypes>;
+template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class QuadBendingSprings<Vec3fTypes>;
-template class QuadBendingSprings<Vec2fTypes>;
+template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec3fTypes>;
+template class SOFA_COMPONENT_INTERACTIONFORCEFIELD_API QuadBendingSprings<Vec2fTypes>;
 #endif
 
 
