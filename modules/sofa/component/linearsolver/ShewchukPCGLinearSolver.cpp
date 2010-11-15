@@ -63,6 +63,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_update_iteration( initData(&f_update_iteration,(unsigned)0,"update_iteration","Number of CG iterations before next refresh of precondtioner") )
     , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
+    , f_max_use_by_step( initData(&f_max_use_by_step,(unsigned)0,"max_use_by_step","maximum application of the precondtioners in one step (0 = as much as necessary)") )
     , f_use_precond( initData(&f_use_precond,true,"use_precond","Use preconditioners") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
@@ -202,6 +203,29 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     unsigned iter=1;
     r = M*x;
 
+    bool apply_precond = false;
+    if (this->preconditioners.size()>0 && usePrecond && (f_update_step.getValue()>0))
+    {
+        if (!f_max_use_by_step.getValue())
+        {
+            apply_precond=true;
+        }
+        else if (f_update_iteration.getValue())
+        {
+            if ((iter % (f_update_iteration.getValue()/f_max_use_by_step.getValue())) == 1)
+            {
+                apply_precond=true;
+            }
+        }
+        else
+        {
+            if (iter-1<f_max_use_by_step.getValue())
+            {
+                apply_precond=true;
+            }
+        }
+    }
+
     cgstep_beta(r,b,-1);//for (int i=0; i<n; i++) r[i] = b[i] - r[i];
     if (this->preconditioners.size()>0 && usePrecond)
     {
@@ -233,7 +257,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     {
         if (verbose) printf("CG iteration %d: current L2 error vs initial error=%G\n", iter, sqrt(deltaNew/delta0));
 
-        graph_error.push_back(deltaNew);
+        graph_error.push_back(sqrt(deltaNew/delta0));
 
         q = M * d;
         double dtq = d.dot(q);
@@ -251,7 +275,29 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
             cgstep_alpha(r,q,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
         }
 
-        if (this->preconditioners.size()>0 && usePrecond)
+        if (this->preconditioners.size()>0 && usePrecond && (f_update_step.getValue()>0))
+        {
+            if (!f_max_use_by_step.getValue())
+            {
+                apply_precond=true;
+            }
+            else if (f_update_iteration.getValue())
+            {
+                if ((iter % (f_update_iteration.getValue()/f_max_use_by_step.getValue())) == 1)
+                {
+                    apply_precond=true;
+                }
+            }
+            else
+            {
+                if (iter-1<f_max_use_by_step.getValue())
+                {
+                    apply_precond=true;
+                }
+            }
+        }
+
+        if (apply_precond)
         {
             sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
             sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
@@ -277,7 +323,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         iter++;
     }
 
-    graph_error.push_back(deltaNew);
+    graph_error.push_back(sqrt(deltaNew/delta0));
     next_refresh_iteration=iter;
     sofa::helper::AdvancedTimer::valSet("PCG iterations", iter);
 
