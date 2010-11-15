@@ -78,9 +78,7 @@ PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::PrecomputedWarpPreco
     , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
     , share_matrix( initData(&share_matrix,true,"share_matrix","Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
-    , init_MaxIter( initData(&init_MaxIter,5000,"init_MaxIter","Max Iter use to precompute the first matrix") )
-    , init_Tolerance( initData(&init_Tolerance,1e-20,"init_Tolerance","Tolerance use to precompute the first matrix") )
-    , init_Threshold( initData(&init_Threshold,1e-35,"init_Threshold","Threshold use to precompute the first matrix") )
+    , use_rotations( initData(&use_rotations,true,"use_rotations","Use Rotations around the preconditioner") )
 {
     first = true;
     _rotate = false;
@@ -88,16 +86,16 @@ PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::PrecomputedWarpPreco
 }
 
 template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMatrix(double mFact, double bFact, double kFact)
+void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
     // Update the matrix only the first time
     if (first)
     {
         first = false;
-        init_mFact = mFact;
-        init_bFact = bFact;
-        init_kFact = kFact;
-        Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+        init_mFact = mparams->mFactor();
+        init_bFact = mparams->bFactor();
+        init_kFact = mparams->kFactor();
+        Inherit::setSystemMBKMatrix(mparams);
         loadMatrix();
     }
 
@@ -110,31 +108,39 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix&
 {
     if (usePrecond)
     {
-        unsigned int k = 0;
-        unsigned int l = 0;
-
-        //Solve z = R^t * b
-        while (l < internalData.MinvPtr->colSize())
+        if (use_rotations.getValue())
         {
-            z[l+0] = R[k + 0] * r[l + 0] + R[k + 3] * r[l + 1] + R[k + 6] * r[l + 2];
-            z[l+1] = R[k + 1] * r[l + 0] + R[k + 4] * r[l + 1] + R[k + 7] * r[l + 2];
-            z[l+2] = R[k + 2] * r[l + 0] + R[k + 5] * r[l + 1] + R[k + 8] * r[l + 2];
-            l+=3;
-            k+=9;
+            unsigned int k = 0;
+            unsigned int l = 0;
+
+            //Solve z = R^t * b
+            while (l < internalData.MinvPtr->colSize())
+            {
+                z[l+0] = R[k + 0] * r[l + 0] + R[k + 3] * r[l + 1] + R[k + 6] * r[l + 2];
+                z[l+1] = R[k + 1] * r[l + 0] + R[k + 4] * r[l + 1] + R[k + 7] * r[l + 2];
+                z[l+2] = R[k + 2] * r[l + 0] + R[k + 5] * r[l + 1] + R[k + 8] * r[l + 2];
+                l+=3;
+                k+=9;
+            }
+
+            //Solve tmp = M^-1 * z
+            T = (*internalData.MinvPtr) * z;
+
+            //Solve z = R * tmp
+            k = 0; l = 0;
+            while (l < internalData.MinvPtr->colSize())
+            {
+                z[l+0] = R[k + 0] * T[l + 0] + R[k + 1] * T[l + 1] + R[k + 2] * T[l + 2];
+                z[l+1] = R[k + 3] * T[l + 0] + R[k + 4] * T[l + 1] + R[k + 5] * T[l + 2];
+                z[l+2] = R[k + 6] * T[l + 0] + R[k + 7] * T[l + 1] + R[k + 8] * T[l + 2];
+                l+=3;
+                k+=9;
+            }
         }
-
-        //Solve tmp = M^-1 * z
-        T = (*internalData.MinvPtr) * z;
-
-        //Solve z = R * tmp
-        k = 0; l = 0;
-        while (l < internalData.MinvPtr->colSize())
+        else
         {
-            z[l+0] = R[k + 0] * T[l + 0] + R[k + 1] * T[l + 1] + R[k + 2] * T[l + 2];
-            z[l+1] = R[k + 3] * T[l + 0] + R[k + 4] * T[l + 1] + R[k + 5] * T[l + 2];
-            z[l+2] = R[k + 6] * T[l + 0] + R[k + 7] * T[l + 1] + R[k + 8] * T[l + 2];
-            l+=3;
-            k+=9;
+            //Solve tmp = M^-1 * z
+            z = (*internalData.MinvPtr) * r;
         }
     }
     else z = r;
@@ -154,8 +160,9 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
     std::stringstream ss;
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
     std::string fname = ss.str();
-    if (share_matrix.getValue())
-        internalData.setMinv(internalData.getSharedMatrix(fname));
+
+    if (share_matrix.getValue()) internalData.setMinv(internalData.getSharedMatrix(fname));
+
     if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == systemSize)
     {
         cout << "shared matrix : " << fname << " is already built" << endl;
@@ -342,8 +349,10 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
 
     //<TO REMOVE>
     //VecDeriv& force = *mstate->getVecDeriv(rhId.index);
-    Data<VecDeriv>* dataForce = mstate->writeVecDeriv(rhId);
-    VecDeriv& force = *dataForce->beginEdit();
+    //Data<VecDeriv>* dataForce = mstate->writeVecDeriv(rhId);
+    //VecDeriv& force = *dataForce->beginEdit();
+    helper::WriteAccessor<Data<VecDeriv> > dataForce = *mstate->write(core::VecDerivId::externalForce());
+    VecDeriv& force = dataForce.wref();
 
     force.clear();
     force.resize(nbNodes);
@@ -356,28 +365,32 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
         buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
         buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
         buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
-        CGlinearSolver->f_tolerance.setValue(init_Tolerance.getValue());
-        CGlinearSolver->f_maxIter.setValue(init_MaxIter.getValue());
-        CGlinearSolver->f_smallDenominatorThreshold.setValue(init_Threshold.getValue());
+        CGlinearSolver->f_tolerance.setValue(1e-35);
+        CGlinearSolver->f_maxIter.setValue(5000);
+        CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
     }
     else if(PCGlinearSolver)
     {
         buf_tolerance = (double) PCGlinearSolver->f_tolerance.getValue();
         buf_maxIter   = (int) PCGlinearSolver->f_maxIter.getValue();
         buf_threshold = (double) PCGlinearSolver->f_smallDenominatorThreshold.getValue();
-        PCGlinearSolver->f_tolerance.setValue(init_Tolerance.getValue());
-        PCGlinearSolver->f_maxIter.setValue(init_MaxIter.getValue());
-        PCGlinearSolver->f_smallDenominatorThreshold.setValue(init_Threshold.getValue());
+        PCGlinearSolver->f_tolerance.setValue(1e-35);
+        PCGlinearSolver->f_maxIter.setValue(5000);
+        PCGlinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     //<TO REMOVE>
     //VecDeriv& velocity = *mstate->getVecDeriv(lhId.index);
-    Data<VecDeriv>* dataVelocity = mstate->writeVecDeriv(lhId);
-    VecDeriv& velocity = *dataVelocity->beginEdit();
+    //Data<VecDeriv>* dataVelocity = mstate->writeVecDeriv(lhId);
+    //VecDeriv& velocity = *dataVelocity->beginEdit();
+    helper::WriteAccessor<Data<VecDeriv> > dataVelocity = *mstate->write(core::VecDerivId::velocity());
+    VecDeriv& velocity = dataVelocity.wref();
 
     VecDeriv velocity0 = velocity;
-    VecCoord& pos = *mstate->getX();
+    //VecCoord& pos = *mstate->getX();
+    helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::VecCoordId::position());
+    VecCoord& pos = posData.wref();
     VecCoord pos0 = pos;
 
     for(unsigned int f = 0 ; f < nbNodes ; f++)
@@ -458,8 +471,8 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
     //Reset the position
     for (unsigned int i=0; i<pos0.size(); i++) pos[i]=pos0[i];
 
-    dataForce->endEdit();
-    dataVelocity->endEdit();
+//         dataForce->endEdit();
+//         dataVelocity->endEdit();
 
     mstate->vFree(lhId);
     mstate->vFree(rhId);
@@ -470,13 +483,15 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
 template<class TDataTypes,class TMatrix,class TVector>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::invert(TMatrix& /*M*/)
 {
-    _rotate = true;
     this->rotateConstraints();
 }
 
 template<class TDataTypes,class TMatrix,class TVector>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstraints()
 {
+    _rotate = true;
+    if (! use_rotations.getValue()) return;
+
     unsigned systemSize3 = internalData.MinvPtr->colSize()/3;
     if (R.size() != systemSize3*9)
     {
@@ -561,25 +576,45 @@ bool PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::addJMInvJt(defa
 template<class TDataTypes,class TMatrix,class TVector> template<class JMatrix>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
 {
+    unsigned nl;
     internalData.JR.clear();
     internalData.JR.resize(J.rowSize(),J.colSize());
 
-    //compute JR = J * R
-    unsigned nl = 0;
-    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+    if (use_rotations.getValue())
     {
-        int l = jit1->first;
-        for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
+        //compute JR = J * R
+        nl = 0;
+        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
         {
-            int c = i1->first;
-            Real v0 = i1->second; i1++; if (i1==jit1->second.end()) break;
-            Real v1 = i1->second; i1++; if (i1==jit1->second.end()) break;
-            Real v2 = i1->second; i1++;
-            internalData.JR.set(l,c+0,v0 * R[(c+0)*3+0] + v1 * R[(c+1)*3+0] + v2 * R[(c+1)*3+0] );
-            internalData.JR.set(l,c+1,v0 * R[(c+0)*3+1] + v1 * R[(c+1)*3+1] + v2 * R[(c+2)*3+1] );
-            internalData.JR.set(l,c+2,v0 * R[(c+0)*3+2] + v1 * R[(c+1)*3+2] + v2 * R[(c+3)*3+2] );
+            int l = jit1->first;
+            for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
+            {
+                int c = i1->first;
+                Real v0 = i1->second; i1++; Real v1 = i1->second; i1++; Real v2 = i1->second; i1++;
+                internalData.JR.set(l,c+0,v0 * R[(c+0)*3+0] + v1 * R[(c+1)*3+0] + v2 * R[(c+1)*3+0] );
+                internalData.JR.set(l,c+1,v0 * R[(c+0)*3+1] + v1 * R[(c+1)*3+1] + v2 * R[(c+2)*3+1] );
+                internalData.JR.set(l,c+2,v0 * R[(c+0)*3+2] + v1 * R[(c+1)*3+2] + v2 * R[(c+3)*3+2] );
+            }
+            nl++;
         }
-        nl++;
+    }
+    else
+    {
+        //compute JR = J * I
+        nl = 0;
+        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+        {
+            int l = jit1->first;
+            for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end();)
+            {
+                int c = i1->first;
+                Real v0 = i1->second; i1++; Real v1 = i1->second; i1++; Real v2 = i1->second; i1++;
+                internalData.JR.set(l,c+0,v0);
+                internalData.JR.set(l,c+1,v1);
+                internalData.JR.set(l,c+2,v2);
+            }
+            nl++;
+        }
     }
 
     internalData.JRMinv.clear();

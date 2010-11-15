@@ -113,15 +113,13 @@ public:
     Data<bool> use_file;
     Data<bool> share_matrix;
     Data <std::string> solverName;
-    Data<int> init_MaxIter;
-    Data<double> init_Tolerance;
-    Data<double> init_Threshold;
+    Data<bool> use_rotations;
 
     PrecomputedWarpPreconditioner();
 
     void solve (TMatrix& M, TVector& x, TVector& b);
     void invert(TMatrix& M);
-    void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
     TBaseMatrix * getSystemMatrixInv()
