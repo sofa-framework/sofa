@@ -42,7 +42,8 @@ using namespace core::behavior;
 
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
-    : localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    : sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>()
+    , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
 {
 }
 
