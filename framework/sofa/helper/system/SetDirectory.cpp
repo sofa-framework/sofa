@@ -203,7 +203,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         std::wstring wprocessPath = tpath;
         std::string processPath;
         processPath.assign(wprocessPath.begin(), wprocessPath.end() );
-        std::cout << "Current process: "<<processPath<<std::endl;
+        //std::cout << "Current process: "<<processPath<<std::endl;
         return processPath;
     }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
