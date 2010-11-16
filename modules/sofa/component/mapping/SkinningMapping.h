@@ -180,7 +180,11 @@ public:
     typedef defaulttype::Mat<8,8,InReal> Mat88;
     typedef vector<Mat88> VMat88;
     typedef defaulttype::Mat<InDOFs,3,InReal> MatInx3;
-
+    typedef defaulttype::Mat<6,10,InReal> Mat610;
+    typedef vector<Mat610> VMat610;
+    typedef sofa::helper::fixed_array<Mat610,InDOFs> MatInx610;
+    typedef vector<MatInx610> VMatInx610;
+    typedef vector<VMatInx610> VVMatInx610;
     typedef defaulttype::Vec<3,InReal> Vec3;
     typedef vector<Vec3> VVec3;
     typedef vector<VVec3> VVVec3;
