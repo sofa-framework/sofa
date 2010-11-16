@@ -22,6 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP
+#define SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP
+
+
 #include "CudaTypes.h"
 #include "CudaMechanicalObject.inl"
 #include <sofa/core/ObjectFactory.h>
@@ -85,3 +89,5 @@ int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations
 } // namespace gpu
 
 } // namespace sofa
+
+#endif // SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP

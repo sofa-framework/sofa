@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
+#define SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
+
 #include "CudaTypes.h"
 #include "CudaIdentityMapping.inl"
 #include <sofa/core/ObjectFactory.h>
@@ -134,3 +137,6 @@ int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computati
 } // namespace gpu
 
 } // namespace sofa
+
+
+#endif // SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP

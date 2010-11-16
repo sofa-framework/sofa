@@ -64,10 +64,62 @@ template <>
 inline void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJT( InDataVecDeriv& dOut, const OutDataVecDeriv& dIn, const core::MechanicalParams* mparams );
 
 
+
+
 } // namespace mapping
 
 } // namespace component
 
 } // namespace sofa
+
+
+#ifndef SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
+
+using namespace sofa::defaulttype;
+using namespace sofa::component::mapping;
+using namespace sofa::gpu::cuda;
+
+extern template class  IdentityMapping< CudaVec3fTypes, CudaVec3fTypes>;
+#ifndef SOFA_DOUBLE
+extern template class  IdentityMapping< CudaVec3fTypes, Vec3fTypes>;
+extern template class  IdentityMapping< Vec3fTypes, CudaVec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+extern template class  IdentityMapping< CudaVec3fTypes, Vec3dTypes>;
+extern template class  IdentityMapping< Vec3dTypes, CudaVec3fTypes>;
+#endif
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class  IdentityMapping< CudaVec3fTypes, CudaVec3dTypes>;
+extern template class  IdentityMapping< CudaVec3dTypes, CudaVec3fTypes>;
+extern template class  IdentityMapping< CudaVec3dTypes, CudaVec3dTypes>;
+extern template class  IdentityMapping< CudaVec3dTypes, Vec3fTypes>;
+extern template class  IdentityMapping< CudaVec3dTypes, Vec3dTypes>;
+#ifndef SOFA_DOUBLE
+extern template class  IdentityMapping< Vec3dTypes, CudaVec3dTypes>;
+#endif
+#ifndef SOFA_FLOAT
+extern template class  IdentityMapping< Vec3fTypes, CudaVec3dTypes>;
+#endif
+
+extern template class  IdentityMapping< CudaVec3d1Types, ExtVec3dTypes >;
+extern template class  IdentityMapping< CudaVec3dTypes, ExtVec3dTypes >;
+#endif
+extern template class  IdentityMapping< CudaVec3f1Types, ExtVec3fTypes >;
+extern template class  IdentityMapping< CudaVec3f1Types, CudaVec3f1Types>;
+extern template class  IdentityMapping< CudaVec3f1Types, Vec3dTypes>;
+extern template class  IdentityMapping< CudaVec3f1Types, Vec3fTypes>;
+#ifndef SOFA_FLOAT
+extern template class  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class  IdentityMapping< Vec3fTypes, ExtVec3fTypes>;
+#endif
+extern template class  IdentityMapping< CudaVec3f1Types, ExtVec3dTypes >;
+extern template class  IdentityMapping< CudaVec3f1Types, CudaVec3fTypes>;
+extern template class  IdentityMapping< CudaVec3fTypes, CudaVec3f1Types>;
+
+#endif
+
 
 #endif
