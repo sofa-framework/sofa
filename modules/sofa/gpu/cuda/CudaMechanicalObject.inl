@@ -2373,16 +2373,6 @@ CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3dTypes);
 
 
 
-// template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-extern template class MechanicalObject<CudaVec3fTypes>;
-extern template class MechanicalObject<CudaVec3f1Types>;
-extern template class MechanicalObject<CudaRigid3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class MechanicalObject<CudaVec3dTypes>;
-extern template class MechanicalObject<CudaVec3d1Types>;
-extern template class MechanicalObject<CudaRigid3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
 
 
 
