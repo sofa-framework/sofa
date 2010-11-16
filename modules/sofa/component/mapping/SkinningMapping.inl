@@ -88,7 +88,7 @@ SkinningMapping<TIn, TOut>::SkinningMapping (core::State<In>* from, core::State<
     , newFrameDistanceToMaximizeWeight ( initData ( &newFrameDistanceToMaximizeWeight, 0.0, "newFrameDistanceToMaximizeWeight","new frame distance used to maximize weights." ) )
     , enableSkinning ( initData ( &enableSkinning, true, "enableSkinning","enable skinning." ) )
     , voxelVolume ( initData ( &voxelVolume, 1.0, "voxelVolume","default volume voxel. Use if no hexa topo is found." ) )
-    , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to compute all physical matrices." ) )
+    , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to improve numerical integration" ) )
 #endif
     , wheightingType ( initData ( &wheightingType, "wheightingType","Weighting computation method.\n0 - none (distance is used).\n1 - inverse distance square.\n2 - linear.\n3 - hermite (on groups of four dofs).\n4 - spline (on groups of four dofs)." ) )
     , distanceType ( initData ( &distanceType, "distanceType","Distance computation method.\n0 - euclidian distance.\n1 - geodesic distance.\n2 - harmonic diffusion." ) )
@@ -248,29 +248,36 @@ void SkinningMapping<TIn, TOut>::normalizeWeights()
     const unsigned int& nbRef = nbRefs.getValue();
     VVD& m_weights = * ( weights.beginEdit() );
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+    VVMat33& m_ddweight = this->weightGradients2;
 
     // Normalise weights & dweights
     for (unsigned int j = 0; j < xtoSize; ++j)
     {
-        double sumWeights = 0;
-        Vec3 sumGrad;
+        double sumWeights = 0,wn;
+        Vec3 sumGrad,dwn;			sumGrad.fill(0);
+        Mat33 sumGrad2,ddwn;		sumGrad2.fill(0);
 
         // Compute norm
         for (unsigned int i = 0; i < nbRef; ++i)
         {
             sumWeights += m_weights[i][j];
             sumGrad += m_dweight[i][j];
+            sumGrad2 += m_ddweight[i][j];
         }
 
         // Normalise
-        for (unsigned int i = 0; i < nbRef; ++i)
-        {
-            m_weights[i][j] /= sumWeights;
-            m_dweight[i][j] = (m_dweight[i][j] - sumGrad * m_weights[i][j]) / sumWeights;
-        }
+        if(sumWeights!=0)
+            for (unsigned int i = 0; i < nbRef; ++i)
+            {
+                wn=m_weights[i][j]/sumWeights;
+                dwn=(m_dweight[i][j] - sumGrad*wn)/sumWeights;
+                for(unsigned int o=0; o<3; o++) for(unsigned int p=0; p<3; p++) ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
+                m_ddweight[i][j]=ddwn;
+                m_dweight[i][j]=dwn;
+                m_weights[i][j] =wn;
+            }
     }
 }
-
 
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::init()
@@ -358,14 +365,13 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
 
     VVD& m_weights = * ( weights.beginEdit() );
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+    VVMat33& m_ddweight = this->weightGradients2;
+
     const vector<int>& m_reps = repartition.getValue();
 
-    m_weights.resize ( xfrom.size() );
-    for ( unsigned int i=0; i<xfrom.size(); i++ )
-        m_weights[i].resize ( xto.size() );
-    m_dweight.resize ( xfrom.size() );
-    for ( unsigned int i=0; i<xfrom.size(); i++ )
-        m_dweight[i].resize ( xto.size() );
+    m_weights.resize ( xfrom.size() );    for ( unsigned int i=0; i<xfrom.size(); i++ )        m_weights[i].resize ( xto.size() );
+    m_dweight.resize ( xfrom.size() );    for ( unsigned int i=0; i<xfrom.size(); i++ )        m_dweight[i].resize ( xto.size() );
+    m_ddweight.resize( xfrom.size() );    for ( unsigned int i=0; i<xfrom.size(); i++ )        m_ddweight[i].resize( xto.size() );
 
     switch ( wheightingType.getValue().getSelectedId() )
     {
@@ -405,6 +411,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
             {
                 m_weights[j][i] = 0.0;
                 m_dweight[j][i] = Coord();
+                m_ddweight[j][i].fill(0);
             }
             Vec3d r1r2, r1p;
             r1r2 = xfrom[tmpReps[nbRefs.getValue() *i+1]].getCenter() - xfrom[tmpReps[nbRefs.getValue() *i+0]].getCenter();
@@ -427,14 +434,24 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
             for ( unsigned int i=0; i<nbRefs.getValue(); i++ )
             {
                 int indexFrom = m_reps[nbRefs.getValue() *j + i];
-                if ( distances[indexFrom][j])
-                    m_weights[indexFrom][j] = 1 / (distances[indexFrom][j]*distances[indexFrom][j]);
+                double d2=distances[indexFrom][j]*distances[indexFrom][j];
+                double d3=d2*distances[indexFrom][j];
+                double d4=d3*distances[indexFrom][j];
+
+                m_ddweight[indexFrom][j].fill(0);
+                if (d2)
+                {
+                    m_weights[indexFrom][j] = 1 / d2;
+                    m_dweight[indexFrom][j] = - distGradients[indexFrom][j] / d3* 2.0;
+                    m_ddweight[indexFrom][j][0][0]-=2.0/d4;	m_ddweight[indexFrom][j][1][1]-=2.0/d4;	m_ddweight[indexFrom][j][2][2]-=2.0/d4;
+                    for(unsigned int k=0; k<3; k++) for(unsigned int m=0; m<3; m++) m_ddweight[indexFrom][j][k][m]+=distGradients[indexFrom][j][k]*distGradients[indexFrom][j][m]*8.0/d2;
+                }
                 else
+                {
                     m_weights[indexFrom][j] = 0xFFF;
-                if ( distances[indexFrom][j])
-                    m_dweight[indexFrom][j] = - distGradients[indexFrom][j] / (double)(distances[indexFrom][j]*distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
-                else
                     m_dweight[indexFrom][j] = Coord();
+                }
+
             }
         }
 
@@ -1244,13 +1261,19 @@ void SkinningMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename de
 }
 
 
+
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::getCov33 (Mat33& M, const Vec3& vec1, const Vec3& vec2) const
+void SkinningMapping<TIn, TOut>::M33toV6(Vec6 &v,const Mat33& M) const
+// referred as operator V in the paper
 {
-    for(int i=0; i<3; i++)
-        for(int j=0; j<3; j++)
-            M[i][j] = vec1[i]*vec2[j];
+    v[0]=M[0][0];
+    v[1]=M[1][1];
+    v[2]=M[2][2];
+    v[3]=(M[0][1]+M[1][0])/2.;
+    v[4]=(M[2][1]+M[1][2])/2.;
+    v[5]=(M[2][0]+M[0][2])/2.;
 }
+
 
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::QtoR(Mat33& M, const Quat& q) const
@@ -1328,6 +1351,55 @@ void SkinningMapping<TIn, TOut>::ComputeMw(Mat33& M, const Quat& q) const
     M[2][0]=-q[1]; M[2][1]=q[0]; M[2][2]=0;
 }
 
+//rigid
+template <class TIn, class TOut>
+void SkinningMapping<TIn, TOut>:: StrainDeriv_rigid(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const
+{
+    unsigned int k,m;
+    Mat33 D; Mat33 FT=F.transposed();
+    D=FT*Ma*At; B[0][0]+=2*D[0][0]; B[1][0]+=2*D[1][1]; B[2][0]+=2*D[2][2]; B[3][0]+=D[0][1]+D[1][0]; B[4][0]+=D[1][2]+D[2][1]; B[5][0]+=D[0][2]+D[2][0];
+    D=FT*Mb*At; B[0][1]+=2*D[0][0]; B[1][1]+=2*D[1][1]; B[2][1]+=2*D[2][2]; B[3][1]+=D[0][1]+D[1][0]; B[4][1]+=D[1][2]+D[2][1]; B[5][1]+=D[0][2]+D[2][0];
+    D=FT*Mc*At; B[0][2]+=2*D[0][0]; B[1][2]+=2*D[1][1]; B[2][2]+=2*D[2][2]; B[3][2]+=D[0][1]+D[1][0]; B[4][2]+=D[1][2]+D[2][1]; B[5][2]+=D[0][2]+D[2][0];
+    D=FT*Mw*At; B[0][3]+=2*D[0][0]; B[1][3]+=2*D[1][1]; B[2][3]+=2*D[2][2]; B[3][3]+=D[0][1]+D[1][0]; B[4][3]+=D[1][2]+D[2][1]; B[5][3]+=D[0][2]+D[2][0];
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][k+4]+=dw[m]*F[k][m];
+    for(k=0; k<3; k++)  B[3][k+4]+=(dw[0]*F[k][1]+dw[1]*F[k][0])/2.;
+    for(k=0; k<3; k++)  B[4][k+4]+=(dw[1]*F[k][2]+dw[2]*F[k][1])/2.;
+    for(k=0; k<3; k++)  B[5][k+4]+=(dw[0]*F[k][2]+dw[2]*F[k][0])/2.;
+}
+
+//affine
+template <class TIn, class TOut>
+void SkinningMapping<TIn, TOut>::StrainDeriv_affine(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
+{
+    unsigned int k,l,m;
+// stretch
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][9+k]+=dw[m]*F[k][m];
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) for(l=0; l<3; l++) B[m][3*l+k]+=F[l][m]*At[k][m];
+// shear
+    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[3][3*l+k]+=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
+    for(k=0; k<3; k++)  B[3][9+k]+=0.5*(dw[0]*F[k][1] + dw[1]*F[k][0]);
+    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[4][3*l+k]+=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
+    for(k=0; k<3; k++)  B[4][9+k]+=0.5*(dw[1]*F[k][2] + dw[2]*F[k][1]);
+    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[5][3*l+k]+=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
+    for(k=0; k<3; k++)  B[5][9+k]+=0.5*(dw[2]*F[k][0] + dw[0]*F[k][2]);
+}
+
+// quadratic
+template <class TIn, class TOut>
+void SkinningMapping<TIn, TOut>::StrainDeriv_quadratic(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
+{
+    unsigned int k,l,m;
+// stretch
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][27+k]+=dw[m]*F[k][m];
+    for(k=0; k<9; k++)  for(m=0; m<3; m++) for(l=0; l<3; l++) B[m][9*l+k]+=F[l][m]*At[k][m];
+// shear
+    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[3][9*l+k]+=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
+    for(k=0; k<3; k++)  B[3][27+k]+=0.5*(dw[0]*F[k][1] + dw[1]*F[k][0]);
+    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[4][9*l+k]+=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
+    for(k=0; k<3; k++)  B[4][27+k]+=0.5*(dw[1]*F[k][2] + dw[2]*F[k][1]);
+    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[5][9*l+k]+=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
+    for(k=0; k<3; k++)  B[5][27+k]+=0.5*(dw[2]*F[k][0] + dw[0]*F[k][2]);
+}
 
 template <class TIn, class TOut>
 template<class T>
@@ -1338,6 +1410,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+    VVMat33& m_ddweight = this->weightGradients2;
 
     // vol and massDensity
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
@@ -1353,18 +1426,56 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
     // Resize matrices
     this->det.resize(xto.size());
     this->deformationTensors.resize(xto.size());
+    this->ddet.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->ddet[i].resize(xto.size());
     this->B.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->B[i].resize(xto.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B[i].resize(xto.size());
     this->Atilde.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->Atilde[i].resize(xto0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->Atilde[i].resize(xto0.size());
     this->J0.resize ( xfrom0.size() );
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->J0[i].resize(xto0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J0[i].resize(xto0.size());
     this->J.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->J[i].resize(xto0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J[i].resize(xto0.size());
+
+    if( useElastons.getValue())
+    {
+        this->integ_Elaston.resize( xto.size());
+        for ( unsigned int i = 0; i < xto.size(); i++) // to update
+        {
+            double lx,ly,lz;
+            if ( hexaContainer && this->geoDist)
+            {
+                lx=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0];
+                ly=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[1];
+                lz=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[2];
+            }
+            else lx=ly=lz=pow(this->voxelVolume.getValue(),1/3.);
+            this->integ_Elaston[i][0] = 1;
+            this->integ_Elaston[i][4] = lx*lx/12.;
+            this->integ_Elaston[i][7] = ly*ly/12.;
+            this->integ_Elaston[i][9] = lz*lz/12.;
+            this->integ_Elaston[i][20] = lx*lx*lx*lx/80.;
+            this->integ_Elaston[i][21] = lx*lx*ly*ly/144.;
+            this->integ_Elaston[i][22] = lx*lx*lz*lz/144.;
+            this->integ_Elaston[i][23] = ly*ly*ly*ly/80.;
+            this->integ_Elaston[i][24] = ly*ly*lz*lz/144.;
+            this->integ_Elaston[i][25] = lz*lz*lz*lz/80.;
+            this->integ_Elaston[i]=this->integ_Elaston[i]*lx*ly*lz;
+        }
+
+        this->deformationTensorsElaston.resize(xto.size());
+        this->Stilde_x.resize(xfrom0.size());
+        this->Stilde_y.resize(xfrom0.size());
+        this->Stilde_z.resize(xfrom0.size());
+        for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        {
+            this->Stilde_x[i].resize(xto0.size());
+            this->Stilde_y[i].resize(xto0.size());
+            this->Stilde_z[i].resize(xto0.size());
+        }
+        this->B_Elaston.resize(xfrom0.size());
+        for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B_Elaston[i].resize(xto.size());
+    }
 
     // Precompute matrices
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
@@ -1375,27 +1486,23 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
             const int& idxReps=m_reps[idx];
 
             const InCoord& xi0 = xfrom0[idxReps];
-            Mat33 transformation;
-            QtoR( transformation, xi0.getOrientation());
-            Mat33 transformationInv;
-            transformationInv.invert (transformation);
+            Mat33 R0;	 QtoR( R0, xi0.getOrientation());
+            Mat33 R0Inv;  R0Inv.invert (R0);
 
-            for(int k=0; k<3; k++)
+            for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (R0Inv)[k][l];
+
+            if( useElastons.getValue())
             {
-                for(int l=0; l<3; l++)
-                {
-                    (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (transformationInv)[k][l];
-                }
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_x[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][0] + (R0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (R0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_y[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][1] + (R0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (R0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_z[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][2] + (R0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (R0Inv)[k][l];
             }
 
             Mat76 L; ComputeL(L, xi0.getOrientation());
-
             Mat37 Q; ComputeQ(Q, xi0.getOrientation(), initPos[idx]);
 
-            Mat3xIn Ji = this->J[idxReps][i];
-            Ji.fill(0);
-            Ji = (InReal)m_weights[idxReps][i] * Q * L;
-            this->J0[idxReps][i] = Ji;
+            this->J[idxReps][i] = (InReal)m_weights[idxReps][i] * Q * L;
+            this->J0[idxReps][i] = this->J[idxReps][i];
         }
     }
 }
@@ -1410,6 +1517,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+    VVMat33& m_ddweight = this->weightGradients2;
 
     // vol and massDensity
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
@@ -1425,15 +1533,54 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
     // Resize matrices
     this->det.resize(xto.size());
     this->deformationTensors.resize(xto.size());
+    this->ddet.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->ddet[i].resize(xto.size());
     this->B.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->B[i].resize(xto.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B[i].resize(xto.size());
     this->Atilde.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->Atilde[i].resize(xto0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->Atilde[i].resize(xto0.size());
     this->J.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->J[i].resize(xto0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J[i].resize(xto0.size());
+
+    if( useElastons.getValue())
+    {
+        this->integ_Elaston.resize( xto.size());
+        for ( unsigned int i = 0; i < xto.size(); i++) // to update
+        {
+            double lx,ly,lz;
+            if ( hexaContainer && this->geoDist)
+            {
+                lx=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0];
+                ly=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[1];
+                lz=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[2];
+            }
+            else lx=ly=lz=pow(this->voxelVolume.getValue(),1/3.);
+            this->integ_Elaston[i][0] = 1;
+            this->integ_Elaston[i][4] = lx*lx/12.;
+            this->integ_Elaston[i][7] = ly*ly/12.;
+            this->integ_Elaston[i][9] = lz*lz/12.;
+            this->integ_Elaston[i][20] = lx*lx*lx*lx/80.;
+            this->integ_Elaston[i][21] = lx*lx*ly*ly/144.;
+            this->integ_Elaston[i][22] = lx*lx*lz*lz/144.;
+            this->integ_Elaston[i][23] = ly*ly*ly*ly/80.;
+            this->integ_Elaston[i][24] = ly*ly*lz*lz/144.;
+            this->integ_Elaston[i][25] = lz*lz*lz*lz/80.;
+            this->integ_Elaston[i]=this->integ_Elaston[i]*lx*ly*lz;
+        }
+
+        this->deformationTensorsElaston.resize(xto.size());
+        this->Stilde_x.resize(xfrom0.size());
+        this->Stilde_y.resize(xfrom0.size());
+        this->Stilde_z.resize(xfrom0.size());
+        for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        {
+            this->Stilde_x[i].resize(xto0.size());
+            this->Stilde_y[i].resize(xto0.size());
+            this->Stilde_z[i].resize(xto0.size());
+        }
+        this->B_Elaston.resize(xfrom0.size());
+        for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B_Elaston[i].resize(xto.size());
+    }
 
     // Precompute matrices
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
@@ -1444,16 +1591,16 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
             const int& idxReps = m_reps[idx];
 
             const InCoord& xi0 = xfrom0[idxReps];
-            const Mat33& affine = xi0.getAffine();
-            Mat33 affineInv;
-            affineInv.invert (affine);
+            const Mat33& A0 = xi0.getAffine();
+            Mat33 A0Inv; A0Inv.invert (A0);
 
-            for(int k=0; k<3; k++)
+            for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (A0Inv)[k][l];
+
+            if( useElastons.getValue())
             {
-                for(int l=0; l<3; l++)
-                {
-                    (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (affineInv)[k][l];
-                }
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_x[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][0] + (A0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (A0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_y[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][1] + (A0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (A0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_z[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][2] + (A0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (A0Inv)[k][l];
             }
 
             Mat3xIn& Ji = this->J[idxReps][i];
@@ -1481,6 +1628,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+    VVMat33& m_ddweight = this->weightGradients2;
 
     // vol and massDensity
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
@@ -1496,16 +1644,54 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
     // Resize matrices
     this->det.resize(xto.size());
     this->deformationTensors.resize(xto.size());
+    this->ddet.resize(xfrom0.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->ddet[i].resize(xto.size());
     this->B.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->B[i].resize(xto.size());
+    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B[i].resize(xto.size());
     this->Atilde.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->Atilde[i].resize(xto0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->Atilde[i].resize(xto0.size());
     this->J.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        this->J[i].resize(xto0.size());
+    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J[i].resize(xto0.size());
 
+    if( useElastons.getValue())
+    {
+        this->integ_Elaston.resize( xto.size());
+        for ( unsigned int i = 0; i < xto.size(); i++) // to update
+        {
+            double lx,ly,lz;
+            if ( hexaContainer && this->geoDist)
+            {
+                lx=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0];
+                ly=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[1];
+                lz=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[2];
+            }
+            else lx=ly=lz=pow(this->voxelVolume.getValue(),1./3.);
+            this->integ_Elaston[i][0] = 1;
+            this->integ_Elaston[i][4] = lx*lx/12.;
+            this->integ_Elaston[i][7] = ly*ly/12.;
+            this->integ_Elaston[i][9] = lz*lz/12.;
+            this->integ_Elaston[i][20] = lx*lx*lx*lx/80.;
+            this->integ_Elaston[i][21] = lx*lx*ly*ly/144.;
+            this->integ_Elaston[i][22] = lx*lx*lz*lz/144.;
+            this->integ_Elaston[i][23] = ly*ly*ly*ly/80.;
+            this->integ_Elaston[i][24] = ly*ly*lz*lz/144.;
+            this->integ_Elaston[i][25] = lz*lz*lz*lz/80.;
+            this->integ_Elaston[i]=this->integ_Elaston[i]*lx*ly*lz;
+        }
+
+        this->deformationTensorsElaston.resize(xto.size());
+        this->Stilde_x.resize(xfrom0.size());
+        this->Stilde_y.resize(xfrom0.size());
+        this->Stilde_z.resize(xfrom0.size());
+        for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        {
+            this->Stilde_x[i].resize(xto0.size());
+            this->Stilde_y[i].resize(xto0.size());
+            this->Stilde_z[i].resize(xto0.size());
+        }
+        this->B_Elaston.resize(xfrom0.size());
+        for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B_Elaston[i].resize(xto.size());
+    }
     // Precompute matrices ( suppose that A0=I )
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
     {
@@ -1517,18 +1703,25 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
             const Vec3& p0 = initPos[idx];
             Vec9 p2 = Vec9( p0[0], p0[1], p0[2], p0[0]*p0[0], p0[1]*p0[1], p0[2]*p0[2], p0[0]*p0[1], p0[1]*p0[2], p0[0]*p0[2]);
 
-            MatInAtx3& At = this->Atilde[idxReps][i];
-            At[0][0] = 1;       At[0][1]=0;       At[0][2]=0;
-            At[1][0] = 0;       At[1][1]=1;       At[1][2]=0;
-            At[2][0] = 0;       At[2][1]=0;       At[2][2]=1;
-            At[3][0] = 2*p2[0]; At[3][1]=0;       At[3][2]=0;
-            At[4][0] = 0;       At[4][1]=2*p2[1]; At[4][2]=0;
-            At[5][0] = 0;       At[5][1]=0;       At[5][2]=2*p2[2];
-            At[6][0] = p2[1];   At[6][1]=p2[0];   At[6][2]=0;
-            At[7][0] = 0;       At[7][1]=p2[2];   At[7][2]=p2[1];
-            At[8][0] = p2[2];   At[8][1]=0;       At[8][2]=p2[0];
-            At = (InReal)m_weights[idxReps][i] * At;
-            for (int k=0; k<9; k++) for (int l=0; l<3; l++) At[k][l] += p2[k] * m_dweight[idxReps][i][l];
+            MatInAtx3 A0Inv; // supposing that A0=I
+            A0Inv[0][0] = 1;       A0Inv[0][1]=0;       A0Inv[0][2]=0;
+            A0Inv[1][0] = 0;       A0Inv[1][1]=1;       A0Inv[1][2]=0;
+            A0Inv[2][0] = 0;       A0Inv[2][1]=0;       A0Inv[2][2]=1;
+            A0Inv[3][0] = 2*p2[0]; A0Inv[3][1]=0;       A0Inv[3][2]=0;
+            A0Inv[4][0] = 0;       A0Inv[4][1]=2*p2[1]; A0Inv[4][2]=0;
+            A0Inv[5][0] = 0;       A0Inv[5][1]=0;       A0Inv[5][2]=2*p2[2];
+            A0Inv[6][0] = p2[1];   A0Inv[6][1]=p2[0];   A0Inv[6][2]=0;
+            A0Inv[7][0] = 0;       A0Inv[7][1]=p2[2];   A0Inv[7][2]=p2[1];
+            A0Inv[8][0] = p2[2];   A0Inv[8][1]=0;       A0Inv[8][2]=p2[0];
+            for (int k=0; k<9; k++) for (int l=0; l<3; l++) (this->Atilde[idxReps][i])[k][l] = p2[k] * m_dweight[idxReps][i][l] + m_weights[idxReps][i] * (A0Inv)[k][l];
+
+            if( useElastons.getValue())
+            {
+                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_x[idxReps][i])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][0] + (A0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (A0Inv)[k][l];
+                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_y[idxReps][i])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][1] + (A0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (A0Inv)[k][l];
+                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_z[idxReps][i])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][2] + (A0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (A0Inv)[k][l];
+            }
+
 
             Mat3xIn& Ji = this->J[idxReps][i];
             Ji.fill(0);
@@ -1595,26 +1788,33 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
         if ( !this->computeAllMatrices.getValue()) continue;
 
         const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
+        VVMat33& ddw = this->weightGradients2;
 
-        Mat33 F, FT, Finv, E;
-        F.fill ( 0 );
+        Mat33 F, Finv, E,A,S_x,S_y,S_z;
+        F.fill ( 0 ); S_x.fill(0); S_y.fill(0); S_z.fill(0);
         E.fill ( 0 );
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
         {
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat33 cov;
-            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
-            Mat33 rot;
-            in[idxReps ].getOrientation().toMatrix(rot);
-            F += cov + rot * this->Atilde[idxReps][i];
+            in[idxReps ].getOrientation().toMatrix(A);
+            for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) F[k][l]+=in[idxReps ].getCenter()[k]*dw[idxReps][i][l];
+            F += A * this->Atilde[idxReps][i];
+
+            if( useElastons.getValue())
+            {
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_x[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][0];
+                S_x += A * this->Stilde_x[idxReps][i];
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_y[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][1];
+                S_y += A * this->Stilde_y[idxReps][i];
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_z[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][2];
+                S_z += A * this->Stilde_z[idxReps][i];
+            }
         }
-        FT.transpose( F);
 
         // strain and determinant
         this->det[i] = determinant ( F );
-        invertMatrix ( Finv, F );
         for ( unsigned int k = 0; k < 3; ++k )
         {
             for ( unsigned int j = 0; j < 3; ++j )
@@ -1623,62 +1823,110 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
 
             E[k][k] -= 1.;
         }
-        E /= 2.; // update E=1/2(U^TU-I)
-        this->deformationTensors[i][0] = E[0][0];
-        this->deformationTensors[i][1] = E[1][1];
-        this->deformationTensors[i][2] = E[2][2];
-        this->deformationTensors[i][3] = E[0][1];
-        this->deformationTensors[i][4] = E[1][2];
-        this->deformationTensors[i][5] = E[0][2]; // column form
+        E /= 2.; // update E=1/2(F^TF-I)
+        M33toV6(this->deformationTensors[i],E); // column form
+
+        if(useElastons.getValue())
+        {
+            Vec6 v6;
+            Mat610 &e_elastons=this->deformationTensorsElaston[i];
+            unsigned int k,j,m;
+
+            for(k=0; k<6; k++) e_elastons[k][9]=this->deformationTensors[i][k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_x[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][0]=v6[k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_y[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][1]=v6[k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_z[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][2]=v6[k];
+            // extended elastons
+            {
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_x[m][j]*S_x[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][3]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_y[m][j]*S_y[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][4]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_z[m][j]*S_z[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][5]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_x[m][j]*S_y[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][6]=v6[k];
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_y[m][j]*S_z[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][7]=v6[k];
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_z[m][j]*S_x[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][8]=v6[k];
+            }
+        }
 
         // update B and ddet
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
         {
-            unsigned int k, m;
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat6xIn& Bij = this->B[idxReps][i];
+            Mat6xIn& B = this->B[idxReps][i];
             const Mat33& At = this->Atilde[idxReps][i];
             const Quat& rot = in[idxReps ].getOrientation();
             const Vec3& dWeight = dw[idxReps][i];
 
-            Mat33 D, Ma, Mb, Mc, Mw;
-            ComputeMa( D, rot); Ma=D*(At);
-            ComputeMb( D, rot); Mb=D*(At);
-            ComputeMc( D, rot); Mc=D*(At);
-            ComputeMw( D, rot); Mw=D*(At);
+            Mat33 Ma, Mb, Mc, Mw;
+            ComputeMa( Ma, rot);
+            ComputeMb( Mb, rot);
+            ComputeMc( Mc, rot);
+            ComputeMw( Mw, rot);
+
             Mat67 dE;
-            D = FT*Ma; dE[0][0] = 2*D[0][0]; dE[1][0] = 2*D[1][1]; dE[2][0] = 2*D[2][2];
-            dE[3][0] = D[0][1]+D[1][0]; dE[4][0] = D[1][2]+D[2][1]; dE[5][0] = D[0][2]+D[2][0];
-            D = FT*Mb; dE[0][1] = 2*D[0][0]; dE[1][1] = 2*D[1][1]; dE[2][1] = 2*D[2][2];
-            dE[3][1] = D[0][1]+D[1][0]; dE[4][1] = D[1][2]+D[2][1]; dE[5][1] = D[0][2]+D[2][0];
-            D = FT*Mc; dE[0][2] = 2*D[0][0]; dE[1][2] = 2*D[1][1]; dE[2][2] = 2*D[2][2];
-            dE[3][2] = D[0][1]+D[1][0]; dE[4][2] = D[1][2]+D[2][1]; dE[5][2] = D[0][2]+D[2][0];
-            D = FT*Mw; dE[0][3] = 2*D[0][0]; dE[1][3] = 2*D[1][1]; dE[2][3] = 2*D[2][2];
-            dE[3][3] = D[0][1]+D[1][0]; dE[4][3] = D[1][2]+D[2][1]; dE[5][3] = D[0][2]+D[2][0];
-            for(k=0; k<3; k++) for(m=0; m<3; m++) dE[m][k+4]=dWeight[m]*F[k][m];
-            for(k=0; k<3; k++) dE[3][k+4]=0.5*(dWeight[0]*F[k][1]+dWeight[1]*F[k][0]);
-            for(k=0; k<3; k++) dE[4][k+4]=0.5*(dWeight[1]*F[k][2]+dWeight[2]*F[k][1]);
-            for(k=0; k<3; k++) dE[5][k+4]=0.5*(dWeight[0]*F[k][2]+dWeight[2]*F[k][0]);
-            Bij = dE * L[idxReps];
-            /*
-            // Compute ddet
-            for(k=0;k<7;k++) u7[k]=0;
-            for(k=0;k<3;k++)
+            dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,F,dE);
+            B=dE*L[idxReps];
+
+            if(useElastons.getValue())
             {
-              for(m=0;m<3;m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k];
-              u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
-              u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
+                MatInx610& Be = this->B_Elaston[idxReps][i];
+                const Mat33& Stx = this->Stilde_x[idxReps][i];
+                const Mat33& Sty = this->Stilde_y[idxReps][i];
+                const Mat33& Stz = this->Stilde_z[idxReps][i];
+                const Vec3 ddx (ddw[idxReps][i][0][0],ddw[idxReps][i][1][0],ddw[idxReps][i][2][0]);
+                const Vec3 ddy (ddw[idxReps][i][0][1],ddw[idxReps][i][1][1],ddw[idxReps][i][2][1]);
+                const Vec3 ddz (ddw[idxReps][i][0][2],ddw[idxReps][i][1][2],ddw[idxReps][i][2][2]);
+                unsigned int k,m;
+
+                Mat66 S;
+                for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][9]=B[k][m];
+                dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,S_x,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][0]=S[k][m];
+                dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,S_y,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][1]=S[k][m];
+                dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,S_z,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][2]=S[k][m];
+
+                // extended elastons
+                {
+                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,S_x,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][3]=S[k][m];
+                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,S_y,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][4]=S[k][m];
+                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,S_z,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][5]=S[k][m];
+                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,S_y,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,S_x,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][6]=S[k][m];
+                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,S_z,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,S_y,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][7]=S[k][m];
+                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,S_x,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,S_z,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][8]=S[k][m];
+                }
+
             }
-            for(k=0;k<6;k++) n->ddet[idxReps].rigid[k]=0;
-            for(k=0;k<6;k++) for(m=0;m<7;m++) n->ddet[idxReps].rigid[k]+=u7[m]*L[f][m][k];
-            n->ddet[idxReps].rigid=n->det * n->ddet[idxReps].rigid;
-            */
+            // Compute ddet
+            // if(computevolpres)
+            {
+                invertMatrix ( Finv, F );
+                Vec6 &ddet = this->ddet[idxReps][i];
+                ddet.fill(0);
+                Vec7 u7; u7.fill(0);
+
+                Ma=Ma*At;			Mb=Mb*At;			Mc=Mc*At;			Mw=Mw*At;
+                for(unsigned int k=0; k<3; k++)
+                {
+                    for(unsigned int m=0; m<3; m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k]; u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
+                    u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
+                }
+                for(unsigned int k=0; k<6; k++) for(unsigned int m=0; m<7; m++) ddet[k]+=u7[m]*L[idxReps][m][k];
+                for(unsigned int k=0; k<6; k++) ddet[k]=this->det[i] * ddet[k];
+            }
 
         }
 #endif
     }
+
 }
 
 #ifdef SOFA_DEV
@@ -1695,7 +1943,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
     rotatedPoints.resize ( initPos.size() );
     out.resize ( initPos.size() / nbRefs.getValue() );
 
-    // Resize matrices
+    // Resize matrices  // pourquoi ??
     if ( this->computeAllMatrices.getValue())
     {
         this->det.resize(out.size());
@@ -1726,23 +1974,33 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
         if ( !this->computeAllMatrices.getValue()) continue;
 
         const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
+        VVMat33& ddw = this->weightGradients2;
 
-        Mat33 F, Finv, E;
-        F.fill ( 0 );
+        Mat33 F, Finv, E,A,S_x,S_y,S_z;
+        F.fill ( 0 ); S_x.fill(0); S_y.fill(0); S_z.fill(0);
         E.fill ( 0 );
+
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
         {
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat33 cov;
-            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
-            F += cov + in[idxReps ].getAffine() * this->Atilde[idxReps][i];
+            for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) F[k][l]+=in[idxReps ].getCenter()[k]*dw[idxReps][i][l];
+            F += in[idxReps ].getAffine() * this->Atilde[idxReps][i];
+
+            if( useElastons.getValue())
+            {
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_x[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][0];
+                S_x += in[idxReps ].getAffine() * this->Stilde_x[idxReps][i];
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_y[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][1];
+                S_y += in[idxReps ].getAffine() * this->Stilde_y[idxReps][i];
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_z[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][2];
+                S_z += in[idxReps ].getAffine() * this->Stilde_z[idxReps][i];
+            }
         }
 
         // strain and determinant
         this->det[i] = determinant ( F );
-        invertMatrix ( Finv, F );
         for ( unsigned int k = 0; k < 3; ++k )
         {
             for ( unsigned int j = 0; j < 3; ++j )
@@ -1752,47 +2010,87 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             E[k][k] -= 1.;
         }
         E /= 2.; // update E=1/2(U^TU-I)
-        this->deformationTensors[i][0] = E[0][0];
-        this->deformationTensors[i][1] = E[1][1];
-        this->deformationTensors[i][2] = E[2][2];
-        this->deformationTensors[i][3] = E[0][1];
-        this->deformationTensors[i][4] = E[1][2];
-        this->deformationTensors[i][5] = E[0][2]; // column form
+        M33toV6(this->deformationTensors[i],E); // column form
+
+        if(useElastons.getValue())
+        {
+            Vec6 v6;
+            Mat610 &e_elastons=this->deformationTensorsElaston[i];
+            unsigned int k,j,m;
+
+            for(k=0; k<6; k++) e_elastons[k][9]=this->deformationTensors[i][k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_x[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][0]=v6[k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_y[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][1]=v6[k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_z[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][2]=v6[k];
+            // extended elastons
+            {
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_x[m][j]*S_x[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][3]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_y[m][j]*S_y[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][4]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_z[m][j]*S_z[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][5]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_x[m][j]*S_y[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][6]=v6[k];
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_y[m][j]*S_z[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][7]=v6[k];
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_z[m][j]*S_x[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][8]=v6[k];
+            }
+        }
 
         // update B and ddet
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
         {
-            unsigned int k, l, m;
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat6xIn& Bij = this->B[idxReps][i];
-            const Mat33& At = this->Atilde[idxReps][i];
+            Mat6xIn& B = this->B[idxReps][i];
             const Vec3& dWeight = dw[idxReps][i];
+            const Mat33& At = this->Atilde[idxReps][i];
+            B.fill(0); StrainDeriv_affine(dWeight,At,F,B);
 
-            // stretch
-            for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) for ( l = 0; l < 3; l++ ) Bij[m][3*l+k] = F[l][m] * At[k][m];
-            for ( k = 0; k < 3; k++ ) for ( m = 0; m < 3; m++ ) Bij[m][9+k] = dWeight [m] * F[k][m];
+            if(useElastons.getValue())
+            {
+                MatInx610& Be = this->B_Elaston[idxReps][i];
+                const MatInAtx3& Stx = this->Stilde_x[idxReps][i];
+                const MatInAtx3& Sty = this->Stilde_y[idxReps][i];
+                const MatInAtx3& Stz = this->Stilde_z[idxReps][i];
+                const Vec3 ddx (ddw[idxReps][i][0][0],ddw[idxReps][i][1][0],ddw[idxReps][i][2][0]);
+                const Vec3 ddy (ddw[idxReps][i][0][1],ddw[idxReps][i][1][1],ddw[idxReps][i][2][1]);
+                const Vec3 ddz (ddw[idxReps][i][0][2],ddw[idxReps][i][1][2],ddw[idxReps][i][2][2]);
+                unsigned int k,m;
 
-            // shear
-            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ ) Bij[3][3*l+k] = 0.5 * ( F[l][0] * At[k][1] +
-                            F[l][1] * At[k][0] );
-            for ( k = 0; k < 3; k++ ) Bij[3][9+k] = 0.5 * ( dWeight [0] * F[k][1] + dWeight [1] * F[k][0] );
-            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
-                    Bij[4][3*l+k] = 0.5 * ( F[l][1] * At[k][2] + F[l][2] * At[k][1] );
-            for ( k = 0; k < 3; k++ ) Bij[4][9+k] = 0.5 * ( dWeight [1] * F[k][2] + dWeight [2] * F[k][1] );
-            for ( k = 0; k < 3; k++ ) for ( l = 0; l < 3; l++ )
-                    Bij[5][3*l+k] = 0.5 * ( F[l][2] * At[k][0] + F[l][0] * At[k][2] );
-            for ( k = 0; k < 3; k++ ) Bij[5][9+k] = 0.5 * ( dWeight [2] * F[k][0] + dWeight [0] * F[k][2] );
+                Mat6xIn S;
+                for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][9]=B[k][m];
+                S.fill(0); StrainDeriv_affine(dWeight,At,S_x,S); StrainDeriv_affine(ddx,Stx,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][0]=S[k][m];
+                S.fill(0); StrainDeriv_affine(dWeight,At,S_y,S); StrainDeriv_affine(ddy,Sty,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][1]=S[k][m];
+                S.fill(0); StrainDeriv_affine(dWeight,At,S_z,S); StrainDeriv_affine(ddz,Stz,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][2]=S[k][m];
+
+                // extended elastons
+                {
+                    S.fill(0); StrainDeriv_affine(ddx,Stx,S_x,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][3]=S[k][m];
+                    S.fill(0); StrainDeriv_affine(ddy,Sty,S_y,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][4]=S[k][m];
+                    S.fill(0); StrainDeriv_affine(ddz,Stz,S_z,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][5]=S[k][m];
+                    S.fill(0); StrainDeriv_affine(ddx,Stx,S_y,S); StrainDeriv_affine(ddy,Sty,S_x,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][6]=S[k][m];
+                    S.fill(0); StrainDeriv_affine(ddy,Sty,S_z,S); StrainDeriv_affine(ddz,Stz,S_y,S); 	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][7]=S[k][m];
+                    S.fill(0); StrainDeriv_affine(ddz,Stz,S_x,S); StrainDeriv_affine(ddx,Stx,S_z,S); 	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][8]=S[k][m];
+                }
+            }
 
             // Compute ddet
-            /*
-            for ( k = 0;k < 12;k++ ) n->ddet[j].affine[k] = 0;
-            for ( k = 0;k < 3;k++ ) for ( m = 0;m < 3;m++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[m+3*k] +=
-                    At[m][l] * Finv[l][k];
-            for ( k = 0;k < 3;k++ ) for ( l = 0;l < 3;l++ ) n->ddet[j].affine[9+k] += dWeight [l] * Finv[l][k];
-            this->ddet[idxReps][i] = this->det[i] * this->ddet[idxReps][i];
-            */
+            // if(computevolpres)
+            {
+                invertMatrix ( Finv, F );
+                VecIn &ddet = this->ddet[idxReps][i];
+                ddet.fill(0);
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 3; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+3*k] += At[m][l] * Finv[l][k];
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[9+k] += dWeight [l] * Finv[l][k];
+                for(unsigned int k=0; k<12; k++) ddet[k]=this->det[i] * ddet[k];
+            }
         }
     }
 }
@@ -1810,7 +2108,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
     rotatedPoints.resize ( initPos.size() );
     out.resize ( initPos.size() / nbRefs.getValue() );
 
-    // Resize matrices
+    // Resize matrices  // pourquoi ??
     if ( this->computeAllMatrices.getValue())
     {
         this->det.resize(out.size());
@@ -1844,24 +2142,33 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
         if ( !this->computeAllMatrices.getValue()) continue;
 
         const SVector<SVector<GeoCoord> >& dw = this->weightGradients.getValue();
+        VVMat33& ddw = this->weightGradients2;
 
-        Mat33 F, FT, Finv, E;
-        F.fill ( 0 );
+        Mat33 F, Finv, E,A,S_x,S_y,S_z;
+        F.fill ( 0 ); S_x.fill(0); S_y.fill(0); S_z.fill(0);
         E.fill ( 0 );
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
         {
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat33 cov;
-            getCov33 ( cov, in[idxReps ].getCenter(), dw[idxReps][i] );
-            F += cov + in[idxReps ].getQuadratic() * this->Atilde[idxReps][i];
+            for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) F[k][l]+=in[idxReps ].getCenter()[k]*dw[idxReps][i][l];
+            F += in[idxReps ].getQuadratic() * this->Atilde[idxReps][i];
+
+            if( useElastons.getValue())
+            {
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_x[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][0];
+                S_x += in[idxReps ].getQuadratic() * this->Stilde_x[idxReps][i];
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_y[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][1];
+                S_y += in[idxReps ].getQuadratic() * this->Stilde_y[idxReps][i];
+                for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_z[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][2];
+                S_z += in[idxReps ].getQuadratic() * this->Stilde_z[idxReps][i];
+            }
         }
-        FT.transpose(F);
 
         // strain and determinant
         this->det[i] = determinant ( F );
-        invertMatrix ( Finv, F );
+
         for ( unsigned int k = 0; k < 3; ++k )
         {
             for ( unsigned int j = 0; j < 3; ++j )
@@ -1871,44 +2178,88 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             E[k][k] -= 1.;
         }
         E /= 2.; // update E=1/2(U^TU-I)
-        this->deformationTensors[i][0] = E[0][0];
-        this->deformationTensors[i][1] = E[1][1];
-        this->deformationTensors[i][2] = E[2][2];
-        this->deformationTensors[i][3] = E[0][1];
-        this->deformationTensors[i][4] = E[1][2];
-        this->deformationTensors[i][5] = E[0][2]; // column form
+        M33toV6(this->deformationTensors[i],E); // column form
+
+        if(useElastons.getValue())
+        {
+            Vec6 v6;
+            Mat610 &e_elastons=this->deformationTensorsElaston[i];
+            unsigned int k,j,m;
+
+            for(k=0; k<6; k++) e_elastons[k][9]=this->deformationTensors[i][k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_x[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][0]=v6[k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_y[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][1]=v6[k];
+            E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=F[m][j]*S_z[m][k];
+            M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][2]=v6[k];
+            // extended elastons
+            {
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_x[m][j]*S_x[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][3]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_y[m][j]*S_y[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][4]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_z[m][j]*S_z[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][5]=v6[k]/2;
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_x[m][j]*S_y[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][6]=v6[k];
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_y[m][j]*S_z[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][7]=v6[k];
+                E.fill(0); for(k=0; k<3; k++) for(j=0; j<3; j++) for(m=0; m<3; m++) E[k][j]+=S_z[m][j]*S_x[m][k];
+                M33toV6(v6,E); for(k=0; k<6; k++) e_elastons[k][8]=v6[k];
+            }
+        }
 
         // update B and ddet
         for ( unsigned int j = 0 ; j < nbRefs.getValue(); ++j )
         {
-            unsigned int k, l, m;
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat6xIn& Bij = this->B[idxReps][i];
-            const MatInAtx3& At = this->Atilde[idxReps][i];
+            Mat6xIn& B = this->B[idxReps][i];
             const Vec3& dWeight = dw[idxReps][i];
+            const MatInAtx3& At = this->Atilde[idxReps][i];
+            B.fill(0); StrainDeriv_quadratic(dWeight,At,F,B);
 
-            // stretch
-            for(k=0; k<9; k++) for(m=0; m<3; m++) for(l=0; l<3; l++) Bij[m][9*l+k] = F[l][m] * At[k][m];
-            for(k=0; k<3; k++) for(m=0; m<3; m++) Bij[m][27+k]=dWeight[m]*F[k][m];
 
-            // shear
-            for(k=0; k<9; k++) for(l=0; l<3; l++) Bij[3][9*l+k]=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
-            for(k=0; k<3; k++) Bij[3][27+k]=0.5*(dWeight[0]*F[k][1] + dWeight[1]*F[k][0]);
-            for(k=0; k<9; k++) for(l=0; l<3; l++) Bij[4][9*l+k]=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
-            for(k=0; k<3; k++) Bij[4][27+k]=0.5*(dWeight[1]*F[k][2] + dWeight[2]*F[k][1]);
-            for(k=0; k<9; k++) for(l=0; l<3; l++) Bij[5][9*l+k]=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
-            for(k=0; k<3; k++) Bij[5][27+k]=0.5*(dWeight[2]*F[k][0] + dWeight[0]*F[k][2]);
+            if(useElastons.getValue())
+            {
+                MatInx610& Be = this->B_Elaston[idxReps][i];
+                const MatInAtx3& Stx = this->Stilde_x[idxReps][i];
+                const MatInAtx3& Sty = this->Stilde_y[idxReps][i];
+                const MatInAtx3& Stz = this->Stilde_z[idxReps][i];
+                const Vec3 ddx (ddw[idxReps][i][0][0],ddw[idxReps][i][1][0],ddw[idxReps][i][2][0]);
+                const Vec3 ddy (ddw[idxReps][i][0][1],ddw[idxReps][i][1][1],ddw[idxReps][i][2][1]);
+                const Vec3 ddz (ddw[idxReps][i][0][2],ddw[idxReps][i][1][2],ddw[idxReps][i][2][2]);
+                unsigned int k,m;
+                Mat6xIn S;
 
-            /*
-                            // Compute ddet
-                            for(k=0;k<30;k++) n->ddet[j].quadratic[k]=0;
-                            for(k=0;k<3;k++) for(m=0;m<9;m++) for(l=0;l<3;l++) n->ddet[j].quadratic[m+9*k]+=
-                            (*At2)[m][l]*Finv[l][k];
-                            for(k=0;k<3;k++) for(l=0;l<3;l++) n->ddet[j].quadratic[27+k]+= (*dW)[l]*Finv[l][k];
-                            n->ddet[j].quadratic=n->det * n->ddet[j].quadratic;
-            */
+                for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][9]=B[k][m];
+                S.fill(0); StrainDeriv_quadratic(dWeight,At,S_x,S); StrainDeriv_quadratic(ddx,Stx,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][0]=S[k][m];
+                S.fill(0); StrainDeriv_quadratic(dWeight,At,S_y,S); StrainDeriv_quadratic(ddy,Sty,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][1]=S[k][m];
+                S.fill(0); StrainDeriv_quadratic(dWeight,At,S_z,S); StrainDeriv_quadratic(ddz,Stz,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][2]=S[k][m];
+
+                // extended elastons
+                {
+                    S.fill(0); StrainDeriv_quadratic(ddx,Stx,S_x,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][3]=S[k][m];
+                    S.fill(0); StrainDeriv_quadratic(ddy,Sty,S_y,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][4]=S[k][m];
+                    S.fill(0); StrainDeriv_quadratic(ddz,Stz,S_z,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][5]=S[k][m];
+                    S.fill(0); StrainDeriv_quadratic(ddx,Stx,S_y,S); StrainDeriv_quadratic(ddy,Sty,S_x,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][6]=S[k][m];
+                    S.fill(0); StrainDeriv_quadratic(ddy,Sty,S_z,S); StrainDeriv_quadratic(ddz,Stz,S_y,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][7]=S[k][m];
+                    S.fill(0); StrainDeriv_quadratic(ddz,Stz,S_x,S); StrainDeriv_quadratic(ddx,Stx,S_z,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][8]=S[k][m];
+                }
+            }
+
+            // Compute ddet
+            // if(computevolpres)
+            {
+                invertMatrix ( Finv, F );
+                VecIn &ddet = this->ddet[idxReps][i];
+                ddet.fill(0);
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 9; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+9*k] += At[m][l] * Finv[l][k];
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[27+k] += dWeight [l] * Finv[l][k];
+                for(unsigned int k=0; k<30; k++) ddet[k]=this->det[i] * ddet[k];
+            }
         }
     }
 }

@@ -41,7 +41,7 @@
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
 #include "FrameStorage.h"
 #include <../applications/plugins/frame/AffineTypes.h>
-#include <../applications/plugins/frame/ElastonTypes.h>
+//#include <../applications/plugins/frame/ElastonTypes.h>
 #include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
 
@@ -149,6 +149,8 @@ public:
 #endif
     typedef defaulttype::Mat<N,N,InReal> Mat;
     typedef defaulttype::Mat<3,3,InReal> Mat33;
+    typedef vector<Mat33> VMat33;
+    typedef vector<VMat33> VVMat33;
     typedef defaulttype::Mat<3,InDOFs,InReal> Mat3xIn;
     typedef vector<Mat3xIn> VMat3xIn;
     typedef vector<VMat3xIn> VVMat3xIn;
@@ -186,6 +188,7 @@ public:
     typedef defaulttype::Vec<6,InReal> Vec6;
     typedef vector<Vec6> VVec6;
     typedef vector<VVec6> VVVec6;
+    typedef defaulttype::Vec<7,InReal> Vec7;
     typedef defaulttype::Vec<8,InReal> Vec8;
     typedef defaulttype::Vec<9,InReal> Vec9;
     typedef defaulttype::Vec<InDOFs,InReal> VecIn;
@@ -208,7 +211,7 @@ public:
 #ifdef SOFA_DEV
     typedef defaulttype::StdAffineTypes<N,InReal> AffineType;
     typedef defaulttype::StdQuadraticTypes<N,InReal> QuadraticType;
-    typedef defaulttype::StdElastonTypes<Coord, Deriv, Real> ElastonType;
+//  typedef defaulttype::StdElastonTypes<Coord, Deriv, Real> ElastonType;
 #endif
 protected:
     vector<Coord> initPos; // pos: point coord in the local reference frame of In[i].
@@ -253,6 +256,8 @@ protected:
     Data<sofa::helper::OptionsGroup> distanceType;
     bool computeWeights;
     VVD distances;
+    VVMat33 weightGradients2;
+
 #ifdef SOFA_DEV
     GeoVecVecCoord distGradients;
 #else
@@ -322,7 +327,7 @@ public:
     inline void changeSettingsDueToInsertion();
 
 protected:
-    void getCov33 (Mat33& M, const Vec3& vec1, const Vec3& vec2) const;
+    void M33toV6(Vec6 &v,const Mat33& M) const;
     void QtoR(Mat33& M, const Quat& q) const;
     void ComputeL(Mat76& L, const Quat& q) const;
     void ComputeQ(Mat37& Q, const Quat& q, const Vec3& p) const;
@@ -330,6 +335,9 @@ protected:
     void ComputeMb(Mat33& M, const Quat& q) const;
     void ComputeMc(Mat33& M, const Quat& q) const;
     void ComputeMw(Mat33& M, const Quat& q) const;
+    void StrainDeriv_rigid(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const;
+    void StrainDeriv_affine(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
+    void StrainDeriv_quadratic(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
 
     // Avoid multiple specializations
     inline void setInCoord( typename defaulttype::StdRigidTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
