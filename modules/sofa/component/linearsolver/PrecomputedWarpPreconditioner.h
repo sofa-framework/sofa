@@ -100,6 +100,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename TDataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename behavior::MechanicalState<DataTypes> MState;
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
@@ -114,6 +115,9 @@ public:
     Data<bool> share_matrix;
     Data <std::string> solverName;
     Data<bool> use_rotations;
+    Data<double> draw_rotations_scale;
+
+    MState * mstate;
 
     PrecomputedWarpPreconditioner();
 
@@ -121,6 +125,8 @@ public:
     void invert(TMatrix& M);
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    void draw();
+    void init();
 
     TBaseMatrix * getSystemMatrixInv()
     {
@@ -132,7 +138,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL) return false;
+        if (dynamic_cast<MState *>(context->getMechanicalState()) == NULL) return false;
         return BaseObject::canCreate(obj, context, arg);
     }
 
