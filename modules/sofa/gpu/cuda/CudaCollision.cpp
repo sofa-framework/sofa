@@ -22,29 +22,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "CudaTypes.h"
 #include "CudaMechanicalObject.inl"
 #include "CudaIdentityMapping.inl"
-#include <sofa/component/collision/MouseInteractor.inl>
+#include "CudaContactMapper.h"
+#include "CudaPenalityContactForceField.h"
+#include "CudaSpringForceField.h"
 #include "CudaDistanceGridCollisionModel.h"
 #include "CudaSphereModel.h"
 #include "CudaPointModel.h"
+
+#include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/component/collision/NewProximityIntersection.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
 #include <sofa/component/collision/AttachBodyPerformer.inl>
 #include <sofa/component/collision/FixParticlePerformer.inl>
 #include <sofa/component/collision/RayContact.h>
-#include "CudaContactMapper.h"
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
 #include <sofa/component/collision/BarycentricContactMapper.inl>
-
 #include <sofa/component/interactionforcefield/PenalityContactForceField.h>
-#include "CudaPenalityContactForceField.h"
-#include "CudaSpringForceField.h"
 #include <sofa/component/interactionforcefield/VectorSpringForceField.h>
-#include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/Factory.inl>
+#include <fstream>
 
 namespace sofa
 {

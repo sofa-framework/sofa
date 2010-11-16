@@ -43,9 +43,12 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/container/RotationFinder.h>
+#include <sofa/component/container/RotationFinder.inl>
 #include <sofa/core/behavior/LinearSolver.h>
 
+#include <sofa/helper/gl/DrawManager.h>
+#include <sofa/helper/gl/Axis.h>
+#include <sofa/helper/Quater.h>
 
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
@@ -79,6 +82,7 @@ PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::PrecomputedWarpPreco
     , share_matrix( initData(&share_matrix,true,"share_matrix","Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
     , use_rotations( initData(&use_rotations,true,"use_rotations","Use Rotations around the preconditioner") )
+    , draw_rotations_scale( initData(&draw_rotations_scale,0.5,"draw_rotations_scale","Scale rotations in draw function") )
 {
     first = true;
     _rotate = false;
@@ -501,16 +505,16 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstrain
 
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
     sofa::component::forcefield::TetrahedronFEMForceField<TDataTypes>* forceField = NULL;
-    //sofa::component::container::RotationFinder<TDataTypes>* rotationFinder = NULL;
+    sofa::component::container::RotationFinder<TDataTypes>* rotationFinder = NULL;
 
     if (node != NULL)
     {
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<TDataTypes> > ();
         if (forceField == NULL)
         {
-            //rotationFinder = node->get<component::container::RotationFinder<TDataTypes> > ();
-            //if (rotationFinder == NULL)
-            sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+            rotationFinder = node->get<component::container::RotationFinder<TDataTypes> > ();
+            if (rotationFinder == NULL)
+                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
 
         }
     }
@@ -529,16 +533,21 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstrain
                 }
             }
         }
-// 	} else if (rotationFinder != NULL) {
-// 		const helper::vector<defaulttype::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
-// 		for(unsigned int k = 0; k < systemSize3; k++)	{
-// 			Rotation = rotations[k];
-// 			for (int j=0;j<3;j++) {
-// 				for (int i=0;i<3;i++) {
-// 					R[k*9+j*3+i] = (Real)Rotation[j][i];
-// 				}
-// 			}
-// 		}
+    }
+    else if (rotationFinder != NULL)
+    {
+        const helper::vector<defaulttype::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
+        for(unsigned int k = 0; k < systemSize3; k++)
+        {
+            Rotation = rotations[k];
+            for (int j=0; j<3; j++)
+            {
+                for (int i=0; i<3; i++)
+                {
+                    R[k*9+j*3+i] = (Real)Rotation[j][i];
+                }
+            }
+        }
     }
     else
     {
@@ -654,6 +663,43 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::ComputeResult(de
             result->add(l,c,res*fact);
         }
         nl++;
+    }
+}
+
+template<class TDataTypes,class TMatrix,class TVector>
+void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::init()
+{
+    simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
+    if (node != NULL) mstate = node->get<MState> ();
+}
+
+template<class TDataTypes,class TMatrix,class TVector>
+void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::draw()
+{
+    if (! use_rotations.getValue()) return;
+    if (draw_rotations_scale.getValue() <= 0.0) return;
+    if (! this->getContext()->getShowBehaviorModels()) return;
+    if (mstate==NULL) return;
+
+    const VecCoord& x = *mstate->getX();
+
+    if (R.size()!=x.size()*9) return;
+
+    for (unsigned int i=0; i< x.size(); i++)
+    {
+        sofa::defaulttype::Matrix3 RotMat;
+
+        for (int a=0; a<3; a++)
+        {
+            for (int b=0; b<3; b++)
+            {
+                RotMat[a][b] = R[i*9+a*3+b];
+            }
+        }
+
+        sofa::defaulttype::Quat q;
+        q.fromMatrix(RotMat);
+        helper::gl::Axis::draw(DataTypes::getCPos(x[i]), q, this->draw_rotations_scale.getValue());
     }
 }
 

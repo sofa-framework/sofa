@@ -935,9 +935,9 @@ public:
     iterator end() { return data+vref.size(); }
 
     void clear() { vref.clear(); }
-    void resize(size_type s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); }
-    void reserve(size_type s) { vref.reserve(s); }
-    void push_back(const_reference v) { vref.push_back(v); }
+    void resize(size_type s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
+    void reserve(size_type s) { vref.reserve(s); data = vref.hostWrite(); }
+    void push_back(const_reference v) { vref.push_back(v); data = vref.hostWrite(); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<container_type>& vec )
     {
