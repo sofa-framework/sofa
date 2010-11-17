@@ -67,6 +67,11 @@ void AttachBodyPerformer<DataTypes>::start()
 template <class DataTypes>
 void AttachBodyPerformer<DataTypes>::execute()
 {
+    sofa::core::BaseMapping *mapping;
+    this->interactor->getContext()->get(mapping); assert(mapping);
+    mapping->apply();
+    mapping->applyJ();
+    this->interactor->setMouseAttached(true);
 }
 
 template <class DataTypes>

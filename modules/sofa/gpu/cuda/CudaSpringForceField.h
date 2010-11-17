@@ -161,12 +161,12 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaSpringForceField_DeclMethods(T) \
-    template<> bool SpringForceField< T >::canPrefetch() const; \
-    template<> void SpringForceField< T >::init(); \
-    template<> void SpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams); \
-    template<> void StiffSpringForceField< T >::init(); \
-    template<> void StiffSpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams); \
-    template<> void StiffSpringForceField< T >::addDForce(DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2, const core::MechanicalParams* );
+    template<> inline bool SpringForceField< T >::canPrefetch() const; \
+    template<> inline void SpringForceField< T >::init(); \
+    template<> inline void SpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams); \
+    template<> inline void StiffSpringForceField< T >::init(); \
+    template<> inline void StiffSpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams); \
+    template<> inline void StiffSpringForceField< T >::addDForce(DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2, const core::MechanicalParams* );
 
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);
