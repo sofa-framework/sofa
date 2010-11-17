@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
+#include "CudaSpringForceField.inl"
 #include "CudaMechanicalObject.inl"
 #include "CudaIdentityMapping.inl"
 #include "CudaContactMapper.h"
