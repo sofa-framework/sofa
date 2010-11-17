@@ -319,6 +319,15 @@ NewOmniDriver::NewOmniDriver()
 
 NewOmniDriver::~NewOmniDriver()
 {
+    if (visu_base)
+    {
+        delete visu_base;
+    }
+    if (visu_end)
+    {
+        delete visu_end;
+    }
+
 }
 
 void NewOmniDriver::cleanup()
@@ -401,7 +410,7 @@ void NewOmniDriver::reinitVisual()
         delete(visu_base);
         visu_base = new sofa::component::visualmodel::OglModel();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
@@ -418,7 +427,7 @@ void NewOmniDriver::reinitVisual()
         delete(visu_end);
         visu_end = new sofa::component::visualmodel::OglModel();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();
@@ -461,7 +470,7 @@ void NewOmniDriver::draw()
             //serr<<"create visual model for NewOmniDriver base"<<sendl;
             visu_base = new sofa::component::visualmodel::OglModel();
             visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-            visu_base->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+            visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
             visu_base->init();
             visu_base->initVisual();
             visu_base->updateVisual();
@@ -476,7 +485,7 @@ void NewOmniDriver::draw()
             //serr<<"create visual model for NewOmniDriver end"<<sendl;
             visu_end = new sofa::component::visualmodel::OglModel();
             visu_end->fileMesh.setValue("mesh/stylus.obj");
-            visu_end->scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+            visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
             visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
             visu_end->init();
             visu_end->initVisual();
@@ -487,10 +496,10 @@ void NewOmniDriver::draw()
         SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
         SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
 
-        sofa::component::visualmodel::RigidMappedModel::VecCoord* x_rigid = visu_end->getRigidX();
-        x_rigid->resize(1);
-        (*x_rigid)[0].getOrientation() = world_H_endOmni.getOrientation();
-        (*x_rigid)[0].getCenter() =  world_H_endOmni.getOrigin();
+
+        visu_end->xforms.resize(1);
+        (visu_end->xforms)[0].getOrientation() = world_H_endOmni.getOrientation();
+        (visu_end->xforms)[0].getCenter() =  world_H_endOmni.getOrigin();
 
         // draw the 2 visual models
         visu_base->drawVisual();
