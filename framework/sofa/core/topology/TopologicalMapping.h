@@ -33,6 +33,7 @@
 #include <iostream>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/objectmodel/ObjectRef.h>
 
 namespace sofa
 {
@@ -44,21 +45,26 @@ namespace topology
 {
 
 /**
- *  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
- *
- * It first initializes the mesh of the output topology from the mesh of the input topology,
- * and it creates the two Index Maps that maintain the correspondence between the indices of their common elements.
- *
- * Then, at each propagation of topological changes, it translates the topological change events that are propagated from the INPUT topology
- * into specific actions that call element adding or element removal methods on the OUTPUT topology, and it updates the Index Maps.
- *
- * So, at each time step, the geometrical and adjacency information are consistent in both topologies.
- *
- */
+*  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
+*
+* It first initializes the mesh of the output topology from the mesh of the input topology,
+* and it creates the two Index Maps that maintain the correspondence between the indices of their common elements.
+*
+* Then, at each propagation of topological changes, it translates the topological change events that are propagated from the INPUT topology
+* into specific actions that call element adding or element removal methods on the OUTPUT topology, and it updates the Index Maps.
+*
+* So, at each time step, the geometrical and adjacency information are consistent in both topologies.
+*
+*/
 class TopologicalMapping : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(TopologicalMapping, objectmodel::BaseObject);
+
+    /// Name of the Input Topology
+    objectmodel::DataObjectRef m_inputTopology;
+    /// Name of the Output Topology
+    objectmodel::DataObjectRef m_outputTopology;
 
     /// Input Topology
     typedef BaseMeshTopology In;
@@ -67,12 +73,14 @@ public:
 
     TopologicalMapping(In* from, Out* to)
         : fromModel(from), toModel(to)
+        , m_inputTopology(initData(&m_inputTopology, "input", "Input topology to map"))
+        , m_outputTopology(initData(&m_outputTopology, "output", "Output topology to map"))
     {}
 
     virtual ~TopologicalMapping() { }
 
     /// Specify the input and output topologies.
-//	void setModels(In* from, Out* to)
+    //	void setModels(In* from, Out* to)
     //{
     //	fromModel = from;
     //	toModel = to;
@@ -105,10 +113,6 @@ public:
 
     Data <sofa::helper::vector<unsigned int> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
 
-
-
-
-
     virtual unsigned int getGlobIndex(unsigned int ind)
     {
         if(ind< (Loc2GlobDataVec.getValue()).size())
@@ -133,6 +137,170 @@ public:
 
     const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
 
+    /// Pre-construction check method called by ObjectFactory.
+    ///
+    /// This implementation read the object1 and object2 attributes and check
+    /// if they are compatible with the input and output topology types of this
+    /// mapping.
+    template<class T>
+    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    {
+        BaseMeshTopology* topoIn = NULL;
+        BaseMeshTopology* topoOut = NULL;
+
+#ifndef SOFA_DEPRECATE_OLD_API
+        ////Deprecated check
+        Base* bobjInput = NULL;
+        Base* bobjOutput = NULL;
+
+        //Input
+        if (arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
+            bobjInput = arg->findObject("../..");
+
+        if (arg->getAttribute("object1",NULL) != NULL)
+            bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
+
+        if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
+            topoIn = dynamic_cast< BaseMeshTopology* >(bo);
+
+        else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
+            bc->get(topoIn);
+
+        //Output
+        if (arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
+            bobjOutput = arg->findObject("..");
+
+        if (arg->getAttribute("object2",NULL) != NULL)
+            bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
+
+        if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
+            topoOut = dynamic_cast< BaseMeshTopology* >(bo);
+
+        else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
+            bc->get(topoOut);
+        /////
+
+        if (topoIn == NULL || topoOut == NULL)
+#endif // SOFA_DEPRECATE_OLD_API
+        {
+            topoIn = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("input", arg);
+            topoOut = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("output", arg);
+        }
+
+        if (topoIn == NULL)
+        {
+            //context->serr << "Cannot create "<<className(obj)<<" as object1 is missing or invalid." << context->sendl;
+            return false;
+        }
+
+        if (topoOut == NULL)
+        {
+            //context->serr << "Cannot create "<<className(obj)<<" as object2 is missing or invalid." << context->sendl;
+            return false;
+        }
+
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    ///
+    /// This implementation read the object1 and object2 attributes to
+    /// find the input and output topologies of this mapping.
+    template<class T>
+    static void create ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    {
+        BaseMeshTopology* topoIn=NULL;
+        BaseMeshTopology* topoOut=NULL;
+
+#ifndef SOFA_DEPRECATE_OLD_API
+        {
+            ////Deprecated check
+            std::string object1Path;
+            std::string object2Path;
+
+            Base* bobjInput = NULL;
+            Base* bobjOutput = NULL;
+
+            //Input
+            if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
+            {
+                object1Path = "..";
+                context->serr << "Deprecated use of implicit value for input" << context->sendl;
+                context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
+                bobjInput = arg->findObject("../..");
+            }
+
+            if(arg->getAttribute("object1",NULL) != NULL)
+            {
+                object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
+                context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
+                context->serr << "Use now : input=\"@"
+                        << object1Path
+                        << "\""<< context->sendl;
+                bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
+            }
+
+            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
+            {
+                topoIn = dynamic_cast< BaseMeshTopology* >(bo);
+            }
+            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
+            {
+                bc->get(topoIn);
+            }
+
+            //Output
+            if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
+            {
+                object2Path = ".";
+                context->serr << "Deprecated use of implicit value for output" << context->sendl;
+                context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
+                bobjOutput = arg->findObject("..");
+            }
+
+            if(arg->getAttribute("object2",NULL) != NULL)
+            {
+                object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
+                context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
+                context->serr << "Use now : output=\"@"
+                        << object2Path
+                        << "\""<< context->sendl;
+                bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
+            }
+
+            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
+            {
+                topoOut = dynamic_cast< BaseMeshTopology* >(bo);
+            }
+            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
+            {
+                bc->get(topoOut);
+            }
+
+            /////
+
+            if(topoIn == NULL && topoOut == NULL)
+#endif // SOFA_DEPRECATE_OLD_API
+            {
+                topoIn = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("input", arg);
+                topoOut = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("output", arg);
+            }
+
+            obj = new T( (arg?topoIn:NULL), (arg?topoOut:NULL));
+#ifndef SOFA_DEPRECATE_OLD_API
+            if (!object1Path.empty())
+                obj->m_inputTopology.setValue( object1Path );
+            if (!object2Path.empty())
+                obj->m_outputTopology.setValue( object2Path );
+#endif // SOFA_DEPRECATE_OLD_API
+        }
+
+        if (context)
+            context->addObject(obj);
+
+        if (arg)
+            obj->parse(arg);
+    }
 
 protected:
 
