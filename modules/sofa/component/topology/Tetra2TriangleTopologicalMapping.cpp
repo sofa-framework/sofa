@@ -66,12 +66,10 @@ int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case o
 // Implementation
 
 Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping(In* from, Out* to)
-    : TopologicalMapping(from, to),
-      object1(initData(&object1, std::string("../.."), "object1", "First object to map"))
-      ,object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
-      ,flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
-      ,noNewTriangles(initData(&noNewTriangles, bool(false), "noNewTriangles", "If true no new triangles are being created"))
-      ,noInitialTriangles(initData(&noInitialTriangles, bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
+    : TopologicalMapping(from, to)
+    ,flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
+    ,noNewTriangles(initData(&noNewTriangles, bool(false), "noNewTriangles", "If true no new triangles are being created"))
+    ,noInitialTriangles(initData(&noInitialTriangles, bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
 
 {
 }

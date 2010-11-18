@@ -65,9 +65,7 @@ int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 // Implementation
 
 Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping(In* from, Out* to)
-    : TopologicalMapping(from, to),
-      object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-      object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+    : TopologicalMapping(from, to)
 {
 }
 
