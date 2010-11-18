@@ -72,9 +72,10 @@ public:
     typedef BaseMeshTopology Out;
 
     TopologicalMapping(In* from, Out* to)
-        : fromModel(from), toModel(to)
-        , m_inputTopology(initData(&m_inputTopology, "input", "Input topology to map"))
+        : m_inputTopology(initData(&m_inputTopology, "input", "Input topology to map"))
         , m_outputTopology(initData(&m_outputTopology, "output", "Output topology to map"))
+        , fromModel(from), toModel(to)
+
     {}
 
     virtual ~TopologicalMapping() { }

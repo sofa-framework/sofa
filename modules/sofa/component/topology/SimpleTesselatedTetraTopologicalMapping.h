@@ -103,87 +103,12 @@ public:
     /// Return true if this mapping is able to propagate topological changes from output to input model
     virtual bool propagateFromOutputToInputModel() { return true; }
 
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output topology types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        if ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) == NULL )
-            context->serr << "Cannot create "<<className ( obj ) <<" as object1 is missing." << context->sendl;
-
-        if ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) == NULL )
-            context->serr << "Cannot create "<<className ( obj ) <<" as object2 is missing." << context->sendl;
-
-        if ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) == NULL || arg->findObject ( arg->getAttribute ( "object2",".." ) ) == NULL )
-            return false;
-
-        BaseMeshTopology* topoIn;
-        BaseMeshTopology* topoOut;
-
-        ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) ) )->getContext()->get ( topoIn );
-        ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) ) )->getContext()->get ( topoOut );
-
-        if ( dynamic_cast<In*> ( topoIn ) == NULL )
-            return false;
-
-        if ( dynamic_cast<Out*> ( topoOut ) == NULL )
-            return false;
-
-        return BaseMapping::canCreate ( obj, context, arg );
-    }
-
-    /// Construction method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes to
-    /// find the input and output topologies of this mapping.
-    template<class T>
-    static void create ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        BaseMeshTopology* topoIn=NULL;
-        BaseMeshTopology* topoOut=NULL;
-        if ( arg )
-        {
-            if ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) != NULL )
-                ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) ) )->getContext()->get ( topoIn );
-
-            if ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) != NULL )
-                ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) ) )->getContext()->get ( topoOut );
-        }
-        obj = new T (
-            ( arg?dynamic_cast<In*> ( topoIn ) :NULL ),
-            ( arg?dynamic_cast<Out*> ( topoOut ) :NULL ) );
-
-        if ( context ) context->addObject ( obj );
-
-        if ( ( arg ) && ( arg->getAttribute ( "object1" ) ) )
-        {
-            obj->object1.setValue ( arg->getAttribute ( "object1" ) );
-            arg->removeAttribute ( "object1" );
-        }
-
-        if ( ( arg ) && ( arg->getAttribute ( "object2" ) ) )
-        {
-            obj->object2.setValue ( arg->getAttribute ( "object2" ) );
-            arg->removeAttribute ( "object2" );
-        }
-
-        if ( arg ) obj->parse ( arg );
-    }
-
     const helper::vector<int>& getPointMappedFromPoint() const { return d_pointMappedFromPoint.getValue(); }
     const helper::vector<int>& getPointMappedFromEdge() const { return d_pointMappedFromEdge.getValue(); }
     const helper::vector<int>& getPointSource() const { return d_pointSource.getValue(); }
 
 protected:
-    Data< std::string > object1;
-    Data< std::string > object2;
-
     TetrahedronData< fixed_array<int, 8> > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
-
-
     TetrahedronData<int> tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
 
     Data< helper::vector<int> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.

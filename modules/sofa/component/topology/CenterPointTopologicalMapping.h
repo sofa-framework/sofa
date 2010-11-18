@@ -75,76 +75,6 @@ public:
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     virtual void updateTopologicalMappingTopDown();
 
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output topology types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        if ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) == NULL )
-            context->serr << "Cannot create "<<className ( obj ) <<" as object1 is missing."<<context->sendl;
-
-        if ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) == NULL )
-            context->serr << "Cannot create "<<className ( obj ) <<" as object2 is missing."<<context->sendl;
-
-        if ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) == NULL || arg->findObject ( arg->getAttribute ( "object2",".." ) ) == NULL )
-            return false;
-
-        BaseMeshTopology* topoIn;
-        BaseMeshTopology* topoOut;
-
-        ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) ) )->getContext()->get ( topoIn );
-        ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) ) )->getContext()->get ( topoOut );
-
-        if ( dynamic_cast<In*> ( topoIn ) == NULL )
-            return false;
-
-        if ( dynamic_cast<Out*> ( topoOut ) == NULL )
-            return false;
-
-        return BaseMapping::canCreate ( obj, context, arg );
-    }
-
-    /// Construction method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes to
-    /// find the input and output topologies of this mapping.
-    template<class T>
-    static void create ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        BaseMeshTopology* topoIn=NULL;
-        BaseMeshTopology* topoOut=NULL;
-        if ( arg )
-        {
-            if ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) != NULL )
-                ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object1","../.." ) ) ) )->getContext()->get ( topoIn );
-
-            if ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) != NULL )
-                ( dynamic_cast<sofa::core::objectmodel::BaseObject*> ( arg->findObject ( arg->getAttribute ( "object2",".." ) ) ) )->getContext()->get ( topoOut );
-        }
-        obj = new T (
-            ( arg?dynamic_cast<In*> ( topoIn ) :NULL ),
-            ( arg?dynamic_cast<Out*> ( topoOut ) :NULL ) );
-
-        if ( context ) context->addObject ( obj );
-
-        if ( ( arg ) && ( arg->getAttribute ( "object1" ) ) )
-        {
-            obj->object1.setValue ( arg->getAttribute ( "object1" ) );
-            arg->removeAttribute ( "object1" );
-        }
-
-        if ( ( arg ) && ( arg->getAttribute ( "object2" ) ) )
-        {
-            obj->object2.setValue ( arg->getAttribute ( "object2" ) );
-            arg->removeAttribute ( "object2" );
-        }
-
-        if ( arg ) obj->parse ( arg );
-    }
-
     virtual unsigned int getGlobIndex(unsigned int ind)
     {
         return ind;
@@ -154,10 +84,6 @@ public:
     {
         return ind;
     }
-
-protected:
-    Data< std::string > object1;
-    Data< std::string > object2;
 };
 
 } // namespace topology
