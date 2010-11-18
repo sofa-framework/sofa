@@ -91,8 +91,8 @@ void OglShader::init()
     std::string tempStr = vertFilename.getFullPath();
     std::string file;
     const std::string SEPARATOR = ";";
-    unsigned long int pos = 0;
-    unsigned long int oldPos = 0;
+    size_t pos = 0;
+    size_t oldPos = 0;
 
     pos = tempStr.find(SEPARATOR, oldPos);
 
