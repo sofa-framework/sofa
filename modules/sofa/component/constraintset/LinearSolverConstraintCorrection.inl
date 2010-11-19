@@ -293,11 +293,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     // use the OdeSolver to get the position integration factor
     const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 
-
     Data<VecCoord>& xData     = *mstate->write(core::VecCoordId::position());
     Data<VecDeriv>& vData     = *mstate->write(core::VecDerivId::velocity());
-    Data<VecCoord> xfreeData = *mstate->read(core::ConstVecCoordId::freePosition());
-    Data<VecDeriv> vfreeData = *mstate->read(core::ConstVecDerivId::freeVelocity());
+    const Data<VecCoord> & xfreeData = *mstate->read(core::ConstVecCoordId::freePosition());
+    const Data<VecDeriv> & vfreeData = *mstate->read(core::ConstVecDerivId::freeVelocity());
     VecCoord& x = *xData.beginEdit();
     VecDeriv& v = *vData.beginEdit();
     const VecCoord& x_free = xfreeData.getValue();
