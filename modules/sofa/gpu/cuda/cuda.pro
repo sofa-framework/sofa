@@ -47,6 +47,7 @@ HEADERS += mycuda.h \
 	   CudaTypesBase.h \
            CudaCommon.h \
            CudaMath.h \
+           CudaMath.inl \
            CudaMechanicalObject.h \
            CudaMechanicalObject.inl \
            CudaUniformMass.h \
@@ -107,6 +108,7 @@ SOURCES += mycuda.cpp \
            CudaFixedConstraint.cpp \
            CudaFixedTranslationConstraint.cpp \
            CudaLinearMovementConstraint.cpp \
+           CudaLinearVelocityConstraint.cpp \
 	   CudaLinearForceField.cpp \
            CudaSpringForceField.cpp \
            CudaTetrahedronFEMForceField.cpp \
@@ -158,6 +160,7 @@ HEADERS += \
            CudaFixedPlaneConstraint.inl \
 	   	CudaLCP.h \
 			CudaMathRigid.h \
+			CudaMathRigid.inl \
 	   	CudaMatrixUtils.h \
 	   	CudaDiagonalMatrix.h \
         CudaRotationMatrix.h \
