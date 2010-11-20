@@ -303,21 +303,12 @@ __device__ real norm2(CudaVec3<real> a)
     return a.x*a.x+a.y*a.y+a.z*a.z;
 }
 
-#ifndef SOFA_GPU_CUDA_PRECISE
 template<class real>
 __device__ real norm(CudaVec3<real> a)
 {
     return sqrtf(norm2(a));
 }
-#else
-template<class real>
-__device__ real norm(CudaVec3<real> a)
-{
-    return __fsqrt_rn(norm2(a));
-}
-#endif
 
-#ifndef SOFA_GPU_CUDA_PRECISE
 template<class real>
 __device__ real invnorm(CudaVec3<real> a)
 {
@@ -325,15 +316,6 @@ __device__ real invnorm(CudaVec3<real> a)
         return rsqrtf(norm2(a));
     return 0.0;
 }
-#else
-template<class real>
-__device__ real invnorm(CudaVec3<real> a)
-{
-    if (norm2(a) > 0.0)
-        return __fdiv_rn(1.0f, __fsqrt_rn(norm2(a)));
-    return 0.0;
-}
-#endif
 
 template<class real>
 __device__ real norm2(CudaVec4<real> a)
@@ -341,7 +323,6 @@ __device__ real norm2(CudaVec4<real> a)
     return a.x*a.x+a.y*a.y+a.z*a.z+a.w*a.w;
 }
 
-#ifndef SOFA_GPU_CUDA_PRECISE
 template<class real>
 __device__ real invnorm(CudaVec4<real> a)
 {
@@ -349,15 +330,6 @@ __device__ real invnorm(CudaVec4<real> a)
         return rsqrtf(norm2(a));
     return 0.0;
 }
-#else
-template<class real>
-__device__ real invnorm(CudaVec4<real> a)
-{
-    if (norm2(a) > 0.0)
-        return __fdiv_rn(1.0f, __fsqrt_rn(norm2(a)));
-    return 0.0;
-}
-#endif
 
 template<class real>
 __device__ CudaVec4<real> inv(CudaVec4<real> a)
