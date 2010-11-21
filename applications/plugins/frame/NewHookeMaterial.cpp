@@ -22,71 +22,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initFrame.h"
+#include "NewHookeMaterial.inl"
+#include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
-
 namespace component
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_FRAME_API void initExternalModule();
-    SOFA_FRAME_API const char* getModuleName();
-    SOFA_FRAME_API const char* getModuleVersion();
-    SOFA_FRAME_API const char* getModuleLicense();
-    SOFA_FRAME_API const char* getModuleDescription();
-    SOFA_FRAME_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace material
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+using namespace sofa::defaulttype;
+
+SOFA_DECL_CLASS (HookeMaterial3);
+// Register in the Factory
+
+int HookeMaterial3Class = core::RegisterObject ( "Hooke material for deformable objects" )
+#ifndef SOFA_FLOAT
+        .add<HookeMaterial3<Material3d> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add<HookeMaterial3<Material3f> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_FRAME_API HookeMaterial3<Material3d>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_FRAME_API HookeMaterial3<Material3f>;
+#endif
+
+
+
 }
 
-const char* getModuleName()
-{
-    return "Frame Based Dynamic Plugin";
-}
-
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Use frame based dynamic technic in SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "FrameDiagonalMass, FixedConstraint, FrameHookeForceField, MechanicalObject, FrameSpringForceField2";
-}
-
-} // namespace frame
+} // namespace component
 
 } // namespace sofa
 
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(FrameDiagonalMass)
-SOFA_LINK_CLASS(FrameConstantForceField)
-SOFA_LINK_CLASS(FrameFixedConstraint)
-SOFA_LINK_CLASS(FrameHookeForceField)
-SOFA_LINK_CLASS(FrameLoydAlgo)
-SOFA_LINK_CLASS(FrameMechanicalObject)
-SOFA_LINK_CLASS(FrameSpringForceField2)
-SOFA_LINK_CLASS(HookeMaterial3)

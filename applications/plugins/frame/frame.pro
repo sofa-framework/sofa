@@ -40,6 +40,9 @@ HEADERS += \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
            initFrame.h \
+            Material.h \
+            NewHookeMaterial.h \
+            NewHookeMaterial.inl \
            QuadraticTypes.h
 
 SOURCES += \
@@ -51,4 +54,5 @@ SOURCES += \
            FrameLoydAlgo.cpp \
            FrameMechanicalObject.cpp \
            FrameSpringForceField2.cpp \
+            NewHookeMaterial.cpp \
            initFrame.cpp
