@@ -161,12 +161,14 @@ double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoo
     const MassVector &masses= f_mass.getValue();
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set
-    ( theGravity, g[0], g[1], g[2] );
+    Vec<InDerivDim> theGravity;
+    theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
     for ( unsigned int i=0; i<x.size(); i++ )
     {
-        e -= theGravity.getVCenter() *masses[i].mass*x[i].getCenter();
+        Vec<InDerivDim> translation;
+        translation[0]=x[i].getCenter()[0],  translation[0]=x[1].getCenter()[1], translation[2]=x[i].getCenter()[2];
+        const MatInxIn& m = masses[i].inertiaMatrix;
+        e -= translation * (m * theGravity);
     }
     return e;
 }
@@ -183,9 +185,11 @@ void FrameDiagonalMass<DataTypes, MassType>::addMToMatrix ( defaulttype::BaseMat
 
 
 template <class DataTypes, class MassType>
-double FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index ) const
+double FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int /*index*/ ) const
 {
-    return ( SReal ) ( f_mass.getValue() [index] );
+//                return ( SReal ) ( f_mass.getValue() [index] );
+    cerr<<"WARNING : double FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index ) const IS NOT IMPLEMENTED" << endl;
+    return 0;
 }
 
 
@@ -376,10 +380,10 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
     /*
     std::cerr << "Masse: " << std::endl;
     for(unsigned int i = 0; i < masses.size(); ++i)
-      std::cerr << i << ": " << masses[i].inertiaMatrix << std::endl;
+    std::cerr << i << ": " << masses[i].inertiaMatrix << std::endl;
     std::cerr << "Force_Masse: " << std::endl;
     for(unsigned int i = 0; i < masses.size(); ++i)
-      std::cerr << i << ": " << f[i] << std::endl;
+    std::cerr << i << ": " << f[i] << std::endl;
     */
 }
 
@@ -390,8 +394,8 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
     if ( !this->getContext()->getShowBehaviorModels() ) return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
     if( x.size() != masses.size()) return;
-    Real totalMass=0;
-    RigidTypes::Vec3 gravityCenter;
+//                Real totalMass=0;
+//                RigidTypes::Vec3 gravityCenter;
     for ( unsigned int i=0; i<x.size(); i++ )
     {
         glPushMatrix();
@@ -401,24 +405,24 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
         simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3d(1,1,1)*showAxisSize.getValue() );
         glPopMatrix();
 
-        const Vec3& center = x[i].getCenter();
-        gravityCenter += ( center * masses[i].mass );
-        totalMass += masses[i].mass;
+//                    const Vec3& center = x[i].getCenter();
+//                    gravityCenter += ( center * masses[i].mass );
+//                    totalMass += masses[i].mass;
     }
 
-    if ( showCenterOfGravity.getValue() )
-    {
-        glColor3f ( 1,1,0 );
-        glBegin ( GL_LINES );
-        gravityCenter /= totalMass;
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-        glEnd();
-    }
+//                if ( showCenterOfGravity.getValue() )
+//                {
+//                    glColor3f ( 1,1,0 );
+//                    glBegin ( GL_LINES );
+//                    gravityCenter /= totalMass;
+//                    helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
+//                    helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
+//                    helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
+//                    helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
+//                    helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
+//                    helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
+//                    glEnd();
+//                }
 }
 
 template <class DataTypes, class MassType>
@@ -472,7 +476,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
     MatInx3 JT;
     MatInxIn JJT;
 
-    mass.mass = 1.0;//volmass[i] * vol[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, is directly stored in the inertia matrix via the displacement matrix J)
+//                mass.mass = 1.0;//volmass[i] * vol[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, is directly stored in the inertia matrix via the displacement matrix J)
     MatInxIn& frameMass = mass.inertiaMatrix;
     frameMass.fill (0.0);
 
@@ -485,12 +489,12 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
         frameMass += JJT;
         /*/ // With lumping
         //serr << "J[i][j]: " << J[i][j] << sendl;
-        for ( unsigned int k=0;k<nbDOF;k++ )
-        	{
-        		JJT=JT*J[k][j];
-        		frameMass += JJT;
-        	}
-        	//*/
+        	for ( unsigned int k=0;k<nbDOF;k++ )
+        		{
+        			JJT=JT*J[k][j];
+        			frameMass += JJT;
+        		}
+        		//*/
     }
     mass.recalc();
     //serr << "Mass: " << mass << sendl;
