@@ -42,12 +42,6 @@ namespace material
 using namespace sofa::defaulttype;
 
 /** \brief Material as a stress-strain relationship.
- An object has spatial and material coordinates.
- The spatial coordinates have 1, 2 or 3 entries if the object belongs to 1d, 2d or 3d world, respectively.
- The material coordinates are similar to texture coordinates. They have 1, 2 or 3 entries depending on how the object is internally parameterized.
- Rope points may have 1d, while cloth points typically have 2d, and volumetric objects have 3d material coordinates.
-
- The API is similar to ForceFields. Stress is accumulated (+=) rather than set (=), to allow multiple materials at the same place.
  */
 template<class TMaterialTypes>
 class SOFA_COMPONENT_FEM_API Material : public virtual core::objectmodel::BaseObject
@@ -57,22 +51,22 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(Material, TMaterialTypes), Inherited);
 
     typedef TMaterialTypes MaterialTypes;
-    typedef typename MaterialTypes::MaterialCoord MaterialCoord;        ///< Material coordinates of a point in the object.
-    typedef typename MaterialTypes::VecMaterialCoord VecMaterialCoord;  ///< Vector of material coordinates.
     typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
+    typedef typename MaterialTypes::StrStr StrStr;      ///< Stress-strain matrix
+    typedef typename MaterialTypes::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
     virtual ~Material() {}
 
-    /** \brief Accumulate stress based on local strain and strain rate at each point.
-      The stress-strain relation may be different at each point, and may also depend on strain rate (time derivative of strain).
+    /** \brief Compute stress based on local strain and strain rate at each point.
+      The stress-strain relation may depend on strain rate (time derivative of strain).
     */
-    virtual void computeStress  ( VecStr& stress, const VecStr& strain, const VecStr& strainRate, const VecMaterialCoord& point ) = 0;
+    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate ) = 0;
 
-    /** \brief Accumulate stress change based on local strain change at each point.
-      This is for use in implicit methods.
-    */
-    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange, const VecMaterialCoord& point ) = 0;
+//    /** \brief Compute stress change based on local strain.
+//      This is for using in implicit methods.
+//    */
+//    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange ) = 0;
 
 };
 
@@ -80,10 +74,14 @@ template<int D, class R>
 struct DefaultMaterialTypes
 {
     typedef R Real;
-    typedef defaulttype::Vec<D,R> MaterialCoord;
-    typedef helper::vector<MaterialCoord> VecMaterialCoord;
-    typedef defaulttype::Vec<D*(D+1)/2,R> Str;
+    static const int N = D*(D+1)/2;             ///< Number of independent entries in the symmetric DxD strain tensor
+
+    typedef defaulttype::Vec<N,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
     typedef helper::vector<Str> VecStr;
+
+    typedef defaulttype::Mat<N,N,R> StrStr;  ///< Stress-strain matrix
+    typedef helper::vector<StrStr> VecStrStr;
+
     static const char* Name();
 };
 

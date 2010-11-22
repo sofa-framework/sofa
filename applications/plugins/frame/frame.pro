@@ -40,7 +40,7 @@ HEADERS += \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
            initFrame.h \
-            Material.h \
+            NewMaterial.h \
             NewHookeMaterial.h \
             NewHookeMaterial.inl \
            QuadraticTypes.h
