@@ -250,7 +250,7 @@ public:
     Data<double> _sor;
     Data<bool> schemeCorrection;
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints;
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints, _graphForces;
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;};
 

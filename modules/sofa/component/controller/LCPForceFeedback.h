@@ -28,7 +28,7 @@
 #include <sofa/component/component.h>
 #include <sofa/component/controller/ForceFeedback.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/constraintset/LCPConstraintSolver.h>
+#include <sofa/component/constraintset/ConstraintSolverImpl.h>
 
 namespace sofa
 {
@@ -122,16 +122,15 @@ protected:
     VecCoord mVal[3];
     MatrixDeriv mConstraints[3];
     std::vector<int> mId_buf[3];
-    component::constraintset::LCP* mLcp[3];
+    component::constraintset::ConstraintProblem* mCP[3];
     /* 	std::vector<int> *id_buf; */
     /* 	typename DataType::VecCoord *val; */
     unsigned char mNextBufferId; // Next buffer id to be use
     unsigned char mCurBufferId; // Current buffer id in use
     bool mIsCuBufferInUse; // Is current buffer currently in use right now
 
-
     //core::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.
-    sofa::component::constraintset::LCPConstraintSolverInterface* lcpconstraintSolver;
+    sofa::component::constraintset::ConstraintSolverImpl* constraintSolver;
     // timer: verifies the time rates of the haptic loop
     CTime *_timer;
     double time_buf;

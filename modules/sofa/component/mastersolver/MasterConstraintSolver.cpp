@@ -41,6 +41,9 @@
 #include <math.h>
 
 #include <map>
+#include <string>
+#include <sstream>
+
 
 namespace sofa
 {
@@ -120,7 +123,6 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
 
     double t0 = (double)_timer->getTime() ;
     double timeScale = 1.0 / (double)CTime::getTicksPerSec();
-
 
     /* // no init: the constraint problem has already been solved in the simulation...
     	for(i=0; i<dim; )
@@ -223,7 +225,8 @@ MasterConstraintSolver::MasterConstraintSolver()
      _sor( initData(&_sor, 1.0, "sor","Successive Over Relaxation parameter (0-2)")),
      schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection","Apply new scheme where compliance is progressively corrected")),
      _graphErrors( initData(&_graphErrors,"graphErrors","Sum of the constraints' errors at each iteration")),
-     _graphConstraints( initData(&_graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
+     _graphConstraints( initData(&_graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution")),
+     _graphForces( initData(&_graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
 {
     bufCP1 = false;
 
@@ -234,6 +237,10 @@ MasterConstraintSolver::MasterConstraintSolver()
     _graphConstraints.setWidget("graph");
 //	_graphConstraints.setReadOnly(true);
     _graphConstraints.setGroup("Graph");
+
+    _graphForces.setWidget("graph");
+//	_graphForces.setReadOnly(true);
+    _graphForces.setGroup("Graph2");
 
     CP1.clear(0,_tol.getValue());
     CP2.clear(0,_tol.getValue());
@@ -731,6 +738,17 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
         i += res[i]->nbLines;
     }
 
+    std::map < std::string, sofa::helper::vector<double> >* graphs = _graphForces.beginEdit();
+    graphs->clear();
+    /*	for(j=0; j<dim; j++)
+    	{
+    		std::ostringstream oss;
+    		oss << "f" << j;
+
+    		sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+    		graph_force.clear();
+    	}	*/
+    _graphForces.endEdit();
 
 
     if(schemeCorrection.getValue())
@@ -840,6 +858,18 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 //				std::cerr<< std::setprecision(9) <<force[k]<<"     "<< dfree[k] <<std::endl;
 //		}
 ////////////////////////////////
+
+        /// display a graph with the force of each constraint dimension at each iteration
+        std::map < std::string, sofa::helper::vector<double> >* graphs = _graphForces.beginEdit();
+        for(j=0; j<dim; j++)
+        {
+            std::ostringstream oss;
+            oss << "f" << j;
+
+            sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+            graph_force.push_back(force[j]);
+        }
+        _graphForces.endEdit();
 
         graph_residuals.push_back(error);
 
