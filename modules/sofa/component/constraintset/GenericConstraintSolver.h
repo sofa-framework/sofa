@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_GENERICLCPCONSTRAINTSOLVER_H
-#define SOFA_COMPONENT_CONSTRAINTSET_GENERICLCPCONSTRAINTSOLVER_H
+#ifndef SOFA_COMPONENT_CONSTRAINTSET_GENERICCONSTRAINTSOLVER_H
+#define SOFA_COMPONENT_CONSTRAINTSET_GENERICCONSTRAINTSOLVER_H
 
-#include <sofa/component/constraintset/LCPConstraintSolver.h>
+#include <sofa/component/constraintset/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
@@ -52,9 +52,9 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 using core::behavior::ConstraintResolution;
-class GenericLCPConstraintSolver;
+class GenericConstraintSolver;
 
-class SOFA_COMPONENT_CONSTRAINTSET_API GenericLCP : public LCP
+class SOFA_COMPONENT_CONSTRAINTSET_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
     FullVector<double> _d, _df;
@@ -62,25 +62,27 @@ public:
     bool scaleTolerance, allVerified;
     double sor;
 
-    GenericLCP() : scaleTolerance(true), allVerified(false), sor(1.0) {}
+    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0) {}
+    ~GenericConstraintProblem() { freeConstraintResolutions(); }
 
-    void setMaxConst(unsigned int /*nbC*/) {}
-    void setNbConst(unsigned int nbC);
-    void gaussSeidel(double timeout = 0, GenericLCPConstraintSolver* solver = NULL);
+    void clear(int nbConstraints);
     void freeConstraintResolutions();
+    void solveTimed(double tol, int maxIt, double timeout);
+
+    void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = NULL);
 };
 
-class SOFA_COMPONENT_CONSTRAINTSET_API GenericLCPConstraintSolver : public LCPConstraintSolverInterface
+class SOFA_COMPONENT_CONSTRAINTSET_API GenericConstraintSolver : public ConstraintSolverImpl
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 public:
-    SOFA_CLASS(GenericLCPConstraintSolver, sofa::core::behavior::ConstraintSolver);
+    SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
 
-    GenericLCPConstraintSolver();
-    virtual ~GenericLCPConstraintSolver();
+    GenericConstraintSolver();
+    virtual ~GenericConstraintSolver();
 
     void init();
 
@@ -95,16 +97,16 @@ public:
     Data<bool> scaleTolerance, allVerified, schemeCorrection;
     Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints /*, graphForces */;
 
-    LCP* getLCP();
-    void lockLCP(LCP* l1, LCP* l2=0);
+    ConstraintProblem* getConstraintProblem();
+    void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
 
 private:
 
+    GenericConstraintProblem cp1, cp2, cp3;
+    GenericConstraintProblem *current_cp, *last_cp;
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 
     void build_LCP();
-    GenericLCP lcp1, lcp2, lcp3; // Triple buffer for LCP.
-    GenericLCP *lcp,*last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
 
     simulation::Node *context;
 

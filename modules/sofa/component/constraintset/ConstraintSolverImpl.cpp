@@ -22,42 +22,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/controller/LCPForceFeedback.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/LCPcalc.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
-using namespace std;
-using namespace sofa::defaulttype;
+#include <sofa/component/constraintset/ConstraintSolverImpl.h>
+
+#include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/SolveVisitor.h>
+
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <math.h>
+#include <iostream>
+
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
+
 namespace component
 {
-namespace controller
+
+namespace constraintset
 {
-int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for the omni")
-#ifndef SOFA_FLOAT
-        .add< LCPForceFeedback<sofa::defaulttype::Vec1dTypes> >()
-        .add< LCPForceFeedback<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LCPForceFeedback<sofa::defaulttype::Vec1fTypes> >()
-        .add< LCPForceFeedback<sofa::defaulttype::Rigid3fTypes> >()
-#endif
-        ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Vec1dTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Vec1fTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Rigid3fTypes>;
-#endif
-SOFA_DECL_CLASS(LCPForceFeedback)
+void ConstraintProblem::clear(int nbConstraints)
+{
+    dimension = nbConstraints;
+    W.resize(nbConstraints, nbConstraints);
+    dFree.resize(nbConstraints);
+    f.resize(nbConstraints);
+}
 
+} // namespace constraintset
 
-} // namespace controller
 } // namespace component
+
 } // namespace sofa

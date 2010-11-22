@@ -50,29 +50,9 @@ namespace component
 namespace constraintset
 {
 
-LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0), lok(false)
+void LCPConstraintProblem::solveTimed(double tolerance, int maxIt, double timeout)
 {
-    W.resize(maxConst,maxConst);
-    dFree.resize(maxConst);
-    f.resize(2*maxConst+1);
-}
-
-void LCP::setMaxConst(unsigned int nbC)
-{
-    maxConst = nbC;
-    W.resize(maxConst,maxConst);
-    dFree.resize(maxConst);
-    f.resize(2*maxConst+1);
-}
-
-LCP::~LCP()
-{
-}
-
-void LCP::reset(void)
-{
-    W.clear();
-    dFree.clear();
+    helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
 }
 
 bool LCPConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder)
@@ -146,8 +126,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::Constrain
 
         if (_mu > 0.0)
         {
-            lcp->setNbConst(_numConstraints);
-            lcp->setTolerance(_tol);
+            lcp->tolerance = _tol;
 
             if (multi_grid.getValue())
             {
@@ -315,9 +294,6 @@ LCPConstraintSolver::LCPConstraintSolver()
     , showTranslation( initData(&showTranslation, "showTranslation", "Position of the first cell"))
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
     , _mu(0.6)
-    , lcp1(MAX_NUM_CONSTRAINTS)
-    , lcp2(MAX_NUM_CONSTRAINTS)
-    , lcp3(MAX_NUM_CONSTRAINTS)
     , _W(&lcp1.W)
     , lcp(&lcp1)
     , last_lcp(0)
@@ -378,20 +354,9 @@ void LCPConstraintSolver::build_LCP()
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
+    lcp->mu = _mu;
+    lcp->clear(_numConstraints);
 
-    if (_numConstraints > lcp->getMaxConst())
-    {
-        serr<<sendl<<"maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<sendl;
-        int maxC = (_numConstraints > 2*lcp->getMaxConst()) ? _numConstraints : 2*lcp->getMaxConst();
-        lcp1.setMaxConst(maxC);
-        lcp2.setMaxConst(maxC);
-        lcp3.setMaxConst(maxC);
-        //exit(-1);
-    }
-
-    lcp->getMu() = _mu;
-
-    _dFree->resize(_numConstraints);
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
     MechanicalGetConstraintValueVisitor(_dFree, &cparams).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Value");
@@ -399,8 +364,6 @@ void LCPConstraintSolver::build_LCP()
 
     if (this->f_printLog.getValue())
         sout<<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu<<sendl;
-
-    _W->resize(_numConstraints,_numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
     if (this->f_printLog.getValue())
@@ -788,24 +751,11 @@ void LCPConstraintSolver::build_problem_info()
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
-    /*
-    	// necessary ///////
-    	if (_numConstraints > lcp->getMaxConst())
-        {
-            serr<<sendl<<"maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<sendl;
-            int maxC = (_numConstraints > 2*lcp->getMaxConst()) ? _numConstraints : 2*lcp->getMaxConst();
-            lcp1.setMaxConst(maxC);
-            lcp2.setMaxConst(maxC);
-            lcp3.setMaxConst(maxC);
-            //exit(-1);
-        }
-    */
-    lcp->getMu() = _mu;
+    lcp->mu = _mu;
+    lcp->clear(_numConstraints);
 
-    _dFree->resize(_numConstraints);
     // as _Wdiag is a sparse matrix resize do not allocate memory
     _Wdiag->resize(_numConstraints,_numConstraints);
-    _result->resize(_numConstraints);
 
     // debug
     //std::cout<<" resize done "  <<std::endl;
@@ -1448,14 +1398,14 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
     return 0;
 }
 
-LCP* LCPConstraintSolver::getLCP()
+ConstraintProblem* LCPConstraintSolver::getConstraintProblem()
 {
     return last_lcp;
 }
 
-void LCPConstraintSolver::lockLCP(LCP* l1, LCP* l2)
+void LCPConstraintSolver::lockConstraintProblem(ConstraintProblem* l1, ConstraintProblem* l2)
 {
-    if((lcp!=l1)&&(lcp!=l2)) // Le lcp courrant n'est pas locké
+    if((lcp!=l1)&&(lcp!=l2)) // Le lcp courant n'est pas locké
         return;
 
     if((&lcp1!=l1)&&(&lcp1!=l2)) // lcp1 n'est pas locké

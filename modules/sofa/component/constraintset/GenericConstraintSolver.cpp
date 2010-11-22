@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraintset/GenericLCPConstraintSolver.h>
+#include <sofa/component/constraintset/GenericConstraintSolver.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
@@ -54,8 +54,8 @@ namespace constraintset
 #define MAX_NUM_CONSTRAINTS 3000
 //#define DISPLAY_TIME
 
-GenericLCPConstraintSolver::GenericLCPConstraintSolver()
-    : displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of GenericLCPConstraintSolver."))
+GenericConstraintSolver::GenericConstraintSolver()
+    : displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of GenericConstraintSolver."))
     , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
@@ -65,8 +65,8 @@ GenericLCPConstraintSolver::GenericLCPConstraintSolver()
     , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
     , graphConstraints( initData(&graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
 //, graphForces( initData(&graphForces,"graphForces","Graph of each constraint's force at each step of the resolution"))
-    , lcp(&lcp1)
-    , last_lcp(NULL)
+    , current_cp(&cp1)
+    , last_cp(NULL)
 {
     addAlias(&maxIt, "maxIt");
 
@@ -80,14 +80,11 @@ GenericLCPConstraintSolver::GenericLCPConstraintSolver()
 //	graphForces.setGroup("Graph2");
 }
 
-GenericLCPConstraintSolver::~GenericLCPConstraintSolver()
+GenericConstraintSolver::~GenericConstraintSolver()
 {
-    lcp1.freeConstraintResolutions();
-    lcp2.freeConstraintResolutions();
-    lcp3.freeConstraintResolutions();
 }
 
-void GenericLCPConstraintSolver::init()
+void GenericConstraintSolver::init()
 {
     core::behavior::ConstraintSolver::init();
 
@@ -102,12 +99,12 @@ void GenericLCPConstraintSolver::init()
     context = (simulation::Node*) getContext();
 }
 
-bool GenericLCPConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder)
+bool GenericConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, core::ConstraintParams::ConstOrder)
 {
     if (id.getDefaultId() != VecId::freePosition()) return false;
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
-    last_lcp = lcp;
+    last_cp = current_cp;
     simulation::MechanicalVOpVisitor((VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
     //simulation::MechanicalPropagateDxVisitor(dx_id,true,true).execute( context); //Propagate dX //ignore the mask here
 
@@ -132,7 +129,7 @@ bool GenericLCPConstraintSolver::prepareStates(double /*dt*/, MultiVecId id, cor
     return true;
 }
 
-bool GenericLCPConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
+bool GenericConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
 {
     unsigned int numConstraints = 0;
     core::ConstraintParams cparams;
@@ -148,24 +145,24 @@ bool GenericLCPConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Co
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
-    lcp->setNbConst(numConstraints);
+    current_cp->clear(numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintValueVisitor(&lcp->dFree, &cparams).execute(context);
+    MechanicalGetConstraintValueVisitor(&current_cp->dFree, &cparams).execute(context);
     sofa::helper::AdvancedTimer::stepEnd ("Get Constraint Value");
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Resolutions");
-    MechanicalGetConstraintResolutionVisitor(lcp->constraintsResolutions, &cparams).execute(context);
+    MechanicalGetConstraintResolutionVisitor(current_cp->constraintsResolutions, &cparams).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Resolutions");
 
-    if (this->f_printLog.getValue()) sout<<"GenericLCPConstraintSolver: "<<numConstraints<<" constraints"<<sendl;
+    if (this->f_printLog.getValue()) sout<<"GenericConstraintSolver: "<<numConstraints<<" constraints"<<sendl;
 
     sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
     if (this->f_printLog.getValue()) sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->getCompliance(&lcp->W);
+        cc->getCompliance(&current_cp->W);
     }
     sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
     if (this->f_printLog.getValue()) sout<<" computeCompliance_done "  <<sendl;
@@ -178,16 +175,16 @@ bool GenericLCPConstraintSolver::buildSystem(double /*dt*/, MultiVecId, core::Co
     return true;
 }
 
-bool GenericLCPConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
+bool GenericConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::ConstraintParams::ConstOrder)
 {
-    lcp->setTolerance(tolerance.getValue());
-    lcp->setMaxIter(maxIt.getValue());
-    lcp->scaleTolerance = scaleTolerance.getValue();
-    lcp->allVerified = allVerified.getValue();
-    lcp->sor = sor.getValue();
+    current_cp->tolerance = tolerance.getValue();
+    current_cp->maxIterations = maxIt.getValue();
+    current_cp->scaleTolerance = scaleTolerance.getValue();
+    current_cp->allVerified = allVerified.getValue();
+    current_cp->sor = sor.getValue();
 
     sofa::helper::AdvancedTimer::stepBegin("ConstraintsGaussSeidel");
-    lcp->gaussSeidel(0, this);
+    current_cp->gaussSeidel(0, this);
     sofa::helper::AdvancedTimer::stepEnd("ConstraintsGaussSeidel");
 
     if ( displayTime.getValue() )
@@ -199,7 +196,7 @@ bool GenericLCPConstraintSolver::solveSystem(double /*dt*/, MultiVecId, core::Co
     return true;
 }
 
-bool GenericLCPConstraintSolver::applyCorrection(double /*dt*/, MultiVecId , core::ConstraintParams::ConstOrder)
+bool GenericConstraintSolver::applyCorrection(double /*dt*/, MultiVecId , core::ConstraintParams::ConstOrder)
 {
     if(this->f_printLog.getValue())
         serr<<"keepContactForces done"<<sendl;
@@ -209,7 +206,7 @@ bool GenericLCPConstraintSolver::applyCorrection(double /*dt*/, MultiVecId , cor
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->applyContactForce(&lcp->f);
+        cc->applyContactForce(&current_cp->f);
     }
     sofa::helper::AdvancedTimer::stepEnd  ("Apply Contact Force");
 
@@ -239,38 +236,36 @@ bool GenericLCPConstraintSolver::applyCorrection(double /*dt*/, MultiVecId , cor
     return true;
 }
 
-LCP* GenericLCPConstraintSolver::getLCP()
+
+ConstraintProblem* GenericConstraintSolver::getConstraintProblem()
 {
-    return last_lcp;
+    return last_cp;
 }
 
-void GenericLCPConstraintSolver::lockLCP(LCP* l1, LCP* l2)
+void GenericConstraintSolver::lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2)
 {
-    if((lcp!=l1)&&(lcp!=l2)) // Le lcp courrant n'est pas locké
+    if( (current_cp != p1) && (current_cp != p2) ) // Le ConstraintProblem courant n'est pas locké
         return;
 
-    if((&lcp1!=l1)&&(&lcp1!=l2)) // lcp1 n'est pas locké
-        lcp = &lcp1;
-    else if((&lcp2!=l1)&&(&lcp2!=l2)) // lcp2 n'est pas locké
-        lcp = &lcp2;
+    if( (&cp1 != p1) && (&cp1 != p2) ) // cp1 n'est pas locké
+        current_cp = &cp1;
+    else if( (&cp2 != p1) && (&cp2 != p2) ) // cp2 n'est pas locké
+        current_cp = &cp2;
     else
-        lcp = &lcp3; // lcp1 et lcp2 sont lockés, donc lcp3 n'est pas locké
+        current_cp = &cp3; // cp1 et cp2 sont lockés, donc cp3 n'est pas locké
 }
 
-
-void GenericLCP::setNbConst(unsigned int nbC)
+void GenericConstraintProblem::clear(int nbC)
 {
-    dim = nbConst = nbC;
-    W.resize(nbC, nbC);
-    dFree.resize(nbC);
-    f.resize(nbC);
+    ConstraintProblem::clear(nbC);
+
     freeConstraintResolutions();
     constraintsResolutions.resize(nbC);
     _d.resize(nbC);
     _df.resize(nbC);
 }
 
-void GenericLCP::freeConstraintResolutions()
+void GenericConstraintProblem::freeConstraintResolutions()
 {
     for(unsigned int i=0; i<constraintsResolutions.size(); i++)
     {
@@ -282,10 +277,24 @@ void GenericLCP::freeConstraintResolutions()
     }
 }
 
-// Debug is only available when called directly by the solver (not in haptic thread)
-void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
+void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
 {
-    if(!dim)
+    double tempTol = tolerance;
+    int tempMaxIt = maxIterations;
+
+    tolerance = tol;
+    maxIterations = maxIt;
+
+    gaussSeidel(timeout);
+
+    tolerance = tempTol;
+    maxIterations = tempMaxIt;
+}
+
+// Debug is only available when called directly by the solver (not in haptic thread)
+void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolver* solver)
+{
+    if(!dimension)
         return;
 
     double t0 = (double)CTime::getTime() ;
@@ -294,7 +303,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
     double *dfree = getDfree();
     double *force = getF();
     double **w = getW();
-    double tolerance = getTolerance();
+    double tol = tolerance;
 
     double *d = _d.ptr();
 //	double *df = _df.ptr();
@@ -306,12 +315,12 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
 
     bool convergence = false;
     sofa::helper::vector<double> tempForces;
-    if(sor != 1.0) tempForces.resize(dim);
+    if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
-        tolerance *= dim;
+        tol *= dimension;
 
-    for(i=0; i<dim; )
+    for(i=0; i<dimension; )
     {
         constraintsResolutions[i]->init(i, w, force);
         i += constraintsResolutions[i]->nbLines;
@@ -329,7 +338,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
         graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
         graph_residuals->clear();
 
-        tabErrors.resize(dim);
+        tabErrors.resize(dimension);
     }
 
     /*   if(schemeCorrection)
@@ -349,17 +358,17 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
        }
     */
 
-    for(i=0; i<numItMax; i++)
+    for(i=0; i<maxIterations; i++)
     {
         bool constraintsAreVerified = true;
         if(sor != 1.0)
         {
-            for(j=0; j<dim; j++)
+            for(j=0; j<dimension; j++)
                 tempForces[j] = force[j];
         }
 
         error=0.0;
-        for(j=0; j<dim; ) // increment of j realized at the end of the loop
+        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             //1. nbLines provide the dimension of the constraint  (max=6)
             nb = constraintsResolutions[j]->nbLines;
@@ -372,7 +381,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
                 d[j+l] = dfree[j+l];
             }
             //   (b) contribution of forces are added to d
-            for(k=0; k<dim; k++)
+            for(k=0; k<dimension; k++)
                 for(l=0; l<nb; l++)
                     d[j+l] += w[j+l][k] * force[k];
 
@@ -392,7 +401,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
                         lineError += dofError * dofError;
                     }
                     lineError = sqrt(lineError);
-                    if(lineError > tolerance)
+                    if(lineError > tol)
                         constraintsAreVerified = false;
 
                     contraintError += lineError;
@@ -401,7 +410,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
             else
             {
                 contraintError = fabs(w[j][j] * (force[j] - errF[0]));
-                if(contraintError > tolerance)
+                if(contraintError > tol)
                     constraintsAreVerified = false;
             }
 
@@ -409,7 +418,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
             {
                 if(contraintError > constraintsResolutions[j]->tolerance)
                     constraintsAreVerified = false;
-                contraintError *= tolerance / constraintsResolutions[j]->tolerance;
+                contraintError *= tol / constraintsResolutions[j]->tolerance;
             }
 
             error += contraintError;
@@ -437,7 +446,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
 
         if(sor != 1.0)
         {
-            for(j=0; j<dim; j++)
+            for(j=0; j<dimension; j++)
                 force[j] = sor * force[j] + (1-sor) * tempForces[j];
         }
 
@@ -454,7 +463,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
                 break;
             }
         }
-        else if(error < tolerance && i>0) // do not stop at the first iteration (that is used for initial guess computation)
+        else if(error < tol && i>0) // do not stop at the first iteration (that is used for initial guess computation)
         {
             convergence = true;
             break;
@@ -471,7 +480,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
 
-    for(i=0; i<dim; i += constraintsResolutions[i]->nbLines)
+    for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
         constraintsResolutions[i]->store(i, force, convergence);
     /*
         if(schemeCorrection)
@@ -490,7 +499,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
         sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
-        for(j=0; j<dim; )
+        for(j=0; j<dimension; )
         {
             nb = constraintsResolutions[j]->nbLines;
 
@@ -499,7 +508,7 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
             else if(constraintsResolutions[j]->tolerance)
                 graph_constraints.push_back(constraintsResolutions[j]->tolerance);
             else
-                graph_constraints.push_back(tolerance);
+                graph_constraints.push_back(tol);
 
             j += nb;
         }
@@ -508,10 +517,10 @@ void GenericLCP::gaussSeidel(double timeout, GenericLCPConstraintSolver* solver)
 }
 
 
-int GenericLCPConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
-        .add< GenericLCPConstraintSolver >();
+int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
+        .add< GenericConstraintSolver >();
 
-SOFA_DECL_CLASS(GenericLCPConstraintSolver);
+SOFA_DECL_CLASS(GenericConstraintSolver);
 
 
 } // namespace constraintset

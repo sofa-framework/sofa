@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
 
-#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/component/constraintset/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 
 #include <sofa/simulation/common/Node.h>
@@ -53,198 +53,13 @@ using namespace helper::system::thread;
 
 
 /// Christian : WARNING: this class is already defined in sofa::helper
-class LCP
+class LCPConstraintProblem : public ConstraintProblem
 {
 public:
-    int maxConst;
-    LPtrFullMatrix<double> W;
-    FullVector<double> dFree, f;
-    double tol;
-    int numItMax;
-    unsigned int nbConst;
-    bool useInitialF;
     double mu;
-    int dim;
 
-private:
-    bool lok;
-
-protected:
-    LCP() : maxConst(0), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0), lok(false) {}
-
-public:
-    LCP(unsigned int maxConstraint);
-    virtual ~LCP();
-    void reset(void);
-    //LCP& operator=(LCP& lcp);
-    inline double** getW(void) {return W.lptr();}
-    inline double& getMu(void) { return mu;}
-    inline double* getDfree(void) {return dFree.ptr();}
-    inline int getDfreeSize(void) {return dFree.size();}
-    inline double getTolerance(void) {return tol;}
-    inline void setTolerance(double t) {tol = t;}
-    inline int getMaxIter(void) {return numItMax;}
-    inline void setMaxIter(int m) {numItMax = m;}
-    inline double* getF(void) {return f.ptr();}
-    inline bool useInitialGuess(void) {return useInitialF;}
-    inline unsigned int getNbConst(void) {return nbConst;}
-    virtual void setNbConst(unsigned int nbC) {nbConst = nbC;}
-    inline unsigned int getMaxConst(void) {return maxConst;}
-    virtual void setMaxConst(unsigned int nbC);
-
-    inline bool isLocked(void) {return false;}
-    inline void lock(void) {lok = true;}
-    inline void unlock(void) {lok = false;}
-    inline void wait(void) {while(lok) ; } //infinite loop?
+    void solveTimed(double tolerance, int maxIt, double timeout);
 };
-
-
-
-class MechanicalResetContactForceVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    //core::MultiVecDerivId force;
-    MechanicalResetContactForceVisitor(/*core::MultiVecDerivId force,*/ const core::ExecParams* params)
-        : simulation::BaseMechanicalVisitor(params)
-        //	, force(force)
-    {
-    }
-
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->resetContactForce(/*force*/);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->resetForce(/*force*/);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalResetContactForceVisitor";}
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-};
-
-
-/// Apply the Contact Forces on mechanical models & Compute displacements
-class SOFA_COMPONENT_MASTERSOLVER_API MechanicalApplyContactForceVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    //VecId force;
-    MechanicalApplyContactForceVisitor(double *f, const core::ExecParams* params)
-        : simulation::BaseMechanicalVisitor(params)
-        , _f(f)
-    {
-    }
-
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->applyContactForce(_f);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* ms)
-    {
-        ctime_t t0 = begin(node, ms);
-        ms->applyContactForce(_f);
-        end(node, ms, t0);
-        return RESULT_CONTINUE;
-    }
-
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalApplyContactForceVisitor";}
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-
-private:
-    double *_f; // vector of contact forces from lcp //
-    // to be multiplied by constraint direction in mechanical models //
-
-};
-
-
-/// Gets the vector of constraint values
-class MechanicalGetConstraintValueVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-
-    MechanicalGetConstraintValueVisitor(BaseVector *v, const core::ConstraintParams* params)
-        : simulation::BaseMechanicalVisitor(params)
-        , cparams(params)
-        , m_v(v)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
-    {
-        if (core::behavior::BaseConstraintSet *c=dynamic_cast<core::behavior::BaseConstraintSet*>(cSet))
-        {
-            ctime_t t0 = begin(node, c);
-            c->getConstraintViolation(m_v, cparams);
-            end(node, c, t0);
-        }
-        return RESULT_CONTINUE;
-    }
-
-    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetConstraintValueVisitor";}
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-
-private:
-    /// Constraint parameters
-    const sofa::core::ConstraintParams *cparams;
-
-    /// Vector for constraint values
-    BaseVector* m_v;
-};
-
 
 class MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
 {
@@ -303,14 +118,7 @@ private:
     VecConstArea& _areas;
 };
 
-class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolverInterface : public sofa::core::behavior::ConstraintSolver
-{
-public:
-    virtual LCP* getLCP() = 0;
-    virtual void lockLCP(LCP* l1, LCP* l2=0) = 0; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
-};
-
-class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolver : public LCPConstraintSolverInterface
+class SOFA_COMPONENT_CONSTRAINTSET_API LCPConstraintSolver : public ConstraintSolverImpl
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
@@ -363,8 +171,8 @@ public:
     Data<defaulttype::Vector3> showTranslation;
     Data<defaulttype::Vector3> showLevelTranslation;
 
-    LCP* getLCP();
-    void lockLCP(LCP* l1, LCP* l2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
+    ConstraintProblem* getConstraintProblem();
+    void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
 private:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
@@ -374,12 +182,11 @@ private:
     unsigned int _numConstraints;
     double _mu;
 
-
     /// for built lcp ///
     void build_LCP();
-    LCP lcp1, lcp2, lcp3; // Triple buffer for LCP.
+    LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.
+    LCPConstraintProblem *lcp, *last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
     LPtrFullMatrix<double>  *_W;
-    LCP *lcp,*last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
 
     /// multi-grid approach ///
     void MultigridConstraintsMerge();
