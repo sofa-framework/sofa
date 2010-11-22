@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_H
 #define SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_H
 
-#include "Material.h"
+#include "NewMaterial.h"
 
 
 namespace sofa
@@ -77,43 +77,43 @@ using namespace sofa::defaulttype;
 //    Real stressDiagonal, stressOffDiagonal, shear;
 //};
 
-template<class TMaterialTypes>
-class SOFA_COMPONENT_FEM_API HookeMaterial2 : public Material<TMaterialTypes>
-{
-public:
-    typedef Material<TMaterialTypes> Inherited;
-//    SOFA_CLASS( SOFA_TEMPLATE(HookeMaterial, TMaterialTypes, NumMaterialCoordinates), SOFA_TEMPLATE(Inherited, TMaterialTypes) );
-
-    typedef TMaterialTypes MaterialTypes;
-    typedef typename MaterialTypes::Real Real;        ///< Scalar values.
-    typedef typename MaterialTypes::MaterialCoord MaterialCoord;        ///< Material coordinates of a point in the object.
-    typedef typename MaterialTypes::VecMaterialCoord VecMaterialCoord;  ///< Vector of material coordinates.
-    typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
-    typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
-
-    HookeMaterial2();
-    virtual ~HookeMaterial2() {}
-
-    /// Recompute the stress-strain matrix when the parameters are changed.
-    virtual void reinit();
-
-    /// implementation of the abstract function
-    virtual void computeStress  ( VecStr& stress, const VecStr& strain, const VecStr& strainRate, const VecMaterialCoord& point );
-    /// implementation of the abstract function
-    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange, const VecMaterialCoord& point );
-
-    Data<Real> youngModulus;  ///< Stiffness, typically denoted using symbol \f$ E \f$
-
-    /** \brief Volume conservation, typically denoted using symbol \f$  \nu \f$.
-    Should be positive and less than 0.5 in 3d, respectively 1 in 2d.
-    0 means no volume conservation, while 0.5 (resp. 1) means perfect volume conservation.
-    Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
-    */
-    Data<Real> poissonRatio;
-
-protected:
-    Real stressDiagonal, stressOffDiagonal, shear;
-};
+//template<class TMaterialTypes>
+//class SOFA_COMPONENT_FEM_API HookeMaterial2 : public Material<TMaterialTypes>
+//{
+//public:
+//    typedef Material<TMaterialTypes> Inherited;
+////    SOFA_CLASS( SOFA_TEMPLATE(HookeMaterial, TMaterialTypes, NumMaterialCoordinates), SOFA_TEMPLATE(Inherited, TMaterialTypes) );
+//
+//    typedef TMaterialTypes MaterialTypes;
+//    typedef typename MaterialTypes::Real Real;        ///< Scalar values.
+//    typedef typename MaterialTypes::MaterialCoord MaterialCoord;        ///< Material coordinates of a point in the object.
+//    typedef typename MaterialTypes::VecMaterialCoord VecMaterialCoord;  ///< Vector of material coordinates.
+//    typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
+//    typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
+//
+//    HookeMaterial2();
+//    virtual ~HookeMaterial2(){}
+//
+//    /// Recompute the stress-strain matrix when the parameters are changed.
+//    virtual void reinit();
+//
+//    /// implementation of the abstract function
+//    virtual void computeStress  ( VecStr& stress, const VecStr& strain, const VecStr& strainRate, const VecMaterialCoord& point );
+//    /// implementation of the abstract function
+//    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange, const VecMaterialCoord& point );
+//
+//    Data<Real> youngModulus;  ///< Stiffness, typically denoted using symbol \f$ E \f$
+//
+//    /** \brief Volume conservation, typically denoted using symbol \f$  \nu \f$.
+//    Should be positive and less than 0.5 in 3d, respectively 1 in 2d.
+//    0 means no volume conservation, while 0.5 (resp. 1) means perfect volume conservation.
+//    Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
+//    */
+//    Data<Real> poissonRatio;
+//
+//protected:
+//    Real stressDiagonal, stressOffDiagonal, shear;
+//};
 
 template<class TMaterialTypes>
 class SOFA_COMPONENT_FEM_API HookeMaterial3 : public Material<TMaterialTypes>
@@ -124,10 +124,10 @@ public:
 
     typedef TMaterialTypes MaterialTypes;
     typedef typename MaterialTypes::Real Real;        ///< Scalar values.
-    typedef typename MaterialTypes::MaterialCoord MaterialCoord;        ///< Material coordinates of a point in the object.
-    typedef typename MaterialTypes::VecMaterialCoord VecMaterialCoord;  ///< Vector of material coordinates.
     typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
+    typedef typename MaterialTypes::StrStr StrStr;      ///< Stress-strain matrix
+    typedef typename MaterialTypes::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
     HookeMaterial3();
     virtual ~HookeMaterial3() {}
@@ -136,9 +136,9 @@ public:
     virtual void reinit();
 
     /// implementation of the abstract function
-    virtual void computeStress  ( VecStr& stress, const VecStr& strain, const VecStr& strainRate, const VecMaterialCoord& point );
-    /// implementation of the abstract function
-    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange, const VecMaterialCoord& point );
+    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
+//    /// implementation of the abstract function
+//    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
 
     Data<Real> youngModulus;  ///< Stiffness, typically denoted using symbol \f$ E \f$
 
@@ -150,7 +150,7 @@ public:
     Data<Real> poissonRatio;
 
 protected:
-    Real stressDiagonal, stressOffDiagonal, shear;
+    Real stressDiagonal, stressOffDiagonal, shear; // entries of the stress-strain matrix
 };
 
 

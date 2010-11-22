@@ -71,7 +71,7 @@ class StdAffineTypes;
 
 
 
-/** Degrees of freedom of 3D rigid bodies. Orientations are modeled using quaternions.
+/** Degrees of freedom of 3D non-rigid bodies.
 */
 template<typename real>
 
