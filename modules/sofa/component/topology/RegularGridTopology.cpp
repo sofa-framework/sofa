@@ -79,7 +79,7 @@ RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
       computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
       //  computeTetraList(initData(&computeTetraList, false, "computeTetraList", "put true if the list of Tetrahedra is needed during init")),
       computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
-//   computeTriList(initData(&computeTriList, false, "computeTriList", "put true if the list of Triangle is needed during init")),
+      //   computeTriList(initData(&computeTriList, false, "computeTriList", "put true if the list of Triangle is needed during init")),
       computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
       computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
       min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
@@ -151,29 +151,45 @@ void RegularGridTopology::init()
         seqPoints.endEdit();
     }
 
-//    MeshTopology::init();
+    //    MeshTopology::init();
 
     reinit();
 }
 
 void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)
 {
-    min.setValue(Vector3(xmin,ymin,zmin));
-    max.setValue(Vector3(xmax,ymax,zmax));
-    if (!p0.isSet())
-        setP0(Vector3(xmin,ymin,zmin));
+    SReal p0x=xmin, p0y=ymin, p0z=zmin;
+
     if (n.getValue()[0]>1)
         setDx(Vector3((xmax-xmin)/(n.getValue()[0]-1),0,0));
     else
-        setDx(Vector3(0,0,0));
+    {
+        setDx(Vector3(xmax-xmin,0,0));
+        p0x = (xmax+xmin)/2;
+    }
+
     if (n.getValue()[1]>1)
         setDy(Vector3(0,(ymax-ymin)/(n.getValue()[1]-1),0));
     else
-        setDy(Vector3(0,0,0));
+    {
+        setDy(Vector3(0,ymax-ymin,0));
+        p0y = (ymax+ymin)/2;
+    }
+
     if (n.getValue()[2]>1)
         setDz(Vector3(0,0,(zmax-zmin)/(n.getValue()[2]-1)));
     else
-        setDz(Vector3(0,0,0));
+    {
+        setDz(Vector3(0,0,zmax-zmin));
+        p0z = (zmax+zmin)/2;
+    }
+
+    min.setValue(Vector3(xmin,ymin,zmin));
+    max.setValue(Vector3(xmax,ymax,zmax));
+    if (!p0.isSet())
+    {
+        setP0(Vector3(p0x,p0y,p0z));
+    }
 }
 
 unsigned RegularGridTopology::getIndex( int i, int j, int k ) const

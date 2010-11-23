@@ -1238,27 +1238,27 @@ void SkinningMapping<TIn, TOut>::setInCoord( typename defaulttype::StdQuadraticT
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename defaulttype::StdRigidTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
+void SkinningMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename In::Coord& inCoord, const Coord& coord) const
 {
-    result = inCoord.getOrientation().inverseRotate ( coord - inCoord.getCenter() );
+    result = inCoord.pointToChild ( coord );
 }
 
 
 #ifdef SOFA_DEV
-template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
-{
-    Mat33 affineInv;
-    affineInv.invert( inCoord.getAffine() );
-    result = affineInv * ( coord - inCoord.getCenter() );
-}
-
-
-template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
-{
-    result = coord - inCoord.getCenter();
-}
+//template <class TIn, class TOut>
+//void SkinningMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
+//{
+//  Mat33 affineInv;
+//  affineInv.invert( inCoord.getAffine() );
+//  result = affineInv * ( coord - inCoord.getCenter() );
+//}
+//
+//
+//template <class TIn, class TOut>
+//void SkinningMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const
+//{
+//  result = coord - inCoord.getCenter();
+//}
 
 
 
