@@ -154,10 +154,19 @@ public:
     */
     Data<Real> poissonRatio;
 
+    static const char* Name();
+
 protected:
     Real stressDiagonal, stressOffDiagonal, shear; // entries of the stress-strain matrix
 };
 
+#ifdef SOFA_FLOAT
+template<> inline const char* HookeMaterial3<Material3d>::Name() { return "HookeMaterial3d"; }
+template<> inline const char* HookeMaterial3<Material3f>::Name() { return "HookeMaterial3"; }
+#else
+template<> inline const char* HookeMaterial3<Material3d>::Name() { return "HookeMaterial3"; }
+template<> inline const char* HookeMaterial3<Material3f>::Name() { return "HookeMaterial3f"; }
+#endif
 
 
 }
