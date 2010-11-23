@@ -229,7 +229,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 // 				preconditioners[i]->setSystemRHVector(r);
 // 				preconditioners[i]->solveSystem();
 // 			}
-
+            preconditioners[0]->updateSystemMatrix();
             preconditioners[0]->setSystemLHVector(z);
             preconditioners[0]->setSystemRHVector(r);
             preconditioners[0]->solveSystem();
