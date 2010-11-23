@@ -70,8 +70,8 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    typedef typename Data<VecCoord> DataVecCoord;
-    typedef typename Data<VecDeriv> DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     typedef topology::PointSubset SetIndex;
     typedef helper::vector< unsigned int > SetIndexArray;
