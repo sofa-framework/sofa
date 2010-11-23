@@ -45,20 +45,20 @@ template<class Deriv, class MassType>
 class AddMToMatrixFunctor
 {
 public:
-    void operator()(defaulttype::BaseMatrix * /*mat*/, const MassType& /*mass*/, int /*pos*/, double /*fact*/)
+    void operator()(defaulttype::BaseMatrix * mat, const MassType& mass, int pos, double fact)
     {
         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
-//        const double m = mass*fact;
-//        for (unsigned int i=0;i<Deriv::size();++i)
-//            mat->add(pos+i, pos+i, m);
+        const double m = mass*fact;
+        for (unsigned int i=0; i<Deriv::size(); ++i)
+            mat->add(pos+i, pos+i, m);
     }
 
     ///Method to add non-diagonal terms
-    void operator()(defaulttype::BaseMatrix * /*mat*/, const MassType& /*mass*/, int /*posRow*/, int /*posColumn*/, double /*fact*/)
+    void operator()(defaulttype::BaseMatrix * mat, const MassType& mass, int posRow, int posColumn, double fact)
     {
-//        const double m = mass*fact;
-//        for (unsigned int i=0;i<Deriv::size();++i)
-//            mat->add(posRow+i, posColumn+i, m);
+        const double m = mass*fact;
+        for (unsigned int i=0; i<Deriv::size(); ++i)
+            mat->add(posRow+i, posColumn+i, m);
     }
 };
 
@@ -66,14 +66,14 @@ template<int N, typename Real>
 class AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >
 {
 public:
-    void operator()(defaulttype::BaseMatrix * /*mat*/, const defaulttype::Mat<N,N,Real>& /*mass*/, int /*pos*/, double /*fact*/)
+    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::Mat<N,N,Real>& mass, int pos, double fact)
     {
         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
-//        for (int i=0;i<N;++i)
-//            for (int j=0;j<N;++j)
-//        {
-//            mat->add(pos+i, pos+j, mass[i][j]*fact);
-//        }
+        for (int i=0; i<N; ++i)
+            for (int j=0; j<N; ++j)
+            {
+                mat->add(pos+i, pos+j, mass[i][j]*fact);
+            }
     }
 };
 
@@ -82,17 +82,17 @@ class AddMToMatrixFunctor< defaulttype::RigidDeriv<3,Real>, defaulttype::RigidMa
 {
 public:
     enum { N=3 };
-    void operator()(defaulttype::BaseMatrix * /*mat*/, const defaulttype::RigidMass<N,Real>& /*mass*/, int /*pos*/, double /*fact*/)
+    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
     {
         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
-//        const double m = mass.mass*fact;
-//        for (int i=0;i<N;++i)
-//            mat->add(pos+i, pos+i, m);
-//        for (int i=0;i<N;++i)
-//            for (int j=0;j<N;++j)
-//        {
-//            mat->add(pos+N+i, pos+N+j, mass.inertiaMassMatrix[i][j]*fact);
-//        }
+        const double m = mass.mass*fact;
+        for (int i=0; i<N; ++i)
+            mat->add(pos+i, pos+i, m);
+        for (int i=0; i<N; ++i)
+            for (int j=0; j<N; ++j)
+            {
+                mat->add(pos+N+i, pos+N+j, mass.inertiaMassMatrix[i][j]*fact);
+            }
     }
 };
 
@@ -101,13 +101,13 @@ class AddMToMatrixFunctor< defaulttype::RigidDeriv<2,Real>, defaulttype::RigidMa
 {
 public:
     enum { N=2 };
-    void operator()(defaulttype::BaseMatrix * /*mat*/, const defaulttype::RigidMass<N,Real>& /*mass*/, int /*pos*/, double /*fact*/)
+    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
     {
         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
-//        const double m = mass.mass*fact;
-//        for (int i=0;i<N;++i)
-//            mat->add(pos+i, pos+i, m);
-//        mat->add(pos+N, pos+N, mass.inertiaMassMatrix*fact);
+        const double m = mass.mass*fact;
+        for (int i=0; i<N; ++i)
+            mat->add(pos+i, pos+i, m);
+        mat->add(pos+N, pos+N, mass.inertiaMassMatrix*fact);
     }
 };
 
