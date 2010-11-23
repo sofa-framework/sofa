@@ -40,6 +40,7 @@
 #ifdef SOFA_DEV
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
 #include "FrameStorage.h"
+#include <../applications/plugins/frame/RigidFrameTypes.h>
 #include <../applications/plugins/frame/AffineTypes.h>
 #include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
@@ -212,6 +213,7 @@ public:
 #endif
     typedef defaulttype::StdRigidTypes<N,InReal> RigidType;
 #ifdef SOFA_DEV
+    typedef defaulttype::StdRigidFrameTypes<N,InReal> RigidFrameType;
     typedef defaulttype::StdAffineTypes<N,InReal> AffineType;
     typedef defaulttype::StdQuadraticTypes<N,InReal> QuadraticType;
 #endif
@@ -343,10 +345,10 @@ protected:
     inline void setInCoord( typename defaulttype::StdAffineTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
     inline void setInCoord( typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
 #endif
-    inline void getLocalCoord( Coord& result, const typename defaulttype::StdRigidTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
+    inline void getLocalCoord( Coord& result, const typename In::Coord& inCoord, const Coord& coord) const;
 #ifdef SOFA_DEV
-    inline void getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
-    inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
+//	inline void getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
+//	inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
 
     template<class T>
     inline typename enable_if<Equal<RigidType, T> >::type strainDeriv(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const;
@@ -357,6 +359,8 @@ protected:
 
     template<class T>
     inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(const RigidType&); // Useless parameter here to be compatible with gcc-4.0
+    template<class T>
+    inline typename enable_if<Equal<RigidFrameType, T> >::type precomputeMatrices(const RigidFrameType&); // Useless parameter here to be compatible with gcc-4.0
     template<class T>
     inline typename enable_if<Equal<AffineType, T> >::type precomputeMatrices(const AffineType&); // Useless parameter here to be compatible with gcc-4.0
     template<class T>

@@ -27,7 +27,7 @@ HEADERS += \
 	  DataTypeInfo.h \
           Frame.h \ 
           LaparoscopicRigidTypes.h \
-		  MapMapSparseMatrix.h \
+          MapMapSparseMatrix.h \
           Mat.h \
           Quat.h \
           Quat.inl \

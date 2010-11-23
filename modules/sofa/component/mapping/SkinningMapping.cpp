@@ -152,6 +152,12 @@ template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Vec
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 
+// Rigid with Rigid
+#ifndef SOFA_DOUBLE
+//template class SOFA_COMPONENT_MAPPING_API SkinningMapping< RigidFrame3dTypes, Vec3dTypes >;
+#endif //SOFA_DOUBLE
+
+
 #endif // ifdef SOFA_DEV
 
 } // namespace mapping

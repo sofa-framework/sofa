@@ -142,8 +142,8 @@ void FixedConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    if (!topology)
-        serr << "Can not find the topology." << sendl;
+//  if (!topology)
+//    serr << "Can not find the topology." << sendl;
 
     // Initialize functions and parameters
     topology::PointSubset my_subset = f_indices.getValue();

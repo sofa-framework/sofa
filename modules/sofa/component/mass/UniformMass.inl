@@ -242,11 +242,7 @@ void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& f, const DataVec
 void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v , const core::MechanicalParams* )
 #endif
 #else
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams* mparams)
-#else
-void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams* )
-#endif
+void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams* /*mparams*/)
 #endif
 {
 

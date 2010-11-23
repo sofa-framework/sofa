@@ -311,8 +311,7 @@ public:
     void operator +=(const RigidCoord<3,real>& a)
     {
         center += a.getCenter();
-        //	orientation += a.getOrientation();
-        //	orientation.normalize();
+        orientation *= a.getOrientation();
     }
 
     template<typename real2>
@@ -438,6 +437,18 @@ public:
         m[12] = (float)center[0];
         m[13] = (float)center[1];
         m[14] = (float)center[2];
+    }
+
+    /// Project a point from the child frame to the parent frame
+    Vec3 pointToParent( const Vec3& v ) const
+    {
+        return orientation.rotate(v)+center;
+    }
+
+    /// Project a point from the parent frame to the child frame
+    Vec3 pointToChild( const Vec3& v ) const
+    {
+        return orientation.inverseRotate(v-center);
     }
 
     /// compute the projection of a vector from the parent frame to the child
