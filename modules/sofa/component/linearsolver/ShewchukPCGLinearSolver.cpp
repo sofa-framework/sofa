@@ -231,12 +231,10 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     {
         sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
         sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
+        preconditioners[0]->updateSystemMatrix();
         preconditioners[0]->setSystemLHVector(d);
         preconditioners[0]->setSystemRHVector(r);
-        preconditioners[0]->freezeSystemMatrix();
         preconditioners[0]->solveSystem();
-        //Use freeze boolean to specify the preconditioner that's the fist solve of the step (for example if stepMBK is not call)
-        preconditioners[0]->updateSystemMatrix();
         sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
         sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
     }
