@@ -222,69 +222,75 @@ public:
             Base* bobjInput = NULL;
             Base* bobjOutput = NULL;
 
-            //Input
-            if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
+            if( arg != NULL )
             {
-                object1Path = "..";
-                context->serr << "Deprecated use of implicit value for input" << context->sendl;
-                context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
-                bobjInput = arg->findObject("../..");
-            }
+                //Input
+                if(arg->getAttribute("object1",NULL) == NULL && arg->getAttribute("input",NULL) == NULL)
+                {
+                    object1Path = "..";
+                    context->serr << "Deprecated use of implicit value for input" << context->sendl;
+                    context->serr << "Use now : input=\"@" << object1Path << "\" "<< context->sendl;
+                    bobjInput = arg->findObject("../..");
+                }
 
-            if(arg->getAttribute("object1",NULL) != NULL)
-            {
-                object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
-                context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
-                context->serr << "Use now : input=\"@"
-                        << object1Path
-                        << "\""<< context->sendl;
-                bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
-            }
+                if(arg->getAttribute("object1",NULL) != NULL)
+                {
+                    object1Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object1",NULL));
+                    context->serr << "Deprecated use of attribute " << "object1" << context->sendl;
+                    context->serr << "Use now : input=\"@"
+                            << object1Path
+                            << "\""<< context->sendl;
+                    bobjInput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object1", arg);
+                }
 
-            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
-            {
-                topoIn = dynamic_cast< BaseMeshTopology* >(bo);
-            }
-            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
-            {
-                bc->get(topoIn);
-            }
+                if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjInput))
+                {
+                    topoIn = dynamic_cast< BaseMeshTopology* >(bo);
+                }
+                else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjInput))
+                {
+                    bc->get(topoIn);
+                }
 
-            //Output
-            if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
-            {
-                object2Path = ".";
-                context->serr << "Deprecated use of implicit value for output" << context->sendl;
-                context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
-                bobjOutput = arg->findObject("..");
-            }
+                //Output
+                if(arg->getAttribute("object2",NULL) == NULL && arg->getAttribute("output",NULL) == NULL)
+                {
+                    object2Path = ".";
+                    context->serr << "Deprecated use of implicit value for output" << context->sendl;
+                    context->serr << "Use now : output=\"@" << object2Path << "\" "<< context->sendl;
+                    bobjOutput = arg->findObject("..");
+                }
 
-            if(arg->getAttribute("object2",NULL) != NULL)
-            {
-                object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
-                context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
-                context->serr << "Use now : output=\"@"
-                        << object2Path
-                        << "\""<< context->sendl;
-                bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
-            }
+                if(arg->getAttribute("object2",NULL) != NULL)
+                {
+                    object2Path = sofa::core::objectmodel::ObjectRef::convertFromXMLPathToSofaScenePath(arg->getAttribute("object2",NULL));
+                    context->serr << "Deprecated use of attribute " << "object2" << context->sendl;
+                    context->serr << "Use now : output=\"@"
+                            << object2Path
+                            << "\""<< context->sendl;
+                    bobjOutput = sofa::core::objectmodel::ObjectRef::parseFromXMLPath("object2", arg);
+                }
 
-            if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
-            {
-                topoOut = dynamic_cast< BaseMeshTopology* >(bo);
-            }
-            else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
-            {
-                bc->get(topoOut);
-            }
+                if (BaseObject* bo = dynamic_cast< BaseObject* >(bobjOutput))
+                {
+                    topoOut = dynamic_cast< BaseMeshTopology* >(bo);
+                }
+                else if (core::objectmodel::BaseContext* bc = dynamic_cast< core::objectmodel::BaseContext* >(bobjOutput))
+                {
+                    bc->get(topoOut);
+                }
 
-            /////
+                /////
+            }
 
             if(topoIn == NULL && topoOut == NULL)
 #endif // SOFA_DEPRECATE_OLD_API
             {
-                topoIn = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("input", arg);
-                topoOut = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("output", arg);
+                if(arg)
+                {
+                    topoIn = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("input", arg);
+                    topoOut = sofa::core::objectmodel::ObjectRef::parse< BaseMeshTopology >("output", arg);
+                }
             }
 
             obj = new T( (arg?topoIn:NULL), (arg?topoOut:NULL));

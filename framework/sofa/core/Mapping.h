@@ -423,8 +423,11 @@ public:
             if(stin == NULL && stout == NULL)
 #endif // SOFA_DEPRECATE_OLD_API
             {
-                stin = sofa::core::objectmodel::ObjectRef::parse< State<In> >("input", arg);
-                stout = sofa::core::objectmodel::ObjectRef::parse< State<Out> >("output", arg);
+                if(arg)
+                {
+                    stin = sofa::core::objectmodel::ObjectRef::parse< State<In> >("input", arg);
+                    stout = sofa::core::objectmodel::ObjectRef::parse< State<Out> >("output", arg);
+                }
             }
 
             obj = new T( (arg?stin:NULL), (arg?stout:NULL));
