@@ -242,7 +242,7 @@ void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& f, const DataVec
 void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v , const core::MechanicalParams* )
 #endif
 #else
-void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams* /*mparams*/)
+void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams* mparams)
 #endif
 {
 
