@@ -106,8 +106,8 @@ public:
     void projectPosition(DataVecCoord& xData, const core::MechanicalParams* mparams);
     void projectJacobianMatrix(DataMatrixDeriv& cData, const core::MechanicalParams* mparams);
 
-    void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset);
-    void applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset);
+    void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
+    void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
     // Handle topological changes
     virtual void handleTopologyChange();

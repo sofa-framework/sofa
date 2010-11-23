@@ -197,7 +197,7 @@ public:
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
     /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseMatrix* /*matrix*/, unsigned int & /*offset*/)
+    virtual void applyConstraint(defaulttype::BaseMatrix* /*matrix*/, unsigned int /*offset*/)
     {
     }
 
@@ -211,7 +211,7 @@ public:
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
     /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, unsigned int & /*offset*/)
+    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, unsigned int /*offset*/)
     {
     }
 

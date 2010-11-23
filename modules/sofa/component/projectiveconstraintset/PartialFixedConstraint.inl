@@ -255,7 +255,7 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(DataMatrixDeriv& c
 
 // Matrix Integration interface
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
+void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
@@ -278,7 +278,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix 
 }
 
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
+void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();

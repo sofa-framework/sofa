@@ -250,7 +250,7 @@ void FixedConstraint<DataTypes>::projectPosition(DataVecCoord& /*xData*/, const 
 
 // Matrix Integration interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
+void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
@@ -268,7 +268,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
+void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();

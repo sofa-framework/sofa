@@ -32,9 +32,6 @@
 
 #include <sofa/component/topology/PointSubset.h>
 
-
-
-
 namespace sofa
 {
 
@@ -376,6 +373,8 @@ AttachConstraint<DataTypes>::AttachConstraint()
 //     f_indices1.endEdit();
 //     f_indices2.beginEdit()->push_back(0);
 //     f_indices2.endEdit();
+
+    std::cout << "Hey\n";
 }
 
 template <class DataTypes>
@@ -398,6 +397,8 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
 //     f_indices1.endEdit();
 //     f_indices2.beginEdit()->push_back(0);
 //     f_indices2.endEdit();
+
+    std::cout << "Hey 2  params\n";
 }
 
 #if 0
@@ -515,7 +516,7 @@ void AttachConstraint<Rigid3dTypes>::calcRestRotations()
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2)
+void AttachConstraint<DataTypes>::projectPosition(DataVecCoord& res1_d, DataVecCoord& res2_d, const core::MechanicalParams * /*mparams*/)
 {
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
@@ -525,12 +526,14 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
 
+    VecCoord &res1 = *res1_d.beginEdit();
+    VecCoord &res2 = *res2_d.beginEdit();
+
     // update active flags
     activeFlags.resize(indices2.size());
     if (last)
         lastDist.resize(indices2.size());
-    //sout << "lastDir="<<f_lastDir.getValue()<<sendl;
-    //sout << "lastPos="<<f_lastPos.getValue()<<sendl;
+
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
@@ -564,50 +567,73 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
         Coord p = res1[indices1[i]];
         if (activeFlags[i])
         {
-            if (log) sout << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]"<<sendl;
-            //res2[indices2[i]] = res1[indices1[i]];
+            if (log)
+                sout << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]"<<sendl;
+
             projectPosition(p, res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
         }
         else if (clamp)
         {
             DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
-            if (log) sout << "AttachConstraint: x2["<<indices2[i]<<"] = lastPos"<<sendl;
+
+            if (log)
+                sout << "AttachConstraint: x2["<<indices2[i]<<"] = lastPos"<<sendl;
+
             projectPosition(p, res2[indices2[i]], freeRotations, i);
         }
     }
+
+    res1_d.endEdit();
+    res2_d.endEdit();
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectVelocity(VecDeriv& res1, VecDeriv& res2)
+void AttachConstraint<DataTypes>::projectVelocity(DataVecDeriv& res1_d, DataVecDeriv& res2_d, const core::MechanicalParams * /*mparams*/)
 {
+    VecDeriv &res1 = *res1_d.beginEdit();
+    VecDeriv &res2 = *res2_d.beginEdit();
+
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
+
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
-        if (i < activeFlags.size()) active = activeFlags[i];
-        //res2[indices2[i]] = res1[indices1[i]];
+
+        if (i < activeFlags.size())
+            active = activeFlags[i];
+
         if (active)
         {
-            if (log) sout << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]"<<sendl;
+            if (log)
+                sout << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]"<<sendl;
+
             projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
         }
         else if (clamp)
         {
-            if (log) sout << "AttachConstraint: v2["<<indices2[i]<<"] = 0"<<sendl;
+            if (log)
+                sout << "AttachConstraint: v2["<<indices2[i]<<"] = 0"<<sendl;
+
             Deriv v = Deriv();
             projectVelocity(v, res2[indices2[i]], freeRotations, i);
         }
     }
+
+    res1_d.endEdit();
+    res2_d.endEdit();
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2)
+void AttachConstraint<DataTypes>::projectResponse(DataVecDeriv& res1_d, DataVecDeriv& res2_d, const core::MechanicalParams * /*mparams*/)
 {
+    VecDeriv &res1 = *res1_d.beginEdit();
+    VecDeriv &res2 = *res2_d.beginEdit();
+
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     const bool twoway = f_twoWay.getValue();
@@ -615,38 +641,61 @@ void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
+
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
-        if (i < activeFlags.size()) active = activeFlags[i];
+
+        if (i < activeFlags.size())
+            active = activeFlags[i];
+
         if (active)
         {
             if (log)
             {
-                if (twoway) sout << "AttachConstraint: r2["<<indices2[i]<<"] = r1["<<indices2[i]<<"] = (r2["<<indices2[i]<<"] + r2["<<indices2[i]<<"])"<<sendl;
-                else        sout << "AttachConstraint: r2["<<indices2[i]<<"] = 0"<<sendl;
+                if (twoway)
+                    sout << "AttachConstraint: r2["<<indices2[i]<<"] = r1["<<indices2[i]<<"] = (r2["<<indices2[i]<<"] + r2["<<indices2[i]<<"])"<<sendl;
+                else
+                    sout << "AttachConstraint: r2["<<indices2[i]<<"] = 0"<<sendl;
             }
+
             projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i);
-            //res2[indices2[i]] = Deriv();
+
             if (log)
                 sout << "AttachConstraint: final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<""<<sendl;
         }
         else if (clamp)
         {
-            if (log) sout << "AttachConstraint: r2["<<indices2[i]<<"] = 0"<<sendl;
+            if (log)
+                sout << "AttachConstraint: r2["<<indices2[i]<<"] = 0"<<sendl;
+
             Deriv v = Deriv();
             projectResponse(v, res2[indices2[i]], freeRotations, false, i);
+
             if (log)
                 sout << "AttachConstraint: final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<""<<sendl;
         }
     }
+
+    res1_d.endEdit();
+    res2_d.endEdit();
 }
+
 
 // Matrix Integration interface
 template <class DataTypes>
-void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
+void AttachConstraint<DataTypes>::applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams * /*mparams*/)
 {
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+    if (f_twoWay.getValue())
+        return;
+
+    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate2);
+    if (!r)
+        return;
+
+    defaulttype::BaseMatrix *mat = r.matrix;
+    unsigned int offset = r.offset;
+
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
@@ -654,10 +703,15 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
+
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
-        if (!clamp && i < activeFlags.size() && !activeFlags[i]) continue;
-        if (log) sout << "AttachConstraint: apply in matrix column/row "<<(*it)<<""<<sendl;
+        if (!clamp && i < activeFlags.size() && !activeFlags[i])
+            continue;
+
+        if (log)
+            sout << "AttachConstraint: apply in matrix column/row "<<(*it)<<""<<sendl;
+
         if (NCLast != NC && (i>=activeFlags.size() || !activeFlags[i+1]))
         {
             // Reset Fixed Row and Col
@@ -679,20 +733,34 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
     }
 }
 
+
 template <class DataTypes>
-void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
+void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams * /*mparams*/)
 {
-    sout << "applyConstraint in Vector with offset = " << offset << sendl;
+    if (f_twoWay.getValue())
+        return;
+
+    int o = matrix->getGlobalOffset(this->mstate2);
+    if (o < 0)
+        return;
+
+    unsigned int offset = (unsigned int)o;
+
+    if (this->f_printLog.getValue())
+        sout << "applyConstraint in Vector with offset = " << offset << sendl;
 
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
     const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
-    unsigned int i=0;
+    unsigned int i = 0;
     const bool clamp = f_clamp.getValue();
+
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
-        if (!clamp && i < activeFlags.size() && !activeFlags[i]) continue;
+        if (!clamp && i < activeFlags.size() && !activeFlags[i])
+            continue;
+
         if (NCLast != NC && (i>=activeFlags.size() || !activeFlags[i+1]))
         {
             for (unsigned int c=0; c<NCLast; ++c)
@@ -712,6 +780,7 @@ void AttachConstraint<DataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;
+
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     const VecCoord& x1 = *this->mstate1->getX();
