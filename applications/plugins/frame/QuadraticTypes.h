@@ -471,6 +471,20 @@ public:
                   return orientation.inverseRotate ( v );
                 }
     */
+    /// Project a point from the child frame to the parent frame
+    Vec3 pointToParent( const Vec3& v ) const
+    {
+        cerr<<"WARNING: QuadraticCoord<3, real>::pointToParent not implemented, returns fake result"<<endl;
+        return v + center;
+    }
+
+    /// Project a point from the parent frame to the child frame
+    Vec3 pointToChild( const Vec3& v ) const
+    {
+        cerr<<"WARNING: QuadraticCoord<3, real>::pointToChild not implemented, returns fake result"<<endl;
+        return (v-center);
+    }
+
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const QuadraticCoord<3, real>& v )
     {

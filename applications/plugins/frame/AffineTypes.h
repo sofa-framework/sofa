@@ -478,6 +478,21 @@ public:
                   return orientation.inverseRotate ( v );
                 }
     */
+    /// Project a point from the child frame to the parent frame
+    Vec3 pointToParent( const Vec3& v ) const
+    {
+        return getAffine()*v + getCenter();
+    }
+
+    /// Project a point from the parent frame to the child frame
+    Vec3 pointToChild( const Vec3& v ) const
+    {
+        Mat33 affineInv;
+        affineInv.invert( getAffine() );
+        return affineInv * (v-center);
+    }
+
+
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const AffineCoord<3, real>& v )
     {
