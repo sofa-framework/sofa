@@ -59,20 +59,53 @@ public:
     typedef Vec<Nc,Real> VecDOFs;
     typedef vector<double> VD;
     enum { InDerivDim=Nc};//StdRigidTypes<3,Real>::deriv_total_size };
+    Real mass;
     MatMass inertiaMatrix;	      // Inertia matrix of the object
+    MatMass inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
     MatMass invInertiaMatrix;	  // inverse of inertiaMatrix
+    MatMass invInertiaMassMatrix; // inverse of inertiaMassMatrix
 
     FrameMass ( Real m=1 )
     {
-        inertiaMatrix[0][0] = inertiaMatrix[2][2] = inertiaMatrix[1][1] = m;
-        for(int i=3; i<Nc; i++)
-            inertiaMatrix[i][i] = 1;
+        mass = m;
+        //recalc();
     }
 
+    void operator= ( Real m )
+    {
+        mass = m;
+        //recalc();
+    }
+
+    // operator to cast to const Real
+    operator const Real() const
+    {
+        return mass;
+    }
 
     void recalc()
     {
+        inertiaMassMatrix = inertiaMatrix * mass;
         invInertiaMatrix.invert ( inertiaMatrix );
+        /*
+        bool nullMatrix = true;
+        for ( int i = 0; i < 6; i++ )
+          for ( int j = 0; j < 6; j++ )
+            if ( invInertiaMatrix[i][j] != 0 ) nullMatrix = false;
+        if ( nullMatrix )
+          for ( int i = 0; i < 6; i++ )
+            invInertiaMatrix[i][i] = 1.0;
+        	*/
+        invInertiaMassMatrix.invert ( inertiaMassMatrix );
+        /*
+        nullMatrix = true;
+        for ( int i = 0; i < 6; i++ )
+          for ( int j = 0; j < 6; j++ )
+            if ( invInertiaMassMatrix[i][j] != 0 ) nullMatrix = false;
+        if ( nullMatrix )
+          for ( int i = 0; i < 6; i++ )
+            invInertiaMassMatrix[i][i] = mass;
+        	*/
     }
 
     /// compute ma = M*a
@@ -86,7 +119,8 @@ public:
         va[4] = a.getVCenter() [1];
         va[5] = a.getVCenter() [2];
 
-        vma = inertiaMatrix * va;
+        vma = inertiaMassMatrix * va;
+        //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
         RigidDeriv ma;
         ma.getVOrientation() [0] = vma[0];
@@ -95,9 +129,6 @@ public:
         ma.getVCenter() [0] = vma[3];
         ma.getVCenter() [1] = vma[4];
         ma.getVCenter() [2] = vma[5];
-//            std::cerr << "inertiaMatrix: " << inertiaMatrix << std::endl;
-//            std::cerr << "a: " << va << std::endl;
-//            std::cerr << "Ma: " << vma << std::endl;
 
         return ma;
     }
@@ -113,8 +144,8 @@ public:
         vma[4] = f.getVCenter() [1];
         vma[5] = f.getVCenter() [2];
 
-        va = invInertiaMatrix * vma;
-//            std::cerr << "invInertiaMatrix: " << invInertiaMatrix << std::endl;
+        va = invInertiaMassMatrix * vma;
+        //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
         RigidDeriv a;
         a.getVOrientation() [0] = va[0];
         a.getVOrientation() [1] = va[1];
@@ -143,8 +174,8 @@ public:
         va[10] = a.getVCenter() [1];
         va[11] = a.getVCenter() [2];
 
-        vma = inertiaMatrix * va;
-        //std::cerr << "inertiaMatrix: " << inertiaMatrix << std::endl;
+        vma = inertiaMassMatrix * va;
+        //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
         AffineDeriv ma;
         ma.getVAffine() [0][0] = vma[0];
@@ -180,8 +211,8 @@ public:
         vma[10] = f.getVCenter() [1];
         vma[11] = f.getVCenter() [2];
 
-        va = invInertiaMatrix * vma;
-        //std::cerr << "invInertiaMatrix: " << invInertiaMatrix << std::endl;
+        va = invInertiaMassMatrix * vma;
+        //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
         AffineDeriv a;
         a.getVAffine() [0][0] = va[0];
         a.getVAffine() [0][1] = va[1];
@@ -211,8 +242,8 @@ public:
         va[3*dim+1] = a.getVCenter() [1];
         va[3*dim+2] = a.getVCenter() [2];
 
-        vma = inertiaMatrix * va;
-        //std::cerr << "inertiaMatrix: " << inertiaMatrix << std::endl;
+        vma = inertiaMassMatrix * va;
+        //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
         QuadraticDeriv ma;
         for (unsigned int i = 0; i < 3; ++i)
@@ -237,8 +268,8 @@ public:
         vma[3*dim+1] = f.getVCenter() [1];
         vma[3*dim+2] = f.getVCenter() [2];
 
-        va = invInertiaMatrix * vma;
-        //std::cerr << "invInertiaMatrix: " << invInertiaMatrix << std::endl;
+        va = invInertiaMassMatrix * vma;
+        //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
 
         QuadraticDeriv a;
         for (unsigned int i = 0; i < 3; ++i)
@@ -253,22 +284,26 @@ public:
 
     void operator *= ( Real fact )
     {
-        inertiaMatrix *= fact;
-        invInertiaMatrix /= fact;
+        mass *= fact;
+        inertiaMassMatrix *= fact;
+        invInertiaMassMatrix /= fact;
     }
     void operator /= ( Real fact )
     {
-        inertiaMatrix /= fact;
-        invInertiaMatrix *= fact;
+        mass /= fact;
+        inertiaMassMatrix /= fact;
+        invInertiaMassMatrix *= fact;
     }
 
     inline friend std::ostream& operator << ( std::ostream& out, const FrameMass<3, Nc, real>& m )
     {
+        out<<m.mass;
         out<<" "<<m.inertiaMatrix;
         return out;
     }
     inline friend std::istream& operator >> ( std::istream& in, FrameMass<3, Nc, real>& m )
     {
+        in>>m.mass;
         in>>m.inertiaMatrix;
         return in;
     }

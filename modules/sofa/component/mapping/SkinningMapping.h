@@ -339,9 +339,6 @@ protected:
     void ComputeMb(Mat33& M, const Quat& q) const;
     void ComputeMc(Mat33& M, const Quat& q) const;
     void ComputeMw(Mat33& M, const Quat& q) const;
-    void StrainDeriv_rigid(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const;
-    void StrainDeriv_affine(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
-    void StrainDeriv_quadratic(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
 
     // Avoid multiple specializations
     inline void setInCoord( typename defaulttype::StdRigidTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
@@ -352,6 +349,13 @@ protected:
 #ifdef SOFA_DEV
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
     inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
+
+    template<class T>
+    inline typename enable_if<Equal<RigidType, T> >::type strainDeriv(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const;
+    template<class T>
+    inline typename enable_if<Equal<AffineType, T> >::type strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
+    template<class T>
+    inline typename enable_if<Equal<QuadraticType, T> >::type strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
 
     template<class T>
     inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(const RigidType&); // Useless parameter here to be compatible with gcc-4.0
