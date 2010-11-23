@@ -29,7 +29,6 @@
 
 #include <sofa/component/container/MechanicalObject.h>
 #include "AffineTypes.h"
-#include "ElastonTypes.h"
 #include "QuadraticTypes.h"
 #include "initFrame.h"
 
@@ -47,12 +46,10 @@ using namespace sofa::defaulttype;
 #if defined(WIN32) && !defined(FRAME_FRAMEMECHANICALOBJECT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3dTypes>;
-extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Elaston3dTypes>;
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3fTypes>;
-extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Elaston3fTypes>;
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Quadratic3fTypes>;
 #endif
 #endif

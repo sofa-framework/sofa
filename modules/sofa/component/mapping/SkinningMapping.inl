@@ -410,7 +410,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
             for ( unsigned int j=0; j<xfrom.size(); j++ )
             {
                 m_weights[j][i] = 0.0;
-                m_dweight[j][i] = Coord();
+                m_dweight[j][i] = GeoCoord();
                 m_ddweight[j][i].fill(0);
             }
             Vec3d r1r2, r1p;
@@ -449,7 +449,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
                 else
                 {
                     m_weights[indexFrom][j] = 0xFFF;
-                    m_dweight[indexFrom][j] = Coord();
+                    m_dweight[indexFrom][j] = GeoCoord();
                 }
 
             }
@@ -466,7 +466,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
             for ( unsigned int j=0; j<xfrom.size(); j++ )
             {
                 m_weights[j][i] = 0.0;
-                m_dweight[j][i] = Coord();
+                m_dweight[j][i] = GeoCoord();
             }
             Vec3d r1r2, r1p;
             double wi;
@@ -500,7 +500,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
             for ( unsigned int j=0; j<xfrom.size(); j++ )
             {
                 m_weights[j][i] = 0.0;
-                m_dweight[j][i] = Coord();
+                m_dweight[j][i] = GeoCoord();
             }
             // Get the 4 nearest DOFs.
             vector<unsigned int> sortedFrames;
@@ -1063,7 +1063,7 @@ void SkinningMapping<TIn, TOut>::computeWeight( VVD& w, VecVecCoord& dw, const C
             else
             {
                 w[i][0] = 0xFFF;
-                dw[i][0] = Coord();
+                dw[i][0] = GeoCoord();
             }
         }
         break;
@@ -1142,7 +1142,7 @@ void SkinningMapping<TIn, TOut>::updateDataAfterInsertion()
                     if ( this->distances[i][j] == -1.0)
                     {
                         m_weights[i][j] = 0.0;
-                        dw[i][j] = Coord();
+                        dw[i][j] = GeoCoord();
                     }
                     else
                     {
@@ -1151,12 +1151,12 @@ void SkinningMapping<TIn, TOut>::updateDataAfterInsertion()
                           if( this->distances[i][j] < maximizeWeightDist)
                           {
                             m_weights[i][j] = 0xFFF;
-                            dw[i][j] = Coord();
+                            dw[i][j] = GeoCoord();
                           }
                           else if( this->distances[i][j] > radius[i])
                           {
                             m_weights[i][j] = 0.0;
-                            dw[i][j] = Coord();
+                            dw[i][j] = GeoCoord();
                           }
                           else
                           {
@@ -1176,7 +1176,7 @@ void SkinningMapping<TIn, TOut>::updateDataAfterInsertion()
                           if (m_weights[i][j] < 0)
                           {
                             m_weights[i][j] = 0.0;
-                            dw[i][j] = Coord();
+                            dw[i][j] = GeoCoord();
                           }
                           else
                             dw[i][j] = - this->distGradients[i][j] / (this->distances[i][j]*this->distances[i][j]*this->distances[i][j]) * 2.0;
@@ -1186,7 +1186,7 @@ void SkinningMapping<TIn, TOut>::updateDataAfterInsertion()
                 else
                 {
                     m_weights[i][j] = 0xFFF;
-                    dw[i][j] = Coord();
+                    dw[i][j] = GeoCoord();
                 }
             }
         }

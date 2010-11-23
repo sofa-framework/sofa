@@ -235,10 +235,10 @@ void UniformMass<DataTypes, MassType>::addGravityToV(DataVecDeriv& d_v, const co
 }
 
 template <class DataTypes, class MassType>
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v , const core::MechanicalParams* )
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v , const core::MechanicalParams* mparams)
 #else
-void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams* /*mparams*/)
+void UniformMass<DataTypes, MassType>::addForce ( DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ , const core::MechanicalParams*)
 #endif
 {
 

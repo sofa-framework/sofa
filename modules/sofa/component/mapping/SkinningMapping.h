@@ -41,7 +41,6 @@
 #include <sofa/component/topology/HexahedronGeodesicalDistance.h>
 #include "FrameStorage.h"
 #include <../applications/plugins/frame/AffineTypes.h>
-//#include <../applications/plugins/frame/ElastonTypes.h>
 #include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
 
@@ -215,7 +214,6 @@ public:
 #ifdef SOFA_DEV
     typedef defaulttype::StdAffineTypes<N,InReal> AffineType;
     typedef defaulttype::StdQuadraticTypes<N,InReal> QuadraticType;
-//  typedef defaulttype::StdElastonTypes<Coord, Deriv, Real> ElastonType;
 #endif
 protected:
     vector<Coord> initPos; // pos: point coord in the local reference frame of In[i].
