@@ -25,7 +25,6 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
            AffineTypes.h \
-           ElastonTypes.h \
            FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
@@ -46,6 +45,8 @@ HEADERS += \
             NewHookeMaterial.inl \
 #            NewSkinningMapping.h \
 #            NewSkinningMapping.inl \
+           #PrimitiveSkinningMapping.h \
+           #PrimitiveSkinningMapping.inl \
            QuadraticTypes.h
 
 SOURCES += \
@@ -59,4 +60,5 @@ SOURCES += \
            FrameSpringForceField2.cpp \
             NewHookeMaterial.cpp \
  #           NewSkinningMapping.cpp \
+           #PrimitiveSkinningMapping.cpp \
            initFrame.cpp
