@@ -51,6 +51,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(Material, TMaterialTypes), Inherited);
 
     typedef TMaterialTypes MaterialTypes;
+    typedef typename MaterialTypes::Real Real;          ///< Real
     typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
     typedef typename MaterialTypes::ElStr ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
@@ -79,6 +80,8 @@ public:
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange ) = 0;
 
 };
+
+
 
 template<int D, class R>
 struct DefaultMaterialTypes

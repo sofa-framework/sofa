@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_INL
+#define SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_INL
+
 #include "NewHookeMaterial.h"
 
 
@@ -159,4 +162,7 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecElStr& stress, VecStrStr
 } // namespace component
 
 } // namespace sofa
+
+#endif
+
 
