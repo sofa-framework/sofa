@@ -1353,7 +1353,8 @@ void SkinningMapping<TIn, TOut>::ComputeMw(Mat33& M, const Quat& q) const
 
 //rigid
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>:: StrainDeriv_rigid(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const
+template<class T>
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const
 {
     unsigned int k,m;
     Mat33 D; Mat33 FT=F.transposed();
@@ -1369,7 +1370,8 @@ void SkinningMapping<TIn, TOut>:: StrainDeriv_rigid(Mat33 Ma,Mat33 Mb,Mat33 Mc,M
 
 //affine
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::StrainDeriv_affine(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
+template<class T>
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
 {
     unsigned int k,l,m;
 // stretch
@@ -1386,7 +1388,8 @@ void SkinningMapping<TIn, TOut>::StrainDeriv_affine(Vec3 dw,MatInAtx3 At,Mat33 F
 
 // quadratic
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::StrainDeriv_quadratic(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
+template<class T>
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
 {
     unsigned int k,l,m;
 // stretch
@@ -1874,7 +1877,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             ComputeMw( Mw, rot);
 
             Mat67 dE;
-            dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,F,dE);
+            dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,dWeight,At,F,dE);
             B=dE*L[idxReps];
 
             if(useElastons.getValue())
@@ -1890,18 +1893,18 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
 
                 Mat66 S;
                 for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][9]=B[k][m];
-                dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,S_x,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][0]=S[k][m];
-                dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,S_y,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][1]=S[k][m];
-                dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,dWeight,At,S_z,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][2]=S[k][m];
+                dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,dWeight,At,S_x,dE); strainDeriv<In>(Ma,Mb,Mc,Mw,ddx,Stx,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][0]=S[k][m];
+                dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,dWeight,At,S_y,dE); strainDeriv<In>(Ma,Mb,Mc,Mw,ddy,Sty,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][1]=S[k][m];
+                dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,dWeight,At,S_z,dE); strainDeriv<In>(Ma,Mb,Mc,Mw,ddz,Stz,F,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][2]=S[k][m];
 
                 // extended elastons
                 {
-                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,S_x,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][3]=S[k][m];
-                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,S_y,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][4]=S[k][m];
-                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,S_z,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][5]=S[k][m];
-                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,S_y,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,S_x,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][6]=S[k][m];
-                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddy,Sty,S_z,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,S_y,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][7]=S[k][m];
-                    dE.fill(0); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddz,Stz,S_x,dE); StrainDeriv_rigid(Ma,Mb,Mc,Mw,ddx,Stx,S_z,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][8]=S[k][m];
+                    dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,ddx,Stx,S_x,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][3]=S[k][m];
+                    dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,ddy,Sty,S_y,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][4]=S[k][m];
+                    dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,ddz,Stz,S_z,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][5]=S[k][m];
+                    dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,ddx,Stx,S_y,dE); strainDeriv<In>(Ma,Mb,Mc,Mw,ddy,Sty,S_x,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][6]=S[k][m];
+                    dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,ddy,Sty,S_z,dE); strainDeriv<In>(Ma,Mb,Mc,Mw,ddz,Stz,S_y,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][7]=S[k][m];
+                    dE.fill(0); strainDeriv<In>(Ma,Mb,Mc,Mw,ddz,Stz,S_x,dE); strainDeriv<In>(Ma,Mb,Mc,Mw,ddx,Stx,S_z,dE); S=dE*L[idxReps];	for(k=0; k<6; k++) for(m=0; m<6; m++) Be[m][k][8]=S[k][m];
                 }
 
             }
@@ -2051,7 +2054,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             Mat6xIn& B = this->B[idxReps][i];
             const Vec3& dWeight = dw[idxReps][i];
             const Mat33& At = this->Atilde[idxReps][i];
-            B.fill(0); StrainDeriv_affine(dWeight,At,F,B);
+            B.fill(0); strainDeriv<In>(dWeight,At,F,B);
 
             if(useElastons.getValue())
             {
@@ -2066,18 +2069,18 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
 
                 Mat6xIn S;
                 for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][9]=B[k][m];
-                S.fill(0); StrainDeriv_affine(dWeight,At,S_x,S); StrainDeriv_affine(ddx,Stx,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][0]=S[k][m];
-                S.fill(0); StrainDeriv_affine(dWeight,At,S_y,S); StrainDeriv_affine(ddy,Sty,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][1]=S[k][m];
-                S.fill(0); StrainDeriv_affine(dWeight,At,S_z,S); StrainDeriv_affine(ddz,Stz,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][2]=S[k][m];
+                S.fill(0); strainDeriv<In>(dWeight,At,S_x,S); strainDeriv<In>(ddx,Stx,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][0]=S[k][m];
+                S.fill(0); strainDeriv<In>(dWeight,At,S_y,S); strainDeriv<In>(ddy,Sty,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][1]=S[k][m];
+                S.fill(0); strainDeriv<In>(dWeight,At,S_z,S); strainDeriv<In>(ddz,Stz,F,S); for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][2]=S[k][m];
 
                 // extended elastons
                 {
-                    S.fill(0); StrainDeriv_affine(ddx,Stx,S_x,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][3]=S[k][m];
-                    S.fill(0); StrainDeriv_affine(ddy,Sty,S_y,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][4]=S[k][m];
-                    S.fill(0); StrainDeriv_affine(ddz,Stz,S_z,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][5]=S[k][m];
-                    S.fill(0); StrainDeriv_affine(ddx,Stx,S_y,S); StrainDeriv_affine(ddy,Sty,S_x,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][6]=S[k][m];
-                    S.fill(0); StrainDeriv_affine(ddy,Sty,S_z,S); StrainDeriv_affine(ddz,Stz,S_y,S); 	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][7]=S[k][m];
-                    S.fill(0); StrainDeriv_affine(ddz,Stz,S_x,S); StrainDeriv_affine(ddx,Stx,S_z,S); 	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][8]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddx,Stx,S_x,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][3]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddy,Sty,S_y,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][4]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddz,Stz,S_z,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][5]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddx,Stx,S_y,S); strainDeriv<In>(ddy,Sty,S_x,S);	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][6]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddy,Sty,S_z,S); strainDeriv<In>(ddz,Stz,S_y,S); 	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][7]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddz,Stz,S_x,S); strainDeriv<In>(ddx,Stx,S_z,S); 	for(k=0; k<6; k++) for(m=0; m<12; m++) Be[m][k][8]=S[k][m];
                 }
             }
 
@@ -2219,7 +2222,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             Mat6xIn& B = this->B[idxReps][i];
             const Vec3& dWeight = dw[idxReps][i];
             const MatInAtx3& At = this->Atilde[idxReps][i];
-            B.fill(0); StrainDeriv_quadratic(dWeight,At,F,B);
+            B.fill(0); strainDeriv<In>(dWeight,At,F,B);
 
 
             if(useElastons.getValue())
@@ -2235,18 +2238,18 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
                 Mat6xIn S;
 
                 for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][9]=B[k][m];
-                S.fill(0); StrainDeriv_quadratic(dWeight,At,S_x,S); StrainDeriv_quadratic(ddx,Stx,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][0]=S[k][m];
-                S.fill(0); StrainDeriv_quadratic(dWeight,At,S_y,S); StrainDeriv_quadratic(ddy,Sty,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][1]=S[k][m];
-                S.fill(0); StrainDeriv_quadratic(dWeight,At,S_z,S); StrainDeriv_quadratic(ddz,Stz,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][2]=S[k][m];
+                S.fill(0); strainDeriv<In>(dWeight,At,S_x,S); strainDeriv<In>(ddx,Stx,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][0]=S[k][m];
+                S.fill(0); strainDeriv<In>(dWeight,At,S_y,S); strainDeriv<In>(ddy,Sty,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][1]=S[k][m];
+                S.fill(0); strainDeriv<In>(dWeight,At,S_z,S); strainDeriv<In>(ddz,Stz,F,S); for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][2]=S[k][m];
 
                 // extended elastons
                 {
-                    S.fill(0); StrainDeriv_quadratic(ddx,Stx,S_x,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][3]=S[k][m];
-                    S.fill(0); StrainDeriv_quadratic(ddy,Sty,S_y,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][4]=S[k][m];
-                    S.fill(0); StrainDeriv_quadratic(ddz,Stz,S_z,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][5]=S[k][m];
-                    S.fill(0); StrainDeriv_quadratic(ddx,Stx,S_y,S); StrainDeriv_quadratic(ddy,Sty,S_x,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][6]=S[k][m];
-                    S.fill(0); StrainDeriv_quadratic(ddy,Sty,S_z,S); StrainDeriv_quadratic(ddz,Stz,S_y,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][7]=S[k][m];
-                    S.fill(0); StrainDeriv_quadratic(ddz,Stz,S_x,S); StrainDeriv_quadratic(ddx,Stx,S_z,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][8]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddx,Stx,S_x,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][3]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddy,Sty,S_y,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][4]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddz,Stz,S_z,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][5]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddx,Stx,S_y,S); strainDeriv<In>(ddy,Sty,S_x,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][6]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddy,Sty,S_z,S); strainDeriv<In>(ddz,Stz,S_y,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][7]=S[k][m];
+                    S.fill(0); strainDeriv<In>(ddz,Stz,S_x,S); strainDeriv<In>(ddx,Stx,S_z,S);	for(k=0; k<6; k++) for(m=0; m<30; m++) Be[m][k][8]=S[k][m];
                 }
             }
 
