@@ -237,7 +237,7 @@ void ForceField<DataTypes>::addBToMatrix(const sofa::core::behavior::MultiMatrix
 template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
 {
-    serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
+//    serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
 }
 
 

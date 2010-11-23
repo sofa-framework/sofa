@@ -83,7 +83,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(Mu
 template<class DataTypes>
 struct PairConstraintProjectResponseTask
 {
-    void operator()(   PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx1,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx2, const MechanicalParams* mparams)
+    void operator()(PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx1,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx2, const MechanicalParams* mparams)
     {
         c->projectResponse(dx1.access(), dx2.access(), mparams);
     }
@@ -92,7 +92,7 @@ struct PairConstraintProjectResponseTask
 template<class DataTypes>
 struct PairConstraintProjectVelocityTask
 {
-    void operator()(   PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v1, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v2, const MechanicalParams* mparams)
+    void operator()(PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v1, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v2, const MechanicalParams* mparams)
     {
         c->projectVelocity(v1.access(), v2.access(), mparams);
     }
@@ -101,7 +101,7 @@ struct PairConstraintProjectVelocityTask
 template<class DataTypes>
 struct PairConstraintProjectPositionTask
 {
-    void operator()(   PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x1, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x2, const MechanicalParams* mparams)
+    void operator()(PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x1, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x2, const MechanicalParams* mparams)
     {
         c->projectPosition(x1.access(), x2.access(), mparams);
     }
@@ -157,30 +157,6 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(MultiVec
 #endif /* SOFA_SMP */
             projectPosition(*xId[mstate1].write(), *xId[mstate2].write(), mparams);
     }
-}
-
-template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(DataVecDeriv& dx1, DataVecDeriv& dx2, const MechanicalParams* /*mparams*/)
-{
-    projectResponse(*dx1.beginEdit(), *dx2.beginEdit());
-    dx1.endEdit();
-    dx2.endEdit();
-}
-
-template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(DataVecDeriv& v1, DataVecDeriv& v2, const MechanicalParams* /*mparams*/)
-{
-    projectVelocity(*v1.beginEdit(), *v2.beginEdit());
-    v1.endEdit();
-    v2.endEdit();
-}
-
-template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(DataVecCoord& x1, DataVecCoord& x2, const MechanicalParams* /*mparams*/)
-{
-    projectPosition(*x1.beginEdit(), *x2.beginEdit());
-    x1.endEdit();
-    x2.endEdit();
 }
 
 } // namespace behavior

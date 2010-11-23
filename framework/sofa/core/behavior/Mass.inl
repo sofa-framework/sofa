@@ -217,7 +217,13 @@ double Mass<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/ ) const
 template<class DataTypes>
 void Mass<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/)
 {
-    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
+//    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::addBToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, const MechanicalParams* /*mparams*/)
+{
+//	serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
 }
 
 template<class DataTypes>

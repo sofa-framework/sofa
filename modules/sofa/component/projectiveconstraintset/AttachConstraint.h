@@ -69,8 +69,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+
+    typedef typename Data<VecCoord> DataVecCoord;
+    typedef typename Data<VecDeriv> DataVecDeriv;
+
     typedef topology::PointSubset SetIndex;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector< unsigned int > SetIndexArray;
 
 
 protected:
@@ -105,12 +109,15 @@ public:
 
     // -- Constraint interface
     void init();
-    void projectResponse(VecDeriv& dx1, VecDeriv& dx2);
-    virtual void projectVelocity(VecDeriv& v1, VecDeriv& v2);
-    virtual void projectPosition(VecCoord& x1, VecCoord& x2);
+    void projectResponse(DataVecDeriv& dx1, DataVecDeriv& dx2, const core::MechanicalParams *mparams);
+    void projectVelocity(DataVecDeriv& v1, DataVecDeriv& v2, const core::MechanicalParams *mparams);
+    void projectPosition(DataVecCoord& x1, DataVecCoord& x2, const core::MechanicalParams *mparams);
 
-    void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset);
-    void applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset);
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    void applyConstraint(const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams);
+
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    void applyConstraint(defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix, const core::MechanicalParams *mparams);
 
     // Handle topological changes
     //virtual void handleTopologyChange();
@@ -118,6 +125,7 @@ public:
     virtual void draw();
 
 protected :
+
     void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned index)
     {
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -131,6 +139,7 @@ protected :
 
         x2 = x1;
     }
+
     void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned index)
     {
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -138,6 +147,7 @@ protected :
 
         x2 = x1;
     }
+
     void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned index)
     {
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
@@ -153,6 +163,7 @@ protected :
             dx2 = dx1;
         }
     }
+
     static unsigned int DerivConstrainedSize(bool /*freeRotations*/) { return Deriv::size(); }
 
     void calcRestRotations();
@@ -162,7 +173,6 @@ protected :
 
     // Define RemovalFunction
     //static void FCRemovalFunction ( int , void*);
-
 };
 
 
