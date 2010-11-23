@@ -126,6 +126,8 @@ public:
     typedef typename MaterialTypes::Real Real;        ///< Scalar values.
     typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
+    typedef typename MaterialTypes::ElStr ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
+    typedef typename MaterialTypes::VecElStr VecElStr;      ///< Vector of elaston strain or stress
     typedef typename MaterialTypes::StrStr StrStr;      ///< Stress-strain matrix
     typedef typename MaterialTypes::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
@@ -137,6 +139,9 @@ public:
 
     /// implementation of the abstract function
     virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
+
+    virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate );
+
 //    /// implementation of the abstract function
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
 

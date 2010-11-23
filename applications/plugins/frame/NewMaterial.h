@@ -53,6 +53,8 @@ public:
     typedef TMaterialTypes MaterialTypes;
     typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
+    typedef typename MaterialTypes::ElStr ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
+    typedef typename MaterialTypes::VecElStr VecElStr;      ///< Vector of elaston strain or stress
     typedef typename MaterialTypes::StrStr StrStr;      ///< Stress-strain matrix
     typedef typename MaterialTypes::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
@@ -60,8 +62,16 @@ public:
 
     /** \brief Compute stress based on local strain and strain rate at each point.
       The stress-strain relation may depend on strain rate (time derivative of strain).
+      The stress-strain matrices are written if the pointer is not null.
     */
     virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate ) = 0;
+
+    /** \brief Compute elaston stress based on local strain and strain rate at each point.
+      The stress-strain relation may depend on strain rate (time derivative of strain).
+      The stress-strain matrices are written if the pointer is not null.
+    */
+    virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate ) = 0;
+
 
 //    /** \brief Compute stress change based on local strain.
 //      This is for using in implicit methods.
@@ -78,6 +88,12 @@ struct DefaultMaterialTypes
 
     typedef defaulttype::Vec<N,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
     typedef helper::vector<Str> VecStr;
+
+    /** Strain or stress tensor in Voigt (i.e. vector) notation for an elaston.
+    The first column is the strain (or stress), the other columns are its derivatives in the space directions (TODO: check this)
+    */
+    typedef defaulttype::Mat<N,D*D+1,R> ElStr;
+    typedef helper::vector<ElStr> VecElStr;
 
     typedef defaulttype::Mat<N,N,R> StrStr;  ///< Stress-strain matrix
     typedef helper::vector<StrStr> VecStrStr;

@@ -107,6 +107,35 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecStr& stress, VecStrStr* 
     }
 }
 
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& )
+{
+    for(unsigned e=0; e<10; e++)
+        for(unsigned i=0; i<stress.size(); i++)
+        {
+            stress[i][0][e] = stressDiagonal * strain[i][0][e] + stressOffDiagonal * strain[i][1][e] + stressOffDiagonal * strain[i][2][e];
+            stress[i][1][e] = stressOffDiagonal * strain[i][0][e] + stressDiagonal * strain[i][1][e] + stressOffDiagonal * strain[i][2][e];
+            stress[i][2][e] = stressOffDiagonal * strain[i][0][e] + stressOffDiagonal * strain[i][1][e] + stressDiagonal * strain[i][2][e];
+            stress[i][3][e] = shear * strain[i][3][e];
+            stress[i][4][e] = shear * strain[i][4][e];
+            stress[i][5][e] = shear * strain[i][5][e];
+        }
+    if( stressStrainMatrices != NULL )
+    {
+        VecStrStr&  m = *stressStrainMatrices;
+        m.resize( stress.size() );
+        m[0].fill(0);
+        m[0][0][0] = m[0][1][1] = m[0][2][2] = stressDiagonal;
+        m[0][0][1] = m[0][0][2] = m[0][1][0] = m[0][1][2] = m[0][2][0] = m[0][2][1] = stressOffDiagonal;
+        m[0][3][3] = m[0][4][4] = m[0][5][5] = shear;
+        for( unsigned i=1; i<m.size(); i++ )
+        {
+            m[i] = m[0];
+        }
+    }
+}
+
 //            // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
 //            template<class MaterialTypes>
 //            void HookeMaterial3<MaterialTypes>::computeDStress  ( VecStr& stress, const VecStr& strain )

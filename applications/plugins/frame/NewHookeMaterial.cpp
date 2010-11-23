@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "NewHookeMaterial.inl"
+#include "RigidFrameTypes.h"
 #include <sofa/core/ObjectFactory.h>
 
 

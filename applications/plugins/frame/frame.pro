@@ -40,9 +40,12 @@ HEADERS += \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
            initFrame.h \
+            RigidFrameTypes.h \
             NewMaterial.h \
             NewHookeMaterial.h \
             NewHookeMaterial.inl \
+#            NewSkinningMapping.h \
+#            NewSkinningMapping.inl \
            QuadraticTypes.h
 
 SOURCES += \
@@ -55,4 +58,5 @@ SOURCES += \
            FrameMechanicalObject.cpp \
            FrameSpringForceField2.cpp \
             NewHookeMaterial.cpp \
+ #           NewSkinningMapping.cpp \
            initFrame.cpp
