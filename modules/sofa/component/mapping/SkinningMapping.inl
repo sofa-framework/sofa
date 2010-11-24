@@ -2336,13 +2336,14 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
             out[i] = Deriv();
             for ( unsigned int j=0 ; j<in.size(); j++ )
             {
-                VecIn speed;
-                for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
+                /*                VecIn speed;
+                                for (unsigned int k = 0; k < InDOFs; ++k)
+                                    speed[k]  = in[j][k];
 
-                Vec3 f = ( this->J[j][i] * speed );
+                                Vec3 f = ( this->J[j][i] * speed );
 
-                out[i] += Deriv ( f[0], f[1], f[2] );
+                                out[i] += Deriv ( f[0], f[1], f[2] );*/
+                out[i] += this->J[j][i] * in[j];
             }
         }
     }
@@ -2358,13 +2359,14 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
             out[i] = Deriv();
             for ( unsigned int j=0 ; j<in.size(); j++ )
             {
-                VecIn speed;
-                for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
+                /*                VecIn speed;
+                                for (unsigned int k = 0; k < InDOFs; ++k)
+                                    speed[k]  = in[j][k];
 
-                Vec3 f = ( this->J[j][i] * speed );
+                                Vec3 f = ( this->J[j][i] * speed );
 
-                out[i] += Deriv ( f[0], f[1], f[2] );
+                                out[i] += Deriv ( f[0], f[1], f[2] );*/
+                out[i] += this->J[j][i] * in[j];
             }
         }
     }
