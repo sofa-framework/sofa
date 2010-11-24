@@ -261,7 +261,7 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
             out[tetra[3]] += v * fz;
 
             //compute the linear forces for each vertex from the torque, inspired by rigid mapping
-            Vector3 torque = in[i].getVOrientation();
+            Vector3 torque = getVOrientation(in[i]);
             //if (torque.norm() > 10e-6) {
             for (unsigned int ti = 0; ti<4; ti++)
                 out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
@@ -295,7 +295,7 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
             out[tetra[3]] += v * fz;
 
             //compute the linear forces for each vertex from the torque, inspired by rigid mapping
-            Vector3 torque = in[i].getVOrientation();
+            Vector3 torque = getVOrientation(in[i]);
             //if (torque.norm() > 10e-6) {
             for (unsigned int ti = 0; ti<4; ti++)
                 out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);

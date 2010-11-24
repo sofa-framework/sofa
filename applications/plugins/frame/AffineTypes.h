@@ -70,198 +70,94 @@ class StdAffineTypes;
 //=============================================================================
 
 
+//    /** Degrees of freedom of 3D non-rigid bodies.
+//    */
+//    template<typename real>
+//
+//    class AffineDeriv<3, real> : public Vec<12,real>
+//      {
+//        public:
+//          typedef real value_type;
+//          typedef real Real;
+//          typedef Vec<3, Real> Vec3;
+//          typedef Vec3 Pos;
+//          typedef defaulttype::Mat<3,3,Real> Mat33;
+//          typedef Mat33 Affine;
+//
+//        protected:
+////          Vec3 vCenter;
+////          Mat33 vAffine;
+//        public:
+//
+//          friend class AffineCoord<3, real>;
+//
+//          AffineDeriv ( const Vec3 &vCenter, const Mat33 &vAffine )
+//              { getVCenter() = vCenter; getVAffine() = vAffine; }
+//
+//          AffineDeriv ( const Vec<12,Real>& v )
+//          {
+//              for(unsigned i=0; i<12; i++) {
+//                  this->elems[i] = v[i];
+//              }
+//          }
+//
+//          AffineDeriv() { this->clear(); }
+//
+//          template<typename real2>
+//          AffineDeriv ( const AffineDeriv<3, real2>& c )
+//          { getVCenter() = c.getVCenter(); getVAffine() = c.getVAffine(); }
+//
+//
+//
+//          Vec3& getVCenter() { return *reinterpret_cast<Vec3*>(this->elems); }
+//
+//          Mat33& getVAffine() { return *reinterpret_cast<Mat33*>(this->elems+3); }
+//
+//          const Vec3& getVCenter() const { return *reinterpret_cast<const Vec3*>(this->elems); }
+//
+//          const Mat33& getVAffine() const { return *reinterpret_cast<const Mat33*>(this->elems+3); }
+//
+//          Vec3& getLinear () { return getVCenter(); }
+//
+//          const Vec3& getLinear () const { return getVCenter(); }
+//
+//          Vec3 velocityAtRotatedPoint ( const Vec3& p ) const
+//            {
+//              return getVCenter() + getVAffine() * p;
+//            }
+//
+//
+//          /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
+//          enum { total_size = 12 };
+//          /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+//          enum { spatial_dimensions = 3 };
+//
+//          static unsigned int size() {return 12;}
+//
+//      };
 
-/** Degrees of freedom of 3D non-rigid bodies.
-*/
-template<typename real>
+//    using defaulttype::Vec;
 
-class AffineDeriv<3, real>
-{
-public:
-    typedef real value_type;
-    typedef real Real;
-    typedef Vec<3, Real> Vec3;
-    typedef Vec3 Pos;
-    typedef defaulttype::Mat<3,3,Real> Mat33;
-    typedef Mat33 Affine;
+typedef Vec<3,double> V3d;
+typedef Vec<3,float> V3f;
+typedef Vec<12,double> VAffine3double;
+typedef Vec<12,float>  VAffine3float;
 
-protected:
-    Vec3 vCenter;
-    Mat33 vAffine;
-public:
+template<typename T>
+Vec<3,T>& getVCenter( Vec<12,T>& v ) { return *reinterpret_cast<Vec<3,T>*>(&v[0]); }
 
-    friend class AffineCoord<3, real>;
+template<typename T>
+const Vec<3,T>& getVCenter( const Vec<12,T>& v ) { return *reinterpret_cast<const Vec<3,T>*>(&v[0]); }
 
-    AffineDeriv ( const Vec3 &vCenter, const Mat33 &vAffine )
-        : vCenter ( vCenter ), vAffine ( vAffine ) {}
+template<typename T>
+Mat<3,3,T>& getVAffine( Vec<12,T>& v ) { return *reinterpret_cast<Mat<3,3,T>*>(&v[3]); }
 
-    AffineDeriv() { clear(); }
-
-    template<typename real2>
-    AffineDeriv ( const AffineDeriv<3, real2>& c )
-        : vCenter ( c.getVCenter() ), vAffine ( c.getVAffine() )
-    {
-    }
-
-    void clear() { vCenter.clear(); vAffine.clear(); }
-
-    template<typename real2>
-    void operator = ( const AffineDeriv<3, real2>& c )
-    {
-        vCenter = c.getVCenter();
-        vAffine = c.getVAffine();
-    }
-
-    void operator += ( const AffineDeriv& a )
-    {
-        vCenter += a.vCenter;
-        vAffine += a.vAffine;
-    }
-
-    void operator -= ( const AffineDeriv& a )
-    {
-        vCenter -= a.vCenter;
-        vAffine -= a.vAffine;
-    }
-
-    AffineDeriv<3, real> operator + ( const AffineDeriv<3, real>& a ) const
-    {
-        AffineDeriv d;
-        d.vCenter = vCenter + a.vCenter;
-        d.vAffine = vAffine + a.vAffine;
-        return d;
-    }
-
-    template<typename real2>
-    void operator*= ( real2 a )
-    {
-        vCenter *= (Real)a;
-        vAffine *= (Real)a;
-    }
-
-    template<typename real2>
-    void operator/= ( real2 a )
-    {
-        vCenter /= (Real)a;
-        vAffine /= (Real)a;
-    }
-
-    AffineDeriv<3, real> operator* ( float a ) const
-    {
-        AffineDeriv r = *this;
-        r *= a;
-        return r;
-    }
-
-    AffineDeriv<3, real> operator* ( double a ) const
-    {
-        AffineDeriv r = *this;
-        r *= a;
-        return r;
-    }
-
-    AffineDeriv<3, real> operator - () const
-    {
-        Affine tmp;
-        tmp[0][0] = - vAffine[0][0];
-        tmp[0][1] = - vAffine[0][1];
-        tmp[0][2] = - vAffine[0][2];
-        tmp[1][0] = - vAffine[1][0];
-        tmp[1][1] = - vAffine[1][1];
-        tmp[1][2] = - vAffine[1][2];
-        tmp[2][0] = - vAffine[2][0];
-        tmp[2][1] = - vAffine[2][1];
-        tmp[2][2] = - vAffine[2][2];
-        return AffineDeriv ( -vCenter, tmp );
-    }
-
-    AffineDeriv<3, real> operator - ( const AffineDeriv<3, real>& a ) const
-    {
-        return AffineDeriv<3, real> ( this->vCenter - a.vCenter, this->vAffine - a.vAffine );
-    }
-
-
-    /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator* ( const AffineDeriv<3, real>& a ) const
-    {
-        return vCenter[0]*a.vCenter[0] + vCenter[1]*a.vCenter[1] + vCenter[2]*a.vCenter[2]
-                + vAffine(0,0)*a.vAffine(0,0) + vAffine(0,1)*a.vAffine(0,1) + vAffine(0,2)*a.vAffine(0,2)
-                + vAffine(1,0)*a.vAffine(1,0) + vAffine(1,1)*a.vAffine(1,1) + vAffine(1,2)*a.vAffine(1,2)
-                + vAffine(2,0)*a.vAffine(2,0) + vAffine(2,1)*a.vAffine(2,1) + vAffine(2,2)*a.vAffine(2,2);
-    }
-
-    Vec3& getVCenter ( void ) { return vCenter; }
-
-    Mat33& getVAffine ( void ) { return vAffine; }
-
-    const Vec3& getVCenter ( void ) const { return vCenter; }
-
-    const Mat33& getVAffine ( void ) const { return vAffine; }
-
-    Vec3& getLinear () { return vCenter; }
-
-    const Vec3& getLinear () const { return vCenter; }
-
-    Vec3 velocityAtRotatedPoint ( const Vec3& p ) const
-    {
-        return vCenter - vAffine * p;
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const AffineDeriv<3, real>& v )
-    {
-        out << v.vCenter << " " << v.vAffine;
-        return out;
-    }
-
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, AffineDeriv<3, real>& v )
-    {
-        in >> v.vCenter >> v.vAffine;
-        return in;
-    }
-
-    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 12 };
-    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 3 };
-
-    real* ptr() { return vCenter.ptr(); }
-
-    const real* ptr() const { return vCenter.ptr(); }
-
-    static unsigned int size() {return 12;}
-
-    /// Access to i-th element.
-    real& operator[] ( int i )
-    {
-        if ( i<3 )
-            return this->vCenter ( i );
-        else
-            return this->vAffine((i-3)/3, (i-3)%3);
-    }
-
-    /// Const access to i-th element.
-    const real& operator[] ( int i ) const
-    {
-        if ( i<3 )
-            return this->vCenter ( i );
-        else
-            return this->vAffine((i-3)/3, (i-3)%3);
-    }
-};
-
-
-
-
-
-
-
+template<typename T>
+const Mat<3,3,T>& getVAffine( const Vec<12,T>& v ) { return *reinterpret_cast<const Mat<3,3,T>*>(&v[3]); }
 
 
 
 template<typename real>
-
 class AffineCoord<3, real>
 {
 public:
@@ -296,17 +192,17 @@ public:
         affine = c.getAffine();
     }
 
-    void operator += ( const AffineDeriv<3, real>& a )
+    void operator += ( const Vec<12, real>& a )
     {
-        center += a.getVCenter();
-        affine += a.getVAffine();
+        center += getVCenter(a);
+        affine += getVAffine(a);
     }
 
-    AffineCoord<3, real> operator + ( const AffineDeriv<3, real>& a ) const
+    AffineCoord<3, real> operator + ( const Vec<12, real>& a ) const
     {
         AffineCoord c = *this;
-        c.center += a.getVCenter();
-        c.affine += a.getVAffine();
+        c.center += getVCenter(a);
+        c.affine += getVAffine(a);
         return c;
     }
 
@@ -524,22 +420,24 @@ public:
     static unsigned int size() {return 12;}
 
     /// Access to i-th element.
-    real& operator[] ( int i )
+    real& operator[](int i)
     {
-        if ( i<3 )
-            return this->center ( i );
-        else
-            return this->affine((i-3)/3, (i-3)%3);
+        assert (i<3);
+        return this->center[i];
+//          else
+//                  return this->affine[i-3];
     }
 
     /// Const access to i-th element.
-    const real& operator[] ( int i ) const
+    const real& operator[](int i) const
     {
-        if ( i<3 )
-            return this->center ( i );
-        else
-            return this->affine((i-3)/3, (i-3)%3);
+        assert (i<3);
+        return this->center[i];
+//                  else
+//                          return this->affine[i-3];
     }
+
+
 };
 
 
@@ -555,17 +453,14 @@ public:
     typedef real value_type;
     typedef real Real;
     typedef Mat<3, 3, Real> Mat3x3;
-    Real mass, volume;
+    Real mass;
     Mat3x3 inertiaMatrix;       // Inertia matrix of the object
-    Mat3x3 inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
     Mat3x3 invInertiaMatrix;    // inverse of inertiaMatrix
-    Mat3x3 invInertiaMassMatrix; // inverse of inertiaMassMatrix
     AffineMass ( Real m = 1 )
     {
         mass = m;
-        volume = 1;
         inertiaMatrix.identity();
-        recalc();
+        invInertiaMatrix.identity();
     }
 
     void operator= ( Real m )
@@ -582,15 +477,12 @@ public:
 
     void recalc()
     {
-        inertiaMassMatrix = inertiaMatrix * mass;
         invInertiaMatrix.invert ( inertiaMatrix );
-        invInertiaMassMatrix.invert ( inertiaMassMatrix );
     }
 
     inline friend std::ostream& operator << ( std::ostream& out, const AffineMass<3, real>& m )
     {
         out << m.mass;
-        out << " " << m.volume;
         out << " " << m.inertiaMatrix;
         return out;
     }
@@ -598,7 +490,6 @@ public:
     inline friend std::istream& operator >> ( std::istream& in, AffineMass<3, real>& m )
     {
         in >> m.mass;
-        in >> m.volume;
         in >> m.inertiaMatrix;
         return in;
     }
@@ -606,15 +497,15 @@ public:
     void operator *= ( Real fact )
     {
         mass *= fact;
-        inertiaMassMatrix *= fact;
-        invInertiaMassMatrix /= fact;
+        inertiaMatrix *= fact;
+        invInertiaMatrix /= fact;
     }
 
     void operator /= ( Real fact )
     {
         mass /= fact;
-        inertiaMassMatrix /= fact;
-        invInertiaMassMatrix *= fact;
+        inertiaMatrix /= fact;
+        invInertiaMatrix *= fact;
     }
 };
 /*
@@ -648,7 +539,8 @@ class StdAffineTypes<3, real>
 public:
     typedef real Real;
     typedef AffineCoord<3, real> Coord;
-    typedef AffineDeriv<3, real> Deriv;
+//          typedef AffineDeriv<3, real> Deriv;
+    typedef Vec<12, real> Deriv;
     typedef typename Coord::Vec3 Vec3;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
@@ -665,15 +557,15 @@ public:
 
     static void setCRot ( Coord& c, const CAffine& v ) { c.getAffine() = v; }
 
-    typedef typename Deriv::Pos DPos;
-    typedef typename Deriv::Affine DAffine;
-    static const DPos& getDPos ( const Deriv& d ) { return d.getVCenter(); }
-
-    static void setDPos ( Deriv& d, const DPos& v ) { d.getVCenter() = v; }
-
-    static const DAffine& getDAffine ( const Deriv& d ) { return d.getVAffine(); }
-
-    static void setDAffine ( Deriv& d, const DAffine& v ) { d.getVAffine() = v; }
+//          typedef typename Deriv::Pos DPos;
+//          typedef typename Deriv::Affine DAffine;
+//          static const DPos& getDPos ( const Deriv& d ) { return d.getVCenter(); }
+//
+//          static void setDPos ( Deriv& d, const DPos& v ) { d.getVCenter() = v; }
+//
+//          static const DAffine& getDAffine ( const Deriv& d ) { return d.getVAffine(); }
+//
+//          static void setDAffine ( Deriv& d, const DAffine& v ) { d.getVAffine() = v; }
 
     //  typedef SparseConstraint<Coord> SparseVecCoord;
     //  typedef SparseConstraint<Deriv> SparseVecDeriv;
@@ -724,25 +616,25 @@ public:
     template<typename T>
     static void set ( Deriv& c, T x, T y, T z )
     {
-        c.getVCenter() [0] = ( Real ) x;
-        c.getVCenter() [1] = ( Real ) y;
-        c.getVCenter() [2] = ( Real ) z;
+        getVCenter(c) [0] = ( Real ) x;
+        getVCenter(c) [1] = ( Real ) y;
+        getVCenter(c) [2] = ( Real ) z;
     }
 
     template<typename T>
     static void get ( T& x, T& y, T& z, const Deriv& c )
     {
-        x = ( T ) c.getVCenter() [0];
-        y = ( T ) c.getVCenter() [1];
-        z = ( T ) c.getVCenter() [2];
+        x = ( T ) getVCenter(c) [0];
+        y = ( T ) getVCenter(c) [1];
+        z = ( T ) getVCenter(c) [2];
     }
 
     template<typename T>
     static void add ( Deriv& c, T x, T y, T z )
     {
-        c.getVCenter() [0] += ( Real ) x;
-        c.getVCenter() [1] += ( Real ) y;
-        c.getVCenter() [2] += ( Real ) z;
+        getVCenter(c) [0] += ( Real ) x;
+        getVCenter(c) [1] += ( Real ) y;
+        getVCenter(c) [2] += ( Real ) z;
     }
 
     static const char* Name();
@@ -1482,9 +1374,9 @@ Deriv inertiaForce ( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const C
 
 /// Specialization of the inertia force for defaulttype::Affine3dTypes
 template <>
-inline defaulttype::AffineDeriv<3, double> inertiaForce <
+inline defaulttype::VAffine3double inertiaForce <
 defaulttype::AffineCoord<3, double>,
-            defaulttype::AffineDeriv<3, double>,
+            defaulttype::VAffine3double,
             objectmodel::BaseContext::Vec3,
             defaulttype::AffineMass<3, double>,
             objectmodel::BaseContext::SpatialVector
@@ -1494,23 +1386,24 @@ defaulttype::AffineCoord<3, double>,
                     const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::AffineMass<3, double>& mass,
                     const defaulttype::AffineCoord<3, double>& x,
-                    const defaulttype::AffineDeriv<3, double>& v
+                    const defaulttype::VAffine3double& v
             )
 {
-    defaulttype::AffineDeriv<3, double>::Vec3 omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::AffineDeriv<3, double>::Vec3 origin = x.getCenter(), finertia;
-    defaulttype::AffineDeriv<3, double>::Mat33 zero;
+    defaulttype::Vec3d omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::Vec3d origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getVCenter() * 2 ) ) * mass.mass;
-    return defaulttype::AffineDeriv<3, double> ( finertia, zero);
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + getVCenter(v) * 2 ) ) * mass.mass;
+    defaulttype::VAffine3double result;
+    result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
+    return result;
     /// \todo replace zero by Jomega.cross(omega)
 }
 
 /// Specialization of the inertia force for defaulttype::Affine3fTypes
 template <>
-inline defaulttype::AffineDeriv<3, float> inertiaForce <
+inline defaulttype::VAffine3float inertiaForce <
 defaulttype::AffineCoord<3, float>,
-            defaulttype::AffineDeriv<3, float>,
+            defaulttype::VAffine3float,
             objectmodel::BaseContext::Vec3,
             defaulttype::AffineMass<3, float>,
             objectmodel::BaseContext::SpatialVector
@@ -1520,15 +1413,16 @@ defaulttype::AffineCoord<3, float>,
                     const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::AffineMass<3, float>& mass,
                     const defaulttype::AffineCoord<3, float>& x,
-                    const defaulttype::AffineDeriv<3, float>& v
+                    const defaulttype::VAffine3float& v
             )
 {
-    defaulttype::AffineDeriv<3, float>::Vec3 omega ( ( float ) vframe.lineVec[0], ( float ) vframe.lineVec[1], ( float ) vframe.lineVec[2] );
-    defaulttype::AffineDeriv<3, float>::Vec3 origin = x.getCenter(), finertia;
-    defaulttype::AffineDeriv<3, double>::Mat33 zero;
+    defaulttype::Vec3f omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::Vec3f origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getVCenter() * 2 ) ) * mass.mass;
-    return defaulttype::AffineDeriv<3, float> ( finertia, zero );
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + getVCenter(v) * 2 ) ) * mass.mass;
+    defaulttype::VAffine3float result;
+    result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
+    return result;
     /// \todo replace zero by Jomega.cross(omega)
 }
 

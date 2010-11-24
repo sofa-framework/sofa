@@ -289,13 +289,13 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
-    Quater<Real> prevOrientation = Quater<Real>::createQuaterFromEuler(prevM.getVOrientation());
-    Quater<Real> nextOrientation = Quater<Real>::createQuaterFromEuler(nextM.getVOrientation());
+    Quater<Real> prevOrientation = Quater<Real>::createQuaterFromEuler(getVOrientation(prevM));
+    Quater<Real> nextOrientation = Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        x[*it].getCenter() = x0[*it].getCenter() + m.getVCenter() ;
+        x[*it].getCenter() = x0[*it].getCenter() + getVCenter(m) ;
         x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
     }
 }

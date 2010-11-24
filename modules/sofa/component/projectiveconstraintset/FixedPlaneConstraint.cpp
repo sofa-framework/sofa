@@ -73,7 +73,7 @@ void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(DataDeriv& res, const 
 
     for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
     {
-        res[*it].getVCenter() -= dir*(dir*(res[*it].getVCenter()));
+        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
     }
 }
 
@@ -99,7 +99,7 @@ void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(DataDeriv& res, const 
 
     for (helper::vector< unsigned int > ::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
     {
-        res[*it].getVCenter() -= dir*(dir*(res[*it].getVCenter()));
+        getVCenter(res[*it]) -= dir*(dir*(getVCenter(res[*it])));
     }
 }
 

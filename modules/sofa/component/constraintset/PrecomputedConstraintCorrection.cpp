@@ -63,18 +63,18 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaultty
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            Vec3d n_i = q.inverseRotate(n.getVCenter());
-            Vec3d wn_i= q.inverseRotate(n.getVOrientation());
+            Vec3d n_i = q.inverseRotate(getVCenter(n));
+            Vec3d wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {
-                n_i = q.rotate(n.getVCenter());
-                wn_i= q.rotate(n.getVOrientation());
+                n_i = q.rotate(getVCenter(n));
+                wn_i= q.rotate(getVOrientation(n));
             }
 
             // on passe les normales du repere global au repere local
-            n.getVCenter() = n_i;
-            n.getVOrientation() = wn_i;
+            getVCenter(n) = n_i;
+            getVOrientation(n) = wn_i;
         }
     }
 }
@@ -106,8 +106,8 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
         else
             q = x[j].getOrientation();
 
-        temp.getVCenter()		= q.rotate(dx[j].getVCenter());
-        temp.getVOrientation()  = q.rotate(dx[j].getVOrientation());
+        getVCenter(temp)		= q.rotate(getVCenter(dx[j]));
+        getVOrientation(temp)  = q.rotate(getVOrientation(dx[j]));
         dx[j] = temp;
     }
 }
@@ -161,19 +161,19 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection< defaultty
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            Vec3f n_i = q.inverseRotate(n.getVCenter());
-            Vec3f wn_i= q.inverseRotate(n.getVOrientation());
+            Vec3f n_i = q.inverseRotate(getVCenter(n));
+            Vec3f wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {
-                n_i = q.rotate(n.getVCenter());
-                wn_i= q.rotate(n.getVOrientation());
+                n_i = q.rotate(getVCenter(n));
+                wn_i= q.rotate(getVOrientation(n));
             }
 
 
             // on passe les normales du repere global au repere local
-            n.getVCenter() = n_i;
-            n.getVOrientation() = wn_i;
+            getVCenter(n) = n_i;
+            getVOrientation(n) = wn_i;
         }
     }
 }
@@ -202,8 +202,8 @@ SOFA_COMPONENT_CONSTRAINTSET_API void PrecomputedConstraintCorrection<defaulttyp
         else
             q = x[j].getOrientation();
 
-        temp.getVCenter()		= q.rotate(dx[j].getVCenter());
-        temp.getVOrientation()  = q.rotate(dx[j].getVOrientation());
+        getVCenter(temp)		= q.rotate(getVCenter(dx[j]));
+        getVOrientation(temp)  = q.rotate(getVOrientation(dx[j]));
         dx[j] = temp;
     }
 }

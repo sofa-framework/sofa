@@ -66,8 +66,8 @@ void LaparoscopicRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const 
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
     out.resize(1);
-    out[0].getVOrientation() = in[0].getVOrientation(); //rotation * in[0].getVOrientation();
-    out[0].getVCenter() = currentRotation.rotate(sofa::defaulttype::Vector3(0,0,in[0].getVTranslation()));
+    getVOrientation(out[0]) =in[0].getVOrientation(); //rotation * in[0].getVOrientation();
+    getVCenter(out[0]) = currentRotation.rotate(sofa::defaulttype::Vector3(0,0,in[0].getVTranslation()));
 }
 
 template <class TIn, class TOut>
@@ -76,8 +76,8 @@ void LaparoscopicRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const 
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<OutVecDeriv> > in = dIn;
 
-    out[0].getVOrientation() += in[0].getVOrientation(); //rotation * in[0].getVOrientation();
-    out[0].getVTranslation() += dot(currentRotation.rotate(sofa::defaulttype::Vector3(0,0,1)), in[0].getVCenter());
+    out[0].getVOrientation() += getVOrientation(in[0]); //rotation * in[0].getVOrientation();
+    out[0].getVTranslation() += dot(currentRotation.rotate(sofa::defaulttype::Vector3(0,0,1)), getVCenter(in[0]));
 }
 
 template <class TIn, class TOut>

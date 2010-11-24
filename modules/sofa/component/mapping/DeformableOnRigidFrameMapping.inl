@@ -297,13 +297,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::Ve
         //  case 0:
         if (indexFromEnd.getValue())
         {
-            v = (*inRigid)[(*inRigid).size() - 1 - index.getValue()].getVCenter();
-            omega = (*inRigid)[(*inRigid).size() - 1 - index.getValue()].getVOrientation();
+            v = getVCenter((*inRigid)[(*inRigid).size() - 1 - index.getValue()]);
+            omega = getVOrientation((*inRigid)[(*inRigid).size() - 1 - index.getValue()]);
         }
         else
         {
-            v = (*inRigid)[index.getValue()].getVCenter();
-            omega = (*inRigid)[index.getValue()].getVOrientation();
+            v = getVCenter((*inRigid)[index.getValue()]);
+            omega = getVOrientation((*inRigid)[index.getValue()]);
         }
 
 
@@ -408,16 +408,16 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
         if (indexFromEnd.getValue())
         {
 
-            (*outRoot)[(*outRoot).size() - 1 - index.getValue()].getVCenter() += v;
-            (*outRoot)[(*outRoot).size() - 1 - index.getValue()].getVOrientation() += omega;
+            getVCenter((*outRoot)[(*outRoot).size() - 1 - index.getValue()]) += v;
+            getVOrientation((*outRoot)[(*outRoot).size() - 1 - index.getValue()]) += omega;
             for(unsigned int i=0; i<in.size(); i++)
                 out[i]+=rootX.getOrientation().inverseRotate(in[i]);
         }
         else
         {
 
-            (*outRoot)[index.getValue()].getVCenter() += v;
-            (*outRoot)[index.getValue()].getVOrientation() += omega;
+            getVCenter((*outRoot)[index.getValue()]) += v;
+            getVOrientation((*outRoot)[index.getValue()]) += omega;
             for(unsigned int i=0; i<in.size(); i++)
                 out[i]+=rootX.getOrientation().inverseRotate(in[i]);
         }

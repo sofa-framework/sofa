@@ -71,191 +71,103 @@ class StdQuadraticTypes;
 
 
 
-/** Degrees of freedom of 3D rigid bodies. Orientations are modeled using quaternions.
-*/
-template<typename real>
-
-class QuadraticDeriv<3, real>
-{
-public:
-    typedef real value_type;
-    typedef real Real;
-    typedef Vec<3, Real> Vec3;
-    typedef Vec<9, Real> Vec9;
-    typedef Vec3 Pos;
-    typedef defaulttype::Mat<3,9,Real> Mat39;
-    typedef Mat39 Quadratic;
-
-protected:
-    Vec3 vCenter;
-    Mat39 vQuadratic;
-public:
-
-    friend class QuadraticCoord<3, real>;
-
-    QuadraticDeriv ( const Vec3 &vCenter, const Mat39 &vQuadratic )
-        : vCenter ( vCenter ), vQuadratic ( vQuadratic ) {}
-
-    QuadraticDeriv() { clear(); }
-
-    template<typename real2>
-    QuadraticDeriv ( const QuadraticDeriv<3, real2>& c )
-        : vCenter ( c.getVCenter() ), vQuadratic ( c.getVQuadratic() )
-    {
-    }
-
-    void clear() { vCenter.clear(); vQuadratic.clear(); }
-
-    template<typename real2>
-    void operator = ( const QuadraticDeriv<3, real2>& c )
-    {
-        vCenter = c.getVCenter();
-        vQuadratic = c.getVQuadratic();
-    }
-
-    void operator += ( const QuadraticDeriv& a )
-    {
-        vCenter += a.vCenter;
-        vQuadratic += a.getVQuadratic();
-    }
-
-    void operator -= ( const QuadraticDeriv& a )
-    {
-        vCenter -= a.vCenter;
-        vQuadratic -= a.getVQuadratic();
-    }
-
-    QuadraticDeriv<3, real> operator + ( const QuadraticDeriv<3, real>& a ) const
-    {
-        QuadraticDeriv d;
-        d.vCenter = vCenter + a.vCenter;
-        d.vQuadratic = vQuadratic + a.getVQuadratic();
-        return d;
-    }
-
-    template<typename real2>
-    void operator*= ( real2 a )
-    {
-        vCenter *= (Real)a;
-        vQuadratic *= (Real)a;
-    }
-
-    template<typename real2>
-    void operator/= ( real2 a )
-    {
-        vCenter /= (Real)a;
-        vQuadratic /= (Real)a;
-    }
-
-    QuadraticDeriv<3, real> operator* ( float a ) const
-    {
-        QuadraticDeriv r = *this;
-        r *= a;
-        return r;
-    }
-
-    QuadraticDeriv<3, real> operator* ( double a ) const
-    {
-        QuadraticDeriv r = *this;
-        r *= a;
-        return r;
-    }
-
-    QuadraticDeriv<3, real> operator - () const
-    {
-        Mat39 matQuad;
-        for (unsigned int i = 0; i < 3; ++i)
-            for (unsigned int j = 0; j < 9; ++j)
-                matQuad[i][j] = - vQuadratic[i][j];
-        return QuadraticDeriv ( -vCenter, matQuad);
-    }
-
-    QuadraticDeriv<3, real> operator - ( const QuadraticDeriv<3, real>& a ) const
-    {
-        return QuadraticDeriv<3, real> ( this->vCenter - a.vCenter, this->vQuadratic - a.vQuadratic);
-    }
+//    /** Degrees of freedom of 3D rigid bodies. Orientations are modeled using quaternions.
+//    */
+//    template<typename real>
+//
+//    class QuadraticDeriv<3, real> : public Vec<30,real>
+//      {
+//        public:
+//          typedef real value_type;
+//          typedef real Real;
+//          typedef Vec<3, Real> Vec3;
+//          typedef Vec<9, Real> Vec9;
+//          typedef Vec3 Pos;
+//          typedef defaulttype::Mat<3,9,Real> Mat39;
+//          typedef Mat39 Quadratic;
+//
+//        protected:
+////          Vec3 vCenter;
+////          Mat39 vQuadratic;
+//        public:
+//
+//          friend class QuadraticCoord<3, real>;
+//
+//          QuadraticDeriv ( const Vec3 &vCenter, const Mat39 &vQuadratic )
+//          {
+//            getVCenter() = vCenter;
+//            getVQuadratic() = vQuadratic;
+//          }
+//
+//          QuadraticDeriv() { this->clear(); }
+//
+//          template<typename real2>
+//          QuadraticDeriv ( const QuadraticDeriv<3, real2>& c )
+//          {
+//              getVCenter() = c.getVCenter();
+//              getVQuadratic() = c.getVQuadratic();
+//          }
+//
+//          template<typename real2>
+//          void operator = ( const QuadraticDeriv<3, real2>& c )
+//          {
+//            getVCenter() = c.getVCenter();
+//            getVQuadratic() = c.getVQuadratic();
+//          }
+//
+//
+//          Vec3& getVCenter() { return *reinterpret_cast<Vec3*>(this->elems); }
+//
+//          Mat39& getVQuadratic() { return *reinterpret_cast<Mat39*>(this->elems+3); }
+//
+//          const Vec3& getVCenter() const { return *reinterpret_cast<const Vec3*>(this->elems); }
+//
+//          const Mat39& getVQuadratic() const { return *reinterpret_cast<const Mat39*>(this->elems+3); }
+//
+//          Vec3& getLinear () { return getVCenter(); }
+//
+//          const Vec3& getLinear () const { return getVCenter(); }
+//
+//          Vec3 velocityAtRotatedPoint ( const Vec3& p ) const
+//            {
+//              Vec9 pq;
+//              for (unsigned int i = 0; i < 3; ++i)
+//                pq[i] = p[i];
+//              for (unsigned int i = 0; i < 3; ++i)
+//                pq[i+3] = p[i]*p[i];
+//                pq[6] = p[0]*p[1];
+//                pq[7] = p[1]*p[2];
+//                pq[8] = p[0]*p[2];
+//              return getVCenter() + getVQuadratic() * p;
+//            }
+//
+//
+//          /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
+//          enum { total_size = 30 };
+//          /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+//          enum { spatial_dimensions = 3 };
+//
+//          static unsigned int size() {return 30;}
+//
+//      };
 
 
-    /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator* ( const QuadraticDeriv<3, real>& a ) const
-    {
-        Real result = vCenter[0]*a.vCenter[0] + vCenter[1]*a.vCenter[1] + vCenter[2]*a.vCenter[2];
-        for (unsigned int i = 0; i < 3; ++i)
-            for (unsigned int j = 0; j < 9; ++j)
-                result += vQuadratic(i,j)*a.vQuadratic(i,j);
-        return result;
-    }
+typedef Vec<3,double> V3d;
+typedef Vec<3,float> V3f;
+typedef Vec<30,double> VQuadratic3double;
+typedef Vec<30,float>  VQuadratic3float;
 
-    Vec3& getVCenter ( void ) { return vCenter; }
+template<typename T>
+Vec<3,T>& getVCenter( Vec<30,T>& v ) { return *reinterpret_cast<Vec<3,T>*>(&v[0]); }
 
-    Mat39& getVQuadratic ( void ) { return vQuadratic; }
+template<typename T>
+const Vec<3,T>& getVCenter( const Vec<30,T>& v ) { return *reinterpret_cast<const Vec<3,T>*>(&v[0]); }
 
-    const Vec3& getVCenter ( void ) const { return vCenter; }
+template<typename T>
+Mat<3,9,T>& getVQuadratic( Vec<30,T>& v ) { return *reinterpret_cast<Mat<3,9,T>*>(&v[3]); }
 
-    const Mat39& getVQuadratic ( void ) const { return vQuadratic; }
-
-    Vec3& getLinear () { return vCenter; }
-
-    const Vec3& getLinear () const { return vCenter; }
-
-    Vec3 velocityAtRotatedPoint ( const Vec3& p ) const
-    {
-        Vec9 pq;
-        for (unsigned int i = 0; i < 3; ++i)
-            pq[i] = p[i];
-        for (unsigned int i = 0; i < 3; ++i)
-            pq[i+3] = p[i]*p[i];
-        pq[6] = p[0]*p[1];
-        pq[7] = p[1]*p[2];
-        pq[8] = p[0]*p[2];
-        return vCenter - vQuadratic * p;
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const QuadraticDeriv<3, real>& v )
-    {
-        out << v.vCenter << " " << v.vQuadratic;
-        return out;
-    }
-
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, QuadraticDeriv<3, real>& v )
-    {
-        in >> v.vCenter >> v.vQuadratic;
-        return in;
-    }
-
-    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 30 };
-    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 3 };
-
-    real* ptr() { return vCenter.ptr(); }
-
-    const real* ptr() const { return vCenter.ptr(); }
-
-    static unsigned int size() {return 30;}
-
-    /// Access to i-th element.
-    real& operator[] ( int i )
-    {
-        if ( i<3 )
-            return this->vCenter ( i );
-        else
-            return this->vQuadratic((i-3)/9, (i-3)%9);
-    }
-
-    /// Const access to i-th element.
-    const real& operator[] ( int i ) const
-    {
-        if ( i<3 )
-            return this->vCenter ( i );
-        else
-            return this->vQuadratic((i-3)/9, (i-3)%9);
-    }
-};
-
-
+template<typename T>
+const Mat<3,9,T>& getVQuadratic( const Vec<30,T>& v ) { return *reinterpret_cast<const Mat<3,9,T>*>(&v[3]); }
 
 
 
@@ -300,17 +212,17 @@ public:
         quadratic = c.getQuadratic();
     }
 
-    void operator += ( const QuadraticDeriv<3, real>& a )
+    void operator += ( const Vec<30, real>& a )
     {
-        center += a.getVCenter();
-        quadratic += a.getVQuadratic();
+        center += getVCenter(a);
+        quadratic += getVQuadratic(a);
     }
 
-    QuadraticCoord<3, real> operator + ( const QuadraticDeriv<3, real>& a ) const
+    QuadraticCoord<3, real> operator + ( const Vec<30, real>& a ) const
     {
         QuadraticCoord c = *this;
-        c.center += a.getVCenter();
-        c.quadratic += a.getVQuadratic();
+        c.center += getVCenter(a);
+        c.quadratic += getVQuadratic(a);
         return c;
     }
     /*
@@ -640,7 +552,7 @@ class StdQuadraticTypes<3, real>
 public:
     typedef real Real;
     typedef QuadraticCoord<3, real> Coord;
-    typedef QuadraticDeriv<3, real> Deriv;
+    typedef Vec<30,Real> Deriv;
     typedef typename Coord::Vec3 Vec3;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
@@ -657,15 +569,15 @@ public:
 
     static void setCQuad ( Coord& c, const CQuadratic& v ) { c.getQuadratic() = v; }
 
-    typedef typename Deriv::Pos DPos;
-    typedef typename Deriv::Quadratic DQuadratic;
-    static const DPos& getDPos ( const Deriv& d ) { return d.getVCenter(); }
-
-    static void setDPos ( Deriv& d, const DPos& v ) { d.getVCenter() = v; }
-
-    static const DQuadratic& getDQuadratic ( const Deriv& d ) { return d.getVQuadratic(); }
-
-    static void setDQuadratic ( Deriv& d, const DQuadratic& v ) { d.getVQuadratic() = v; }
+//          typedef typename Deriv::Pos DPos;
+//          typedef typename Deriv::Quadratic DQuadratic;
+//          static const DPos& getDPos ( const Deriv& d ) { return d.getVCenter(); }
+//
+//          static void setDPos ( Deriv& d, const DPos& v ) { d.getVCenter() = v; }
+//
+//          static const DQuadratic& getDQuadratic ( const Deriv& d ) { return d.getVQuadratic(); }
+//
+//          static void setDQuadratic ( Deriv& d, const DQuadratic& v ) { d.getVQuadratic() = v; }
 
     //  typedef SparseConstraint<Coord> SparseVecCoord;
     //  typedef SparseConstraint<Deriv> SparseVecDeriv;
@@ -716,25 +628,25 @@ public:
     template<typename T>
     static void set ( Deriv& c, T x, T y, T z )
     {
-        c.getVCenter() [0] = ( Real ) x;
-        c.getVCenter() [1] = ( Real ) y;
-        c.getVCenter() [2] = ( Real ) z;
+        getVCenter(c) [0] = ( Real ) x;
+        getVCenter(c) [1] = ( Real ) y;
+        getVCenter(c) [2] = ( Real ) z;
     }
 
     template<typename T>
     static void get ( T& x, T& y, T& z, const Deriv& c )
     {
-        x = ( T ) c.getVCenter() [0];
-        y = ( T ) c.getVCenter() [1];
-        z = ( T ) c.getVCenter() [2];
+        x = ( T ) getVCenter(c) [0];
+        y = ( T ) getVCenter(c) [1];
+        z = ( T ) getVCenter(c) [2];
     }
 
     template<typename T>
     static void add ( Deriv& c, T x, T y, T z )
     {
-        c.getVCenter() [0] += ( Real ) x;
-        c.getVCenter() [1] += ( Real ) y;
-        c.getVCenter() [2] += ( Real ) z;
+        getVCenter(c) [0] += ( Real ) x;
+        getVCenter(c) [1] += ( Real ) y;
+        getVCenter(c) [2] += ( Real ) z;
     }
 
     static const char* Name();
@@ -867,9 +779,9 @@ Deriv inertiaForce ( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const C
 
 /// Specialization of the inertia force for defaulttype::Quadratic3dTypes
 template <>
-inline defaulttype::QuadraticDeriv<3, double> inertiaForce <
+inline defaulttype::VQuadratic3double inertiaForce <
 defaulttype::QuadraticCoord<3, double>,
-            defaulttype::QuadraticDeriv<3, double>,
+            defaulttype::VQuadratic3double,
             objectmodel::BaseContext::Vec3,
             defaulttype::QuadraticMass<3, double>,
             objectmodel::BaseContext::SpatialVector
@@ -879,23 +791,25 @@ defaulttype::QuadraticCoord<3, double>,
                     const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::QuadraticMass<3, double>& mass,
                     const defaulttype::QuadraticCoord<3, double>& x,
-                    const defaulttype::QuadraticDeriv<3, double>& v
+                    const defaulttype::VQuadratic3double& v
             )
 {
-    defaulttype::QuadraticDeriv<3, double>::Vec3 omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::QuadraticDeriv<3, double>::Vec3 origin = x.getCenter(), finertia;
-    defaulttype::QuadraticDeriv<3, double>::Mat39 zero;
+    defaulttype::Vec3d omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::Vec3d origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getVCenter() * 2 ) ) * mass.mass;
-    return defaulttype::QuadraticDeriv<3, double> ( finertia, zero);
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + getVCenter(v) * 2 ) ) * mass.mass;
+
+    defaulttype::VQuadratic3double result;
+    result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
+    return result;
     /// \todo replace zero by Jomega.cross(omega)
 }
 
 /// Specialization of the inertia force for defaulttype::Quadratic3fTypes
 template <>
-inline defaulttype::QuadraticDeriv<3, float> inertiaForce <
+inline defaulttype::VQuadratic3float inertiaForce <
 defaulttype::QuadraticCoord<3, float>,
-            defaulttype::QuadraticDeriv<3, float>,
+            defaulttype::VQuadratic3float,
             objectmodel::BaseContext::Vec3,
             defaulttype::QuadraticMass<3, float>,
             objectmodel::BaseContext::SpatialVector
@@ -905,15 +819,17 @@ defaulttype::QuadraticCoord<3, float>,
                     const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::QuadraticMass<3, float>& mass,
                     const defaulttype::QuadraticCoord<3, float>& x,
-                    const defaulttype::QuadraticDeriv<3, float>& v
+                    const defaulttype::VQuadratic3float& v
             )
 {
-    defaulttype::QuadraticDeriv<3, float>::Vec3 omega ( ( float ) vframe.lineVec[0], ( float ) vframe.lineVec[1], ( float ) vframe.lineVec[2] );
-    defaulttype::QuadraticDeriv<3, float>::Vec3 origin = x.getCenter(), finertia;
-    defaulttype::QuadraticDeriv<3, double>::Mat39 zero;
+    defaulttype::Vec3d omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::Vec3d origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getVCenter() * 2 ) ) * mass.mass;
-    return defaulttype::QuadraticDeriv<3, float> ( finertia, zero );
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + getVCenter(v) * 2 ) ) * mass.mass;
+
+    defaulttype::VQuadratic3float result;
+    result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
+    return result;
     /// \todo replace zero by Jomega.cross(omega)
 }
 

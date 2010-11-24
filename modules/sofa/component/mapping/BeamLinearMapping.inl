@@ -139,10 +139,10 @@ void BeamLinearMapping<TIn, TOut>::applyJ(Data< typename Out::VecDeriv >& _out, 
         int in0 = helper::rfloor(inpos[0]);
         if (in0<0) in0 = 0; else if (in0 > (int)in.size()-2) in0 = in.size()-2;
         inpos[0] -= in0;
-        Deriv omega0 = in[in0].getVOrientation();
-        Deriv out0 = in[in0].getVCenter() - cross(rotatedPoints0[i], omega0);
-        Deriv omega1 = in[in0+1].getVOrientation();
-        Deriv out1 = in[in0+1].getVCenter() - cross(rotatedPoints1[i], omega1);
+        Deriv omega0 = getVOrientation(in[in0]);
+        Deriv out0 = getVCenter(in[in0]) - cross(rotatedPoints0[i], omega0);
+        Deriv omega1 = getVOrientation(in[in0+1]);
+        Deriv out1 = getVCenter(in[in0+1]) - cross(rotatedPoints1[i], omega1);
         Real fact = (Real)inpos[0];
         fact = 3*(fact*fact)-2*(fact*fact*fact);
         out[i] = out0 * (1-fact) + out1 * (fact);
@@ -174,10 +174,10 @@ void BeamLinearMapping<TIn, TOut>::applyJT(Data< typename In::VecDeriv >& _out, 
         Deriv f = in[i];
         Real fact = (Real)inpos[0];
         fact = 3*(fact*fact)-2*(fact*fact*fact);
-        out[in0].getVCenter() += f * (1-fact);
-        out[in0].getVOrientation() += cross(rotatedPoints0[i], f) * (1-fact);
-        out[in0+1].getVCenter() += f * (fact);
-        out[in0+1].getVOrientation() += cross(rotatedPoints1[i], f) * (fact);
+        getVCenter(out[in0]) += f * (1-fact);
+        getVOrientation(out[in0]) += cross(rotatedPoints0[i], f) * (1-fact);
+        getVCenter(out[in0+1]) += f * (fact);
+        getVOrientation(out[in0+1]) += cross(rotatedPoints1[i], f) * (fact);
     }
     //out[index.getValue()].getVCenter() += v;
     //out[index.getValue()].getVOrientation() += omega;
@@ -231,11 +231,11 @@ void BeamLinearMapping<TIn, TOut>::applyJT(Data< typename In::MatrixDeriv >& _ou
 
                 // Compute the mapped Constraint on the beam nodes
                 InDeriv direction0;
-                direction0.getVCenter() = w_n * (1-fact);
-                direction0.getVOrientation() = cross(rotatedPoints0[indexIn], w_n) * (1-fact);
+                getVCenter(direction0) = w_n * (1-fact);
+                getVOrientation(direction0) = cross(rotatedPoints0[indexIn], w_n) * (1-fact);
                 InDeriv direction1;
-                direction1.getVCenter() = w_n * (fact);
-                direction1.getVOrientation() = cross(rotatedPoints1[indexIn], w_n) * (fact);
+                getVCenter(direction1) = w_n * (fact);
+                getVOrientation(direction1) = cross(rotatedPoints1[indexIn], w_n) * (fact);
 
                 o.addCol(in0, direction0);
                 o.addCol(in0+1, direction1);

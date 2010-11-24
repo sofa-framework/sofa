@@ -38,12 +38,12 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
     d.resize(sz0);
     for(unsigned int i=0; i<szmin; ++i)
     {
-        d[i].getVCenter() = x1[i].getCenter() - x0[i].getCenter();
+        getVCenter(d[i]) = x1[i].getCenter() - x0[i].getCenter();
         // Pas de prise en charge des rotations
     }
     for(unsigned int i=szmin; i<sz0; ++i)
     {
-        d[i].getVCenter() = - x0[i].getCenter();
+        getVCenter(d[i]) = - x0[i].getCenter();
     }
     return true;
 }
@@ -66,7 +66,7 @@ bool derivVectors<Rigid3dTypes>(const Rigid3dTypes::VecCoord& x0, const Rigid3dT
 template <>
 double computeDot<Rigid3dTypes>(const Rigid3dTypes::Deriv& v0, const Rigid3dTypes::Deriv& v1)
 {
-    return dot(v0.getVCenter(),v1.getVCenter());
+    return dot(getVCenter(v0),getVCenter(v1));
 }
 
 #endif
@@ -80,7 +80,7 @@ bool derivVectors<Rigid3fTypes>(const Rigid3fTypes::VecCoord& x0, const Rigid3fT
 template <>
 double computeDot<Rigid3fTypes>(const Rigid3fTypes::Deriv& v0, const Rigid3fTypes::Deriv& v1)
 {
-    return dot(v0.getVCenter(),v1.getVCenter());
+    return dot(getVCenter(v0),getVCenter(v1));
 }
 
 #endif
@@ -327,9 +327,9 @@ void LCPForceFeedback<Rigid3fTypes>::computeForce(double x, double y, double z, 
     state.resize(1);
     state[0].getCenter() = sofa::defaulttype::Vec3f((float)x,(float)y,(float)z);
     computeForce(state,forces);
-    fx = forces[0].getVCenter().x();
-    fy = forces[0].getVCenter().y();
-    fz = forces[0].getVCenter().z();
+    fx = getVCenter(forces[0]).x();
+    fy = getVCenter(forces[0]).y();
+    fz = getVCenter(forces[0]).z();
 }
 #endif
 
@@ -343,9 +343,9 @@ void LCPForceFeedback<Rigid3dTypes>::computeForce(double x, double y, double z, 
     state.resize(1);
     state[0].getCenter() = sofa::defaulttype::Vec3d(x,y,z);
     computeForce(state,forces);
-    fx = forces[0].getVCenter().x();
-    fy = forces[0].getVCenter().y();
-    fz = forces[0].getVCenter().z();
+    fx = getVCenter(forces[0]).x();
+    fy = getVCenter(forces[0]).y();
+    fz = getVCenter(forces[0]).z();
 }
 #endif
 

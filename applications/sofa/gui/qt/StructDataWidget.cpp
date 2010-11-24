@@ -46,14 +46,14 @@ SOFA_DECL_CLASS(StructDataWidget);
 
 Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,float> > > DWClass_RigidCoord2f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,double> > > DWClass_RigidCoord2d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<2,float> > > DWClass_RigidDeriv2f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<2,double> > > DWClass_RigidDeriv2d("default",true);
+//Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<2,float> > > DWClass_RigidDeriv2f("default",true);
+//Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<2,double> > > DWClass_RigidDeriv2d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<2,float> > > DWClass_RigidMass2f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<2,double> > > DWClass_RigidMass2d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<3,float> > > DWClass_RigidCoord3f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<3,double> > > DWClass_RigidCoord3d("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<3,float> > > DWClass_RigidDeriv3f("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<3,double> > > DWClass_RigidDeriv3d("default",true);
+//Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<3,float> > > DWClass_RigidDeriv3f("default",true);
+//Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<3,double> > > DWClass_RigidDeriv3d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,float> > > DWClass_RigidMass3f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,double> > > DWClass_RigidMass3d("default",true);
 

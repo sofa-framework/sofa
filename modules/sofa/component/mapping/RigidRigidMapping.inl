@@ -283,23 +283,23 @@ void RigidRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<In
         case 0:
             if (!indexFromEnd.getValue())
             {
-                v = parentVelocities[index.getValue()].getVCenter();
-                omega = parentVelocities[index.getValue()].getVOrientation();
+                v = getVCenter(parentVelocities[index.getValue()]);
+                omega = getVOrientation(parentVelocities[index.getValue()]);
                 for(unsigned int i=0; i<points.getValue().size(); i++)
                 {
-                    childVelocities[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
-                    childVelocities[i].getVOrientation() = omega;
+                    getVCenter(childVelocities[i]) =  v + cross(omega,pointsR0[i].getCenter());
+                    getVOrientation(childVelocities[i]) = omega;
                 }
             }
             else
             {
-                v = parentVelocities[parentVelocities.size() - 1 - index.getValue()].getVCenter();
-                omega = parentVelocities[parentVelocities.size() - 1 - index.getValue()].getVOrientation();
+                v = getVCenter(parentVelocities[parentVelocities.size() - 1 - index.getValue()]);
+                omega = getVOrientation(parentVelocities[parentVelocities.size() - 1 - index.getValue()]);
 
                 for(unsigned int i = 0; i < points.getValue().size(); i++)
                 {
-                    childVelocities[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
-                    childVelocities[i].getVOrientation() = omega;
+                    getVCenter(childVelocities[i]) =  v + cross(omega,pointsR0[i].getCenter());
+                    getVOrientation(childVelocities[i]) = omega;
                 }
             }
             break;
@@ -309,13 +309,13 @@ void RigidRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<In
             cptchildVelocities=0;
             for (unsigned int ifrom=0 ; ifrom<parentVelocities.size() ; ifrom++)
             {
-                v = parentVelocities[ifrom].getVCenter();
-                omega = parentVelocities[ifrom].getVOrientation();
+                v = getVCenter(parentVelocities[ifrom]);
+                omega = getVOrientation(parentVelocities[ifrom]);
 
                 for(unsigned int ito=0; ito<val; ito++)
                 {
-                    childVelocities[cptchildVelocities].getVCenter() =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
-                    childVelocities[cptchildVelocities].getVOrientation() = omega;
+                    getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
+                    getVOrientation(childVelocities[cptchildVelocities]) = omega;
                     cptchildVelocities++;
                 }
             }
@@ -330,13 +330,13 @@ void RigidRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<In
             cptchildVelocities=0;
             for (unsigned int ifrom=0 ; ifrom<parentVelocities.size() ; ifrom++)
             {
-                v = parentVelocities[ifrom].getVCenter();
-                omega = parentVelocities[ifrom].getVOrientation();
+                v = getVCenter(parentVelocities[ifrom]);
+                omega = getVOrientation(parentVelocities[ifrom]);
 
                 for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
                 {
-                    childVelocities[cptchildVelocities].getVCenter() =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
-                    childVelocities[cptchildVelocities].getVOrientation() = omega;
+                    getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
+                    getVOrientation(childVelocities[cptchildVelocities]) = omega;
                     cptchildVelocities++;
                 }
             }
@@ -355,30 +355,30 @@ void RigidRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<In
         case 0:
             if (!indexFromEnd.getValue())
             {
-                v = parentVelocities[index.getValue()].getVCenter();
-                omega = parentVelocities[index.getValue()].getVOrientation();
+                v = getVCenter(parentVelocities[index.getValue()]);
+                omega = getVOrientation(parentVelocities[index.getValue()]);
                 for(unsigned int i=0; i<points.getValue().size() && it != indices.end(); i++)
                 {
                     const unsigned int idx=(*it);
                     if (idx != i) continue;
 
-                    childVelocities[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
-                    childVelocities[i].getVOrientation() = omega;
+                    getVCenter(childVelocities[i]) =  v + cross(omega,pointsR0[i].getCenter());
+                    getVOrientation(childVelocities[i]) = omega;
                     it++;
                 }
             }
             else
             {
-                v = parentVelocities[parentVelocities.size() - 1 - index.getValue()].getVCenter();
-                omega = parentVelocities[parentVelocities.size() - 1 - index.getValue()].getVOrientation();
+                v = getVCenter(parentVelocities[parentVelocities.size() - 1 - index.getValue()]);
+                omega = getVOrientation(parentVelocities[parentVelocities.size() - 1 - index.getValue()]);
 
                 for(unsigned int i = 0; i < points.getValue().size() && it != indices.end(); i++)
                 {
                     const unsigned int idx=(*it);
                     if (idx != i) continue;
 
-                    childVelocities[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
-                    childVelocities[i].getVOrientation() = omega;
+                    getVCenter(childVelocities[i]) =  v + cross(omega,pointsR0[i].getCenter());
+                    getVOrientation(childVelocities[i]) = omega;
                     it++;
                 }
             }
@@ -389,16 +389,16 @@ void RigidRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<In
             cptchildVelocities=0;
             for (unsigned int ifrom=0 ; ifrom<parentVelocities.size() && it != indices.end() ; ifrom++)
             {
-                v = parentVelocities[ifrom].getVCenter();
-                omega = parentVelocities[ifrom].getVOrientation();
+                v = getVCenter(parentVelocities[ifrom]);
+                omega = getVOrientation(parentVelocities[ifrom]);
 
                 for(unsigned int ito=0; ito<val && it != indices.end(); ito++,cptchildVelocities++)
                 {
                     const unsigned int idx=(*it);
                     if (idx != cptchildVelocities) continue;
 
-                    childVelocities[cptchildVelocities].getVCenter() =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
-                    childVelocities[cptchildVelocities].getVOrientation() = omega;
+                    getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
+                    getVOrientation(childVelocities[cptchildVelocities]) = omega;
                     it++;
                 }
             }
@@ -413,8 +413,8 @@ void RigidRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<In
             cptchildVelocities=0;
             for (unsigned int ifrom=0 ; ifrom<parentVelocities.size()  && it != indices.end(); ifrom++)
             {
-                v = parentVelocities[ifrom].getVCenter();
-                omega = parentVelocities[ifrom].getVOrientation();
+                v = getVCenter(parentVelocities[ifrom]);
+                omega = getVOrientation(parentVelocities[ifrom]);
 
                 for(unsigned int ito=0; ito<repartition.getValue()[ifrom] && it != indices.end(); ito++,cptchildVelocities++)
                 {
@@ -422,8 +422,8 @@ void RigidRigidMapping<TIn, TOut>::applyJ(Data<OutVecDeriv>& dOut, const Data<In
                     const unsigned int idx=(*it);
                     if (idx != cptchildVelocities) continue;
 
-                    childVelocities[cptchildVelocities].getVCenter() =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
-                    childVelocities[cptchildVelocities].getVOrientation() = omega;
+                    getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
+                    getVOrientation(childVelocities[cptchildVelocities]) = omega;
 
                     it++;
                 }
@@ -457,20 +457,20 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 //      [ -OM^t ]
                 // -OM^t = OM^
 
-                Vector f = childForces[i].getVCenter();
+                Vector f = getVCenter(childForces[i]);
                 v += f;
-                omega += childForces[i].getVOrientation() + cross(f,-pointsR0[i].getCenter());
+                omega += getVOrientation(childForces[i]) + cross(f,-pointsR0[i].getCenter());
             }
 
             if (!indexFromEnd.getValue())
             {
-                parentForces[index.getValue()].getVCenter() += v;
-                parentForces[index.getValue()].getVOrientation() += omega;
+                getVCenter(parentForces[index.getValue()]) += v;
+                getVOrientation(parentForces[index.getValue()]) += omega;
             }
             else
             {
-                parentForces[parentForces.size() - 1 - index.getValue()].getVCenter() += v;
-                parentForces[parentForces.size() - 1 - index.getValue()].getVOrientation() += omega;
+                getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
+                getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
             }
 
             break;
@@ -483,13 +483,13 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 omega=Vector();
                 for(unsigned int i=0; i<val; i++)
                 {
-                    Vector f = childForces[cpt].getVCenter();
+                    Vector f = getVCenter(childForces[cpt]);
                     v += f;
-                    omega += childForces[cpt].getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
+                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
                     cpt++;
                 }
-                parentForces[ito].getVCenter() += v;
-                parentForces[ito].getVOrientation() += omega;
+                getVCenter(parentForces[ito]) += v;
+                getVOrientation(parentForces[ito]) += omega;
             }
             break;
         default :
@@ -505,13 +505,13 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 omega=Vector();
                 for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
                 {
-                    Vector f = childForces[cpt].getVCenter();
+                    Vector f =getVCenter( childForces[cpt]);
                     v += f;
-                    omega += childForces[cpt].getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
+                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
                     cpt++;
                 }
-                parentForces[ito].getVCenter() += v;
-                parentForces[ito].getVOrientation() += omega;
+                getVCenter(parentForces[ito]) += v;
+                getVOrientation(parentForces[ito]) += omega;
             }
             break;
         }
@@ -533,21 +533,21 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 //      [ -OM^t ]
                 // -OM^t = OM^
 
-                Vector f = childForces[i].getVCenter();
+                Vector f = getVCenter(childForces[i]);
                 v += f;
-                omega += childForces[i].getVOrientation() + cross(f,-pointsR0[i].getCenter());
+                omega += getVOrientation(childForces[i]) + cross(f,-pointsR0[i].getCenter());
             }
 
             if (!indexFromEnd.getValue())
             {
-                parentForces[index.getValue()].getVCenter() += v;
-                parentForces[index.getValue()].getVOrientation() += omega;
+                getVCenter(parentForces[index.getValue()]) += v;
+                getVOrientation(parentForces[index.getValue()]) += omega;
                 maskFrom->insertEntry(index.getValue());
             }
             else
             {
-                parentForces[parentForces.size() - 1 - index.getValue()].getVCenter() += v;
-                parentForces[parentForces.size() - 1 - index.getValue()].getVOrientation() += omega;
+                getVCenter(parentForces[parentForces.size() - 1 - index.getValue()]) += v;
+                getVOrientation(parentForces[parentForces.size() - 1 - index.getValue()]) += omega;
                 maskFrom->insertEntry(parentForces.size() - 1 - index.getValue());
             }
 
@@ -563,13 +563,13 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 {
                     const unsigned int idx=(*it);
                     if (idx != cpt) continue;
-                    Vector f = childForces[cpt].getVCenter();
+                    Vector f = getVCenter(childForces[cpt]);
                     v += f;
-                    omega += childForces[cpt].getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
+                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
                     it++;
                 }
-                parentForces[ito].getVCenter() += v;
-                parentForces[ito].getVOrientation() += omega;
+                getVCenter(parentForces[ito]) += v;
+                getVOrientation(parentForces[ito]) += omega;
                 maskFrom->insertEntry(ito);
             }
             break;
@@ -588,13 +588,13 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<Ou
                 {
                     const unsigned int idx=(*it);
                     if (idx != cpt) continue;
-                    Vector f = childForces[cpt].getVCenter();
+                    Vector f = getVCenter(childForces[cpt]);
                     v += f;
-                    omega += childForces[cpt].getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
+                    omega += getVOrientation(childForces[cpt]) + cross(f,-pointsR0[cpt].getCenter());
                     it++;
                 }
-                parentForces[ito].getVCenter() += v;
-                parentForces[ito].getVOrientation() += omega;
+                getVCenter(parentForces[ito]) += v;
+                getVOrientation(parentForces[ito]) += omega;
                 maskFrom->insertEntry(ito);
             }
             break;
@@ -628,9 +628,9 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data
                 // Jt = [ I     ]
                 //      [ -OM^t ]
                 // -OM^t = OM^
-                Vector f = data.getVCenter();
+                Vector f = getVCenter(data);
                 v += f;
-                omega += data.getVOrientation() + cross(f,-pointsR0[colIt.index()].getCenter());
+                omega += getVOrientation(data) + cross(f,-pointsR0[colIt.index()].getCenter());
             }
 
             const InDeriv result(v, omega);
@@ -677,9 +677,9 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data
 
                     needToInsert = true;
                     const OutDeriv data = colIt.val();
-                    Vector f = data.getVCenter();
+                    Vector f = getVCenter(data);
                     v += f;
-                    omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
+                    omega += getVOrientation(data) + cross(f,-pointsR0[cpt].getCenter());
 
                     ++colIt;
                 }
@@ -723,9 +723,9 @@ void RigidRigidMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data
                     needToInsert = true;
 
                     const OutDeriv data = colIt.val();
-                    const Vector f = data.getVCenter();
+                    const Vector f = getVCenter(data);
                     v += f;
-                    omega += data.getVOrientation() + cross(f, -pointsR0[cpt].getCenter());
+                    omega += getVOrientation(data) + cross(f, -pointsR0[cpt].getCenter());
 
                     ++colIt;
                 }
@@ -779,16 +779,16 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(Data<OutVecDeriv>& dAcc
 
         if (!indexFromEnd.getValue())
         {
-            omega = v_in[index.getValue()].getVOrientation();
+            omega = getVOrientation(v_in[index.getValue()]);
         }
         else
         {
-            omega = v_in[v_in.size() - 1 - index.getValue()].getVOrientation();
+            omega = getVOrientation(v_in[v_in.size() - 1 - index.getValue()]);
         }
 
         for(unsigned int i=0; i<points.getValue().size(); i++)
         {
-            acc_out[i].getVCenter() +=   cross(omega, cross(omega,pointsR0[i].getCenter()) );
+            getVCenter(acc_out[i]) +=   cross(omega, cross(omega,pointsR0[i].getCenter()) );
         }
         break;
 
@@ -797,11 +797,11 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(Data<OutVecDeriv>& dAcc
         cptchildV=0;
         for (unsigned int ifrom=0 ; ifrom<v_in.size() ; ifrom++)
         {
-            omega = v_in[ifrom].getVOrientation();
+            omega = getVOrientation(v_in[ifrom]);
 
             for(unsigned int ito=0; ito<val; ito++)
             {
-                acc_out[cptchildV].getVCenter() +=  cross(omega, cross(omega,(pointsR0[cptchildV]).getCenter()) );
+                getVCenter(acc_out[cptchildV]) +=  cross(omega, cross(omega,(pointsR0[cptchildV]).getCenter()) );
                 cptchildV++;
             }
         }
@@ -817,11 +817,11 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(Data<OutVecDeriv>& dAcc
         cptchildV=0;
         for (unsigned int ifrom=0 ; ifrom<v_in.size() ; ifrom++)
         {
-            omega = v_in[ifrom].getVOrientation();
+            omega = getVOrientation(v_in[ifrom]);
 
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                acc_out[cptchildV].getVCenter() += cross(omega, cross(omega,(pointsR0[cptchildV]).getCenter()) );
+                getVCenter(acc_out[cptchildV]) += cross(omega, cross(omega,(pointsR0[cptchildV]).getCenter()) );
                 cptchildV++;
             }
         }

@@ -111,175 +111,175 @@ public:
     /// compute ma = M*a
     RigidDeriv operator * ( const RigidDeriv& a ) const
     {
-        VecDOFs va, vma;
-        va[0] = a.getVOrientation() [0];
-        va[1] = a.getVOrientation() [1];
-        va[2] = a.getVOrientation() [2];
-        va[3] = a.getVCenter() [0];
-        va[4] = a.getVCenter() [1];
-        va[5] = a.getVCenter() [2];
+//            VecDOFs va, vma;
+//            va[0] = getVOrientation(a) [0];
+//            va[1] = getVOrientation(a) [1];
+//            va[2] = getVOrientation(a) [2];
+//            va[3] = getVCenter(a) [0];
+//            va[4] = getVCenter(a) [1];
+//            va[5] = getVCenter(a) [2];
 
-        vma = inertiaMassMatrix * va;
+        return inertiaMassMatrix * a;
         //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
-        RigidDeriv ma;
-        ma.getVOrientation() [0] = vma[0];
-        ma.getVOrientation() [1] = vma[1];
-        ma.getVOrientation() [2] = vma[2];
-        ma.getVCenter() [0] = vma[3];
-        ma.getVCenter() [1] = vma[4];
-        ma.getVCenter() [2] = vma[5];
+//            RigidDeriv ma;
+//            getVOrientation(ma) [0] = vma[0];
+//            getVOrientation(ma) [1] = vma[1];
+//            ma.getVOrientation() [2] = vma[2];
+//            ma.getVCenter() [0] = vma[3];
+//            ma.getVCenter() [1] = vma[4];
+//            ma.getVCenter() [2] = vma[5];
 
-        return ma;
+//            return ma;
     }
 
     /// compute a = f/m
     RigidDeriv operator / ( const RigidDeriv& f ) const
     {
-        VecDOFs va, vma;
-        vma[0] = f.getVOrientation() [0];
-        vma[1] = f.getVOrientation() [1];
-        vma[2] = f.getVOrientation() [2];
-        vma[3] = f.getVCenter() [0];
-        vma[4] = f.getVCenter() [1];
-        vma[5] = f.getVCenter() [2];
+//            VecDOFs va, vma;
+//            vma[0] = f.getVOrientation() [0];
+//            vma[1] = f.getVOrientation() [1];
+//            vma[2] = f.getVOrientation() [2];
+//            vma[3] = f.getVCenter() [0];
+//            vma[4] = f.getVCenter() [1];
+//            vma[5] = f.getVCenter() [2];
 
-        va = invInertiaMassMatrix * vma;
+        return invInertiaMassMatrix * f;
         //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
-        RigidDeriv a;
-        a.getVOrientation() [0] = va[0];
-        a.getVOrientation() [1] = va[1];
-        a.getVOrientation() [2] = va[2];
-        a.getVCenter() [0] = va[3];
-        a.getVCenter() [1] = va[4];
-        a.getVCenter() [2] = va[5];
-
-        return a;
+//            RigidDeriv a;
+//            a.getVOrientation() [0] = va[0];
+//            a.getVOrientation() [1] = va[1];
+//            a.getVOrientation() [2] = va[2];
+//            a.getVCenter() [0] = va[3];
+//            a.getVCenter() [1] = va[4];
+//            a.getVCenter() [2] = va[5];
+//
+//            return a;
     }
 
     /// compute ma = M*a
     AffineDeriv operator * ( const AffineDeriv& a ) const
     {
-        VecDOFs va, vma;
-        va[0] = a.getVAffine() [0][0];
-        va[1] = a.getVAffine() [0][1];
-        va[2] = a.getVAffine() [0][2];
-        va[3] = a.getVAffine() [1][0];
-        va[4] = a.getVAffine() [1][1];
-        va[5] = a.getVAffine() [1][2];
-        va[6] = a.getVAffine() [2][0];
-        va[7] = a.getVAffine() [2][1];
-        va[8] = a.getVAffine() [2][2];
-        va[9] = a.getVCenter() [0];
-        va[10] = a.getVCenter() [1];
-        va[11] = a.getVCenter() [2];
+//            VecDOFs va, vma;
+//            va[0] = getVAffine(a) [0][0];
+//            va[1] = getVAffine(a) [0][1];
+//            va[2] = getVAffine(a) [0][2];
+//            va[3] = getVAffine(a) [1][0];
+//            va[4] = getVAffine(a) [1][1];
+//            va[5] = getVAffine(a) [1][2];
+//            va[6] = getVAffine(a) [2][0];
+//            va[7] = getVAffine(a) [2][1];
+//            va[8] = getVAffine(a) [2][2];
+//            va[9] = getVCenter(a) [0];
+//            va[10] = getVCenter(a) [1];
+//            va[11] = getVCenter(a) [2];
 
-        vma = inertiaMassMatrix * va;
+        return  inertiaMassMatrix * a;
         //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
-        AffineDeriv ma;
-        ma.getVAffine() [0][0] = vma[0];
-        ma.getVAffine() [0][1] = vma[1];
-        ma.getVAffine() [0][2] = vma[2];
-        ma.getVAffine() [1][0] = vma[3];
-        ma.getVAffine() [1][1] = vma[4];
-        ma.getVAffine() [1][2] = vma[5];
-        ma.getVAffine() [2][0] = vma[6];
-        ma.getVAffine() [2][1] = vma[7];
-        ma.getVAffine() [2][2] = vma[8];
-        ma.getVCenter() [0] = vma[9];
-        ma.getVCenter() [1] = vma[10];
-        ma.getVCenter() [2] = vma[11];
-
-        return ma;
+//            AffineDeriv ma;
+//            getVAffine(ma) [0][0] = vma[0];
+//            getVAffine(ma) [0][1] = vma[1];
+//            getVAffine(ma) [0][2] = vma[2];
+//            getVAffine(ma) [1][0] = vma[3];
+//            getVAffine(ma) [1][1] = vma[4];
+//            getVAffine(ma) [1][2] = vma[5];
+//            getVAffine(ma) [2][0] = vma[6];
+//            getVAffine(ma) [2][1] = vma[7];
+//            getVAffine(ma) [2][2] = vma[8];
+//            getVCenter(ma) [0] = vma[9];
+//            getVCenter(ma) [1] = vma[10];
+//            getVCenter(ma) [2] = vma[11];
+//
+//            return ma;
     }
 
     /// compute a = f/m
     AffineDeriv operator / ( const AffineDeriv& f ) const
     {
-        VecDOFs va, vma;
-        vma[0] = f.getVAffine() [0][0];
-        vma[1] = f.getVAffine() [0][1];
-        vma[2] = f.getVAffine() [0][2];
-        vma[3] = f.getVAffine() [1][0];
-        vma[4] = f.getVAffine() [1][1];
-        vma[5] = f.getVAffine() [1][2];
-        vma[6] = f.getVAffine() [2][0];
-        vma[7] = f.getVAffine() [2][1];
-        vma[8] = f.getVAffine() [2][2];
-        vma[9] = f.getVCenter() [0];
-        vma[10] = f.getVCenter() [1];
-        vma[11] = f.getVCenter() [2];
+//            VecDOFs va, vma;
+//            vma[0] = getVAffine(f) [0][0];
+//            vma[1] = getVAffine(f) [0][1];
+//            vma[2] = getVAffine(f) [0][2];
+//            vma[3] = getVAffine(f) [1][0];
+//            vma[4] = getVAffine(f) [1][1];
+//            vma[5] = getVAffine(f) [1][2];
+//            vma[6] = getVAffine(f) [2][0];
+//            vma[7] = getVAffine(f) [2][1];
+//            vma[8] = getVAffine(f) [2][2];
+//            vma[9] = getVCenter(f) [0];
+//            vma[10] = getVCenter(f) [1];
+//            vma[11] = getVCenter(f) [2];
 
-        va = invInertiaMassMatrix * vma;
+        return invInertiaMassMatrix * f;
         //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
-        AffineDeriv a;
-        a.getVAffine() [0][0] = va[0];
-        a.getVAffine() [0][1] = va[1];
-        a.getVAffine() [0][2] = va[2];
-        a.getVAffine() [1][0] = va[3];
-        a.getVAffine() [1][1] = va[4];
-        a.getVAffine() [1][2] = va[5];
-        a.getVAffine() [2][0] = va[6];
-        a.getVAffine() [2][1] = va[7];
-        a.getVAffine() [2][2] = va[8];
-        a.getVCenter() [0] = va[9];
-        a.getVCenter() [1] = va[10];
-        a.getVCenter() [2] = va[11];
-
-        return a;
+//            AffineDeriv a;
+//            getVAffine(a) [0][0] = va[0];
+//            getVAffine(a) [0][1] = va[1];
+//            getVAffine(a) [0][2] = va[2];
+//            getVAffine(a) [1][0] = va[3];
+//            getVAffine(a) [1][1] = va[4];
+//            getVAffine(a) [1][2] = va[5];
+//            getVAffine(a) [2][0] = va[6];
+//            getVAffine(a) [2][1] = va[7];
+//            getVAffine(a) [2][2] = va[8];
+//            getVCenter(a) [0] = va[9];
+//            getVCenter(a) [1] = va[10];
+//            getVCenter(a) [2] = va[11];
+//
+//            return a;
     }
 
     /// compute ma = M*a
     QuadraticDeriv operator * ( const QuadraticDeriv& a ) const
     {
-        const unsigned int& dim = (Nc-3)/3;
-        VecDOFs va, vma;
-        for (unsigned int i = 0; i < 3; ++i)
-            for (unsigned int j = 0; j < dim; ++j)
-                va[dim*i+j] = a.getVQuadratic() [i][j];
-        va[3*dim  ] = a.getVCenter() [0];
-        va[3*dim+1] = a.getVCenter() [1];
-        va[3*dim+2] = a.getVCenter() [2];
+//            const unsigned int& dim = (Nc-3)/3;
+//            VecDOFs va, vma;
+//            for (unsigned int i = 0; i < 3; ++i)
+//              for (unsigned int j = 0; j < dim; ++j)
+//                va[dim*i+j] = getVQuadratic(a) [i][j];
+//            va[3*dim  ] = getVCenter(a) [0];
+//            va[3*dim+1] = getVCenter(a) [1];
+//            va[3*dim+2] = getVCenter(a) [2];
 
-        vma = inertiaMassMatrix * va;
+        return inertiaMassMatrix * a;
         //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
-        QuadraticDeriv ma;
-        for (unsigned int i = 0; i < 3; ++i)
-            for (unsigned int j = 0; j < dim; ++j)
-                ma.getVQuadratic()[i][j] = vma[dim*i+j];
-        ma.getVCenter()[0] = vma[3*dim];
-        ma.getVCenter()[1] = vma[3*dim+1];
-        ma.getVCenter()[2] = vma[3*dim+2];
-
-        return ma;
+//            QuadraticDeriv ma;
+//            for (unsigned int i = 0; i < 3; ++i)
+//              for (unsigned int j = 0; j < dim; ++j)
+//                getVQuadratic(ma)[i][j] = vma[dim*i+j];
+//            getVCenter(ma)[0] = vma[3*dim];
+//            getVCenter(ma)[1] = vma[3*dim+1];
+//            getVCenter(ma)[2] = vma[3*dim+2];
+//
+//            return ma;
     }
 
     /// compute a = f/m
     QuadraticDeriv operator / ( const QuadraticDeriv& f ) const
     {
-        const unsigned int& dim = (Nc-3)/3;
-        VecDOFs va, vma;
-        for (unsigned int i = 0; i < 3; ++i)
-            for (unsigned int j = 0; j < dim; ++j)
-                vma[dim*i+j] = f.getVQuadratic() [i][j];
-        vma[3*dim  ] = f.getVCenter() [0];
-        vma[3*dim+1] = f.getVCenter() [1];
-        vma[3*dim+2] = f.getVCenter() [2];
+//            const unsigned int& dim = (Nc-3)/3;
+//            VecDOFs va, vma;
+//            for (unsigned int i = 0; i < 3; ++i)
+//              for (unsigned int j = 0; j < dim; ++j)
+//                vma[dim*i+j] = getVQuadratic(f) [i][j];
+//            vma[3*dim  ] = getVCenter(f) [0];
+//            vma[3*dim+1] = getVCenter(f) [1];
+//            vma[3*dim+2] = getVCenter(f) [2];
 
-        va = invInertiaMassMatrix * vma;
+        return invInertiaMassMatrix * f;
         //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
 
-        QuadraticDeriv a;
-        for (unsigned int i = 0; i < 3; ++i)
-            for (unsigned int j = 0; j < dim; ++j)
-                a.getVQuadratic()[i][j] = va[dim*i+j];
-        a.getVCenter()[0] = va[3*dim  ];
-        a.getVCenter()[1] = va[3*dim+1];
-        a.getVCenter()[2] = va[3*dim+2];
-
-        return a;
+//            QuadraticDeriv a;
+//            for (unsigned int i = 0; i < 3; ++i)
+//              for (unsigned int j = 0; j < dim; ++j)
+//                getVQuadratic(a)[i][j] = va[dim*i+j];
+//            getVCenter(a)[0] = va[3*dim  ];
+//            getVCenter(a)[1] = va[3*dim+1];
+//            getVCenter(a)[2] = va[3*dim+2];
+//
+//            return a;
     }
 
     void operator *= ( Real fact )

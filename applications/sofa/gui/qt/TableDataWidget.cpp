@@ -141,12 +141,12 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::helper::P
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<2,float> > > > DWClass_vectorRigidCoord2f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<2,double> > > > DWClass_vectorRigidCoord2d("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<2,float> > > > DWClass_vectorRigidDeriv2f("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<2,double> > > > DWClass_vectorRigidDeriv2d("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<2,float> > > > DWClass_vectorRigidDeriv2f("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<2,double> > > > DWClass_vectorRigidDeriv2d("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<3,float> > > > DWClass_vectorRigidCoord3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<3,double> > > > DWClass_vectorRigidCoord3d("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,float> > > > DWClass_vectorRigidDeriv3f("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,double> > > > DWClass_vectorRigidDeriv3d("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,float> > > > DWClass_vectorRigidDeriv3f("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,double> > > > DWClass_vectorRigidDeriv3d("default",true);
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::LaparoscopicRigid3Types::Coord > > > DWClass_vectorLaparoRigidCoord3("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::LaparoscopicRigid3Types::Deriv > > > DWClass_vectorLaparoRigidDeriv3("default",true);
