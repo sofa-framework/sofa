@@ -45,8 +45,8 @@ HEADERS += \
             NewHookeMaterial.inl \
 #            NewSkinningMapping.h \
 #            NewSkinningMapping.inl \
-           #PrimitiveSkinningMapping.h \
-           #PrimitiveSkinningMapping.inl \
+           PrimitiveSkinningMapping.h \
+           PrimitiveSkinningMapping.inl \
            QuadraticTypes.h  \
             RigidFrameTypes.h
 
@@ -62,5 +62,5 @@ SOURCES += \
            FrameSpringForceField2.cpp \
             NewHookeMaterial.cpp \
  #           NewSkinningMapping.cpp \
-           #PrimitiveSkinningMapping.cpp \
+           PrimitiveSkinningMapping.cpp \
            initFrame.cpp
