@@ -35,7 +35,7 @@ HEADERS += \
            FrameLoydAlgo.h \
            FrameLoydAlgo.inl \
            FrameMass.h \
-            FrameMasterSolver.h \
+#            FrameMasterSolver.h \
            FrameMechanicalObject.h \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
@@ -57,7 +57,7 @@ SOURCES += \
            FrameForceField.cpp \
            FrameHookeForceField.cpp \
            FrameLoydAlgo.cpp \
-            FrameMasterSolver.cpp \
+#            FrameMasterSolver.cpp \
            FrameMechanicalObject.cpp \
            FrameSpringForceField2.cpp \
             NewHookeMaterial.cpp \
