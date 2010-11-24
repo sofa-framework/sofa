@@ -330,10 +330,10 @@ void CurveMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDeri
             A = in[integer];
             B = in[integer+1];
             AB = B - A;
-            out[i].getVCenter() = A + (AB * fraction);
+            getVCenter(out[i]) = A + (AB * fraction);
             if (isV)
-                out[i].getVCenter() += (x[integer+1] - x[integer]) * (velocity.getValue()/lengthElements[integer]);
-            out[i].getVOrientation().clear();
+                getVCenter(out[i]) += (x[integer+1] - x[integer]) * (velocity.getValue()/lengthElements[integer]);
+            getVOrientation(out[i]).clear();
             //out[i].getOrientation() = computeOrientation(AB, out[i].getOrientation());
         }
     }
@@ -357,8 +357,8 @@ void CurveMapping<TIn, TOut>::applyJT(InDataVecDeriv& dOut, const OutDataVecDeri
         double fraction = abscissa.getValue()[i] - integer;
         //if (fraction > 1.0) fraction = 1.0;
         {
-            out[integer] += in[i].getVCenter() * (1-fraction);
-            out[integer+1] += in[i].getVCenter() * (fraction);
+            out[integer] += getVCenter(in[i]) * (1-fraction);
+            out[integer+1] += getVCenter(in[i]) * (fraction);
         }
     }
 }

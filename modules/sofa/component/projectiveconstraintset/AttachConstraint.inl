@@ -138,9 +138,9 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& 
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
-    x2.getVCenter() = x1.getVCenter();
+    getVCenter( x2) = getVCenter(x1);
     if (!freeRotations)
-        x2.getVOrientation() = x1.getVOrientation();
+        getVOrientation(x2) = getVOrientation(x1);
     //x2 = Deriv();
 }
 
@@ -150,9 +150,9 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& 
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
-    x2.getVCenter() = x1.getVCenter();
+    getVCenter(x2) = getVCenter(x1);
     if (!freeRotations)
-        x2.getVOrientation() = x1.getVOrientation();
+        getVOrientation(x2) = getVOrientation(x1);
 }
 
 template<>
@@ -161,9 +161,9 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& 
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
-    x2.getVCenter() = x1.getVCenter();
+    getVCenter(x2) = getVCenter(x1);
     if (!freeRotations)
-        x2.getVOrientation() = x1.getVOrientation();
+        getVOrientation(x2) = getVOrientation(x1);
 }
 
 template<>
@@ -172,9 +172,9 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& 
     // do nothing if distance between x2 & x1 is bigger than f_minDistance
     if (constraintReleased[index]) return;
 
-    x2.getVCenter() = x1.getVCenter();
+    getVCenter(x2) = getVCenter(x1);
     if (!freeRotations)
-        x2.getVOrientation() = x1.getVOrientation();
+        getVOrientation(x2) = getVOrientation(x1);
 }
 
 template<>
@@ -188,7 +188,7 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& 
         if (!freeRotations)
             dx2 = Deriv();
         else
-            dx2.getVCenter().clear();
+            getVCenter(dx2).clear();
     }
     else
     {
@@ -199,8 +199,8 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& 
         }
         else
         {
-            dx1.getVCenter() += dx2.getVCenter();
-            dx2.getVCenter() = dx1.getVCenter();
+            getVCenter(dx1) += getVCenter(dx2);
+            getVCenter(dx2) = getVCenter(dx1);
         }
     }
 }
@@ -216,7 +216,7 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& 
         if (!freeRotations)
             dx2 = Deriv();
         else
-            dx2.getVCenter().clear();
+            getVCenter(dx2).clear();
     }
     else
     {
@@ -227,8 +227,8 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& 
         }
         else
         {
-            dx1.getVCenter() += dx2.getVCenter();
-            dx2.getVCenter() = dx1.getVCenter();
+            getVCenter(dx1) += getVCenter(dx2);
+            getVCenter(dx2) = getVCenter(dx1);
         }
     }
 }
@@ -244,7 +244,7 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& 
         if (!freeRotations)
             dx2 = Deriv();
         else
-            dx2.getVCenter().clear();
+            getVCenter(dx2).clear();
     }
     else
     {
@@ -255,8 +255,8 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& 
         }
         else
         {
-            dx1.getVCenter() += dx2.getVCenter();
-            dx2.getVCenter() = dx1.getVCenter();
+            getVCenter(dx1) += getVCenter(dx2);
+            getVCenter(dx2) = getVCenter(dx1);
         }
     }
 }
@@ -272,7 +272,7 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& 
         if (!freeRotations)
             dx2 = Deriv();
         else
-            dx2.getVCenter().clear();
+            getVCenter(dx2).clear();
     }
     else
     {
@@ -283,8 +283,8 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& 
         }
         else
         {
-            dx1.getVCenter() += dx2.getVCenter();
-            dx2.getVCenter() = dx1.getVCenter();
+            getVCenter(dx1) += getVCenter(dx2);
+            getVCenter(dx2) = getVCenter(dx1);
         }
     }
 }

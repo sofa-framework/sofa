@@ -369,25 +369,25 @@ template<int N, class T>
 class data_widget_container < sofa::defaulttype::RigidCoord<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidCoord<N, T> >
 {};
 
-template<int N, class T>
-class struct_data_trait < sofa::defaulttype::RigidDeriv<N, T> >
-{
-public:
-    typedef sofa::defaulttype::RigidDeriv<N, T> data_type;
-    enum { NVAR = 2 };
-    static void set( data_type& /*d*/ )
-    {
-    }
-};
-template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<3 COMMA T>, 0, "VCenter", "d", typename data_type::Vec3, getVCenter());
-template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<3 COMMA T>, 1, "VOrientation", "w", typename data_type::Vec3, getVOrientation());
-
-template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<2 COMMA T>, 0, "VCenter", "d", typename data_type::Vec2, getVCenter());
-template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<2 COMMA T>, 1, "VOrientation", "dA", typename data_type::Real, getVOrientation());
-
-template<int N, class T>
-class data_widget_container < sofa::defaulttype::RigidDeriv<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidDeriv<N, T> >
-{};
+//      template<int N, class T>
+//      class struct_data_trait < sofa::defaulttype::RigidDeriv<N, T> >
+//      {
+//      public:
+//        typedef sofa::defaulttype::RigidDeriv<N, T> data_type;
+//        enum { NVAR = 2 };
+//        static void set( data_type& /*d*/ )
+//        {
+//        }
+//      };
+//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<3 COMMA T>, 0, "VCenter", "d", typename data_type::Vec3, getVCenter());
+//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<3 COMMA T>, 1, "VOrientation", "w", typename data_type::Vec3, getVOrientation());
+//
+//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<2 COMMA T>, 0, "VCenter", "d", typename data_type::Vec2, getVCenter());
+//      template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidDeriv<2 COMMA T>, 1, "VOrientation", "dA", typename data_type::Real, getVOrientation());
+//
+//      template<int N, class T>
+//      class data_widget_container < sofa::defaulttype::RigidDeriv<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidDeriv<N, T> >
+//      {};
 
 
 template<int N, class T>

@@ -635,7 +635,7 @@ class CudaRigidTypes<3, real>
 public:
     typedef real Real;
     typedef sofa::defaulttype::RigidCoord<3,real> Coord;
-    typedef sofa::defaulttype::RigidDeriv<3,real> Deriv;
+    typedef sofa::defaulttype::Vec<6,real> Deriv;
     typedef typename Coord::Vec3 Vec3;
     typedef typename Coord::Quat Quat;
     typedef CudaVector<Coord> VecCoord;
@@ -654,12 +654,12 @@ public:
     static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
     static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
 
-    typedef typename Deriv::Pos DPos;
-    typedef typename Deriv::Rot DRot;
-    static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
-    static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
-    static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
-    static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
+    typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::DPos DPos;
+    typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::DRot DRot;
+    static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
+    static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
+    static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
+    static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
     template<typename T>
     static void set(Coord& r, T x, T y, T z)
@@ -697,7 +697,7 @@ public:
     template<typename T>
     static void set(Deriv& r, T x, T y, T z)
     {
-        Vec3& c = r.getVCenter();
+        Vec3& c = getVCenter(r);
         if ( c.size() >0 )
             c[0] = (Real) x;
         if ( c.size() >1 )
@@ -709,7 +709,7 @@ public:
     template<typename T>
     static void get(T& x, T& y, T& z, const Deriv& r)
     {
-        const Vec3& c = r.getVCenter();
+        const Vec3& c = getVCenter(r);
         x = ( c.size() >0 ) ? (T) c[0] : (T) 0.0;
         y = ( c.size() >1 ) ? (T) c[1] : (T) 0.0;
         z = ( c.size() >2 ) ? (T) c[2] : (T) 0.0;
@@ -718,7 +718,7 @@ public:
     template<typename T>
     static void add(Deriv& r, T x, T y, T z)
     {
-        Vec3& c = r.getVCenter();
+        Vec3& c = getVCenter(r);
         if ( c.size() >0 )
             c[0] += (Real) x;
         if ( c.size() >1 )

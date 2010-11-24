@@ -117,6 +117,19 @@ public:
         this->elems[5]=r6;
     }
 
+    /// Specific constructor for 6-elements vectors.
+    template<typename R, typename T>
+    Vec( const Vec<3,R>& a , const Vec<3,T>& b )
+    {
+        BOOST_STATIC_ASSERT(N == 6);
+        this->elems[0]=a[0];
+        this->elems[1]=a[1];
+        this->elems[2]=a[2];
+        this->elems[3]=b[0];
+        this->elems[4]=b[1];
+        this->elems[5]=b[2];
+    }
+
     /// Specific constructor for 8-elements vectors.
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
     {
@@ -445,7 +458,8 @@ public:
                 this->elems[i]/=r;
     }
 
-    Vec cross( const Vec& b ) const
+    template<typename R>
+    Vec cross( const Vec<3,R>& b ) const
     {
         BOOST_STATIC_ASSERT(N == 3);
         return Vec(
@@ -537,17 +551,17 @@ std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
 }
 
 /// Cross product for 3-elements vectors.
-template<typename real>
-inline Vec<3,real> cross(const Vec<3,real>& a, const Vec<3,real>& b)
+template<typename real1, typename real2 >
+inline Vec<3,real1> cross(const Vec<3,real1>& a, const Vec<3,real2>& b)
 {
-    return Vec<3,real>(a.y()*b.z() - a.z()*b.y(),
+    return Vec<3,real1>(a.y()*b.z() - a.z()*b.y(),
             a.z()*b.x() - a.x()*b.z(),
             a.x()*b.y() - a.y()*b.x());
 }
 
 /// Cross product for 2-elements vectors.
-template <typename real>
-real cross(const defaulttype::Vec<2,real>& a, const defaulttype::Vec<2,real>& b )
+template <typename real1, typename real2>
+real1 cross(const defaulttype::Vec<2,real1>& a, const defaulttype::Vec<2,real2>& b )
 {
     return a[0]*b[1] - a[1]*b[0];
 }

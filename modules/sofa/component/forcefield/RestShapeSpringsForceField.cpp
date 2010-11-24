@@ -73,7 +73,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(DataVecDeriv& f, const D
 
         // translation
         Vec3f dx = p1[index].getCenter() - p_0[ext_index].getCenter();
-        f1[index].getVCenter() -=  dx * k[i] ;
+        getVCenter(f1[index]) -=  dx * k[i] ;
 
         // rotation
         Quat dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
@@ -91,7 +91,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(DataVecDeriv& f, const D
             dq.quatToAxis(dir, angle);
 
         //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
-        f1[index].getVOrientation() -= dir * angle * k_a[i] ;
+        getVOrientation(f1[index]) -= dir * angle * k_a[i] ;
     }
 }
 
@@ -109,8 +109,8 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(DataVecDeriv& df, const
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        df1[indices[i]].getVCenter()	 -=  dx1[indices[i]].getVCenter()      * k[i]   * kFactor ;
-        df1[indices[i]].getVOrientation() -=  dx1[indices[i]].getVOrientation() * k_a[i] * kFactor ;
+        getVCenter(df1[indices[i]])	 -=  getVCenter(dx1[indices[i]])      * k[i]   * kFactor ;
+        getVOrientation(df1[indices[i]]) -=  getVOrientation(dx1[indices[i]]) * k_a[i] * kFactor ;
     }
 }
 
@@ -193,7 +193,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(DataVecDeriv& f, const D
 
         // translation
         Vec3f dx = p1[index].getCenter() - p_0[ext_index].getCenter();
-        f1[index].getVCenter() -=  dx * k[i] ;
+        getVCenter(f1[index]) -=  dx * k[i] ;
 
         // rotation
         Quat dq = p1[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
@@ -205,7 +205,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(DataVecDeriv& f, const D
         dq.quatToAxis(dir, angle);
 
         //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
-        f1[index].getVOrientation() -= dir * angle * k_a[i] ;
+        getVOrientation(f1[index]) -= dir * angle * k_a[i] ;
     }
 }
 
@@ -223,8 +223,8 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(DataVecDeriv& df, const
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        df1[indices[i]].getVCenter()      -=  dx1[indices[i]].getVCenter()      * k[i]   * kFactor ;
-        df1[indices[i]].getVOrientation() -=  dx1[indices[i]].getVOrientation() * k_a[i] * kFactor ;
+        getVCenter(df1[indices[i]])      -=  getVCenter(dx1[indices[i]])      * k[i]   * kFactor ;
+        getVOrientation(df1[indices[i]]) -=  getVOrientation(dx1[indices[i]]) * k_a[i] * kFactor ;
     }
 }
 

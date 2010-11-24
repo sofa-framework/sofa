@@ -93,14 +93,14 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnerg
     //store the referential of the spring (p1) to use it in addSpringDForce()
     springRef[a] = p1[a];
 
-    VecN fT = kst.linearProduct( ( p2[b].getCenter() + Mr02 * ( spring.vec2)) - ( p1[a].getCenter() + Mr01 * ( spring.vec1))) + damping.linearProduct ( Vp1p2.getVCenter());
+    VecN fT = kst.linearProduct( ( p2[b].getCenter() + Mr02 * ( spring.vec2)) - ( p1[a].getCenter() + Mr01 * ( spring.vec1))) + damping.linearProduct ( getVCenter(Vp1p2));
     VecN fR = ksr.linearProduct( ( p1[a].getOrientation().inverse() * p2[b].getOrientation()).toEulerVector());
 
-    VecN C1 = fR + cross( Mr01 * ( spring.vec1), fT) + damping.linearProduct ( Vp1p2.getVOrientation() );
-    VecN C2 = fR + cross( Mr02 * ( spring.vec2), fT) + damping.linearProduct ( -Vp1p2.getVOrientation() );
+    VecN C1 = fR + cross( Mr01 * ( spring.vec1), fT) + damping.linearProduct ( getVOrientation(Vp1p2) );
+    VecN C2 = fR + cross( Mr02 * ( spring.vec2), fT) + damping.linearProduct ( -getVOrientation(Vp1p2) );
 
-    f1[a] += Deriv ( fT, C1);
-    f2[b] -= Deriv ( fT, C2);
+    f1[a] += Deriv ( fT[0],fT[1],fT[2], C1[0],C1[1],C1[2]);
+    f2[b] -= Deriv ( fT[0],fT[1],fT[2], C2[0],C2[1],C2[2]);
 
     /*serr << "f1: " << fT1 << ", " << fR1 << endl;
     serr << "f2: " << fT2 << ", " << fR2 << endl;
@@ -123,11 +123,11 @@ void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const Vec
     VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
 
     //compute directional force
-    VecN df0 = Mr01 * ( kst.linearProduct ( Mr10*Mdx1dx2.getVCenter() ) );
+    VecN df0 = Mr01 * ( kst.linearProduct ( Mr10*getVCenter(Mdx1dx2) ) );
     //compute rotational force
-    VecN dR0 = Mr01 * ( ksr.linearProduct ( Mr10* Mdx1dx2.getVOrientation() ) );
+    VecN dR0 = Mr01 * ( ksr.linearProduct ( Mr10* getVOrientation(Mdx1dx2) ) );
 
-    const Deriv dforce ( df0,dR0);
+    const Deriv dforce ( df0[0],df0[1],df0[2], dR0[0],dR0[1],dR0[2] );
 
     f1[a] += dforce;
     f2[b] -= dforce;

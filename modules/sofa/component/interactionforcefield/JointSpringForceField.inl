@@ -159,13 +159,13 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     Vector ksrS( spring.freeMovements[3]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[4]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[5]==0?(Real)0.0:spring.softStiffnessRot);
 
     //compute directional force (relative translation is expressed in world coordinates)
-    Vector fT0 = Mr01 * (kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(Vp1p2.getVCenter());
+    Vector fT0 = Mr01 * (kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(getVCenter(Vp1p2));
     //compute rotational force (relative orientation is expressed in p1)
-    Vector fR0 = Mr01 * MRLT * ( ksrH.linearProduct(spring.extraTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
-    fR0 += Mr01 * ( ksrS.linearProduct(spring.lawfulTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
+    Vector fR0 = Mr01 * MRLT * ( ksrH.linearProduct(spring.extraTorsion.toEulerVector())) + damping.linearProduct(getVOrientation(Vp1p2));
+    fR0 += Mr01 * ( ksrS.linearProduct(spring.lawfulTorsion.toEulerVector())) + damping.linearProduct(getVOrientation(Vp1p2));
     //--
     if(bloc)
-        fR0 += Mr01 * ( spring.bloquage.linearProduct( dTorsion)) + damping.linearProduct(Vp1p2.getVOrientation());
+        fR0 += Mr01 * ( spring.bloquage.linearProduct( dTorsion)) + damping.linearProduct(getVOrientation(Vp1p2));
 
     const Deriv force(fT0, fR0 );
     //affect forces
@@ -191,9 +191,9 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     Vector ksr( spring.freeMovements[3]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[0], spring.freeMovements[4]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[1], spring.freeMovements[5]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[2]);
 
     //compute directional force
-    Vector df0 = Mr01 * (kst.linearProduct(Mr10*Mdx1dx2.getVCenter() ));
+    Vector df0 = Mr01 * (kst.linearProduct(Mr10*getVCenter(Mdx1dx2) ));
     //compute rotational force
-    Vector dR0 = Mr01 * (ksr.linearProduct(Mr10* Mdx1dx2.getVOrientation()));
+    Vector dR0 = Mr01 * (ksr.linearProduct(Mr10* getVOrientation(Mdx1dx2)));
 
     const Deriv dforce(df0,dR0);
 

@@ -148,8 +148,8 @@ void TubularMapping<TIn, TOut>::applyJ( OutDataVecDeriv& dOut, const InDataVecDe
 
     for (unsigned int i=0; i<in.size(); i++)
     {
-        v = in[i].getVCenter();
-        omega = in[i].getVOrientation();
+        v = getVCenter(in[i]);
+        omega = getVOrientation(in[i]);
 
         for(unsigned int j=0; j<N; ++j)
         {
@@ -189,8 +189,8 @@ void TubularMapping<TIn, TOut>::applyJT( InDataVecDeriv& dOut, const OutDataVecD
             omega += cross(rotatedPoints[i*N+j],f);
         }
 
-        out[i].getVCenter() += v;
-        out[i].getVOrientation() += omega;
+        getVCenter(out[i]) += v;
+        getVOrientation(out[i]) += omega;
         //sout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << sendl;
     }
 

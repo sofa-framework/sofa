@@ -136,11 +136,11 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
             std::cout << "    [ " << dof << "]=" << n << std::endl;
 #endif
 
-            weightedNormal.getVCenter() = n.getVCenter();
-            weightedNormal.getVOrientation() = n.getVOrientation();
+            getVCenter(weightedNormal) = getVCenter(n);
+            getVOrientation(weightedNormal) = getVOrientation(n);
 
             // compliance * weightedNormal
-            comp_wN.getVCenter() = weightedNormal.getVCenter() * usedComp[0];
+            getVCenter(comp_wN) = getVCenter(weightedNormal) * usedComp[0];
 
             const double wn3 = weightedNormal[3];
             const double wn4 = weightedNormal[4];
@@ -277,8 +277,8 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
                 dof = colIt.index();
                 weightedNormal = colIt.val();
 
-                force[dof].getVCenter() += weightedNormal.getVCenter() * fC1;
-                force[dof].getVOrientation() += weightedNormal.getVOrientation() * fC1;
+                getVCenter(force[dof]) += getVCenter(weightedNormal) * fC1;
+                getVOrientation(force[dof]) += getVOrientation(weightedNormal) * fC1;
 
                 ++colIt;
             }
@@ -310,7 +310,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
         v[i] = v_free[i];
 
         // compliance * force
-        dx[i].getVCenter() = force[i].getVCenter() * usedComp[0];
+        getVCenter(dx[i]) = getVCenter(force[i]) * usedComp[0];
         dx[i][3] =  usedComp[1] * force[i][3] +  usedComp[2] * force[i][4] +  usedComp[3] * force[i][5];
         dx[i][4] =  usedComp[2] * force[i][3] +  usedComp[4] * force[i][4] +  usedComp[5] * force[i][5];
         dx[i][5] =  usedComp[3] * force[i][3] +  usedComp[5] * force[i][4] +  usedComp[6] * force[i][5];
@@ -355,12 +355,12 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
                 constraint_force[dof] += n * df[id];
 
                 Deriv dx;
-                dx.getVCenter() = constraint_force[dof].getVCenter() * compliance.getValue()[0];
+                getVCenter(dx) = getVCenter(constraint_force[dof]) * compliance.getValue()[0];
 
-                defaulttype::Vec3d wrench = constraint_force[dof].getVOrientation();
-                dx.getVOrientation()[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];
-                dx.getVOrientation()[1] = usedComp[2] * wrench[0] + usedComp[4] * wrench[1] + usedComp[5] * wrench[2];
-                dx.getVOrientation()[2] = usedComp[3] * wrench[0] + usedComp[5] * wrench[1] + usedComp[6] * wrench[2];
+                defaulttype::Vec3d wrench = getVOrientation(constraint_force[dof]);
+                getVOrientation(dx)[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];
+                getVOrientation(dx)[1] = usedComp[2] * wrench[0] + usedComp[4] * wrench[1] + usedComp[5] * wrench[2];
+                getVOrientation(dx)[2] = usedComp[3] * wrench[0] + usedComp[5] * wrench[1] + usedComp[6] * wrench[2];
 
                 constraint_disp[dof] = dx;
 
@@ -397,12 +397,12 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
                 weightedNormal = colIt.val();
                 unsigned int dof1 = colIt.index();
 
-                C_n.getVCenter() = weightedNormal.getVCenter() * compliance.getValue()[0];
-                defaulttype::Vec3d wrench = weightedNormal.getVOrientation() ;
+                getVCenter(C_n) = getVCenter(weightedNormal) * compliance.getValue()[0];
+                defaulttype::Vec3d wrench = getVOrientation(weightedNormal) ;
 
-                C_n.getVOrientation()[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];
-                C_n.getVOrientation()[1] = usedComp[2] * wrench[0] + usedComp[4] * wrench[1] + usedComp[5] * wrench[2];
-                C_n.getVOrientation()[2] = usedComp[3] * wrench[0] + usedComp[5] * wrench[1] + usedComp[6] * wrench[2];
+                getVOrientation(C_n)[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];
+                getVOrientation(C_n)[1] = usedComp[2] * wrench[0] + usedComp[4] * wrench[1] + usedComp[5] * wrench[2];
+                getVOrientation(C_n)[2] = usedComp[3] * wrench[0] + usedComp[5] * wrench[1] + usedComp[6] * wrench[2];
 
                 for (int id2 = id1; id2 <= end; id2++)
                 {

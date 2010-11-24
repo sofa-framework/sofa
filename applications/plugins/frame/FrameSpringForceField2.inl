@@ -143,7 +143,7 @@ void FrameSpringForceField2<DataTypes>::computeK0()
         }
 
 
-// update KSpring (K expressed at the joint location)
+    // update KSpring (K expressed at the joint location)
     helper::ReadAccessor<VecCoord> xiref = *this->getMState()->getX0();
     Mat33 crossi,crossj;
     Mat66 Kbackup;
@@ -170,14 +170,14 @@ void FrameSpringForceField2<DataTypes>::computeK0()
             }
 
     /*
-    	for ( i=0;i<nbDOF;++i )
-    		for ( j=0;j<nbDOF;++j )
-    			if(i!=j)
-    				{
-    				for(l=0;l<6;l++)  for(m=0;m<6;m++) if(fabs(K0[i][j][l][m])<1E-5) K0[i][j][l][m]=0;
-    				serr << "Kspring["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
-    				}
-    		 */
+    for ( i=0;i<nbDOF;++i )
+    	for ( j=0;j<nbDOF;++j )
+    		if(i!=j)
+    			{
+    			for(l=0;l<6;l++)  for(m=0;m<6;m++) if(fabs(K0[i][j][l][m])<1E-5) K0[i][j][l][m]=0;
+    			serr << "Kspring["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
+    			}
+    	 */
 
 }
 
@@ -216,21 +216,22 @@ void FrameSpringForceField2<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& 
         Vec6 res = Vec6 ( 0, 0, 0, 0, 0, 0 );
         for ( unsigned int j = 0; j < dx.size(); ++j )
         {
-            Vec6 tmp;
-            tmp[0] = dx[j].getVOrientation() [0];
-            tmp[1] = dx[j].getVOrientation() [1];
-            tmp[2] = dx[j].getVOrientation() [2];
-            tmp[3] = dx[j].getVCenter() [0];
-            tmp[4] = dx[j].getVCenter() [1];
-            tmp[5] = dx[j].getVCenter() [2];
-            res += K[i][j] * tmp;
+//                        Vec6 tmp;
+//                        tmp[0] = dx[j].getVOrientation() [0];
+//                        tmp[1] = dx[j].getVOrientation() [1];
+//                        tmp[2] = dx[j].getVOrientation() [2];
+//                        tmp[3] = dx[j].getVCenter() [0];
+//                        tmp[4] = dx[j].getVCenter() [1];
+//                        tmp[5] = dx[j].getVCenter() [2];
+//                        res += K[i][j] * tmp;
+            df[i] += K[i][j] * dx[j];
         }
-        df[i].getVOrientation() [0] += res[0];
-        df[i].getVOrientation() [1] += res[1];
-        df[i].getVOrientation() [2] += res[2];
-        df[i].getVCenter() [0] += res[3];
-        df[i].getVCenter() [1] += res[4];
-        df[i].getVCenter() [2] += res[5];
+//                    df[i].getVOrientation() [0] += res[0];
+//                    df[i].getVOrientation() [1] += res[1];
+//                    df[i].getVOrientation() [2] += res[2];
+//                    df[i].getVCenter() [0] += res[3];
+//                    df[i].getVCenter() [1] += res[4];
+//                    df[i].getVCenter() [2] += res[5];
     }
 }
 
@@ -281,15 +282,15 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMatInxIn
 
                 // mid frame M
                 M.getCenter()=(MI.getCenter()+MJ.getCenter())/2.;
-                n=Thetaij.getVOrientation()[0]*Thetaij.getVOrientation()[0]+Thetaij.getVOrientation()[1]*Thetaij.getVOrientation()[1]+Thetaij.getVOrientation()[2]*Thetaij.getVOrientation()[2];
+                n=getVOrientation(Thetaij)*getVOrientation(Thetaij);
                 if (n>0)
                 {
                     n=sqrt(n);
                     q[3]=cos(n/4.);
                     n=sin(n/4.)/n;
-                    q[0]=Thetaij.getVOrientation()[0]*n;
-                    q[1]=Thetaij.getVOrientation()[1]*n;
-                    q[2]=Thetaij.getVOrientation()[2]*n;
+                    q[0]=getVOrientation(Thetaij)[0]*n;
+                    q[1]=getVOrientation(Thetaij)[1]*n;
+                    q[2]=getVOrientation(Thetaij)[2]*n;
                 }
                 else
                 {
@@ -322,22 +323,23 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMatInxIn
                 KmSym=(Km+Km.transposed())/2.;
 
                 // spring force at M
-                Fm=Deriv();
-                for (k=0; k<3; k++) for (l=0; l<3; l++)
-                    {
-                        Fm.getVOrientation()[k]+=KmSym[k][l]*Thetaij.getVOrientation()[l];
-                        Fm.getVOrientation()[k]+=KmSym[k][l+3]*Thetaij.getVCenter()[l];
-                        Fm.getVCenter()[k]+=KmSym[k+3][l]*Thetaij.getVOrientation()[l];
-                        Fm.getVCenter()[k]+=KmSym[k+3][l+3]*Thetaij.getVCenter()[l];
-                    }
+//                        Fm=Deriv();
+//                        for (k=0;k<3;k++) for (l=0;l<3;l++)
+//                        {
+//                            Fm.getVOrientation()[k]+=KmSym[k][l]*Thetaij.getVOrientation()[l];
+//                            Fm.getVOrientation()[k]+=KmSym[k][l+3]*Thetaij.getVCenter()[l];
+//                            Fm.getVCenter()[k]+=KmSym[k+3][l]*Thetaij.getVOrientation()[l];
+//                            Fm.getVCenter()[k]+=KmSym[k+3][l+3]*Thetaij.getVCenter()[l];
+//                        }
+                Fm=KmSym*Thetaij;
 
                 // force on i (displaced from M)
-                Force[i].getVOrientation()+=Fm.getVOrientation()+cross(M.getCenter()-xi[i].getCenter(),Fm.getVCenter());
-                Force[i].getVCenter()+=Fm.getVCenter();
+                getVOrientation(Force[i])+=getVOrientation(Fm)+cross(M.getCenter()-xi[i].getCenter(),getVCenter(Fm));
+                getVCenter(Force[i])+=getVCenter(Fm);
 
                 // force on j (displaced from M)
-                Force[j].getVOrientation()-=Fm.getVOrientation()+cross(M.getCenter()-xi[j].getCenter(),Fm.getVCenter());
-                Force[j].getVCenter()-=Fm.getVCenter();
+                getVOrientation(Force[j]) -= getVOrientation(Fm) + cross(M.getCenter()-xi[j].getCenter(),getVCenter(Fm));
+                getVCenter(Force[j]) -= getVCenter(Fm);
 
                 // update K
                 if (K.size())
@@ -396,7 +398,7 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMatInxIn
 template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::QtoR( Mat33& M, const Quat& q)
 {
-// q to M
+    // q to M
     double xs = q[0]*2., ys = q[1]*2., zs = q[2]*2.;
     double wx = q[3]*xs, wy = q[3]*ys, wz = q[3]*zs;
     double xx = q[0]*xs, xy = q[0]*ys, xz = q[0]*zs;
@@ -424,7 +426,7 @@ void FrameSpringForceField2<DataTypes>::Transform_Q( Vec3& pout, const Vec3& pin
 template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::PostoSpeed( Deriv& Omega, const Coord& xi, const Coord& xi2)
 {
-// X2=Omega*X -> Q(Omega/2)=X2*X^-1
+    // X2=Omega*X -> Q(Omega/2)=X2*X^-1
 
     Quat q_inv; q_inv[0]=-xi.getOrientation()[0];    q_inv[1]=-xi.getOrientation()[1];    q_inv[2]=-xi.getOrientation()[2];
     q_inv[3]=xi.getOrientation()[3];
@@ -433,10 +435,10 @@ void FrameSpringForceField2<DataTypes>::PostoSpeed( Deriv& Omega, const Coord& x
     double W=0,n=sqrt(Om[0]*Om[0]+Om[1]*Om[1]+Om[2]*Om[2]);
     if(Om[3]<-1) Om[3]=-1;
     if(n!=0 && Om[3]<=1 && Om[3]>=-1) W=2*acos(Om[3])/n;
-    Omega.getVOrientation()[0]=Om[0]*W;
-    Omega.getVOrientation()[1]=Om[1]*W;
-    Omega.getVOrientation()[2]=Om[2]*W;
-    Omega.getVCenter()=xi2.getCenter()-xi.getCenter();
+    getVOrientation(Omega)[0]=Om[0]*W;
+    getVOrientation(Omega)[1]=Om[1]*W;
+    getVOrientation(Omega)[2]=Om[2]*W;
+    getVCenter(Omega)=xi2.getCenter()-xi.getCenter();
 }
 
 template<class DataTypes>

@@ -95,8 +95,8 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
     out.recreate(points.size());
-    v = in[index.getValue()].getVCenter();
-    omega = in[index.getValue()].getVOrientation();
+    v = getVCenter(in[index.getValue()]);
+    omega = getVOrientation(in[index.getValue()]);
     //for(unsigned int i=0;i<points.size();i++)
     //{
     //    // out = J in
@@ -126,8 +126,8 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
         v += tmp[2*i];
         omega += tmp[2*i+1];
     }
-    out[index.getValue()].getVCenter() += v;
-    out[index.getValue()].getVOrientation() += omega;
+    getVCenter(out[index.getValue()]) += v;
+    getVOrientation(out[index.getValue()]) += omega;
 
     dOut.endEdit();
 }
@@ -169,8 +169,8 @@ void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJ(
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
     out.recreate(points.size());
-    v = in[index.getValue()].getVCenter();
-    omega = in[index.getValue()].getVOrientation();
+    v = getVCenter(in[index.getValue()]);
+    omega = getVOrientation(in[index.getValue()]);
     //for(unsigned int i=0;i<points.size();i++)
     //{
     //    // out = J in
@@ -200,8 +200,8 @@ void RigidMapping<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>::applyJT
         v += tmp[2*i];
         omega += tmp[2*i+1];
     }
-    out[index.getValue()].getVCenter() += v;
-    out[index.getValue()].getVOrientation() += omega;
+    getVCenter(out[index.getValue()]) += v;
+    getVOrientation(out[index.getValue()]) += omega;
 
     dOut.endEdit();
 }
@@ -243,8 +243,8 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ(
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
     out.recreate(points.size());
-    v = in[index.getValue()].getVCenter();
-    omega = in[index.getValue()].getVOrientation();
+    v = getVCenter(in[index.getValue()]);
+    omega = getVOrientation(in[index.getValue()]);
     //for(unsigned int i=0;i<points.size();i++)
     //{
     //    // out = J in
@@ -274,8 +274,8 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT
         v += tmp[2*i];
         omega += tmp[2*i+1];
     }
-    out[index.getValue()].getVCenter() += v;
-    out[index.getValue()].getVOrientation() += omega;
+    getVCenter(out[index.getValue()]) += v;
+    getVOrientation(out[index.getValue()]) += omega;
 
     dOut.endEdit();
 }

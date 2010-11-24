@@ -381,10 +381,10 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         int parent = (*ac)->parentIndex.getValue();
         int child = (*ac)->childIndex.getValue();
 
-        out[child].getVOrientation() += out[parent].getVOrientation();
+        getVOrientation(out[child]) += getVOrientation(out[parent]);
         Vec<3,OutReal> P = xto[parent].getCenter();
         Vec<3,OutReal> C = xto[child].getCenter();
-        out[child].getVCenter() = out[parent].getVCenter() + cross(P-C, out[parent].getVOrientation());
+        getVCenter(out[child]) = getVCenter(out[parent]) + cross(P-C, getVOrientation(out[parent]));
         //sout<<"P:"<< P  <<"- C: "<< C;
 
         vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
@@ -401,12 +401,12 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
 
             if ((*a)->rotation.getValue())
             {
-                out[child].getVCenter() += cross(A-C, axis*value.x());
-                out[child].getVOrientation() += axis*value.x();
+                getVCenter(out[child]) += cross(A-C, axis*value.x());
+                getVOrientation(out[child]) += axis*value.x();
             }
             if ((*a)->translation.getValue())
             {
-                out[child].getVCenter() += axis*value.x();
+                getVCenter(out[child]) += axis*value.x();
             }
             i++;
 
@@ -459,10 +459,10 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
         int parent = (*ac)->parentIndex.getValue();
         int child = (*ac)->childIndex.getValue();
 
-        fObjects6DBuf[parent].getVCenter() += fObjects6DBuf[child].getVCenter();
+        getVCenter(fObjects6DBuf[parent]) += getVCenter(fObjects6DBuf[child]);
         Vec<3,OutReal> P = xto[parent].getCenter();
         Vec<3,OutReal> C = xto[child].getCenter();
-        fObjects6DBuf[parent].getVOrientation() += fObjects6DBuf[child].getVOrientation() + cross(C-P,  fObjects6DBuf[child].getVCenter());
+        getVOrientation(fObjects6DBuf[parent]) += getVOrientation(fObjects6DBuf[child]) + cross(C-P,  getVCenter(fObjects6DBuf[child]));
 
         vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation* > articulations = (*ac)->getArticulations();
 
@@ -477,16 +477,16 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
             Vec<3,OutReal> axis = ArticulationAxis[ind];
             Vec<3,Real> A = ArticulationPos[ind] ;
             OutDeriv T;
-            T.getVCenter() = fObjects6DBuf[child].getVCenter();
-            T.getVOrientation() = fObjects6DBuf[child].getVOrientation() + cross(C-A, fObjects6DBuf[child].getVCenter());
+            getVCenter(T) = getVCenter(fObjects6DBuf[child]);
+            getVOrientation(T) = getVOrientation(fObjects6DBuf[child]) + cross(C-A, getVCenter(fObjects6DBuf[child]));
 
             if ((*a)->rotation.getValue())
             {
-                out[ind].x() += (Real)dot(axis, T.getVOrientation());
+                out[ind].x() += (Real)dot(axis, getVOrientation(T));
             }
             if ((*a)->translation.getValue())
             {
-                out[ind].x() += (Real)dot(axis, T.getVCenter());
+                out[ind].x() += (Real)dot(axis, getVCenter(T));
             }
         }
     }
@@ -573,17 +573,17 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                         Vec< 3, Real > A = ArticulationPos[ind] ; // Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
 
                         OutDeriv T;
-                        T.getVCenter() = valueConst.getVCenter();
-                        T.getVOrientation() = valueConst.getVOrientation() + cross(C - A, valueConst.getVCenter());
+                        getVCenter(T) = getVCenter(valueConst);
+                        getVOrientation(T) = getVOrientation(valueConst) + cross(C - A, getVCenter(valueConst));
 
                         if ((*a)->rotation.getValue())
                         {
-                            data = (Real)dot(axis, T.getVOrientation());
+                            data = (Real)dot(axis, getVOrientation(T));
                         }
 
                         if ((*a)->translation.getValue())
                         {
-                            data = (Real)dot(axis, T.getVCenter());
+                            data = (Real)dot(axis, getVCenter(T));
                         }
 
                         o.addCol(ind, data);
@@ -596,8 +596,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                     Vec<3,OutReal> posRoot = xto[indexT].getCenter();
 
                     OutDeriv T;
-                    T.getVCenter() = valueConst.getVCenter();
-                    T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
+                    getVCenter(T) = getVCenter(valueConst);
+                    getVOrientation(T) = getVOrientation(valueConst) + cross(C - posRoot, getVCenter(valueConst));
 
                     if (rootRowIt == rootRowItEnd)
                         rootRowIt = (*outRoot).writeLine(rowIt.index());

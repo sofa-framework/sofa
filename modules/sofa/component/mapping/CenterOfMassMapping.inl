@@ -104,7 +104,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& childForce
     //with Fi: force of the dof i, Mi: mass of the dof i, and Mt : total mass of the object
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
     {
-        outF += parentForces[i].getVCenter() * masses->getElementMass(i);
+        outF += getVCenter(parentForces[i]) * masses->getElementMass(i);
     }
 
     childForces[0] = outF / totalMass;
@@ -124,7 +124,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& parentForc
     //the force on a dof is proportional to its mass
     //relation is Fi = Fc * (Mi/Mt), with Fc: force of center of mass, Mi: dof mass, Mt: total mass
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
-        parentForces[i].getVCenter() += childForces[0] * (masses->getElementMass(i) / totalMass);
+        getVCenter(parentForces[i]) += childForces[0] * (masses->getElementMass(i) / totalMass);
 }
 
 

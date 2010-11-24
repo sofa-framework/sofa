@@ -120,8 +120,8 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(defaul
     const Coord dof1 = x1.getValue()[m1.getValue()];
     const Coord dof2 = x2.getValue()[m2.getValue()];
 
-    dfree.getVCenter() = dof2.getCenter() - dof1.getCenter();
-    dfree.getVOrientation() =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
+    getVCenter(dfree) = dof2.getCenter() - dof1.getCenter();
+    getVOrientation(dfree) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
 
     for (unsigned int i=0 ; i<dfree.size() ; i++)
         v->set(cid+i, dfree[i]);
@@ -196,8 +196,8 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(defaul
     Coord dof1 = x1.getValue()[m1.getValue()];
     Coord dof2 = x2.getValue()[m1.getValue()];
 
-    dfree.getVCenter() = dof2.getCenter() - dof1.getCenter();
-    dfree.getVOrientation() =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
+    getVCenter(dfree) = dof2.getCenter() - dof1.getCenter();
+    getVOrientation(dfree) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
 
     for (unsigned int i=0 ; i<dfree.size() ; i++)
         v->set(cid+i, dfree[i]);

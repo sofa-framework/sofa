@@ -256,7 +256,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( typename Out::VecDeriv& out, con
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
             Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
-            out[verticeIndex] += (in[t->getLine(iline.lineIndex)[0]].getVCenter() - IP.cross(in[t->getLine(iline.lineIndex)[0]].getVOrientation())) * iline.weight;
+            out[verticeIndex] += (getVCenter(in[t->getLine(iline.lineIndex)[0]]) - IP.cross(getVOrientation(in[t->getLine(iline.lineIndex)[0]]))) * iline.weight;
         }
     }
 }
@@ -280,8 +280,8 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( typename In::VecDeriv& out, con
 
             Vec<3,Real> IP = xfrom[I].getOrientation().rotate(iline.position);
 
-            out[I].getVCenter() += f * iline.weight;
-            out[I].getVOrientation() += IP.cross(f) *  iline.weight;
+            getVCenter(out[I]) += f * iline.weight;
+            getVOrientation(out[I]) += IP.cross(f) *  iline.weight;
 
         }
     }
@@ -331,9 +331,9 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( typename In::MatrixDeriv& out, 
                     influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
                     Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
                     InDeriv direction;
-                    direction.getVCenter() = data * iline.weight;
+                    getVCenter(direction) = data * iline.weight;
                     //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
-                    direction.getVOrientation() = IP.cross(data) * iline.weight;
+                    getVOrientation(direction) = IP.cross(data) * iline.weight;
 
                     o.addCol(t->getLine(iline.lineIndex)[0], direction);
                 }

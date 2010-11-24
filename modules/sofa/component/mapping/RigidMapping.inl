@@ -532,7 +532,7 @@ void RigidMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDeriv
                 }
                 ++it;
             }
-            out[outIdx] = in[inIdx].velocityAtRotatedPoint(rotatedPoints[outIdx]);
+            out[outIdx] = velocityAtRotatedPoint( in[inIdx], rotatedPoints[outIdx] );
         }
     }
 }
@@ -607,8 +607,8 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeri
                 }
                 ++it;
             }
-            out[outIdx].getVCenter() += in[inIdx];
-            out[outIdx].getVOrientation() += (DRot) cross(rotatedPoints[inIdx], in[inIdx]);
+            getVCenter(out[outIdx]) += in[inIdx];
+            getVOrientation(out[outIdx]) +=  cross(rotatedPoints[inIdx], in[inIdx]);
 
         }
         if (isMaskInUse)

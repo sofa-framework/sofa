@@ -45,8 +45,8 @@ namespace defaulttype
 using std::endl;
 using sofa::helper::vector;
 
-template<int N, typename real>
-class RigidDeriv;
+//template<int N, typename real>
+//class RigidDeriv;
 
 template<int N, typename real>
 class RigidCoord;
@@ -61,173 +61,206 @@ class StdRigidTypes;
 // 3D Rigids
 //=============================================================================
 
-/** Degrees of freedom of 3D rigid bodies. Orientations are modeled using quaternions.
-*/
-template<typename real>
-class RigidDeriv<3, real>
+///** Degrees of freedom of 3D rigid bodies. Orientations are modeled using quaternions.
+//*/
+//template<typename real>
+//class RigidDeriv<3, real>
+//{
+//public:
+//	typedef real value_type;
+//    typedef real Real;
+//    typedef Vec<3,Real> Pos;
+//    typedef Vec<3,Real> Rot;
+//    typedef Vec<3,Real> Vec3;
+//    typedef helper::Quater<Real> Quat;
+//
+//protected:
+//    Vec3 vCenter;
+//    Vec3 vOrientation;
+//public:
+//    friend class RigidCoord<3,real>;
+//
+//    RigidDeriv(const Vec3 &velCenter, const Vec3 &velOrient)
+//    : vCenter(velCenter), vOrientation(velOrient) {}
+//    RigidDeriv() { clear(); }
+//
+//    template<typename real2>
+//    RigidDeriv(const RigidDeriv<3,real2>& c)
+//    : vCenter(c.getVCenter()), vOrientation(c.getVOrientation())
+//    {
+//    }
+//
+//    void clear() { vCenter.clear(); vOrientation.clear(); }
+//
+//    template<typename real2>
+//    void operator =(const RigidDeriv<3,real2>& c)
+//    {
+//        vCenter = c.getVCenter();
+//        vOrientation = c.getVOrientation();
+//    }
+//
+//    void operator =(const Vec3& v)
+//    {
+//        vCenter = v;
+//    }
+//
+//    void operator +=(const RigidDeriv& a)
+//    {
+//        vCenter += a.vCenter;
+//        vOrientation += a.vOrientation;
+//    }
+//
+//	void operator -=(const RigidDeriv& a)
+//    {
+//        vCenter -= a.vCenter;
+//        vOrientation -= a.vOrientation;
+//    }
+//
+//    RigidDeriv<3,real> operator + (const RigidDeriv<3,real>& a) const
+//    {
+//        RigidDeriv d;
+//        d.vCenter = vCenter + a.vCenter;
+//        d.vOrientation = vOrientation + a.vOrientation;
+//        return d;
+//    }
+//
+//    template<typename real2>
+//    void operator*=(real2 a)
+//    {
+//        vCenter *= a;
+//        vOrientation *= a;
+//    }
+//
+//    template<typename real2>
+//    void operator/=(real2 a)
+//    {
+//        vCenter /= a;
+//        vOrientation /= a;
+//    }
+//
+//    RigidDeriv<3,real> operator*(float a) const
+//    {
+//        RigidDeriv r = *this;
+//        r*=a;
+//        return r;
+//    }
+//
+//    RigidDeriv<3,real> operator*(double a) const
+//    {
+//        RigidDeriv r = *this;
+//        r*=a;
+//        return r;
+//    }
+//
+//    RigidDeriv<3,real> operator - () const
+//    {
+//        return RigidDeriv(-vCenter, -vOrientation);
+//    }
+//
+//	RigidDeriv<3,real> operator - (const RigidDeriv<3,real>& a) const
+//	{
+//		return RigidDeriv<3,real>(this->vCenter - a.vCenter, this->vOrientation-a.vOrientation);
+//	}
+//
+//
+//    /// dot product, mostly used to compute residuals as sqrt(x*x)
+//    Real operator*(const RigidDeriv<3,real>& a) const
+//    {
+//        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
+//            +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
+//            +vOrientation[2]*a.vOrientation[2];
+//    }
+//
+//    Vec3& getVCenter (void) { return vCenter; }
+//    Vec3& getVOrientation (void) { return vOrientation; }
+//    const Vec3& getVCenter (void) const { return vCenter; }
+//    const Vec3& getVOrientation (void) const { return vOrientation; }
+//
+//	 Vec3& getLinear () { return vCenter; }
+//	 const Vec3& getLinear () const { return vCenter; }
+//	 Vec3& getAngular () { return vOrientation; }
+//	 const Vec3& getAngular () const { return vOrientation; }
+//
+//
+//	 Vec3 velocityAtRotatedPoint(const Vec3& p) const
+//	 {
+//	     return vCenter - cross(p, vOrientation);
+//	 }
+//
+//	 /// write to an output stream
+//    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<3,real>& v ){
+//        out<<v.vCenter<<" "<<v.vOrientation;
+//        return out;
+//    }
+//    /// read from an input stream
+//    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<3,real>& v ){
+//        in>>v.vCenter>>v.vOrientation;
+//        return in;
+//    }
+//
+//    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
+//    enum { total_size = 6 };
+//    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+//    enum { spatial_dimensions = 3 };
+//
+//    real* ptr() { return vCenter.ptr(); }
+//    const real* ptr() const { return vCenter.ptr(); }
+//
+//	static unsigned int size(){return 6;}
+//
+//	/// Access to i-th element.
+//    real& operator[](int i)
+//    {
+//		if (i<3)
+//			return this->vCenter(i);
+//		else
+//			return this->vOrientation(i-3);
+//    }
+//
+//    /// Const access to i-th element.
+//    const real& operator[](int i) const
+//    {
+//		if (i<3)
+//			return this->vCenter(i);
+//		else
+//			return this->vOrientation(i-3);
+//    }
+//};
+
+
+template<typename T>
+Vec<3,T>& getLinear(Vec<6,T>& v) { return *reinterpret_cast<Vec<3,T>*>( &v[0]); }
+
+template<typename T>
+const Vec<3,T>& getLinear(const Vec<6,T>& v) { return *reinterpret_cast<const Vec<3,T>*>( &v[0]); }
+
+template<typename T>
+Vec<3,T>& getAngular(Vec<6,T>& v) {  return *reinterpret_cast<Vec<3,T>*>( &v[3]);  }
+
+template<typename T>
+const Vec<3,T>& getAngular(const Vec<6,T>& v) {  return *reinterpret_cast<const Vec<3,T>*>( &v[3]);  }
+
+template<typename T>
+Vec<3,T>& getVCenter(Vec<6,T>& v) { return getLinear(v); }
+
+template<typename T>
+Vec<3,T>& getVOrientation(Vec<6,T>& v) { return getAngular(v); }
+
+template<typename T>
+const Vec<3,T>& getVCenter(const Vec<6,T>& v) { return getLinear(v); }
+
+template<typename T>
+const Vec<3,T>& getVOrientation(const Vec<6,T>& v) { return getAngular(v); }
+
+
+template<typename T, typename R>
+Vec<3,T> velocityAtRotatedPoint(const Vec<6,R>& v, const Vec<3,T>& p)
 {
-public:
-    typedef real value_type;
-    typedef real Real;
-    typedef Vec<3,Real> Pos;
-    typedef Vec<3,Real> Rot;
-    typedef Vec<3,Real> Vec3;
-    typedef helper::Quater<Real> Quat;
-
-protected:
-    Vec3 vCenter;
-    Vec3 vOrientation;
-public:
-    friend class RigidCoord<3,real>;
-
-    RigidDeriv(const Vec3 &velCenter, const Vec3 &velOrient)
-        : vCenter(velCenter), vOrientation(velOrient) {}
-    RigidDeriv() { clear(); }
-
-    template<typename real2>
-    RigidDeriv(const RigidDeriv<3,real2>& c)
-        : vCenter(c.getVCenter()), vOrientation(c.getVOrientation())
-    {
-    }
-
-    void clear() { vCenter.clear(); vOrientation.clear(); }
-
-    template<typename real2>
-    void operator =(const RigidDeriv<3,real2>& c)
-    {
-        vCenter = c.getVCenter();
-        vOrientation = c.getVOrientation();
-    }
-
-    void operator =(const Vec3& v)
-    {
-        vCenter = v;
-    }
-
-    void operator +=(const RigidDeriv& a)
-    {
-        vCenter += a.vCenter;
-        vOrientation += a.vOrientation;
-    }
-
-    void operator -=(const RigidDeriv& a)
-    {
-        vCenter -= a.vCenter;
-        vOrientation -= a.vOrientation;
-    }
-
-    RigidDeriv<3,real> operator + (const RigidDeriv<3,real>& a) const
-    {
-        RigidDeriv d;
-        d.vCenter = vCenter + a.vCenter;
-        d.vOrientation = vOrientation + a.vOrientation;
-        return d;
-    }
-
-    template<typename real2>
-    void operator*=(real2 a)
-    {
-        vCenter *= a;
-        vOrientation *= a;
-    }
-
-    template<typename real2>
-    void operator/=(real2 a)
-    {
-        vCenter /= a;
-        vOrientation /= a;
-    }
-
-    RigidDeriv<3,real> operator*(float a) const
-    {
-        RigidDeriv r = *this;
-        r*=a;
-        return r;
-    }
-
-    RigidDeriv<3,real> operator*(double a) const
-    {
-        RigidDeriv r = *this;
-        r*=a;
-        return r;
-    }
-
-    RigidDeriv<3,real> operator - () const
-    {
-        return RigidDeriv(-vCenter, -vOrientation);
-    }
-
-    RigidDeriv<3,real> operator - (const RigidDeriv<3,real>& a) const
-    {
-        return RigidDeriv<3,real>(this->vCenter - a.vCenter, this->vOrientation-a.vOrientation);
-    }
+    return getLinear(v) + cross( getAngular(v),p );
+}
 
 
-    /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator*(const RigidDeriv<3,real>& a) const
-    {
-        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
-                +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
-                +vOrientation[2]*a.vOrientation[2];
-    }
 
-    Vec3& getVCenter (void) { return vCenter; }
-    Vec3& getVOrientation (void) { return vOrientation; }
-    const Vec3& getVCenter (void) const { return vCenter; }
-    const Vec3& getVOrientation (void) const { return vOrientation; }
-
-    Vec3& getLinear () { return vCenter; }
-    const Vec3& getLinear () const { return vCenter; }
-    Vec3& getAngular () { return vOrientation; }
-    const Vec3& getAngular () const { return vOrientation; }
-
-
-    Vec3 velocityAtRotatedPoint(const Vec3& p) const
-    {
-        return vCenter - cross(p, vOrientation);
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<3,real>& v )
-    {
-        out<<v.vCenter<<" "<<v.vOrientation;
-        return out;
-    }
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<3,real>& v )
-    {
-        in>>v.vCenter>>v.vOrientation;
-        return in;
-    }
-
-    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 6 };
-    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 3 };
-
-    real* ptr() { return vCenter.ptr(); }
-    const real* ptr() const { return vCenter.ptr(); }
-
-    static unsigned int size() {return 6;}
-
-    /// Access to i-th element.
-    real& operator[](int i)
-    {
-        if (i<3)
-            return this->vCenter(i);
-        else
-            return this->vOrientation(i-3);
-    }
-
-    /// Const access to i-th element.
-    const real& operator[](int i) const
-    {
-        if (i<3)
-            return this->vCenter(i);
-        else
-            return this->vOrientation(i-3);
-    }
-};
 
 template<typename real>
 class RigidCoord<3,real>
@@ -276,22 +309,22 @@ public:
     //    orientation = c.getOrientation();
     //}
 
-    void operator +=(const RigidDeriv<3,real>& a)
+    void operator +=(const Vec<6,real>& a)
     {
-        center += a.getVCenter();
+        center += getVCenter(a);
         orientation.normalize();
-        Quat qDot = orientation.vectQuatMult(a.getVOrientation());
+        Quat qDot = orientation.vectQuatMult(getVOrientation(a));
         for (int i = 0; i < 4; i++)
             orientation[i] += qDot[i] * 0.5f;
         orientation.normalize();
     }
 
-    RigidCoord<3,real> operator + (const RigidDeriv<3,real>& a) const
+    RigidCoord<3,real> operator + (const Vec<6,real>& a) const
     {
         RigidCoord c = *this;
-        c.center += a.getVCenter();
+        c.center += getVCenter(a);
         c.orientation.normalize();
-        Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
+        Quat qDot = c.orientation.vectQuatMult(getVOrientation(a));
         for (int i = 0; i < 4; i++)
             c.orientation[i] += qDot[i] * 0.5f;
         c.orientation.normalize();
@@ -567,21 +600,21 @@ public:
     }
 };
 
-template<int N, typename real>
-inline RigidDeriv<N,real> operator*(const RigidDeriv<N,real>& d, const RigidMass<N,real>& m)
+template<typename real>
+inline Vec<6,real> operator*(const Vec<6,real>& d, const RigidMass<3,real>& m)
 {
-    RigidDeriv<N,real> res;
-    res.getVCenter() = d.getVCenter() * m.mass;
-    res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
+    Vec<6,real> res;
+    getVCenter(res) = getVCenter(d) * m.mass;
+    getVOrientation(res) = m.inertiaMassMatrix * getVOrientation(d);
     return res;
 }
 
-template<int N, typename real>
-inline RigidDeriv<N, real> operator/(const RigidDeriv<N, real>& d, const RigidMass<N, real>& m)
+template<typename real>
+inline Vec<6,real> operator/(const Vec<6,real>& d, const RigidMass<3, real>& m)
 {
-    RigidDeriv<N, real> res;
-    res.getVCenter() = d.getVCenter() / m.mass;
-    res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
+    Vec<6,real> res;
+    getVCenter(res) = getVCenter(d) / m.mass;
+    getVOrientation(res) = m.invInertiaMassMatrix * getVOrientation(d);
     return res;
 }
 
@@ -592,7 +625,7 @@ class StdRigidTypes<3, real>
 public:
     typedef real Real;
     typedef RigidCoord<3,real> Coord;
-    typedef RigidDeriv<3,real> Deriv;
+    typedef Vec<6,real> Deriv;
     typedef typename Coord::Vec3 Vec3;
     typedef typename Coord::Quat Quat;
 
@@ -607,12 +640,12 @@ public:
     static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
     static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
 
-    typedef typename Deriv::Pos DPos;
-    typedef typename Deriv::Rot DRot;
-    static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
-    static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
-    static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
-    static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
+    typedef Vec<3,real> DPos;
+    typedef Vec<3,real> DRot;
+    static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
+    static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
+    static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
+    static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
@@ -647,25 +680,25 @@ public:
     template<typename T>
     static void set(Deriv& c, T x, T y, T z)
     {
-        c.getVCenter()[0] = (Real)x;
-        c.getVCenter()[1] = (Real)y;
-        c.getVCenter()[2] = (Real)z;
+        getVCenter(c)[0] = (Real)x;
+        getVCenter(c)[1] = (Real)y;
+        getVCenter(c)[2] = (Real)z;
     }
 
     template<typename T>
     static void get(T& x, T& y, T& z, const Deriv& c)
     {
-        x = (T)c.getVCenter()[0];
-        y = (T)c.getVCenter()[1];
-        z = (T)c.getVCenter()[2];
+        x = (T)getVCenter(c)[0];
+        y = (T)getVCenter(c)[1];
+        z = (T)getVCenter(c)[2];
     }
 
     template<typename T>
     static void add(Deriv& c, T x, T y, T z)
     {
-        c.getVCenter()[0] += (Real)x;
-        c.getVCenter()[1] += (Real)y;
-        c.getVCenter()[2] += (Real)z;
+        getVCenter(c)[0] += (Real)x;
+        getVCenter(c)[1] += (Real)y;
+        getVCenter(c)[2] += (Real)z;
     }
 
     static const char* Name();
@@ -751,140 +784,160 @@ typedef Rigid3Types RigidTypes;
 // 2D Rigids
 //=============================================================================
 
-template<typename real>
-class RigidDeriv<2,real>
+//template<typename real>
+//class RigidDeriv<2,real>
+//{
+//public:
+//	typedef real value_type;
+//    typedef real Real;
+//    typedef Vec<2,Real> Pos;
+//    typedef Real Rot;
+//    typedef Vec<2,Real> Vec2;
+//private:
+//    Vec2 vCenter;
+//    Real vOrientation;
+//public:
+//    friend class RigidCoord<2,real>;
+//
+//    RigidDeriv (const Vec2 &velCenter, const Real &velOrient)
+//    : vCenter(velCenter), vOrientation(velOrient) {}
+//    RigidDeriv () { clear(); }
+//
+//    void clear() { vCenter.clear(); vOrientation=0; }
+//
+//    void operator +=(const RigidDeriv<2,real>& a)
+//    {
+//        vCenter += a.vCenter;
+//        vOrientation += a.vOrientation;
+//    }
+//
+//    RigidDeriv<2,real> operator + (const RigidDeriv<2,real>& a) const
+//    {
+//        RigidDeriv<2,real> d;
+//        d.vCenter = vCenter + a.vCenter;
+//        d.vOrientation = vOrientation + a.vOrientation;
+//        return d;
+//    }
+//
+//	RigidDeriv<2,real> operator - (const RigidDeriv<2,real>& a) const
+//    {
+//        RigidDeriv<2,real> d;
+//        d.vCenter = vCenter - a.vCenter;
+//        d.vOrientation = vOrientation - a.vOrientation;
+//        return d;
+//    }
+//
+//    template<typename real2>
+//    void operator*=(real2 a)
+//    {
+//        vCenter *= a;
+//        vOrientation *= (Real)a;
+//    }
+//
+//    template<typename real2>
+//    void operator/=(real2 a)
+//    {
+//        vCenter /= a;
+//        vOrientation /= (Real)a;
+//    }
+//
+//    RigidDeriv<2,real> operator*(float a) const
+//    {
+//        RigidDeriv<2,real> r = *this;
+//        r *= a;
+//        return r;
+//    }
+//
+//    RigidDeriv<2,real> operator*(double a) const
+//    {
+//        RigidDeriv<2,real> r = *this;
+//        r *= a;
+//        return r;
+//    }
+//
+//    RigidDeriv<2,real> operator - () const
+//    {
+//        return RigidDeriv<2,real>(-vCenter, -vOrientation);
+//    }
+//
+//    /// dot product, mostly used to compute residuals as sqrt(x*x)
+//    Real operator*(const RigidDeriv<2,real>& a) const
+//    {
+//        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]
+//            +vOrientation*a.vOrientation;
+//    }
+//
+//    Vec2& getVCenter (void) { return vCenter; }
+//    Real& getVOrientation (void) { return vOrientation; }
+//    const Vec2& getVCenter (void) const { return vCenter; }
+//    const Real& getVOrientation (void) const { return vOrientation; }
+//
+//    Vec2 velocityAtRotatedPoint(const Vec2& p) const
+//    {
+//        return vCenter + Vec2(-p[1], p[0]) * vOrientation;
+//    }
+//
+//    /// write to an output stream
+//    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<2,real>& v )
+//    {
+//        out<<v.vCenter<<" "<<v.vOrientation;
+//        return out;
+//    }
+//    /// read from an input stream
+//    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<2,real>& v )
+//    {
+//        in>>v.vCenter>>v.vOrientation;
+//        return in;
+//    }
+//
+//    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
+//    enum { total_size = 3 };
+//    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+//    enum { spatial_dimensions = 2 };
+//
+//    real* ptr() { return vCenter.ptr(); }
+//    const real* ptr() const { return vCenter.ptr(); }
+//
+//	static unsigned int size(){return 3;}
+//
+//	/// Access to i-th element.
+//    real& operator[](int i)
+//    {
+//		if (i<2)
+//			return this->vCenter(i);
+//		else
+//			return this->vOrientation;
+//    }
+//
+//    /// Const access to i-th element.
+//    const real& operator[](int i) const
+//    {
+//		if (i<2)
+//			return this->vCenter(i);
+//		else
+//			return this->vOrientation;
+//    }
+//};
+
+template<typename R>
+Vec<2,R>& getVCenter ( Vec<3,R>& v ) { return *reinterpret_cast<Vec<2,R>*>(&v[0]); }
+
+template<typename R>
+R& getVOrientation ( Vec<3,R>& v ) { return *reinterpret_cast<R*>(&v[2]); }
+
+template<typename R>
+const Vec<2,R>& getVCenter ( const Vec<3,R>& v ) {  return *reinterpret_cast<const Vec<2,R>*>(&v[0]); }
+
+template<typename R>
+const R& getVOrientation ( const Vec<3,R>& v ) { return *reinterpret_cast<const R*>(&v[2]); }
+
+template<typename R, typename T>
+Vec<2,R> velocityAtRotatedPoint(const Vec<3,T>& v, const Vec<2,R>& p)
 {
-public:
-    typedef real value_type;
-    typedef real Real;
-    typedef Vec<2,Real> Pos;
-    typedef Real Rot;
-    typedef Vec<2,Real> Vec2;
-private:
-    Vec2 vCenter;
-    Real vOrientation;
-public:
-    friend class RigidCoord<2,real>;
+    return getVCenter(v) + Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
+}
 
-    RigidDeriv (const Vec2 &velCenter, const Real &velOrient)
-        : vCenter(velCenter), vOrientation(velOrient) {}
-    RigidDeriv () { clear(); }
 
-    void clear() { vCenter.clear(); vOrientation=0; }
-
-    void operator +=(const RigidDeriv<2,real>& a)
-    {
-        vCenter += a.vCenter;
-        vOrientation += a.vOrientation;
-    }
-
-    RigidDeriv<2,real> operator + (const RigidDeriv<2,real>& a) const
-    {
-        RigidDeriv<2,real> d;
-        d.vCenter = vCenter + a.vCenter;
-        d.vOrientation = vOrientation + a.vOrientation;
-        return d;
-    }
-
-    RigidDeriv<2,real> operator - (const RigidDeriv<2,real>& a) const
-    {
-        RigidDeriv<2,real> d;
-        d.vCenter = vCenter - a.vCenter;
-        d.vOrientation = vOrientation - a.vOrientation;
-        return d;
-    }
-
-    template<typename real2>
-    void operator*=(real2 a)
-    {
-        vCenter *= a;
-        vOrientation *= (Real)a;
-    }
-
-    template<typename real2>
-    void operator/=(real2 a)
-    {
-        vCenter /= a;
-        vOrientation /= (Real)a;
-    }
-
-    RigidDeriv<2,real> operator*(float a) const
-    {
-        RigidDeriv<2,real> r = *this;
-        r *= a;
-        return r;
-    }
-
-    RigidDeriv<2,real> operator*(double a) const
-    {
-        RigidDeriv<2,real> r = *this;
-        r *= a;
-        return r;
-    }
-
-    RigidDeriv<2,real> operator - () const
-    {
-        return RigidDeriv<2,real>(-vCenter, -vOrientation);
-    }
-
-    /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator*(const RigidDeriv<2,real>& a) const
-    {
-        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]
-                +vOrientation*a.vOrientation;
-    }
-
-    Vec2& getVCenter (void) { return vCenter; }
-    Real& getVOrientation (void) { return vOrientation; }
-    const Vec2& getVCenter (void) const { return vCenter; }
-    const Real& getVOrientation (void) const { return vOrientation; }
-
-    Vec2 velocityAtRotatedPoint(const Vec2& p) const
-    {
-        return vCenter + Vec2(-p[1], p[0]) * vOrientation;
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<2,real>& v )
-    {
-        out<<v.vCenter<<" "<<v.vOrientation;
-        return out;
-    }
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<2,real>& v )
-    {
-        in>>v.vCenter>>v.vOrientation;
-        return in;
-    }
-
-    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 3 };
-    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 2 };
-
-    real* ptr() { return vCenter.ptr(); }
-    const real* ptr() const { return vCenter.ptr(); }
-
-    static unsigned int size() {return 3;}
-
-    /// Access to i-th element.
-    real& operator[](int i)
-    {
-        if (i<2)
-            return this->vCenter(i);
-        else
-            return this->vOrientation;
-    }
-
-    /// Const access to i-th element.
-    const real& operator[](int i) const
-    {
-        if (i<2)
-            return this->vCenter(i);
-        else
-            return this->vOrientation;
-    }
-};
 
 template<typename real>
 class RigidCoord<2,real>
@@ -905,17 +958,17 @@ public:
 
     void clear() { center.clear(); orientation = 0; }
 
-    void operator +=(const RigidDeriv<2,real>& a)
+    void operator +=(const Vec<3,real>& a)
     {
-        center += a.getVCenter();
-        orientation += a.getVOrientation();
+        center += getVCenter(a);
+        orientation += getVOrientation(a);
     }
 
-    RigidCoord<2,real> operator + (const RigidDeriv<2,real>& a) const
+    RigidCoord<2,real> operator + (const Vec<3,real>& a) const
     {
         RigidCoord<2,real> c = *this;
-        c.center += a.getVCenter();
-        c.orientation += a.getVOrientation();
+        c.center += getVCenter(a);
+        c.orientation += getVOrientation(a);
         return c;
     }
 
@@ -931,7 +984,7 @@ public:
 
     void operator +=(const RigidCoord<2,real>& a)
     {
-//         std::cout << "+="<<std::endl;
+        //         std::cout << "+="<<std::endl;
         center += a.getCenter();
         orientation += a.getOrientation();
     }
@@ -939,7 +992,7 @@ public:
     template<typename real2>
     void operator*=(real2 a)
     {
-//         std::cout << "*="<<std::endl;
+        //         std::cout << "*="<<std::endl;
         center *= a;
         orientation *= (Real)a;
     }
@@ -947,7 +1000,7 @@ public:
     template<typename real2>
     void operator/=(real2 a)
     {
-//         std::cout << "/="<<std::endl;
+        //         std::cout << "/="<<std::endl;
         center /= a;
         orientation /= (Real)a;
     }
@@ -1200,6 +1253,25 @@ public:
     }
 };
 
+template<typename real>
+inline Vec<3,real> operator*(const Vec<3,real>& d, const RigidMass<2,real>& m)
+{
+    Vec<3,real> res;
+    getVCenter(res) = getVCenter(d) * m.mass;
+    getVOrientation(res) = m.inertiaMassMatrix * getVOrientation(d);
+    return res;
+}
+
+template<typename real>
+inline Vec<3,real> operator/(const Vec<3,real>& d, const RigidMass<2, real>& m)
+{
+    Vec<3,real> res;
+    getVCenter(res) = getVCenter(d) / m.mass;
+    getVOrientation(res) = m.invInertiaMassMatrix * getVOrientation(d);
+    return res;
+}
+
+
 /** Degrees of freedom of 2D rigid bodies.
 */
 template<typename real>
@@ -1209,7 +1281,7 @@ public:
     typedef real Real;
     typedef Vec<2,real> Vec2;
 
-    typedef RigidDeriv<2,Real> Deriv;
+    typedef Vec<3,real> Deriv;
     typedef RigidCoord<2,Real> Coord;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
@@ -1223,12 +1295,12 @@ public:
     static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
     static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
 
-    typedef typename Deriv::Pos DPos;
-    typedef typename Deriv::Rot DRot;
-    static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
-    static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
-    static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
-    static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
+    typedef Vec<2,real> DPos;
+    typedef real DRot;
+    static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
+    static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
+    static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
+    static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
     static const char* Name();
 
@@ -1263,23 +1335,23 @@ public:
     template<typename T>
     static void set(Deriv& c, T x, T y, T)
     {
-        c.getVCenter()[0] = (Real)x;
-        c.getVCenter()[1] = (Real)y;
+        getVCenter(c)[0] = (Real)x;
+        getVCenter(c)[1] = (Real)y;
     }
 
     template<typename T>
     static void get(T& x, T& y, T& z, const Deriv& c)
     {
-        x = (T)c.getVCenter()[0];
-        y = (T)c.getVCenter()[1];
+        x = (T)getVCenter(c)[0];
+        y = (T)getVCenter(c)[1];
         z = (T)0;
     }
 
     template<typename T>
     static void add(Deriv& c, T x, T y, T)
     {
-        c.getVCenter()[0] += (Real)x;
-        c.getVCenter()[1] += (Real)y;
+        getVCenter(c)[0] += (Real)x;
+        getVCenter(c)[1] += (Real)y;
     }
 
     static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
@@ -1333,11 +1405,17 @@ typedef Rigid2dMass Rigid2Mass;
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 
-template<int N, typename real>
-struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
+//        template<typename real>
+//        struct DataTypeInfo< sofa::defaulttype::Vec<6,real> > : public FixedArrayTypeInfo< sofa::defaulttype::Vec<6,real>, sofa::defaulttype::Vec<6,real>::total_size >
+//        {
+//            static std::string name() { std::ostringstream o; o << "RigidDeriv<" << 6 << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+//        };
+//
+//        template<typename real>
+//        struct DataTypeInfo< sofa::defaulttype::Vec<3,real> > : public FixedArrayTypeInfo< sofa::defaulttype::Vec<3,real>, sofa::defaulttype::Vec<3,real>::total_size >
+//        {
+//            static std::string name() { std::ostringstream o; o << "RigidDeriv<" << 3 << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+//        };
 
 template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real>, sofa::defaulttype::RigidCoord<N,real>::total_size >
@@ -1349,13 +1427,13 @@ struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArray
 /// \cond TEMPLATE_OVERRIDES
 
 template<> struct DataTypeName< defaulttype::Rigid2fTypes::Coord > { static const char* name() { return "Rigid2fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2fTypes::Deriv > { static const char* name() { return "Rigid2fTypes::Deriv"; } };
+//        template<> struct DataTypeName< defaulttype::Rigid2fTypes::Deriv > { static const char* name() { return "Rigid2fTypes::Deriv"; } };
 template<> struct DataTypeName< defaulttype::Rigid2dTypes::Coord > { static const char* name() { return "Rigid2dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2dTypes::Deriv > { static const char* name() { return "Rigid2dTypes::Deriv"; } };
+//        template<> struct DataTypeName< defaulttype::Rigid2dTypes::Deriv > { static const char* name() { return "Rigid2dTypes::Deriv"; } };
 template<> struct DataTypeName< defaulttype::Rigid3fTypes::Coord > { static const char* name() { return "Rigid3fTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3fTypes::Deriv > { static const char* name() { return "Rigid3fTypes::Deriv"; } };
+//        template<> struct DataTypeName< defaulttype::Rigid3fTypes::Deriv > { static const char* name() { return "Rigid3fTypes::Deriv"; } };
 template<> struct DataTypeName< defaulttype::Rigid3dTypes::Coord > { static const char* name() { return "Rigid3dTypes::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3dTypes::Deriv > { static const char* name() { return "Rigid3dTypes::Deriv"; } };
+//        template<> struct DataTypeName< defaulttype::Rigid3dTypes::Deriv > { static const char* name() { return "Rigid3dTypes::Deriv"; } };
 template<> struct DataTypeName< defaulttype::Rigid2fMass > { static const char* name() { return "Rigid2fMass"; } };
 template<> struct DataTypeName< defaulttype::Rigid2dMass > { static const char* name() { return "Rigid2dMass"; } };
 template<> struct DataTypeName< defaulttype::Rigid3fMass > { static const char* name() { return "Rigid3fMass"; } };
@@ -1384,9 +1462,9 @@ Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Co
 
 /// Specialization of the inertia force for defaulttype::Rigid3dTypes
 template <>
-inline defaulttype::RigidDeriv<3, double> inertiaForce<
+inline defaulttype::Vec<6, double> inertiaForce<
 defaulttype::RigidCoord<3, double>,
-            defaulttype::RigidDeriv<3, double>,
+            defaulttype::Vec<6, double>,
             objectmodel::BaseContext::Vec3,
             defaulttype::RigidMass<3, double>,
             objectmodel::BaseContext::SpatialVector
@@ -1396,22 +1474,22 @@ defaulttype::RigidCoord<3, double>,
                     const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::RigidMass<3, double>& mass,
                     const defaulttype::RigidCoord<3, double>& x,
-                    const defaulttype::RigidDeriv<3, double>& v
+                    const defaulttype::Vec<6, double>& v
             )
 {
-    defaulttype::RigidDeriv<3, double>::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::RigidDeriv<3, double>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+    defaulttype::Vec<3, double> omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::Vec<3, double> origin = x.getCenter(), finertia;
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return defaulttype::RigidDeriv<3, double>( finertia, zero );
+    finertia = -( aframe + omega.cross( omega.cross(origin) + getVCenter(v)*2 ))*mass.mass;
+    return defaulttype::Vec<6, double>( finertia[0], finertia[1], finertia[2], 0., 0., 0. );
     /// \todo replace zero by Jomega.cross(omega)
 }
 
 /// Specialization of the inertia force for defaulttype::Rigid3fTypes
 template <>
-inline defaulttype::RigidDeriv<3, float> inertiaForce<
+inline defaulttype::Vec<6, float> inertiaForce<
 defaulttype::RigidCoord<3, float>,
-            defaulttype::RigidDeriv<3, float>,
+            defaulttype::Vec<6, float>,
             objectmodel::BaseContext::Vec3,
             defaulttype::RigidMass<3, float>,
             objectmodel::BaseContext::SpatialVector
@@ -1421,14 +1499,14 @@ defaulttype::RigidCoord<3, float>,
                     const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::RigidMass<3, float>& mass,
                     const defaulttype::RigidCoord<3, float>& x,
-                    const defaulttype::RigidDeriv<3, float>& v
+                    const defaulttype::Vec<6, float>& v
             )
 {
-    defaulttype::RigidDeriv<3, float>::Vec3 omega( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
-    defaulttype::RigidDeriv<3, float>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+    defaulttype::Vec<3, float> omega( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
+    defaulttype::Vec<3, float> origin = x.getCenter(), finertia;
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return defaulttype::RigidDeriv<3, float>( finertia, zero );
+    finertia = -( aframe + omega.cross( omega.cross(origin) + getVCenter(v)*2 ))*mass.mass;
+    return defaulttype::Vec<6, float>( finertia[0], finertia[1], finertia[2], 0., 0., 0. );
     /// \todo replace zero by Jomega.cross(omega)
 }
 
