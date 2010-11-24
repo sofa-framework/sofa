@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_H
 #define SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_H
 
+#include "initFrame.h"
 #include "NewMaterial.h"
 
 
@@ -116,7 +117,7 @@ using namespace sofa::defaulttype;
 //};
 
 template<class TMaterialTypes>
-class SOFA_COMPONENT_FEM_API HookeMaterial3 : public Material<TMaterialTypes>
+class SOFA_FRAME_API HookeMaterial3 : public Material<TMaterialTypes>
 {
 public:
     typedef Material<TMaterialTypes> Inherited;

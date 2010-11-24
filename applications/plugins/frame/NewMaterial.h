@@ -44,7 +44,7 @@ using namespace sofa::defaulttype;
 /** \brief Material as a stress-strain relationship.
  */
 template<class TMaterialTypes>
-class SOFA_COMPONENT_FEM_API Material : public virtual core::objectmodel::BaseObject
+class SOFA_FRAME_API Material : public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::objectmodel::BaseObject Inherited;
