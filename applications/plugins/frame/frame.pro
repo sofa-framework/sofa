@@ -37,6 +37,8 @@ HEADERS += \
            FrameMass.h \
 #            FrameMasterSolver.h \
            FrameMechanicalObject.h \
+           FrameSampler.h \
+           FrameSampler.inl \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
            initFrame.h \
@@ -59,6 +61,7 @@ SOURCES += \
            FrameLoydAlgo.cpp \
 #            FrameMasterSolver.cpp \
            FrameMechanicalObject.cpp \
+           FrameSampler.cpp \
            FrameSpringForceField2.cpp \
             NewHookeMaterial.cpp \
  #           NewSkinningMapping.cpp \
