@@ -259,7 +259,7 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     }
     if ( ! dqStorage )
     {
-        serr << "Can't find dqStorage component." << sendl;
+        serr << "Can't find FrameStorage component (present in linear or dualquat skinning mappings)." << sendl;
         return;
     }
     else
