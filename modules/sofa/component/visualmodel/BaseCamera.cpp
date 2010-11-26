@@ -435,7 +435,8 @@ bool BaseCamera::importSingleParameter(TiXmlElement* root, core::objectmodel::Ba
                 attrValue = element->Attribute("value");
                 if(attrValue)
                 {
-                    bool retvalue = data.read(std::string(attrValue));
+                    std::string m_string; m_string.assign(attrValue);
+                    bool retvalue = data.read(m_string);
                     if(!retvalue)
                         serr << "Unreadable value for " << data.getName() << " field." << sendl;
                     return retvalue;
