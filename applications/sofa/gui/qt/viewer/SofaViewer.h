@@ -178,6 +178,11 @@ public:
             {
                 currentCamera = new component::visualmodel::InteractiveCamera();
                 groot->addObject(currentCamera);
+                //force set data to avoid useless warnings, as the camera is created itself
+                currentCamera->p_position.forceSet();
+                currentCamera->p_orientation.forceSet();
+                currentCamera->init();
+
                 //std::cout << "Create Default Camera" << std::endl;
             }
             sofa::defaulttype::Vector3 minBBox, maxBBox;
@@ -279,6 +284,10 @@ public:
     {
         if (!currentCamera || !groot)
             return;
+
+        sofa::defaulttype::Vector3 minBBox, maxBBox;
+        sofa::simulation::getSimulation()->computeBBox(groot, minBBox.ptr(),maxBBox.ptr());
+        currentCamera->setBoundingBox(minBBox, maxBBox);
 
         currentCamera->setDefaultView(groot->getGravityInWorld());
     }

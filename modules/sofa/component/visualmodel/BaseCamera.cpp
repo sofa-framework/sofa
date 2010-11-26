@@ -387,6 +387,165 @@ void BaseCamera::setDefaultView(const Vec3 & gravity)
     computeZ();
 }
 
+void BaseCamera::exportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comment)
+{
+    TiXmlElement* node = new TiXmlElement( data.getName().c_str() );
+    node->SetAttribute("value", data.getValueString().c_str() );
+    if(!comment.empty())
+    {
+        TiXmlComment* com = new TiXmlComment( comment.c_str() );
+        root->LinkEndChild(com);
+    }
+    root->LinkEndChild(node);
+}
+
+bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
+{
+    TiXmlDocument doc;
+    TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
+    doc.LinkEndChild( decl );
+
+    TiXmlElement* root = new TiXmlElement( "Camera" );
+    root->SetAttribute("version", "1.0" );
+    doc.LinkEndChild( root );
+
+    exportSingleParameter(root, p_position, "Vector of 3 reals (x, y, z)");
+    exportSingleParameter(root, p_orientation, "Quaternion (x, y, z, w)");
+    exportSingleParameter(root, p_lookAt, "Vector of 3 reals (x, y, z)");
+    exportSingleParameter(root, p_fieldOfView, "Real");
+    exportSingleParameter(root, p_distance, "Real");
+    exportSingleParameter(root, p_zNear, "Real");
+    exportSingleParameter(root, p_zFar, "Real");
+    exportSingleParameter(root, p_type, "Int (0 -> Perspective, 1 -> Orthographic)");
+
+    return doc.SaveFile( viewFilename.c_str() );
+}
+
+bool BaseCamera::importSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data)
+{
+    if(root)
+    {
+        TiXmlNode* node = root->FirstChild( data.getName().c_str() );
+        if(node)
+        {
+            TiXmlElement* element = node->ToElement();
+            if(element)
+            {
+                const char* attrValue;
+                attrValue = element->Attribute("value");
+                if(attrValue)
+                {
+                    bool retvalue = data.read(std::string(attrValue));
+                    if(!retvalue)
+                        serr << "Unreadable value for " << data.getName() << " field." << sendl;
+                    return retvalue;
+                }
+                else
+                {
+                    serr << "Attribute value has not been found for " << data.getName() << " field." << sendl;
+                    return false;
+                }
+            }
+            else
+            {
+                serr << "Unknown error occured for " << data.getName() << " field." << sendl;
+                return false;
+            }
+        }
+        else
+        {
+            serr << "Field " << data.getName() << " has not been found." << sendl;
+            return false;
+        }
+    }
+    else return false;
+}
+
+bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
+{
+    sout << "Reading " << viewFilename << " for view parameters." << sendl;
+    TiXmlDocument doc(viewFilename.c_str());
+    if (!doc.LoadFile())
+    {
+#ifndef SOFA_DEPRECATE_OLD_API
+        ////qglviewer-type view parameters
+        //std::ifstream in(viewFilename.c_str());
+        //Vec3& position = *p_position.beginEdit();
+        //Quat& orientation = *p_orientation.beginEdit();
+
+        //if(in.good())
+        //{
+        //	in >> position[0];
+        //	in >> position[1];
+        //	in >> position[2];
+        //	in >> orientation[0];
+        //	in >> orientation[1];
+        //	in >> orientation[2];
+        //	in >> orientation[3];
+        //	orientation.normalize();
+        //	p_position.endEdit();
+        //	p_orientation.endEdit();
+        //	in.close();
+
+        //	return true;
+        //}
+        //oldqtviewer-type view parameters
+        sout << "Deprecated View File..." << sendl;
+        std::ifstream in(viewFilename.c_str());
+        Vec3 translation;
+        Quat& orientation = *p_orientation.beginEdit();
+        p_position.setValue(Vec3(0.0,0.0,0.0));
+
+        if(in.good())
+        {
+            in >> translation[0];
+            in >> translation[1];
+            in >> translation[2];
+            in >> orientation[0];
+            in >> orientation[1];
+            in >> orientation[2];
+            in >> orientation[3];
+
+            orientation.normalize();
+            p_orientation.endEdit();
+            translate(translation);
+            in.close();
+
+            return true;
+        }
+        else
+#endif // SOFA_DEPRECATE_OLD_API
+            return false;
+    }
+
+    TiXmlHandle hDoc(&doc);
+    TiXmlElement* root;
+
+    root = hDoc.FirstChildElement().Element();
+
+    if (!root)
+        return false;
+
+    //std::string camVersion;
+    //root->QueryStringAttribute ("version", &camVersion);
+
+    importSingleParameter(root, p_position);
+    importSingleParameter(root, p_orientation);
+    importSingleParameter(root, p_lookAt);
+    importSingleParameter(root, p_fieldOfView);
+    importSingleParameter(root, p_distance);
+    importSingleParameter(root, p_zNear);
+    importSingleParameter(root, p_zFar);
+    importSingleParameter(root, p_type);
+
+    return true;
+}
+
+void BaseCamera::handleEvent(sofa::core::objectmodel::Event* /* event */)
+{
+
+}
+
 
 } // namespace visualmodel
 

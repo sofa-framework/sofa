@@ -99,8 +99,8 @@ static  bool enabled = false;
 //  Consequently, the old .view file is now totally incorrect.
 
 ///TODO: standardize .view file parameters
-const std::string QtViewer::VIEW_FILE_EXTENSION = "qglviewer.view";
-//const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
+//const std::string QtViewer::VIEW_FILE_EXTENSION = "qglviewer.view";
+const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
 // Mouse Interactor
 bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
@@ -1602,23 +1602,24 @@ void QtViewer::resetView()
     if (!sceneFileName.empty())
     {
         std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
-        std::ifstream in(viewFileName.c_str());
+        /*std::ifstream in(viewFileName.c_str());
         if (!in.fail())
         {
-            in >> position[0];
-            in >> position[1];
-            in >> position[2];
-            in >> orientation[0];
-            in >> orientation[1];
-            in >> orientation[2];
-            in >> orientation[3];
-            orientation.normalize();
+        	in >> position[0];
+        	in >> position[1];
+        	in >> position[2];
+        	in >> orientation[0];
+        	in >> orientation[1];
+        	in >> orientation[2];
+        	in >> orientation[3];
+        	orientation.normalize();
 
-            in.close();
-            fileRead = true;
+        	in.close();
+        	fileRead = true;
 
             setView(position, orientation);
-        }
+        }*/
+        fileRead = currentCamera->importParametersFromFile(viewFileName);
     }
 
     //if there is no .view file , look at the center of the scene bounding box
@@ -1629,6 +1630,7 @@ void QtViewer::resetView()
     }
 
     update();
+    //updateGL();
 
     //SofaViewer::resetView();
     //ResetScene();
@@ -1659,22 +1661,25 @@ void QtViewer::saveView()
     if (!sceneFileName.empty())
     {
         std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
-        std::ofstream out(viewFileName.c_str());
+        /*std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {
             const Vec3d& camPosition = currentCamera->getPosition();
-            const Quat& camOrientation = currentCamera->getOrientation();
+        	const Quat& camOrientation = currentCamera->getOrientation();
 
-            out << camPosition[0] << " "
-                << camPosition[1] << " "
-                << camPosition[2] << "\n";
-            out << camOrientation[0] << " "
-                << camOrientation[1] << " "
-                << camOrientation[2] << " "
-                << camOrientation[3] << "\n";
-            out.close();
-        }
-        std::cout << "View parameters saved in " << viewFileName << std::endl;
+        	out << camPosition[0] << " "
+        		<< camPosition[1] << " "
+        		<< camPosition[2] << "\n";
+        	out << camOrientation[0] << " "
+        	    << camOrientation[1] << " "
+        	    << camOrientation[2] << " "
+        	    << camOrientation[3] << "\n";
+        	out.close();
+        }*/
+        if(currentCamera->exportParametersInFile(viewFileName))
+            std::cout << "View parameters saved in " << viewFileName << std::endl;
+        else
+            std::cout << "Error while saving view parameters in " << viewFileName << std::endl;
     }
 }
 
