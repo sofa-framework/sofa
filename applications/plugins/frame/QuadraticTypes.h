@@ -393,7 +393,7 @@ public:
     /// Project a point from the parent frame to the child frame
     Vec3 pointToChild( const Vec3& v ) const
     {
-        cerr<<"WARNING: QuadraticCoord<3, real>::pointToChild not implemented, returns fake result"<<endl;
+        //cerr<<"WARNING: QuadraticCoord<3, real>::pointToChild not implemented, returns fake result"<<endl;
         return (v-center);
     }
 
