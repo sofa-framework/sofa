@@ -58,17 +58,13 @@ std::string GetProcessFullPath(const char* filename)
 #if defined (WIN32)
     if (!filename || !filename[0])
     {
-        //return __argv[0];
-        int n=0;
-        LPWSTR wpath = *CommandLineToArgvW(GetCommandLineW(),&n);
-        if (wpath)
-        {
-            char path[1024];
-            memset(path,0,sizeof(path));
-            wcstombs(path, wpath, sizeof(path)-1);
-            //std::cout << "Current process: "<<path<<std::endl;
-            if (path[0]) return path;
-        }
+        TCHAR tpath[1024];
+        GetModuleFileName(NULL,tpath,1024);
+        std::wstring wprocessPath = tpath;
+        std::string processPath;
+        processPath.assign(wprocessPath.begin(), wprocessPath.end() );
+        std::cout << "Current process: "<<processPath<<std::endl;
+        return processPath;
     }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
 #elif defined (__linux__)
@@ -112,7 +108,7 @@ int main(int argc, char** argv)
 {
 
     std::string file;
-    file=GetProcessFullPath(argv[0]);
+    file=GetProcessFullPath("");
 
     std::size_t bin = file.find("bin");
 
