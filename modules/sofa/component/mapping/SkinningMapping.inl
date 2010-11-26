@@ -1291,31 +1291,21 @@ void SkinningMapping<TIn, TOut>::QtoR(Mat33& M, const Quat& q) const
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::ComputeL(Mat76& L, const Quat& q) const
 {
-    L[0][0]=q[3]/2.; L[0][1]=q[2]/2.; L[0][2]=-q[1]/2.; L[0][3]=0;
-    L[0][4]=0; L[0][5]=0;
-    L[1][0]=-q[2]/2.; L[1][1]=q[3]/2.; L[1][2]=q[0]/2.; L[1][3]=0;
-    L[1][4]=0; L[1][5]=0;
-    L[2][0]=q[1]/2.; L[2][1]=-q[0]/2.; L[2][2]=q[3]/2.; L[2][3]=0;
-    L[2][4]=0; L[2][5]=0;
-    L[3][0]=-q[0]/2.; L[3][1]=-q[1]/2.; L[3][2]=-q[2]/2.; L[3][3]=0;
-    L[3][4]=0; L[3][5]=0;
-    L[4][0]=0; L[4][1]=0; L[4][2]=0; L[4][3]=1; L[4][4]=0; L[4][5]=0;
-    L[5][0]=0; L[5][1]=0; L[5][2]=0; L[5][3]=0; L[5][4]=1; L[5][5]=0;
-    L[6][0]=0; L[6][1]=0; L[6][2]=0; L[6][3]=0; L[6][4]=0; L[6][5]=1;
+    L[0][0]=1;	L[0][1]=0; L[0][2]=0;	L[0][3]=0;			L[0][4]=0;			L[0][5]=0;
+    L[1][0]=0;	L[1][1]=1; L[1][2]=0;	L[1][3]=0;			L[1][4]=0;			L[1][5]=0;
+    L[2][0]=0;	L[2][1]=0; L[2][2]=1;	L[2][3]=0;			L[2][4]=0;			L[2][5]=0;
+    L[3][0]=0;	L[3][1]=0; L[3][2]=0;	L[3][3]=q[3]/2.;	L[3][4]=q[2]/2.;	L[3][5]=-q[1]/2.;
+    L[4][0]=0;	L[4][1]=0; L[4][2]=0;	L[4][3]=-q[2]/2.;	L[4][4]=q[3]/2.;	L[4][5]=q[0]/2.;
+    L[5][0]=0;	L[5][1]=0; L[5][2]=0;	L[5][3]=q[1]/2.;	L[5][4]=-q[0]/2.;	L[5][5]=q[3]/2.;
+    L[6][0]=0;	L[6][1]=0; L[6][2]=0;	L[6][3]=-q[0]/2.;	L[6][4]=-q[1]/2.;	L[6][5]=-q[2]/2.;
 }
 
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::ComputeQ(Mat37& Q, const Quat& q, const Vec3& p) const
 {
-    Q[0][0]=2*(q[1]*p[1]+q[2]*p[2]); Q[0][1]=2*(-2*q[1]*p[0]+q[0]*p[1]+q[3]*p[2]);
-    Q[0][2]=2*(-2*q[2]*p[0]-q[3]*p[1]+q[0]*p[2]);
-    Q[0][3]=2*(-q[2]*p[1]+q[1]*p[2]); Q[0][4]=1; Q[0][5]=0; Q[0][6]=0;
-    Q[1][0]=2*(q[1]*p[0]-2*q[0]*p[1]-q[3]*p[2]); Q[1][1]=2*(q[0]*p[0]+q[2]*p[2]);
-    Q[1][2]=2*(q[3]*p[0]-2*q[2]*p[1]+q[1]*p[2]); Q[1][3]=2*(q[2]*p[0]-q[0]*p[2]);
-    Q[1][4]=0; Q[1][5]=1; Q[1][6]=0;
-    Q[2][0]=2*(q[2]*p[0]+q[3]*p[1]-2*q[0]*p[2]);
-    Q[2][1]=2*(-q[3]*p[0]+q[2]*p[1]-2*q[1]*p[2]); Q[2][2]=2*(q[0]*p[0]+q[1]*p[1]);
-    Q[2][3]=2*(-q[1]*p[0]+q[0]*p[1]); Q[2][4]=0; Q[2][5]=0; Q[2][6]=1;
+    Q[0][0]=1; Q[0][1]=0; Q[0][2]=0;	Q[0][3]=2*(q[1]*p[1]+q[2]*p[2]);				Q[0][4]=2*(-2*q[1]*p[0]+q[0]*p[1]+q[3]*p[2]);	Q[0][5]=2*(-2*q[2]*p[0]-q[3]*p[1]+q[0]*p[2]);	Q[0][6]=2*(-q[2]*p[1]+q[1]*p[2]);
+    Q[1][0]=0; Q[1][1]=1; Q[1][2]=0;	Q[1][3]=2*(q[1]*p[0]-2*q[0]*p[1]-q[3]*p[2]);	Q[1][4]=2*(q[0]*p[0]+q[2]*p[2]);				Q[1][5]=2*(q[3]*p[0]-2*q[2]*p[1]+q[1]*p[2]);	Q[1][6]=2*(q[2]*p[0]-q[0]*p[2]);
+    Q[2][0]=0; Q[2][1]=0; Q[2][2]=1;	Q[2][3]=2*(q[2]*p[0]+q[3]*p[1]-2*q[0]*p[2]);	Q[2][4]=2*(-q[3]*p[0]+q[2]*p[1]-2*q[1]*p[2]);	Q[2][5]=2*(q[0]*p[0]+q[1]*p[1]);				Q[2][6]=2*(-q[1]*p[0]+q[0]*p[1]);
 }
 
 
@@ -1358,14 +1348,14 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
 {
     unsigned int k,m;
     Mat33 D; Mat33 FT=F.transposed();
-    D=FT*Ma*At; B[0][0]+=2*D[0][0]; B[1][0]+=2*D[1][1]; B[2][0]+=2*D[2][2]; B[3][0]+=D[0][1]+D[1][0]; B[4][0]+=D[1][2]+D[2][1]; B[5][0]+=D[0][2]+D[2][0];
-    D=FT*Mb*At; B[0][1]+=2*D[0][0]; B[1][1]+=2*D[1][1]; B[2][1]+=2*D[2][2]; B[3][1]+=D[0][1]+D[1][0]; B[4][1]+=D[1][2]+D[2][1]; B[5][1]+=D[0][2]+D[2][0];
-    D=FT*Mc*At; B[0][2]+=2*D[0][0]; B[1][2]+=2*D[1][1]; B[2][2]+=2*D[2][2]; B[3][2]+=D[0][1]+D[1][0]; B[4][2]+=D[1][2]+D[2][1]; B[5][2]+=D[0][2]+D[2][0];
-    D=FT*Mw*At; B[0][3]+=2*D[0][0]; B[1][3]+=2*D[1][1]; B[2][3]+=2*D[2][2]; B[3][3]+=D[0][1]+D[1][0]; B[4][3]+=D[1][2]+D[2][1]; B[5][3]+=D[0][2]+D[2][0];
-    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][k+4]+=dw[m]*F[k][m];
-    for(k=0; k<3; k++)  B[3][k+4]+=(dw[0]*F[k][1]+dw[1]*F[k][0])/2.;
-    for(k=0; k<3; k++)  B[4][k+4]+=(dw[1]*F[k][2]+dw[2]*F[k][1])/2.;
-    for(k=0; k<3; k++)  B[5][k+4]+=(dw[0]*F[k][2]+dw[2]*F[k][0])/2.;
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][k]+=dw[m]*F[k][m];
+    for(k=0; k<3; k++)  B[3][k]+=(dw[0]*F[k][1]+dw[1]*F[k][0])/2.;
+    for(k=0; k<3; k++)  B[4][k]+=(dw[1]*F[k][2]+dw[2]*F[k][1])/2.;
+    for(k=0; k<3; k++)  B[5][k]+=(dw[0]*F[k][2]+dw[2]*F[k][0])/2.;
+    D=FT*Ma*At; B[0][3]+=2*D[0][0]; B[1][3]+=2*D[1][1]; B[2][3]+=2*D[2][2]; B[3][3]+=D[0][1]+D[1][0]; B[4][3]+=D[1][2]+D[2][1]; B[5][3]+=D[0][2]+D[2][0];
+    D=FT*Mb*At; B[0][4]+=2*D[0][0]; B[1][4]+=2*D[1][1]; B[2][4]+=2*D[2][2]; B[3][4]+=D[0][1]+D[1][0]; B[4][4]+=D[1][2]+D[2][1]; B[5][4]+=D[0][2]+D[2][0];
+    D=FT*Mc*At; B[0][5]+=2*D[0][0]; B[1][5]+=2*D[1][1]; B[2][5]+=2*D[2][2]; B[3][5]+=D[0][1]+D[1][0]; B[4][5]+=D[1][2]+D[2][1]; B[5][5]+=D[0][2]+D[2][0];
+    D=FT*Mw*At; B[0][6]+=2*D[0][0]; B[1][6]+=2*D[1][1]; B[2][6]+=2*D[2][2]; B[3][6]+=D[0][1]+D[1][0]; B[4][6]+=D[1][2]+D[2][1]; B[5][6]+=D[0][2]+D[2][0];
 }
 
 //affine
@@ -1375,15 +1365,15 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
 {
     unsigned int k,l,m;
 // stretch
-    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][9+k]+=dw[m]*F[k][m];
-    for(k=0; k<3; k++)  for(m=0; m<3; m++) for(l=0; l<3; l++) B[m][3*l+k]+=F[l][m]*At[k][m];
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][k]+=dw[m]*F[k][m];
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) for(l=0; l<3; l++) B[m][3*l+k+3]+=F[l][m]*At[k][m];
 // shear
-    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[3][3*l+k]+=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
-    for(k=0; k<3; k++)  B[3][9+k]+=0.5*(dw[0]*F[k][1] + dw[1]*F[k][0]);
-    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[4][3*l+k]+=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
-    for(k=0; k<3; k++)  B[4][9+k]+=0.5*(dw[1]*F[k][2] + dw[2]*F[k][1]);
-    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[5][3*l+k]+=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
-    for(k=0; k<3; k++)  B[5][9+k]+=0.5*(dw[2]*F[k][0] + dw[0]*F[k][2]);
+    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[3][3*l+k+3]+=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
+    for(k=0; k<3; k++)  B[3][k]+=0.5*(dw[0]*F[k][1] + dw[1]*F[k][0]);
+    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[4][3*l+k+3]+=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
+    for(k=0; k<3; k++)  B[4][k]+=0.5*(dw[1]*F[k][2] + dw[2]*F[k][1]);
+    for(k=0; k<3; k++)  for(l=0; l<3; l++) B[5][3*l+k+3]+=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
+    for(k=0; k<3; k++)  B[5][k]+=0.5*(dw[2]*F[k][0] + dw[0]*F[k][2]);
 }
 
 // quadratic
@@ -1393,15 +1383,15 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
 {
     unsigned int k,l,m;
 // stretch
-    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][27+k]+=dw[m]*F[k][m];
-    for(k=0; k<9; k++)  for(m=0; m<3; m++) for(l=0; l<3; l++) B[m][9*l+k]+=F[l][m]*At[k][m];
+    for(k=0; k<3; k++)  for(m=0; m<3; m++) B[m][k]+=dw[m]*F[k][m];
+    for(k=0; k<9; k++)  for(m=0; m<3; m++) for(l=0; l<3; l++) B[m][9*l+k+3]+=F[l][m]*At[k][m];
 // shear
-    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[3][9*l+k]+=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
-    for(k=0; k<3; k++)  B[3][27+k]+=0.5*(dw[0]*F[k][1] + dw[1]*F[k][0]);
-    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[4][9*l+k]+=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
-    for(k=0; k<3; k++)  B[4][27+k]+=0.5*(dw[1]*F[k][2] + dw[2]*F[k][1]);
-    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[5][9*l+k]+=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
-    for(k=0; k<3; k++)  B[5][27+k]+=0.5*(dw[2]*F[k][0] + dw[0]*F[k][2]);
+    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[3][9*l+k+3]+=0.5*(F[l][0]*At[k][1] + F[l][1]*At[k][0]);
+    for(k=0; k<3; k++)  B[3][k]+=0.5*(dw[0]*F[k][1] + dw[1]*F[k][0]);
+    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[4][9*l+k+3]+=0.5*(F[l][1]*At[k][2]+F[l][2]*At[k][1]);
+    for(k=0; k<3; k++)  B[4][k]+=0.5*(dw[1]*F[k][2] + dw[2]*F[k][1]);
+    for(k=0; k<9; k++)  for(l=0; l<3; l++) B[5][9*l+k+3]+=0.5*(F[l][2]*At[k][0]+F[l][0]*At[k][2]);
+    for(k=0; k<3; k++)  B[5][k]+=0.5*(dw[2]*F[k][0] + dw[0]*F[k][2]);
 }
 
 template <class TIn, class TOut>
@@ -1569,10 +1559,10 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
             for(int k=0; k<3; k++)
             {
                 val = m_weights[idxReps][i] * initPos[idx][k];
-                Ji[0][k]=val;
-                Ji[1][k+3]=val;
-                Ji[2][k+6]=val;
-                Ji[k][k+9]=m_weights[idxReps][i];
+                Ji[0][k+3]=val;
+                Ji[1][k+6]=val;
+                Ji[2][k+9]=val;
+                Ji[k][k]=m_weights[idxReps][i];
             }
         }
     }
@@ -1629,12 +1619,12 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
             for(int k=0; k<9; k++)
             {
                 val = m_weights[idxReps][i] * p2[k];
-                Ji[0][k] = val;
-                Ji[1][k+9] = val;
-                Ji[2][k+18] = val;
+                Ji[0][k+3] = val;
+                Ji[1][k+12] = val;
+                Ji[2][k+21] = val;
             }
             for(int k=0; k<3; k++)
-                Ji[k][k+27] = m_weights[idxReps][i];
+                Ji[k][k] = m_weights[idxReps][i];
         }
     }
 }
@@ -1816,8 +1806,8 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
                 Ma=Ma*At;			Mb=Mb*At;			Mc=Mc*At;			Mw=Mw*At;
                 for(unsigned int k=0; k<3; k++)
                 {
-                    for(unsigned int m=0; m<3; m++) { u7[0]+=2*Finv[k][m]*Ma[m][k]; u7[1]+=2*Finv[k][m]*Mb[m][k]; u7[2]+=2*Finv[k][m]*Mc[m][k]; u7[3]+=2*Finv[k][m]*Mw[m][k]; }
-                    u7[4]+=Finv[k][0]*dWeight[k]; u7[5]+=Finv[k][1]*dWeight[k]; u7[6]+=Finv[k][2]*dWeight[k];
+                    u7[0]+=Finv[k][0]*dWeight[k]; u7[1]+=Finv[k][1]*dWeight[k]; u7[2]+=Finv[k][2]*dWeight[k];
+                    for(unsigned int m=0; m<3; m++) { u7[3]+=2*Finv[k][m]*Ma[m][k]; u7[4]+=2*Finv[k][m]*Mb[m][k]; u7[5]+=2*Finv[k][m]*Mc[m][k]; u7[6]+=2*Finv[k][m]*Mw[m][k]; }
                 }
                 for(unsigned int k=0; k<6; k++) for(unsigned int m=0; m<7; m++) ddet[k]+=u7[m]*L[idxReps][m][k];
                 for(unsigned int k=0; k<6; k++) ddet[k]=this->det[i] * ddet[k];
@@ -1987,8 +1977,8 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
                 invertMatrix ( Finv, F );
                 VecIn &ddet = this->ddet[idxReps][i];
                 ddet.fill(0);
-                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 3; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+3*k] += At[m][l] * Finv[l][k];
-                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[9+k] += dWeight [l] * Finv[l][k];
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[k] += dWeight [l] * Finv[l][k];
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 3; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+3*k+3] += At[m][l] * Finv[l][k];
                 for(unsigned int k=0; k<12; k++) ddet[k]=this->det[i] * ddet[k];
             }
         }
@@ -2156,8 +2146,8 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
                 invertMatrix ( Finv, F );
                 VecIn &ddet = this->ddet[idxReps][i];
                 ddet.fill(0);
-                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 9; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+9*k] += At[m][l] * Finv[l][k];
-                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[27+k] += dWeight [l] * Finv[l][k];
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[k] += dWeight [l] * Finv[l][k];
+                for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 9; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+9*k+3] += At[m][l] * Finv[l][k];
                 for(unsigned int k=0; k<30; k++) ddet[k]=this->det[i] * ddet[k];
             }
         }
