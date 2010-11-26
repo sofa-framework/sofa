@@ -41,8 +41,8 @@ namespace component
 namespace linearsolver
 {
 
-typedef Eigen::SparseMatrix<SReal,Eigen::RowMajor>    SparseMatrixEigen;
-typedef Eigen::SparseVector<SReal,Eigen::RowMajor>    SparseVectorEigen;
+typedef Eigen::SparseMatrix<SReal>    SparseMatrixEigen;
+typedef Eigen::SparseVector<SReal>    SparseVectorEigen;
 typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
 
 struct LMatrixManipulator;
