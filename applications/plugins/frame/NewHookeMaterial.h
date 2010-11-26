@@ -157,6 +157,15 @@ public:
 
     static const char* Name();
 
+    std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const HookeMaterial3<TMaterialTypes>* = NULL)
+    {
+        return TMaterialTypes::Name();
+    }
+
 protected:
     Real stressDiagonal, stressOffDiagonal, shear; // entries of the stress-strain matrix
 };
