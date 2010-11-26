@@ -50,7 +50,7 @@ public:
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
-
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
 
@@ -64,6 +64,8 @@ public:
     virtual void draw()
     {
     }
+    void setObject1(MechanicalState* object1) {this->mstate1=object1;}
+    void setObject2(MechanicalState* object2) {this->mstate2=object2;}
 
 protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
