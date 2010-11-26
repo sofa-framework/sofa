@@ -1419,7 +1419,8 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
     this->getContext()->get( hexaContainer);
     double volume = this->voxelVolume.getValue();
-    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    //TODO get the volume from the FrameSampler !
+    //if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
     const VecCoord& xto = *this->toModel->getX();
     this->vol.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
@@ -1448,9 +1449,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
             double lx,ly,lz;
             if ( hexaContainer && this->geoDist)
             {
-                lx=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0];
-                ly=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[1];
-                lz=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[2];
+                lx=volume;
+                ly=volume; //TODO get the volume from the FrameSampler !
+                lz=volume;
             }
             else lx=ly=lz=pow(this->voxelVolume.getValue(),1/3.);
             this->integ_Elaston[i][0] = 1;
@@ -1525,8 +1526,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
     // vol and massDensity
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
     this->getContext()->get( hexaContainer);
+    //TODO get the volume from the FrameSampler !
     double volume = this->voxelVolume.getValue();
-    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    //if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
     const VecCoord& xto = *this->toModel->getX();
     this->vol.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
@@ -1553,9 +1555,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
             double lx,ly,lz;
             if ( hexaContainer && this->geoDist)
             {
-                lx=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0];
-                ly=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[1];
-                lz=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[2];
+                lx=volume;
+                ly=volume; //TODO get the volume from the FrameSampler !
+                lz=volume;
             }
             else lx=ly=lz=pow(this->voxelVolume.getValue(),1/3.);
             this->integ_Elaston[i][0] = 1;
@@ -1637,7 +1639,8 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
     this->getContext()->get( hexaContainer);
     double volume = this->voxelVolume.getValue();
-    if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    //TODO get the volume from the FrameSampler !
+    //if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
     const VecCoord& xto = *this->toModel->getX();
     this->vol.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
@@ -1664,9 +1667,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
             double lx,ly,lz;
             if ( hexaContainer && this->geoDist)
             {
-                lx=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0];
-                ly=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[1];
-                lz=this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[2];
+                lx=volume;
+                ly=volume; //TODO get the volume from the FrameSampler !
+                lz=volume;
             }
             else lx=ly=lz=pow(this->voxelVolume.getValue(),1./3.);
             this->integ_Elaston[i][0] = 1;
