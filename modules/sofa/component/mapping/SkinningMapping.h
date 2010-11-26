@@ -38,7 +38,7 @@
 #include <sofa/helper/OptionsGroup.h>
 
 #ifdef SOFA_DEV
-#include <sofa/component/topology/HexahedronGeodesicalDistance.h>
+#include <sofa/component/topology/DistanceOnGrid.h>
 #include "FrameStorage.h"
 #include <../applications/plugins/frame/RigidFrameTypes.h>
 #include <../applications/plugins/frame/AffineTypes.h>
@@ -58,7 +58,7 @@ using sofa::helper::vector;
 using sofa::helper::Quater;
 using sofa::helper::SVector;
 #ifdef SOFA_DEV
-using sofa::component::topology::HexahedronGeodesicalDistance;
+using sofa::component::topology::DistanceOnGrid;
 #endif
 
 #define DISTANCE_EUCLIDIAN 0
@@ -203,13 +203,13 @@ public:
 
 #ifdef SOFA_DEV
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
-    typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, double>, sofa::defaulttype::Vec<N, double>, double> GeoType; // = Vec3fTypes or Vec3dTypes
-    typedef typename HexahedronGeodesicalDistance< GeoType >::VecCoord GeoVecCoord;
-    typedef typename HexahedronGeodesicalDistance< GeoType >::Coord GeoCoord;
-    typedef typename HexahedronGeodesicalDistance< GeoType >::VecVecCoord GeoVecVecCoord;
+    typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, double>, sofa::defaulttype::Vec<N, double>, double> DoGType; // = Vec3fTypes or Vec3dTypes
+    typedef typename DistanceOnGrid< DoGType >::VecCoord GeoVecCoord;
+    typedef typename DistanceOnGrid< DoGType >::Coord GeoCoord;
+    typedef typename DistanceOnGrid< DoGType >::VecVecCoord GeoVecVecCoord;
 #else
-    typedef Coord GeoCoord;
-    typedef VecCoord GeoVecCoord;
+    typedef Coord DoGCoord;
+    typedef VecCoord DoGVecCoord;
 #endif
     typedef defaulttype::StdRigidTypes<N,InReal> RigidType;
 #ifdef SOFA_DEV
@@ -245,7 +245,7 @@ public:
     Data<bool> showGradientsValues;
     Data<double> showGradientsScaleFactor;
 #ifdef SOFA_DEV
-    HexahedronGeodesicalDistance< GeoType>* geoDist;
+    DistanceOnGrid< DoGType>* distOnGrid;
     Data<double> newFrameMinDist;
     Data<vector<double> > newFrameWeightingRadius;
     Data<double> newFrameDefaultCutOffDistance;

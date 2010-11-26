@@ -38,7 +38,7 @@
 
 #ifdef SOFA_DEV
 #include <sofa/helper/DualQuat.h>
-#include <sofa/component/topology/HexahedronGeodesicalDistance.inl>
+#include <sofa/component/topology/DistanceOnGrid.inl>
 #include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
 #include <sofa/simulation/common/Simulation.h>
 #endif
@@ -104,7 +104,7 @@ SkinningMapping<TIn, TOut>::SkinningMapping (core::State<In>* from, core::State<
         maskTo = &stateTo->forceMask;
 
 #ifdef SOFA_DEV
-    geoDist = NULL;
+    distOnGrid = NULL;
 #endif
 
     sofa::helper::OptionsGroup wheightingTypeOptions(5,"None","InvDistSquare","Linear", "Hermite", "Spline");
@@ -156,14 +156,14 @@ void SkinningMapping<TIn, TOut>::computeDistances ()
 
         if (this->computeAllMatrices.getValue())
         {
-            sofa::helper::OptionsGroup* geoDistanceTypeOption = geoDist->distanceType.beginEdit();
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC) geoDistanceTypeOption->setSelectedItem(TYPE_GEODESIC);
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC) geoDistanceTypeOption->setSelectedItem(TYPE_HARMONIC);
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION) geoDistanceTypeOption->setSelectedItem(TYPE_STIFFNESS_DIFFUSION);
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC_STIFFNESS) geoDistanceTypeOption->setSelectedItem(TYPE_HARMONIC_STIFFNESS);
-            geoDist->distanceType.endEdit();
+            sofa::helper::OptionsGroup* distOnGridanceTypeOption = distOnGrid->distanceType.beginEdit();
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC) distOnGridanceTypeOption->setSelectedItem(TYPE_GEODESIC);
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC) distOnGridanceTypeOption->setSelectedItem(TYPE_HARMONIC);
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION) distOnGridanceTypeOption->setSelectedItem(TYPE_STIFFNESS_DIFFUSION);
+            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC_STIFFNESS) distOnGridanceTypeOption->setSelectedItem(TYPE_HARMONIC_STIFFNESS);
+            distOnGrid->distanceType.endEdit();
         }
-        geoDist->computeDistanceMap ( tmpFrom );
+        distOnGrid->computeDistanceMap ( tmpFrom );
     }
 #endif
 
@@ -205,7 +205,7 @@ void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
         goals.resize ( xto0.size() );
         for ( unsigned int j = 0; j < xto0.size(); ++j )
             goals[j] = xto0[j];
-        geoDist->getDistances ( distances, distGradients, goals );
+        distOnGrid->getDistances ( distances, distGradients, goals );
         break;
     }
 #endif
@@ -285,8 +285,8 @@ void SkinningMapping<TIn, TOut>::init()
 #ifdef SOFA_DEV
     if ( distanceType.getValue().getSelectedId() != DISTANCE_EUCLIDIAN)
     {
-        this->getContext()->get ( geoDist, core::objectmodel::BaseContext::SearchRoot );
-        if ( !geoDist )
+        this->getContext()->get ( distOnGrid, core::objectmodel::BaseContext::SearchRoot );
+        if ( !distOnGrid )
         {
             serr << "Can not find the geodesical distance component: distances used are euclidian." << sendl;
             distanceType.setValue( DISTANCE_EUCLIDIAN);
@@ -384,10 +384,10 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
 #ifdef SOFA_DEV
                 if ( distanceType.getValue().getSelectedId()  == DISTANCE_HARMONIC)
                 {
-                    m_weights[indexFrom][j] = geoDist->harmonicMaxValue.getValue() - distances[indexFrom][j];
+                    m_weights[indexFrom][j] = distOnGrid->harmonicMaxValue.getValue() - distances[indexFrom][j];
                     if ( distances[indexFrom][j] < 0.0) distances[indexFrom][j] = 0.0;
-                    if ( distances[indexFrom][j] > geoDist->harmonicMaxValue.getValue()) distances[indexFrom][j] = geoDist->harmonicMaxValue.getValue();
-                    if(distances[indexFrom][j]==0 || distances[indexFrom][j]==geoDist->harmonicMaxValue.getValue()) m_dweight[indexFrom][j]=Coord();
+                    if ( distances[indexFrom][j] > distOnGrid->harmonicMaxValue.getValue()) distances[indexFrom][j] = distOnGrid->harmonicMaxValue.getValue();
+                    if(distances[indexFrom][j]==0 || distances[indexFrom][j]==distOnGrid->harmonicMaxValue.getValue()) m_dweight[indexFrom][j]=Coord();
                     else m_dweight[indexFrom][j] = - distGradients[indexFrom][j];
                 }
                 else
@@ -861,7 +861,7 @@ void SkinningMapping<TIn, TOut>::insertFrame( const Coord& pos, const Quat& rot,
 
     // Compute geodesical/euclidian distance for this frame.
     if ( this->distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC || this->distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC || this->distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION || this->distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS)
-        this->geoDist->addElt( newX0.getCenter(), beginPointSet, distMax);
+        this->distOnGrid->addElt( newX0.getCenter(), beginPointSet, distMax);
     vector<double>& vRadius = (*this->newFrameWeightingRadius.beginEdit());
     vRadius.resize( indexFrom + 1);
     vRadius[indexFrom] = distMax;
@@ -1015,7 +1015,7 @@ void SkinningMapping<TIn, TOut>::computeWeight( VVD& w, VecVecCoord& dw, const C
     {
         GeoVecCoord goals;
         goals.push_back( x0);
-        this->geoDist->getDistances ( dist, ddist, goals );
+        this->distOnGrid->getDistances ( dist, ddist, goals );
         break;
     }
     default: {}
@@ -1201,7 +1201,7 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::changeSettingsDueToInsertion()
 {
     this->setWeightsToInvDist();
-    if( this->geoDist)
+    if( this->distOnGrid)
     {
         this->distanceType.beginEdit()->setSelectedItem(DISTANCE_GEODESIC);
     }
@@ -1424,7 +1424,7 @@ void SkinningMapping<TIn, TOut>::initSamples() // Temporary (will be done in Fra
     this->getContext()->get( hexaContainer);
     //TODO get the volume from the FrameSampler !
     double volume = this->voxelVolume.getValue();
-    //if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+    //if ( hexaContainer && this->distOnGrid) volume = this->distOnGrid->initTargetStep.getValue()*this->distOnGrid->initTargetStep.getValue()*this->distOnGrid->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
     const VecCoord& xto = *this->toModel->getX();
     this->vol.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
@@ -1437,7 +1437,7 @@ void SkinningMapping<TIn, TOut>::initSamples() // Temporary (will be done in Fra
         for ( unsigned int i = 0; i < xto.size(); i++) // to update
         {
             double lx,ly,lz;
-            if ( hexaContainer && this->geoDist)
+            if ( hexaContainer && this->distOnGrid)
             {
                 lx=volume;
                 ly=volume; //TODO get the volume from the FrameSampler !
