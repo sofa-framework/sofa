@@ -340,6 +340,9 @@ protected:
     void ComputeMc(Mat33& M, const Quat& q) const;
     void ComputeMw(Mat33& M, const Quat& q) const;
 
+    inline void resizeMatrices();
+    inline void initSamples(); // Temporary
+
     // Avoid multiple specializations
     inline void setInCoord( typename defaulttype::StdRigidTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
     inline void setInCoord( typename defaulttype::StdAffineTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;

@@ -1405,21 +1405,35 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
 }
 
 template <class TIn, class TOut>
-template<class T>
-typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::type SkinningMapping<TIn, TOut>::precomputeMatrices(const RigidType&)
+void SkinningMapping<TIn, TOut>::resizeMatrices()
 {
-    const VecInCoord& xfrom0 = *this->fromModel->getX0();
-    const VecCoord& xto0 = *this->toModel->getX0();
-    const vector<int>& m_reps = repartition.getValue();
-    const VVD& m_weights = weights.getValue();
-    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
-    VVMat33& m_ddweight = this->weightGradients2;
+    const unsigned int& fromSize = this->fromModel->getX()->size();
+    const unsigned int& toSize = this->toModel->getX()->size();
 
+    this->det.resize(toSize);
+    this->deformationTensors.resize(toSize);
+    this->ddet.resize(fromSize);
+    for (unsigned int i = 0; i < fromSize; ++i)      this->ddet[i].resize(toSize);
+    this->B.resize(fromSize);
+    for (unsigned int i = 0; i < fromSize; ++i)      this->B[i].resize(toSize);
+    this->Atilde.resize(fromSize);
+    for (unsigned int i = 0; i < fromSize; ++i)      this->Atilde[i].resize(toSize);
+    this->J0.resize (fromSize);
+    for (unsigned int i = 0; i < fromSize; ++i)      this->J0[i].resize(toSize);
+    this->J.resize(fromSize);
+    for (unsigned int i = 0; i < fromSize; ++i)      this->J[i].resize(toSize);
+}
+
+
+template <class TIn, class TOut>
+void SkinningMapping<TIn, TOut>::initSamples() // Temporary (will be done in FrameSampler class)
+{
+    const unsigned int& fromSize = this->fromModel->getX0()->size();
     // vol and massDensity
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
     this->getContext()->get( hexaContainer);
-    double volume = this->voxelVolume.getValue();
     //TODO get the volume from the FrameSampler !
+    double volume = this->voxelVolume.getValue();
     //if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
     const VecCoord& xto = *this->toModel->getX();
     this->vol.resize( xto.size());
@@ -1427,21 +1441,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
     this->massDensity.resize( xto.size());
     for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
 
-    // Resize matrices
-    this->det.resize(xto.size());
-    this->deformationTensors.resize(xto.size());
-    this->ddet.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->ddet[i].resize(xto.size());
-    this->B.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B[i].resize(xto.size());
-    this->Atilde.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->Atilde[i].resize(xto0.size());
-    this->J0.resize ( xfrom0.size() );
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J0[i].resize(xto0.size());
-    this->J.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J[i].resize(xto0.size());
-
-    if( useElastons.getValue())
+    if ( useElastons.getValue())
     {
         this->integ_Elaston.resize( xto.size());
         for ( unsigned int i = 0; i < xto.size(); i++) // to update
@@ -1453,7 +1453,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
                 ly=volume; //TODO get the volume from the FrameSampler !
                 lz=volume;
             }
-            else lx=ly=lz=pow(this->voxelVolume.getValue(),1/3.);
+            else lx=ly=lz=pow(this->voxelVolume.getValue(),1./3.);
             this->integ_Elaston[i][0] = 1;
             this->integ_Elaston[i][4] = lx*lx/12.;
             this->integ_Elaston[i][7] = ly*ly/12.;
@@ -1468,18 +1468,34 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
         }
 
         this->deformationTensorsElaston.resize(xto.size());
-        this->Stilde_x.resize(xfrom0.size());
-        this->Stilde_y.resize(xfrom0.size());
-        this->Stilde_z.resize(xfrom0.size());
-        for (unsigned int i = 0; i < xfrom0.size(); ++i)
+        this->Stilde_x.resize(fromSize);
+        this->Stilde_y.resize(fromSize);
+        this->Stilde_z.resize(fromSize);
+        for (unsigned int i = 0; i < fromSize; ++i)
         {
-            this->Stilde_x[i].resize(xto0.size());
-            this->Stilde_y[i].resize(xto0.size());
-            this->Stilde_z[i].resize(xto0.size());
+            this->Stilde_x[i].resize(xto.size());
+            this->Stilde_y[i].resize(xto.size());
+            this->Stilde_z[i].resize(xto.size());
         }
-        this->B_Elaston.resize(xfrom0.size());
-        for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B_Elaston[i].resize(xto.size());
+        this->B_Elaston.resize(fromSize);
+        for (unsigned int i = 0; i < fromSize; ++i)      this->B_Elaston[i].resize(xto.size());
     }
+}
+
+
+template <class TIn, class TOut>
+template<class T>
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::type SkinningMapping<TIn, TOut>::precomputeMatrices(const RigidType&)
+{
+    const VecInCoord& xfrom0 = *this->fromModel->getX0();
+    const VecCoord& xto0 = *this->toModel->getX0();
+    const vector<int>& m_reps = repartition.getValue();
+    const VVD& m_weights = weights.getValue();
+    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
+    VVMat33& m_ddweight = this->weightGradients2;
+
+    resizeMatrices();
+    initSamples();
 
     // Precompute matrices
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
@@ -1523,69 +1539,8 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
     VVMat33& m_ddweight = this->weightGradients2;
 
-    // vol and massDensity
-    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
-    this->getContext()->get( hexaContainer);
-    //TODO get the volume from the FrameSampler !
-    double volume = this->voxelVolume.getValue();
-    //if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
-    const VecCoord& xto = *this->toModel->getX();
-    this->vol.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
-    this->massDensity.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
-
-    // Resize matrices
-    this->det.resize(xto.size());
-    this->deformationTensors.resize(xto.size());
-    this->ddet.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->ddet[i].resize(xto.size());
-    this->B.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B[i].resize(xto.size());
-    this->Atilde.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->Atilde[i].resize(xto0.size());
-    this->J.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J[i].resize(xto0.size());
-
-    if( useElastons.getValue())
-    {
-        this->integ_Elaston.resize( xto.size());
-        for ( unsigned int i = 0; i < xto.size(); i++) // to update
-        {
-            double lx,ly,lz;
-            if ( hexaContainer && this->geoDist)
-            {
-                lx=volume;
-                ly=volume; //TODO get the volume from the FrameSampler !
-                lz=volume;
-            }
-            else lx=ly=lz=pow(this->voxelVolume.getValue(),1/3.);
-            this->integ_Elaston[i][0] = 1;
-            this->integ_Elaston[i][4] = lx*lx/12.;
-            this->integ_Elaston[i][7] = ly*ly/12.;
-            this->integ_Elaston[i][9] = lz*lz/12.;
-            this->integ_Elaston[i][20] = lx*lx*lx*lx/80.;
-            this->integ_Elaston[i][21] = lx*lx*ly*ly/144.;
-            this->integ_Elaston[i][22] = lx*lx*lz*lz/144.;
-            this->integ_Elaston[i][23] = ly*ly*ly*ly/80.;
-            this->integ_Elaston[i][24] = ly*ly*lz*lz/144.;
-            this->integ_Elaston[i][25] = lz*lz*lz*lz/80.;
-            this->integ_Elaston[i]=this->integ_Elaston[i]*lx*ly*lz;
-        }
-
-        this->deformationTensorsElaston.resize(xto.size());
-        this->Stilde_x.resize(xfrom0.size());
-        this->Stilde_y.resize(xfrom0.size());
-        this->Stilde_z.resize(xfrom0.size());
-        for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        {
-            this->Stilde_x[i].resize(xto0.size());
-            this->Stilde_y[i].resize(xto0.size());
-            this->Stilde_z[i].resize(xto0.size());
-        }
-        this->B_Elaston.resize(xfrom0.size());
-        for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B_Elaston[i].resize(xto.size());
-    }
+    resizeMatrices();
+    initSamples();
 
     // Precompute matrices
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
@@ -1628,76 +1583,15 @@ template <class TIn, class TOut>
 template<class T>
 typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> >::type SkinningMapping<TIn, TOut>::precomputeMatrices(const QuadraticType&)
 {
-    const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecCoord& xto0 = *this->toModel->getX0();
     const vector<int>& m_reps = repartition.getValue();
     const VVD& m_weights = weights.getValue();
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
     VVMat33& m_ddweight = this->weightGradients2;
 
-    // vol and massDensity
-    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
-    this->getContext()->get( hexaContainer);
-    double volume = this->voxelVolume.getValue();
-    //TODO get the volume from the FrameSampler !
-    //if ( hexaContainer && this->geoDist) volume = this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue()*this->geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
-    const VecCoord& xto = *this->toModel->getX();
-    this->vol.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
-    this->massDensity.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
+    resizeMatrices();
+    initSamples();
 
-    // Resize matrices
-    this->det.resize(xto.size());
-    this->deformationTensors.resize(xto.size());
-    this->ddet.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->ddet[i].resize(xto.size());
-    this->B.resize(xfrom0.size());
-    for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B[i].resize(xto.size());
-    this->Atilde.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->Atilde[i].resize(xto0.size());
-    this->J.resize(xfrom0.size());
-    for (unsigned int i = 0; i < xfrom0.size(); ++i)      this->J[i].resize(xto0.size());
-
-    if( useElastons.getValue())
-    {
-        this->integ_Elaston.resize( xto.size());
-        for ( unsigned int i = 0; i < xto.size(); i++) // to update
-        {
-            double lx,ly,lz;
-            if ( hexaContainer && this->geoDist)
-            {
-                lx=volume;
-                ly=volume; //TODO get the volume from the FrameSampler !
-                lz=volume;
-            }
-            else lx=ly=lz=pow(this->voxelVolume.getValue(),1./3.);
-            this->integ_Elaston[i][0] = 1;
-            this->integ_Elaston[i][4] = lx*lx/12.;
-            this->integ_Elaston[i][7] = ly*ly/12.;
-            this->integ_Elaston[i][9] = lz*lz/12.;
-            this->integ_Elaston[i][20] = lx*lx*lx*lx/80.;
-            this->integ_Elaston[i][21] = lx*lx*ly*ly/144.;
-            this->integ_Elaston[i][22] = lx*lx*lz*lz/144.;
-            this->integ_Elaston[i][23] = ly*ly*ly*ly/80.;
-            this->integ_Elaston[i][24] = ly*ly*lz*lz/144.;
-            this->integ_Elaston[i][25] = lz*lz*lz*lz/80.;
-            this->integ_Elaston[i]=this->integ_Elaston[i]*lx*ly*lz;
-        }
-
-        this->deformationTensorsElaston.resize(xto.size());
-        this->Stilde_x.resize(xfrom0.size());
-        this->Stilde_y.resize(xfrom0.size());
-        this->Stilde_z.resize(xfrom0.size());
-        for (unsigned int i = 0; i < xfrom0.size(); ++i)
-        {
-            this->Stilde_x[i].resize(xto0.size());
-            this->Stilde_y[i].resize(xto0.size());
-            this->Stilde_z[i].resize(xto0.size());
-        }
-        this->B_Elaston.resize(xfrom0.size());
-        for(unsigned int i = 0; i < xfrom0.size(); ++i)      this->B_Elaston[i].resize(xto.size());
-    }
     // Precompute matrices ( suppose that A0=I )
     for ( unsigned int i=0 ; i<xto0.size(); i++ )
     {
