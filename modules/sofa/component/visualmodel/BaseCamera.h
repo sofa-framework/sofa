@@ -45,6 +45,8 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
+#include <tinyxml.h>
+
 namespace sofa
 {
 
@@ -76,8 +78,11 @@ public:
     BaseCamera();
     virtual ~BaseCamera();
 
-    void init();
-    void reinit();
+    virtual void init();
+    virtual void reinit();
+
+    bool exportParametersInFile(const std::string& viewFilename);
+    bool importParametersFromFile(const std::string& viewFilename);
 
     void translate(const Vec3& t);
     void translateLookAt(const Vec3& t);
@@ -179,6 +184,7 @@ public:
     virtual void manageEvent(core::objectmodel::Event* e)=0;
     virtual void internalUpdate() {}
 
+    void handleEvent(sofa::core::objectmodel::Event* event);
 protected:
     Vec3 sceneCenter;
 
@@ -189,6 +195,9 @@ protected:
     double currentZNear, currentZFar;
 
     void computeZ();
+
+    void exportSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data, const std::string& comments = std::string());
+    bool importSingleParameter(TiXmlElement* root, core::objectmodel::BaseData& data);
 };
 
 
