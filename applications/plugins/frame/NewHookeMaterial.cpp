@@ -39,7 +39,7 @@ SOFA_DECL_CLASS (HookeMaterial3);
 
 int HookeMaterial3Class = core::RegisterObject ( "Hooke material for deformable objects" )
 #ifndef SOFA_FLOAT
-        .add<HookeMaterial3<Material3d> >()
+        .add<HookeMaterial3<Material3d> >(true)
 #endif
 #ifndef SOFA_DOUBLE
         .add<HookeMaterial3<Material3f> >()
