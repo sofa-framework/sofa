@@ -646,7 +646,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::ComputeResult(de
         nl++;
     }
 
-    //compute Result = JRMinv * Jt
+    //compute Result = JRMinv * (JR)t
 
     nl = 0;
     for (typename SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)

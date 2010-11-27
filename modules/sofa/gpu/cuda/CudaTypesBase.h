@@ -91,6 +91,16 @@ public :
         return v[i];
     }
 
+    void fastResize(int nbRow)
+    {
+        v.fastResize(nbRow);
+    }
+
+    void fastResize(int nbRow,int warp_size)
+    {
+        v.fastResize(nbRow,warp_size);
+    }
+
     void resize(int nbRow)
     {
         v.resize(nbRow);
@@ -169,12 +179,22 @@ public :
 
     void resize(int nbRow, int nbCol)
     {
-        m.resize(nbCol,nbRow,BSIZE);
+        m.resize(nbRow,nbCol);
     }
 
     void resize(int nbRow, int nbCol,int ws)
     {
-        m.resize(nbCol,nbRow,ws);
+        m.resize(nbRow,nbCol,ws);
+    }
+
+    void fastResize(int nbRow, int nbCol)
+    {
+        m.fastResize(nbRow,nbCol);
+    }
+
+    void fastResize(int nbRow, int nbCol,int ws)
+    {
+        m.fastResize(nbRow,nbCol,ws);
     }
 
     unsigned int rowSize() const
@@ -187,9 +207,9 @@ public :
         return m.getSizeX();
     }
 
-    SReal element(int i, int j) const
+    SReal element(int j, int i) const
     {
-        return m[i][j];
+        return m[j][i];
     }
 
     const T* operator[] ( int i ) const
@@ -208,7 +228,7 @@ public :
         //m.memsetHost();
     }
 
-    void set(int i, int j, double v)
+    void set(int j, int i, double v)
     {
 #ifdef DEBUG_BASE
         if ((j>=rowSize()) || (i>=colSize()))
@@ -217,10 +237,10 @@ public :
             exit(1);
         }
 #endif
-        m[i][j] = (T)v;
+        m[j][i] = (T)v;
     }
 
-    void add(int i, int j, double v)
+    void add(int j, int i, double v)
     {
 #ifdef DEBUG_BASE
         if ((j>=rowSize()) || (i>=colSize()))
@@ -229,7 +249,7 @@ public :
             exit(1);
         }
 #endif
-        m[i][j] += (T)v;
+        m[j][i] += (T)v;
     }
 
     static const char* Name();
@@ -237,10 +257,10 @@ public :
     CudaBaseVector<Real> operator*(const CudaBaseVector<Real> & v) const
     {
         CudaBaseVector<Real> res;
-        res.resize(rowSize());
+        res.fastResize(rowSize());
         CudaBaseMatrixKernels<Real>::matrix_vector_product(rowSize(),
                 m.deviceRead(),
-                m.getPitch(),
+                m.getPitchDevice(),
                 v.getCudaVector().deviceRead(),
                 res.getCudaVector().deviceWrite());
         return res;
@@ -250,7 +270,7 @@ public :
     {
         CudaBaseMatrixKernels<Real>::matrix_vector_product(rowSize(),
                 m.deviceRead(),
-                m.getPitch(),
+                m.getPitchDevice(),
                 r.getCudaVector().deviceRead(),
                 v.getCudaVector().deviceWrite());
     }
