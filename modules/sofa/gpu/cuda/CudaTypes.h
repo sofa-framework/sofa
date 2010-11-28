@@ -1212,4 +1212,14 @@ template<> struct DataTypeName<sofa::gpu::cuda::Vec3d1> { static const char* nam
 
 } // namespace sofa
 
+#ifdef DEBUG_OUT_MATRIX
+#undef DEBUG_OUT_M
+#undef SPACEP
+#undef SPACEM
+#undef SPACEN
+#undef DEBUG_OUT_MATRIX
+#else
+#undef DEBUG_OUT_M
+#endif
+
 #endif

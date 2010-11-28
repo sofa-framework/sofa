@@ -36,7 +36,9 @@ namespace sofa
 namespace helper
 {
 
-DEBUG_OUT_V(int cptid = 0);
+#ifdef DEBUG_OUT_VECTOR
+int cptid = 0;
+#endif
 
 void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type)
 {
