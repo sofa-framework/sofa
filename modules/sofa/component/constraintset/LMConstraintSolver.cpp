@@ -581,13 +581,12 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
     for (unsigned int eq=0; eq<numEquations; ++eq)
     {
         const int idxRow=constraintOffset+eq;
-        L.startVec(idxRow);
-
         for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); itBlock++)
         {
             const ConstraintBlock &b=(*itBlock);
             const defaulttype::BaseMatrix &m=b.getMatrix();
             const unsigned int column=b.getColumn()*dimensionDofs;
+
             for (unsigned int j=0; j<m.colSize(); ++j)
             {
                 SReal value=m.element(eq,j);
@@ -793,7 +792,13 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     //Correct Dof
     //    operation: M0^-1.L0^T.lambda -> A
 
-    VectorEigen A; A.noalias() = invM_Ltrans*c;
+    VectorEigen A;
+    /* This seems very redundant, but the SparseTimeDenseProduct seems buggy when the dense rhs
+    and sparse lhs uses different storage order. This is always the case with a sparse row major
+    and a dense vector (col major otherwise compile time assert )*/
+    Eigen::SparseMatrix<SReal> invM_Ltrans_colMajor = Eigen::SparseMatrix<SReal>(invM_Ltrans);
+
+    A.noalias() = invM_Ltrans_colMajor*c;
     if (f_printLog.getValue())
     {
         sout << "M^-1.L^T " << "\n" << invM_Ltrans << sendl;
