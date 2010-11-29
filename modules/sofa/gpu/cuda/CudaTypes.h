@@ -317,12 +317,12 @@ public:
             {
                 T* prevHostPointer = hostPointer;
                 MemoryManager::hostAlloc( (void **) &hostPointer, allocSize ); pitch_host = d_x*sizeof(T);
-                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((int) hostPointer) << " HostPitch = " << pitch_host << std::endl);
+                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((unsigned long) hostPointer) << " HostPitch = " << pitch_host << std::endl);
                 if ( prevHostPointer != NULL ) MemoryManager::hostFree( prevHostPointer );
 
                 void* prevDevicePointer = devicePointer;
                 mycudaMallocPitch(&devicePointer, &pitch_device, d_x*sizeof(T), d_y);
-                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((int) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
+                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((unsigned long) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
                 if ( prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
 
                 allocSizeY = d_y;
@@ -346,7 +346,7 @@ public:
                 DEBUG_OUT_M(SPACEN << "Is in (y > allocSizeY)" << std::endl);
                 T* prevHostPointer = hostPointer;
                 MemoryManager::hostAlloc( (void **) &hostPointer, allocSize);
-                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((int) hostPointer) << " HostPitch = " << pitch_host << std::endl);
+                DEBUG_OUT_M(SPACEN << "Allocate Host : " << ((unsigned long) hostPointer) << " HostPitch = " << pitch_host << std::endl);
                 if (hostIsValid)
                 {
                     DEBUG_OUT_M(SPACEN << "MemcpyHost from 0 to " << (pitch_host*sizeY) << std::endl);
@@ -356,7 +356,7 @@ public:
 
                 void* prevDevicePointer = devicePointer;
                 mycudaMallocPitch(&devicePointer, &pitch_device, pitch_device, d_y); //pitch_device should not be modified
-                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((int) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
+                DEBUG_OUT_M(SPACEN << "Allocate Device : " << ((unsigned long) devicePointer) << " DevicePitch = " << pitch_device << std::endl);
                 if (deviceIsValid)
                 {
                     DEBUG_OUT_M(SPACEN << "MemcpyDevice from 0 to " << (pitch_device*sizeY) << std::endl);
@@ -517,7 +517,7 @@ protected:
 //#ifndef NDEBUG
         if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
 //#endif
-        DEBUG_OUT_M(SPACEN << "copyToHost host : " << ((int) hostPointer) << " pitchH : " << pitch_host << " | device : " << ((int)devicePointer) << " pitchD : " << pitch_device << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
+        DEBUG_OUT_M(SPACEN << "copyToHost host : " << ((unsigned long) hostPointer) << " pitchH : " << pitch_host << " | device : " << ((unsigned long)devicePointer) << " pitchD : " << pitch_device << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
         mycudaMemcpyDeviceToHost2D ( hostPointer, pitch_host, devicePointer, pitch_device, sizeX*sizeof(T), sizeY);
         hostIsValid = true;
     }
@@ -528,7 +528,7 @@ protected:
 //#ifndef NDEBUG
         if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
 //#endif
-        DEBUG_OUT_M(SPACEN << "copyToDevice device : " << ((int)devicePointer) << " pitchD : " << pitch_device << " | host : " << ((int) hostPointer) << " pitchH : " << pitch_host << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
+        DEBUG_OUT_M(SPACEN << "copyToDevice device : " << ((unsigned long)devicePointer) << " pitchD : " << pitch_device << " | host : " << ((unsigned long) hostPointer) << " pitchH : " << pitch_host << " | (" << sizeX*sizeof(T) << "," << sizeY << ")" << std::endl);
         mycudaMemcpyHostToDevice2D ( devicePointer, pitch_device, hostPointer, pitch_host,  sizeX*sizeof(T), sizeY);
         deviceIsValid = true;
     }
