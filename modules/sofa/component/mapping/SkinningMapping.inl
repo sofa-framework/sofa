@@ -288,7 +288,7 @@ void SkinningMapping<TIn, TOut>::init()
         this->getContext()->get ( distOnGrid, core::objectmodel::BaseContext::SearchRoot );
         if ( !distOnGrid )
         {
-            serr << "Can not find the geodesical distance component: distances used are euclidian." << sendl;
+            serr << "Can not find the DistanceOnGrid component: distances used are euclidian." << sendl;
             distanceType.setValue( DISTANCE_EUCLIDIAN);
         }
     }
