@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_CPP
+
 #include "GridMaterial.inl"
 #include <sofa/core/ObjectFactory.h>
 
