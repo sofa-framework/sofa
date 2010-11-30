@@ -41,6 +41,8 @@ HEADERS += \
            FrameSampler.inl \
            FrameSpringForceField2.h \
            FrameSpringForceField2.inl \
+           GridMaterial.h \
+           GridMaterial.inl \
            initFrame.h \
             NewMaterial.h \
             NewHookeMaterial.h \
@@ -63,6 +65,7 @@ SOURCES += \
            FrameMechanicalObject.cpp \
            FrameSampler.cpp \
            FrameSpringForceField2.cpp \
+           GridMaterial.cpp \
             NewHookeMaterial.cpp \
  #           NewSkinningMapping.cpp \
            PrimitiveSkinningMapping.cpp \
