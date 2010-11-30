@@ -368,7 +368,7 @@ struct IdentityMappingMatrixHelper
             {
                 mat[r][c] = (Real) 0;
             }
-            mat[r][r] = (Real) 1.0;
+            if( r<M ) mat[r][r] = (Real) 1.0;
         }
     }
 };
