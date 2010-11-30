@@ -204,10 +204,10 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     r = M*x;
 
     bool apply_precond = false;
-    if (this->preconditioners.size()>0 && usePrecond)
+    if (((int) this->preconditioners.size()>=0) && usePrecond)
     {
         preconditioners[0]->updateSystemMatrix();
-        apply_precond = (f_update_step.getValue()>0);
+        apply_precond = true;
     }
 
     cgstep_beta(r,b,-1);//for (int i=0; i<n; i++) r[i] = b[i] - r[i];
@@ -258,12 +258,12 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 
         if (this->preconditioners.size()>0 && usePrecond)
         {
-            apply_precond = (f_max_use_by_step.getValue()>=0);
-
-            if (f_max_use_by_step.getValue()>0)
+            if (f_max_use_by_step.getValue()==0) apply_precond = true;
+            else if (f_max_use_by_step.getValue()>0)
             {
-                apply_precond = (iter-1<f_max_use_by_step.getValue());
+                apply_precond = (((int) (iter-1))<(int) f_max_use_by_step.getValue());
             }
+            else apply_precond = false;
         }
 
         if (apply_precond)
