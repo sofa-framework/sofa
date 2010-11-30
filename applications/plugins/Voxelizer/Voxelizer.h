@@ -113,12 +113,15 @@ public:
     Data<string> segmentationFileName;
     Data<string> infoFileName;
     Data<Vec3d> rawOrigin; // MechObj can connect their "position" Data on this one.
-    Data<Vec3d> rawDimension;
+    Data<Vec3d> resolution;
+    Data<bool> showRasterizedVolumes;
 
     Voxelizer();
     ~Voxelizer();
 
     virtual void init();
+
+    virtual void draw();
 
     virtual bool canLoad();
     virtual bool load();
@@ -137,6 +140,7 @@ protected:
     TagSet rasterizerTags;
     double rasterizerPixelSize;
     BBox rasterizerBBox;
+    RasterizedVol** rasterizedVolumes; // Temporary kept for debugging
 
     helper::io::ImageRAW* valueImg;
     helper::io::ImageRAW* segmentationImg;

@@ -63,7 +63,8 @@ Voxelizer<DataTypes>::Voxelizer()
     , segmentationFileName (initData(&segmentationFileName, "segmentationFileName", "segmentation file name"))
     , infoFileName (initData(&infoFileName, "infoFileName", "information about the RAW file name"))
     , rawOrigin (initData(&rawOrigin, "rawOrigin", "origin of the RAW array. Mechanical object Data named \"position\" can connect to this data to obtain the correct offset."))
-    , rawDimension (initData(&rawDimension, "rawDimension", "dimension of the RAW array. RAW loader can connect to this data."))
+    , resolution (initData(&resolution, "resolution", "resolution of the RAW array. RAW loader can connect to this data."))
+    , showRasterizedVolumes (initData(&showRasterizedVolumes, false, "showRasterizedVolumes", "Show rasterized volumes."))
 {
     this->addAlias(&valueFileName, "filename");
     rasterizer = NULL;
@@ -161,13 +162,13 @@ void Voxelizer<DataTypes>::init()
     rootNode->execute<simulation::CollisionDetectionVisitor>(sofa::core::ExecParams::defaultInstance());
 
     unsigned int nbModels = vTriangularModel.size();
-    RasterizedVol** rasterizedVolume = new RasterizedVol*[3]; // 3 for each axis
+    rasterizedVolumes = new RasterizedVol*[3]; // 3 for each axis
     for (unsigned int i = 0; i < 3; ++i)
-        rasterizedVolume[i] = new RasterizedVol[nbModels];
-    generateFullVolumes(rasterizedVolume);
+        rasterizedVolumes[i] = new RasterizedVol[nbModels];
+    generateFullVolumes(rasterizedVolumes);
 
     if (generateRAWFiles.getValue())
-        createImages(rasterizedVolume);
+        createImages(rasterizedVolumes);
 
     // Clean changes
     reloadRasterizerSettings();
@@ -261,7 +262,7 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
     // Init images
     Vec3d imgSize = (rasterizer->bbox[1] - rasterizer->bbox[0]);
     const Vec3d& voxelsSize = voxelSize.getValue();
-    Vec3d& dimension = *rawDimension.beginEdit();
+    Vec3d& dimension = *resolution.beginEdit();
     unsigned int width = dimension[0] = (unsigned int)(imgSize[0] / voxelsSize[0]);
     unsigned int height = dimension[1] = (unsigned int)(imgSize[1] / voxelsSize[1]);
     unsigned int depth = dimension[2] = (unsigned int)(imgSize[2] / voxelsSize[2]);
@@ -335,7 +336,7 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
         }
     }
     rawOrigin.endEdit();
-    rawDimension.endEdit();
+    resolution.endEdit();
 
     // Save images
     if (!valueImg->save(valueFileName.getValue())) serr << "value RAW save failed." << sendl;
@@ -849,7 +850,7 @@ void Voxelizer<DataTypes>::saveInfos()
         serr << "Can not open " << infoFileName.getValue() << sendl;
     }
     std::cout << "Writing info file " << infoFileName.getValue() << std::endl;
-    fileStream << rawDimension.getValue() << " " << rawOrigin.getValue() << std::endl;
+    fileStream << resolution.getValue() << " " << rawOrigin.getValue() << std::endl;
     fileStream.close();
 }
 
@@ -862,9 +863,9 @@ void Voxelizer<DataTypes>::loadInfos()
     {
         serr << "Can not open " << infoFileName.getValue() << sendl;
     }
-    Vec3d& dim = *rawDimension.beginEdit();
-    fileStream >> dim;
-    rawDimension.endEdit();
+    Vec3d& res = *resolution.beginEdit();
+    fileStream >> res;
+    resolution.endEdit();
     Vec3d& origin = *rawOrigin.beginEdit();
     fileStream >> origin;
     rawOrigin.endEdit();
@@ -902,6 +903,81 @@ void Voxelizer<DataTypes>::reloadRasterizerSettings()
     restoreTags();
     rasterizer->reinit();
 }
+
+
+template <class DataTypes>
+void Voxelizer<DataTypes>::draw()
+{
+    // Display volumes retrieved from depth peeling textures
+    if( showRasterizedVolumes.getValue())
+    {
+#ifndef USE_MAP_FOR_VOLUMES
+        // Not implemented
+#else
+        for ( int axis=0; axis<3; ++axis )
+        {
+            /*          const int iX = ( axis+1 ) %3;
+                      const int iY = ( axis+2 ) %3;
+                      const int iZ =  axis;*/
+
+            if( axis == 0)
+                glColor3f( 1, 0, 0);
+            else if( axis == 1)
+                glColor3f( 0, 1, 0);
+            else if( axis == 2)
+                glColor3f( 0, 0, 1);
+
+            for( unsigned int indexModel = 0; indexModel < vTriangularModel.size(); ++indexModel)
+            {
+                RasterizedVol& rasterizedVolume = rasterizedVolumes[axis][indexModel];
+                for (RasterizedVol::const_iterator it = rasterizedVolume.begin(); it != rasterizedVolume.end(); ++it)
+                {
+                    double x = it->first;
+                    const std::multimap<double, std::pair< double, double> >& multiMap = it->second;
+                    for (std::multimap<double, std::pair< double, double> >::const_iterator it2 = multiMap.begin(); it2 != multiMap.end(); ++it2)
+                    {
+                        double y = it2->first;
+                        double zMin = it2->second.first;
+                        double zMax = it2->second.second;
+                        const Real psize = rasterizer->pixelSize.getValue();
+
+                        BBox box;
+//                 box[0][iX] = x - ( psize*0.5 );
+//                 box[0][iY] = y - ( psize*0.5 );
+//                 box[0][iZ] = zMin;
+//                 box[1][iX] = x + ( psize*0.5 );
+//                 box[1][iY] = y + ( psize*0.5 );
+//                 box[1][iZ] = zMax;
+
+                        box[0][0] = x - ( psize*0.5 );
+                        box[0][1] = y - ( psize*0.5 );
+                        box[0][2] = zMin;
+                        box[1][0] = x + ( psize*0.5 );
+                        box[1][1] = y + ( psize*0.5 );
+                        box[1][2] = zMax;
+
+                        glBegin( GL_QUADS);
+                        // z min face
+                        glVertex3f( box[0][0], box[0][1], box[0][2]);
+                        glVertex3f( box[0][0], box[1][1], box[0][2]);
+                        glVertex3f( box[1][0], box[1][1], box[0][2]);
+                        glVertex3f( box[1][0], box[0][1], box[0][2]);
+
+                        // z max face
+                        glVertex3f( box[0][0], box[0][1], box[1][2]);
+                        glVertex3f( box[0][0], box[1][1], box[1][2]);
+                        glVertex3f( box[1][0], box[1][1], box[1][2]);
+                        glVertex3f( box[1][0], box[0][1], box[1][2]);
+                        glEnd();
+                    }
+                }
+            }
+        }
+#endif
+    }
+
+}
+
 
 
 }
