@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_INL
-#define SOFA_COMPONENT_MATERIAL_HOOKEMATERIAL_INL
+#ifndef SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_INL
+#define SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_INL
 
 #include "GridMaterial.h"
 #include <queue>
@@ -38,6 +38,7 @@ namespace material
 
 template<class MaterialTypes>
 GridMaterial<MaterialTypes>::GridMaterial()
+    : Inherited()
 {
 }
 
@@ -55,17 +56,17 @@ void GridMaterial<MaterialTypes>::init()
     {
         serr << "VoxelGrid component not found" << sendl;
         this->nbVoxels = 0;
-        this->Data = NULL;
-        this->SegmentID = NULL;
+        this->data = NULL;
+        this->segmentID = NULL;
     }
     else
     {
         this->voxelGridLoader->getVoxelSize(this->voxelSize);
-        this->voxelGridLoader->getResolution(this->Dimension);
-        // this->voxelGridLoader->getOrigin(this->Origin); // TO DO : update voxelGridLoader to add offsets
-        this->nbVoxels = this->Dimension[0]*this->Dimension[1]*this->Dimension[2];
-        this->Data = this->voxelGridLoader->getData();
-        this->SegmentID = this->voxelGridLoader->getSegmentID();
+        this->voxelGridLoader->getResolution(this->dimension);
+        // this->voxelGridLoader->getorigin(this->origin); // TO DO : update voxelGridLoader to add offsets
+        this->nbVoxels = this->dimension[0]*this->dimension[1]*this->dimension[2];
+        this->data = this->voxelGridLoader->getData();
+        this->segmentID = this->voxelGridLoader->getSegmentID();
     }
 
     Inherited::init();
@@ -73,7 +74,7 @@ void GridMaterial<MaterialTypes>::init()
 
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
 template<class MaterialTypes>
-void GridMaterial<MaterialTypes>::computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& )
+void GridMaterial<MaterialTypes>::computeStress  ( VecStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecStr& /*strain*/, const VecStr& )
 {
 
 //                Real f = youngModulus.getValue()/((1 + poissonRatio.getValue())*(1 - 2 * poissonRatio.getValue()));
@@ -106,7 +107,7 @@ void GridMaterial<MaterialTypes>::computeStress  ( VecStr& stress, VecStrStr* st
 
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
 template<class MaterialTypes>
-void GridMaterial<MaterialTypes>::computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& )
+void GridMaterial<MaterialTypes>::computeStress  ( VecElStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecElStr& /*strain*/, const VecElStr& )
 {
 //                Real f = youngModulus.getValue()/((1 + poissonRatio.getValue())*(1 - 2 * poissonRatio.getValue()));
 //                stressDiagonal = f * (1 - poissonRatio.getValue());
@@ -172,17 +173,17 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const int& inde
 {
     if(!nbVoxels) return false;
     unsigned int i,index1,index2;
-    Distances.resize(this->nbVoxels);
-    for(i=0; i<this->nbVoxels; i++) Distances[i]=distMax;
+    distances.resize(this->nbVoxels);
+    for(i=0; i<this->nbVoxels; i++) distances[i]=distMax;
 
-    if(index<0 || index>=nbVoxels) return false; // voxel out of grid
-    if(!SegmentID[index]) return false;	// voxel out of object
+    if(index<0 || index>=(int)nbVoxels) return false; // voxel out of grid
+    if(!segmentID[index]) return false;	// voxel out of object
 
     VUI neighbors;
     double d;
 
     std::queue<unsigned int> fifo;
-    Distances[index]=0; fifo.push(index);
+    distances[index]=0; fifo.push(index);
     while(!fifo.empty())
     {
         index1=fifo.front();
@@ -190,12 +191,12 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const int& inde
         for(i=0; i<neighbors.size(); i++)
         {
             index2=neighbors[i];
-            if(SegmentID[index2]) // test if voxel is not void
+            if(segmentID[index2]) // test if voxel is not void
             {
-                d=Distances[index1]+getDistance(index1,index2,biasDistances);
-                if(Distances[index2]>d)
+                d=distances[index1]+getDistance(index1,index2,biasDistances);
+                if(distances[index2]>d)
                 {
-                    Distances[index2]=d;
+                    distances[index2]=d;
                     fifo.push(index2);
                 }
             }
@@ -221,14 +222,14 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VI& indic
 {
     if(!nbVoxels) return false;
     unsigned int i,nbi=indices.size(),index1,index2;
-    Distances.resize(this->nbVoxels); Voronoi.resize(this->nbVoxels);
-    for(i=0; i<this->nbVoxels; i++) {Distances[i]=distMax; Voronoi[i]=-1;}
+    distances.resize(this->nbVoxels); voronoi.resize(this->nbVoxels);
+    for(i=0; i<this->nbVoxels; i++) {distances[i]=distMax; voronoi[i]=-1;}
 
     VUI neighbors;
     double d;
 
     std::queue<unsigned int> fifo;
-    for(i=0; i<nbi; i++) if(indices[i]>=0 && indices[i]<nbVoxels) if(SegmentID[indices[i]]!=0) {Distances[indices[i]]=0; Voronoi[indices[i]]=i; fifo.push(indices[i]);}
+    for(i=0; i<nbi; i++) if(indices[i]>=0 && indices[i]<(int)nbVoxels) if(segmentID[indices[i]]!=0) {distances[indices[i]]=0; voronoi[indices[i]]=i; fifo.push(indices[i]);}
     if(fifo.empty()) return false; // all input voxels out of grid
     while(!fifo.empty())
     {
@@ -237,12 +238,12 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VI& indic
         for(i=0; i<neighbors.size(); i++)
         {
             index2=neighbors[i];
-            if(SegmentID[index2]) // test if voxel is not void
+            if(segmentID[index2]) // test if voxel is not void
             {
-                d=Distances[index1]+getDistance(index1,index2,biasDistances);
-                if(Distances[index2]>d)
+                d=distances[index1]+getDistance(index1,index2,biasDistances);
+                if(distances[index2]>d)
                 {
-                    Distances[index2]=d; Voronoi[index2]=Voronoi[index1];
+                    distances[index2]=d; voronoi[index2]=voronoi[index1];
                     fifo.push(index2);
                 }
             }
@@ -257,27 +258,27 @@ bool GridMaterial< MaterialTypes >::computeUniformSampling ( VecVec3& points, co
 {
     if(!nbVoxels) return false;
     unsigned int i,k,initial_num_points=points.size();
-    VI indices(num_points,-1);
+    VI indices((int)num_points,-1);
     for(i=0; i<initial_num_points; i++) indices.push_back(getIndex(points[i]));
     points.resize(num_points);
 
 // initialization: farthest point sampling (see [adams08])
     double dmax; int indexmax;
 
-    if(initial_num_points==0) {indices[0]=0; while(SegmentID[indices[0]]==0) {indices[0]++; if(indices[0]==nbVoxels) return false;} } // take the first not empty voxel as a random point
+    if(initial_num_points==0) {indices[0]=0; while(segmentID[indices[0]]==0) {indices[0]++; if(indices[0]==(int)nbVoxels) return false;} } // take the first not empty voxel as a random point
     for(i=initial_num_points; i<num_points; i++)
     {
         if(i==0) i=1; // a random point has been inserted
         // get farthest point from all inserted points
         computeGeodesicalDistances(indices,biasDistances);
-        dmax=-1; indexmax=-1; for(k=0; k<num_points; k++) {if(Distances[k]>dmax) {dmax=Distances[k]; indexmax=k;}}
+        dmax=-1; indexmax=-1; for(k=0; k<num_points; k++) {if(distances[k]>dmax) {dmax=distances[k]; indexmax=k;}}
         if(indexmax==-1) return false; // unable to add point
         indices[i]=indexmax;
     }
 
 // Lloyd relaxation
     Vec3 pos,u,pos_point,pos_voxel;
-    int count,count2=0;
+    unsigned int count,count2=0;
     bool ok=false,ok2;
     double d,dmin; int indexmin;
 
@@ -285,25 +286,25 @@ bool GridMaterial< MaterialTypes >::computeUniformSampling ( VecVec3& points, co
     {
         ok2=true;
         computeGeodesicalDistances(indices,biasDistances); // Voronoi
-        VB flag(nbVoxels,false);
+        VB flag((int)nbVoxels,false);
         for(i=initial_num_points; i<num_points; i++) 	// move to centroid of Voronoi cells
         {
             // estimate centroid given the measured distances = p + 1/N sum d(p,pi)*voxelsize*(p-pi)/|p-pi|
             getCoord(indices[i],pos_point);
             pos.fill(0); count=0;
             for(k=0; k<nbVoxels; k++)
-                if(Voronoi[k]==i)
+                if(voronoi[k]==(int)i)
                 {
                     getCoord(k,pos_voxel);
                     u=pos_point-pos_voxel; u.normalize();
                     u[0]*=(Real)voxelSize[0]; u[1]*=(Real)voxelSize[1]; u[2]*=(Real)voxelSize[2];
-                    pos+=u*(Real)Distances[k];
+                    pos+=u*(Real)distances[k];
                     count++;
                 }
             pos/=(Real)count; 		pos+=pos_point;
             // get closest unoccupied point in object
             dmin=1E100; indexmin=-1;
-            for(k=0; k<nbVoxels; k++) if(!flag[k]) if(SegmentID[k]!=0) {getCoord(k,pos_voxel); d=(pos-pos_voxel).norm2(); if(d<dmin) {flag[k]=true; dmin=d; indexmin=k;}}
+            for(k=0; k<nbVoxels; k++) if(!flag[k]) if(segmentID[k]!=0) {getCoord(k,pos_voxel); d=(pos-pos_voxel).norm2(); if(d<dmin) {flag[k]=true; dmin=d; indexmin=k;}}
             if(indices[i]!=indexmin) {ok2=false; indices[i]=indexmin;}
         }
         ok=ok2; count2++;
@@ -328,8 +329,8 @@ template < class MaterialTypes >
 int GridMaterial< MaterialTypes >::getIndex(const Vec3i& icoord)
 {
     if(!nbVoxels) return -1;
-    for(int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=this->Dimension[i]) return -1; // invalid icoord (out of grid)
-    return icoord[0]+this->Dimension[0]*icoord[1]+this->Dimension[0]*this->Dimension[1]*icoord[2];
+    for(int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=this->dimension[i]) return -1; // invalid icoord (out of grid)
+    return icoord[0]+this->dimension[0]*icoord[1]+this->dimension[0]*this->dimension[1]*icoord[2];
 }
 
 template < class MaterialTypes >
@@ -348,22 +349,22 @@ bool GridMaterial< MaterialTypes >::getiCoord(const Vec3& coord, Vec3i& icoord)
     Real val;
     for(unsigned int i=0; i<3; i++)
     {
-        val=(coord[i]-(Real)Origin[i])/(Real)voxelSize[i];
+        val=(coord[i]-(Real)origin[i])/(Real)voxelSize[i];
         val=((val-floor(val))<0.5)?floor(val):ceil(val); //round
-        if(val<0 || val>=Dimension[i]) return false;
+        if(val<0 || val>=dimension[i]) return false;
         icoord[i]=(int)val;
     }
     return true;
 }
 
 template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::getiCoord(const unsigned int& index, Vec3i& icoord)
+bool GridMaterial< MaterialTypes >::getiCoord(const int& index, Vec3i& icoord)
 {
     if(!nbVoxels) return false;
-    if(index<0 || index>=nbVoxels) return false;  // invalid index
-    icoord[2]=index/this->Dimension[0]*this->Dimension[1];
-    icoord[1]=(index-icoord[2]*this->Dimension[0]*this->Dimension[1])/this->Dimension[0];
-    icoord[0]=index-icoord[2]*this->Dimension[0]*this->Dimension[1]-icoord[1]*this->Dimension[0];
+    if(index<0 || index>=(int)nbVoxels) return false;  // invalid index
+    icoord[2]=index/this->dimension[0]*this->dimension[1];
+    icoord[1]=(index-icoord[2]*this->dimension[0]*this->dimension[1])/this->dimension[0];
+    icoord[0]=index-icoord[2]*this->dimension[0]*this->dimension[1]-icoord[1]*this->dimension[0];
     return true;
 }
 
@@ -371,14 +372,14 @@ template < class MaterialTypes >
 bool GridMaterial< MaterialTypes >::getCoord(const Vec3i& icoord, Vec3& coord)
 {
     if(!nbVoxels) return false;
-    for(unsigned int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=this->Dimension[i]) return false; // invalid icoord (out of grid)
-    coord=this->Origin;
+    for(unsigned int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=this->dimension[i]) return false; // invalid icoord (out of grid)
+    coord=this->origin;
     for(unsigned int i=0; i<3; i++) coord[i]+=(Real)this->voxelSize[i]*(Real)icoord[i];
     return true;
 }
 
 template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::getCoord(const unsigned int& index, Vec3& coord)
+bool GridMaterial< MaterialTypes >::getCoord(const int& index, Vec3& coord)
 {
     if(!nbVoxels) return false;
     Vec3i icoord;

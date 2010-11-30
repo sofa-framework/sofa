@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MATERIAL_GridMaterial_H
-#define SOFA_COMPONENT_MATERIAL_GridMaterial_H
+#ifndef SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_H
+#define SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_H
 
 #include "initFrame.h"
 #include "NewMaterial.h"
@@ -35,8 +35,10 @@
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace material
 {
 
@@ -48,9 +50,9 @@ template<class TMaterialTypes>
 class SOFA_FRAME_API GridMaterial : public Material<TMaterialTypes>
 {
 public:
-    typedef Material<TMaterialTypes> Inherited;
     SOFA_CLASS( SOFA_TEMPLATE(GridMaterial, TMaterialTypes), SOFA_TEMPLATE(Material, TMaterialTypes) );
 
+    typedef Material<TMaterialTypes> Inherited;
     typedef typename Inherited::Real Real;        ///< Scalar values.
     typedef typename defaulttype::Vec<3,Real> Vec3;        ///< Material coordinate
     typedef helper::vector<Vec3> VecVec3;        ///< Vector of material coordinates
@@ -114,9 +116,9 @@ public:
     inline int getIndex(const Vec3i& icoord);
     inline int getIndex(const Vec3& coord);
     inline bool getiCoord(const Vec3& coord, Vec3i& icoord);
-    inline bool getiCoord(const unsigned int& index, Vec3i& icoord);
+    inline bool getiCoord(const int& index, Vec3i& icoord);
     inline bool getCoord(const Vec3i& icoord, Vec3& coord) ;
-    inline bool getCoord(const unsigned int& index, Vec3& coord) ;
+    inline bool getCoord(const int& index, Vec3& coord) ;
     inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
@@ -138,15 +140,15 @@ protected:
 
     // Grid parameters (initialized from voxelGridLoader)
     Vec3d voxelSize;
-    Vec3d Origin;
-    Vec3i Dimension;
+    Vec3d origin;
+    Vec3i dimension;
     unsigned int nbVoxels;
-    const unsigned char *Data;
-    const unsigned char *SegmentID;
+    const unsigned char *data;
+    const unsigned char *segmentID;
 
     // temporary values in grid
-    VD Distances;
-    VI Voronoi;
+    VD distances;
+    VI voronoi;
 
 
 };
@@ -160,10 +162,10 @@ template<> inline const char* GridMaterial<Material3f>::Name() { return "GridMat
 #endif
 
 
-}
+} // namespace material
 
 } // namespace component
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FEM_BASEMATERIAL_H
+#endif // SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_H
