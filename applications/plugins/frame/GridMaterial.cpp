@@ -26,6 +26,8 @@
 
 #include "GridMaterial.inl"
 #include <sofa/core/ObjectFactory.h>
+#include "AffineTypes.h"
+#include "QuadraticTypes.h"
 
 
 namespace sofa
@@ -41,18 +43,26 @@ SOFA_DECL_CLASS (GridMaterial);
 
 int GridMaterialClass = core::RegisterObject ( "Hooke material for deformable objects" )
 #ifndef SOFA_FLOAT
-        .add<GridMaterial<Material3d> >(true)
+        .add<GridMaterial<Rigid3dTypes> >(true)
+        .add<GridMaterial<Affine3dTypes> >(true)
+        .add<GridMaterial<Quadratic3dTypes> >(true)
 #endif
 #ifndef SOFA_DOUBLE
-        .add<GridMaterial<Material3f> >()
+        .add<GridMaterial<Rigid3fTypes> >()
+        .add<GridMaterial<Affine3fTypes> >()
+        .add<GridMaterial<Quadratic3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_FRAME_API GridMaterial<Material3d>;
+template class SOFA_FRAME_API GridMaterial<Rigid3dTypes>;
+template class SOFA_FRAME_API GridMaterial<Affine3dTypes>;
+template class SOFA_FRAME_API GridMaterial<Quadratic3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API GridMaterial<Material3f>;
+template class SOFA_FRAME_API GridMaterial<Rigid3fTypes>;
+template class SOFA_FRAME_API GridMaterial<Affine3fTypes>;
+template class SOFA_FRAME_API GridMaterial<Quadratic3fTypes>;
 #endif
 
 
