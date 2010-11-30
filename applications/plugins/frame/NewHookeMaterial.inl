@@ -75,12 +75,20 @@ HookeMaterial3<MaterialTypes>::HookeMaterial3()
 }
 
 template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::init()
+{
+    reinit();
+    Inherited::init();
+}
+
+template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::reinit()
 {
     Real f = youngModulus.getValue()/((1 + poissonRatio.getValue())*(1 - 2 * poissonRatio.getValue()));
     stressDiagonal = f * (1 - poissonRatio.getValue());
     stressOffDiagonal = poissonRatio.getValue() * f;
     shear = f * (1 - 2 * poissonRatio.getValue()) /2;
+    Inherited::reinit();
 }
 
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy

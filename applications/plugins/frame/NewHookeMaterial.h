@@ -134,6 +134,9 @@ public:
     HookeMaterial3();
     virtual ~HookeMaterial3() {}
 
+    /// Compute the stress-strain matrix
+    virtual void init();
+
     /// Recompute the stress-strain matrix when the parameters are changed.
     virtual void reinit();
 
