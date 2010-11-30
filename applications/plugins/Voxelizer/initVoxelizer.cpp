@@ -55,7 +55,7 @@ SOFA_VOXELIZER_API void initExternalModule()
 
 SOFA_VOXELIZER_API const char* getModuleName()
 {
-    return "VoxelLoaderByRasterization";
+    return "Voxelizer";
 }
 
 SOFA_VOXELIZER_API const char* getModuleVersion()
@@ -65,12 +65,12 @@ SOFA_VOXELIZER_API const char* getModuleVersion()
 
 SOFA_VOXELIZER_API const char* getModuleDescription()
 {
-    return "Component use to create voxels depending of the triangular meshes in the scene.";
+    return "Component used to create RAW files from triangular meshes in the scene.";
 }
 
 SOFA_VOXELIZER_API const char* getModuleComponentList()
 {
-    return "VoxelLoaderByRasterization";
+    return "Voxelizer";
 }
 SOFA_LINK_CLASS(Voxelizer);
 
