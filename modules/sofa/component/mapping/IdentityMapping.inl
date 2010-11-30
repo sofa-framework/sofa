@@ -54,17 +54,17 @@ extern void eq(defaulttype::Vec<3,T1>& dest, const defaulttype::Vec<6,T2>& src)
 template<class T1, class T2>
 extern void eq(defaulttype::Vec<6,T1>& dest, const defaulttype::Vec<3,T2>& src)
 {
-    dest = defaulttype::Vec<6,T1>(src[0],src[2],src[3],0,0,0);
+    dest = defaulttype::Vec<6,T1>(src[0],src[1],src[2],0,0,0);
 }
 template<class T1, class T2>
 extern void eq(defaulttype::Vec<2,T1>& dest, const defaulttype::Vec<3,T2>& src)
 {
-    dest = defaulttype::Vec<2,T1>(src[0],src[2]);
+    dest = defaulttype::Vec<2,T1>(src[0],src[1]);
 }
 template<class T1, class T2>
 extern void eq(defaulttype::Vec<3,T1>& dest, const defaulttype::Vec<2,T2>& src)
 {
-    dest = defaulttype::Vec<3,T1>(src[0],src[2],0);
+    dest = defaulttype::Vec<3,T1>(src[0],src[1],0);
 }
 
 template<class T1, class T2>
@@ -80,7 +80,7 @@ extern void peq(defaulttype::Vec<3,T1>& dest, const defaulttype::Vec<6,T2>& src)
 template<class T1, class T2>
 extern void peq(defaulttype::Vec<6,T1>& dest, const defaulttype::Vec<3,T2>& src)
 {
-    dest += defaulttype::Vec<6,T1>(src[0],src[2],src[3],0,0,0);
+    dest += defaulttype::Vec<6,T1>(src[0],src[1],src[2],0,0,0);
 }
 template<class T1, class T2>
 extern void peq(defaulttype::Vec<2,T1>& dest, const defaulttype::Vec<3,T2>& src)
