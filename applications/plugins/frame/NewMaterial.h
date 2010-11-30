@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include "initFrame.h"
+#include <sofa/defaulttype/RigidTypes.h>
 
 
 namespace sofa
@@ -40,6 +41,7 @@ namespace material
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 /** \brief Material as a stress-strain relationship.
  */
@@ -52,12 +54,12 @@ public:
 
     typedef TMaterialTypes MaterialTypes;
     typedef typename MaterialTypes::Real Real;          ///< Real
-    typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
-    typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
-    typedef typename MaterialTypes::ElStr ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
-    typedef typename MaterialTypes::VecElStr VecElStr;      ///< Vector of elaston strain or stress
-    typedef typename MaterialTypes::StrStr StrStr;      ///< Stress-strain matrix
-    typedef typename MaterialTypes::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
+    typedef Vec<6,Real> Str;            ///< Strain or stress tensor
+    typedef vector<Str> VecStr;      ///< Vector of strain or stress tensors
+    typedef Mat<6,10,Real> El2Str;            ///< second-order Elaston strain or stress
+    typedef vector<El2Str> VecEl2Str;      ///< Vector of elaston strain or stress
+    typedef Mat<6,6,Real> StrStr;      ///< Stress-strain matrix
+    typedef vector<StrStr> VecStrStr;      ///< Vector of Stress-strain matrices
 
     virtual ~Material() {}
 
@@ -71,7 +73,7 @@ public:
       The stress-strain relation may depend on strain rate (time derivative of strain).
       The stress-strain matrices are written if the pointer is not null.
     */
-    virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate ) = 0;
+    virtual void computeStress  ( VecEl2Str& stress, VecStrStr* stressStrainMatrices, const VecEl2Str& strain, const VecEl2Str& strainRate ) = 0;
 
 
 //    /** \brief Compute stress change based on local strain.
@@ -83,37 +85,41 @@ public:
 
 
 
-template<int D, class R>
-struct DefaultMaterialTypes
-{
-    typedef R Real;
-    static const int N = D*(D+1)/2;             ///< Number of independent entries in the symmetric DxD strain tensor
+//template<int D, class R>
+//struct DefaultMaterialTypes
+//{
+//    typedef R Real;
+//    static const int N = D*(D+1)/2;             ///< Number of independent entries in the symmetric DxD strain tensor
+//
+//    typedef defaulttype::Vec<N,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
+//    typedef helper::vector<Str> VecStr;
+//
+//    /** Strain or stress tensor in Voigt (i.e. vector) notation for an elaston.
+//    The first column is the strain (or stress), the other columns are its derivatives in the space directions (TODO: check this)
+//    */
+//    typedef defaulttype::Mat<N,D*D+1,R> ElStr;
+//    typedef helper::vector<ElStr> VecElStr;
+//
+//    typedef defaulttype::Mat<N,N,R> StrStr;  ///< Stress-strain matrix
+//    typedef helper::vector<StrStr> VecStrStr;
+//
+//    static const char* Name();
+//};
+//
+//typedef DefaultMaterialTypes<3,float> Material3f;
+//typedef DefaultMaterialTypes<3,double> Material3d;
 
-    typedef defaulttype::Vec<N,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
-    typedef helper::vector<Str> VecStr;
 
-    /** Strain or stress tensor in Voigt (i.e. vector) notation for an elaston.
-    The first column is the strain (or stress), the other columns are its derivatives in the space directions (TODO: check this)
-    */
-    typedef defaulttype::Mat<N,D*D+1,R> ElStr;
-    typedef helper::vector<ElStr> VecElStr;
+typedef Rigid3fTypes Material3f;
+typedef Rigid3dTypes Material3d;
 
-    typedef defaulttype::Mat<N,N,R> StrStr;  ///< Stress-strain matrix
-    typedef helper::vector<StrStr> VecStrStr;
-
-    static const char* Name();
-};
-
-typedef DefaultMaterialTypes<3,float> Material3f;
-typedef DefaultMaterialTypes<3,double> Material3d;
-
-#ifdef SOFA_FLOAT
-template<> inline const char* Material3d::Name() { return "Material3d"; }
-template<> inline const char* Material3f::Name() { return "Material"; }
-#else
-template<> inline const char* Material3d::Name() { return "Material"; }
-template<> inline const char* Material3f::Name() { return "Material3f"; }
-#endif
+//#ifdef SOFA_FLOAT
+//template<> inline const char* Material3d::Name() { return "Material3d"; }
+//template<> inline const char* Material3f::Name() { return "Material"; }
+//#else
+//template<> inline const char* Material3d::Name() { return "Material"; }
+//template<> inline const char* Material3f::Name() { return "Material3f"; }
+//#endif
 
 
 

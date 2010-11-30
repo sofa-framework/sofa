@@ -123,14 +123,13 @@ public:
     typedef Material<TMaterialTypes> Inherited;
     SOFA_CLASS( SOFA_TEMPLATE(HookeMaterial3, TMaterialTypes), SOFA_TEMPLATE(Material, TMaterialTypes) );
 
-    typedef TMaterialTypes MaterialTypes;
-    typedef typename MaterialTypes::Real Real;        ///< Scalar values.
-    typedef typename MaterialTypes::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
-    typedef typename MaterialTypes::VecStr VecStr;      ///< Vector of strain or stress tensors
-    typedef typename MaterialTypes::ElStr ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
-    typedef typename MaterialTypes::VecElStr VecElStr;      ///< Vector of elaston strain or stress
-    typedef typename MaterialTypes::StrStr StrStr;      ///< Stress-strain matrix
-    typedef typename MaterialTypes::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
+    typedef typename Inherited::Real Real;        ///< Scalar values.
+    typedef typename Inherited::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
+    typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
+    typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
+    typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
+    typedef typename Inherited::StrStr StrStr;      ///< Stress-strain matrix
+    typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
     HookeMaterial3();
     virtual ~HookeMaterial3() {}
