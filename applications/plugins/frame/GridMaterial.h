@@ -153,13 +153,13 @@ protected:
 
 };
 
-#ifdef SOFA_FLOAT
-template<> inline const char* GridMaterial<Material3d>::Name() { return "GridMateriald"; }
-template<> inline const char* GridMaterial<Material3f>::Name() { return "GridMaterial"; }
-#else
-template<> inline const char* GridMaterial<Material3d>::Name() { return "GridMaterial"; }
-template<> inline const char* GridMaterial<Material3f>::Name() { return "GridMaterialf"; }
-#endif
+//#ifdef SOFA_FLOAT
+//template<> inline const char* GridMaterial<Material3d>::Name() { return "GridMateriald"; }
+//template<> inline const char* GridMaterial<Material3f>::Name() { return "GridMaterial"; }
+//#else
+//template<> inline const char* GridMaterial<Material3d>::Name() { return "GridMaterial"; }
+//template<> inline const char* GridMaterial<Material3f>::Name() { return "GridMaterialf"; }
+//#endif
 
 
 } // namespace material

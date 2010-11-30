@@ -105,13 +105,13 @@ public:
 //
 //    static const char* Name();
 //};
-//
+
 //typedef DefaultMaterialTypes<3,float> Material3f;
 //typedef DefaultMaterialTypes<3,double> Material3d;
 
 
-typedef Rigid3fTypes Material3f;
-typedef Rigid3dTypes Material3d;
+//typedef Rigid3fTypes Material3f;
+//typedef Rigid3dTypes Material3d;
 
 //#ifdef SOFA_FLOAT
 //template<> inline const char* Material3d::Name() { return "Material3d"; }

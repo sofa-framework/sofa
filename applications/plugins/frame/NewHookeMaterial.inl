@@ -69,8 +69,9 @@ HookeMaterial3<MaterialTypes>::HookeMaterial3()
     : youngModulus(initData(&youngModulus, (Real)1.0, "youngModulus", "Stiffness, typically denoted using symbol E"))
     , poissonRatio(initData(&poissonRatio, (Real)0.3, "poissonRatio", "Volume conservation, typically denoted using symbol \nu. Should be positive and less than 0.5 in 3d, respectively 1 in 2d. 0 means no volume conservation and 0.5 (resp. 1) means perfect volume conservation. Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead."))
 {
-    reinit();
-    Inherited::reinit();
+//                reinit();
+//                Inherited::reinit();
+
 }
 
 template<class MaterialTypes>
