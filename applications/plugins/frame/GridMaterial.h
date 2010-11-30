@@ -60,6 +60,12 @@ public:
     typedef typename Inherited::StrStr StrStr;      ///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
+    typedef Vec<3,int> Vec3i;
+    typedef sofa::helper::vector<double> VD;
+    typedef sofa::helper::vector<unsigned int> VUI;
+    typedef sofa::helper::vector<int> VI;
+    typedef sofa::helper::vector<bool> VB;
+
     GridMaterial();
     virtual ~GridMaterial() {}
 
@@ -90,6 +96,31 @@ public:
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
 
 
+    /*   Compute distances   */
+    // (biased) Euclidean distance between two voxels
+    double getDistance(const unsigned int& index1,const unsigned int& index2,const bool biasDistances);
+    // (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
+    bool computeGeodesicalDistances ( const Vec3& point, const bool biasDistances, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const int& index, const bool biasDistances, const double distMax =1E100);
+    // (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
+    bool computeGeodesicalDistances ( const VecVec3& points, const bool biasDistances, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const VI& indices, const bool biasDistances, const double distMax =1E100);
+
+    bool computeUniformSampling ( VecVec3& points, const bool biasDistances, unsigned int num_points, unsigned int max_iterations );
+
+
+    /*         Utils         */
+    inline int getIndex(const Vec3i& icoord);
+    inline int getIndex(const Vec3& coord);
+    inline bool getiCoord(const Vec3& coord, Vec3i& icoord);
+    inline bool getiCoord(const unsigned int& index, Vec3i& icoord);
+    inline bool getCoord(const Vec3i& icoord, Vec3& coord) ;
+    inline bool getCoord(const unsigned int& index, Vec3& coord) ;
+    inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
+    inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
+    inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
+
+
     static const char* Name();
 
     std::string getTemplateName() const
@@ -103,6 +134,20 @@ public:
 
 protected:
     VoxelGridLoader* voxelGridLoader;
+
+    // Grid parameters (initialized from voxelGridLoader)
+    Vec3d voxelSize;
+    Vec3d Origin;
+    Vec3i Dimension;
+    unsigned int nbVoxels;
+    const unsigned char *Data;
+    const unsigned char *SegmentID;
+
+    // temporary values in grid
+    VD Distances;
+    VI Voronoi;
+
+
 };
 
 #ifdef SOFA_FLOAT
