@@ -296,8 +296,8 @@ bool GridMaterial< MaterialTypes >::computeUniformSampling ( VecVec3& points, co
                 {
                     getCoord(k,pos_voxel);
                     u=pos_point-pos_voxel; u.normalize();
-                    u[0]*=voxelSize[0]; u[1]*=voxelSize[1]; u[2]*=voxelSize[2];
-                    pos+=u*Distances[k];
+                    u[0]*=(Real)voxelSize[0]; u[1]*=(Real)voxelSize[1]; u[2]*=(Real)voxelSize[2];
+                    pos+=u*(Real)Distances[k];
                     count++;
                 }
             pos/=(Real)count; 		pos+=pos_point;

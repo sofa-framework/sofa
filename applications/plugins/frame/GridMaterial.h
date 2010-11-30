@@ -29,6 +29,7 @@
 #include "NewMaterial.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/SVector.h>
 #include <sofa/component/container/VoxelGridLoader.h>
 
 
@@ -61,10 +62,10 @@ public:
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
     typedef Vec<3,int> Vec3i;
-    typedef sofa::helper::vector<double> VD;
-    typedef sofa::helper::vector<unsigned int> VUI;
-    typedef sofa::helper::vector<int> VI;
-    typedef sofa::helper::vector<bool> VB;
+    typedef sofa::helper::SVector<double> VD;
+    typedef sofa::helper::SVector<unsigned int> VUI;
+    typedef sofa::helper::SVector<int> VI;
+    typedef sofa::helper::SVector<bool> VB;
 
     GridMaterial();
     virtual ~GridMaterial() {}
@@ -90,7 +91,7 @@ public:
     A first-order elaston models the strain as a linear function using the strain at the point and the gradient of the strain at this point, while a second-order elaston models the strain, the strain gradient and the strain Hessian.
 
       */
-    Real computeUniformSampling( VecVec3& points, helper::vector<Real>& point_data, unsigned num_points, unsigned order );
+    //  Real computeUniformSampling( VecVec3& points, helper::vector<Real>& point_data, unsigned num_points, unsigned order );
 
 //    /// implementation of the abstract function
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
