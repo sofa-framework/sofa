@@ -1402,16 +1402,16 @@ void SkinningMapping<TIn, TOut>::resizeMatrices()
 
     this->det.resize(toSize);
     this->deformationTensors.resize(toSize);
-    this->ddet.resize(fromSize);
-    for (unsigned int i = 0; i < fromSize; ++i)      this->ddet[i].resize(toSize);
-    this->B.resize(fromSize);
-    for (unsigned int i = 0; i < fromSize; ++i)      this->B[i].resize(toSize);
-    this->Atilde.resize(fromSize);
-    for (unsigned int i = 0; i < fromSize; ++i)      this->Atilde[i].resize(toSize);
-    this->J0.resize (fromSize);
-    for (unsigned int i = 0; i < fromSize; ++i)      this->J0[i].resize(toSize);
-    this->J.resize(fromSize);
-    for (unsigned int i = 0; i < fromSize; ++i)      this->J[i].resize(toSize);
+    this->Atilde.resize(toSize);
+    for (unsigned int i = 0; i < toSize; ++i)      this->Atilde[i].resize(fromSize);
+    this->ddet.resize(toSize);
+    for (unsigned int i = 0; i < toSize; ++i)      this->ddet[i].resize(fromSize);
+    this->B.resize(toSize);
+    for (unsigned int i = 0; i < toSize; ++i)      this->B[i].resize(fromSize);
+    this->J0.resize (toSize);
+    for (unsigned int i = 0; i < toSize; ++i)      this->J0[i].resize(fromSize);
+    this->J.resize(toSize);
+    for (unsigned int i = 0; i < toSize; ++i)      this->J[i].resize(fromSize);
 }
 
 
@@ -1426,15 +1426,16 @@ void SkinningMapping<TIn, TOut>::initSamples() // Temporary (will be done in Fra
     double volume = this->voxelVolume.getValue();
     //if ( hexaContainer && this->distOnGrid) volume = this->distOnGrid->initTargetStep.getValue()*this->distOnGrid->initTargetStep.getValue()*this->distOnGrid->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
     const VecCoord& xto = *this->toModel->getX();
-    this->vol.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
-    this->massDensity.resize( xto.size());
-    for ( unsigned int i = 0; i < xto.size(); i++) this->massDensity[i] = 1.0;
+    const unsigned int& toSize = xto.size();
+    this->vol.resize( toSize);
+    for ( unsigned int i = 0; i < toSize; i++) this->vol[i] = volume;
+    this->massDensity.resize( toSize);
+    for ( unsigned int i = 0; i < toSize; i++) this->massDensity[i] = 1.0;
 
     if ( useElastons.getValue())
     {
-        this->integ_Elaston.resize( xto.size());
-        for ( unsigned int i = 0; i < xto.size(); i++) // to update
+        this->integ_Elaston.resize( toSize);
+        for ( unsigned int i = 0; i < toSize; i++) // to update
         {
             double lx,ly,lz;
             if ( hexaContainer && this->distOnGrid)
@@ -1457,18 +1458,18 @@ void SkinningMapping<TIn, TOut>::initSamples() // Temporary (will be done in Fra
             this->integ_Elaston[i]=this->integ_Elaston[i]*lx*ly*lz;
         }
 
-        this->deformationTensorsElaston.resize(xto.size());
-        this->Stilde_x.resize(fromSize);
-        this->Stilde_y.resize(fromSize);
-        this->Stilde_z.resize(fromSize);
-        for (unsigned int i = 0; i < fromSize; ++i)
+        this->deformationTensorsElaston.resize(toSize);
+        this->Stilde_x.resize(toSize);
+        this->Stilde_y.resize(toSize);
+        this->Stilde_z.resize(toSize);
+        for (unsigned int i = 0; i < toSize; ++i)
         {
-            this->Stilde_x[i].resize(xto.size());
-            this->Stilde_y[i].resize(xto.size());
-            this->Stilde_z[i].resize(xto.size());
+            this->Stilde_x[i].resize(fromSize);
+            this->Stilde_y[i].resize(fromSize);
+            this->Stilde_z[i].resize(fromSize);
         }
-        this->B_Elaston.resize(fromSize);
-        for (unsigned int i = 0; i < fromSize; ++i)      this->B_Elaston[i].resize(xto.size());
+        this->B_Elaston.resize(toSize);
+        for (unsigned int i = 0; i < toSize; ++i)      this->B_Elaston[i].resize(fromSize);
     }
 }
 
@@ -1499,20 +1500,20 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
             Mat33 R0;	 QtoR( R0, xi0.getOrientation());
             Mat33 R0Inv;  R0Inv.invert (R0);
 
-            for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (R0Inv)[k][l];
+            for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Atilde[i][idxReps])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (R0Inv)[k][l];
 
             if( useElastons.getValue())
             {
-                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_x[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][0] + (R0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (R0Inv)[k][l];
-                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_y[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][1] + (R0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (R0Inv)[k][l];
-                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_z[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][2] + (R0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (R0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_x[i][idxReps])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][0] + (R0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (R0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_y[i][idxReps])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][1] + (R0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (R0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_z[i][idxReps])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][2] + (R0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (R0Inv)[k][l];
             }
 
             Mat76 L; ComputeL(L, xi0.getOrientation());
             Mat37 Q; ComputeQ(Q, xi0.getOrientation(), initPos[idx]);
 
-            this->J[idxReps][i] = (InReal)m_weights[idxReps][i] * Q * L;
-            this->J0[idxReps][i] = this->J[idxReps][i];
+            this->J[i][idxReps] = (InReal)m_weights[idxReps][i] * Q * L;
+            this->J0[i][idxReps] = this->J[i][idxReps];
         }
     }
 }
@@ -1544,16 +1545,16 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
             const Mat33& A0 = xi0.getAffine();
             Mat33 A0Inv; A0Inv.invert (A0);
 
-            for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Atilde[idxReps][i])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (A0Inv)[k][l];
+            for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Atilde[i][idxReps])[k][l] = (initPos[idx])[k] * (m_dweight[idxReps][i])[l]  +  m_weights[idxReps][i] * (A0Inv)[k][l];
 
             if( useElastons.getValue())
             {
-                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_x[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][0] + (A0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (A0Inv)[k][l];
-                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_y[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][1] + (A0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (A0Inv)[k][l];
-                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_z[idxReps][i])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][2] + (A0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (A0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_x[i][idxReps])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][0] + (A0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (A0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_y[i][idxReps])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][1] + (A0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (A0Inv)[k][l];
+                for(int k=0; k<3; k++) for(int l=0; l<3; l++) (this->Stilde_z[i][idxReps])[k][l] = (initPos[idx])[k] * (m_ddweight[idxReps][i])[l][2] + (A0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (A0Inv)[k][l];
             }
 
-            Mat3xIn& Ji = this->J[idxReps][i];
+            Mat3xIn& Ji = this->J[i][idxReps];
             Ji.fill(0);
             double val;
             for(int k=0; k<3; k++)
@@ -1603,17 +1604,17 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> 
             A0Inv[6][0] = p2[1];   A0Inv[6][1]=p2[0];   A0Inv[6][2]=0;
             A0Inv[7][0] = 0;       A0Inv[7][1]=p2[2];   A0Inv[7][2]=p2[1];
             A0Inv[8][0] = p2[2];   A0Inv[8][1]=0;       A0Inv[8][2]=p2[0];
-            for (int k=0; k<9; k++) for (int l=0; l<3; l++) (this->Atilde[idxReps][i])[k][l] = p2[k] * m_dweight[idxReps][i][l] + m_weights[idxReps][i] * (A0Inv)[k][l];
+            for (int k=0; k<9; k++) for (int l=0; l<3; l++) (this->Atilde[i][idxReps])[k][l] = p2[k] * m_dweight[idxReps][i][l] + m_weights[idxReps][i] * (A0Inv)[k][l];
 
             if( useElastons.getValue())
             {
-                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_x[idxReps][i])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][0] + (A0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (A0Inv)[k][l];
-                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_y[idxReps][i])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][1] + (A0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (A0Inv)[k][l];
-                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_z[idxReps][i])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][2] + (A0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (A0Inv)[k][l];
+                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_x[i][idxReps])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][0] + (A0Inv)[k][0] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][0] * (A0Inv)[k][l];
+                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_y[i][idxReps])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][1] + (A0Inv)[k][1] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][1] * (A0Inv)[k][l];
+                for(int k=0; k<9; k++) for(int l=0; l<3; l++) (this->Stilde_z[i][idxReps])[k][l] = p2[k] * (m_ddweight[idxReps][i])[l][2] + (A0Inv)[k][2] * (m_dweight[idxReps][i])[l]  +  m_dweight[idxReps][i][2] * (A0Inv)[k][l];
             }
 
 
-            Mat3xIn& Ji = this->J[idxReps][i];
+            Mat3xIn& Ji = this->J[i][idxReps];
             Ji.fill(0);
             double val;
             for(int k=0; k<9; k++)
@@ -1671,7 +1672,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
 
             ComputeQ( Q, in[idxReps ].getOrientation(), initPos[idx]);
             ComputeL( L[idxReps], in[idxReps ].getOrientation());
-            this->J[idxReps][i] = (InReal)m_weights[idxReps][i] * Q * L[idxReps];
+            this->J[i][idxReps] = (InReal)m_weights[idxReps][i] * Q * L[idxReps];
         }
 
         // Physical computations
@@ -1690,16 +1691,16 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
 
             in[idxReps ].getOrientation().toMatrix(A);
             for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) F[k][l]+=in[idxReps ].getCenter()[k]*dw[idxReps][i][l];
-            F += A * this->Atilde[idxReps][i];
+            F += A * this->Atilde[i][idxReps];
 
             if( useElastons.getValue())
             {
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_x[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][0];
-                S_x += A * this->Stilde_x[idxReps][i];
+                S_x += A * this->Stilde_x[i][idxReps];
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_y[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][1];
-                S_y += A * this->Stilde_y[idxReps][i];
+                S_y += A * this->Stilde_y[i][idxReps];
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_z[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][2];
-                S_z += A * this->Stilde_z[idxReps][i];
+                S_z += A * this->Stilde_z[i][idxReps];
             }
         }
 
@@ -1752,8 +1753,8 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat6xIn& B = this->B[idxReps][i];
-            const Mat33& At = this->Atilde[idxReps][i];
+            Mat6xIn& B = this->B[i][idxReps];
+            const Mat33& At = this->Atilde[i][idxReps];
             const Quat& rot = in[idxReps ].getOrientation();
             const Vec3& dWeight = dw[idxReps][i];
 
@@ -1769,10 +1770,10 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
 
             if(useElastons.getValue())
             {
-                MatInx610& Be = this->B_Elaston[idxReps][i];
-                const Mat33& Stx = this->Stilde_x[idxReps][i];
-                const Mat33& Sty = this->Stilde_y[idxReps][i];
-                const Mat33& Stz = this->Stilde_z[idxReps][i];
+                MatInx610& Be = this->B_Elaston[i][idxReps];
+                const Mat33& Stx = this->Stilde_x[i][idxReps];
+                const Mat33& Sty = this->Stilde_y[i][idxReps];
+                const Mat33& Stz = this->Stilde_z[i][idxReps];
                 const Vec3 ddx (ddw[idxReps][i][0][0],ddw[idxReps][i][1][0],ddw[idxReps][i][2][0]);
                 const Vec3 ddy (ddw[idxReps][i][0][1],ddw[idxReps][i][1][1],ddw[idxReps][i][2][1]);
                 const Vec3 ddz (ddw[idxReps][i][0][2],ddw[idxReps][i][1][2],ddw[idxReps][i][2][2]);
@@ -1799,7 +1800,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             // if(computevolpres)
             {
                 invertMatrix ( Finv, F );
-                Vec6 &ddet = this->ddet[idxReps][i];
+                Vec6 &ddet = this->ddet[i][idxReps];
                 ddet.fill(0);
                 Vec7 u7; u7.fill(0);
 
@@ -1838,9 +1839,9 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
     {
         this->det.resize(out.size());
         this->deformationTensors.resize(out.size());
-        this->B.resize(in.size());
-        for(unsigned int i = 0; i < in.size(); ++i)
-            this->B[i].resize(out.size());
+        this->B.resize(out.size());
+        for(unsigned int i = 0; i < out.size(); ++i)
+            this->B[i].resize(in.size());
     }
 
     for ( unsigned int i = 0 ; i < out.size(); i++ )
@@ -1876,16 +1877,16 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             const int& idxReps = m_reps[idx];
 
             for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) F[k][l]+=in[idxReps ].getCenter()[k]*dw[idxReps][i][l];
-            F += in[idxReps ].getAffine() * this->Atilde[idxReps][i];
+            F += in[idxReps ].getAffine() * this->Atilde[i][idxReps];
 
             if( useElastons.getValue())
             {
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_x[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][0];
-                S_x += in[idxReps ].getAffine() * this->Stilde_x[idxReps][i];
+                S_x += in[idxReps ].getAffine() * this->Stilde_x[i][idxReps];
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_y[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][1];
-                S_y += in[idxReps ].getAffine() * this->Stilde_y[idxReps][i];
+                S_y += in[idxReps ].getAffine() * this->Stilde_y[i][idxReps];
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_z[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][2];
-                S_z += in[idxReps ].getAffine() * this->Stilde_z[idxReps][i];
+                S_z += in[idxReps ].getAffine() * this->Stilde_z[i][idxReps];
             }
         }
 
@@ -1938,17 +1939,17 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat6xIn& B = this->B[idxReps][i];
+            Mat6xIn& B = this->B[i][idxReps];
             const Vec3& dWeight = dw[idxReps][i];
-            const Mat33& At = this->Atilde[idxReps][i];
+            const Mat33& At = this->Atilde[i][idxReps];
             B.fill(0); strainDeriv<In>(dWeight,At,F,B);
 
             if(useElastons.getValue())
             {
-                MatInx610& Be = this->B_Elaston[idxReps][i];
-                const MatInAtx3& Stx = this->Stilde_x[idxReps][i];
-                const MatInAtx3& Sty = this->Stilde_y[idxReps][i];
-                const MatInAtx3& Stz = this->Stilde_z[idxReps][i];
+                MatInx610& Be = this->B_Elaston[i][idxReps];
+                const MatInAtx3& Stx = this->Stilde_x[i][idxReps];
+                const MatInAtx3& Sty = this->Stilde_y[i][idxReps];
+                const MatInAtx3& Stz = this->Stilde_z[i][idxReps];
                 const Vec3 ddx (ddw[idxReps][i][0][0],ddw[idxReps][i][1][0],ddw[idxReps][i][2][0]);
                 const Vec3 ddy (ddw[idxReps][i][0][1],ddw[idxReps][i][1][1],ddw[idxReps][i][2][1]);
                 const Vec3 ddz (ddw[idxReps][i][0][2],ddw[idxReps][i][1][2],ddw[idxReps][i][2][2]);
@@ -1975,7 +1976,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             // if(computevolpres)
             {
                 invertMatrix ( Finv, F );
-                VecIn &ddet = this->ddet[idxReps][i];
+                VecIn &ddet = this->ddet[i][idxReps];
                 ddet.fill(0);
                 for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[k] += dWeight [l] * Finv[l][k];
                 for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 3; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+3*k+3] += At[m][l] * Finv[l][k];
@@ -2003,9 +2004,9 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
     {
         this->det.resize(out.size());
         this->deformationTensors.resize(out.size());
-        this->B.resize(in.size());
-        for(unsigned int i = 0; i < in.size(); ++i)
-            this->B[i].resize(out.size());
+        this->B.resize(out.size());
+        for(unsigned int i = 0; i < out.size(); ++i)
+            this->B[i].resize(in.size());
     }
 
     for ( unsigned int i = 0 ; i < out.size(); i++ )
@@ -2043,16 +2044,16 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             const int& idxReps = m_reps[idx];
 
             for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) F[k][l]+=in[idxReps ].getCenter()[k]*dw[idxReps][i][l];
-            F += in[idxReps ].getQuadratic() * this->Atilde[idxReps][i];
+            F += in[idxReps ].getQuadratic() * this->Atilde[i][idxReps];
 
             if( useElastons.getValue())
             {
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_x[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][0];
-                S_x += in[idxReps ].getQuadratic() * this->Stilde_x[idxReps][i];
+                S_x += in[idxReps ].getQuadratic() * this->Stilde_x[i][idxReps];
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_y[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][1];
-                S_y += in[idxReps ].getQuadratic() * this->Stilde_y[idxReps][i];
+                S_y += in[idxReps ].getQuadratic() * this->Stilde_y[i][idxReps];
                 for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) S_z[k][l]+=in[idxReps ].getCenter()[k]*ddw[idxReps][i][l][2];
-                S_z += in[idxReps ].getQuadratic() * this->Stilde_z[idxReps][i];
+                S_z += in[idxReps ].getQuadratic() * this->Stilde_z[i][idxReps];
             }
         }
 
@@ -2106,18 +2107,18 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             const int& idx = nbRefs.getValue() * i + j;
             const int& idxReps = m_reps[idx];
 
-            Mat6xIn& B = this->B[idxReps][i];
+            Mat6xIn& B = this->B[i][idxReps];
             const Vec3& dWeight = dw[idxReps][i];
-            const MatInAtx3& At = this->Atilde[idxReps][i];
+            const MatInAtx3& At = this->Atilde[i][idxReps];
             B.fill(0); strainDeriv<In>(dWeight,At,F,B);
 
 
             if(useElastons.getValue())
             {
-                MatInx610& Be = this->B_Elaston[idxReps][i];
-                const MatInAtx3& Stx = this->Stilde_x[idxReps][i];
-                const MatInAtx3& Sty = this->Stilde_y[idxReps][i];
-                const MatInAtx3& Stz = this->Stilde_z[idxReps][i];
+                MatInx610& Be = this->B_Elaston[i][idxReps];
+                const MatInAtx3& Stx = this->Stilde_x[i][idxReps];
+                const MatInAtx3& Sty = this->Stilde_y[i][idxReps];
+                const MatInAtx3& Stz = this->Stilde_z[i][idxReps];
                 const Vec3 ddx (ddw[idxReps][i][0][0],ddw[idxReps][i][1][0],ddw[idxReps][i][2][0]);
                 const Vec3 ddy (ddw[idxReps][i][0][1],ddw[idxReps][i][1][1],ddw[idxReps][i][2][1]);
                 const Vec3 ddz (ddw[idxReps][i][0][2],ddw[idxReps][i][1][2],ddw[idxReps][i][2][2]);
@@ -2144,7 +2145,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
             // if(computevolpres)
             {
                 invertMatrix ( Finv, F );
-                VecIn &ddet = this->ddet[idxReps][i];
+                VecIn &ddet = this->ddet[i][idxReps];
                 ddet.fill(0);
                 for (unsigned int k = 0; k < 3; k++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[k] += dWeight [l] * Finv[l][k];
                 for (unsigned int k = 0; k < 3; k++ ) for (unsigned int m = 0; m < 9; m++ ) for (unsigned int l = 0; l < 3; l++ ) ddet[m+9*k+3] += At[m][l] * Finv[l][k];
@@ -2227,10 +2228,10 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
                 for (unsigned int k = 0; k < InDOFs; ++k)
                 speed[k]  = in[j][k];
 
-                Vec3 f = ( this->J[j][i] * speed );
+                Vec3 f = ( this->J[i][j] * speed );
 
                 out[i] += Deriv ( f[0], f[1], f[2] );*/
-                out[i] += this->J[j][i] * in[j];
+                out[i] += this->J[i][j] * in[j];
             }
         }
     }
@@ -2250,10 +2251,10 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
                 for (unsigned int k = 0; k < InDOFs; ++k)
                 speed[k]  = in[j][k];
 
-                Vec3 f = ( this->J[j][i] * speed );
+                Vec3 f = ( this->J[i][j] * speed );
 
                 out[i] += Deriv ( f[0], f[1], f[2] );*/
-                out[i] += this->J[j][i] * in[j];
+                out[i] += this->J[i][j] * in[j];
             }
         }
     }
@@ -2280,7 +2281,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Der
                 for (unsigned int k = 0; k < InDOFs; ++k)
                     speed[k]  = in[j][k];
 
-                Vec3 f = ( this->J[j][i] * speed );
+                Vec3 f = ( this->J[i][j] * speed );
 
                 out[i] += Deriv ( f[0], f[1], f[2] );
             }
@@ -2302,7 +2303,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Der
                 for (unsigned int k = 0; k < InDOFs; ++k)
                     speed[k]  = in[j][k];
 
-                Vec3 f = ( this->J[j][i] * speed );
+                Vec3 f = ( this->J[i][j] * speed );
 
                 out[i] += Deriv ( f[0], f[1], f[2] );
             }
@@ -2377,9 +2378,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
         {
             for ( unsigned int i=0 ; i<out.size(); i++ ) // AffineType
             {
-                out[i] += this->J[i][j].multTranspose( in[j] );
+                out[i] += this->J[j][i].multTranspose( in[j] );
                 //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[i][j] );
+                //                Jt.transpose ( this->J[j][i] );
                 //
                 //                Vec3 f;
                 //                f[0] = in[j][0];
@@ -2408,9 +2409,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
             const int j= ( int ) ( *it );
             for ( unsigned int i=0 ; i<out.size(); i++ ) // AffineType
             {
-                out[i] += this->J[i][j].multTranspose( in[j] );
+                out[i] += this->J[j][i].multTranspose( in[j] );
                 //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[i][j] );
+                //                Jt.transpose ( this->J[j][i] );
                 //
                 //                Vec3 f;
                 //                f[0] = in[j][0];
@@ -2444,9 +2445,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Der
         {
             for ( unsigned int i=0 ; i<out.size(); i++ ) // QuadraticType
             {
-                out[i] += this->J[i][j].multTranspose(in[j]);
+                out[i] += this->J[j][i].multTranspose(in[j]);
                 //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[i][j] );
+                //                Jt.transpose ( this->J[j][i] );
                 //
                 //                Vec3 f;
                 //                f[0] = in[j][0];
@@ -2475,9 +2476,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Der
             const int j= ( int ) ( *it );
             for ( unsigned int i=0 ; i<out.size(); i++ ) // QuadraticType
             {
-                out[i] += this->J[i][j].multTranspose(in[j]);
+                out[i] += this->J[j][i].multTranspose(in[j]);
                 //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[i][j] );
+                //                Jt.transpose ( this->J[j][i] );
                 //
                 //                Vec3 f;
                 //                f[0] = in[j][0];
@@ -2567,7 +2568,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Matrix
 
     if ( !this->enableSkinning.getValue())
         return;
-    const unsigned int numOut = this->J.size();
+    const unsigned int numOut = this->J[0].size();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -2589,9 +2590,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Matrix
 
             for (unsigned int j=0; j<numOut; ++j) // Affine
             {
-                InDeriv value = this->J[j][indexIn].multTranspose(data);
+                InDeriv value = this->J[indexIn][j].multTranspose(data);
                 //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[j][indexIn] );
+                //                Jt.transpose ( this->J[indexIn][j] );
                 //
                 //                VecIn speed = Jt * data;
                 //
@@ -2619,7 +2620,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Mat
 
     if ( !this->enableSkinning.getValue())
         return;
-    const unsigned int numOut = this->J.size();
+    const unsigned int numOut = this->J[0].size();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -2641,9 +2642,9 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Mat
 
             for (unsigned int j=0; j<numOut; ++j)
             {
-                InDeriv value = this->J[j][indexIn].multTranspose(data);
+                InDeriv value = this->J[indexIn][j].multTranspose(data);
                 //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[j][indexIn] );
+                //                Jt.transpose ( this->J[indexIn][j] );
                 //
                 //                VecIn speed = Jt * data;
                 //

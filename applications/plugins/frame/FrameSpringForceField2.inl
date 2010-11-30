@@ -123,20 +123,20 @@ void FrameSpringForceField2<DataTypes>::computeK0()
     }
 
     // K=-B^T.H.B
-    const int nbDOF=(*B).size();
-    if ( nbDOF==0 ) return;
+    const int nbP=(*B).size();
+    if ( nbP==0 ) return;
+    const int nbDOF=(*B)[0].size();
     int i,j,k,l,m;
-    const int nbP=(*B)[0].size();
     Mat6xIn HB;
     MatInx6 BT;
     MatInxIn BTHB;
     for ( i=0; i<nbP; ++i )
         for ( j=0; j<nbDOF; ++j )
         {
-            HB= ( Real ) ( (*vol)[i] ) *H*(*B)[j][i];
+            HB= ( Real ) ( (*vol)[i] ) *H*(*B)[i][j];
             for ( k=0; k<nbDOF; ++k )
             {
-                BT.transpose ( (*B)[k][i] );
+                BT.transpose ( (*B)[i][k] );
                 BTHB=BT*HB;
                 K0[k][j]-=BTHB;
             }
