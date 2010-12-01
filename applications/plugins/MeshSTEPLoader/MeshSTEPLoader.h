@@ -26,6 +26,10 @@
 #ifndef MESHSTEPLOADER_MESHSTEPLOADER_H
 #define MESHSTEPLOADER_MESHSTEPLOADER_H
 
+
+#ifdef __linux__
+#include <config.h>
+#endif
 #include <BRep_Tool.hxx>
 #include <vector>
 #include <iostream>
