@@ -38,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 
+
 namespace sofa
 {
 
@@ -47,6 +48,8 @@ namespace component
 namespace loader
 {
 
+// cf CudaRasterizer.inl
+static const int SHIFT_TRIANGLE_GROUP_SIZE = sofa::gpu::cuda::CudaLDI_get_shift_triangle_group_size();
 
 template <class DataTypes>
 Voxelizer<DataTypes>::Voxelizer()
@@ -65,6 +68,8 @@ Voxelizer<DataTypes>::Voxelizer()
     , rawOrigin (initData(&rawOrigin, "rawOrigin", "origin of the RAW array. Mechanical object Data named \"position\" can connect to this data to obtain the correct offset."))
     , resolution (initData(&resolution, "resolution", "resolution of the RAW array. RAW loader can connect to this data."))
     , showRasterizedVolumes (initData(&showRasterizedVolumes, false, "showRasterizedVolumes", "Show rasterized volumes."))
+    , showWireFrameMode (initData(&showWireFrameMode, false, "showWireFrameMode", "Show in wire frame."))
+    , showWhichAxis (initData(&showWhichAxis, (unsigned int)0, "showWhichAxis", "0 - all Axis\n1 - X Axis\n2 - Y Axis\n3 - Z Axis."))
 {
     this->addAlias(&valueFileName, "filename");
     rasterizer = NULL;
@@ -461,9 +466,11 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
             const Cell& cell = ldi.cells[bx];
             if ( cell.nbLayers == 0 ) continue;
             static helper::vector<int> layers;
+            static helper::vector<int> inLayers;
             static helper::vector<int> inobjs;
             layers.resize ( cell.nbLayers );
             inobjs.resize ( cell.nbLayers );
+            inLayers.resize ( cell.nbLayers );
 
             for ( int i=0, l = cell.firstLayer; i<cell.nbLayers; ++i )
             {
@@ -483,7 +490,6 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
 
             const CellCountLayer& counts = ldi.cellCounts[bx];
             bool first_front = false;
-            int first_layer = 0;
             int first_obj = 0;
             int first_tid = -1;
             for ( int l=0; l < Rasterizer::CELL_NY; ++l )
@@ -500,7 +506,7 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                         int tid = ldi.cellLayers[layer][l][c].tid;
 
                         //if (tid == -1) break;
-                        int tg = (tid >> Rasterizer::SHIFT_TID) / tgsize; // tid >> (SHIFT_TRIANGLE_GROUP_SIZE+SHIFT_TID);
+                        int tg = (tid >> (SHIFT_TRIANGLE_GROUP_SIZE + Rasterizer::SHIFT_TID)) / tgsize; // tid >> (SHIFT_TRIANGLE_GROUP_SIZE+SHIFT_TID);
                         int obj = (tg < (int)tgobj.size()) ? tgobj[tg] : -1;
 
                         if (obj == -1)
@@ -518,7 +524,10 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                         if ( front )
                         {
                             if ( incount >= 0 )
+                            {
                                 inobjs[incount] = obj;
+                                inLayers[incount] = layer;
+                            }
                             ++incount;
                         }
                         else
@@ -528,7 +537,20 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                             ++nbcoll;
                             Real y = ( Real ) ( cl0 + l ) * psize;
                             Real x = ( Real ) ( cc0 + c ) * psize;
-                            Real z0 = ldi.cellLayers[first_layer][l][c].z;
+                            // Find the first layer corresponding to this object
+                            int indexFirstLayer = -1;
+                            for (int incpt = 0; incpt <= incount; ++incpt)
+                            {
+                                if( inobjs[incpt] == obj) indexFirstLayer = inLayers[incpt];
+                            }
+
+                            if( indexFirstLayer == -1)
+                            {
+                                serr << "Returned indexFirstLayer == -1. Object not stored ?" << sendl;
+                                continue;
+                            }
+
+                            Real z0 = ldi.cellLayers[indexFirstLayer][l][c].z;
                             Real z1 = ldi.cellLayers[layer][l][c].z;
 
                             SReal minDepth, maxDepth;
@@ -561,7 +583,6 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                             addVolume( rasterizedVolume[axis][indexMesh], x, y, minDepth, maxDepth, axis);
                         }
                         first_front = front;
-                        first_layer = layer;
                         first_obj = obj;
                         first_tid = tid;
                     }
@@ -908,17 +929,21 @@ void Voxelizer<DataTypes>::reloadRasterizerSettings()
 template <class DataTypes>
 void Voxelizer<DataTypes>::draw()
 {
+    const Real& psize = std::min( std::min(voxelSize.getValue()[0],voxelSize.getValue()[1]),voxelSize.getValue()[2]);
+
     // Display volumes retrieved from depth peeling textures
     if( showRasterizedVolumes.getValue())
     {
 #ifndef USE_MAP_FOR_VOLUMES
         // Not implemented
 #else
-        for ( int axis=0; axis<3; ++axis )
+        if (showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        for ( unsigned int axis=0; axis<3; ++axis )
         {
-            /*          const int iX = ( axis+1 ) %3;
-                      const int iY = ( axis+2 ) %3;
-                      const int iZ =  axis;*/
+            if ((showWhichAxis.getValue() != 0) && showWhichAxis.getValue() != axis+1) continue;
+            const int iX = ( axis+1 ) %3;
+            const int iY = ( axis+2 ) %3;
+            const int iZ =  axis;
 
             if( axis == 0)
                 glColor3f( 1, 0, 0);
@@ -939,40 +964,67 @@ void Voxelizer<DataTypes>::draw()
                         double y = it2->first;
                         double zMin = it2->second.first;
                         double zMax = it2->second.second;
-                        const Real psize = rasterizer->pixelSize.getValue();
 
                         BBox box;
-//                 box[0][iX] = x - ( psize*0.5 );
-//                 box[0][iY] = y - ( psize*0.5 );
-//                 box[0][iZ] = zMin;
-//                 box[1][iX] = x + ( psize*0.5 );
-//                 box[1][iY] = y + ( psize*0.5 );
-//                 box[1][iZ] = zMax;
+                        box[0][iX] = x - ( psize*0.5 );
+                        box[0][iY] = y - ( psize*0.5 );
+                        box[0][iZ] = zMin;
+                        box[1][iX] = x + ( psize*0.5 );
+                        box[1][iY] = y + ( psize*0.5 );
+                        box[1][iZ] = zMax;
+                        if( axis == 0)
+                        {
+                            glBegin( GL_QUADS);
+                            // z min face
+                            glVertex3f( box[0][0], box[0][1], box[0][2]);
+                            glVertex3f( box[0][0], box[0][1], box[1][2]);
+                            glVertex3f( box[0][0], box[1][1], box[1][2]);
+                            glVertex3f( box[0][0], box[1][1], box[0][2]);
 
-                        box[0][0] = x - ( psize*0.5 );
-                        box[0][1] = y - ( psize*0.5 );
-                        box[0][2] = zMin;
-                        box[1][0] = x + ( psize*0.5 );
-                        box[1][1] = y + ( psize*0.5 );
-                        box[1][2] = zMax;
+                            // z max face
+                            glVertex3f( box[1][0], box[0][1], box[0][2]);
+                            glVertex3f( box[1][0], box[0][1], box[1][2]);
+                            glVertex3f( box[1][0], box[1][1], box[1][2]);
+                            glVertex3f( box[1][0], box[1][1], box[0][2]);
+                            glEnd();
+                        }
+                        else if( axis == 1)
+                        {
+                            glBegin( GL_QUADS);
+                            // z min face
+                            glVertex3f( box[0][0], box[0][1], box[0][2]);
+                            glVertex3f( box[1][0], box[0][1], box[0][2]);
+                            glVertex3f( box[1][0], box[0][1], box[1][2]);
+                            glVertex3f( box[0][0], box[0][1], box[1][2]);
 
-                        glBegin( GL_QUADS);
-                        // z min face
-                        glVertex3f( box[0][0], box[0][1], box[0][2]);
-                        glVertex3f( box[0][0], box[1][1], box[0][2]);
-                        glVertex3f( box[1][0], box[1][1], box[0][2]);
-                        glVertex3f( box[1][0], box[0][1], box[0][2]);
+                            // z max face
+                            glVertex3f( box[0][0], box[1][1], box[0][2]);
+                            glVertex3f( box[1][0], box[1][1], box[0][2]);
+                            glVertex3f( box[1][0], box[1][1], box[1][2]);
+                            glVertex3f( box[0][0], box[1][1], box[1][2]);
+                            glEnd();
+                        }
+                        else if( axis == 2)
+                        {
+                            glBegin( GL_QUADS);
+                            // z min face
+                            glVertex3f( box[0][0], box[0][1], box[0][2]);
+                            glVertex3f( box[0][0], box[1][1], box[0][2]);
+                            glVertex3f( box[1][0], box[1][1], box[0][2]);
+                            glVertex3f( box[1][0], box[0][1], box[0][2]);
 
-                        // z max face
-                        glVertex3f( box[0][0], box[0][1], box[1][2]);
-                        glVertex3f( box[0][0], box[1][1], box[1][2]);
-                        glVertex3f( box[1][0], box[1][1], box[1][2]);
-                        glVertex3f( box[1][0], box[0][1], box[1][2]);
-                        glEnd();
+                            // z max face
+                            glVertex3f( box[0][0], box[0][1], box[1][2]);
+                            glVertex3f( box[0][0], box[1][1], box[1][2]);
+                            glVertex3f( box[1][0], box[1][1], box[1][2]);
+                            glVertex3f( box[1][0], box[0][1], box[1][2]);
+                            glEnd();
+                        }
                     }
                 }
             }
         }
+        if (showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #endif
     }
 
