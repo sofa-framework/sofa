@@ -494,8 +494,10 @@ void GridMaterial< MaterialTypes,voxelType >::draw()
     if ( this->showVoxels.getValue() )
     {
         //glDisable ( GL_LIGHTING );
+        //glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
+
         double s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
-        float defaultcolor[4]= {1,.2f,.2f,.1f};
+        float defaultcolor[4]= {1,.2,.2,.1};
         float voidcolor[4]= {0,0,0,0};
         bool wireframe=getContext()->getShowWireFrame();
 
