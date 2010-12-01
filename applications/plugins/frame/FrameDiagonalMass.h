@@ -205,12 +205,14 @@ public:
 
 private:
     FStorage* dqStorage;
+    const unsigned int* nbRefs;
+    const vector<unsigned int>* repartition;
     VD* vol;
     VD* massDensity;
-    VVMat3xIn* J;
-    VVMat3xIn* J0;
+    const VVMat3xIn* J;
+    const VVMat3xIn* J0;
 
-    void updateMass ( MassType& mass, const VMat3xIn& J, const VD& vol, const VD& volmass );
+    void updateMass ( VecMass& mass, const VVMat3xIn& J);
     void computeRelRot ( Mat33& relRot, const Coord& xi, const Coord& xi0);
     void rotateM( MatInxIn& M, const MatInxIn& M0, const Mat33& R);
     void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);
