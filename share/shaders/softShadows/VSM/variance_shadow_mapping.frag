@@ -1,21 +1,24 @@
-varying vec3 normal;
-varying vec4 ambientGlobal;
+#version 120
 
 uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
-uniform sampler2D shadowTexture[MAX_NUMBER_OF_LIGHTS];
-uniform float zFar[MAX_NUMBER_OF_LIGHTS];
-uniform float zNear[MAX_NUMBER_OF_LIGHTS];
 
-varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
+varying vec3 normal;
+varying vec4 ambientGlobal;
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
 varying float dist[MAX_NUMBER_OF_LIGHTS];
 
-
-
 #ifdef USE_TEXTURE
 uniform sampler2D colorTexture;
-#endif
+#endif // USE_TEXTURE
 
+#if ENABLE_SHADOW == 1 
+uniform sampler2D shadowTexture[MAX_NUMBER_OF_LIGHTS];
+uniform float zFar[MAX_NUMBER_OF_LIGHTS];
+uniform float zNear[MAX_NUMBER_OF_LIGHTS];
+varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
+#endif // ENABLE_SHADOW == 1 
+
+#if ENABLE_SHADOW == 1 
 float g_MinVariance = 0.01;
 float g_bleedingAmount = 0.2;
 
@@ -61,7 +64,7 @@ float shadow_variance_unroll(const int index, const sampler2D shadowTexture)
 
 	return VarianceShadow(texture2DProj(shadowTexture, shadowTexCoord[index]).xy, depth);
 }
-
+#endif // ENABLE_SHADOW == 1 
 
 void main()
 {
@@ -73,10 +76,8 @@ void main()
 	float NdotL,NdotHV;
 	float att,spotEffect;
 
-	//lightFlag[0] = 2;
-	//lightFlag[1] = 0;
+#if ENABLE_SHADOW == 1 
 	float shadow=1.0;
-
 	
 	//Compute first all shadow variables
 	//as : -Mac Os does not support accessing array of sampler2D with a non const index
@@ -106,8 +107,10 @@ void main()
 	 if(lightFlag[4] == 2)
 	 	shadowsVar[4] = shadow_variance_unroll(4, shadowTexture[4]);
 #endif //MAX_NUMBER_OF_LIGHTS > 4
+
 #endif //MAX_NUMBER_OF_LIGHTS > 0
 
+#endif // ENABLE_SHADOW == 1 
 	// a fragment shader can't write a verying variable, hence we need
 	//a new variable to store the normalized interpolated normal
 	n = normalize(normal);
@@ -117,32 +120,39 @@ void main()
 		if(lightFlag[i] > 0)
 		{
 			hasLight = true;
-			
+#if ENABLE_SHADOW == 1 
 			shadow = shadowsVar[i];
+#endif // ENABLE_SHADOW == 1 
 
-			//if(lightFlag[i] == 2)
-			//	shadow = shadow_variance(shadowTexture[i], shadowTexCoord[i], depth);
 			NdotL = max(dot(n,normalize(lightDir[i])),0.0);	
-			if (shadow > 0.0 && NdotL > 0.0)
+			if (NdotL > 0.0)
 			{
-				
-				diffuse = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
-				spotEffect = dot(normalize(gl_LightSource[i].spotDirection), normalize(-lightDir[i]));
-
-				if (spotEffect > gl_LightSource[i].spotCosCutoff)
+#if ENABLE_SHADOW == 1 
+				if (shadow > 1.0)
 				{
+#endif // ENABLE_SHADOW == 1 
+					diffuse = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
+					spotEffect = dot(normalize(gl_LightSource[i].spotDirection), normalize(-lightDir[i]));
 
-					spotEffect = (shadow)*smoothstep(gl_LightSource[i].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
-					att = spotEffect /* / (gl_LightSource[i].constantAttenuation +
-							gl_LightSource[i].linearAttenuation * dist[i] +
-							gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]) */;
+					if (spotEffect > gl_LightSource[i].spotCosCutoff)
+					{
+						spotEffect = smoothstep(gl_LightSource[i].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
+#if ENABLE_SHADOW == 1 
+						spotEffect *= shadow;
+#endif // ENABLE_SHADOW == 1 
+						att = spotEffect /* / (gl_LightSource[i].constantAttenuation +
+								gl_LightSource[i].linearAttenuation * dist[i] +
+								gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]) */;
 
-					final_color += att * (diffuse * NdotL) ;
+						final_color += att * (diffuse * NdotL) ;
 
-					halfV = normalize(gl_LightSource[i].halfVector).xyz;
-					NdotHV = max(dot(n,halfV),0.0);
-					specular_color += att * gl_FrontMaterial.specular * gl_LightSource[i].specular * pow(NdotHV,gl_FrontMaterial.shininess);
+						halfV = normalize(gl_LightSource[i].halfVector).xyz;
+						NdotHV = max(dot(n,halfV),0.0);
+						specular_color += att * gl_FrontMaterial.specular * gl_LightSource[i].specular * pow(NdotHV,gl_FrontMaterial.shininess);
+					}
+				#if ENABLE_SHADOW == 1 
 				}
+				#endif // ENABLE_SHADOW == 1 
 			}
 		}
 	}

@@ -1,15 +1,15 @@
 #version 120
-varying vec3 normal;
-varying vec4 ambientGlobal;
 
 //0 -> disabled, 1 -> only lighting, 2 -> lighting & shadow
 uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
-
-varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
+varying vec3 normal;
+varying vec4 ambientGlobal;
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
 varying float dist[MAX_NUMBER_OF_LIGHTS];
 
-uniform mat4x4 shadowMatrix[MAX_NUMBER_OF_LIGHTS];
+#if ENABLE_SHADOW == 1 
+varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
+#endif // ENABLE_SHADOW == 1 
 
 void main()
 {
@@ -42,10 +42,11 @@ void main()
 			//diffuse[i] = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
 			//ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[i].ambient;
 
+#if ENABLE_SHADOW == 1 
 			if (lightFlag[i] == 2)
 				//shadowTexCoord[i] = shadowMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
 				shadowTexCoord[i] = gl_TextureMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
-
+#endif // ENABLE_SHADOW == 1 
 		}
 
 	}

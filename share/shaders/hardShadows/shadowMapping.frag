@@ -1,18 +1,20 @@
+#version 120
+
 varying vec3 normal;
 varying vec4 ambientGlobal;
 
 uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
+varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
+varying float dist[MAX_NUMBER_OF_LIGHTS];
+#ifdef USE_TEXTURE
+uniform sampler2D colorTexture;
+#endif // USE_TEXTURE
+
+#if ENABLE_SHADOW == 1 
 uniform sampler2DShadow shadowTexture[MAX_NUMBER_OF_LIGHTS];
 uniform float zFar[MAX_NUMBER_OF_LIGHTS];
 uniform float zNear[MAX_NUMBER_OF_LIGHTS];
-
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
-varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
-varying float dist[MAX_NUMBER_OF_LIGHTS];
-
-#ifdef USE_TEXTURE
-uniform sampler2D colorTexture;
-#endif
 
 float shadow_unroll(const int index, const sampler2DShadow shadowTexture) 
 { 
@@ -27,6 +29,7 @@ float shadow_unroll(const int index, const sampler2DShadow shadowTexture)
 		shadow = 1.0;	
 	return shadow;
 }
+#endif // ENABLE_SHADOW == 1 
 
 void main()
 {
@@ -37,8 +40,8 @@ void main()
 	vec4 diffuse;
 	float NdotL,NdotHV;
 	float att,spotEffect;
-	float isLit,shadow;
-	float depth, depthSqr;
+#if ENABLE_SHADOW == 1 
+	float shadow, depth, depthSqr;
 
 	//Compute first all shadow variables
 	//as : -Mac Os does not support accessing array of sampler2D with a non const index
@@ -68,8 +71,10 @@ void main()
 	 if(lightFlag[4] == 2)
 	 	shadowsVar[4] = shadow_unroll(4, shadowTexture[4]);
 #endif //MAX_NUMBER_OF_LIGHTS > 4
+
 #endif //MAX_NUMBER_OF_LIGHTS > 0
 
+#endif // ENABLE_SHADOW == 1 
 	// a fragment shader can't write a verying variable, hence we need
 	//a new variable to store the normalized interpolated normal
 
@@ -79,27 +84,39 @@ void main()
 		if(lightFlag[i] > 0)
 		{
 			hasLight = true;
+#if ENABLE_SHADOW == 1 
 			shadow = shadowsVar[i];
-
+#endif // ENABLE_SHADOW == 1 
 			NdotL = max(dot(n,normalize(lightDir[i])),0.0);
-			if (NdotL > 0.0 && shadow > 0.0)
+			if (NdotL > 0.0)
 			{
-				diffuse = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
-				spotEffect = dot(normalize(gl_LightSource[i].spotDirection), normalize(-lightDir[i]));
-
-				if (spotEffect > gl_LightSource[i].spotCosCutoff)
+#if ENABLE_SHADOW == 1 
+				if (shadow > 0.0)
 				{
-					spotEffect = shadow * smoothstep(gl_LightSource[i].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
-					att = spotEffect /* / (gl_LightSource[i].constantAttenuation +
-							gl_LightSource[i].linearAttenuation * dist[i] +
-							gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]) */;
+#endif // ENABLE_SHADOW == 1 
+					diffuse = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
+					spotEffect = dot(normalize(gl_LightSource[i].spotDirection), normalize(-lightDir[i]));
 
-					final_color += att * (diffuse * NdotL) ;
+					if (spotEffect > gl_LightSource[i].spotCosCutoff)
+					{
+						spotEffect = smoothstep(gl_LightSource[i].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
+#if ENABLE_SHADOW == 1 
+						spotEffect *= shadow;
+#endif // ENABLE_SHADOW == 1 
 
-					halfV = normalize(gl_LightSource[i].halfVector.xyz);
-					NdotHV = max(dot(n,halfV),0.0);
-					specular_color += att * gl_FrontMaterial.specular * gl_LightSource[i].specular * pow(NdotHV,gl_FrontMaterial.shininess);
+						att = spotEffect /* / (gl_LightSource[i].constantAttenuation +
+								gl_LightSource[i].linearAttenuation * dist[i] +
+								gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]) */;
+
+						final_color += att * (diffuse * NdotL) ;
+
+						halfV = normalize(gl_LightSource[i].halfVector.xyz);
+						NdotHV = max(dot(n,halfV),0.0);
+						specular_color += att * gl_FrontMaterial.specular * gl_LightSource[i].specular * pow(NdotHV,gl_FrontMaterial.shininess);
+					}
+				#if ENABLE_SHADOW == 1 
 				}
+#endif // ENABLE_SHADOW == 1 
 			}
 		}
 	}
@@ -114,9 +131,5 @@ void main()
 		gl_FragColor = final_color;
 	else
 		gl_FragColor = gl_Color;
-
-
-	//gl_FragColor = shadow2DProj(shadowTexture[0], shadowTexCoord[0]);
-	//gl_FragColor = shadowTexCoord[0]*0.5 - 0.5;
 
 }
