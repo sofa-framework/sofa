@@ -31,7 +31,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/component/container/VoxelGridLoader.h>
-
+#include "CImg.h"
 
 namespace sofa
 {
@@ -42,15 +42,16 @@ namespace component
 namespace material
 {
 
+using namespace cimg_library;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using container::VoxelGridLoader;
 
-template<class TMaterialTypes>
+template<class TMaterialTypes, typename voxelType>
 class SOFA_FRAME_API GridMaterial : public Material<TMaterialTypes>
 {
 public:
-    SOFA_CLASS( SOFA_TEMPLATE(GridMaterial, TMaterialTypes), SOFA_TEMPLATE(Material, TMaterialTypes) );
+    SOFA_CLASS( SOFA_TEMPLATE2(GridMaterial, TMaterialTypes,voxelType), SOFA_TEMPLATE(Material, TMaterialTypes) );
 
     typedef Material<TMaterialTypes> Inherited;
     typedef typename Inherited::Real Real;        ///< Scalar values.
@@ -68,6 +69,8 @@ public:
     typedef sofa::helper::SVector<unsigned int> VUI;
     typedef sofa::helper::SVector<int> VI;
     typedef sofa::helper::SVector<bool> VB;
+
+    Data<bool> showVoxels;
 
     GridMaterial();
     virtual ~GridMaterial() {}
@@ -98,8 +101,30 @@ public:
 //    /// implementation of the abstract function
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
 
+    /*************************/
+    /*   draw	              */
+    /*************************/
+    void draw();
+    void drawCube(double size,bool wireframe);
 
+    /*************************/
+    /*   IO	              */
+    /*************************/
+    bool loadInfos();
+    bool saveInfos();
+    bool loadImage();
+    bool saveImage();
+
+    /*************************/
+    /*   Lumping			  */
+    /*************************/
+    bool LumpVolumes(const Vec3& point,double& vol);
+    bool LumpMoments(const Vec3& point,const unsigned int order,VD& moments);
+    bool LumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
+
+    /*************************/
     /*   Compute distances   */
+    /*************************/
     // (biased) Euclidean distance between two voxels
     double getDistance(const unsigned int& index1,const unsigned int& index2,const bool biasDistances);
     // (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
@@ -112,7 +137,9 @@ public:
     bool computeUniformSampling ( VecVec3& points, const bool biasDistances, unsigned int num_points, unsigned int max_iterations );
 
 
+    /*************************/
     /*         Utils         */
+    /*************************/
     inline int getIndex(const Vec3i& icoord);
     inline int getIndex(const Vec3& coord);
     inline bool getiCoord(const Vec3& coord, Vec3i& icoord);
@@ -122,6 +149,7 @@ public:
     inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
+    inline void getCompleteBasis(const Vec3& p,const unsigned int order,VD& basis);
 
 
     static const char* Name();
@@ -130,26 +158,25 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const GridMaterial<TMaterialTypes>* = NULL)
+    static std::string templateName(const GridMaterial<TMaterialTypes,voxelType>* = NULL)
     {
         return TMaterialTypes::Name();
     }
 
 protected:
-    VoxelGridLoader* voxelGridLoader;
+    // Grid data
+    sofa::core::objectmodel::DataFileName imageFile;
+    sofa::core::objectmodel::DataFileName infoFile;
+    Data< Vec3d > voxelSize;
+    Data< Vec3d > origin;
+    Data< Vec3i > dimension;
 
-    // Grid parameters (initialized from voxelGridLoader)
-    Vec3d voxelSize;
-    Vec3d origin;
-    Vec3i dimension;
+    CImg<voxelType> grid;
     unsigned int nbVoxels;
-    const unsigned char *data;
-    const unsigned char *segmentID;
 
     // temporary values in grid
     VD distances;
     VI voronoi;
-
 
 };
 
