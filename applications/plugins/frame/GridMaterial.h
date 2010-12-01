@@ -70,7 +70,7 @@ public:
     typedef sofa::helper::SVector<int> VI;
     typedef sofa::helper::SVector<bool> VB;
 
-    Data<bool> showVoxels;
+    Data<bool> showVoxelData;
     Data<bool> showVoronoi;
     Data<bool> showDistances;
     Data<bool> showWeights;
@@ -133,16 +133,20 @@ public:
     /*************************/
     /*   Compute distances   */
     /*************************/
-    // (biased) Euclidean distance between two voxels
+    /// (biased) Euclidean distance between two voxels
     double getDistance(const unsigned int& index1,const unsigned int& index2,const bool biasDistances);
-    // (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
+    /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
     bool computeGeodesicalDistances ( const Vec3& point, const bool biasDistances, const double distMax =1E100);
     bool computeGeodesicalDistances ( const int& index, const bool biasDistances, const double distMax =1E100);
-    // (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
+    /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
     bool computeGeodesicalDistances ( const VecVec3& points, const bool biasDistances, const double distMax =1E100);
     bool computeGeodesicalDistances ( const VI& indices, const bool biasDistances, const double distMax =1E100);
-
-    bool computeUniformSampling ( VecVec3& points, const bool biasDistances, unsigned int num_points, unsigned int max_iterations );
+    /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation -> id/distances stored in voronoi/distances
+    bool computeUniformSampling ( VecVec3& points, const bool biasDistances,const unsigned int num_points,const unsigned int max_iterations = 10);
+    /// linearly decreasing weight with support=factor*distmax_in_voronoi
+    bool computeLinearWeightsInVoronoi ( const Vec3& point,const bool biasDistances, const double factor=2.);
+    /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
+    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=1000,const double precision=1E-5);
 
 
     /*************************/

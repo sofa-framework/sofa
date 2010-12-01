@@ -30,6 +30,7 @@
 #include <sofa/helper/gl/glText.inl>
 #include <queue>
 #include <string>
+//#include <omp.h>
 
 namespace sofa
 {
@@ -42,15 +43,15 @@ namespace material
 template<class MaterialTypes, typename voxelType>
 GridMaterial< MaterialTypes,voxelType>::GridMaterial()
     : Inherited()
-    , showVoxels ( initData ( &showVoxels, false, "showVoxels","show voxels." ) )
-    , showVoronoi ( initData ( &showVoronoi, false, "showVoronoi","show Voronoi." ) )
-    , showDistances ( initData ( &showDistances, false, "showDistances","show Distances." ) )
-    , showWeights ( initData ( &showWeights, false, "showWeights","show Weights." ) )
-    , imageFile( initData(&imageFile,"imageFile","ImageFile file"))
-    , infoFile( initData(&infoFile,"infoFile","InfoFile file"))
+    , showVoxelData ( initData ( &showVoxelData, false, "showVoxelData","Show voxel data" ) )
+    , showVoronoi ( initData ( &showVoronoi, false, "showVoronoi","Show voronoi" ) )
+    , showDistances ( initData ( &showDistances, false, "showDistances","Show distances" ) )
+    , showWeights ( initData ( &showWeights, false, "showWeights","Show weights" ) )
+    , imageFile( initData(&imageFile,"imageFile","Image file"))
+    , infoFile( initData(&infoFile,"infoFile","Info file"))
     , voxelSize ( initData ( &voxelSize, Vec3d ( 0,0,0 ), "voxelSize", "Voxel size" ) )
-    , origin ( initData ( &origin, Vec3d ( 0,0,0 ), "origin", "Origin of the voxel grid" ) )
-    , dimension ( initData ( &dimension, Vec3i ( 0,0,0 ), "dimension", "Dimension of the voxel grid" ) )
+    , origin ( initData ( &origin, Vec3d ( 0,0,0 ), "origin", "Grid origin" ) )
+    , dimension ( initData ( &dimension, Vec3i ( 0,0,0 ), "dimension", "Grid dimensions" ) )
 {
 }
 
@@ -87,10 +88,12 @@ void GridMaterial< MaterialTypes,voxelType>::init()
     if(writeinfos) saveInfos();
 
     VecVec3 points;
-    //	points.push_back(Vec3(-0.2,0.9,0.1));
-    //	points.push_back(Vec3(-0.7,1.3,0.2 ));
+    //points.push_back(Vec3(-0.2,0.9,0.1));	points.push_back(Vec3(-0.7,1.3,0.2 ));
+    //points.push_back(Vec3(0.732348,0,0.316815));points.push_back(Vec3(-0.534989,-0.661314,-0.479452));points.push_back(Vec3(-0.534955,0.661343,-0.479452));points.push_back(Vec3(0.257823,-0.46005,-0.527559));points.push_back(Vec3(0.257847,0.460036,-0.527559));points.push_back(Vec3(-0.865567,-0.017041,-0.206655));points.push_back(Vec3(-0.15,0,0.2));
+    computeUniformSampling(points,true,10,100); //TEST
+    computeLinearWeightsInVoronoi ( points[0], true,2.);
+    //  HeatDiffusion( points, 0,false,2000);
     //  computeGeodesicalDistances(points,false);
-    computeUniformSampling(points,false,10,100);
 
     Inherited::init();
 }
@@ -292,7 +295,7 @@ bool GridMaterial< MaterialTypes,voxelType >::LumpMomentsStiffness(const Vec3& p
 {
     if(!nbVoxels) {moments.clear(); return false;}
     LumpMoments(point,order,moments);
-    int dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
+    unsigned int dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
 
     int index=getIndex(point);
     if(voronoi.size()!=nbVoxels) {moments[0]*=getStiffness(grid.data()[index]); return false;} // no voronoi -> 1 point = 1 voxel
@@ -453,8 +456,9 @@ bool GridMaterial< MaterialTypes,voxelType >::computeGeodesicalDistances ( const
     return true;
 }
 
+
 template < class MaterialTypes, typename voxelType >
-bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& points, const bool biasDistances, unsigned int num_points, unsigned int max_iterations )
+bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& points, const bool biasDistances,const unsigned int num_points, const unsigned int max_iterations )
 {
     if(!nbVoxels) return false;
     unsigned int i,k,initial_num_points=points.size();
@@ -476,11 +480,11 @@ bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& 
     }
 // Lloyd relaxation
     Vec3 pos,u,pos_point,pos_voxel;
-    unsigned int count,count2=0;
+    unsigned int count,nbiterations=0;
     bool ok=false,ok2;
     double d,dmin; int indexmin;
 
-    while(!ok && count2<max_iterations)
+    while(!ok && nbiterations<max_iterations)
     {
         ok2=true;
         computeGeodesicalDistances(indices,biasDistances); // Voronoi
@@ -505,7 +509,7 @@ bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& 
             flag[indexmin]=true;
             if(indices[i]!=indexmin) {ok2=false; indices[i]=indexmin;}
         }
-        ok=ok2; count2++;
+        ok=ok2; nbiterations++;
     }
 
 // get points from indices
@@ -513,11 +517,103 @@ bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& 
     {
         getCoord(indices[i],points[i]) ;
     }
-    std::cout<<"Lloyd completed in "<<count2<<" iterations"<<std::endl;
+    std::cout<<"Lloyd completed in "<<nbiterations<<" iterations"<<std::endl;
 
-    if(count2==max_iterations) return false; // reached max iterations
+    if(nbiterations==max_iterations) return false; // reached max iterations
     return true;
 }
+
+
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::computeLinearWeightsInVoronoi ( const Vec3& point, const bool biasDistances, const double factor)
+{
+    unsigned int i;
+    weights.resize(this->nbVoxels);  for(i=0; i<this->nbVoxels; i++)  weights[i]=0;
+    if(!this->nbVoxels) return false;
+    int index=getIndex(point);
+    if(voronoi.size()!=nbVoxels) return false;
+    if(voronoi[index]==-1) return false;
+    double dmax=0; for(i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) if(distances[i]>dmax) dmax=distances[i];
+    if(dmax==0) return false;
+    VD backupdistance; backupdistance.swap(distances);
+    computeGeodesicalDistances(point,true,biasDistances);
+    for(i=0; i<nbVoxels; i++) if(distances[i]<dmax) weights[i]=1.-distances[i]/dmax;
+    backupdistance.swap(distances);
+    return true;  // 1 point = voxels its his voronoi region
+}
+
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue,const unsigned int max_iterations,const double precision  )
+{
+    if(!this->nbVoxels) return false;
+    unsigned int i,j,k,num_points=points.size();
+    int index;
+    weights.resize(this->nbVoxels);  for(i=0; i<this->nbVoxels; i++)  weights[i]=0.5;
+
+    VB isfixed(nbVoxels,false);
+    VB update(nbVoxels,false);
+    VUI neighbors;
+
+// intialisation: fix weight of points or regions
+    for(i=0; i<num_points; i++)
+    {
+        index=getIndex(points[i]);
+        if(index!=-1)
+        {
+            isfixed[index]=true;
+            if(i==hotpointindex) weights[index]=1; else weights[index]=0;
+            get6Neighbors(index, neighbors); for(j=0; j<neighbors.size(); j++) update[neighbors[j]]=true;
+            if(fixdatavalue) // fix regions
+                for(k=0; k<this->nbVoxels; k++)
+                    if(grid.data()[k]==grid.data()[index])
+                    {
+                        isfixed[k]=true; weights[k]=weights[index];
+                        get6Neighbors(k, neighbors); for(j=0; j<neighbors.size(); j++) update[neighbors[j]]=true;
+                    }
+        }
+    }
+
+// diffuse
+    unsigned int nbiterations=0;
+    bool ok=false,ok2;
+
+    while(!ok && nbiterations<max_iterations)
+    {
+        ok2=true;
+//	#pragma omp parallel for private(j,neighbors)
+        for(i=0; i<this->nbVoxels; i++)
+            if(update[i])
+            {
+                if(isfixed[i]) update[i]=false;
+                else
+                {
+                    double val=0,W=0;
+                    //if(aniso) {W+=Update_AnisoDiffw(i,vol); val+=W*n->v;}
+
+                    get6Neighbors(i, neighbors);
+                    for(j=0; j<neighbors.size(); j++) {val+=weights[neighbors[j]]; W+=1.; } if(W!=0) val=val/W; // average neighboor values
+
+                    if(fabs(val-weights[i])<precision) update[i]=false;
+                    else
+                    {
+                        weights[i]=val; ok2=false;
+                        for(j=0; j<neighbors.size(); j++) update[neighbors[j]]=true;
+                    }
+                }
+            }
+        ok=ok2; nbiterations++;
+    }
+    std::cout<<"Heat diffusion completed in "<<nbiterations<<" iterations"<<std::endl;
+
+//for(i=0;i<this->nbVoxels;i++)  serr<<weights[i]<<sendl;
+
+    if(nbiterations==max_iterations) return false; // reached max iterations
+    return true;
+}
+
+
 
 
 /*************************/
@@ -527,7 +623,7 @@ bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& 
 template<class MaterialTypes, typename voxelType>
 void GridMaterial< MaterialTypes,voxelType >::draw()
 {
-    if ( this->showVoxels.getValue() || this->showVoronoi.getValue() ||this->showDistances.getValue() ||this->showWeights.getValue() )
+    if ( this->showVoxelData.getValue() || this->showVoronoi.getValue() ||this->showDistances.getValue() ||this->showWeights.getValue() )
     {
         //glDisable ( GL_LIGHTING );
         //glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
@@ -538,15 +634,19 @@ void GridMaterial< MaterialTypes,voxelType >::draw()
         bool wireframe=this->getContext()->getShowWireFrame();
 
         float label,labelmax=-1;
-        if(voronoi.size()==nbVoxels && this->showVoronoi.getValue()) {for(i=0; i<nbVoxels; i++) if(grid.data()[i]!=0) if(voronoi[i]>labelmax) labelmax=(float)voronoi[i];}
+
+        if(this->showVoxelData.getValue()) {for(i=0; i<nbVoxels; i++) if(grid.data()[i]>labelmax) labelmax=(float)grid.data()[i];}
+        else if(voronoi.size()==nbVoxels && this->showVoronoi.getValue()) {for(i=0; i<nbVoxels; i++) if(grid.data()[i]!=0) if(voronoi[i]>labelmax) labelmax=(float)voronoi[i];}
         else if(distances.size()==nbVoxels && this->showDistances.getValue()) {for(i=0; i<nbVoxels; i++) if(grid.data()[i]!=0) if(distances[i]>labelmax) labelmax=(float)distances[i];}
+        else if(weights.size()==nbVoxels && this->showWeights.getValue()) labelmax=1;
 
         cimg_forXYZ(grid,x,y,z)
         {
             if(grid(x,y,z)!=0)
             {
                 label=-1;
-                if(voronoi.size()==nbVoxels && this->showVoronoi.getValue())  label=(float)voronoi[getIndex(Vec3i(x,y,z))];
+                if(this->showVoxelData.getValue()) label=(float)grid(x,y,z);
+                else if(voronoi.size()==nbVoxels && this->showVoronoi.getValue())  label=(float)voronoi[getIndex(Vec3i(x,y,z))];
                 else if(distances.size()==nbVoxels && this->showDistances.getValue())  label=(float)distances[getIndex(Vec3i(x,y,z))];
                 else if(weights.size()==nbVoxels && this->showWeights.getValue())  label=(float)weights[getIndex(Vec3i(x,y,z))];
 
