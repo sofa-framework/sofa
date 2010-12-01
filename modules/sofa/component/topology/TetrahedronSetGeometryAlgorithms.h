@@ -84,6 +84,9 @@ public:
 
     bool isPointInTetrahedron(const TetraID i, const Vec<3,Real>& p) const;
 
+    /// return (if the point is in the tetrahedron) the barycentric coordinates of the point in the tetrahedron
+    bool isPointInTetrahedron(const TetraID ind_t, const Vec<3,Real>& pTest, Vec<4,Real>& barycentricCoordinates) const;
+
     void getTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
 
     void getRestTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
