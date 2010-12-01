@@ -526,7 +526,7 @@ bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& 
 
 
 template < class MaterialTypes, typename voxelType >
-bool GridMaterial< MaterialTypes,voxelType >::computeLinearWeightsInVoronoi ( const Vec3& point, const bool biasDistances, const double factor)
+bool GridMaterial< MaterialTypes,voxelType >::computeLinearWeightsInVoronoi ( const Vec3& point, const bool biasDistances, const double /*factor*/)
 {
     unsigned int i;
     weights.resize(this->nbVoxels);  for(i=0; i<this->nbVoxels; i++)  weights[i]=0;
