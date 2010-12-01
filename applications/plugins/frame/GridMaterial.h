@@ -104,6 +104,10 @@ public:
 //    /// implementation of the abstract function
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
 
+
+    double getStiffness(const voxelType label);
+    double getDensity(const voxelType label);
+
     /*************************/
     /*   draw	              */
     /*************************/
@@ -121,7 +125,8 @@ public:
     /*************************/
     /*   Lumping			  */
     /*************************/
-    bool LumpVolumes(const Vec3& point,double& vol);
+    bool LumpMass(const Vec3& point,double& mass);
+    bool LumpVolume(const Vec3& point,double& vol);
     bool LumpMoments(const Vec3& point,const unsigned int order,VD& moments);
     bool LumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
 
