@@ -224,10 +224,13 @@ protected:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-    Data<vector<int> > repartition;
+#ifndef SOFA_DEV // contained in FrameStorage
+    Data<unsigned int> nbRefs; // Number of primitives influencing each point.
+    Data<vector<unsigned int> > repartition; // indices of primitives influencing each point.
+#endif
+
     Data<VVD> weights;
     Data<SVector<SVector<GeoCoord> > > weightGradients;
-    Data<unsigned int> nbRefs;
 public:
     Data<bool> showBlendedFrame;
     Data<bool> showDefTensors;
@@ -270,7 +273,7 @@ protected:
 
     inline void computeInitPos();
     inline void computeDistances();
-    inline void sortReferences( vector<int>& references);
+    inline void sortReferences( vector<unsigned int>& references);
     inline void normalizeWeights();
 
 public:
@@ -297,25 +300,25 @@ public:
     // Accessors
     void setNbRefs ( unsigned int nb )
     {
-        nbRefs.setValue ( nb );
+        this->nbRefs.setValue ( nb );
     }
-    void setWeightCoefs ( VVD& weights );
     void setRepartition ( vector<int> &rep );
+    void setWeightCoefs ( VVD& weights );
     void setComputeWeights ( bool val )
     {
         computeWeights=val;
     }
     unsigned int getNbRefs() const
     {
-        return nbRefs.getValue();
+        return this->nbRefs.getValue();
     }
     const VVD& getWeightCoefs() const
     {
         return weights.getValue();
     }
-    const vector<int>& getRepartition() const
+    const vector<unsigned int>& getRepartition() const
     {
-        return repartition.getValue();
+        return this->repartition.getValue();
     }
     bool getComputeWeights() const
     {
