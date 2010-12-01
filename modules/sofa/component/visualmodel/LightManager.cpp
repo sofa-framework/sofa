@@ -88,7 +88,10 @@ void LightManager::init()
     }
 
     for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
+    {
         shadowShaders[i]->initShaders(lights.size(), softShadowsEnabled.getValue());
+        shadowShaders[i]->setCurrentIndex(shadowsEnabled.getValue() ? 1 : 0);
+    }
 #endif
     lightModelViewMatrix.resize(lights.size());
 
@@ -448,6 +451,12 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
             {
                 bool b = shadowsEnabled.getValue();
                 shadowsEnabled.setValue(!b);
+                if (!shadowShaders.empty())
+                {
+                    for (unsigned int i=0 ; i < shadowShaders.size() ; i++)
+                        shadowShaders[i]->setCurrentIndex(shadowsEnabled.getValue() ? 1 : 0);
+                }
+
                 std::cout << "Shadows : "<<(shadowsEnabled.getValue()?"ENABLED":"DISABLED")<<std::endl;
             }
 #endif
