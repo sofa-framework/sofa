@@ -44,6 +44,7 @@
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -101,6 +102,7 @@ public:
     /// to display the center of gravity of the system
     Data< bool >         showCenterOfGravity;
     Data< float >        showAxisSize;
+    Data< bool >         lumping;
 
 
 protected:
@@ -108,6 +110,7 @@ protected:
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
     float massLumpingCoeff;
+
 
 public:
 
