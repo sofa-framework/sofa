@@ -87,7 +87,7 @@ typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTe
 template< class DataTypes>
 bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const Vec<3,Real>& pTest) const
 {
-    const double ZERO = 1e-12;
+    const double ZERO = 1e-15;
 
     const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
@@ -102,8 +102,51 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
     double v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
     double v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
 
-    return (v0 > -ZERO) && (v1 > -ZERO) && (v2 > -ZERO) && (v3 > -ZERO);
+    double V = tripleProduct(t1-t0, t2-t0, t3-t0);
+    if(fabs(V)>ZERO)
+        return (v0/V > -ZERO) && (v1/V > -ZERO) && (v2/V > -ZERO) && (v3/V > -ZERO);
+
+    else
+        return false;
 }
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const Vec<3,Real>& pTest, Vec<4,Real>& shapeFunctions) const
+{
+    const double ZERO = 1e-15;
+
+    const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    const Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
+    const Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
+    const Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
+    const Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
+
+    double v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
+    double v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
+    double v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
+    double v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
+
+    double V = tripleProduct(t1-t0, t2-t0, t3-t0);
+    if(fabs(V)>ZERO)
+    {
+        if( (v0/V > -ZERO) && (v1/V > -ZERO) && (v2/V > -ZERO) && (v3/V > -ZERO) )
+        {
+            shapeFunctions[0] = v0/V;
+            shapeFunctions[1] = v1/V;
+            shapeFunctions[2] = v2/V;
+            shapeFunctions[3] = v3/V;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    else
+        return false;
+}
+
 
 template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetrahedronVertexCoordinates(const TetraID i, Coord pnt[4]) const
