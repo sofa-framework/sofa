@@ -552,8 +552,8 @@ bool GridMaterial< MaterialTypes,voxelType >::HeatDiffusion( const VecVec3& poin
     int index;
     weights.resize(this->nbVoxels);  for(i=0; i<this->nbVoxels; i++)  weights[i]=0.5;
 
-    VB isfixed(nbVoxels,false);
-    VB update(nbVoxels,false);
+    VB isfixed((int)nbVoxels,false);
+    VB update((int)nbVoxels,false);
     VUI neighbors;
 
 // intialisation: fix weight of points or regions
