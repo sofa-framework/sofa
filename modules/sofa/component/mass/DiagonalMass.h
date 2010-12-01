@@ -88,7 +88,7 @@ public:
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3;
-    typedef DataTypes     GeometricalTypes ; /// assumes the geometry object type is 3D
+    typedef StdVectorTypes< Vec3, Vec3, MassType >     GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef enum
     {
