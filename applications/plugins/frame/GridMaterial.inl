@@ -26,7 +26,10 @@
 #define SOFA_COMPONENT_MATERIAL_GRIDMATERIAL_INL
 
 #include "GridMaterial.h"
+#include <sofa/helper/gl/Color.h>
+#include <sofa/helper/gl/glText.inl>
 #include <queue>
+#include <string>
 
 namespace sofa
 {
@@ -36,45 +39,62 @@ namespace material
 {
 
 
-template<class MaterialTypes>
-GridMaterial<MaterialTypes>::GridMaterial()
+template<class MaterialTypes, typename voxelType>
+GridMaterial< MaterialTypes,voxelType>::GridMaterial()
     : Inherited()
+    , showVoxels ( initData ( &showVoxels, false, "showVoxels","show voxels." ) )
+    , imageFile( initData(&imageFile,"imageFile","ImageFile file"))
+    , infoFile( initData(&infoFile,"infoFile","InfoFile file"))
+    , voxelSize ( initData ( &voxelSize, Vec3d ( 0,0,0 ), "voxelSize", "Voxel size" ) )
+    , origin ( initData ( &origin, Vec3d ( 0,0,0 ), "origin", "Origin of the voxel grid" ) )
+    , dimension ( initData ( &dimension, Vec3i ( 0,0,0 ), "dimension", "Dimension of the voxel grid" ) )
 {
 }
 
-template<class MaterialTypes>
-void GridMaterial<MaterialTypes>::init()
+template<class MaterialTypes, typename voxelType>
+void GridMaterial< MaterialTypes,voxelType>::init()
 {
 
-    vector<VoxelGridLoader*> vg;
-    sofa::core::objectmodel::BaseContext* context=  this->getContext();
-    context->get<VoxelGridLoader>( &vg, core::objectmodel::BaseContext::Local);
-    assert(vg.size()>0);
-    this->voxelGridLoader = vg[0];
-
+    /*  vector<VoxelGridLoader*> vg;
+      sofa::core::objectmodel::BaseContext* context=  this->getContext();
+      context->get<VoxelGridLoader>( &vg, core::objectmodel::BaseContext::Local);
+      assert(vg.size()>0);
+      this->voxelGridLoader = vg[0];
     if ( !this->voxelGridLoader )
     {
-        serr << "VoxelGrid component not found" << sendl;
-        this->nbVoxels = 0;
-        this->data = NULL;
-        this->segmentID = NULL;
+    	serr << "VoxelGrid component not found" << sendl;
+    	this->nbVoxels = 0;
+    	this->data = NULL;
+    	this->segmentID = NULL;
     }
     else
     {
-        this->voxelGridLoader->getVoxelSize(this->voxelSize);
-        this->voxelGridLoader->getResolution(this->dimension);
-        // this->voxelGridLoader->getorigin(this->origin); // TO DO : update voxelGridLoader to add offsets
-        this->nbVoxels = this->dimension[0]*this->dimension[1]*this->dimension[2];
-        this->data = this->voxelGridLoader->getData();
-        this->segmentID = this->voxelGridLoader->getSegmentID();
+    	this->voxelGridLoader->getVoxelSize(this->voxelSize);
+    	this->voxelGridLoader->getResolution(dimension.getValue());
+    	// this->voxelGridLoader->getorigin(this->origin); // TO DO : update voxelGridLoader to add offsets (temporary solution: use a data Origin)
+    	this->nbVoxels = dimension.getValue()[0]*dimension.getValue()[1]*dimension.getValue()[2];
+    	this->data = this->voxelGridLoader->getData();
+    	this->segmentID = this->voxelGridLoader->getSegmentID();
     }
+    */
+
+    bool writeinfos=false; if(!loadInfos()) writeinfos=true;
+    loadImage();
+    this->nbVoxels = dimension.getValue()[0]*dimension.getValue()[1]*dimension.getValue()[2];
+    if(writeinfos) saveInfos();
+
+    VecVec3 points;
+    //	points.push_back(Vec3(-0.2,0.9,0.1));
+    //	points.push_back(Vec3(-0.7,1.3,0.2 ));
+    //  computeGeodesicalDistances(points,false);
+    computeUniformSampling(points,false,10,100);
 
     Inherited::init();
 }
 
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
-template<class MaterialTypes>
-void GridMaterial<MaterialTypes>::computeStress  ( VecStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecStr& /*strain*/, const VecStr& )
+template<class MaterialTypes, typename voxelType>
+void GridMaterial< MaterialTypes,voxelType>::computeStress  ( VecStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecStr& /*strain*/, const VecStr& )
 {
 
 //                Real f = youngModulus.getValue()/((1 + poissonRatio.getValue())*(1 - 2 * poissonRatio.getValue()));
@@ -106,8 +126,8 @@ void GridMaterial<MaterialTypes>::computeStress  ( VecStr& /*stress*/, VecStrStr
 }
 
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
-template<class MaterialTypes>
-void GridMaterial<MaterialTypes>::computeStress  ( VecElStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecElStr& /*strain*/, const VecElStr& )
+template<class MaterialTypes, typename voxelType>
+void GridMaterial< MaterialTypes,voxelType>::computeStress  ( VecElStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecElStr& /*strain*/, const VecElStr& )
 {
 //                Real f = youngModulus.getValue()/((1 + poissonRatio.getValue())*(1 - 2 * poissonRatio.getValue()));
 //                stressDiagonal = f * (1 - poissonRatio.getValue());
@@ -139,15 +159,160 @@ void GridMaterial<MaterialTypes>::computeStress  ( VecElStr& /*stress*/, VecStrS
 }
 
 
+/*************************/
+/*   IO   			      */
+/*************************/
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial<MaterialTypes,voxelType>::loadInfos()
+{
+    std::ifstream fileStream (infoFile.getFullPath().c_str(), std::ifstream::in);
+    if (!fileStream.is_open())
+    {
+        serr << "Can not open " << infoFile << sendl;
+        return false;
+    }
+    Vec3i& dim = *this->dimension.beginEdit();		fileStream >> dim;			this->dimension.endEdit();
+    Vec3d& origin = *this->origin.beginEdit();		fileStream >> origin;		this->origin.endEdit();
+    Vec3d& voxelsize = *this->voxelSize.beginEdit();  fileStream >> voxelsize;	this->voxelSize.endEdit();
+    fileStream.close();
+    return true;
+}
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::saveInfos()
+{
+    std::ofstream fileStream (infoFile.getFullPath().c_str(), std::ofstream::out);
+    if (!fileStream.is_open())
+    {
+        serr << "Can not open " << infoFile << sendl;
+        return false;
+    }
+    std::cout << "Writing info file " << infoFile << std::endl;
+    fileStream << dimension.getValue() << " " << origin.getValue() << " " << voxelSize.getValue() << std::endl;
+    fileStream.close();
+    return true;
+}
+
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::loadImage()
+{
+    grid.load_raw(imageFile.getFullPath().c_str(),dimension.getValue()[0],dimension.getValue()[1],dimension.getValue()[2]);
+    if(grid.size()==0)
+    {
+        serr << "Can not open " << imageFile << sendl;
+        return false;
+    }
+    return true;
+}
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::saveImage()
+{
+    grid.save_raw(imageFile.getFullPath().c_str());
+    return true;
+}
+
+
+/*************************/
+/*   Lumping			  */
+/*************************/
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::LumpVolumes(const Vec3& point,double& vol)
+{
+    if(!nbVoxels) {vol=0; return false;}
+    double voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
+    if(voronoi.size()!=nbVoxels) {vol=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
+    int index=getIndex(point);
+    if(voronoi[index]==-1) {vol=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
+    vol=0; for(unsigned int i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) vol+=voxelvolume;
+    return true;  // 1 point = voxels its his voronoi region
+}
+
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::LumpMoments(const Vec3& point,const unsigned int order,VD& moments)
+{
+    if(!nbVoxels) {moments.clear(); return false;}
+    unsigned int dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
+
+    unsigned int i,j;
+    moments.resize(dim); for(i=0; i<dim; i++) moments[i]=0;
+
+    double voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
+    if(voronoi.size()!=nbVoxels) {moments[i]=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
+    int index=getIndex(point);
+    if(voronoi[i]==-1) {moments[i]=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
+
+    Vec3 P,G; getCoord(index,P);
+    VD momementPG;
+    for(i=0; i<nbVoxels; i++)
+        if(voronoi[i]==voronoi[index])
+        {
+            getCoord(i,G);
+            getCompleteBasis(G-P,order,momementPG);
+            for(j=0; j<dim; j++) moments[j]+=momementPG[j]*voxelvolume;
+        }
+    return true;  // 1 point = voxels in its voronoi region
+}
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::LumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments)
+{
+    if(!nbVoxels) {moments.clear(); return false;}
+    LumpMoments(point,order,moments);
+    int dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
+// todo
+
+    return true;
+}
+
+
+template < class MaterialTypes, typename voxelType >
+void GridMaterial< MaterialTypes,voxelType >::getCompleteBasis(const Vec3& p,const unsigned int order,VD& basis)
+{
+    unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
+    basis.resize(dim); for(j=0; j<dim; j++) basis[j]=0;
+
+    Vec3 p2; for(j=0; j<3; j++) p2[j]=p[j]*p[j];
+    Vec3 p3; for(j=0; j<3; j++) p3[j]=p2[j]*p[j];
+
+    count=0;
+// order 0
+    basis[count]=1; count++;
+    if(count==dim) return;
+// order 1
+    for(j=0; j<3; j++) {basis[count]=p[j]; count++;}
+    if(count==dim) return;
+// order 2
+    for(j=0; j<3; j++) for(k=j; k<3; k++) {basis[count]=p[j]*p[k];   count++;}
+    if(count==dim) return;
+// order 3
+    basis[count]=p[0]*p[1]*p[2]; count++;
+    for(j=0; j<3; j++) for(k=0; k<3; k++) {basis[count]=p2[j]*p[k];  count++;}
+    if(count==dim) return;
+// order 4
+    for(j=0; j<3; j++) for(k=j; k<3; k++) {basis[count]=p2[j]*p2[k]; count++;}
+    basis[count]=p2[0]*p[1]*p[2]; count++;
+    basis[count]=p[0]*p2[1]*p[2]; count++;
+    basis[count]=p[0]*p[1]*p2[2]; count++;
+    for(j=0; j<3; j++) for(k=0; k<3; k++) if(j!=k) {basis[count]=p3[j]*p[k];  count++;}
+    if(count==dim) return;
+
+    return; // order>4 not implemented...
+}
 
 
 
-
-
+/*************************/
 /*   Compute distances   */
+/*************************/
 
-template < class MaterialTypes >
-double GridMaterial< MaterialTypes >::getDistance(const unsigned int& index1,const unsigned int& index2,const bool biasDistances)
+
+template < class MaterialTypes, typename voxelType >
+double GridMaterial< MaterialTypes,voxelType >::getDistance(const unsigned int& index1,const unsigned int& index2,const bool biasDistances)
 {
     if(!nbVoxels) return -1;
     Vec3 coord1; if(!getCoord(index1,coord1)) return -1; // point1 not in grid
@@ -160,16 +325,16 @@ double GridMaterial< MaterialTypes >::getDistance(const unsigned int& index1,con
     else return (double)(coord2-coord1).norm();
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const Vec3& point, const bool biasDistances, const double distMax )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::computeGeodesicalDistances ( const Vec3& point, const bool biasDistances, const double distMax )
 {
     if(!nbVoxels) return false;
     int index=getIndex(point);
     return computeGeodesicalDistances (index, biasDistances, distMax );
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const int& index, const bool biasDistances, const double distMax )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::computeGeodesicalDistances ( const int& index, const bool biasDistances, const double distMax )
 {
     if(!nbVoxels) return false;
     unsigned int i,index1,index2;
@@ -177,12 +342,11 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const int& inde
     for(i=0; i<this->nbVoxels; i++) distances[i]=distMax;
 
     if(index<0 || index>=(int)nbVoxels) return false; // voxel out of grid
-    if(!segmentID[index]) return false;	// voxel out of object
+    if(!grid.data()[index]) return false;	// voxel out of object
 
     VUI neighbors;
     double d;
-
-    std::queue<unsigned int> fifo;
+    std::queue<int> fifo;
     distances[index]=0; fifo.push(index);
     while(!fifo.empty())
     {
@@ -191,7 +355,7 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const int& inde
         for(i=0; i<neighbors.size(); i++)
         {
             index2=neighbors[i];
-            if(segmentID[index2]) // test if voxel is not void
+            if(grid.data()[index2]) // test if voxel is not void
             {
                 d=distances[index1]+getDistance(index1,index2,biasDistances);
                 if(distances[index2]>d)
@@ -207,8 +371,8 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const int& inde
 }
 
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VecVec3& points, const bool biasDistances, const double distMax )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::computeGeodesicalDistances ( const VecVec3& points, const bool biasDistances, const double distMax )
 {
     if(!nbVoxels) return false;
     VI indices;
@@ -217,8 +381,8 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VecVec3& 
 }
 
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VI& indices, const bool biasDistances, const double distMax )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::computeGeodesicalDistances ( const VI& indices, const bool biasDistances, const double distMax )
 {
     if(!nbVoxels) return false;
     unsigned int i,nbi=indices.size(),index1,index2;
@@ -229,7 +393,7 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VI& indic
     double d;
 
     std::queue<unsigned int> fifo;
-    for(i=0; i<nbi; i++) if(indices[i]>=0 && indices[i]<(int)nbVoxels) if(segmentID[indices[i]]!=0) {distances[indices[i]]=0; voronoi[indices[i]]=i; fifo.push(indices[i]);}
+    for(i=0; i<nbi; i++) if(indices[i]>=0 && indices[i]<(int)nbVoxels) if(grid.data()[indices[i]]!=0) {distances[indices[i]]=0; voronoi[indices[i]]=i; fifo.push(indices[i]);}
     if(fifo.empty()) return false; // all input voxels out of grid
     while(!fifo.empty())
     {
@@ -238,7 +402,7 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VI& indic
         for(i=0; i<neighbors.size(); i++)
         {
             index2=neighbors[i];
-            if(segmentID[index2]) // test if voxel is not void
+            if(grid.data()[index2]) // test if voxel is not void
             {
                 d=distances[index1]+getDistance(index1,index2,biasDistances);
                 if(distances[index2]>d)
@@ -253,29 +417,27 @@ bool GridMaterial< MaterialTypes >::computeGeodesicalDistances ( const VI& indic
     return true;
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::computeUniformSampling ( VecVec3& points, const bool biasDistances, unsigned int num_points, unsigned int max_iterations )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& points, const bool biasDistances, unsigned int num_points, unsigned int max_iterations )
 {
     if(!nbVoxels) return false;
     unsigned int i,k,initial_num_points=points.size();
     VI indices((int)num_points,-1);
-    for(i=0; i<initial_num_points; i++) indices.push_back(getIndex(points[i]));
+    for(i=0; i<initial_num_points; i++) indices[i]=getIndex(points[i]);
     points.resize(num_points);
 
 // initialization: farthest point sampling (see [adams08])
     double dmax; int indexmax;
-
-    if(initial_num_points==0) {indices[0]=0; while(segmentID[indices[0]]==0) {indices[0]++; if(indices[0]==(int)nbVoxels) return false;} } // take the first not empty voxel as a random point
+    if(initial_num_points==0) {indices[0]=0; while(grid.data()[indices[0]]==0) {indices[0]++; if(indices[0]==(int)nbVoxels) return false;} } // take the first not empty voxel as a random point
     for(i=initial_num_points; i<num_points; i++)
     {
         if(i==0) i=1; // a random point has been inserted
         // get farthest point from all inserted points
         computeGeodesicalDistances(indices,biasDistances);
-        dmax=-1; indexmax=-1; for(k=0; k<num_points; k++) {if(distances[k]>dmax) {dmax=distances[k]; indexmax=k;}}
-        if(indexmax==-1) return false; // unable to add point
+        dmax=-1; indexmax=-1; for(k=0; k<nbVoxels; k++) {if(distances[k]>dmax && voronoi[k]!=-1) {dmax=distances[k]; indexmax=k;}}
+        if(indexmax==-1) {return false; }// unable to add point
         indices[i]=indexmax;
     }
-
 // Lloyd relaxation
     Vec3 pos,u,pos_point,pos_voxel;
     unsigned int count,count2=0;
@@ -289,22 +451,22 @@ bool GridMaterial< MaterialTypes >::computeUniformSampling ( VecVec3& points, co
         VB flag((int)nbVoxels,false);
         for(i=initial_num_points; i<num_points; i++) 	// move to centroid of Voronoi cells
         {
-            // estimate centroid given the measured distances = p + 1/N sum d(p,pi)*voxelsize*(p-pi)/|p-pi|
+            // estimate centroid given the measured distances = p + 1/N sum d(p,pi)*(pi-p)/|pi-p|
             getCoord(indices[i],pos_point);
             pos.fill(0); count=0;
             for(k=0; k<nbVoxels; k++)
                 if(voronoi[k]==(int)i)
                 {
                     getCoord(k,pos_voxel);
-                    u=pos_point-pos_voxel; u.normalize();
-                    u[0]*=(Real)voxelSize[0]; u[1]*=(Real)voxelSize[1]; u[2]*=(Real)voxelSize[2];
+                    u=pos_voxel-pos_point; u.normalize();
                     pos+=u*(Real)distances[k];
                     count++;
                 }
             pos/=(Real)count; 		pos+=pos_point;
             // get closest unoccupied point in object
             dmin=1E100; indexmin=-1;
-            for(k=0; k<nbVoxels; k++) if(!flag[k]) if(segmentID[k]!=0) {getCoord(k,pos_voxel); d=(pos-pos_voxel).norm2(); if(d<dmin) {flag[k]=true; dmin=d; indexmin=k;}}
+            for(k=0; k<nbVoxels; k++) if(!flag[k]) if(grid.data()[k]!=0) {getCoord(k,pos_voxel); d=(pos-pos_voxel).norm2(); if(d<dmin) {dmin=d; indexmin=k;}}
+            flag[indexmin]=true;
             if(indices[i]!=indexmin) {ok2=false; indices[i]=indexmin;}
         }
         ok=ok2; count2++;
@@ -315,26 +477,81 @@ bool GridMaterial< MaterialTypes >::computeUniformSampling ( VecVec3& points, co
     {
         getCoord(indices[i],points[i]) ;
     }
+    std::cout<<"Lloyd completed in "<<count2<<" iterations"<<std::endl;
 
     if(count2==max_iterations) return false; // reached max iterations
     return true;
 }
 
 
+/*************************/
+/*         Draw          */
+/*************************/
 
-
-
-/*         Utils         */
-template < class MaterialTypes >
-int GridMaterial< MaterialTypes >::getIndex(const Vec3i& icoord)
+template<class MaterialTypes, typename voxelType>
+void GridMaterial< MaterialTypes,voxelType >::draw()
 {
-    if(!nbVoxels) return -1;
-    for(int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=this->dimension[i]) return -1; // invalid icoord (out of grid)
-    return icoord[0]+this->dimension[0]*icoord[1]+this->dimension[0]*this->dimension[1]*icoord[2];
+    if ( this->showVoxels.getValue() )
+    {
+        //glDisable ( GL_LIGHTING );
+        double s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
+        float defaultcolor[4]= {1,.2f,.2f,.1f};
+        float voidcolor[4]= {0,0,0,0};
+        bool wireframe=getContext()->getShowWireFrame();
+
+        int labelmax=0; if(voronoi.size()==nbVoxels) for(unsigned int i=0; i<nbVoxels; i++) if(voronoi[i]>labelmax) labelmax=voronoi[i];
+
+        cimg_forXYZ(grid,x,y,z)
+        {
+            if(grid(x,y,z)!=0)
+            {
+                if(voronoi.size()==nbVoxels)
+                {
+                    int label=voronoi[getIndex(Vec3i(x,y,z))];
+                    if(label==-1) glColor4fv(voidcolor);
+                    else sofa::helper::gl::Color::setHSVA(240.*(float)label/(float)labelmax,1.,.8,defaultcolor[3]);
+                    glGetFloatv(GL_CURRENT_COLOR, defaultcolor);
+                    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);
+                }
+                else {glColor4fv(defaultcolor); glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);}
+                Vec3 coord; getCoord(Vec3i(x,y,z),coord);
+                glTranslated (coord[0],coord[1],coord[2]);
+                drawCube(s,wireframe);
+                glTranslated (-coord[0],-coord[1],-coord[2]);
+                //GlText::draw ( (int), coord, showTextScaleFactor.getValue() );
+            }
+        }
+    }
 }
 
-template < class MaterialTypes >
-int GridMaterial< MaterialTypes >::getIndex(const Vec3& coord)
+template < class MaterialTypes, typename voxelType >
+void GridMaterial< MaterialTypes,voxelType >::drawCube(double size,bool wireframe)
+{
+    double ss2=size/2.;
+    if(!wireframe) glBegin(GL_QUADS);
+    if(wireframe) glBegin(GL_LINE_LOOP);  glNormal3f(1,0,0);   glVertex3d(ss2,-ss2,-ss2);         glNormal3f(1,0,0);   glVertex3d(ss2,-ss2,ss2);         glNormal3f(1,0,0);   glVertex3d(ss2,ss2,ss2);         glNormal3f(1,0,0);   glVertex3d(ss2,ss2,-ss2); if(wireframe) glEnd ();
+    if(wireframe) glBegin(GL_LINE_LOOP);  glNormal3f(-1,0,0);  glVertex3d(-ss2,-ss2,-ss2);        glNormal3f(-1,0,0);  glVertex3d(-ss2,-ss2,ss2);        glNormal3f(-1,0,0);  glVertex3d(-ss2,ss2,ss2);        glNormal3f(-1,0,0);  glVertex3d(-ss2,ss2,-ss2); if(wireframe) glEnd ();
+    if(wireframe) glBegin(GL_LINE_LOOP);  glNormal3f(0,1,0);   glVertex3d(-ss2,ss2,-ss2);         glNormal3f(0,1,0);   glVertex3d(ss2,ss2,-ss2);         glNormal3f(0,1,0);   glVertex3d(ss2,ss2,ss2);         glNormal3f(0,1,0);   glVertex3d(-ss2,ss2,ss2); if(wireframe) glEnd ();
+    if(wireframe) glBegin(GL_LINE_LOOP);  glNormal3f(0,-1,0);  glVertex3d(-ss2,-ss2,-ss2);        glNormal3f(0,-1,0);  glVertex3d(ss2,-ss2,-ss2);        glNormal3f(0,-1,0);  glVertex3d(ss2,-ss2,ss2);        glNormal3f(0,-1,0);  glVertex3d(-ss2,-ss2,ss2); if(wireframe) glEnd ();
+    if(wireframe) glBegin(GL_LINE_LOOP);  glNormal3f(0,0,1);   glVertex3d(-ss2,-ss2,ss2);         glNormal3f(0,0,1);   glVertex3d(-ss2,ss2,ss2);         glNormal3f(0,0,1);   glVertex3d(ss2,ss2,ss2);         glNormal3f(0,0,1);   glVertex3d(ss2,-ss2,ss2); if(wireframe) glEnd ();
+    if(wireframe) glBegin(GL_LINE_LOOP);  glNormal3f(0,0,-1);  glVertex3d(-ss2,-ss2,-ss2);        glNormal3f(0,0,-1);  glVertex3d(-ss2,ss2,-ss2);        glNormal3f(0,0,-1);  glVertex3d(ss2,ss2,-ss2);        glNormal3f(0,0,-1);  glVertex3d(ss2,-ss2,-ss2); if(wireframe) glEnd ();
+    if(!wireframe) glEnd ();
+}
+
+
+/*************************/
+/*         Utils         */
+/*************************/
+template < class MaterialTypes, typename voxelType >
+int GridMaterial< MaterialTypes,voxelType >::getIndex(const Vec3i& icoord)
+{
+    if(!nbVoxels) return -1;
+    for(int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=dimension.getValue()[i]) return -1; // invalid icoord (out of grid)
+    return icoord[0]+dimension.getValue()[0]*icoord[1]+dimension.getValue()[0]*dimension.getValue()[1]*icoord[2];
+}
+
+template < class MaterialTypes, typename voxelType >
+int GridMaterial< MaterialTypes,voxelType >::getIndex(const Vec3& coord)
 {
     if(!nbVoxels) return -1;
     Vec3i icoord;
@@ -342,44 +559,44 @@ int GridMaterial< MaterialTypes >::getIndex(const Vec3& coord)
     return getIndex(icoord);
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::getiCoord(const Vec3& coord, Vec3i& icoord)
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::getiCoord(const Vec3& coord, Vec3i& icoord)
 {
     if(!nbVoxels) return false;
     Real val;
     for(unsigned int i=0; i<3; i++)
     {
-        val=(coord[i]-(Real)origin[i])/(Real)voxelSize[i];
+        val=(coord[i]-(Real)origin.getValue()[i])/(Real)voxelSize.getValue()[i];
         val=((val-floor(val))<0.5)?floor(val):ceil(val); //round
-        if(val<0 || val>=dimension[i]) return false;
+        if(val<0 || val>=dimension.getValue()[i]) return false;
         icoord[i]=(int)val;
     }
     return true;
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::getiCoord(const int& index, Vec3i& icoord)
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::getiCoord(const int& index, Vec3i& icoord)
 {
     if(!nbVoxels) return false;
     if(index<0 || index>=(int)nbVoxels) return false;  // invalid index
-    icoord[2]=index/this->dimension[0]*this->dimension[1];
-    icoord[1]=(index-icoord[2]*this->dimension[0]*this->dimension[1])/this->dimension[0];
-    icoord[0]=index-icoord[2]*this->dimension[0]*this->dimension[1]-icoord[1]*this->dimension[0];
+    icoord[2]=index/(dimension.getValue()[0]*dimension.getValue()[1]);
+    icoord[1]=(index-icoord[2]*dimension.getValue()[0]*dimension.getValue()[1])/dimension.getValue()[0];
+    icoord[0]=index-icoord[2]*dimension.getValue()[0]*dimension.getValue()[1]-icoord[1]*dimension.getValue()[0];
     return true;
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::getCoord(const Vec3i& icoord, Vec3& coord)
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::getCoord(const Vec3i& icoord, Vec3& coord)
 {
     if(!nbVoxels) return false;
-    for(unsigned int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=this->dimension[i]) return false; // invalid icoord (out of grid)
-    coord=this->origin;
-    for(unsigned int i=0; i<3; i++) coord[i]+=(Real)this->voxelSize[i]*(Real)icoord[i];
+    for(unsigned int i=0; i<3; i++) if(icoord[i]<0 || icoord[i]>=dimension.getValue()[i]) return false; // invalid icoord (out of grid)
+    coord=this->origin.getValue();
+    for(unsigned int i=0; i<3; i++) coord[i]+=(Real)this->voxelSize.getValue()[i]*(Real)icoord[i];
     return true;
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::getCoord(const int& index, Vec3& coord)
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::getCoord(const int& index, Vec3& coord)
 {
     if(!nbVoxels) return false;
     Vec3i icoord;
@@ -387,8 +604,8 @@ bool GridMaterial< MaterialTypes >::getCoord(const int& index, Vec3& coord)
     else return getCoord(icoord,coord);
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::get6Neighbors ( const int& index, VUI& neighbors )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::get6Neighbors ( const int& index, VUI& neighbors )
 {
     neighbors.clear();
     if(!nbVoxels) return false;
@@ -403,8 +620,8 @@ bool GridMaterial< MaterialTypes >::get6Neighbors ( const int& index, VUI& neigh
     return true;
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::get18Neighbors ( const int& index, VUI& neighbors )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::get18Neighbors ( const int& index, VUI& neighbors )
 {
     neighbors.clear();
     if(!nbVoxels) return false;
@@ -436,8 +653,8 @@ bool GridMaterial< MaterialTypes >::get18Neighbors ( const int& index, VUI& neig
     return true;
 }
 
-template < class MaterialTypes >
-bool GridMaterial< MaterialTypes >::get26Neighbors ( const int& index, VUI& neighbors )
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::get26Neighbors ( const int& index, VUI& neighbors )
 {
     neighbors.clear();
     if(!nbVoxels) return false;
