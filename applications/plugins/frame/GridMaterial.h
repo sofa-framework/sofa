@@ -71,6 +71,9 @@ public:
     typedef sofa::helper::SVector<bool> VB;
 
     Data<bool> showVoxels;
+    Data<bool> showVoronoi;
+    Data<bool> showDistances;
+    Data<bool> showWeights;
 
     GridMaterial();
     virtual ~GridMaterial() {}
@@ -177,6 +180,7 @@ protected:
     // temporary values in grid
     VD distances;
     VI voronoi;
+    VD weights;
 
 };
 

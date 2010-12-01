@@ -43,6 +43,9 @@ template<class MaterialTypes, typename voxelType>
 GridMaterial< MaterialTypes,voxelType>::GridMaterial()
     : Inherited()
     , showVoxels ( initData ( &showVoxels, false, "showVoxels","show voxels." ) )
+    , showVoronoi ( initData ( &showVoronoi, false, "showVoronoi","show Voronoi." ) )
+    , showDistances ( initData ( &showDistances, false, "showDistances","show Distances." ) )
+    , showWeights ( initData ( &showWeights, false, "showWeights","show Weights." ) )
     , imageFile( initData(&imageFile,"imageFile","ImageFile file"))
     , infoFile( initData(&infoFile,"infoFile","InfoFile file"))
     , voxelSize ( initData ( &voxelSize, Vec3d ( 0,0,0 ), "voxelSize", "Voxel size" ) )
@@ -491,31 +494,35 @@ bool GridMaterial< MaterialTypes,voxelType >::computeUniformSampling ( VecVec3& 
 template<class MaterialTypes, typename voxelType>
 void GridMaterial< MaterialTypes,voxelType >::draw()
 {
-    if ( this->showVoxels.getValue() )
+    if ( this->showVoxels.getValue() || this->showVoronoi.getValue() ||this->showDistances.getValue() ||this->showWeights.getValue() )
     {
         //glDisable ( GL_LIGHTING );
         //glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
 
+        unsigned int i;
         double s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
-        float defaultcolor[4]= {1,.2,.2,.1};
-        float voidcolor[4]= {0,0,0,0};
+        float defaultcolor[4]= {0.8,0.8,0.8,0.3},color[4];
         bool wireframe=getContext()->getShowWireFrame();
 
-        int labelmax=0; if(voronoi.size()==nbVoxels) for(unsigned int i=0; i<nbVoxels; i++) if(voronoi[i]>labelmax) labelmax=voronoi[i];
+        float label,labelmax=-1;
+        if(voronoi.size()==nbVoxels && this->showVoronoi.getValue()) {for(i=0; i<nbVoxels; i++) if(grid.data()[i]!=0) if(voronoi[i]>labelmax) labelmax=(float)voronoi[i];}
+        else if(distances.size()==nbVoxels && this->showDistances.getValue()) {for(i=0; i<nbVoxels; i++) if(grid.data()[i]!=0) if(distances[i]>labelmax) labelmax=(float)distances[i];}
 
         cimg_forXYZ(grid,x,y,z)
         {
             if(grid(x,y,z)!=0)
             {
-                if(voronoi.size()==nbVoxels)
+                label=-1;
+                if(voronoi.size()==nbVoxels && this->showVoronoi.getValue())  label=(float)voronoi[getIndex(Vec3i(x,y,z))];
+                else if(distances.size()==nbVoxels && this->showDistances.getValue())  label=(float)distances[getIndex(Vec3i(x,y,z))];
+                else if(weights.size()==nbVoxels && this->showWeights.getValue())  label=(float)weights[getIndex(Vec3i(x,y,z))];
+
+                if(label==-1) {glColor4fv(defaultcolor); glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);}
+                else
                 {
-                    int label=voronoi[getIndex(Vec3i(x,y,z))];
-                    if(label==-1) glColor4fv(voidcolor);
-                    else sofa::helper::gl::Color::setHSVA(240.*(float)label/(float)labelmax,1.,.8,defaultcolor[3]);
-                    glGetFloatv(GL_CURRENT_COLOR, defaultcolor);
-                    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);
+                    sofa::helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
+                    glGetFloatv(GL_CURRENT_COLOR, color); glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
                 }
-                else {glColor4fv(defaultcolor); glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);}
                 Vec3 coord; getCoord(Vec3i(x,y,z),coord);
                 glTranslated (coord[0],coord[1],coord[2]);
                 drawCube(s,wireframe);
