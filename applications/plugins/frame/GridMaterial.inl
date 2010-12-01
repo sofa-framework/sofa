@@ -161,6 +161,19 @@ void GridMaterial< MaterialTypes,voxelType>::computeStress  ( VecElStr& /*stress
 //                }
 }
 
+template < class MaterialTypes, typename voxelType >
+double GridMaterial<MaterialTypes,voxelType>::getStiffness(const voxelType label)
+{
+// TO DO: add transfer function based on data
+    return (double)label;
+}
+
+template < class MaterialTypes, typename voxelType >
+double GridMaterial<MaterialTypes,voxelType>::getDensity(const voxelType label)
+{
+// TO DO: add transfer function based on data
+    return (double)label;
+}
 
 /*************************/
 /*   IO   			      */
@@ -223,12 +236,25 @@ bool GridMaterial< MaterialTypes,voxelType >::saveImage()
 /*************************/
 
 template < class MaterialTypes, typename voxelType >
-bool GridMaterial< MaterialTypes,voxelType >::LumpVolumes(const Vec3& point,double& vol)
+bool GridMaterial< MaterialTypes,voxelType >::LumpMass(const Vec3& point,double& mass)
+{
+    if(!nbVoxels) {mass=0; return false;}
+    double voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
+    int index=getIndex(point);
+    if(voronoi.size()!=nbVoxels) {mass=voxelvolume*getDensity(grid.data()[index]); return false;} // no voronoi -> 1 point = 1 voxel
+    if(voronoi[index]==-1) {mass=voxelvolume*getDensity(grid.data()[index]); return false;} // no voronoi -> 1 point = 1 voxel
+    mass=0; for(unsigned int i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) mass+=voxelvolume*getDensity(grid.data()[i]);
+    return true;  // 1 point = voxels its his voronoi region
+}
+
+
+template < class MaterialTypes, typename voxelType >
+bool GridMaterial< MaterialTypes,voxelType >::LumpVolume(const Vec3& point,double& vol)
 {
     if(!nbVoxels) {vol=0; return false;}
     double voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
-    if(voronoi.size()!=nbVoxels) {vol=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
     int index=getIndex(point);
+    if(voronoi.size()!=nbVoxels) {vol=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
     if(voronoi[index]==-1) {vol=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
     vol=0; for(unsigned int i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) vol+=voxelvolume;
     return true;  // 1 point = voxels its his voronoi region
@@ -245,18 +271,18 @@ bool GridMaterial< MaterialTypes,voxelType >::LumpMoments(const Vec3& point,cons
     moments.resize(dim); for(i=0; i<dim; i++) moments[i]=0;
 
     double voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
-    if(voronoi.size()!=nbVoxels) {moments[i]=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
     int index=getIndex(point);
-    if(voronoi[i]==-1) {moments[i]=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
+    if(voronoi.size()!=nbVoxels) {moments[0]=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
+    if(voronoi[index]==-1) {moments[0]=voxelvolume; return false;} // no voronoi -> 1 point = 1 voxel
 
     Vec3 P,G; getCoord(index,P);
-    VD momementPG;
+    VD momentPG;
     for(i=0; i<nbVoxels; i++)
         if(voronoi[i]==voronoi[index])
         {
             getCoord(i,G);
-            getCompleteBasis(G-P,order,momementPG);
-            for(j=0; j<dim; j++) moments[j]+=momementPG[j]*voxelvolume;
+            getCompleteBasis(G-P,order,momentPG);
+            for(j=0; j<dim; j++) moments[j]+=momentPG[j]*voxelvolume;
         }
     return true;  // 1 point = voxels in its voronoi region
 }
@@ -267,7 +293,15 @@ bool GridMaterial< MaterialTypes,voxelType >::LumpMomentsStiffness(const Vec3& p
     if(!nbVoxels) {moments.clear(); return false;}
     LumpMoments(point,order,moments);
     int dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
-// todo
+
+    int index=getIndex(point);
+    if(voronoi.size()!=nbVoxels) {moments[0]*=getStiffness(grid.data()[index]); return false;} // no voronoi -> 1 point = 1 voxel
+    if(voronoi[index]==-1) {moments[0]*=getStiffness(grid.data()[index]); return false;} // no voronoi -> 1 point = 1 voxel
+
+    unsigned int i,j;
+    for(i=0; i<nbVoxels; i++)
+        if(voronoi[i]==voronoi[index])
+            for(j=0; j<dim; j++) moments[j]*=getStiffness(grid.data()[i]);
 
     return true;
 }
@@ -313,7 +347,6 @@ void GridMaterial< MaterialTypes,voxelType >::getCompleteBasis(const Vec3& p,con
 /*   Compute distances   */
 /*************************/
 
-
 template < class MaterialTypes, typename voxelType >
 double GridMaterial< MaterialTypes,voxelType >::getDistance(const unsigned int& index1,const unsigned int& index2,const bool biasDistances)
 {
@@ -322,7 +355,7 @@ double GridMaterial< MaterialTypes,voxelType >::getDistance(const unsigned int& 
     Vec3 coord2; if(!getCoord(index2,coord2)) return -1; // point2 not in grid
     if(biasDistances)
     {
-        double meanstiff=1;//=(getStiffness(index1)+getStiffness(index2))/2.; // TO DO: implement stiffness
+        double meanstiff=(getStiffness(grid.data()[index1])+getStiffness(grid.data()[index2]))/2.;
         return (double)(coord2-coord1).norm()/meanstiff;
     }
     else return (double)(coord2-coord1).norm();
@@ -502,7 +535,7 @@ void GridMaterial< MaterialTypes,voxelType >::draw()
         unsigned int i;
         double s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
         float defaultcolor[4]= {0.8,0.8,0.8,0.3},color[4];
-        bool wireframe=getContext()->getShowWireFrame();
+        bool wireframe=this->getContext()->getShowWireFrame();
 
         float label,labelmax=-1;
         if(voronoi.size()==nbVoxels && this->showVoronoi.getValue()) {for(i=0; i<nbVoxels; i++) if(grid.data()[i]!=0) if(voronoi[i]>labelmax) labelmax=(float)voronoi[i];}
