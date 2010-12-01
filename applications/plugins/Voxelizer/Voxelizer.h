@@ -115,6 +115,8 @@ public:
     Data<Vec3d> rawOrigin; // MechObj can connect their "position" Data on this one.
     Data<Vec3d> resolution;
     Data<bool> showRasterizedVolumes;
+    Data<bool> showWireFrameMode;
+    Data<unsigned int> showWhichAxis;
 
     Voxelizer();
     ~Voxelizer();
