@@ -905,9 +905,9 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(DataVecDeriv& a, const DataVe
 //            _acc[i] = _f[i] / (massLumpingCoeff * vertexMass[i]);
 //        }
 
-}
+//    }
 
-return;
+    return;
 }
 
 
