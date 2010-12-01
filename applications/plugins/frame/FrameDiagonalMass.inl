@@ -447,6 +447,7 @@ template<class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::updateMass ( VecMass& mass, const VVMat3xIn& J)
 {
     // Mass_ij=sum(d.p.Ji^TTJj)
+    const unsigned int& fromSize = this->mstate->getX()->size();
     int j,nbP=this->vol->size();
     if( nbP == 0) return;
     MatInx3 JT;
@@ -454,7 +455,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( VecMass& mass, const V
 
     MassVector& vecMass = * ( mass.beginEdit() );
     //vecMass.mass = 1.0;//volmass[i] * (*this->vol)[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, is directly stored in the inertia matrix via the displacement matrix J)
-    for (unsigned int i = 0; i < *nbRefs; ++i)
+    for (unsigned int i = 0; i < fromSize; ++i)
     {
         MatInxIn& frameMass = vecMass[i].inertiaMatrix;
         frameMass.fill (0.0);
@@ -479,7 +480,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( VecMass& mass, const V
             		}
             		//*/
         }
-    for (unsigned int i = 0; i < *nbRefs; ++i)
+    for (unsigned int i = 0; i < fromSize; ++i)
         vecMass[i].recalc();
     mass.endEdit();
     //serr << "Mass: " << mass << sendl;
