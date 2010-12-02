@@ -187,7 +187,7 @@ public:
             }
             sofa::defaulttype::Vector3 minBBox, maxBBox;
 
-            sofa::simulation::getSimulation()->computeBBox(groot, minBBox.ptr(),maxBBox.ptr());
+            sofa::simulation::getSimulation()->computeBBox(simulation::getSimulation()->getVisualRoot(), minBBox.ptr(),maxBBox.ptr());
 
             currentCamera->setBoundingBox(minBBox, maxBBox);
 
@@ -284,10 +284,6 @@ public:
     {
         if (!currentCamera || !groot)
             return;
-
-        sofa::defaulttype::Vector3 minBBox, maxBBox;
-        sofa::simulation::getSimulation()->computeBBox(groot, minBBox.ptr(),maxBBox.ptr());
-        currentCamera->setBoundingBox(minBBox, maxBBox);
 
         currentCamera->setDefaultView(groot->getGravityInWorld());
     }
