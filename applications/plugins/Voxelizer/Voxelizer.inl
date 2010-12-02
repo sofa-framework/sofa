@@ -441,7 +441,6 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                 tgobj.push_back(obj);
         }
 
-    int nbcoll = 0;
     const Real psize = rasterizer->pixelSize.getValue();
 
 #ifdef DRAW_ONE_LDI
@@ -533,8 +532,6 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                         else
                         {
                             --incount;
-                            current_model = rasterizer->vmtopology[obj];
-                            ++nbcoll;
                             Real y = ( Real ) ( cl0 + l ) * psize;
                             Real x = ( Real ) ( cc0 + c ) * psize;
                             // Find the first layer corresponding to this object
@@ -565,11 +562,9 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                                 maxDepth = z0;
                             }
 
-                            // TODO verifier les inobjs pour avoir les bons volume
-                            // meme en autocollision ou collision multiples
-
                             // Find the corresponding mesh
                             int indexMesh = -1;
+                            current_model = rasterizer->vmtopology[obj];
                             for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
                                 if( current_model == vTriangularModel[i])
                                     indexMesh = i;

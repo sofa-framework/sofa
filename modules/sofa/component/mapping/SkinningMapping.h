@@ -334,6 +334,7 @@ public:
     inline void changeSettingsDueToInsertion();
 
 protected:
+    inline void reverseRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
     void M33toV6(Vec6 &v,const Mat33& M) const;
     void QtoR(Mat33& M, const Quat& q) const;
     void ComputeL(Mat76& L, const Quat& q) const;
