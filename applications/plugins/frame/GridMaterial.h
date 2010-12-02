@@ -83,11 +83,11 @@ public:
     typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
     typedef SVector<double> VD;
     typedef SVector<SVector<double> > VVD;
-    typedef SVector<SVector<SVector<double>> > VVVD;
+    typedef SVector<SVector<SVector<double> > > VVVD;
     typedef SVector<unsigned int> VUI;
-    typedef SVector<SVector<unsigned int>> VVUI;
+    typedef SVector<SVector<unsigned int> > VVUI;
     typedef SVector<int> VI;
-    typedef SVector<SVector<int>> VVI;
+    typedef SVector<SVector<int> > VVI;
     typedef SVector<bool> VB;
     typedef map<double,double> mapLabelType;
 

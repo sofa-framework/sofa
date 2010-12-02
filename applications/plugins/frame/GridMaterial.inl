@@ -89,7 +89,7 @@ void GridMaterial< MaterialTypes,voxelType>::init()
     }
     */
 
-    bool writeinfos=false; if(!loadInfos()) writeinfos=true;
+    bool writeinfos=false; if(infoFile.isSet()) if(!loadInfos()) writeinfos=true;
     loadImage();
     if(writeinfos) saveInfos();
     if(weightFile.isSet()) loadWeightRepartion();
@@ -97,12 +97,14 @@ void GridMaterial< MaterialTypes,voxelType>::init()
 
 
 //TEST
+    /*
     if(weightsRepartition.size()!=nbVoxels)
-    {
-        VecVec3 points;
-        computeUniformSampling(points,6,100);
-        computeWeights(6,points);
-    }
+    	{
+    	VecVec3 points;
+    	computeUniformSampling(points,6,100);
+    	computeWeights(6,points);
+    	}
+    	*/
 ////
 
 
