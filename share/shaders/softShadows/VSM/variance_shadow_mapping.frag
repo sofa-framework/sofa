@@ -6,6 +6,7 @@ varying vec3 normal;
 varying vec4 ambientGlobal;
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
 varying float dist[MAX_NUMBER_OF_LIGHTS];
+varying float spotOff[MAX_NUMBER_OF_LIGHTS];
 
 #ifdef USE_TEXTURE
 uniform sampler2D colorTexture;
@@ -128,15 +129,15 @@ void main()
 			if (NdotL > 0.0)
 			{
 #if ENABLE_SHADOW == 1 
-				if (shadow > 1.0)
+				if (shadow > 0.0)
 				{
 #endif // ENABLE_SHADOW == 1 
 					diffuse = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
 					spotEffect = dot(normalize(gl_LightSource[i].spotDirection), normalize(-lightDir[i]));
 
-					if (spotEffect > gl_LightSource[i].spotCosCutoff)
+					if (spotEffect > spotOff[i])
 					{
-						spotEffect = smoothstep(gl_LightSource[i].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
+						spotEffect = smoothstep(spotOff[i], 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
 #if ENABLE_SHADOW == 1 
 						spotEffect *= shadow;
 #endif // ENABLE_SHADOW == 1 

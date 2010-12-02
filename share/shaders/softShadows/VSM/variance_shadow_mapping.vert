@@ -6,6 +6,7 @@ uniform vec3 lightPosition[MAX_NUMBER_OF_LIGHTS];
 varying vec3 normal;
 varying vec4 ambientGlobal;
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
+varying float spotOff[MAX_NUMBER_OF_LIGHTS];
 
 #if ENABLE_SHADOW == 1 
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
@@ -41,6 +42,7 @@ void main()
 			// Compute the diffuse, ambient and globalAmbient terms
 			//diffuse[i] = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
 			//ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[i].ambient;
+			spotOff[i] = gl_LightSource[i].spotCosCutoff;
 
 #if ENABLE_SHADOW == 1 
 			if (lightFlag[i] == 2)
