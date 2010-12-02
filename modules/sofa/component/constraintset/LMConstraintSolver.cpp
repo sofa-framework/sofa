@@ -581,6 +581,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
     for (unsigned int eq=0; eq<numEquations; ++eq)
     {
         const int idxRow=constraintOffset+eq;
+
         for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); itBlock++)
         {
             const ConstraintBlock &b=(*itBlock);
@@ -796,9 +797,9 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     /* This seems very redundant, but the SparseTimeDenseProduct seems buggy when the dense rhs
     and sparse lhs uses different storage order. This is always the case with a sparse row major
     and a dense vector (col major otherwise compile time assert )*/
-    Eigen::SparseMatrix<SReal> invM_Ltrans_colMajor = Eigen::SparseMatrix<SReal>(invM_Ltrans);
+    //Eigen::SparseMatrix<SReal> invM_Ltrans_colMajor = Eigen::SparseMatrix<SReal>(invM_Ltrans);
 
-    A.noalias() = invM_Ltrans_colMajor*c;
+    A.noalias() = invM_Ltrans*c;
     if (f_printLog.getValue())
     {
         sout << "M^-1.L^T " << "\n" << invM_Ltrans << sendl;
