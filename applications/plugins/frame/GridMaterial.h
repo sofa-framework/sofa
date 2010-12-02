@@ -30,8 +30,23 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/SVector.h>
+#include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/map.h>
 #include <sofa/component/container/VoxelGridLoader.h>
 #include "CImg.h"
+
+#define DISTANCE_GEODESIC 0
+#define DISTANCE_BIASEDGEODESIC 1
+#define DISTANCE_DIFFUSION 2
+#define DISTANCE_ANISOTROPICDIFFUSION 3
+
+#define SHOWVOXELS_NONE 0
+#define SHOWVOXELS_DATAVALUE 1
+#define SHOWVOXELS_STIFFNESS 2
+#define SHOWVOXELS_DENSITY 3
+#define SHOWVOXELS_VORONOI 4
+#define SHOWVOXELS_DISTANCES 5
+#define SHOWVOXELS_WEIGHTS 6
 
 namespace sofa
 {
@@ -44,8 +59,8 @@ namespace material
 
 using namespace cimg_library;
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using container::VoxelGridLoader;
+using namespace helper;
+using std::map;
 
 template<class TMaterialTypes, typename voxelType>
 class SOFA_FRAME_API GridMaterial : public Material<TMaterialTypes>
@@ -55,25 +70,30 @@ public:
 
     typedef Material<TMaterialTypes> Inherited;
     typedef typename Inherited::Real Real;        ///< Scalar values.
-    typedef typename defaulttype::Vec<3,Real> Vec3;        ///< Material coordinate
-    typedef helper::vector<Vec3> VecVec3;        ///< Vector of material coordinates
     typedef typename Inherited::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
     typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
     typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
-    typedef typename Inherited::StrStr StrStr;      ///< Stress-strain matrix
+    typedef typename Inherited::StrStr StrStr;			///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
-    typedef Vec<3,int> Vec3i;
-    typedef sofa::helper::SVector<double> VD;
-    typedef sofa::helper::SVector<unsigned int> VUI;
-    typedef sofa::helper::SVector<int> VI;
-    typedef sofa::helper::SVector<bool> VB;
+    typedef typename Vec<3,Real> Vec3;			///< Material coordinate
+    typedef vector<Vec3> VecVec3;							///< Vector of material coordinates
+    typedef typename Mat<3,3,Real> Mat33;
+    typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
+    typedef SVector<double> VD;
+    typedef SVector<SVector<double> > VVD;
+    typedef SVector<SVector<SVector<double>> > VVVD;
+    typedef SVector<unsigned int> VUI;
+    typedef SVector<SVector<unsigned int>> VVUI;
+    typedef SVector<int> VI;
+    typedef SVector<SVector<int>> VVI;
+    typedef SVector<bool> VB;
+    typedef map<double,double> mapLabelType;
 
-    Data<bool> showVoxelData;
-    Data<bool> showVoronoi;
-    Data<bool> showDistances;
-    Data<bool> showWeights;
+    Data<OptionsGroup> distanceType;  ///< Geodesic, BiasedGeodesic, HeatDiffusion, AnisotropicHeatDiffusion
+    Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
+    Data<unsigned int> showWeightIndex;    ///
 
     GridMaterial();
     virtual ~GridMaterial() {}
@@ -99,59 +119,81 @@ public:
     A first-order elaston models the strain as a linear function using the strain at the point and the gradient of the strain at this point, while a second-order elaston models the strain, the strain gradient and the strain Hessian.
 
       */
-    //  Real computeUniformSampling( VecVec3& points, helper::vector<Real>& point_data, unsigned num_points, unsigned order );
+    //  Real computeUniformSampling( VecVec3& points, vector<Real>& point_data, unsigned num_points, unsigned order );
 
 //    /// implementation of the abstract function
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
 
 
+    /*************************/
+    /* material properties	  */
+    /*************************/
+
+    // return the linearly interpolated value from the label/stiffness pairs
     double getStiffness(const voxelType label);
+    // return the linearly interpolated value from the label/density pairs
     double getDensity(const voxelType label);
 
     /*************************/
     /*   draw	              */
     /*************************/
+
     void draw();
     void drawCube(double size,bool wireframe);
 
     /*************************/
     /*   IO	              */
     /*************************/
+
     bool loadInfos();
     bool saveInfos();
     bool loadImage();
     bool saveImage();
+    bool loadWeightRepartion();
+    bool saveWeightRepartion();
 
     /*************************/
     /*   Lumping			  */
     /*************************/
-    bool LumpMass(const Vec3& point,double& mass);
-    bool LumpVolume(const Vec3& point,double& vol);
-    bool LumpMoments(const Vec3& point,const unsigned int order,VD& moments);
-    bool LumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
 
-    /*************************/
-    /*   Compute distances   */
-    /*************************/
+    /// return sum(mu_i.vol_i) in the voronoi region of point
+    bool LumpMass(const Vec3& point,double& mass);
+    /// return sum(vol_i) in the voronoi region of point
+    bool LumpVolume(const Vec3& point,double& vol);
+    /// return sum((p_i-p)^(order).vol_i) in the voronoi region of point
+    bool LumpMoments(const Vec3& point,const unsigned int order,VD& moments);
+    /// return sum(E_i.(p_i-p)^(order).vol_i) in the voronoi region of point
+    bool LumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
+    /// fit 1st, 2d or 3d polynomial to the weights in the (dilated by 1 voxel) voronoi region of point.
+    bool LumpWeights(const Vec3& point,const bool dilatevoronoi,double& w,Vec3* dw=NULL,Mat33* ddw=NULL);
+
+    /*********************************/
+    /*   Compute distances/weights   */
+    /*********************************/
+
+    /// compute voxel weights according to 'distanceType' method -> stored in weightsRepartition and repartition
+    bool computeWeights(const unsigned int nbrefs,const VecVec3& points);
+
     /// (biased) Euclidean distance between two voxels
-    double getDistance(const unsigned int& index1,const unsigned int& index2,const bool biasDistances);
+    double getDistance(const unsigned int& index1,const unsigned int& index2);
     /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
-    bool computeGeodesicalDistances ( const Vec3& point, const bool biasDistances, const double distMax =1E100);
-    bool computeGeodesicalDistances ( const int& index, const bool biasDistances, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const Vec3& point, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const int& index, const double distMax =1E100);
     /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
-    bool computeGeodesicalDistances ( const VecVec3& points, const bool biasDistances, const double distMax =1E100);
-    bool computeGeodesicalDistances ( const VI& indices, const bool biasDistances, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const VecVec3& points, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const VI& indices, const double distMax =1E100);
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation -> id/distances stored in voronoi/distances
-    bool computeUniformSampling ( VecVec3& points, const bool biasDistances,const unsigned int num_points,const unsigned int max_iterations = 10);
+    bool computeUniformSampling ( VecVec3& points, const unsigned int num_points,const unsigned int max_iterations = 100);
     /// linearly decreasing weight with support=factor*distmax_in_voronoi
-    bool computeLinearWeightsInVoronoi ( const Vec3& point,const bool biasDistances, const double factor=2.);
+    bool computeLinearWeightsInVoronoi ( const Vec3& point,const double factor=2.);
     /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
-    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=1000,const double precision=1E-5);
+    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=1000,const double precision=0.0001);
 
 
     /*************************/
     /*         Utils         */
     /*************************/
+
     inline int getIndex(const Vec3i& icoord);
     inline int getIndex(const Vec3& coord);
     inline bool getiCoord(const Vec3& coord, Vec3i& icoord);
@@ -161,18 +203,18 @@ public:
     inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
-    inline void getCompleteBasis(const Vec3& p,const unsigned int order,VD& basis);
 
-
-    static const char* Name();
-
-    std::string getTemplateName() const
+    virtual std::string getTemplateName() const
     {
         return templateName(this);
     }
+
     static std::string templateName(const GridMaterial<TMaterialTypes,voxelType>* = NULL)
     {
-        return TMaterialTypes::Name();
+        std::string name;
+        name.append(TMaterialTypes::Name());
+        name.append(CImg<voxelType>::pixel_type());
+        return name;
     }
 
 protected:
@@ -186,10 +228,30 @@ protected:
     CImg<voxelType> grid;
     unsigned int nbVoxels;
 
+    // material properties
+    Data<mapLabelType> labelToStiffnessPairs;
+    Data<mapLabelType> labelToDensityPairs;
+
     // temporary values in grid
     VD distances;
     VI voronoi;
     VD weights;
+
+    // repartitioned weights
+    sofa::core::objectmodel::DataFileName weightFile;
+    VVD weightsRepartition;
+    VVUI repartition;
+    int showedrepartition; // to improve visualization (no need to paste weights on each draw)
+
+    // local functions
+    inline void accumulateCovariance(const Vec3& p,const unsigned int order,VVD& Cov);
+    inline void getCompleteBasis(const Vec3& p,const unsigned int order,VD& basis);
+    inline void getCompleteBasisDeriv(const Vec3& p,const unsigned int order,VVD& basisDeriv);
+    inline void getCompleteBasisDeriv2(const Vec3& p,const unsigned int order,VVVD& basisDeriv);
+    inline void addWeightinRepartion(const unsigned int index); // add dense weights relative to index, in weight repartion of size nbref if it is large enough
+    inline void pasteRepartioninWeight(const unsigned int index); // paste weight relative to index in the dense weight map
+    inline void normalizeWeightRepartion();
+
 
 };
 

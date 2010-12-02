@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS (GridMaterial);
 // Register in the Factory
 
-int GridMaterialClass = core::RegisterObject ( "Hooke material for deformable objects" )
+int GridMaterialClass = core::RegisterObject ( "Grid representation of deformable materials" )
 #ifndef SOFA_FLOAT
         .add<GridMaterial<Rigid3dTypes,unsigned char> >(true)
         .add<GridMaterial<Affine3dTypes,unsigned char> >(true)
