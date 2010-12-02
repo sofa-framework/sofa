@@ -1959,7 +1959,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Coord,
             const int& idxReps = m_reps[idx];
 
             for (unsigned int k=0; k<3; k++) for (unsigned int l=0; l<3; l++) F[k][l]+=in[idxReps].getCenter()[k]*dw[i][j][l];
-            F += in[idxReps].getAffine() * this->Atilde[i][idxReps];
+            F += in[idxReps].getAffine() * this->Atilde[i][j];
 
             if( useElastons.getValue())
             {
@@ -2069,8 +2069,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Coord,
 // Apply for Quadratic types
 template <class TIn, class TOut>
 template<class TCoord>
-typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Coord, TCoord> >::type
-SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename QuadraticType::Coord>& in)
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Coord, TCoord> >::type SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::helper::vector<typename QuadraticType::Coord>& in)
 {
     const unsigned int& nbRef = this->nbRefs.getValue();
     const vector<unsigned int>& m_reps = this->repartition.getValue();
@@ -2079,7 +2078,7 @@ SkinningMapping<TIn, TOut>::_apply( typename Out::VecCoord& out, const sofa::hel
     rotatedPoints.resize ( initPos.size() );
     out.resize ( initPos.size() / nbRef );
 
-    // Resize matrices  // pourquoi ??
+    // Resize matrices in case of Frame insertion
     if ( this->computeAllMatrices.getValue())
     {
         this->det.resize(out.size());
@@ -2291,6 +2290,7 @@ template<class TDeriv>
 typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv, TDeriv> >::type SkinningMapping<TIn, TOut>::_applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename AffineType::Deriv>& in)
 {
     const unsigned int& nbRef = this->nbRefs.getValue();
+    const vector<unsigned int>& m_reps = this->repartition.getValue();
     const VecCoord& xto = *this->toModel->getX();
     out.resize ( xto.size() );
     Deriv v;
@@ -2310,7 +2310,8 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
                 Vec3 f = ( this->J[i][j] * speed );
 
                 out[i] += Deriv ( f[0], f[1], f[2] );*/
-                out[i] += this->J[i][j] * in[j];
+                const int idxReps=m_reps[nbRef *i+j];
+                out[i] += this->J[i][j] * in[idxReps];
             }
         }
     }
@@ -2333,7 +2334,8 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
                 Vec3 f = ( this->J[i][j] * speed );
 
                 out[i] += Deriv ( f[0], f[1], f[2] );*/
-                out[i] += this->J[i][j] * in[j];
+                const int idxReps=m_reps[nbRef *i+j];
+                out[i] += this->J[i][j] * in[idxReps];
             }
         }
     }
@@ -2345,6 +2347,7 @@ template<class TDeriv>
 typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Deriv, TDeriv> >::type SkinningMapping<TIn, TOut>::_applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename QuadraticType::Deriv>& in)
 {
     const unsigned int& nbRef = this->nbRefs.getValue();
+    const vector<unsigned int>& m_reps = this->repartition.getValue();
     const VecCoord& xto = *this->toModel->getX();
     out.resize ( xto.size() );
     Deriv v;
@@ -2357,9 +2360,10 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Der
             out[i] = Deriv();
             for ( unsigned int j=0 ; j<nbRef; j++ )
             {
+                const int idxReps=m_reps[nbRef *i+j];
                 VecIn speed;
                 for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
+                    speed[k]  = in[idxReps][k];
 
                 Vec3 f = ( this->J[i][j] * speed );
 
@@ -2379,9 +2383,10 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Der
             out[i] = Deriv();
             for ( unsigned int j=0 ; j<nbRef; j++ )
             {
+                const int idxReps=m_reps[nbRef *i+j];
                 VecIn speed;
                 for (unsigned int k = 0; k < InDOFs; ++k)
-                    speed[k]  = in[j][k];
+                    speed[k]  = in[idxReps][k];
 
                 Vec3 f = ( this->J[i][j] * speed );
 
@@ -2451,32 +2456,18 @@ template<class TDeriv>
 typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv, TDeriv> >::type SkinningMapping<TIn, TOut>::_applyJT( sofa::helper::vector<typename AffineType::Deriv>& out, const typename Out::VecDeriv& in)
 {
     const unsigned int& nbRef = this->nbRefs.getValue();
+    const vector<unsigned int>& m_reps = this->repartition.getValue();
     Deriv v;
     //    typename In::Deriv::Affine omega;
     if ( ! ( maskTo->isInUse() ) )
     {
         maskFrom->setInUse ( false );
-        for ( unsigned int j=0; j<in.size(); j++ ) // VecType
+        for ( unsigned int i=0; i<in.size(); i++ ) // VecType
         {
-            for ( unsigned int i=0 ; i<nbRef; i++ ) // AffineType
+            for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
             {
-                out[i] += this->J[j][i].multTranspose( in[j] );
-                //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[j][i] );
-                //
-                //                Vec3 f;
-                //                f[0] = in[j][0];
-                //                f[1] = in[j][1];
-                //                f[2] = in[j][2];
-                //                VecIn speed = Jt * f;
-                //
-                //                for (unsigned int k = 0; k < 3; ++k)
-                //                    for (unsigned int l = 0; l < 3; ++l)
-                //                        omega[k][l] = speed[3*k+l];
-                //                v = Deriv ( speed[9], speed[10], speed[11] );
-                //
-                //                out[i].getVCenter() += v;
-                //                out[i].getVAffine() += omega;
+                const int idxReps=m_reps[nbRef *i+j];
+                out[idxReps] += this->J[i][j].multTranspose( in[i] );
             }
         }
     }
@@ -2488,26 +2479,11 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Deriv,
         ParticleMask::InternalStorage::const_iterator it;
         for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
         {
-            const int j= ( int ) ( *it );
-            for ( unsigned int i=0 ; i<nbRef; i++ ) // AffineType
+            const int i= ( int ) ( *it );
+            for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
             {
-                out[i] += this->J[j][i].multTranspose( in[j] );
-                //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[j][i] );
-                //
-                //                Vec3 f;
-                //                f[0] = in[j][0];
-                //                f[1] = in[j][1];
-                //                f[2] = in[j][2];
-                //                VecIn speed = Jt * f;
-                //
-                //                for (unsigned int k = 0; k < 3; ++k)
-                //                    for (unsigned int l = 0; l < 3; ++l)
-                //                        omega[k][l] = speed[3*k+l];
-                //                v = Deriv ( speed[9], speed[10], speed[11] );
-                //
-                //                out[i].getVCenter() += v;
-                //                out[i].getVAffine() += omega;
+                const int idxReps=m_reps[nbRef *i+j];
+                out[idxReps] += this->J[i][j].multTranspose( in[i] );
             }
         }
     }
@@ -2519,32 +2495,18 @@ template<class TDeriv>
 typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Deriv, TDeriv> >::type SkinningMapping<TIn, TOut>::_applyJT( sofa::helper::vector<typename QuadraticType::Deriv>& out, const typename Out::VecDeriv& in)
 {
     const unsigned int& nbRef = this->nbRefs.getValue();
+    const vector<unsigned int>& m_reps = this->repartition.getValue();
     Deriv v;
     //    typename In::Deriv::Quadratic omega;
     if ( ! ( maskTo->isInUse() ) )
     {
         maskFrom->setInUse ( false );
-        for ( unsigned int j=0; j<in.size(); j++ ) // VecType
+        for ( unsigned int i=0; i<in.size(); i++ ) // VecType
         {
-            for ( unsigned int i=0 ; i<nbRef; i++ ) // QuadraticType
+            for ( unsigned int j=0 ; j<nbRef; j++ ) // QuadraticType
             {
-                out[i] += this->J[j][i].multTranspose(in[j]);
-                //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[j][i] );
-                //
-                //                Vec3 f;
-                //                f[0] = in[j][0];
-                //                f[1] = in[j][1];
-                //                f[2] = in[j][2];
-                //                VecIn speed = Jt * f;
-                //
-                //                for (unsigned int k = 0; k < 3; ++k)
-                //                    for (unsigned int l = 0; l < 9; ++l)
-                //                        omega[k][l] = speed[9*k+l];
-                //                v = Deriv ( speed[27], speed[28], speed[29] );
-                //
-                //                out[i].getVCenter() += v;
-                //                out[i].getVQuadratic() += omega;
+                const int idxReps=m_reps[nbRef *i+j];
+                out[idxReps] += this->J[i][j].multTranspose(in[i]);
             }
         }
     }
@@ -2556,26 +2518,11 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Der
         ParticleMask::InternalStorage::const_iterator it;
         for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
         {
-            const int j= ( int ) ( *it );
-            for ( unsigned int i=0 ; i<nbRef; i++ ) // QuadraticType
+            const int i= ( int ) ( *it );
+            for ( unsigned int j=0 ; j<nbRef; j++ ) // QuadraticType
             {
-                out[i] += this->J[j][i].multTranspose(in[j]);
-                //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[j][i] );
-                //
-                //                Vec3 f;
-                //                f[0] = in[j][0];
-                //                f[1] = in[j][1];
-                //                f[2] = in[j][2];
-                //                VecIn speed = Jt * f;
-                //
-                //                for (unsigned int k = 0; k < 3; ++k)
-                //                    for (unsigned int l = 0; l < 9; ++l)
-                //                        omega[k][l] = speed[9*k+l];
-                //                v = Deriv ( speed[27], speed[28], speed[29] );
-                //
-                //                out[i].getVCenter() += v;
-                //                out[i].getVQuadratic() += omega;
+                const int idxReps=m_reps[nbRef *i+j];
+                out[idxReps] += this->J[i][j].multTranspose(in[i]);
             }
         }
     }
@@ -2613,12 +2560,13 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType::MatrixD
             unsigned int indexPoint = colIt.index();
             Deriv data = ( Deriv ) colIt.val();
 
-            for (unsigned int m = 0 ; m < nbRef; m++)
+            for (unsigned int j = 0 ; j < nbRef; j++)
             {
-                omega = cross(rotatedPoints[nbRef * indexPoint + m], data);
-                flags[m_reps[nbRef * indexPoint + m]] = true;
-                getVCenter(v[m_reps[nbRef * indexPoint + m]]) += data * m_weights[indexPoint][m];
-                getVOrientation(v[m_reps[nbRef * indexPoint + m]]) += omega * m_weights[indexPoint][m];
+                const int idxReps=m_reps[nbRef *indexPoint+j];
+                omega = cross(rotatedPoints[nbRef * indexPoint + j], data);
+                flags[idxReps] = true;
+                getVCenter(v[idxReps]) += data * m_weights[indexPoint][j];
+                getVOrientation(v[idxReps]) += omega * m_weights[indexPoint][j];
             }
 
             for (unsigned int j = 0 ; j < nbp; j++)
@@ -2645,10 +2593,9 @@ template<class TMatrixDeriv>
 typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::MatrixDeriv, TMatrixDeriv> >::type SkinningMapping<TIn, TOut>::_applyJT_Matrix( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const unsigned int& nbRef = this->nbRefs.getValue();
-    const unsigned int nbi = this->fromModel->getX()->size();
+    const vector<unsigned int>& m_reps = this->repartition.getValue();
     //    typename In::Deriv::Affine omega;
     typename In::VecDeriv v;
-    vector<bool> flags;
 
     if ( !this->enableSkinning.getValue())
         return;
@@ -2657,35 +2604,20 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType::Matrix
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        v.clear();
-        v.resize(nbi);
-        flags.clear();
-        flags.resize(nbi);
-
         typename In::MatrixDeriv::RowIterator o = out.end();
 
         typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
         for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            const unsigned int indexIn = colIt.index(); // Point
+            const unsigned int indexPoint = colIt.index(); // Point
             const Deriv data = colIt.val();
 
             for (unsigned int j=0; j<nbRef; ++j) // Affine
             {
-                InDeriv value = this->J[indexIn][j].multTranspose(data);
-                //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[indexIn][j] );
-                //
-                //                VecIn speed = Jt * data;
-                //
-                //                typename In::Deriv::Affine affine;
-                //                for (unsigned int k = 0; k < 3; ++k)
-                //                    for (unsigned int l = 0; l < 3; ++l)
-                //                        affine[k][l] = speed[3*k+l];
-                //                const Vec3 pos( speed[9], speed[10], speed[11] );
-                //                InDeriv value(pos,affine);
-                o.addCol(j, value);
+                const int idxReps=m_reps[nbRef *indexPoint+j];
+                InDeriv value = this->J[indexPoint][j].multTranspose(data);
+                o.addCol(idxReps, value);
             }
         }
     }
@@ -2697,10 +2629,9 @@ template<class TMatrixDeriv>
 typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::MatrixDeriv, TMatrixDeriv> >::type SkinningMapping<TIn, TOut>::_applyJT_Matrix( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
     const unsigned int& nbRef = this->nbRefs.getValue();
-    const unsigned int nbi = this->fromModel->getX()->size();
+    const vector<unsigned int>& m_reps = this->repartition.getValue();
     //    typename In::Deriv::Quadratic omega;
     typename In::VecDeriv v;
-    vector<bool> flags;
 
     if ( !this->enableSkinning.getValue())
         return;
@@ -2709,35 +2640,20 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType::Mat
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        v.clear();
-        v.resize(nbi);
-        flags.clear();
-        flags.resize(nbi);
-
         typename In::MatrixDeriv::RowIterator o = out.end();
 
         typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
 
         for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
-            const unsigned int indexIn = colIt.index();
+            const unsigned int indexPoint = colIt.index();
             const Deriv data = colIt.val();
 
             for (unsigned int j=0; j<nbRef; ++j)
             {
-                InDeriv value = this->J[indexIn][j].multTranspose(data);
-                //                MatInx3 Jt;
-                //                Jt.transpose ( this->J[indexIn][j] );
-                //
-                //                VecIn speed = Jt * data;
-                //
-                //                typename In::Deriv::Affine affine;
-                //                for (unsigned int k = 0; k < 3; ++k)
-                //                    for (unsigned int l = 0; l < 3; ++l)
-                //                        affine[k][l] = speed[3*k+l];
-                //                const Vec3 pos( speed[9], speed[10], speed[11] );
-                //                InDeriv value(pos,affine);
-                o.addCol(j, value);
+                const int idxReps=m_reps[nbRef *indexPoint+j];
+                InDeriv value = this->J[indexPoint][j].multTranspose(data);
+                o.addCol(idxReps, value);
             }
         }
     }
