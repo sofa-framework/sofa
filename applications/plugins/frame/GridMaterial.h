@@ -77,9 +77,9 @@ public:
     typedef typename Inherited::StrStr StrStr;			///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
-    typedef typename Vec<3,Real> Vec3;			///< Material coordinate
+    typedef Vec<3,Real> Vec3;			///< Material coordinate
     typedef vector<Vec3> VecVec3;							///< Vector of material coordinates
-    typedef typename Mat<3,3,Real> Mat33;
+    typedef Mat<3,3,Real> Mat33;
     typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
     typedef SVector<double> VD;
     typedef SVector<SVector<double> > VVD;

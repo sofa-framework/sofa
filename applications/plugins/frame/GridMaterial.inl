@@ -304,8 +304,8 @@ bool GridMaterial<MaterialTypes,voxelType>::loadWeightRepartion()
     fileStream >> nbvox; fileStream >> nbrefs;
     if(nbVoxels!=nbvox) {serr << "Invalid grid size in " << weightFile << sendl; return false;}
 
-    this->repartition.swap(VVUI((int)nbVoxels,VUI((int)nbrefs)));
-    this->weightsRepartition.swap(VVD((int)nbVoxels,VD((int)nbrefs,0)));
+    this->repartition.resize(nbVoxels); for(unsigned int i=0; i<nbVoxels; i++) this->repartition[i].resize(nbrefs);
+    this->weightsRepartition.resize(nbVoxels); for(unsigned int i=0; i<nbVoxels; i++) {this->weightsRepartition[i].resize(nbrefs);  this->weightsRepartition[i].fill(0);}
     for(unsigned int i=0; i<nbVoxels; i++)
         for(unsigned int j=0; j<nbrefs; j++)
         {
@@ -539,8 +539,8 @@ bool GridMaterial< MaterialTypes,voxelType >::computeWeights(const unsigned int 
     unsigned int i,dtype=this->distanceType.getValue().getSelectedId(),nbp=points.size();
 
 // init
-    this->repartition.swap(VVUI((int)nbVoxels,VUI((int)nbrefs)));
-    this->weightsRepartition.swap(VVD((int)nbVoxels,VD((int)nbrefs,0)));
+    this->repartition.resize(nbVoxels); for(i=0; i<nbVoxels; i++) this->repartition[i].resize(nbrefs);
+    this->weightsRepartition.resize(nbVoxels); for(i=0; i<nbVoxels; i++) {this->weightsRepartition[i].resize(nbrefs);  this->weightsRepartition[i].fill(0);}
 
     if(dtype==DISTANCE_GEODESIC || dtype==DISTANCE_BIASEDGEODESIC)
     {
@@ -1205,7 +1205,8 @@ template < class MaterialTypes, typename voxelType >
 void GridMaterial< MaterialTypes,voxelType >::getCompleteBasisDeriv(const Vec3& p,const unsigned int order,VVD& basisDeriv)
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
-    basisDeriv.swap(VVD(dim,VD(3,0)));
+
+    basisDeriv.resize(dim); for(j=0; j<dim; j++) {basisDeriv[j].resize(3); basisDeriv[j].fill(0);}
 
     Vec3 p2; for(j=0; j<3; j++) p2[j]=p[j]*p[j];
     Vec3 p3; for(j=0; j<3; j++) p3[j]=p2[j]*p[j];
@@ -1240,7 +1241,8 @@ template < class MaterialTypes, typename voxelType >
 void GridMaterial< MaterialTypes,voxelType >::getCompleteBasisDeriv2(const Vec3& p,const unsigned int order,VVVD& basisDeriv)
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
-    basisDeriv.swap(VVVD(dim,VVD(3,VD(3,0))));
+
+    basisDeriv.resize(dim); for(k=0; k<dim; k++) {basisDeriv[k].resize(dim); for(j=0; j<dim; j++) {basisDeriv[k][j].resize(3); basisDeriv[k][j].fill(0);}}
 
     Vec3 p2; for(j=0; j<3; j++) p2[j]=p[j]*p[j];
 
