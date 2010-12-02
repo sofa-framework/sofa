@@ -814,8 +814,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     // v += b
                     if (v.type == sofa::core::V_COORD)
                     {
-                        Data<VecDeriv>* d_vv = m->write((VecCoordId)v);
-                        VecDeriv* vv = d_vv->beginEdit();
+                        Data<VecCoord>* d_vv = m->write((VecCoordId)v);
+                        VecCoord* vv = d_vv->beginEdit();
                         if (b.type == sofa::core::V_COORD)
                         {
                             const Data<VecCoord>* d_vb = m->read((ConstVecCoordId)b);
@@ -918,12 +918,12 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     }
                     else if (b.type == sofa::core::V_DERIV)
                     {
-                        Data<VecCoord>* d_vv = m->write((VecCoordId)v);
-                        VecCoord* vv = d_vv->beginEdit();
-                        const Data<VecCoord>* d_va = m->read((ConstVecCoordId)a);
-                        const VecCoord* va = &d_va->getValue();
-                        const Data<VecCoord>* d_vb = m->read((ConstVecCoordId)b);
-                        const VecCoord* vb = &d_vb->getValue();
+                        Data<VecDeriv>* d_vv = m->write((VecDerivId)v);
+                        VecDeriv* vv = d_vv->beginEdit();
+                        const Data<VecDeriv>* d_va = m->read((ConstVecDerivId)a);
+                        const VecDeriv* va = &d_va->getValue();
+                        const Data<VecDeriv>* d_vb = m->read((ConstVecDerivId)b);
+                        const VecDeriv* vb = &d_vb->getValue();
                         vv->recreate(va->size());
                         Kernels::vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
                         d_vv->endEdit();
@@ -1822,12 +1822,12 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
                     }
                     else if (b.type == sofa::core::V_DERIV)
                     {
-                        Data<VecCoord>* d_vv = m->write((VecCoordId)v);
-                        VecCoord* vv = d_vv->beginEdit();
-                        const Data<VecCoord>* d_va = m->read((ConstVecCoordId)a);
-                        const VecCoord* va = &d_va->getValue();
-                        const Data<VecCoord>* d_vb = m->read((ConstVecCoordId)b);
-                        const VecCoord* vb = &d_vb->getValue();
+                        Data<VecDeriv>* d_vv = m->write((VecDerivId)v);
+                        VecDeriv* vv = d_vv->beginEdit();
+                        const Data<VecDeriv>* d_va = m->read((ConstVecDerivId)a);
+                        const VecDeriv* va = &d_va->getValue();
+                        const Data<VecDeriv>* d_vb = m->read((ConstVecDerivId)b);
+                        const VecDeriv* vb = &d_vb->getValue();
                         vv->recreate(va->size());
                         Kernels::vAddDeriv(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
                         d_vv->endEdit();
