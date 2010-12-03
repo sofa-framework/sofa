@@ -221,6 +221,7 @@ protected:
     // Grid data
     sofa::core::objectmodel::DataFileName imageFile;
     sofa::core::objectmodel::DataFileName infoFile;
+    sofa::core::objectmodel::DataFileName weightFile;
     Data< Vec3d > voxelSize;
     Data< Vec3d > origin;
     Data< Vec3i > dimension;
@@ -238,7 +239,6 @@ protected:
     VD weights;
 
     // repartitioned weights
-    sofa::core::objectmodel::DataFileName weightFile;
     VVD weightsRepartition;
     VVUI repartition;
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)

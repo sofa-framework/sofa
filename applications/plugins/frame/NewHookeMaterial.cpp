@@ -41,26 +41,18 @@ SOFA_DECL_CLASS (HookeMaterial3);
 
 int HookeMaterial3Class = core::RegisterObject ( "Hooke material for deformable objects" )
 #ifndef SOFA_FLOAT
-        .add<HookeMaterial3<Rigid3dTypes> >()
-        .add<HookeMaterial3<Affine3dTypes> >()
-        .add<HookeMaterial3<Quadratic3dTypes> >()
+        .add<HookeMaterial3<Material3d> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add<HookeMaterial3<Rigid3fTypes> >()
-        .add<HookeMaterial3<Affine3fTypes> >()
-        .add<HookeMaterial3<Quadratic3fTypes> >()
+        .add<HookeMaterial3<Material3f> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_FRAME_API HookeMaterial3<Rigid3dTypes>;
-template class SOFA_FRAME_API HookeMaterial3<Affine3dTypes>;
-template class SOFA_FRAME_API HookeMaterial3<Quadratic3dTypes>;
+template class SOFA_FRAME_API HookeMaterial3<Material3d>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API HookeMaterial3<Rigid3fTypes>;
-template class SOFA_FRAME_API HookeMaterial3<Affine3fTypes>;
-template class SOFA_FRAME_API HookeMaterial3<Quadratic3fTypes>;
+template class SOFA_FRAME_API HookeMaterial3<Material3f>;
 #endif
 
 

@@ -85,41 +85,42 @@ public:
 
 
 
-//template<int D, class R>
-//struct DefaultMaterialTypes
-//{
-//    typedef R Real;
-//    static const int N = D*(D+1)/2;             ///< Number of independent entries in the symmetric DxD strain tensor
-//
-//    typedef defaulttype::Vec<N,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
+template<int N_, class R>
+struct MaterialTypes
+{
+    typedef R Real;
+    static const int N=N_ ;  ///< Number of parameters of the material coordinates
+    static const int StrDim = N*(N+1)/2;             ///< Number of independent entries in the symmetric DxD strain tensor
+
+//    typedef defaulttype::Vec<StrDim,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
 //    typedef helper::vector<Str> VecStr;
 //
 //    /** Strain or stress tensor in Voigt (i.e. vector) notation for an elaston.
 //    The first column is the strain (or stress), the other columns are its derivatives in the space directions (TODO: check this)
 //    */
-//    typedef defaulttype::Mat<N,D*D+1,R> ElStr;
+//    typedef defaulttype::Mat<StrDim,D*D+1,R> ElStr;
 //    typedef helper::vector<ElStr> VecElStr;
 //
-//    typedef defaulttype::Mat<N,N,R> StrStr;  ///< Stress-strain matrix
+//    typedef defaulttype::Mat<StrDim,StrDim,R> StrStr;  ///< Stress-strain matrix
 //    typedef helper::vector<StrStr> VecStrStr;
-//
-//    static const char* Name();
-//};
 
-//typedef DefaultMaterialTypes<3,float> Material3f;
-//typedef DefaultMaterialTypes<3,double> Material3d;
+    static const char* Name();
+};
+
+typedef MaterialTypes<3,float> Material3f;
+typedef MaterialTypes<3,double> Material3d;
 
 
 //typedef Rigid3fTypes Material3f;
 //typedef Rigid3dTypes Material3d;
 
-//#ifdef SOFA_FLOAT
-//template<> inline const char* Material3d::Name() { return "Material3d"; }
-//template<> inline const char* Material3f::Name() { return "Material"; }
-//#else
-//template<> inline const char* Material3d::Name() { return "Material"; }
-//template<> inline const char* Material3f::Name() { return "Material3f"; }
-//#endif
+#ifdef SOFA_FLOAT
+template<> inline const char* Material3d::Name() { return "Material3d"; }
+template<> inline const char* Material3f::Name() { return "Material3"; }
+#else
+template<> inline const char* Material3d::Name() { return "Material3"; }
+template<> inline const char* Material3f::Name() { return "Material3f"; }
+#endif
 
 
 
