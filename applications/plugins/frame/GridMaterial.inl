@@ -46,7 +46,6 @@ GridMaterial< MaterialTypes>::GridMaterial()
     : Inherited()
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
     , imageFile( initData(&imageFile,"imageFile","Image file."))
-    , infoFile( initData(&infoFile,"infoFile","Info file."))
     , weightFile( initData(&weightFile,"weightFile","Voxel weight file."))
     , voxelSize ( initData ( &voxelSize, Vec3d ( 0,0,0 ), "voxelSize", "Voxel size." ) )
     , origin ( initData ( &origin, Vec3d ( 0,0,0 ), "origin", "Grid origin." ) )
@@ -68,34 +67,13 @@ GridMaterial< MaterialTypes>::GridMaterial()
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::init()
 {
-
-    /*  vector<VoxelGridLoader*> vg;
-      core::objectmodel::BaseContext* context=  this->getContext();
-      context->get<VoxelGridLoader>( &vg, core::objectmodel::BaseContext::Local);
-      assert(vg.size()>0);
-      this->voxelGridLoader = vg[0];
-      if ( !this->voxelGridLoader )
-      {
-        serr << "VoxelGrid component not found" << sendl;
-        this->nbVoxels = 0;
-        this->data = NULL;
-        this->segmentID = NULL;
-      }
-      else
-      {
-        this->voxelGridLoader->getVoxelSize(this->voxelSize);
-        this->voxelGridLoader->getResolution(dimension.getValue());
-        // this->voxelGridLoader->getorigin(this->origin); // TO DO : update voxelGridLoader to add offsets (temporary solution: use a data Origin)
-        this->nbVoxels = dimension.getValue()[0]*dimension.getValue()[1]*dimension.getValue()[2];
-        this->data = this->voxelGridLoader->getData();
-        this->segmentID = this->voxelGridLoader->getSegmentID();
-      }
-      */
-
-    bool writeinfos=false;
-    if (infoFile.isSet()) if (!loadInfos()) writeinfos=true;
-    loadImage();
-    if (writeinfos) saveInfos();
+    if (imageFile.isSet())
+    {
+        infoFile=imageFile.getFullPath(); infoFile.replace(infoFile.find_last_of('.')+1,infoFile.size(),"nfo");
+        bool writeinfos=false;	if(!loadInfos()) writeinfos=true;
+        loadImage();
+        if (writeinfos) saveInfos();
+    }
     if (weightFile.isSet()) loadWeightRepartion();
     showedrepartition=-1;
 
@@ -236,38 +214,38 @@ typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensi
 template < class MaterialTypes>
 bool GridMaterial<MaterialTypes>::loadInfos()
 {
-    if (!infoFile.isSet()) return false;
-    std::ifstream fileStream (infoFile.getFullPath().c_str(), std::ifstream::in);
+    if (!infoFile.size()) return false;
+    std::ifstream fileStream (infoFile.c_str(), std::ifstream::in);
     if (!fileStream.is_open())
     {
         serr << "Can not open " << infoFile << sendl;
         return false;
     }
-    Vec3i& dim = *this->dimension.beginEdit();
-    fileStream >> dim;
-    this->dimension.endEdit();
-    Vec3d& origin = *this->origin.beginEdit();
-    fileStream >> origin;
-    this->origin.endEdit();
-    Vec3d& voxelsize = *this->voxelSize.beginEdit();
-    fileStream >> voxelsize;
-    this->voxelSize.endEdit();
+    std::string str;
+    fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32); // voxeltype not used yet
+    fileStream >> str; Vec3i& dim = *this->dimension.beginEdit();       fileStream >> dim;      this->dimension.endEdit();
+    fileStream >> str; Vec3d& origin = *this->origin.beginEdit();       fileStream >> origin;   this->origin.endEdit();
+    fileStream >> str; Vec3d& voxelsize = *this->voxelSize.beginEdit(); fileStream >> voxelsize; this->voxelSize.endEdit();
     fileStream.close();
+    std::cout << "Loaded info file "<< infoFile << std::endl;
     return true;
 }
 
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::saveInfos()
 {
-    if (!infoFile.isSet()) return false;
-    std::ofstream fileStream (infoFile.getFullPath().c_str(), std::ofstream::out);
+    if (!infoFile.size()) return false;
+    std::ofstream fileStream (infoFile.c_str(), std::ofstream::out);
     if (!fileStream.is_open())
     {
         serr << "Can not open " << infoFile << sendl;
         return false;
     }
     std::cout << "Writing info file " << infoFile << std::endl;
-    fileStream << dimension.getValue() << " " << origin.getValue() << " " << voxelSize.getValue() << std::endl;
+    fileStream << "voxelType: " << CImg<voxelType>::pixel_type() << endl;
+    fileStream << "dimensions: " << dimension.getValue() << endl;
+    fileStream << "origin: " << origin.getValue() << endl;
+    fileStream << "voxelSize: " << voxelSize.getValue() << endl;
     fileStream.close();
     return true;
 }
@@ -283,7 +261,7 @@ bool GridMaterial< MaterialTypes>::loadImage()
         serr << "Can not open " << imageFile << sendl;
         return false;
     }
-    std::cout << "Loaded "<< imageFile <<" of voxel type " << grid.pixel_type() << std::endl;
+    std::cout << "Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << std::endl;
     this->nbVoxels = dimension.getValue()[0]*dimension.getValue()[1]*dimension.getValue()[2];
     return true;
 }
