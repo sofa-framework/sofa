@@ -26,9 +26,6 @@
 
 #include "GridMaterial.inl"
 #include <sofa/core/ObjectFactory.h>
-#include "AffineTypes.h"
-#include "QuadraticTypes.h"
-
 
 namespace sofa
 {

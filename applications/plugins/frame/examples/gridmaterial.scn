@@ -3,7 +3,6 @@
 		<Node name="Grid">
 			<GridMaterial name="gridmaterial" 
 				imageFile="textures/Turtle_64_64_64.raw" 
-				infoFile="textures/Turtle_64_64_64.nfo" 
 				labelToStiffnessPairs=" 1 1 
 								2 20000
 								3 1"  

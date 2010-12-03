@@ -33,7 +33,6 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map.h>
 #include <limits>
-#include <sofa/component/container/VoxelGridLoader.h>
 #include "CImg.h"
 
 #define DISTANCE_GEODESIC 0
@@ -211,16 +210,13 @@ public:
 
     static std::string templateName(const GridMaterial<TMaterialTypes>* = NULL)
     {
-        std::string name;
-        name.append(TMaterialTypes::Name());
-        name.append(CImg<voxelType>::pixel_type());
-        return name;
+        return TMaterialTypes::Name();
     }
 
 protected:
     // Grid data
     sofa::core::objectmodel::DataFileName imageFile;
-    sofa::core::objectmodel::DataFileName infoFile;
+    std::string infoFile;
     sofa::core::objectmodel::DataFileName weightFile;
     Data< Vec3d > voxelSize;
     Data< Vec3d > origin;
