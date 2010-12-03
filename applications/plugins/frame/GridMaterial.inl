@@ -183,8 +183,8 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStif
     const mapLabelType& pairs = labelToStiffnessPairs.getValue();
     if(pairs.size()==0) return (Real)label; // no map defined -> return label
 
-    mapLabelType::const_iterator mit;
-    for(mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
+    typename mapLabelType::const_iterator mit;
+    for(typename mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
     {
         if(pit->first>label)
         {
@@ -207,8 +207,8 @@ typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensi
     const mapLabelType& pairs = labelToDensityPairs.getValue();
     if(pairs.size()==0) return (Real)label; // no map defined -> return label
 
-    mapLabelType::const_iterator mit;
-    for(mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
+    typename mapLabelType::const_iterator mit;
+    for(typename mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
     {
         if(pit->first>label)
         {
