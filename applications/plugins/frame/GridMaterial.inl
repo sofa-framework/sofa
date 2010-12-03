@@ -57,7 +57,7 @@ GridMaterial< MaterialTypes,voxelType>::GridMaterial()
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
-    helper::OptionsGroup showVoxelsOptions(7,"None", "Grid Values", "Stiffness", "Density", "Voronoi regions", "Distances", "Weights");
+    helper::OptionsGroup showVoxelsOptions(7,"None", "Data", "Stiffness", "Density", "Voronoi regions", "Distances", "Weights");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 }
@@ -856,7 +856,7 @@ bool GridMaterial< MaterialTypes,voxelType >::HeatDiffusion( const VecVec3& poin
 // diffuse
     unsigned int nbiterations=0;
     bool ok=false,ok2;
-    double maxchange;
+    double maxchange=0.;
     while(!ok && nbiterations<max_iterations)
     {
         ok2=true; maxchange=0;
@@ -872,7 +872,7 @@ bool GridMaterial< MaterialTypes,voxelType >::HeatDiffusion( const VecVec3& poin
 
                         if(this->distanceType.getValue().getSelectedId()==DISTANCE_ANISOTROPICDIFFUSION)
                         {
-                            double dv2; bool okp,okm; unsigned int ip,im;
+                            double dv2; bool okp,okm; int ip,im;
                             Vec3i icoord; getiCoord(i,icoord);
                             neighbors.clear();
                             for(j=0; j<3 ; j++)
@@ -947,8 +947,8 @@ void GridMaterial< MaterialTypes,voxelType >::draw()
             labelmax=1;
             if(weightsRepartition.size()==nbVoxels && repartition.size()==nbVoxels) // paste weightsRepartition into weights
             {
-                if(showedrepartition!=showWeightIndex.getValue()) pasteRepartioninWeight(showWeightIndex.getValue());
-                showedrepartition=showWeightIndex.getValue();
+                if(showedrepartition!=(int)showWeightIndex.getValue()) pasteRepartioninWeight(showWeightIndex.getValue());
+                showedrepartition==(int)showWeightIndex.getValue();
             }
         }
 

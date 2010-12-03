@@ -1,0 +1,20 @@
+<Node 	name="Scene" gravity="0 0 0" dt="0.2" showVisualModels="0" showBehaviorModels="1"  >
+	<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
+	<Node 	name="Beam" >
+		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -100 0 0 0 1 0 0 100 0 0 0 1" position="0 0 -100 0 0 0 1 0 0 200 0.4472135955 0.707106781187 0.4472135955 0.316227766017"/>
+		<HookeMaterial3 name="hookeMat" template="DefaultMaterialTypes&lt;3, double&gt;" youngModulus="200"  poissonRatio="0.3" />
+		<FrameDiagonalMass template="RigidFrame3x6dMass" name="Mass"  massDensity="1"  showAxisSizeFactor="20"  damping="0" />
+		<FrameHookeForceField template="Rigid" name="Hooke"  />
+		<Node 	name="TrianglesNode" >
+			<MeshLoader name="MeshLoader"  filename="mesh/beam.obj" />
+			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
+			<TriangleSetTopologyContainer name="Container" />
+			<TriangleSetTopologyModifier name="Modifier" />
+			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+			<SkinningMapping template="Mapping&lt;Rigid,Vec3d&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  computeAllMatrices="1"  showDefTensors="1"  enableSkinning="0"  useElastons="0"  wheightingType="InvDistSquare"  distanceType="Euclidian" />
+			<TTriangleModel name="CollisionModel"  printLog="0" />
+		</Node>
+	</Node>
+</Node>
