@@ -43,18 +43,18 @@ SOFA_DECL_CLASS (GridMaterial);
 
 int GridMaterialClass = core::RegisterObject ( "Grid representation of deformable materials" )
 #ifndef SOFA_FLOAT
-        .add<GridMaterial<Material3d,unsigned char> >(true)
+        .add<GridMaterial<Material3d> >(true)
 #endif
 #ifndef SOFA_DOUBLE
-        .add<GridMaterial<Material3f,unsigned char> >()
+        .add<GridMaterial<Material3f> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_FRAME_API GridMaterial<Material3d,unsigned char>;
+template class SOFA_FRAME_API GridMaterial<Material3d>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API GridMaterial<Material3f,unsigned char>;
+template class SOFA_FRAME_API GridMaterial<Material3f>;
 #endif
 
 

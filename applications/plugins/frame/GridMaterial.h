@@ -32,6 +32,7 @@
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map.h>
+#include <limits>
 #include <sofa/component/container/VoxelGridLoader.h>
 #include "CImg.h"
 
@@ -62,11 +63,11 @@ using namespace sofa::defaulttype;
 using namespace helper;
 using std::map;
 
-template<class TMaterialTypes, typename voxelType>
+template<class TMaterialTypes>
 class SOFA_FRAME_API GridMaterial : public Material<TMaterialTypes>
 {
 public:
-    SOFA_CLASS( SOFA_TEMPLATE2(GridMaterial, TMaterialTypes,voxelType), SOFA_TEMPLATE(Material, TMaterialTypes) );
+    SOFA_CLASS( SOFA_TEMPLATE(GridMaterial, TMaterialTypes), SOFA_TEMPLATE(Material, TMaterialTypes) );
 
     typedef Material<TMaterialTypes> Inherited;
     typedef typename Inherited::Real Real;        ///< Scalar values.
@@ -76,24 +77,23 @@ public:
     typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
     typedef typename Inherited::StrStr StrStr;			///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
+    typedef unsigned char voxelType;
 
     typedef Vec<3,Real> Vec3;			///< Material coordinate
     typedef vector<Vec3> VecVec3;							///< Vector of material coordinates
     typedef Mat<3,3,Real> Mat33;
     typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
-    typedef SVector<double> VD;
-    typedef SVector<SVector<double> > VVD;
-    typedef SVector<SVector<SVector<double> > > VVVD;
+    typedef SVector<Real> VD;
+    typedef SVector<SVector<Real> > VVD;
+    typedef SVector<SVector<SVector<Real> > > VVVD;
     typedef SVector<unsigned int> VUI;
     typedef SVector<SVector<unsigned int> > VVUI;
     typedef SVector<int> VI;
     typedef SVector<SVector<int> > VVI;
     typedef SVector<bool> VB;
-    typedef map<double,double> mapLabelType;
+    typedef map<voxelType,Real> mapLabelType;
 
     Data<OptionsGroup> distanceType;  ///< Geodesic, BiasedGeodesic, HeatDiffusion, AnisotropicHeatDiffusion
-    Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
-    Data<unsigned int> showWeightIndex;    ///
 
     GridMaterial();
     virtual ~GridMaterial() {}
@@ -130,16 +130,16 @@ public:
     /*************************/
 
     // return the linearly interpolated value from the label/stiffness pairs
-    double getStiffness(const voxelType label);
+    Real getStiffness(const voxelType label);
     // return the linearly interpolated value from the label/density pairs
-    double getDensity(const voxelType label);
+    Real getDensity(const voxelType label);
 
     /*************************/
     /*   draw	              */
     /*************************/
 
     void draw();
-    void drawCube(double size,bool wireframe);
+    void drawCube(Real size,bool wireframe);
 
     /*************************/
     /*   IO	              */
@@ -157,15 +157,15 @@ public:
     /*************************/
 
     /// return sum(mu_i.vol_i) in the voronoi region of point
-    bool LumpMass(const Vec3& point,double& mass);
+    bool LumpMass(const Vec3& point,Real& mass);
     /// return sum(vol_i) in the voronoi region of point
-    bool LumpVolume(const Vec3& point,double& vol);
+    bool LumpVolume(const Vec3& point,Real& vol);
     /// return sum((p_i-p)^(order).vol_i) in the voronoi region of point
     bool LumpMoments(const Vec3& point,const unsigned int order,VD& moments);
     /// return sum(E_i.(p_i-p)^(order).vol_i) in the voronoi region of point
     bool LumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
     /// fit 1st, 2d or 3d polynomial to the weights in the (dilated by 1 voxel) voronoi region of point.
-    bool LumpWeights(const Vec3& point,const bool dilatevoronoi,double& w,Vec3* dw=NULL,Mat33* ddw=NULL);
+    bool LumpWeights(const Vec3& point,const bool dilatevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
 
     /*********************************/
     /*   Compute distances/weights   */
@@ -175,19 +175,19 @@ public:
     bool computeWeights(const unsigned int nbrefs,const VecVec3& points);
 
     /// (biased) Euclidean distance between two voxels
-    double getDistance(const unsigned int& index1,const unsigned int& index2);
+    Real getDistance(const unsigned int& index1,const unsigned int& index2);
     /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
-    bool computeGeodesicalDistances ( const Vec3& point, const double distMax =1E100);
-    bool computeGeodesicalDistances ( const int& index, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
-    bool computeGeodesicalDistances ( const VecVec3& points, const double distMax =1E100);
-    bool computeGeodesicalDistances ( const VI& indices, const double distMax =1E100);
+    bool computeGeodesicalDistances ( const VecVec3& points, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const VI& indices, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation -> id/distances stored in voronoi/distances
     bool computeUniformSampling ( VecVec3& points, const unsigned int num_points,const unsigned int max_iterations = 100);
     /// linearly decreasing weight with support=factor*distmax_in_voronoi
-    bool computeLinearWeightsInVoronoi ( const Vec3& point,const double factor=2.);
+    bool computeLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
     /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
-    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=1000,const double precision=0.0001);
+    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=1000,const Real precision=0.0001);
 
 
     /*************************/
@@ -209,7 +209,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const GridMaterial<TMaterialTypes,voxelType>* = NULL)
+    static std::string templateName(const GridMaterial<TMaterialTypes>* = NULL)
     {
         std::string name;
         name.append(TMaterialTypes::Name());
@@ -242,6 +242,10 @@ protected:
     VVD weightsRepartition;
     VVUI repartition;
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
+
+    // draw
+    Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
+    Data<unsigned int> showWeightIndex;    ///
 
     // local functions
     inline void accumulateCovariance(const Vec3& p,const unsigned int order,VVD& Cov);
