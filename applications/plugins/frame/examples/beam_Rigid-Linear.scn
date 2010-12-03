@@ -3,7 +3,7 @@
 	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
 	<Node 	name="Beam" >
 		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -100 0 0 0 1 0 0 100 0 0 0 1" position="0 0 -100 0 0 0 1 0 0 200 0.4472135955 0.707106781187 0.4472135955 0.316227766017"/>
-		<HookeMaterial3 name="hookeMat" template="DefaultMaterialTypes&lt;3, double&gt;" youngModulus="200"  poissonRatio="0.3" />
+		<HookeMaterial3 name="hookeMat" template="Material3" youngModulus="200"  poissonRatio="0.3" />
 		<FrameDiagonalMass template="RigidFrame3x6dMass" name="Mass"  massDensity="1"  showAxisSizeFactor="20"  damping="0" />
 		<FrameHookeForceField template="Rigid" name="Hooke"  />
 		<Node 	name="TrianglesNode" >
