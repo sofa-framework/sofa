@@ -1,0 +1,21 @@
+<Node name="root">
+	<Node name="Turtle">
+		<Node name="Grid">
+			<GridMaterial name="gridmaterial" 
+				imageFile="textures/Turtle_64_64_64.raw" 
+				infoFile="textures/Turtle_64_64_64.nfo" 
+				labelToStiffnessPairs=" 1 1 
+								2 20000
+								3 1"  
+				labelToDensityPairs="1 1000"  
+				distanceType="BiasedGeodesic" 
+				showVoxelData="Data" 
+				/>
+		</Node>
+
+		<Node 	name="Visual" >
+			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Turtle.obj"/>
+		</Node>
+	</Node>
+
+</Node>
