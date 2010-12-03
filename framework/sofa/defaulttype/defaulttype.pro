@@ -34,7 +34,7 @@ HEADERS += \
           RigidTypes.h \
           SolidTypes.h \
           SolidTypes.inl \
-          SparseConstraintTypes.h \
+          #SparseConstraintTypes.h \
           Vec.h \
           VecTypes.h \
 	    MatSym.h \
