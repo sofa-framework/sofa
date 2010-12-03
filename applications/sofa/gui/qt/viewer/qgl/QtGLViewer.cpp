@@ -168,9 +168,9 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     _waitForRender=false;
 
     /*_surfaceModel = NULL;
-      _springMassView = NULL;
-      _mapView = NULL;
-      sphViewer = NULL;
+    _springMassView = NULL;
+    _mapView = NULL;
+    sphViewer = NULL;
     */
 
     //////////////////////
@@ -703,7 +703,7 @@ void QtGLViewer::DisplayOBJs()
 
     if (!initTexturesDone)
     {
-//		std::cout << "-----------------------------------> initTexturesDone\n";
+        //		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
         simulation::getSimulation()->initTextures(groot);
         //---------------------------------------------------
@@ -781,7 +781,7 @@ void QtGLViewer::DrawScene(void)
 
     //for(int i=0 ; i<16 ;i++)
     //	std::cout << lastModelviewMatrix[i] << " ";
-//
+    //
     //std::cout << std::endl;
     //std::cout << "P " << camera()->position().x << " " << camera()->position().y << " " << camera()->position().z << " " << std::endl;
     //std::cout << "T " << camera()->frame()->translation().x << " " << camera()->frame()->translation().y << " " << camera()->frame()->translation().z << " " << std::endl;
@@ -858,7 +858,7 @@ void QtGLViewer::resizeGL(int width, int height)
 
 
     QGLViewer::resizeGL( width,  height);
-// 	    camera()->setScreenWidthAndHeight(_W,_H);
+    // 	    camera()->setScreenWidthAndHeight(_W,_H);
 
     this->resize(width, height);
     emit( resizeW( _W ) );
@@ -881,13 +881,13 @@ void QtGLViewer::draw()
     // Use this to avoid unneccessarily initializing the OpenGL context.
     //static double lastOrthoTransZ = 0.0;
     /*
-      if (!valid())
-      {
-      InitGFX();		// this has to be called here since we don't know when the context is created
-      _W = w();
-      _H = h();
-      reshape(_W, _H);
-      }
+    if (!valid())
+    {
+    InitGFX();		// this has to be called here since we don't know when the context is created
+    _W = w();
+    _H = h();
+    reshape(_W, _H);
+    }
     */
     // clear buffers (color and depth)
     if (_background==0)
@@ -942,7 +942,7 @@ void QtGLViewer::setCameraMode(component::visualmodel::BaseCamera::CameraType mo
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
 
-//Tracking Mode
+    //Tracking Mode
 #ifdef TRACKING_MOUSE
     if(m_grabActived)
     {
@@ -985,10 +985,11 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
     }
     else  // control the GUI
     {
+//                            cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" without Control pressed "<<endl;
         switch(e->key())
         {
         case Qt::Key_A: //axis
-        case Qt::Key_S: //screenshot
+        case Qt::Key_S: //sofa screenshot
         case Qt::Key_H: //shortcuts for screenshot and help page specified for qglviewer
         {
             QGLViewer::keyPressEvent(e);
@@ -1325,25 +1326,25 @@ QString QtGLViewer::helpString()
 
     QString text(
         "<H1>QtGLViewer</H1><hr>\
-<ul>\
-<li><b>Mouse</b>: TO NAVIGATE<br></li>\
-<li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
-<li><b>A</b>: TO DRAW AXIS<br></li>\
-<li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
-<li><b>C</b>: TO CENTER THE VIEW<br></li>\
-<li><b>H</b>: TO OPEN HELP of QGLViewer<br></li>\
-<li><b>L</b>: TO DRAW SHADOWS<br></li>\
-<li><b>O</b>: TO EXPORT TO .OBJ<br>\
-The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
-<li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
-Each time the frame is updated an obj is exported<br></li>\
-<li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
-<li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
-The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
-<li><b>S</b>: TO SAVE A SCREENSHOT<br>\
-<li><b>V</b>: TO SAVE A VIDEO<br>\
-Each time the frame is updated a screenshot is saved<br></li>\
-<li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
+                                <ul>\
+                                <li><b>Mouse</b>: TO NAVIGATE<br></li>\
+                                <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+                                <li><b>A</b>: TO DRAW AXIS<br></li>\
+                                <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
+                                <li><b>C</b>: TO CENTER THE VIEW<br></li>\
+                                <li><b>H</b>: TO OPEN HELP of QGLViewer<br></li>\
+                                <li><b>L</b>: TO DRAW SHADOWS<br></li>\
+                                <li><b>O</b>: TO EXPORT TO .OBJ<br>\
+                                The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
+                                <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
+                                Each time the frame is updated an obj is exported<br></li>\
+                                <li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
+                                <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+                                The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
+                                <li><b>S</b>: TO SAVE A SCREENSHOT<br>\
+                                <li><b>V</b>: TO SAVE A VIDEO<br>\
+                                Each time the frame is updated a screenshot is saved<br></li>\
+                                <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
 
     return text;
 }

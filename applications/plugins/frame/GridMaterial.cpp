@@ -43,26 +43,18 @@ SOFA_DECL_CLASS (GridMaterial);
 
 int GridMaterialClass = core::RegisterObject ( "Grid representation of deformable materials" )
 #ifndef SOFA_FLOAT
-        .add<GridMaterial<Rigid3dTypes,unsigned char> >(true)
-        .add<GridMaterial<Affine3dTypes,unsigned char> >(true)
-        .add<GridMaterial<Quadratic3dTypes,unsigned char> >(true)
+        .add<GridMaterial<Material3d,unsigned char> >(true)
 #endif
 #ifndef SOFA_DOUBLE
-        .add<GridMaterial<Rigid3fTypes,unsigned char> >()
-        .add<GridMaterial<Affine3fTypes,unsigned char> >()
-        .add<GridMaterial<Quadratic3fTypes,unsigned char> >()
+        .add<GridMaterial<Material3f,unsigned char> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_FRAME_API GridMaterial<Rigid3dTypes,unsigned char>;
-template class SOFA_FRAME_API GridMaterial<Affine3dTypes,unsigned char>;
-template class SOFA_FRAME_API GridMaterial<Quadratic3dTypes,unsigned char>;
+template class SOFA_FRAME_API GridMaterial<Material3d,unsigned char>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API GridMaterial<Rigid3fTypes,unsigned char>;
-template class SOFA_FRAME_API GridMaterial<Affine3fTypes,unsigned char>;
-template class SOFA_FRAME_API GridMaterial<Quadratic3fTypes,unsigned char>;
+template class SOFA_FRAME_API GridMaterial<Material3f,unsigned char>;
 #endif
 
 
