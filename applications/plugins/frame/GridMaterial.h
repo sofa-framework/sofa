@@ -33,6 +33,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map.h>
 #include <limits>
+#include <sofa/component/container/VoxelGridLoader.h>
 #include "CImg.h"
 
 #define DISTANCE_GEODESIC 0
