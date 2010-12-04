@@ -403,10 +403,10 @@ public:
         return in;
     }
 
-    static int max_size()
-    {
-        return 3;
-    }
+//          static int max_size()
+//          {
+//            return 3;
+//          }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
     enum { total_size = 12 };
