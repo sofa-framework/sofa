@@ -217,7 +217,7 @@ void QwtDoubleRange::setStep(double vstep)
        newStep = intv * DefaultRelStep;
     else
     {
-        if ((intv > 0) && (vstep < 0) || (intv < 0) && (vstep > 0))
+        if (((intv > 0) && (vstep < 0)) || ((intv < 0) && (vstep > 0)))
            newStep = -vstep;
         else
            newStep = vstep;
