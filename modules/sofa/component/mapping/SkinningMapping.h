@@ -358,11 +358,11 @@ protected:
 //	inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
 
     template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type strainDeriv(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const;
+    inline typename enable_if<Equal<RigidType, T> >::type strainDeriv(const Mat33& Ma, const Mat33& Mb, const Mat33& Mc, const Mat33& Mw, const Vec3& dw, const Mat33& At, const Mat33& F, Mat67 &B) const;
     template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
+    inline typename enable_if<Equal<AffineType, T> >::type strainDeriv(const Vec3& dw, const MatInAtx3& At, const Mat33& F, Mat6xIn &B) const;
     template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const;
+    inline typename enable_if<Equal<QuadraticType, T> >::type strainDeriv(const Vec3& dw, const MatInAtx3& At, const Mat33& F, Mat6xIn &B) const;
 
     template<class T>
     inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(const RigidType&); // Useless parameter here to be compatible with gcc-4.0
