@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,15 +37,30 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
+
 
 #include <sofa/component/collision/MouseInteractor.h>
+#include <sofa/component/forcefield/VectorField.h>
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MouseInteractor
-typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MouseInteractor3f;
-typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdRigidTypes<3, float> > MouseInteractorRigid3f;
+typedef  sofa::component::collision::MouseInteractor< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MouseInteractor3f;
+typedef  sofa::component::collision::MouseInteractor< sofa::defaulttype::StdRigidTypes<3,float> > MouseInteractorRigid3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for VectorField
+typedef  sofa::component::forcefield::VectorField< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > VectorField3f;
 
 
 
@@ -54,6 +69,7 @@ typedef sofa::component::collision::MouseInteractor<sofa::defaulttype::StdRigidT
 #ifdef SOFA_FLOAT
 typedef MouseInteractor3f MouseInteractor3;
 typedef MouseInteractorRigid3f MouseInteractorRigid3;
+typedef VectorField3f VectorField3;
 #endif
 
 #endif

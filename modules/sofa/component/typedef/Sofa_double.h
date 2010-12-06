@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,9 +41,9 @@
 #include <sofa/component/typedef/Engine_double.h>
 #include <sofa/component/typedef/ForceField_double.h>
 #include <sofa/component/typedef/InteractionForceField_double.h>
+#include <sofa/component/typedef/LinearSolver_double.h>
 #include <sofa/component/typedef/Mapping_double.h>
 #include <sofa/component/typedef/Mass_double.h>
-#include <sofa/component/typedef/MechanicalMapping_double.h>
 #include <sofa/component/typedef/MechanicalState_double.h>
 #include <sofa/component/typedef/ProjectiveConstraintSet_double.h>
 #include <sofa/component/typedef/TopologyObject_double.h>

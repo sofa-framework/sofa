@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,20 +37,62 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
 
+
+#include <sofa/component/constraintset/BeamConstraint.h>
+#include <sofa/component/constraintset/BilateralInteractionConstraint.h>
+#include <sofa/component/constraintset/SlidingConstraint.h>
+#include <sofa/component/constraintset/StopperConstraint.h>
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
 
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for BeamConstraint
+typedef  sofa::component::constraintset::BeamConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > BeamConstraint3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for BilateralInteractionConstraint
+typedef  sofa::component::constraintset::BilateralInteractionConstraint< sofa::defaulttype::StdRigidTypes<3,double> > BilateralInteractionConstraintRigid3d;
+typedef  sofa::component::constraintset::BilateralInteractionConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > BilateralInteractionConstraint3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for SlidingConstraint
+typedef  sofa::component::constraintset::SlidingConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > SlidingConstraint3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for StopperConstraint
+typedef  sofa::component::constraintset::StopperConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,double>, sofa::defaulttype::Vec<1,double>,double> > StopperConstraint1d;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for UnilateralInteractionConstraint
-typedef sofa::component::constraintset::UnilateralInteractionConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > UnilateralInteractionConstraint3d;
+typedef  sofa::component::constraintset::UnilateralInteractionConstraint< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > UnilateralInteractionConstraint3d;
 
 
 
 
 
 #ifndef SOFA_FLOAT
+typedef BeamConstraint3d BeamConstraint3;
+typedef BilateralInteractionConstraintRigid3d BilateralInteractionConstraintRigid3;
+typedef BilateralInteractionConstraint3d BilateralInteractionConstraint3;
+typedef SlidingConstraint3d SlidingConstraint3;
+typedef StopperConstraint1d StopperConstraint1;
 typedef UnilateralInteractionConstraint3d UnilateralInteractionConstraint3;
 #endif
 
