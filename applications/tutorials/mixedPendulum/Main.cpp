@@ -34,11 +34,18 @@
 #include <sofa/component/visualmodel/OglModel.h>
 // gui
 #include <sofa/gui/GUIManager.h>
+#include <sofa/core/VecId.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/accessor.h>
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa::simulation::tree;
 typedef sofa::component::odesolver::EulerSolver Solver;
+using sofa::core::objectmodel::Data;
+using sofa::helper::ReadAccessor;
+using sofa::helper::WriteAccessor;
+using sofa::core::VecId;
 
 int main(int, char** argv)
 {
@@ -66,7 +73,7 @@ int main(int, char** argv)
     deformableBody->addObject(DOF);
     DOF->resize(2);
     DOF->setName("Dof1");
-    VecCoord3& x = *DOF->getX();
+    WriteAccessor< Data< VecCoord3 > > x = *DOF->write(VecId::position() );
     x[0] = Coord3(0,0,0);
     x[1] = Coord3(endPos,0,0);
 
@@ -99,7 +106,7 @@ int main(int, char** argv)
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
     rigidDOF->setName("Dof2");
-    VecCoordRigid3& rigid_x = *rigidDOF->getX();
+    WriteAccessor< Data<VecCoordRigid3> > rigid_x = *rigidDOF->write(VecId::position() );
     rigid_x[0] = CoordRigid3( Coord3(endPos-attach+splength,0,0),
             Quat3::identity() );
 
@@ -128,15 +135,15 @@ int main(int, char** argv)
     rigidParticles->addObject(rigidParticleDOF);
     rigidParticleDOF->resize(1);
     rigidParticleDOF->setName("Dof3");
-    VecCoord3& rp_x = *rigidParticleDOF->getX();
+    WriteAccessor< Data< VecCoord3 > > rp_x = *rigidParticleDOF->write(VecId::position() );
     rp_x[0] = Coord3(attach,0,0);
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
-    RigidMechanicalMappingRigid3_to_3* rigidMapping = new RigidMechanicalMappingRigid3_to_3(rigidDOF,rigidParticleDOF);
-    std::string pathobject1(rigidBody->getName()+"/"+rigidDOF->getName());
-    std::string pathobject2(rigidParticles->getName()+"/"+rigidParticleDOF->getName());
-    rigidMapping->setPathObject1(pathobject1);
-    rigidMapping->setPathObject2(pathobject2);
+    RigidMappingRigid3_to_3* rigidMapping = new RigidMappingRigid3_to_3(rigidDOF,rigidParticleDOF);
+    std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
+    std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
+    rigidMapping->setPathInputObject(pathobject1);
+    rigidMapping->setPathOutPutObject(pathobject2);
     rigidParticles->addObject( rigidMapping );
     rigidMapping->setName("Map23");
 
