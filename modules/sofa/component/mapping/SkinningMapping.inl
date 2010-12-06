@@ -183,13 +183,15 @@ void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
     {
     case DISTANCE_EUCLIDIAN:
     {
-        distances.resize( xfrom0.size());
-        distGradients.resize( xfrom0.size());
-        for ( unsigned int i = xfromBegin; i < xfrom0.size(); ++i ) // for each new frame
+        const unsigned int& toSize = xto0.size();
+        const unsigned int& fromSize = xfrom0.size();
+        distances.resize( fromSize);
+        distGradients.resize( fromSize);
+        for ( unsigned int i = xfromBegin; i < fromSize; ++i ) // for each new frame
         {
-            distances[i].resize ( xto0.size() );
-            distGradients[i].resize ( xto0.size() );
-            for ( unsigned int j=0; j<xto0.size(); ++j )
+            distances[i].resize (toSize);
+            distGradients[i].resize (toSize);
+            for ( unsigned int j=0; j<toSize; ++j )
             {
                 distGradients[i][j] = xto0[j] - xfrom0[i].getCenter();
                 distances[i][j] = distGradients[i][j].norm();
@@ -219,17 +221,17 @@ void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::sortReferences( vector<unsigned int>& references)
 {
-    const VecCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
-    const VecInCoord& xfrom = *this->fromModel->getX0();
+    const unsigned int& toSize = this->toModel->getX()->size();
+    const unsigned int& fromSize = this->fromModel->getX0()->size();
     const unsigned int& nbRef = this->nbRefs.getValue();
 
     references.clear();
-    references.resize ( nbRef *xto.size() );
-    for ( unsigned int i=0; i< nbRef *xto.size(); i++ )
+    references.resize (nbRef*toSize);
+    for ( unsigned int i=0; i< nbRef *toSize; i++ )
         references[i] = -1;
 
-    for ( unsigned int i=0; i<xfrom.size(); i++ )
-        for ( unsigned int j=0; j<xto.size(); j++ )
+    for ( unsigned int i=0; i<fromSize; i++ )
+        for ( unsigned int j=0; j<toSize; j++ )
             for ( unsigned int k=0; k<nbRef; k++ )
             {
                 const int idxReps=references[nbRef*j+k];
@@ -247,7 +249,7 @@ void SkinningMapping<TIn, TOut>::sortReferences( vector<unsigned int>& reference
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::normalizeWeights()
 {
-    const unsigned int xtoSize = this->toModel->getX()->size();
+    const unsigned int& xtoSize = this->toModel->getX()->size();
     const unsigned int& nbRef = this->nbRefs.getValue();
     VVD& m_weights = * ( weights.beginEdit() );
     SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
@@ -1422,7 +1424,7 @@ void SkinningMapping<TIn, TOut>::ComputeMw(Mat33& M, const Quat& q) const
 //rigid
 template <class TIn, class TOut>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(Mat33 Ma,Mat33 Mb,Mat33 Mc,Mat33 Mw,Vec3 dw,Mat33 At,Mat33 F,Mat67 &B) const
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(const Mat33& Ma, const Mat33& Mb, const Mat33& Mc, const Mat33& Mw, const Vec3& dw, const Mat33& At, const Mat33& F,Mat67 &B) const
 {
     unsigned int k,m;
     Mat33 D; Mat33 FT=F.transposed();
@@ -1439,7 +1441,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::RigidType, T> >::t
 //affine
 template <class TIn, class TOut>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(const Vec3& dw, const MatInAtx3& At, const Mat33& F, Mat6xIn &B) const
 {
     unsigned int k,l,m;
     // stretch
@@ -1457,7 +1459,7 @@ typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::AffineType, T> >::
 // quadratic
 template <class TIn, class TOut>
 template<class T>
-typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(Vec3 dw,MatInAtx3 At,Mat33 F,Mat6xIn &B) const
+typename enable_if<Equal<typename SkinningMapping<TIn, TOut>::QuadraticType, T> >::type SkinningMapping<TIn, TOut>::strainDeriv(const Vec3& dw, const MatInAtx3& At, const Mat33& F, Mat6xIn &B) const
 {
     unsigned int k,l,m;
     // stretch
