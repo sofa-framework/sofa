@@ -518,8 +518,7 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
             {
             typedefFile << "\
             //Default files needed to create a Mapping\n\
-#include <sofa/core/behavior/State.h>\n\
-#include <sofa/core/behavior/MappedModel.h>\n\
+#include <sofa/core/State.h>\n\
 #include <sofa/core/Mapping.h>\n\
 ";
 }
