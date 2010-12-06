@@ -31,12 +31,20 @@
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/VecId.h>
 #include <sofa/gui/GUIManager.h>
 
 #include <sofa/helper/system/glut.h>
+#include <sofa/helper/accessor.h>
+
+
+
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::EulerSolver;
-
+using sofa::core::objectmodel::Data;
+using sofa::helper::ReadAccessor;
+using sofa::helper::WriteAccessor;
+using sofa::core::VecId;
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -71,9 +79,11 @@ int main(int argc, char** argv)
     particule_node->addObject(particle);
     particle->resize(1);
     // The point
-    (*particle->getX())[0] = Coord3(0,0,0);
+    WriteAccessor< Data<typename MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
+    positions[0] = Coord3(0,0,0);
     // The velocity
-    (*particle->getV())[0] = Coord3(0,0,0);
+    WriteAccessor< Data<typename MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
+    velocities[0] = Deriv3(0,0,0);
 
     // Its properties, i.e, a simple mass node
     UniformMass3* mass = new UniformMass3;
