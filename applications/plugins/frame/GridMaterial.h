@@ -33,13 +33,12 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map.h>
 #include <limits>
-#include <sofa/component/container/VoxelGridLoader.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include "CImg.h"
 
 #define DISTANCE_GEODESIC 0
-#define DISTANCE_BIASEDGEODESIC 1
-#define DISTANCE_DIFFUSION 2
-#define DISTANCE_ANISOTROPICDIFFUSION 3
+#define DISTANCE_DIFFUSION 1
+#define DISTANCE_ANISOTROPICDIFFUSION 2
 
 #define SHOWVOXELS_NONE 0
 #define SHOWVOXELS_DATAVALUE 1
@@ -80,7 +79,7 @@ public:
     typedef unsigned char voxelType;
 
     typedef Vec<3,Real> Vec3;			///< Material coordinate
-    typedef vector<Vec3> VecVec3;							///< Vector of material coordinates
+    typedef SVector<Vec3> VecVec3;							///< Vector of material coordinates
     typedef Mat<3,3,Real> Mat33;
     typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
     typedef SVector<Real> VD;
@@ -91,9 +90,7 @@ public:
     typedef SVector<int> VI;
     typedef SVector<SVector<int> > VVI;
     typedef SVector<bool> VB;
-    typedef map<voxelType,Real> mapLabelType;
-
-    Data<OptionsGroup> distanceType;  ///< Geodesic, BiasedGeodesic, HeatDiffusion, AnisotropicHeatDiffusion
+    typedef map<Real,Real> mapLabelType; // voxeltype does not work..
 
     GridMaterial();
     virtual ~GridMaterial() {}
@@ -157,19 +154,25 @@ public:
     /*************************/
 
     /// return sum(mu_i.vol_i) in the voronoi region of point
-    bool LumpMass(const Vec3& point,Real& mass);
+    bool lumpMass(const Vec3& point,Real& mass);
     /// return sum(vol_i) in the voronoi region of point
-    bool LumpVolume(const Vec3& point,Real& vol);
+    bool lumpVolume(const Vec3& point,Real& vol);
     /// return sum((p_i-p)^(order).vol_i) in the voronoi region of point
-    bool LumpMoments(const Vec3& point,const unsigned int order,VD& moments);
+    bool lumpMoments(const Vec3& point,const unsigned int order,VD& moments);
     /// return sum(E_i.(p_i-p)^(order).vol_i) in the voronoi region of point
-    bool LumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
-    /// fit 1st, 2d or 3d polynomial to the weights in the (dilated by 1 voxel) voronoi region of point.
-    bool LumpWeights(const Vec3& point,const bool dilatevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
+    bool lumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
+    /// fit 1st, 2d or 3d polynomial to the weights in the dilated by 1 voxel voronoi region (usevoronoi=true) or 26 neighbors (usevoronoi=false) of point.
+    bool lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
+    /// interpolate weights (and weight derivatives) in the grid.
+    bool interpolateWeights(const Vec3& point,Real& w,Vec3* dw=NULL);
+
 
     /*********************************/
     /*   Compute distances/weights   */
     /*********************************/
+
+    Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
+    Data<bool> biasDistances;
 
     /// compute voxel weights according to 'distanceType' method -> stored in weightsRepartition and repartition
     bool computeWeights(const unsigned int nbrefs,const VecVec3& points);
@@ -182,13 +185,17 @@ public:
     /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
     bool computeGeodesicalDistances ( const VecVec3& points, const Real distMax =std::numeric_limits<Real>::max());
     bool computeGeodesicalDistances ( const VI& indices, const Real distMax =std::numeric_limits<Real>::max());
+    /// (biased) Geodesical distance between the border of the voronoi cell containing point and all other voxels -> stored in distances
+    bool computeGeodesicalDistancesToVoronoi ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation -> id/distances stored in voronoi/distances
     bool computeUniformSampling ( VecVec3& points, const unsigned int num_points,const unsigned int max_iterations = 100);
-    /// linearly decreasing weight with support=factor*distmax_in_voronoi
+    /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
+    bool computeAnisotropicLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
+    /// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
     bool computeLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
     /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
-    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=1000,const Real precision=0.0001);
-
+    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
 
     /*************************/
     /*         Utils         */
@@ -263,7 +270,6 @@ protected:
 //template<> inline const char* GridMaterial<Material3d>::Name() { return "GridMaterial"; }
 //template<> inline const char* GridMaterial<Material3f>::Name() { return "GridMaterialf"; }
 //#endif
-
 
 } // namespace material
 
