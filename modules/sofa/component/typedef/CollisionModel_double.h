@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,14 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
+
 
 #include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModelInRegularGrid.h>
@@ -46,19 +54,19 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for SphereTreeModel
-typedef sofa::component::collision::SphereTreeModel SphereTreeModel3d;
+typedef  sofa::component::collision::SphereTreeModel SphereTreeModel3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TriangleModelInRegularGrid
-typedef sofa::component::collision::TriangleModelInRegularGrid TriangleModelInRegularGrid3d;
+typedef  sofa::component::collision::TriangleModelInRegularGrid TriangleModelInRegularGrid3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for TriangleOctreeModel
-typedef sofa::component::collision::TriangleOctreeModel TriangleOctreeModel3d;
+typedef  sofa::component::collision::TriangleOctreeModel TriangleOctreeModel3d;
 
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,79 +37,127 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
+
 
 #include <sofa/component/mass/DiagonalMass.h>
+#include <sofa/component/forcefield/HexahedralFEMForceFieldAndMass.h>
+#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
 #include <sofa/component/forcefield/HexahedronFEMForceFieldAndMass.h>
 #include <sofa/component/mass/MatrixMass.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
+#include <sofa/component/forcefield/NonUniformHexahedralFEMForceFieldAndMass.h>
+#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
+#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.h>
 #include <sofa/component/mass/UniformMass.h>
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DiagonalMass
-typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, double> DiagonalMass3d;
-typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double>, double> DiagonalMass2d;
-typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double>, double> DiagonalMass1d;
-typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdRigidTypes<3, double>, sofa::defaulttype::RigidMass<3, double> > DiagonalMassRigid3d;
-typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdRigidTypes<2, double>, sofa::defaulttype::RigidMass<2, double> > DiagonalMassRigid2d;
+typedef  sofa::component::mass::DiagonalMass< sofa::defaulttype::StdRigidTypes<3,double>, sofa::defaulttype::RigidMass<3,double> > DiagonalMassRigid3d;
+typedef  sofa::component::mass::DiagonalMass< sofa::defaulttype::StdRigidTypes<2,double>, sofa::defaulttype::RigidMass<2,double> > DiagonalMassRigid2d;
+typedef  sofa::component::mass::DiagonalMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,double>, sofa::defaulttype::Vec<1,double>,double>,double> DiagonalMass1d;
+typedef  sofa::component::mass::DiagonalMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,double>, sofa::defaulttype::Vec<2,double>,double>,double> DiagonalMass2d;
+typedef  sofa::component::mass::DiagonalMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double>,double> DiagonalMass3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for HexahedralFEMForceFieldAndMass
+typedef  sofa::component::forcefield::HexahedralFEMForceFieldAndMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > HexahedralFEMForceFieldAndMass3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for HexahedronCompositeFEMForceFieldAndMass
+typedef  sofa::component::forcefield::HexahedronCompositeFEMForceFieldAndMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > HexahedronCompositeFEMForceFieldAndMass3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for HexahedronFEMForceFieldAndMass
-typedef sofa::component::forcefield::HexahedronFEMForceFieldAndMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > HexahedronFEMForceFieldAndMass3d;
+typedef  sofa::component::forcefield::HexahedronFEMForceFieldAndMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > HexahedronFEMForceFieldAndMass3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MatrixMass
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::Mat<3, 3, double> > MatrixMass3d;
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double>, sofa::defaulttype::Mat<2, 2, double> > MatrixMass2d;
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double>, sofa::defaulttype::Mat<1, 1, double> > MatrixMass1d;
+typedef  sofa::component::mass::MatrixMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,double>, sofa::defaulttype::Vec<1,double>,double>, sofa::defaulttype::Mat<1,1,double> > MatrixMass1d;
+typedef  sofa::component::mass::MatrixMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,double>, sofa::defaulttype::Vec<2,double>,double>, sofa::defaulttype::Mat<2,2,double> > MatrixMass2d;
+typedef  sofa::component::mass::MatrixMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double>, sofa::defaulttype::Mat<3,3,double> > MatrixMass3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MeshMatrixMass
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, double> MeshMatrixMass3d;
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double>, double> MeshMatrixMass2d;
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double>, double> MeshMatrixMass1d;
+typedef  sofa::component::mass::MeshMatrixMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,double>, sofa::defaulttype::Vec<1,double>,double>,double> MeshMatrixMass1d;
+typedef  sofa::component::mass::MeshMatrixMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,double>, sofa::defaulttype::Vec<2,double>,double>,double> MeshMatrixMass2d;
+typedef  sofa::component::mass::MeshMatrixMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double>,double> MeshMatrixMass3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for NonUniformHexahedralFEMForceFieldAndMass
+typedef  sofa::component::forcefield::NonUniformHexahedralFEMForceFieldAndMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > NonUniformHexahedralFEMForceFieldAndMass3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for NonUniformHexahedronFEMForceFieldAndMass
+typedef  sofa::component::forcefield::NonUniformHexahedronFEMForceFieldAndMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > NonUniformHexahedronFEMForceFieldAndMass3d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for NonUniformHexahedronFEMForceFieldDensity
+typedef  sofa::component::forcefield::NonUniformHexahedronFEMForceFieldDensity< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double> > NonUniformHexahedronFEMForceFieldDensity3d;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for UniformMass
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, double> UniformMass3d;
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double>, double> UniformMass2d;
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double>, double> UniformMass1d;
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double>, double> UniformMass6d;
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdRigidTypes<3, double>, sofa::defaulttype::RigidMass<3, double> > UniformMassRigid3d;
-typedef sofa::component::mass::UniformMass<sofa::defaulttype::StdRigidTypes<2, double>, sofa::defaulttype::RigidMass<2, double> > UniformMassRigid2d;
+typedef  sofa::component::mass::UniformMass< sofa::defaulttype::StdRigidTypes<3,double>, sofa::defaulttype::RigidMass<3,double> > UniformMassRigid3d;
+typedef  sofa::component::mass::UniformMass< sofa::defaulttype::StdRigidTypes<2,double>, sofa::defaulttype::RigidMass<2,double> > UniformMassRigid2d;
+typedef  sofa::component::mass::UniformMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,double>, sofa::defaulttype::Vec<1,double>,double>,double> UniformMass1d;
+typedef  sofa::component::mass::UniformMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,double>, sofa::defaulttype::Vec<2,double>,double>,double> UniformMass2d;
+typedef  sofa::component::mass::UniformMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,double>, sofa::defaulttype::Vec<3,double>,double>,double> UniformMass3d;
+typedef  sofa::component::mass::UniformMass< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,double>, sofa::defaulttype::Vec<6,double>,double>,double> UniformMass6d;
 
 
 
 
 
 #ifndef SOFA_FLOAT
-typedef DiagonalMass3d DiagonalMass3;
-typedef DiagonalMass2d DiagonalMass2;
-typedef DiagonalMass1d DiagonalMass1;
 typedef DiagonalMassRigid3d DiagonalMassRigid3;
 typedef DiagonalMassRigid2d DiagonalMassRigid2;
+typedef DiagonalMass1d DiagonalMass1;
+typedef DiagonalMass2d DiagonalMass2;
+typedef DiagonalMass3d DiagonalMass3;
+typedef HexahedralFEMForceFieldAndMass3d HexahedralFEMForceFieldAndMass3;
+typedef HexahedronCompositeFEMForceFieldAndMass3d HexahedronCompositeFEMForceFieldAndMass3;
 typedef HexahedronFEMForceFieldAndMass3d HexahedronFEMForceFieldAndMass3;
-typedef MatrixMass3d MatrixMass3;
-typedef MatrixMass2d MatrixMass2;
 typedef MatrixMass1d MatrixMass1;
-typedef MeshMatrixMass3d MeshMatrixMass3;
-typedef MeshMatrixMass2d MeshMatrixMass2;
+typedef MatrixMass2d MatrixMass2;
+typedef MatrixMass3d MatrixMass3;
 typedef MeshMatrixMass1d MeshMatrixMass1;
-typedef UniformMass3d UniformMass3;
-typedef UniformMass2d UniformMass2;
-typedef UniformMass1d UniformMass1;
-typedef UniformMass6d UniformMass6;
+typedef MeshMatrixMass2d MeshMatrixMass2;
+typedef MeshMatrixMass3d MeshMatrixMass3;
+typedef NonUniformHexahedralFEMForceFieldAndMass3d NonUniformHexahedralFEMForceFieldAndMass3;
+typedef NonUniformHexahedronFEMForceFieldAndMass3d NonUniformHexahedronFEMForceFieldAndMass3;
+typedef NonUniformHexahedronFEMForceFieldDensity3d NonUniformHexahedronFEMForceFieldDensity3;
 typedef UniformMassRigid3d UniformMassRigid3;
 typedef UniformMassRigid2d UniformMassRigid2;
+typedef UniformMass1d UniformMass1;
+typedef UniformMass2d UniformMass2;
+typedef UniformMass3d UniformMass3;
+typedef UniformMass6d UniformMass6;
 #endif
 
 #endif

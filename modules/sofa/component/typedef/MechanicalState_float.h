@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,14 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
+
 
 #include <sofa/component/container/MechanicalObject.h>
 
@@ -44,24 +52,24 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MechanicalObject
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > MechanicalObject3f;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > MechanicalObject2f;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MechanicalObject1f;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > MechanicalObject6f;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, float> > MechanicalObjectRigid3f;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<2, float> > MechanicalObjectRigid2f;
+typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdRigidTypes<2,float> > MechanicalObjectRigid2f;
+typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdRigidTypes<3,float> > MechanicalObjectRigid3f;
+typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > MechanicalObject1f;
+typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<2,float>, sofa::defaulttype::Vec<2,float>,float> > MechanicalObject2f;
+typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > MechanicalObject3f;
+typedef  sofa::component::container::MechanicalObject< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<6,float>, sofa::defaulttype::Vec<6,float>,float> > MechanicalObject6f;
 
 
 
 
 
 #ifdef SOFA_FLOAT
-typedef MechanicalObject3f MechanicalObject3;
-typedef MechanicalObject2f MechanicalObject2;
-typedef MechanicalObject1f MechanicalObject1;
-typedef MechanicalObject6f MechanicalObject6;
-typedef MechanicalObjectRigid3f MechanicalObjectRigid3;
 typedef MechanicalObjectRigid2f MechanicalObjectRigid2;
+typedef MechanicalObjectRigid3f MechanicalObjectRigid3;
+typedef MechanicalObject1f MechanicalObject1;
+typedef MechanicalObject2f MechanicalObject2;
+typedef MechanicalObject3f MechanicalObject3;
+typedef MechanicalObject6f MechanicalObject6;
 #endif
 
 #endif

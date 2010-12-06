@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,14 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
+
 
 #include <sofa/component/visualmodel/DrawV.h>
 #include <sofa/component/visualmodel/OglModel.h>
@@ -48,31 +56,31 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for DrawV
-typedef sofa::component::visualmodel::DrawV DrawVExt3f;
+typedef  sofa::component::visualmodel::DrawV DrawVExt3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for OglModel
-typedef sofa::component::visualmodel::OglModel OglModelExt3f;
+typedef  sofa::component::visualmodel::OglModel OglModelExt3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for OglShaderVisualModel
-typedef sofa::component::visualmodel::OglShaderVisualModel OglShaderVisualModelExt3f;
+typedef  sofa::component::visualmodel::OglShaderVisualModel OglShaderVisualModelExt3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for OglTetrahedralModel
-typedef sofa::component::visualmodel::OglTetrahedralModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > OglTetrahedralModel3f;
+typedef  sofa::component::visualmodel::OglTetrahedralModel< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > OglTetrahedralModel3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for VisualModelImpl
-typedef sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
+typedef  sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
 
 
 

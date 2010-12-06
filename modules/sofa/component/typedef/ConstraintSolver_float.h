@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,14 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
+
 
 #include <sofa/component/constraintset/LinearSolverConstraintCorrection.h>
 #include <sofa/component/constraintset/PrecomputedConstraintCorrection.h>
@@ -46,40 +54,40 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LinearSolverConstraintCorrection
-typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > LinearSolverConstraintCorrection3f;
-typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LinearSolverConstraintCorrection1f;
-typedef sofa::component::constraintset::LinearSolverConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > LinearSolverConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::LinearSolverConstraintCorrection< sofa::defaulttype::StdRigidTypes<3,float> > LinearSolverConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::LinearSolverConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > LinearSolverConstraintCorrection1f;
+typedef  sofa::component::constraintset::LinearSolverConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > LinearSolverConstraintCorrection3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for PrecomputedConstraintCorrection
-typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PrecomputedConstraintCorrection3f;
-typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > PrecomputedConstraintCorrection1f;
-typedef sofa::component::constraintset::PrecomputedConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > PrecomputedConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::PrecomputedConstraintCorrection< sofa::defaulttype::StdRigidTypes<3,float> > PrecomputedConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::PrecomputedConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > PrecomputedConstraintCorrection1f;
+typedef  sofa::component::constraintset::PrecomputedConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > PrecomputedConstraintCorrection3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for UncoupledConstraintCorrection
-typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > UncoupledConstraintCorrection1f;
-typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > UncoupledConstraintCorrection3f;
-typedef sofa::component::constraintset::UncoupledConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, float> > UncoupledConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::UncoupledConstraintCorrection< sofa::defaulttype::StdRigidTypes<3,float> > UncoupledConstraintCorrectionRigid3f;
+typedef  sofa::component::constraintset::UncoupledConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > UncoupledConstraintCorrection1f;
+typedef  sofa::component::constraintset::UncoupledConstraintCorrection< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<3,float>, sofa::defaulttype::Vec<3,float>,float> > UncoupledConstraintCorrection3f;
 
 
 
 
 
 #ifdef SOFA_FLOAT
-typedef LinearSolverConstraintCorrection3f LinearSolverConstraintCorrection3;
-typedef LinearSolverConstraintCorrection1f LinearSolverConstraintCorrection1;
 typedef LinearSolverConstraintCorrectionRigid3f LinearSolverConstraintCorrectionRigid3;
-typedef PrecomputedConstraintCorrection3f PrecomputedConstraintCorrection3;
-typedef PrecomputedConstraintCorrection1f PrecomputedConstraintCorrection1;
+typedef LinearSolverConstraintCorrection1f LinearSolverConstraintCorrection1;
+typedef LinearSolverConstraintCorrection3f LinearSolverConstraintCorrection3;
 typedef PrecomputedConstraintCorrectionRigid3f PrecomputedConstraintCorrectionRigid3;
+typedef PrecomputedConstraintCorrection1f PrecomputedConstraintCorrection1;
+typedef PrecomputedConstraintCorrection3f PrecomputedConstraintCorrection3;
+typedef UncoupledConstraintCorrectionRigid3f UncoupledConstraintCorrectionRigid3;
 typedef UncoupledConstraintCorrection1f UncoupledConstraintCorrection1;
 typedef UncoupledConstraintCorrection3f UncoupledConstraintCorrection3;
-typedef UncoupledConstraintCorrectionRigid3f UncoupledConstraintCorrectionRigid3;
 #endif
 
 #endif

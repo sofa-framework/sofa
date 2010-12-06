@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2010 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,8 +37,18 @@
 #include <sofa/defaulttype/Mat.h>
 
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypesBase.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
+#ifdef SOFA_GPU_OPENCL
+#include <sofa/gpu/opencl/OpenCLTypes.h>
+#endif
+
 
 #include <sofa/component/controller/EdgeSetController.h>
+#include <sofa/component/controller/HandStateController.h>
+#include <sofa/component/controller/JointSpringController.h>
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/component/controller/MechanicalStateController.h>
 
@@ -46,21 +56,34 @@
 
 //---------------------------------------------------------------------------------------------
 //Typedef for EdgeSetController
-typedef sofa::component::controller::EdgeSetController<sofa::defaulttype::StdRigidTypes<3, float> > EdgeSetControllerRigid3f;
+typedef  sofa::component::controller::EdgeSetController< sofa::defaulttype::StdRigidTypes<3,float> > EdgeSetControllerRigid3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for HandStateController
+typedef  sofa::component::controller::HandStateController< sofa::defaulttype::StdRigidTypes<3,float> > HandStateControllerRigid3f;
+typedef  sofa::component::controller::HandStateController< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > HandStateController1f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for JointSpringController
+typedef  sofa::component::controller::JointSpringController< sofa::defaulttype::StdRigidTypes<3,float> > JointSpringControllerRigid3f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for LCPForceFeedback
-typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LCPForceFeedback1f;
-typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::StdRigidTypes<3, float> > LCPForceFeedbackRigid3f;
+typedef  sofa::component::controller::LCPForceFeedback< sofa::defaulttype::StdRigidTypes<3,float> > LCPForceFeedbackRigid3f;
+typedef  sofa::component::controller::LCPForceFeedback< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > LCPForceFeedback1f;
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for MechanicalStateController
-typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > MechanicalStateController1f;
-typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype::StdRigidTypes<3, float> > MechanicalStateControllerRigid3f;
+typedef  sofa::component::controller::MechanicalStateController< sofa::defaulttype::StdRigidTypes<3,float> > MechanicalStateControllerRigid3f;
+typedef  sofa::component::controller::MechanicalStateController< sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<1,float>, sofa::defaulttype::Vec<1,float>,float> > MechanicalStateController1f;
 
 
 
@@ -68,10 +91,13 @@ typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype
 
 #ifdef SOFA_FLOAT
 typedef EdgeSetControllerRigid3f EdgeSetControllerRigid3;
-typedef LCPForceFeedback1f LCPForceFeedback1;
+typedef HandStateControllerRigid3f HandStateControllerRigid3;
+typedef HandStateController1f HandStateController1;
+typedef JointSpringControllerRigid3f JointSpringControllerRigid3;
 typedef LCPForceFeedbackRigid3f LCPForceFeedbackRigid3;
-typedef MechanicalStateController1f MechanicalStateController1;
+typedef LCPForceFeedback1f LCPForceFeedback1;
 typedef MechanicalStateControllerRigid3f MechanicalStateControllerRigid3;
+typedef MechanicalStateController1f MechanicalStateController1;
 #endif
 
 #endif
