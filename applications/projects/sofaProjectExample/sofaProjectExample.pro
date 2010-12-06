@@ -40,7 +40,7 @@ macx {
 	QMAKE_POST_LINK = ln -sf "$$TARGET".app/Contents/MacOS/"$$TARGET" $$DESTDIR/"$$TARGET" ;
 }
 
-!macx : RC_FILE = sofa.rc
+# !macx : RC_FILE = sofa.rc
 
 SOURCES = Main.cpp 
 HEADERS = 
