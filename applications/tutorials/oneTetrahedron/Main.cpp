@@ -49,6 +49,10 @@ using sofa::simulation::Node;
 using sofa::component::odesolver::EulerSolver;
 using sofa::component::topology::MeshTopology;
 using sofa::component::visualmodel::OglModel;
+using sofa::core::objectmodel::Data;
+using sofa::helper::ReadAccessor;
+using sofa::helper::WriteAccessor;
+using sofa::core::VecId;
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -76,7 +80,8 @@ int main(int argc, char** argv)
     groot->addObject(DOF);
     DOF->resize(4);
     DOF->setName("DOF");
-    VecCoord3& x = *DOF->getX();
+    //get write access to the position vector of mechanical object DOF
+    WriteAccessor<Data<VecCoord3> > x = *DOF->write(VecId::position());
 
     x[0] = Coord3(0,10,0);
     x[1] = Coord3(10,0,0);
@@ -138,6 +143,7 @@ int main(int argc, char** argv)
     groot->setShowForceFields(true);
     groot->setShowWireFrame(true);
     groot->setShowVisualModels(true);
+    groot->setShowBehaviorModels(true);
 
 
 
