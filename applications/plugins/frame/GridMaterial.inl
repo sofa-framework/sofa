@@ -541,7 +541,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const Vec3& point,VUI&
         // get the nbrefs most relevant weights in the voronoi region of point
         unsigned int maxlabel=0;
         for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbrefs; j++) { if(weightsRepartition[i][j]!=0) if(repartition[i][j]>maxlabel) maxlabel=repartition[i][j]; }
-        VD W(maxlabel+1,0);
+        VD W((int)(maxlabel+1),0);
         for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbrefs; j++) if(weightsRepartition[i][j]!=0) W[repartition[i][j]]+=weightsRepartition[i][j];
 
         for (i=0; i<nbrefs; i++) w[i]=0;

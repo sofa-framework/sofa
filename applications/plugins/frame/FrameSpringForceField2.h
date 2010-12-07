@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/mapping/FrameStorage.h>
+#include "FrameStorage.h"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
