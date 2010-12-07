@@ -53,25 +53,6 @@ extern inline behavior::OdeSolver* getOdeSolver(objectmodel::BaseContext* contex
 {
     return context->get<behavior::OdeSolver>();
 }
-extern inline behavior::LinearSolver* getLinearSolver(objectmodel::BaseContext* context)
-{
-    return context->get<behavior::LinearSolver>();
-}
-
-extern inline behavior::LinearSolver* getLinearSolverByName(objectmodel::BaseContext* context,std::string name)
-{
-    std::vector<sofa::core::behavior::LinearSolver*> solvers;
-    context->get<behavior::LinearSolver>(&solvers,objectmodel::BaseContext::SearchDown);
-
-    for (unsigned int i=0; i<solvers.size(); ++i)
-    {
-        if (solvers[i]->getName() == name)
-        {
-            return solvers[i];
-        }
-    }
-    return NULL;
-}
 
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
@@ -116,7 +97,7 @@ public:
 
     // new API for non building the constraint system during solving process //
     Data< bool > wire_optimization;
-    Data <std::string> solverName;
+    Data< helper::vector< std::string > >  solverName;
 
     void verify_constraints();
 
@@ -165,7 +146,7 @@ public:
 protected:
     behavior::MechanicalState<DataTypes> *mstate;
     behavior::OdeSolver* odesolver;
-    behavior::LinearSolver* linearsolver;
+    std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
 
     linearsolver::SparseMatrix<SReal> J; ///< constraint matrix
     linearsolver::FullVector<SReal> F; ///< forces computed from the constraints
