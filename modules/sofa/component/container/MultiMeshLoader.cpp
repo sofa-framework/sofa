@@ -46,7 +46,12 @@ int MultiMeshLoaderClass = core::RegisterObject("Generic multiple Mesh Loader")
 
 MultiMeshLoader::MultiMeshLoader()
     : filenameList(initData(&filenameList,"filenamelist","list of the filenames of the objects"))
-{}
+    , nbPointsPerMesh(initData(&nbPointsPerMesh,"nbPointsPerMesh","the number of points per mesh"))
+    , nbPointsTotal(initData(&nbPointsTotal,"nbPointsTotal","the total number of points loaded"))
+{
+    nbPointsPerMesh.setReadOnly(true);
+    nbPointsTotal.setReadOnly(true);
+}
 
 void MultiMeshLoader::parse(core::objectmodel::BaseObjectDescription* arg)
 {
@@ -59,13 +64,15 @@ void MultiMeshLoader::parse(core::objectmodel::BaseObjectDescription* arg)
             pushMesh(filenameList.getValue()[i].c_str());
         }
     }
+    nbPointsTotal.setValue(seqPoints.size());
 }
 
 void MultiMeshLoader::pushMesh(const char* filename)
 {
     currentMeshIndex = seqPoints.size();
     load(filename);
-    nbPointsPerMesh.push_back(seqPoints.size() - currentMeshIndex);
+    nbPointsPerMesh.beginEdit()->push_back(seqPoints.size() - currentMeshIndex);
+    nbPointsPerMesh.endEdit();
 }
 
 
