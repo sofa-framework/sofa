@@ -94,13 +94,16 @@ public:
         return filenameList.getValue()[i];
     }
 
-    unsigned int getNbMeshs() { return filenameList.getValue().size(); }
-    unsigned int getNbPoints(unsigned int i) { return nbPointsPerMesh[i]; }
-
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
     /// adds a mesh to the loader
     void pushMesh(const char* filename);
+
+
+    sofa::core::objectmodel::DataFileNameVector filenameList;
+    Data< sofa::helper::vector<unsigned int> > nbPointsPerMesh;
+    Data< int > nbPointsTotal;
+
 
 protected:
     // helper::io::MeshTopologyLoader API
@@ -113,9 +116,9 @@ protected:
 
 protected:
 
-    sofa::core::objectmodel::DataFileNameVector filenameList;
 
-    sofa::helper::vector<unsigned int> nbPointsPerMesh;
+
+
     unsigned int currentMeshIndex;
 };
 
