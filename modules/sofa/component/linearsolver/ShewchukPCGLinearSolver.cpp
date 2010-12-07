@@ -299,7 +299,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
             sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
             if (preconditioners.size()>0)
             {
-                preconditioners[0]->setSystemLHVector(d);
+                preconditioners[0]->setSystemLHVector(s);
                 preconditioners[0]->setSystemRHVector(r);
                 preconditioners[0]->solveSystem();
             }
@@ -308,8 +308,8 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
                 Vector& t = *vtmp.createTempVector();
                 for (unsigned int i=1; i<preconditioners.size(); ++i)
                 {
-                    t = d;
-                    preconditioners[i]->setSystemLHVector(d);
+                    t = s;
+                    preconditioners[i]->setSystemLHVector(s);
                     preconditioners[i]->setSystemRHVector(t);
                     preconditioners[i]->solveSystem();
                 }
