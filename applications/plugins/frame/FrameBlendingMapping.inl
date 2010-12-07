@@ -52,10 +52,8 @@ using namespace sofa::defaulttype;
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to )
-#ifndef SOFA_DEV
     , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","Number of primitives influencing each point." ) )
     , repartition ( initData ( &repartition,"repartition","Repartition between input DOFs and skinned vertices." ) )
-#endif
     , weights ( initData ( &weights,"weights","weights list for the influences of the references Dofs" ) )
     , weightGradients ( initData ( &weightGradients,"weightGradients","weight gradients list for the influences of the references Dofs" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
