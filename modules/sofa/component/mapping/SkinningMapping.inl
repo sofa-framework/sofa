@@ -148,7 +148,7 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::computeDistances ()
 {
 #ifdef SOFA_DEV
-    if( this->computeAllMatrices.getValue() && distanceType.getValue().getSelectedId() != DISTANCE_EUCLIDIAN)
+    if( this->computeAllMatrices.getValue() && distanceType.getValue().getSelectedId() != SM_DISTANCE_EUCLIDIAN)
     {
         const VecInCoord& xfrom0 = *this->fromModel->getX0();
 
@@ -160,10 +160,10 @@ void SkinningMapping<TIn, TOut>::computeDistances ()
         if (this->computeAllMatrices.getValue())
         {
             sofa::helper::OptionsGroup* distOnGridanceTypeOption = distOnGrid->distanceType.beginEdit();
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC) distOnGridanceTypeOption->setSelectedItem(TYPE_GEODESIC);
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC) distOnGridanceTypeOption->setSelectedItem(TYPE_HARMONIC);
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION) distOnGridanceTypeOption->setSelectedItem(TYPE_STIFFNESS_DIFFUSION);
-            if ( distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC_STIFFNESS) distOnGridanceTypeOption->setSelectedItem(TYPE_HARMONIC_STIFFNESS);
+            if ( distanceType.getValue().getSelectedId() == SM_DISTANCE_GEODESIC) distOnGridanceTypeOption->setSelectedItem(TYPE_GEODESIC);
+            if ( distanceType.getValue().getSelectedId() == SM_DISTANCE_HARMONIC) distOnGridanceTypeOption->setSelectedItem(TYPE_HARMONIC);
+            if ( distanceType.getValue().getSelectedId() == SM_DISTANCE_STIFFNESS_DIFFUSION) distOnGridanceTypeOption->setSelectedItem(TYPE_STIFFNESS_DIFFUSION);
+            if ( distanceType.getValue().getSelectedId() == SM_DISTANCE_HARMONIC_STIFFNESS) distOnGridanceTypeOption->setSelectedItem(TYPE_HARMONIC_STIFFNESS);
             distOnGrid->distanceType.endEdit();
         }
         distOnGrid->computeDistanceMap ( tmpFrom );
@@ -181,7 +181,7 @@ void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
 
     switch ( distanceType.getValue().getSelectedId() )
     {
-    case DISTANCE_EUCLIDIAN:
+    case SM_DISTANCE_EUCLIDIAN:
     {
         const unsigned int& toSize = xto0.size();
         const unsigned int& fromSize = xfrom0.size();
@@ -201,10 +201,10 @@ void SkinningMapping<TIn, TOut>::getDistances( int xfromBegin)
         break;
     }
 #ifdef SOFA_DEV
-    case DISTANCE_GEODESIC:
-    case DISTANCE_HARMONIC:
-    case DISTANCE_STIFFNESS_DIFFUSION:
-    case DISTANCE_HARMONIC_STIFFNESS:
+    case SM_DISTANCE_GEODESIC:
+    case SM_DISTANCE_HARMONIC:
+    case SM_DISTANCE_STIFFNESS_DIFFUSION:
+    case SM_DISTANCE_HARMONIC_STIFFNESS:
     {
         GeoVecCoord goals;
         goals.resize ( xto0.size() );
@@ -288,17 +288,17 @@ template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::init()
 {
 #ifdef SOFA_DEV
-    if ( distanceType.getValue().getSelectedId() != DISTANCE_EUCLIDIAN)
+    if ( distanceType.getValue().getSelectedId() != SM_DISTANCE_EUCLIDIAN)
     {
         this->getContext()->get ( distOnGrid, core::objectmodel::BaseContext::SearchRoot );
         if ( !distOnGrid )
         {
             serr << "Can not find the DistanceOnGrid component: distances used are euclidian." << sendl;
-            distanceType.setValue( DISTANCE_EUCLIDIAN);
+            distanceType.setValue( SM_DISTANCE_EUCLIDIAN);
         }
     }
 #else
-    distanceType.beginEdit()->setSelectedItem(DISTANCE_EUCLIDIAN);
+    distanceType.beginEdit()->setSelectedItem(SM_DISTANCE_EUCLIDIAN);
     distanceType.endEdit();
 #endif
     const VecInCoord& xfrom = *this->fromModel->getX0();
@@ -389,7 +389,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
             {
                 int indexFrom = m_reps[nbRef*i+j];
 #ifdef SOFA_DEV
-                if ( distanceType.getValue().getSelectedId()  == DISTANCE_HARMONIC)
+                if ( distanceType.getValue().getSelectedId()  == SM_DISTANCE_HARMONIC)
                 {
                     m_weights[indexFrom][i] = distOnGrid->harmonicMaxValue.getValue() - distances[indexFrom][i];
                     if ( distances[indexFrom][i] < 0.0) distances[indexFrom][i] = 0.0;
@@ -923,7 +923,7 @@ void SkinningMapping<TIn, TOut>::insertFrame( const Coord& pos, const Quat& rot,
         distMax = this->newFrameDefaultCutOffDistance.getValue();
 
     // Compute geodesical/euclidian distance for this frame.
-    if ( this->distanceType.getValue().getSelectedId() == DISTANCE_GEODESIC || this->distanceType.getValue().getSelectedId() == DISTANCE_HARMONIC || this->distanceType.getValue().getSelectedId() == DISTANCE_STIFFNESS_DIFFUSION || this->distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS)
+    if ( this->distanceType.getValue().getSelectedId() == SM_DISTANCE_GEODESIC || this->distanceType.getValue().getSelectedId() == SM_DISTANCE_HARMONIC || this->distanceType.getValue().getSelectedId() == SM_DISTANCE_STIFFNESS_DIFFUSION || this->distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS)
         this->distOnGrid->addElt( newX0.getCenter(), beginPointSet, distMax);
     vector<double>& vRadius = (*this->newFrameWeightingRadius.beginEdit());
     vRadius.resize( indexFrom + 1);
@@ -1056,7 +1056,7 @@ void SkinningMapping<TIn, TOut>::computeWeight( VVD& w, VecVecCoord& dw, const C
 
     switch ( this->distanceType.getValue().getSelectedId()  )
     {
-    case DISTANCE_EUCLIDIAN:
+    case SM_DISTANCE_EUCLIDIAN:
     {
         dist.resize( xfrom0.size());
         ddist.resize( xfrom0.size());
@@ -1071,10 +1071,10 @@ void SkinningMapping<TIn, TOut>::computeWeight( VVD& w, VecVecCoord& dw, const C
         }
         break;
     }
-    case DISTANCE_GEODESIC:
-    case DISTANCE_HARMONIC:
-    case DISTANCE_STIFFNESS_DIFFUSION:
-    case DISTANCE_HARMONIC_STIFFNESS:
+    case SM_DISTANCE_GEODESIC:
+    case SM_DISTANCE_HARMONIC:
+    case SM_DISTANCE_STIFFNESS_DIFFUSION:
+    case SM_DISTANCE_HARMONIC_STIFFNESS:
     {
         GeoVecCoord goals;
         goals.push_back( x0);
@@ -1266,11 +1266,11 @@ void SkinningMapping<TIn, TOut>::changeSettingsDueToInsertion()
     this->setWeightsToInvDist();
     if( this->distOnGrid)
     {
-        this->distanceType.beginEdit()->setSelectedItem(DISTANCE_GEODESIC);
+        this->distanceType.beginEdit()->setSelectedItem(SM_DISTANCE_GEODESIC);
     }
     else
     {
-        this->distanceType.beginEdit()->setSelectedItem(DISTANCE_EUCLIDIAN);
+        this->distanceType.beginEdit()->setSelectedItem(SM_DISTANCE_EUCLIDIAN);
     }
 }
 

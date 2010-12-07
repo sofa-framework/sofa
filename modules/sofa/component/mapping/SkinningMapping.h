@@ -40,7 +40,6 @@
 #ifdef SOFA_DEV
 #include <sofa/component/topology/DistanceOnGrid.h>
 #include "FrameStorage.h"
-#include <../applications/plugins/frame/RigidFrameTypes.h>
 #include <../applications/plugins/frame/AffineTypes.h>
 #include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
@@ -61,11 +60,11 @@ using sofa::helper::SVector;
 using sofa::component::topology::DistanceOnGrid;
 #endif
 
-#define DISTANCE_EUCLIDIAN 0
-#define DISTANCE_GEODESIC 1
-#define DISTANCE_HARMONIC 2
-#define DISTANCE_STIFFNESS_DIFFUSION 3
-#define DISTANCE_HARMONIC_STIFFNESS 4
+#define SM_DISTANCE_EUCLIDIAN 0
+#define SM_DISTANCE_GEODESIC 1
+#define SM_DISTANCE_HARMONIC 2
+#define SM_DISTANCE_STIFFNESS_DIFFUSION 3
+#define SM_DISTANCE_HARMONIC_STIFFNESS 4
 
 #define WEIGHT_NONE 0
 #define WEIGHT_INVDIST_SQUARE 1
@@ -213,7 +212,6 @@ public:
 #endif
     typedef defaulttype::StdRigidTypes<N,InReal> RigidType;
 #ifdef SOFA_DEV
-    typedef defaulttype::StdRigidFrameTypes<N,InReal> RigidFrameType;
     typedef defaulttype::StdAffineTypes<N,InReal> AffineType;
     typedef defaulttype::StdQuadraticTypes<N,InReal> QuadraticType;
 #endif
@@ -366,8 +364,6 @@ protected:
 
     template<class T>
     inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(const RigidType&); // Useless parameter here to be compatible with gcc-4.0
-    template<class T>
-    inline typename enable_if<Equal<RigidFrameType, T> >::type precomputeMatrices(const RigidFrameType&); // Useless parameter here to be compatible with gcc-4.0
     template<class T>
     inline typename enable_if<Equal<AffineType, T> >::type precomputeMatrices(const AffineType&); // Useless parameter here to be compatible with gcc-4.0
     template<class T>

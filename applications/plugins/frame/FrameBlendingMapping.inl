@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_FrameBlendingMapping_INL
-#define SOFA_COMPONENT_MAPPING_FrameBlendingMapping_INL
+#ifndef SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
 
 #include "FrameBlendingMapping.h"
+#include <sofa/component/mapping/SkinningMapping.inl>
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/gl/Axis.h>
@@ -53,33 +54,9 @@ using namespace sofa::defaulttype;
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to )
-    , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","Number of primitives influencing each point." ) )
-    , repartition ( initData ( &repartition,"repartition","Repartition between input DOFs and skinned vertices." ) )
-    , weights ( initData ( &weights,"weights","weights list for the influences of the references Dofs" ) )
-    , weightGradients ( initData ( &weightGradients,"weightGradients","weight gradients list for the influences of the references Dofs" ) )
-    , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
-    , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
-    , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
-    , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
-    , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
-    , showWeights ( initData ( &showWeights, false, "showWeights","Show coeficients." ) )
-    , showGammaCorrection ( initData ( &showGammaCorrection, 1.0, "showGammaCorrection","Correction of the Gamma by a power" ) )
-    , showWeightsValues ( initData ( &showWeightsValues, false, "showWeightsValues","Show coeficients values." ) )
-    , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
-    , showValuesNbDecimals ( initData ( &showValuesNbDecimals, 0, "showValuesNbDecimals","Multiply floating point by 10^n." ) )
-    , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
-    , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
-    , showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.0001, "showGradientsScaleFactor","Gradients Scale Factor." ) )
+    , targetFrameNumber ( initData ( &targetFrameNumber, false, "targetFrameNumber","Target frames number" ) )
+    , targetSampleNumber ( initData ( &targetSampleNumber, false, "targetSampleNumber","Target samples number" ) )
 {
-
-
-    maskFrom = NULL;
-    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
-        maskFrom = &stateFrom->forceMask;
-    maskTo = NULL;
-    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
-        maskTo = &stateTo->forceMask;
-
 }
 
 template <class TIn, class TOut>
@@ -119,57 +96,6 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
 {
     serr<<"WARNING : FrameBlendingMapping<TIn, TOut>::applyJT does nothing " << endl;
-}
-
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::draw()
-{
-    const typename Out::VecCoord& xto = *this->toModel->getX();
-    const typename In::VecCoord& xfrom = *this->fromModel->getX();
-    const unsigned int nbRef = this->nbRefs.getValue();
-    const vector<unsigned int>& m_reps = this->repartition.getValue();
-    const vector<Real>& m_weights = weights.getValue();
-//                const vector<SpatialCoord>& dw = weightGradients.getValue();
-    const int valueScale = showValuesNbDecimals.getValue();
-    int scale = 1;
-    for (int i = 0; i < valueScale; ++i) scale *= 10;
-    const double textScale = showTextScaleFactor.getValue();
-
-    glDisable ( GL_LIGHTING );
-
-    if ( this->getShow() )
-    {
-        // Display mapping links between in and out elements
-        glDisable ( GL_LIGHTING );
-        glPointSize ( 1 );
-        glColor4f ( 1,1,0,1 );
-        glBegin ( GL_LINES );
-
-        for ( unsigned int i=0; i<xto.size(); i++ )
-        {
-            for ( unsigned int m=0 ; m<nbRef; m++ )
-            {
-                const int idxReps=m_reps[nbRef *i+m];
-                double coef = m_weights[nbRef *i+m];
-                if ( coef > 0.0 )
-                {
-                    glColor4d ( coef,coef,0,1 );
-                    helper::gl::glVertexT ( xfrom[idxReps].getCenter() );
-                    helper::gl::glVertexT ( Out::center(xto[i]) );
-                }
-            }
-        }
-        glEnd();
-    }
-
-    // Display  m_reps for each points
-    if ( showReps.getValue())
-    {
-        for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( m_reps[nbRef*i+0]*scale, Out::center(xto[i]), textScale );
-    }
-
-
 }
 
 
