@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_FrameBlendingMapping_H
 #define SOFA_COMPONENT_MAPPING_FrameBlendingMapping_H
 
+#include "initFrame.h"
 #include <sofa/core/Mapping.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -115,15 +116,15 @@ public:
 
     void init();
 
-    void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
-    void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
-    void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
-    void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
+    virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
+    virtual void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 
     void draw();
 
 
-    virtual bool inverseSkinning( InCoord& /*X0*/, InCoord& /*X*/, const InCoord& /*Xtarget*/) {}
+    //   virtual bool inverseSkinning( InCoord& /*X0*/, InCoord& /*X*/, const InCoord& /*Xtarget*/){}
 
 protected:
 //	void M33toV6(Vec6 &v,const Mat33& M) const;
@@ -145,19 +146,21 @@ protected:
 using sofa::defaulttype::Affine3dTypes;
 using sofa::defaulttype::Affine3fTypes;
 
+#if defined(WIN32) && !defined(SOFA_BUILD_FRAME)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API FrameBlendingMapping< Affine3dTypes, sofa::defaulttype::DeformationGradient332dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, sofa::defaulttype::DeformationGradient332dTypes >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API FrameBlendingMapping< Affine3fTypes, sofa::defaulttype::DeformationGradient332fTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API FrameBlendingMapping< Affine3fTypes, ExtVec3fTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, sofa::defaulttype::DeformationGradient332fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, ExtVec3fTypes >;
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API FrameBlendingMapping< Affine3fTypes, Vec3dTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3dTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
+#endif
 
 
 
