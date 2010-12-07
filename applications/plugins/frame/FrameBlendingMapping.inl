@@ -33,6 +33,7 @@
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/core/Mapping.inl>
 
 #include <string>
 #include <iostream>

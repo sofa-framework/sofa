@@ -160,13 +160,13 @@ double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoo
     double e = 0;
     const MassVector &masses= f_mass.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Vec<InDerivDim> theGravity;
+    Vec<3,Real> g ( this->getContext()->getLocalGravity() );
+    Vec<InDerivDim,Real> theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
     for ( unsigned int i=0; i<x.size(); i++ )
     {
         Vec<InDerivDim> translation;
-        translation[0]=x[i].getCenter()[0],  translation[0]=x[1].getCenter()[1], translation[2]=x[i].getCenter()[2];
+        translation[0]=(float)x[i].getCenter()[0],  translation[0]=(float)x[1].getCenter()[1], translation[2]=(float)x[i].getCenter()[2];
         const MatInxIn& m = masses[i].inertiaMatrix;
         e -= translation * (m * theGravity);
     }

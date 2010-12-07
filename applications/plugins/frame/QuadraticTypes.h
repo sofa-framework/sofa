@@ -828,7 +828,7 @@ defaulttype::QuadraticCoord<3, float>,
     finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + getVCenter(v) * 2 ) ) * mass.mass;
 
     defaulttype::VQuadratic3float result;
-    result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
+    result[0]=(float)finertia[0]; result[1]=(float)finertia[1]; result[2]=(float)finertia[2];
     return result;
     /// \todo replace zero by Jomega.cross(omega)
 }

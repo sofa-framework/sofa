@@ -30,16 +30,17 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-
 #include <sofa/helper/SVector.h>
-
-#include <vector>
-
-#include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/component.h>
+#include <vector>
 
 #include "AffineTypes.h"
 #include "DeformationGradientTypes.h"
+
+#include "NewMaterial.h"
+#include "GridMaterial.h"
+
 
 namespace sofa
 {
@@ -51,6 +52,8 @@ namespace mapping
 {
 
 using helper::vector;
+using sofa::component::material::MaterialTypes;
+using sofa::component::material::GridMaterial;
 
 /** This class is not supposed to be instanciated. It is only used to contain what is common between its derived classes.
   */
@@ -82,11 +85,15 @@ public:
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Real InReal;
 
+    typedef MaterialTypes<3,Real> materialType;
+    typedef typename sofa::component::material::GridMaterial<materialType>::Vec3  materialCoordType;
+    typedef typename sofa::component::material::GridMaterial<materialType>::VecVec3  materialVecCoordType;
 
 
 protected:
-    Data<unsigned int> nbRefs; // Number of primitives influencing each point.
+    Data<unsigned int> nbRefs;	// Maximum number of primitives influencing each point.
     Data<vector<unsigned int> > repartition; // indices of primitives influencing each point.
+
     Data<vector<Real> > weights;
     Data<vector<SpatialCoord > > weightGradients;
 
@@ -109,6 +116,9 @@ public:
     Data<bool> showGradients;
     Data<double> showGradientsScaleFactor;
 
+    GridMaterial< materialType>* gridMaterial;
+    Data<unsigned int> targetFrameNumber;
+    Data<unsigned int> targetSampleNumber;
 
 public:
     FrameBlendingMapping (core::State<In>* from, core::State<Out>* to );
