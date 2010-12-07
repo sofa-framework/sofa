@@ -44,10 +44,12 @@ using namespace sofa::defaulttype;
 int MonitorClass = core::RegisterObject("Monitoring of particles")
 #ifndef SOFA_FLOAT
         .add< Monitor<Vec3dTypes> >(true)
+        .add< Monitor<Vec6dTypes> >()
         .add< Monitor<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< Monitor<Vec3fTypes> >()
+        .add< Monitor<Vec6fTypes> >()
         .add< Monitor<Rigid3fTypes> >()
 #endif
         ;
@@ -56,10 +58,12 @@ int MonitorClass = core::RegisterObject("Monitoring of particles")
 
 #ifndef SOFA_FLOAT
 template class Monitor<Vec3dTypes>;
+template class Monitor<Vec6dTypes>;
 template class Monitor<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class Monitor<Vec3fTypes>;
+template class Monitor<Vec6fTypes>;
 template class Monitor<Rigid3fTypes>;
 #endif
 

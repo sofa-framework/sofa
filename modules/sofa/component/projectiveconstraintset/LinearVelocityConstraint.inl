@@ -360,6 +360,10 @@ template <>
 void LinearVelocityConstraint<Rigid3dTypes >::draw();
 template <>
 void LinearVelocityConstraint<Rigid3fTypes >::draw();
+template <>
+void LinearVelocityConstraint<Vec6dTypes >::draw();
+template <>
+void LinearVelocityConstraint<Vec6fTypes >::draw();
 
 } // namespace constraint
 

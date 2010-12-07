@@ -60,6 +60,20 @@ void LinearVelocityConstraint<Rigid3dTypes>::draw()
         gl::glVertexT(x[*it].getCenter());
     glEnd();
 }
+template <>
+void LinearVelocityConstraint<Vec6dTypes>::draw()
+{
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+    if (!getContext()->getShowBehaviorModels()) return;
+    const VecCoord& x = *mstate->getX();
+    glDisable (GL_LIGHTING);
+    glPointSize(10);
+    glColor4f (0,0.5,0.5,0);
+    glBegin (GL_POINTS);
+    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        gl::glVertexT(Vec<3,double>(x[*it][0], x[*it][1], x[*it][2]));
+    glEnd();
+}
 #endif
 #ifndef SOFA_DOUBLE
 template <>
@@ -76,6 +90,20 @@ void LinearVelocityConstraint<Rigid3fTypes>::draw()
         gl::glVertexT(x[*it].getCenter());
     glEnd();
 }
+template <>
+void LinearVelocityConstraint<Vec6fTypes>::draw()
+{
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+    if (!getContext()->getShowBehaviorModels()) return;
+    const VecCoord& x = *mstate->getX();
+    glDisable (GL_LIGHTING);
+    glPointSize(10);
+    glColor4f (0,0.5,0.5,0);
+    glBegin (GL_POINTS);
+    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+    glEnd();
+}
 #endif
 
 //declaration of the class, for the factory
@@ -87,14 +115,14 @@ int LinearVelocityConstraintClass = core::RegisterObject("apply velocity to give
         .add< LinearVelocityConstraint<Vec3dTypes> >()
         .add< LinearVelocityConstraint<Vec2dTypes> >()
         .add< LinearVelocityConstraint<Vec1dTypes> >()
-//.add< LinearVelocityConstraint<Vec6dTypes> >()
+        .add< LinearVelocityConstraint<Vec6dTypes> >()
         .add< LinearVelocityConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< LinearVelocityConstraint<Vec3fTypes> >()
         .add< LinearVelocityConstraint<Vec2fTypes> >()
         .add< LinearVelocityConstraint<Vec1fTypes> >()
-//.add< LinearVelocityConstraint<Vec6fTypes> >()
+        .add< LinearVelocityConstraint<Vec6fTypes> >()
         .add< LinearVelocityConstraint<Rigid3fTypes> >()
 #endif
         ;
@@ -103,14 +131,14 @@ int LinearVelocityConstraintClass = core::RegisterObject("apply velocity to give
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec3dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec2dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec1dTypes>;
-//template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec6dTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec6dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec3fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec2fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec1fTypes>;
-//template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec6fTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Vec6fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearVelocityConstraint<Rigid3fTypes>;
 #endif
 

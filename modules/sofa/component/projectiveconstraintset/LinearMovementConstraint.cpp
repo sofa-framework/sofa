@@ -49,14 +49,14 @@ int LinearMovementConstraintClass = core::RegisterObject("translate given partic
         .add< LinearMovementConstraint<Vec3dTypes> >()
         .add< LinearMovementConstraint<Vec2dTypes> >()
         .add< LinearMovementConstraint<Vec1dTypes> >()
-//.add< LinearMovementConstraint<Vec6dTypes> >()
+        .add< LinearMovementConstraint<Vec6dTypes> >()
         .add< LinearMovementConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< LinearMovementConstraint<Vec3fTypes> >()
         .add< LinearMovementConstraint<Vec2fTypes> >()
         .add< LinearMovementConstraint<Vec1fTypes> >()
-//.add< LinearMovementConstraint<Vec6fTypes> >()
+        .add< LinearMovementConstraint<Vec6fTypes> >()
         .add< LinearMovementConstraint<Rigid3fTypes> >()
 #endif
         ;
@@ -65,14 +65,14 @@ int LinearMovementConstraintClass = core::RegisterObject("translate given partic
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec3dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec2dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec1dTypes>;
-//template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec6dTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec6dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec3fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec2fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec1fTypes>;
-//template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec6fTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Vec6fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API LinearMovementConstraint<Rigid3fTypes>;
 #endif
 
