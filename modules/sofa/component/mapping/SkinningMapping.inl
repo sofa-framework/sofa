@@ -222,8 +222,10 @@ void SkinningMapping<TIn, TOut>::normalizeWeights()
     for (unsigned int i = 0; i < xtoSize; ++i)
     {
         double sumWeights = 0,wn;
-        Vec3 sumGrad,dwn;			sumGrad.fill(0);
-        Mat33 sumGrad2,ddwn;		sumGrad2.fill(0);
+        Vec3 sumGrad,dwn;
+        sumGrad.fill(0);
+        Mat33 sumGrad2,ddwn;
+        sumGrad2.fill(0);
 
         // Compute norm
         for (unsigned int j = 0; j < nbRef; ++j)
@@ -234,12 +236,12 @@ void SkinningMapping<TIn, TOut>::normalizeWeights()
         }
 
         // Normalise
-        if(sumWeights!=0)
+        if (sumWeights!=0)
             for (unsigned int j = 0; j < nbRef; ++j)
             {
                 wn=m_weights[i][j]/sumWeights;
                 dwn=(m_dweight[i][j] - sumGrad*wn)/sumWeights;
-                for(unsigned int o=0; o<3; o++) for(unsigned int p=0; p<3; p++) ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
+                for (unsigned int o=0; o<3; o++) for (unsigned int p=0; p<3; p++) ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
                 m_ddweight[i][j]=ddwn;
                 m_dweight[i][j]=dwn;
                 m_weights[i][j] =wn;
@@ -335,9 +337,12 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
     const unsigned int& nbRef = this->nbRefs.getValue();
     const vector<unsigned int>& m_reps = this->repartition.getValue();
 
-    m_weights.resize ( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_weights[i].resize ( nbRef );
-    m_dweight.resize ( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_dweight[i].resize ( nbRef );
-    m_ddweight.resize( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_ddweight[i].resize( nbRef );
+    m_weights.resize ( xto.size() );
+    for ( unsigned int i=0; i<xto.size(); i++ )        m_weights[i].resize ( nbRef );
+    m_dweight.resize ( xto.size() );
+    for ( unsigned int i=0; i<xto.size(); i++ )        m_dweight[i].resize ( nbRef );
+    m_ddweight.resize( xto.size() );
+    for ( unsigned int i=0; i<xto.size(); i++ )        m_ddweight[i].resize( nbRef );
 
     switch ( wheightingType.getValue().getSelectedId() )
     {
@@ -353,7 +358,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
                     m_weights[indexFrom][i] = distOnGrid->harmonicMaxValue.getValue() - distances[indexFrom][i];
                     if ( distances[indexFrom][i] < 0.0) distances[indexFrom][i] = 0.0;
                     if ( distances[indexFrom][i] > distOnGrid->harmonicMaxValue.getValue()) distances[indexFrom][i] = distOnGrid->harmonicMaxValue.getValue();
-                    if(distances[indexFrom][i]==0 || distances[indexFrom][i]==distOnGrid->harmonicMaxValue.getValue()) m_dweight[indexFrom][i]=Coord();
+                    if (distances[indexFrom][i]==0 || distances[indexFrom][i]==distOnGrid->harmonicMaxValue.getValue()) m_dweight[indexFrom][i]=Coord();
                     else m_dweight[indexFrom][i] = - distGradients[indexFrom][i];
                 }
                 else
@@ -414,8 +419,8 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
                     m_ddweight[i][j][0][0]-=2.0/d4;
                     m_ddweight[i][j][1][1]-=2.0/d4;
                     m_ddweight[i][j][2][2]-=2.0/d4;
-                    for(unsigned int k=0; k<3; k++)
-                        for(unsigned int m=0; m<3; m++)
+                    for (unsigned int k=0; k<3; k++)
+                        for (unsigned int m=0; m<3; m++)
                             m_ddweight[i][j][k][m]+=distGradients[indexFrom][i][k]*distGradients[indexFrom][i][m]*8.0/d2;
                 }
                 else
@@ -459,7 +464,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
     }
     case WEIGHT_SPLINE:
     {
-        if( xfrom.size() < 4 || nbRef < 4)
+        if ( xfrom.size() < 4 || nbRef < 4)
         {
             serr << "Error ! To use WEIGHT_SPLINE, you must use at least 4 DOFs and set nbRefs to 4.\n WEIGHT_SPLINE requires also the DOFs are ordered along z-axis." << sendl;
             return;
@@ -476,11 +481,11 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
             }
             // Get the 4 nearest DOFs.
             vector<unsigned int> sortedFrames;
-            for( unsigned int j = 0; j < 4; ++j)
+            for ( unsigned int j = 0; j < 4; ++j)
                 sortedFrames.push_back( tmpReps[nbRef *i+j]);
             std::sort( sortedFrames.begin(), sortedFrames.end());
 
-            if( xto[i][2] < xfrom[sortedFrames[1]].getCenter()[2])
+            if ( xto[i][2] < xfrom[sortedFrames[1]].getCenter()[2])
             {
                 vector<unsigned int> sortedFramesCpy = sortedFrames;
                 sortedFrames.clear();
@@ -489,7 +494,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
                 sortedFrames.push_back( sortedFramesCpy[1]);
                 sortedFrames.push_back( sortedFramesCpy[2]);
             }
-            else if( xto[i][2] > xfrom[sortedFrames[2]].getCenter()[2])
+            else if ( xto[i][2] > xfrom[sortedFrames[2]].getCenter()[2])
             {
                 vector<unsigned int> sortedFramesCpy = sortedFrames;
                 sortedFrames.clear();
@@ -784,7 +789,7 @@ void SkinningMapping<TIn, TOut>::draw()
             bool influenced;
             unsigned int refIndex;
             reverseRepartition(influenced, refIndex, i, showFromIndex.getValue()%distances.size());
-            if( influenced)
+            if ( influenced)
             {
                 sofa::helper::gl::GlText::draw ( (int)(distances[refIndex][i]*scale), xto[i], textScale );
             }
@@ -801,7 +806,7 @@ void SkinningMapping<TIn, TOut>::draw()
             bool influenced;
             unsigned int refIndex;
             reverseRepartition(influenced, refIndex, i, showFromIndex.getValue()%distances.size());
-            if( influenced)
+            if ( influenced)
             {
                 const Vec3& grad = dw[i][refIndex];
                 sprintf( txt, "( %i, %i, %i)", (int)(grad[0]*scale), (int)(grad[1]*scale), (int)(grad[2]*scale));
@@ -819,7 +824,7 @@ void SkinningMapping<TIn, TOut>::draw()
             bool influenced;
             unsigned int indexRep;
             reverseRepartition(influenced, indexRep, i, showFromIndex.getValue()%distances.size());
-            if( influenced)
+            if ( influenced)
             {
                 sofa::helper::gl::GlText::draw ( (int)(m_weights[i][indexRep]*scale), xto[i], textScale );
             }

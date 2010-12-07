@@ -115,7 +115,7 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::computeDistances ()
 {
 #ifdef SOFA_DEV
-    if( this->computeAllMatrices.getValue() && distanceType.getValue().getSelectedId() != SM_DISTANCE_EUCLIDIAN)
+    if ( this->computeAllMatrices.getValue() && distanceType.getValue().getSelectedId() != SM_DISTANCE_EUCLIDIAN)
     {
         const VecInCoord& xfrom0 = *this->fromModel->getX0();
 
@@ -226,8 +226,10 @@ void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
     for (unsigned int i = 0; i < xtoSize; ++i)
     {
         double sumWeights = 0,wn;
-        Vec3 sumGrad,dwn;     sumGrad.fill(0);
-        Mat33 sumGrad2,ddwn;    sumGrad2.fill(0);
+        Vec3 sumGrad,dwn;
+        sumGrad.fill(0);
+        Mat33 sumGrad2,ddwn;
+        sumGrad2.fill(0);
 
         // Compute norm
         for (unsigned int j = 0; j < nbRef; ++j)
@@ -238,12 +240,12 @@ void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
         }
 
         // Normalise
-        if(sumWeights!=0)
+        if (sumWeights!=0)
             for (unsigned int j = 0; j < nbRef; ++j)
             {
                 wn=m_weights[i][j]/sumWeights;
                 dwn=(m_dweight[i][j] - sumGrad*wn)/sumWeights;
-                for(unsigned int o=0; o<3; o++) for(unsigned int p=0; p<3; p++) ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
+                for (unsigned int o=0; o<3; o++) for (unsigned int p=0; p<3; p++) ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
                 m_ddweight[i][j]=ddwn;
                 m_dweight[i][j]=dwn;
                 m_weights[i][j] =wn;
@@ -358,7 +360,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             bool influenced;
             unsigned int refIndex;
             reverseRepartition(influenced, refIndex, i, showFromIndex.getValue()%distances.size());
-            if( influenced)
+            if ( influenced)
             {
                 sofa::helper::gl::GlText::draw ( (int)(distances[refIndex][i]*scale), xto[i], textScale );
             }
@@ -375,7 +377,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             bool influenced;
             unsigned int refIndex;
             reverseRepartition(influenced, refIndex, i, showFromIndex.getValue()%distances.size());
-            if( influenced)
+            if ( influenced)
             {
                 const Vec3& grad = dw[i][refIndex];
                 sprintf( txt, "( %i, %i, %i)", (int)(grad[0]*scale), (int)(grad[1]*scale), (int)(grad[2]*scale));
@@ -393,7 +395,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             bool influenced;
             unsigned int indexRep;
             reverseRepartition(influenced, indexRep, i, showFromIndex.getValue()%distances.size());
-            if( influenced)
+            if ( influenced)
             {
                 sofa::helper::gl::GlText::draw ( (int)(m_weights[i][indexRep]*scale), xto[i], textScale );
             }
@@ -538,8 +540,11 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                 const Vec6& e = this->deformationTensors[i];
                 double mult=500;
                 double color = (e[0]+e[1]+e[2])/3.;
-                if(color<0) color=2*color/(color+1.);
-                color*=mult; color+=120; if(color<0) color=0; if(color>240) color=240;
+                if (color<0) color=2*color/(color+1.);
+                color*=mult;
+                color+=120;
+                if (color<0) color=0;
+                if (color>240) color=240;
                 sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
                 glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
             }
@@ -592,9 +597,12 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     const unsigned int& nbRef = this->nbRefs.getValue();
     const vector<unsigned int>& m_reps = this->repartition.getValue();
 
-    m_weights.resize ( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_weights[i].resize ( nbRef );
-    m_dweight.resize ( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_dweight[i].resize ( nbRef );
-    m_ddweight.resize( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_ddweight[i].resize( nbRef );
+    m_weights.resize ( xto.size() );
+    for ( unsigned int i=0; i<xto.size(); i++ )        m_weights[i].resize ( nbRef );
+    m_dweight.resize ( xto.size() );
+    for ( unsigned int i=0; i<xto.size(); i++ )        m_dweight[i].resize ( nbRef );
+    m_ddweight.resize( xto.size() );
+    for ( unsigned int i=0; i<xto.size(); i++ )        m_ddweight[i].resize( nbRef );
 
     switch ( wheightingType.getValue().getSelectedId() )
     {
@@ -609,7 +617,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     m_weights[indexFrom][i] = distOnGrid->harmonicMaxValue.getValue() - distances[indexFrom][i];
                     if ( distances[indexFrom][i] < 0.0) distances[indexFrom][i] = 0.0;
                     if ( distances[indexFrom][i] > distOnGrid->harmonicMaxValue.getValue()) distances[indexFrom][i] = distOnGrid->harmonicMaxValue.getValue();
-                    if(distances[indexFrom][i]==0 || distances[indexFrom][i]==distOnGrid->harmonicMaxValue.getValue()) m_dweight[indexFrom][i]=Coord();
+                    if (distances[indexFrom][i]==0 || distances[indexFrom][i]==distOnGrid->harmonicMaxValue.getValue()) m_dweight[indexFrom][i]=Coord();
                     else m_dweight[indexFrom][i] = - distGradients[indexFrom][i];
                 }
                 else
@@ -667,8 +675,8 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     m_ddweight[i][j][0][0]-=2.0/d4;
                     m_ddweight[i][j][1][1]-=2.0/d4;
                     m_ddweight[i][j][2][2]-=2.0/d4;
-                    for(unsigned int k=0; k<3; k++)
-                        for(unsigned int m=0; m<3; m++)
+                    for (unsigned int k=0; k<3; k++)
+                        for (unsigned int m=0; m<3; m++)
                             m_ddweight[i][j][k][m]+=distGradients[indexFrom][i][k]*distGradients[indexFrom][i][m]*8.0/d2;
                 }
                 else
@@ -712,7 +720,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     }
     case WEIGHT_SPLINE:
     {
-        if( xfrom.size() < 4 || nbRef < 4)
+        if ( xfrom.size() < 4 || nbRef < 4)
         {
             serr << "Error ! To use WEIGHT_SPLINE, you must use at least 4 DOFs and set nbRefs to 4.\n WEIGHT_SPLINE requires also the DOFs are ordered along z-axis." << sendl;
             return;
@@ -729,11 +737,11 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             }
             // Get the 4 nearest DOFs.
             vector<unsigned int> sortedFrames;
-            for( unsigned int j = 0; j < 4; ++j)
+            for ( unsigned int j = 0; j < 4; ++j)
                 sortedFrames.push_back( tmpReps[nbRef *i+j]);
             std::sort( sortedFrames.begin(), sortedFrames.end());
 
-            if( xto[i][2] < xfrom[sortedFrames[1]].getCenter()[2])
+            if ( xto[i][2] < xfrom[sortedFrames[1]].getCenter()[2])
             {
                 vector<unsigned int> sortedFramesCpy = sortedFrames;
                 sortedFrames.clear();
@@ -742,7 +750,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 sortedFrames.push_back( sortedFramesCpy[1]);
                 sortedFrames.push_back( sortedFramesCpy[2]);
             }
-            else if( xto[i][2] > xfrom[sortedFrames[2]].getCenter()[2])
+            else if ( xto[i][2] > xfrom[sortedFrames[2]].getCenter()[2])
             {
                 vector<unsigned int> sortedFramesCpy = sortedFrames;
                 sortedFrames.clear();
@@ -841,56 +849,56 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::insertFrame( const Coord& pos, const Quat& rot, GeoVecCoord beginPointSet, double distMax)
 {
     /*
-       changeSettingsDueToInsertion();
+                   changeSettingsDueToInsertion();
 
-       if (!this->toModel->getX0()) return;
-       // Get references
-       Data<VecCoord> &xto_d = *this->toModel->write(core::VecCoordId::position());
-       VecCoord& xto = *xto_d.beginEdit();
-       Data<VecInCoord> &xfrom0_d = *this->fromModel->write(core::VecCoordId::restPosition());
-       VecInCoord &xfrom0 = *xfrom0_d.beginEdit();
-       Data<VecInCoord> &xfrom_d = *this->fromModel->write(core::VecCoordId::position());
-       VecInCoord &xfrom = *xfrom_d.beginEdit();
-       Data<VecInCoord> &xfromReset_d = *this->fromModel->write(core::VecCoordId::resetPosition());
-       VecInCoord &xfromReset = *xfromReset_d.beginEdit();
+                   if (!this->toModel->getX0()) return;
+                   // Get references
+                   Data<VecCoord> &xto_d = *this->toModel->write(core::VecCoordId::position());
+                   VecCoord& xto = *xto_d.beginEdit();
+                   Data<VecInCoord> &xfrom0_d = *this->fromModel->write(core::VecCoordId::restPosition());
+                   VecInCoord &xfrom0 = *xfrom0_d.beginEdit();
+                   Data<VecInCoord> &xfrom_d = *this->fromModel->write(core::VecCoordId::position());
+                   VecInCoord &xfrom = *xfrom_d.beginEdit();
+                   Data<VecInCoord> &xfromReset_d = *this->fromModel->write(core::VecCoordId::resetPosition());
+                   VecInCoord &xfromReset = *xfromReset_d.beginEdit();
 
-       unsigned int indexFrom = xfrom.size();
-       core::behavior::MechanicalState< In >* mstateFrom = dynamic_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
-       if ( !mstateFrom) {
-           serr << "Error: try to insert a new frame on fromModel, which is not a mechanical state !" << sendl;
-           return;
-       }
+                   unsigned int indexFrom = xfrom.size();
+                   core::behavior::MechanicalState< In >* mstateFrom = dynamic_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
+                   if ( !mstateFrom) {
+                       serr << "Error: try to insert a new frame on fromModel, which is not a mechanical state !" << sendl;
+                       return;
+                   }
 
-       // Compute the rest position of the frame.
-       InCoord newX, newX0;
-       InCoord targetDOF;
-       setInCoord( targetDOF, pos, rot);
-       inverseSkinning( newX0, newX, targetDOF);
+                   // Compute the rest position of the frame.
+                   InCoord newX, newX0;
+                   InCoord targetDOF;
+                   setInCoord( targetDOF, pos, rot);
+                   inverseSkinning( newX0, newX, targetDOF);
 
-       // Insert a new DOF
-       this->fromModel->resize( indexFrom + 1);
-       xfrom[indexFrom] = newX;
-       xfrom0[indexFrom] = newX0;
-       xfromReset[indexFrom] = newX0;
+                   // Insert a new DOF
+                   this->fromModel->resize( indexFrom + 1);
+                   xfrom[indexFrom] = newX;
+                   xfrom0[indexFrom] = newX0;
+                   xfromReset[indexFrom] = newX0;
 
-       if ( distMax == 0.0)
-           distMax = this->newFrameDefaultCutOffDistance.getValue();
+                   if ( distMax == 0.0)
+                       distMax = this->newFrameDefaultCutOffDistance.getValue();
 
-       // Compute geodesical/euclidian distance for this frame.
-       if ( this->distanceType.getValue().getSelectedId() == SM_DISTANCE_GEODESIC || this->distanceType.getValue().getSelectedId() == SM_DISTANCE_HARMONIC || this->distanceType.getValue().getSelectedId() == SM_DISTANCE_STIFFNESS_DIFFUSION || this->distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS)
-           this->distOnGrid->addElt( newX0.getCenter(), beginPointSet, distMax);
-       vector<double>& vRadius = (*this->newFrameWeightingRadius.beginEdit());
-       vRadius.resize( indexFrom + 1);
-       vRadius[indexFrom] = distMax;
-       this->newFrameWeightingRadius.endEdit();
+                   // Compute geodesical/euclidian distance for this frame.
+                   if ( this->distanceType.getValue().getSelectedId() == SM_DISTANCE_GEODESIC || this->distanceType.getValue().getSelectedId() == SM_DISTANCE_HARMONIC || this->distanceType.getValue().getSelectedId() == SM_DISTANCE_STIFFNESS_DIFFUSION || this->distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS)
+                       this->distOnGrid->addElt( newX0.getCenter(), beginPointSet, distMax);
+                   vector<double>& vRadius = (*this->newFrameWeightingRadius.beginEdit());
+                   vRadius.resize( indexFrom + 1);
+                   vRadius[indexFrom] = distMax;
+                   this->newFrameWeightingRadius.endEdit();
 
-       // Recompute matrices
-       apply( xto, xfrom);
+                   // Recompute matrices
+                   apply( xto, xfrom);
 
-       xto_d.endEdit();
-       xfrom0_d.endEdit();
-       xfrom_d.endEdit();
-       xfromReset_d.endEdit();*/
+                   xto_d.endEdit();
+                   xfrom0_d.endEdit();
+                   xfrom_d.endEdit();
+                   xfromReset_d.endEdit();*/
 }
 
 template <class TIn, class TOut>
@@ -1218,7 +1226,7 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::changeSettingsDueToInsertion()
 {
     this->setWeightsToInvDist();
-    if( this->distOnGrid)
+    if ( this->distOnGrid)
     {
         this->distanceType.beginEdit()->setSelectedItem(SM_DISTANCE_GEODESIC);
     }
