@@ -56,12 +56,15 @@ HEADERS += \
 #            NewSkinningMapping.inl \
            PrimitiveSkinningMapping.h \
            PrimitiveSkinningMapping.inl \
+           RigidSkinningMapping.h \
+           RigidSkinningMapping.inl \
+           QuadraticSkinningMapping.h \
+           QuadraticSkinningMapping.inl \
            QuadraticTypes.h  \
             RigidFrameTypes.h
 
 SOURCES += \
            AffineSkinningMapping.cpp \
-           FrameBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
            FrameFixedConstraint.cpp \
@@ -76,4 +79,6 @@ SOURCES += \
             NewHookeMaterial.cpp \
  #           NewSkinningMapping.cpp \
            PrimitiveSkinningMapping.cpp \
+           QuadraticSkinningMapping.cpp \
+           RigidSkinningMapping.cpp \
            initFrame.cpp

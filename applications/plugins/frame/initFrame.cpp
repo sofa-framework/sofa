@@ -82,6 +82,7 @@ const char* getModuleComponentList()
 } // namespace sofa
 
 ////////// BEGIN CLASS LIST //////////
+SOFA_LINK_CLASS(AffineSkinningMapping)
 SOFA_LINK_CLASS(FrameDiagonalMass)
 SOFA_LINK_CLASS(FrameConstantForceField)
 SOFA_LINK_CLASS(FrameFixedConstraint)
@@ -91,6 +92,6 @@ SOFA_LINK_CLASS(FrameMechanicalObject)
 SOFA_LINK_CLASS(FrameSpringForceField2)
 SOFA_LINK_CLASS(HookeMaterial3)
 SOFA_LINK_CLASS(GridMaterial)
-SOFA_LINK_CLASS(FrameBlendingMapping)
-SOFA_LINK_CLASS(AffineSkinningMapping)
 SOFA_LINK_CLASS(PrimitiveSkinningMapping)
+SOFA_LINK_CLASS(QuadraticSkinningMapping)
+SOFA_LINK_CLASS(RigidSkinningMapping)
