@@ -33,6 +33,8 @@ HEADERS += \
            FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
+           FrameDualQuatSkinningMapping.h \
+           FrameDualQuatSkinningMapping.inl \
            FrameFixedConstraint.h \
            FrameForceField.h \
            FrameHookeForceField.h \
@@ -67,6 +69,7 @@ SOURCES += \
            AffineSkinningMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
+           FrameDualQuatSkinningMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
            FrameHookeForceField.cpp \

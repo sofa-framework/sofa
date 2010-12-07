@@ -39,9 +39,6 @@
 
 #ifdef SOFA_DEV
 #include <sofa/component/topology/DistanceOnGrid.h>
-#include "FrameStorage.h"
-#include <../applications/plugins/frame/AffineTypes.h>
-#include <../applications/plugins/frame/QuadraticTypes.h>
 #endif
 
 namespace sofa
@@ -72,49 +69,12 @@ using sofa::component::topology::DistanceOnGrid;
 #define WEIGHT_HERMITE 3
 #define WEIGHT_SPLINE 4
 
-////////////// Definitions to avoid multiple specializations //////////////////
-// See "Substitution failure is not an error" desgin patern and boost::enable_if
-// http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error
-// http://www.boost.org/doc/libs/1_36_0/libs/utility/enable_if.html
-template <bool B, class T = void>
-struct enable_if_c
-{
-    typedef T type;
-};
-
-template <class T>
-struct enable_if_c<false, T> {};
-
-template <class Cond, class T = void>
-struct enable_if : public enable_if_c<Cond::value, T> {};
-
-template <class T, class T2>
-struct Equal
-{
-    typedef char ok;
-    typedef long nok;
-
-    static ok test(const T t, const T t2);
-    static nok test(...);
-
-    static const bool value=(sizeof(test(T(),T2()))==sizeof(ok));
-};
-///////////////////////////////////////////////////////////////////////////////
-
 
 template <class TIn, class TOut>
-#ifdef SOFA_DEV
-class SkinningMapping : public core::Mapping<TIn, TOut>, public FrameStorage<TIn, typename TIn::Real>
-#else
 class SkinningMapping : public core::Mapping<TIn, TOut>
-#endif
 {
 public:
-#ifdef SOFA_DEV
-    SOFA_CLASS2(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut), SOFA_TEMPLATE2(FrameStorage,TIn, typename TIn::Real));
-#else
     SOFA_CLASS(SOFA_TEMPLATE2(SkinningMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
-#endif
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -139,13 +99,8 @@ public:
 
     enum { N=DataTypes::spatial_dimensions };
     //enum { InDerivDim=In::DataTypes::deriv_total_size };
-#ifdef SOFA_DEV
-    enum { InDOFs=sofa::frame::DataTypesInfo<In::spatial_dimensions, InReal, In>::degrees_of_freedom };
-    enum { InAt=sofa::frame::DataTypesInfo<In::spatial_dimensions, InReal, In>::Atilde_nb_column };
-#else
     enum { InDOFs=In::deriv_total_size };
     enum { InAt=0 };
-#endif
     typedef defaulttype::Mat<N,N,InReal> Mat;
     typedef defaulttype::Mat<3,3,InReal> Mat33;
     typedef vector<Mat33> VMat33;
@@ -210,11 +165,7 @@ public:
     typedef Coord DoGCoord;
     typedef VecCoord DoGVecCoord;
 #endif
-    typedef defaulttype::StdRigidTypes<N,InReal> RigidType;
-#ifdef SOFA_DEV
-    typedef defaulttype::StdAffineTypes<N,InReal> AffineType;
-    typedef defaulttype::StdQuadraticTypes<N,InReal> QuadraticType;
-#endif
+
 protected:
     vector<Coord> initPos; // pos: point coord in the local reference frame of In[i].
     vector<Coord> rotatedPoints;
@@ -222,18 +173,12 @@ protected:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-#ifndef SOFA_DEV // contained in FrameStorage
     Data<unsigned int> nbRefs; // Number of primitives influencing each point.
     Data<vector<unsigned int> > repartition; // indices of primitives influencing each point.
-#endif
-
     Data<VVD> weights;
     Data<SVector<SVector<GeoCoord> > > weightGradients;
 public:
     Data<bool> showBlendedFrame;
-    Data<bool> showDefTensors;
-    Data<bool> showDefTensorsValues;
-    Data<double> showDefTensorScale;
     Data<unsigned int> showFromIndex;
     Data<bool> showDistancesValues;
     Data<bool> showWeights;
@@ -242,19 +187,12 @@ public:
     Data<bool> showReps;
     Data<int> showValuesNbDecimals;
     Data<double> showTextScaleFactor;
+#ifdef SOFA_DEV
+    DistanceOnGrid< DoGType>* distOnGrid;
+#endif
     Data<bool> showGradients;
     Data<bool> showGradientsValues;
     Data<double> showGradientsScaleFactor;
-#ifdef SOFA_DEV
-    DistanceOnGrid< DoGType>* distOnGrid;
-    Data<double> newFrameMinDist;
-    Data<vector<double> > newFrameWeightingRadius;
-    Data<double> newFrameDefaultCutOffDistance;
-    Data<double> newFrameDistanceToMaximizeWeight;
-    Data<bool> enableSkinning;
-    Data<double> voxelVolume;
-    Data<bool> useElastons;
-#endif
 
 protected:
     Data<sofa::helper::OptionsGroup> wheightingType;
@@ -323,91 +261,10 @@ public:
         return computeWeights;
     }
 
-#ifdef SOFA_DEV
-    void removeFrame( const unsigned int index);
-    void insertFrame( const Coord& pos, const Quat& rot, GeoVecCoord beginPointSet = GeoVecCoord(), double distMax = 0.0);
-    bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
-    void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
-    void updateDataAfterInsertion();
-    inline void changeSettingsDueToInsertion();
+    inline void reverseRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
 
 protected:
-    inline void reverseRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
-    void M33toV6(Vec6 &v,const Mat33& M) const;
-    void QtoR(Mat33& M, const Quat& q) const;
-    void ComputeL(Mat76& L, const Quat& q) const;
-    void ComputeQ(Mat37& Q, const Quat& q, const Vec3& p) const;
-    void ComputeMa(Mat33& M, const Quat& q) const;
-    void ComputeMb(Mat33& M, const Quat& q) const;
-    void ComputeMc(Mat33& M, const Quat& q) const;
-    void ComputeMw(Mat33& M, const Quat& q) const;
-
-    inline void resizeMatrices();
-    inline void initSamples(); // Temporary
-
-    // Avoid multiple specializations
-    inline void setInCoord( typename defaulttype::StdRigidTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
-    inline void setInCoord( typename defaulttype::StdAffineTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
-    inline void setInCoord( typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& coord, const Coord& position, const Quat& rotation) const;
-#endif
     inline void getLocalCoord( Coord& result, const typename In::Coord& inCoord, const Coord& coord) const;
-#ifdef SOFA_DEV
-//	inline void getLocalCoord( Coord& result, const typename defaulttype::StdAffineTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
-//	inline void getLocalCoord( Coord& result, const typename defaulttype::StdQuadraticTypes<N, InReal>::Coord& inCoord, const Coord& coord) const;
-
-    template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type strainDeriv(const Mat33& Ma, const Mat33& Mb, const Mat33& Mc, const Mat33& Mw, const Vec3& dw, const Mat33& At, const Mat33& F, Mat67 &B) const;
-    template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type strainDeriv(const Vec3& dw, const MatInAtx3& At, const Mat33& F, Mat6xIn &B) const;
-    template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type strainDeriv(const Vec3& dw, const MatInAtx3& At, const Mat33& F, Mat6xIn &B) const;
-
-    template<class T>
-    inline typename enable_if<Equal<RigidType, T> >::type precomputeMatrices(const RigidType&); // Useless parameter here to be compatible with gcc-4.0
-    template<class T>
-    inline typename enable_if<Equal<AffineType, T> >::type precomputeMatrices(const AffineType&); // Useless parameter here to be compatible with gcc-4.0
-    template<class T>
-    inline typename enable_if<Equal<QuadraticType, T> >::type precomputeMatrices(const QuadraticType&); // Useless parameter here to be compatible with gcc-4.0
-#endif
-
-
-    // Samples (default)
-    template<class TCoord>
-    inline typename enable_if<Equal<typename RigidType::Coord, TCoord> >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename RigidType::Coord>& in);
-#ifdef SOFA_DEV
-    template<class TCoord>
-    inline typename enable_if<Equal<typename AffineType::Coord, TCoord> >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename AffineType::Coord>& in);
-    template<class TCoord>
-    inline typename enable_if<Equal<typename QuadraticType::Coord, TCoord> >::type _apply( typename Out::VecCoord& out, const sofa::helper::vector<typename QuadraticType::Coord>& in);
-#endif
-
-
-    template<class TDeriv>
-    inline typename enable_if<Equal<typename RigidType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename RigidType::Deriv>& in);
-#ifdef SOFA_DEV
-    template<class TDeriv>
-    inline typename enable_if<Equal<typename AffineType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename AffineType::Deriv>& in);
-    template<class TDeriv>
-    inline typename enable_if<Equal<typename QuadraticType::Deriv, TDeriv> >::type _applyJ( typename Out::VecDeriv& out, const sofa::helper::vector<typename QuadraticType::Deriv>& in);
-#endif
-
-    template<class TDeriv>
-    inline typename enable_if<Equal<typename RigidType::Deriv, TDeriv> >::type _applyJT( sofa::helper::vector<typename RigidType::Deriv>& out, const typename Out::VecDeriv& in);
-#ifdef SOFA_DEV
-    template<class TDeriv>
-    inline typename enable_if<Equal<typename AffineType::Deriv, TDeriv> >::type _applyJT( sofa::helper::vector<typename AffineType::Deriv>& out, const typename Out::VecDeriv& in);
-    template<class TDeriv>
-    inline typename enable_if<Equal<typename QuadraticType::Deriv, TDeriv> >::type _applyJT( sofa::helper::vector<typename QuadraticType::Deriv>& out, const typename Out::VecDeriv& in);
-#endif
-
-    template<class TMatrixDeriv>
-    inline typename enable_if<Equal<typename RigidType::MatrixDeriv, TMatrixDeriv> >::type _applyJT_Matrix( typename RigidType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
-#ifdef SOFA_DEV
-    template<class TMatrixDeriv>
-    inline typename enable_if<Equal<typename AffineType::MatrixDeriv, TMatrixDeriv> >::type _applyJT_Matrix( typename AffineType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
-    template<class TMatrixDeriv>
-    inline typename enable_if<Equal<typename QuadraticType::MatrixDeriv, TMatrixDeriv> >::type _applyJT_Matrix( typename QuadraticType::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
-#endif
 };
 
 using sofa::defaulttype::Vec3dTypes;
@@ -432,55 +289,6 @@ extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3dTypes, 
 extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
-
-
-#ifdef SOFA_DEV
-///////////////////////////////////////////////////////////////////////////////
-//                           Affine Specialization                           //
-///////////////////////////////////////////////////////////////////////////////
-
-using sofa::defaulttype::Affine3dTypes;
-using sofa::defaulttype::Affine3fTypes;
-
-#ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Vec3dTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, ExtVec3fTypes >;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Vec3fTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, ExtVec3fTypes >;
-#endif //SOFA_DOUBLE
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3dTypes, Vec3fTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Affine3fTypes, Vec3dTypes >;
-#endif //SOFA_DOUBLE
-#endif //SOFA_FLOAT
-
-
-///////////////////////////////////////////////////////////////////////////////
-//                          Quadratic Specialization                         //
-///////////////////////////////////////////////////////////////////////////////
-
-using sofa::defaulttype::Quadratic3dTypes;
-using sofa::defaulttype::Quadratic3fTypes;
-
-#ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Vec3dTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, ExtVec3fTypes >;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Vec3fTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, ExtVec3fTypes >;
-#endif //SOFA_DOUBLE
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3dTypes, Vec3fTypes >;
-//extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Quadratic3fTypes, Vec3dTypes >;
-#endif //SOFA_DOUBLE
-#endif //SOFA_FLOAT
-#endif // SOFA_DEV
-
 #endif //defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 
