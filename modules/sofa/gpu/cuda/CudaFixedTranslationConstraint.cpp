@@ -39,6 +39,9 @@ namespace projectiveconstraintset
 {
 
 template class FixedTranslationConstraint<gpu::cuda::CudaRigid3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class FixedTranslationConstraint<gpu::cuda::CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace projectiveconstraintset
 
