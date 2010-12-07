@@ -47,10 +47,12 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 #ifndef SOFA_FLOAT
         .add< MechanicalObject<Affine3dTypes> >()
         .add< MechanicalObject<Quadratic3dTypes> >()
+        .add< MechanicalObject<DeformationGradient332dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< MechanicalObject<Affine3fTypes> >()
         .add< MechanicalObject<Quadratic3fTypes> >()
+        .add< MechanicalObject<DeformationGradient332fTypes> >()
 #endif
         ;
 
@@ -59,10 +61,12 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API MechanicalObject<Affine3fTypes>;
 template class SOFA_FRAME_API MechanicalObject<Quadratic3dTypes>;
+template class SOFA_FRAME_API MechanicalObject<DeformationGradient332dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_FRAME_API MechanicalObject<Affine3dTypes>;
 template class SOFA_FRAME_API MechanicalObject<Quadratic3fTypes>;
+template class SOFA_FRAME_API MechanicalObject<DeformationGradient332fTypes>;
 #endif
 } // namespace behavior
 

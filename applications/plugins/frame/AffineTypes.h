@@ -1416,7 +1416,7 @@ defaulttype::AffineCoord<3, float>,
                     const defaulttype::VAffine3float& v
             )
 {
-    defaulttype::Vec3f omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    const defaulttype::Vec3f omega ( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
     defaulttype::Vec3f origin = x.getCenter(), finertia;
 
     finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + getVCenter(v) * 2 ) ) * mass.mass;

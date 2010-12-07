@@ -56,7 +56,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned ) 0, "showWeightIndex","Weight index." ) )
 {
-    helper::OptionsGroup distanceTypeOptions(4,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
+    helper::OptionsGroup distanceTypeOptions(3,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 

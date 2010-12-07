@@ -100,6 +100,71 @@ struct DeformationGradientTypes
     /// gradient of the deformation gradient at the sampling point
     template<class CoordOrDeriv>
     static const MaterialFrameGradient& materialFrameGradient( const CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
+
+
+    template<typename T>
+    static void set ( Coord& c, T x, T y, T z )
+    {
+        center(c)[0] = ( Real ) x;
+        center(c) [1] = ( Real ) y;
+        center(c) [2] = ( Real ) z;
+    }
+
+    template<typename T>
+    static void get ( T& x, T& y, T& z, const Coord& c )
+    {
+        x = ( T ) center(c) [0];
+        y = ( T ) center(c) [1];
+        z = ( T ) center(c) [2];
+    }
+
+    template<typename T>
+    static void add ( Coord& c, T x, T y, T z )
+    {
+        center(c) [0] += ( Real ) x;
+        center(c) [1] += ( Real ) y;
+        center(c) [2] += ( Real ) z;
+    }
+
+    //template<typename T>
+    //static void set ( Deriv& c, T x, T y, T z )
+    //{
+    //  getVCenter(c) [0] = ( Real ) x;
+    //  getVCenter(c) [1] = ( Real ) y;
+    //  getVCenter(c) [2] = ( Real ) z;
+    //}
+
+    //template<typename T>
+    //static void get ( T& x, T& y, T& z, const Deriv& c )
+    //{
+    //  x = ( T ) getVCenter(c) [0];
+    //  y = ( T ) getVCenter(c) [1];
+    //  z = ( T ) getVCenter(c) [2];
+    //}
+
+    //template<typename T>
+    //static void add ( Deriv& c, T x, T y, T z )
+    //{
+    //  getVCenter(c) [0] += ( Real ) x;
+    //  getVCenter(c) [1] += ( Real ) y;
+    //  getVCenter(c) [2] += ( Real ) z;
+    //}
+
+
+    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
+    {
+        assert ( ancestors.size() == coefs.size() );
+
+        Coord c;
+
+        for ( unsigned int i = 0; i < ancestors.size(); i++ )
+        {
+            c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
+        }
+
+        return c;
+    }
+
 };
 
 
@@ -357,7 +422,7 @@ defaulttype::DeformationGradient332fTypes,
                     const defaulttype::DeformationGradient332fTypes::Deriv& v
             )
 {
-    defaulttype::Vec3f omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    const defaulttype::Vec3f omega ( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
     defaulttype::Vec3f origin = defaulttype::DeformationGradient332fTypes::center(x), finertia;
 
     finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + defaulttype::DeformationGradient332dTypes::center(v) * 2 ) ) * mass.mass;
