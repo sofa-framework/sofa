@@ -25,7 +25,11 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
            AffineTypes.h \
-           ElastonTypes.h \
+           AffineSkinningMapping.h \
+           AffineSkinningMapping.inl \
+           DeformationGradientTypes.h \
+           FrameBlendingMapping.h \
+           FrameBlendingMapping.inl \
            FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
@@ -56,6 +60,8 @@ HEADERS += \
             RigidFrameTypes.h
 
 SOURCES += \
+           AffineSkinningMapping.cpp \
+           FrameBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
            FrameFixedConstraint.cpp \

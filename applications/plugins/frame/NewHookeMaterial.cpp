@@ -26,6 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
+#include "DeformationGradientTypes.h"
 
 
 namespace sofa
