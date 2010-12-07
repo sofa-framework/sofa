@@ -60,7 +60,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
-    helper::OptionsGroup showVoxelsOptions(7,"None", "Data", "Stiffness", "Density", "Voronoi regions", "Distances", "Weights");
+    helper::OptionsGroup showVoxelsOptions(7,"None", "Data", "Stiffness", "Density", "Voronoi", "Distances", "Weights");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 }
@@ -499,6 +499,79 @@ bool GridMaterial< MaterialTypes>::lumpMomentsStiffness(const Vec3& point,const 
     return true;
 }
 
+
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw,VMat33* ddw)
+{
+    if (!nbVoxels) return false;
+
+    int index=getIndex(point);
+    if (index==-1) return false; // point not in grid or no weight computed
+    if (weightsRepartition.size()!=nbVoxels || repartition.size()!=nbVoxels) return false; // weights not computed
+
+    unsigned int nbrefs=weightsRepartition[index].size();
+    w.resize(nbrefs);
+    reps.resize(nbrefs);
+    if(dw) dw->resize(nbrefs);
+    if(ddw) ddw->resize(nbrefs);
+
+    bool fitononevoxel=false;
+    if (voronoi.size()!=nbVoxels) fitononevoxel=true;
+    else if (voronoi[index]==-1) fitononevoxel=true;
+
+    unsigned int i,j,k;
+    if(fitononevoxel)
+    {
+        for (i=0; i<nbrefs; i++)
+            if(weightsRepartition[index][i]!=0)
+            {
+                reps[i]=repartition[index][i];
+                pasteRepartioninWeight(repartition[index][i]);
+                if(!dw) lumpWeights(point,false,w[i]); else if(!ddw) lumpWeights(point,false,w[i],&(*dw)[i]); else lumpWeights(point,false,w[i],&(*dw)[i],&(*ddw)[i]);
+            }
+            else
+            {
+                reps[i]=w[i]=0;
+                if(dw) (*dw)[i].fill(0);
+                if(ddw) (*ddw)[i].fill(0);
+            }
+    }
+    else
+    {
+        // get the nbrefs most relevant weights in the voronoi region of point
+        unsigned int maxlabel=0;
+        for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbrefs; j++) { if(weightsRepartition[i][j]!=0) if(repartition[i][j]>maxlabel) maxlabel=repartition[i][j]; }
+        VD W(maxlabel+1,0);
+        for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbrefs; j++) if(weightsRepartition[i][j]!=0) W[repartition[i][j]]+=weightsRepartition[i][j];
+
+        for (i=0; i<nbrefs; i++) w[i]=0;
+        for (i=0; i<maxlabel; i++)
+        {
+            j=0; while (j!=nbrefs && w[j]>W[i]) j++;
+            if(j!=nbrefs)
+            {
+                for (k=nbrefs-1; k>j; k--) {w[k]=w[k-1]; reps[k]=reps[k-1];}
+                w[j]=W[i];
+                reps[j]=i;
+            }
+        }
+
+        // lump the weights
+        for (i=0; i<nbrefs; i++)
+            if(w[i]!=0)
+            {
+                pasteRepartioninWeight(reps[i]);
+                if(!dw) lumpWeights(point,false,w[i]); else if(!ddw) lumpWeights(point,false,w[i],&(*dw)[i]); else lumpWeights(point,false,w[i],&(*dw)[i],&(*ddw)[i]);
+            }
+    }
+
+    return true;
+}
+
+
+
+
+
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw,Mat33* ddw)
 {
@@ -597,7 +670,7 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usev
         for (i=0; i<dim; i++) wdp[i]+=basis[i]*weights[neighbors[j]];
     }
     VD W((int)dim,(Real)0);
-    for (i=0; i<dim; i++) for (j=0; i<dim; j++) W[i]+=invCov[i][j]*wdp[j];
+    for (i=0; i<dim; i++) for (j=0; j<dim; j++) W[i]+=invCov[i][j]*wdp[j];
 
     w=W[0];
     if (order==0) return true;
@@ -628,6 +701,38 @@ void GridMaterial< MaterialTypes>::accumulateCovariance(const Vec3& p,const unsi
     getCompleteBasis(p,order,basis);
     unsigned int dim=(order+1)*(order+2)*(order+3)/6;
     for (unsigned int i=0; i<dim; i++) for (unsigned int j=0; j<dim; j++) Cov[i][j]+=basis[i]*basis[j];
+}
+
+
+
+
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw)
+{
+    if (!nbVoxels) return false;
+
+    int index=getIndex(point);
+    if (index==-1) return false; // point not in grid
+    if (weightsRepartition.size()!=nbVoxels || repartition.size()!=nbVoxels) return false; // weights not computed
+
+    unsigned int nbrefs=weightsRepartition[index].size();
+    w.resize(nbrefs);
+    reps.resize(nbrefs);
+    if(dw) dw->resize(nbrefs);
+
+    for (unsigned int i=0; i<nbrefs; i++)
+        if(weightsRepartition[index][i]!=0)
+        {
+            reps[i]=repartition[index][i];
+            pasteRepartioninWeight(repartition[index][i]);
+            if(!dw) interpolateWeights(point,w[i]); else interpolateWeights(point,w[i],&(*dw)[i]);
+        }
+        else
+        {
+            reps[i]=w[i]=0;
+            if(dw) (*dw)[i].fill(0);
+        }
+    return true;
 }
 
 
@@ -962,10 +1067,12 @@ template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, const unsigned int num_points, const unsigned int max_iterations )
 {
     if (!nbVoxels) return false;
-    unsigned int i,k,initial_num_points=points.size();
-    VI indices((int)num_points,-1);
+    unsigned int i,k,initial_num_points=points.size(),nb_points=num_points;
+    if(initial_num_points>num_points) nb_points=initial_num_points;
+
+    VI indices((int)nb_points,-1);
     for (i=0; i<initial_num_points; i++) indices[i]=getIndex(points[i]);
-    points.resize(num_points);
+    points.resize(nb_points);
 
 // initialization: farthest point sampling (see [adams08])
     Real dmax;
@@ -979,9 +1086,9 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, con
             if (indices[0]==(int)nbVoxels) return false;
         }
     }
-    else if(initial_num_points==num_points) computeGeodesicalDistances(indices);
+    else if(initial_num_points==nb_points) computeGeodesicalDistances(indices);
 
-    for (i=initial_num_points; i<num_points; i++)
+    for (i=initial_num_points; i<nb_points; i++)
     {
         if (i==0) i=1; // a random point has been inserted
         // get farthest point from all inserted points
@@ -1014,7 +1121,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, con
         ok2=true;
         computeGeodesicalDistances(indices); // Voronoi
         VB flag((int)nbVoxels,false);
-        for (i=initial_num_points; i<num_points; i++) // move to centroid of Voronoi cells
+        for (i=initial_num_points; i<nb_points; i++) // move to centroid of Voronoi cells
         {
             // estimate centroid given the measured distances = p + 1/N sum d(p,pi)*(pi-p)/|pi-p|
             getCoord(indices[i],pos_point);
@@ -1056,7 +1163,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, con
     }
 
 // get points from indices
-    for (i=initial_num_points; i<num_points; i++)
+    for (i=initial_num_points; i<nb_points; i++)
     {
         getCoord(indices[i],points[i]) ;
     }

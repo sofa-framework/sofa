@@ -81,14 +81,15 @@ public:
     typedef Vec<3,Real> Vec3;			///< Material coordinate
     typedef SVector<Vec3> VecVec3;							///< Vector of material coordinates
     typedef Mat<3,3,Real> Mat33;
+    typedef SVector<Mat<3,3,Real> > VMat33;
     typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
     typedef SVector<Real> VD;
-    typedef SVector<SVector<Real> > VVD;
-    typedef SVector<SVector<SVector<Real> > > VVVD;
+    typedef SVector<VD > VVD;
+    typedef SVector<VVD > VVVD;
     typedef SVector<unsigned int> VUI;
-    typedef SVector<SVector<unsigned int> > VVUI;
+    typedef SVector<VUI > VVUI;
     typedef SVector<int> VI;
-    typedef SVector<SVector<int> > VVI;
+    typedef SVector<VI > VVI;
     typedef SVector<bool> VB;
     typedef map<Real,Real> mapLabelType; // voxeltype does not work..
 
@@ -161,10 +162,10 @@ public:
     bool lumpMoments(const Vec3& point,const unsigned int order,VD& moments);
     /// return sum(E_i.(p_i-p)^(order).vol_i) in the voronoi region of point
     bool lumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
-    /// fit 1st, 2d or 3d polynomial to the weights in the dilated by 1 voxel voronoi region (usevoronoi=true) or 26 neighbors (usevoronoi=false) of point.
-    bool lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
-    /// interpolate weights (and weight derivatives) in the grid.
-    bool interpolateWeights(const Vec3& point,Real& w,Vec3* dw=NULL);
+    /// return the repartited weights
+    bool lumpWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw=NULL,VMat33* ddw=NULL);
+    /// return the interpolated repartited weights
+    bool interpolateWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw=NULL);
 
 
     /*********************************/
@@ -176,7 +177,6 @@ public:
 
     /// compute voxel weights according to 'distanceType' method -> stored in weightsRepartition and repartition
     bool computeWeights(const unsigned int nbrefs,const VecVec3& points);
-
     /// (biased) Euclidean distance between two voxels
     Real getDistance(const unsigned int& index1,const unsigned int& index2);
     /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
@@ -259,6 +259,10 @@ protected:
     inline void addWeightinRepartion(const unsigned int index); // add dense weights relative to index, in weight repartion of size nbref if it is large enough
     inline void pasteRepartioninWeight(const unsigned int index); // paste weight relative to index in the dense weight map
     inline void normalizeWeightRepartion();
+    /// fit 1st, 2d or 3d polynomial to the dense weight map in the dilated by 1 voxel voronoi region (usevoronoi=true) or 26 neighbors (usevoronoi=false) of point.
+    bool lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
+    /// interpolate weights (and weight derivatives) in the dense weight map.
+    bool interpolateWeights(const Vec3& point,Real& w,Vec3* dw=NULL);
 
 
 };
