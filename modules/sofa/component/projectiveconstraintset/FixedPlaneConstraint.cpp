@@ -46,10 +46,12 @@ SOFA_DECL_CLASS(FixedPlaneConstraint)
 int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
 #ifndef SOFA_FLOAT
         .add< FixedPlaneConstraint<Vec3dTypes> >()
+        .add< FixedPlaneConstraint<Vec6dTypes> >()
         .add< FixedPlaneConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< FixedPlaneConstraint<Vec3fTypes> >()
+        .add< FixedPlaneConstraint<Vec6fTypes> >()
         .add< FixedPlaneConstraint<Rigid3fTypes> >()
 #endif
         ;
@@ -58,10 +60,12 @@ int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a giv
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Rigid3dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Rigid3fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedPlaneConstraint<Vec6fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT

@@ -46,22 +46,84 @@ int FixedTranslationConstraintClass = core::RegisterObject("Attach given rigids 
 #ifndef SOFA_FLOAT
         .add< FixedTranslationConstraint<Rigid3dTypes> >()
         .add< FixedTranslationConstraint<Rigid2dTypes> >()
+        .add< FixedTranslationConstraint<Vec6dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< FixedTranslationConstraint<Rigid3fTypes> >()
         .add< FixedTranslationConstraint<Rigid2fTypes> >()
+        .add< FixedTranslationConstraint<Vec6fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid3dTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid2dTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid3fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Rigid2fTypes>;
+template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API FixedTranslationConstraint<Vec6fTypes>;
 #endif
 
+#ifndef SOFA_FLOAT
+template <>
+void FixedTranslationConstraint<Vec6dTypes>::draw()
+{
+    const SetIndexArray & indices = f_indices.getValue().getArray();
+    if (!this->getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *this->mstate->getX();
+    glDisable(GL_LIGHTING);
+    glPointSize(10);
+    glColor4f(1, 0.5, 0.5, 1);
+    glBegin(GL_POINTS);
+    if (f_fixAll.getValue() == true)
+    {
+        for (unsigned i = 0; i < x.size(); i++)
+        {
+            gl::glVertexT(Vec<3,double>(x[i][0], x[i][1], x[i][2]));
+        }
+    }
+    else
+    {
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            gl::glVertexT(Vec<3,double>(x[*it][0], x[*it][1], x[*it][2]));
+        }
+    }
+    glEnd();
+}
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void FixedTranslationConstraint<Vec6fTypes>::draw()
+{
+    const SetIndexArray & indices = f_indices.getValue().getArray();
+    if (!this->getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *this->mstate->getX();
+    glDisable(GL_LIGHTING);
+    glPointSize(10);
+    glColor4f(1, 0.5, 0.5, 1);
+    glBegin(GL_POINTS);
+    if (f_fixAll.getValue() == true)
+    {
+        for (unsigned i = 0; i < x.size(); i++)
+        {
+            gl::glVertexT(Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+        }
+    }
+    else
+    {
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+        }
+    }
+    glEnd();
+}
+#endif
 } // namespace projectiveconstraintset
 
 } // namespace component

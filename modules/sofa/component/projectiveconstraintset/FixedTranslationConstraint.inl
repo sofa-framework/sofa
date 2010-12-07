@@ -218,6 +218,10 @@ void FixedTranslationConstraint<DataTypes>::draw()
     glEnd();
 }
 
+template<>
+void FixedTranslationConstraint<Vec6dTypes>::draw();
+template<>
+void FixedTranslationConstraint<Vec6fTypes>::draw();
 
 } // namespace constraint
 
