@@ -40,7 +40,7 @@
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 #include "FrameMass.h"
-#include <sofa/component/mapping/FrameStorage.h>
+#include "FrameStorage.h"
 #include <sofa/core/objectmodel/DataFileName.h>
 #include "initFrame.h"
 
