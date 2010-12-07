@@ -28,6 +28,7 @@
 #include "../objectCreator/ObjectCreator.h"
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #ifdef SOFA_DEV
 #include <sofa/simulation/bgl/BglSimulation.h>
@@ -268,7 +269,7 @@ int main(int argc, char** argv)
 
     //=======================================
     // Destroy created scene: step needed, as I can't get rid of the locales (the mass can't init correctly as 0.1 is not considered as a floating point).
-    sofa::simulation::DeleteVisitor deleteScene;
+    sofa::simulation::DeleteVisitor deleteScene(sofa::core::ExecParams::defaultInstance() );
     root->execute(deleteScene);
     delete root;
 
