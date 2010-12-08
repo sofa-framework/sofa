@@ -299,8 +299,6 @@ protected:
     inline void getLocalCoord( Coord& result, const typename In::Coord& inCoord, const Coord& coord) const;
 
     virtual void precomputeMatrices() = 0;
-
-
 };
 
 
