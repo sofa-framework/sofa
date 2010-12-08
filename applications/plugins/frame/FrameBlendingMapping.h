@@ -62,6 +62,7 @@ namespace mapping
 //#define WEIGHT_SPLINE 4
 //using sofa::component::topology::DistanceOnGrid;
 
+using defaulttype::Vec;
 using helper::vector;
 using helper::SVector;
 using sofa::component::material::MaterialTypes;
@@ -99,7 +100,7 @@ public:
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Real InReal;
 
-    typedef SVector<Real> VD;
+    typedef SVector<InReal> VD;
     typedef SVector<VD> VVD;
 
     typedef SVector<SpatialCoord > VSpatialCoord;
@@ -112,17 +113,18 @@ public:
     typedef SVector<unsigned int> VUI;
     typedef SVector<VUI> VVUI;
 
-    typedef MaterialTypes<N,Real> materialType;
-    typedef typename sofa::component::material::GridMaterial<materialType>::Vec3  materialCoordType;
-    typedef typename sofa::component::material::GridMaterial<materialType>::VecVec3  materialVecCoordType;
-    typedef typename sofa::component::material::GridMaterial<materialType>::Mat33  materialMat33Type;
-    typedef typename sofa::component::material::GridMaterial<materialType>::VMat33  materialVecMat33Type;
+    typedef MaterialTypes<N,InReal> materialType;
+    typedef GridMaterial<materialType> GridMat;
+    typedef typename GridMat::Vec3  materialCoordType;
+    typedef typename GridMat::VecVec3  materialVecCoordType;
+    typedef typename GridMat::Mat33  materialMat33Type;
+    typedef typename GridMat::VMat33  materialVecMat33Type;
 
     //enum { InDerivDim=In::DataTypes::deriv_total_size };
     //enum { InDOFs=In::deriv_total_size };
     //enum { InAt=0 };
     //typedef defaulttype::Mat<N,N,InReal> Mat;
-    //typedef defaulttype::Mat<3,3,InReal> Mat33;
+    typedef defaulttype::Mat<3,3,InReal> Mat33;
     //typedef vector<Mat33> VMat33;
     //typedef vector<VMat33> VVMat33;
     //typedef defaulttype::Mat<3,InDOFs,InReal> Mat3xIn;
@@ -163,7 +165,7 @@ public:
     //typedef vector<Vec3> VVec3;
     //typedef vector<VVec3> VVVec3;
     //typedef defaulttype::Vec<4,InReal> Vec4;
-    //typedef defaulttype::Vec<6,InReal> Vec6;
+    typedef defaulttype::Vec<6,InReal> Vec6;
     //typedef vector<Vec6> VVec6;
     //typedef vector<VVec6> VVVec6;
     //typedef defaulttype::Vec<7,InReal> Vec7;

@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include "FrameStorage.h"
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/helper/SVector.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/component/component.h>
 
@@ -47,6 +47,7 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using sofa::component::mapping::FrameStorage;
+using helper::SVector;
 
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -81,37 +82,37 @@ public:
     typedef Vec<N, Real> VecN;
     typedef defaulttype::Mat<3, 3, Real> Mat33;
     typedef defaulttype::Mat<3, 6, Real> Mat36;
-    typedef vector<Mat36> VMat36;
-    typedef vector<VMat36> VVMat36;
+    typedef SVector<Mat36> VMat36;
+    typedef SVector<VMat36> VVMat36;
     typedef defaulttype::Mat<3, 8, Real> Mat38;
     typedef defaulttype::Mat<4, 4, Real> Mat44;
     typedef defaulttype::Mat<6, 3, Real> Mat63;
     typedef defaulttype::Mat<6, 6, Real> Mat66;
-    typedef vector<Mat66> VMat66;
-    typedef vector<VMat66> VVMat66;
+    typedef SVector<Mat66> VMat66;
+    typedef SVector<VMat66> VVMat66;
     typedef defaulttype::Mat<6,InDerivDim,Real> Mat6xIn;
-    typedef vector<Mat6xIn> VMat6xIn;
-    typedef vector<VMat6xIn> VVMat6xIn;
+    typedef SVector<Mat6xIn> VMat6xIn;
+    typedef SVector<VMat6xIn> VVMat6xIn;
     typedef defaulttype::Mat<8, 3, Real> Mat83;
     typedef defaulttype::Mat<8, 6, Real> Mat86;
-    typedef vector<Mat86> VMat86;
+    typedef SVector<Mat86> VMat86;
     typedef defaulttype::Mat<8, 8, Real> Mat88;
-    typedef vector<Mat88> VMat88;
+    typedef SVector<Mat88> VMat88;
     typedef defaulttype::Mat<InDerivDim,6,Real> MatInx6;
     typedef defaulttype::Mat<InDerivDim,InDerivDim,Real> MatInxIn;
-    typedef vector<MatInxIn> VMatInxIn;
-    typedef vector<VMatInxIn> VVMatInxIn;
+    typedef SVector<MatInxIn> VMatInxIn;
+    typedef SVector<VMatInxIn> VVMatInxIn;
     typedef defaulttype::Vec<3, Real> Vec3;
-    typedef vector<Vec3> VVec3;
-    typedef vector<VVec3> VVVec3;
+    typedef SVector<Vec3> VVec3;
+    typedef SVector<VVec3> VVVec3;
     typedef defaulttype::Vec<4, Real> Vec4;
     typedef defaulttype::Vec<6, Real> Vec6;
-    typedef vector<Vec6> VVec6;
-    typedef vector<VVec6> VVVec6;
+    typedef SVector<Vec6> VVec6;
+    typedef SVector<VVec6> VVVec6;
     typedef defaulttype::Vec<8, Real> Vec8;
-    typedef vector<Real> VD;
+    typedef SVector<Real> VD;
     typedef defaulttype::Vec<InDerivDim,Real> VecIn;
-    typedef vector<vector<VecIn> > VVVecIn;
+    typedef SVector<SVector<VecIn> > VVVecIn;
     typedef FrameStorage<DataTypes, Real> FStorage;
 
     typedef struct
@@ -119,7 +120,7 @@ public:
         Vec4 q0;
         Vec4 qe;
     } DUALQUAT;
-    typedef vector<DUALQUAT> VDUALQUAT;
+    typedef SVector<DUALQUAT> VDUALQUAT;
 
 protected:
     bool maskInUse;

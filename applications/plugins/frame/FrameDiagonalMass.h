@@ -34,7 +34,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/topology/PointData.h>
-#include <sofa/helper/vector.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -53,7 +52,6 @@ namespace component
 
 namespace mass
 {
-using helper::vector;
 using helper::SVector;
 using sofa::component::mapping::FrameStorage;
 using namespace sofa::defaulttype;
@@ -78,38 +76,38 @@ public:
     //typedef defaulttype::Mat<3,1,Real> Mat31;
     typedef defaulttype::Mat<3,3,Real> Mat33;
     typedef defaulttype::Mat<3,6,Real> Mat36;
-    typedef vector<Mat36> VMat36;
-    typedef vector<VMat36> VVMat36;
+    typedef SVector<Mat36> VMat36;
+    typedef SVector<VMat36> VVMat36;
     typedef defaulttype::Mat<3,8,Real> Mat38;
     typedef defaulttype::Mat<3,9,Real> Mat39;
     typedef defaulttype::Mat<3,InDerivDim,Real> Mat3xIn;
-    typedef vector<Mat3xIn> VMat3xIn;
-    typedef vector<VMat3xIn> VVMat3xIn;
+    typedef SVector<Mat3xIn> VMat3xIn;
+    typedef SVector<VMat3xIn> VVMat3xIn;
     typedef defaulttype::Mat<4,4,Real> Mat44;
     //typedef defaulttype::Mat<6,1,Real> Mat61;
     typedef defaulttype::Mat<6,3,Real> Mat63;
     typedef defaulttype::Mat<InDerivDim,3,Real> MatInx3;
-    typedef vector<MatInx3> VMatInx3;
-    typedef vector<VMatInx3> VVMatInx3;
+    typedef SVector<MatInx3> VMatInx3;
+    typedef SVector<VMatInx3> VVMatInx3;
     typedef defaulttype::Mat<6,6,Real> Mat66;
     typedef defaulttype::Mat<InDerivDim,InDerivDim,Real> MatInxIn;
-    typedef vector<Mat66> VMat66;
-    typedef vector<VMat66> VVMat66;
+    typedef SVector<Mat66> VMat66;
+    typedef SVector<VMat66> VVMat66;
     //typedef defaulttype::Mat<8,1,Real> Mat81;
     typedef defaulttype::Mat<8,3,Real> Mat83;
     typedef defaulttype::Mat<8,6,Real> Mat86;
-    typedef vector<Mat86> VMat86;
+    typedef SVector<Mat86> VMat86;
     typedef defaulttype::Mat<8,8,Real> Mat88;
-    typedef vector<Mat88> VMat88;
+    typedef SVector<Mat88> VMat88;
     typedef defaulttype::Vec<3,Real> Vec3;
-    typedef vector<Vec3> VVec3;
-    typedef vector<VVec3> VVVec3;
+    typedef SVector<Vec3> VVec3;
+    typedef SVector<VVec3> VVVec3;
     typedef defaulttype::Vec<4,Real> Vec4;
     typedef defaulttype::Vec<6,Real> Vec6;
-    typedef vector<Vec6> VVec6;
-    typedef vector<VVec6> VVVec6;
+    typedef SVector<Vec6> VVec6;
+    typedef SVector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
-    typedef vector<Real> VD;
+    typedef SVector<Real> VD;
     typedef FrameStorage<DataTypes, Real> FStorage;
 
     typedef SVector<unsigned int> VUI;
@@ -120,7 +118,7 @@ public:
     typedef StdVectorTypes< Vec3Mass, Vec3Mass, MassType > GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
-    typedef vector<MassType> MassVector;
+    typedef helper::vector<MassType> MassVector;
 
     VecMass f_mass;
     VecMass f_mass0;
