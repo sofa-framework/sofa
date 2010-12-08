@@ -35,6 +35,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/SVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "AffineTypes.h"
@@ -52,7 +53,8 @@ namespace component
 
 namespace mass
 {
-
+using helper::vector;
+using helper::SVector;
 using sofa::component::mapping::FrameStorage;
 using namespace sofa::defaulttype;
 
@@ -107,15 +109,18 @@ public:
     typedef vector<Vec6> VVec6;
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
-    typedef vector<double> VD;
+    typedef vector<Real> VD;
     typedef FrameStorage<DataTypes, Real> FStorage;
+
+    typedef SVector<unsigned int> VUI;
+    typedef SVector<VUI> VVUI;
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3Mass;
     typedef StdVectorTypes< Vec3Mass, Vec3Mass, MassType > GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
-    typedef helper::vector<MassType> MassVector;
+    typedef vector<MassType> MassVector;
 
     VecMass f_mass;
     VecMass f_mass0;
@@ -206,7 +211,7 @@ public:
 private:
     FStorage* dqStorage;
     const unsigned int* nbRefs;
-    const vector<unsigned int>* repartition;
+    const VVUI* repartition;
     VD* vol;
     VD* massDensity;
     const VVMat3xIn* J;

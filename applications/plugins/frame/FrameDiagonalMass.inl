@@ -464,7 +464,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( VecMass& mass, const V
     for (j=0; j<nbP; j++ )
         for (unsigned int i = 0; i < *nbRefs; ++i)
         {
-            const unsigned int& indexRep = (*repartition)[*nbRefs*j+i];
+            const unsigned int& indexRep = (*repartition)[j][i];
             MatInxIn& frameMass = vecMass[indexRep].inertiaMatrix;
             JT.transpose ( J[j][i] );
             JT*=(Real)((*this->vol)[j] * (*this->massDensity)[j]);

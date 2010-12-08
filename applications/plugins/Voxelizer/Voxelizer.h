@@ -168,7 +168,7 @@ protected:
     inline void reloadRasterizerSettings();
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_VOXEL_LOADER_BY_RASTERIZATION)
+#if defined(WIN32) && !defined(SOFA_BUILD_VOXELIZER)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class Voxelizer<defaulttype::Vec3dTypes>;
