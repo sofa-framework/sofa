@@ -22,6 +22,8 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
+#define SOFA_VOXELIZER_CPP
+
 #include "Voxelizer.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/Simulation.h>

@@ -109,7 +109,7 @@ public:
     typedef vector<Vec6> VVec6;
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8, Real> Vec8;
-    typedef vector<double> VD;
+    typedef vector<Real> VD;
     typedef defaulttype::Vec<InDerivDim,Real> VecIn;
     typedef vector<vector<VecIn> > VVVecIn;
     typedef FrameStorage<DataTypes, Real> FStorage;

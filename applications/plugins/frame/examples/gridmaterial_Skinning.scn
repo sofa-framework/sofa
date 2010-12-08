@@ -1,0 +1,31 @@
+<Node name="root">
+	<Node name="Turtle">
+		<GridMaterial name="gridmaterial" template="Material3" 
+				imageFile="textures/Turtle_32_32_32.raw" 
+				labelToStiffnessPairs="1 1
+2 20000
+3 1"  
+				labelToDensityPairs="1 1000"  
+				distanceType="Geodesic" 
+				biasDistances="true"
+				showVoxelData="Voronoi" 
+				/>
+
+		<MechanicalObject name="DOFs" template="Affine" useMask="1"  
+				position="0.8 0 0.3 [1 0 0, 0 1 0, 0 0 1] -0.15 0 0.2 [1 0 0, 0 1 0, 0 0 1]"  
+				/>
+
+		<Node name="Physics" >
+			<MechanicalObject name="Samples" template="DeformationGradient332"  />
+ 			<AffineSkinningMapping name="Mapping" template="Mapping&lt;Affine,DeformationGradient332&gt;" 
+				input="@../DOFs"  output="@Samples"  
+				targetFrameNumber="6"
+				targetSampleNumber="20"
+				/>
+		</Node>
+
+		<Node name="Visual" >
+			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Turtle.obj"/>
+		</Node>
+	</Node>
+</Node>
