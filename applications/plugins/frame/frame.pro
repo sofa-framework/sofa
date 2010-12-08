@@ -62,9 +62,8 @@ HEADERS += \
            RigidSkinningMapping.inl \
            QuadraticSkinningMapping.h \
            QuadraticSkinningMapping.inl \
-           QuadraticTypes.h  \
-            RigidFrameTypes.h
-
+           QuadraticTypes.h
+           
 SOURCES += \
            AffineSkinningMapping.cpp \
            FrameConstantForceField.cpp \
