@@ -85,12 +85,12 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     //, distanceType ( initData ( &distanceType, "distanceType","Distance computation method.\n0 - euclidian distance.\n1 - geodesic distance.\n2 - harmonic diffusion." ) )
     //, computeWeights ( true )
 {
-    //maskFrom = NULL;
-    //if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
-    //    maskFrom = &stateFrom->forceMask;
-    //maskTo = NULL;
-    //if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
-    //    maskTo = &stateTo->forceMask;
+    maskFrom = NULL;
+    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
+        maskFrom = &stateFrom->forceMask;
+    maskTo = NULL;
+    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
+        maskTo = &stateTo->forceMask;
 }
 
 template <class TIn, class TOut>
@@ -104,9 +104,7 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::init()
 {
     gridMaterial=NULL;
-    vector<GridMaterial<materialType> *> vgmat;
-    this->getContext()->get<GridMaterial<materialType> >( &vgmat, core::objectmodel::BaseContext::SearchUp);
-    if(vgmat.size()!=0)  gridMaterial=vgmat[0];
+    this->getContext()->get( gridMaterial);
     if ( !gridMaterial )
     {
         serr << "GridMaterial component not found -> use model vertices as Gauss point and 1/d^2 as weights." << sendl;
@@ -286,7 +284,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     m_ddweight.resize( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_ddweight[i].resize( nbRef );
     m_reps.resize( xto.size() );		for ( unsigned int i=0; i<xto.size(); i++ )        m_reps[i].resize( nbRef );
 
-    unsigned int i,j,k,m;
+    unsigned int i,j,k,m=0;
     if(gridMaterial)
     {
         materialVecCoordType points(xto.size());
