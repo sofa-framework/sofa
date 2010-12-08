@@ -76,12 +76,12 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< VecIndex > points;
+    Data< helper::vector< unsigned int > > points;
     Data< VecReal > stiffness;
     Data< VecReal > angularStiffness;
     Data< std::string > external_rest_shape;
-    Data< VecIndex > external_points;
-    Data< bool > recomput_indices;
+    Data< helper::vector< unsigned int > > external_points;
+    Data< bool > recompute_indices;
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
 
