@@ -1322,6 +1322,11 @@ template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::reinit()
 {
     if (!this->mstate) return;
+    if (!_mesh->getTetrahedra().empty())
+    {
+        _indexedElements = & (_mesh->getTetrahedra());
+    }
+
     setMethod(f_method.getValue() );
     const VecCoord& p = *this->mstate->getX0();
     _initialPoints.setValue(p);

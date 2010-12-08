@@ -206,6 +206,11 @@ using namespace gpu::cuda;
 template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::reinit(Main* m)
 {
+    if (!m->_mesh->getTetrahedra().empty())
+    {
+        m->_indexedElements = & (m->_mesh->getTetrahedra());
+    }
+
     Data& data = m->data;
     m->parallelDataSimu->strainDisplacements.resize( m->_indexedElements->size() );
     m->parallelDataSimu->materialsStiffnesses.resize(m->_indexedElements->size() );
