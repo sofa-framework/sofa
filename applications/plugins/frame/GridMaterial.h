@@ -158,6 +158,8 @@ public:
     /*   Lumping			  */
     /*************************/
 
+    /// return w_i(index).mu_i.vol_i and p_i of voxels in the voronoi region of point
+    bool getWeightedMasses(const Vec3& point,const unsigned int findex,VecVec3& p,VD& weightedmasses);
     /// return sum(mu_i.vol_i) in the voronoi region of point
     bool lumpMass(const Vec3& point,Real& mass);
     /// return sum(vol_i) in the voronoi region of point
@@ -214,6 +216,7 @@ public:
     inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
+    inline bool findIndexInRepartition(unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
 
     virtual std::string getTemplateName() const
     {
