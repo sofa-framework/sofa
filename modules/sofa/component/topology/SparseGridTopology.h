@@ -202,6 +202,7 @@ public:
     Data< vector< unsigned char > >     dataVoxels;
     Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
 
+
 protected:
     bool isVirtual;
     /// cutting number in all directions
@@ -211,6 +212,7 @@ protected:
     Data< double > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
+public:
     Data< Vec3i >			dataResolution;
     Data< Vector3 >         voxelSize;
     Data< unsigned int >    marchingCubeStep;
@@ -221,6 +223,7 @@ protected:
     Data< SeqTriangles > input_triangles;
     Data< SeqQuads > input_quads;
 
+protected:
     virtual void updateEdges();
     virtual void updateQuads();
     virtual void updateHexahedra();
