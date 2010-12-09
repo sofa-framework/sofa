@@ -590,8 +590,10 @@ public:
     static Coord inverse( const Coord& c )
     {
         CAffine m;
+#if _DEBUG
         bool invertible = invertMatrix(m,c.getAffine());
         assert(invertible);
+#endif
         return Coord( -(m*c.getCenter()),m );
     }
 
