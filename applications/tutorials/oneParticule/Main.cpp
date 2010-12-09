@@ -78,10 +78,10 @@ int main(int argc, char** argv)
     particle->setName("particle");
     particule_node->addObject(particle);
     particle->resize(1);
-    // The point
+    // get write access the particle positions vector
     WriteAccessor< Data<typename MechanicalObject3::VecCoord> > positions = *particle->write( VecId::position() );
     positions[0] = Coord3(0,0,0);
-    // The velocity
+    // get write access the particle velocities vector
     WriteAccessor< Data<typename MechanicalObject3::VecDeriv> > velocities = *particle->write( VecId::velocity() );
     velocities[0] = Deriv3(0,0,0);
 
@@ -93,6 +93,7 @@ int main(int argc, char** argv)
 
     sofa::simulation::tree::getSimulation()->init(groot);
     groot->setAnimate(false);
+    groot->setShowBehaviorModels(true);
 
     //=======================================
     // Run the main loop
