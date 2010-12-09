@@ -39,6 +39,7 @@
 
 #ifdef SOFA_DEV
 #include <sofa/component/topology/DistanceOnGrid.h>
+//#include <../applications/plugins/frame/ElastonTypes.h>
 #endif
 
 namespace sofa

@@ -22,8 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initFrame.h"
+#define SOFA_COMPONENT_ENGINE_AverageCoord_CPP
+#include "AverageCoord.inl"
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -31,69 +34,42 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_FRAME_API void initExternalModule();
-    SOFA_FRAME_API const char* getModuleName();
-    SOFA_FRAME_API const char* getModuleVersion();
-    SOFA_FRAME_API const char* getModuleLicense();
-    SOFA_FRAME_API const char* getModuleDescription();
-    SOFA_FRAME_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace engine
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Frame Based Dynamic Plugin";
-}
+SOFA_DECL_CLASS(AverageCoord)
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
+int AverageCoordClass = core::RegisterObject("Compute the average of coordinates")
+#ifndef SOFA_FLOAT
+        .add< AverageCoord<Vec2dTypes> >()
+        .add< AverageCoord<Vec3dTypes> >()
+        .add< AverageCoord<Rigid2dTypes> >()
+        .add< AverageCoord<Rigid3dTypes> >()
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< AverageCoord<Vec2fTypes> >()
+        .add< AverageCoord<Rigid2fTypes> >()
+        .add< AverageCoord<Vec3fTypes> >()
+        .add< AverageCoord<Rigid3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Vec2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Rigid2dTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Rigid3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Vec2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Rigid2fTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API AverageCoord<Rigid3fTypes>;
+#endif //SOFA_DOUBLE
 
 
-const char* getModuleDescription()
-{
-    return "Use frame based dynamic technic in SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "FrameDiagonalMass, FixedConstraint, FrameHookeForceField, MechanicalObject, FrameSpringForceField2";
-}
-
-} // namespace frame
+} //
+} // namespace component
 
 } // namespace sofa
 
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(FrameBlendingMapping)
-//SOFA_LINK_CLASS(AffineSkinningMapping)
-SOFA_LINK_CLASS(FrameDiagonalMass)
-SOFA_LINK_CLASS(FrameConstantForceField)
-//SOFA_LINK_CLASS(FrameDualQuatSkinningMapping)
-SOFA_LINK_CLASS(FrameFixedConstraint)
-SOFA_LINK_CLASS(FrameHookeForceField)
-SOFA_LINK_CLASS(FrameLoydAlgo)
-SOFA_LINK_CLASS(FrameMechanicalObject)
-SOFA_LINK_CLASS(FrameSpringForceField2)
-SOFA_LINK_CLASS(HookeMaterial3)
-SOFA_LINK_CLASS(GridMaterial)
-//SOFA_LINK_CLASS(PrimitiveSkinningMapping)
-//SOFA_LINK_CLASS(QuadraticSkinningMapping)
-//SOFA_LINK_CLASS(RigidSkinningMapping)

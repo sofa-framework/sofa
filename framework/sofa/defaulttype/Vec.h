@@ -159,6 +159,24 @@ public:
         this->elems[8]=r9;
     }
 
+    /// Specific constructor for 12-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
+    {
+        BOOST_STATIC_ASSERT(N == 12);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+        this->elems[6]=r7;
+        this->elems[7]=r8;
+        this->elems[8]=r9;
+        this->elems[9]=r10;
+        this->elems[10]=r11;
+        this->elems[11]=r12;
+    }
+
 
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
     Vec(const Vec<N-1,real>& v, real r1)

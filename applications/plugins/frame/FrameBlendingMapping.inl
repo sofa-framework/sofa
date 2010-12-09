@@ -53,14 +53,20 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 using sofa::component::topology::TriangleSetTopologyContainer;
+using helper::WriteAccessor;
+using helper::ReadAccessor;
 
 
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to )
+    , f_nbRefs ( initData ( &f_nbRefs,"nbRefs","number of parents for each child" ) )
+    , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
-    , weightDeriv ( initData ( &weightDeriv,"weight gradients","weight gradients" ) )
-    , weightDeriv2 ( initData ( &weightDeriv2,"weight Hessians","weight Hessians" ) )
+    , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
+    , weightDeriv2 ( initData ( &weightDeriv2,"weightHessians","weight Hessians" ) )
+    , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
+    , f_initialInverseMatrices ( initData ( &f_initialInverseMatrices,"initialInverseMatrices","inverses of the initial parent matrices in the world reference frame" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
@@ -103,6 +109,33 @@ FrameBlendingMapping<TIn, TOut>::~FrameBlendingMapping ()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::init()
 {
+    Inherit::init();
+    unsigned numParents = this->fromModel->getSize();
+    unsigned numChildren = this->toModel->getSize();
+    unsigned nbRef = f_nbRefs.getValue();
+    ReadAccessor<Data<VecOutCoord> > x (*this->toModel->read(core::ConstVecCoordId::position()));
+    ReadAccessor<Data<VecInCoord> > xparent = *this->fromModel->read(core::ConstVecCoordId::position());
+    ReadAccessor<Data<vector<OutReal> > > weights(weight);
+    ReadAccessor<Data<vector<MaterialCoord> > > dweights(weightDeriv);
+    ReadAccessor<Data<vector<MaterialMat> > > ddweights(weightDeriv2);
+    WriteAccessor<Data<VecInCoord> > initialInverseMatrices(f_initialInverseMatrices);
+    WriteAccessor<Data<VecOutCoord> > initPos(f_initPos);
+
+    if( f_initPos.getValue().size() != numChildren )
+    {
+        initPos.resize(x.size());
+        for(unsigned i=0; i<x.size(); i++ )
+            initPos[i] = x[i];
+    }
+    if( f_initialInverseMatrices.getValue().size() != numParents )
+    {
+        initialInverseMatrices.resize(xparent.size());
+        for(unsigned i=0; i<initialInverseMatrices.size(); i++)
+            initialInverseMatrices[i] = In::inverse(xparent[i]);
+    }
+
+
+
     gridMaterial=NULL;
     this->getContext()->get( gridMaterial);
     if ( !gridMaterial )
@@ -111,13 +144,16 @@ void FrameBlendingMapping<TIn, TOut>::init()
     }
     else
     {
-        initFrames();
+        //                    initFrames();
         initSamples();
     }
     updateWeights();
-    computeInitPos ();
 
-    Inherit::init();
+    // compute J
+    for(unsigned i=0; i<x.size(); i++ )
+        for( unsigned j=0; j<nbRef; j++ )
+            J[i*nbRef+j] = InOut::computeJacobianBlock( initialInverseMatrices[i], initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
+
 
 
     //if ( distanceType.getValue().getSelectedId() != SM_DISTANCE_EUCLIDIAN)
@@ -159,86 +195,180 @@ void FrameBlendingMapping<TIn, TOut>::init()
     //    computeInitPos();
     //}
 
-    Inherit::init();
 }
 
 
 
-
-
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::computeInitPos ( )
+void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    const VecCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
-    const VecInCoord& xfrom = *this->fromModel->getX0();
+    const unsigned int& nbRef = this->f_nbRefs.getValue();
+    const vector<unsigned>& index= this->f_index.getValue();
+    const vector<OutReal> weights = this->weight.getValue();
 
-    const unsigned int& nbRef = this->nbRefs.getValue();
-    const VVUI& m_reps = this->repartition.getValue();
+    ReadAccessor<Data<VecOutCoord> > initPos = this->f_initPos;
+    ReadAccessor<Data<VecInCoord> > invmat = this->f_initialInverseMatrices;
+    this->mm0.resize( in.size() );
+    for(unsigned i=0; i<mm0.size(); i++ )
+        mm0[i] = In::mult(in[i],invmat[i]);
 
-    initPos.resize ( xto.size() * nbRef );
-    for ( unsigned int i = 0; i < xto.size(); i++ )
-        for ( unsigned int m = 0; m < nbRef; m++ )
-        {
-            const int& idx=nbRef *i+m;
-            const int& idxReps=m_reps[i][m];
-            getLocalCoord( initPos[idx], xfrom[idxReps], xto[i]);
-        }
-}
-
-
-
-
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::initFrames()
-{
-    // Get references
-    Data<VecInCoord> &xfrom0_d = *this->fromModel->write(core::VecCoordId::restPosition());
-    VecInCoord &xfrom0 = *xfrom0_d.beginEdit();
-    Data<VecInCoord> &xfrom_d = *this->fromModel->write(core::VecCoordId::position());
-    VecInCoord &xfrom = *xfrom_d.beginEdit();
-    Data<VecInCoord> &xfromReset_d = *this->fromModel->write(core::VecCoordId::resetPosition());
-    VecInCoord &xfromReset = *xfromReset_d.beginEdit();
-
-    core::behavior::MechanicalState< In >* mstateFrom = dynamic_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
-    if ( !mstateFrom)
+    for ( unsigned int i = 0 ; i < out.size(); i++ )
     {
-        serr << "Error: try to insert new frames, which are not mechanical states !" << sendl;
-        return;
+        // Point transformation (apply)
+        out[i] = OutCoord();
+
+        for ( unsigned int j = 0 ; j < nbRef; ++j )
+        {
+            out[i] += InOut::mult(mm0[index[nbRef * i + j]], initPos[i])  * weights[index[nbRef * i + j]];
+        }
     }
-
-    // retrieve initial frames
-    materialVecCoordType points(xfrom0.size());
-    for ( unsigned int i=0; i<xfrom.size(); i++ )
-        for ( unsigned int j=0; j<N; j++ )
-            points[i][j]= xfrom0[i][j];
-
-    // Insert new frames and compute associated voxel weights
-    std::cout<<"Inserting "<<targetFrameNumber.getValue()-xfrom.size()<<" frames..."<<std::endl;
-    gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
-    std::cout<<"Computing weights in grid..."<<std::endl;
-    gridMaterial->computeWeights(this->nbRefs.getValue(),points);
-
-    //// copy
-    this->fromModel->resize(points.size());
-    for ( unsigned int i=xfrom.size(); i<points.size(); i++ )
-        for ( unsigned int j=0; j<N; j++ )
-            xfrom[i][j] = xfrom0[i][j] = xfromReset[i][j]=  points[i][j];
-    xfrom0_d.endEdit();
-    xfrom_d.endEdit();
-    xfromReset_d.endEdit();
 }
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+{
+    unsigned nbRef = this->f_nbRefs.getValue();
+    const vector<unsigned> index = this->f_index.getValue();
+
+    if ( ! ( this->maskTo->isInUse() ) )
+    {
+        for ( unsigned int i=0; i<out.size(); i++ )
+        {
+            out[i] = OutDeriv();
+            for ( unsigned int j=0 ; j<nbRef; j++ )
+            {
+                out[i] += InOut::mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
+            }
+        }
+    }
+    else
+    {
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+
+        ParticleMask::InternalStorage::const_iterator it;
+        for ( it=indices.begin(); it!=indices.end(); it++ )
+        {
+            unsigned i= ( unsigned ) ( *it );
+            out[i] = OutDeriv();
+            for ( unsigned int j=0 ; j<nbRef; j++ )
+            {
+                out[i] += InOut::mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
+            }
+        }
+    }
+}
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+{
+    unsigned nbRef = this->f_nbRefs.getValue();
+    const vector<unsigned> index = this->f_index.getValue();
+    if ( ! ( this->maskTo->isInUse() ) )
+    {
+        this->maskFrom->setInUse ( false );
+        for ( unsigned int i=0; i<in.size(); i++ ) // VecType
+        {
+            for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
+            {
+                out[index[nbRef*i+j]] += InOut::multTranspose( this->J[nbRef*i+j], in[i] );
+            }
+        }
+    }
+    else
+    {
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+
+        ParticleMask::InternalStorage::const_iterator it;
+        for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
+        {
+            const int i= ( int ) ( *it );
+            for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
+            {
+                out[index[nbRef*i+j]] += InOut::multTranspose( this->J[nbRef*i+j], in[i] );
+            }
+        }
+    }
+}
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+{
+    cerr<<"WARNING ! FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) not implemented"<< endl;
+}
+
+//            template <class TIn, class TOut>
+//                    void FrameBlendingMapping<TIn, TOut>::computeInitPos ( )
+//            {
+//                const VecCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
+//                const VecInCoord& xfrom = *this->fromModel->getX0();
+//
+//                const unsigned int& nbRef = this->nbRefs.getValue();
+//                const VVUI& m_reps = this->repartition.getValue();
+//
+//                initPos.resize ( xto.size() * nbRef );
+//                for ( unsigned int i = 0; i < xto.size(); i++ )
+//                    for ( unsigned int m = 0; m < nbRef; m++ )
+//                    {
+//                    const int& idx=nbRef *i+m;
+//                    const int& idxReps=m_reps[i][m];
+//                    getLocalCoord( initPos[idx], xfrom[idxReps], xto[i]);
+//                }
+//            }
+
+
+
+
+//            template <class TIn, class TOut>
+//                    void FrameBlendingMapping<TIn, TOut>::initFrames()
+//            {
+//                // Get references
+//                Data<VecInCoord> &xfrom0_d = *this->fromModel->write(core::VecCoordId::restPosition());
+//                VecInCoord &xfrom0 = *xfrom0_d.beginEdit();
+//                Data<VecInCoord> &xfrom_d = *this->fromModel->write(core::VecCoordId::position());
+//                VecInCoord &xfrom = *xfrom_d.beginEdit();
+//                Data<VecInCoord> &xfromReset_d = *this->fromModel->write(core::VecCoordId::resetPosition());
+//                VecInCoord &xfromReset = *xfromReset_d.beginEdit();
+//
+//                core::behavior::MechanicalState< In >* mstateFrom = dynamic_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
+//                if ( !mstateFrom)
+//                {
+//                    serr << "Error: try to insert new frames, which are not mechanical states !" << sendl;
+//                    return;
+//                }
+//
+//                // retrieve initial frames
+//                VecMaterialCoord points(xfrom0.size());
+//                for ( unsigned int i=0;i<xfrom.size();i++ )
+//                    for ( unsigned int j=0;j<N;j++ )
+//                        points[i][j]= xfrom0[i][j];
+//
+//                // Insert new frames and compute associated voxel weights
+//                std::cout<<"Inserting "<<targetFrameNumber.getValue()-xfrom.size()<<" frames..."<<std::endl;
+//                gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
+//                std::cout<<"Computing weights in grid..."<<std::endl;
+//                gridMaterial->computeWeights(this->nbRefs.getValue(),points);
+//
+//                //// copy
+//                this->fromModel->resize(points.size());
+//                for ( unsigned int i=xfrom.size();i<points.size();i++ )
+//                    for ( unsigned int j=0;j<N;j++ )
+//                        xfrom[i][j] = xfrom0[i][j] = xfromReset[i][j]=  points[i][j];
+//                xfrom0_d.endEdit();
+//                xfrom_d.endEdit();
+//                xfromReset_d.endEdit();
+//            }
 
 
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
     // Get references
-    Data<VecCoord> &xto0_d = *this->toModel->write(core::VecCoordId::restPosition());
-    VecCoord &xto0 = *xto0_d.beginEdit();
-    Data<VecCoord> &xto_d = *this->toModel->write(core::VecCoordId::position());
-    VecCoord &xto = *xto_d.beginEdit();
-    Data<VecCoord> &xtoReset_d = *this->toModel->write(core::VecCoordId::resetPosition());
-    VecCoord &xtoReset = *xtoReset_d.beginEdit();
+    WriteAccessor<Data<VecOutCoord> > xto0 = *this->toModel->write(core::VecCoordId::restPosition());
+    WriteAccessor<Data<VecOutCoord> >  xto = *this->toModel->write(core::VecCoordId::position());
+    WriteAccessor<Data<VecOutCoord> >  xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
 
     core::behavior::MechanicalState< Out >* mstateto = dynamic_cast<core::behavior::MechanicalState< Out >* >( this->toModel);
     if ( !mstateto)
@@ -249,7 +379,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 
     // Insert new samples
     std::cout<<"Inserting "<<targetSampleNumber.getValue()<<" gauss points..."<<std::endl;
-    materialVecCoordType points;
+    vector<MaterialCoord> points;
     gridMaterial->computeUniformSampling(points,targetSampleNumber.getValue());
 
     // copy
@@ -257,9 +387,6 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     for ( unsigned int i=0; i<targetSampleNumber.getValue(); i++ )
         for ( unsigned int j=0; j<N; j++ )
             xto[i][j] = xto0[i][j] = xtoReset[i][j]= points[i][j];
-    xto0_d.endEdit();
-    xto_d.endEdit();
-    xtoReset_d.endEdit();
 }
 
 
@@ -269,72 +396,90 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 {
     std::cout<<"Lumping weights to gauss points..."<<std::endl;
 
-    const VecCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
-    const VecInCoord& xfrom = *this->fromModel->getX0();
+    //                const VecOutCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
+    //                const VecInCoord& xfrom = *this->fromModel->getX0();
+    ReadAccessor<Data<VecOutCoord> > xto (f_initPos);
+    ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
 
-    VVD& m_weights = * ( weight.beginEdit() );
-    VVSpatialCoord& m_dweight = * ( weightDeriv.beginEdit());
-    VVMatNN& m_ddweight = * ( weightDeriv2.beginEdit());
+    WriteAccessor<Data<vector<OutReal> > >       m_weights  ( weight );
+    WriteAccessor<Data<vector<MaterialCoord> > > m_dweight  ( weightDeriv );
+    WriteAccessor<Data<vector<MaterialMat> > >   m_ddweight ( weightDeriv2 );
 
-    const unsigned int& nbRef = this->nbRefs.getValue();
-    VVUI& m_reps = * ( repartition.beginEdit());
+    const unsigned int& nbRef = this->f_nbRefs.getValue();
+    WriteAccessor<Data<vector<unsigned> > > m_reps ( f_index );
 
-    m_weights.resize ( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_weights[i].resize ( nbRef );
-    m_dweight.resize ( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_dweight[i].resize ( nbRef );
-    m_ddweight.resize( xto.size() );    for ( unsigned int i=0; i<xto.size(); i++ )        m_ddweight[i].resize( nbRef );
-    m_reps.resize( xto.size() );		for ( unsigned int i=0; i<xto.size(); i++ )        m_reps[i].resize( nbRef );
+    m_weights.resize ( xto.size() * nbRef );
+    m_dweight.resize ( xto.size() * nbRef );
+    m_ddweight.resize( xto.size() * nbRef );
+    m_reps.resize( xto.size() * nbRef );
 
-    unsigned int i,j,k,m=0;
+    unsigned int j,k,m=0;
     if(gridMaterial)
     {
-        materialVecCoordType points(xto.size());
-        for (i=0; i<xto.size(); i++ ) for (j=0; j<N; j++ )  points[i][j]= xto[i][j];
+        vector<MaterialCoord> points ( xto.size() );
+        for(unsigned i=0; i<points.size(); i++ )
+            points[i] = xto[i];
 
-        VD w;
-        VUI reps;
-        materialVecCoordType dw;
-        materialVecMat33Type ddw;
+        vector<OutReal> w;
+        vector<unsigned> reps;
+        vector<MaterialCoord> dw;
+        vector<MaterialMat> ddw;
 
-        for (i=0; i<xto.size(); i++ )
+        for (unsigned i=0; i<xto.size(); i++ )
         {
             if(gridMaterial->lumpWeightsRepartition(points[i],reps,w,&dw,&ddw))
             {
-                for (j=0; j<nbRef; j++) {	m_weights[i][j]=w[j]; 	m_reps[i][j]=reps[j]; 	for(k=0; k<N; k++) m_dweight[i][j][k]=dw[j][k]; for(k=0; k<N; k++)  for(m=0; m<N; m++) 	m_ddweight[i][j][k][m]=ddw[j][k][m]; }
+                for (j=0; j<nbRef; j++)
+                {
+                    m_weights[nbRef*i+j]=w[j];
+                    m_reps[nbRef*i+j]=reps[j];
+                    for(k=0; k<N; k++)
+                    {
+                        m_dweight[nbRef*i+j][k]=dw[j][k];
+                    }
+                    for(k=0; k<N; k++)
+                    {
+                        for(m=0; m<N; m++)
+                        {
+                            m_ddweight[nbRef*i+j][k][m]=ddw[j][k][m];
+                        }
+                    }
+                }
             }
         }
     }
     else	// 1/d^2 weights with Euclidean distance
     {
-        Real w,w2,w3,w4;
+        OutReal w,w2,w3,w4;
         SpatialCoord u;
-        for (i=0; i<xto.size(); i++ )
+        for (unsigned i=0; i<xto.size(); i++ )
         {
             // get the nbRef closest primitives
-            for (j=0; j<nbRef; j++ ) {m_weights[i][j]=0; m_reps[i][j]=0;}
+            for (j=0; j<nbRef; j++ ) {m_weights[nbRef*i+j]=0; m_reps[nbRef*i+j]=0;}
             for (j=0; j<xfrom.size(); j++ )
             {
-                w=0; for(k=0; k<N; k++) w+=(xto[i][k]-xfrom[j][k])*(xto[i][k]-xfrom[j][k]); if(w!=0) w=1./w; else w=std::numeric_limits<Real>::max();
-                m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
+                w=0; for(k=0; k<N; k++) w+=(xto[i][k]-xfrom[j][k])*(xto[i][k]-xfrom[j][k]); if(w!=0) w=1./w; else w=std::numeric_limits<OutReal>::max();
+                m=0; while (m!=nbRef && m_weights[nbRef*i+m]>w) m++;
                 if(m!=nbRef)
                 {
-                    for (k=nbRef-1; k>m; k--) {m_weights[i][k]=m_weights[i][k-1]; m_reps[i][k]=m_reps[i][k-1];}
-                    m_weights[i][m]=w;
-                    m_reps[i][m]=j;
+                    for (k=nbRef-1; k>m; k--) {m_weights[nbRef*i+k]=m_weights[nbRef*i+k-1]; m_reps[nbRef*i+k]=m_reps[nbRef*i+k-1];}
+                    m_weights[nbRef*i+m]=w;
+                    m_reps[nbRef*i+m]=j;
                 }
             }
             // compute weight gradients
             for (j=0; j<nbRef; j++ )
             {
-                w=m_weights[i][m];
-                m_dweight[i][j].fill(0);
-                m_ddweight[i][j].fill(0);
+                w=m_weights[i*nbRef+m];
+                m_dweight[i*nbRef+j].fill(0);
+                m_ddweight[i*nbRef+j].fill(0);
                 if (w)
                 {
                     w2=w*w; w3=w2*w; w4=w3*w;
                     for(k=0; k<N; k++) u[k]=(xto[i][k]-xfrom[j][k]);
-                    m_dweight[i][j] = - u * w2* 2.0;
-                    for(k=0; k<N; k++) m_ddweight[i][j][k][k]= - w2* 2.0;
-                    for(k=0; k<N; k++) for(m=0; m<N; m++) m_ddweight[i][j][k][m]+=u[k]*u[m]*w3* 8.0;
+                    m_dweight[i*nbRef+j] = - u * w2* 2.0;
+                    for(k=0; k<N; k++) m_ddweight[i*nbRef+j][k][k]= - w2* 2.0;
+                    for(k=0; k<N; k++) for(m=0; m<N; m++) m_ddweight[i*nbRef+j][k][m]+=u[k]*u[m]*w3* 8.0;
                 }
             }
         }
@@ -347,35 +492,41 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
 {
     const unsigned int xtoSize = this->toModel->getX()->size();
-    const unsigned int& nbRef = this->nbRefs.getValue();
-    VVD& m_weights = * ( weight.beginEdit() );
-    VVSpatialCoord& m_dweight = * ( weightDeriv.beginEdit());
-    VVMatNN& m_ddweight = * ( weightDeriv2.beginEdit());
+    const unsigned int& nbRef = this->f_nbRefs.getValue();
+    WriteAccessor<Data<vector<OutReal> > >       m_weights  ( weight );
+    WriteAccessor<Data<vector<MaterialCoord> > > m_dweight  ( weightDeriv );
+    WriteAccessor<Data<vector<MaterialMat> > >   m_ddweight ( weightDeriv2 );
 
     for (unsigned int i = 0; i < xtoSize; ++i)
     {
-        Real sumWeights = 0,wn;
-        SpatialCoord sumGrad,dwn;			sumGrad.fill(0);
-        MatNN sumGrad2,ddwn;				sumGrad2.fill(0);
+        OutReal sumWeights = 0,wn;
+        MaterialCoord sumGrad,dwn;			sumGrad.fill(0);
+        MaterialMat sumGrad2,ddwn;				sumGrad2.fill(0);
 
         // Compute norm
         for (unsigned int j = 0; j < nbRef; ++j)
         {
-            sumWeights += m_weights[i][j];
-            sumGrad += m_dweight[i][j];
-            sumGrad2 += m_ddweight[i][j];
+            sumWeights += m_weights[i*nbRef+j];
+            sumGrad += m_dweight[i*nbRef+j];
+            sumGrad2 += m_ddweight[i*nbRef+j];
         }
 
         // Normalise
         if(sumWeights!=0)
             for (unsigned int j = 0; j < nbRef; ++j)
             {
-                wn=m_weights[i][j]/sumWeights;
-                dwn=(m_dweight[i][j] - sumGrad*wn)/sumWeights;
-                for(unsigned int o=0; o<N; o++) for(unsigned int p=0; p<N; p++) ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
-                m_ddweight[i][j]=ddwn;
-                m_dweight[i][j]=dwn;
-                m_weights[i][j] =wn;
+                wn=m_weights[i*nbRef+j]/sumWeights;
+                dwn=(m_dweight[i*nbRef+j] - sumGrad*wn)/sumWeights;
+                for(unsigned int o=0; o<num_material_dimensions; o++)
+                {
+                    for(unsigned int p=0; p<num_material_dimensions; p++)
+                    {
+                        ddwn[o][p]=(m_ddweight[i*nbRef+j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
+                    }
+                }
+                m_ddweight[i*nbRef+j]=ddwn;
+                m_dweight[i*nbRef+j]=dwn;
+                m_weights[i*nbRef+j] =wn;
             }
     }
 }
@@ -533,10 +684,10 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 {
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
-    const unsigned int nbRef = this->nbRefs.getValue();
-    const VVUI& m_reps = this->repartition.getValue();
-    const VVD& m_weights = weight.getValue();
-    const VVSpatialCoord& m_dweights = weightDeriv.getValue();
+    const unsigned int nbRef = this->f_nbRefs.getValue();
+    ReadAccessor<Data<vector<unsigned> > > m_reps = this->f_index;
+    ReadAccessor<Data<vector<OutReal> > > m_weights = weight ;
+    ReadAccessor<Data<vector<MaterialCoord> > >  m_dweights = weightDeriv ;
     const int valueScale = showValuesNbDecimals.getValue();
     int scale = 1;
     for (int i = 0; i < valueScale; ++i) scale *= 10;
@@ -556,8 +707,8 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         {
             for ( unsigned int m=0 ; m<nbRef; m++ )
             {
-                const int idxReps=m_reps[i][m];
-                double coef = m_weights[i][m];
+                const int idxReps=m_reps[i*nbRef+m];
+                double coef = m_weights[i*nbRef+m];
                 if ( coef > 0.0 )
                 {
                     glColor4d ( coef,coef,0,1 );
@@ -573,7 +724,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
     if ( showReps.getValue())
     {
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( m_reps[i][0]*scale, xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( m_reps[i*nbRef+0]*scale, xto[i], textScale );
     }
 
     // Display distances for each points
@@ -601,10 +752,10 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         {
             bool influenced;
             unsigned int refIndex;
-            findIndexInRepartition(influenced, refIndex, i, showFromIndex.getValue()%nbRefs.getValue());
+            findIndexInRepartition(influenced, refIndex, i, showFromIndex.getValue()%nbRef);
             if ( influenced)
             {
-                const SpatialCoord& grad = m_dweights[i][refIndex];
+                const MaterialCoord& grad = m_dweights[i*nbRef+refIndex];
                 sprintf( txt, "( %i, %i, %i)", (int)(grad[0]*scale), (int)(grad[1]*scale), (int)(grad[2]*scale));
                 sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
             }
@@ -619,10 +770,10 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         {
             bool influenced;
             unsigned int indexRep;
-            findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRefs.getValue());
+            findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
             if ( influenced)
             {
-                sofa::helper::gl::GlText::draw ( (int)(m_weights[i][indexRep]*scale), xto[i], textScale );
+                sofa::helper::gl::GlText::draw ( (int)(m_weights[i*nbRef+indexRep]*scale), xto[i], textScale );
             }
         }
     }
@@ -636,10 +787,10 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         {
             bool influenced;
             unsigned int indexRep;
-            findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRefs.getValue());
+            findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
             if (influenced)
             {
-                const SpatialCoord& gradMap = m_dweights[i][indexRep];
+                const SpatialCoord& gradMap = m_dweights[i*nbRef+indexRep];
                 const SpatialCoord& point = xto[i];
                 glVertex3f ( point[0], point[1], point[2] );
                 glVertex3f ( point[0] + gradMap[0] * showGradientsScaleFactor.getValue(), point[1] + gradMap[1] * showGradientsScaleFactor.getValue(), point[2] + gradMap[2] * showGradientsScaleFactor.getValue() );
@@ -653,16 +804,16 @@ void FrameBlendingMapping<TIn, TOut>::draw()
     if ( showWeights.getValue())
     {
         // Compute min and max values.
-        Real minValue = std::numeric_limits<Real>::max();
-        Real maxValue = -std::numeric_limits<Real>::min();
+        OutReal minValue = std::numeric_limits<OutReal>::max();
+        OutReal maxValue = -std::numeric_limits<OutReal>::min();
         for ( unsigned int i = 0; i < xto.size(); i++)
         {
             bool influenced;
             unsigned int indexRep;
-            findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRefs.getValue());
+            findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
             if (influenced)
             {
-                const Real& weight = m_weights[i][indexRep];
+                const OutReal& weight = m_weights[i*nbRef+indexRep];
                 if ( weight < minValue && weight != 0xFFF) minValue = weight;
                 if ( weight > maxValue && weight != 0xFFF) maxValue = weight;
             }
@@ -683,11 +834,11 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                 {
                     bool influenced;
                     unsigned int indexRep;
-                    findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRefs.getValue());
+                    findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
                     if (influenced)
                     {
                         const unsigned int& indexPoint = tri[i][j];
-                        float color = (float)(m_weights[indexPoint][indexRep] - minValue) / (maxValue - minValue);
+                        float color = (float)(m_weights[indexPoint*nbRef+indexRep] - minValue) / (maxValue - minValue);
                         color = (float)pow((float)color, (float)showGammaCorrection.getValue());
                         points.push_back(defaulttype::Vector3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
                         colors.push_back(defaulttype::Vec<4,float>(color, 0.0, 0.0,1.0));
@@ -705,10 +856,10 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             {
                 bool influenced;
                 unsigned int indexRep;
-                findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRefs.getValue());
+                findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
                 if (influenced)
                 {
-                    float color = (float)(m_weights[i][indexRep] - minValue) / (maxValue - minValue);
+                    float color = (float)(m_weights[i*nbRef+indexRep] - minValue) / (maxValue - minValue);
                     color = (float)pow((float)color, (float)showGammaCorrection.getValue());
                     glColor3f( color, 0.0, 0.0);
                     glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
@@ -718,71 +869,71 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         }
     }
 
-    // Display def tensor values for each points
-    if ( this->showDefTensorsValues.getValue())
-    {
-        char txt[100];
-        glColor3f( 0.5, 0.5, 0.5);
-        for ( unsigned int i=0; i<xto.size(); i++ )
-        {
-            const Vec6& e = this->deformationTensors[i];
-            sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
-            sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
-        }
-    }
+//                // Display def tensor values for each points
+//                if ( this->showDefTensorsValues.getValue())
+//                {
+//                    char txt[100];
+//                    glColor3f( 0.5, 0.5, 0.5);
+//                    for ( unsigned int i=0;i<xto.size();i++ )
+//                    {
+//                        const Vec6& e = this->deformationTensors[i];
+//                        sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
+//                        sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+//                    }
+//                }
 
-    // Deformation tensor show
-    if ( this->showDefTensors.getValue() && this->computeAllMatrices.getValue() )
-    {
-        TriangleSetTopologyContainer *mesh;
-        this->getContext()->get( mesh);
-        if ( mesh)
-        {
-            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
-            glDisable( GL_LIGHTING);
-            glBegin( GL_TRIANGLES);
-            const TriangleSetTopologyContainer::SeqTriangles& tri = mesh->getTriangles();
-            for ( unsigned int i = 0; i < mesh->getNumberOfTriangles(); i++)
-            {
-                for ( unsigned int j = 0; j < 3; j++)
-                {
-                    const Vec6& e = this->deformationTensors[tri[i][j]];
-                    float color = 0.5 + ( e[0] + e[1] + e[2])/this->showDefTensorScale.getValue();
-                    glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
-                    glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
-                }
-            }
-            glEnd();
-            glPopAttrib();
-        }
-        else // Show by points
-        {
-            glPointSize( 10);
-            glBegin( GL_POINTS);
-            for ( unsigned int i = 0; i < xto.size(); i++)
-            {
-                const Vec6& e = this->deformationTensors[i];
-                float mult=500;
-                float color = (e[0]+e[1]+e[2])/3.;
-                if (color<0) color=2*color/(color+1.);
-                color*=mult;
-                color+=120;
-                if (color<0) color=0;
-                if (color>240) color=240;
-                sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
-                glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
-            }
-            glEnd();
-        }
-    }
+//                // Deformation tensor show
+//                if ( this->showDefTensors.getValue() && this->computeAllMatrices.getValue() )
+//                {
+//                    TriangleSetTopologyContainer *mesh;
+//                    this->getContext()->get( mesh);
+//                    if ( mesh)
+//                    {
+//                        glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+//                        glDisable( GL_LIGHTING);
+//                        glBegin( GL_TRIANGLES);
+//                        const TriangleSetTopologyContainer::SeqTriangles& tri = mesh->getTriangles();
+//                        for ( unsigned int i = 0; i < mesh->getNumberOfTriangles(); i++)
+//                        {
+//                            for ( unsigned int j = 0; j < 3; j++)
+//                            {
+//                                const Vec6& e = this->deformationTensors[tri[i][j]];
+//                                float color = 0.5 + ( e[0] + e[1] + e[2])/this->showDefTensorScale.getValue();
+//                                glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
+//                                glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
+//                            }
+//                        }
+//                        glEnd();
+//                        glPopAttrib();
+//                    }
+//                    else // Show by points
+//                    {
+//                        glPointSize( 10);
+//                        glBegin( GL_POINTS);
+//                        for ( unsigned int i = 0; i < xto.size(); i++)
+//                        {
+//                            const Vec6& e = this->deformationTensors[i];
+//                            float mult=500;
+//                            float color = (e[0]+e[1]+e[2])/3.;
+//                            if (color<0) color=2*color/(color+1.);
+//                            color*=mult;
+//                            color+=120;
+//                            if (color<0) color=0;
+//                            if (color>240) color=240;
+//                            sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
+//                            glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
+//                        }
+//                        glEnd();
+//                    }
+//                }
 }
 
 
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::clear()
-{
-    this->initPos.clear();
-}
+//            template <class TIn, class TOut>
+//                    void FrameBlendingMapping<TIn, TOut>::clear()
+//            {
+//                this->initPos.clear();
+//            }
 //
 //template <class TIn, class TOut>
 //void FrameBlendingMapping<TIn, TOut>::setWeightsToHermite()
@@ -1032,12 +1183,12 @@ void FrameBlendingMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex)
 {
-    const unsigned int& nbRef = this->nbRefs.getValue();
-    const VVUI& m_reps = this->repartition.getValue();
+    const unsigned int& nbRef = this->f_nbRefs.getValue();
+    ReadAccessor<Data<vector<unsigned> > >  m_reps( f_index );
     influenced = false;
     for ( unsigned int j = 0; j < nbRef; ++j)
     {
-        if ( m_reps[pointIndex][j] == frameIndex)
+        if ( m_reps[pointIndex*nbRef+j] == frameIndex)
         {
             influenced = true;
             realIndex = j;
@@ -1460,38 +1611,38 @@ void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, 
 //
 //
 
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::M33toV6(Vec6 &v,const Mat33& M) const
-// referred as operator V in the paper
-{
-    v[0]=M[0][0];
-    v[1]=M[1][1];
-    v[2]=M[2][2];
-    v[3]=(M[0][1]+M[1][0])/2.;
-    v[4]=(M[2][1]+M[1][2])/2.;
-    v[5]=(M[2][0]+M[0][2])/2.;
-}
+//            template <class TIn, class TOut>
+//                    void FrameBlendingMapping<TIn, TOut>::M33toV6(Vec6 &v,const Mat33& M) const
+//                    // referred as operator V in the paper
+//            {
+//                v[0]=M[0][0];
+//                v[1]=M[1][1];
+//                v[2]=M[2][2];
+//                v[3]=(M[0][1]+M[1][0])/2.;
+//                v[4]=(M[2][1]+M[1][2])/2.;
+//                v[5]=(M[2][0]+M[0][2])/2.;
+//            }
 
 //
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::resizeMatrices()
-{
-    const unsigned int& nbRef = this->nbRefs.getValue();
-    const unsigned int& toSize = this->toModel->getX()->size();
-
-    this->det.resize(toSize);
-    this->deformationTensors.resize(toSize);
-    this->Atilde.resize(toSize);
-    for (unsigned int i = 0; i < toSize; ++i)      this->Atilde[i].resize(nbRef);
-    this->ddet.resize(toSize);
-    for (unsigned int i = 0; i < toSize; ++i)      this->ddet[i].resize(nbRef);
-    this->B.resize(toSize);
-    for (unsigned int i = 0; i < toSize; ++i)      this->B[i].resize(nbRef);
-    this->J0.resize (toSize);
-    for (unsigned int i = 0; i < toSize; ++i)      this->J0[i].resize(nbRef);
-    this->J.resize(toSize);
-    for (unsigned int i = 0; i < toSize; ++i)      this->J[i].resize(nbRef);
-}
+//            template <class TIn, class TOut>
+//                    void FrameBlendingMapping<TIn, TOut>::resizeMatrices()
+//            {
+//                const unsigned int& nbRef = this->nbRefs.getValue();
+//                const unsigned int& toSize = this->toModel->getX()->size();
+//
+//                this->det.resize(toSize);
+//                this->deformationTensors.resize(toSize);
+//                this->Atilde.resize(toSize);
+//                for (unsigned int i = 0; i < toSize; ++i)      this->Atilde[i].resize(nbRef);
+//                this->ddet.resize(toSize);
+//                for (unsigned int i = 0; i < toSize; ++i)      this->ddet[i].resize(nbRef);
+//                this->B.resize(toSize);
+//                for (unsigned int i = 0; i < toSize; ++i)      this->B[i].resize(nbRef);
+//                this->J0.resize (toSize);
+//                for (unsigned int i = 0; i < toSize; ++i)      this->J0[i].resize(nbRef);
+//                this->J.resize(toSize);
+//                for (unsigned int i = 0; i < toSize; ++i)      this->J[i].resize(nbRef);
+//            }
 
 //
 //template <class TIn, class TOut>
@@ -1552,11 +1703,11 @@ void FrameBlendingMapping<TIn, TOut>::resizeMatrices()
 //    }
 //}
 
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename In::Coord& inCoord, const Coord& coord) const
-{
-    result = inCoord.pointToChild ( coord );
-}
+//            template <class TIn, class TOut>
+//                    void FrameBlendingMapping<TIn, TOut>::getLocalCoord( Coord& result, const typename In::Coord& inCoord, const Coord& coord) const
+//            {
+//                result = inCoord.pointToChild ( coord );
+//            }
 //
 //
 //template <class TIn, class TOut>
