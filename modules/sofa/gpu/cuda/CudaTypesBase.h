@@ -152,6 +152,16 @@ public :
         return v.deviceWrite();
     }
 
+    const T* hostRead()
+    {
+        return v.hostRead();
+    }
+
+    T * hostWrite()
+    {
+        return v.hostWrite();
+    }
+
     static const char* Name(); /* {
 			return "CudaBaseVector";
             }*/
@@ -283,6 +293,21 @@ public :
     void invalidatehost()
     {
         m.invalidatehost();
+    }
+
+    const void* deviceRead()
+    {
+        return m.deviceRead();
+    }
+
+    void * deviceWrite()
+    {
+        return m.deviceWrite();
+    }
+
+    int getPitchDevice()
+    {
+        return m.getPitchDevice();
     }
 
 private :
