@@ -10,8 +10,6 @@
 			<TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3"/>
 		</Node>
 		<Node name="M2">
-			<EulerImplicit name="cg_odesolver" printLog="false"/>
-			<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
 			<MechanicalObject/>
 			<UniformMass mass="1"/>
 			<RegularGrid nx="4" ny="4" nz="10" xmin="1" xmax="4" ymin="0" ymax="3" zmin="9" zmax="18"/>
@@ -42,8 +40,6 @@
 			<TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3"/>
 		</Node>
 		<Node name="M2">
-			<EulerImplicit name="cg_odesolver" printLog="false"/>
-			<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
 			<MechanicalObject/>
 			<UniformMass mass="1"/>
 			<RegularGrid nx="4" ny="4" nz="10" xmin="-4" xmax="-1" ymin="0" ymax="3" zmin="9" zmax="18"/>
