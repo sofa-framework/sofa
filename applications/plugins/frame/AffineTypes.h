@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 //#include <sofa/core/behavior/Mass.h>
@@ -39,6 +40,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
+#include "MappingTypes.h"
 
 namespace sofa
 {
@@ -65,78 +67,6 @@ template<int N, typename real>
 
 class StdAffineTypes;
 
-//=============================================================================
-// 3D Affines
-//=============================================================================
-
-
-//    /** Degrees of freedom of 3D non-rigid bodies.
-//    */
-//    template<typename real>
-//
-//    class AffineDeriv<3, real> : public Vec<12,real>
-//      {
-//        public:
-//          typedef real value_type;
-//          typedef real Real;
-//          typedef Vec<3, Real> Vec3;
-//          typedef Vec3 Pos;
-//          typedef defaulttype::Mat<3,3,Real> Mat33;
-//          typedef Mat33 Affine;
-//
-//        protected:
-////          Vec3 vCenter;
-////          Mat33 vAffine;
-//        public:
-//
-//          friend class AffineCoord<3, real>;
-//
-//          AffineDeriv ( const Vec3 &vCenter, const Mat33 &vAffine )
-//              { getVCenter() = vCenter; getVAffine() = vAffine; }
-//
-//          AffineDeriv ( const Vec<12,Real>& v )
-//          {
-//              for(unsigned i=0; i<12; i++) {
-//                  this->elems[i] = v[i];
-//              }
-//          }
-//
-//          AffineDeriv() { this->clear(); }
-//
-//          template<typename real2>
-//          AffineDeriv ( const AffineDeriv<3, real2>& c )
-//          { getVCenter() = c.getVCenter(); getVAffine() = c.getVAffine(); }
-//
-//
-//
-//          Vec3& getVCenter() { return *reinterpret_cast<Vec3*>(this->elems); }
-//
-//          Mat33& getVAffine() { return *reinterpret_cast<Mat33*>(this->elems+3); }
-//
-//          const Vec3& getVCenter() const { return *reinterpret_cast<const Vec3*>(this->elems); }
-//
-//          const Mat33& getVAffine() const { return *reinterpret_cast<const Mat33*>(this->elems+3); }
-//
-//          Vec3& getLinear () { return getVCenter(); }
-//
-//          const Vec3& getLinear () const { return getVCenter(); }
-//
-//          Vec3 velocityAtRotatedPoint ( const Vec3& p ) const
-//            {
-//              return getVCenter() + getVAffine() * p;
-//            }
-//
-//
-//          /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-//          enum { total_size = 12 };
-//          /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-//          enum { spatial_dimensions = 3 };
-//
-//          static unsigned int size() {return 12;}
-//
-//      };
-
-//    using defaulttype::Vec;
 
 typedef Vec<3,double> V3d;
 typedef Vec<3,float> V3f;
@@ -254,6 +184,7 @@ public:
                 + affine(1,0)*a.affine(1,0) + affine(1,1)*a.affine(1,1) + affine(1,2)*a.affine(1,2)
                 + affine(2,0)*a.affine(2,0) + affine(2,1)*a.affine(2,1) + affine(2,2)*a.affine(2,2);
     }
+
 
     /// Squared norm
     real norm2() const
@@ -539,7 +470,6 @@ class StdAffineTypes<3, real>
 public:
     typedef real Real;
     typedef AffineCoord<3, real> Coord;
-//          typedef AffineDeriv<3, real> Deriv;
     typedef Vec<12, real> Deriv;
     typedef typename Coord::Vec3 Vec3;
 
@@ -557,25 +487,6 @@ public:
 
     static void setCRot ( Coord& c, const CAffine& v ) { c.getAffine() = v; }
 
-//          typedef typename Deriv::Pos DPos;
-//          typedef typename Deriv::Affine DAffine;
-//          static const DPos& getDPos ( const Deriv& d ) { return d.getVCenter(); }
-//
-//          static void setDPos ( Deriv& d, const DPos& v ) { d.getVCenter() = v; }
-//
-//          static const DAffine& getDAffine ( const Deriv& d ) { return d.getVAffine(); }
-//
-//          static void setDAffine ( Deriv& d, const DAffine& v ) { d.getVAffine() = v; }
-
-    //  typedef SparseConstraint<Coord> SparseVecCoord;
-    //  typedef SparseConstraint<Deriv> SparseVecDeriv;
-
-    //! All the Constraints applied to a state Vector
-#ifndef SOFA_SMP
-    //  typedef vector<SparseVecDeriv> VecConst;
-#else /* SOFA_SMP */
-    //  typedef SharedVector<SparseVecDeriv> VecConst;
-#endif /* SOFA_SMP */
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
@@ -668,6 +579,22 @@ public:
 
         return d;
     }
+
+    /// matrix product
+    static Coord mult ( const Coord& a, const Coord& b )
+    {
+        return Coord( a.getCenter() + a.getAffine()*b.getCenter(),  a.getAffine()*b.getAffine());
+    }
+
+    /// Compute an inverse transform
+    static Coord inverse( const Coord& c )
+    {
+        CAffine m;
+        bool invertible = invertMatrix(m,c.getAffine());
+        assert(invertible);
+        return Coord( -(m*c.getCenter()),m );
+    }
+
 };
 
 
@@ -703,612 +630,6 @@ typedef Affine3dMass Affine3Mass;
 typedef Affine3Types AffineTypes;
 
 
-
-
-
-
-
-/*
-//=============================================================================
-// 2D Affines
-//=============================================================================
-
-template<typename real>
-class AffineDeriv<2,real>
-{
-public:
-  typedef real value_type;
-    typedef real Real;
-    typedef Vec<2,Real> Pos;
-    typedef Real Rot;
-    typedef Vec<2,Real> Vec2;
-private:
-    Vec2 vCenter;
-    Real vOrientation;
-public:
-    friend class AffineCoord<2,real>;
-
-    AffineDeriv (const Vec2 &velCenter, const Real &velOrient)
-    : vCenter(velCenter), vOrientation(velOrient) {}
-    AffineDeriv () { clear(); }
-
-    void clear() { vCenter.clear(); vOrientation=0; }
-
-    void operator +=(const AffineDeriv<2,real>& a)
-    {
-        vCenter += a.vCenter;
-        vOrientation += a.vOrientation;
-    }
-
-    AffineDeriv<2,real> operator + (const AffineDeriv<2,real>& a) const
-    {
-        AffineDeriv<2,real> d;
-        d.vCenter = vCenter + a.vCenter;
-        d.vOrientation = vOrientation + a.vOrientation;
-        return d;
-    }
-
-  AffineDeriv<2,real> operator - (const AffineDeriv<2,real>& a) const
-    {
-        AffineDeriv<2,real> d;
-        d.vCenter = vCenter - a.vCenter;
-        d.vOrientation = vOrientation - a.vOrientation;
-        return d;
-    }
-
-    template<typename real2>
-    void operator*=(real2 a)
-    {
-        vCenter *= a;
-        vOrientation *= (Real)a;
-    }
-
-    template<typename real2>
-    void operator/=(real2 a)
-    {
-        vCenter /= a;
-        vOrientation /= (Real)a;
-    }
-
-    AffineDeriv<2,real> operator*(float a) const
-    {
-        AffineDeriv<2,real> r = *this;
-        r *= a;
-        return r;
-    }
-
-    AffineDeriv<2,real> operator*(double a) const
-    {
-        AffineDeriv<2,real> r = *this;
-        r *= a;
-        return r;
-    }
-
-    AffineDeriv<2,real> operator - () const
-    {
-        return AffineDeriv<2,real>(-vCenter, -vOrientation);
-    }
-
-    /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator*(const AffineDeriv<2,real>& a) const
-    {
-        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]
-            +vOrientation*a.vOrientation;
-    }
-
-    Vec2& getVCenter (void) { return vCenter; }
-    Real& getVOrientation (void) { return vOrientation; }
-    const Vec2& getVCenter (void) const { return vCenter; }
-    const Real& getVOrientation (void) const { return vOrientation; }
-
-    Vec2 velocityAtRotatedPoint(const Vec2& p) const
-    {
-        return vCenter + Vec2(-p[1], p[0]) * vOrientation;
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const AffineDeriv<2,real>& v )
-    {
-        out<<v.vCenter<<" "<<v.vOrientation;
-        return out;
-    }
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, AffineDeriv<2,real>& v )
-    {
-        in>>v.vCenter>>v.vOrientation;
-        return in;
-    }
-
-    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 3 };
-    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 2 };
-
-    real* ptr() { return vCenter.ptr(); }
-    const real* ptr() const { return vCenter.ptr(); }
-
-  static unsigned int size(){return 3;}
-
-  /// Access to i-th element.
-    real& operator[](int i)
-    {
-    if (i<2)
-      return this->vCenter(i);
-    else
-      return this->vOrientation;
-    }
-
-    /// Const access to i-th element.
-    const real& operator[](int i) const
-    {
-    if (i<2)
-      return this->vCenter(i);
-    else
-      return this->vOrientation;
-    }
-};
-
-template<typename real>
-class AffineCoord<2,real>
-{
-public:
-  typedef real value_type;
-    typedef real Real;
-    typedef Vec<2,Real> Pos;
-    typedef Real Rot;
-    typedef Vec<2,Real> Vec2;
-private:
-    Vec2 center;
-    Real orientation;
-public:
-    AffineCoord (const Vec2 &posCenter, const Real &orient)
-    : center(posCenter), orientation(orient) {}
-    AffineCoord () { clear(); }
-
-    void clear() { center.clear(); orientation = 0; }
-
-    void operator +=(const AffineDeriv<2,real>& a)
-    {
-        center += a.getVCenter();
-        orientation += a.getVOrientation();
-    }
-
-    AffineCoord<2,real> operator + (const AffineDeriv<2,real>& a) const
-    {
-        AffineCoord<2,real> c = *this;
-        c.center += a.getVCenter();
-        c.orientation += a.getVOrientation();
-        return c;
-    }
-
-    AffineCoord<2,real> operator -(const AffineCoord<2,real>& a) const
-    {
-        return AffineCoord<2,real>(this->center - a.getCenter(), this->orientation - a.orientation);
-    }
-
-    AffineCoord<2,real> operator +(const AffineCoord<2,real>& a) const
-    {
-        return AffineCoord<2,real>(this->center + a.getCenter(), this->orientation + a.orientation);
-    }
-
-    void operator +=(const AffineCoord<2,real>& a)
-    {
-//         std::cout << "+="<<std::endl;
-        center += a.getCenter();
-        orientation += a.getOrientation();
-    }
-
-    template<typename real2>
-    void operator*=(real2 a)
-    {
-//         std::cout << "*="<<std::endl;
-        center *= a;
-        orientation *= (Real)a;
-    }
-
-    template<typename real2>
-    void operator/=(real2 a)
-    {
-//         std::cout << "/="<<std::endl;
-        center /= a;
-        orientation /= (Real)a;
-    }
-
-    template<typename real2>
-    AffineCoord<2,real> operator*(real2 a) const
-    {
-        AffineCoord<2,real> r = *this;
-        r *= a;
-        return r;
-    }
-
-    /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator*(const AffineCoord<2,real>& a) const
-    {
-        return center[0]*a.center[0]+center[1]*a.center[1]
-            +orientation*a.orientation;
-    }
-
-    /// Squared norm
-    real norm2() const
-    {
-        return center[0]*center[0]+center[1]*center[1];
-    }
-
-    /// Euclidean norm
-    real norm() const
-    {
-        return helper::rsqrt(norm2());
-    }
-
-    Vec2& getCenter () { return center; }
-    Real& getOrientation () { return orientation; }
-    const Vec2& getCenter () const { return center; }
-    const Real& getOrientation () const { return orientation; }
-
-    Vec2 rotate(const Vec2& v) const
-    {
-        Real s = sin(orientation);
-        Real c = cos(orientation);
-        return Vec2(c*v[0]-s*v[1],
-                    s*v[0]+c*v[1]);
-    }
-    Vec2 inverseRotate(const Vec2& v) const
-    {
-        Real s = sin(-orientation);
-        Real c = cos(-orientation);
-        return Vec2(c*v[0]-s*v[1],
-                    s*v[0]+c*v[1]);
-    }
-
-    static AffineCoord<2,real> identity()
-    {
-        AffineCoord<2,real> c;
-        return c;
-    }
-
-    /// Apply a transformation with respect to itself
-    void multRight( const AffineCoord<2,real>& c )
-    {
-        //center += orientation.rotate(c.getCenter());
-        center += rotate(c.getCenter());
-        orientation = orientation + c.getOrientation();
-    }
-
-    /// compute the product with another frame on the right
-    AffineCoord<2,real> mult( const AffineCoord<2,real>& c ) const
-    {
-        AffineCoord<2,real> r;
-        //r.center = center + orientation.rotate( c.center );
-        r.center = center + rotate( c.center );
-        r.orientation = orientation + c.getOrientation();
-        return r;
-    }
-
-    template<class Mat>
-    void writeRotationMatrix( Mat& m) const
-    {
-        m[0][0] = (typename Mat::Real)cos(orientation); m[0][1] = (typename Mat::Real)-sin(orientation);
-        m[1][0] = (typename Mat::Real)sin(orientation); m[1][1] = (typename Mat::Real) cos(orientation);
-    }
-
-    /// Set from the given matrix
-    template<class Mat>
-    void fromMatrix(const Mat& m)
-    {
-        center[0] = m[0][2];
-        center[1] = m[1][2];
-        orientation = atan2(m[1][0],m[0][0]);
-    }
-
-    /// Write to the given matrix
-    template<class Mat>
-    void toMatrix( Mat& m) const
-    {
-        m.identity();
-        writeRotationMatrix( m );
-        m[0][2] = center[0];
-        m[1][2] = center[1];
-    }
-
-    /// Write the OpenGL transformation matrix
-    void writeOpenGlMatrix( float m[16] ) const
-    {
-        //orientation.writeOpenGlMatrix(m);
-        m[0] = cos(orientation);
-        m[1] = sin(orientation);
-        m[2] = 0;
-        m[3] = 0;
-        m[4] = -sin(orientation);
-        m[5] = cos(orientation);
-        m[6] = 0;
-        m[7] = 0;
-        m[8] = 0;
-        m[9] = 0;
-        m[10] = 1;
-        m[11] = 0;
-        m[12] = (float)center[0];
-        m[13] = (float)center[1];
-        m[14] = (float)center[2];
-        m[15] = 1;
-    }
-
-    /// compute the projection of a vector from the parent frame to the child
-    Vec2 vectorToChild( const Vec2& v ) const
-    {
-        //return orientation.inverseRotate(v);
-        return inverseRotate(v);
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const AffineCoord<2,real>& v )
-    {
-        out<<v.center<<" "<<v.orientation;
-        return out;
-    }
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, AffineCoord<2,real>& v )
-    {
-        in>>v.center>>v.orientation;
-        return in;
-    }
-    static int max_size()
-    {
-        return 3;
-    }
-
-    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 3 };
-    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 2 };
-
-    real* ptr() { return center.ptr(); }
-    const real* ptr() const { return center.ptr(); }
-
-  static unsigned int size(){return 3;}
-
-  /// Access to i-th element.
-    real& operator[](int i)
-    {
-    if (i<2)
-      return this->center(i);
-    else
-      return this->orientation;
-    }
-
-    /// Const access to i-th element.
-    const real& operator[](int i) const
-    {
-    if (i<2)
-      return this->center(i);
-    else
-      return this->orientation;
-    }
-};
-
-template<class real>
-class AffineMass<2, real>
-{
-public:
-  typedef real value_type;
-    typedef real Real;
-    Real mass,volume;
-    Real inertiaMatrix;       // Inertia matrix of the object
-    Real inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
-    Real invInertiaMatrix;    // inverse of inertiaMatrix
-    Real invInertiaMassMatrix; // inverse of inertiaMassMatrix
-    AffineMass(Real m=1)
-    {
-        mass = m;
-        volume = 1;
-        inertiaMatrix = 1;
-        recalc();
-    }
-    void operator=(Real m)
-    {
-        mass = m;
-        recalc();
-    }
-  // operator to cast to const Real
-  operator const Real() const
-  {
-    return mass;
-  }
-    /// Mass for a circle
-    AffineMass(Real m, Real radius)
-    {
-        mass = m;
-        volume = radius*radius*R_PI;
-        inertiaMatrix = (radius*radius)/2;
-        recalc();
-    }
-    /// Mass for a rectangle
-    AffineMass(Real m, Real xwidth, Real ywidth)
-    {
-        mass = m;
-        volume = xwidth*xwidth + ywidth*ywidth;
-        inertiaMatrix = volume/12;
-        recalc();
-    }
-
-    void recalc()
-    {
-        inertiaMassMatrix = inertiaMatrix * mass;
-        invInertiaMatrix = 1/(inertiaMatrix);
-        invInertiaMassMatrix = 1/(inertiaMassMatrix);
-    }
-    inline friend std::ostream& operator << (std::ostream& out, const AffineMass<2,Real>& m )
-    {
-        out<<m.mass;
-        out<<" "<<m.volume;
-        out<<" "<<m.inertiaMatrix;
-        return out;
-    }
-    inline friend std::istream& operator >> (std::istream& in, AffineMass<2,Real>& m )
-    {
-        in>>m.mass;
-        in>>m.volume;
-        in>>m.inertiaMatrix;
-        return in;
-    }
-    void operator *=(Real fact)
-    {
-        mass *= fact;
-        inertiaMassMatrix *= fact;
-        invInertiaMassMatrix /= fact;
-    }
-    void operator /=(Real fact)
-    {
-        mass /= fact;
-        inertiaMassMatrix /= fact;
-        invInertiaMassMatrix *= fact;
-    }
-};
-
-/// Degrees of freedom of 2D rigid bodies.
-template<typename real>
-class StdAffineTypes<2, real>
-{
-public:
-    typedef real Real;
-    typedef Vec<2,real> Vec2;
-
-    typedef AffineDeriv<2,Real> Deriv;
-    typedef AffineCoord<2,Real> Coord;
-
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
-
-    typedef typename Coord::Pos CPos;
-    typedef typename Coord::Rot CRot;
-  static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
-  static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
-  static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
-  static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
-
-    typedef typename Deriv::Pos DPos;
-    typedef typename Deriv::Rot DRot;
-  static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
-  static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
-  static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
-  static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
-
-    static const char* Name();
-
-#ifndef SOFA_SMP
-    typedef vector<Coord> VecCoord;
-    typedef vector<Deriv> VecDeriv;
-#else
-    typedef SharedVector<Coord> VecCoord;
-    typedef SharedVector<Deriv> VecDeriv;
-#endif
-
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
-#ifndef SOFA_SMP
-    typedef vector<Real> VecReal;
-#else
-    typedef SharedVector<Real> VecReal;
-#endif
-
-#ifndef SOFA_SMP
-    typedef vector<SparseVecDeriv> VecConst;
-#else
-    typedef SharedVector<SparseVecDeriv> VecConst;
-#endif
-
-    template<typename T>
-    static void set(Coord& c, T x, T y, T)
-    {
-        c.getCenter()[0] = (Real)x;
-        c.getCenter()[1] = (Real)y;
-    }
-
-    template<typename T>
-    static void get(T& x, T& y, T& z, const Coord& c)
-    {
-        x = (T)c.getCenter()[0];
-        y = (T)c.getCenter()[1];
-        z = (T)0;
-    }
-
-    template<typename T>
-    static void add(Coord& c, T x, T y, T)
-    {
-        c.getCenter()[0] += (Real)x;
-        c.getCenter()[1] += (Real)y;
-    }
-
-    template<typename T>
-    static void set(Deriv& c, T x, T y, T)
-    {
-        c.getVCenter()[0] = (Real)x;
-        c.getVCenter()[1] = (Real)y;
-    }
-
-    template<typename T>
-    static void get(T& x, T& y, T& z, const Deriv& c)
-    {
-        x = (T)c.getVCenter()[0];
-        y = (T)c.getVCenter()[1];
-        z = (T)0;
-    }
-
-    template<typename T>
-    static void add(Deriv& c, T x, T y, T)
-    {
-        c.getVCenter()[0] += (Real)x;
-        c.getVCenter()[1] += (Real)y;
-    }
-
-  static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
-  {
-    assert(ancestors.size() == coefs.size());
-
-    Coord c;
-
-    for (unsigned int i = 0; i < ancestors.size(); i++)
-    {
-      c += ancestors[i] * coefs[i];
-    }
-
-    return c;
-  }
-
-  static Deriv interpolate(const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs)
-  {
-    assert(ancestors.size() == coefs.size());
-
-    Deriv d;
-
-    for (unsigned int i = 0; i < ancestors.size(); i++)
-    {
-      d += ancestors[i] * coefs[i];
-    }
-
-    return d;
-  }
-
-};
-
-typedef StdAffineTypes<2,double> Affine2dTypes;
-typedef StdAffineTypes<2,float> Affine2fTypes;
-
-typedef AffineMass<2,double> Affine2dMass;
-typedef AffineMass<2,float> Affine2fMass;
-
-template<> inline const char* Affine2dTypes::Name() { return "Affine2d"; }
-template<> inline const char* Affine2fTypes::Name() { return "Affine2f"; }
-
-#ifdef SOFA_FLOAT
-typedef Affine2fTypes Affine2Types;
-typedef Affine2fMass Affine2Mass;
-#else
-typedef Affine2dTypes Affine2Types;
-typedef Affine2dMass Affine2Mass;
-#endif
-*/
 
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
@@ -1351,6 +672,10 @@ template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char*
 template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "Affine3dMass"; } };
 
 /// \endcond
+
+
+
+
 
 
 } // namespace defaulttype

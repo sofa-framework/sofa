@@ -22,8 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initFrame.h"
+#ifndef SOFA_COMPONENT_ENGINE_AverageCoord_INL
+#define SOFA_COMPONENT_ENGINE_AverageCoord_INL
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+#include "AverageCoord.h"
+#include <sofa/helper/gl/template.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -31,69 +41,66 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
+namespace engine
+{
 
-extern "C" {
-    SOFA_FRAME_API void initExternalModule();
-    SOFA_FRAME_API const char* getModuleName();
-    SOFA_FRAME_API const char* getModuleVersion();
-    SOFA_FRAME_API const char* getModuleLicense();
-    SOFA_FRAME_API const char* getModuleDescription();
-    SOFA_FRAME_API const char* getModuleComponentList();
+using namespace sofa::helper;
+using namespace sofa::defaulttype;
+using namespace core::objectmodel;
+
+template <class DataTypes>
+AverageCoord<DataTypes>::AverageCoord()
+    : f_indices( initData (&f_indices, "indices", "indices of the coordinates to average") )
+    , f_vecId(initData (&f_vecId, core::VecCoordId::position().getIndex(), "vecId", "index of the vector (default value corresponds to core::VecCoordId::position() )") )
+    , f_average( initData (&f_average, "average", "average of the values with the given indices in the given coordinate vector") )
+{
 }
 
-void initExternalModule()
+template <class DataTypes>
+void AverageCoord<DataTypes>::init()
 {
-    static bool first = true;
-    if (first)
+    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    addInput(&f_indices);
+    addInput(&f_vecId);
+    addOutput(&f_average);
+    setDirtyValue();
+}
+
+template <class DataTypes>
+void AverageCoord<DataTypes>::reinit()
+{
+    update();
+}
+
+template <class DataTypes>
+void AverageCoord<DataTypes>::update()
+{
+    cleanDirty();
+
+    helper::ReadAccessor< Data<VecCoord> > coord = *mstate->read(core::VecCoordId(f_vecId.getValue()));
+    const VecIndex& indices = f_indices.getValue();
+
+    Coord c;
+
+    if( !indices.empty() )
     {
-        first = false;
+        for( unsigned i=0; i<indices.size(); ++i )
+        {
+            c += coord[indices[i]];
+//        cerr<<"AverageCoord<DataTypes>::update, coord = "<< coord[indices[i]] << ", new average = " << c << endl;
+        }
+        c *= 1./indices.size();
+
+//    cerr<<"AverageCoord<DataTypes>::update, c= "<< c << endl;
     }
+
+    f_average.setValue(c);
 }
 
-const char* getModuleName()
-{
-    return "Frame Based Dynamic Plugin";
-}
+} // namespace engine
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Use frame based dynamic technic in SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "FrameDiagonalMass, FixedConstraint, FrameHookeForceField, MechanicalObject, FrameSpringForceField2";
-}
-
-} // namespace frame
+} // namespace component
 
 } // namespace sofa
 
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(FrameBlendingMapping)
-//SOFA_LINK_CLASS(AffineSkinningMapping)
-SOFA_LINK_CLASS(FrameDiagonalMass)
-SOFA_LINK_CLASS(FrameConstantForceField)
-//SOFA_LINK_CLASS(FrameDualQuatSkinningMapping)
-SOFA_LINK_CLASS(FrameFixedConstraint)
-SOFA_LINK_CLASS(FrameHookeForceField)
-SOFA_LINK_CLASS(FrameLoydAlgo)
-SOFA_LINK_CLASS(FrameMechanicalObject)
-SOFA_LINK_CLASS(FrameSpringForceField2)
-SOFA_LINK_CLASS(HookeMaterial3)
-SOFA_LINK_CLASS(GridMaterial)
-//SOFA_LINK_CLASS(PrimitiveSkinningMapping)
-//SOFA_LINK_CLASS(QuadraticSkinningMapping)
-//SOFA_LINK_CLASS(RigidSkinningMapping)
+#endif

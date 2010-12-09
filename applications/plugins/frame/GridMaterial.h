@@ -29,7 +29,7 @@
 #include "NewMaterial.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map.h>
 #include <limits>
@@ -61,6 +61,7 @@ using namespace cimg_library;
 using namespace sofa::defaulttype;
 using namespace helper;
 using std::map;
+using helper::vector;
 
 template<class TMaterialTypes>
 class SOFA_FRAME_API GridMaterial : public Material<TMaterialTypes>
@@ -79,18 +80,21 @@ public:
     typedef unsigned char voxelType;
 
     typedef Vec<3,Real> Vec3;			///< Material coordinate
-    typedef SVector<Vec3> VecVec3;							///< Vector of material coordinates
+    typedef Vec<3,Real> MaterialCoord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef Vec<3,Real> SpatialCoord;     ///< Coordinate of a point in the space the object is moving in
+    static const unsigned num_material_dimensions = 3;
+    typedef vector<Vec3> VecVec3;							///< Vector of material coordinates
     typedef Mat<3,3,Real> Mat33;
-    typedef SVector<Mat<3,3,Real> > VMat33;
+    typedef vector<Mat<3,3,Real> > VMat33;
     typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
-    typedef SVector<Real> VD;
-    typedef SVector<VD > VVD;
-    typedef SVector<VVD > VVVD;
-    typedef SVector<unsigned int> VUI;
-    typedef SVector<VUI > VVUI;
-    typedef SVector<int> VI;
-    typedef SVector<VI > VVI;
-    typedef SVector<bool> VB;
+    typedef vector<Real> VD;
+    typedef vector<VD > VVD;
+    typedef vector<VVD > VVVD;
+    typedef vector<unsigned int> VUI;
+    typedef vector<VUI > VVUI;
+    typedef vector<int> VI;
+    typedef vector<VI > VVI;
+    typedef vector<bool> VB;
     typedef map<Real,Real> mapLabelType; // voxeltype does not work..
 
     GridMaterial();

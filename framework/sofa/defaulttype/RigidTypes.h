@@ -754,6 +754,19 @@ public:
 
         return d;
     }
+
+    /// inverse rigid transform
+    static Coord inverse(const Coord& c)
+    {
+        CRot qinv = c.getOrientation().inverse();
+        return Coord( -(qinv.rotate(c.getCenter())),qinv );
+    }
+
+    /// matrix product
+    static Coord mult ( const Coord& a, const Coord& b )
+    {
+        return a.mult(b);
+    }
 };
 
 typedef StdRigidTypes<3,double> Rigid3dTypes;
