@@ -1,0 +1,23 @@
+<Node name="root" dt="0.01" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" showWireFrame="1" gravity="0 -1 0">
+	
+        <MeshVTKLoader name="meshLoader" filename="data/mesh/edges.vtk" />
+
+        <Refine2DMesh template="Vec3d" name="cgalTool"
+                        inputPoints="@meshLoader.position" inputEdges="@meshLoader.edges"
+                        useInteriorPoints="false"
+                        seedPoints="200 50 0"
+                        regionPoints="50 50 0"
+                        shapeCriteria="0.125"
+                        sizeCriteria="10"
+                        viewSeedPoints="1"
+                        viewRegionPoints="1"
+                        />
+
+	<Node>
+                <MechanicalObject position="@../cgalTool.outputPoints" />
+                <TriangleSetTopologyContainer position="@../cgalTool.outputPoints" triangles="@../cgalTool.outputTriangles" />
+                <TriangleSetGeometryAlgorithms drawTriangles="true"/>
+                <VTKExporter exportAtEnd="true" filename="aneurysm" XMLformat="true" position="@../cgalTool.outputPoints" edges="0" triangles="1" listening="true"/>
+	</Node>
+	
+</Node>
