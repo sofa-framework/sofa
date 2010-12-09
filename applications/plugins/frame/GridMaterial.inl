@@ -84,8 +84,15 @@ void GridMaterial< MaterialTypes>::init()
           {
 
           VecVec3 points;	  points.push_back(Vec3(0.8,0,0.3));	  points.push_back(Vec3(-0.534989,-0.661314,-0.58));	  points.push_back(Vec3(-0.534955,0.661343,-0.58));	  points.push_back(Vec3(0.257823,-0.46005,-0.63));	  points.push_back(Vec3(0.257847,0.460036,-0.63));	  points.push_back(Vec3(-0.15,0,0.2 ));
-          computeUniformSampling(points,6,100);
+          computeUniformSampling(points,6);
           computeWeights(6,points);
+
+    	  VecVec3 samples;
+          computeUniformSampling(samples,50);
+
+    	  VUI reps; VD w; VecVec3 dw; VMat33 ddw;
+    	  for(unsigned int j=0;j<samples.size();j++) lumpWeightsRepartition(samples[j],reps,w,&dw,&ddw);
+
           }*/
 ////
 
@@ -352,9 +359,48 @@ bool GridMaterial< MaterialTypes>::saveWeightRepartion()
 
 
 
+
 /*************************/
 /*   Lumping        */
 /*************************/
+
+
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::getWeightedMasses(const Vec3& point,const unsigned int findex,VecVec3& p,VD& weightedmasses)
+{
+    if (!nbVoxels) return false;
+
+    int index=getIndex(point);
+    if (index==-1) return false; // point not in grid or no weight computed
+    if (weightsRepartition.size()!=nbVoxels || repartition.size()!=nbVoxels) return false; // weights not computed
+
+    unsigned int i,j,nbp=1;
+    bool fitononevoxel=false;
+    if (voronoi.size()!=nbVoxels) fitononevoxel=true;
+    else if (voronoi[index]==-1) fitononevoxel=true;
+    else for(i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) if(findIndexInRepartition(j,i,findex)) nbp+=1;
+
+    p.resize(nbp);
+    weightedmasses.resize(nbp);
+
+    Real voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
+
+    if(fitononevoxel)
+    {
+        p[0]=point;
+        if(findIndexInRepartition(j,index,findex)) weightedmasses[0]=weightsRepartition[index][j]*voxelvolume*getDensity(grid.data()[index]);
+        else weightedmasses[0]=0;
+    }
+    else for(i=0; i<nbVoxels; i++)
+            if (voronoi[i]==voronoi[index])
+                if(findIndexInRepartition(j,i,findex))
+                {
+                    getCoord(i,p[i]);
+                    weightedmasses[i]=weightsRepartition[i][j]*voxelvolume*getDensity(grid.data()[i]);
+                }
+    return true;
+}
+
 
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::lumpMass(const Vec3& point,Real& mass)
@@ -561,7 +607,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const Vec3& point,VUI&
             if(w[i]!=0)
             {
                 pasteRepartioninWeight(reps[i]);
-                if(!dw) lumpWeights(point,false,w[i]); else if(!ddw) lumpWeights(point,false,w[i],&(*dw)[i]); else lumpWeights(point,false,w[i],&(*dw)[i],&(*ddw)[i]);
+                if(!dw) lumpWeights(point,true,w[i]); else if(!ddw) lumpWeights(point,true,w[i],&(*dw)[i]); else lumpWeights(point,true,w[i],&(*dw)[i],&(*ddw)[i]);
             }
     }
 
@@ -1999,6 +2045,21 @@ void GridMaterial< MaterialTypes>::getCompleteBasisDeriv2(const Vec3& p,const un
 
     return; // order>4 not implemented...
 }
+
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::findIndexInRepartition(unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex)
+{
+    if (repartition.size()<=pointIndex) return false;
+    const unsigned int& nbRef = repartition[pointIndex].size();
+    for ( unsigned int j = 0; j < nbRef; ++j)
+        if ( repartition[pointIndex][j] == frameIndex)
+        {
+            realIndex = j;
+            return true;
+        }
+    return false;
+}
+
 
 } // namespace material
 
