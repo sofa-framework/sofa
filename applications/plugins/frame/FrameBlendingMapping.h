@@ -29,6 +29,7 @@
 #include "MappingTypes.h"
 #include "NewMaterial.h"
 #include "GridMaterial.h"
+#include "DeformationGradientTypes.h"
 #include <sofa/core/Mapping.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -160,70 +161,31 @@ public:
     GridMaterial< materialType>* gridMaterial;
     Data<unsigned int> targetFrameNumber;
     Data<unsigned int> targetSampleNumber;
-
-    //enum { InDerivDim=In::DataTypes::deriv_total_size };
-    //enum { InDOFs=In::deriv_total_size };
-    //enum { InAt=0 };
-    //typedef defaulttype::Mat<N,N,InReal> Mat;
-    //    typedef defaulttype::Mat<3,3,InReal> Mat33;
-    //typedef vector<Mat33> VMat33;
-    //typedef vector<VMat33> VVMat33;
-    //typedef defaulttype::Mat<3,InDOFs,InReal> Mat3xIn;
-    //typedef vector<Mat3xIn> VMat3xIn;
-    //typedef vector<VMat3xIn> VVMat3xIn;
-    //typedef defaulttype::Mat<InAt,3,InReal> MatInAtx3;
-    //typedef vector<MatInAtx3> VMatInAtx3;
-    //typedef vector<VMatInAtx3> VVMatInAtx3;
-    //typedef defaulttype::Mat<3,6,InReal> Mat36;
-    //typedef vector<Mat36> VMat36;
-    //typedef vector<VMat36> VVMat36;
-    //typedef defaulttype::Mat<3,7,InReal> Mat37;
-    //typedef defaulttype::Mat<3,8,InReal> Mat38;
-    //typedef defaulttype::Mat<3,9,InReal> Mat39;
-    //typedef defaulttype::Mat<4,3,InReal> Mat43;
-    //typedef vector<Mat43> VMat43;
-    //typedef defaulttype::Mat<4,4,InReal> Mat44;
-    //typedef defaulttype::Mat<6,3,InReal> Mat63;
-    //typedef defaulttype::Mat<6,6,InReal> Mat66;
-    //typedef vector<Mat66> VMat66;
-    //typedef vector<VMat66> VVMat66;
-    //typedef defaulttype::Mat<6,7,InReal> Mat67;
-    //typedef defaulttype::Mat<6,InDOFs,InReal> Mat6xIn;
-    //typedef defaulttype::Mat<7,6,InReal> Mat76;
-    //typedef vector<Mat76> VMat76;
-    //typedef defaulttype::Mat<8,3,InReal> Mat83;
-    //typedef defaulttype::Mat<8,6,InReal> Mat86;
-    //typedef vector<Mat86> VMat86;
-    //typedef defaulttype::Mat<8,8,InReal> Mat88;
-    //typedef vector<Mat88> VMat88;
-    //typedef defaulttype::Mat<InDOFs,3,InReal> MatInx3;
-    //typedef defaulttype::Mat<6,10,InReal> Mat610;
-    //typedef vector<Mat610> VMat610;
-    //typedef sofa::helper::fixed_array<Mat610,InDOFs> MatInx610;
-    //typedef vector<MatInx610> VMatInx610;
-    //typedef vector<VMatInx610> VVMatInx610;
-    //typedef defaulttype::Vec<3,InReal> Vec3;
-    //typedef vector<Vec3> VVec3;
-    //typedef vector<VVec3> VVVec3;
-    //typedef defaulttype::Vec<4,InReal> Vec4;
-    //    typedef defaulttype::Vec<6,InReal> Vec6;
-    //typedef vector<Vec6> VVec6;
-    //typedef vector<VVec6> VVVec6;
-    //typedef defaulttype::Vec<7,InReal> Vec7;
-    //typedef defaulttype::Vec<8,InReal> Vec8;
-    //typedef defaulttype::Vec<9,InReal> Vec9;
-    //typedef defaulttype::Vec<InDOFs,InReal> VecIn;
-    //typedef helper::Quater<InReal> Quat;
-    //typedef sofa::helper::vector< VecCoord > VecVecCoord;
-    //typedef SVector<double> VD;
-    //typedef SVector<SVector<double> > VVD;
-
-    // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
-    //typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, double>, sofa::defaulttype::Vec<N, double>, double> DoGType; // = Vec3fTypes or Vec3dTypes
-    //typedef typename DistanceOnGrid< DoGType >::VecCoord GeoVecCoord;
-    //typedef typename DistanceOnGrid< DoGType >::Coord GeoCoord;
-    //typedef typename DistanceOnGrid< DoGType >::VecVecCoord GeoVecVecCoord;
 };
+
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3fTypes, Vec3fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3fTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3fTypes, Vec3dTypes >;
+#endif
+#endif
+#endif //defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 
 } // namespace mapping

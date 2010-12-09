@@ -680,6 +680,22 @@ public:
 
         return d;
     }
+    /*
+              /// matrix product
+              static Coord mult ( const Coord& a, const Coord& b )
+                {
+                  return Coord( a.getCenter() + a.getQuadratic()*b.getCenter(),  a.getQuadratic()*b.getQuadratic());
+                }
+
+              /// Compute an inverse transform
+              static Coord inverse( const Coord& c ){
+                  CAffine m;
+                  #if _DEBUG
+                  bool invertible = invertMatrix(m,c.getAffine());
+                  assert(invertible);
+                  #endif
+                  return Coord( -(m*c.getCenter()),m );
+              }*/
 };
 
 

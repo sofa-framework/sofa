@@ -45,6 +45,53 @@
 namespace sofa
 {
 
+namespace defaulttype
+{
+
+///////////////////////////////////////////////
+//        Avoid Out specializations          //
+///////////////////////////////////////////////
+template<class _Real, int Dim>
+inline const Vec<3,_Real>& center(const Vec<Dim,_Real>& c)
+{
+    return DeformationGradientTypes<3, 3, 2, _Real>::center(c);
+}
+
+template<class _Real, int Dim>
+inline Vec<3,_Real>& center(Vec<Dim,_Real>& c)
+{
+    return DeformationGradientTypes<3, 3, 2, _Real>::center(c);
+}
+
+template<class _Real>
+inline const Vec<3,_Real>& center(const Vec<3,_Real>& c)
+{
+    return c;
+}
+
+template<class _Real>
+inline Vec<3,_Real>& center(Vec<3,_Real>& c)
+{
+    return c;
+}
+
+template<class _Real, int Dim>
+inline Mat<Dim, Dim, _Real> covNN(const Vec<Dim,_Real>& v1, const Vec<Dim,_Real>& v2)
+{
+    Mat<Dim, Dim, _Real> res;
+    for( unsigned int i = 0; i < Dim; ++i)
+        for( unsigned int j = i; j < Dim; ++j)
+        {
+            res[i][j] = v1[i] * v2[j];
+            res[j][i] = res[i][j];
+        }
+    return res;
+}
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+}
+
 namespace component
 {
 
@@ -82,14 +129,9 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
     , showGradientsValues ( initData ( &showGradientsValues, false, "showGradientsValues","Show Gradients Values." ) )
     , showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.0001, "showGradientsScaleFactor","Gradients Scale Factor." ) )
-    //, enableSkinning ( initData ( &enableSkinning, true, "enableSkinning","enable skinning." ) )
-    //      , voxelVolume ( initData ( &voxelVolume, 1.0, "voxelVolume","default volume voxel. Use if no hexa topo is found." ) )
     , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to improve numerical integration" ) )
     , targetFrameNumber ( initData ( &targetFrameNumber, false, "targetFrameNumber","Target frames number" ) )
     , targetSampleNumber ( initData ( &targetSampleNumber, false, "targetSampleNumber","Target samples number" ) )
-    //, wheightingType ( initData ( &wheightingType, "wheightingType","Weighting computation method.\n0 - none (distance is used).\n1 - inverse distance square.\n2 - linear.\n3 - hermite (on groups of four dofs).\n4 - spline (on groups of four dofs)." ) )
-    //, distanceType ( initData ( &distanceType, "distanceType","Distance computation method.\n0 - euclidian distance.\n1 - geodesic distance.\n2 - harmonic diffusion." ) )
-    //, computeWeights ( true )
 {
     maskFrom = NULL;
     if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
@@ -219,7 +261,7 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
 
         for ( unsigned int j = 0 ; j < nbRef; ++j )
         {
-            out[i] += InOut::mult(mm0[index[nbRef * i + j]], initPos[i])  * weights[index[nbRef * i + j]];
+            center(out[i]) += InOut::mult(mm0[index[nbRef * i + j]], center(initPos[i]))  * weights[index[nbRef * i + j]];
         }
     }
 }
@@ -294,7 +336,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
 {
     cerr<<"WARNING ! FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) not implemented"<< endl;
 }
@@ -724,7 +766,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
     if ( showReps.getValue())
     {
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( m_reps[i*nbRef+0]*scale, xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( m_reps[i*nbRef+0]*scale, center(xto[i]), textScale );
     }
 
     // Display distances for each points
@@ -757,7 +799,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             {
                 const MaterialCoord& grad = m_dweights[i*nbRef+refIndex];
                 sprintf( txt, "( %i, %i, %i)", (int)(grad[0]*scale), (int)(grad[1]*scale), (int)(grad[2]*scale));
-                sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+                sofa::helper::gl::GlText::draw ( txt, center(xto[i]), textScale );
             }
         }
     }
@@ -773,7 +815,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
             if ( influenced)
             {
-                sofa::helper::gl::GlText::draw ( (int)(m_weights[i*nbRef+indexRep]*scale), xto[i], textScale );
+                sofa::helper::gl::GlText::draw ( (int)(m_weights[i*nbRef+indexRep]*scale), center(xto[i]), textScale );
             }
         }
     }
@@ -791,7 +833,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             if (influenced)
             {
                 const SpatialCoord& gradMap = m_dweights[i*nbRef+indexRep];
-                const SpatialCoord& point = xto[i];
+                const SpatialCoord& point = center(xto[i]);
                 glVertex3f ( point[0], point[1], point[2] );
                 glVertex3f ( point[0] + gradMap[0] * showGradientsScaleFactor.getValue(), point[1] + gradMap[1] * showGradientsScaleFactor.getValue(), point[2] + gradMap[2] * showGradientsScaleFactor.getValue() );
             }
