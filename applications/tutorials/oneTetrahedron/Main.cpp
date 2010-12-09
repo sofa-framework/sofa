@@ -31,8 +31,11 @@
 #include <sofa/component/visualmodel/OglModel.h>
 
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/VecId.h>
 
 #include <sofa/gui/GUIManager.h>
+
+
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
