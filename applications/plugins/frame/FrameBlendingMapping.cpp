@@ -703,7 +703,7 @@ struct LinearBlendTypes<
     OutCoord mult( const InCoord& f ) // Called in Apply
     {
         //TO DO
-        return f.pointToParent(v);
+        return OutCoord(); //f.pointToParent(v);
     }
 
     OutDeriv mult( const InDeriv& d )
@@ -712,7 +712,7 @@ struct LinearBlendTypes<
         return getLinear( d ) * Jb.Pt + cross(getAngular(d), Jb.Pa);
     }
 
-    InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d )
+    InDeriv multTranspose( const OutDeriv& d )
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
           */
