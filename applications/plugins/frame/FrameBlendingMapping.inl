@@ -236,9 +236,6 @@ void FrameBlendingMapping<TIn, TOut>::init()
     //                  //J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]], initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
 
     Inherit::init();
-
-
-
 }
 
 
@@ -271,7 +268,7 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
         out[i] = OutCoord();
         for ( unsigned int j = 0 ; j < nbRef; ++j )
         {
-            out[i] += inout[nbRef * i + j].mult( in[i] );
+            out[i] += inout[nbRef * i + j].mult( in[index[i*nbRef+j]] );
             //out[i] += inout.mult(mm0[index[nbRef * i + j]], initPos[i])  * weights[nbRef * i + j];
 //                        cerr<<"  FrameBlendingMapping<TIn, TOut>::apply, initPos[i] = "<< initPos[i] <<",mm0[index[nbRef * i + j]]  = "<<mm0[index[nbRef * i + j]]<< endl;
 //                        cerr<<"  FrameBlendingMapping<TIn, TOut>::apply, mult(mm0[index[nbRef * i + j]], initPos[i]) = "<< inout.mult(mm0[index[nbRef * i + j]], initPos[i]) << endl;
@@ -287,6 +284,7 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
             //J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]],  initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
         }
     }
+
 }
 
 template <class TIn, class TOut>
@@ -404,8 +402,6 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 {
-    std::cout<<"Lumping weights to gauss points..."<<std::endl;
-
     //                const VecOutCoord& xto = ( this->toModel->getX0()->size() == 0)?*this->toModel->getX():*this->toModel->getX0();
     //                const VecInCoord& xfrom = *this->fromModel->getX0();
     ReadAccessor<Data<VecOutCoord> > xto (f_initPos);
@@ -425,6 +421,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 
     if(gridMaterial)
     {
+        std::cout<<"Lumping weights to gauss points..."<<std::endl;
         vector<MaterialCoord> points ( xto.size() );
         for(unsigned i=0; i<points.size(); i++ )
             points[i] = xto[i];
