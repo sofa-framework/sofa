@@ -194,11 +194,20 @@ void FrameBlendingMapping<TIn, TOut>::init()
     }
     updateWeights();
 
+    inout.init(
+        this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+        f_initPos.getValue(),
+        f_index.getValue(),
+        weight.getValue(),
+        weightDeriv.getValue(),
+        weightDeriv2.getValue()
+    );
+
     // compute J
     J.resize( out.size() * nbRef );
     for(unsigned i=0; i<out.size(); i++ )
         for( unsigned j=0; j<nbRef; j++ )
-            J[i*nbRef+j] = InOut::computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]], initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
+            J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]], initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
 
     Inherit::init();
 
@@ -236,20 +245,20 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
         out[i] = OutCoord();
         for ( unsigned int j = 0 ; j < nbRef; ++j )
         {
-            out[i] += InOut::mult(mm0[index[nbRef * i + j]], initPos[i])  * weights[nbRef * i + j];
+            out[i] += inout.mult(mm0[index[nbRef * i + j]], initPos[i])  * weights[nbRef * i + j];
 //                        cerr<<"  FrameBlendingMapping<TIn, TOut>::apply, initPos[i] = "<< initPos[i] <<",mm0[index[nbRef * i + j]]  = "<<mm0[index[nbRef * i + j]]<< endl;
-//                        cerr<<"  FrameBlendingMapping<TIn, TOut>::apply, mult(mm0[index[nbRef * i + j]], initPos[i]) = "<< InOut::mult(mm0[index[nbRef * i + j]], initPos[i]) << endl;
+//                        cerr<<"  FrameBlendingMapping<TIn, TOut>::apply, mult(mm0[index[nbRef * i + j]], initPos[i]) = "<< inout.mult(mm0[index[nbRef * i + j]], initPos[i]) << endl;
         }
 //                    cerr<<"FrameBlendingMapping<TIn, TOut>::apply, initPos = "<<initPos[i]<<", out= "<< out[i] << endl;
     }
     // update J
-    if( InOut::mustRecomputeJacobian() )
+    if( inout.mustRecomputeJacobian() )
     {
         for(unsigned i=0; i<out.size(); i++ )
         {
             for( unsigned j=0; j<nbRef; j++ )
             {
-                J[i*nbRef+j] = InOut::computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]],  initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
+                J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]],  initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
             }
         }
     }
@@ -268,7 +277,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
             out[i] = OutDeriv();
             for ( unsigned int j=0 ; j<nbRef; j++ )
             {
-                out[i] += InOut::mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
+                out[i] += inout.mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
             }
         }
     }
@@ -284,7 +293,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
             out[i] = OutDeriv();
             for ( unsigned int j=0 ; j<nbRef; j++ )
             {
-                out[i] += InOut::mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
+                out[i] += inout.mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
             }
         }
     }
@@ -302,7 +311,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
         {
             for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
             {
-                out[index[nbRef*i+j]] += InOut::multTranspose( this->J[nbRef*i+j], in[i] );
+                out[index[nbRef*i+j]] += inout.multTranspose( this->J[nbRef*i+j], in[i] );
             }
         }
     }
@@ -317,7 +326,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
             const int i= ( int ) ( *it );
             for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
             {
-                out[index[nbRef*i+j]] += InOut::multTranspose( this->J[nbRef*i+j], in[i] );
+                out[index[nbRef*i+j]] += inout.multTranspose( this->J[nbRef*i+j], in[i] );
             }
         }
     }

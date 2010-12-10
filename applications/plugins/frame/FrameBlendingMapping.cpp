@@ -39,25 +39,34 @@ namespace defaulttype
 ////  Specialization on Affine->Points types
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Real, class _MaterialDeriv, class _MaterialMat>
+template<class _Material>
 struct LinearBlendTypes<
-        StdAffineTypes<3,_Real>,
-        StdVectorTypes< Vec<3,_Real>, Vec<3,_Real>, _Real >,
-        _MaterialDeriv, _MaterialMat
+        StdAffineTypes<3,typename _Material::Real>,
+        StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
+        _Material
         >
 {
-    typedef _Real Real;
-    typedef _MaterialDeriv MaterialDeriv;
-    typedef _MaterialMat MaterialMat;
+    typedef _Material Material;
+    typedef typename Material::Real Real;
+    typedef typename Material::VecReal VecReal;
+    typedef typename Material::Gradient MaterialDeriv;
+    typedef typename Material::VecGradient VecMaterialDeriv;
+    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::VecHessian VecMaterialMat;
     typedef StdAffineTypes<3,Real> In;
-    typedef StdVectorTypes< Vec<3,_Real>, Vec<3,_Real>, _Real > Out;
+    typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::Deriv InDeriv;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename Out::VecCoord VecOutCoord;
+    typedef vector<unsigned> VecIndex;
+
+    void init( const VecInCoord&, const VecOutCoord&, const VecIndex&, const VecReal&, const VecMaterialDeriv&, const VecMaterialMat&  ) {}
 
     /// Transform a Vec
-    static OutCoord mult( const InCoord& f, const OutCoord& v )
+    OutCoord mult( const InCoord& f, const OutCoord& v )
     {
         return f.getCenter() + f.getAffine()*v;
     }
@@ -74,23 +83,23 @@ struct LinearBlendTypes<
     };
 
 
-    static JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
+    JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
     {
         return JacobianBlock( mult(inverseInitialMatrix,initialChildPosition)*w, w );
     }
 
-    inline static  bool mustRecomputeJacobian(  )
+    bool mustRecomputeJacobian(  )
     {
         // No update is needed
         return false;
     }
 
-    static OutDeriv mult( const JacobianBlock& block, const InDeriv& d )
+    OutDeriv mult( const JacobianBlock& block, const InDeriv& d )
     {
         return getVCenter( d ) * block.w + getVAffine( d ) * block.weightedVectorInLocalCoordinates;
     }
 
-    static InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d )
+    InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d )
     {
         const OutDeriv& j=block.weightedVectorInLocalCoordinates;
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
@@ -110,27 +119,36 @@ struct LinearBlendTypes<
 ////  Specialization on Affine->DeformationGradient first order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Real, class _MaterialDeriv, class _MaterialMat>
+template<class _Material>
 struct LinearBlendTypes<
-        StdAffineTypes<3,_Real>,
-        DeformationGradientTypes<3, 3, 1, _Real>,
-        _MaterialDeriv, _MaterialMat
+        StdAffineTypes<3,typename _Material::Real>,
+        DeformationGradientTypes<3, 3, 1, typename  _Material::Real>,
+        _Material
         >
 {
-    typedef _Real Real;
-    typedef _MaterialDeriv MaterialDeriv;
-    typedef _MaterialMat MaterialMat;
+    typedef _Material Material;
+    typedef typename Material::Real Real;
+    typedef typename Material::VecReal VecReal;
+    typedef typename Material::Gradient MaterialDeriv;
+    typedef typename Material::VecGradient VecMaterialDeriv;
+    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::VecHessian VecMaterialMat;
     typedef StdAffineTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 1, _Real> Out;
+    typedef DeformationGradientTypes<3, 3, 1, Real> Out;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::Deriv InDeriv;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename Out::VecCoord VecOutCoord;
+    typedef vector<unsigned> VecIndex;
+
+    void init( const VecInCoord&, const VecOutCoord&, const VecIndex&, const VecReal&, const VecMaterialDeriv&, const VecMaterialMat&  ) {}
 
     /// Transform a Vec
-    static SpatialCoord mult( const InCoord& f, const SpatialCoord& v ) // Called in Apply
+    SpatialCoord mult( const InCoord& f, const SpatialCoord& v ) // Called in Apply
     {
         return f.getCenter() + f.getAffine()*Out::center(v);
     }
@@ -149,7 +167,7 @@ struct LinearBlendTypes<
     };
 
 
-    static JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat /*ddw*/ )
+    JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat /*ddw*/ )
     {
         OutCoord jacobian;
         SpatialCoord vectorInLocalCoordinates = mult(inverseInitialMatrix,Out::center(initialChildPosition));
@@ -159,13 +177,13 @@ struct LinearBlendTypes<
     }
 
 
-    inline static  bool mustRecomputeJacobian(  )
+    bool mustRecomputeJacobian(  )
     {
         // No update is needed
         return false;
     }
 
-    static OutDeriv mult( const JacobianBlock& block, const InDeriv& d ) // Called in ApplyJ
+    OutDeriv mult( const JacobianBlock& block, const InDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
         Out::center(res) = getVCenter( d ) * block.w + getVAffine( d ) * block.weightedVectorInLocalCoordinates;
@@ -174,7 +192,7 @@ struct LinearBlendTypes<
     }
 
 
-    static InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d ) // Called in ApplyJT
+    InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d ) // Called in ApplyJT
     {
         const SpatialCoord& jt=block.weightedVectorInLocalCoordinates;
         const MaterialFrame& ja=block.weightedVectorInLocalCoordinatesDerivative;
@@ -198,18 +216,22 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 
-template<class _Real, class _MaterialDeriv, class _MaterialMat>
+template<class  _Material>
 struct LinearBlendTypes<
-        StdAffineTypes<3,_Real>,
-        DeformationGradientTypes<3, 3, 2, _Real>,
-        _MaterialDeriv, _MaterialMat
+        StdAffineTypes<3,typename _Material::Real>,
+        DeformationGradientTypes<3, 3, 2, typename _Material::Real>,
+        _Material
         >
 {
-    typedef _Real Real;
-    typedef _MaterialDeriv MaterialDeriv;
-    typedef _MaterialMat MaterialMat;
+    typedef _Material Material;
+    typedef typename Material::Real Real;
+    typedef typename Material::VecReal VecReal;
+    typedef typename Material::Gradient MaterialDeriv;
+    typedef typename Material::VecGradient VecMaterialDeriv;
+    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::VecHessian VecMaterialMat;
     typedef StdAffineTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 2, _Real> Out;
+    typedef DeformationGradientTypes<3, 3, 2, Real> Out;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
@@ -218,9 +240,14 @@ struct LinearBlendTypes<
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::Deriv InDeriv;
     typedef Mat<3,3,Real> Mat33;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename Out::VecCoord VecOutCoord;
+    typedef vector<unsigned> VecIndex;
+
+    void init( const VecInCoord&, const VecOutCoord&, const VecIndex&, const VecReal&, const VecMaterialDeriv&, const VecMaterialMat&  ) {}
 
     /// Transform a Vec
-    static SpatialCoord mult( const InCoord& f, const SpatialCoord& v ) // Called in Apply
+    SpatialCoord mult( const InCoord& f, const SpatialCoord& v ) // Called in Apply
     {
         return f.getCenter() + f.getAffine()*Out::center(v);
     }
@@ -241,7 +268,7 @@ struct LinearBlendTypes<
     };
 
 
-    static JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat ddw )
+    JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat ddw )
     {
         OutCoord jacobian;
         SpatialCoord vectorInLocalCoordinates = mult(inverseInitialMatrix,Out::center(initialChildPosition));
@@ -254,7 +281,7 @@ struct LinearBlendTypes<
         return JacobianBlock( jacobian, w, dw, ddw);
     }
 
-    inline static  bool mustRecomputeJacobian(  )
+    bool mustRecomputeJacobian(  )
     {
         // No update is needed
         return false;
@@ -359,25 +386,34 @@ struct LinearBlendTypes<
 ////  Specialization on Rigid types
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Real, class _MaterialDeriv, class _MaterialMat>
+template<class _Material>
 struct LinearBlendTypes<
-        StdRigidTypes<3,_Real>,
-        StdVectorTypes< Vec<3,_Real>, Vec<3,_Real>, _Real >,
-        _MaterialDeriv, _MaterialMat
+        StdRigidTypes<3,typename _Material::Real>,
+        StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
+        _Material
         >
 {
-    typedef _Real Real;
-    typedef _MaterialDeriv MaterialDeriv;
-    typedef _MaterialMat MaterialMat;
+    typedef _Material Material;
+    typedef typename Material::Real Real;
+    typedef typename Material::VecReal VecReal;
+    typedef typename Material::Gradient MaterialDeriv;
+    typedef typename Material::VecGradient VecMaterialDeriv;
+    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::VecHessian VecMaterialMat;
     typedef StdRigidTypes<3,Real> In;
-    typedef StdVectorTypes< Vec<3,_Real>, Vec<3,_Real>, _Real > Out;
+    typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::Deriv InDeriv;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename Out::VecCoord VecOutCoord;
+    typedef vector<unsigned> VecIndex;
+
+    void init( const VecInCoord&, const VecOutCoord&, const VecIndex&, const VecReal&, const VecMaterialDeriv&, const VecMaterialMat&  ) {}
 
     /// Transform a Vec
-    static OutCoord mult( const InCoord& f, const OutCoord& v )
+    OutCoord mult( const InCoord& f, const OutCoord& v )
     {
         return f.pointToParent(v);
     }
@@ -393,23 +429,23 @@ struct LinearBlendTypes<
         Real w; ///< = dp_0/ dMt_i = w_i : translation part
     };
 
-    static JacobianBlock computeJacobianBlock( const InCoord& currentTransform, const InCoord& inverseInitialTransform, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
+    JacobianBlock computeJacobianBlock( const InCoord& currentTransform, const InCoord& inverseInitialTransform, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
     {
         return JacobianBlock( currentTransform.getOrientation().rotate(mult(inverseInitialTransform,initialChildPosition)*w), w);
     }
 
-    inline static  bool mustRecomputeJacobian(  )
+    bool mustRecomputeJacobian(  )
     {
         // Update is needed
         return true;
     }
 
-    static OutDeriv mult( const JacobianBlock& block, const InDeriv& d )
+    OutDeriv mult( const JacobianBlock& block, const InDeriv& d )
     {
         return getLinear( d ) * block.w + cross(getAngular(d), block.weightedVectorInWorldCoordinates);
     }
 
-    static InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d )
+    InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d )
     {
         const OutDeriv& j=block.weightedVectorInWorldCoordinates;
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
@@ -451,6 +487,7 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
 
 #ifndef SOFA_FLOAT
         .add< FrameBlendingMapping< Affine3dTypes, Vec3dTypes > >()
+//.add< FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes > >()
 //.add< FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, Vec3dTypes > >()
 // .add< FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes > >()

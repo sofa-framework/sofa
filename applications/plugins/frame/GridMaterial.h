@@ -71,6 +71,7 @@ public:
 
     typedef Material<TMaterialTypes> Inherited;
     typedef typename Inherited::Real Real;        ///< Scalar values.
+    typedef vector<Real> VecReal;
     typedef typename Inherited::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
     typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
@@ -79,10 +80,17 @@ public:
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
     typedef unsigned char voxelType;
 
-    typedef Vec<3,Real> Vec3;			///< Material coordinate
-    typedef Vec<3,Real> MaterialCoord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef Vec<3,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef vector<Coord> VecCoord;
+    typedef Vec<3,Real> Gradient;    ///< gradient of a scalar value in material space
+    typedef vector<Gradient> VecGradient;
+    typedef Mat<3,3,Real> Hessian;    ///< hessian (second derivative) of a scalar value in material space
+    typedef vector<Hessian> VecHessian;
     typedef Vec<3,Real> SpatialCoord;     ///< Coordinate of a point in the space the object is moving in
     static const unsigned num_material_dimensions = 3;
+
+
+    typedef Vec<3,Real> Vec3;			///< Material coordinate
     typedef vector<Vec3> VecVec3;							///< Vector of material coordinates
     typedef Mat<3,3,Real> Mat33;
     typedef vector<Mat<3,3,Real> > VMat33;
