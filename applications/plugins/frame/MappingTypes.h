@@ -35,7 +35,7 @@ namespace defaulttype
 {
 
 
-template<class In, class Out, class MaterialDeriv, class MaterialMat>
+template<class In, class Out, class Material>
 class LinearBlendTypes;
 
 

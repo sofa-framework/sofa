@@ -87,7 +87,7 @@ public:
     // Material types
     typedef MaterialTypes<num_spatial_dimensions,InReal> materialType;
     typedef GridMaterial<materialType> GridMat;
-    typedef typename GridMat::MaterialCoord  MaterialCoord;
+    typedef typename GridMat::Coord  MaterialCoord;
     typedef typename GridMat::SpatialCoord  SpatialCoord;
     static const unsigned num_material_dimensions = GridMat::num_material_dimensions;
 //                typedef typename GridMat::VecVec3  VecMaterialCoord;
@@ -95,7 +95,7 @@ public:
 //                typedef typename GridMat::VMat33  VecMaterialMatrix;
 
     // Conversion types
-    typedef typename defaulttype::LinearBlendTypes<In,Out,MaterialCoord,MaterialMat> InOut;
+    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat> InOut;
     typedef typename InOut::JacobianBlock JacobianBlock;
 
 
@@ -119,7 +119,7 @@ protected:
     inline void updateWeights ();
     inline void normalizeWeights();
 
-
+    InOut inout;  ///< Data specific to the conversion between the types
     VecInCoord mm0;  ///< product of the current matrices with the inverse of the initial matrices
 
     helper::ParticleMask* maskFrom;
