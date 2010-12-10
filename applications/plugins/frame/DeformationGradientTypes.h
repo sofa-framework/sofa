@@ -96,10 +96,10 @@ struct DeformationGradientTypes
 
     /// gradient of the deformation gradient at the sampling point
     template<class CoordOrDeriv>
-    static MaterialFrameGradient& materialFrameGradient( CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
+    static MaterialFrameGradient& materialFrameGradient( CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
     /// gradient of the deformation gradient at the sampling point
     template<class CoordOrDeriv>
-    static const MaterialFrameGradient& materialFrameGradient( const CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
+    static const MaterialFrameGradient& materialFrameGradient( const CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
 
 
     template<typename T>

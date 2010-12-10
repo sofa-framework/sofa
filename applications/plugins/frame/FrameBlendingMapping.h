@@ -119,8 +119,10 @@ protected:
     inline void updateWeights ();
     inline void normalizeWeights();
 
-    InOut inout;  ///< Data specific to the conversion between the types
-    VecInCoord mm0;  ///< product of the current matrices with the inverse of the initial matrices
+    vector<InOut> inout;  ///< Data specific to the conversion between the types
+//              VecInCoord mm0;  ///< product of the current matrices with the inverse of the initial matrices
+//              vector<JacobianBlock> J;  ///< The tangent operator used in applyJ and applyJT
+//              Data<VecInCoord> f_initialInverseMatrices; // inverses of the initial parent matrices in the world reference frame
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
@@ -133,9 +135,7 @@ protected:
     Data< vector<MaterialMat> >   weightDeriv2;
 
     Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
-    Data<VecInCoord> f_initialInverseMatrices; // inverses of the initial parent matrices in the world reference frame
 
-    vector<JacobianBlock> J;  ///< The tangent operator used in applyJ and applyJT
 
 
 public:
