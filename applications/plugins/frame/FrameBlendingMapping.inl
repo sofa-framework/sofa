@@ -196,7 +196,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
 
     gridMaterial=NULL;
-    this->getContext()->get( gridMaterial);
+    this->getContext()->get( gridMaterial, core::objectmodel::BaseContext::SearchRoot);
     if ( !gridMaterial )
     {
         serr << "GridMaterial component not found -> use model vertices as Gauss point and 1/d^2 as weights." << sendl;
@@ -373,6 +373,8 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& /*out*
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
+    if( targetSampleNumber.getValue() == 0) return;
+
     // Get references
     WriteAccessor<Data<VecOutCoord> > xto0 = *this->toModel->write(core::VecCoordId::restPosition());
     WriteAccessor<Data<VecOutCoord> >  xto = *this->toModel->write(core::VecCoordId::position());
