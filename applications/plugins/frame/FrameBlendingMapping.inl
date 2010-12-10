@@ -87,6 +87,19 @@ inline Mat<Dim, Dim, _Real> covNN(const Vec<Dim,_Real>& v1, const Vec<Dim,_Real>
         }
     return res;
 }
+
+template<class _Real, int Dim1, int Dim2>
+inline Mat<Dim1, Dim2, _Real> covMN(const Vec<Dim1,_Real>& v1, const Vec<Dim2,_Real>& v2)
+{
+    Mat<Dim1, Dim2, _Real> res;
+    for( unsigned int i = 0; i < Dim1; ++i)
+        for( unsigned int j = i; j < Dim2; ++j)
+        {
+            res[i][j] = v1[i] * v2[j];
+            res[j][i] = res[i][j];
+        }
+    return res;
+}
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
@@ -113,7 +126,7 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
     , weightDeriv2 ( initData ( &weightDeriv2,"weightHessians","weight Hessians" ) )
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
-    , f_initialInverseMatrices ( initData ( &f_initialInverseMatrices,"initialInverseMatrices","inverses of the initial parent matrices in the world reference frame" ) )
+    //, f_initialInverseMatrices ( initData ( &f_initialInverseMatrices,"initialInverseMatrices","inverses of the initial parent matrices in the world reference frame" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, true, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
     , showDefTensors ( initData ( &showDefTensors, true, "showDefTensors","show computed deformation tensors." ) )
     , showDefTensorsValues ( initData ( &showDefTensorsValues, true, "showDefTensorsValues","Show Deformation Tensors Values." ) )
@@ -151,7 +164,7 @@ FrameBlendingMapping<TIn, TOut>::~FrameBlendingMapping ()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::init()
 {
-    unsigned numParents = this->fromModel->getSize();
+//                unsigned numParents = this->fromModel->getSize();
     unsigned numChildren = this->toModel->getSize();
     unsigned nbRef = f_nbRefs.getValue();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -161,7 +174,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
     ReadAccessor<Data<vector<OutReal> > > weights(weight);
     ReadAccessor<Data<vector<MaterialCoord> > > dweights(weightDeriv);
     ReadAccessor<Data<vector<MaterialMat> > > ddweights(weightDeriv2);
-    WriteAccessor<Data<VecInCoord> > initialInverseMatrices(f_initialInverseMatrices);
+    //WriteAccessor<Data<VecInCoord> > initialInverseMatrices(f_initialInverseMatrices);
     WriteAccessor<Data<VecOutCoord> > initPos(f_initPos);
 
     if( f_initPos.getValue().size() != numChildren )
@@ -170,15 +183,16 @@ void FrameBlendingMapping<TIn, TOut>::init()
         for(unsigned i=0; i<out.size(); i++ )
             initPos[i] = out[i];
     }
-    if( f_initialInverseMatrices.getValue().size() != numParents )
-    {
-        initialInverseMatrices.resize(in0.size());
-        for(unsigned i=0; i<initialInverseMatrices.size(); i++)
-            initialInverseMatrices[i] = In::inverse(in0[i]);
-//                    cerr<<"FrameBlendingMapping<TIn, TOut>::init(), matrices = "<< in << endl;
-//                    cerr<<"FrameBlendingMapping<TIn, TOut>::init(), inverse matrices = "<< initialInverseMatrices << endl;
-    }
 
+// now done in inout.init()
+//                if( f_initialInverseMatrices.getValue().size() != numParents )
+//                {
+//                    initialInverseMatrices.resize(in0.size());
+//                    for(unsigned i=0; i<initialInverseMatrices.size(); i++)
+//                        initialInverseMatrices[i] = In::inverse(in0[i]);
+////                    cerr<<"FrameBlendingMapping<TIn, TOut>::init(), matrices = "<< in << endl;
+////                    cerr<<"FrameBlendingMapping<TIn, TOut>::init(), inverse matrices = "<< initialInverseMatrices << endl;
+//                }
 
 
     gridMaterial=NULL;
@@ -194,20 +208,32 @@ void FrameBlendingMapping<TIn, TOut>::init()
     }
     updateWeights();
 
-    inout.init(
-        this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
-        f_initPos.getValue(),
-        f_index.getValue(),
-        weight.getValue(),
-        weightDeriv.getValue(),
-        weightDeriv2.getValue()
-    );
-
-    // compute J
-    J.resize( out.size() * nbRef );
+    inout.resize( out.size() * nbRef );
     for(unsigned i=0; i<out.size(); i++ )
         for( unsigned j=0; j<nbRef; j++ )
-            J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]], initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
+            inout[i*nbRef+j].init(
+                in0[index[i*nbRef+j]],
+                initPos[i],
+                weight.getValue()[i*nbRef+j],
+                weightDeriv.getValue()[i*nbRef+j],
+                weightDeriv2.getValue()[i*nbRef+j]
+            );
+
+    /*	inout.init(
+    			this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+    			f_initPos.getValue(),
+    			f_index.getValue(),
+    			weight.getValue(),
+    			weightDeriv.getValue(),
+    			weightDeriv2.getValue()
+    			);*/
+    // compute J
+    // now done in inout.init()
+    //          J.resize( out.size() * nbRef );
+    //          for(unsigned i=0; i<out.size(); i++ )
+    //              for( unsigned j=0; j<nbRef; j++ )
+    //inout[i*nbRef+j].computeJacobianBlock(in[index[i*nbRef+j]]);
+    //                  //J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]], initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
 
     Inherit::init();
 
@@ -223,16 +249,16 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
     const unsigned int& nbRef = this->f_nbRefs.getValue();
 
     ReadAccessor<Data<VecOutCoord> >            initPos = this->f_initPos;
-    ReadAccessor<Data<VecInCoord> >             invmat = this->f_initialInverseMatrices;
-    ReadAccessor<Data<VecInCoord> >             initialInverseMatrices(f_initialInverseMatrices);
+//                ReadAccessor<Data<VecInCoord> >             invmat = this->f_initialInverseMatrices;
+//                ReadAccessor<Data<VecInCoord> >             initialInverseMatrices(f_initialInverseMatrices);
     ReadAccessor<Data<vector<unsigned> > >      index = this->f_index;
     ReadAccessor<Data<vector<OutReal> > >       weights = this->weight;
     ReadAccessor<Data<vector<MaterialCoord> > > dweights(weightDeriv);
     ReadAccessor<Data<vector<MaterialMat> > >   ddweights(weightDeriv2);
 
-    this->mm0.resize( in.size() );
-    for(unsigned i=0; i<mm0.size(); i++ )
-        mm0[i] = In::mult(in[i],invmat[i]);
+    //this->mm0.resize( in.size() );
+    //for(unsigned i=0; i<mm0.size(); i++ )
+    //    mm0[i] = In::mult(in[i],invmat[i]);
 
 //                cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << endl;
 //                cerr<<"FrameBlendingMapping<TIn, TOut>::apply, invmat = "<< invmat << endl;
@@ -245,21 +271,20 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
         out[i] = OutCoord();
         for ( unsigned int j = 0 ; j < nbRef; ++j )
         {
-            out[i] += inout.mult(mm0[index[nbRef * i + j]], initPos[i])  * weights[nbRef * i + j];
+            out[i] += inout[nbRef * i + j].mult( in[i] );
+            //out[i] += inout.mult(mm0[index[nbRef * i + j]], initPos[i])  * weights[nbRef * i + j];
 //                        cerr<<"  FrameBlendingMapping<TIn, TOut>::apply, initPos[i] = "<< initPos[i] <<",mm0[index[nbRef * i + j]]  = "<<mm0[index[nbRef * i + j]]<< endl;
 //                        cerr<<"  FrameBlendingMapping<TIn, TOut>::apply, mult(mm0[index[nbRef * i + j]], initPos[i]) = "<< inout.mult(mm0[index[nbRef * i + j]], initPos[i]) << endl;
         }
 //                    cerr<<"FrameBlendingMapping<TIn, TOut>::apply, initPos = "<<initPos[i]<<", out= "<< out[i] << endl;
     }
     // update J
-    if( inout.mustRecomputeJacobian() )
+    for(unsigned i=0; i<out.size(); i++ )
     {
-        for(unsigned i=0; i<out.size(); i++ )
+        for( unsigned j=0; j<nbRef; j++ )
         {
-            for( unsigned j=0; j<nbRef; j++ )
-            {
-                J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]],  initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
-            }
+            inout[i*nbRef+j].updateJacobian( in[index[i*nbRef+j]]);
+            //J[i*nbRef+j] = inout.computeJacobianBlock( in[index[i*nbRef+j]], initialInverseMatrices[index[i*nbRef+j]],  initPos[i], weights[i*nbRef+j], dweights[i*nbRef+j], ddweights[i*nbRef+j]  );
         }
     }
 }
@@ -277,7 +302,8 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
             out[i] = OutDeriv();
             for ( unsigned int j=0 ; j<nbRef; j++ )
             {
-                out[i] += inout.mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
+                out[i] += inout[nbRef*i+j].mult( in[index[nbRef*i+j]] );
+                //out[i] += inout.mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
             }
         }
     }
@@ -293,7 +319,8 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
             out[i] = OutDeriv();
             for ( unsigned int j=0 ; j<nbRef; j++ )
             {
-                out[i] += inout.mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
+                out[i] += inout[nbRef*i+j].mult( in[index[nbRef*i+j]] );
+                //out[i] += inout.mult( this->J[nbRef*i+j] , in[index[nbRef*i+j]] );
             }
         }
     }
@@ -311,7 +338,8 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
         {
             for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
             {
-                out[index[nbRef*i+j]] += inout.multTranspose( this->J[nbRef*i+j], in[i] );
+                out[index[nbRef*i+j]] += inout[nbRef*i+j].multTranspose( in[i] );
+                //out[index[nbRef*i+j]] += inout.multTranspose( this->J[nbRef*i+j], in[i] );
             }
         }
     }
@@ -326,7 +354,8 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
             const int i= ( int ) ( *it );
             for ( unsigned int j=0 ; j<nbRef; j++ ) // AffineType
             {
-                out[index[nbRef*i+j]] += inout.multTranspose( this->J[nbRef*i+j], in[i] );
+                out[index[nbRef*i+j]] += inout[nbRef*i+j].multTranspose( in[i] );
+                //out[index[nbRef*i+j]] += inout.multTranspose( this->J[nbRef*i+j], in[i] );
             }
         }
     }

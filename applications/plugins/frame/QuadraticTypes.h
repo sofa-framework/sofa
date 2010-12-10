@@ -185,15 +185,35 @@ public:
     typedef real Real;
     typedef Vec<3, Real> Vec3;
     typedef Vec3 Pos;
+    typedef Vec<9, Real> Vec9;
+    typedef Vec9 Pos2;
+    typedef defaulttype::Mat<3,3,Real> Mat33;
+    typedef Mat33 Affine;
     typedef defaulttype::Mat<3,9,Real> Mat39;
     typedef Mat39 Quadratic;
+    typedef defaulttype::Mat<9,3,Real> Mat93;
+    typedef Mat93 QuadraticTranspose;
+    typedef QuadraticCoord<3, real> Coord;
 
 protected:
     Vec3 center;
     Mat39 quadratic;
+
 public:
     QuadraticCoord ( const Vec3 &center, const Mat39 &quadratic )
         : center ( center ), quadratic ( quadratic ) {}
+
+    QuadraticCoord ( const Vec3 &center, const Mat33 &affine, const Mat33 &square=Mat33(), const Mat33 &crossterms=Mat33())
+        : center ( center )
+    {
+        for(unsigned int i=0; i<3; ++i)
+            for(unsigned int j=0; j<3; ++j)
+            {
+                quadratic[i][j]=affine[i][j];
+                quadratic[i][j+3]=square[i][j];
+                quadratic[i][j+6]=crossterms[i][j];
+            }
+    }
 
     QuadraticCoord () { clear(); }
 
@@ -302,29 +322,21 @@ public:
 
     const Mat39& getQuadratic () const { return quadratic; }
 
+    Affine getAffine() const
+    {
+        Affine m;
+        for (unsigned int i = 0; i < 3; ++i)
+            for (unsigned int j = 0; j < 3; ++j)
+                m[i][j]=quadratic[i][j];
+        return  m;
+    }
+
     static QuadraticCoord<3, real> identity()
     {
         QuadraticCoord c;
         return c;
     }
-    /*
-              /// Apply a transformation with respect to itself
-              void multRight ( const QuadraticCoord<3, real>& c )
-              {
-                center += affine * c.getCenter();
-                affine = affine * c.getQuadratic();
-                //TODO decomposition polaire. => mult rot, ajoute S terme a terme.
-              }
 
-              /// compute the product with another frame on the right
-              QuadraticCoord<3, real> mult ( const QuadraticCoord<3, real>& c ) const
-                {
-                  QuadraticCoord r;
-                  r.center = center + orientation.rotate ( c.center );
-                  r.orientation = orientation * c.getOrientation();
-                  return r;
-                }
-    */
     /// Set from the given matrix
     template<class Mat>
     void fromMatrix ( const Mat& m )
@@ -444,6 +456,7 @@ public:
         else
             return this->quadratic((i-3)/9, (i-3)%9);
     }
+
 };
 
 
@@ -554,6 +567,8 @@ public:
     typedef QuadraticCoord<3, real> Coord;
     typedef Vec<30,Real> Deriv;
     typedef typename Coord::Vec3 Vec3;
+    typedef typename Coord::Vec9 Vec9;
+    typedef typename Coord::Affine Affine;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };
@@ -680,22 +695,32 @@ public:
 
         return d;
     }
-    /*
-              /// matrix product
-              static Coord mult ( const Coord& a, const Coord& b )
-                {
-                  return Coord( a.getCenter() + a.getQuadratic()*b.getCenter(),  a.getQuadratic()*b.getQuadratic());
-                }
 
-              /// Compute an inverse transform
-              static Coord inverse( const Coord& c ){
-                  CAffine m;
-                  #if _DEBUG
-                  bool invertible = invertMatrix(m,c.getAffine());
-                  assert(invertible);
-                  #endif
-                  return Coord( -(m*c.getCenter()),m );
-              }*/
+    static Vec9 convertToQuadraticCoord(const Vec3& p)
+    {
+        return Vec9( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
+    }
+
+    /// matrix product
+    // only the linear (affine and translation) part is used !!
+    static Coord mult ( const Coord& a, const Coord& b )
+    {
+        return Coord( a.getCenter() + a.getAffine()*b.getCenter(),  a.getAffine()*b.getAffine());
+    }
+
+    /// Compute an inverse transform
+    // only the linear (affine and translation) part is inverted !!
+    static Coord inverse( const Coord& c )
+    {
+        Affine m;
+#ifdef DEBUG
+        bool invertible = invertMatrix(m,c.getAffine());
+        assert(invertible);
+#else
+        invertMatrix(m,c.getAffine());
+#endif
+        return Coord( -(m*c.getCenter()),m );
+    }
 };
 
 
