@@ -353,19 +353,19 @@ public:
     /// Access to i-th element.
     real& operator[](int i)
     {
-        assert (i<3);
-        return this->center[i];
-//          else
-//                  return this->affine[i-3];
+        if (i<3)
+            return this->center[i];
+        else
+            return this->affine((i-3)/3, (i-3)%3);
     }
 
     /// Const access to i-th element.
     const real& operator[](int i) const
     {
-        assert (i<3);
-        return this->center[i];
-//                  else
-//                          return this->affine[i-3];
+        if (i<3)
+            return this->center[i];
+        else
+            return this->affine((i-3)/3, (i-3)%3);
     }
 
 
@@ -590,9 +590,11 @@ public:
     static Coord inverse( const Coord& c )
     {
         CAffine m;
-#if _DEBUG
+#ifdef DEBUG
         bool invertible = invertMatrix(m,c.getAffine());
         assert(invertible);
+#else
+        invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
     }

@@ -36,7 +36,7 @@ namespace defaulttype
 {
 
 //////////////////////////////////////////////////////////////////////////////////
-////  Specialization on Affine types
+////  Specialization on Affine->Points types
 //////////////////////////////////////////////////////////////////////////////////
 
 template<class _Real, class _MaterialDeriv, class _MaterialMat>
@@ -74,9 +74,15 @@ struct LinearBlendTypes<
     };
 
 
-    static JacobianBlock computeJacobianBlock( const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
+    static JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
     {
         return JacobianBlock( mult(inverseInitialMatrix,initialChildPosition)*w, w );
+    }
+
+    inline static  bool mustRecomputeJacobian(  )
+    {
+        // No update is needed
+        return false;
     }
 
     static OutDeriv mult( const JacobianBlock& block, const InDeriv& d )
@@ -99,6 +105,10 @@ struct LinearBlendTypes<
 };
 
 
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Specialization on Affine->DeformationGradient first order
+//////////////////////////////////////////////////////////////////////////////////
 
 template<class _Real, class _MaterialDeriv, class _MaterialMat>
 struct LinearBlendTypes<
@@ -139,7 +149,7 @@ struct LinearBlendTypes<
     };
 
 
-    static JacobianBlock computeJacobianBlock( const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat /*ddw*/ )
+    static JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat /*ddw*/ )
     {
         OutCoord jacobian;
         SpatialCoord vectorInLocalCoordinates = mult(inverseInitialMatrix,Out::center(initialChildPosition));
@@ -148,6 +158,12 @@ struct LinearBlendTypes<
         return JacobianBlock( jacobian, w, dw);
     }
 
+
+    inline static  bool mustRecomputeJacobian(  )
+    {
+        // No update is needed
+        return false;
+    }
 
     static OutDeriv mult( const JacobianBlock& block, const InDeriv& d ) // Called in ApplyJ
     {
@@ -176,6 +192,10 @@ struct LinearBlendTypes<
     }
 };
 
+
+//////////////////////////////////////////////////////////////////////////////////
+////  Specialization on Affine->DeformationGradient second order
+//////////////////////////////////////////////////////////////////////////////////
 
 
 template<class _Real, class _MaterialDeriv, class _MaterialMat>
@@ -221,7 +241,7 @@ struct LinearBlendTypes<
     };
 
 
-    static JacobianBlock computeJacobianBlock( const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat ddw )
+    static JacobianBlock computeJacobianBlock( const InCoord& /*currentTransform*/, const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv dw,  const MaterialMat ddw )
     {
         OutCoord jacobian;
         SpatialCoord vectorInLocalCoordinates = mult(inverseInitialMatrix,Out::center(initialChildPosition));
@@ -234,34 +254,39 @@ struct LinearBlendTypes<
         return JacobianBlock( jacobian, w, dw, ddw);
     }
 
+    inline static  bool mustRecomputeJacobian(  )
+    {
+        // No update is needed
+        return false;
+    }
+
     /*
-                static OutDeriv mult( const JacobianBlock& block, const InDeriv& d ) // Called in ApplyJ
-                {
-                    OutDeriv res;
-                    Out::center(res) = getVCenter( d ) * block.w + getVAffine( d ) * block.weightedVectorInLocalCoordinates;
-                    Out::materialFrame(res) = covNN( getVCenter( d ), block.dw) + getVAffine( d ) * block.weightedVectorInLocalCoordinatesDerivative;
-                    for (unsigned int i = 0; i < 3; ++i)
-                      Out::materialFrameGradient(res)[i] = covNN( getVCenter( d ), block.dw) + getVAffine( d ) * block.weightedVectorInLocalCoordinatesScdDerivative;
-                    return res;
-                }
+    static OutDeriv mult( const JacobianBlock& block, const InDeriv& d ) // Called in ApplyJ
+    {
+        OutDeriv res;
+        Out::center(res) = getVCenter( d ) * block.w + getVAffine( d ) * block.weightedVectorInLocalCoordinates;
+        Out::materialFrame(res) = covNN( getVCenter( d ), block.dw) + getVAffine( d ) * block.weightedVectorInLocalCoordinatesDerivative;
+        for (unsigned int i = 0; i < 3; ++i)
+          Out::materialFrameGradient(res)[i] = covNN( getVCenter( d ), block.dw) + getVAffine( d ) * block.weightedVectorInLocalCoordinatesScdDerivative;
+        return res;
+    }
 
 
-                static InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d ) // Called in ApplyJT
-                {
-                    const SpatialCoord& jt=block.weightedVectorInLocalCoordinates;
-                    const MaterialFrame& ja=block.weightedVectorInLocalCoordinatesDerivative;
-                    /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-                      */
-    /*                InDeriv res;
-                    for (unsigned int i = 0; i < 3; ++i)
-                    {
-                       getVCenter(res)[i] = block.w * Out::center(d)[i];
-                        for (unsigned int j = 0; j < 3; ++j)
-                           getVCenter(res)[i] += block.dw[j] * Out::materialFrame(d)[i][j];
-                        getVAffine(res)[i] = jt * Out::center(d)[i] + ja * (Out::materialFrame(d)[i]);
-                    }
-                    return res;
-                }*/
+    static InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d ) // Called in ApplyJT
+    {
+        const SpatialCoord& jt=block.weightedVectorInLocalCoordinates;
+        const MaterialFrame& ja=block.weightedVectorInLocalCoordinatesDerivative;
+        //To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
+       InDeriv res;
+        for (unsigned int i = 0; i < 3; ++i)
+        {
+           getVCenter(res)[i] = block.w * Out::center(d)[i];
+            for (unsigned int j = 0; j < 3; ++j)
+               getVCenter(res)[i] += block.dw[j] * Out::materialFrame(d)[i][j];
+            getVAffine(res)[i] = jt * Out::center(d)[i] + ja * (Out::materialFrame(d)[i]);
+        }
+        return res;
+    }*/
 };
 
 
@@ -295,10 +320,10 @@ struct LinearBlendTypes<
 
             struct JacobianBlock
             {
-                /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-                  The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-                  */
-/*                JacobianBlock(){}
+                // Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
+                 // The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+
+                JacobianBlock(){}
                 JacobianBlock(const OutCoord& o, const Real w):weightedVectorInLocalCoordinates(o),w(w){}
                 OutCoord weightedVectorInLocalCoordinates;  ///< = dp_0/ dMa_i = w_i \bar M_i p_0  : affine part
                 Real w; ///< = dp_0/ dMt_i = w_i : translation part
@@ -317,9 +342,8 @@ struct LinearBlendTypes<
             static InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d )
             {
                 const OutDeriv& j=block.weightedVectorInLocalCoordinates;
-                /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-                  */
-/*                return InDeriv (
+                // To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
+                return InDeriv (
                         d[0], d[1], d[2],
                         j[1]*d[2]-j[2]*d[1],
                         j[2]*d[0]-j[0]*d[2],
@@ -364,24 +388,30 @@ struct LinearBlendTypes<
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
         JacobianBlock() {}
-        JacobianBlock(const OutCoord& o, const Real w):weightedVectorInLocalCoordinates(o),w(w) {}
-        OutCoord weightedVectorInLocalCoordinates;  ///< = dp_0/ dMa_i = w_i \bar M_i p_0  : affine part
+        JacobianBlock(const OutCoord& o, const Real w):weightedVectorInWorldCoordinates(o),w(w) {}
+        OutCoord weightedVectorInWorldCoordinates;  ///< = dp_0/ dMa_i = w_i \bar M_i p_0  : affine part
         Real w; ///< = dp_0/ dMt_i = w_i : translation part
     };
 
-    static JacobianBlock computeJacobianBlock( const InCoord& inverseInitialMatrix, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
+    static JacobianBlock computeJacobianBlock( const InCoord& currentTransform, const InCoord& inverseInitialTransform, const OutCoord& initialChildPosition, Real w, const MaterialDeriv /*dw*/,  const MaterialMat /*ddw*/ )
     {
-        return JacobianBlock( mult(inverseInitialMatrix,initialChildPosition)*w, w);
+        return JacobianBlock( currentTransform.getOrientation().rotate(mult(inverseInitialTransform,initialChildPosition)*w), w);
+    }
+
+    inline static  bool mustRecomputeJacobian(  )
+    {
+        // Update is needed
+        return true;
     }
 
     static OutDeriv mult( const JacobianBlock& block, const InDeriv& d )
     {
-        return getLinear( d ) * block.w + cross(getAngular(d), block.weightedVectorInLocalCoordinates);
+        return getLinear( d ) * block.w + cross(getAngular(d), block.weightedVectorInWorldCoordinates);
     }
 
     static InDeriv multTranspose( const JacobianBlock& block, const OutDeriv& d )
     {
-        const OutDeriv& j=block.weightedVectorInLocalCoordinates;
+        const OutDeriv& j=block.weightedVectorInWorldCoordinates;
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
           */
         return InDeriv (

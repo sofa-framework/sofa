@@ -11,7 +11,7 @@
 			<TriangleSetTopologyModifier name="Modifier" />
 			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  computeAllMatrices="1" showDefTensors="1" useElastons="0"  wheightingType="1" distanceType="0" enableSkinning="0"/>
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  showDefTensors="1" useElastons="0" />
 			<TriangleModel name="CollisionModel"  printLog="0" />
 		</Node>
 	</Node>
