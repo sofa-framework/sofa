@@ -866,7 +866,10 @@ void Voxelizer<DataTypes>::saveInfos()
         serr << "Can not open " << infoFileName.getValue() << sendl;
     }
     std::cout << "Writing info file " << infoFileName.getValue() << std::endl;
-    fileStream << resolution.getValue() << " " << rawOrigin.getValue() << std::endl;
+    fileStream << "voxelType: 1" << std::endl;// << CImg<voxelType>::pixel_type() << endl;
+    fileStream << "dimensions: " << resolution.getValue() << std::endl;
+    fileStream << "origin: " << rawOrigin.getValue() << std::endl;
+    fileStream << "voxelSize: " << voxelSize.getValue() << std::endl;
     fileStream.close();
 }
 
@@ -879,12 +882,31 @@ void Voxelizer<DataTypes>::loadInfos()
     {
         serr << "Can not open " << infoFileName.getValue() << sendl;
     }
+    std::string str;
+
+    // Voxel Type
+    fileStream >> str;
+    char vtype[32]; fileStream.getline(vtype,32); // voxeltype not used yet
+
+    // Resolution
+    fileStream >> str;
     Vec3d& res = *resolution.beginEdit();
     fileStream >> res;
     resolution.endEdit();
+
+    // Origin
+    fileStream >> str;
     Vec3d& origin = *rawOrigin.beginEdit();
     fileStream >> origin;
     rawOrigin.endEdit();
+
+    // Voxel Size
+    fileStream >> str;
+    Vec3d voxelsize;
+    fileStream >> voxelsize;
+    if( voxelsize != voxelSize.getValue())
+        serr << "The RAW file loaded deos not match with the wanted resolution" << sendl;
+
     fileStream.close();
 }
 

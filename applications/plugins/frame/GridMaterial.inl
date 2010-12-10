@@ -222,19 +222,23 @@ template < class MaterialTypes>
 bool GridMaterial<MaterialTypes>::loadInfos()
 {
     if (!infoFile.size()) return false;
-    std::ifstream fileStream (infoFile.c_str(), std::ifstream::in);
-    if (!fileStream.is_open())
+    if (sofa::helper::system::DataRepository.findFile(infoFile)) // If the file is existing
     {
-        serr << "Can not open " << infoFile << sendl;
-        return false;
+        infoFile=sofa::helper::system::DataRepository.getFile(infoFile);
+        std::ifstream fileStream (infoFile.c_str(), std::ifstream::in);
+        if (!fileStream.is_open())
+        {
+            serr << "Can not open " << infoFile << sendl;
+            return false;
+        }
+        std::string str;
+        fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32); // voxeltype not used yet
+        fileStream >> str; Vec3i& dim = *this->dimension.beginEdit();       fileStream >> dim;      this->dimension.endEdit();
+        fileStream >> str; Vec3d& origin = *this->origin.beginEdit();       fileStream >> origin;   this->origin.endEdit();
+        fileStream >> str; Vec3d& voxelsize = *this->voxelSize.beginEdit(); fileStream >> voxelsize; this->voxelSize.endEdit();
+        fileStream.close();
+        sout << "Loaded info file "<< infoFile << sendl;
     }
-    std::string str;
-    fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32); // voxeltype not used yet
-    fileStream >> str; Vec3i& dim = *this->dimension.beginEdit();       fileStream >> dim;      this->dimension.endEdit();
-    fileStream >> str; Vec3d& origin = *this->origin.beginEdit();       fileStream >> origin;   this->origin.endEdit();
-    fileStream >> str; Vec3d& voxelsize = *this->voxelSize.beginEdit(); fileStream >> voxelsize; this->voxelSize.endEdit();
-    fileStream.close();
-    std::cout << "Loaded info file "<< infoFile << std::endl;
     return true;
 }
 
@@ -248,11 +252,11 @@ bool GridMaterial< MaterialTypes>::saveInfos()
         serr << "Can not open " << infoFile << sendl;
         return false;
     }
-    std::cout << "Writing info file " << infoFile << std::endl;
-    fileStream << "voxelType: " << CImg<voxelType>::pixel_type() << endl;
-    fileStream << "dimensions: " << dimension.getValue() << endl;
-    fileStream << "origin: " << origin.getValue() << endl;
-    fileStream << "voxelSize: " << voxelSize.getValue() << endl;
+    sout << "Writing info file " << infoFile << sendl;
+    fileStream << "voxelType: " << CImg<voxelType>::pixel_type() << std::endl;
+    fileStream << "dimensions: " << dimension.getValue() << std::endl;
+    fileStream << "origin: " << origin.getValue() << std::endl;
+    fileStream << "voxelSize: " << voxelSize.getValue() << std::endl;
     fileStream.close();
     return true;
 }
@@ -268,7 +272,7 @@ bool GridMaterial< MaterialTypes>::loadImage()
         serr << "Can not open " << imageFile << sendl;
         return false;
     }
-    std::cout << "Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << std::endl;
+    sout << "Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << sendl;
     this->nbVoxels = dimension.getValue()[0]*dimension.getValue()[1]*dimension.getValue()[2];
     return true;
 }
@@ -321,7 +325,7 @@ bool GridMaterial<MaterialTypes>::loadWeightRepartion()
             fileStream >> weightsRepartition[i][j];
         }
     fileStream.close();
-    std::cout << "Loaded weight file "<< weightFile << std::endl;
+    sout << "Loaded weight file "<< weightFile << sendl;
     showedrepartition=-1;
     return true;
 }
@@ -342,7 +346,7 @@ bool GridMaterial< MaterialTypes>::saveWeightRepartion()
         serr << "Can not open " << weightFile << sendl;
         return false;
     }
-    std::cout << "Writing grid weights repartion file " << weightFile << std::endl;
+    sout << "Writing grid weights repartion file " << weightFile << sendl;
     unsigned int nbrefs=repartition[0].size();
     fileStream << nbVoxels << " " << nbrefs << std::endl;
     for (unsigned int i=0; i<nbVoxels; i++)
@@ -849,7 +853,7 @@ bool GridMaterial< MaterialTypes>::computeWeights(const unsigned int nbrefs,cons
 
     normalizeWeightRepartion();
 
-    std::cout<<"Grid weight computation completed"<<std::endl;
+    sout<<"Grid weight computation completed"<<sendl;
     if (weightFile.isSet()) saveWeightRepartion();
     showedrepartition=-1;
     return true;
@@ -1219,7 +1223,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, con
         serr<<"Lloyd relaxation has not converged in "<<nbiterations<<" iterations"<<sendl;
         return false;
     }
-    else std::cout<<"Lloyd relaxation completed in "<<nbiterations<<" iterations"<<std::endl;
+    else sout<<"Lloyd relaxation completed in "<<nbiterations<<" iterations"<<sendl;
     return true;
 }
 
@@ -1404,7 +1408,7 @@ bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecVec3& points, const u
         serr<<"Heat diffusion has not converged in "<<nbiterations<<" iterations (precision="<<maxchange<<")"<<sendl;
         return false;
     }
-    else std::cout<<"Heat diffusion completed in "<<nbiterations<<" iterations"<<std::endl;
+    else sout<<"Heat diffusion completed in "<<nbiterations<<" iterations"<<sendl;
     showedrepartition=-1;
     return true;
 }
