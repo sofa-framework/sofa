@@ -29,6 +29,9 @@
 #include "FrameMechanicalObject.h"
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -38,6 +41,14 @@ namespace component
 
 namespace container
 {
+
+
+//            template <>
+//                    void MechanicalObject<Affine3dTypes>::draw()
+//            {
+//                cerr<<"MechanicalObject<Affine3dTypes>::draw()"<<endl;
+//            }
+
 
 SOFA_DECL_CLASS(FrameMechanicalObject)
 

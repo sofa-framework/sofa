@@ -64,9 +64,9 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
-    typedef TIn In;
 
     // Input types
+    typedef TIn In;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
@@ -76,8 +76,7 @@ public:
 
     // Output types
     typedef TOut Out;
-    typedef Out DataTypes;
-    enum { N=DataTypes::spatial_dimensions };
+    static const unsigned num_spatial_dimensions=Out::spatial_dimensions;
     typedef typename Out::VecCoord VecOutCoord;
     typedef typename Out::VecDeriv VecOutDeriv;
     typedef typename Out::Coord OutCoord;
@@ -86,7 +85,7 @@ public:
     typedef typename Out::Real OutReal;
 
     // Material types
-    typedef MaterialTypes<N,InReal> materialType;
+    typedef MaterialTypes<num_spatial_dimensions,InReal> materialType;
     typedef GridMaterial<materialType> GridMat;
     typedef typename GridMat::MaterialCoord  MaterialCoord;
     typedef typename GridMat::SpatialCoord  SpatialCoord;

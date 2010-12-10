@@ -126,10 +126,10 @@ public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     virtual void parse ( BaseObjectDescription* arg );
 
-    /// Initialization method called at graph modification, during bottom-up traversal.
+    /// Initialization method called at graph creation and modification, during top-down traversal.
     virtual void init();
 
-    /// Initialization method called at graph modification, during top-down traversal.
+    /// Initialization method called at graph creation and modification, during bottom-up traversal.
     virtual void bwdInit();
 
     /// Update method called when variables used in precomputation are modified.
