@@ -65,7 +65,102 @@ struct DeformationGradientTypes
     static const unsigned VSize = spatial_dimensions +  NumMatrices * spatial_dimensions * spatial_dimensions;  // number of entries
     typedef _Real Real;
     typedef vector<Real> VecReal;
-    typedef Vec<VSize,Real> Coord;  ///< position and deformation gradient
+
+    // ------------    Types and methods defined for easier data access
+    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position on velocity of a point
+    typedef Mat<spatial_dimensions,spatial_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
+    typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
+    //            typedef Vec<VSize,Real> Coord;  ///< position and deformation gradient
+
+    class Coord
+    {
+        Vec<VSize,Real> v;
+    public:
+        Coord() { v.clear(); }
+        Coord( const Vec<VSize,Real>& d):v(d) {}
+        void clear() { v.clear(); }
+
+        /// seen as a vector
+        Vec<VSize,Real>& getVec() { return v; }
+        const Vec<VSize,Real>& getVec() const { return v; }
+
+        /// point
+        SpatialCoord& getCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
+        const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+
+        /// local frame (if order>=1)
+        MaterialFrame& getMaterialFrame() { BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
+        const MaterialFrame& getMaterialFrame() const { BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
+
+        /// gradient of the local frame (if order>=2)
+        MaterialFrameGradient& materialFrameGradient() { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
+        const MaterialFrameGradient& materialFrameGradient() const { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
+
+        static const unsigned spatial_dimensions = _spatial_dimensions;
+        static const unsigned total_size = VSize;
+        typedef Real value_type;
+
+
+
+        Coord operator +(const Coord& a) const { return Coord(v+a.v); }
+        void operator +=(const Coord& a) { v+=a.v; }
+
+        Coord operator -(const Coord& a) const { return Coord(v-a.v); }
+        void operator -=(const Coord& a) { v-=a.v; }
+
+
+        template<typename real2>
+        Coord operator *(real2 a) const { return Coord(v*a); }
+        template<typename real2>
+        void operator *=(real2 a) { v *= a; }
+
+        template<typename real2>
+        void operator /=(real2 a) { v /= a; }
+
+        Coord operator - () const { return Coord(-v); }
+
+
+        /// dot product, mostly used to compute residuals as sqrt(x*x)
+        Real operator*(const Coord& a) const
+        {
+            return v*a.v;
+        }
+
+        /// write to an output stream
+        inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
+        {
+            out<<c.v;
+            return out;
+        }
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Coord& c )
+        {
+            in>>c.v;
+            return in;
+        }
+
+
+        Real* ptr() { return v.ptr(); }
+        const Real* ptr() const { return v.ptr(); }
+
+        /// Vector size
+        static unsigned size() { return VSize; }
+
+        /// Access to i-th element.
+        Real& operator[](int i)
+        {
+            return v[i];
+        }
+
+        /// Const access to i-th element.
+        const Real& operator[](int i) const
+        {
+            return v[i];
+        }
+    };
+
+
+
     typedef vector<Coord> VecCoord;
     typedef Coord Deriv ;            ///< velocity and deformation gradient rate
     typedef vector<Deriv> VecDeriv;
@@ -74,80 +169,76 @@ struct DeformationGradientTypes
     static const char* Name();
 
 
-    // ------------    Types and methods defined for easier data access
-    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position on velocity of a point
-    typedef Mat<spatial_dimensions,spatial_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
-    typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
 
-    /// position or velocity of the sampling point
-    template<class CoordOrDeriv>
-    static SpatialCoord& center( CoordOrDeriv& v ) { return *reinterpret_cast<SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
-    /// position or velocity of the sampling point
-    template<class CoordOrDeriv>
-    static const SpatialCoord& center( const CoordOrDeriv& v ) { return *reinterpret_cast<const SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
-
-
-    /// deformation gradient at the sampling point
-    template<class CoordOrDeriv>
-    static MaterialFrame& materialFrame( CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
-    /// deformation gradient at the sampling point
-    template<class CoordOrDeriv>
-    static const MaterialFrame& materialFrame( const CoordOrDeriv& v ) {  BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
-
-    /// gradient of the deformation gradient at the sampling point
-    template<class CoordOrDeriv>
-    static MaterialFrameGradient& materialFrameGradient( CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
-    /// gradient of the deformation gradient at the sampling point
-    template<class CoordOrDeriv>
-    static const MaterialFrameGradient& materialFrameGradient( const CoordOrDeriv& v ) { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
+    //            /// position or velocity of the sampling point
+    //            template<class CoordOrDeriv>
+    //            static SpatialCoord& center( CoordOrDeriv& v ){ return *reinterpret_cast<SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
+    //            /// position or velocity of the sampling point
+    //            template<class CoordOrDeriv>
+    //            static const SpatialCoord& center( const CoordOrDeriv& v ){ return *reinterpret_cast<const SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
+    //
+    //
+    //            /// deformation gradient at the sampling point
+    //            template<class CoordOrDeriv>
+    //            static MaterialFrame& materialFrame( CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
+    //            /// deformation gradient at the sampling point
+    //            template<class CoordOrDeriv>
+    //            static const MaterialFrame& materialFrame( const CoordOrDeriv& v ){  BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
+    //
+    //            /// gradient of the deformation gradient at the sampling point
+    //            template<class CoordOrDeriv>
+    //            static MaterialFrameGradient& materialFrameGradient( CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
+    //            /// gradient of the deformation gradient at the sampling point
+    //            template<class CoordOrDeriv>
+    //            static const MaterialFrameGradient& materialFrameGradient( const CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
 
 
     template<typename T>
     static void set ( Coord& c, T x, T y, T z )
     {
-        center(c)[0] = ( Real ) x;
-        center(c) [1] = ( Real ) y;
-        center(c) [2] = ( Real ) z;
+        c.getCenter()[0] = ( Real ) x;
+        c.getCenter() [1] = ( Real ) y;
+        c.getCenter() [2] = ( Real ) z;
     }
 
     template<typename T>
     static void get ( T& x, T& y, T& z, const Coord& c )
     {
-        x = ( T ) center(c) [0];
-        y = ( T ) center(c) [1];
-        z = ( T ) center(c) [2];
+        x = ( T ) c.getCenter() [0];
+        y = ( T ) c.getCenter() [1];
+        z = ( T ) c.getCenter() [2];
     }
 
     template<typename T>
     static void add ( Coord& c, T x, T y, T z )
     {
-        center(c) [0] += ( Real ) x;
-        center(c) [1] += ( Real ) y;
-        center(c) [2] += ( Real ) z;
+        c.getCenter() [0] += ( Real ) x;
+        c.getCenter() [1] += ( Real ) y;
+        c.getCenter() [2] += ( Real ) z;
     }
 
     //template<typename T>
     //static void set ( Deriv& c, T x, T y, T z )
     //{
-    //  getVCenter(c) [0] = ( Real ) x;
-    //  getVCenter(c) [1] = ( Real ) y;
-    //  getVCenter(c) [2] = ( Real ) z;
+    //  getVc.getCenter() [0] = ( Real ) x;
+    //  getVc.getCenter() [1] = ( Real ) y;
+    //  getVc.getCenter() [2] = ( Real ) z;
     //}
 
     //template<typename T>
     //static void get ( T& x, T& y, T& z, const Deriv& c )
     //{
-    //  x = ( T ) getVCenter(c) [0];
-    //  y = ( T ) getVCenter(c) [1];
-    //  z = ( T ) getVCenter(c) [2];
+    //  x = ( T ) getVc.getCenter() [0];
+    //  y = ( T ) getVc.getCenter() [1];
+    //  z = ( T ) getVc.getCenter() [2];
     //}
 
     //template<typename T>
     //static void add ( Deriv& c, T x, T y, T z )
     //{
-    //  getVCenter(c) [0] += ( Real ) x;
-    //  getVCenter(c) [1] += ( Real ) y;
-    //  getVCenter(c) [2] += ( Real ) z;
+    //  getVc.getCenter() [0] += ( Real ) x;
+    //  getVc.getCenter() [1] += ( Real ) y;
+    //  getVc.getCenter() [2] += ( Real ) z;
     //}
 
 
@@ -167,6 +258,20 @@ struct DeformationGradientTypes
 
 };
 
+//        /// position of the sampling point
+//        template<int S, int M, int O, typename R>
+//        typename DeformationGradientTypes<S,M,O,R>::SpatialCoord& thecenter( typename DeformationGradientTypes<S,M,O,R>::Coord& v ){ return *reinterpret_cast<typename DeformationGradientTypes<S,M,O,R>::SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
+//        /// position of the sampling point
+//        template<int S, int M, int O, typename R>
+//        const typename DeformationGradientTypes<S,M,O,R>::SpatialCoord& thecenter( const typename DeformationGradientTypes<S,M,O,R>::Coord& v ){ return *reinterpret_cast<typename DeformationGradientTypes<S,M,O,R>::SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
+
+
+//        /// deformation gradient at the sampling point
+//        template<class CoordOrDeriv>
+//        static MaterialFrame& materialFrame( CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
+//        /// deformation gradient at the sampling point
+//        template<class CoordOrDeriv>
+//        static const MaterialFrame& materialFrame( const CoordOrDeriv& v ){  BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
 
 
 
@@ -398,9 +503,9 @@ defaulttype::DeformationGradient332dTypes,
             )
 {
     defaulttype::Vec3d omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::Vec3d origin = defaulttype::DeformationGradient332dTypes::center(x), finertia;
+    defaulttype::Vec3d origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + defaulttype::DeformationGradient332dTypes::center(v) * 2 ) ) * mass.mass;
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getCenter() * 2 ) ) * mass.mass;
     defaulttype::DeformationGradient332dTypes::Deriv result;
     result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
     return result;
@@ -423,9 +528,9 @@ defaulttype::DeformationGradient332fTypes,
             )
 {
     const defaulttype::Vec3f omega ( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
-    defaulttype::Vec3f origin = defaulttype::DeformationGradient332fTypes::center(x), finertia;
+    defaulttype::Vec3f origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + defaulttype::DeformationGradient332dTypes::center(v) * 2 ) ) * mass.mass;
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getCenter() * 2 ) ) * mass.mass;
     defaulttype::DeformationGradient332fTypes::Deriv result;
     result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
     return result;

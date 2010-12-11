@@ -29,6 +29,7 @@
 #include "FrameMechanicalObject.h"
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -43,11 +44,77 @@ namespace container
 {
 
 
-//            template <>
-//                    void MechanicalObject<Affine3dTypes>::draw()
-//            {
+template <>
+void MechanicalObject<Affine3dTypes>::draw()
+{
+    if (!this->getContext()->getShowBehaviorModels()) return;
+    typedef Vec<3,double> Vec3d;
+    typedef Vec<4,float> Vec4f;
+    std::vector<Vec3d> points;
 //                cerr<<"MechanicalObject<Affine3dTypes>::draw()"<<endl;
-//            }
+    glPushAttrib(GL_LIGHTING_BIT);
+    glDisable(GL_LIGHTING);
+    glLineWidth(10);
+    for(int i=0; i<this->getSize(); i++ )
+    {
+        const Affine3dTypes::Coord& c = (*getX())[i];
+//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.getCenter() = " << c.getCenter() << endl;
+//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.gAffine() = " << c.getMaterialFrame() << endl;
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+c.getAffine()[0][0], c.getCenter()[1]+c.getAffine()[1][0], c.getCenter()[2]+c.getAffine()[2][0] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+c.getAffine()[0][1], c.getCenter()[1]+c.getAffine()[1][1], c.getCenter()[2]+c.getAffine()[2][1] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back( Vec3d(c.getCenter()[0]+c.getAffine()[0][2], c.getCenter()[1]+c.getAffine()[1][2], c.getCenter()[2]+c.getAffine()[2][2] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
+
+    }
+    glPopAttrib();
+}
+
+
+template <>
+void MechanicalObject<DeformationGradient331dTypes>::draw()
+{
+    if (!this->getContext()->getShowBehaviorModels()) return;
+    typedef Vec<3,double> Vec3d;
+    typedef Vec<4,float> Vec4f;
+    std::vector<Vec3d> points;
+//                cerr<<"MechanicalObject<Affine3dTypes>::draw()"<<endl;
+    glPushAttrib(GL_LIGHTING_BIT);
+    glDisable(GL_LIGHTING);
+    glLineWidth(10);
+    for(int i=0; i<this->getSize(); i++ )
+    {
+        const DeformationGradient331dTypes::Coord& c = (*getX())[i];
+//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.getCenter() = " << c.getCenter() << endl;
+//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.gAffine() = " << c.getMaterialFrame() << endl;
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][0], c.getCenter()[1]+c.getMaterialFrame()[1][0], c.getCenter()[2]+c.getMaterialFrame()[2][0] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][1], c.getCenter()[1]+c.getMaterialFrame()[1][1], c.getCenter()[2]+c.getMaterialFrame()[2][1] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back( Vec3d(c.getCenter()[0]+c.getMaterialFrame()[0][2], c.getCenter()[1]+c.getMaterialFrame()[1][2], c.getCenter()[2]+c.getMaterialFrame()[2][2] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
+
+    }
+    glPopAttrib();
+}
+
 
 
 SOFA_DECL_CLASS(FrameMechanicalObject)
@@ -58,11 +125,13 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 #ifndef SOFA_FLOAT
         .add< MechanicalObject<Affine3dTypes> >()
         .add< MechanicalObject<Quadratic3dTypes> >()
+        .add< MechanicalObject<DeformationGradient331dTypes> >()
         .add< MechanicalObject<DeformationGradient332dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< MechanicalObject<Affine3fTypes> >()
         .add< MechanicalObject<Quadratic3fTypes> >()
+        .add< MechanicalObject<DeformationGradient331fTypes> >()
         .add< MechanicalObject<DeformationGradient332fTypes> >()
 #endif
         ;
@@ -70,13 +139,15 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_FRAME_API MechanicalObject<Affine3fTypes>;
+template class SOFA_FRAME_API MechanicalObject<Affine3dTypes>;
 template class SOFA_FRAME_API MechanicalObject<Quadratic3dTypes>;
+template class SOFA_FRAME_API MechanicalObject<DeformationGradient331dTypes>;
 template class SOFA_FRAME_API MechanicalObject<DeformationGradient332dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API MechanicalObject<Affine3dTypes>;
+template class SOFA_FRAME_API MechanicalObject<Affine3fTypes>;
 template class SOFA_FRAME_API MechanicalObject<Quadratic3fTypes>;
+template class SOFA_FRAME_API MechanicalObject<DeformationGradient331fTypes>;
 template class SOFA_FRAME_API MechanicalObject<DeformationGradient332fTypes>;
 #endif
 } // namespace behavior

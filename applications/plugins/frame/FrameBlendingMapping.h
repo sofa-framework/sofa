@@ -95,7 +95,8 @@ public:
 //                typedef typename GridMat::VMat33  VecMaterialMatrix;
 
     // Conversion types
-    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat> InOut;
+    static const unsigned nbRef = 4;
+    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef> InOut;
     typedef typename InOut::JacobianBlock JacobianBlock;
 
 
@@ -127,12 +128,12 @@ protected:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-    Data<unsigned>       f_nbRefs;  ///< Number of parents influencing each child.
-    Data< vector<unsigned> > f_index;   ///< The numChildren * numRefs column indices. index[nbRefs*i+j] is the index of the j-th parent influencing child i.
+//                Data<unsigned>       f_nbRefs;  ///< Number of parents influencing each child.
+    Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[nbRefs*i+j] is the index of the j-th parent influencing child i.
 
-    Data< vector<OutReal> >       weight;
-    Data< vector<MaterialCoord> > weightDeriv;
-    Data< vector<MaterialMat> >   weightDeriv2;
+    Data< vector<Vec<nbRef,OutReal> > >       weight;
+    Data< vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
+    Data< vector<Vec<nbRef,MaterialMat> > >   weightDeriv2;
 
     Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
 
