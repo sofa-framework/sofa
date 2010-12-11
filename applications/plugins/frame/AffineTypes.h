@@ -599,6 +599,7 @@ public:
         return Coord( -(m*c.getCenter()),m );
     }
 
+
 };
 
 
