@@ -1770,6 +1770,24 @@ int MeshTopology::computeRelativeOrientationInQuad(const unsigned int ind_p0, co
     return 0;
 }
 
+void MeshTopology::reOrientateTriangle(TriangleID id)
+{
+    if (id >= this->getNbTriangles())
+    {
+#ifndef NDEBUG
+        sout << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds." << endl;
+#endif
+        return;
+    }
+    Triangle& tri = (*seqTriangles.beginEdit())[id];
+    unsigned int tmp = tri[1];
+    tri[1] = tri[2];
+    tri[2] = tmp;
+    seqTriangles.endEdit();
+
+    return;
+}
+
 bool MeshTopology::hasPos() const
 {
     return !seqPoints.getValue().empty();

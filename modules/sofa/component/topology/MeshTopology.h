@@ -216,6 +216,8 @@ public:
     // otherwise: return 0
     int computeRelativeOrientationInQuad(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_q);
 
+    /// Will change order of vertices in triangle: t[1] <=> t[2]
+    void reOrientateTriangle(TriangleID id);
 
     // functions returning border elements. To be moved in a mapping.
     //virtual const sofa::helper::vector <TriangleID>& getTrianglesOnBorder();
