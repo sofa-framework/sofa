@@ -353,6 +353,11 @@ void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
     serr<<"addHexa() not supported." << sendl;
 }
 
+void BaseMeshTopology::reOrientateTriangle(TriangleID id)
+{
+    serr<<"reOrientateTriangle() not supported." << sendl;
+}
+
 sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
 {
     serr << "beginChange() not supported." << sendl;

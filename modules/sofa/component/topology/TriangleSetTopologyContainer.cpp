@@ -408,6 +408,27 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 }
 
 
+void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
+{
+    std::cout << "TriangleSetTopologyContainer::reOrientateTriangle" << std::endl;
+    if (id >= this->getNbTriangles())
+    {
+#ifndef NDEBUG
+        sout << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds." << endl;
+#endif
+        return;
+    }
+    Triangle& tri = (*d_triangle.beginEdit())[id];
+    unsigned int tmp = tri[1];
+    tri[1] = tri[2];
+    tri[2] = tmp;
+    d_triangle.endEdit();
+
+    std::cout << "TriangleSetTopologyContainer::reOrientateTriangle end" << std::endl;
+    return;
+}
+
+
 const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangleArray()
 {
     if(!hasTriangles() && getNbPoints()>0)
