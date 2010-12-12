@@ -77,7 +77,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MState;
 
     enum { N = DataTypes::spatial_dimensions };
-    enum { InDerivDim=DataTypes::deriv_total_size };
+    enum { InDerivDim=DataTypes::Deriv::total_size };
     typedef defaulttype::Mat<N, N, Real> Mat;
     typedef Vec<N, Real> VecN;
     typedef defaulttype::Mat<3, 3, Real> Mat33;

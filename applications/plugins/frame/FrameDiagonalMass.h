@@ -71,7 +71,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef TMassType MassType;
     enum { N=DataTypes::spatial_dimensions };
-    enum { InDerivDim=DataTypes::deriv_total_size };
+    enum { InDerivDim=DataTypes::Deriv::total_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
     //typedef defaulttype::Mat<3,1,Real> Mat31;
     typedef defaulttype::Mat<3,3,Real> Mat33;

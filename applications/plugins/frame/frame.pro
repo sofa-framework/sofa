@@ -37,16 +37,16 @@ HEADERS += \
  #           FrameDualQuatSkinningMapping.inl \
            FrameFixedConstraint.h \
            FrameForceField.h \
-           FrameHookeForceField.h \
-           FrameHookeForceField.inl \
+#           FrameHookeForceField.h \
+ #          FrameHookeForceField.inl \
            FrameLoydAlgo.h \
            FrameLoydAlgo.inl \
            FrameMass.h \
            FrameMechanicalObject.h \
            FrameSampler.h \
            FrameSampler.inl \
-           FrameSpringForceField2.h \
-           FrameSpringForceField2.inl \
+#           FrameSpringForceField2.h \
+#           FrameSpringForceField2.inl \
            GridMaterial.h \
            GridMaterial.inl \
            initFrame.h \
@@ -70,11 +70,11 @@ SOURCES += \
  #           FrameDualQuatSkinningMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
-           FrameHookeForceField.cpp \
+#           FrameHookeForceField.cpp \
            FrameLoydAlgo.cpp \
            FrameMechanicalObject.cpp \
            FrameSampler.cpp \
-           FrameSpringForceField2.cpp \
+ #          FrameSpringForceField2.cpp \
            GridMaterial.cpp \
             NewHookeMaterial.cpp \
 #           PrimitiveSkinningMapping.cpp \

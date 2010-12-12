@@ -174,7 +174,7 @@ public:
 //            va[10] = getVCenter(a) [1];
 //            va[11] = getVCenter(a) [2];
 
-        return  inertiaMassMatrix * a;
+        return  inertiaMassMatrix * a.getVec();
         //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
 //            AffineDeriv ma;
@@ -211,7 +211,7 @@ public:
 //            vma[10] = getVCenter(f) [1];
 //            vma[11] = getVCenter(f) [2];
 
-        return invInertiaMassMatrix * f;
+        return invInertiaMassMatrix * f.getVec();
         //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
 //            AffineDeriv a;
 //            getVAffine(a) [0][0] = va[0];

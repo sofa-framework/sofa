@@ -32,7 +32,6 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-//#include <sofa/core/behavior/Mass.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -67,7 +66,7 @@ struct DeformationGradientTypes
     typedef vector<Real> VecReal;
 
     // ------------    Types and methods defined for easier data access
-    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position on velocity of a point
+    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
     typedef Mat<spatial_dimensions,spatial_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
     typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
     //            typedef Vec<VSize,Real> Coord;  ///< position and deformation gradient
@@ -93,8 +92,8 @@ struct DeformationGradientTypes
         const MaterialFrame& getMaterialFrame() const { BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
 
         /// gradient of the local frame (if order>=2)
-        MaterialFrameGradient& materialFrameGradient() { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
-        const MaterialFrameGradient& materialFrameGradient() const { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
+        MaterialFrameGradient& getMaterialFrameGradient() { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
+        const MaterialFrameGradient& getMaterialFrameGradient() const { BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
 
         static const unsigned spatial_dimensions = _spatial_dimensions;
         static const unsigned total_size = VSize;
@@ -170,28 +169,6 @@ struct DeformationGradientTypes
 
 
 
-    //            /// position or velocity of the sampling point
-    //            template<class CoordOrDeriv>
-    //            static SpatialCoord& center( CoordOrDeriv& v ){ return *reinterpret_cast<SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
-    //            /// position or velocity of the sampling point
-    //            template<class CoordOrDeriv>
-    //            static const SpatialCoord& center( const CoordOrDeriv& v ){ return *reinterpret_cast<const SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
-    //
-    //
-    //            /// deformation gradient at the sampling point
-    //            template<class CoordOrDeriv>
-    //            static MaterialFrame& materialFrame( CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
-    //            /// deformation gradient at the sampling point
-    //            template<class CoordOrDeriv>
-    //            static const MaterialFrame& materialFrame( const CoordOrDeriv& v ){  BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
-    //
-    //            /// gradient of the deformation gradient at the sampling point
-    //            template<class CoordOrDeriv>
-    //            static MaterialFrameGradient& materialFrameGradient( CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
-    //            /// gradient of the deformation gradient at the sampling point
-    //            template<class CoordOrDeriv>
-    //            static const MaterialFrameGradient& materialFrameGradient( const CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=2); return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
-
 
     template<typename T>
     static void set ( Coord& c, T x, T y, T z )
@@ -217,29 +194,6 @@ struct DeformationGradientTypes
         c.getCenter() [2] += ( Real ) z;
     }
 
-    //template<typename T>
-    //static void set ( Deriv& c, T x, T y, T z )
-    //{
-    //  getVc.getCenter() [0] = ( Real ) x;
-    //  getVc.getCenter() [1] = ( Real ) y;
-    //  getVc.getCenter() [2] = ( Real ) z;
-    //}
-
-    //template<typename T>
-    //static void get ( T& x, T& y, T& z, const Deriv& c )
-    //{
-    //  x = ( T ) getVc.getCenter() [0];
-    //  y = ( T ) getVc.getCenter() [1];
-    //  z = ( T ) getVc.getCenter() [2];
-    //}
-
-    //template<typename T>
-    //static void add ( Deriv& c, T x, T y, T z )
-    //{
-    //  getVc.getCenter() [0] += ( Real ) x;
-    //  getVc.getCenter() [1] += ( Real ) y;
-    //  getVc.getCenter() [2] += ( Real ) z;
-    //}
 
 
     static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
@@ -258,20 +212,6 @@ struct DeformationGradientTypes
 
 };
 
-//        /// position of the sampling point
-//        template<int S, int M, int O, typename R>
-//        typename DeformationGradientTypes<S,M,O,R>::SpatialCoord& thecenter( typename DeformationGradientTypes<S,M,O,R>::Coord& v ){ return *reinterpret_cast<typename DeformationGradientTypes<S,M,O,R>::SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
-//        /// position of the sampling point
-//        template<int S, int M, int O, typename R>
-//        const typename DeformationGradientTypes<S,M,O,R>::SpatialCoord& thecenter( const typename DeformationGradientTypes<S,M,O,R>::Coord& v ){ return *reinterpret_cast<typename DeformationGradientTypes<S,M,O,R>::SpatialCoord*>(&v[0]); } ///< position or velocity of the sampling point
-
-
-//        /// deformation gradient at the sampling point
-//        template<class CoordOrDeriv>
-//        static MaterialFrame& materialFrame( CoordOrDeriv& v ){ BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
-//        /// deformation gradient at the sampling point
-//        template<class CoordOrDeriv>
-//        static const MaterialFrame& materialFrame( const CoordOrDeriv& v ){  BOOST_STATIC_ASSERT(order>=1); return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
 
 
 
@@ -383,11 +323,11 @@ struct DataTypeInfo< DeformationGradient331dTypes::Deriv > : public FixedArrayTy
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-//        template<> struct DataTypeName< defaulttype::DeformationGradient331fTypes::Coord > { static const char* name() { return "DeformationGradient331fTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::DeformationGradient331fTypes::Coord > { static const char* name() { return "DeformationGradient331fTypes::CoordOrDeriv"; } };
 
 //        template<> struct DataTypeName< defaulttype::DeformationGradient331fTypes::Deriv > { static const char* name() { return "DeformationGradient331fTypes::Deriv"; } };
 
-//        template<> struct DataTypeName< defaulttype::DeformationGradient331dTypes::Coord > { static const char* name() { return "DeformationGradient331dTypes::CoordOrDeriv"; } };
+template<> struct DataTypeName< defaulttype::DeformationGradient331dTypes::Coord > { static const char* name() { return "DeformationGradient331dTypes::CoordOrDeriv"; } };
 
 //        template<> struct DataTypeName< defaulttype::DeformationGradient331dTypes::Deriv > { static const char* name() { return "DeformationGradient331dTypes::Deriv"; } };
 
@@ -453,11 +393,11 @@ struct DataTypeInfo< DeformationGradient332dTypes::Deriv > : public FixedArrayTy
 
 template<> struct DataTypeName< defaulttype::DeformationGradient332fTypes::Coord > { static const char* name() { return "DeformationGradient332fTypes::CoordOrDeriv"; } };
 
-//                template<> struct DataTypeName< defaulttype::DeformationGradient332fTypes::Deriv > { static const char* name() { return "DeformationGradient332fTypes::Deriv"; } };
+//        template<> struct DataTypeName< defaulttype::DeformationGradient332fTypes::Deriv > { static const char* name() { return "DeformationGradient332fTypes::Deriv"; } };
 
 template<> struct DataTypeName< defaulttype::DeformationGradient332dTypes::Coord > { static const char* name() { return "DeformationGradient332dTypes::CoordOrDeriv"; } };
 
-//                template<> struct DataTypeName< defaulttype::DeformationGradient332dTypes::Deriv > { static const char* name() { return "DeformationGradient332dTypes::Deriv"; } };
+//        template<> struct DataTypeName< defaulttype::DeformationGradient332dTypes::Deriv > { static const char* name() { return "DeformationGradient332dTypes::Deriv"; } };
 
 
 template<> struct DataTypeName< defaulttype::DeformationGradient332fMass > { static const char* name() { return "DeformationGradient332fMass"; } };

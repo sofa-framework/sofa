@@ -115,6 +115,41 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
     glPopAttrib();
 }
 
+template <>
+void MechanicalObject<DeformationGradient332dTypes >::draw()
+{
+    if (!this->getContext()->getShowBehaviorModels()) return;
+    typedef Vec<3,double> Vec3d;
+    typedef Vec<4,float> Vec4f;
+    std::vector<Vec3d> points;
+//                cerr<<"MechanicalObject<Affine3dTypes>::draw()"<<endl;
+    glPushAttrib(GL_LIGHTING_BIT);
+    glDisable(GL_LIGHTING);
+    glLineWidth(10);
+    for(int i=0; i<this->getSize(); i++ )
+    {
+        const DeformationGradient332dTypes::Coord& c = (*getX())[i];
+//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.getCenter() = " << c.getCenter() << endl;
+//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.gAffine() = " << c.getMaterialFrame() << endl;
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][0], c.getCenter()[1]+c.getMaterialFrame()[1][0], c.getCenter()[2]+c.getMaterialFrame()[2][0] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][1], c.getCenter()[1]+c.getMaterialFrame()[1][1], c.getCenter()[2]+c.getMaterialFrame()[2][1] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back( Vec3d(c.getCenter()[0]+c.getMaterialFrame()[0][2], c.getCenter()[1]+c.getMaterialFrame()[1][2], c.getCenter()[2]+c.getMaterialFrame()[2][2] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
+
+    }
+    glPopAttrib();
+}
+
 
 
 SOFA_DECL_CLASS(FrameMechanicalObject)
