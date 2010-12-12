@@ -3,7 +3,7 @@
 	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
 	<Node name="Beam">
 		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 2 [1 0 0, 0 1 0, 0 0 1] "/>
-		<FrameFixedConstraint template="Affine" index="0" allowed="0 0 0 0 0 0 0 0 0"/>
+		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
 		<Node name="TrianglesNode">
 			<MechanicalObject template="DeformationGradient331" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  showDefTensors="1" useElastons="0" />

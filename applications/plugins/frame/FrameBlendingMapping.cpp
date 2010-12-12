@@ -116,8 +116,8 @@ struct LinearBlendTypes<
         {
             for (unsigned int j = 0; j < 3; ++j)
             {
-                res[index[i]].getCenter()[j] = Jb[i].Pt * d[j];
-                res[index[i]].getAffine()[j] = Jb[i].Pa * d[j];
+                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
+                res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
             }
         }
         //                InDeriv res;
@@ -217,8 +217,8 @@ struct LinearBlendTypes<
         {
             for (unsigned int j = 0; j < 3; ++j)
             {
-                res[index[i]].getCenter()[j] = Jb[i].Pt * d[j];
-                res[index[i]].getAffine()[j] = Jb[i].Pa * d[j];
+                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
+                res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
             }
         }
         //                InDeriv res;
@@ -316,8 +316,8 @@ struct LinearBlendTypes<
         {
             for (unsigned int j = 0; j < 3; ++j)
             {
-                res[index[i]].getCenter()[j] = Jb[i].Pt * d[j];
-                res[index[i]].getAffine()[j] = Jb[i].Pa * d[j];
+                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
+                res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
             }
         }
         //                InDeriv res;
@@ -505,8 +505,8 @@ struct LinearBlendTypes<
         {
             for (unsigned int j = 0; j < 3; ++j)
             {
-                res[index[i]].getCenter()[j] = Jb[i].Pt * d.getCenter()[j];
-                res[index[i]].getAffine()[j] = Jb[i].Pa * d.getCenter()[j];
+                res[index[i]].getCenter()[j] += Jb[i].Pt * d.getCenter()[j];
+                res[index[i]].getAffine()[j] += Jb[i].Pa * d.getCenter()[j];
 
                 for (unsigned int k = 0; k < 3; ++k)
                     res[index[i]].getCenter()[j] += Jb[i].Ft[k] * d.getMaterialFrame()[j][k];
@@ -702,7 +702,6 @@ struct LinearBlendTypes<
     typedef StdQuadraticTypes<3,Real> In;
     typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
     typedef typename In::QuadraticCoord QuadraticCoord; // vec9
-    //            typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
@@ -721,13 +720,6 @@ struct LinearBlendTypes<
     Vec<nbRef,unsigned> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    //            void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& /*dw*/, const MaterialMat&  /*ddw*/)
-    //            {
-    //                inverseInitialTransform = In::inverse(InitialTransform);
-    //                const SpatialCoord2& vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos + inverseInitialTransform.getCenter()) );
-    //                Jb.Pa=vectorInLocalCoordinates*w;
-    //                Jb.Pt=w;
-    //            }
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
@@ -740,10 +732,6 @@ struct LinearBlendTypes<
         }
     }
 
-    //            void updateJacobian( const InCoord& /*currentTransform*/)
-    //            {
-    //                return ;
-    //            }
 
     OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
@@ -762,7 +750,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef; i++ )
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             for (unsigned int j = 0; j < 3; ++j)
             {
@@ -788,94 +776,95 @@ struct LinearBlendTypes<
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
-    typedef typename Material::VecReal VecReal;
     typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::VecGradient VecMaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef typename Material::VecHessian VecMaterialMat;
     typedef StdQuadraticTypes<3,Real> In;
     typedef DeformationGradientTypes<3, 3, 1, Real> Out;
-    typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
-    typedef typename Out::MaterialFrame MaterialFrame;
+    typedef typename In::QuadraticCoord QuadraticCoord; // vec9
+    typedef typename In::Affine Affine;
     typedef typename In::Coord InCoord;
-    typedef typename In::Vec9 SpatialCoord2; // vec9
-    typedef Mat<9,3,Real> MaterialFrame2;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
-    typedef typename Out::VecCoord VecOutCoord;
-    typedef vector<unsigned> VecIndex;
+    typedef typename In::VecDeriv VecInDeriv;
+    typedef Mat<9,3,Real> MaterialFrame2;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        JacobianBlock() {}
-        JacobianBlock(const SpatialCoord2& p2, const Real w,  const MaterialFrame2& f2,  const MaterialDeriv dw):Pa(p2),Pt(w),Fa(f2),Ft(dw) {}
-        SpatialCoord2 Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        QuadraticCoord Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;			///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame2 Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
         MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
     };
 
-    Vec<nbRef,InCoord> inverseInitialTransform;
+    Vec<nbRef,unsigned> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& dw, const MaterialMat&  /*ddw*/)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
-        inverseInitialTransform = In::inverse(InitialTransform);
-        const SpatialCoord2& vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
-        Jb.Pa=vectorInLocalCoordinates*w;
-        Jb.Pt=w;
-        Jb.Fa=covMN(vectorInLocalCoordinates, dw);
-        // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
-        for(unsigned int i=0; i<3; ++i) for(unsigned int j=0; j<3; ++j)  Jb.Fa[i][j]+=inverseInitialTransform.getAffine()[i][j] * w;
-        Jb.Ft=dw;
+        index = Index;
+        for( unsigned i=0; i<nbRef; i++ )
+        {
+            InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
+            Affine invaff = inverseInitialTransform.getAffine();
+            QuadraticCoord vectorInLocalCoordinates = In::convertToQuadraticCoord( (invaff*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
+            Jb[i].Pa=vectorInLocalCoordinates*w[i];
+            Jb[i].Pt=w[i];
+            Jb[i].Fa=covMN(vectorInLocalCoordinates, dw[i]);
+            // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
+            for(unsigned int k=0; k<3; ++k) for(unsigned int j=0; j<3; ++j)  Jb[i].Fa[k][j]+=invaff[k][j] * w[i];
+            Jb[i].Ft=dw[i];
+        }
     }
+    //            void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& dw, const MaterialMat&  /*ddw*/)
+    //            {
+    //                inverseInitialTransform = In::inverse(InitialTransform);
+    //                const SpatialCoord2& vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
+    //                Jb.Pa=vectorInLocalCoordinates*w;
+    //                Jb.Pt=w;
+    //                Jb.Fa=covMN(vectorInLocalCoordinates, dw);
+    //                // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
+    //                for(unsigned int i=0;i<3;++i) for(unsigned int j=0;j<3;++j)  Jb.Fa[i][j]+=inverseInitialTransform.getAffine()[i][j] * w;
+    //                Jb.Ft=dw;
+    //            }
 
-    void updateJacobian( const InCoord& /*currentTransform*/)
-    {
-        return ;
-    }
 
-
-    OutCoord mult( const InCoord& d ) // Called in Apply
+    OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutCoord res;
-        res.getCenter() = d.getCenter( ) * Jb.Pt + d.getQuadratic ( ) * Jb.Pa;
-        res.getMaterialFrame() = covNN( d.getCenter( ), Jb.Ft) + d.getQuadratic( ) * Jb.Fa;
-        return res;
-    }
-
-    OutDeriv mult( const InDeriv& d ) // Called in ApplyJ
-    {
-        OutDeriv res;
-        res.getCenter() = getVCenter( d ) * Jb.Pt + getVQuadratic ( d ) * Jb.Pa;
-        res.getMaterialFrame() = covNN( getVCenter( d ), Jb.Ft) + getVQuadratic( d ) * Jb.Fa;
-        return res;
-    }
-
-
-    InDeriv multTranspose( const OutDeriv& d ) // Called in ApplyJT
-    {
-        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-          */
-        InDeriv res;
-        for (unsigned int i = 0; i < 3; ++i)
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
-            getVCenter(res)[i] = Jb.Pt * d.getCenter()[i];
-            getVQuadratic(res)[i] = Jb.Pa * d.getCenter()[i] ;
-
-            for (unsigned int j = 0; j < 3; ++j) getVCenter(res)[i] += Jb.Ft[j] * (d.getMaterialFrame()[i][j]);
-            getVQuadratic(res)[i] += Jb.Fa * (d.getMaterialFrame()[i]);
+            res.getCenter() = d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getQuadratic ( ) * Jb[i].Pa;
+            res.getMaterialFrame() = covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getQuadratic( ) * Jb[i].Fa;
         }
         return res;
     }
+
+    OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
+    {
+        return apply(d);
+    }
+
+
+    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
+    {
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            for (unsigned int j = 0; j < 3; ++j)
+            {
+                res[index[i]].getCenter()[j] += Jb[i].Pt * d.getCenter()[j];
+                res[index[i]].getQuadratic()[j] += Jb[i].Pa * d.getCenter()[j] ;
+
+                for (unsigned int k = 0; k < 3; ++k)
+                    res[index[i]].getCenter()[j] += Jb[i].Ft[k] * (d.getMaterialFrame()[j][k]);
+                res[index[i]].getQuadratic()[j] += Jb[i].Fa * (d.getMaterialFrame()[j]);
+            }
+        }
+    }
 };
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -891,35 +880,31 @@ struct LinearBlendTypes<
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
-    typedef typename Material::VecReal VecReal;
     typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::VecGradient VecMaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef typename Material::VecHessian VecMaterialMat;
     typedef StdQuadraticTypes<3,Real> In;
     typedef DeformationGradientTypes<3, 3, 2, Real> Out;
-    typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Vec9 SpatialCoord2; // vec9
     typedef Mat<9,3,Real> MaterialFrame2;
     typedef Vec<3,MaterialFrame2> MaterialFrameGradient2;
+    //            typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
+    typedef typename In::QuadraticCoord QuadraticCoord; // vec9
+    typedef typename In::Affine Affine;
+    typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
-    typedef typename Out::VecCoord VecOutCoord;
-    typedef vector<unsigned> VecIndex;
+    typedef typename In::VecDeriv VecInDeriv;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        JacobianBlock() {}
-        JacobianBlock(const SpatialCoord2& p2, const Real& w,  const MaterialFrame2& f2,  const MaterialDeriv& dw,  const MaterialFrameGradient2& df2,  const MaterialMat& ddw):Pa(p2),Pt(w),Fa(f2),Ft(dw),dFa(df2),dFt(ddw) {}
-        SpatialCoord2 Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        //                JacobianBlock(){}
+        //                JacobianBlock(const SpatialCoord2& p2, const Real& w,  const MaterialFrame2& f2,  const MaterialDeriv& dw,  const MaterialFrameGradient2& df2,  const MaterialMat& ddw):Pa(p2),Pt(w),Fa(f2),Ft(dw),dFa(df2),dFt(ddw){}
+        QuadraticCoord Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;			///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame2 Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
         MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
@@ -927,80 +912,220 @@ struct LinearBlendTypes<
         MaterialMat dFt;	///< = d gradF_k = dMt_i (grad(dw_i)_k)
     };
 
-    Vec<nbRef,InCoord> inverseInitialTransform;
+    Vec<nbRef,unsigned> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& dw, const MaterialMat&  ddw)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
-        inverseInitialTransform = In::inverse(InitialTransform);
-        const SpatialCoord2& vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
-        Jb.Pa=vectorInLocalCoordinates*w;
-        Jb.Pt=w;
-        Jb.Fa=covMN(vectorInLocalCoordinates, dw);
-        // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
-        for(unsigned int i=0; i<3; ++i) for(unsigned int j=0; j<3; ++j)  Jb.Fa[i][j]+=inverseInitialTransform.getAffine()[i][j] * w;
-        Jb.Ft=dw;
-
-        Jb.dFt=ddw.transposed();
-        const MaterialFrame& inverseInitialTransformT=inverseInitialTransform.getAffine().transposed();
-        for (unsigned int k = 0; k < 3; ++k)
+        index = Index;
+        for( unsigned i=0; i<nbRef; i++ )
         {
-            Jb.dFa[k] = covMN( vectorInLocalCoordinates, Jb.dFt[k]);
-            const MaterialFrame& m=covNN(inverseInitialTransformT[k],dw); // dFa
-            for(unsigned int i=0; i<3; ++i)
+            InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
+            Affine invaff = inverseInitialTransform.getAffine();
+            QuadraticCoord vectorInLocalCoordinates = In::convertToQuadraticCoord( (invaff*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
+            Jb[i].Pa=vectorInLocalCoordinates*w[i];
+            Jb[i].Pt=w[i];
+            Jb[i].Fa=covMN(vectorInLocalCoordinates, dw[i]);
+            // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
+            for(unsigned int ii=0; ii<3; ++ii)
+            {
                 for(unsigned int j=0; j<3; ++j)
                 {
-                    Jb.dFa[k][i][j]+=m[i][j]+inverseInitialTransform.getAffine()[i][j] * dw[k];
+                    Jb[i].Fa[ii][j]+=invaff[ii][j] * w[i];
                 }
+            }
+            Jb[i].Ft=dw[i];
+
+            Jb[i].dFt=ddw[i].transposed();
+            MaterialFrame inverseInitialTransformT=invaff.transposed();
+            for (unsigned int k = 0; k < 3; ++k)
+            {
+                Jb[i].dFa[k] = covMN( vectorInLocalCoordinates, Jb[i].dFt[k]);
+                MaterialFrame m=covNN(inverseInitialTransformT[k],dw[i] ); // dFa
+                for(unsigned int ii=0; ii<3; ++ii)
+                {
+                    for(unsigned int j=0; j<3; ++j)
+                    {
+                        Jb[i].dFa[k][ii][j]+=m[ii][j]+inverseInitialTransform.getAffine()[ii][j] * dw[i][k];
+                    }
+                }
+            }
         }
     }
 
-    void updateJacobian( const InCoord& /*currentTransform*/)
-    {
-        return ;
-    }
-
-    OutCoord mult( const InCoord& d ) // Called in Apply
+    OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutDeriv res;
-        res.getCenter() = d.getCenter( ) * Jb.Pt + d.getQuadratic ( ) * Jb.Pa;
-        res.getMaterialFrame() = covNN( d.getCenter( ), Jb.Ft) + d.getQuadratic( ) * Jb.Fa;
-        for (unsigned int k = 0; k < 3; ++k) Out::materialFrameGradient(res)[k] = covNN( d.getCenter( ), Jb.dFt[k]) + d.getQuadratic( ) * Jb.dFa[k];
-        return res;
-    }
-
-    OutDeriv mult( const InDeriv& d ) // Called in ApplyJ
-    {
-        OutDeriv res;
-        res.getCenter() = getVCenter( d ) * Jb.Pt + getVQuadratic ( d ) * Jb.Pa;
-        res.getMaterialFrame() = covNN( getVCenter( d ), Jb.Ft) + getVQuadratic( d ) * Jb.Fa;
-        for (unsigned int k = 0; k < 3; ++k) Out::materialFrameGradient(res)[k] = covNN( getVCenter( d ), Jb.dFt[k]) + getVQuadratic( d ) * Jb.dFa[k];
-        return res;
-    }
-
-
-    InDeriv multTranspose( const OutDeriv& d ) // Called in ApplyJT
-    {
-        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-          */
-        InDeriv res;
-        for (unsigned int i = 0; i < 3; ++i)
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
-            getVCenter(res)[i] = Jb.Pt * d.getCenter()[i];
-            getVQuadratic(res)[i] = Jb.Pa * d.getCenter()[i] ;
-
-            for (unsigned int j = 0; j < 3; ++j) getVCenter(res)[i] += Jb.Ft[j] * d.getMaterialFrame()[i][j];
-            getVQuadratic(res)[i] += Jb.Fa * (d.getMaterialFrame()[i]);
-
+            res.getCenter() = d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getQuadratic ( ) * Jb[i].Pa;
+            res.getMaterialFrame() = covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getQuadratic( ) * Jb[i].Fa;
             for (unsigned int k = 0; k < 3; ++k)
             {
-                for (unsigned int j = 0; j < 3; ++j) getVCenter(res)[i] += Jb.dFt[k][j] * Out::materialFrameGradient(d)[k][i][j];
-                getVQuadratic(res)[i] += Jb.dFa[k] * (Out::materialFrameGradient(d)[k][i]);
+                res.getMaterialFrameGradient()[k] = covNN( d[index[i]].getCenter(), Jb[i].dFt[k]) + d[index[i]].getQuadratic() * Jb[i].dFa[k];
             }
         }
         return res;
     }
+
+    OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
+    {
+        return apply(d);
+    }
+
+
+    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
+    {
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            for (unsigned int i3 = 0; i3 < 3; ++i3)
+            {
+                res[index[i]].getCenter()[i3] += Jb[i].Pt * d.getCenter()[i3];
+                res[index[i]].getQuadratic()[i3] += Jb[i].Pa * d.getCenter()[i3] ;
+
+                for (unsigned int j = 0; j < 3; ++j)
+                {
+                    res[index[i]].getCenter()[i3] += Jb[i].Ft[j] * d.getMaterialFrame()[i3][j];
+                }
+                res[index[i]].getQuadratic()[i3] += Jb[i].Fa * (d.getMaterialFrame()[i3]);
+
+                for (unsigned int k = 0; k < 3; ++k)
+                {
+                    for (unsigned int j = 0; j < 3; ++j)
+                    {
+                        res[index[i]].getCenter()[i3] += Jb[i].dFt[k][j] * d.getMaterialFrameGradient()[k][i3][j];
+                    }
+                    res[index[i]].getQuadratic()[i3] += Jb[i].dFa[k] * d.getMaterialFrameGradient()[k][i3];
+                }
+            }
+        }
+    }
 };
+
+
+//        //////////////////////////////////////////////////////////////////////////////////
+//        ////  Specialization on Quadratic->DeformationGradient second order
+//        //////////////////////////////////////////////////////////////////////////////////
+//
+//        template<class _Material, int nbRef>
+//        struct LinearBlendTypes<
+//                StdQuadraticTypes<3,typename _Material::Real>,
+//                DeformationGradientTypes<3, 3, 2, typename  _Material::Real>,
+//                _Material, nbRef
+//                >
+//        {
+//            typedef _Material Material;
+//            typedef typename Material::Real Real;
+//            typedef typename Material::VecReal VecReal;
+//            typedef typename Material::Gradient MaterialDeriv;
+//            typedef typename Material::VecGradient VecMaterialDeriv;
+//            typedef typename Material::Hessian MaterialMat;
+//            typedef typename Material::VecHessian VecMaterialMat;
+//            typedef StdQuadraticTypes<3,Real> In;
+//            typedef DeformationGradientTypes<3, 3, 2, Real> Out;
+//            typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
+//            typedef typename Out::MaterialFrame MaterialFrame;
+//            typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
+//            typedef typename In::Coord InCoord;
+//            typedef typename In::Vec9 SpatialCoord2; // vec9
+//            typedef Mat<9,3,Real> MaterialFrame2;
+//            typedef Vec<3,MaterialFrame2> MaterialFrameGradient2;
+//            typedef typename Out::Coord OutCoord;
+//            typedef typename Out::Deriv OutDeriv;
+//            typedef typename In::Deriv InDeriv;
+//            typedef typename In::VecCoord VecInCoord;
+//            typedef typename Out::VecCoord VecOutCoord;
+//            typedef vector<unsigned> VecIndex;
+//
+//            struct JacobianBlock
+//            {
+//                /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
+//                  The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+//                  */
+//                JacobianBlock(){}
+//                JacobianBlock(const SpatialCoord2& p2, const Real& w,  const MaterialFrame2& f2,  const MaterialDeriv& dw,  const MaterialFrameGradient2& df2,  const MaterialMat& ddw):Pa(p2),Pt(w),Fa(f2),Ft(dw),dFa(df2),dFt(ddw){}
+//                SpatialCoord2 Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+//                Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+//                MaterialFrame2 Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
+//                MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
+//                MaterialFrameGradient2 dFa;  ///< = d gradF_k = dMa_i ( grad(w_i)_k \bar M_i + \bar M_i p_0 grad(dw_i)_k + grad(\bar M_i p_0)_k dw_i)
+//                MaterialMat dFt;	///< = d gradF_k = dMt_i (grad(dw_i)_k)
+//            };
+//
+//            Vec<nbRef,InCoord> inverseInitialTransform;
+//            Vec<nbRef,JacobianBlock> Jb;
+//
+//            void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& dw, const MaterialMat&  ddw)
+//            {
+//                inverseInitialTransform = In::inverse(InitialTransform);
+//                const SpatialCoord2& vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
+//                Jb.Pa=vectorInLocalCoordinates*w;
+//                Jb.Pt=w;
+//                Jb.Fa=covMN(vectorInLocalCoordinates, dw);
+//                // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
+//                for(unsigned int i=0;i<3;++i) for(unsigned int j=0;j<3;++j)  Jb.Fa[i][j]+=inverseInitialTransform.getAffine()[i][j] * w;
+//                Jb.Ft=dw;
+//
+//                Jb.dFt=ddw.transposed();
+//                const MaterialFrame& inverseInitialTransformT=inverseInitialTransform.getAffine().transposed();
+//                for (unsigned int k = 0; k < 3; ++k)
+//                {
+//                    Jb.dFa[k] = covMN( vectorInLocalCoordinates, Jb.dFt[k]);
+//                    const MaterialFrame& m=covNN(inverseInitialTransformT[k],dw); // dFa
+//                    for(unsigned int i=0;i<3;++i)
+//                        for(unsigned int j=0;j<3;++j)
+//                        {
+//                        Jb.dFa[k][i][j]+=m[i][j]+inverseInitialTransform.getAffine()[i][j] * dw[k];
+//                    }
+//                }
+//            }
+//
+//            void updateJacobian( const InCoord& /*currentTransform*/)
+//            {
+//                return ;
+//            }
+//
+//            OutCoord mult( const InCoord& d ) // Called in Apply
+//            {
+//                OutDeriv res;
+//                res.getCenter() = d.getCenter( ) * Jb.Pt + d.getQuadratic ( ) * Jb.Pa;
+//                res.getMaterialFrame() = covNN( d.getCenter( ), Jb.Ft) + d.getQuadratic( ) * Jb.Fa;
+//                for (unsigned int k = 0; k < 3; ++k) Out::materialFrameGradient(res)[k] = covNN( d.getCenter( ), Jb.dFt[k]) + d.getQuadratic( ) * Jb.dFa[k];
+//                return res;
+//            }
+//
+//            OutDeriv mult( const InDeriv& d ) // Called in ApplyJ
+//            {
+//                OutDeriv res;
+//                res.getCenter() = getVCenter( d ) * Jb.Pt + getVQuadratic ( d ) * Jb.Pa;
+//                res.getMaterialFrame() = covNN( getVCenter( d ), Jb.Ft) + getVQuadratic( d ) * Jb.Fa;
+//                for (unsigned int k = 0; k < 3; ++k) Out::materialFrameGradient(res)[k] = covNN( getVCenter( d ), Jb.dFt[k]) + getVQuadratic( d ) * Jb.dFa[k];
+//                return res;
+//            }
+//
+//
+//            InDeriv multTranspose( const OutDeriv& d ) // Called in ApplyJT
+//            {
+//                /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
+//                  */
+//                InDeriv res;
+//                for (unsigned int i = 0; i < 3; ++i)
+//                {
+//                    getVCenter(res)[i] = Jb.Pt * d.getCenter()[i];
+//                    getVQuadratic(res)[i] = Jb.Pa * d.getCenter()[i] ;
+//
+//                    for (unsigned int j = 0; j < 3; ++j) getVCenter(res)[i] += Jb.Ft[j] * d.getMaterialFrame()[i][j];
+//                    getVQuadratic(res)[i] += Jb.Fa * (d.getMaterialFrame()[i]);
+//
+//                    for (unsigned int k = 0; k < 3; ++k)
+//                    {
+//                        for (unsigned int j = 0; j < 3; ++j) getVCenter(res)[i] += Jb.dFt[k][j] * Out::materialFrameGradient(d)[k][i][j];
+//                        getVQuadratic(res)[i] += Jb.dFa[k] * (Out::materialFrameGradient(d)[k][i]);
+//                    }
+//                }
+//                return res;
+//            }
+//        };
 
 }
 
@@ -1015,13 +1140,9 @@ SOFA_DECL_CLASS(FrameBlendingMapping);
 using namespace defaulttype;
 using namespace core;
 
-
-
-
 //////////////////////////////////////////////////////////////////////////////////
 ////  Instanciations
 //////////////////////////////////////////////////////////////////////////////////
-
 
 // Register in the Factory
 int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
@@ -1033,8 +1154,8 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
         .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes > >()
         .add< FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes > >()
         //.add< FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes > >()
-        //                                            .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes > >()
-        //                                            .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes > >()
+        .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes > >()
+        .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, Vec3dTypes > >()
         //.add< FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes > >()
         //.add< FrameBlendingMapping< Rigid3dTypes, DeformationGradient331dTypes > >()
@@ -1063,8 +1184,8 @@ template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGr
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes >;
-//            template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes >;
-//            template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient331dTypes >;
