@@ -27,7 +27,6 @@
 #ifndef FRAME_FRAMEFORCEFIELD_H
 #define FRAME_FRAMEFORCEFIELD_H
 
-#include <sofa/core/behavior/ForceField.inl>
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 #include "initFrame.h"

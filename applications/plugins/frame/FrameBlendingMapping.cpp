@@ -24,12 +24,12 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_CPP
 
+#include "FrameBlendingMapping.inl"
 #include "MappingTypes.h"
-#include "AffineTypes.h"
 #include "QuadraticTypes.h"
+#include "AffineTypes.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include "FrameBlendingMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/template.h>
 
@@ -550,8 +550,6 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        JacobianBlock() {}
-        JacobianBlock(const OutCoord& o, const Real w, MaterialDeriv dw,MaterialMat ddwT):Pa(Out::center(o)),Pt(w),Fa(Out::materialFrame(o)),Ft(dw),dFa(Out::materialFrameGradient(o)),dFt(ddwT) {}
         SpatialCoord Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;			///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
@@ -688,7 +686,7 @@ struct LinearBlendTypes<
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  Specialization on Quadratic types
+////  Specialization on Quadratic -> Vec
 //////////////////////////////////////////////////////////////////////////////////
 template<class _Material, int nbRef>
 struct LinearBlendTypes<
@@ -699,70 +697,79 @@ struct LinearBlendTypes<
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
-    typedef typename Material::VecReal VecReal;
     typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::VecGradient VecMaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef typename Material::VecHessian VecMaterialMat;
     typedef StdQuadraticTypes<3,Real> In;
     typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
+    typedef typename In::QuadraticCoord QuadraticCoord; // vec9
+    //            typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename In::Coord InCoord;
-    typedef typename InCoord::Pos2 SpatialCoord2; // vec9
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
-    typedef typename Out::VecCoord VecOutCoord;
-    typedef vector<unsigned> VecIndex;
+    typedef typename In::VecDeriv VecInDeriv;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        JacobianBlock() {}
-        JacobianBlock(const SpatialCoord2& o2, const Real w):Pa(o2),Pt(w) {}
-        SpatialCoord2 Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        QuadraticCoord Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;			///< = dp = dMt_i (w_i)  : translation part
     };
 
-    Vec<nbRef,InCoord> inverseInitialTransform;
+    Vec<nbRef,unsigned> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& /*dw*/, const MaterialMat&  /*ddw*/)
+    //            void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& /*dw*/, const MaterialMat&  /*ddw*/)
+    //            {
+    //                inverseInitialTransform = In::inverse(InitialTransform);
+    //                const SpatialCoord2& vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos + inverseInitialTransform.getCenter()) );
+    //                Jb.Pa=vectorInLocalCoordinates*w;
+    //                Jb.Pt=w;
+    //            }
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
-        inverseInitialTransform = In::inverse(InitialTransform);
-        const SpatialCoord2& vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos + inverseInitialTransform.getCenter()) );
-        Jb.Pa=vectorInLocalCoordinates*w;
-        Jb.Pt=w;
-    }
-
-    void updateJacobian( const InCoord& /*currentTransform*/)
-    {
-        return ;
-    }
-
-    OutCoord mult( const InCoord& d ) // Called in Apply
-    {
-        return d.getCenter( ) * Jb.Pt + d.getQuadratic( ) * Jb.Pa;
-    }
-
-    OutDeriv mult( const InDeriv& d ) // Called in ApplyJ
-    {
-        return getVCenter( d ) * Jb.Pt + getVQuadratic( d ) * Jb.Pa;
-    }
-
-    InDeriv multTranspose( const OutDeriv& d ) // Called in ApplyJT
-    {
-        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-          */
-        InDeriv res;
-        for (unsigned int i = 0; i < 3; ++i)
+        index = Index;
+        for( unsigned i=0; i<nbRef; i++ )
         {
-            getVCenter(res)[i] = Jb.Pt * d[i];
-            getVQuadratic(res)[i] = Jb.Pa * d[i];
+            InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
+            QuadraticCoord vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos + inverseInitialTransform.getCenter()) );
+            Jb[i].Pa=vectorInLocalCoordinates*w[i];
+            Jb[i].Pt=w[i];
+        }
+    }
+
+    //            void updateJacobian( const InCoord& /*currentTransform*/)
+    //            {
+    //                return ;
+    //            }
+
+    OutCoord apply( const VecInCoord& d ) // Called in Apply
+    {
+        OutCoord res;
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            res +=  d[index[i]].getCenter() * Jb[i].Pt +  d[index[i]].getQuadratic() * Jb[i].Pa;
         }
         return res;
+    }
+
+    OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
+    {
+        return apply(d);
+    }
+
+    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
+    {
+        for( unsigned i=0; i<nbRef; i++ )
+        {
+            for (unsigned int j = 0; j < 3; ++j)
+            {
+                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
+                res[index[i]].getQuadratic()[j] += Jb[i].Pa * d[j];
+            }
+        }
     }
 
 };
@@ -1024,7 +1031,7 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
         .add< FrameBlendingMapping< Affine3dTypes, ExtVec3dTypes > >()
         .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes > >()
         .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes > >()
-        //                                            .add< FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes > >()
+        .add< FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes > >()
         //.add< FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes > >()
         //                                            .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes > >()
         //                                            .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes > >()
@@ -1054,7 +1061,7 @@ template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
-//            template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes >;
 //            template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes >;
 //            template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes >;

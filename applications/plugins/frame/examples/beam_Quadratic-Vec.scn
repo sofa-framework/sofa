@@ -1,0 +1,17 @@
+<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="0" showBehaviorModels="1" showCollisionModels="1">
+	<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
+	<Node name="Beam">
+		<MechanicalObject template="Quadratic" name="DOFs" rest_position="0 0 -100 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 100 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]" position="-15.9576 75.1434 -87.5906 [0.923678 -0.165519 0.76147 0 0 0 0 0 0,-2.97274 1.33488 -3.521 0 0 0 0 0 0,-0.0365298 0.0380386 0.947585 0 0 0 0 0 0] -13.0019 61.8854 184.424 [0.987649 -0.204468 -0.773124 0 0 0 0 0 0,-3.54108 1.50608 3.57802 0 0 0 0 0 0,0.164834 -0.0772495 0.793862 0 0 0 0 0 0]"/>
+		<Node name="TrianglesNode">
+			<MeshLoader name="MeshLoader"  filename="mesh/beam.obj" />
+			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
+			<TriangleSetTopologyContainer name="Container" />
+			<TriangleSetTopologyModifier name="Modifier" />
+			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,Vec3d&gt;" input="@../DOFs"  output="@Triangles"  showDefTensors="1"/>
+			<TriangleModel name="CollisionModel"  printLog="0" />
+		</Node>
+	</Node>
+</Node>

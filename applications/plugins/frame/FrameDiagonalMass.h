@@ -37,8 +37,8 @@
 #include <sofa/helper/SVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include "AffineTypes.h"
 #include "QuadraticTypes.h"
+#include "AffineTypes.h"
 #include "FrameMass.h"
 #include "FrameStorage.h"
 #include <sofa/core/objectmodel/DataFileName.h>

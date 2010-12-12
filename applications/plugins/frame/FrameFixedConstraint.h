@@ -27,7 +27,7 @@
 #ifndef FRAME_FRAMEFIXEDCONSTRAINT_H
 #define FRAME_FRAMEFIXEDCONSTRAINT_H
 
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include "AffineTypes.h"
 #include "initFrame.h"
 
@@ -40,7 +40,69 @@ namespace component
 namespace projectiveconstraintset
 {
 
+using helper::vector;
+
 using namespace sofa::defaulttype;
+/** Attach given particles to their initial positions.
+*/
+template <class DataTypes>
+class FrameFixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(FrameFixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef Data<typename DataTypes::VecCoord> DataVecCoord;
+    typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
+    typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
+//        typedef typename DataTypes::Coord Coord;
+//        typedef typename DataTypes::Deriv Deriv;
+    static const unsigned dimensions = DataTypes::Deriv::total_size;
+    typedef Vec<dimensions, bool> VecAllowed;
+
+protected:
+
+    template <class DataDeriv>
+    void projectResponseT(DataDeriv& dx, const core::MechanicalParams* mparams);
+
+public:
+    Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
+    Data<vector<VecAllowed > > f_allowed;  ///< Allowed displacements of the constrained frames
+    Data<double> _drawSize;
+
+    FrameFixedConstraint();
+
+    virtual ~FrameFixedConstraint();
+
+
+    // -- Constraint interface
+    void init();
+
+    void projectResponse(DataVecDeriv& resData, const core::MechanicalParams* mparams);
+    void projectVelocity(DataVecDeriv& vData, const core::MechanicalParams* mparams);
+    void projectPosition(DataVecCoord& xData, const core::MechanicalParams* mparams);
+    void projectJacobianMatrix(DataMatrixDeriv& , const core::MechanicalParams* ) {}
+
+    void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
+    void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
+
+    // Handle topological changes
+//        virtual void handleTopologyChange();
+
+    virtual void draw();
+
+
+protected :
+
+//        sofa::core::topology::BaseMeshTopology* topology;
+
+//        // Define TestNewPointFunction
+//    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
+//
+//        // Define RemovalFunction
+//        static void FCRemovalFunction ( int , void*);
+
+};
 
 #if defined(WIN32) && !defined(FRAME_FRAMEFIXEDCONSTRAINT_CPP)
 extern template class SOFA_FRAME_API FixedConstraint<Affine3dTypes>;

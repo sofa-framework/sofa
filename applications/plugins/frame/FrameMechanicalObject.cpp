@@ -81,6 +81,41 @@ void MechanicalObject<Affine3dTypes>::draw()
 
 
 template <>
+void MechanicalObject<Quadratic3dTypes>::draw()
+{
+    if (!this->getContext()->getShowBehaviorModels()) return;
+    typedef Vec<3,double> Vec3d;
+    typedef Vec<4,float> Vec4f;
+    std::vector<Vec3d> points;
+//                cerr<<"MechanicalObject<Quadratic3dTypes>::draw()"<<endl;
+    glPushAttrib(GL_LIGHTING_BIT);
+    glDisable(GL_LIGHTING);
+    glLineWidth(10);
+    for(int i=0; i<this->getSize(); i++ )
+    {
+        const Quadratic3dTypes::Coord& c = (*getX())[i];
+        points.clear();
+        Quadratic3dTypes::Affine aff = c.getAffine();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+aff[0][0], c.getCenter()[1]+aff[1][0], c.getCenter()[2]+aff[2][0] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back(Vec3d( c.getCenter()[0]+aff[0][1], c.getCenter()[1]+aff[1][1], c.getCenter()[2]+aff[2][1] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
+
+        points.clear();
+        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
+        points.push_back( Vec3d(c.getCenter()[0]+aff[0][2], c.getCenter()[1]+aff[1][2], c.getCenter()[2]+aff[2][2] ));
+        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
+
+    }
+    glPopAttrib();
+}
+
+
+template <>
 void MechanicalObject<DeformationGradient331dTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels()) return;

@@ -26,9 +26,9 @@
 ******************************************************************************/
 #define FRAME_FRAMECONSTANTFROCEFIELD_CPP
 
-#include "AffineTypes.h"
-#include "QuadraticTypes.h"
 #include "FrameConstantForceField.h"
+#include "QuadraticTypes.h"
+#include "AffineTypes.h"
 #include <sofa/component/forcefield/ConstantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
