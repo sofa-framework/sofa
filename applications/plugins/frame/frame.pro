@@ -36,11 +36,12 @@ HEADERS += \
  #           FrameDualQuatSkinningMapping.h \
  #           FrameDualQuatSkinningMapping.inl \
            FrameFixedConstraint.h \
+           FrameFixedConstraint.inl \
            FrameForceField.h \
 #           FrameHookeForceField.h \
  #          FrameHookeForceField.inl \
-           FrameLoydAlgo.h \
-           FrameLoydAlgo.inl \
+          FrameLoydAlgo.h \
+          FrameLoydAlgo.inl \
            FrameMass.h \
            FrameMechanicalObject.h \
            FrameSampler.h \

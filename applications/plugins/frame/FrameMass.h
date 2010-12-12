@@ -242,7 +242,7 @@ public:
 //            va[3*dim+1] = getVCenter(a) [1];
 //            va[3*dim+2] = getVCenter(a) [2];
 
-        return inertiaMassMatrix * a;
+        return inertiaMassMatrix * a.getVec();
         //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
 //            QuadraticDeriv ma;
@@ -268,7 +268,7 @@ public:
 //            vma[3*dim+1] = getVCenter(f) [1];
 //            vma[3*dim+2] = getVCenter(f) [2];
 
-        return invInertiaMassMatrix * f;
+        return invInertiaMassMatrix * f.getVec();
         //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
 
 //            QuadraticDeriv a;

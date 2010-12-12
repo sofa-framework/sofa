@@ -26,9 +26,9 @@
 ******************************************************************************/
 #define FRAME_FRAMEFIXEDCONSTRAINT_CPP
 
-#include "AffineTypes.h"
 #include "QuadraticTypes.h"
-#include "FrameFixedConstraint.h"
+#include "AffineTypes.h"
+#include "FrameFixedConstraint.inl"
 #include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -43,26 +43,30 @@ namespace projectiveconstraintset
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameFixedConstraint)
+SOFA_DECL_CLASS(FrameFixedConstraint);
 
-int FixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+int FrameFixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
 #ifndef SOFA_FLOAT
-        .add< FixedConstraint<Affine3dTypes> >()
-        .add< FixedConstraint<Quadratic3dTypes> >()
+        .add< FrameFixedConstraint<Affine3dTypes> >()
+        .add< FrameFixedConstraint<Quadratic3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< FixedConstraint<Affine3fTypes> >()
-        .add< FixedConstraint<Quadratic3fTypes> >()
+        .add< FrameFixedConstraint<Affine3fTypes> >()
+        .add< FrameFixedConstraint<Quadratic3fTypes> >()
 #endif
         ;
 
-template class SOFA_FRAME_API FixedConstraint<Affine3dTypes>;
+#ifndef SOFA_FLOAT
+template class SOFA_FRAME_API FrameFixedConstraint<Affine3dTypes>;
 
-template class SOFA_FRAME_API FixedConstraint<Affine3fTypes>;
+template class SOFA_FRAME_API FrameFixedConstraint<Affine3fTypes>;
+#endif
+#ifndef SOFA_DOUBLE
 
-template class SOFA_FRAME_API FixedConstraint<Quadratic3dTypes>;
+template class SOFA_FRAME_API FrameFixedConstraint<Quadratic3dTypes>;
 
-template class SOFA_FRAME_API FixedConstraint<Quadratic3fTypes>;
+template class SOFA_FRAME_API FrameFixedConstraint<Quadratic3fTypes>;
+#endif
 
 } // namespace projectiveconstraintset
 

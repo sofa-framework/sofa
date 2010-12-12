@@ -28,8 +28,8 @@
 #define FRAME_FRAMEMECHANICALOBJECT_H
 
 #include <sofa/component/container/MechanicalObject.h>
-#include "AffineTypes.h"
 #include "QuadraticTypes.h"
+#include "AffineTypes.h"
 #include "DeformationGradientTypes.h"
 #include "initFrame.h"
 
