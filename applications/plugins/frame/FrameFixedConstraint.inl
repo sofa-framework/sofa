@@ -149,14 +149,15 @@ void FrameFixedConstraint<DataTypes>::init()
 
 
 template <class DataTypes>
-void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams*/* mparams*/)
+void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* /*mparams*/)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
     for(unsigned i=0; i<res.size(); i++)
     {
         for(unsigned j=0; j<dimensions; j++ )
         {
-            res[i].getVec()[j] = 0;
+//            res[i].getVec()[j] = 0;
+            res[i][j] = 0;
         }
     }
 
