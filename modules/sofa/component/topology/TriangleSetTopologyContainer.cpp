@@ -411,7 +411,7 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
 void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 {
     std::cout << "TriangleSetTopologyContainer::reOrientateTriangle" << std::endl;
-    if (id >= this->getNbTriangles())
+    if (id >= (unsigned int)this->getNbTriangles())
     {
 #ifndef NDEBUG
         sout << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds." << endl;

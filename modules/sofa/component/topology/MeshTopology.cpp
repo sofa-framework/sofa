@@ -1772,7 +1772,7 @@ int MeshTopology::computeRelativeOrientationInQuad(const unsigned int ind_p0, co
 
 void MeshTopology::reOrientateTriangle(TriangleID id)
 {
-    if (id >= this->getNbTriangles())
+    if (id >= (unsigned int)this->getNbTriangles())
     {
 #ifndef NDEBUG
         sout << "Warning. [MeshTopology::reOrientateTriangle] Triangle ID out of bounds." << endl;

@@ -43,11 +43,11 @@ using defaulttype::Vec;
 ////  Specialization on Affine->Vec
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdAffineTypes<3,typename _Material::Real>,
         StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -145,11 +145,11 @@ using defaulttype::Vec;
 ////  Specialization on Affine->ExtVec3 (same Real)
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdAffineTypes<3,typename _Material::Real>,
         ExtVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -245,11 +245,11 @@ struct LinearBlendTypes<
 ////  Specialization on Affine->ExtVec3f
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdAffineTypes<3,typename _Material::Real>,
         ExtVec3fTypes,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -345,11 +345,11 @@ struct LinearBlendTypes<
 ////  Rigid->Vec
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdRigidTypes<3,typename _Material::Real>,
         StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -439,11 +439,11 @@ template<int N, class R > Mat<N,N,R> diag( const R& d )
     return m;
 }
 
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdAffineTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 1, typename  _Material::Real>,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -540,11 +540,11 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 
-template<class  _Material, int nbRef>
+template<class  _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdAffineTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 2, typename _Material::Real>,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -707,11 +707,11 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 ////  Specialization on Quadratic -> Vec
 //////////////////////////////////////////////////////////////////////////////////
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdQuadraticTypes<3,typename _Material::Real>,
         StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -787,11 +787,11 @@ struct LinearBlendTypes<
 ////  Specialization on Quadratic->DeformationGradient first order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdQuadraticTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 1, typename  _Material::Real>,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
@@ -892,11 +892,11 @@ struct LinearBlendTypes<
 ////  Specialization on Quadratic->DeformationGradient second order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class _Material, int nbRef, int order>
 struct LinearBlendTypes<
         StdQuadraticTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 2, typename  _Material::Real>,
-        _Material, nbRef
+        _Material, nbRef,order
         >
 {
     typedef _Material Material;
