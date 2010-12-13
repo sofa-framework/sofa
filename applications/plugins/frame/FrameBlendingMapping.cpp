@@ -85,8 +85,8 @@ template<class _Real, int Dim>
 inline Mat<Dim, Dim, _Real> covNN(const Vec<Dim,_Real>& v1, const Vec<Dim,_Real>& v2)
 {
     Mat<Dim, Dim, _Real> res;
-    for( unsigned int i = 0; i < Dim; ++i)
-        for( unsigned int j = i; j < Dim; ++j)
+    for ( unsigned int i = 0; i < Dim; ++i)
+        for ( unsigned int j = i; j < Dim; ++j)
         {
             res[i][j] = v1[i] * v2[j];
             res[j][i] = res[i][j];
@@ -98,8 +98,8 @@ template<class _Real, int Dim1, int Dim2>
 inline Mat<Dim1, Dim2, _Real> covMN(const Vec<Dim1,_Real>& v1, const Vec<Dim2,_Real>& v2)
 {
     Mat<Dim1, Dim2, _Real> res;
-    for( unsigned int i = 0; i < Dim1; ++i)
-        for( unsigned int j = i; j < Dim2; ++j)
+    for ( unsigned int i = 0; i < Dim1; ++i)
+        for ( unsigned int j = i; j < Dim2; ++j)
         {
             res[i][j] = v1[i] * v2[j];
             res[j][i] = res[i][j];
@@ -111,9 +111,15 @@ template<class _Real>
 inline Mat<3, 3, _Real> crossProductMatrix(const Vec<3,_Real>& v)
 {
     Mat<3, 3, _Real> res;
-    res[0][0]=0;		res[0][1]=-v[2];	res[0][2]=v[1];
-    res[1][0]=v[2];		res[1][1]=0;		res[1][2]=-v[0];
-    res[2][0]=-v[1];	res[2][1]=v[0];		res[2][2]=0;
+    res[0][0]=0;
+    res[0][1]=-v[2];
+    res[0][2]=v[1];
+    res[1][0]=v[2];
+    res[1][1]=0;
+    res[1][2]=-v[0];
+    res[2][0]=-v[1];
+    res[2][1]=v[0];
+    res[2][2]=0;
     return res;
 }
 
@@ -146,8 +152,8 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        OutCoord Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        OutCoord Pa;    ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
 
     Vec<nbRef,unsigned> index;
@@ -156,20 +162,21 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
             //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
             Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
             Jb[i].Pt= w[i];
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
         //                cerr << "weights = " << w << endl;
     }
 
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             result += d[index[i]].getCenter() * Jb[i].Pt + d[index[i]].getAffine() * Jb[i].Pa;
         }
@@ -186,7 +193,7 @@ struct LinearBlendTypes<
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
           */
 
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
             res[index[i]].getCenter() += d * Jb[i].Pt;
@@ -229,10 +236,10 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        SpatialCoord Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        SpatialCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
-        MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
+        MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
     };
 
     Vec<nbRef,unsigned> index;
@@ -241,7 +248,8 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             const SpatialCoord& vectorInLocalCoordinates = (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter());
@@ -250,7 +258,7 @@ struct LinearBlendTypes<
             Jb[i].Fa=inverseInitialTransform.getAffine() * w[i] + covNN( vectorInLocalCoordinates, dw[i]);
             Jb[i].Ft=dw[i];  // cerr << "InitialTransform[index[i]]= "<< InitialTransform[index[i]] << " dw[i] = " << dw[i] << endl;
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
@@ -258,7 +266,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getAffine( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter(), Jb[i].Ft) + d[index[i]].getAffine( ) * Jb[i].Fa;
@@ -276,7 +284,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
             res[index[i]].getCenter() +=  d.getCenter() * Jb[i].Pt;
@@ -325,12 +333,12 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        SpatialCoord Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        SpatialCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
-        MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
+        MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
         MaterialFrameGradient dFa;  ///< = d gradF_k = dMa_i ( grad(w_i)_k \bar M_i + \bar M_i p_0 grad(dw_i)_k + grad(\bar M_i p_0)_k dw_i)
-        MaterialMat dFt;	///< = d gradF_k = dMt_i (grad(dw_i)_k)
+        MaterialMat dFt;  ///< = d gradF_k = dMt_i (grad(dw_i)_k)
     };
 
     Vec<nbRef,unsigned> index;
@@ -339,7 +347,8 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             SpatialCoord vectorInLocalCoordinates = (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter());
@@ -352,13 +361,13 @@ struct LinearBlendTypes<
             for (unsigned int k = 0; k < 3; ++k)
                 Jb[i].dFa[k] = inverseInitialTransform.getAffine() * dw[i][k] + covNN( vectorInLocalCoordinates, Jb[i].dFt[k]) + covNN(inverseInitialTransformT[k],dw[i]); // dFa
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getAffine( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getAffine( ) * Jb[i].Fa;
@@ -375,7 +384,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res[index[i]].getCenter() +=  d.getCenter() * Jb[i].Pt;
@@ -421,8 +430,8 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        QuadraticCoord Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        QuadraticCoord Pa;    ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
 
     Vec<nbRef,unsigned> index;
@@ -431,21 +440,22 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             QuadraticCoord vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos + inverseInitialTransform.getCenter()) );
             Jb[i].Pa=vectorInLocalCoordinates*w[i];
             Jb[i].Pt=w[i];
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
     OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutCoord res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res +=  d[index[i]].getCenter() * Jb[i].Pt +  d[index[i]].getQuadratic() * Jb[i].Pa;
         }
@@ -459,7 +469,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res[index[i]].getCenter() += d * Jb[i].Pt;
@@ -501,10 +511,10 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        QuadraticCoord Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        QuadraticCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame2 Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
-        MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
+        MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
     };
 
     Vec<nbRef,unsigned> index;
@@ -513,7 +523,8 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             Affine invaff = inverseInitialTransform.getAffine();
@@ -522,17 +533,17 @@ struct LinearBlendTypes<
             Jb[i].Pt=w[i];
             Jb[i].Fa=covMN(vectorInLocalCoordinates, dw[i]);
             // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
-            for(unsigned int ii=0; ii<3; ++ii) for(unsigned int j=0; j<3; ++j)  Jb[i].Fa[ii][j]+=invaff[ii][j] * w[i];
+            for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j)  Jb[i].Fa[ii][j]+=invaff[ii][j] * w[i];
             Jb[i].Ft=dw[i];
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
     OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutCoord res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getQuadratic ( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getQuadratic( ) * Jb[i].Fa;
@@ -548,7 +559,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
             res[index[i]].getCenter() +=  d.getCenter() * Jb[i].Pt;
@@ -601,12 +612,12 @@ struct LinearBlendTypes<
           */
         //                JacobianBlock(){}
         //                JacobianBlock(const SpatialCoord2& p2, const Real& w,  const MaterialFrame2& f2,  const MaterialDeriv& dw,  const MaterialFrameGradient2& df2,  const MaterialMat& ddw):Pa(p2),Pt(w),Fa(f2),Ft(dw),dFa(df2),dFt(ddw){}
-        QuadraticCoord Pa;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        QuadraticCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame2 Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
-        MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
+        MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
         MaterialFrameGradient2 dFa;  ///< = d gradF_k = dMa_i ( grad(w_i)_k \bar M_i + \bar M_i p_0 grad(dw_i)_k + grad(\bar M_i p_0)_k dw_i)
-        MaterialMat dFt;	///< = d gradF_k = dMt_i (grad(dw_i)_k)
+        MaterialMat dFt;  ///< = d gradF_k = dMt_i (grad(dw_i)_k)
     };
 
     Vec<nbRef,unsigned> index;
@@ -615,7 +626,8 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             Affine invaff = inverseInitialTransform.getAffine();
@@ -624,7 +636,7 @@ struct LinearBlendTypes<
             Jb[i].Pt=w[i];
             Jb[i].Fa=covMN(vectorInLocalCoordinates, dw[i]);
             // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
-            for(unsigned int ii=0; ii<3; ++ii) for(unsigned int j=0; j<3; ++j)  Jb[i].Fa[ii][j]+=invaff[ii][j] * w[i];
+            for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j)  Jb[i].Fa[ii][j]+=invaff[ii][j] * w[i];
             Jb[i].Ft=dw[i];
 
             Jb[i].dFt=ddw[i].transposed();
@@ -633,16 +645,16 @@ struct LinearBlendTypes<
             {
                 Jb[i].dFa[k] = covMN( vectorInLocalCoordinates, Jb[i].dFt[k]);
                 MaterialFrame m=covNN(inverseInitialTransformT[k],dw[i] ); // dFa
-                for(unsigned int ii=0; ii<3; ++ii) for(unsigned int j=0; j<3; ++j)  Jb[i].dFa[k][ii][j]+=m[ii][j]+inverseInitialTransform.getAffine()[ii][j] * dw[i][k];
+                for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j)  Jb[i].dFa[k][ii][j]+=m[ii][j]+inverseInitialTransform.getAffine()[ii][j] * dw[i][k];
             }
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
     OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutDeriv res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getQuadratic ( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getQuadratic( ) * Jb[i].Fa;
@@ -662,7 +674,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res[index[i]].getCenter() +=  d.getCenter() * Jb[i].Pt;
@@ -707,9 +719,9 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        OutCoord Pa0;	///< weighted point in local frame:   dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        OutCoord Pa;	///< rotated point :  dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        OutCoord Pa0; ///< weighted point in local frame:   dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        OutCoord Pa;  ///< rotated point :  dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
 
     Vec<nbRef,unsigned> index;
@@ -719,20 +731,21 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
             Jb[i].Pa0= InitialTransform[index[i]].pointToChild(InitialPos) * w[i] ;
             Jb[i].Pa= (InitialPos - InitialTransform[index[i]].getCenter() ) * w[i] ;
             Jb[i].Pt= w[i];
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
     OutCoord apply( const VecInCoord& in )  // Called in Apply
     {
         OutCoord result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             Jb[i].Pa=in[index[i]].rotate(Jb[i].Pa0); // = update of J according to current transform
             result += in[index[i]].getCenter() * Jb[i].Pt + Jb[i].Pa;
@@ -743,7 +756,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
     {
         OutDeriv result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
             result += getLinear( in[index[i]] ) * Jb[i].Pt + cross(getAngular(in[index[i]]), Jb[i].Pa);
         }
@@ -754,7 +767,7 @@ struct LinearBlendTypes<
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
           */
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
             getLinear(res[index[i]])  += d * Jb[i].Pt;
             getAngular(res[index[i]]) += cross(Jb[i].Pa, d);
@@ -796,13 +809,13 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        SpatialCoord Pa0;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        SpatialCoord Pa;	///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        SpatialCoord Pa0; ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        SpatialCoord Pa;  ///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
 
         MaterialFrame Fa0;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
         MaterialFrame Fa;   ///< = dF = Omega_i x [ Ma_i  (w_i \bar M_i + \bar M_i p_0 dw_i) ]
-        MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
+        MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
 
     };
 
@@ -812,12 +825,15 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
 
-            Mat33 InitialTransform33; InitialTransform[index[i]].getOrientation().toMatrix(InitialTransform33);
+            Mat33 InitialTransform33;
+            InitialTransform[index[i]].getOrientation().toMatrix(InitialTransform33);
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
-            Mat33 inverseInitialTransform33; inverseInitialTransform.getOrientation().toMatrix(inverseInitialTransform33);
+            Mat33 inverseInitialTransform33;
+            inverseInitialTransform.getOrientation().toMatrix(inverseInitialTransform33);
             Mat33 inverseInitialTransformT = inverseInitialTransform33.transposed();
 
             const SpatialCoord& vectorInLocalCoordinates = inverseInitialTransform.pointToParent(InitialPos.getCenter());
@@ -830,7 +846,7 @@ struct LinearBlendTypes<
             Jb[i].Ft=dw[i];
 
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
@@ -838,13 +854,14 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             Jb[i].Pa =d[index[i]].rotate(Jb[i].Pa0); // = update of J according to current transform
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + Jb[i].Pa;
 
-            Mat33 Transform33; d[index[i]].getOrientation().toMatrix(Transform33);
+            Mat33 Transform33;
+            d[index[i]].getOrientation().toMatrix(Transform33);
             Jb[i].Fa=Transform33 * Jb[i].Fa0;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + Jb[i].Fa;
 
@@ -856,7 +873,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res.getCenter() +=  getLinear( d[index[i]] ) * Jb[i].Pt +  cross(getAngular(d[index[i]]), Jb[i].Pa);
@@ -868,7 +885,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             getLinear(res[index[i]]) +=  d.getCenter() * Jb[i].Pt;
@@ -918,17 +935,17 @@ struct LinearBlendTypes<
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
           The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
           */
-        SpatialCoord Pa0;	///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        SpatialCoord Pa;	///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+        SpatialCoord Pa0; ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        SpatialCoord Pa;  ///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
+        Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
 
         MaterialFrame Fa0;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
         MaterialFrame Fa;   ///< = dF = Omega_i x [ Ma_i  (w_i \bar M_i + \bar M_i p_0 dw_i) ]
-        MaterialDeriv Ft;	///< = dF = dMt_i (dw_i)
+        MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
 
         MaterialFrameGradient dFa0;  ///< = d gradF_k = dMa_i ( grad(w_i)_k \bar M_i + \bar M_i p_0 grad(dw_i)_k + grad(\bar M_i p_0)_k dw_i)
         MaterialFrameGradient dFa;  ///< = d gradF_k = Omega_i x [ Ma_i ( grad(w_i)_k \bar M_i + \bar M_i p_0 grad(dw_i)_k + grad(\bar M_i p_0)_k dw_i) ]
-        MaterialMat dFt;	///< = d gradF_k = dMt_i (grad(dw_i)_k)
+        MaterialMat dFt;  ///< = d gradF_k = dMt_i (grad(dw_i)_k)
 
     };
 
@@ -938,12 +955,15 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        unsigned i=0;
+        for ( ; i<nbRef && w[i]>0; i++ )
         {
 
-            Mat33 InitialTransform33; InitialTransform[index[i]].getOrientation().toMatrix(InitialTransform33);
+            Mat33 InitialTransform33;
+            InitialTransform[index[i]].getOrientation().toMatrix(InitialTransform33);
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
-            Mat33 inverseInitialTransform33; inverseInitialTransform.getOrientation().toMatrix(inverseInitialTransform33);
+            Mat33 inverseInitialTransform33;
+            inverseInitialTransform.getOrientation().toMatrix(inverseInitialTransform33);
             Mat33 inverseInitialTransformT = inverseInitialTransform33.transposed();
 
             const SpatialCoord& vectorInLocalCoordinates = inverseInitialTransform.pointToParent(InitialPos.getCenter());
@@ -963,7 +983,7 @@ struct LinearBlendTypes<
             }
 
         }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
@@ -971,13 +991,14 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             Jb[i].Pa =d[index[i]].rotate(Jb[i].Pa0); // = update of J according to current transform
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + Jb[i].Pa;
 
-            Mat33 Transform33; d[index[i]].getOrientation().toMatrix(Transform33);
+            Mat33 Transform33;
+            d[index[i]].getOrientation().toMatrix(Transform33);
             Jb[i].Fa=Transform33 * Jb[i].Fa0;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + Jb[i].Fa;
 
@@ -994,7 +1015,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res.getCenter() +=  getLinear( d[index[i]] ) * Jb[i].Pt +  cross(getAngular(d[index[i]]), Jb[i].Pa);
@@ -1008,7 +1029,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             getLinear(res[index[i]]) +=  d.getCenter() * Jb[i].Pt;
