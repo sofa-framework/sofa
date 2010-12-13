@@ -2,7 +2,7 @@
 	<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
 	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
 	<Node name="Beam">
-		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 2 [1 0 0, 0 1 0, 0 0 1] "/>
+		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1.2 [1 0 0, 0 1 0, 0 0 1] "/>
 		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
 		<Node name="TrianglesNode">
 			<MechanicalObject template="DeformationGradient331" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1" />

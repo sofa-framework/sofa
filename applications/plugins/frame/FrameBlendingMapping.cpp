@@ -77,12 +77,13 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
             Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
             Jb[i].Pt= w[i];
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
         //                cerr << "weights = " << w << endl;
     }
 
@@ -178,12 +179,13 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
             Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
             Jb[i].Pt= w[i];
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
         //                cerr << "weights = " << w << endl;
     }
 
@@ -277,13 +279,13 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
             Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
             Jb[i].Pt= w[i];
         }
-        //                cerr << "weights = " << w << endl;
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
     OutCoord apply( const VecInCoord& in )  // Called in Apply
@@ -377,11 +379,12 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             Jb[i].Pa= InitialTransform[index[i]].pointToChild(InitialPos) * w[i] ;
             Jb[i].Pt= w[i];
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
     /// Transform a Vec
@@ -421,6 +424,20 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 ////  Specialization on Affine->DeformationGradient first order
 //////////////////////////////////////////////////////////////////////////////////
+template<int N, class R > Mat<N,N,R> identity()
+{
+    Mat<N,N,R> m;
+    for(unsigned i=0; i<N; i++)
+        m[i][i] = (R)1.0;
+    return m;
+}
+template<int N, class R > Mat<N,N,R> diag( const R& d )
+{
+    Mat<N,N,R> m;
+    for(unsigned i=0; i<N; i++)
+        m[i][i] = d;
+    return m;
+}
 
 template<class _Material, int nbRef>
 struct LinearBlendTypes<
@@ -461,15 +478,16 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             const SpatialCoord& vectorInLocalCoordinates = (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter());
             Jb[i].Pa=vectorInLocalCoordinates*w[i];
             Jb[i].Pt=w[i];
             Jb[i].Fa=inverseInitialTransform.getAffine() * w[i] + covNN( vectorInLocalCoordinates, dw[i]);
-            Jb[i].Ft=dw[i];
+            Jb[i].Ft=dw[i];  // cerr << "InitialTransform[index[i]]= "<< InitialTransform[index[i]] << " dw[i] = " << dw[i] << endl;
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
@@ -480,11 +498,11 @@ struct LinearBlendTypes<
         for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getAffine( ) * Jb[i].Pa;
-            res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getAffine( ) * Jb[i].Fa;
-            cerr<<"OutCoord apply, res.getMaterialFrame() += covNN("<<d[index[i]].getCenter( )<<" , "<<Jb[i].Ft<<")+"<<d[index[i]].getAffine( )<<" * "<<Jb[i].Fa<<endl;
-            cerr<<"OutCoord apply, res.getMaterialFrame() = "<< res.getMaterialFrame() <<endl;
+            res.getMaterialFrame() += covNN( d[index[i]].getCenter(), Jb[i].Ft) + d[index[i]].getAffine( ) * Jb[i].Fa;
+//                    cerr<<"OutCoord apply, res.getMaterialFrame() += covNN("<<d[index[i]].getCenter( )<<" , "<<Jb[i].Ft<<")+"<<d[index[i]].getAffine( )<<" * "<<Jb[i].Fa<<endl;
+//                    cerr<<"OutCoord apply, res.getMaterialFrame() = "<< res.getMaterialFrame() <<endl;
         }
-        cerr<<"----OutCoord apply, res.getMaterialFrame() = "<< res.getMaterialFrame()  <<endl;
+//                cerr<<"----OutCoord apply, res.getMaterialFrame() = "<< res.getMaterialFrame()  <<endl;
         return res;
     }
 
@@ -564,7 +582,7 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             SpatialCoord vectorInLocalCoordinates = (inverseInitialTransform.getAffine()*InitialPos.getCenter() + inverseInitialTransform.getCenter());
@@ -577,6 +595,7 @@ struct LinearBlendTypes<
             for (unsigned int k = 0; k < 3; ++k)
                 Jb[i].dFa[k] = inverseInitialTransform.getAffine() * dw[i][k] + covNN( vectorInLocalCoordinates, Jb[i].dFt[k]) + covNN(inverseInitialTransformT[k],dw[i]); // dFa
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
     //            void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& dw, const MaterialMat&  ddw)
     //            {
@@ -723,13 +742,14 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             QuadraticCoord vectorInLocalCoordinates = In::convertToQuadraticCoord( (inverseInitialTransform.getAffine()*InitialPos + inverseInitialTransform.getCenter()) );
             Jb[i].Pa=vectorInLocalCoordinates*w[i];
             Jb[i].Pt=w[i];
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
 
@@ -806,7 +826,7 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             Affine invaff = inverseInitialTransform.getAffine();
@@ -818,6 +838,7 @@ struct LinearBlendTypes<
             for(unsigned int k=0; k<3; ++k) for(unsigned int j=0; j<3; ++j)  Jb[i].Fa[k][j]+=invaff[k][j] * w[i];
             Jb[i].Ft=dw[i];
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
     //            void init( const InCoord& InitialTransform, const OutCoord& InitialPos, const Real& w, const MaterialDeriv& dw, const MaterialMat&  /*ddw*/)
     //            {
@@ -918,7 +939,7 @@ struct LinearBlendTypes<
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        for( unsigned i=0; i<nbRef; i++ )
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
             Affine invaff = inverseInitialTransform.getAffine();
@@ -951,6 +972,7 @@ struct LinearBlendTypes<
                 }
             }
         }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
 
     OutCoord apply( const VecInCoord& d ) // Called in Apply
