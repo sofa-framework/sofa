@@ -56,7 +56,7 @@ template<class TCoord, class TDeriv, class TReal>
 class ExtVectorTypes;
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-class DeformationGradientTypes;
+struct DeformationGradientTypes;
 
 template< class Real, int Dim>
 class DataTypesInfo<StdVectorTypes<Vec<Dim, Real>, Vec<Dim, Real>, Real>,Real,Dim>
