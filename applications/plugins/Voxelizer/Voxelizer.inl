@@ -53,14 +53,12 @@ static const int SHIFT_TRIANGLE_GROUP_SIZE = sofa::gpu::cuda::CudaLDI_get_shift_
 
 template <class DataTypes>
 Voxelizer<DataTypes>::Voxelizer()
-    : vPosition (initData(&vPosition, "vPosition", "position of the center of the ROI"))
-    , vRadius (initData(&vRadius, "vRadius", "radius of the ROI"))
-    , useROI (initData(&useROI, false, "useROI", "Use the given regions of interest."))
+    : useROI (initData(&useROI, false, "useROI", "Use the given regions of interest."))
+    , vROICenter (initData(&vROICenter, "vROICenter", "position of the center of the ROI"))
+    , vROIRadius (initData(&vROIRadius, "vROIRadius", "radius of the ROI"))
     , bbox (initData(&bbox, "bbox", "Define a bounding bos for the rasterization."))
     , triangularModelPath (initData(&triangularModelPath, "triangularModelPath", "path to the triangular models"))
     , voxelSize (initData(&voxelSize, "voxelSize", "voxels size"))
-    , vOffsets (initData(&vOffsets, "vOffsets", "offset between voxels to create and rasterized models"))
-    //, generateVoxels (initData(&generateVoxels, true, "generateVoxels", "generate voxels"))
     , generateRAWFiles (initData(&generateRAWFiles, true, "generateRAWFiles", "generate RAW files"))
     , valueFileName (initData(&valueFileName, "valueFileName", "RAW file name"))
     , segmentationFileName (initData(&segmentationFileName, "segmentationFileName", "segmentation file name"))
@@ -83,6 +81,11 @@ Voxelizer<DataTypes>::~Voxelizer()
 {
     if (valueImg) delete valueImg;
     if (segmentationImg) delete segmentationImg;
+
+    unsigned int nbModels = vTriangularModel.size();
+    for (unsigned int i = 0; i < nbModels; ++i)
+        delete [] rasterizedVolumes[i];
+    delete [] rasterizedVolumes;
 }
 
 
@@ -148,13 +151,11 @@ void Voxelizer<DataTypes>::init()
 
     // Check everybody has the same size.
     if( useROI.getValue() &&
-        (vPosition.getValue().size() != vRadius.getValue().size() ||
-                vPosition.getValue().size() != vOffsets.getValue().size() ||
-                vPosition.getValue().size() != vTriangularModel.size() ))
+        (vROICenter.getValue().size() != vROIRadius.getValue().size() ||
+                vROICenter.getValue().size() != vTriangularModel.size() ))
     {
-        serr << "vPosition.getValue().size() " << vPosition.getValue().size() << sendl;
-        serr << "vRadius.getValue().size() " << vRadius.getValue().size() << sendl;
-        serr << "vOffsets.getValue().size() " << vOffsets.getValue().size() << sendl;
+        serr << "vROICenter.getValue().size() " << vROICenter.getValue().size() << sendl;
+        serr << "vROIRadius.getValue().size() " << vROIRadius.getValue().size() << sendl;
         serr << "vTriangularModel.size() " << vTriangularModel.size() << sendl;
         serr << "All the vectors defining the ROI must have the same size." << sendl;
         return;
@@ -193,52 +194,6 @@ bool Voxelizer<DataTypes>::load()
     return true;
 }
 
-/*
-// TODO: rewrite it in order to load voxels from RAW file instead of volumes (to be able to load voxels from existing RAW files).
-    template <class DataTypes>
-    bool Voxelizer<DataTypes>::createVoxels(RasterizedVol** rasterizedVolume)
-    {
-        const Vec3d& voxelsSize = voxelSize.getValue();
-        helper::vector< helper::fixed_array<unsigned int,8> >* vHexas = hexahedra.beginEdit();
-        // for each roi
-        for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
-        {
-            const Vec3d& roiCenter = vPosition.getValue()[i];
-            const double& radius = vRadius.getValue()[i];
-
-            // Parse the volume to create hexas
-            Vec3d roiRadius(radius, radius, radius);
-            BBox roi( roiCenter - roiRadius, roiCenter + roiRadius);
-            for (double x = roi.first[0]; x < roi.second[0]; x += voxelsSize[0])
-            {
-                for (double y = roi.first[1]; y < roi.second[1]; y += voxelsSize[1])
-                {
-                    for (double z = roi.first[2]; z < roi.second[2]; z += voxelsSize[2])
-                    {
-                        Vec3d coord(x, y, z);
-                        if ((roiCenter - coord).norm() > radius) continue;
-                        bool foundInAllAxis = true;
-                        for( unsigned int axis = 0; axis < 3; ++axis)
-                        {
-                            if( i+1 != coordIsInside(coord, rasterizedVolume[axis], axis))
-                            {
-                                foundInAllAxis = false;
-                                break;
-                            }
-                        }
-                        if (foundInAllAxis)
-                            createVoxel(vHexas, coord);
-                    }
-                }
-            }
-        }
-
-        hexahedra.endEdit();
-
-        return true;
-    }
-*/
-
 
 template <class DataTypes>
 bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
@@ -258,15 +213,15 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
     valueImg = new helper::io::ImageRAW;
     segmentationImg = new helper::io::ImageRAW;
 
+    const Vec3d& voxelsSize = voxelSize.getValue();
     Vec3d& origin = *rawOrigin.beginEdit();
-    origin = rasterizer->bbox[0];
+    origin = rasterizer->bbox[0] + voxelsSize/2.0;
     sout << "RAW origin is: " << rawOrigin << sendl;
 
     //std::cout << "bbox: " << rasterizer->bbox[0] << ", " << rasterizer->bbox[1] << std::endl;
 
     // Init images
     Vec3d imgSize = (rasterizer->bbox[1] - rasterizer->bbox[0]);
-    const Vec3d& voxelsSize = voxelSize.getValue();
     Vec3d& dimension = *resolution.beginEdit();
     unsigned int width = dimension[0] = (unsigned int)(imgSize[0] / voxelsSize[0]);
     unsigned int height = dimension[1] = (unsigned int)(imgSize[1] / voxelsSize[1]);
@@ -292,13 +247,13 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
 
                 Vec3d vecHalfVoxelSize (voxelsSize[0]/2.0, voxelsSize[1]/2.0, voxelsSize[2]/2.0);
                 BBox box( pos - vecHalfVoxelSize, pos + vecHalfVoxelSize);
-                unsigned int segID = coordIsInside( box, rasterizedVolume[0], 0); // TODO: for each axis
+                unsigned int segID = isCoordIntersecting( box, rasterizedVolume[0], 0);
                 if( segID)
                 {
                     if (checkROI)
                     {
-                        const Vec3d& roiCenter = vPosition.getValue()[segID-1];
-                        const double& radius = vRadius.getValue()[segID-1];
+                        const Vec3d& roiCenter = vROICenter.getValue()[segID-1];
+                        const double& radius = vROIRadius.getValue()[segID-1];
                         if ((roiCenter - pos).norm() < radius)
                             segData[indexPixel] = segID;
                         else
@@ -318,8 +273,8 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
                         {
                             if (checkROI)
                             {
-                                const Vec3d& roiCenter = vPosition.getValue()[i];
-                                const double& radius = vRadius.getValue()[i];
+                                const Vec3d& roiCenter = vROICenter.getValue()[i];
+                                const double& radius = vROIRadius.getValue()[i];
                                 if ((roiCenter - pos).norm() < radius)
                                 {
                                     segData[indexPixel] = i+1;
@@ -391,20 +346,6 @@ bool Voxelizer<DataTypes>::canCreate ( T*& obj, core::objectmodel::BaseContext* 
 template <class DataTypes>
 void Voxelizer<DataTypes>::addVolume( RasterizedVol& rasterizedVolume, double x, double y, double zMin, double zMax, int /*axis*/)
 {
-#ifndef USE_MAP_FOR_VOLUMES
-    const Real psize = rasterizer->pixelSize.getValue();
-    const int iX = ( axis+1 ) %3;
-    const int iY = ( axis+2 ) %3;
-    const int iZ = axis;
-    BBox collisionVol;
-    collisionVol[0][iX] = x - ( psize*0.5 );
-    collisionVol[0][iY] = y - ( psize*0.5 );
-    collisionVol[0][iZ] = zMin;
-    collisionVol[1][iX] = x + ( psize*0.5 );
-    collisionVol[1][iY] = y + ( psize*0.5 );
-    collisionVol[1][iZ] = zMax;
-    rasterizedVolume.push_back(collisionVol);
-#else
     RasterizedVol::iterator it = rasterizedVolume.find( x);
     if (it != rasterizedVolume.end())
     {
@@ -416,7 +357,6 @@ void Voxelizer<DataTypes>::addVolume( RasterizedVol& rasterizedVolume, double x,
         temp.insert( std::pair<double, std::pair<double, double> >( y, std::make_pair<double, double>(zMin, zMax)));
         rasterizedVolume.insert( std::make_pair<double, std::multimap<double, std::pair<double, double> > >( x, temp));
     }
-#endif
 }
 
 
@@ -510,12 +450,9 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
 
                         if (obj == -1)
                         {
-                            serr << "ERROR: tid " << (tid>>Rasterizer::SHIFT_TID) << " object invalid exit draw......." << sendl;
-                            glEnd();
+                            serr << "ERROR: tid " << (tid>>Rasterizer::SHIFT_TID) << " object invalid......." << sendl;
                             return;
                         }
-
-                        current_model = rasterizer->vmtopology[obj];
 
                         bool front = ((tid&1) != 0);
                         tid = (tid >> (Rasterizer::SHIFT_TID))- ldiObjects[obj].t0;
@@ -597,13 +534,6 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
 template <class DataTypes>
 bool Voxelizer<DataTypes>::isCoordInside( const Vec3d& position, const RasterizedVol& rasterizedVolume, const unsigned int /*axis*/)
 {
-#ifndef USE_MAP_FOR_VOLUMES
-    for (vector<BBox>::const_iterator it = rasterizedVolume.begin(); it != rasterizedVolume.end(); ++it)
-    {
-        if( isInsideAABB( it->first, it->second, position))
-            return true;
-    }
-#else
     // TODO: this can be optimized with lower and upper bound access. We have to use iX, iY and iZ for vector access.
     const double& x = position[0];
     const double& y = position[1];
@@ -625,13 +555,12 @@ bool Voxelizer<DataTypes>::isCoordInside( const Vec3d& position, const Rasterize
             }
         }
     }
-#endif
     return false;
 }
 
 
 template <class DataTypes>
-unsigned int Voxelizer<DataTypes>::coordIsInside( const Vec3d& position, const RasterizedVol* rasterizedVolume, const unsigned int axis)
+unsigned int Voxelizer<DataTypes>::isCoordInside( const Vec3d& position, const RasterizedVol* rasterizedVolume, const unsigned int axis)
 {
     for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
     {
@@ -645,13 +574,6 @@ unsigned int Voxelizer<DataTypes>::coordIsInside( const Vec3d& position, const R
 template <class DataTypes>
 bool Voxelizer<DataTypes>::isCoordInside( const BBox& bbox, const RasterizedVol& rasterizedVolume, const unsigned int axis)
 {
-#ifndef USE_MAP_FOR_VOLUMES
-    for (vector<BBox>::const_iterator it = rasterizedVolume.begin(); it != rasterizedVolume.end(); ++it)
-    {
-        if( isCrossingAABB( it->first, it->second, bbox[0], bbox[1]))
-            return true;
-    }
-#else
     const int iX = ( axis+1 ) %3;
     const int iY = ( axis+2 ) %3;
     const int iZ = axis;
@@ -666,16 +588,15 @@ bool Voxelizer<DataTypes>::isCoordInside( const BBox& bbox, const RasterizedVol&
     {
         std::multimap<double, std::pair< double, double> >::const_iterator it2Max = it->second.upper_bound(yMax);
         for (std::multimap<double, std::pair< double, double> >::const_iterator it2 = it->second.lower_bound( yMin); it2 != it2Max; ++it2)
-            if (bbox[0][iZ] < it2->second.second && it2->second.first < bbox[1][iZ])
+            if (bbox[0][iZ] > it2->second.first && bbox[1][iZ] < it2->second.second)
                 return true;
     }
-#endif
     return false;
 }
 
 
 template <class DataTypes>
-unsigned int Voxelizer<DataTypes>::coordIsInside( const BBox& bbox, const RasterizedVol* rasterizedVolume, const unsigned int axis)
+unsigned int Voxelizer<DataTypes>::isCoordInside( const BBox& bbox, const RasterizedVol* rasterizedVolume, const unsigned int axis)
 {
     for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
     {
@@ -687,61 +608,70 @@ unsigned int Voxelizer<DataTypes>::coordIsInside( const BBox& bbox, const Raster
 
 
 template <class DataTypes>
-bool Voxelizer<DataTypes>::isCrossingAABB ( const Vec3d& min1, const Vec3d& max1, const Vec3d& min2, const Vec3d& max2 ) const
+unsigned int Voxelizer<DataTypes>::isCoordInside( const BBox& /*bbox*/, const RasterizedVol** /*rasterizedVolume*/)
 {
-    if ( min1[0] < max2[0] && min1[1] < max2[1] && min1[2] < max2[2] &&
-            min2[0] < max1[0] && min2[1] < max1[1] && min2[2] < max1[2] ) return true;
-    return false;
+    /*
+     bool inside = true;
+     for (unsigned int axis = 0; axis < 3; ++axis)
+     {
+         if( !isCoordInside( bbox, rasterizedVolume[axis], axis))
+             inside = false;
+     }
+       return inside;*/
+    serr << "not yet implemented !" << sendl;
+    return 0;
 }
 
 
 template <class DataTypes>
-bool Voxelizer<DataTypes>::isInsideAABB ( const Vec3d& min1, const Vec3d& max1, const Vec3d& point ) const
+bool Voxelizer<DataTypes>::isCoordIntersecting( const BBox& bbox, const RasterizedVol& rasterizedVolume, const unsigned int axis)
 {
-    if ( min1[0] < point[0] && min1[1] < point[1] && min1[2] < point[2] &&
-            point[0] < max1[0] && point[1] < max1[1] && point[2] < max1[2] ) return true;
-    return false;
-}
+    const int iX = ( axis+1 ) %3;
+    const int iY = ( axis+2 ) %3;
+    const int iZ = axis;
 
-
-template <class DataTypes>
-void Voxelizer<DataTypes>::createVoxel(helper::vector<helper::fixed_array <unsigned int,8> >* hexahedra, const Vec3d& coord)
-{
-    const Vec3d& halfVoxelsSize = voxelSize.getValue() / 2.0;
-    const double& x = coord[0];
-    const double& y = coord[1];
-    const double& z = coord[2];
-    helper::fixed_array <unsigned int,8> hexa;
-    hexa[0] = createPoint( x - halfVoxelsSize[0], y - halfVoxelsSize[1], z - halfVoxelsSize[2]);
-    hexa[1] = createPoint( x + halfVoxelsSize[0], y - halfVoxelsSize[1], z - halfVoxelsSize[2]);
-    hexa[2] = createPoint( x + halfVoxelsSize[0], y + halfVoxelsSize[1], z - halfVoxelsSize[2]);
-    hexa[3] = createPoint( x - halfVoxelsSize[0], y + halfVoxelsSize[1], z - halfVoxelsSize[2]);
-    hexa[4] = createPoint( x - halfVoxelsSize[0], y - halfVoxelsSize[1], z + halfVoxelsSize[2]);
-    hexa[5] = createPoint( x + halfVoxelsSize[0], y - halfVoxelsSize[1], z + halfVoxelsSize[2]);
-    hexa[6] = createPoint( x + halfVoxelsSize[0], y + halfVoxelsSize[1], z + halfVoxelsSize[2]);
-    hexa[7] = createPoint( x - halfVoxelsSize[0], y + halfVoxelsSize[1], z + halfVoxelsSize[2]);
-
-    addHexahedron( hexahedra, hexa);
-}
-
-
-template <class DataTypes>
-int Voxelizer<DataTypes>::createPoint( const double& x, const double& y, const double& z)
-{
-    // If this coordinate is ever defined, return its index
-    Vec3d position( x, y, z);
-    helper::vector<sofa::defaulttype::Vec<3,SReal> >* pos = positions.beginEdit();
-    for (unsigned int i = 0; i < pos->size(); ++i)
+    const Real psize = rasterizer->pixelSize.getValue();
+    const double& xMin = bbox[0][iX] - psize*1.5;
+    const double& xMax = bbox[1][iX] + psize*1.5;
+    const double& yMin = bbox[0][iY] - psize*1.5;
+    const double& yMax = bbox[1][iY] + psize*1.5;
+    RasterizedVol::const_iterator itMax = rasterizedVolume.upper_bound(xMax);
+    for (RasterizedVol::const_iterator it = rasterizedVolume.lower_bound( xMin); it != itMax; ++it)
     {
-        if( (*pos)[i] == position)
-            return i;
+        std::multimap<double, std::pair< double, double> >::const_iterator it2Max = it->second.upper_bound(yMax);
+        for (std::multimap<double, std::pair< double, double> >::const_iterator it2 = it->second.lower_bound( yMin); it2 != it2Max; ++it2)
+            if (bbox[0][iZ] - psize < it2->second.second && bbox[1][iZ] + psize > it2->second.first)
+                return true;
     }
+    return false;
+}
 
-    // Else, create it and return its index.
-    addPosition(pos, x, y, z);
-    positions.endEdit();
 
-    return pos->size()-1;
+template <class DataTypes>
+unsigned int Voxelizer<DataTypes>::isCoordIntersecting( const BBox& bbox, const RasterizedVol* rasterizedVolume, const unsigned int axis)
+{
+    for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
+    {
+        if( isCoordIntersecting( bbox, rasterizedVolume[i], axis))
+            return i+1;
+    }
+    return 0;
+}
+
+
+template <class DataTypes>
+unsigned int Voxelizer<DataTypes>::isCoordIntersecting( const BBox& /*bbox*/, const RasterizedVol** /*rasterizedVolume*/)
+{
+    /*
+     bool inside = true;
+     for (unsigned int axis = 0; axis < 3; ++axis)
+     {
+         if( !isCoordIntersecting( bbox, rasterizedVolume[axis], axis))
+             inside = false;
+     }
+       return inside;*/
+    serr << "not yet implemented !" << sendl;
+    return 0;
 }
 
 
@@ -951,9 +881,6 @@ void Voxelizer<DataTypes>::draw()
     // Display volumes retrieved from depth peeling textures
     if( showRasterizedVolumes.getValue())
     {
-#ifndef USE_MAP_FOR_VOLUMES
-        // Not implemented
-#else
         if (showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable( GL_LIGHTING);
         for ( unsigned int axis=0; axis<3; ++axis )
@@ -963,15 +890,16 @@ void Voxelizer<DataTypes>::draw()
             const int iY = ( axis+2 ) %3;
             const int iZ =  axis;
 
-            if( axis == 0)
-                glColor3f( 1, 0, 0);
-            else if( axis == 1)
-                glColor3f( 0, 1, 0);
-            else if( axis == 2)
-                glColor3f( 0, 0, 1);
-
-            for( unsigned int indexModel = 0; indexModel < vTriangularModel.size(); ++indexModel)
+            const unsigned int nbModel = vTriangularModel.size();
+            for( unsigned int indexModel = 0; indexModel < nbModel; ++indexModel)
             {
+                if( axis == 0)
+                    glColor3f( indexModel/(double)nbModel, 0, 0);
+                else if( axis == 1)
+                    glColor3f( 0, indexModel/(double)nbModel, 0);
+                else if( axis == 2)
+                    glColor3f( 0, 0, indexModel/(double)nbModel);
+
                 RasterizedVol& rasterizedVolume = rasterizedVolumes[axis][indexModel];
                 for (RasterizedVol::const_iterator it = rasterizedVolume.begin(); it != rasterizedVolume.end(); ++it)
                 {
@@ -1043,7 +971,6 @@ void Voxelizer<DataTypes>::draw()
             }
         }
         if (showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif
     }
 
 }
