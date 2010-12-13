@@ -36,6 +36,24 @@ namespace component
 
 namespace topology
 {
+template<class DataTypes>
+void TriangleSetGeometryAlgorithms< DataTypes >::init()
+{
+    EdgeSetGeometryAlgorithms<DataTypes>::init();
+
+    this->reinit();
+}
+
+template<class DataTypes>
+void TriangleSetGeometryAlgorithms< DataTypes >::reinit()
+{
+    EdgeSetGeometryAlgorithms<DataTypes>::reinit();
+
+    if (p_recomputeTrianglesOrientation.getValue())
+        this->reorderTrianglesOrientationFromNormals();
+}
+
+
 template< class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleAABB(const TriangleID i, Coord& minCoord, Coord& maxCoord) const
 {
@@ -1900,6 +1918,99 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
     myfile.close();
 }
 
+
+template <typename DataTypes>
+void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNormals()
+{
+    std::cout << "reorderTrianglesOrientationFromNormals" << std::endl;
+    Vec<3,Real> firstNormal = computeTriangleNormal(0);
+    std::cout << "firstNormal: "<< firstNormal << std::endl;
+    if (p_flipNormals.getValue())
+        firstNormal = -firstNormal;
+    std::cout << "firstNormal: "<< firstNormal << std::endl;
+
+    sofa::helper::vector<TriangleID> _neighTri = this->m_topology->getElementAroundElement(0);
+    sofa::helper::vector<TriangleID> _neighTri2, buffK, buffKK;
+    unsigned int cpt_secu = 0, max = this->m_topology->getNbTriangles();
+    Vec<3,Real> triNormal;
+    bool pair = true;
+
+
+    while (!_neighTri.empty() && cpt_secu < max)
+    {
+
+        for (unsigned int i=0; i<_neighTri.size(); ++i)
+        {
+            unsigned int triId = _neighTri[i];
+            triNormal = this->computeTriangleNormal(triId);
+            //std::cout << "triNormal: "<< triNormal << std::endl;
+            double prod = (firstNormal*triNormal)/(firstNormal.norm()*triNormal.norm());
+            //std::cout << "prod: "<< prod << std::endl;
+            if (prod < 0.0) //change orientation
+                this->m_topology->reOrientateTriangle(triId);
+        }
+
+        _neighTri2 = this->m_topology->getElementAroundElements(_neighTri);
+
+        if (pair)
+        {
+            buffK = _neighTri;
+            pair = false;
+
+            _neighTri.clear();
+            for (unsigned int i=0; i<_neighTri2.size(); ++i)
+            {
+                bool find = false;
+                unsigned int id = _neighTri2[i];
+                for (unsigned int j=0; j<buffKK.size(); ++j)
+                    if (id == buffKK[j])
+                    {
+                        find = true;
+                        break;
+                    }
+
+                if (!find)
+                    _neighTri.push_back(id);
+            }
+        }
+        else
+        {
+            buffKK = _neighTri;
+            pair = true;
+
+            _neighTri.clear();
+            for (unsigned int i=0; i<_neighTri2.size(); ++i)
+            {
+                bool find = false;
+                unsigned int id = _neighTri2[i];
+                for (unsigned int j=0; j<buffK.size(); ++j)
+                    if (id == buffK[j])
+                    {
+                        find = true;
+                        break;
+                    }
+
+                if (!find)
+                    _neighTri.push_back(id);
+            }
+        }
+
+        std::cout << "_neighTri: "<< _neighTri << std::endl;
+        std::cout << "_neighTri2: "<< _neighTri2 << std::endl;
+        std::cout << "buffk: "<< buffK << std::endl;
+        std::cout << "buffkk: "<< buffKK << std::endl;
+        //_neighTri = _neighTri2;
+        cpt_secu++;
+    }
+
+    if(cpt_secu == max)
+        std::cerr << "WARNING: TriangleSetGeometryAlgorithms: reorder triangle orientation reach security end of loop." << std::endl;
+    std::cout << "reorderTrianglesOrientationFromNormals end" << std::endl;
+    return;
+}
+
+
+
 template<class Real>
 bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c)
 {
@@ -1938,7 +2049,6 @@ bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<
         return false;
     }
 }
-
 
 
 /// Test if a point p is in the right halfplane
