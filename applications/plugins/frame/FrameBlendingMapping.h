@@ -173,18 +173,31 @@ using sofa::defaulttype::Rigid3fTypes;
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3dTypes >;
 extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3dTypes >;
-#endif
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient331dTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient332dTypes >;
+#endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3fTypes, Vec3fTypes >;
-//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3fTypes, ExtVec3fTypes >;
-#endif
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, ExtVec3fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, DeformationGradient332fTypes >;
+#endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3fTypes >;
-//extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3fTypes, Vec3dTypes >;
-#endif
-#endif
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3dTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332fTypes >;
+//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, DeformationGradient332dTypes >;
+#endif //SOFA_DOUBLE
+#endif //SOFA_FLOAT
 #endif //defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 
