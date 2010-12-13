@@ -38,412 +38,133 @@ namespace sofa
 namespace defaulttype
 {
 
-using defaulttype::Vec;
-//////////////////////////////////////////////////////////////////////////////////
-////  Specialization on Affine->Vec
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class _Material, int nbRef, int order>
-struct LinearBlendTypes<
-        StdAffineTypes<3,typename _Material::Real>,
-        StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef,order
-        >
-{
-    typedef _Material Material;
-    typedef typename Material::Real Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
-    typedef StdAffineTypes<3,Real> In;
-    typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
-    typedef typename In::Coord InCoord;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename In::VecCoord VecInCoord;
-    typedef typename In::VecDeriv VecInDeriv;
-
-    struct JacobianBlock
-    {
-        /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
-        OutCoord Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
-    };
-
-    Vec<nbRef,unsigned> index;
-    Vec<nbRef,JacobianBlock> Jb;
-
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
-    {
-        index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
-        {
-            //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
-            Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
-            Jb[i].Pt= w[i];
-        }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
-        //                cerr << "weights = " << w << endl;
-    }
-
-    OutCoord apply( const VecInCoord& in )  // Called in Apply
-    {
-        OutCoord result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
-        {
-            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
-        }
-        return result;
-    }
-
-    OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
-    {
-        OutDeriv result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
-        }
-        return result;
-        //                return getVCenter( d ) * Jb.Pt + getVAffine( d ) * Jb.Pa;
-    }
-
-    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
-    {
-        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-          */
-
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            for (unsigned int j = 0; j < 3; ++j)
-            {
-                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
-                res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
-            }
-        }
-        //                InDeriv res;
-        //                for (unsigned int i = 0; i < 3; ++i)
-        //                {
-        //                    getVCenter(res)[i] = Jb.Pt * d[i];
-        //                    getVAffine(res)[i] = Jb.Pa * d[i];
-        //                }
-        //                return res;
-    }
-
-    //return InDeriv (
-    //        Jb.Pa[0]*d[0], Jb.Pa[1]*d[0], Jb.Pa[2]*d[0], d[0]*Jb.Pt,
-    //        Jb.Pa[0]*d[1], Jb.Pa[1]*d[1], Jb.Pa[2]*d[1], d[1]*Jb.Pt,
-    //        Jb.Pa[0]*d[2], Jb.Pa[1]*d[2], Jb.Pa[2]*d[2], d[2]*Jb.Pt
-    //        );
-
-
-};
-
-
-using defaulttype::Vec;
-//////////////////////////////////////////////////////////////////////////////////
-////  Specialization on Affine->ExtVec3 (same Real)
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class _Material, int nbRef, int order>
-struct LinearBlendTypes<
-        StdAffineTypes<3,typename _Material::Real>,
-        ExtVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef,order
-        >
-{
-    typedef _Material Material;
-    typedef typename Material::Real Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
-    typedef StdAffineTypes<3,Real> In;
-    typedef ExtVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
-    typedef typename In::Coord InCoord;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename In::VecCoord VecInCoord;
-    typedef typename In::VecDeriv VecInDeriv;
-
-    struct JacobianBlock
-    {
-        /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
-        OutCoord Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
-    };
-
-    Vec<nbRef,unsigned> index;
-    Vec<nbRef,JacobianBlock> Jb;
-
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
-    {
-        index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
-        {
-            //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
-            Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
-            Jb[i].Pt= w[i];
-        }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
-        //                cerr << "weights = " << w << endl;
-    }
-
-    OutCoord apply( const VecInCoord& in )  // Called in Apply
-    {
-        OutCoord result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
-        {
-            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
-        }
-        return result;
-    }
-
-    OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
-    {
-        OutDeriv result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
-        }
-        return result;
-        //                return getVCenter( d ) * Jb.Pt + getVAffine( d ) * Jb.Pa;
-    }
-
-    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
-    {
-        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-          */
-
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            for (unsigned int j = 0; j < 3; ++j)
-            {
-                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
-                res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
-            }
-        }
-        //                InDeriv res;
-        //                for (unsigned int i = 0; i < 3; ++i)
-        //                {
-        //                    getVCenter(res)[i] = Jb.Pt * d[i];
-        //                    getVAffine(res)[i] = Jb.Pa * d[i];
-        //                }
-        //                return res;
-    }
-
-    //return InDeriv (
-    //        Jb.Pa[0]*d[0], Jb.Pa[1]*d[0], Jb.Pa[2]*d[0], d[0]*Jb.Pt,
-    //        Jb.Pa[0]*d[1], Jb.Pa[1]*d[1], Jb.Pa[2]*d[1], d[1]*Jb.Pt,
-    //        Jb.Pa[0]*d[2], Jb.Pa[1]*d[2], Jb.Pa[2]*d[2], d[2]*Jb.Pt
-    //        );
-
-
-};
-
-//////////////////////////////////////////////////////////////////////////////////
-////  Specialization on Affine->ExtVec3f
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class _Material, int nbRef, int order>
-struct LinearBlendTypes<
-        StdAffineTypes<3,typename _Material::Real>,
-        ExtVec3fTypes,
-        _Material, nbRef,order
-        >
-{
-    typedef _Material Material;
-    typedef typename Material::Real Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
-    typedef StdAffineTypes<3,Real> In;
-    typedef ExtVec3fTypes Out;
-    typedef typename In::Coord InCoord;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename In::VecCoord VecInCoord;
-    typedef typename In::VecDeriv VecInDeriv;
-
-    struct JacobianBlock
-    {
-        /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
-        OutCoord Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
-    };
-
-    Vec<nbRef,unsigned> index;
-    Vec<nbRef,JacobianBlock> Jb;
-
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
-    {
-        index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
-        {
-            //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
-            Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
-            Jb[i].Pt= w[i];
-        }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
-    }
-
-    OutCoord apply( const VecInCoord& in )  // Called in Apply
-    {
-        OutCoord result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
-        {
-            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
-        }
-        return result;
-    }
-
-    OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
-    {
-        OutDeriv result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
-        }
-        return result;
-        //                return getVCenter( d ) * Jb.Pt + getVAffine( d ) * Jb.Pa;
-    }
-
-    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
-    {
-        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-          */
-
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            for (unsigned int j = 0; j < 3; ++j)
-            {
-                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
-                res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
-            }
-        }
-        //                InDeriv res;
-        //                for (unsigned int i = 0; i < 3; ++i)
-        //                {
-        //                    getVCenter(res)[i] = Jb.Pt * d[i];
-        //                    getVAffine(res)[i] = Jb.Pa * d[i];
-        //                }
-        //                return res;
-    }
-
-    //return InDeriv (
-    //        Jb.Pa[0]*d[0], Jb.Pa[1]*d[0], Jb.Pa[2]*d[0], d[0]*Jb.Pt,
-    //        Jb.Pa[0]*d[1], Jb.Pa[1]*d[1], Jb.Pa[2]*d[1], d[1]*Jb.Pt,
-    //        Jb.Pa[0]*d[2], Jb.Pa[1]*d[2], Jb.Pa[2]*d[2], d[2]*Jb.Pt
-    //        );
-
-
-};
-
-
-//////////////////////////////////////////////////////////////////////////////////
-////  Rigid->Vec
-//////////////////////////////////////////////////////////////////////////////////
-
-template<class _Material, int nbRef, int order>
-struct LinearBlendTypes<
-        StdRigidTypes<3,typename _Material::Real>,
-        StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef,order
-        >
-{
-    typedef _Material Material;
-    typedef typename Material::Real Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
-    typedef StdRigidTypes<3,Real> In;
-    typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
-    typedef typename In::Coord InCoord;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename In::VecCoord VecInCoord;
-    typedef typename In::VecDeriv VecInDeriv;
-
-    struct JacobianBlock
-    {
-        /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
-        OutCoord Pa;		///< position of point in local frame, times weight.  dp = dMa_i (w_i \bar M_i p_0)  : affine part
-        Real Pt;			///< Weight:  dp = dMt_i (w_i)  : translation part
-    };
-
-    Vec<nbRef,unsigned> index;
-    Vec<nbRef,JacobianBlock> Jb;
-
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
-    {
-        index = Index;
-        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
-        {
-            Jb[i].Pa= InitialTransform[index[i]].pointToChild(InitialPos) * w[i] ;
-            Jb[i].Pt= w[i];
-        }
-        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
-    }
-
-    /// Transform a Vec
-    OutCoord apply( const VecInCoord& in )  // Called in Apply
-    {
-        OutCoord result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
-        {
-            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].rotate(Jb[i].Pa);
-        }
-        return result;
-    }
-
-    OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
-    {
-        OutDeriv result;
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            result += getLinear( in[index[i]] ) * Jb[i].Pt + cross(getAngular(in[index[i]]), Jb[i].Pa);
-        }
-        return result;
-    }
-
-    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
-    {
-        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
-          */
-        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
-        {
-            getLinear(res[index[i]])  += d * Jb[i].Pt;
-            getAngular(res[index[i]]) += cross(Jb[i].Pa, d);
-        }
-    }
-
-};
-
-//////////////////////////////////////////////////////////////////////////////////
-////  Specialization on Affine->DeformationGradient first order
-//////////////////////////////////////////////////////////////////////////////////
 template<int N, class R > Mat<N,N,R> identity()
 {
     Mat<N,N,R> m;
-    for(unsigned i=0; i<N; i++)
+    for (unsigned i=0; i<N; i++)
         m[i][i] = (R)1.0;
     return m;
 }
+
 template<int N, class R > Mat<N,N,R> diag( const R& d )
 {
     Mat<N,N,R> m;
-    for(unsigned i=0; i<N; i++)
+    for (unsigned i=0; i<N; i++)
         m[i][i] = d;
     return m;
 }
 
-template<class _Material, int nbRef, int order>
+
+
+using defaulttype::Vec;
+//////////////////////////////////////////////////////////////////////////////////
+////  Specialization on Affine
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class Out, class _Material, int nbRef, int order>
+struct LinearBlendTypes<
+        StdAffineTypes<3,typename _Material::Real>,
+        Out, _Material, nbRef,order
+        >
+{
+    typedef _Material Material;
+    typedef typename Material::Real Real;
+    typedef typename Material::Gradient MaterialDeriv;
+    typedef typename Material::Hessian MaterialMat;
+    typedef StdAffineTypes<3,Real> In;
+    typedef typename In::Coord InCoord;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename In::VecDeriv VecInDeriv;
+
+    struct JacobianBlock
+    {
+        /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
+        OutCoord Pa;		///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;			///< = dp = dMt_i (w_i)  : translation part
+    };
+
+    Vec<nbRef,unsigned> index;
+    Vec<nbRef,JacobianBlock> Jb;
+
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    {
+        index = Index;
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        {
+            //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
+            Jb[i].Pa= In::inverse(InitialTransform[index[i]]).pointToParent(InitialPos) *w[i];
+            Jb[i].Pt= w[i];
+        }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+        //                cerr << "weights = " << w << endl;
+    }
+
+    OutCoord apply( const VecInCoord& in )  // Called in Apply
+    {
+        OutCoord result;
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
+        }
+        return result;
+    }
+
+    OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
+    {
+        OutDeriv result;
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].getAffine() * Jb[i].Pa;
+        }
+        return result;
+        //                return getVCenter( d ) * Jb.Pt + getVAffine( d ) * Jb.Pa;
+    }
+
+    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
+    {
+        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
+          */
+
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            for (unsigned int j = 0; j < 3; ++j)
+            {
+                res[index[i]].getCenter()[j] += Jb[i].Pt * d[j];
+                res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
+            }
+        }
+        //                InDeriv res;
+        //                for (unsigned int i = 0; i < 3; ++i)
+        //                {
+        //                    getVCenter(res)[i] = Jb.Pt * d[i];
+        //                    getVAffine(res)[i] = Jb.Pa * d[i];
+        //                }
+        //                return res;
+    }
+
+    //return InDeriv (
+    //        Jb.Pa[0]*d[0], Jb.Pa[1]*d[0], Jb.Pa[2]*d[0], d[0]*Jb.Pt,
+    //        Jb.Pa[0]*d[1], Jb.Pa[1]*d[1], Jb.Pa[2]*d[1], d[1]*Jb.Pt,
+    //        Jb.Pa[0]*d[2], Jb.Pa[1]*d[2], Jb.Pa[2]*d[2], d[2]*Jb.Pt
+    //        );
+
+
+};
+
+
+using defaulttype::Vec;
+//////////////////////////////////////////////////////////////////////////////////
+////  Specialization on Affine->DeformationGradient first order
+//////////////////////////////////////////////////////////////////////////////////
+template<class _Material, int nbRef>
 struct LinearBlendTypes<
         StdAffineTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 1, typename  _Material::Real>,
-        _Material, nbRef,order
+        _Material, nbRef,1
         >
 {
     typedef _Material Material;
@@ -540,11 +261,11 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 
-template<class  _Material, int nbRef, int order>
+template<class  _Material, int nbRef>
 struct LinearBlendTypes<
         StdAffineTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 2, typename _Material::Real>,
-        _Material, nbRef,order
+        _Material, nbRef,2
         >
 {
     typedef _Material Material;
@@ -705,13 +426,12 @@ struct LinearBlendTypes<
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////  Specialization on Quadratic -> Vec
+////  Specialization on Quadratic
 //////////////////////////////////////////////////////////////////////////////////
-template<class _Material, int nbRef, int order>
+template<class Out, class _Material, int nbRef>
 struct LinearBlendTypes<
         StdQuadraticTypes<3,typename _Material::Real>,
-        StdVectorTypes< Vec<3,typename _Material::Real>, Vec<3,typename _Material::Real>, typename _Material::Real >,
-        _Material, nbRef,order
+        Out, _Material, nbRef,0
         >
 {
     typedef _Material Material;
@@ -719,7 +439,6 @@ struct LinearBlendTypes<
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdQuadraticTypes<3,Real> In;
-    typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
     typedef typename In::QuadraticCoord QuadraticCoord; // vec9
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
@@ -787,11 +506,11 @@ struct LinearBlendTypes<
 ////  Specialization on Quadratic->DeformationGradient first order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef, int order>
+template<class _Material, int nbRef>
 struct LinearBlendTypes<
         StdQuadraticTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 1, typename  _Material::Real>,
-        _Material, nbRef,order
+        _Material, nbRef,1
         >
 {
     typedef _Material Material;
@@ -892,11 +611,11 @@ struct LinearBlendTypes<
 ////  Specialization on Quadratic->DeformationGradient second order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef, int order>
+template<class _Material, int nbRef>
 struct LinearBlendTypes<
         StdQuadraticTypes<3,typename _Material::Real>,
         DeformationGradientTypes<3, 3, 2, typename  _Material::Real>,
-        _Material, nbRef,order
+        _Material, nbRef,2
         >
 {
     typedef _Material Material;
@@ -1149,6 +868,84 @@ struct LinearBlendTypes<
 //            }
 //        };
 
+//////////////////////////////////////////////////////////////////////////////////
+////  Rigid->Vec
+//////////////////////////////////////////////////////////////////////////////////
+
+template<class Out, class _Material, int nbRef>
+struct LinearBlendTypes<
+        StdRigidTypes<3,typename _Material::Real>,
+        Out, _Material, nbRef,0
+        >
+{
+    typedef _Material Material;
+    typedef typename Material::Real Real;
+    typedef typename Material::Gradient MaterialDeriv;
+    typedef typename Material::Hessian MaterialMat;
+    typedef StdRigidTypes<3,Real> In;
+    typedef typename In::Coord InCoord;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename In::VecCoord VecInCoord;
+    typedef typename In::VecDeriv VecInDeriv;
+
+    struct JacobianBlock
+    {
+        /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
+          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+          */
+        OutCoord Pa;    ///< position of point in local frame, times weight.  dp = dMa_i (w_i \bar M_i p_0)  : affine part
+        Real Pt;      ///< Weight:  dp = dMt_i (w_i)  : translation part
+    };
+
+    Vec<nbRef,unsigned> index;
+    Vec<nbRef,JacobianBlock> Jb;
+
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    {
+        index = Index;
+        unsigned i=0; for( ; i<nbRef && w[i]>0; i++ )
+        {
+            Jb[i].Pa= InitialTransform[index[i]].pointToChild(InitialPos) * w[i] ;
+            Jb[i].Pt= w[i];
+        }
+        if( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
+    }
+
+    /// Transform a Vec
+    OutCoord apply( const VecInCoord& in )  // Called in Apply
+    {
+        OutCoord result;
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            result += in[index[i]].getCenter() * Jb[i].Pt + in[index[i]].rotate(Jb[i].Pa);
+        }
+        return result;
+    }
+
+    OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
+    {
+        OutDeriv result;
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            result += getLinear( in[index[i]] ) * Jb[i].Pt + cross(getAngular(in[index[i]]), Jb[i].Pa);
+        }
+        return result;
+    }
+
+    void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
+    {
+        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
+          */
+        for( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            getLinear(res[index[i]])  += d * Jb[i].Pt;
+            getAngular(res[index[i]]) += cross(Jb[i].Pa, d);
+        }
+    }
+
+};
+
 }
 
 
@@ -1175,11 +972,11 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
         .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes > >()
         .add< FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes > >()
         .add< FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes > >()
-        //.add< FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes > >()
+        //.add< FrameBlendingMapping< Quadratic3dTypes, ExtVec3dTypes > >()
         .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes > >()
         .add< FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, Vec3dTypes > >()
-        //.add< FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes > >()
+        .add< FrameBlendingMapping< Rigid3dTypes, ExtVec3dTypes > >()
         //.add< FrameBlendingMapping< Rigid3dTypes, DeformationGradient331dTypes > >()
         //.add< FrameBlendingMapping< Rigid3dTypes, DeformationGradient332dTypes > >()
 #endif
@@ -1200,16 +997,15 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
 
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3dTypes >;
-template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3dTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes >;
+//template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient331dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, DeformationGradient332dTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3dTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient331dTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient332dTypes >;
 #endif //SOFA_FLOAT
