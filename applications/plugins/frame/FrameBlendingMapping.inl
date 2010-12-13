@@ -406,7 +406,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             for (unsigned j=0; j<nbRef; j++ )
             {
                 w=m_weights[i][j];
-                //                            cerr<<"  weight = "<< w << endl;
+//                                                        cerr<<"  weight = "<< w << endl;
                 m_dweight[i][j].fill(0);
                 m_ddweight[i][j].fill(0);
                 if (w)
@@ -414,7 +414,10 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     w2=w*w; w3=w2*w; w4=w3*w;
                     for(unsigned k=0; k<num_spatial_dimensions; k++)
                         u[k]=(xto[i][k]-xfrom[j][k]);
-                    m_dweight[i][j] = - u * w2* 2.0;
+//                                m_dweight[i][j] = - u * w2* 2.0;
+                    m_dweight[i][j] = u * w2; // hack FF for a special case. Todo: compute this right.
+//                                cerr<<" xfrom[j]  = "<< xfrom[j] << endl;
+//                                cerr<<"  m_dweight = "<< m_dweight[i][j] << endl;
                     for(unsigned k=0; k<num_spatial_dimensions; k++)
                         m_ddweight[i][j][k][k]= - w2* 2.0;
                     for(unsigned k=0; k<num_spatial_dimensions; k++)
