@@ -25,60 +25,45 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
            AffineTypes.h \
- #          AffineSkinningMapping.h \
- #          AffineSkinningMapping.inl \
            DeformationGradientTypes.h \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
            FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
- #           FrameDualQuatSkinningMapping.h \
- #           FrameDualQuatSkinningMapping.inl \
+#            FrameDualQuatSkinningMapping.h \
+#            FrameDualQuatSkinningMapping.inl \
            FrameFixedConstraint.h \
            FrameFixedConstraint.inl \
            FrameForceField.h \
 #           FrameHookeForceField.h \
- #          FrameHookeForceField.inl \
-          FrameLoydAlgo.h \
-          FrameLoydAlgo.inl \
+#           FrameHookeForceField.inl \
            FrameMass.h \
            FrameMechanicalObject.h \
-           FrameSampler.h \
-           FrameSampler.inl \
 #           FrameSpringForceField2.h \
 #           FrameSpringForceField2.inl \
            GridMaterial.h \
            GridMaterial.inl \
            initFrame.h \
            MappingTypes.h \
-            NewMaterial.h \
-            NewHookeMaterial.h \
-            NewHookeMaterial.inl \
+           NewMaterial.h \
+           NewHookeMaterial.h \
+           NewHookeMaterial.inl \
 #           PrimitiveSkinningMapping.h \
 #           PrimitiveSkinningMapping.inl \
-#           RigidSkinningMapping.h \
-#           RigidSkinningMapping.inl \
-#           QuadraticSkinningMapping.h \
-#           QuadraticSkinningMapping.inl \
            QuadraticTypes.h
            
 SOURCES += \
-#           AffineSkinningMapping.cpp \
            FrameBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
- #           FrameDualQuatSkinningMapping.cpp \
+#           FrameDualQuatSkinningMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
 #           FrameHookeForceField.cpp \
-           FrameLoydAlgo.cpp \
            FrameMechanicalObject.cpp \
-           FrameSampler.cpp \
- #          FrameSpringForceField2.cpp \
+#           FrameSpringForceField2.cpp \
            GridMaterial.cpp \
-            NewHookeMaterial.cpp \
+           NewHookeMaterial.cpp \
 #           PrimitiveSkinningMapping.cpp \
-#           QuadraticSkinningMapping.cpp \
-#           RigidSkinningMapping.cpp \
            initFrame.cpp
