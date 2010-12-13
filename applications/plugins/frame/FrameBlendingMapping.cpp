@@ -696,7 +696,6 @@ struct LinearBlendTypes<
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdRigidTypes<3,Real> In;
-    typedef StdVectorTypes< Vec<3,Real>, Vec<3,Real>, Real > Out;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
@@ -764,7 +763,6 @@ struct LinearBlendTypes<
 
 };
 
-}
 
 //////////////////////////////////////////////////////////////////////////////////
 ////  Specialization on Rigid->DeformationGradient first order
@@ -1034,6 +1032,7 @@ struct LinearBlendTypes<
 
 };
 
+}
 //////////////////////////////////////////////////////////////////////////////////
 
 namespace component
