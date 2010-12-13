@@ -955,6 +955,7 @@ void Voxelizer<DataTypes>::draw()
         // Not implemented
 #else
         if (showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDisable( GL_LIGHTING);
         for ( unsigned int axis=0; axis<3; ++axis )
         {
             if ((showWhichAxis.getValue() != 0) && showWhichAxis.getValue() != axis+1) continue;
