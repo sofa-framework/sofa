@@ -47,6 +47,38 @@ using sofa::helper::system::DataRepository;
 using sofa::helper::system::SetDirectory;
 using sofa::simulation::tree::GNode;
 
+
+
+#ifndef WIN32
+#include <dlfcn.h>
+bool loadPlugin(const char* filename)
+{
+    void *handle;
+    handle=dlopen(filename, RTLD_LAZY);
+    if (!handle)
+    {
+        std::cerr<<"Error loading plugin "<<filename<<": "<<dlerror()<<std::endl;
+        return false;
+    }
+    std::cerr<<"Plugin "<<filename<<" loaded."<<std::endl;
+    return true;
+}
+#else
+bool loadPlugin(const char* filename)
+{
+    HINSTANCE DLLHandle;
+    DLLHandle = LoadLibraryA(filename); //warning: issue between unicode and ansi encoding on Visual c++ -> force to ansi-> dirty!
+    if (DLLHandle == NULL)
+    {
+        std::cerr<<"Error loading plugin "<<filename<<std::endl;
+        return false;
+    }
+    std::cerr<<"Plugin "<<filename<<" loaded."<<std::endl;
+    return true;
+}
+#endif
+
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -210,6 +242,7 @@ int main(int argc, char** argv)
     std::string directory;
     std::vector<std::string> fileArguments;
     std::vector<std::string> sceneFiles;
+    std::vector<std::string> plugins;
     unsigned int iterations = 100;
     bool reinit = false;
     bool topology = false;
@@ -225,6 +258,7 @@ int main(int argc, char** argv)
     .option(&reinit, 'r', "reinit", "Recreate the references state files")
     .option(&iterations, 'i', "iteration", "Number of iterations for testing")
     .option(&directory, 'd', "directory", "The directory for reference files")
+    .option(&plugins,'p',"plugin","load given plugins")
     .option(&topology, 't', "topology", "Specific mode to run tests on topology")
     .option(&lifetime, 'l', "lifetime", "Maximum execution time in seconds (default: 0 -> no limit")
     (argc, argv);
@@ -236,6 +270,10 @@ int main(int argc, char** argv)
         watchdog.start(lifetime);
     }
 #endif
+
+    for (unsigned int i=0; i<plugins.size(); i++)
+        loadPlugin(plugins[i].c_str());
+
 
     for(size_t i = 0; i < fileArguments.size(); ++i)
     {
