@@ -353,7 +353,7 @@ void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
     serr<<"addHexa() not supported." << sendl;
 }
 
-void BaseMeshTopology::reOrientateTriangle(TriangleID id)
+void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
 {
     serr<<"reOrientateTriangle() not supported." << sendl;
 }
