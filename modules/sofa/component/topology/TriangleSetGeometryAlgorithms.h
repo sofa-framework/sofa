@@ -61,15 +61,22 @@ public:
 
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-        ,showTriangleIndices (core::objectmodel::Base::initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
-        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
+        ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
+        , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
         , _drawColor(initData(&_drawColor, Vector3(0.2,1.0,1.0), "drawColorTriangles", "RGB code color used to draw edges."))
+        , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
+        , p_flipNormals(initData(&p_flipNormals, false, "flipNormals","if true, will flip normal of the first triangle used to recompute triangle orientation."))
+
     {
     }
 
     virtual ~TriangleSetGeometryAlgorithms() {}
 
     virtual void draw();
+
+    virtual void init();
+
+    virtual void reinit();
 
     void computeTriangleAABB(const TriangleID i, Coord& minCoord, Coord& maxCoord) const;
 
@@ -250,10 +257,17 @@ public:
      */
     void writeMSHfile(const char *filename) const;
 
+    /** \brief This function will changed vertex index in triangles if normal from one to another triangle are in opposite direction.
+      First triangle index is used as ground truth. Use option flipNormals if first triangle direction is wrong.
+      */
+    void reorderTrianglesOrientationFromNormals();
+
 protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
     Data<Vector3> _drawColor;
+    Data<bool> p_recomputeTrianglesOrientation;
+    Data<bool> p_flipNormals;
 
 };
 

@@ -51,7 +51,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
     this->m_topology = this->getContext()->getMeshTopology();
 
     // Initialization PointIndicesScale
-    this->computeIndicesScale();
+    this->reinit();
 }
 
 template <class DataTypes>
