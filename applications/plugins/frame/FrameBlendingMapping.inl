@@ -45,66 +45,6 @@
 namespace sofa
 {
 
-namespace defaulttype
-{
-
-///////////////////////////////////////////////
-//        Avoid Out specializations          //
-///////////////////////////////////////////////
-template<class _Real, int Dim>
-inline const Vec<3,_Real>& center(const Vec<Dim,_Real>& c)
-{
-    return DeformationGradientTypes<3, 3, 2, _Real>::center(c);
-}
-
-template<class _Real, int Dim>
-inline Vec<3,_Real>& center(Vec<Dim,_Real>& c)
-{
-    return DeformationGradientTypes<3, 3, 2, _Real>::center(c);
-}
-
-template<class _Real>
-inline const Vec<3,_Real>& center(const Vec<3,_Real>& c)
-{
-    return c;
-}
-
-template<class _Real>
-inline Vec<3,_Real>& center(Vec<3,_Real>& c)
-{
-    return c;
-}
-
-template<class _Real, int Dim>
-inline Mat<Dim, Dim, _Real> covNN(const Vec<Dim,_Real>& v1, const Vec<Dim,_Real>& v2)
-{
-    Mat<Dim, Dim, _Real> res;
-    for( unsigned int i = 0; i < Dim; ++i)
-        for( unsigned int j = i; j < Dim; ++j)
-        {
-            res[i][j] = v1[i] * v2[j];
-            res[j][i] = res[i][j];
-        }
-    return res;
-}
-
-template<class _Real, int Dim1, int Dim2>
-inline Mat<Dim1, Dim2, _Real> covMN(const Vec<Dim1,_Real>& v1, const Vec<Dim2,_Real>& v2)
-{
-    Mat<Dim1, Dim2, _Real> res;
-    for( unsigned int i = 0; i < Dim1; ++i)
-        for( unsigned int j = i; j < Dim2; ++j)
-        {
-            res[i][j] = v1[i] * v2[j];
-            res[j][i] = res[i][j];
-        }
-    return res;
-}
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-}
-
 namespace component
 {
 

@@ -97,7 +97,6 @@ public:
     // Conversion types
     static const unsigned nbRef = 4;
     typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::DataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > InOut;
-    typedef typename InOut::JacobianBlock JacobianBlock;
 
 
 public:
