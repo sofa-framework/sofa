@@ -1014,7 +1014,6 @@ void VisualModelImpl::updateVisual()
                 computeMesh();
             }
         }
-
         computePositions();
         computeNormals();
         if (m_updateTangents.getValue())
@@ -1174,6 +1173,8 @@ void VisualModelImpl::handleTopologyChange()
 
     ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
     ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
+    ResizableExtVector<Coord>& vertices = *(m_vertices.beginEdit());
+
 
     std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
@@ -1521,6 +1522,60 @@ void VisualModelImpl::handleTopologyChange()
             break;
         }
 
+        case core::topology::POINTSADDED:
+        {
+            using sofa::core::behavior::BaseMechanicalState;
+            BaseMechanicalState* mstate;
+            const unsigned int nbPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+            m_topology->getContext()->get(mstate);
+            /* fjourdes:
+            ! THIS IS OBVIOUSLY NOT THE APPROPRIATE WAY TO DO IT !
+            However : VisualModelImpl stores in two separates data the vertices
+              - Data position in inherited ExtVec3State
+              - Data vertices
+            I don t know what is the purpose of the Data vertices (except at the init maybe ? )
+            When doing topological operations on a graph like
+            (removal points triangles / add of points triangles for instance)
+            + Hexas
+            ...
+            + Triangles
+            + - MechObj Triangles
+            + - TriangleSetTopologyContainer Container
+            + - Hexa2TriangleTopologycalMapping
+            + + VisualModel
+            + + - OglModel visual
+            + + - IdentityMapping
+
+            The IdentityMapping reflects the changes in topology by updating the Data position of the OglModel
+            knowing the Data position of the MechObj named Triangles.
+            However the Data vertices which is used to compute the normals is not updated, and the next computeNormals will
+            fail. BTW this is odd that normals are computed using Data vertices since Data normals it belongs to ExtVec3State
+            (like Data position) ...
+            So my question is how the changes in the Data position of and OglModel are reflected to its Data vertices?
+            It must be done somewhere since ultimately visual models are drawn correctly by OglModel::internalDraw !
+            */
+
+            if (mstate)
+            {
+                if (this->f_printLog.getValue())
+                {
+                    sout << "VisualModel: oldsize    " << this->getSize()  << sendl;
+                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+                }
+
+                vertices.resize(mstate->getSize());
+
+                for (unsigned int i=0; i<vertices.size(); i++)
+                {
+                    vertices[i][0] = (Real)mstate->getPX(i);
+                    vertices[i][1] = (Real)mstate->getPY(i);
+                    vertices[i][2] = (Real)mstate->getPZ(i);
+                }
+            }
+            updateVisual();
+            break;
+        }
+
         default:
             // Ignore events that are not Triangle  related.
             break;
@@ -1531,6 +1586,7 @@ void VisualModelImpl::handleTopologyChange()
 
     m_triangles.endEdit();
     m_quads.endEdit();
+    m_vertices.endEdit();
 }
 
 void VisualModelImpl::initVisual()

@@ -100,6 +100,9 @@ public:
         , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
         , modified(false)
     {
+        m_positions.setGroup("Vector");
+        m_restPositions.setGroup("Vector");
+        m_vnormals.setGroup("Vector");
     }
 
     virtual void resize(int vsize)
