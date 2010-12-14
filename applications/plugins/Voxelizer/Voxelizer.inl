@@ -48,9 +48,6 @@ namespace component
 namespace loader
 {
 
-// cf CudaRasterizer.inl
-static const int SHIFT_TRIANGLE_GROUP_SIZE = sofa::gpu::cuda::CudaLDI_get_shift_triangle_group_size();
-
 template <class DataTypes>
 Voxelizer<DataTypes>::Voxelizer()
     : useROI (initData(&useROI, false, "useROI", "Use the given regions of interest."))
@@ -144,7 +141,7 @@ void Voxelizer<DataTypes>::init()
             //if( name.substr(0, 3).compare("../") == 0)
             //    name = name.substr( 3);
             MTopology* model = findObject<MTopology>(name, rootNode);
-            if( !model) serr << "impossible de caster :" << name << "." << sendl;
+            if( !model) serr << "impossible to cast :" << name << "." << sendl;
             vTriangularModel.push_back(model);
         }
     }
@@ -445,7 +442,7 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                         int tid = ldi.cellLayers[layer][l][c].tid;
 
                         //if (tid == -1) break;
-                        int tg = (tid >> (SHIFT_TRIANGLE_GROUP_SIZE + Rasterizer::SHIFT_TID)) / tgsize; // tid >> (SHIFT_TRIANGLE_GROUP_SIZE+SHIFT_TID);
+                        int tg = (tid >> Rasterizer::SHIFT_TID) / tgsize; // tid >> (SHIFT_TRIANGLE_GROUP_SIZE+SHIFT_TID);
                         int obj = (tg < (int)tgobj.size()) ? tgobj[tg] : -1;
 
                         if (obj == -1)
@@ -894,11 +891,11 @@ void Voxelizer<DataTypes>::draw()
             for( unsigned int indexModel = 0; indexModel < nbModel; ++indexModel)
             {
                 if( axis == 0)
-                    glColor3f( indexModel/(double)nbModel, 0, 0);
+                    glColor3f( (indexModel+1)/(double)nbModel, 0, 0);
                 else if( axis == 1)
-                    glColor3f( 0, indexModel/(double)nbModel, 0);
+                    glColor3f( 0, (indexModel+1)/(double)nbModel, 0);
                 else if( axis == 2)
-                    glColor3f( 0, 0, indexModel/(double)nbModel);
+                    glColor3f( 0, 0, (indexModel+1)/(double)nbModel);
 
                 RasterizedVol& rasterizedVolume = rasterizedVolumes[axis][indexModel];
                 for (RasterizedVol::const_iterator it = rasterizedVolume.begin(); it != rasterizedVolume.end(); ++it)
