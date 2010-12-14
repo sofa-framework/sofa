@@ -288,7 +288,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 
     // Insert new samples
     //    gridMaterial->computeUniformSampling(points,targetSampleNumber.getValue());
-    gridMaterial->computeRegularSampling(points,1);
+    gridMaterial->computeRegularSampling(points,3);
 
     std::cout<<"Inserting "<<points.size()-xto0.size()<<" gauss points..."<<std::endl;
 
@@ -364,7 +364,8 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
         {
             for (unsigned int i=0; i<xto.size(); i++ )
             {
-                Vec<3,OutReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
+                Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] ); // OutReal??
+
                 // get the 2 closest primitives
                 for (unsigned int j=0; j<nbRef; j++ )
                 {
@@ -372,20 +373,20 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     m_dweight[i][j].fill(0);
                     m_ddweight[i][j].fill(0);
                 }
-                m_weights[i][0]=std::numeric_limits<OutReal>::max();
-                m_weights[i][1]=std::numeric_limits<OutReal>::max();
+                m_weights[i][0]=std::numeric_limits<InReal>::max();
+                m_weights[i][1]=std::numeric_limits<InReal>::max();
                 for (unsigned int j=0; j<xfrom.size(); j++ )
                 {
-                    Vec<3,OutReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
-                    OutReal d=(cto-cfrom).norm();
+                    Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
+                    InReal d=(cto-cfrom).norm();
                     if(m_weights[i][0]>d) {m_weights[i][0]=d; index[i][0]=j;}
                     else if(m_weights[i][1]>d) {m_weights[i][1]=d; index[i][1]=j;}
                 }
-                Vec<3,OutReal> cfrom1; In::get( cfrom1[0],cfrom1[1],cfrom1[2], xfrom[index[i][0]] );
-                Vec<3,OutReal> cfrom2; In::get( cfrom2[0],cfrom2[1],cfrom2[2], xfrom[index[i][1]] );
-                Vec<3,OutReal> u=cfrom2-cfrom1;
-                OutReal d=u.norm2(); u=u/d;
-                OutReal d1=dot(cto-cfrom1,u),d2=dot(cto-cfrom2,u);
+                Vec<3,InReal> cfrom1; In::get( cfrom1[0],cfrom1[1],cfrom1[2], xfrom[index[i][0]] );
+                Vec<3,InReal> cfrom2; In::get( cfrom2[0],cfrom2[1],cfrom2[2], xfrom[index[i][1]] );
+                Vec<3,InReal> u=cfrom2-cfrom1;
+                InReal d=u.norm2(); u=u/d;
+                InReal d1=dot(cto-cfrom1,u),d2=dot(cto-cfrom2,u);
                 if(d1<0) d1=-d1; if(d2<0) d2=-d2;
                 if(d1>d) m_weights[i][1]=1;
                 else if(d2>d) m_weights[i][0]=1;
@@ -400,7 +401,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
         {
             for (unsigned int i=0; i<xto.size(); i++ )
             {
-                Vec<3,OutReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
+                Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] ); // OutReal??
                 // get the nbRef closest primitives
                 for (unsigned int j=0; j<nbRef; j++ )
                 {
@@ -410,11 +411,11 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 //  cerr<<"FrameBlendingMapping<TIn, TOut>::updateWeights, xto = "<< xto[i] << endl;
                 for (unsigned int j=0; j<xfrom.size(); j++ )
                 {
-                    Vec<3,OutReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
-                    OutReal w=(cto-cfrom)*(cto-cfrom);
+                    Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
+                    InReal w=(cto-cfrom)*(cto-cfrom);
                     // cerr<<"  distance = "<< sqrt(w) << endl;
                     if(w!=0) w=1./w;
-                    else w=std::numeric_limits<OutReal>::max();
+                    else w=std::numeric_limits<InReal>::max();
                     unsigned m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
                     if(m!=nbRef)
                     {
@@ -430,14 +431,14 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 // compute weight gradients
                 for (unsigned j=0; j<nbRef; j++ )
                 {
-                    OutReal w=m_weights[i][j];
+                    InReal w=m_weights[i][j];
                     //    cerr<<"  weight = "<< w << endl;
                     m_dweight[i][j].fill(0);
                     m_ddweight[i][j].fill(0);
                     if (w)
                     {
-                        OutReal w2=w*w,w3=w2*w;
-                        Vec<3,OutReal> u;
+                        InReal w2=w*w,w3=w2*w;
+                        Vec<3,InReal> u;
                         for(unsigned k=0; k<3; k++)
                             u[k]=(xto[i][k]-xfrom[j][k]);
                         m_dweight[i][j] = - u * w2* 2.0;
@@ -472,7 +473,7 @@ void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
 
     for (unsigned int i = 0; i < xtoSize; ++i)
     {
-        OutReal sumWeights = 0,wn;
+        InReal sumWeights = 0,wn;
         MaterialCoord sumGrad,dwn;			sumGrad.fill(0);
         MaterialMat sumGrad2,ddwn;				sumGrad2.fill(0);
 
@@ -652,8 +653,8 @@ void FrameBlendingMapping<TIn, TOut>::draw()
     if ( showWeights.getValue())
     {
         // Compute min and max values.
-        OutReal minValue = std::numeric_limits<OutReal>::max();
-        OutReal maxValue = -std::numeric_limits<OutReal>::min();
+        InReal minValue = std::numeric_limits<InReal>::max();
+        InReal maxValue = -std::numeric_limits<InReal>::min();
         for ( unsigned int i = 0; i < xto.size(); i++)
         {
             bool influenced;
@@ -661,7 +662,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
             if (influenced)
             {
-                const OutReal& weight = m_weights[i][indexRep];
+                const InReal& weight = m_weights[i][indexRep];
                 if ( weight < minValue && weight != 0xFFF) minValue = weight;
                 if ( weight > maxValue && weight != 0xFFF) maxValue = weight;
             }
