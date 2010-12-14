@@ -222,7 +222,8 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(DataVecDeriv& df, const
 
     for (unsigned int i=0; i<m_indices.size(); i++)
     {
-        curIndex = m_indices[index];
+//		curIndex = m_indices[index];
+        curIndex = m_indices[i];  // Fix by FF, just a guess
         getVCenter(df1[curIndex])      -=  getVCenter(dx1[curIndex])      * k[i]   * kFactor ;
         getVOrientation(df1[curIndex]) -=  getVOrientation(dx1[curIndex]) * k_a[i] * kFactor ;
     }
