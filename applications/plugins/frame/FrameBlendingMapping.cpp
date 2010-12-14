@@ -137,7 +137,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdAffineTypes<3,InReal> In;
@@ -218,7 +218,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdAffineTypes<3,InReal> In;
@@ -315,7 +315,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdAffineTypes<3,InReal> In;
@@ -417,7 +417,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdQuadraticTypes<3,InReal> In;
@@ -496,7 +496,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdQuadraticTypes<3,InReal> In;
@@ -592,7 +592,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdQuadraticTypes<3,InReal> In;
@@ -710,7 +710,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdRigidTypes<3,InReal> In;
@@ -796,7 +796,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdRigidTypes<3,InReal> In;
@@ -923,7 +923,7 @@ struct LinearBlendTypes<
         >
 {
     typedef _Material Material;
-    typedef typename Material::Real Real;
+    typedef OutReal Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
     typedef StdRigidTypes<3,InReal> In;
@@ -1103,9 +1103,12 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< FrameBlendingMapping< Affine3dTypes, Vec3fTypes > >()
-//                                .add< FrameBlendingMapping< Affine3fTypes, Vec3dTypes > >()
+        .add< FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes > >()
+//                                .add< FrameBlendingMapping< Affine3fTypes, ExtVec3dTypes > >()
         .add< FrameBlendingMapping< Quadratic3dTypes, Vec3fTypes > >()
+        .add< FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes > >()
         .add< FrameBlendingMapping< Rigid3dTypes, Vec3fTypes > >()
+        .add< FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes > >()
 #endif
 #endif
         ;
@@ -1132,9 +1135,12 @@ template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGra
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes >;
+//template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, ExtVec3dTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3fTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, ExtVec3fTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3fTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3fTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 
