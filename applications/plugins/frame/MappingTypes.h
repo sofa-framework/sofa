@@ -38,6 +38,10 @@ namespace defaulttype
 template<class In, class Out, class Material, int nbRef, int order>
 class LinearBlendTypes;
 
+template<class TCoord, class TDeriv, class TReal> class StdVectorTypes;
+template<class TCoord, class TDeriv, class TReal> class ExtVectorTypes;
+template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real> struct DeformationGradientTypes;
+
 template< class Primitive, class Real, int Dim>
 class DataTypesInfo
 {
@@ -45,54 +49,12 @@ public:
     enum {primitive_order = 0};
 };
 
-
-
-
-
-template<class TCoord, class TDeriv, class TReal>
-class StdVectorTypes;
-
-template<class TCoord, class TDeriv, class TReal>
-class ExtVectorTypes;
-
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-struct DeformationGradientTypes;
-
-template< class Real, int Dim>
-class DataTypesInfo<StdVectorTypes<Vec<Dim, Real>, Vec<Dim, Real>, Real>,Real,Dim>
+template< class Real, int Dim, int Order>
+class DataTypesInfo<DeformationGradientTypes<Dim,Dim,Order,Real>,Real,Dim>
 {
 public:
-    enum {primitive_order = 0};
+    enum {primitive_order = DeformationGradientTypes<Dim,Dim,Order,Real>::order};
 };
-
-template< class Real, int Dim>
-class DataTypesInfo<ExtVectorTypes<Vec<Dim, Real>, Vec<Dim, Real>, Real>,Real,Dim>
-{
-public:
-    enum {primitive_order = 0};
-};
-
-template< class Real, int Dim>
-class DataTypesInfo<DeformationGradientTypes<Dim,Dim,0,Real>,Real,Dim>
-{
-public:
-    enum {primitive_order = 0}; // DeformationGradientTypes<Dim,Dim,0,Real>::order};
-};
-
-template< class Real, int Dim>
-class DataTypesInfo<DeformationGradientTypes<Dim,Dim,1,Real>,Real,Dim>
-{
-public:
-    enum {primitive_order = 1}; // DeformationGradientTypes<Dim,Dim,1,Real>::order};
-};
-
-template< class Real, int Dim>
-class DataTypesInfo<DeformationGradientTypes<Dim,Dim,2,Real>,Real,Dim>
-{
-public:
-    enum {primitive_order = 2}; // DeformationGradientTypes<Dim,Dim,2,Real>::order};
-};
-
 
 } // namespace defaulttype
 } // namespace sofa
