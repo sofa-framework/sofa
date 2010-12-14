@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MappingTypes_H
-#define MappingTypes_H
+#ifndef FRAME_MAPPINGTYPES_H
+#define FRAME_MAPPINGTYPES_H
 
 #include <sofa/defaulttype/Vec.h>
 
@@ -38,9 +38,7 @@ namespace defaulttype
 template<class In, class Out, class Material, int nbRef, int order>
 class LinearBlendTypes;
 
-template<class TCoord, class TDeriv, class TReal> class StdVectorTypes;
-template<class TCoord, class TDeriv, class TReal> class ExtVectorTypes;
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real> struct DeformationGradientTypes;
+
 
 template< class Primitive, class Real, int Dim>
 class DataTypesInfo
@@ -49,12 +47,15 @@ public:
     enum {primitive_order = 0};
 };
 
+template<int Spatial_dimensions, int Material_dimensions, int Order, typename Real> struct DeformationGradientTypes;
+
 template< class Real, int Dim, int Order>
 class DataTypesInfo<DeformationGradientTypes<Dim,Dim,Order,Real>,Real,Dim>
 {
 public:
     enum {primitive_order = DeformationGradientTypes<Dim,Dim,Order,Real>::order};
 };
+
 
 } // namespace defaulttype
 } // namespace sofa
