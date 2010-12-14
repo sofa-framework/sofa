@@ -85,7 +85,7 @@ public:
     typedef typename Out::Real OutReal;
 
     // Material types
-    typedef MaterialTypes<num_spatial_dimensions,InReal> materialType;
+    typedef MaterialTypes<num_spatial_dimensions,OutReal> materialType;
     typedef GridMaterial<materialType> GridMat;
     typedef typename GridMat::Coord  MaterialCoord;
     typedef typename GridMat::SpatialCoord  SpatialCoord;
@@ -96,7 +96,7 @@ public:
 
     // Conversion types
     static const unsigned nbRef = 4;
-    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::DataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > InOut;
+    typedef typename defaulttype::LinearBlendTypes<In,InReal,Out,OutReal,GridMat,nbRef, defaulttype::DataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > InOut;
 
 
 public:
@@ -191,10 +191,10 @@ extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, ExtVec3
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
 //extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3dTypes >;
-//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332fTypes >;
-//extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, DeformationGradient332dTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3fTypes >;
+extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3fTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 #endif //defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)

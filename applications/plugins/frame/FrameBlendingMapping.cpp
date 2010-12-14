@@ -130,17 +130,17 @@ using defaulttype::Vec;
 ////  Specialization on Affine
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class Out, class _Material, int nbRef>
+template<class InReal, class Out, class OutReal, class _Material, int nbRef>
 struct LinearBlendTypes<
-        StdAffineTypes<3,typename _Material::Real>,
-        Out, _Material, nbRef,0
+        StdAffineTypes<3,InReal>,
+        InReal, Out, OutReal, _Material, nbRef,0
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdAffineTypes<3,Real> In;
+    typedef StdAffineTypes<3,InReal> In;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
@@ -209,19 +209,20 @@ using defaulttype::Vec;
 //////////////////////////////////////////////////////////////////////////////////
 ////  Specialization on Affine->DeformationGradient first order
 //////////////////////////////////////////////////////////////////////////////////
-template<class _Material, int nbRef>
+template<class InReal, class OutReal, class _Material, int nbRef>
 struct LinearBlendTypes<
-        StdAffineTypes<3,typename _Material::Real>,
-        DeformationGradientTypes<3, 3, 1, typename  _Material::Real>,
-        _Material, nbRef,1
+        StdAffineTypes<3,InReal>,
+        InReal,
+        DeformationGradientTypes<3, 3, 1, OutReal>,
+        OutReal, _Material, nbRef,1
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdAffineTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 1, Real> Out;
+    typedef StdAffineTypes<3,InReal> In;
+    typedef DeformationGradientTypes<3, 3, 1, OutReal> Out;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
@@ -305,19 +306,20 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 
-template<class  _Material, int nbRef>
+template<class InReal, class OutReal, class  _Material, int nbRef>
 struct LinearBlendTypes<
-        StdAffineTypes<3,typename _Material::Real>,
-        DeformationGradientTypes<3, 3, 2, typename _Material::Real>,
-        _Material, nbRef,2
+        StdAffineTypes<3,InReal>,
+        InReal,
+        DeformationGradientTypes<3, 3, 2, OutReal>,
+        OutReal, _Material, nbRef,2
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdAffineTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 2, Real> Out;
+    typedef StdAffineTypes<3,InReal> In;
+    typedef DeformationGradientTypes<3, 3, 2, OutReal> Out;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
@@ -407,17 +409,18 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 ////  Specialization on Quadratic
 //////////////////////////////////////////////////////////////////////////////////
-template<class Out, class _Material, int nbRef>
+template<class InReal, class Out, class OutReal, class _Material, int nbRef>
 struct LinearBlendTypes<
-        StdQuadraticTypes<3,typename _Material::Real>,
-        Out, _Material, nbRef,0
+        StdQuadraticTypes<3,InReal>,
+        InReal,
+        Out, OutReal, _Material, nbRef,0
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdQuadraticTypes<3,Real> In;
+    typedef StdQuadraticTypes<3,InReal> In;
     typedef typename In::QuadraticCoord QuadraticCoord; // vec9
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
@@ -484,19 +487,20 @@ struct LinearBlendTypes<
 ////  Specialization on Quadratic->DeformationGradient first order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class InReal, class OutReal, class _Material, int nbRef>
 struct LinearBlendTypes<
-        StdQuadraticTypes<3,typename _Material::Real>,
-        DeformationGradientTypes<3, 3, 1, typename  _Material::Real>,
-        _Material, nbRef,1
+        StdQuadraticTypes<3,InReal>,
+        InReal,
+        DeformationGradientTypes<3, 3, 1, OutReal>,
+        OutReal, _Material, nbRef,1
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdQuadraticTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 1, Real> Out;
+    typedef StdQuadraticTypes<3,InReal> In;
+    typedef DeformationGradientTypes<3, 3, 1, OutReal> Out;
     typedef typename In::QuadraticCoord QuadraticCoord; // vec9
     typedef typename In::Affine Affine;
     typedef typename In::Coord InCoord;
@@ -579,19 +583,20 @@ struct LinearBlendTypes<
 ////  Specialization on Quadratic->DeformationGradient second order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class _Material, int nbRef>
+template<class InReal, class OutReal, class _Material, int nbRef>
 struct LinearBlendTypes<
-        StdQuadraticTypes<3,typename _Material::Real>,
-        DeformationGradientTypes<3, 3, 2, typename  _Material::Real>,
-        _Material, nbRef,2
+        StdQuadraticTypes<3,InReal>,
+        InReal,
+        DeformationGradientTypes<3, 3, 2, OutReal>,
+        OutReal, _Material, nbRef,2
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdQuadraticTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 2, Real> Out;
+    typedef StdQuadraticTypes<3,InReal> In;
+    typedef DeformationGradientTypes<3, 3, 2, OutReal> Out;
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
     typedef Mat<9,3,Real> MaterialFrame2;
@@ -697,17 +702,18 @@ struct LinearBlendTypes<
 ////  Rigid->Vec
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class Out, class _Material, int nbRef>
+template<class InReal, class Out, class OutReal, class _Material, int nbRef>
 struct LinearBlendTypes<
-        StdRigidTypes<3,typename _Material::Real>,
-        Out, _Material, nbRef,0
+        StdRigidTypes<3,InReal>,
+        InReal,
+        Out, OutReal, _Material, nbRef,0
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdRigidTypes<3,Real> In;
+    typedef StdRigidTypes<3,InReal> In;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
@@ -781,19 +787,20 @@ struct LinearBlendTypes<
 ////  Specialization on Rigid->DeformationGradient first order
 //////////////////////////////////////////////////////////////////////////////////
 
-template<class  _Material, int nbRef>
+template<class InReal, class OutReal, class  _Material, int nbRef>
 struct LinearBlendTypes<
-        StdRigidTypes<3,typename _Material::Real>,
-        DeformationGradientTypes<3, 3, 1, typename _Material::Real>,
-        _Material, nbRef,1
+        StdRigidTypes<3,InReal>,
+        InReal,
+        DeformationGradientTypes<3, 3, 1, OutReal>,
+        OutReal, _Material, nbRef,1
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdRigidTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 1, Real> Out;
+    typedef StdRigidTypes<3,InReal> In;
+    typedef DeformationGradientTypes<3, 3, 1, OutReal> Out;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
@@ -907,19 +914,20 @@ struct LinearBlendTypes<
 //////////////////////////////////////////////////////////////////////////////////
 
 
-template<class  _Material, int nbRef>
+template<class InReal, class OutReal, class  _Material, int nbRef>
 struct LinearBlendTypes<
-        StdRigidTypes<3,typename _Material::Real>,
-        DeformationGradientTypes<3, 3, 2, typename _Material::Real>,
-        _Material, nbRef,2
+        StdRigidTypes<3,InReal>,
+        InReal,
+        DeformationGradientTypes<3, 3, 2, OutReal>,
+        OutReal, _Material, nbRef,2
         >
 {
     typedef _Material Material;
     typedef typename Material::Real Real;
     typedef typename Material::Gradient MaterialDeriv;
     typedef typename Material::Hessian MaterialMat;
-    typedef StdRigidTypes<3,Real> In;
-    typedef DeformationGradientTypes<3, 3, 2, Real> Out;
+    typedef StdRigidTypes<3,InReal> In;
+    typedef DeformationGradientTypes<3, 3, 2, OutReal> Out;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
@@ -1094,10 +1102,10 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        // .add< FrameBlendingMapping< Affine3dTypes, Vec3fTypes > >()
-        // .add< FrameBlendingMapping< Affine3fTypes, Vec3dTypes > >()
-        //.add< FrameBlendingMapping< Affine3dTypes, DeformationGradient332fTypes > >()
-        //.add< FrameBlendingMapping< Affine3fTypes, DeformationGradient332dTypes > >()
+        .add< FrameBlendingMapping< Affine3dTypes, Vec3fTypes > >()
+//                                .add< FrameBlendingMapping< Affine3fTypes, Vec3dTypes > >()
+        .add< FrameBlendingMapping< Quadratic3dTypes, Vec3fTypes > >()
+        .add< FrameBlendingMapping< Rigid3dTypes, Vec3fTypes > >()
 #endif
 #endif
         ;
@@ -1123,10 +1131,10 @@ template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGra
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3dTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient332fTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, DeformationGradient332dTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Quadratic3dTypes, Vec3fTypes >;
+template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Vec3fTypes >;
 #endif //SOFA_DOUBLE
 #endif //SOFA_FLOAT
 
