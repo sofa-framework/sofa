@@ -106,9 +106,11 @@ public:
 
 protected :
 
-    VecIndex indices;
+    void recomputeIndices();
+
+    VecIndex m_indices;
     VecReal k;
-    VecIndex ext_indices;
+    VecIndex m_ext_indices;
     const VecCoord* pp_0;
 private :
 

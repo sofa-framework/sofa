@@ -375,6 +375,9 @@ void LCPConstraintSolver::build_LCP()
         cc->getCompliance(_W);
     }
 
+    if (this->f_printLog.getValue())
+        sout << "W=" << *_W << sendl;
+
     sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
     if (this->f_printLog.getValue())
         sout<<" computeCompliance_done "  <<sendl;
