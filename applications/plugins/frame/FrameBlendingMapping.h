@@ -116,6 +116,7 @@ public:
 
 protected:
     inline void initSamples();
+    inline void initFrames();
     inline void updateWeights ();
     inline void normalizeWeights();
 

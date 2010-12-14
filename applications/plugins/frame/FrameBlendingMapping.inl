@@ -104,7 +104,21 @@ FrameBlendingMapping<TIn, TOut>::~FrameBlendingMapping ()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::init()
 {
-    //                unsigned numParents = this->fromModel->getSize();
+    // init samples and frames according to target numbers
+    gridMaterial=NULL;
+    this->getContext()->get( gridMaterial, core::objectmodel::BaseContext::SearchRoot);
+    if ( !gridMaterial )
+    {
+        serr << "GridMaterial component not found -> use model vertices as Gauss point and 1/d^2 as weights." << sendl;
+    }
+    else
+    {
+        initFrames();
+        initSamples();
+    }
+
+    // update init pos (necessary ??)
+    //   unsigned numParents = this->fromModel->getSize();
     unsigned numChildren = this->toModel->getSize();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     WriteAccessor<Data<VecOutCoord> > initPos(f_initPos);
@@ -116,22 +130,11 @@ void FrameBlendingMapping<TIn, TOut>::init()
             initPos[i] = out[i];
     }
 
-    gridMaterial=NULL;
-    this->getContext()->get( gridMaterial, core::objectmodel::BaseContext::SearchRoot);
-    if ( !gridMaterial )
-    {
-        serr << "GridMaterial component not found -> use model vertices as Gauss point and 1/d^2 as weights." << sendl;
-    }
-    else
-    {
-        //                    initFrames();
-        initSamples();
-    }
+
+    // init weights and sample info (mass, moments) todo: ask the Material
     updateWeights();
 
-
-    // todo: ask the Material for mass info
-
+    // init jacobians for mapping
     inout.resize( out.size() );
     for(unsigned i=0; i<out.size(); i++ )
     {
@@ -219,15 +222,55 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& /*out*
 
 
 
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::initFrames()
+{
+    if( targetFrameNumber.getValue() == 0) return;
+
+    // Get references
+    WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
+    WriteAccessor<Data<VecInCoord> >  xfrom = *this->fromModel->write(core::VecCoordId::position());
+    WriteAccessor<Data<VecInCoord> >  xfromReset = *this->fromModel->write(core::VecCoordId::resetPosition());
+    unsigned int num_points=xfrom0.size();
+
+    core::behavior::MechanicalState< In >* mstateFrom = dynamic_cast<core::behavior::MechanicalState< In >* >( this->fromModel);
+    if ( !mstateFrom)
+    {
+        serr << "Error: try to insert new frames, which are not mechanical states !" << sendl;
+        return;
+    }
+
+    // retrieve initial frames
+    vector<MaterialCoord> points(num_points);
+    for ( unsigned int i=0; i<num_points; i++ )
+        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+            points[i][j]= xfrom0[i][j];
+
+    // Insert new frames and compute associated voxel weights
+    std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
+    gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
+    std::cout<<"Computing weights in grid..."<<std::endl;
+    gridMaterial->computeWeights(nbRef,points);
+
+    //// copy
+    this->fromModel->resize(points.size());
+    for ( unsigned int i=num_points; i<points.size(); i++ )
+        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+            xfrom[i][j] = xfrom0[i][j] = xfromReset[i][j]=  points[i][j];
+}
+
+
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
     if( targetSampleNumber.getValue() == 0) return;
 
     // Get references
-    WriteAccessor<Data<VecOutCoord> > xto0 = *this->toModel->write(core::VecCoordId::restPosition());
+    WriteAccessor<Data<VecOutCoord> >  xto0 = *this->toModel->write(core::VecCoordId::restPosition());
     WriteAccessor<Data<VecOutCoord> >  xto = *this->toModel->write(core::VecCoordId::position());
     WriteAccessor<Data<VecOutCoord> >  xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
+    unsigned int num_points=xto0.size();
 
     core::behavior::MechanicalState< Out >* mstateto = dynamic_cast<core::behavior::MechanicalState< Out >* >( this->toModel);
     if ( !mstateto)
@@ -236,14 +279,22 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
         return;
     }
 
+    // retrieve initial samples -> is problematic when there is no user sample : the mechanical object is always initialized with one sample centered on 0
+    /*vector<MaterialCoord> points(num_points);
+    for ( unsigned int i=0;i<num_points;i++ )
+    	for ( unsigned int j=0;j<num_spatial_dimensions;j++ )
+    		points[i][j]= xto0[i][j];*/
+    num_points=0; vector<MaterialCoord> points;
+
     // Insert new samples
-    std::cout<<"Inserting "<<targetSampleNumber.getValue()<<" gauss points..."<<std::endl;
-    vector<MaterialCoord> points;
-    gridMaterial->computeUniformSampling(points,targetSampleNumber.getValue());
+    //    gridMaterial->computeUniformSampling(points,targetSampleNumber.getValue());
+    gridMaterial->computeRegularSampling(points,1);
+
+    std::cout<<"Inserting "<<points.size()-xto0.size()<<" gauss points..."<<std::endl;
 
     // copy
     this->toModel->resize(points.size());
-    for ( unsigned int i=0; i<targetSampleNumber.getValue(); i++ )
+    for ( unsigned int i=num_points; i<points.size(); i++ )
         for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
             xto[i][j] = xto0[i][j] = xtoReset[i][j]= points[i][j];
 }
@@ -284,6 +335,8 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 
         for (unsigned i=0; i<xto.size(); i++ )
         {
+            // std::cout<<"lumping of "<<points[i]<<std::endl;
+
             if(gridMaterial->lumpWeightsRepartition(points[i],reps,w,&dw,&ddw))
             {
                 for (unsigned j=0; j<nbRef; j++)
@@ -305,71 +358,109 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             }
         }
     }
-    else	// 1/d^2 weights with Euclidean distance
+    else
     {
-        OutReal w,w2,w3,w4;
-        SpatialCoord u;
-        for (unsigned i=0; i<xto.size(); i++ )
+        if(xfrom.size()==2)  // linear weights based on 2 closest primitives
         {
-            // get the nbRef closest primitives
-            for (unsigned j=0; j<nbRef; j++ )
-            {
-                m_weights[i][j]=0;
-                index[i][j]=0;
-            }
-            //                        cerr<<"FrameBlendingMapping<TIn, TOut>::updateWeights, xto = "<< xto[i] << endl;
-            for (unsigned j=0; j<xfrom.size(); j++ )
+            for (unsigned int i=0; i<xto.size(); i++ )
             {
                 Vec<3,OutReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
-                Vec<3,OutReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
-                w=(cto-cfrom)*(cto-cfrom);
-                //                            cerr<<"  distance = "<< sqrt(w) << endl;
-                if(w!=0)
-                    w=1./w;
-                else
-                    w=std::numeric_limits<OutReal>::max();
-                unsigned m=0;
-                while (m!=nbRef && m_weights[i][m]>w)
-                    m++;
-                if(m!=nbRef)
+                // get the 2 closest primitives
+                for (unsigned int j=0; j<nbRef; j++ )
                 {
-                    for (unsigned k=nbRef-1; k>m; k--)
-                    {
-                        m_weights[i][k]=m_weights[i][k-1];
-                        index[i][k]=index[i][k-1];
-                    }
-                    m_weights[i][m]=w;
-                    index[i][m]=j;
+                    m_weights[i][j]=0; index[i][j]=0;
+                    m_dweight[i][j].fill(0);
+                    m_ddweight[i][j].fill(0);
                 }
-            }
-            // compute weight gradients
-            for (unsigned j=0; j<nbRef; j++ )
-            {
-                w=m_weights[i][j];
-//                                                        cerr<<"  weight = "<< w << endl;
-                m_dweight[i][j].fill(0);
-                m_ddweight[i][j].fill(0);
-                if (w)
+                m_weights[i][0]=std::numeric_limits<OutReal>::max();
+                m_weights[i][1]=std::numeric_limits<OutReal>::max();
+                for (unsigned int j=0; j<xfrom.size(); j++ )
                 {
-                    w2=w*w; w3=w2*w; w4=w3*w;
-                    for(unsigned k=0; k<num_spatial_dimensions; k++)
-                        u[k]=(xto[i][k]-xfrom[j][k]);
-//                                m_dweight[i][j] = - u * w2* 2.0;
-                    m_dweight[i][j] = u * w2; // hack FF for a special case. Todo: compute this right.
-//                                cerr<<" xfrom[j]  = "<< xfrom[j] << endl;
-//                                cerr<<"  m_dweight = "<< m_dweight[i][j] << endl;
-                    for(unsigned k=0; k<num_spatial_dimensions; k++)
-                        m_ddweight[i][j][k][k]= - w2* 2.0;
-                    for(unsigned k=0; k<num_spatial_dimensions; k++)
-                        for(unsigned m=0; m<num_spatial_dimensions; m++)
-                            m_ddweight[i][j][k][m]+=u[k]*u[m]*w3* 8.0;
+                    Vec<3,OutReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
+                    OutReal d=(cto-cfrom).norm();
+                    if(m_weights[i][0]>d) {m_weights[i][0]=d; index[i][0]=j;}
+                    else if(m_weights[i][1]>d) {m_weights[i][1]=d; index[i][1]=j;}
+                }
+                Vec<3,OutReal> cfrom1; In::get( cfrom1[0],cfrom1[1],cfrom1[2], xfrom[index[i][0]] );
+                Vec<3,OutReal> cfrom2; In::get( cfrom2[0],cfrom2[1],cfrom2[2], xfrom[index[i][1]] );
+                Vec<3,OutReal> u=cfrom2-cfrom1;
+                OutReal d=u.norm2(); u=u/d;
+                OutReal d1=dot(cto-cfrom1,u),d2=dot(cto-cfrom2,u);
+                if(d1<0) d1=-d1; if(d2<0) d2=-d2;
+                if(d1>d) m_weights[i][1]=1;
+                else if(d2>d) m_weights[i][0]=1;
+                else
+                {
+                    m_weights[i][0]=d2; m_weights[i][1]=d1;
+                    m_dweight[i][0]=-u; m_dweight[i][1]=u;
                 }
             }
         }
-    }
+        else	// 1/d^2 weights with Euclidean distance
+        {
+            for (unsigned int i=0; i<xto.size(); i++ )
+            {
+                Vec<3,OutReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
+                // get the nbRef closest primitives
+                for (unsigned int j=0; j<nbRef; j++ )
+                {
+                    m_weights[i][j]=0;
+                    index[i][j]=0;
+                }
+                //  cerr<<"FrameBlendingMapping<TIn, TOut>::updateWeights, xto = "<< xto[i] << endl;
+                for (unsigned int j=0; j<xfrom.size(); j++ )
+                {
+                    Vec<3,OutReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
+                    OutReal w=(cto-cfrom)*(cto-cfrom);
+                    // cerr<<"  distance = "<< sqrt(w) << endl;
+                    if(w!=0) w=1./w;
+                    else w=std::numeric_limits<OutReal>::max();
+                    unsigned m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
+                    if(m!=nbRef)
+                    {
+                        for (unsigned k=nbRef-1; k>m; k--)
+                        {
+                            m_weights[i][k]=m_weights[i][k-1];
+                            index[i][k]=index[i][k-1];
+                        }
+                        m_weights[i][m]=w;
+                        index[i][m]=j;
+                    }
+                }
+                // compute weight gradients
+                for (unsigned j=0; j<nbRef; j++ )
+                {
+                    OutReal w=m_weights[i][j];
+                    //    cerr<<"  weight = "<< w << endl;
+                    m_dweight[i][j].fill(0);
+                    m_ddweight[i][j].fill(0);
+                    if (w)
+                    {
+                        OutReal w2=w*w,w3=w2*w;
+                        Vec<3,OutReal> u;
+                        for(unsigned k=0; k<3; k++)
+                            u[k]=(xto[i][k]-xfrom[j][k]);
+                        m_dweight[i][j] = - u * w2* 2.0;
+                        // m_dweight[i][j] = u * w2; // hack FF for a special case. Todo: compute this right.
+                        //  cerr<<" xfrom[j]  = "<< xfrom[j] << endl;
+                        //  cerr<<"  m_dweight = "<< m_dweight[i][j] << endl;
+                        for(unsigned k=0; k<num_spatial_dimensions; k++)
+                            m_ddweight[i][j][k][k]= - w2* 2.0;
+                        for(unsigned k=0; k<num_spatial_dimensions; k++)
+                            for(unsigned m=0; m<num_spatial_dimensions; m++)
+                                m_ddweight[i][j][k][m]+=u[k]*u[m]*w3* 8.0;
+                    }
+                }
+            }
+        }
 
+    }
     normalizeWeights();
 }
+
+
+
+
 
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
