@@ -660,11 +660,10 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usev
                     if (insert) neighbors.push_back((unsigned int)i);
                 }
         if (neighbors.size()<26) // not enough samples -> go back to a local neighbor fit
-        {
-            get26Neighbors(index, neighbors);
-            neighbors.push_back((unsigned int)index);
-        }
+            lumpWeights(point,false,w,dw,ddw);
     }
+
+    //	std::cout<<"fit on "<<neighbors.size()<<" voxels"<<std::endl;
 
 // least squares fit
     unsigned int order=0;

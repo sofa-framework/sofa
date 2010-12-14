@@ -1,5 +1,5 @@
-<Node name="root">
-	<Node name="Turtle">
+<Node name="root"  >
+	<Node name="Turtle" showBehaviorModels="1">
 		<GridMaterial name="gridmaterial" template="Material3" 
 				imageFile="textures/Turtle_32_32_32.raw" 
 				labelToStiffnessPairs="1 1
@@ -15,12 +15,12 @@
 				position="0.8 0 0.3 [1 0 0, 0 1 0, 0 0 1] -0.15 0 0.2 [1 0 0, 0 1 0, 0 0 1]"  
 				/>
 
-		<Node name="Physics" >
-			<MechanicalObject name="Samples" template="DeformationGradient332"  />
- 			<AffineSkinningMapping name="Mapping" template="Mapping&lt;Affine,DeformationGradient332&gt;" 
+		<Node name="Physics" showBehaviorModels="0">
+			<MechanicalObject name="Samples" template="DeformationGradient331"  />
+ 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" 
 				input="@../DOFs"  output="@Samples"  
-				targetFrameNumber="6"
-				targetSampleNumber="20"
+				targetFrameNumber="7"
+				targetSampleNumber="10"
 				/>
 		</Node>
 
