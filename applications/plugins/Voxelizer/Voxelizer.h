@@ -114,6 +114,8 @@ public:
 
     virtual void init();
 
+    RasterizedVol** getRasterizedVolumes() const;
+
     virtual void draw();
 
     virtual bool canLoad();
@@ -132,7 +134,7 @@ protected:
     TagSet rasterizerTags;
     double rasterizerPixelSize;
     BBox rasterizerBBox;
-    RasterizedVol** rasterizedVolumes; // Temporary kept for debugging
+    RasterizedVol** rasterizedVolumes;
 
     helper::io::ImageRAW* valueImg;
     helper::io::ImageRAW* segmentationImg;

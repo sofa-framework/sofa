@@ -89,16 +89,19 @@ Voxelizer<DataTypes>::~Voxelizer()
 template <class DataTypes>
 void Voxelizer<DataTypes>::init()
 {
-    // Check if the RAW file has ever been generated
-    std::string rawFileName = valueFileName.getValue();
-    std::string segFileName = segmentationFileName.getValue();
-    if (sofa::helper::system::DataRepository.findFile(rawFileName) &&
-        sofa::helper::system::DataRepository.findFile(segFileName))
+    if (generateRAWFiles.getValue())
     {
-        loadInfos();
-        sout << "RAW and segmentation files are ever generated. Using existing ones." << sendl;
-        std::cout << "Voxelizer(" << getName() << "): RAW and segmentation files are ever generated. Using existing ones." << std::endl;
-        return;
+        // Check if the RAW file has ever been generated
+        std::string rawFileName = valueFileName.getValue();
+        std::string segFileName = segmentationFileName.getValue();
+        if (sofa::helper::system::DataRepository.findFile(rawFileName) &&
+            sofa::helper::system::DataRepository.findFile(segFileName))
+        {
+            loadInfos();
+            sout << "RAW and segmentation files are ever generated. Using existing ones." << sendl;
+            std::cout << "Voxelizer(" << getName() << "): RAW and segmentation files are ever generated. Using existing ones." << std::endl;
+            return;
+        }
     }
 
     // Get the rasterizer
@@ -871,6 +874,13 @@ void Voxelizer<DataTypes>::reloadRasterizerSettings()
 
 
 template <class DataTypes>
+typename Voxelizer<DataTypes>::RasterizedVol** Voxelizer<DataTypes>::getRasterizedVolumes() const
+{
+    return rasterizedVolumes;
+}
+
+
+template <class DataTypes>
 void Voxelizer<DataTypes>::draw()
 {
     const Real& psize = std::min( std::min(voxelSize.getValue()[0],voxelSize.getValue()[1]),voxelSize.getValue()[2]);
@@ -878,7 +888,7 @@ void Voxelizer<DataTypes>::draw()
     // Display volumes retrieved from depth peeling textures
     if( showRasterizedVolumes.getValue())
     {
-        if (showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if (this->getContext()->getShowWireFrame() || showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable( GL_LIGHTING);
         for ( unsigned int axis=0; axis<3; ++axis )
         {
@@ -967,7 +977,7 @@ void Voxelizer<DataTypes>::draw()
                 }
             }
         }
-        if (showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        if (showWireFrameMode.getValue() && !this->getContext()->getShowWireFrame()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
 }

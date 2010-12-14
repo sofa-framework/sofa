@@ -1477,7 +1477,7 @@ void GridMaterial< MaterialTypes>::draw()
             {
                 VUI neighbors;
                 get6Neighbors(getIndex(Vec3i(x,y,z)), neighbors);
-                if (neighbors.size()!=6) // disable internal voxels
+                //if (neighbors.size()!=6) // disable internal voxels
                 {
                     label=-1;
                     if (labelmax!=-1)
