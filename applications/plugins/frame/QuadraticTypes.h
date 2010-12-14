@@ -68,15 +68,15 @@ public:
     {
         Vec<VSize,Real> v;
     public:
-        Coord() { v.clear(); }
+        Coord() { clear(); }
         Coord( const Vec<VSize,Real>& d):v(d) {}
         Coord( const SpatialCoord& c, const Quadratic& a) { getCenter()=c; getQuadratic()=a;}
         Coord ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const Affine &crossterms=Affine())
         {
             getCenter() = center;
-            for(unsigned int i=0; i<3; ++i)
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<3; ++j)
+                for(unsigned int j=0; j<spatial_dimensions; ++j)
                 {
                     Quadratic& quadratic=getQuadratic();
                     quadratic[i][j]=affine[i][j];
@@ -85,7 +85,11 @@ public:
                 }
             }
         }
-        void clear() { v.clear(); }
+        void clear()
+        {
+            v.clear();
+            for(unsigned i=0; i<spatial_dimensions; i++) getQuadratic()[i][i]=(Real)1.; // init affine part to identity
+        }
 
         /// seen as a vector
         Vec<VSize,Real>& getVec() { return v; }

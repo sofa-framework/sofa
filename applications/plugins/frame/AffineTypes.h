@@ -65,10 +65,14 @@ public:
     {
         Vec<VSize,Real> v;
     public:
-        Coord() { v.clear(); }
+        Coord() { clear(); }
         Coord( const Vec<VSize,Real>& d):v(d) {}
         Coord( const SpatialCoord& c, const Affine& a) { getCenter()=c; getAffine()=a;}
-        void clear() { v.clear(); }
+        void clear()
+        {
+            v.clear();
+            for(unsigned i=0; i<spatial_dimensions; i++) getAffine()[i][i]=(Real)1.; // init affine part to identity
+        }
 
         /// seen as a vector
         Vec<VSize,Real>& getVec() { return v; }

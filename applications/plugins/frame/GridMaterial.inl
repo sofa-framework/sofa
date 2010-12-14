@@ -44,17 +44,18 @@ namespace material
 template<class MaterialTypes>
 GridMaterial< MaterialTypes>::GridMaterial()
     : Inherited()
-    , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
-    , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
-    , imageFile( initData(&imageFile,"imageFile","Image file."))
-    , weightFile( initData(&weightFile,"weightFile","Voxel weight file."))
     , voxelSize ( initData ( &voxelSize, Vec3d ( 0,0,0 ), "voxelSize", "Voxel size." ) )
     , origin ( initData ( &origin, Vec3d ( 0,0,0 ), "origin", "Grid origin." ) )
     , dimension ( initData ( &dimension, Vec3i ( 0,0,0 ), "dimension", "Grid dimensions." ) )
     , labelToStiffnessPairs ( initData ( &labelToStiffnessPairs, "labelToStiffnessPairs","Correspondances between grid value and stiffness." ) )
     , labelToDensityPairs ( initData ( &labelToDensityPairs, "labelToDensityPairs","Correspondances between grid value and material density." ) )
+    , imageFile( initData(&imageFile,"imageFile","Image file."))
+    , weightFile( initData(&weightFile,"weightFile","Voxel weight file."))
+    , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
+    , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned ) 0, "showWeightIndex","Weight index." ) )
+    , showPlane ( initData ( &showPlane, Vec3i ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
 {
     helper::OptionsGroup distanceTypeOptions(3,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
@@ -1111,6 +1112,31 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
 }
 
 
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecVec3& points, const unsigned int step)
+{
+    if (!nbVoxels) return false;
+    if(step==0)  return false;
+
+    unsigned int i,initial_num_points=points.size();
+    VI indices;
+    for (i=0; i<initial_num_points; i++) indices.push_back(getIndex(points[i]));
+
+    for(unsigned int z=0; z<(unsigned int)dimension.getValue()[2]; z+=step)
+        for(unsigned int y=0; y<(unsigned int)dimension.getValue()[1]; y+=step)
+            for(unsigned int x=0; x<(unsigned int)dimension.getValue()[0]; x+=step)
+                if (grid(x,y,z)!=0)
+                    indices.push_back(getIndex(Vec3i(x,y,z)));
+
+    computeGeodesicalDistances(indices); // voronoi
+
+// get points from indices
+    points.resize(indices.size());
+    for (i=initial_num_points; i<indices.size(); i++)     getCoord(indices[i],points[i]) ;
+
+    sout<<"Added " << indices.size()-initial_num_points << " regularly sampled points"<<sendl;
+    return true;
+}
 
 
 template < class MaterialTypes>
@@ -1470,46 +1496,49 @@ void GridMaterial< MaterialTypes>::draw()
             }
         }
 
+        bool slicedisplay=false;
+        for (i=0; i<3; i++) if(showPlane.getValue()[i]>=0 && showPlane.getValue()[i]<dimension.getValue()[i]) slicedisplay=true;
 
         cimg_forXYZ(grid,x,y,z)
         {
             if (grid(x,y,z)!=0)
-            {
-                VUI neighbors;
-                get6Neighbors(getIndex(Vec3i(x,y,z)), neighbors);
-                //if (neighbors.size()!=6) // disable internal voxels
+                if (!slicedisplay || (slicedisplay && (x==showPlane.getValue()[0] || y==showPlane.getValue()[1] || z==showPlane.getValue()[2])) )
                 {
-                    label=-1;
-                    if (labelmax!=-1)
+                    VUI neighbors;
+                    get6Neighbors(getIndex(Vec3i(x,y,z)), neighbors);
+                    if (neighbors.size()!=6 || wireframe || slicedisplay) // disable internal voxels
                     {
-                        if (showvox==SHOWVOXELS_DATAVALUE) label=(float)grid(x,y,z);
-                        else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
-                        else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
-                        else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(Vec3i(x,y,z))];
-                        else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  label=(float)distances[getIndex(Vec3i(x,y,z))];
-                        else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  label=(float)weights[getIndex(Vec3i(x,y,z))];
-                    }
+                        label=-1;
+                        if (labelmax!=-1)
+                        {
+                            if (showvox==SHOWVOXELS_DATAVALUE) label=(float)grid(x,y,z);
+                            else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
+                            else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
+                            else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(Vec3i(x,y,z))];
+                            else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  label=(float)distances[getIndex(Vec3i(x,y,z))];
+                            else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  label=(float)weights[getIndex(Vec3i(x,y,z))];
+                        }
 
-                    if (label==-1)
-                    {
-                        glColor4fv(defaultcolor);
-                        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);
+                        if (label==-1)
+                        {
+                            glColor4fv(defaultcolor);
+                            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);
+                        }
+                        else
+                        {
+                            if (label>labelmax) label=labelmax;
+                            helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
+                            glGetFloatv(GL_CURRENT_COLOR, color);
+                            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+                        }
+                        Vec3 coord;
+                        getCoord(Vec3i(x,y,z),coord);
+                        glTranslated ((double)coord[0],(double)coord[1],(double)coord[2]);
+                        drawCube(s,wireframe);
+                        glTranslated (-(double)coord[0],-(double)coord[1],-(double)coord[2]);
+                        //GlText::draw ( (int), coord, showTextScaleFactor.getValue() );
                     }
-                    else
-                    {
-                        if (label>labelmax) label=labelmax;
-                        helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
-                        glGetFloatv(GL_CURRENT_COLOR, color);
-                        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-                    }
-                    Vec3 coord;
-                    getCoord(Vec3i(x,y,z),coord);
-                    glTranslated ((double)coord[0],(double)coord[1],(double)coord[2]);
-                    drawCube(s,wireframe);
-                    glTranslated (-(double)coord[0],-(double)coord[1],-(double)coord[2]);
-                    //GlText::draw ( (int), coord, showTextScaleFactor.getValue() );
                 }
-            }
         }
     }
 }

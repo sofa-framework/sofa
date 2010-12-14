@@ -149,18 +149,6 @@ public:
     /*************************/
 
     void draw();
-    void drawCube(Real size,bool wireframe);
-
-    /*************************/
-    /*   IO	              */
-    /*************************/
-
-    bool loadInfos();
-    bool saveInfos();
-    bool loadImage();
-    bool saveImage();
-    bool loadWeightRepartion();
-    bool saveWeightRepartion();
 
     /*************************/
     /*   Lumping			  */
@@ -181,50 +169,18 @@ public:
     /// return the interpolated repartited weights
     bool interpolateWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw=NULL);
 
-
     /*********************************/
     /*   Compute distances/weights   */
     /*********************************/
 
-    Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
-    Data<bool> biasDistances;
-
     /// compute voxel weights according to 'distanceType' method -> stored in weightsRepartition and repartition
     bool computeWeights(const unsigned int nbrefs,const VecVec3& points);
-    /// (biased) Euclidean distance between two voxels
-    Real getDistance(const unsigned int& index1,const unsigned int& index2);
-    /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
-    bool computeGeodesicalDistances ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
-    bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
-    /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
-    bool computeGeodesicalDistances ( const VecVec3& points, const Real distMax =std::numeric_limits<Real>::max());
-    bool computeGeodesicalDistances ( const VI& indices, const Real distMax =std::numeric_limits<Real>::max());
-    /// (biased) Geodesical distance between the border of the voronoi cell containing point and all other voxels -> stored in distances
-    bool computeGeodesicalDistancesToVoronoi ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
-    bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
-    /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation -> id/distances stored in voronoi/distances
+    /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation
+    //  -> returns points and store id/distances in voronoi/distances
     bool computeUniformSampling ( VecVec3& points, const unsigned int num_points,const unsigned int max_iterations = 100);
-    /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
-    bool computeAnisotropicLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
-    /// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
-    bool computeLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
-    /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
-    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
-
-    /*************************/
-    /*         Utils         */
-    /*************************/
-
-    inline int getIndex(const Vec3i& icoord);
-    inline int getIndex(const Vec3& coord);
-    inline bool getiCoord(const Vec3& coord, Vec3i& icoord);
-    inline bool getiCoord(const int& index, Vec3i& icoord);
-    inline bool getCoord(const Vec3i& icoord, Vec3& coord) ;
-    inline bool getCoord(const int& index, Vec3& coord) ;
-    inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
-    inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
-    inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
-    inline bool findIndexInRepartition(unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
+    /// Regular sampling based on step size
+    //  -> returns points and store id/distances in voronoi/distances
+    bool computeRegularSampling ( VecVec3& points, const unsigned int step);
 
     virtual std::string getTemplateName() const
     {
@@ -237,10 +193,11 @@ public:
     }
 
 protected:
-    // Grid data
-    sofa::core::objectmodel::DataFileName imageFile;
-    std::string infoFile;
-    sofa::core::objectmodel::DataFileName weightFile;
+
+
+    /*********************************/
+    /*         Grid data   		  */
+    /*********************************/
     Data< Vec3d > voxelSize;
     Data< Vec3d > origin;
     Data< Vec3i > dimension;
@@ -251,22 +208,75 @@ protected:
     // material properties
     Data<mapLabelType> labelToStiffnessPairs;
     Data<mapLabelType> labelToDensityPairs;
-
     // temporary values in grid
     VD distances;
     VI voronoi;
     VD weights;
-
     // repartitioned weights
     VVD weightsRepartition;
     VVUI repartition;
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
 
-    // draw
-    Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
-    Data<unsigned int> showWeightIndex;    ///
+    /*********************************/
+    /*   IO						  */
+    /*********************************/
+    sofa::core::objectmodel::DataFileName imageFile;
+    std::string infoFile;
+    sofa::core::objectmodel::DataFileName weightFile;
 
-    // local functions
+    bool loadInfos();
+    bool saveInfos();
+    bool loadImage();
+    bool saveImage();
+    bool loadWeightRepartion();
+    bool saveWeightRepartion();
+
+    /*********************************/
+    /*   Compute distances/weights   */
+    /*********************************/
+
+    Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
+    Data<bool> biasDistances;
+
+    /// (biased) Euclidean distance between two voxels
+    Real getDistance(const unsigned int& index1,const unsigned int& index2);
+    /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
+    bool computeGeodesicalDistances ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
+    /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
+    bool computeGeodesicalDistances ( const VecVec3& points, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const VI& indices, const Real distMax =std::numeric_limits<Real>::max());
+    /// (biased) Geodesical distance between the border of the voronoi cell containing point and all other voxels -> stored in distances
+    bool computeGeodesicalDistancesToVoronoi ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
+
+    /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
+    bool computeAnisotropicLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
+    /// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
+    bool computeLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
+    /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
+    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
+
+    /// fit 1st, 2d or 3d polynomial to the dense weight map in the dilated by 1 voxel voronoi region (usevoronoi=true) or 26 neighbors (usevoronoi=false) of point.
+    bool lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
+    /// interpolate weights (and weight derivatives) in the dense weight map.
+    bool interpolateWeights(const Vec3& point,Real& w,Vec3* dw=NULL);
+
+    /*********************************/
+    /*         Utils				  */
+    /*********************************/
+
+    inline int getIndex(const Vec3i& icoord);
+    inline int getIndex(const Vec3& coord);
+    inline bool getiCoord(const Vec3& coord, Vec3i& icoord);
+    inline bool getiCoord(const int& index, Vec3i& icoord);
+    inline bool getCoord(const Vec3i& icoord, Vec3& coord) ;
+    inline bool getCoord(const int& index, Vec3& coord) ;
+    inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
+    inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
+    inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
+    inline bool findIndexInRepartition(unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
+
     inline void accumulateCovariance(const Vec3& p,const unsigned int order,VVD& Cov);
     inline void getCompleteBasis(const Vec3& p,const unsigned int order,VD& basis);
     inline void getCompleteBasisDeriv(const Vec3& p,const unsigned int order,VVD& basisDeriv);
@@ -274,10 +284,15 @@ protected:
     inline void addWeightinRepartion(const unsigned int index); // add dense weights relative to index, in weight repartion of size nbref if it is large enough
     inline void pasteRepartioninWeight(const unsigned int index); // paste weight relative to index in the dense weight map
     inline void normalizeWeightRepartion();
-    /// fit 1st, 2d or 3d polynomial to the dense weight map in the dilated by 1 voxel voronoi region (usevoronoi=true) or 26 neighbors (usevoronoi=false) of point.
-    bool lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
-    /// interpolate weights (and weight derivatives) in the dense weight map.
-    bool interpolateWeights(const Vec3& point,Real& w,Vec3* dw=NULL);
+
+    /*********************************/
+    /*   draw						  */
+    /*********************************/
+
+    Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
+    Data<unsigned int> showWeightIndex;    ///
+    void drawCube(Real size,bool wireframe);
+    Data<Vec3i> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
 
 
 };
