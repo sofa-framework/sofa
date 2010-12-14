@@ -35,7 +35,7 @@ namespace sofa
 namespace defaulttype
 {
 
-template<class In, class InReal, class Out, class OutReal, class Material, int nbRef, int order>
+template<class In, class Out, class Material, int nbRef, int order>
 class LinearBlendTypes;
 
 template< class Primitive, class Real, int Dim>
