@@ -402,6 +402,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
         glColor4f(1,1,0,1);
         helper::gl::glVertexT(c.P);
         helper::gl::glVertexT(c.P+c.norm*(c.dfree));
+        glColor4f(1,0,1,1);
         helper::gl::glVertexT(c.Q);
         helper::gl::glVertexT(c.Q-c.norm*(c.dfree));
 
