@@ -307,7 +307,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     ReadAccessor<Data<VecOutCoord> > xto (f_initPos);
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
 
-    WriteAccessor<Data<vector<Vec<nbRef,OutReal> > > >       m_weights  ( weight );
+    WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialCoord> > > > m_dweight  ( weightDeriv );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
 
@@ -328,7 +328,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             //                        points[i] = xto[i];
         }
 
-        vector<OutReal> w;
+        vector<InReal> w;
         vector<unsigned> reps;
         vector<MaterialCoord> dw;
         vector<MaterialMat> ddw;
@@ -466,7 +466,7 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
 {
     const unsigned int xtoSize = this->toModel->getX()->size();
-    WriteAccessor<Data<vector<Vec<nbRef,OutReal> > > >       m_weights  ( weight );
+    WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialCoord> > > > m_dweight  ( weightDeriv );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
 
@@ -518,7 +518,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
     //                const unsigned int nbRef = this->f_nbRefs.getValue();
     ReadAccessor<Data<vector<Vec<nbRef,unsigned> > > > m_reps = this->f_index;
-    ReadAccessor<Data<vector<Vec<nbRef,OutReal> > > > m_weights = weight ;
+    ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights = weight ;
     ReadAccessor<Data<vector<Vec<nbRef,MaterialCoord> > > >  m_dweights = weightDeriv ;
     const int valueScale = showValuesNbDecimals.getValue();
     int scale = 1;

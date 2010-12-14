@@ -85,7 +85,7 @@ public:
     typedef typename Out::Real OutReal;
 
     // Material types
-    typedef MaterialTypes<num_spatial_dimensions,OutReal> materialType;
+    typedef MaterialTypes<num_spatial_dimensions,InReal> materialType;
     typedef GridMaterial<materialType> GridMat;
     typedef typename GridMat::Coord  MaterialCoord;
     typedef typename GridMat::SpatialCoord  SpatialCoord;
@@ -131,7 +131,7 @@ protected:
 //                Data<unsigned>       f_nbRefs;  ///< Number of parents influencing each child.
     Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[nbRefs*i+j] is the index of the j-th parent influencing child i.
 
-    Data< vector<Vec<nbRef,OutReal> > >       weight;
+    Data< vector<Vec<nbRef,InReal> > >       weight;
     Data< vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
     Data< vector<Vec<nbRef,MaterialMat> > >   weightDeriv2;
 
