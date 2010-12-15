@@ -299,6 +299,8 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_J(int max_size,int size,std::str
             return false;
         }
 
+        if (print) std::cout << "file open : " << fileName << " sizeX = " << sizeX << " syzeY=" << sizeY << std::endl;
+
         J.resize(sizeY,sizeX);
         int * cols = (int*) malloc(size * sizeof(int));
         Real * vals = (Real*) malloc(size * sizeof(Real));
