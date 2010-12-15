@@ -39,7 +39,27 @@ class LinearBlendTypes;
 
 
 template< class Primitive, class Real, int Dim>
-class DataTypesInfo
+class InDataTypesInfo
+{
+public:
+    enum {VSize = Primitive::VSize};
+};
+
+template<int Dim, typename Real> class StdRigidTypes;
+
+template< class Real, int Dim>
+class InDataTypesInfo<StdRigidTypes<Dim,Real>,Real,Dim >
+{
+public:
+    enum {VSize = 6};
+};
+
+
+
+
+
+template< class Primitive, class Real, int Dim>
+class OutDataTypesInfo
 {
 public:
     enum {primitive_order = 0};
@@ -48,7 +68,7 @@ public:
 template<int Spatial_dimensions, int Material_dimensions, int Order, typename Real> struct DeformationGradientTypes;
 
 template< class Real, int Dim, int Order>
-class DataTypesInfo<DeformationGradientTypes<Dim,Dim,Order,Real>,Real,Dim>
+class OutDataTypesInfo<DeformationGradientTypes<Dim,Dim,Order,Real>,Real,Dim>
 {
 public:
     enum {primitive_order = DeformationGradientTypes<Dim,Dim,Order,Real>::order};

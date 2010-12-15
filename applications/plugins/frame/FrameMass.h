@@ -83,6 +83,15 @@ public:
         return mass;
     }
 
+    void clear()
+    {
+        inertiaMatrix.clear();
+        inertiaMassMatrix.clear();
+        invInertiaMatrix.clear();
+        invInertiaMassMatrix.clear();
+    }
+
+
     void recalc()
     {
         inertiaMassMatrix = inertiaMatrix * mass;

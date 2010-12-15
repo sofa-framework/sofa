@@ -26,6 +26,7 @@
 
 		<Node name="Visual" >
 			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Turtle.obj"/>
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
 		</Node>
 	</Node>
 </Node>

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_H
 
 #include "initFrame.h"
+#include "FrameMass.h"
 #include "MappingTypes.h"
 #include "NewMaterial.h"
 #include "GridMaterial.h"
@@ -87,16 +88,19 @@ public:
     // Material types
     typedef MaterialTypes<num_spatial_dimensions,InReal> materialType;
     typedef GridMaterial<materialType> GridMat;
-    typedef typename GridMat::Coord  MaterialCoord;
-    typedef typename GridMat::SpatialCoord  SpatialCoord;
     static const unsigned num_material_dimensions = GridMat::num_material_dimensions;
-//                typedef typename GridMat::VecVec3  VecMaterialCoord;
-    typedef typename GridMat::Mat33  MaterialMat;
-//                typedef typename GridMat::VMat33  VecMaterialMatrix;
+    typedef typename GridMat::Coord  MaterialCoord;
+    typedef typename GridMat::SCoord  SpatialCoord;
+    typedef typename GridMat::SGradient  MaterialDeriv;
+    typedef typename GridMat::SHessian  MaterialMat;
+
+    // Mass types
+    enum {InVSize= defaulttype::InDataTypesInfo<In,InReal,num_spatial_dimensions>::VSize};
+    typedef FrameMass<num_spatial_dimensions,InVSize,InReal> frameMassType;
 
     // Conversion types
-    static const unsigned nbRef = 4;
-    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::DataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > InOut;
+    static const unsigned nbRef = GridMat::nbRef;
+    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > InOut;
 
 
 public:
@@ -119,8 +123,13 @@ protected:
     inline void initFrames();
     inline void updateWeights ();
     inline void normalizeWeights();
+    inline void LumpMassesToFrames ();
+    inline void LumpVolumes ();
 
     vector<InOut> inout;  ///< Data specific to the conversion between the types
+    vector<frameMassType> frameMass;
+    vector<Vec<35,InReal>> sampleIntegVector;
+
 //              VecInCoord mm0;  ///< product of the current matrices with the inverse of the initial matrices
 //              vector<JacobianBlock> J;  ///< The tangent operator used in applyJ and applyJT
 //              Data<VecInCoord> f_initialInverseMatrices; // inverses of the initial parent matrices in the world reference frame
@@ -129,7 +138,7 @@ protected:
     helper::ParticleMask* maskTo;
 
 //                Data<unsigned>       f_nbRefs;  ///< Number of parents influencing each child.
-    Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[nbRefs*i+j] is the index of the j-th parent influencing child i.
+    Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.
 
     Data< vector<Vec<nbRef,InReal> > >       weight;
     Data< vector<Vec<nbRef,MaterialCoord> > > weightDeriv;

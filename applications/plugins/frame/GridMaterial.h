@@ -80,29 +80,35 @@ public:
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
     typedef unsigned char voxelType;
 
-    typedef Vec<3,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
-    typedef vector<Coord> VecCoord;
-    typedef Vec<3,Real> Gradient;    ///< gradient of a scalar value in material space
-    typedef vector<Gradient> VecGradient;
-    typedef Mat<3,3,Real> Hessian;    ///< hessian (second derivative) of a scalar value in material space
-    typedef vector<Hessian> VecHessian;
-    typedef Vec<3,Real> SpatialCoord;     ///< Coordinate of a point in the space the object is moving in
     static const unsigned num_material_dimensions = 3;
+    static const unsigned num_spatial_dimensions = 3;
 
+    static const unsigned nbRef = 4;
 
-    typedef Vec<3,Real> Vec3;			///< Material coordinate
-    typedef vector<Vec3> VecVec3;							///< Vector of material coordinates
-    typedef Mat<3,3,Real> Mat33;
-    typedef vector<Mat<3,3,Real> > VMat33;
-    typedef Vec<3,int> Vec3i;							    ///< Vector of grid coordinates
-    typedef vector<Real> VD;
-    typedef vector<VD > VVD;
-    typedef vector<VVD > VVVD;
+    typedef Vec<num_material_dimensions,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
+    typedef vector<Coord> VecCoord;
+    typedef Vec<num_material_dimensions,Real> Gradient;    ///< gradient of a scalar value in material space
+    typedef vector<Gradient> VecGradient;
+    typedef Mat<num_material_dimensions,num_material_dimensions,Real> Hessian;    ///< hessian (second derivative) of a scalar value in material space
+    typedef vector<Hessian> VecHessian;
+
+    typedef Vec<num_spatial_dimensions,Real> SCoord;     ///< Coordinate of a point in the space the object is moving in
+    typedef vector<Coord> VecSCoord;
+    typedef Vec<num_spatial_dimensions,Real> SGradient;    ///< gradient of a scalar value in space
+    typedef vector<Gradient> VecSGradient;
+    typedef Mat<num_spatial_dimensions,num_spatial_dimensions,Real> SHessian;    ///< hessian (second derivative) of a scalar value in space
+    typedef vector<Hessian> VecSHessian;
+
+    typedef Vec<num_spatial_dimensions,int> GCoord;			///< Vector of grid coordinates
+
+    typedef Vec<nbRef,Real> VRefReal;
+    typedef Vec<nbRef,SCoord> VRefCoord;
+    typedef Vec<nbRef,SGradient> VRefGradient;
+    typedef Vec<nbRef,SHessian> VRefHessian;
+    typedef Vec<nbRef,unsigned> VRef;
+
     typedef vector<unsigned int> VUI;
-    typedef vector<VUI > VVUI;
-    typedef vector<int> VI;
-    typedef vector<VI > VVI;
-    typedef vector<bool> VB;
+
     typedef map<Real,Real> mapLabelType; // voxeltype does not work..
 
     GridMaterial();
@@ -154,33 +160,33 @@ public:
     /*   Lumping			  */
     /*************************/
 
-    /// return w_i(index).mu_i.vol_i and p_i of voxels in the voronoi region of point
-    bool getWeightedMasses(const Vec3& point,const unsigned int findex,VecVec3& p,VD& weightedmasses);
+    /// return mu_i.vol_i , p_i and weights of voxels in the voronoi region of point
+    bool getWeightedMasses(const SCoord& point, vector<VRef>& reps, vector<VRefReal>& w, VecSCoord& p,vector<Real>& masses);
     /// return sum(mu_i.vol_i) in the voronoi region of point
-    bool lumpMass(const Vec3& point,Real& mass);
+    bool lumpMass(const SCoord& point,Real& mass);
     /// return sum(vol_i) in the voronoi region of point
-    bool lumpVolume(const Vec3& point,Real& vol);
+    bool lumpVolume(const SCoord& point,Real& vol);
     /// return sum((p_i-p)^(order).vol_i) in the voronoi region of point
-    bool lumpMoments(const Vec3& point,const unsigned int order,VD& moments);
+    bool lumpMoments(const SCoord& point,const unsigned int order,vector<Real>& moments);
     /// return sum(E_i.(p_i-p)^(order).vol_i) in the voronoi region of point
-    bool lumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments);
+    bool lumpMomentsStiffness(const SCoord& point,const unsigned int order,vector<Real>& moments);
     /// return the repartited weights
-    bool lumpWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw=NULL,VMat33* ddw=NULL);
+    bool lumpWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw=NULL,VRefHessian* ddw=NULL);
     /// return the interpolated repartited weights
-    bool interpolateWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw=NULL);
+    bool interpolateWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w);
 
     /*********************************/
     /*   Compute distances/weights   */
     /*********************************/
 
     /// compute voxel weights according to 'distanceType' method -> stored in weightsRepartition and repartition
-    bool computeWeights(const unsigned int nbrefs,const VecVec3& points);
+    bool computeWeights(const VecSCoord& points);
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation
     //  -> returns points and store id/distances in voronoi/distances
-    bool computeUniformSampling ( VecVec3& points, const unsigned int num_points,const unsigned int max_iterations = 100);
+    bool computeUniformSampling ( VecSCoord& points, const unsigned int num_points,const unsigned int max_iterations = 100);
     /// Regular sampling based on step size
     //  -> returns points and store id/distances in voronoi/distances
-    bool computeRegularSampling ( VecVec3& points, const unsigned int step);
+    bool computeRegularSampling ( VecSCoord& points, const unsigned int step);
 
     virtual std::string getTemplateName() const
     {
@@ -198,9 +204,9 @@ protected:
     /*********************************/
     /*         Grid data   		  */
     /*********************************/
-    Data< Vec3d > voxelSize;
-    Data< Vec3d > origin;
-    Data< Vec3i > dimension;
+    Data< SCoord > voxelSize;
+    Data< SCoord > origin;
+    Data< GCoord > dimension;
 
     CImg<voxelType> grid;
     unsigned int nbVoxels;
@@ -209,12 +215,13 @@ protected:
     Data<mapLabelType> labelToStiffnessPairs;
     Data<mapLabelType> labelToDensityPairs;
     // temporary values in grid
-    VD distances;
-    VI voronoi;
-    VD weights;
+    vector<Real> distances;
+    vector<int> voronoi;
+    vector<Real> weights;
     // repartitioned weights
-    VVD weightsRepartition;
-    VVUI repartition;
+    vector<VRefReal> f_weights;
+    vector<VRef> f_index;
+
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
 
     /*********************************/
@@ -241,46 +248,46 @@ protected:
     /// (biased) Euclidean distance between two voxels
     Real getDistance(const unsigned int& index1,const unsigned int& index2);
     /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
-    bool computeGeodesicalDistances ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max());
     bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
-    bool computeGeodesicalDistances ( const VecVec3& points, const Real distMax =std::numeric_limits<Real>::max());
-    bool computeGeodesicalDistances ( const VI& indices, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const VecSCoord& points, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const vector<int>& indices, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Geodesical distance between the border of the voronoi cell containing point and all other voxels -> stored in distances
-    bool computeGeodesicalDistancesToVoronoi ( const Vec3& point, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max());
     bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
 
     /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
-    bool computeAnisotropicLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
+    bool computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point,const Real factor=2.);
     /// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
-    bool computeLinearWeightsInVoronoi ( const Vec3& point,const Real factor=2.);
+    bool computeLinearWeightsInVoronoi ( const SCoord& point,const Real factor=2.);
     /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
-    bool HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
+    bool HeatDiffusion( const VecSCoord& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
 
     /// fit 1st, 2d or 3d polynomial to the dense weight map in the dilated by 1 voxel voronoi region (usevoronoi=true) or 26 neighbors (usevoronoi=false) of point.
-    bool lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw=NULL,Mat33* ddw=NULL);
+    bool lumpWeights(const SCoord& point,const bool usevoronoi,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL);
     /// interpolate weights (and weight derivatives) in the dense weight map.
-    bool interpolateWeights(const Vec3& point,Real& w,Vec3* dw=NULL);
+    bool interpolateWeights(const SCoord& point,Real& w);
 
     /*********************************/
     /*         Utils				  */
     /*********************************/
 
-    inline int getIndex(const Vec3i& icoord);
-    inline int getIndex(const Vec3& coord);
-    inline bool getiCoord(const Vec3& coord, Vec3i& icoord);
-    inline bool getiCoord(const int& index, Vec3i& icoord);
-    inline bool getCoord(const Vec3i& icoord, Vec3& coord) ;
-    inline bool getCoord(const int& index, Vec3& coord) ;
+    inline int getIndex(const GCoord& icoord);
+    inline int getIndex(const SCoord& coord);
+    inline bool getiCoord(const SCoord& coord, GCoord& icoord);
+    inline bool getiCoord(const int& index, GCoord& icoord);
+    inline bool getCoord(const GCoord& icoord, SCoord& coord) ;
+    inline bool getCoord(const int& index, SCoord& coord) ;
     inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool findIndexInRepartition(unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
 
-    inline void accumulateCovariance(const Vec3& p,const unsigned int order,VVD& Cov);
-    inline void getCompleteBasis(const Vec3& p,const unsigned int order,VD& basis);
-    inline void getCompleteBasisDeriv(const Vec3& p,const unsigned int order,VVD& basisDeriv);
-    inline void getCompleteBasisDeriv2(const Vec3& p,const unsigned int order,VVVD& basisDeriv);
+    inline void accumulateCovariance(const SCoord& p,const unsigned int order,vector<vector<Real> >& Cov);
+    inline void getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis);
+    inline void getCompleteBasisDeriv(const SCoord& p,const unsigned int order,vector<SGradient>& basisDeriv);
+    inline void getCompleteBasisDeriv2(const SCoord& p,const unsigned int order,vector<SHessian>& basisDeriv);
     inline void addWeightinRepartion(const unsigned int index); // add dense weights relative to index, in weight repartion of size nbref if it is large enough
     inline void pasteRepartioninWeight(const unsigned int index); // paste weight relative to index in the dense weight map
     inline void normalizeWeightRepartion();
@@ -292,7 +299,7 @@ protected:
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
     Data<unsigned int> showWeightIndex;    ///
     void drawCube(Real size,bool wireframe);
-    Data<Vec3i> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
+    Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
 
 
 };
