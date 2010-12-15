@@ -87,11 +87,15 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(FRAME_CorotationalForceField_CPP)
-extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331fTypes>;
+#if defined(WIN32) && !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
+#ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331dTypes>;
-extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332fTypes>;
 extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient331fTypes>;
+extern template class SOFA_FRAME_API CorotationalForceField<DeformationGradient332fTypes>;
+#endif
 #endif
 
 } //

@@ -140,8 +140,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdAffineTypes<3,InReal> In;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
@@ -226,8 +226,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdAffineTypes<3,InReal> In;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
@@ -326,8 +326,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdAffineTypes<3,InReal> In;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
@@ -436,8 +436,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdQuadraticTypes<3,InReal> In;
     typedef typename In::QuadraticCoord QuadraticCoord; // vec9
     typedef typename In::Coord InCoord;
@@ -520,8 +520,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdQuadraticTypes<3,InReal> In;
     typedef typename In::QuadraticCoord QuadraticCoord; // vec9
     typedef typename In::Affine Affine;
@@ -621,8 +621,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdQuadraticTypes<3,InReal> In;
     typedef typename Out::MaterialFrame MaterialFrame;
     typedef typename Out::MaterialFrameGradient MaterialFrameGradient;
@@ -749,8 +749,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdRigidTypes<3,InReal> In;
     typedef typename In::Coord InCoord;
     typedef typename Out::Coord OutCoord;
@@ -835,8 +835,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdRigidTypes<3,InReal> In;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;
@@ -961,8 +961,8 @@ struct LinearBlendTypes<
     typedef typename Material::Real InReal;
     typedef typename Out::Real OutReal;
     typedef OutReal Real;
-    typedef typename Material::Gradient MaterialDeriv;
-    typedef typename Material::Hessian MaterialMat;
+    typedef typename Material::SGradient MaterialDeriv;
+    typedef typename Material::SHessian MaterialMat;
     typedef StdRigidTypes<3,InReal> In;
     typedef typename Out::SpatialCoord SpatialCoord; // = Vec3
     typedef typename Out::MaterialFrame MaterialFrame;

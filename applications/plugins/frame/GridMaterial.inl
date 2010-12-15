@@ -44,9 +44,9 @@ namespace material
 template<class MaterialTypes>
 GridMaterial< MaterialTypes>::GridMaterial()
     : Inherited()
-    , voxelSize ( initData ( &voxelSize, Vec3d ( 0,0,0 ), "voxelSize", "Voxel size." ) )
-    , origin ( initData ( &origin, Vec3d ( 0,0,0 ), "origin", "Grid origin." ) )
-    , dimension ( initData ( &dimension, Vec3i ( 0,0,0 ), "dimension", "Grid dimensions." ) )
+    , voxelSize ( initData ( &voxelSize, SCoord ( 0,0,0 ), "voxelSize", "Voxel size." ) )
+    , origin ( initData ( &origin, SCoord ( 0,0,0 ), "origin", "Grid origin." ) )
+    , dimension ( initData ( &dimension, GCoord ( 0,0,0 ), "dimension", "Grid dimensions." ) )
     , labelToStiffnessPairs ( initData ( &labelToStiffnessPairs, "labelToStiffnessPairs","Correspondances between grid value and stiffness." ) )
     , labelToDensityPairs ( initData ( &labelToDensityPairs, "labelToDensityPairs","Correspondances between grid value and material density." ) )
     , imageFile( initData(&imageFile,"imageFile","Image file."))
@@ -55,7 +55,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned ) 0, "showWeightIndex","Weight index." ) )
-    , showPlane ( initData ( &showPlane, Vec3i ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
+    , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
 {
     helper::OptionsGroup distanceTypeOptions(3,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
@@ -81,17 +81,17 @@ void GridMaterial< MaterialTypes>::init()
 
 
 //TEST
-    /*    if(weightsRepartition.size()!=nbVoxels)
+    /*    if(f_weights.size()!=nbVoxels)
           {
 
-          VecVec3 points;	  points.push_back(Vec3(0.8,0,0.3));	  points.push_back(Vec3(-0.534989,-0.661314,-0.58));	  points.push_back(Vec3(-0.534955,0.661343,-0.58));	  points.push_back(Vec3(0.257823,-0.46005,-0.63));	  points.push_back(Vec3(0.257847,0.460036,-0.63));	  points.push_back(Vec3(-0.15,0,0.2 ));
+          VecSCoord points;	  points.push_back(SCoord(0.8,0,0.3));	  points.push_back(SCoord(-0.534989,-0.661314,-0.58));	  points.push_back(SCoord(-0.534955,0.661343,-0.58));	  points.push_back(SCoord(0.257823,-0.46005,-0.63));	  points.push_back(SCoord(0.257847,0.460036,-0.63));	  points.push_back(SCoord(-0.15,0,0.2 ));
           computeUniformSampling(points,6);
           computeWeights(6,points);
 
-    	  VecVec3 samples;
+    	  VecSCoord samples;
           computeUniformSampling(samples,50);
 
-    	  VUI reps; VD w; VecVec3 dw; VMat33 ddw;
+    	  Vec<nbRef,unsigned> reps; vector<Real> w; VecSGradient dw; VecSHessian ddw;
     	  for(unsigned int j=0;j<samples.size();j++) lumpWeightsRepartition(samples[j],reps,w,&dw,&ddw);
 
           }*/
@@ -234,9 +234,9 @@ bool GridMaterial<MaterialTypes>::loadInfos()
         }
         std::string str;
         fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32); // voxeltype not used yet
-        fileStream >> str; Vec3i& dim = *this->dimension.beginEdit();       fileStream >> dim;      this->dimension.endEdit();
-        fileStream >> str; Vec3d& origin = *this->origin.beginEdit();       fileStream >> origin;   this->origin.endEdit();
-        fileStream >> str; Vec3d& voxelsize = *this->voxelSize.beginEdit(); fileStream >> voxelsize; this->voxelSize.endEdit();
+        fileStream >> str; GCoord& dim = *this->dimension.beginEdit();       fileStream >> dim;      this->dimension.endEdit();
+        fileStream >> str; SCoord& origin = *this->origin.beginEdit();       fileStream >> origin;   this->origin.endEdit();
+        fileStream >> str; SCoord& voxelsize = *this->voxelSize.beginEdit(); fileStream >> voxelsize; this->voxelSize.endEdit();
         fileStream.close();
         sout << "Loaded info file "<< infoFile << sendl;
     }
@@ -310,20 +310,20 @@ bool GridMaterial<MaterialTypes>::loadWeightRepartion()
         serr << "Invalid grid size in " << weightFile << sendl;
         return false;
     }
-
-    this->repartition.resize(nbVoxels);
-    for (unsigned int i=0; i<nbVoxels; i++) this->repartition[i].resize(nbrefs);
-    this->weightsRepartition.resize(nbVoxels);
-    for (unsigned int i=0; i<nbVoxels; i++)
+    if (nbRef!=nbrefs)
     {
-        this->weightsRepartition[i].resize(nbrefs);
-        this->weightsRepartition[i].fill(0);
+        serr << "Invalid nbRef in " << weightFile << sendl;
+        return false;
     }
+
+    this->f_index.resize(nbVoxels);
+    this->f_weights.resize(nbVoxels);
+
     for (unsigned int i=0; i<nbVoxels; i++)
-        for (unsigned int j=0; j<nbrefs; j++)
+        for (unsigned int j=0; j<nbRef; j++)
         {
-            fileStream >> repartition[i][j] ;
-            fileStream >> weightsRepartition[i][j];
+            fileStream >> f_index[i][j] ;
+            fileStream >> f_weights[i][j];
         }
     fileStream.close();
     sout << "Loaded weight file "<< weightFile << sendl;
@@ -338,8 +338,8 @@ bool GridMaterial< MaterialTypes>::saveWeightRepartion()
 {
     if (!weightFile.isSet()) return false;
     if (nbVoxels==0) return false;
-    if (weightsRepartition.size()!=nbVoxels) return false;
-    if (repartition.size()!=nbVoxels) return false;
+    if (f_weights.size()!=nbVoxels) return false;
+    if (f_index.size()!=nbVoxels) return false;
 
     std::ofstream fileStream (weightFile.getFullPath().c_str(), std::ofstream::out);
     if (!fileStream.is_open())
@@ -348,13 +348,13 @@ bool GridMaterial< MaterialTypes>::saveWeightRepartion()
         return false;
     }
     sout << "Writing grid weights repartion file " << weightFile << sendl;
-    unsigned int nbrefs=repartition[0].size();
-    fileStream << nbVoxels << " " << nbrefs << std::endl;
+
+    fileStream << nbVoxels << " " << nbRef << std::endl;
     for (unsigned int i=0; i<nbVoxels; i++)
     {
-        for (unsigned int j=0; j<nbrefs; j++)
+        for (unsigned int j=0; j<nbRef; j++)
         {
-            fileStream << repartition[i][j] << " " << weightsRepartition[i][j] << " ";
+            fileStream << f_index[i][j] << " " << f_weights[i][j] << " ";
         }
         fileStream << std::endl;
     }
@@ -371,44 +371,46 @@ bool GridMaterial< MaterialTypes>::saveWeightRepartion()
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getWeightedMasses(const Vec3& point,const unsigned int findex,VecVec3& p,VD& weightedmasses)
+bool GridMaterial< MaterialTypes>::getWeightedMasses(const SCoord& point, vector<VRef>& reps, vector<VRefReal>& w, VecSCoord& p,vector<Real>& masses)
 {
+    p.clear();
+    masses.clear();
+    reps.clear();
+    w.clear();
+
     if (!nbVoxels) return false;
 
     int index=getIndex(point);
     if (index==-1) return false; // point not in grid or no weight computed
-    if (weightsRepartition.size()!=nbVoxels || repartition.size()!=nbVoxels) return false; // weights not computed
-
-    unsigned int i,j,nbp=1;
-    bool fitononevoxel=false;
-    if (voronoi.size()!=nbVoxels) fitononevoxel=true;
-    else if (voronoi[index]==-1) fitononevoxel=true;
-    else for(i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) if(findIndexInRepartition(j,i,findex)) nbp+=1;
-
-    p.resize(nbp);
-    weightedmasses.resize(nbp);
+    if (f_weights.size()!=nbVoxels || f_index.size()!=nbVoxels) return false; // weights not computed
 
     Real voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
 
+    unsigned int i;
+    bool fitononevoxel=false;
+    if (voronoi.size()!=nbVoxels) fitononevoxel=true;
+    else if (voronoi[index]==-1) fitononevoxel=true;
+
     if(fitononevoxel)
     {
-        p[0]=point;
-        if(findIndexInRepartition(j,index,findex)) weightedmasses[0]=weightsRepartition[index][j]*voxelvolume*getDensity(grid.data()[index]);
-        else weightedmasses[0]=0;
+        p.push_back(SCoord());  getCoord(index,p.back());
+        w.push_back(f_weights[index]);
+        reps.push_back(f_index[index]);
+        masses.push_back(voxelvolume*getDensity(grid.data()[index]));
     }
-    else for(i=0; i<nbVoxels; i++)
-            if (voronoi[i]==voronoi[index])
-                if(findIndexInRepartition(j,i,findex))
-                {
-                    getCoord(i,p[i]);
-                    weightedmasses[i]=weightsRepartition[i][j]*voxelvolume*getDensity(grid.data()[i]);
-                }
+    else for(i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index])
+            {
+                p.push_back(SCoord());  getCoord(i,p.back());
+                w.push_back(f_weights[i]);
+                reps.push_back(f_index[i]);
+                masses.push_back(voxelvolume*getDensity(grid.data()[i]));
+            }
     return true;
 }
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpMass(const Vec3& point,Real& mass)
+bool GridMaterial< MaterialTypes>::lumpMass(const SCoord& point,Real& mass)
 {
     if (!nbVoxels)
     {
@@ -439,7 +441,7 @@ bool GridMaterial< MaterialTypes>::lumpMass(const Vec3& point,Real& mass)
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpVolume(const Vec3& point,Real& vol)
+bool GridMaterial< MaterialTypes>::lumpVolume(const SCoord& point,Real& vol)
 {
     if (!nbVoxels)
     {
@@ -470,7 +472,7 @@ bool GridMaterial< MaterialTypes>::lumpVolume(const Vec3& point,Real& vol)
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpMoments(const Vec3& point,const unsigned int order,VD& moments)
+bool GridMaterial< MaterialTypes>::lumpMoments(const SCoord& point,const unsigned int order,vector<Real>& moments)
 {
     if (!nbVoxels)
     {
@@ -501,9 +503,9 @@ bool GridMaterial< MaterialTypes>::lumpMoments(const Vec3& point,const unsigned 
         return false;
     }
 
-    Vec3 P,G;
+    SCoord P,G;
     getCoord(index,P);
-    VD momentPG;
+    vector<Real> momentPG;
     for (i=0; i<nbVoxels; i++)
         if (voronoi[i]==voronoi[index])
         {
@@ -515,7 +517,7 @@ bool GridMaterial< MaterialTypes>::lumpMoments(const Vec3& point,const unsigned 
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpMomentsStiffness(const Vec3& point,const unsigned int order,VD& moments)
+bool GridMaterial< MaterialTypes>::lumpMomentsStiffness(const SCoord& point,const unsigned int order,vector<Real>& moments)
 {
     if (!nbVoxels)
     {
@@ -552,19 +554,13 @@ bool GridMaterial< MaterialTypes>::lumpMomentsStiffness(const Vec3& point,const 
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw,VMat33* ddw)
+bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw,VRefHessian* ddw)
 {
     if (!nbVoxels) return false;
 
     int index=getIndex(point);
     if (index==-1) return false; // point not in grid or no weight computed
-    if (weightsRepartition.size()!=nbVoxels || repartition.size()!=nbVoxels) return false; // weights not computed
-
-    unsigned int nbrefs=weightsRepartition[index].size();
-    w.resize(nbrefs);
-    reps.resize(nbrefs);
-    if(dw) dw->resize(nbrefs);
-    if(ddw) ddw->resize(nbrefs);
+    if (f_weights.size()!=nbVoxels || f_index.size()!=nbVoxels) return false; // weights not computed
 
     bool fitononevoxel=false;
     if (voronoi.size()!=nbVoxels) fitononevoxel=true;
@@ -573,11 +569,11 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const Vec3& point,VUI&
     unsigned int i,j,k;
     if(fitononevoxel)
     {
-        for (i=0; i<nbrefs; i++)
-            if(weightsRepartition[index][i]!=0)
+        for (i=0; i<nbRef; i++)
+            if(f_weights[index][i]!=0)
             {
-                reps[i]=repartition[index][i];
-                pasteRepartioninWeight(repartition[index][i]);
+                reps[i]=f_index[index][i];
+                pasteRepartioninWeight(f_index[index][i]);
                 if(!dw) lumpWeights(point,false,w[i]); else if(!ddw) lumpWeights(point,false,w[i],&(*dw)[i]); else lumpWeights(point,false,w[i],&(*dw)[i],&(*ddw)[i]);
             }
             else
@@ -591,24 +587,24 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const Vec3& point,VUI&
     {
         // get the nbrefs most relevant weights in the voronoi region of point
         unsigned int maxlabel=0;
-        for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbrefs; j++) { if(weightsRepartition[i][j]!=0) if(repartition[i][j]>maxlabel) maxlabel=repartition[i][j]; }
-        VD W((int)(maxlabel+1),0);
-        for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbrefs; j++) if(weightsRepartition[i][j]!=0) W[repartition[i][j]]+=weightsRepartition[i][j];
+        for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbRef; j++) { if(f_weights[i][j]!=0) if(f_index[i][j]>maxlabel) maxlabel=f_index[i][j]; }
+        vector<Real> W((int)(maxlabel+1),0);
+        for (i=0; i<nbVoxels; i++) if(voronoi[i]==voronoi[index]) for (j=0; j<nbRef; j++) if(f_weights[i][j]!=0) W[f_index[i][j]]+=f_weights[i][j];
 
-        for (i=0; i<nbrefs; i++) w[i]=0;
+        for (i=0; i<nbRef; i++) w[i]=0;
         for (i=0; i<maxlabel; i++)
         {
-            j=0; while (j!=nbrefs && w[j]>W[i]) j++;
-            if(j!=nbrefs)
+            j=0; while (j!=nbRef && w[j]>W[i]) j++;
+            if(j!=nbRef)
             {
-                for (k=nbrefs-1; k>j; k--) {w[k]=w[k-1]; reps[k]=reps[k-1];}
+                for (k=nbRef-1; k>j; k--) {w[k]=w[k-1]; reps[k]=reps[k-1];}
                 w[j]=W[i];
                 reps[j]=i;
             }
         }
 
         // lump the weights
-        for (i=0; i<nbrefs; i++)
+        for (i=0; i<nbRef; i++)
             if(w[i]!=0)
             {
                 pasteRepartioninWeight(reps[i]);
@@ -624,7 +620,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const Vec3& point,VUI&
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usevoronoi,Real& w,Vec3* dw,Mat33* ddw)
+bool GridMaterial< MaterialTypes>::lumpWeights(const SCoord& point,const bool usevoronoi,Real& w,SGradient* dw,SHessian* ddw)
 {
     if (!nbVoxels) return false;
 
@@ -670,8 +666,8 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usev
     if (ddw && dw) order=2;
     else if (dw) order=1;
     unsigned int dim=(order+1)*(order+2)*(order+3)/6;
-    VVD Cov((int)dim,VD((int)dim,(Real)0)); // accumulate dp^(order)dp^(order)T
-    Vec3 pi;
+    vector<vector<Real> > Cov((int)dim,vector<Real>((int)dim,(Real)0)); // accumulate dp^(order)dp^(order)T
+    SCoord pi;
     for (j=0; j<neighbors.size(); j++)
     {
         getCoord(neighbors[j],pi);
@@ -679,7 +675,7 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usev
     }
 
     // invert covariance matrix
-    VVD invCov((int)dim,VD((int)dim,(Real)0));
+    vector<vector<Real> > invCov((int)dim,vector<Real>((int)dim,(Real)0));
     if (order==0)
     {
         invCov[0][0]=1./Cov[0][0];    // simple average
@@ -712,21 +708,21 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usev
     }
 
     // compute the weights and its derivatives
-    VD basis,wdp((int)dim,(Real)0);
+    vector<Real> basis,wdp((int)dim,(Real)0);
     for (j=0; j<neighbors.size(); j++)
     {
         getCoord(neighbors[j],pi);
         getCompleteBasis(pi-point,order,basis);
         for (i=0; i<dim; i++) wdp[i]+=basis[i]*weights[neighbors[j]];
     }
-    VD W((int)dim,(Real)0);
+    vector<Real> W((int)dim,(Real)0);
     for (i=0; i<dim; i++) for (j=0; j<dim; j++) W[i]+=invCov[i][j]*wdp[j];
 
     w=W[0];
     if (order==0) return true;
 
-    VVD basisderiv;
-    getCompleteBasisDeriv(Vec3(0,0,0),order,basisderiv);
+    vector<SGradient> basisderiv;
+    getCompleteBasisDeriv(SCoord(0,0,0),order,basisderiv);
     for (i=0; i<3; i++)
     {
         (*dw)[i]=0;
@@ -734,8 +730,8 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usev
     }
     if (order==1) return true;
 
-    VVVD basisderiv2;
-    getCompleteBasisDeriv2(Vec3(0,0,0),order,basisderiv2);
+    vector<SHessian> basisderiv2;
+    getCompleteBasisDeriv2(SCoord(0,0,0),order,basisderiv2);
     for (i=0; i<3; i++) for (k=0; k<3; k++)
         {
             (*ddw)[i][k]=0;    // dddw[i][k]=dw[i]/p_k
@@ -745,9 +741,9 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const Vec3& point,const bool usev
 }
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::accumulateCovariance(const Vec3& p,const unsigned int order,VVD& Cov)
+void GridMaterial< MaterialTypes>::accumulateCovariance(const SCoord& p,const unsigned int order,vector<vector<Real> >& Cov)
 {
-    VD basis;
+    vector<Real> basis;
     getCompleteBasis(p,order,basis);
     unsigned int dim=(order+1)*(order+2)*(order+3)/6;
     for (unsigned int i=0; i<dim; i++) for (unsigned int j=0; j<dim; j++) Cov[i][j]+=basis[i]*basis[j];
@@ -757,30 +753,24 @@ void GridMaterial< MaterialTypes>::accumulateCovariance(const Vec3& p,const unsi
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const Vec3& point,VUI& reps,VD& w,VecVec3* dw)
+bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w)
 {
     if (!nbVoxels) return false;
 
     int index=getIndex(point);
     if (index==-1) return false; // point not in grid
-    if (weightsRepartition.size()!=nbVoxels || repartition.size()!=nbVoxels) return false; // weights not computed
+    if (f_weights.size()!=nbVoxels || f_index.size()!=nbVoxels) return false; // weights not computed
 
-    unsigned int nbrefs=weightsRepartition[index].size();
-    w.resize(nbrefs);
-    reps.resize(nbrefs);
-    if(dw) dw->resize(nbrefs);
-
-    for (unsigned int i=0; i<nbrefs; i++)
-        if(weightsRepartition[index][i]!=0)
+    for (unsigned int i=0; i<nbRef; i++)
+        if(f_weights[index][i]!=0)
         {
-            reps[i]=repartition[index][i];
-            pasteRepartioninWeight(repartition[index][i]);
-            if(!dw) interpolateWeights(point,w[i]); else interpolateWeights(point,w[i],&(*dw)[i]);
+            reps[i]=f_index[index][i];
+            pasteRepartioninWeight(f_index[index][i]);
+            interpolateWeights(point,w[i]);
         }
         else
         {
             reps[i]=w[i]=0;
-            if(dw) (*dw)[i].fill(0);
         }
     return true;
 }
@@ -788,25 +778,29 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const Vec3& poi
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::interpolateWeights(const Vec3& point,Real& w,Vec3* dw)
+bool GridMaterial< MaterialTypes>::interpolateWeights(const SCoord& point,Real& w)
 {
     if (!nbVoxels) return false;
 
     // get weights of the underlying voxel
-    Real wvox; 	Vec3 dwvox;   Mat33 ddwvox;
-    if(lumpWeights(point,false,wvox,&dwvox,&ddwvox))
-    {
-        // use 2d order Taylor serie to voxel center
-        Vec3i ipvox; 	getiCoord(point,ipvox);
-        Vec3 pvox; getCoord(ipvox,pvox);
-        Vec3 u=point-pvox;
 
-        w=wvox+dot(dwvox,u)+dot(u,ddwvox*u)/2.;
-        if(dw) { *dw= dwvox + ddwvox*u ;}
+// temporary: no interpolation
+    int index=getIndex(point);
+    if (index==-1 || weights.size()!=nbVoxels) {w=0; return false; } // point not in grid or no weight computed
+    else {w=weights[index]; return true;}
 
-        return true;
-    }
-    else return false;
+    //Real wvox; 	SGradient dwvox;   SHessian ddwvox;
+    //if(lumpWeights(point,false,wvox,&dwvox,&ddwvox))
+    //	{
+    //	// use 2d order Taylor serie to voxel center
+    //	GCoord ipvox; 	getiCoord(point,ipvox);
+    //	SCoord pvox; getCoord(ipvox,pvox);
+    //	SCoord u=point-pvox;
+
+    //	w=wvox+dot(dwvox,u)+dot(u,ddwvox*u)/2.;
+    //	return true;
+    //	}
+    //else return false;
 }
 
 
@@ -817,20 +811,18 @@ bool GridMaterial< MaterialTypes>::interpolateWeights(const Vec3& point,Real& w,
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeWeights(const unsigned int nbrefs,const VecVec3& points)
+bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
 {
 // TO DO: add params as data? : GEODESIC factor, DIFFUSION fixdatavalue, DIFFUSION max_iterations, DIFFUSION precision
     if (!nbVoxels) return false;
     unsigned int i,dtype=this->distanceType.getValue().getSelectedId(),nbp=points.size();
 
 // init
-    this->repartition.resize(nbVoxels);
-    for (i=0; i<nbVoxels; i++) this->repartition[i].resize(nbrefs);
-    this->weightsRepartition.resize(nbVoxels);
+    this->f_index.resize(nbVoxels);
+    this->f_weights.resize(nbVoxels);
     for (i=0; i<nbVoxels; i++)
     {
-        this->weightsRepartition[i].resize(nbrefs);
-        this->weightsRepartition[i].fill(0);
+        this->f_weights[i].fill(0);
     }
 
     if (dtype==DISTANCE_GEODESIC)
@@ -864,22 +856,22 @@ template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::addWeightinRepartion(const unsigned int index)
 {
     if (!nbVoxels) return;
-    unsigned int j,k,nbrefs=repartition[0].size();
+    unsigned int j,k;
 
     for (unsigned int i=0; i<nbVoxels; i++)
         if (grid.data()[i])
         {
             j=0;
-            while (j!=nbrefs && weightsRepartition[i][j]>weights[i]) j++;
-            if (j!=nbrefs) // insert weight and index in the ordered list
+            while (j!=nbRef && f_weights[i][j]>weights[i]) j++;
+            if (j!=nbRef) // insert weight and index in the ordered list
             {
-                for (k=nbrefs-1; k>j; k--)
+                for (k=nbRef-1; k>j; k--)
                 {
-                    weightsRepartition[i][k]=weightsRepartition[i][k-1];
-                    repartition[i][k]=repartition[i][k-1];
+                    f_weights[i][k]=f_weights[i][k-1];
+                    f_index[i][k]=f_index[i][k-1];
                 }
-                weightsRepartition[i][j]=weights[i];
-                repartition[i][j]=index;
+                f_weights[i][j]=weights[i];
+                f_index[i][j]=index;
             }
         }
     showedrepartition=-1;
@@ -890,17 +882,17 @@ template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::pasteRepartioninWeight(const unsigned int index)
 {
     if (!nbVoxels) return;
-    if (repartition.size()!=nbVoxels) return;
-    if (weightsRepartition.size()!=nbVoxels) return;
+    if (f_index.size()!=nbVoxels) return;
+    if (f_weights.size()!=nbVoxels) return;
     weights.resize(this->nbVoxels);
 
-    unsigned int i,j,nbrefs=repartition[0].size();
+    unsigned int i,j;
     for (i=0; i<nbVoxels; i++)
         if (grid.data()[i])
         {
             j=0;
-            while (j!=nbrefs && repartition[i][j]!=index) j++;
-            if (j!=nbrefs) weights[i]=weightsRepartition[i][j];
+            while (j!=nbRef && f_index[i][j]!=index) j++;
+            if (j!=nbRef) weights[i]=f_weights[i][j];
             else weights[i]=0;
         }
         else weights[i]=0;
@@ -911,13 +903,13 @@ template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::normalizeWeightRepartion()
 {
     if (!nbVoxels) return;
-    unsigned int j,nbrefs=repartition[0].size();
+    unsigned int j;
     for (unsigned int i=0; i<nbVoxels; i++)
         if (grid.data()[i])
         {
             Real W=0;
-            for (j=0; j<nbrefs; j++) W+=weightsRepartition[i][j];
-            if (W!=0) for (j=0; j<nbrefs; j++) weightsRepartition[i][j]/=W;
+            for (j=0; j<nbRef; j++) W+=f_weights[i][j];
+            if (W!=0) for (j=0; j<nbRef; j++) f_weights[i][j]/=W;
         }
     showedrepartition=-1;
 }
@@ -927,9 +919,9 @@ template < class MaterialTypes>
 typename GridMaterial< MaterialTypes>::Real GridMaterial< MaterialTypes>::getDistance(const unsigned int& index1,const unsigned int& index2)
 {
     if (!nbVoxels) return -1;
-    Vec3 coord1;
+    SCoord coord1;
     if (!getCoord(index1,coord1)) return -1; // point1 not in grid
-    Vec3 coord2;
+    SCoord coord2;
     if (!getCoord(index2,coord2)) return -1; // point2 not in grid
 
     if (this->biasDistances.getValue()) // bias distances according to stiffness
@@ -941,7 +933,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial< MaterialTypes>::getDis
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const Vec3& point, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const SCoord& point, const Real distMax )
 {
     if (!nbVoxels) return false;
     int index=getIndex(point);
@@ -988,17 +980,17 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const VecVec3& points, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const VecSCoord& points, const Real distMax )
 {
     if (!nbVoxels) return false;
-    VI indices;
+    vector<int> indices;
     for (unsigned int i=0; i<points.size(); i++) indices.push_back(getIndex(points[i]));
     return computeGeodesicalDistances ( indices, distMax );
 }
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const VI& indices, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int>& indices, const Real distMax )
 {
     if (!nbVoxels) return false;
     unsigned int i,nbi=indices.size(),index1,index2;
@@ -1047,7 +1039,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const VI& indice
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const Vec3& point, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax )
 {
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
@@ -1112,20 +1104,20 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecVec3& points, const unsigned int step)
+bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecSCoord& points, const unsigned int step)
 {
     if (!nbVoxels) return false;
     if(step==0)  return false;
 
     unsigned int i,initial_num_points=points.size();
-    VI indices;
+    vector<int> indices;
     for (i=0; i<initial_num_points; i++) indices.push_back(getIndex(points[i]));
 
     for(unsigned int z=0; z<(unsigned int)dimension.getValue()[2]; z+=step)
         for(unsigned int y=0; y<(unsigned int)dimension.getValue()[1]; y+=step)
             for(unsigned int x=0; x<(unsigned int)dimension.getValue()[0]; x+=step)
                 if (grid(x,y,z)!=0)
-                    indices.push_back(getIndex(Vec3i(x,y,z)));
+                    indices.push_back(getIndex(GCoord(x,y,z)));
 
     computeGeodesicalDistances(indices); // voronoi
 
@@ -1139,13 +1131,13 @@ bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecVec3& points, con
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, const unsigned int num_points, const unsigned int max_iterations )
+bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, const unsigned int num_points, const unsigned int max_iterations )
 {
     if (!nbVoxels) return false;
     unsigned int i,k,initial_num_points=points.size(),nb_points=num_points;
     if(initial_num_points>num_points) nb_points=initial_num_points;
 
-    VI indices((int)nb_points,-1);
+    vector<int> indices((int)nb_points,-1);
     for (i=0; i<initial_num_points; i++) indices[i]=getIndex(points[i]);
     points.resize(nb_points);
 
@@ -1185,7 +1177,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, con
         indices[i]=indexmax;
     }
 // Lloyd relaxation
-    Vec3 pos,u,pos_point,pos_voxel;
+    SCoord pos,u,pos_point,pos_voxel;
     unsigned int count,nbiterations=0;
     bool ok=false,ok2;
     Real d,dmin;
@@ -1195,7 +1187,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, con
     {
         ok2=true;
         computeGeodesicalDistances(indices); // Voronoi
-        VB flag((int)nbVoxels,false);
+        vector<bool> flag((int)nbVoxels,false);
         for (i=initial_num_points; i<nb_points; i++) // move to centroid of Voronoi cells
         {
             // estimate centroid given the measured distances = p + 1/N sum d(p,pi)*(pi-p)/|pi-p|
@@ -1253,7 +1245,7 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecVec3& points, con
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( const Vec3& point, const Real factor)
+bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point, const Real factor)
 /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
 {
     unsigned int i;
@@ -1268,10 +1260,10 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
     if (dmax==0) return false;
     dmax*=factor;
 
-    VD backupdistance;
+    vector<Real> backupdistance;
     backupdistance.swap(distances);
     computeGeodesicalDistances(point,dmax);
-    VD d(distances);
+    vector<Real> d(distances);
     computeGeodesicalDistancesToVoronoi(point,dmax);
     for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (d[i]<dmax)
             {
@@ -1287,7 +1279,7 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const Vec3& point, const Real factor)
+bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const SCoord& point, const Real factor)
 /// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
 {
     unsigned int i;
@@ -1301,7 +1293,7 @@ bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const Vec3& p
     for (i=0; i<nbVoxels; i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (distances[i]>dmax) dmax=distances[i];
     if (dmax==0) return false;
     dmax*=factor;
-    VD backupdistance;
+    vector<Real> backupdistance;
     backupdistance.swap(distances);
     computeGeodesicalDistances(point,dmax);
     for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax) weights[i]=1.-distances[i]/dmax;
@@ -1312,7 +1304,7 @@ bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const Vec3& p
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecVec3& points, const unsigned int hotpointindex,const bool fixdatavalue,const unsigned int max_iterations,const Real precision  )
+bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecSCoord& points, const unsigned int hotpointindex,const bool fixdatavalue,const unsigned int max_iterations,const Real precision  )
 {
     if (!this->nbVoxels) return false;
     unsigned int i,j,k,num_points=points.size();
@@ -1320,8 +1312,8 @@ bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecVec3& points, const u
     weights.resize(this->nbVoxels);
     for (i=0; i<this->nbVoxels; i++)  weights[i]=0;
 
-    VB isfixed((int)nbVoxels,false);
-    VB update((int)nbVoxels,false);
+    vector<bool> isfixed((int)nbVoxels,false);
+    vector<bool> update((int)nbVoxels,false);
     VUI neighbors;
     Real diffw,meanstiff;
     Real alphabias=5; // d^2/sigma^2 between a voxel and one its 6 neighbor.
@@ -1371,7 +1363,7 @@ bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecVec3& points, const u
                         {
                             Real dv2;
                             int ip,im;
-                            Vec3i icoord;
+                            GCoord icoord;
                             getiCoord(i,icoord);
                             neighbors.clear();
                             for (j=0; j<3 ; j++)
@@ -1488,7 +1480,7 @@ void GridMaterial< MaterialTypes>::draw()
         else if (showvox==SHOWVOXELS_WEIGHTS)
         {
             labelmax=1;
-            if (weightsRepartition.size()==nbVoxels && repartition.size()==nbVoxels) // paste weightsRepartition into weights
+            if (f_weights.size()==nbVoxels && f_index.size()==nbVoxels) // paste f_weights into weights
             {
                 if (showedrepartition!=(int)showWeightIndex.getValue()) pasteRepartioninWeight(showWeightIndex.getValue());
                 showedrepartition=(int)showWeightIndex.getValue();
@@ -1504,7 +1496,7 @@ void GridMaterial< MaterialTypes>::draw()
                 if (!slicedisplay || (slicedisplay && (x==showPlane.getValue()[0] || y==showPlane.getValue()[1] || z==showPlane.getValue()[2])) )
                 {
                     VUI neighbors;
-                    get6Neighbors(getIndex(Vec3i(x,y,z)), neighbors);
+                    get6Neighbors(getIndex(GCoord(x,y,z)), neighbors);
                     if (neighbors.size()!=6 || wireframe || slicedisplay) // disable internal voxels
                     {
                         label=-1;
@@ -1513,9 +1505,9 @@ void GridMaterial< MaterialTypes>::draw()
                             if (showvox==SHOWVOXELS_DATAVALUE) label=(float)grid(x,y,z);
                             else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
                             else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
-                            else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(Vec3i(x,y,z))];
-                            else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  label=(float)distances[getIndex(Vec3i(x,y,z))];
-                            else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  label=(float)weights[getIndex(Vec3i(x,y,z))];
+                            else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(GCoord(x,y,z))];
+                            else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  label=(float)distances[getIndex(GCoord(x,y,z))];
+                            else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  label=(float)weights[getIndex(GCoord(x,y,z))];
                         }
 
                         if (label==-1)
@@ -1530,8 +1522,8 @@ void GridMaterial< MaterialTypes>::draw()
                             glGetFloatv(GL_CURRENT_COLOR, color);
                             glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
                         }
-                        Vec3 coord;
-                        getCoord(Vec3i(x,y,z),coord);
+                        SCoord coord;
+                        getCoord(GCoord(x,y,z),coord);
                         glTranslated ((double)coord[0],(double)coord[1],(double)coord[2]);
                         drawCube(s,wireframe);
                         glTranslated (-(double)coord[0],-(double)coord[1],-(double)coord[2]);
@@ -1615,7 +1607,7 @@ void GridMaterial< MaterialTypes>::drawCube(Real size,bool wireframe)
 /*         Utils         */
 /*************************/
 template < class MaterialTypes>
-int GridMaterial< MaterialTypes>::getIndex(const Vec3i& icoord)
+int GridMaterial< MaterialTypes>::getIndex(const GCoord& icoord)
 {
     if (!nbVoxels) return -1;
     for (int i=0; i<3; i++) if (icoord[i]<0 || icoord[i]>=dimension.getValue()[i]) return -1; // invalid icoord (out of grid)
@@ -1623,16 +1615,16 @@ int GridMaterial< MaterialTypes>::getIndex(const Vec3i& icoord)
 }
 
 template < class MaterialTypes>
-int GridMaterial< MaterialTypes>::getIndex(const Vec3& coord)
+int GridMaterial< MaterialTypes>::getIndex(const SCoord& coord)
 {
     if (!nbVoxels) return -1;
-    Vec3i icoord;
+    GCoord icoord;
     if (!getiCoord(coord,icoord)) return -1;
     return getIndex(icoord);
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getiCoord(const Vec3& coord, Vec3i& icoord)
+bool GridMaterial< MaterialTypes>::getiCoord(const SCoord& coord, GCoord& icoord)
 {
     if (!nbVoxels) return false;
     Real val;
@@ -1647,7 +1639,7 @@ bool GridMaterial< MaterialTypes>::getiCoord(const Vec3& coord, Vec3i& icoord)
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getiCoord(const int& index, Vec3i& icoord)
+bool GridMaterial< MaterialTypes>::getiCoord(const int& index, GCoord& icoord)
 {
     if (!nbVoxels) return false;
     if (index<0 || index>=(int)nbVoxels) return false; // invalid index
@@ -1658,7 +1650,7 @@ bool GridMaterial< MaterialTypes>::getiCoord(const int& index, Vec3i& icoord)
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getCoord(const Vec3i& icoord, Vec3& coord)
+bool GridMaterial< MaterialTypes>::getCoord(const GCoord& icoord, SCoord& coord)
 {
     if (!nbVoxels) return false;
     for (unsigned int i=0; i<3; i++) if (icoord[i]<0 || icoord[i]>=dimension.getValue()[i]) return false; // invalid icoord (out of grid)
@@ -1668,10 +1660,10 @@ bool GridMaterial< MaterialTypes>::getCoord(const Vec3i& icoord, Vec3& coord)
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getCoord(const int& index, Vec3& coord)
+bool GridMaterial< MaterialTypes>::getCoord(const int& index, SCoord& coord)
 {
     if (!nbVoxels) return false;
-    Vec3i icoord;
+    GCoord icoord;
     if (!getiCoord(index,icoord)) return false;
     else return getCoord(icoord,coord);
 }
@@ -1682,7 +1674,7 @@ bool GridMaterial< MaterialTypes>::get6Neighbors ( const int& index, VUI& neighb
     neighbors.clear();
     if (!nbVoxels) return false;
     int i;
-    Vec3i icoord;
+    GCoord icoord;
     if (!getiCoord(index,icoord)) return false;
     for (unsigned int j=0; j<3 ; j++)
     {
@@ -1704,7 +1696,7 @@ bool GridMaterial< MaterialTypes>::get18Neighbors ( const int& index, VUI& neigh
     neighbors.clear();
     if (!nbVoxels) return false;
     int i;
-    Vec3i icoord;
+    GCoord icoord;
     if (!getiCoord(index,icoord)) return false;
     for (unsigned int j=0; j<3 ; j++)
     {
@@ -1755,7 +1747,7 @@ bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neigh
     neighbors.clear();
     if (!nbVoxels) return false;
     int i;
-    Vec3i icoord;
+    GCoord icoord;
     if (!getiCoord(index,icoord)) return false;
     for (unsigned int j=0; j<3 ; j++)
     {
@@ -1843,15 +1835,15 @@ bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neigh
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::getCompleteBasis(const Vec3& p,const unsigned int order,VD& basis)
+void GridMaterial< MaterialTypes>::getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis)
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
     basis.resize(dim);
     for (j=0; j<dim; j++) basis[j]=0;
 
-    Vec3 p2;
+    SCoord p2;
     for (j=0; j<3; j++) p2[j]=p[j]*p[j];
-    Vec3 p3;
+    SCoord p3;
     for (j=0; j<3; j++) p3[j]=p2[j]*p[j];
 
     count=0;
@@ -1905,20 +1897,16 @@ void GridMaterial< MaterialTypes>::getCompleteBasis(const Vec3& p,const unsigned
 }
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::getCompleteBasisDeriv(const Vec3& p,const unsigned int order,VVD& basisDeriv)
+void GridMaterial< MaterialTypes>::getCompleteBasisDeriv(const SCoord& p,const unsigned int order,vector<SGradient>& basisDeriv)
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
 
     basisDeriv.resize(dim);
-    for (j=0; j<dim; j++)
-    {
-        basisDeriv[j].resize(3);
-        basisDeriv[j].fill(0);
-    }
+    for (j=0; j<dim; j++) basisDeriv[j].fill(0);
 
-    Vec3 p2;
+    SCoord p2;
     for (j=0; j<3; j++) p2[j]=p[j]*p[j];
-    Vec3 p3;
+    SCoord p3;
     for (j=0; j<3; j++) p3[j]=p2[j]*p[j];
 
     count=0;
@@ -1984,22 +1972,14 @@ void GridMaterial< MaterialTypes>::getCompleteBasisDeriv(const Vec3& p,const uns
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::getCompleteBasisDeriv2(const Vec3& p,const unsigned int order,VVVD& basisDeriv)
+void GridMaterial< MaterialTypes>::getCompleteBasisDeriv2(const SCoord& p,const unsigned int order,vector<SHessian>& basisDeriv)
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
 
     basisDeriv.resize(dim);
-    for (k=0; k<dim; k++)
-    {
-        basisDeriv[k].resize(dim);
-        for (j=0; j<dim; j++)
-        {
-            basisDeriv[k][j].resize(3);
-            basisDeriv[k][j].fill(0);
-        }
-    }
+    for (k=0; k<dim; k++) basisDeriv[k].fill(0);
 
-    Vec3 p2;
+    SCoord p2;
     for (j=0; j<3; j++) p2[j]=p[j]*p[j];
 
     count=0;
@@ -2081,10 +2061,10 @@ void GridMaterial< MaterialTypes>::getCompleteBasisDeriv2(const Vec3& p,const un
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::findIndexInRepartition(unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex)
 {
-    if (repartition.size()<=pointIndex) return false;
-    const unsigned int& nbRef = repartition[pointIndex].size();
+    if (f_index.size()<=pointIndex) return false;
+    const unsigned int& nbRef = f_index[pointIndex].size();
     for ( unsigned int j = 0; j < nbRef; ++j)
-        if ( repartition[pointIndex][j] == frameIndex)
+        if ( f_index[pointIndex][j] == frameIndex)
         {
             realIndex = j;
             return true;

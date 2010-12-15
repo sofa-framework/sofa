@@ -133,6 +133,8 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
     // init weights and sample info (mass, moments) todo: ask the Material
     updateWeights();
+    LumpMassesToFrames ();
+    LumpVolumes ();
 
     // init jacobians for mapping
     inout.resize( out.size() );
@@ -242,7 +244,7 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
     }
 
     // retrieve initial frames
-    vector<MaterialCoord> points(num_points);
+    vector<SpatialCoord> points(num_points);
     for ( unsigned int i=0; i<num_points; i++ )
         for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
             points[i][j]= xfrom0[i][j];
@@ -251,7 +253,7 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
     std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
     gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
     std::cout<<"Computing weights in grid..."<<std::endl;
-    gridMaterial->computeWeights(nbRef,points);
+    gridMaterial->computeWeights(points);
 
     //// copy
     this->fromModel->resize(points.size());
@@ -264,7 +266,7 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
-    if( targetSampleNumber.getValue() == 0) return;
+    if(targetSampleNumber.getValue() == 0) return; // use visual/collision or used-define points instead
 
     // Get references
     WriteAccessor<Data<VecOutCoord> >  xto0 = *this->toModel->write(core::VecCoordId::restPosition());
@@ -280,15 +282,15 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     }
 
     // retrieve initial samples -> is problematic when there is no user sample : the mechanical object is always initialized with one sample centered on 0
-    /*vector<MaterialCoord> points(num_points);
+    /*vector<SpatialCoord> points(num_points);
     for ( unsigned int i=0;i<num_points;i++ )
     	for ( unsigned int j=0;j<num_spatial_dimensions;j++ )
     		points[i][j]= xto0[i][j];*/
-    num_points=0; vector<MaterialCoord> points;
+    num_points=0; vector<SpatialCoord> points;
 
     // Insert new samples
-    //    gridMaterial->computeUniformSampling(points,targetSampleNumber.getValue());
-    gridMaterial->computeRegularSampling(points,3);
+    gridMaterial->computeUniformSampling(points,targetSampleNumber.getValue());
+    //gridMaterial->computeRegularSampling(points,3);
 
     std::cout<<"Inserting "<<points.size()-xto0.size()<<" gauss points..."<<std::endl;
 
@@ -307,55 +309,33 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     ReadAccessor<Data<VecOutCoord> > xto (f_initPos);
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
 
-    WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
-    WriteAccessor<Data<vector<Vec<nbRef,MaterialCoord> > > > m_dweight  ( weightDeriv );
-    WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
+    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
 
+    WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
+    WriteAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > > m_dweight  ( weightDeriv );
+    WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
     WriteAccessor<Data<vector<Vec<nbRef,unsigned> > > > index ( f_index );
 
-    m_weights.resize ( xto.size() * nbRef );
-    m_dweight.resize ( xto.size() * nbRef );
-    m_ddweight.resize( xto.size() * nbRef );
-    index.resize( xto.size() * nbRef );
+    index.resize( xto.size() );
+    m_weights.resize ( xto.size() );
+    //if(primitiveorder > 0)
+    m_dweight.resize ( xto.size() );
+    //if(primitiveorder > 1)
+    m_ddweight.resize( xto.size() );
 
     if(gridMaterial)
     {
-        std::cout<<"Lumping weights to gauss points..."<<std::endl;
-        vector<MaterialCoord> points ( xto.size() );
-        for(unsigned i=0; i<points.size(); i++ )
-        {
-            Out::get(points[i][0],points[i][1],points[i][2], xto[i]) ;
-            //                        points[i] = xto[i];
-        }
-
-        vector<InReal> w;
-        vector<unsigned> reps;
-        vector<MaterialCoord> dw;
-        vector<MaterialMat> ddw;
+        if(primitiveorder != 0) std::cout<<"Lumping weights to gauss points..."<<std::endl;
+        SpatialCoord point;
 
         for (unsigned i=0; i<xto.size(); i++ )
         {
-            // std::cout<<"lumping of "<<points[i]<<std::endl;
+            Out::get(point[0],point[1],point[2], xto[i]);
 
-            if(gridMaterial->lumpWeightsRepartition(points[i],reps,w,&dw,&ddw))
-            {
-                for (unsigned j=0; j<nbRef; j++)
-                {
-                    m_weights[i][j]=w[j];
-                    index[i][j]=reps[j];
-                    for(unsigned k=0; k<num_spatial_dimensions; k++)
-                    {
-                        m_dweight[i][j][k]=dw[j][k];
-                    }
-                    for(unsigned k=0; k<num_spatial_dimensions; k++)
-                    {
-                        for(unsigned m=0; m<num_spatial_dimensions; m++)
-                        {
-                            m_ddweight[i][j][k][m]=ddw[j][k][m];
-                        }
-                    }
-                }
-            }
+            if(primitiveorder == 0)  // no gauss point here -> interpolate weights in the grid
+                gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i]);
+            else // gauss points generated -> approximate weights over a set of voxels by least squares fitting
+                gridMaterial->lumpWeightsRepartition(point,index[i],m_weights[i],&m_dweight[i],&m_ddweight[i]);
         }
     }
     else
@@ -460,7 +440,95 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 }
 
 
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::LumpVolumes ( )
+{
+    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
+    ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
 
+    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
+    if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
+
+    sampleIntegVector.resize(out.size());
+    for(unsigned int i=0; i<out.size(); i++) sampleIntegVector[i].clear();
+
+    SpatialCoord point;
+
+    for(unsigned int i=0; i<out.size(); i++) // treat each sample
+    {
+        Out::get(point[0],point[1],point[2], out[i]) ;
+        if(gridMaterial)
+        {
+            vector<InReal> moments;
+            gridMaterial->lumpMoments(point,4,moments);
+            for(unsigned int j=0; j<moments.size() && j<sampleIntegVector[i].size() ; j++) sampleIntegVector[i][j]=moments[j];
+        }
+        else
+        {
+            sampleIntegVector[i][0]=1; // default value for the volume when model vertices are used as gauss points
+        }
+    }
+
+    //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<sampleIntegVector[i]<<std::endl;
+}
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
+{
+
+    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
+    ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
+
+    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
+    if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
+
+    frameMass.resize(in.size());
+    for(unsigned int i=0; i<in.size(); i++) frameMass[i].clear();
+
+    SpatialCoord point;
+    vector<Vec<nbRef,unsigned> > reps;
+    vector<Vec<nbRef,InReal> > w;
+    vector<SpatialCoord> pts;
+    vector<InReal> masses;
+
+    VecInDeriv d(in.size()),m(in.size());
+
+    defaulttype::LinearBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > map;
+
+    for(unsigned int i=0; i<out.size(); i++) // treat each sample
+    {
+        Out::get(point[0],point[1],point[2], out[i]) ;
+        if(gridMaterial)  gridMaterial->getWeightedMasses(point,reps,w,pts,masses);
+        else
+        {
+            pts.clear(); pts.push_back(point);
+            w.clear(); w.push_back(weight.getValue()[i]);
+            reps.clear(); reps.push_back(f_index.getValue()[i]);
+            masses.clear();  masses.push_back(1);	// default value for the mass when model vertices are used as gauss points
+        }
+
+        for(unsigned int j=0; j<pts.size(); j++) // treat each voxel j of the sample
+        {
+            map.init(pts[j],reps[j],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w[j],Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+
+            for(unsigned int k=0; k<nbRef && w[j][k]>0 ; k++) // treat each primitive influencing the voxel
+            {
+                unsigned int findex=reps[j][k];
+                for(unsigned int l=0; l<InVSize; l++)	// treat each dof of the primitive
+                {
+                    d[findex][l]=1;
+                    m[findex].clear();
+                    map.addMultTranspose( m , map.mult(d) );  // get the contribution of j to each column l of the mass = mass(j).J^T.J.[0...1...0]^T
+                    m[findex]*=masses[j];
+                    for(unsigned int col=0; col<InVSize; col++)  frameMass[findex].inertiaMassMatrix[col][l]+= m[findex][col];
+                    d[reps[j][k]][l]=0;
+                }
+            }
+        }
+    }
+
+    //for(unsigned int i=0;i<in.size();i++) std::cout<<"mass["<<i<<"]="<<frameMass[i].inertiaMassMatrix<<std::endl;
+}
 
 
 template <class TIn, class TOut>
@@ -468,13 +536,13 @@ void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
 {
     const unsigned int xtoSize = this->toModel->getX()->size();
     WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
-    WriteAccessor<Data<vector<Vec<nbRef,MaterialCoord> > > > m_dweight  ( weightDeriv );
+    WriteAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > > m_dweight  ( weightDeriv );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
 
     for (unsigned int i = 0; i < xtoSize; ++i)
     {
         InReal sumWeights = 0,wn;
-        MaterialCoord sumGrad,dwn;			sumGrad.fill(0);
+        MaterialDeriv sumGrad,dwn;			sumGrad.fill(0);
         MaterialMat sumGrad2,ddwn;				sumGrad2.fill(0);
 
         // Compute norm
@@ -520,7 +588,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
     //                const unsigned int nbRef = this->f_nbRefs.getValue();
     ReadAccessor<Data<vector<Vec<nbRef,unsigned> > > > m_reps = this->f_index;
     ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights = weight ;
-    ReadAccessor<Data<vector<Vec<nbRef,MaterialCoord> > > >  m_dweights = weightDeriv ;
+    ReadAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > >  m_dweights = weightDeriv ;
     const int valueScale = showValuesNbDecimals.getValue();
     int scale = 1;
     for (int i = 0; i < valueScale; ++i) scale *= 10;
@@ -599,7 +667,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             findIndexInRepartition(influenced, refIndex, i, showFromIndex.getValue()%nbRef);
             if ( influenced)
             {
-                const MaterialCoord& grad = m_dweights[i][refIndex];
+                const MaterialDeriv& grad = m_dweights[i][refIndex];
                 sprintf( txt, "( %i, %i, %i)", (int)(grad[0]*scale), (int)(grad[1]*scale), (int)(grad[2]*scale));
                 SpatialCoord p;
                 Out::get(p[0],p[1],p[2],xto[i]);
@@ -638,7 +706,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);
             if (influenced)
             {
-                const SpatialCoord& gradMap = m_dweights[i][indexRep];
+                const MaterialDeriv& gradMap = m_dweights[i][indexRep];
                 SpatialCoord point;
                 Out::get(point[0],point[1],point[2],xto[i]);
                 glVertex3f ( point[0], point[1], point[2] );
