@@ -180,7 +180,7 @@ bool GenerateBenchSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatrix* r
 }
 
 template<class TMatrix, class TVector>
-bool GenerateBenchSolver<TMatrix,TVector>::read_system(std::string & fileName,int & size,TMatrix & matrix,sofa::defaulttype::BaseVector * solution,sofa::defaulttype::BaseVector * unknown,bool print)
+bool GenerateBenchSolver<TMatrix,TVector>::read_system(int & max_size,std::string & fileName,TMatrix & matrix,sofa::defaulttype::BaseVector * solution,sofa::defaulttype::BaseVector * unknown,bool print)
 {
     std::ifstream file(fileName.c_str(), std::ifstream::binary);
 
@@ -188,15 +188,25 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_system(std::string & fileName,in
     {
         int size_type;
         int n_val;
+        int size;
         file.read((char*) &size, sizeof(int));
+        if (max_size>size)
+        {
+            std::cerr << "Error the file has a maximum size of " << max_size << " and you wan to generate a bench of size " << size << std::endl;
+            file.close();
+            return false;
+        }
+
         file.read((char*) &size_type, sizeof(int));
         file.read((char*) &n_val, sizeof(int));
 
         if (size_type!=sizeof(Real))
         {
             std::cerr << "Error the bench has been created with another type Real" << std::endl;
+            file.close();
             return false;
         }
+        max_size = size;
 
         if (print) std::cout << "file open : " << fileName << " size = " << size << " syze_type=" << size_type << " nb_val=" << n_val << std::endl;
 
@@ -217,7 +227,7 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_system(std::string & fileName,in
 
         if (n_val!=row_ind[size])
         {
-            std::cerr << "Error there was a problem in the generation of the matrix col_ind[size]=" << col_ind[size] << std::endl;
+            std::cerr << "Error there was a problem in the generation of the matrix col_ind[size]=" << col_ind[size] << " nval=" << n_val << std::endl;
             return false;
         }
 
@@ -255,7 +265,7 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_system(std::string & fileName,in
 }
 
 template<class TMatrix, class TVector> template<class JMatrix>
-bool GenerateBenchSolver<TMatrix,TVector>::read_J(std::string & fileName,int size,JMatrix & J,double & fact,bool print)
+bool GenerateBenchSolver<TMatrix,TVector>::read_J(int max_size,int size,std::string & fileName,JMatrix & J,double & fact,bool print)
 {
     std::ifstream file(fileName.c_str(), std::ifstream::binary);
 
@@ -274,6 +284,12 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_J(std::string & fileName,int siz
         if (sizeX!= (int) size)
         {
             std::cerr << "Error the J matrix has not a valid dimention J.size=" << sizeX << " System.size=" << size << std::endl;
+            return false;
+        }
+
+        if (sizeY < max_size)
+        {
+            std::cerr << "Error the J matrix contains only " << sizeY << " Contacts you cannot generate a bench with " << max_size << std::endl;
             return false;
         }
 
@@ -299,9 +315,9 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_J(std::string & fileName,int siz
             for (int i=0; i<nval; i++) J.set(lin,cols[i],vals[i]);
         }
 
-        if (print) std::cout << J << std::endl;
+        //if (print) std::cout << J << std::endl;
 
-        std::cout << "J is loaded" << std::endl;
+        if (print) std::cout << "J is loaded" << std::endl;
 
         return true;
     }
@@ -361,11 +377,11 @@ bool GenerateBenchSolver<TMatrix,TVector>::generate_system(int size,double spars
         solution->set(y,acc);
     }
 
-    //if (print) std::cout << matrix << std::endl;
+//   std::cout << matrix << std::endl;
 
-    //std::cout << matrix << std::endl;
-    //std::cout << solution << std::endl;
-    std::cout << "Sparsity of the generated matrix is " << ((taux*100.0)/((double) (size*size))) << "%" << std::endl;
+//   std::cout << matrix << std::endl;
+//   std::cout << solution << std::endl;
+    if (print) std::cout << "Sparsity of the generated matrix is " << ((taux*100.0)/((double) (size*size))) << "%" << std::endl;
 
     return true;
 }
