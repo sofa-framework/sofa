@@ -27,6 +27,7 @@
 #define FRAME_FRAMEFORCEFIELD_CPP
 
 #include "FrameForceField.h"
+#include "DeformationGradientTypes.h"
 #include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
@@ -43,10 +44,14 @@ using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API ForceField<Affine3dTypes>;
 template class SOFA_FRAME_API ForceField<Quadratic3dTypes>;
+template class SOFA_FRAME_API ForceField<DeformationGradient331dTypes>;
+template class SOFA_FRAME_API ForceField<DeformationGradient332dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_FRAME_API ForceField<Quadratic3fTypes>;
 template class SOFA_FRAME_API ForceField<Affine3fTypes>;
+template class SOFA_FRAME_API ForceField<DeformationGradient331fTypes>;
+template class SOFA_FRAME_API ForceField<DeformationGradient332fTypes>;
 #endif
 
 } // namespace behavior
