@@ -27,8 +27,6 @@
 #ifndef FRAME_MAPPINGTYPES_H
 #define FRAME_MAPPINGTYPES_H
 
-#include <sofa/defaulttype/Vec.h>
-
 namespace sofa
 {
 

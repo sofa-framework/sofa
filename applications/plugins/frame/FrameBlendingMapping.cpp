@@ -187,7 +187,12 @@ struct LinearBlendTypes<
 
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
-        return apply(d);
+        OutCoord result;
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            result += d[index[i]].getVCenter() * Jb[i].Pt + d[index[i]].getVAffine() * Jb[i].Pa;
+        }
+        return result;
     }
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
@@ -198,8 +203,8 @@ struct LinearBlendTypes<
         for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
-            res[index[i]].getCenter() += d * Jb[i].Pt;
-            for (unsigned int j = 0; j < 3; ++j) res[index[i]].getAffine()[j] += Jb[i].Pa * d[j];
+            res[index[i]].getVCenter() += d * Jb[i].Pt;
+            for (unsigned int j = 0; j < 3; ++j) res[index[i]].getVAffine()[j] += Jb[i].Pa * d[j];
         }
     }
 
@@ -272,16 +277,19 @@ struct LinearBlendTypes<
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getAffine( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter(), Jb[i].Ft) + d[index[i]].getAffine( ) * Jb[i].Fa;
-//                    cerr<<"OutCoord apply, res.getMaterialFrame() += covNN("<<d[index[i]].getCenter( )<<" , "<<Jb[i].Ft<<")+"<<d[index[i]].getAffine( )<<" * "<<Jb[i].Fa<<endl;
-//                    cerr<<"OutCoord apply, res.getMaterialFrame() = "<< res.getMaterialFrame() <<endl;
         }
-//                cerr<<"----OutCoord apply, res.getMaterialFrame() = "<< res.getMaterialFrame()  <<endl;
         return res;
     }
 
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
-        return apply(d);
+        OutDeriv res;
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            res.getCenter() += d[index[i]].getVCenter( ) * Jb[i].Pt + d[index[i]].getVAffine( ) * Jb[i].Pa;
+            res.getMaterialFrame() += covNN( d[index[i]].getVCenter(), Jb[i].Ft) + d[index[i]].getVAffine( ) * Jb[i].Fa;
+        }
+        return res;
     }
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
@@ -289,13 +297,13 @@ struct LinearBlendTypes<
         for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
-            res[index[i]].getCenter() +=  d.getCenter() * Jb[i].Pt;
-            res[index[i]].getCenter() += d.getMaterialFrame() * Jb[i].Ft;
+            res[index[i]].getVCenter() +=  d.getCenter() * Jb[i].Pt;
+            res[index[i]].getVCenter() += d.getMaterialFrame() * Jb[i].Ft;
 
             for (unsigned int j = 0; j < 3; ++j)
             {
-                res[index[i]].getAffine()[j] += Jb[i].Pa * d.getCenter()[j];
-                res[index[i]].getAffine()[j] += Jb[i].Fa * (d.getMaterialFrame()[j]);
+                res[index[i]].getVAffine()[j] += Jb[i].Pa * d.getCenter()[j];
+                res[index[i]].getVAffine()[j] += Jb[i].Fa * (d.getMaterialFrame()[j]);
             }
         }
     }
@@ -382,7 +390,15 @@ struct LinearBlendTypes<
 
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
-        return apply(d);
+        OutDeriv res;
+        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            res.getCenter() += d[index[i]].getVCenter( ) * Jb[i].Pt + d[index[i]].getVAffine( ) * Jb[i].Pa;
+            res.getMaterialFrame() += covNN( d[index[i]].getVCenter( ), Jb[i].Ft) + d[index[i]].getVAffine( ) * Jb[i].Fa;
+            for (unsigned int k = 0; k < 3; ++k)
+                res.getMaterialFrameGradient()[k] += covNN( d[index[i]].getVCenter( ), Jb[i].dFt[k]) + d[index[i]].getVAffine( ) * Jb[i].dFa[k];
+        }
+        return res;
     }
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
@@ -390,15 +406,15 @@ struct LinearBlendTypes<
         for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
-            res[index[i]].getCenter() +=  d.getCenter() * Jb[i].Pt;
-            res[index[i]].getCenter() += d.getMaterialFrame() * Jb[i].Ft;
-            for (unsigned int k = 0; k < 3; ++k) res[index[i]].getCenter() += d.getMaterialFrameGradient()[k] * Jb[i].dFt[k];
+            res[index[i]].getVCenter() +=  d.getCenter() * Jb[i].Pt;
+            res[index[i]].getVCenter() += d.getMaterialFrame() * Jb[i].Ft;
+            for (unsigned int k = 0; k < 3; ++k) res[index[i]].getVCenter() += d.getMaterialFrameGradient()[k] * Jb[i].dFt[k];
 
             for (unsigned int m = 0; m < 3; ++m)
             {
-                res[index[i]].getAffine()[m] += Jb[i].Pa * d.getCenter()[m];
-                res[index[i]].getAffine()[m] += Jb[i].Fa * d.getMaterialFrame()[m];
-                for (unsigned int k = 0; k < 3; ++k) res[index[i]].getAffine()[m] += Jb[i].dFa[k] * d.getMaterialFrameGradient()[k][m];
+                res[index[i]].getVAffine()[m] += Jb[i].Pa * d.getCenter()[m];
+                res[index[i]].getVAffine()[m] += Jb[i].Fa * d.getMaterialFrame()[m];
+                for (unsigned int k = 0; k < 3; ++k) res[index[i]].getVAffine()[m] += Jb[i].dFa[k] * d.getMaterialFrameGradient()[k][m];
             }
         }
     }

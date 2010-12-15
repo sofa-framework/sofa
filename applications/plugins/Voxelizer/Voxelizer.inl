@@ -79,10 +79,12 @@ Voxelizer<DataTypes>::~Voxelizer()
     if (valueImg) delete valueImg;
     if (segmentationImg) delete segmentationImg;
 
-    unsigned int nbModels = vTriangularModel.size();
-    for (unsigned int i = 0; i < nbModels; ++i)
-        delete [] rasterizedVolumes[i];
-    delete [] rasterizedVolumes;
+    if( rasterizedVolumes)
+    {
+        for (unsigned int i = 0; i < 3; ++i)
+            delete [] rasterizedVolumes[i];
+        delete [] rasterizedVolumes;
+    }
 }
 
 
