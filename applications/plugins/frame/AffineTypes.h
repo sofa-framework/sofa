@@ -288,32 +288,6 @@ public:
     static void setCPos(Coord& c, const SpatialCoord& v) { c.getCenter() = v; }
 
     template<typename T>
-    static void set ( Coord& c, T x, T y, T z )
-    {
-        c.clear();
-        c.getCenter()[0] = ( Real ) x;
-        c.getCenter() [1] = ( Real ) y;
-        c.getCenter() [2] = ( Real ) z;
-    }
-
-    template<typename T>
-    static void get ( T& x, T& y, T& z, const Coord& c )
-    {
-        x = ( T ) c.getCenter() [0];
-        y = ( T ) c.getCenter() [1];
-        z = ( T ) c.getCenter() [2];
-    }
-
-    template<typename T>
-    static void add ( Coord& c, T x, T y, T z )
-    {
-        c.clear();
-        c.getCenter() [0] += ( Real ) x;
-        c.getCenter() [1] += ( Real ) y;
-        c.getCenter() [2] += ( Real ) z;
-    }
-
-    template<typename T>
     static void set ( Deriv& c, T x, T y, T z )
     {
         c.clear();
@@ -339,13 +313,39 @@ public:
         c.getVCenter() [2] += ( Real ) z;
     }
 
+    template<typename T>
+    static void set ( Coord& c, T x, T y, T z )
+    {
+        c.clear();
+        c.getCenter()[0] = ( Real ) x;
+        c.getCenter() [1] = ( Real ) y;
+        c.getCenter() [2] = ( Real ) z;
+    }
+
+    template<typename T>
+    static void get ( T& x, T& y, T& z, const Coord& c )
+    {
+        x = ( T ) c.getCenter() [0];
+        y = ( T ) c.getCenter() [1];
+        z = ( T ) c.getCenter() [2];
+    }
+
+    template<typename T>
+    static void add ( Coord& c, T x, T y, T z )
+    {
+        c.clear();
+        c.getCenter() [0] += ( Real ) x;
+        c.getCenter() [1] += ( Real ) y;
+        c.getCenter() [2] += ( Real ) z;
+    }
 
 
-    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
+
+    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
 
-        Coord c;
+        Deriv c;
 
         for ( unsigned int i = 0; i < ancestors.size(); i++ )
         {
@@ -355,11 +355,11 @@ public:
         return c;
     }
 
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
 
-        Deriv c;
+        Coord c;
 
         for ( unsigned int i = 0; i < ancestors.size(); i++ )
         {
