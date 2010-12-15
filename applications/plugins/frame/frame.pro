@@ -25,6 +25,8 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
            AffineTypes.h \
+           CorotationalForceField.h \
+           CorotationalForceField.inl \
            DeformationGradientTypes.h \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
@@ -54,6 +56,7 @@ HEADERS += \
            QuadraticTypes.h
            
 SOURCES += \
+           CorotationalForceField.cpp \
            FrameBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \

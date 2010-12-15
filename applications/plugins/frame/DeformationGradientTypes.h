@@ -46,7 +46,7 @@ namespace defaulttype
 {
 
 using std::endl;
-using sofa::helper::vector;
+using helper::vector;
 
 /** Local deformation state of a material object.
 
