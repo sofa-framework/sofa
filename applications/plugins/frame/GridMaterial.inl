@@ -97,6 +97,7 @@ void GridMaterial< MaterialTypes>::init()
           }*/
 ////
 
+    genListCube();
 
     Inherited::init();
 }
@@ -1451,7 +1452,7 @@ void GridMaterial< MaterialTypes>::draw()
         //glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
 
         unsigned int i;
-        Real s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
+//        Real s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
         float defaultcolor[4]= {0.8,0.8,0.8,0.3},color[4];
         bool wireframe=this->getContext()->getShowWireFrame();
 
@@ -1492,114 +1493,108 @@ void GridMaterial< MaterialTypes>::draw()
 
         cimg_forXYZ(grid,x,y,z)
         {
-            if (grid(x,y,z)!=0)
-                if (!slicedisplay || (slicedisplay && (x==showPlane.getValue()[0] || y==showPlane.getValue()[1] || z==showPlane.getValue()[2])) )
-                {
-                    VUI neighbors;
-                    get6Neighbors(getIndex(GCoord(x,y,z)), neighbors);
-                    if (neighbors.size()!=6 || wireframe || slicedisplay) // disable internal voxels
-                    {
-                        label=-1;
-                        if (labelmax!=-1)
-                        {
-                            if (showvox==SHOWVOXELS_DATAVALUE) label=(float)grid(x,y,z);
-                            else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
-                            else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
-                            else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(GCoord(x,y,z))];
-                            else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  label=(float)distances[getIndex(GCoord(x,y,z))];
-                            else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  label=(float)weights[getIndex(GCoord(x,y,z))];
-                        }
+            if (grid(x,y,z)==0) continue;
+            if (slicedisplay)
+            {
+                if(x!=showPlane.getValue()[0] && y!=showPlane.getValue()[1] && z!=showPlane.getValue()[2])
+                    continue;
+            }
+            else
+            {
+                VUI neighbors;
+                get6Neighbors(getIndex(GCoord(x,y,z)), neighbors);
+                if (!wireframe && neighbors.size()==6) // disable internal voxels
+                    continue;
+            }
 
-                        if (label==-1)
-                        {
-                            glColor4fv(defaultcolor);
-                            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);
-                        }
-                        else
-                        {
-                            if (label>labelmax) label=labelmax;
-                            helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
-                            glGetFloatv(GL_CURRENT_COLOR, color);
-                            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-                        }
-                        SCoord coord;
-                        getCoord(GCoord(x,y,z),coord);
-                        glTranslated ((double)coord[0],(double)coord[1],(double)coord[2]);
-                        drawCube(s,wireframe);
-                        glTranslated (-(double)coord[0],-(double)coord[1],-(double)coord[2]);
-                        //GlText::draw ( (int), coord, showTextScaleFactor.getValue() );
-                    }
-                }
+            label=-1;
+            if (labelmax!=-1)
+            {
+                if (showvox==SHOWVOXELS_DATAVALUE) label=(float)grid(x,y,z);
+                else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
+                else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
+                else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(GCoord(x,y,z))];
+                else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  label=(float)distances[getIndex(GCoord(x,y,z))];
+                else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  label=(float)weights[getIndex(GCoord(x,y,z))];
+            }
+
+            if (label==-1)
+            {
+                glColor4fv(defaultcolor);
+                glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);
+            }
+            else
+            {
+                if (label>labelmax) label=labelmax;
+                helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
+                glGetFloatv(GL_CURRENT_COLOR, color);
+                glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+            }
+            SCoord coord;
+            getCoord(GCoord(x,y,z),coord);
+            drawCube((double)coord[0],(double)coord[1],(double)coord[2]);
+            //GlText::draw ( (int), coord, showTextScaleFactor.getValue() );
         }
     }
 }
 
+
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::drawCube(Real size,bool wireframe)
+void GridMaterial< MaterialTypes>::drawCube(const double& x, const double& y, const double& z)
 {
-    double ss2=(double)size/2.;
-    if (!wireframe) glBegin(GL_QUADS);
-    if (wireframe) glBegin(GL_LINE_LOOP);
+    const SCoord& size = voxelSize.getValue();
+    glPushMatrix();
+    glTranslated (x,y,z);
+    glScaled(size[0]*0.5, size[1]*0.5, size[2]*0.5);
+    glCallList(cubeList);
+    glPopMatrix();
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::genListCube()
+{
+    cubeList = glGenLists(1);
+    glNewList(cubeList, GL_COMPILE);
+
+    glBegin(GL_QUADS);
     glNormal3f(1,0,0);
-    glVertex3d(ss2,-ss2,-ss2);
-    glNormal3f(1,0,0);
-    glVertex3d(ss2,-ss2,ss2);
-    glNormal3f(1,0,0);
-    glVertex3d(ss2,ss2,ss2);
-    glNormal3f(1,0,0);
-    glVertex3d(ss2,ss2,-ss2);
-    if (wireframe) glEnd ();
-    if (wireframe) glBegin(GL_LINE_LOOP);
+    glVertex3d(1.0,-1.0,-1.0);
+    glVertex3d(1.0,-1.0,1.0);
+    glVertex3d(1.0,1.0,1.0);
+    glVertex3d(1.0,1.0,-1.0);
+
     glNormal3f(-1,0,0);
-    glVertex3d(-ss2,-ss2,-ss2);
-    glNormal3f(-1,0,0);
-    glVertex3d(-ss2,-ss2,ss2);
-    glNormal3f(-1,0,0);
-    glVertex3d(-ss2,ss2,ss2);
-    glNormal3f(-1,0,0);
-    glVertex3d(-ss2,ss2,-ss2);
-    if (wireframe) glEnd ();
-    if (wireframe) glBegin(GL_LINE_LOOP);
+    glVertex3d(-1.0,-1.0,-1.0);
+    glVertex3d(-1.0,-1.0,1.0);
+    glVertex3d(-1.0,1.0,1.0);
+    glVertex3d(-1.0,1.0,-1.0);
+
     glNormal3f(0,1,0);
-    glVertex3d(-ss2,ss2,-ss2);
-    glNormal3f(0,1,0);
-    glVertex3d(ss2,ss2,-ss2);
-    glNormal3f(0,1,0);
-    glVertex3d(ss2,ss2,ss2);
-    glNormal3f(0,1,0);
-    glVertex3d(-ss2,ss2,ss2);
-    if (wireframe) glEnd ();
-    if (wireframe) glBegin(GL_LINE_LOOP);
+    glVertex3d(-1.0,1.0,-1.0);
+    glVertex3d(1.0,1.0,-1.0);
+    glVertex3d(1.0,1.0,1.0);
+    glVertex3d(-1.0,1.0,1.0);
+
     glNormal3f(0,-1,0);
-    glVertex3d(-ss2,-ss2,-ss2);
-    glNormal3f(0,-1,0);
-    glVertex3d(ss2,-ss2,-ss2);
-    glNormal3f(0,-1,0);
-    glVertex3d(ss2,-ss2,ss2);
-    glNormal3f(0,-1,0);
-    glVertex3d(-ss2,-ss2,ss2);
-    if (wireframe) glEnd ();
-    if (wireframe) glBegin(GL_LINE_LOOP);
+    glVertex3d(-1.0,-1.0,-1.0);
+    glVertex3d(1.0,-1.0,-1.0);
+    glVertex3d(1.0,-1.0,1.0);
+    glVertex3d(-1.0,-1.0,1.0);
+
     glNormal3f(0,0,1);
-    glVertex3d(-ss2,-ss2,ss2);
-    glNormal3f(0,0,1);
-    glVertex3d(-ss2,ss2,ss2);
-    glNormal3f(0,0,1);
-    glVertex3d(ss2,ss2,ss2);
-    glNormal3f(0,0,1);
-    glVertex3d(ss2,-ss2,ss2);
-    if (wireframe) glEnd ();
-    if (wireframe) glBegin(GL_LINE_LOOP);
+    glVertex3d(-1.0,-1.0,1.0);
+    glVertex3d(-1.0,1.0,1.0);
+    glVertex3d(1.0,1.0,1.0);
+    glVertex3d(1.0,-1.0,1.0);
+
     glNormal3f(0,0,-1);
-    glVertex3d(-ss2,-ss2,-ss2);
-    glNormal3f(0,0,-1);
-    glVertex3d(-ss2,ss2,-ss2);
-    glNormal3f(0,0,-1);
-    glVertex3d(ss2,ss2,-ss2);
-    glNormal3f(0,0,-1);
-    glVertex3d(ss2,-ss2,-ss2);
-    if (wireframe) glEnd ();
-    if (!wireframe) glEnd ();
+    glVertex3d(-1.0,-1.0,-1.0);
+    glVertex3d(-1.0,1.0,-1.0);
+    glVertex3d(1.0,1.0,-1.0);
+    glVertex3d(1.0,-1.0,-1.0);
+    glEnd ();
+    glEndList();
 }
 
 

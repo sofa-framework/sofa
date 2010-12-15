@@ -298,9 +298,10 @@ protected:
 
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
     Data<unsigned int> showWeightIndex;    ///
-    void drawCube(Real size,bool wireframe);
+    GLuint cubeList;             // storage for the display list
+    void genListCube();
+    void drawCube(const double& x, const double& y, const double& z);
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
-
 
 };
 

@@ -54,6 +54,7 @@ using defaulttype::Vec;
 using helper::vector;
 using sofa::component::material::MaterialTypes;
 using sofa::component::material::GridMaterial;
+using defaulttype::FrameMass;
 
 
 /** Linear blend skinning, from a variety of input types to a variety of output types.
@@ -128,7 +129,7 @@ protected:
 
     vector<InOut> inout;  ///< Data specific to the conversion between the types
     vector<frameMassType> frameMass;
-    vector<Vec<35,InReal>> sampleIntegVector;
+    vector<Vec<35,InReal> > sampleIntegVector;
 
 //              VecInCoord mm0;  ///< product of the current matrices with the inverse of the initial matrices
 //              vector<JacobianBlock> J;  ///< The tangent operator used in applyJ and applyJT
