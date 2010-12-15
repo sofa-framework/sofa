@@ -85,7 +85,7 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
 }
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv& _dx , const core::MechanicalParams* /*mparams*/)
+void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& /*_df*/ , const DataVecDeriv& /*_dx*/ , const core::MechanicalParams* /*mparams*/)
 {
 }
 
