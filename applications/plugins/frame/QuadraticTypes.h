@@ -64,6 +64,119 @@ public:
     typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;
 
 
+    class Deriv
+    {
+        Vec<VSize,Real> v;
+    public:
+        Deriv() { clear(); }
+        Deriv( const Vec<VSize,Real>& d):v(d) {}
+        Deriv( const SpatialCoord& c, const Quadratic& a) { getVCenter()=c; getVQuadratic()=a;}
+        Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const Affine &crossterms=Affine())
+        {
+            getVCenter() = center;
+            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            {
+                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                {
+                    Quadratic& quadratic=getVQuadratic();
+                    quadratic[i][j]=affine[i][j];
+                    quadratic[i][j+3]=square[i][j];
+                    quadratic[i][j+6]=crossterms[i][j];
+                }
+            }
+        }
+        void clear()
+        {
+            v.clear();
+        }
+
+        /// seen as a vector
+        Vec<VSize,Real>& getVec() { return v; }
+        const Vec<VSize,Real>& getVec() const { return v; }
+
+        /// point
+        SpatialCoord& getVCenter() { return *reinterpret_cast<SpatialCoord*>(&v[0]); }
+        const SpatialCoord& getVCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
+
+        /// local frame
+        Quadratic& getVQuadratic() { return *reinterpret_cast<Quadratic*>(&v[spatial_dimensions]); }
+        const Quadratic& getVQuadratic() const { return *reinterpret_cast<const Quadratic*>(&v[spatial_dimensions]); }
+
+        Affine getAffine() const
+        {
+            Affine m;
+            for (unsigned int i = 0; i < 3; ++i)
+                for (unsigned int j = 0; j < 3; ++j)
+                    m[i][j]=getVQuadratic()[i][j];
+            return  m;
+        }
+
+
+        static const unsigned spatial_dimensions = N;
+        static const unsigned total_size = VSize;
+        typedef Real value_type;
+
+
+
+        Deriv operator +(const Deriv& a) const { return Deriv(v+a.v); }
+        void operator +=(const Deriv& a) { v+=a.v; }
+
+        Deriv operator -(const Deriv& a) const { return Deriv(v-a.v); }
+        void operator -=(const Deriv& a) { v-=a.v; }
+
+
+        template<typename real2>
+        Deriv operator *(real2 a) const { return Deriv(v*a); }
+        template<typename real2>
+        void operator *=(real2 a) { v *= a; }
+
+        template<typename real2>
+        void operator /=(real2 a) { v /= a; }
+
+        Deriv operator - () const { return Deriv(-v); }
+
+
+        /// dot product, mostly used to compute residuals as sqrt(x*x)
+        Real operator*(const Deriv& a) const
+        {
+            return v*a.v;
+        }
+
+        /// write to an output stream
+        inline friend std::ostream& operator << ( std::ostream& out, const Deriv& c )
+        {
+            out<<c.getVCenter()<<" "<<c.getVQuadratic();
+            return out;
+        }
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Deriv& c )
+        {
+            in>>c.getVCenter()>>c.getVQuadratic();
+            return in;
+        }
+
+
+        Real* ptr() { return v.ptr(); }
+        const Real* ptr() const { return v.ptr(); }
+
+        /// Vector size
+        static unsigned size() { return VSize; }
+
+        /// Access to i-th element.
+        Real& operator[](int i)
+        {
+            return v[i];
+        }
+
+        /// Const access to i-th element.
+        const Real& operator[](int i) const
+        {
+            return v[i];
+        }
+    };
+
+
+
     class Coord
     {
         Vec<VSize,Real> v;
@@ -103,6 +216,14 @@ public:
         Quadratic& getQuadratic() { return *reinterpret_cast<Quadratic*>(&v[spatial_dimensions]); }
         const Quadratic& getQuadratic() const { return *reinterpret_cast<const Quadratic*>(&v[spatial_dimensions]); }
 
+        Affine getAffine() const
+        {
+            Affine m;
+            for (unsigned int i = 0; i < 3; ++i)
+                for (unsigned int j = 0; j < 3; ++j)
+                    m[i][j]=getQuadratic()[i][j];
+            return  m;
+        }
 
         static const unsigned spatial_dimensions = N;
         static const unsigned total_size = VSize;
@@ -112,6 +233,9 @@ public:
 
         Coord operator +(const Coord& a) const { return Coord(v+a.v); }
         void operator +=(const Coord& a) { v+=a.v; }
+
+        Coord operator +(const Deriv& a) const { return Coord(v+a.getVec()); }
+        void operator +=(const Deriv& a) { v+=a.getVec(); }
 
         Coord operator -(const Coord& a) const { return Coord(v-a.v); }
         void operator -=(const Coord& a) { v-=a.v; }
@@ -199,14 +323,6 @@ public:
             QuadraticInv.invert( getQuadratic() );
             return QuadraticInv * (v-getCenter());
         }
-        Affine getAffine() const
-        {
-            Affine m;
-            for (unsigned int i = 0; i < 3; ++i)
-                for (unsigned int j = 0; j < 3; ++j)
-                    m[i][j]=getQuadratic()[i][j];
-            return  m;
-        }
     };
 
 
@@ -217,7 +333,6 @@ public:
 
 
     typedef vector<Coord> VecCoord;
-    typedef Coord Deriv ;            ///< velocity and deformation gradient rate
     typedef vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
@@ -229,8 +344,35 @@ public:
     static void setCPos(Coord& c, const SpatialCoord& v) { c.getCenter() = v; }
 
     template<typename T>
+    static void set ( Deriv& c, T x, T y, T z )
+    {
+        c.clear();
+        c.getVCenter()[0] = ( Real ) x;
+        c.getVCenter() [1] = ( Real ) y;
+        c.getVCenter() [2] = ( Real ) z;
+    }
+
+    template<typename T>
+    static void get ( T& x, T& y, T& z, const Deriv& c )
+    {
+        x = ( T ) c.getVCenter() [0];
+        y = ( T ) c.getVCenter() [1];
+        z = ( T ) c.getVCenter() [2];
+    }
+
+    template<typename T>
+    static void add ( Deriv& c, T x, T y, T z )
+    {
+        c.clear();
+        c.getVCenter() [0] += ( Real ) x;
+        c.getVCenter() [1] += ( Real ) y;
+        c.getVCenter() [2] += ( Real ) z;
+    }
+
+    template<typename T>
     static void set ( Coord& c, T x, T y, T z )
     {
+        c.clear();
         c.getCenter()[0] = ( Real ) x;
         c.getCenter() [1] = ( Real ) y;
         c.getCenter() [2] = ( Real ) z;
@@ -247,12 +389,27 @@ public:
     template<typename T>
     static void add ( Coord& c, T x, T y, T z )
     {
+        c.clear();
         c.getCenter() [0] += ( Real ) x;
         c.getCenter() [1] += ( Real ) y;
         c.getCenter() [2] += ( Real ) z;
     }
 
 
+
+    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    {
+        assert ( ancestors.size() == coefs.size() );
+
+        Deriv c;
+
+        for ( unsigned int i = 0; i < ancestors.size(); i++ )
+        {
+            c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
+        }
+
+        return c;
+    }
 
     static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
     {
@@ -437,7 +594,7 @@ defaulttype::Quadratic3dTypes::Coord,
     defaulttype::Vec3d omega ( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
     defaulttype::Vec3d origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getCenter() * 2 ) ) * mass.mass;
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getVCenter() * 2 ) ) * mass.mass;
     defaulttype::Quadratic3dTypes::Deriv result;
     result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
     return result;
@@ -464,7 +621,7 @@ defaulttype::Quadratic3fTypes::Coord,
     const defaulttype::Vec3f omega ( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
     defaulttype::Vec3f origin = x.getCenter(), finertia;
 
-    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getCenter() * 2 ) ) * mass.mass;
+    finertia = - ( aframe + omega.cross ( omega.cross ( origin ) + v.getVCenter() * 2 ) ) * mass.mass;
     defaulttype::Quadratic3fTypes::Deriv result;
     result[0]=finertia[0]; result[1]=finertia[1]; result[2]=finertia[2];
     return result;
