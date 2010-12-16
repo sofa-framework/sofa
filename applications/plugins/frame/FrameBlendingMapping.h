@@ -57,10 +57,47 @@ using sofa::component::material::GridMaterial;
 using defaulttype::FrameMass;
 
 
+template<class Coord> struct DeformationTraits
+{
+    typedef typename Coord::SampleIntegVector SampleIntegVector;
+};
+
+template<>
+template<class R>
+struct DeformationTraits< Vec<3,R> >
+{
+    typedef Vec<0,R> SampleIntegVector;  // rien du tout, on ne calcule pas de déformation sur des points
+};
+
+
+
+
+template<class TOut>
+class SampleData : public  virtual core::objectmodel::BaseObject
+{
+public:
+    // Output types
+    typedef TOut Out;
+    static const unsigned num_spatial_dimensions=Out::spatial_dimensions;
+    typedef typename Out::VecCoord VecOutCoord;
+    typedef typename Out::VecDeriv VecOutDeriv;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real Real;
+
+    Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
+    vector< typename DeformationTraits<OutCoord>::SampleIntegVector > sampleIntegVector;
+
+    SampleData();
+
+};
+
+
 /** Linear blend skinning, from a variety of input types to a variety of output types.
  */
 template <class TIn, class TOut>
-class FrameBlendingMapping : public core::Mapping<TIn, TOut>
+class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public SampleData<TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -129,23 +166,18 @@ protected:
 
     vector<InOut> inout;  ///< Data specific to the conversion between the types
     vector<frameMassType> frameMass;
-    vector<Vec<35,InReal> > sampleIntegVector;
+//                vector<Vec<35,InReal> > sampleIntegVector;
 
-//              VecInCoord mm0;  ///< product of the current matrices with the inverse of the initial matrices
-//              vector<JacobianBlock> J;  ///< The tangent operator used in applyJ and applyJT
-//              Data<VecInCoord> f_initialInverseMatrices; // inverses of the initial parent matrices in the world reference frame
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
-//                Data<unsigned>       f_nbRefs;  ///< Number of parents influencing each child.
     Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.
 
     Data< vector<Vec<nbRef,InReal> > >       weight;
     Data< vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
     Data< vector<Vec<nbRef,MaterialMat> > >   weightDeriv2;
 
-    Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
 
 
 

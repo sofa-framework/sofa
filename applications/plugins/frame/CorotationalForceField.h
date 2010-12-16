@@ -31,6 +31,7 @@
 #include "AffineTypes.h"
 #include "initFrame.h"
 #include "NewMaterial.h"
+#include "FrameBlendingMapping.h"
 
 namespace sofa
 {
@@ -63,6 +64,7 @@ public:
     typedef typename DataTypes::MaterialFrame Frame;
     typedef vector<Frame> VecFrame;
     typedef typename material::Material<material::MaterialTypes<material_dimensions,Real> > Material;
+    typedef typename DataTypes::Coord::Strain Strain;    ///< Strain in vector form, and possibly its gradient, depending on the order of DataTypes
 
 
 public:
@@ -80,10 +82,11 @@ public:
 
 
 protected :
-    VecFrame r; ///< rotation matrices
-    vector<StrainVec> strain, strainRate;
+    VecFrame rotation; ///< rotation matrices
+    vector<Strain> strain, strainRate, stress, strainChange, stressChange;
     Material* material;
-    StrainVec getVoigtForm(  const Frame& f );
+    typedef mapping::SampleData<DataTypes> SampleData;
+    SampleData* sampleData;
 
 };
 

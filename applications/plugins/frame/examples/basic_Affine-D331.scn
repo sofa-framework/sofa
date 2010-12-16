@@ -7,6 +7,7 @@
 		<Node name="TrianglesNode">
 			<MechanicalObject template="DeformationGradient331" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  showDefTensors="1" useElastons="0" />
+			<CorotationalForceField template="DeformationGradient331" />
 		</Node>
 	</Node>
 </Node>
