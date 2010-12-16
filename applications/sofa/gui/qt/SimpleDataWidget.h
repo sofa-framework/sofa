@@ -36,8 +36,10 @@
 #include "WDoubleLineEdit.h"
 #include <limits.h>
 
+#include <sstream>
 #include <sofa/helper/Polynomial_LD.inl>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/objectmodel/ObjectRef.h>
 
 #include <functional>
 #ifdef SOFA_QT4
@@ -826,6 +828,76 @@ public:
     }
 };
 
+
+
+////////////////////////////////////////////////////////////////
+/// sofa::core::objectmodel::ObjectRef
+////////////////////////////////////////////////////////////////
+
+using sofa::core::objectmodel::ObjectRef;
+
+template<>
+class data_widget_trait < ObjectRef >
+{
+public:
+    typedef ObjectRef data_type;
+    typedef QLineEdit Widget;
+    static Widget* create(QWidget* parent, const data_type& d)
+    {
+        Widget* w = new Widget(parent);
+        w->setText(QString(d.getPath().c_str()));
+        return w;
+    }
+    static void readFromData(Widget* w, const data_type& d)
+    {
+        std::ostringstream _outref; _outref<<d;
+        if (w->text().ascii() != _outref.str())
+            w->setText(QString(_outref.str().c_str()));
+    }
+    static void writeToData(Widget* w, data_type& d)
+    {
+        bool canwrite = d.setPath ( w->text().ascii() );
+        if(!canwrite)
+            std::cerr<<"canot set Path "<<w->text().ascii()<<std::endl;
+    }
+    static void connectChanged(Widget* w, DataWidget* datawidget)
+    {
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
+    }
+};
+
+////////////////////////////////////////////////////////////////
+/// support sofa::core::objectmodel::VectorObjectRef;
+////////////////////////////////////////////////////////////////
+
+using sofa::core::objectmodel::VectorObjectRef;
+template<>
+class vector_data_trait < sofa::core::objectmodel::VectorObjectRef >
+{
+public:
+    typedef sofa::core::objectmodel::VectorObjectRef data_type;
+    typedef sofa::core::objectmodel::ObjectRef       value_type;
+
+    static int size(const data_type& d) { return d.size(); }
+    static const char* header(const data_type& , int i = 0)
+    {
+        std::ostringstream _header; _header<<i;
+        return ("Path " + _header.str()).c_str();
+    }
+    static const value_type* get(const data_type& d, int i = 0)
+    {
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : NULL;
+    }
+    static void set( const value_type& v, data_type& d, int i = 0)
+    {
+        if ((unsigned)i < (unsigned)size(d))
+            d[i] = v;
+    }
+    static void resize( int /*s*/, data_type& /*d*/)
+    {
+    }
+};
+
 ////////////////////////////////////////////////////////////////
 /// sofa::defaulttype::Mat support
 ////////////////////////////////////////////////////////////////
@@ -891,8 +963,6 @@ protected:
     QComboBox    *comboList;
     bool buttonMode;
 };
-
-
 
 
 } // namespace qt
