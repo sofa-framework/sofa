@@ -1,5 +1,4 @@
 #include "CorotationalForceField.h"
-#include <sofa/helper/PolarDecompose.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <iostream>
 using std::cerr;
@@ -37,23 +36,12 @@ void CorotationalForceField<DataTypes>::init()
     {
         cerr<<"CorotationalForceField<DataTypes>::init(), material not found"<< endl;
     }
-
-}
-
-template <class DataTypes>
-inline typename  CorotationalForceField<DataTypes>::StrainVec  CorotationalForceField<DataTypes>::getVoigtForm(  const Frame& f )
-{
-    StrainVec s;
-    unsigned ei=0;
-    for(unsigned j=0; j<DataTypes::material_dimensions; j++)
+    sampleData = context->get<SampleData>();
+    if( sampleData==NULL )
     {
-        for( unsigned k=j; k<DataTypes::material_dimensions; k++ )
-        {
-            s[ei] = f[j][k];
-            ei++;
-        }
+        cerr<<"CorotationalForceField<DataTypes>::init(), material not found"<< endl;
     }
-    return s;
+
 }
 
 
@@ -63,30 +51,52 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     ReadAccessor<DataVecCoord> x(_x);
     ReadAccessor<DataVecDeriv> v(_v);
     WriteAccessor<DataVecDeriv> f(_f);
-    r.resize(x.size());
+    rotation.resize(x.size());
     strain.resize(x.size());
     strainRate.resize(x.size());
+    stress.resize(x.size());
 
     // compute strains and strain rates
     for(unsigned i=0; i<x.size(); i++)
     {
-        Frame s;
-
-        // strain, using polar decomposition F = R S
-        helper::polar_decomp(x[i].getMaterialFrame(),r[i],s);
-        // then put S in vector form
-        strain[i] = getVoigtForm(s);
-
-        // strain rate: S_ = R^t F_ where _ denotes time derivative
-        s = r[i].multTranspose( v[i].getMaterialFrame());
-        // then put it in vector form
-        strainRate[i] = getVoigtForm(s);
+        x[i].getCorotationalStrain( rotation[i], strain[i] );
+        v[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
     }
+
+    // compute stresses integrated over the volumes of the samples
+    material->computeStress(stress,strain,strainRate,sampleData->sampleIntegVector);
+
+    // convert vector form to matrix form
+    for(unsigned i=0; i<x.size(); i++)
+    {
+        f[i].setStress(stress[i]);
+    }
+
+
 }
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& /*_df*/ , const DataVecDeriv& /*_dx*/ , const core::MechanicalParams* /*mparams*/)
+void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* /*mparams*/)
 {
+    ReadAccessor<DataVecCoord> dx(_dx);
+    WriteAccessor<DataVecDeriv> df(_df);
+    strainChange.resize(dx.size());
+    stressChange.resize(dx.size());
+
+    // compute strains changes
+    for(unsigned i=0; i<dx.size(); i++)
+    {
+        dx[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
+    }
+
+    // compute stress changes integrated over the volumes of the samples
+    material->computeStressChange(stressChange,strainChange,sampleData->sampleIntegVector);
+
+    // convert vector form to matrix form
+    for(unsigned i=0; i<dx.size(); i++)
+    {
+        df[i].setStress(stressChange[i]);
+    }
 }
 
 }

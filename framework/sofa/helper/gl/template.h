@@ -81,6 +81,7 @@ inline void glVertexT(const Coord& c)
     glVertexNv<Coord::spatial_dimensions>(c.ptr());
 }
 
+
 template<>
 inline void glVertexT<double>(const double& c)
 {

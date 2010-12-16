@@ -57,15 +57,19 @@ using helper::WriteAccessor;
 using helper::ReadAccessor;
 
 
+template <class TOut>
+SampleData<TOut>::SampleData ()
+    : f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
+{
+}
+
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
-    : Inherit ( from, to )
-    //                        , f_nbRefs ( initData ( &f_nbRefs, (unsigned)2, "nbRefs","number of parents for each child" ) )
+    : Inherit ( from, to ), SampleData<TOut>()
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
     , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
     , weightDeriv2 ( initData ( &weightDeriv2,"weightHessians","weight Hessians" ) )
-    , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     //, f_initialInverseMatrices ( initData ( &f_initialInverseMatrices,"initialInverseMatrices","inverses of the initial parent matrices in the world reference frame" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, true, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
     , showDefTensors ( initData ( &showDefTensors, true, "showDefTensors","show computed deformation tensors." ) )
@@ -121,9 +125,9 @@ void FrameBlendingMapping<TIn, TOut>::init()
     //   unsigned numParents = this->fromModel->getSize();
     unsigned numChildren = this->toModel->getSize();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    WriteAccessor<Data<VecOutCoord> > initPos(f_initPos);
+    WriteAccessor<Data<VecOutCoord> > initPos(this->f_initPos);
 
-    if( f_initPos.getValue().size() != numChildren )
+    if( this->f_initPos.getValue().size() != numChildren )
     {
         initPos.resize(out.size());
         for(unsigned i=0; i<out.size(); i++ )
@@ -141,7 +145,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
     for(unsigned i=0; i<out.size(); i++ )
     {
         inout[i].init(
-            f_initPos.getValue()[i],
+            this->f_initPos.getValue()[i],
             f_index.getValue()[i],
             this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
             weight.getValue()[i],
@@ -306,7 +310,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 {
-    ReadAccessor<Data<VecOutCoord> > xto (f_initPos);
+    ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
 
     unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
@@ -449,8 +453,9 @@ void FrameBlendingMapping<TIn, TOut>::LumpVolumes ( )
     unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
     if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
 
-    sampleIntegVector.resize(out.size());
-    for(unsigned int i=0; i<out.size(); i++) sampleIntegVector[i].clear();
+    this->sampleIntegVector.resize(out.size());
+    for(unsigned int i=0; i<out.size(); i++)
+        this->sampleIntegVector[i].clear();
 
     SpatialCoord point;
 
@@ -461,11 +466,14 @@ void FrameBlendingMapping<TIn, TOut>::LumpVolumes ( )
         {
             vector<InReal> moments;
             gridMaterial->lumpMoments(point,4,moments);
-            for(unsigned int j=0; j<moments.size() && j<sampleIntegVector[i].size() ; j++) sampleIntegVector[i][j]=moments[j];
+            for(unsigned int j=0; j<moments.size() && j<this->sampleIntegVector[i].size() ; j++)
+            {
+                this->sampleIntegVector[i][j]=moments[j];
+            }
         }
         else
         {
-            sampleIntegVector[i][0]=1; // default value for the volume when model vertices are used as gauss points
+            this->sampleIntegVector[i][0]=1; // default value for the volume when model vertices are used as gauss points
         }
     }
 
