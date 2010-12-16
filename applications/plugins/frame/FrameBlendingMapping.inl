@@ -453,9 +453,9 @@ void FrameBlendingMapping<TIn, TOut>::LumpVolumes ( )
     unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
     if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
 
-    this->sampleIntegVector.resize(out.size());
+    this->sampleInteg.resize(out.size());
     for(unsigned int i=0; i<out.size(); i++)
-        this->sampleIntegVector[i].clear();
+        this->sampleInteg[i].clear();
 
     SpatialCoord point;
 
@@ -465,19 +465,19 @@ void FrameBlendingMapping<TIn, TOut>::LumpVolumes ( )
         if(gridMaterial)
         {
             vector<InReal> moments;
-            gridMaterial->lumpMoments(point,4,moments);
-            for(unsigned int j=0; j<moments.size() && j<this->sampleIntegVector[i].size() ; j++)
+            gridMaterial->lumpMomentsStiffness(point,VecIntegOrder,moments);
+            for(unsigned int j=0; j<moments.size() && j<this->sampleInteg[i].size() ; j++)
             {
-                this->sampleIntegVector[i][j]=moments[j];
+                this->sampleInteg[i][j]=moments[j];
             }
         }
         else
         {
-            this->sampleIntegVector[i][0]=1; // default value for the volume when model vertices are used as gauss points
+            this->sampleInteg[i][0]=1; // default value for the volume when model vertices are used as gauss points
         }
     }
 
-    //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<sampleIntegVector[i]<<std::endl;
+    //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<sampleInteg[i]<<std::endl;
 }
 
 template <class TIn, class TOut>

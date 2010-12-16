@@ -59,12 +59,23 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
-    //    typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
-    typedef Vec<material_dimensions*(material_dimensions+1)/2> StrainVec;  ///< strain or stress in vector form
     typedef typename DataTypes::MaterialFrame Frame;
     typedef vector<Frame> VecFrame;
+
+    typedef defaulttype::CStrain<DataTypes,true> StrainType;
+    typedef typename StrainType::StrainVec StrainVec;
+    typedef typename StrainType::StrStr StrStrMat;
+    typedef typename StrainType::Strain Strain;
+    typedef typename StrainType::Stress Stress;
+
+    static const unsigned strainenergy_size = StrainType::strainenergy_size;
+    typedef typename StrainType::StrainEnergyVec StrainEnergyVec;
+
+    //    typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
+//                typedef Vec<material_dimensions*(material_dimensions+1)/2> StrainVec;  ///< strain or stress in vector form
+    //              typedef typename DataTypes::Coord::Strain Strain;    ///< Strain in vector form, and possibly its gradient, depending on the order of DataTypes
+
     typedef typename material::Material<material::MaterialTypes<material_dimensions,Real> > Material;
-    typedef typename DataTypes::Coord::Strain Strain;    ///< Strain in vector form, and possibly its gradient, depending on the order of DataTypes
 
 
 public:
@@ -82,12 +93,13 @@ public:
 
 
 protected :
+
     VecFrame rotation; ///< rotation matrices
     vector<Strain> strain, strainRate, stress, strainChange, stressChange;
     Material* material;
-    typedef mapping::SampleData<DataTypes> SampleData;
+    typedef mapping::SampleData<DataTypes> SampleData; // contains precomputed moments
     SampleData* sampleData;
-
+    StrainEnergyVec integVec;  ///< vector describing a quantity and its derivatives that we want to integrate
 };
 
 #if defined(WIN32) && !defined(FRAME_COROTATIONALFORCEFIELD_CPP)

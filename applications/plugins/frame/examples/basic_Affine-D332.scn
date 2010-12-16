@@ -7,6 +7,18 @@
 			<MechanicalObject template="DeformationGradient332" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  showDefTensors="1" useElastons="0" />
 		</Node>
+
+		<Node name="CollisionNode">
+			<MeshLoader name="MeshLoader" fileMesh="mesh/Turtle.obj"/>
+			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
+			<TriangleSetTopologyContainer name="Container" />
+			<TriangleSetTopologyModifier name="Modifier" />
+			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"  input="@../DOFs"  output="@Triangles" />
+			<TriangleModel name="CollisionModel"  printLog="0" />
+		</Node>
+
 		<Node 	name="Visual" >
 			<OglModel template="ExtVec3d" name="Visual" fileMesh="mesh/Turtle.obj"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
