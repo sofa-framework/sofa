@@ -55,21 +55,25 @@ using helper::vector;
 using sofa::component::material::MaterialTypes;
 using sofa::component::material::GridMaterial;
 using defaulttype::FrameMass;
+using defaulttype::DeformationGradient;
+using defaulttype::CStrain;
 
 
-template<class Coord> struct DeformationTraits
-{
-    typedef typename Coord::SampleIntegVector SampleIntegVector;
-};
-
-template<>
-template<class R>
-struct DeformationTraits< Vec<3,R> >
-{
-    typedef Vec<0,R> SampleIntegVector;  // rien du tout, on ne calcule pas de déformation sur des points
-};
-
-
+//            template<class Coord> struct DeformationTraits
+//            {
+////                typedef typename Coord::StrainEnergy SampleIntegVector;
+//			    static const unsigned typename defaulttype::CStrain<Coord ,false>::strainenergy_order  VecIntegOrder; // =0 for order 1 def gradients ; =4 for order 2 deformation gradients  (by default as we don't know if corotational strain is used)
+//			    typedef typename defaulttype::CStrain<Coord ,false>::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
+//
+//            };
+//
+////            template<>
+//            template<class R>
+//            struct DeformationTraits< Vec<3,R> > {
+//               // typedef Vec<0,R> VecInteg;  // rien du tout, on ne calcule pas de déformation sur des points
+//				typedef Vec<1,R> VecInteg; // cannot have 0 sized vector (compilation error on windows)
+//				typedef 0 VecIntegOrder; // cannot have 0 sized vector (compilation error on windows)
+//			};
 
 
 template<class TOut>
@@ -86,8 +90,12 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real Real;
 
+    typedef defaulttype::CStrain<Out,false> strainType;
+    static const unsigned VecIntegOrder=strainType::strainenergy_order  ; // =0 for order 1 def gradients ; =4 for order 2 deformation gradients  (by default as we don't know if corotational strain is used)
+    typedef typename strainType::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
+
     Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
-    vector< typename DeformationTraits<OutCoord>::SampleIntegVector > sampleIntegVector;
+    vector< VecInteg > sampleInteg;
 
     SampleData();
 

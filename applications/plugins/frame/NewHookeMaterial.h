@@ -126,8 +126,8 @@ public:
     typedef typename Inherited::Real Real;        ///< Scalar values.
     typedef typename Inherited::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
-    typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
-    typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
+    //typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
+    //typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
     typedef typename Inherited::StrStr StrStr;      ///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
 
@@ -140,40 +140,40 @@ public:
     /// Recompute the stress-strain matrix when the parameters are changed.
     virtual void reinit();
 
-    typedef defaulttype::DeformationGradient<3,3,1,Real> DeformationGradient331;
-    typedef typename DeformationGradient331::SampleIntegVector SampleIntegVector331;
-    typedef vector<SampleIntegVector331>  VecSampleIntegVector331;
-    typedef typename DeformationGradient331::Strain            Strain331;
-    typedef vector<Strain331>  VecStrain331;
+    //typedef defaulttype::DeformationGradient<3,3,1,Real> DeformationGradient331;
+    //typedef typename DeformationGradient331::SampleIntegVector SampleIntegVector331;
+    //typedef vector<SampleIntegVector331>  VecSampleIntegVector331;
+    //typedef typename DeformationGradient331::Strain            Strain331;
+    //typedef vector<Strain331>  VecStrain331;
 
-    /** \brief Compute stress based on local strain and strain rate at each point.
-    */
-    virtual void computeStress  ( VecStrain331& stress, const VecStrain331& strain, const VecStrain331& strainRate, const VecSampleIntegVector331& integ ) {}
+    ///** \brief Compute stress based on local strain and strain rate at each point.
+    //*/
+    //virtual void computeStress  ( VecStrain331& stress, const VecStrain331& strain, const VecStrain331& strainRate, const VecSampleIntegVector331& integ ){}
 
-    /** \brief Compute stress change based on strain change
-     */
-    virtual void computeStressChange  ( VecStrain331& stressChange, const VecStrain331& strainChange, const VecSampleIntegVector331& integ ) {}
+    ///** \brief Compute stress change based on strain change
+    // */
+    //virtual void computeStressChange  ( VecStrain331& stressChange, const VecStrain331& strainChange, const VecSampleIntegVector331& integ ){}
 
 
-    typedef defaulttype::DeformationGradient<3,3,2,Real> DeformationGradient332;
-    typedef typename DeformationGradient332::SampleIntegVector SampleIntegVector332;
-    typedef vector<SampleIntegVector332>  VecSampleIntegVector332;
-    typedef typename DeformationGradient332::Strain            Strain332;
-    typedef vector<Strain332>  VecStrain332;
+    //typedef defaulttype::DeformationGradient<3,3,2,Real> DeformationGradient332;
+    //typedef typename DeformationGradient332::SampleIntegVector SampleIntegVector332;
+    //typedef vector<SampleIntegVector332>  VecSampleIntegVector332;
+    //typedef typename DeformationGradient332::Strain            Strain332;
+    //typedef vector<Strain332>  VecStrain332;
 
-    /** \brief Compute stress based on local strain and strain rate at each point.
-    */
-    virtual void computeStress  ( VecStrain332& stress, const VecStrain332& strain, const VecStrain332& strainRate, const VecSampleIntegVector332& integ ) {}
+    ///** \brief Compute stress based on local strain and strain rate at each point.
+    //*/
+    //virtual void computeStress  ( VecStrain332& stress, const VecStrain332& strain, const VecStrain332& strainRate, const VecSampleIntegVector332& integ ){}
 
-    /** \brief Compute stress change based on strain change
-     */
-    virtual void computeStressChange  ( VecStrain332& stressChange, const VecStrain332& strainChange, const VecSampleIntegVector332& integ ) {}
+    ///** \brief Compute stress change based on strain change
+    // */
+    //virtual void computeStressChange  ( VecStrain332& stressChange, const VecStrain332& strainChange, const VecSampleIntegVector332& integ ){}
 
 
     /// implementation of the abstract function
-    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
-
-    virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate );
+    virtual void computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& strainRate );
+    //virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
+    //virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate );
 
 
     Data<Real> youngModulus;  ///< Stiffness, typically denoted using symbol \f$ E \f$

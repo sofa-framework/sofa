@@ -104,69 +104,34 @@ void GridMaterial< MaterialTypes>::init()
 
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
 template<class MaterialTypes>
-void GridMaterial< MaterialTypes>::computeStress  ( VecStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecStr& /*strain*/, const VecStr& )
+void GridMaterial< MaterialTypes>::computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& strainRate )
 {
+    Real stressDiagonal, stressOffDiagonal, shear;
+    Real poissonRatio=0.3;
 
-//                Real f = youngModulus.getValue()/((1 + poissonRatio.getValue())*(1 - 2 * poissonRatio.getValue()));
-//                stressDiagonal = f * (1 - poissonRatio.getValue());
-//                stressOffDiagonal = poissonRatio.getValue() * f;
-//                shear = f * (1 - 2 * poissonRatio.getValue()) /2;
-//
-//
-//                for(unsigned i=0; i<stress.size(); i++)
-//                {
-//                    stress[i][0] = stressDiagonal * strain[i][0] + stressOffDiagonal * strain[i][1] + stressOffDiagonal * strain[i][2];
-//                    stress[i][1] = stressOffDiagonal * strain[i][0] + stressDiagonal * strain[i][1] + stressOffDiagonal * strain[i][2];
-//                    stress[i][2] = stressOffDiagonal * strain[i][0] + stressOffDiagonal * strain[i][1] + stressDiagonal * strain[i][2];
-//                    stress[i][3] = shear * strain[i][3];
-//                    stress[i][4] = shear * strain[i][4];
-//                    stress[i][5] = shear * strain[i][5];
-//                }
-//                if( stressStrainMatrices != NULL ){
-//                    VecStrStr&  m = *stressStrainMatrices;
-//                    m.resize( stress.size() );
-//                    m[0].fill(0);
-//                    m[0][0][0] = m[0][1][1] = m[0][2][2] = stressDiagonal;
-//                    m[0][0][1] = m[0][0][2] = m[0][1][0] = m[0][1][2] = m[0][2][0] = m[0][2][1] = stressOffDiagonal;
-//                    m[0][3][3] = m[0][4][4] = m[0][5][5] = shear;
-//                    for( unsigned i=1; i<m.size(); i++ ){
-//                        m[i] = m[0];
-//                    }
-//                }
+    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+    stressDiagonal = f * (1 - poissonRatio);
+    stressOffDiagonal = poissonRatio * f;
+    shear = f * (1 - 2 * poissonRatio) /2;
+
+    stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
+    stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
+    stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
+    stress[3] = shear * strain[3];
+    stress[4] = shear * strain[4];
+    stress[5] = shear * strain[5];
+
+
+    if( stressStrainMatrix != NULL )
+    {
+        StrStr&  m = *stressStrainMatrix;
+        m.fill(0);
+        m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
+        m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
+        m[3][3] = m[4][4] = m[5][5] = shear;
+    }
 }
 
-// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
-template<class MaterialTypes>
-void GridMaterial< MaterialTypes>::computeStress  ( VecElStr& /*stress*/, VecStrStr* /*stressStrainMatrices*/, const VecElStr& /*strain*/, const VecElStr& )
-{
-//                Real f = youngModulus.getValue()/((1 + poissonRatio.getValue())*(1 - 2 * poissonRatio.getValue()));
-//                stressDiagonal = f * (1 - poissonRatio.getValue());
-//                stressOffDiagonal = poissonRatio.getValue() * f;
-//                shear = f * (1 - 2 * poissonRatio.getValue()) /2;
-//
-//
-//                for(unsigned e=0; e<10; e++)
-//                for(unsigned i=0; i<stress.size(); i++)
-//                {
-//                    stress[i][0][e] = stressDiagonal * strain[i][0][e] + stressOffDiagonal * strain[i][1][e] + stressOffDiagonal * strain[i][2][e];
-//                    stress[i][1][e] = stressOffDiagonal * strain[i][0][e] + stressDiagonal * strain[i][1][e] + stressOffDiagonal * strain[i][2][e];
-//                    stress[i][2][e] = stressOffDiagonal * strain[i][0][e] + stressOffDiagonal * strain[i][1][e] + stressDiagonal * strain[i][2][e];
-//                    stress[i][3][e] = shear * strain[i][3][e];
-//                    stress[i][4][e] = shear * strain[i][4][e];
-//                    stress[i][5][e] = shear * strain[i][5][e];
-//                }
-//                if( stressStrainMatrices != NULL ){
-//                    VecStrStr&  m = *stressStrainMatrices;
-//                    m.resize( stress.size() );
-//                    m[0].fill(0);
-//                    m[0][0][0] = m[0][1][1] = m[0][2][2] = stressDiagonal;
-//                    m[0][0][1] = m[0][0][2] = m[0][1][0] = m[0][1][2] = m[0][2][0] = m[0][2][1] = stressOffDiagonal;
-//                    m[0][3][3] = m[0][4][4] = m[0][5][5] = shear;
-//                    for( unsigned i=1; i<m.size(); i++ ){
-//                        m[i] = m[0];
-//                    }
-//                }
-}
 
 template < class MaterialTypes>
 typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStiffness(const voxelType label)
@@ -782,12 +747,13 @@ template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::interpolateWeights(const SCoord& point,Real& w)
 {
     if (!nbVoxels) return false;
+    if(weights.size()!=nbVoxels) {w=0; return false; }  //no weight computed
 
     // get weights of the underlying voxel
 
 // temporary: no interpolation
     int index=getIndex(point);
-    if (index==-1 || weights.size()!=nbVoxels) {w=0; return false; } // point not in grid or no weight computed
+    if (index==-1 || weights.size()!=nbVoxels) {w=0; return false; } // point not in grid
     else {w=weights[index]; return true;}
 
     //Real wvox; 	SGradient dwvox;   SHessian ddwvox;

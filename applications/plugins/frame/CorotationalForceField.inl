@@ -59,18 +59,39 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     // compute strains and strain rates
     for(unsigned i=0; i<x.size(); i++)
     {
-        x[i].getCorotationalStrain( rotation[i], strain[i] );
-        v[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
+        StrainType::getStrain(x[i], strain[i], rotation[i]);
+        StrainType::getStrainRate(v[i], strainRate[i], rotation[i]);
+        //x[i].getCorotationalStrain( rotation[i], strain[i] );
+        //v[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
     }
+
+    // compute stresses
+    for(unsigned i=0; i<x.size(); i++)
+        for(unsigned j=0; j<x[i].size(); j++)
+            material->computeStress(stress[i][j], NULL, strain[i][j], strainRate[i][j] );
+
+// compute strain energy (necessary ??)
+//double U=0;
+//for(unsigned i=0; i<x.size(); i++)
+//	{
+//	integVec=StrainType::multTranspose(strain[i] , stress[i] );
+//	for(unsigned j=0; j<strainenergy_size; j++) U+= integVec[j] * (sampleData[i].sampleInteg)[j] * 0.5;
+//	}
+
+    // integrate force in volume
+    //for(unsigned i=0; i<x.size(); i++)
+    //	{
+    //	for(unsigned dof=0; dof< ; dof++)
+    //	}
 
     // compute stresses integrated over the volumes of the samples
-    material->computeStress(stress,strain,strainRate,sampleData->sampleIntegVector);
+//                material->computeStress(stress,strain,strainRate,sampleData->sampleInteg);
 
     // convert vector form to matrix form
-    for(unsigned i=0; i<x.size(); i++)
-    {
-        f[i].setStress(stress[i]);
-    }
+    //for(unsigned i=0; i<x.size(); i++)
+    //{
+    //    f[i].setStress(stress[i]);
+    //}
 
 
 }
@@ -86,17 +107,18 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     // compute strains changes
     for(unsigned i=0; i<dx.size(); i++)
     {
-        dx[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
+        StrainType::getStrainRate(dx[i], strainRate[i], rotation[i]);
+        //dx[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
     }
 
-    // compute stress changes integrated over the volumes of the samples
-    material->computeStressChange(stressChange,strainChange,sampleData->sampleIntegVector);
+    //// compute stress changes integrated over the volumes of the samples
+    //material->computeStressChange(stressChange,strainChange,sampleData->sampleIntegVector);
 
-    // convert vector form to matrix form
-    for(unsigned i=0; i<dx.size(); i++)
-    {
-        df[i].setStress(stressChange[i]);
-    }
+    //// convert vector form to matrix form
+    //for(unsigned i=0; i<dx.size(); i++)
+    //{
+    //    df[i].setStress(stressChange[i]);
+    //}
 }
 
 }
