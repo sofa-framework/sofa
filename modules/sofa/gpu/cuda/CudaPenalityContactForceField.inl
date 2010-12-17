@@ -134,7 +134,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams)
+void PenalityContactForceField<CudaVec3fTypes>::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* /*mparams*/)
 {
     VecDeriv& f1 = *d_f1.beginEdit();
     const VecCoord& x1 = d_x1.getValue();

@@ -9,7 +9,7 @@
 		</Node>
 
 		<Node name="CollisionNode">
-			<MeshLoader name="MeshLoader" fileMesh="mesh/Turtle.obj"/>
+			<MeshLoader name="MeshLoader" filename="mesh/Turtle.obj"/>
 			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
 			<TriangleSetTopologyContainer name="Container" />
 			<TriangleSetTopologyModifier name="Modifier" />
