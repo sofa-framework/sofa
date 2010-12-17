@@ -856,7 +856,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const de
         {
             for (unsigned int j = 0; j < coordDim; j++)
             {
-                Real tmp;
+                Real tmp = (Real)0.0;
                 DataTypeInfo<Coord>::getValue(vDest[i], j, tmp);
                 DataTypeInfo<Coord>::setValue(vDest[i], j, tmp + src->element(offset + i * coordDim + j));
             }
@@ -873,7 +873,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(VecId dest, const de
         {
             for (unsigned int j = 0; j < derivDim; j++)
             {
-                Real tmp;
+                Real tmp = (Real)0.0;
                 DataTypeInfo<Deriv>::getValue(vDest[i], j, tmp);
                 DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(offset + i * derivDim + j));
             }
@@ -904,7 +904,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, con
         {
             for (unsigned int j=0; j<coordDim; ++j)
             {
-                Real tmp;
+                Real tmp = (Real)0.0;
                 DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
                 DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
             }
@@ -921,7 +921,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(VecId dest, con
         {
             for (unsigned int j=0; j<derivDim; ++j)
             {
-                Real tmp;
+                Real tmp = (Real)0.0;
                 DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
                 DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
             }
