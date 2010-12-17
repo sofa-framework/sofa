@@ -698,17 +698,17 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const SCoord& point,const bool us
     }
     else
     {
-        for (i=0; i<nbVoxels; i++) if (voronoi[i]==voronoi[index]) neighbors.push_back((unsigned int)i);
+        for (i=0; i<nbVoxels; i++) if (voronoi[i]==voronoi[index] ) neighbors.push_back((unsigned int)i);
         if (dilatevoronoi)
             for (i=0; i<nbVoxels; i++)
-                if (grid.data()[i])
-                {
-                    VUI tmp;
-                    get6Neighbors(index, tmp);
-                    bool insert=false;
-                    for (j=0; j<tmp.size(); j++) if (voronoi[tmp[j]]==voronoi[index]) insert=true;
-                    if (insert) neighbors.push_back((unsigned int)i);
-                }
+                //if (grid.data()[i])
+            {
+                VUI tmp;
+                get6Neighbors(index, tmp);
+                bool insert=false;
+                for (j=0; j<tmp.size(); j++) if (voronoi[tmp[j]]==voronoi[index]) insert=true;
+                if (insert) neighbors.push_back((unsigned int)i);
+            }
         if (neighbors.size()<26) // not enough samples -> go back to a local neighbor fit
             lumpWeights(point,false,w,dw,ddw);
     }
@@ -886,6 +886,7 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
         for (i=0; i<nbp; i++)
         {
             computeAnisotropicLinearWeightsInVoronoi(points[i]);
+            offsetWeightsOutsideObject();
             addWeightinRepartion(i);
         }
     }
@@ -894,9 +895,11 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
         for (i=0; i<nbp; i++)
         {
             HeatDiffusion(points,i);
+            offsetWeightsOutsideObject();
             addWeightinRepartion(i);
         }
     }
+
 
     normalizeWeightRepartion();
 
@@ -914,7 +917,8 @@ void GridMaterial< MaterialTypes>::addWeightinRepartion(const unsigned int index
     unsigned int j,k;
 
     for (unsigned int i=0; i<nbVoxels; i++)
-        if (grid.data()[i])
+        //if (grid.data()[i])
+        if(weights[i])
         {
             j=0;
             while (j!=nbRef && f_weights[i][j]>weights[i]) j++;
@@ -960,12 +964,12 @@ void GridMaterial< MaterialTypes>::normalizeWeightRepartion()
     if (!nbVoxels) return;
     unsigned int j;
     for (unsigned int i=0; i<nbVoxels; i++)
-        if (grid.data()[i])
-        {
-            Real W=0;
-            for (j=0; j<nbRef; j++) W+=f_weights[i][j];
-            if (W!=0) for (j=0; j<nbRef; j++) f_weights[i][j]/=W;
-        }
+        //if (grid.data()[i])
+    {
+        Real W=0;
+        for (j=0; j<nbRef; j++) W+=f_weights[i][j];
+        if (W!=0) for (j=0; j<nbRef; j++) f_weights[i][j]/=W;
+    }
     showedrepartition=-1;
 }
 
@@ -1125,13 +1129,12 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
         if(voronoi[i]==voronoi[index])
         {
             get6Neighbors((int)i, neighbors);
-            if(neighbors.size()!=6) {distances[i]=0; fifo.push((int)i);} // object border
-            else for (j=0; j<neighbors.size(); j++)
-                    if(voronoi[neighbors[j]]!=voronoi[index]) // voronoi frontier
-                    {
-                        distances[i]=0; fifo.push((int)i);
-                        j=neighbors.size();
-                    }
+            for (j=0; j<neighbors.size(); j++)
+                if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
+                {
+                    distances[i]=0; fifo.push((int)i);
+                    j=neighbors.size();
+                }
         }
 
     while (!fifo.empty())
@@ -1359,6 +1362,50 @@ bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const SCoord&
 
 
 template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::offsetWeightsOutsideObject(unsigned int offestdist)
+{
+
+    if (!this->nbVoxels) return;
+    unsigned int i,j;
+    vector<bool> isfixed((int)nbVoxels,false);
+    vector<bool> update((int)nbVoxels,false);
+    VUI neighbors;
+
+    for (i=0; i<nbVoxels; i++)
+        if (grid.data()[i])
+        {
+            isfixed[i]=true;
+            get6Neighbors(i, neighbors);
+            for (j=0; j<neighbors.size(); j++) if (!grid.data()[neighbors[j]]) update[neighbors[j]]=true;
+        }
+
+    unsigned int nbiterations=0;
+    while (nbiterations<offestdist)
+    {
+        for (i=0; i<this->nbVoxels; i++)
+            if (update[i])
+            {
+                if (isfixed[i]) update[i]=false;
+                else
+                {
+                    Real val=0,W=0;
+                    get6Neighbors(i, neighbors);
+                    for (j=0; j<neighbors.size(); j++)
+                    {
+                        val+=weights[neighbors[j]];
+                        W+=1;
+                        if (!grid.data()[neighbors[j]]) update[neighbors[j]]=true;
+                    }
+                    if (W!=0) val=val/W; // normalize value
+                    weights[i]=val;
+                }
+            }
+        nbiterations++;
+    }
+}
+
+
+template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecSCoord& points, const unsigned int hotpointindex,const bool fixdatavalue,const unsigned int max_iterations,const Real precision  )
 {
     if (!this->nbVoxels) return false;
@@ -1443,21 +1490,22 @@ bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecSCoord& points, const
                         {
                             get6Neighbors(i, neighbors);
                             for (j=0; j<neighbors.size(); j++)
-                            {
-                                if(biasDistances.getValue())
+                                if (grid.data()[neighbors[j]])
                                 {
-                                    meanstiff=(getStiffness(grid.data()[i])+getStiffness(grid.data()[neighbors[j]]))/2.;
-                                    diffw=(double)exp(-alphabias/(meanstiff*meanstiff));
+                                    if(biasDistances.getValue())
+                                    {
+                                        meanstiff=(getStiffness(grid.data()[i])+getStiffness(grid.data()[neighbors[j]]))/2.;
+                                        diffw=(double)exp(-alphabias/(meanstiff*meanstiff));
+                                    }
+                                    else diffw=1.;
+                                    val+=diffw*weights[neighbors[j]];
+                                    W+=diffw;
                                 }
-                                else diffw=1.;
-                                val+=diffw*weights[neighbors[j]];
-                                W+=diffw;
-                            }
-                            for (j=neighbors.size(); j<6; j++)
-                            {
-                                val+=weights[i];    // dissipative border
-                                W+=1.;
-                            }
+                                else
+                                {
+                                    val+=weights[i];    // dissipative border
+                                    W+=1.;
+                                }
                         }
                         if (W!=0) val=val/W; // normalize value
 
@@ -1555,10 +1603,10 @@ void GridMaterial< MaterialTypes>::draw()
             }
             else
             {
-                VUI neighbors;
-                get6Neighbors(getIndex(GCoord(x,y,z)), neighbors);
-                if (!wireframe && neighbors.size()==6) // disable internal voxels
-                    continue;
+                //VUI neighbors;
+                //get6Neighbors(getIndex(GCoord(x,y,z)), neighbors);
+                //if (!wireframe && neighbors.size()==6) // disable internal voxels -> not working anymore (return neighbors outside objects)
+                //    continue;
             }
 
             label=-1;
@@ -1729,11 +1777,11 @@ bool GridMaterial< MaterialTypes>::get6Neighbors ( const int& index, VUI& neighb
     {
         icoord[j]+=1;
         i=getIndex(icoord);
-        if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+        if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
         icoord[j]-=1;
         icoord[j]-=1;
         i=getIndex(icoord);
-        if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+        if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
         icoord[j]+=1;
     }
     return true;
@@ -1751,11 +1799,11 @@ bool GridMaterial< MaterialTypes>::get18Neighbors ( const int& index, VUI& neigh
     {
         icoord[j]+=1;
         i=getIndex(icoord);
-        if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+        if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
         icoord[j]-=1;
         icoord[j]-=1;
         i=getIndex(icoord);
-        if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+        if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
         icoord[j]+=1;
     }
 
@@ -1766,11 +1814,11 @@ bool GridMaterial< MaterialTypes>::get18Neighbors ( const int& index, VUI& neigh
         {
             icoord[j]+=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]-=1;
             icoord[j]-=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]+=1;
         }
         icoord[k]-=2;
@@ -1778,11 +1826,11 @@ bool GridMaterial< MaterialTypes>::get18Neighbors ( const int& index, VUI& neigh
         {
             icoord[j]+=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]-=1;
             icoord[j]-=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]+=1;
         }
         icoord[k]+=1;
@@ -1802,11 +1850,11 @@ bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neigh
     {
         icoord[j]+=1;
         i=getIndex(icoord);
-        if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+        if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
         icoord[j]-=1;
         icoord[j]-=1;
         i=getIndex(icoord);
-        if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+        if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
         icoord[j]+=1;
     }
     for (unsigned int k=0; k<3 ; k++)
@@ -1816,11 +1864,11 @@ bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neigh
         {
             icoord[j]+=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]-=1;
             icoord[j]-=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]+=1;
         }
         icoord[k]-=2;
@@ -1828,11 +1876,11 @@ bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neigh
         {
             icoord[j]+=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]-=1;
             icoord[j]-=1;
             i=getIndex(icoord);
-            if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+            if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
             icoord[j]+=1;
         }
         icoord[k]+=1;
@@ -1841,40 +1889,40 @@ bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neigh
     icoord[1]+=1;
     icoord[2]+=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]-=1;
     icoord[2]-=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]+=1;
     icoord[1]-=2;
     icoord[2]+=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]-=1;
     icoord[2]-=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]+=1;
     icoord[1]+=1;
     icoord[0]-=2;
     icoord[1]+=1;
     icoord[2]+=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]-=1;
     icoord[2]-=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]+=1;
     icoord[1]-=2;
     icoord[2]+=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]-=1;
     icoord[2]-=1;
     i=getIndex(icoord);
-    if (i!=-1) if (grid.data()[i]) neighbors.push_back(i);
+    if (i!=-1) /*if (grid.data()[i])*/ neighbors.push_back(i);
     icoord[2]+=1;
     icoord[1]+=1;
     icoord[0]+=1;
