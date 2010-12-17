@@ -89,7 +89,7 @@ bool PlaneForceField<gpu::cuda::CudaVec3fTypes>::canPrefetch() const
 }
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
+void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /*mparams*/)
 {
     if (this->isPrefetching()) return;
 
@@ -162,7 +162,7 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(DataVecDeriv& d_df, c
 
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
+void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /*mparams*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();

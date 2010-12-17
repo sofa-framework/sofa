@@ -63,7 +63,7 @@ namespace mass
 {
 
 template<>
-void DiagonalMass<CudaVec3fTypes, float>::addMDx(DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor, const core::MechanicalParams* mparams)
+void DiagonalMass<CudaVec3fTypes, float>::addMDx(DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor, const core::MechanicalParams* /*mparams*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -78,7 +78,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addMDx(DataVecDeriv& d_f, const DataVe
 }
 
 template<>
-void DiagonalMass<CudaVec3fTypes, float>::accFromF(DataVecDeriv& d_a, const DataVecDeriv& d_f, const core::MechanicalParams* mparams)
+void DiagonalMass<CudaVec3fTypes, float>::accFromF(DataVecDeriv& d_a, const DataVecDeriv& d_f, const core::MechanicalParams* /*mparams*/)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -93,11 +93,11 @@ void DiagonalMass<CudaVec3fTypes, float>::accFromF(DataVecDeriv& d_a, const Data
 }
 
 template <>
-void DiagonalMass<CudaVec3fTypes, float>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams)
+void DiagonalMass<CudaVec3fTypes, float>::addForce(DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const core::MechanicalParams* /*mparams*/)
 {
     VecDeriv& f = *d_f.beginEdit();
-    const VecCoord& x = d_x.getValue();
-    const VecDeriv& v = d_v.getValue();
+    //const VecCoord& x = d_x.getValue();
+    //const VecDeriv& v = d_v.getValue();
 
     Vec3d g ( this->getContext()->getLocalGravity() );
     const MassVector &masses= f_mass.getValue();

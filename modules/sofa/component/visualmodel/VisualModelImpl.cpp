@@ -1526,7 +1526,7 @@ void VisualModelImpl::handleTopologyChange()
         {
             using sofa::core::behavior::BaseMechanicalState;
             BaseMechanicalState* mstate;
-            const unsigned int nbPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+            //const unsigned int nbPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
             m_topology->getContext()->get(mstate);
             /* fjourdes:
             ! THIS IS OBVIOUSLY NOT THE APPROPRIATE WAY TO DO IT !
