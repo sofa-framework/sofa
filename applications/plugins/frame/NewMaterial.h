@@ -72,7 +72,7 @@ public:
 
     /** \brief Compute stress based on local strain and strain rate at each point.
     */
-    virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrix, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point ) {}
+    virtual void computeStress  ( VecStrain1& /*stress*/, VecStrStr* /*stressStrainMatrix*/, const VecStrain1& /*strain*/, const VecStrain1& /*strainRate*/, const VecMaterialCoord& /*point*/ ) {}
 //    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
 
 
