@@ -214,10 +214,6 @@ public:
     /*   Lumping			  */
     /*************************/
 
-//                bool lumpMoments(const SCoord& point, const unsigned int order, vector<SampleIntegVector331>& moments);
-    //              bool lumpMoments(const SCoord& point, const unsigned int order, vector<SampleIntegVector332>& moments);
-
-
     /// return mu_i.vol_i , p_i and weights of voxels in the voronoi region of point
     bool getWeightedMasses(const SCoord& point, vector<VRef>& reps, vector<VRefReal>& w, VecSCoord& p,vector<Real>& masses);
     /// return sum(mu_i.vol_i) in the voronoi region of point
@@ -302,6 +298,9 @@ protected:
 
     Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
     Data<bool> biasDistances;
+
+    /// diffuse the weights outside the objects to avoid interpolation problems
+    void offsetWeightsOutsideObject(unsigned int offestdist=10);
 
     /// (biased) Euclidean distance between two voxels
     Real getDistance(const unsigned int& index1,const unsigned int& index2);
