@@ -139,7 +139,6 @@ void FrameBlendingMapping<TIn, TOut>::init()
     // init weights and sample info (mass, moments) todo: ask the Material
     updateWeights();
     LumpMassesToFrames ();
-    LumpVolumes ();
 
     // init jacobians for mapping
     inout.resize( out.size() );
@@ -451,40 +450,6 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 }
 
 
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::LumpVolumes ( )
-{
-    ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
-    ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
-
-//                unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
-//                if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
-//
-//                this->sampleInteg.resize(out.size());
-//                for(unsigned int i=0;i<out.size();i++)
-//                    this->sampleInteg[i].clear();
-//
-//                SpatialCoord point;
-//
-//                for(unsigned int i=0;i<out.size();i++) // treat each sample
-//                {
-//                    Out::get(point[0],point[1],point[2], out[i]) ;
-//                    if(gridMaterial)
-//                    {
-//                        vector<InReal> moments;
-//                        gridMaterial->lumpMomentsStiffness(point,VecIntegOrder,moments);
-//                        for(unsigned int j=0;j<moments.size() && j<this->sampleInteg[i].size() ;j++) {
-//                            this->sampleInteg[i][j]=moments[j];
-//                        }
-//                    }
-//                    else
-//                    {
-//                        this->sampleInteg[i][0]=1; // default value for the volume when model vertices are used as gauss points
-//                    }
-//                }
-
-    //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<sampleInteg[i]<<std::endl;
-}
 
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )

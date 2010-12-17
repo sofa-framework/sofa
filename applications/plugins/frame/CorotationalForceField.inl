@@ -71,6 +71,7 @@ void CorotationalForceField<DataTypes>::init()
         }
     }
 
+    //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<sampleInteg[i]<<std::endl;
 
 }
 
@@ -91,13 +92,16 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     // compute strains and strain rates
     for(unsigned i=0; i<x.size(); i++)
     {
-        StrainType::getStrain(x[i], strain[i], rotation[i]);
-        StrainType::getStrainRate(v[i], strainRate[i], rotation[i]);
+        StrainType::apply(x[i], strain[i],&rotation[i]);
+        StrainType::mult(v[i], strainRate[i],&rotation[i]);
     }
     material->computeStress( stress, &stressStrainMatrices, strain, strainRate, out.ref() );
 
-    // Todo: integrate and compute frame
-
+    // integrate and compute force
+    for(unsigned i=0; i<x.size(); i++)
+    {
+        StrainType::addMultTranspose(f[i], x[i], stress[i], this->sampleInteg[i], &rotation[i]);
+    }
 }
 
 template <class DataTypes>
@@ -107,14 +111,23 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     WriteAccessor<DataVecDeriv> df(_df);
     strainChange.resize(dx.size());
     stressChange.resize(dx.size());
+    ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
 
     // compute strains changes
     for(unsigned i=0; i<dx.size(); i++)
     {
-        StrainType::getStrainRate(dx[i], strainRate[i], rotation[i]);
+        StrainType::mult(dx[i], strainRate[i]);
     }
 
     // Todo: apply stiffness matrix and integration factors, compute frame
+
+    material->computeStress( stressChange, NULL, strain, strainRate, out.ref() );
+
+    // integrate and compute force
+    for(unsigned i=0; i<dx.size(); i++)
+    {
+        StrainType::addMultTranspose(df[i], dx[i], stressChange[i], this->sampleInteg[i], &rotation[i]);
+    }
 }
 
 }

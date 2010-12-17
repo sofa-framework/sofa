@@ -58,7 +58,6 @@ using sofa::component::material::MaterialTypes;
 using sofa::component::material::GridMaterial;
 using defaulttype::FrameMass;
 using defaulttype::DeformationGradient;
-using defaulttype::CStrain;
 
 
 template<class Coord> struct MaterialTraits
@@ -157,11 +156,9 @@ protected:
     inline void updateWeights ();
     inline void normalizeWeights();
     inline void LumpMassesToFrames ();
-    inline void LumpVolumes ();
 
     vector<InOut> inout;  ///< Data specific to the conversion between the types
     vector<frameMassType> frameMass;
-//                vector<Vec<35,InReal> > sampleIntegVector;
 
 
     helper::ParticleMask* maskFrom;

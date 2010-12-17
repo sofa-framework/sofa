@@ -93,22 +93,29 @@ void HookeMaterial3<MaterialTypes>::reinit()
 
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
 template<class MaterialTypes>
-void HookeMaterial3<MaterialTypes>::computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& )
+void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
-    stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
-    stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
-    stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
-    stress[3] = shear * strain[3];
-    stress[4] = shear * strain[4];
-    stress[5] = shear * strain[5];
-
-    if( stressStrainMatrix != NULL )
+    for(unsigned i=0; i<stresses.size(); i++)
     {
-        StrStr&  m = *stressStrainMatrix;
-        m.fill(0);
-        m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
-        m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
-        m[3][3] = m[4][4] = m[5][5] = shear;
+        Str& stress = stresses[i][0];
+        const Str& strain = strains[i][0];
+
+        stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
+        stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
+        stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
+        stress[3] = shear * strain[3];
+        stress[4] = shear * strain[4];
+        stress[5] = shear * strain[5];
+
+
+        if( stressStrainMatrices != NULL )
+        {
+            StrStr&  m = (*stressStrainMatrices)[i];
+            m.fill(0);
+            m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
+            m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
+            m[3][3] = m[4][4] = m[5][5] = shear;
+        }
     }
 }
 

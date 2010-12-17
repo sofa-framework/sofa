@@ -180,36 +180,44 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
     }
 }
 
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecStrStr* stressStrainMatrices, const VecStrain10& strains, const VecStrain10& /*strainRates*/, const VecMaterialCoord& /*point*/  )
+{
+    for( unsigned i=0; i<stresses.size(); i++ )
+    {
+        for(unsigned j=0; j<10; j++ )
+        {
+            Str& stress = stresses[i][j];
+            const Str& strain = strains[i][j];
+
+            Real stressDiagonal, stressOffDiagonal, shear;
+            Real poissonRatio=0.3;
+
+            Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+            stressDiagonal = f * (1 - poissonRatio);
+            stressOffDiagonal = poissonRatio * f;
+            shear = f * (1 - 2 * poissonRatio) /2;
+
+            stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
+            stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
+            stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
+            stress[3] = shear * strain[3];
+            stress[4] = shear * strain[4];
+            stress[5] = shear * strain[5];
 
 
-//            // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
-//            template<class MaterialTypes>
-//            void GridMaterial< MaterialTypes>::computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& /*strainRate*/,  const VecCoord& /*points*/ )
-//            {
-//                Real stressDiagonal, stressOffDiagonal, shear;
-//                Real poissonRatio=0.3;
-//
-//                Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
-//                stressDiagonal = f * (1 - poissonRatio);
-//                stressOffDiagonal = poissonRatio * f;
-//                shear = f * (1 - 2 * poissonRatio) /2;
-//
-//                stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
-//                stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
-//                stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
-//                stress[3] = shear * strain[3];
-//                stress[4] = shear * strain[4];
-//                stress[5] = shear * strain[5];
-//
-//
-//                if( stressStrainMatrix != NULL ){
-//                    StrStr&  m = *stressStrainMatrix;
-//                    m.fill(0);
-//                    m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
-//                    m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
-//                    m[3][3] = m[4][4] = m[5][5] = shear;
-//                }
-//            }
+            if( stressStrainMatrices != NULL )
+            {
+                StrStr&  m = (*stressStrainMatrices)[i];
+                m.fill(0);
+                m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
+                m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
+                m[3][3] = m[4][4] = m[5][5] = shear;
+            }
+        }
+    }
+}
 
 
 

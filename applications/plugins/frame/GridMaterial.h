@@ -126,11 +126,15 @@ public:
     typedef DeformationGradientTypes<3,3,2,Real> D332;
     typedef typename CStrain<D332,true>::Strain Strain4;
     typedef vector<Strain4> VecStrain4;
+    typedef DeformationGradientTypes<3,3,2,Real> D332;
+    typedef typename CStrain<D332,false>::Strain Strain10;
+    typedef vector<Strain10> VecStrain10;
 
     /** \brief Compute stress based on local strain and strain rate at each point.
     */
-    virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrix, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point );
-    virtual void computeStress  ( VecStrain4& stress, VecStrStr* stressStrainMatrix, const VecStrain4& strain, const VecStrain4& strainRate, const VecMaterialCoord& point );
+    virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrices, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point );
+    virtual void computeStress  ( VecStrain4& stress, VecStrStr* stressStrainMatrices, const VecStrain4& strain, const VecStrain4& strainRate, const VecMaterialCoord& point );
+    virtual void computeStress  ( VecStrain10& stress, VecStrStr* stressStrainMatrices, const VecStrain10& strain, const VecStrain10& strainRate, const VecMaterialCoord& point );
 
 //    virtual void computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& strainRate, const VecCoord& points );
 
