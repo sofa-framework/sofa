@@ -59,13 +59,14 @@ using helper::ReadAccessor;
 
 template <class TOut>
 SampleData<TOut>::SampleData ()
-    : f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
+    : f_materialPoints ( initData ( &f_materialPoints,"materialPoints","Coordinates of the samples in object space" ) )
 {
 }
 
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to ), SampleData<TOut>()
+    , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
     , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
@@ -290,10 +291,16 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     for ( unsigned int i=0;i<num_points;i++ )
     	for ( unsigned int j=0;j<num_spatial_dimensions;j++ )
     		points[i][j]= xto0[i][j];*/
-    num_points=0; vector<SpatialCoord> points;
+    num_points=0;
+    vector<MaterialCoord> p(num_points);
+    WriteAccessor<Data<typename MaterialTraits<typename Out::Coord>::VecMaterialCoord> >  points(this->f_materialPoints);
 
     // Insert new samples
-    gridMaterial->computeUniformSampling(points,targetSampleNumber.getValue());
+
+    gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
+    points.resize(p.size());
+    for(unsigned i=0; i<p.size(); i++ )
+        points[i] = p[i];
     //gridMaterial->computeRegularSampling(points,3);
 
     std::cout<<"Inserting "<<points.size()-xto0.size()<<" gauss points..."<<std::endl;
@@ -450,32 +457,31 @@ void FrameBlendingMapping<TIn, TOut>::LumpVolumes ( )
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
 
-    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
-    if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
-
-    this->sampleInteg.resize(out.size());
-    for(unsigned int i=0; i<out.size(); i++)
-        this->sampleInteg[i].clear();
-
-    SpatialCoord point;
-
-    for(unsigned int i=0; i<out.size(); i++) // treat each sample
-    {
-        Out::get(point[0],point[1],point[2], out[i]) ;
-        if(gridMaterial)
-        {
-            vector<InReal> moments;
-            gridMaterial->lumpMomentsStiffness(point,VecIntegOrder,moments);
-            for(unsigned int j=0; j<moments.size() && j<this->sampleInteg[i].size() ; j++)
-            {
-                this->sampleInteg[i][j]=moments[j];
-            }
-        }
-        else
-        {
-            this->sampleInteg[i][0]=1; // default value for the volume when model vertices are used as gauss points
-        }
-    }
+//                unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
+//                if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
+//
+//                this->sampleInteg.resize(out.size());
+//                for(unsigned int i=0;i<out.size();i++)
+//                    this->sampleInteg[i].clear();
+//
+//                SpatialCoord point;
+//
+//                for(unsigned int i=0;i<out.size();i++) // treat each sample
+//                {
+//                    Out::get(point[0],point[1],point[2], out[i]) ;
+//                    if(gridMaterial)
+//                    {
+//                        vector<InReal> moments;
+//                        gridMaterial->lumpMomentsStiffness(point,VecIntegOrder,moments);
+//                        for(unsigned int j=0;j<moments.size() && j<this->sampleInteg[i].size() ;j++) {
+//                            this->sampleInteg[i][j]=moments[j];
+//                        }
+//                    }
+//                    else
+//                    {
+//                        this->sampleInteg[i][0]=1; // default value for the volume when model vertices are used as gauss points
+//                    }
+//                }
 
     //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<sampleInteg[i]<<std::endl;
 }

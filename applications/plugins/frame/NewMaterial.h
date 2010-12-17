@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include "initFrame.h"
-//#include "DeformationGradientTypes.h"
+#include "DeformationGradientTypes.h"
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -55,6 +55,8 @@ public:
 
     typedef TMaterialTypes MaterialTypes;
     typedef typename MaterialTypes::Real Real;          ///< Real
+    typedef typename MaterialTypes::Coord MaterialCoord;
+    typedef vector<MaterialCoord> VecMaterialCoord;
     typedef Vec<6,Real> Str;            ///< Strain or stress tensor
     typedef vector<Str> VecStr;      ///< Vector of strain or stress tensors
     //typedef Mat<6,10,Real> El2Str;            ///< second-order Elaston strain or stress
@@ -64,9 +66,13 @@ public:
 
     virtual ~Material() {}
 
+    typedef DeformationGradientTypes<3,3,1,Real> D331;
+    typedef typename CStrain<D331,true>::Strain Strain1;
+    typedef vector<Strain1> VecStrain1;
+
     /** \brief Compute stress based on local strain and strain rate at each point.
     */
-    virtual void computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& strainRate );
+    virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrix, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point ) {}
 //    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
 
 
@@ -126,6 +132,7 @@ struct MaterialTypes
     typedef R Real;
     static const int N=N_ ;  ///< Number of parameters of the material coordinates
     static const int StrDim = N*(N+1)/2;             ///< Number of independent entries in the symmetric DxD strain tensor
+    typedef Vec<N,Real> Coord;
 
 //    typedef defaulttype::Vec<StrDim,R> Str;       ///< Strain or stress tensor in Voigt (i.e. vector) notation
 //    typedef helper::vector<Str> VecStr;

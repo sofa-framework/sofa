@@ -30,17 +30,47 @@ CorotationalForceField<DataTypes>::~CorotationalForceField()
 template <class DataTypes>
 void CorotationalForceField<DataTypes>::init()
 {
+    Inherit1::init();
     core::objectmodel::BaseContext* context = this->getContext();
-    material = context->get<Material>();
-    if( material==NULL )
-    {
-        cerr<<"CorotationalForceField<DataTypes>::init(), material not found"<< endl;
-    }
     sampleData = context->get<SampleData>();
     if( sampleData==NULL )
     {
         cerr<<"CorotationalForceField<DataTypes>::init(), material not found"<< endl;
     }
+
+
+
+    material = context->get<Material>();
+    if( material==NULL )
+    {
+        cerr<<"CorotationalForceField<DataTypes>::init(), material not found"<< endl;
+    }
+
+
+    ReadAccessor<Data<VecCoord> > out (*this->getMState()->read(core::ConstVecCoordId::restPosition()));
+
+    this->sampleInteg.resize(out.size());
+
+
+    for(unsigned int i=0; i<out.size(); i++) // treat each sample
+    {
+        typename DataTypes::SpatialCoord point;
+        DataTypes::get(point[0],point[1],point[2], out[i]) ;
+        if(material)
+        {
+            vector<Real> moments;
+            material->lumpMomentsStiffness(point,StrainType::strain_order,moments);
+            for(unsigned int j=0; j<moments.size() && j<this->sampleInteg[i].size() ; j++)
+            {
+                this->sampleInteg[i][j]=moments[j];
+            }
+        }
+        else
+        {
+            this->sampleInteg[i][0]=1; // default value for the volume when model vertices are used as gauss points
+        }
+    }
+
 
 }
 
@@ -51,6 +81,8 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     ReadAccessor<DataVecCoord> x(_x);
     ReadAccessor<DataVecDeriv> v(_v);
     WriteAccessor<DataVecDeriv> f(_f);
+    ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
+    stressStrainMatrices.resize(out.size());
     rotation.resize(x.size());
     strain.resize(x.size());
     strainRate.resize(x.size());
@@ -61,38 +93,10 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     {
         StrainType::getStrain(x[i], strain[i], rotation[i]);
         StrainType::getStrainRate(v[i], strainRate[i], rotation[i]);
-        //x[i].getCorotationalStrain( rotation[i], strain[i] );
-        //v[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
     }
+    material->computeStress( stress, &stressStrainMatrices, strain, strainRate, out.ref() );
 
-    // compute stresses
-    for(unsigned i=0; i<x.size(); i++)
-        for(unsigned j=0; j<x[i].size(); j++)
-            material->computeStress(stress[i][j], NULL, strain[i][j], strainRate[i][j] );
-
-// compute strain energy (necessary ??)
-//double U=0;
-//for(unsigned i=0; i<x.size(); i++)
-//	{
-//	integVec=StrainType::multTranspose(strain[i] , stress[i] );
-//	for(unsigned j=0; j<strainenergy_size; j++) U+= integVec[j] * (sampleData[i].sampleInteg)[j] * 0.5;
-//	}
-
-    // integrate force in volume
-    //for(unsigned i=0; i<x.size(); i++)
-    //	{
-    //	for(unsigned dof=0; dof< ; dof++)
-    //	}
-
-    // compute stresses integrated over the volumes of the samples
-//                material->computeStress(stress,strain,strainRate,sampleData->sampleInteg);
-
-    // convert vector form to matrix form
-    //for(unsigned i=0; i<x.size(); i++)
-    //{
-    //    f[i].setStress(stress[i]);
-    //}
-
+    // Todo: integrate and compute frame
 
 }
 
@@ -108,17 +112,9 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     for(unsigned i=0; i<dx.size(); i++)
     {
         StrainType::getStrainRate(dx[i], strainRate[i], rotation[i]);
-        //dx[i].getCorotationalStrainRate( strainRate[i], rotation[i] );
     }
 
-    //// compute stress changes integrated over the volumes of the samples
-    //material->computeStressChange(stressChange,strainChange,sampleData->sampleIntegVector);
-
-    //// convert vector form to matrix form
-    //for(unsigned i=0; i<dx.size(); i++)
-    //{
-    //    df[i].setStress(stressChange[i]);
-    //}
+    // Todo: apply stiffness matrix and integration factors, compute frame
 }
 
 }

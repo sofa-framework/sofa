@@ -71,7 +71,8 @@ public:
 
     typedef Material<TMaterialTypes> Inherited;
     typedef typename Inherited::Real Real;        ///< Scalar values.
-    typedef vector<Real> VecReal;
+    typedef typename Inherited::MaterialCoord MaterialCoord;
+    typedef typename Inherited::VecMaterialCoord VecMaterialCoord;
     typedef typename Inherited::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
     //typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
@@ -118,7 +119,20 @@ public:
     virtual void init();
 
 
-    virtual void computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& strainRate );
+
+    typedef DeformationGradientTypes<3,3,1,Real> D331;
+    typedef typename CStrain<D331,true>::Strain Strain1;
+    typedef vector<Strain1> VecStrain1;
+    typedef DeformationGradientTypes<3,3,2,Real> D332;
+    typedef typename CStrain<D332,true>::Strain Strain4;
+    typedef vector<Strain4> VecStrain4;
+
+    /** \brief Compute stress based on local strain and strain rate at each point.
+    */
+    virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrix, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point );
+    virtual void computeStress  ( VecStrain4& stress, VecStrStr* stressStrainMatrix, const VecStrain4& strain, const VecStrain4& strainRate, const VecMaterialCoord& point );
+
+//    virtual void computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& strainRate, const VecCoord& points );
 
     ///// implementation of the abstract function
     //virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );

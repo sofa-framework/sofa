@@ -59,21 +59,16 @@ using defaulttype::DeformationGradient;
 using defaulttype::CStrain;
 
 
-//            template<class Coord> struct DeformationTraits
-//            {
-////                typedef typename Coord::StrainEnergy SampleIntegVector;
-//			    static const unsigned typename defaulttype::CStrain<Coord ,false>::strainenergy_order  VecIntegOrder; // =0 for order 1 def gradients ; =4 for order 2 deformation gradients  (by default as we don't know if corotational strain is used)
-//			    typedef typename defaulttype::CStrain<Coord ,false>::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
-//
-//            };
-//
-////            template<>
-//            template<class R>
-//            struct DeformationTraits< Vec<3,R> > {
-//               // typedef Vec<0,R> VecInteg;  // rien du tout, on ne calcule pas de déformation sur des points
-//				typedef Vec<1,R> VecInteg; // cannot have 0 sized vector (compilation error on windows)
-//				typedef 0 VecIntegOrder; // cannot have 0 sized vector (compilation error on windows)
-//			};
+template<class Coord> struct MaterialTraits
+{
+    typedef typename Coord::VecMaterialCoord VecMaterialCoord;
+};
+
+template<class R>
+struct MaterialTraits< Vec<3,R> >
+{
+    typedef vector<Vec<3,R> > VecMaterialCoord;
+};
 
 
 template<class TOut>
@@ -82,20 +77,9 @@ class SampleData : public  virtual core::objectmodel::BaseObject
 public:
     // Output types
     typedef TOut Out;
-    static const unsigned num_spatial_dimensions=Out::spatial_dimensions;
-    typedef typename Out::VecCoord VecOutCoord;
-    typedef typename Out::VecDeriv VecOutDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::MatrixDeriv OutMatrixDeriv;
-    typedef typename Out::Real Real;
+    typedef typename MaterialTraits<typename Out::Coord>::VecMaterialCoord VecMaterialCoord;
 
-    typedef defaulttype::CStrain<Out,false> strainType;
-    static const unsigned VecIntegOrder=strainType::strainenergy_order  ; // =0 for order 1 def gradients ; =4 for order 2 deformation gradients  (by default as we don't know if corotational strain is used)
-    typedef typename strainType::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
-
-    Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
-    vector< VecInteg > sampleInteg;
+    Data<VecMaterialCoord> f_materialPoints;
 
     SampleData();
 
@@ -136,6 +120,7 @@ public:
     typedef GridMaterial<materialType> GridMat;
     static const unsigned num_material_dimensions = GridMat::num_material_dimensions;
     typedef typename GridMat::Coord  MaterialCoord;
+    typedef vector<MaterialCoord>  VecMaterialCoord;
     typedef typename GridMat::SCoord  SpatialCoord;
     typedef typename GridMat::SGradient  MaterialDeriv;
     typedef typename GridMat::SHessian  MaterialMat;
@@ -180,6 +165,7 @@ protected:
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
+    Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
     Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.
 
     Data< vector<Vec<nbRef,InReal> > >       weight;
