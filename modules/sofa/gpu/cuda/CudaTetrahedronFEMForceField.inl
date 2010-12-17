@@ -788,7 +788,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     { return true; }						       \
     template<> void TetrahedronFEMForceField< T >::reinit() \
     { data.reinit(this); } \
-    template<> void TetrahedronFEMForceField< T >::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams) \
+    template<> void TetrahedronFEMForceField< T >::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /*mparams*/) \
     { \
 		VecDeriv& f = *d_f.beginEdit(); \
 		const VecCoord& x = d_x.getValue(); \

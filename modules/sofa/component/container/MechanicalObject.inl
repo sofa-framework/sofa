@@ -729,7 +729,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
         {
             for (unsigned int j = 0; j < coordDim; j++)
             {
-                Real tmp;
+                Real tmp = (Real)0.0;
                 DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
                 dest->set(offset + i * coordDim + j, tmp);
             }
@@ -807,7 +807,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
         {
             for (unsigned int j = 0; j < coordDim; j++)
             {
-                Real tmp;
+                Real tmp = (Real)0.0;
                 DataTypeInfo<Coord>::getValue(vSrc[i], j, tmp);
                 dest->add(offset + i * coordDim + j, tmp);
             }

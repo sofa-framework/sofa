@@ -1183,7 +1183,11 @@ Visitor::Result MechanicalPropagatePositionVisitor::fwdProjectiveConstraintSet(s
 }
 
 
+#ifdef SOFA_SUPPORT_MAPPED_MASS
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+#else
+Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+#endif
 {
     //mm->setX(x);
     //mm->setV(v);

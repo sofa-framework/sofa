@@ -33,6 +33,8 @@
 #include "DeformationGradientTypes.h"
 #include <sofa/core/Mapping.h>
 
+#include "QuadraticTypes.h"
+#include "AffineTypes.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/SVector.h>
@@ -202,6 +204,10 @@ public:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Affine3dTypes;
+using sofa::defaulttype::Affine3fTypes;
+using sofa::defaulttype::Quadratic3dTypes;
+using sofa::defaulttype::Quadratic3fTypes;
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
