@@ -78,27 +78,27 @@ template<int N, class R > Mat<N,N,R> diag( const R& d )
 }
 */
 
-template<class _Real1, class _Real2, int Dim>
-inline Mat<Dim, Dim, _Real1> covNN(const Vec<Dim,_Real1>& v1, const Vec<Dim,_Real2>& v2)
+template<class Real, int Dim>
+inline Mat<Dim, Dim, Real> covNN(const Vec<Dim,Real>& v1, const Vec<Dim,Real>& v2)
 {
-    Mat<Dim, Dim, _Real1> res;
+    Mat<Dim, Dim, Real> res;
     for ( unsigned int i = 0; i < Dim; ++i)
         for ( unsigned int j = i; j < Dim; ++j)
         {
-            res[i][j] = (_Real1)(v1[i] * v2[j]);
+            res[i][j] = v1[i] * v2[j];
             res[j][i] = res[i][j];
         }
     return res;
 }
 
-template<class _Real1, class _Real2, int Dim1, int Dim2>
-inline Mat<Dim1, Dim2, _Real1> covMN(const Vec<Dim1,_Real1>& v1, const Vec<Dim2,_Real2>& v2)
+template<class Real, int Dim1, int Dim2>
+inline Mat<Dim1, Dim2, Real> covMN(const Vec<Dim1,Real>& v1, const Vec<Dim2,Real>& v2)
 {
-    Mat<Dim1, Dim2, _Real1> res;
+    Mat<Dim1, Dim2, Real> res;
     for ( unsigned int i = 0; i < Dim1; ++i)
         for ( unsigned int j = i; j < Dim2; ++j)
         {
-            res[i][j] = (_Real1)(v1[i] * v2[j]);
+            res[i][j] = v1[i] * v2[j];
             res[j][i] = res[i][j];
         }
     return res;
