@@ -130,6 +130,8 @@ public:
     //typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
     typedef typename Inherited::StrStr StrStr;      ///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
+    typedef typename Inherited::VecStrain1 VecStrain1;
+    typedef typename Inherited::VecMaterialCoord VecMaterialCoord;
 
     HookeMaterial3();
     virtual ~HookeMaterial3() {}

@@ -126,7 +126,6 @@ public:
     typedef DeformationGradientTypes<3,3,2,Real> D332;
     typedef typename CStrain<D332,true>::Strain Strain4;
     typedef vector<Strain4> VecStrain4;
-    typedef DeformationGradientTypes<3,3,2,Real> D332;
     typedef typename CStrain<D332,false>::Strain Strain10;
     typedef vector<Strain10> VecStrain10;
 
