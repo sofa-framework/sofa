@@ -1170,6 +1170,7 @@ template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGra
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
+template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331fTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
 template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes >;
 //template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, ExtVec3dTypes >;
