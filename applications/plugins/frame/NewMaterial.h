@@ -69,11 +69,44 @@ public:
     typedef DeformationGradientTypes<3,3,1,Real> D331;
     typedef typename CStrain<D331,true>::Strain Strain1;
     typedef vector<Strain1> VecStrain1;
+    typedef DeformationGradientTypes<3,3,2,Real> D332;
+    typedef typename CStrain<D332,true>::Strain Strain4;
+    typedef vector<Strain4> VecStrain4;
+    typedef typename CStrain<D332,false>::Strain Strain10;
+    typedef vector<Strain10> VecStrain10;
 
     /** \brief Compute stress based on local strain and strain rate at each point.
     */
-    virtual void computeStress  ( VecStrain1& /*stresses*/, VecStrStr* /*stressStrainMatrices*/, const VecStrain1& /*strains*/, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/ ) {}
-//    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
+    virtual bool computeVolumeIntegrationFactors(const MaterialCoord& point,const unsigned int order,vector<Real>& moments)=0;
+    virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrices, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point )=0;
+    virtual void computeStressChange  ( VecStrain1& stressChange, const VecStrain1& strainChange, const VecMaterialCoord& point )=0;
+    virtual void computeStress  ( VecStrain4& stress, VecStrStr* stressStrainMatrices, const VecStrain4& strain, const VecStrain4& strainRate, const VecMaterialCoord& point )=0;
+    virtual void computeStressChange  ( VecStrain4& stressChange, const VecStrain4& strainChange, const VecMaterialCoord& point )=0;
+    virtual void computeStress  ( VecStrain10& stress, VecStrStr* stressStrainMatrices, const VecStrain10& strain, const VecStrain10& strainRate, const VecMaterialCoord& point )=0;
+    virtual void computeStressChange  ( VecStrain10& stressChange, const VecStrain10& strainChange, const VecMaterialCoord& point )=0;
+
+    inline Str hookeStress  ( const Str& strain, Real stressDiagonal, Real stressOffDiagonal, Real shear  ) const
+    {
+        return Str(
+                stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2],
+                stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2],
+                stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2],
+                shear * strain[3],
+                shear * strain[4],
+                shear * strain[5]
+                );
+    }
+
+    inline void fillHookeMatrix  ( StrStr& m, Real stressDiagonal, Real stressOffDiagonal, Real shear  ) const
+    {
+        m.fill(0);
+        m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
+        m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
+        m[3][3] = m[4][4] = m[5][5] = shear;
+    }
+
+
+    //    virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
 
 
 //    /** \brief Compute stress based on local strain and strain rate at each point.

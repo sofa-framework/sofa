@@ -107,34 +107,24 @@ template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
 
+    Real stressDiagonal, stressOffDiagonal, shear;
+    Real poissonRatio=0.3;
+
+    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+    stressDiagonal = f * (1 - poissonRatio);
+    stressOffDiagonal = poissonRatio * f;
+    shear = f * (1 - 2 * poissonRatio) /2;
+
     for( unsigned i=0; i<stresses.size(); i++ )
     {
         Str& stress = stresses[i][0];
         const Str& strain = strains[i][0];
 
-        Real stressDiagonal, stressOffDiagonal, shear;
-        Real poissonRatio=0.3;
-
-        Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
-        stressDiagonal = f * (1 - poissonRatio);
-        stressOffDiagonal = poissonRatio * f;
-        shear = f * (1 - 2 * poissonRatio) /2;
-
-        stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
-        stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
-        stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
-        stress[3] = shear * strain[3];
-        stress[4] = shear * strain[4];
-        stress[5] = shear * strain[5];
-
+        stress = hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
 
         if( stressStrainMatrices != NULL )
         {
-            StrStr&  m = (*stressStrainMatrices)[i];
-            m.fill(0);
-            m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
-            m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
-            m[3][3] = m[4][4] = m[5][5] = shear;
+            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
         }
     }
 }
@@ -145,6 +135,14 @@ template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStrStr* stressStrainMatrices, const VecStrain4& strains, const VecStrain4& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
 
+    Real stressDiagonal, stressOffDiagonal, shear;
+    Real poissonRatio=0.3;
+
+    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+    stressDiagonal = f * (1 - poissonRatio);
+    stressOffDiagonal = poissonRatio * f;
+    shear = f * (1 - 2 * poissonRatio) /2;
+
     for( unsigned i=0; i<stresses.size(); i++ )
     {
         for(unsigned j=0; j<4; j++ )
@@ -152,29 +150,11 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
             Str& stress = stresses[i][j];
             const Str& strain = strains[i][j];
 
-            Real stressDiagonal, stressOffDiagonal, shear;
-            Real poissonRatio=0.3;
-
-            Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
-            stressDiagonal = f * (1 - poissonRatio);
-            stressOffDiagonal = poissonRatio * f;
-            shear = f * (1 - 2 * poissonRatio) /2;
-
-            stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
-            stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
-            stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
-            stress[3] = shear * strain[3];
-            stress[4] = shear * strain[4];
-            stress[5] = shear * strain[5];
-
+            stress = hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
 
             if( stressStrainMatrices != NULL )
             {
-                StrStr&  m = (*stressStrainMatrices)[i];
-                m.fill(0);
-                m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
-                m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
-                m[3][3] = m[4][4] = m[5][5] = shear;
+                fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
             }
         }
     }
@@ -184,6 +164,14 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecStrStr* stressStrainMatrices, const VecStrain10& strains, const VecStrain10& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
+    Real stressDiagonal, stressOffDiagonal, shear;
+    Real poissonRatio=0.3;
+
+    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+    stressDiagonal = f * (1 - poissonRatio);
+    stressOffDiagonal = poissonRatio * f;
+    shear = f * (1 - 2 * poissonRatio) /2;
+
     for( unsigned i=0; i<stresses.size(); i++ )
     {
         for(unsigned j=0; j<10; j++ )
@@ -191,30 +179,76 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecSt
             Str& stress = stresses[i][j];
             const Str& strain = strains[i][j];
 
-            Real stressDiagonal, stressOffDiagonal, shear;
-            Real poissonRatio=0.3;
-
-            Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
-            stressDiagonal = f * (1 - poissonRatio);
-            stressOffDiagonal = poissonRatio * f;
-            shear = f * (1 - 2 * poissonRatio) /2;
-
-            stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
-            stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
-            stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
-            stress[3] = shear * strain[3];
-            stress[4] = shear * strain[4];
-            stress[5] = shear * strain[5];
-
+            stress = hookeStress( strain, stressDiagonal, stressOffDiagonal, shear );
 
             if( stressStrainMatrices != NULL )
             {
-                StrStr&  m = (*stressStrainMatrices)[i];
-                m.fill(0);
-                m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
-                m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
-                m[3][3] = m[4][4] = m[5][5] = shear;
+                fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
             }
+        }
+    }
+}
+
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, const VecStrain1& strains, const VecMaterialCoord& /*point*/  )
+{
+    Real stressDiagonal, stressOffDiagonal, shear;
+    Real poissonRatio=0.3;
+
+    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+    stressDiagonal = f * (1 - poissonRatio);
+    stressOffDiagonal = poissonRatio * f;
+    shear = f * (1 - 2 * poissonRatio) /2;
+
+    for( unsigned i=0; i<stresses.size(); i++ )
+    {
+        for(unsigned j=0; j<1; j++ )
+        {
+
+            stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
+        }
+    }
+}
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, const VecStrain4& strains, const VecMaterialCoord& /*point*/  )
+{
+    Real stressDiagonal, stressOffDiagonal, shear;
+    Real poissonRatio=0.3;
+
+    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+    stressDiagonal = f * (1 - poissonRatio);
+    stressOffDiagonal = poissonRatio * f;
+    shear = f * (1 - 2 * poissonRatio) /2;
+
+    for( unsigned i=0; i<stresses.size(); i++ )
+    {
+        for(unsigned j=0; j<4; j++ )
+        {
+
+            stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
+        }
+    }
+}
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses, const VecStrain10& strains, const VecMaterialCoord& /*point*/  )
+{
+    Real stressDiagonal, stressOffDiagonal, shear;
+    Real poissonRatio=0.3;
+
+    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
+    stressDiagonal = f * (1 - poissonRatio);
+    stressOffDiagonal = poissonRatio * f;
+    shear = f * (1 - 2 * poissonRatio) /2;
+
+    for( unsigned i=0; i<stresses.size(); i++ )
+    {
+        for(unsigned j=0; j<10; j++ )
+        {
+
+            stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
         }
     }
 }
@@ -526,7 +560,7 @@ bool GridMaterial< MaterialTypes>::lumpVolume(const SCoord& point,Real& vol)
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpMoments(const SCoord& point,const unsigned int order,vector<Real>& moments)
+bool GridMaterial< MaterialTypes>::computeVolumeIntegrationFactors(const SCoord& point,const unsigned int order,vector<Real>& moments)
 {
     if (!nbVoxels)
     {
@@ -578,7 +612,7 @@ bool GridMaterial< MaterialTypes>::lumpMomentsStiffness(const SCoord& point,cons
         moments.clear();
         return false;
     }
-    lumpMoments(point,order,moments);
+    computeVolumeIntegrationFactors(point,order,moments);
     unsigned int dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
 
     int index=getIndex(point);
@@ -601,7 +635,7 @@ bool GridMaterial< MaterialTypes>::lumpMomentsStiffness(const SCoord& point,cons
     unsigned int i,j;
     for (i=0; i<nbVoxels; i++)
         if (voronoi[i]==voronoi[index])
-            for (j=0; j<dim; j++) moments[j]*=getStiffness(grid.data()[i]);
+            for (j=0; j<dim; j++) moments[j]*=getStiffness(grid.data()[i]); // (ff) ???????????? not resolution-independent ??????
 
     return true;
 }
@@ -624,6 +658,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const SCoord& point,VR
     if(fitononevoxel)
     {
         for (i=0; i<nbRef; i++)
+        {
             if(f_weights[index][i]!=0)
             {
                 reps[i]=f_index[index][i];
@@ -636,6 +671,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const SCoord& point,VR
                 if(dw) (*dw)[i].fill(0);
                 if(ddw) (*ddw)[i].fill(0);
             }
+        }
     }
     else
     {

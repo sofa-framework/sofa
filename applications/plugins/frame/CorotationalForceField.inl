@@ -1,4 +1,5 @@
 #include "CorotationalForceField.h"
+#include "DeformationGradientTypes.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <iostream>
 using std::cerr;
@@ -59,7 +60,8 @@ void CorotationalForceField<DataTypes>::init()
         if(material)
         {
             vector<Real> moments;
-            material->lumpMomentsStiffness(point,StrainType::strain_order,moments);
+            //                        material->lumpMomentsStiffness(point,StrainType::strain_order,moments);
+            material->computeVolumeIntegrationFactors(point,StrainType::strain_order,moments);  // lumpMoments
             for(unsigned int j=0; j<moments.size() && j<this->sampleInteg[i].size() ; j++)
             {
                 this->sampleInteg[i][j]=moments[j];
@@ -83,7 +85,7 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     ReadAccessor<DataVecDeriv> v(_v);
     WriteAccessor<DataVecDeriv> f(_f);
     ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
-    stressStrainMatrices.resize(out.size());
+    stressStrainMatrices.resize(x.size());
     rotation.resize(x.size());
     strain.resize(x.size());
     strainRate.resize(x.size());
@@ -94,6 +96,11 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     {
         StrainType::apply(x[i], strain[i],&rotation[i]);
         StrainType::mult(v[i], strainRate[i],&rotation[i]);
+        if( this->f_printLog.getValue() )
+        {
+            cerr<<"CorotationalForceField<DataTypes>::addForce, deformation gradient = " << x[i] << endl;
+            cerr<<"CorotationalForceField<DataTypes>::addForce, strain = " << strain[i] << endl;
+        }
     }
     material->computeStress( stress, &stressStrainMatrices, strain, strainRate, out.ref() );
 
@@ -101,11 +108,16 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     for(unsigned i=0; i<x.size(); i++)
     {
         StrainType::addMultTranspose(f[i], x[i], stress[i], this->sampleInteg[i], &rotation[i]);
+        if( this->f_printLog.getValue() )
+        {
+            cerr<<"CorotationalForceField<DataTypes>::addForce, stress = " << stress[i] << endl;
+            cerr<<"CorotationalForceField<DataTypes>::addForce, stress deformation gradient form= " << f[i] << endl;
+        }
     }
 }
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* /*mparams*/)
+void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
 {
     ReadAccessor<DataVecCoord> dx(_dx);
     WriteAccessor<DataVecDeriv> df(_df);
@@ -117,16 +129,37 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     for(unsigned i=0; i<dx.size(); i++)
     {
         StrainType::mult(dx[i], strainRate[i]);
+        if( this->f_printLog.getValue() )
+        {
+            cerr<<"CorotationalForceField<DataTypes>::addDForce, deformation gradient change = " << dx[i] << endl;
+            cerr<<"CorotationalForceField<DataTypes>::addDForce, strain change = " << strainRate[i] << endl;
+            cerr<<"CorotationalForceField<DataTypes>::addDForce, stress deformation gradient change before accumulating = " << df[i] << endl;
+        }
     }
 
     // Todo: apply stiffness matrix and integration factors, compute frame
 
-    material->computeStress( stressChange, NULL, strain, strainRate, out.ref() );
+    material->computeStressChange( stressChange, strainRate, out.ref() );
+
+    // apply factor
+    Real kFactor = mparams->kFactor();
+    for(unsigned i=0; i<dx.size(); i++)
+    {
+        if( this->f_printLog.getValue() )
+        {
+            cerr<<"CorotationalForceField<DataTypes>::addDForce, stress change = " << stressChange[i] << endl;
+        }
+        StrainType::mult(stressChange[i], kFactor);
+    }
 
     // integrate and compute force
     for(unsigned i=0; i<dx.size(); i++)
     {
         StrainType::addMultTranspose(df[i], dx[i], stressChange[i], this->sampleInteg[i], &rotation[i]);
+        if( this->f_printLog.getValue() )
+        {
+            cerr<<"CorotationalForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << endl;
+        }
     }
 }
 

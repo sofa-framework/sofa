@@ -67,10 +67,10 @@ namespace material
 template<class MaterialTypes>
 HookeMaterial3<MaterialTypes>::HookeMaterial3()
     : youngModulus(initData(&youngModulus, (Real)1.0, "youngModulus", "Stiffness, typically denoted using symbol E"))
-    , poissonRatio(initData(&poissonRatio, (Real)0.3, "poissonRatio", "Volume conservation, typically denoted using symbol \nu. Should be positive and less than 0.5 in 3d, respectively 1 in 2d. 0 means no volume conservation and 0.5 (resp. 1) means perfect volume conservation. Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead."))
+    , poissonRatio(initData(&poissonRatio, (Real)0.0, "poissonRatio", "Volume conservation, typically denoted using symbol \nu. Should be positive and less than 0.5 in 3d, respectively 1 in 2d. 0 means no volume conservation and 0.5 (resp. 1) means perfect volume conservation. Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead."))
 {
-//                reinit();
-//                Inherited::reinit();
+    //                reinit();
+    //                Inherited::reinit();
 
 }
 
@@ -91,34 +91,100 @@ void HookeMaterial3<MaterialTypes>::reinit()
     Inherited::reinit();
 }
 
+
 // WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
 template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
     for(unsigned i=0; i<stresses.size(); i++)
     {
-        Str& stress = stresses[i][0];
-        const Str& strain = strains[i][0];
-
-        stress[0] = stressDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressOffDiagonal * strain[2];
-        stress[1] = stressOffDiagonal * strain[0] + stressDiagonal * strain[1] + stressOffDiagonal * strain[2];
-        stress[2] = stressOffDiagonal * strain[0] + stressOffDiagonal * strain[1] + stressDiagonal * strain[2];
-        stress[3] = shear * strain[3];
-        stress[4] = shear * strain[4];
-        stress[5] = shear * strain[5];
-
+        stresses[i][0] = hookeStress(strains[i][0], stressDiagonal, stressOffDiagonal,  shear);
 
         if( stressStrainMatrices != NULL )
         {
-            StrStr&  m = (*stressStrainMatrices)[i];
-            m.fill(0);
-            m[0][0] = m[1][1] = m[2][2] = stressDiagonal;
-            m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = stressOffDiagonal;
-            m[3][3] = m[4][4] = m[5][5] = shear;
+            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
         }
     }
 }
 
+
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStrStr* stressStrainMatrices, const VecStrain4& strains, const VecStrain4& /*strainRates*/, const VecMaterialCoord& /*point*/  )
+{
+    for(unsigned i=0; i<stresses.size(); i++)
+    {
+        for(unsigned j=0; j<4; j++)
+        {
+            stresses[i][j] = hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
+        }
+
+        if( stressStrainMatrices != NULL )
+        {
+            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+        }
+    }
+}
+
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain10& stresses, VecStrStr* stressStrainMatrices, const VecStrain10& strains, const VecStrain10& /*strainRates*/, const VecMaterialCoord& /*point*/  )
+{
+    for(unsigned i=0; i<stresses.size(); i++)
+    {
+        for(unsigned j=0; j<10; j++)
+        {
+            stresses[i][j] = hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
+        }
+
+        if( stressStrainMatrices != NULL )
+        {
+            fillHookeMatrix( (*stressStrainMatrices)[i], stressDiagonal, stressOffDiagonal,  shear );
+        }
+    }
+}
+
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain1& stressChanges, const VecStrain1& strainChanges, const VecMaterialCoord& /*point*/  )
+{
+    for(unsigned i=0; i<stressChanges.size(); i++)
+    {
+        stressChanges[i][0] = hookeStress(strainChanges[i][0], stressDiagonal, stressOffDiagonal,  shear);
+    }
+}
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain4& stressChanges, const VecStrain4& strainChanges, const VecMaterialCoord& /*point*/  )
+{
+    for(unsigned i=0; i<stressChanges.size(); i++)
+    {
+        for(unsigned j=0; j<4; j++)
+        {
+            stressChanges[i][j] = hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
+        }
+    }
+}
+// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain10& stressChanges, const VecStrain10& strainChanges, const VecMaterialCoord& /*point*/  )
+{
+    for(unsigned i=0; i<stressChanges.size(); i++)
+    {
+        for(unsigned j=0; j<10; j++)
+        {
+            stressChanges[i][j] = hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
+        }
+    }
+}
+
+template<class MaterialTypes>
+bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const MaterialCoord& point,const unsigned int order,vector<Real>& moments)
+{
+    moments.resize(1);
+    moments[0] = 1;
+    return true;
+}
 
 //// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
 //template<class MaterialTypes>

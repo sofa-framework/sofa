@@ -125,13 +125,18 @@ public:
 
     typedef typename Inherited::Real Real;        ///< Scalar values.
     typedef typename Inherited::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
-    typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
-    //typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
-    //typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
+    typedef typename Inherited::Strain1 Strain1;
+    typedef typename Inherited::VecStrain1 VecStrain1;
+    typedef typename Inherited::Strain4 Strain4;
+    typedef typename Inherited::VecStrain4 VecStrain4;
+    typedef typename Inherited::Strain10 Strain10;
+    typedef typename Inherited::VecStrain10 VecStrain10;
+
+//    typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
     typedef typename Inherited::StrStr StrStr;      ///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
-    typedef typename Inherited::VecStrain1 VecStrain1;
     typedef typename Inherited::VecMaterialCoord VecMaterialCoord;
+    typedef typename Inherited::MaterialCoord MaterialCoord;
 
     HookeMaterial3();
     virtual ~HookeMaterial3() {}
@@ -173,7 +178,13 @@ public:
 
 
     /// implementation of the abstract function
-    virtual void computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  );
+    bool computeVolumeIntegrationFactors(const MaterialCoord& point,const unsigned int order,vector<Real>& moments);
+    virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrices, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point );
+    virtual void computeStress  ( VecStrain4& stress, VecStrStr* stressStrainMatrices, const VecStrain4& strain, const VecStrain4& strainRate, const VecMaterialCoord& point );
+    virtual void computeStress  ( VecStrain10& stress, VecStrStr* stressStrainMatrices, const VecStrain10& strain, const VecStrain10& strainRate, const VecMaterialCoord& point );
+    virtual void computeStressChange  ( VecStrain1& stressChange, const VecStrain1& strainChange, const VecMaterialCoord& point );
+    virtual void computeStressChange  ( VecStrain4& stressChange, const VecStrain4& strainChange, const VecMaterialCoord& point );
+    virtual void computeStressChange  ( VecStrain10& stressChange, const VecStrain10& strainChange, const VecMaterialCoord& point );
     //virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
     //virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate );
 
