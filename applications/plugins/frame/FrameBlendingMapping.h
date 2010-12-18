@@ -161,8 +161,8 @@ protected:
     vector<frameMassType> frameMass;
 
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
+//                helper::ParticleMask* maskFrom;
+//                helper::ParticleMask* maskTo;
 
     Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
     Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.

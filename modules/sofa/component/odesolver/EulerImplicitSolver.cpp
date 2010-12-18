@@ -127,6 +127,9 @@ void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, 
 
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
 
+    if( verbose )
+        serr<<"EulerImplicitSolver start writing equation system "<<sendl;
+
     // compute the right-hand term of the equation system
     // accumulation through mappings is disabled as it will be done by addMBKv after all factors are computed
     mop.computeForce(b, true, false);             // b = f0

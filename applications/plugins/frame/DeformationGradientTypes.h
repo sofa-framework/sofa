@@ -53,13 +53,14 @@ using helper::vector;
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
 class DeformationGradient;
 
+
 template<class DeformationGradientType, bool _iscorotational>
 class CStrain;
 
 
 
 template<class DeformationGradientType, bool _iscorotational>
-class CStrain //< DeformationGradientType, _iscorotational>
+class CStrain
 {
 public:
     CStrain() { }
@@ -98,14 +99,15 @@ public:
 
     static StrainVec getStrainVec(  const MaterialFrame& f ) // convert assymetric matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, 2eyz=Fyz+Fzy, 2ezx=Fxz+Fzx, 2exy=Fxy+Fyx
     {
+//                cerr<<"static StrainVec getStrainVec, f = "<< f << endl;
         StrainVec s;
         unsigned ei=0;
         for(unsigned j=0; j<material_dimensions; j++)
         {
-            for( unsigned k=j; k<material_dimensions; k++ )
+            for( unsigned k=0; k<material_dimensions-j; k++ )
             {
-                s[ei] = f[j][k]+f[k][j];
-                if(j==k)  s[ei] *= 0.5;
+                s[ei] = f[k][k+j]+f[k+j][k];  // first diagonal, then second diagonal…
+                if(0==j)  s[ei] *= 0.5;
                 ei++;
             }
         }
@@ -118,10 +120,10 @@ public:
         unsigned ei=0;
         for(unsigned j=0; j<material_dimensions; j++)
         {
-            for( unsigned k=j; k<material_dimensions; k++ )
+            for( unsigned k=0; k<material_dimensions-j; k++ )
             {
-                f[k][j] = f[j][k] = s[ei] ;
-                if(j!=k) {f[k][j] *= 0.5; f[j][k] *= 0.5;}
+                f[k][k+j] = f[k+j][k] = s[ei] ;
+                if(0!=j) {f[k][k+j] *= 0.5; f[k+j][k] *= 0.5;}
                 ei++;
             }
         }
@@ -179,7 +181,14 @@ public:
         if(iscorotational)
         {
             // order 0: e = [R^T Fr + Fr^T R ]/2
-            strain[0] = getStrainVec( rotation->multTranspose(F.getMaterialFrame()) );
+            if(rotation!=NULL)
+            {
+                strain[0] = getStrainVec( rotation->multTranspose(F.getMaterialFrame()) );
+            }
+            else
+            {
+                strain[0] = getStrainVec( F.getMaterialFrame() );
+            }
 
             if(strain_order==0) return;
             // order 1 : de =  [R^T dFr + dFr^T R ]/2
@@ -220,12 +229,14 @@ public:
             //			dFj += R.dEi * sum dpidpj
 
             for(unsigned i=0; i<material_dimensions; i++)
+            {
                 for(unsigned j=i; i<material_dimensions; i++)
                 {
                     dF.getMaterialFrameGradient()[i] += si[j]*integ[ci];
                     if(i!=j) dF.getMaterialFrameGradient()[j] += si[i]*integ[ci];
                     ci++;
                 }
+            }
 
         }
         else // green-lagrange strain (order 0 or 2)
@@ -749,15 +760,15 @@ struct DeformationGradientTypes
     static const unsigned material_dimensions = _material_dimensions;
     static const unsigned order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient
     typedef _Real Real;
-//            static const unsigned NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
-//            static const unsigned VSize = spatial_dimensions +  NumMatrices * spatial_dimensions * spatial_dimensions;  // number of entries
+    //            static const unsigned NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
+    //            static const unsigned VSize = spatial_dimensions +  NumMatrices * spatial_dimensions * spatial_dimensions;  // number of entries
     typedef vector<Real> VecReal;
-//
+    //
     // ------------    Types and methods defined for easier data access
-//            typedef Vec<material_dimensions, Real> MaterialCoord;
-//            typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-//            typedef Mat<material_dimensions,spatial_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
-//            typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
+    //            typedef Vec<material_dimensions, Real> MaterialCoord;
+    //            typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
+    //            typedef Mat<material_dimensions,spatial_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
+    //            typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
 
 
     typedef DeformationGradient<spatial_dimensions,material_dimensions,order,Real> Coord;

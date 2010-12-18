@@ -75,7 +75,8 @@ public:
     //                typedef Vec<material_dimensions*(material_dimensions+1)/2> StrainVec;  ///< strain or stress in vector form
     //              typedef typename DataTypes::Coord::Strain Strain;    ///< Strain in vector form, and possibly its gradient, depending on the order of DataTypes
 
-    typedef material::GridMaterial<material::MaterialTypes<material_dimensions,Real> > Material;
+//                typedef material::GridMaterial<material::MaterialTypes<material_dimensions,Real> > Material;
+    typedef material::Material<material::MaterialTypes<material_dimensions,Real> > Material;
     typedef typename Material::StrStr StressStrainMatrix;
     typedef typename Material::VecMaterialCoord VecMaterialCoord;
 

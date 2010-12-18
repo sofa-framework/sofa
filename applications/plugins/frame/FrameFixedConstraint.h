@@ -58,7 +58,7 @@ public:
 //        typedef typename DataTypes::Coord Coord;
 //        typedef typename DataTypes::Deriv Deriv;
     static const unsigned dimensions = DataTypes::Deriv::total_size;
-    typedef Vec<dimensions, bool> VecAllowed;
+    typedef Vec<dimensions, int> VecAllowed;
 
 protected:
 

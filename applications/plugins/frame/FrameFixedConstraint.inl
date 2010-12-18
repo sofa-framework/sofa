@@ -119,31 +119,31 @@ void FrameFixedConstraint<DataTypes>::init()
     Inherit1::init();
 
 
-//  if (!topology)
-//    serr << "Can not find the topology." << sendl;
+    //  if (!topology)
+    //    serr << "Can not find the topology." << sendl;
 
     // Initialize functions and parameters
-//	topology::PointSubset my_subset = f_indices.getValue();
-//
-//	my_subset.setTestFunction(FCTestNewPointFunction);
-//	my_subset.setRemovalFunction(FCRemovalFunction);
-//
-//	my_subset.setTestParameter( (void *) this );
-//	my_subset.setRemovalParameter( (void *) this );
-//
-//
-//  unsigned int maxIndex=this->mstate->getSize();
-//  for (topology::PointSubset::iterator it = my_subset.begin();  it != my_subset.end(); )
-//  {
-//    topology::PointSubset::iterator currentIterator=it;
-//    const unsigned int index=*it;
-//    it++;
-//    if (index >= maxIndex)
-//    {
-//      serr << "Index " << index << " not valid!" << sendl;
-//      removeConstraint(index);
-//    }
-//  }
+    //	topology::PointSubset my_subset = f_indices.getValue();
+    //
+    //	my_subset.setTestFunction(FCTestNewPointFunction);
+    //	my_subset.setRemovalFunction(FCRemovalFunction);
+    //
+    //	my_subset.setTestParameter( (void *) this );
+    //	my_subset.setRemovalParameter( (void *) this );
+    //
+    //
+    //  unsigned int maxIndex=this->mstate->getSize();
+    //  for (topology::PointSubset::iterator it = my_subset.begin();  it != my_subset.end(); )
+    //  {
+    //    topology::PointSubset::iterator currentIterator=it;
+    //    const unsigned int index=*it;
+    //    it++;
+    //    if (index >= maxIndex)
+    //    {
+    //      serr << "Index " << index << " not valid!" << sendl;
+    //      removeConstraint(index);
+    //    }
+    //  }
 
 }
 
@@ -152,12 +152,16 @@ template <class DataTypes>
 void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, const core::MechanicalParams* /*mparams*/)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    for(unsigned i=0; i<res.size(); i++)
+    const vector<unsigned> & indices = f_index.getValue();
+    const vector<VecAllowed> & allowed = f_allowed.getValue();
+    cerr<<"FrameFixedConstraint<DataTypes>::projectResponse, indices = "<< indices << endl;
+    cerr<<"FrameFixedConstraint<DataTypes>::projectResponse, motion changes allowed = "<< allowed << endl;
+    for(unsigned i=0; i<indices.size(); i++)
     {
         for(unsigned j=0; j<dimensions; j++ )
         {
-//            res[i].getVec()[j] = 0;
-            res[i][j] = 0;
+            if( !allowed[i][j] )
+                res[indices[i]][j] = 0;
         }
     }
 
