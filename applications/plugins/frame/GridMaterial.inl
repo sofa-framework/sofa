@@ -848,23 +848,23 @@ bool GridMaterial< MaterialTypes>::interpolateWeights(const SCoord& point,Real& 
     // get weights of the underlying voxel
 
     // temporary: no interpolation
-    //int index=getIndex(point);
-    //if (index==-1 || weights.size()!=nbVoxels) {w=0; return false; } // point not in grid
-    //else {w=weights[index]; return true;}
+    int index=getIndex(point);
+    if (index==-1 || weights.size()!=nbVoxels) {w=0; return false; } // point not in grid
+    else {w=weights[index]; return true;}
 
-    Real wvox; 	SGradient dwvox;   SHessian ddwvox;
-    if(lumpWeights(point,false,wvox,&dwvox,&ddwvox))
-    {
-        // use 2d order Taylor serie to voxel center
-        GCoord ipvox; 	getiCoord(point,ipvox);
-        SCoord pvox; getCoord(ipvox,pvox);
-        SCoord u=point-pvox;
+    //           Real wvox; 	SGradient dwvox;   SHessian ddwvox;
+    //           if(lumpWeights(point,false,wvox,&dwvox,&ddwvox))
+    //           	{
+    //           	// use 2d order Taylor serie to voxel center
+    //           	GCoord ipvox; 	getiCoord(point,ipvox);
+    //           	SCoord pvox; getCoord(ipvox,pvox);
+    //           	SCoord u=point-pvox;
 
-        w=wvox+dot(dwvox,u)+dot(u,ddwvox*u)/2.;
-        if(w<0) w=0; else if(w>1) w=1;
-        return true;
-    }
-    else return false;
+    //           	w=wvox+dot(dwvox,u)+dot(u,ddwvox*u)/2.;
+    //if(w<0) w=0; else if(w>1) w=1;
+    //           	return true;
+    //           	}
+    //           else return false;
 }
 
 
@@ -1167,25 +1167,74 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 {
     if (!nbVoxels) return false;
 
-    unsigned int i,initial_num_points=points.size();
-    vector<int> indices;
+    unsigned int i,j,k,initial_num_points=points.size();
 
-    // identify regions with similar repartitions
-
+    // identify regions with similar repartitions and similar stiffness
     voronoi.resize(this->nbVoxels);
-    //for (i=0;i<this->nbVoxels;i++) {
-    //    distances[i]=distMax;
-    //    voronoi[i]=-1;
-    //}
+    for (i=0; i<this->nbVoxels; i++) voronoi[i]=-1;
+
+    vector<unsigned int> indices;
+    vector<Real> stiffnesses;
+
+    // insert initial points
+    for (i=0; i<initial_num_points; i++)
+    {
+        j=getIndex(points[i]);
+        if(grid.data()[j])
+        {
+            voronoi[j]=indices.size();
+            indices.push_back(j);
+            stiffnesses.push_back(getStiffness(grid.data()[j]));
+        }
+    }
+
+
+    // visit all voxels and insert new reps/stiffness if necessary
+    for (i=0; i<this->nbVoxels; i++)
+        if(grid.data()[i])
+        {
+            Real stiffness=getStiffness(grid.data()[i]);
+            k=-1;
+            for (j=0; j<indices.size() && k==-1; j++) // detect similar already inserted repartitions and stiffness
+                if(stiffnesses[j]==stiffness) if(areRepsSimilar(i,indices[j])) k=j;
+
+            if(k==-1)   // insert
+            {
+                voronoi[i]=indices.size();
+                indices.push_back(i);
+                stiffnesses.push_back(stiffness);
+            }
+            else voronoi[i]=k;
+        }
 
 
     // check linearity in each region
 
 
+    // insert gauss points
+    points.resize(indices.size());
+    for (i=initial_num_points; i<indices.size(); i++)     getCoord(indices[i],points[i]) ;
+
     std::cout<<"Added " << indices.size()-initial_num_points << " samples"<<std::endl;
     return true;
 }
 
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::areRepsSimilar(const unsigned int i1,const unsigned int i2)
+{
+    Vec<nbRef,bool> checked; checked.fill(false);
+    unsigned i,j;
+    for(i=0; i<nbRef; i++)
+        if(f_weights[i1][i])
+        {
+            j=0; while(j<nbRef && f_index[i1][i]!=f_index[i2][j]) j++;
+            if(j==nbRef) return false;
+            if(f_weights[i2][j]==0) return false;
+            checked[j]=true;
+        }
+    for(j=0; j<nbRef; j++) if(!checked[j] && f_weights[i2][j]!=0) return false;
+    return true;
+}
 
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecSCoord& points, const unsigned int step)

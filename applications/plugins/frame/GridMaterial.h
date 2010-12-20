@@ -344,6 +344,7 @@ protected:
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
     inline Real findWeightInRepartition(const unsigned int& pointIndex, const unsigned int& frameIndex);
+    inline bool areRepsSimilar(const unsigned int i1,const unsigned int i2);
 
     inline void accumulateCovariance(const SCoord& p,const unsigned int order,vector<vector<Real> >& Cov);
     inline void getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis);
