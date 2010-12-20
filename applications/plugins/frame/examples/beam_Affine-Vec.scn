@@ -14,7 +14,7 @@
 		<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
 		<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
 		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -81 [1 0 0, 0 1 0, 0 0 1] 0 0 81 [1 0 0, 0 1 0, 0 0 1]" />
-		<FrameDiagonalMass template="Affine" />
+		<FrameDiagonalMass template="AffineFrame3x12dMass" />
 
 		<Node name="Material">
 			<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
