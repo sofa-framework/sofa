@@ -94,13 +94,14 @@ struct MaterialTraits< Vec<3,R> >
 
 
 
-template<class TIn>
+template<class TIn, bool IsPhysical>
 class FrameData : public  virtual core::objectmodel::BaseObject
 {
 public:
     // Input types
     typedef TIn In;
     typedef typename In::Real InReal;
+    static const bool isPhysical = IsPhysical;
     static const unsigned num_spatial_dimensions=In::spatial_dimensions;
     enum {InVSize= defaulttype::InDataTypesInfo<In,InReal,num_spatial_dimensions>::VSize};
     typedef FrameMass<num_spatial_dimensions,InVSize,InReal> FrameMassType;
@@ -109,12 +110,10 @@ public:
 
     VecMass f_mass0;
     VecMass f_mass;
-    bool isPhysical;
 
     FrameData()
         : f_mass0 ( initData ( &f_mass0,"f_mass0","vector of lumped blocks of the mass matrix in the rest position." ) )
         , f_mass ( initData ( &f_mass,"f_mass","vector of lumped blocks of the mass matrix." ) )
-        , isPhysical(false)
     {
     }
     virtual void LumpMassesToFrames () = 0;

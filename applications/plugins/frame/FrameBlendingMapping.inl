@@ -58,7 +58,7 @@ using helper::ReadAccessor;
 
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
-    : Inherit ( from, to ), FrameData<TIn>(), SampleData<TOut>()
+    : Inherit ( from, to ), FData(), SampleData<TOut>()
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
@@ -102,9 +102,6 @@ FrameBlendingMapping<TIn, TOut>::~FrameBlendingMapping ()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::init()
 {
-    // Set isPhysical internal flag.
-    this->isPhysical = (defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > 0);
-
     // init samples and frames according to target numbers
     gridMaterial=NULL;
     this->getContext()->get( gridMaterial, core::objectmodel::BaseContext::SearchRoot);
