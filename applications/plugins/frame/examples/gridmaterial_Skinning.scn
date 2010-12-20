@@ -17,6 +17,7 @@
 		<MechanicalObject name="DOFs" template="Affine" useMask="1"  
 				position="0.8 0 0.3 [1 0 0, 0 1 0, 0 0 1] -0.15 0 0.2 [1 0 0, 0 1 0, 0 0 1]"  
 				/>
+		<FrameDiagonalMass template="AffineFrame3x12dMass" />
 
 		<Node name="Physics" showBehaviorModels="0">
 			<MechanicalObject name="Samples" template="DeformationGradient332"  />

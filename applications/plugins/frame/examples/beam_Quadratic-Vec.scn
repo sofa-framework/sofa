@@ -3,6 +3,7 @@
 	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
 	<Node name="Beam">
 		<MechanicalObject template="Quadratic" name="DOFs" rest_position="0 0 -100 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 100 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]" position="-15.9576 75.1434 -87.5906 [0.923678 -0.165519 0.76147 0 0 0 0 0 0,-2.97274 1.33488 -3.521 0 0 0 0 0 0,-0.0365298 0.0380386 0.947585 0 0 0 0 0 0] -13.0019 61.8854 184.424 [0.987649 -0.204468 -0.773124 0 0 0 0 0 0,-3.54108 1.50608 3.57802 0 0 0 0 0 0,0.164834 -0.0772495 0.793862 0 0 0 0 0 0]"/>
+		<FrameDiagonalMass template="QuadraticFrame3x30dMass" />
 		<Node name="TrianglesNode">
 			<MeshLoader name="MeshLoader"  filename="mesh/beam.obj" />
 			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />

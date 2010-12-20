@@ -4,6 +4,7 @@
 	<HookeMaterial3 template="Material3" />
 	<Node name="Beam">
 		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1.2 [1 0 0, 0 1 0, 0 0 1] "/>
+		<FrameDiagonalMass template="AffineFrame3x12dMass"/>
 		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0 0 0 0" />
 		<Node name="TrianglesNode">
 			<MechanicalObject template="DeformationGradient331" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
