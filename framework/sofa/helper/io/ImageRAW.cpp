@@ -114,9 +114,9 @@ bool ImageRAW::save(std::string filename, int)
     bool isWriteOk = true;
     if (headerSize > 0)
     {
-        isWriteOk = isWriteOk && fwrite(header, headerSize, 1, file) == headerSize;
+        isWriteOk = isWriteOk && fwrite(header, 1, headerSize, file) == headerSize;
     }
-    isWriteOk = isWriteOk && fwrite(getPixels(), getImageSize(), 1, file) == getImageSize();
+    isWriteOk = isWriteOk && fwrite(getPixels(), 1, getImageSize(), file) == getImageSize();
     fclose(file);
     return isWriteOk;
 }
