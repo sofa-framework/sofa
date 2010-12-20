@@ -1163,11 +1163,12 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& points, const Real tolerance)
+bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& points, const Real /*tolerance*/)
 {
     if (!nbVoxels) return false;
 
-    unsigned int i,j,k,initial_num_points=points.size();
+    unsigned int i,j,initial_num_points=points.size();
+    int k;
 
     // identify regions with similar repartitions and similar stiffness
     voronoi.resize(this->nbVoxels);
@@ -1195,7 +1196,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
         {
             Real stiffness=getStiffness(grid.data()[i]);
             k=-1;
-            for (j=0; j<indices.size() && k==-1; j++) // detect similar already inserted repartitions and stiffness
+            for (j=0; j<(unsigned int)indices.size() && k==-1; j++) // detect similar already inserted repartitions and stiffness
                 if(stiffnesses[j]==stiffness) if(areRepsSimilar(i,indices[j])) k=j;
 
             if(k==-1)   // insert

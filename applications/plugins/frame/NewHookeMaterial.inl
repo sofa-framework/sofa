@@ -179,7 +179,7 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain10& stressCh
 }
 
 template<class MaterialTypes>
-bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const MaterialCoord& point,const unsigned int order,vector<Real>& moments)
+bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const MaterialCoord& /*point*/,const unsigned int /*order*/,vector<Real>& moments)
 {
     moments.resize(1);
     moments[0] = 1;
