@@ -44,9 +44,10 @@
 #define SHOWVOXELS_DATAVALUE 1
 #define SHOWVOXELS_STIFFNESS 2
 #define SHOWVOXELS_DENSITY 3
-#define SHOWVOXELS_VORONOI 4
-#define SHOWVOXELS_DISTANCES 5
-#define SHOWVOXELS_WEIGHTS 6
+#define SHOWVOXELS_BULKMODULUS 4
+#define SHOWVOXELS_VORONOI 5
+#define SHOWVOXELS_DISTANCES 6
+#define SHOWVOXELS_WEIGHTS 7
 
 namespace sofa
 {
@@ -196,15 +197,6 @@ public:
 
 
     /*************************/
-    /* material properties	  */
-    /*************************/
-
-    // return the linearly interpolated value from the label/stiffness pairs
-    Real getStiffness(const voxelType label);
-    // return the linearly interpolated value from the label/density pairs
-    Real getDensity(const voxelType label);
-
-    /*************************/
     /*   draw	              */
     /*************************/
 
@@ -214,24 +206,24 @@ public:
     /*   Lumping			  */
     /*************************/
 
-    /// return mu_i.vol_i , p_i and weights of voxels in the voronoi region of point
-    bool getWeightedMasses(const SCoord& point, vector<VRef>& reps, vector<VRefReal>& w, VecSCoord& p,vector<Real>& masses);
-    /// return sum(mu_i.vol_i) in the voronoi region of point
-    bool lumpMass(const SCoord& point,Real& mass);
-    /// return sum(vol_i) in the voronoi region of point
-    bool lumpVolume(const SCoord& point,Real& vol);
-    /// return sum(Stiffness_i.(p_i-p)^(order).vol_i) in the voronoi region of point
-    bool computeVolumeIntegrationFactors(const SCoord& point,const unsigned int order,vector<Real>& moments);
-    /// return the repartited weights
-    bool lumpWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw=NULL,VRefHessian* ddw=NULL);
-    /// return the interpolated repartited weights
+    /// return mu_i.vol_i , p_i and weights of voxels in the voronoi region labeled 'sampleindex'
+    bool getWeightedMasses(const unsigned int sampleindex, vector<VRef>& reps, vector<VRefReal>& w, VecSCoord& p,vector<Real>& masses);
+    /// return sum(mu_i.vol_i) in the voronoi region labeled 'sampleindex'
+    bool lumpMass(const unsigned int sampleindex,Real& mass);
+    /// return sum(vol_i) in the voronoi region labeled 'sampleindex'
+    bool lumpVolume(const unsigned int sampleindex,Real& vol);
+    /// return sum(Stiffness_i.(p_i-p)^(order).vol_i) in the voronoi region labeled 'sampleindex' centered on point
+    bool computeVolumeIntegrationFactors(const unsigned int sampleindex,const SCoord& point,const unsigned int order,vector<Real>& moments);
+    /// return the weights of the voronoi region labeled 'sampleindex'
+    bool lumpWeightsRepartition(const unsigned int sampleindex,const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw=NULL,VRefHessian* ddw=NULL);
+    /// return the interpolated weights
     bool interpolateWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w);
 
     /*********************************/
     /*   Compute distances/weights   */
     /*********************************/
 
-    /// compute voxel weights according to 'distanceType' method -> stored in weightsRepartition and repartition
+    /// compute voxel weights related to 'points' according to 'distanceType' method -> stored in weightsRepartition and repartition
     bool computeWeights(const VecSCoord& points);
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation
     //  -> returns points and store id/distances in voronoi/distances
@@ -239,11 +231,9 @@ public:
     /// Regular sampling based on step size
     //  -> returns points and store id/distances in voronoi/distances
     bool computeRegularSampling ( VecSCoord& points, const unsigned int step);
-
     /// Identify regions where weights are linear up to the tolerance
     //  -> returns points and store id/distances in voronoi/distances
     bool computeLinearRegionsSampling ( VecSCoord& points, const Real tolerance);
-
 
 
     virtual std::string getTemplateName() const
@@ -272,13 +262,17 @@ protected:
     // material properties
     Data<mapLabelType> labelToStiffnessPairs;
     Data<mapLabelType> labelToDensityPairs;
-    // temporary values in grid
+    Data<mapLabelType> labelToBulkModulusPairs;
+
+    // temporary grid data
     vector<Real> distances;
     vector<int> voronoi;
     vector<Real> weights;
-    // repartitioned weights
-    vector<VRefReal> f_weights;
-    vector<VRef> f_index;
+
+    // voxel data
+    vector<VRefReal> v_weights;
+    vector<VRef> v_index;
+
 
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
 
@@ -295,6 +289,17 @@ protected:
     bool saveImage();
     bool loadWeightRepartion();
     bool saveWeightRepartion();
+
+    /*************************/
+    /* material properties	  */
+    /*************************/
+
+    // return the linearly interpolated value from the label/stiffness pairs
+    Real getStiffness(const voxelType label);
+    // return the linearly interpolated value from the label/density pairs
+    Real getDensity(const voxelType label);
+    // return the linearly interpolated value from the label/bulkModulus pairs
+    Real getBulkModulus(const voxelType label);
 
     /*********************************/
     /*   Compute distances/weights   */
@@ -325,8 +330,8 @@ protected:
     /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
     bool HeatDiffusion( const VecSCoord& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
 
-    /// fit 1st, 2d or 3d polynomial to the dense weight map in the dilated by 1 voxel voronoi region (usevoronoi=true) or 26 neighbors (usevoronoi=false) of point.
-    bool lumpWeights(const SCoord& point,const bool usevoronoi,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL);
+    /// fit 1st, 2d or 3d polynomial to the dense weight map in the region defined by indices
+    bool lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL,Real* meanerr=NULL,Real* maxerr=NULL);
     /// interpolate weights (and weight derivatives) in the dense weight map.
     bool interpolateWeights(const SCoord& point,Real& w);
 

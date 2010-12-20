@@ -60,17 +60,11 @@ void CorotationalForceField<DataTypes>::init()
         if(material)
         {
             vector<Real> moments;
-            //                        material->lumpMomentsStiffness(point,StrainType::strain_order,moments);
-            material->computeVolumeIntegrationFactors(point,StrainType::strain_order,moments);  // lumpMoments
+            material->computeVolumeIntegrationFactors(i,point,StrainType::strain_order,moments);  // lumpMoments
             for(unsigned int j=0; j<moments.size() && j<this->sampleInteg[i].size() ; j++)
-            {
                 this->sampleInteg[i][j]=moments[j];
-            }
         }
-        else
-        {
-            this->sampleInteg[i][0]=1; // default value for the volume when model vertices are used as gauss points
-        }
+        else this->sampleInteg[i][0]=1; // default value for the volume when model vertices are used as gauss points
     }
 
     //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<sampleInteg[i]<<std::endl;
@@ -142,7 +136,7 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     material->computeStressChange( stressChange, strainRate, out.ref() );
 
     // apply factor
-    Real kFactor = mparams->kFactor();
+    Real kFactor = (Real)mparams->kFactor();
     for(unsigned i=0; i<dx.size(); i++)
     {
         if( this->f_printLog.getValue() )

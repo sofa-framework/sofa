@@ -339,7 +339,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     for(unsigned i=0; i<p.size(); i++ )
         points[i] = p[i];
 
-    std::cout<<"Inserting "<<points.size()-xto0.size()<<" gauss points..."<<std::endl;
+    std::cout<<"Inserting "<<points.size()<<" gauss points..."<<std::endl;
 
     // copy
     this->toModel->resize(points.size());
@@ -379,7 +379,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             if(!this->isPhysical)  // no gauss point here -> interpolate weights in the grid
                 gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i]);
             else // gauss points generated -> approximate weights over a set of voxels by least squares fitting
-                gridMaterial->lumpWeightsRepartition(point,index[i],m_weights[i],&m_dweight[i],&m_ddweight[i]);
+                gridMaterial->lumpWeightsRepartition(i,point,index[i],m_weights[i],&m_dweight[i],&m_ddweight[i]);
         }
     }
     else
@@ -498,7 +498,6 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
     massVector.resize(in.size());
     for(unsigned int i=0; i<in.size(); i++) massVector[i].clear();
 
-    SpatialCoord point;
     vector<Vec<nbRef,unsigned> > reps;
     vector<Vec<nbRef,InReal> > w;
     vector<SpatialCoord> pts;
@@ -510,10 +509,11 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
 
     for(unsigned int i=0; i<out.size(); i++) // treat each sample
     {
-        Out::get(point[0],point[1],point[2], out[i]) ;
-        if(gridMaterial)  gridMaterial->getWeightedMasses(point,reps,w,pts,masses);
+        if(gridMaterial)  gridMaterial->getWeightedMasses(i,reps,w,pts,masses);
         else
         {
+            SpatialCoord point;
+            Out::get(point[0],point[1],point[2], out[i]) ;
             pts.clear(); pts.push_back(point);
             w.clear(); w.push_back(weight.getValue()[i]);
             reps.clear(); reps.push_back(f_index.getValue()[i]);
