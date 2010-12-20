@@ -512,7 +512,7 @@ bool GridMaterial< MaterialTypes>::getWeightedMasses(const unsigned int samplein
     Real voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
 
     unsigned int i;
-    for(i=0; i<nbVoxels; i++) if(voronoi[i]==sampleindex)
+    for(i=0; i<nbVoxels; i++) if(voronoi[i]==(int)sampleindex)
         {
             p.push_back(SCoord());  getCoord(i,p.back());
             w.push_back(v_weights[i]);
@@ -530,7 +530,7 @@ bool GridMaterial< MaterialTypes>::lumpMass(const unsigned int sampleindex,Real&
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
     Real voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
-    for (unsigned int i=0; i<nbVoxels; i++) if (voronoi[i]==sampleindex) mass+=voxelvolume*getDensity(grid.data()[i]);
+    for (unsigned int i=0; i<nbVoxels; i++) if (voronoi[i]==(int)sampleindex) mass+=voxelvolume*getDensity(grid.data()[i]);
     return true;
 }
 
@@ -542,7 +542,7 @@ bool GridMaterial< MaterialTypes>::lumpVolume(const unsigned int sampleindex,Rea
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
     Real voxelvolume=voxelSize.getValue()[0]*voxelSize.getValue()[1]*voxelSize.getValue()[2];
-    for (unsigned int i=0; i<nbVoxels; i++) if (voronoi[i]==sampleindex) vol+=voxelvolume;
+    for (unsigned int i=0; i<nbVoxels; i++) if (voronoi[i]==(int)sampleindex) vol+=voxelvolume;
     return true;
 }
 
@@ -560,7 +560,7 @@ bool GridMaterial< MaterialTypes>::computeVolumeIntegrationFactors(const unsigne
     SCoord G;
     vector<Real> momentPG;
     for (i=0; i<nbVoxels; i++)
-        if (voronoi[i]==sampleindex)
+        if (voronoi[i]==(int)sampleindex)
         {
             getCoord(i,G);
             getCompleteBasis(G-point,order,momentPG);
@@ -582,9 +582,9 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
 
     // get the nbrefs most relevant weights in the voronoi region
     unsigned int maxlabel=0;
-    for (i=0; i<nbVoxels; i++) if(voronoi[i]==sampleindex) for (j=0; j<nbRef; j++) { if(v_weights[i][j]!=0) if(v_index[i][j]>maxlabel) maxlabel=v_index[i][j]; }
+    for (i=0; i<nbVoxels; i++) if(voronoi[i]==(int)sampleindex) for (j=0; j<nbRef; j++) { if(v_weights[i][j]!=0) if(v_index[i][j]>maxlabel) maxlabel=v_index[i][j]; }
     vector<Real> W((int)(maxlabel+1),0);
-    for (i=0; i<nbVoxels; i++) if(voronoi[i]==sampleindex) for (j=0; j<nbRef; j++) if(v_weights[i][j]!=0) W[v_index[i][j]]+=v_weights[i][j];
+    for (i=0; i<nbVoxels; i++) if(voronoi[i]==(int)sampleindex) for (j=0; j<nbRef; j++) if(v_weights[i][j]!=0) W[v_index[i][j]]+=v_weights[i][j];
 
     for (i=0; i<maxlabel; i++)
     {
@@ -598,7 +598,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
     }
 
     // get point indices in voronoi
-    VUI neighbors;   for (i=0; i<nbVoxels; i++) if (voronoi[i]==sampleindex) neighbors.push_back((unsigned int)i);
+    VUI neighbors;   for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)sampleindex) neighbors.push_back((unsigned int)i);
     bool dilatevoronoi=true;
     if (dilatevoronoi)
         for (i=0; i<nbVoxels; i++)
@@ -606,7 +606,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             VUI tmp;
             get26Neighbors(i, tmp);
             bool insert=false;
-            for (j=0; j<tmp.size(); j++) if (voronoi[tmp[j]]==sampleindex) insert=true;
+            for (j=0; j<tmp.size(); j++) if (voronoi[tmp[j]]==(int)sampleindex) insert=true;
             if (insert) neighbors.push_back((unsigned int)i);
         }
 
@@ -1130,7 +1130,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     for (j=0; j<indices.size(); j++)
     {
         getCoord(indices[j],point);
-        ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==j) ptlist.push_back(i);
+        ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
 
         Real meanerr=0,maxerr=0; unsigned int count=0;
         for (i=0; i<nbRef; i++)
@@ -1150,7 +1150,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     {
         points[j].fill(0);
         SCoord p; unsigned int count=0;
-        for (i=0; i<this->nbVoxels; i++) if(voronoi[i]==j) {getCoord(i,p); points[j]+=p; count++; }
+        for (i=0; i<this->nbVoxels; i++) if(voronoi[i]==(int)j) {getCoord(i,p); points[j]+=p; count++; }
         if(count!=0)
         {
             points[j]/=(Real)count;
