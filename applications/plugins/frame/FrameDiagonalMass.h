@@ -108,7 +108,7 @@ public:
     typedef SVector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef SVector<Real> VD;
-    typedef FrameData<DataTypes> FData;
+    typedef FrameData<DataTypes,true> FData;
 
     typedef SVector<unsigned int> VUI;
     typedef SVector<VUI> VVUI;
