@@ -220,10 +220,8 @@ public:
     bool lumpMass(const SCoord& point,Real& mass);
     /// return sum(vol_i) in the voronoi region of point
     bool lumpVolume(const SCoord& point,Real& vol);
-    /// return sum((p_i-p)^(order).vol_i) in the voronoi region of point
+    /// return sum(Stiffness_i.(p_i-p)^(order).vol_i) in the voronoi region of point
     bool computeVolumeIntegrationFactors(const SCoord& point,const unsigned int order,vector<Real>& moments);
-    /// return sum(E_i.(p_i-p)^(order).vol_i) in the voronoi region of point
-    bool lumpMomentsStiffness(const SCoord& point,const unsigned int order,vector<Real>& moments);
     /// return the repartited weights
     bool lumpWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw=NULL,VRefHessian* ddw=NULL);
     /// return the interpolated repartited weights
@@ -241,6 +239,12 @@ public:
     /// Regular sampling based on step size
     //  -> returns points and store id/distances in voronoi/distances
     bool computeRegularSampling ( VecSCoord& points, const unsigned int step);
+
+    /// Identify regions where weights are linear up to the tolerance
+    //  -> returns points and store id/distances in voronoi/distances
+    bool computeLinearRegionsSampling ( VecSCoord& points, const Real tolerance);
+
+
 
     virtual std::string getTemplateName() const
     {
@@ -300,7 +304,7 @@ protected:
     Data<bool> biasDistances;
 
     /// diffuse the weights outside the objects to avoid interpolation problems
-    void offsetWeightsOutsideObject(unsigned int offestdist=10);
+    void offsetWeightsOutsideObject(unsigned int offestdist=2);
 
     /// (biased) Euclidean distance between two voxels
     Real getDistance(const unsigned int& index1,const unsigned int& index2);
@@ -339,7 +343,7 @@ protected:
     inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
     inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
-    inline bool findIndexInRepartition(unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
+    inline Real findWeightInRepartition(const unsigned int& pointIndex, const unsigned int& frameIndex);
 
     inline void accumulateCovariance(const SCoord& p,const unsigned int order,vector<vector<Real> >& Cov);
     inline void getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis);
@@ -355,11 +359,11 @@ protected:
 
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
     Data<unsigned int> showWeightIndex;    ///
-    GLuint cubeList;             // storage for the display list
+    GLuint cubeList; GLuint wcubeList;            // storage for the display list
     void genListCube();
     void drawCube(const double& x, const double& y, const double& z);
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
-
+    bool showWireframe;
 };
 
 //#ifdef SOFA_FLOAT

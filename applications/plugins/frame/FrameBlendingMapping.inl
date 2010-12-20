@@ -310,6 +310,8 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
     if(targetSampleNumber.getValue() == 0) return; // use visual/collision or used-define points instead
+    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
+    if(primitiveorder == 0)  return; // no gauss point -> use visual/collision or used-define points
 
     // Get references
     WriteAccessor<Data<VecOutCoord> >  xto0 = *this->toModel->write(core::VecCoordId::restPosition());
@@ -329,17 +331,19 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     for ( unsigned int i=0;i<num_points;i++ )
     	for ( unsigned int j=0;j<num_spatial_dimensions;j++ )
     		points[i][j]= xto0[i][j];*/
+
     num_points=0;
     vector<MaterialCoord> p(num_points);
-    WriteAccessor<Data<typename MaterialTraits<typename Out::Coord>::VecMaterialCoord> >  points(this->f_materialPoints);
 
     // Insert new samples
+    //gridMaterial->computeRegularSampling(p,3);
+    // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
+    gridMaterial->computeLinearRegionsSampling(p,0.1);
 
-    gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
+    WriteAccessor<Data<typename MaterialTraits<typename Out::Coord>::VecMaterialCoord> >  points(this->f_materialPoints);
     points.resize(p.size());
     for(unsigned i=0; i<p.size(); i++ )
         points[i] = p[i];
-    //gridMaterial->computeRegularSampling(points,3);
 
     std::cout<<"Inserting "<<points.size()-xto0.size()<<" gauss points..."<<std::endl;
 

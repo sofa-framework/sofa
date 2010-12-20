@@ -1,5 +1,8 @@
 <Node name="root"  >
-	<Node name="Turtle" showBehaviorModels="1">
+	<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
+
+	<Node name="Turtle" showBehaviorModels="1" showCollisionModels="1">
 		<GridMaterial name="gridmaterial" template="Material3" 
 				imageFile="textures/Turtle_32_32_32.raw" 
 				labelToStiffnessPairs="1 1
@@ -8,7 +11,7 @@
 				labelToDensityPairs="1 1000"  
 				distanceType="Geodesic" 
 				biasDistances="true"
-				showVoxelData="Voronoi" 
+				showVoxelData="None" 
 				/>
 
 		<MechanicalObject name="DOFs" template="Affine" useMask="1"  
@@ -16,17 +19,28 @@
 				/>
 
 		<Node name="Physics" showBehaviorModels="0">
-			<MechanicalObject name="Samples" template="DeformationGradient331"  />
- 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" 
+			<MechanicalObject name="Samples" template="DeformationGradient332"  />
+ 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" 
 				input="@../DOFs"  output="@Samples"  
 				targetFrameNumber="7"
 				targetSampleNumber="10"
 				/>
 		</Node>
-
+<!--
 		<Node name="Visual" >
 			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Turtle.obj"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
+		</Node>
+-->
+		<Node name="CollisionNode">
+			<MeshLoader name="MeshLoader" filename="mesh/Turtle.obj"/>
+			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
+			<TriangleSetTopologyContainer name="Container" />
+			<TriangleSetTopologyModifier name="Modifier" />
+			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"  input="@../DOFs"  output="@Triangles" />
+			<TriangleModel name="CollisionModel"  printLog="0" />
 		</Node>
 	</Node>
 </Node>
