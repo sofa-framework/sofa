@@ -7,8 +7,9 @@
 		<Node name="TrianglesNode">
 			<MechanicalObject template="DeformationGradient332" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  showDefTensors="1" useElastons="0" />
+			<CorotationalForceField template="DeformationGradient332"   printLog="1" />
 		</Node>
-
+<!--
 		<Node name="CollisionNode">
 			<MeshLoader name="MeshLoader" filename="mesh/Turtle.obj"/>
 			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
@@ -19,6 +20,7 @@
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"  input="@../DOFs"  output="@Triangles" />
 			<TriangleModel name="CollisionModel"  printLog="0" />
 		</Node>
+-->
 
 		<Node 	name="Visual" >
 			<OglModel template="ExtVec3d" name="Visual" fileMesh="mesh/Turtle.obj"/>

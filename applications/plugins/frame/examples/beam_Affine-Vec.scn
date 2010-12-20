@@ -13,12 +13,12 @@
 	<Node name="Beam">
 		<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
 		<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
-		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -81 [1 0 0, 0 1 0, 0 0 1] 0 0 81 [1 0 0, 0 1 0, 0 0 1]" />
+		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -81 [1 0 0, 0 1 0, 0 0 1] 0 0 81 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -81 [1 0 0, 0 1 0, 0 0 1] 0 0 181 [1 0 0, 0 1 0, 0 0 1]" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass" />
 
 		<Node name="Material">
 			<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
-				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="10 10 10" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
+				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="5 5 5" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
 				infoFileName="beam-Affine-Vec-seg.nfo" useROI="true"/>
 			<GridMaterial name="gridmaterial" 
 				imageFile="@VoxelLoader.segmentationFileName"
@@ -31,8 +31,8 @@
 		</Node>
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" name="PointSet"  useMask="1" restScale="1" />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
+			<MechanicalObject template="DeformationGradient331" name="PointSet"  useMask="1" restScale="1" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
 		</Node>
 <!--
 		<Node name="Collision">
