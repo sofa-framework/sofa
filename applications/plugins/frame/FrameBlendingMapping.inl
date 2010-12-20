@@ -309,7 +309,6 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
-    if(targetSampleNumber.getValue() == 0) return; // use visual/collision or used-define points instead
     unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
     if(primitiveorder == 0)  return; // no gauss point -> use visual/collision or used-define points
 
