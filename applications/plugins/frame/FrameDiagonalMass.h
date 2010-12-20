@@ -40,7 +40,7 @@
 #include "QuadraticTypes.h"
 #include "AffineTypes.h"
 #include "FrameMass.h"
-#include "FrameStorage.h"
+#include "MappingTypes.h"
 #include <sofa/core/objectmodel/DataFileName.h>
 #include "initFrame.h"
 
@@ -53,7 +53,7 @@ namespace component
 namespace mass
 {
 using helper::SVector;
-using sofa::component::mapping::FrameStorage;
+using sofa::defaulttype::FrameData;
 using namespace sofa::defaulttype;
 
 template <class DataTypes, class TMassType>
@@ -108,20 +108,18 @@ public:
     typedef SVector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef SVector<Real> VD;
-    typedef FrameStorage<DataTypes, Real> FStorage;
+    typedef FrameData<DataTypes> FData;
 
     typedef SVector<unsigned int> VUI;
     typedef SVector<VUI> VVUI;
 
     // In case of non 3D template
-    typedef Vec<3,MassType>                            Vec3Mass;
+    typedef Vec<3,MassType> Vec3Mass;
     typedef StdVectorTypes< Vec3Mass, Vec3Mass, MassType > GeometricalTypes ; /// assumes the geometry object type is 3D
 
-    typedef sofa::component::topology::PointData<MassType> VecMass;
-    typedef helper::vector<MassType> MassVector;
+    typedef typename FData::VecMass VecMass;
+    typedef typename FData::MassVector MassVector;
 
-    VecMass f_mass;
-    VecMass f_mass0;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity; // Used to fix mass density of all the samples.
 
@@ -130,7 +128,6 @@ public:
     Data< float > showAxisSize;
     core::objectmodel::DataFileName fileMass;
     Data< float > damping;
-    Data<bool> rotateMass;
 
 protected:
     //VecMass masses;
@@ -207,15 +204,9 @@ public:
     }
 
 private:
-    FStorage* dqStorage;
-    const unsigned int* nbRefs;
-    const VVUI* repartition;
-    VD* vol;
-    VD* massDensity;
-    const VVMat3xIn* J;
-    const VVMat3xIn* J0;
+    FData* frameData;
 
-    void updateMass ( VecMass& mass, const VVMat3xIn& J);
+    void updateMass();
     void computeRelRot ( Mat33& relRot, const Coord& xi, const Coord& xi0);
     void rotateM( MatInxIn& M, const MatInxIn& M0, const Mat33& R);
     void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);

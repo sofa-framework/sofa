@@ -56,16 +56,9 @@ using sofa::component::topology::TriangleSetTopologyContainer;
 using helper::WriteAccessor;
 using helper::ReadAccessor;
 
-
-template <class TOut>
-SampleData<TOut>::SampleData ()
-    : f_materialPoints ( initData ( &f_materialPoints,"materialPoints","Coordinates of the samples in object space" ) )
-{
-}
-
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
-    : Inherit ( from, to ), SampleData<TOut>()
+    : Inherit ( from, to ), FrameData<TIn>(), SampleData<TOut>()
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
@@ -109,6 +102,9 @@ FrameBlendingMapping<TIn, TOut>::~FrameBlendingMapping ()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::init()
 {
+    // Set isPhysical internal flag.
+    this->isPhysical = (defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > 0);
+
     // init samples and frames according to target numbers
     gridMaterial=NULL;
     this->getContext()->get( gridMaterial, core::objectmodel::BaseContext::SearchRoot);
@@ -309,8 +305,7 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
-    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
-    if(primitiveorder == 0)  return; // no gauss point -> use visual/collision or used-define points
+    if(!this->isPhysical)  return; // no gauss point -> use visual/collision or used-define points
 
     // Get references
     WriteAccessor<Data<VecOutCoord> >  xto0 = *this->toModel->write(core::VecCoordId::restPosition());
@@ -360,9 +355,6 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 {
     ReadAccessor<Data<VecOutCoord> > xto (this->f_initPos);
     ReadAccessor<Data<VecInCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
-
-    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
-
     WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > > m_dweight  ( weightDeriv );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
@@ -377,14 +369,14 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 
     if(gridMaterial)
     {
-        if(primitiveorder != 0) std::cout<<"Lumping weights to gauss points..."<<std::endl;
+        if(this->isPhysical) std::cout<<"Lumping weights to gauss points..."<<std::endl;
         SpatialCoord point;
 
         for (unsigned i=0; i<xto.size(); i++ )
         {
             Out::get(point[0],point[1],point[2], xto[i]);
 
-            if(primitiveorder == 0)  // no gauss point here -> interpolate weights in the grid
+            if(!this->isPhysical)  // no gauss point here -> interpolate weights in the grid
                 gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i]);
             else // gauss points generated -> approximate weights over a set of voxels by least squares fitting
                 gridMaterial->lumpWeightsRepartition(point,index[i],m_weights[i],&m_dweight[i],&m_ddweight[i]);
@@ -500,11 +492,11 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
     ReadAccessor<Data<VecInCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
 
-    unsigned primitiveorder = defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order;
-    if(primitiveorder == 0) return; // no gauss point here -> no need for lumping
+    if(!this->isPhysical) return; // no gauss point here -> no need for lumping
 
-    frameMass.resize(in.size());
-    for(unsigned int i=0; i<in.size(); i++) frameMass[i].clear();
+    MassVector& massVector = *this->f_mass0.beginEdit();
+    massVector.resize(in.size());
+    for(unsigned int i=0; i<in.size(); i++) massVector[i].clear();
 
     SpatialCoord point;
     vector<Vec<nbRef,unsigned> > reps;
@@ -541,13 +533,14 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
                     m[findex].clear();
                     map.addMultTranspose( m , map.mult(d) );  // get the contribution of j to each column l of the mass = mass(j).J^T.J.[0...1...0]^T
                     m[findex]*=masses[j];
-                    for(unsigned int col=0; col<InVSize; col++)  frameMass[findex].inertiaMassMatrix[col][l]+= m[findex][col];
+                    for(unsigned int col=0; col<InVSize; col++)  massVector[findex].inertiaMassMatrix[col][l]+= m[findex][col];
                     d[reps[j][k]][l]=0;
                 }
             }
         }
     }
 
+    this->f_mass0.endEdit();
     //for(unsigned int i=0;i<in.size();i++) std::cout<<"mass["<<i<<"]="<<frameMass[i].inertiaMassMatrix<<std::endl;
 }
 

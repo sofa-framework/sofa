@@ -66,39 +66,15 @@ template class SOFA_FRAME_API FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass>;
 ///////////////////////////////////////////////////////////////////////////////
 //                     Affine3dTypes, Frame3x12dMass                         //
 ///////////////////////////////////////////////////////////////////////////////
-
-
-template <>
-void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::addForce ( VecDeriv& f, const VecCoord& , const VecDeriv& v )
+template<>
+void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::updateMass()
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if ( this->m_separateGravity.getValue() )
-        return;
-
-    const MassVector &masses= f_mass.getValue();
-
-    // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2] );
-
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
-
-    // add weight and inertia force
-    const double& invDt = 1./this->getContext()->getDt();
-    for ( unsigned int i=0; i<masses.size(); i++ )
-    {
-        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
-        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
-        //std::cerr << "F_mass["<<i<<"]: " << f[i] << std::endl;
-    }
+    const MassVector& vecMass0 = frameData->f_mass0.getValue();
+    MassVector& vecMass = *frameData->f_mass.beginEdit();
+    vecMass = vecMass0;
+    frameData->f_mass.endEdit();
 }
+
 
 template<>
 void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
@@ -108,37 +84,15 @@ void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::computeRelRot ( Mat33& , 
 ///////////////////////////////////////////////////////////////////////////////
 //                     Affine3fTypes, Frame3x12fMass                         //
 ///////////////////////////////////////////////////////////////////////////////
-
-template <>
-void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::addForce ( VecDeriv& f, const VecCoord& , const VecDeriv& v )
+template<>
+void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::updateMass()
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if ( this->m_separateGravity.getValue() )
-        return;
-
-    const MassVector &masses= f_mass.getValue();
-
-    // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2] );
-
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
-
-    // add weight and inertia force
-    const double& invDt = 1./this->getContext()->getDt();
-    for ( unsigned int i=0; i<masses.size(); i++ )
-    {
-        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
-        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
-    }
+    const MassVector& vecMass0 = frameData->f_mass0.getValue();
+    MassVector& vecMass = *frameData->f_mass.beginEdit();
+    vecMass = vecMass0;
+    frameData->f_mass.endEdit();
 }
+
 
 template<>
 void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
@@ -159,36 +113,13 @@ template class SOFA_FRAME_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
 //                    Quadratic3dTypes, Frame3x30dMass                       //
 ///////////////////////////////////////////////////////////////////////////////
 
-template <>
-void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::addForce ( VecDeriv& f, const VecCoord& , const VecDeriv& v )
+template<>
+void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::updateMass()
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if ( this->m_separateGravity.getValue() )
-        return;
-
-    const MassVector &masses= f_mass.getValue();
-
-    // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2] );
-
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
-
-    // add weight and inertia force
-    const double& invDt = 1./this->getContext()->getDt();
-    for ( unsigned int i=0; i<masses.size(); i++ )
-    {
-        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
-        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
-        //std::cerr << "F_mass["<<i<<"]: " << f[i] << std::endl;
-    }
+    const MassVector& vecMass0 = frameData->f_mass0.getValue();
+    MassVector& vecMass = *frameData->f_mass.beginEdit();
+    vecMass = vecMass0;
+    frameData->f_mass.endEdit();
 }
 
 template<>
@@ -200,36 +131,15 @@ void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::computeRelRot ( Mat33&
 //                    Quadratic3fTypes, Frame3x30fMass                       //
 ///////////////////////////////////////////////////////////////////////////////
 
-template <>
-void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::addForce ( VecDeriv& f, const VecCoord& , const VecDeriv& v )
+template<>
+void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::updateMass()
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if ( this->m_separateGravity.getValue() )
-        return;
-
-    const MassVector &masses= f_mass.getValue();
-
-    // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2] );
-
-    // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-
-    // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
-
-    // add weight and inertia force
-    const double& invDt = 1./this->getContext()->getDt();
-    for ( unsigned int i=0; i<masses.size(); i++ )
-    {
-        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
-        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
-    }
+    const MassVector& vecMass0 = frameData->f_mass0.getValue();
+    MassVector& vecMass = *frameData->f_mass.beginEdit();
+    vecMass = vecMass0;
+    frameData->f_mass.endEdit();
 }
+
 
 template<>
 void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )

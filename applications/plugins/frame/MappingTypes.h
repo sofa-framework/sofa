@@ -27,11 +27,17 @@
 #ifndef FRAME_MAPPINGTYPES_H
 #define FRAME_MAPPINGTYPES_H
 
+#include "FrameMass.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/component/topology/PointData.h>
+
 namespace sofa
 {
 
 namespace defaulttype
 {
+
+using sofa::defaulttype::FrameMass;
 
 template<class In, class Out, class Material, int nbRef, int order>
 class LinearBlendTypes;
@@ -56,8 +62,6 @@ public:
 
 
 
-
-
 template< class Primitive, class Real, int Dim>
 class OutDataTypesInfo
 {
@@ -74,6 +78,65 @@ public:
     enum {primitive_order = DeformationGradientTypes<Dim,Dim,Order,Real>::order};
 };
 
+
+
+template<class Coord> struct MaterialTraits
+{
+    typedef typename Coord::VecMaterialCoord VecMaterialCoord;
+};
+
+template<class R>
+struct MaterialTraits< Vec<3,R> >
+{
+    typedef vector<Vec<3,R> > VecMaterialCoord;
+};
+
+
+
+
+template<class TIn>
+class FrameData : public  virtual core::objectmodel::BaseObject
+{
+public:
+    // Input types
+    typedef TIn In;
+    typedef typename In::Real InReal;
+    static const unsigned num_spatial_dimensions=In::spatial_dimensions;
+    enum {InVSize= defaulttype::InDataTypesInfo<In,InReal,num_spatial_dimensions>::VSize};
+    typedef FrameMass<num_spatial_dimensions,InVSize,InReal> FrameMassType;
+    typedef sofa::component::topology::PointData<FrameMassType> VecMass;
+    typedef helper::vector<FrameMassType> MassVector;
+
+    VecMass f_mass0;
+    VecMass f_mass;
+    bool isPhysical;
+
+    FrameData()
+        : f_mass0 ( initData ( &f_mass0,"f_mass0","vector of lumped blocks of the mass matrix in the rest position." ) )
+        , f_mass ( initData ( &f_mass,"f_mass","vector of lumped blocks of the mass matrix." ) )
+        , isPhysical(false)
+    {
+    }
+    virtual void LumpMassesToFrames () = 0;
+};
+
+
+
+template<class TOut>
+class SampleData : public  virtual core::objectmodel::BaseObject
+{
+public:
+    // Output types
+    typedef TOut Out;
+    typedef typename MaterialTraits<typename Out::Coord>::VecMaterialCoord VecMaterialCoord;
+
+    Data<VecMaterialCoord> f_materialPoints;
+
+    SampleData()
+        : f_materialPoints ( initData ( &f_materialPoints,"materialPoints","Coordinates of the samples in object space" ) )
+    {
+    }
+};
 
 } // namespace defaulttype
 } // namespace sofa
