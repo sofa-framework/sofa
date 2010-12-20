@@ -40,7 +40,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
-#include "MappingTypes.h"
 
 namespace sofa
 {

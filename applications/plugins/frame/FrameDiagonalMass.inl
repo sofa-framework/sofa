@@ -53,14 +53,11 @@ using namespace sofa::core::behavior;
 
 template <class DataTypes, class MassType>
 FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
-    : f_mass ( initData ( &f_mass, "mass", "values of the particles masses" ) )
-    , f_mass0 ( initData ( &f_mass0, "mass0", "values of the particles masses" ) )
-    , m_massDensity ( initData ( &m_massDensity, ( Real ) 1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0" ) )
+    : m_massDensity ( initData ( &m_massDensity, ( Real ) 1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0" ) )
     , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , damping ( initData ( &damping, 0.0f, "damping", "add a force which is \"- damping * speed\"" ) )
-    , rotateMass ( initData ( &rotateMass, false, "rotateMass", "Rotate mass matrices instead of computing it at each step." ) )
 {
     this->addAlias(&fileMass,"filename");
 }
@@ -74,44 +71,38 @@ FrameDiagonalMass<DataTypes, MassType>::~FrameDiagonalMass()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::clear()
 {
-    MassVector& masses = *f_mass.beginEdit();
+    MassVector& masses = *frameData->f_mass.beginEdit();
     masses.clear();
-    f_mass.endEdit();
+    frameData->f_mass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMass ( const MassType& m )
 {
-    MassVector& masses = *f_mass.beginEdit();
-    masses.push_back ( m );
-    f_mass.endEdit();
-    if( rotateMass.getValue())
-    {
-        MassVector& masses0 = *f_mass0.beginEdit();
-        masses0.clear();
-        f_mass0.endEdit();
-    }
+    MassVector& masses0 = *frameData->f_mass0.beginEdit();
+    masses0.push_back (m);
+    frameData->f_mass0.endEdit();
+    MassVector& masses = *frameData->f_mass.beginEdit();
+    masses.push_back (m);
+    frameData->f_mass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::resize ( int vsize )
 {
-    MassVector& masses = *f_mass.beginEdit();
-    masses.resize ( vsize );
-    f_mass.endEdit();
-    if( rotateMass.getValue())
-    {
-        MassVector& masses0 = *f_mass0.beginEdit();
-        masses0.resize ( vsize );
-        f_mass0.endEdit();
-    }
+    MassVector& masses0 = *frameData->f_mass0.beginEdit();
+    masses0.resize (vsize);
+    frameData->f_mass0.endEdit();
+    MassVector& masses = *frameData->f_mass.beginEdit();
+    masses.resize (vsize);
+    frameData->f_mass.endEdit();
 }
 
 // -- Mass interface
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDeriv& dx, double factor )
 {
-    const MassVector &masses= f_mass.getValue();
+    const MassVector& masses = frameData->f_mass.getValue();
     if ( factor == 1.0 )
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
@@ -134,7 +125,7 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::accFromF ( VecDeriv& a, const VecDeriv& f )
 {
 
-    const MassVector &masses= f_mass.getValue();
+    const MassVector& masses = frameData->f_mass.getValue();
     for ( unsigned int i=0; i<f.size(); i++ )
     {
         a[i] = f[i] / masses[i];
@@ -145,7 +136,7 @@ template <class DataTypes, class MassType>
 double FrameDiagonalMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& v ) const
 {
 
-    const MassVector &masses= f_mass.getValue();
+    const MassVector& masses = frameData->f_mass.getValue();
     double e = 0;
     for ( unsigned int i=0; i<masses.size(); i++ )
     {
@@ -158,7 +149,7 @@ template <class DataTypes, class MassType>
 double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& x ) const
 {
     double e = 0;
-    const MassVector &masses= f_mass.getValue();
+    const MassVector& masses = frameData->f_mass.getValue();
     // gravity
     Vec<3,Real> g ( this->getContext()->getLocalGravity() );
     Vec<InDerivDim,Real> theGravity;
@@ -176,7 +167,7 @@ double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoo
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMToMatrix ( defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset )
 {
-    const MassVector &masses= f_mass.getValue();
+    const MassVector& masses = frameData->f_mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     for ( unsigned int i=0; i<masses.size(); i++ )
@@ -201,7 +192,8 @@ void FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index
     if ( m->rowSize() != dimension || m->colSize() != dimension ) m->resize ( dimension,dimension );
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>() ( m, f_mass.getValue() [index], 0, 1 );
+    const MassVector& masses = frameData->f_mass.getValue();
+    AddMToMatrixFunctor<Deriv,MassType>() ( m, masses[index], 0, 1 );
 }
 
 
@@ -217,14 +209,9 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::reinit()
 {
     const unsigned int& fromSize = this->mstate->getX()->size();
-    unsigned int nbPt = this->massDensity->size();
-    for( unsigned int i = 0; i < nbPt; i++) (*this->massDensity)[i] = m_massDensity.getValue();
 
     this->resize ( fromSize );
-    if( rotateMass.getValue())
-        updateMass ( f_mass0, *J0);
-    else
-        updateMass ( f_mass, *J);
+    frameData->LumpMassesToFrames();
 
     Inherited::reinit();
 }
@@ -233,45 +220,30 @@ void FrameDiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 {
-    // Get the first DQStorage which has 'computeAllMatrices' to true
-    dqStorage = NULL;
-    vector<FStorage*> vFStorage;
+    // Get the first FramData which is physical
+    frameData = NULL;
+    vector<FData*> vFData;
     sofa::core::objectmodel::BaseContext* context=  this->getContext();
-    context->get<FStorage>( &vFStorage, core::objectmodel::BaseContext::SearchDown);
-    FStorage* tmpDqStorage = NULL;
-    for( typename vector<FStorage *>::iterator it = vFStorage.begin(); it != vFStorage.end(); it++)
+    context->get<FData>( &vFData, core::objectmodel::BaseContext::SearchDown);
+    FData* tmpFData = NULL;
+    for( typename vector<FData *>::iterator it = vFData.begin(); it != vFData.end(); it++)
     {
-        tmpDqStorage = (*it);
-        if( tmpDqStorage && tmpDqStorage->computeAllMatrices.getValue() )
+        tmpFData = (*it);
+        if( tmpFData && tmpFData->isPhysical)
         {
-            dqStorage = tmpDqStorage;
+            frameData = tmpFData;
             break;
         }
     }
-    if ( ! dqStorage )
+    if ( ! frameData )
     {
         serr << "Can't find FrameStorage component (present in linear or dualquat skinning mappings)." << sendl;
         return;
     }
-    else
-    {
-        this->nbRefs = & dqStorage->nbRefs.getValue();
-        this->repartition = & dqStorage->repartition.getValue();
-        this->J = & dqStorage->J;
-        this->J0 = & dqStorage->J0;
-        this->vol = & dqStorage->vol;
-        this->massDensity = & dqStorage->massDensity;
-    }
-
-    unsigned int nbPt = this->massDensity->size();
-    for( unsigned int i = 0; i < nbPt; i++) (*this->massDensity)[i] = m_massDensity.getValue();
 
     const unsigned int& fromSize = this->mstate->getX()->size();
     this->resize ( fromSize );
-    if( rotateMass.getValue())
-        updateMass ( f_mass0, *J0);
-    else
-        updateMass ( f_mass, *J);
+    frameData->LumpMassesToFrames();
 }
 
 template <class DataTypes, class MassType>
@@ -299,38 +271,21 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
 {
     const unsigned int& fromSize = this->mstate->getX()->size();
     this->resize ( fromSize );
-    if( rotateMass.getValue())
-    {
-        // Rotate the mass
-        const VecCoord& xfrom0 = *this->mstate->getX0();
-        const VecCoord& xfrom = *this->mstate->getX();
-        const MassVector& vecMass0 = f_mass0.getValue();
-        MassVector& vecMass = (*f_mass.beginEdit());
-        if( vecMass0.size() != xfrom.size())
-        {
-            // Update the mass
-            updateMass ( f_mass0, *J0);
-        }
-        for( unsigned int i = 0; i < xfrom.size(); ++i)
-        {
-            Mat33 relRot;
-            computeRelRot( relRot, xfrom[i], xfrom0[i]);
-            rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, relRot);
-            vecMass[i].recalc();
-        }
-        f_mass.endEdit();
-    }
-    else
+
+    const VecCoord& xfrom = *this->mstate->getX();
+    const MassVector& vecMass0 = frameData->f_mass0.getValue();
+    const MassVector& vecMass = frameData->f_mass.getValue();
+    if( vecMass0.size() != xfrom.size())
     {
         // Update the mass
-        updateMass ( f_mass, *J);
+        frameData->LumpMassesToFrames();
     }
+
+    updateMass();
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if ( this->m_separateGravity.getValue() )
         return;
-
-    const MassVector &masses= f_mass.getValue();
 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -347,10 +302,10 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
 
     // add weight and inertia force
     const double& invDt = 1./this->getContext()->getDt();
-    for (unsigned int i = 0; i < masses.size(); ++i)
+    for (unsigned int i = 0; i < vecMass.size(); ++i)
     {
-        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
-        f[i] += theGravity*masses[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
+        Deriv fDamping = - (vecMass[i] * v[i] * damping.getValue() * invDt);
+        f[i] += theGravity*vecMass[i] + fDamping; //  + core::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
     }
     /*
     std::cerr << "Masse: " << std::endl;
@@ -365,7 +320,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::draw()
 {
-    const MassVector &masses= f_mass.getValue();
+    const MassVector& masses = frameData->f_mass.getValue();
     if ( !this->getContext()->getShowBehaviorModels() ) return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
     if( x.size() != masses.size()) return;
@@ -444,46 +399,22 @@ bool FrameDiagonalMass<DataTypes, MassType>::load ( const char *filename )
 
 
 template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::updateMass ( VecMass& mass, const VVMat3xIn& J)
+void FrameDiagonalMass<DataTypes, MassType>::updateMass()
 {
-    // Mass_ij=sum(d.p.Ji^TTJj)
-    const unsigned int& fromSize = this->mstate->getX()->size();
-    int j,nbP=this->vol->size();
-    if( nbP == 0) return;
-    MatInx3 JT;
-    MatInxIn JJT;
+    const VecCoord& xfrom0 = *this->mstate->getX0();
+    const VecCoord& xfrom = *this->mstate->getX();
+    const MassVector& vecMass0 = frameData->f_mass0.getValue();
+    MassVector& vecMass = *frameData->f_mass.beginEdit();
 
-    MassVector& vecMass = * ( mass.beginEdit() );
-    //vecMass.mass = 1.0;//volmass[i] * (*this->vol)[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, is directly stored in the inertia matrix via the displacement matrix J)
-    for (unsigned int i = 0; i < fromSize; ++i)
+    // Rotate the mass
+    for( unsigned int i = 0; i < xfrom.size(); ++i)
     {
-        MatInxIn& frameMass = vecMass[i].inertiaMatrix;
-        frameMass.fill (0.0);
-    }
-
-    for (j=0; j<nbP; j++ )
-        for (unsigned int i = 0; i < *nbRefs; ++i)
-        {
-            const unsigned int& indexRep = (*repartition)[j][i];
-            MatInxIn& frameMass = vecMass[indexRep].inertiaMatrix;
-            JT.transpose ( J[j][i] );
-            JT*=(Real)((*this->vol)[j] * (*this->massDensity)[j]);
-            //*/ Without lumping
-            JJT=JT*J[j][i];
-            frameMass += JJT;
-            /*/ // With lumping
-            //serr << "J[i][j]: " << J[i][j] << sendl;
-            	for ( unsigned int k=0;k<nbDOF;k++ )
-            		{
-            			JJT=JT*J[k][j];
-            			frameMass += JJT;
-            		}
-            		//*/
-        }
-    for (unsigned int i = 0; i < fromSize; ++i)
+        Mat33 relRot;
+        computeRelRot( relRot, xfrom[i], xfrom0[i]);
+        rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, relRot);
         vecMass[i].recalc();
-    mass.endEdit();
-    //serr << "Mass: " << mass << sendl;
+    }
+    frameData->f_mass.endEdit();
 }
 
 

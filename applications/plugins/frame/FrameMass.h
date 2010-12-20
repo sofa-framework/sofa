@@ -25,9 +25,9 @@
 #ifndef FRAME_FRAMEMASS_H
 #define FRAME_FRAMEMASS_H
 
-#include <sofa/defaulttype/RigidTypes.h>
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Visitor.h>
 #include "initFrame.h"
 

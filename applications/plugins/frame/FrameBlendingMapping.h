@@ -58,39 +58,14 @@ using sofa::component::material::MaterialTypes;
 using sofa::component::material::GridMaterial;
 using defaulttype::FrameMass;
 using defaulttype::DeformationGradient;
-
-
-template<class Coord> struct MaterialTraits
-{
-    typedef typename Coord::VecMaterialCoord VecMaterialCoord;
-};
-
-template<class R>
-struct MaterialTraits< Vec<3,R> >
-{
-    typedef vector<Vec<3,R> > VecMaterialCoord;
-};
-
-
-template<class TOut>
-class SampleData : public  virtual core::objectmodel::BaseObject
-{
-public:
-    // Output types
-    typedef TOut Out;
-    typedef typename MaterialTraits<typename Out::Coord>::VecMaterialCoord VecMaterialCoord;
-
-    Data<VecMaterialCoord> f_materialPoints;
-
-    SampleData();
-
-};
+using defaulttype::FrameData;
+using defaulttype::SampleData;
 
 
 /** Linear blend skinning, from a variety of input types to a variety of output types.
  */
 template <class TIn, class TOut>
-class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public SampleData<TOut>
+class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public FrameData<TIn>, public SampleData<TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -128,7 +103,9 @@ public:
 
     // Mass types
     enum {InVSize= defaulttype::InDataTypesInfo<In,InReal,num_spatial_dimensions>::VSize};
-    typedef FrameMass<num_spatial_dimensions,InVSize,InReal> frameMassType;
+    typedef typename FrameData<TIn>::FrameMassType FrameMassType;
+    typedef typename FrameData<TIn>::VecMass VecMass;
+    typedef typename FrameData<TIn>::MassVector MassVector;
 
     // Conversion types
     static const unsigned nbRef = GridMat::nbRef;
@@ -155,10 +132,9 @@ protected:
     inline void initFrames();
     inline void updateWeights ();
     inline void normalizeWeights();
-    inline void LumpMassesToFrames ();
+    virtual void LumpMassesToFrames ();
 
     vector<InOut> inout;  ///< Data specific to the conversion between the types
-    vector<frameMassType> frameMass;
 
 
 //                helper::ParticleMask* maskFrom;
