@@ -28,7 +28,6 @@
 #define FRAME_COROTATIONALFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include "AffineTypes.h"
 #include "initFrame.h"
 #include "GridMaterial.h"
 #include "MappingTypes.h"
@@ -59,7 +58,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
-    typedef typename DataTypes::Coord::MaterialFrame Frame;
+    typedef typename DataTypes::MaterialFrame Frame;
     typedef vector<Frame> VecFrame;
 
     typedef defaulttype::CStrain<DataTypes,true> StrainType;

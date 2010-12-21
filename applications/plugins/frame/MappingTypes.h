@@ -80,15 +80,15 @@ public:
 
 
 
-template<class Coord> struct MaterialTraits
+template<class Out> struct MaterialTraits
 {
-    typedef typename Coord::VecMaterialCoord VecMaterialCoord;
+    typedef vector<Vec<3,typename Out::Real> > VecMaterialCoord;
 };
 
-template<class R>
-struct MaterialTraits< Vec<3,R> >
+template< class Real, int Dim, int Order>
+struct MaterialTraits<DeformationGradientTypes<Dim,Dim,Order,Real> >
 {
-    typedef vector<Vec<3,R> > VecMaterialCoord;
+    typedef typename DeformationGradientTypes<Dim,Dim,Order,Real>::VecMaterialCoord VecMaterialCoord;
 };
 
 
@@ -127,7 +127,7 @@ class SampleData : public  virtual core::objectmodel::BaseObject
 public:
     // Output types
     typedef TOut Out;
-    typedef typename MaterialTraits<typename Out::Coord>::VecMaterialCoord VecMaterialCoord;
+    typedef typename MaterialTraits<Out>::VecMaterialCoord VecMaterialCoord;
 
     Data<VecMaterialCoord> f_materialPoints;
 

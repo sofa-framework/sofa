@@ -149,7 +149,7 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
 template <class DataTypes>
 void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
 {
-    ReadAccessor<DataVecCoord> dx(_dx);
+    ReadAccessor<DataVecDeriv> dx(_dx);
     WriteAccessor<DataVecDeriv> df(_df);
     strainChange.resize(dx.size());
     stressChange.resize(dx.size());
