@@ -28,17 +28,12 @@
 #include "FrameBlendingMapping.h"
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/core/Mapping.inl>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/DualQuat.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <string>
 #include <iostream>
-#include <limits>
 
 namespace sofa
 {
@@ -49,7 +44,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
 using sofa::component::topology::TriangleSetTopologyContainer;
 using helper::WriteAccessor;
 using helper::ReadAccessor;
@@ -62,7 +56,6 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
     , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
     , weightDeriv2 ( initData ( &weightDeriv2,"weightHessians","weight Hessians" ) )
-    //, f_initialInverseMatrices ( initData ( &f_initialInverseMatrices,"initialInverseMatrices","inverses of the initial parent matrices in the world reference frame" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
@@ -113,7 +106,6 @@ void FrameBlendingMapping<TIn, TOut>::init()
         initSamples();
     }
 
-    // update init pos (necessary ??)
     //   unsigned numParents = this->fromModel->getSize();
     unsigned numChildren = this->toModel->getSize();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -155,14 +147,14 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
 {
     if( this->f_printLog.getValue() )
     {
-        cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << endl;
+        std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << std::endl;
     }
     for ( unsigned int i = 0 ; i < out.size(); i++ )
     {
         out[i] = inout[i].apply( in );
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << endl;
+            std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
         }
     }
 
@@ -176,14 +168,14 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
 //                {
     if( this->f_printLog.getValue() )
     {
-        cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, in = "<< in << endl;
+        std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, in = "<< in << std::endl;
     }
     for ( unsigned int i=0; i<out.size(); i++ )
     {
         out[i] = inout[i].mult( in );
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << endl;
+            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
         }
     }
 //                }
@@ -209,19 +201,19 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
 //                    this->maskFrom->setInUse ( false );
     if( this->f_printLog.getValue() )
     {
-        cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << endl;
+        std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
     }
     for ( unsigned int i=0; i<in.size(); i++ ) // VecType
     {
         inout[i].addMultTranspose( out, in[i] );
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << endl;
+            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
         }
     }
     if( this->f_printLog.getValue() )
     {
-        cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << endl;
+        std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
     }
 //                }
 //                else
@@ -231,18 +223,18 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
 //
 //                    ParticleMask::InternalStorage::const_iterator it;
 //                    if( this->f_printLog.getValue() ){
-//                        cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << endl;
+//                        std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
 //                    }
 //                    for ( it=indices.begin();it!=indices.end();it++ ) // VecType
 //                    {
 //                        const int i= ( int ) ( *it );
 //                        inout[i].addMultTranspose( out, in[i] );
 //                        if( this->f_printLog.getValue() ){
-//                            cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << endl;
+//                            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
 //                        }
 //                    }
 //                    if( this->f_printLog.getValue() ){
-//                        cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << endl;
+//                        std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
 //                    }
 //                }
 }
@@ -252,7 +244,7 @@ template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
 {
 //                if( this->f_printLog.getValue() ){
-//                    cerr<<"WARNING ! FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) not implemented"<< endl;
+//                    std::cerr<<"WARNING ! FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) not implemented"<< std::endl;
 //                }
 }
 
@@ -329,7 +321,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
     gridMaterial->computeLinearRegionsSampling(p,0.1);
 
-    WriteAccessor<Data<typename MaterialTraits<typename Out::Coord>::VecMaterialCoord> >  points(this->f_materialPoints);
+    WriteAccessor<Data<typename defaulttype::MaterialTraits<typename Out::Coord>::VecMaterialCoord> >  points(this->f_materialPoints);
     points.resize(p.size());
     for(unsigned i=0; i<p.size(); i++ )
         points[i] = p[i];
@@ -592,7 +584,6 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 {
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
-    //                const unsigned int nbRef = this->f_nbRefs.getValue();
     ReadAccessor<Data<vector<Vec<nbRef,unsigned> > > > m_reps = this->f_index;
     ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights = weight ;
     ReadAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > >  m_dweights = weightDeriv ;
@@ -605,16 +596,12 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 
     if ( this->getShow() )
     {
-        //                    this->toModel->draw();
-
         // Display mapping links between in and out elements
         glDisable ( GL_LIGHTING );
         glPointSize ( 1 );
         glColor4f ( 1,1,0,1 );
         glBegin ( GL_LINES );
 
-        cerr<<"FrameBlendingMapping<TIn, TOut>::draw(), xto.size() = "<<xto.size()<<endl;
-        cerr<<"FrameBlendingMapping<TIn, TOut>::draw(), nbRef = "<< nbRef <<endl;
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
             for ( unsigned int m=0 ; m<nbRef; m++ )
@@ -627,12 +614,10 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                     glColor4d ( 1,1,1,1 );
                     helper::gl::glVertexT ( xfrom[idxReps].getCenter() );
                     helper::gl::glVertexT ( xto[i] );
-                    cerr<<"FrameBlendingMapping<TIn, TOut>::draw() from "<< xfrom[idxReps].getCenter() << " to " << xto[i] << endl;
                 }
             }
         }
         glEnd();
-        cerr<<"FrameBlendingMapping<TIn, TOut>::draw()"<<endl;
     }
 
     // Display  m_reps for each points
@@ -859,7 +844,6 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex)
 {
-    //                const unsigned int& nbRef = this->f_nbRefs.getValue();
     ReadAccessor<Data<vector<Vec<nbRef,unsigned> > > >  m_reps( f_index );
     influenced = false;
     for ( unsigned int j = 0; j < nbRef; ++j)
