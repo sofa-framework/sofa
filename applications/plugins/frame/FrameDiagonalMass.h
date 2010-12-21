@@ -73,7 +73,6 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     enum { InDerivDim=DataTypes::Deriv::total_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    //typedef defaulttype::Mat<3,1,Real> Mat31;
     typedef defaulttype::Mat<3,3,Real> Mat33;
     typedef defaulttype::Mat<3,6,Real> Mat36;
     typedef SVector<Mat36> VMat36;
@@ -84,7 +83,6 @@ public:
     typedef SVector<Mat3xIn> VMat3xIn;
     typedef SVector<VMat3xIn> VVMat3xIn;
     typedef defaulttype::Mat<4,4,Real> Mat44;
-    //typedef defaulttype::Mat<6,1,Real> Mat61;
     typedef defaulttype::Mat<6,3,Real> Mat63;
     typedef defaulttype::Mat<InDerivDim,3,Real> MatInx3;
     typedef SVector<MatInx3> VMatInx3;
@@ -93,7 +91,6 @@ public:
     typedef defaulttype::Mat<InDerivDim,InDerivDim,Real> MatInxIn;
     typedef SVector<Mat66> VMat66;
     typedef SVector<VMat66> VVMat66;
-    //typedef defaulttype::Mat<8,1,Real> Mat81;
     typedef defaulttype::Mat<8,3,Real> Mat83;
     typedef defaulttype::Mat<8,6,Real> Mat86;
     typedef SVector<Mat86> VMat86;

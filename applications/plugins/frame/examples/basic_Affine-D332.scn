@@ -8,9 +8,10 @@
 		<Node name="TrianglesNode">
 			<MechanicalObject template="DeformationGradient332" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  showDefTensors="1" useElastons="0" />
-			<CorotationalForceField template="DeformationGradient332"   printLog="1" />
+			<HookeMaterial3 name="hookeMat" template="Material3" youngModulus="2000" poissonRatio="0.3" />
+			<CorotationalForceField template="DeformationGradient332"   printLog="0" />
 		</Node>
-<!--
+
 		<Node name="Collision">
 			<MeshLoader name="MeshLoader" filename="mesh/Turtle.obj"/>
       		<Mesh /> 

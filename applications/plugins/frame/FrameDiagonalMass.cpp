@@ -69,10 +69,6 @@ template class SOFA_FRAME_API FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass>;
 template<>
 void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::updateMass()
 {
-    const MassVector& vecMass0 = frameData->f_mass0.getValue();
-    MassVector& vecMass = *frameData->f_mass.beginEdit();
-    vecMass = vecMass0;
-    frameData->f_mass.endEdit();
 }
 
 
@@ -87,10 +83,6 @@ void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::computeRelRot ( Mat33& , 
 template<>
 void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::updateMass()
 {
-    const MassVector& vecMass0 = frameData->f_mass0.getValue();
-    MassVector& vecMass = *frameData->f_mass.beginEdit();
-    vecMass = vecMass0;
-    frameData->f_mass.endEdit();
 }
 
 
@@ -116,10 +108,6 @@ template class SOFA_FRAME_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
 template<>
 void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::updateMass()
 {
-    const MassVector& vecMass0 = frameData->f_mass0.getValue();
-    MassVector& vecMass = *frameData->f_mass.beginEdit();
-    vecMass = vecMass0;
-    frameData->f_mass.endEdit();
 }
 
 template<>
@@ -134,10 +122,6 @@ void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::computeRelRot ( Mat33&
 template<>
 void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::updateMass()
 {
-    const MassVector& vecMass0 = frameData->f_mass0.getValue();
-    MassVector& vecMass = *frameData->f_mass.beginEdit();
-    vecMass = vecMass0;
-    frameData->f_mass.endEdit();
 }
 
 

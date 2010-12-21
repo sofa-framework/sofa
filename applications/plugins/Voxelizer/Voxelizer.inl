@@ -891,6 +891,7 @@ void Voxelizer<DataTypes>::draw()
     if( showRasterizedVolumes.getValue())
     {
         if (this->getContext()->getShowWireFrame() || showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPushAttrib(GL_LIGHTING_BIT);
         glDisable( GL_LIGHTING);
         for ( unsigned int axis=0; axis<3; ++axis )
         {
@@ -980,6 +981,7 @@ void Voxelizer<DataTypes>::draw()
             }
         }
         if (showWireFrameMode.getValue() && !this->getContext()->getShowWireFrame()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPopAttrib();
     }
 
 }
