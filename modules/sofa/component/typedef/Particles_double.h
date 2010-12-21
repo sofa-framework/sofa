@@ -28,6 +28,8 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/State.h>
+
 
 
 typedef sofa::defaulttype::Vec1dTypes   Particles1d;
@@ -63,6 +65,23 @@ typedef Rigid3d::Quat                   Quat3d;
 typedef Rigid3d::Deriv                  DerivRigid3d;
 typedef Rigid3d::Coord                  CoordRigid3d;
 
+typedef sofa::defaulttype::ExtVec1dTypes ExtVec1d;
+typedef ExtVec1d::VecCoord               VecCoordExtVec1d;
+typedef ExtVec1d::VecDeriv               VecDerivExtVec1d;
+typedef ExtVec1d::Deriv                  DerivExtVec1d;
+typedef ExtVec1d::Coord                  CoordExtVec1d;
+typedef sofa::defaulttype::ExtVec2dTypes ExtVec2d;
+typedef ExtVec2d::VecCoord               VecCoordExtVec2d;
+typedef ExtVec2d::VecDeriv               VecDerivExtVec2d;
+typedef ExtVec2d::Deriv                  DerivExtVec2d;
+typedef ExtVec2d::Coord                  CoordExtVec2d;
+typedef sofa::defaulttype::ExtVec3dTypes ExtVec3d;
+typedef ExtVec3d::VecCoord               VecCoordExtVec3d;
+typedef ExtVec3d::VecDeriv               VecDerivExtVec3d;
+typedef ExtVec3d::Deriv                  DerivExtVec3d;
+typedef ExtVec3d::Coord                  CoordExtVec3d;
+
+
 #ifndef SOFA_FLOAT
 
 typedef Particles1d          Particles1;
@@ -97,6 +116,23 @@ typedef VecCoordRigid3d      VecCoordRigid3;
 typedef Quat3d		     Quat3;
 typedef DerivRigid3d	     DerivRigid3;
 typedef CoordRigid3d	     CoordRigid3;
+
+typedef ExtVec1d ExtVec1;
+typedef ExtVec2d ExtVec2;
+typedef ExtVec3d ExtVec3;
+
+
+typedef sofa::core::State<Particles1> State1;
+typedef sofa::core::State<Particles2> State2;
+typedef sofa::core::State<Particles3> State3;
+typedef sofa::core::State<Particles6> State6;
+typedef sofa::core::State<Rigid2>     RigidState2;
+typedef sofa::core::State<Rigid3>     RigidState3;
+
+typedef sofa::core::State<ExtVec1>     ExtVecState1;
+typedef sofa::core::State<ExtVec2>     ExtVecState2;
+typedef sofa::core::State<ExtVec3>     ExtVecState3;
+
 #endif
 
 
