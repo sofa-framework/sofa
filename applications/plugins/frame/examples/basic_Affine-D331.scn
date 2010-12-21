@@ -4,7 +4,7 @@
 	<HookeMaterial3 template="Material3" />
 	<Node name="Beam">
 		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1.2 [1 0 0, 0 1 0, 0 0 1] "/>
-		<FrameDiagonalMass template="AffineFrame3x12dMass"/>
+<!--		<FrameDiagonalMass template="AffineFrame3x12dMass"/> -->
 		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 1 1 1 1 1 1 1 1 1" />
 		<FrameRigidConstraint template="Affine" indices="0" />
 		<Node name="TrianglesNode">
@@ -12,5 +12,6 @@
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  printLog="1" />
 			<CorotationalForceField template="DeformationGradient331"   printLog="1" />
 		</Node>
+
 	</Node>
 </Node>
