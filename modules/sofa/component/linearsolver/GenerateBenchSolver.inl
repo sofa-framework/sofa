@@ -190,11 +190,11 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_system(int & max_size,std::strin
         int n_val;
         int size;
         file.read((char*) &size, sizeof(int));
-        if (max_size>size)
+        if (max_size==0) max_size=size;
+        else if (max_size>size)
         {
-            std::cerr << "Error the file has a maximum size of " << max_size << " and you wan to generate a bench of size " << size << std::endl;
-            file.close();
-            return false;
+            std::cerr << "Warning the file has a maximum size of " << size << std::endl;
+            max_size=size;
         }
 
         file.read((char*) &size_type, sizeof(int));
@@ -328,8 +328,14 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_J(int & max_size,int size,std::s
 
 
 template<class TMatrix, class TVector>
-bool GenerateBenchSolver<TMatrix,TVector>::generate_system(int size,double sparsity,TMatrix & matrix,sofa::defaulttype::BaseVector * solution,sofa::defaulttype::BaseVector * unknown,bool print)
+bool GenerateBenchSolver<TMatrix,TVector>::generate_system(int & size,double sparsity,TMatrix & matrix,sofa::defaulttype::BaseVector * solution,sofa::defaulttype::BaseVector * unknown,bool print)
 {
+    if (size==0)
+    {
+        std::cerr << "Warning you should specify the size default value is use : 1002 " << std::endl;
+        size=1002;
+    }
+
     matrix.resize(size,size);
     solution->resize(size);
     unknown->resize(size);
