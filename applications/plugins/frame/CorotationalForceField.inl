@@ -1,6 +1,14 @@
 #include "CorotationalForceField.h"
 #include "DeformationGradientTypes.h"
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/behavior/ForceField.inl>
+/*
+NB fjourdes: I don t get why this include is required to stop
+warning C4661 occurences while compiling CorotationalForceField.cpp
+*/
+#include <sofa/core/Mapping.inl>
+/*
+*/
 #include <iostream>
 using std::cerr;
 using std::endl;
