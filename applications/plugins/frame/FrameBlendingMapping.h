@@ -178,12 +178,18 @@ public:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::ExtVec3dTypes;
 using sofa::defaulttype::Affine3dTypes;
 using sofa::defaulttype::Affine3fTypes;
 using sofa::defaulttype::Quadratic3dTypes;
 using sofa::defaulttype::Quadratic3fTypes;
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
+using sofa::defaulttype::DeformationGradient331dTypes;
+using sofa::defaulttype::DeformationGradient331fTypes;
+using sofa::defaulttype::DeformationGradient332fTypes;
+using sofa::defaulttype::DeformationGradient332dTypes;
+
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_CPP)
 #pragma warning(disable : 4231)
