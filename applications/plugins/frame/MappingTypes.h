@@ -44,7 +44,7 @@ class LinearBlendTypes;
 
 
 
-template< class Primitive, class Real, int Dim>
+template< class Primitive>
 class InDataTypesInfo
 {
 public:
@@ -54,7 +54,7 @@ public:
 template<int Dim, typename Real> class StdRigidTypes;
 
 template< class Real, int Dim>
-class InDataTypesInfo<StdRigidTypes<Dim,Real>,Real,Dim >
+class InDataTypesInfo<StdRigidTypes<Dim,Real> >
 {
 public:
     enum {VSize = 6};
@@ -62,35 +62,23 @@ public:
 
 
 
-template< class Primitive, class Real, int Dim>
+template< class Primitive>
 class OutDataTypesInfo
 {
 public:
+    typedef vector<Vec<3,typename Primitive::Real> > VecMaterialCoord;
     enum {primitive_order = 0};
 };
 
 template<int Spatial_dimensions, int Material_dimensions, int Order, typename Real> struct DeformationGradientTypes;
 
 template< class Real, int Dim, int Order>
-class OutDataTypesInfo<DeformationGradientTypes<Dim,Dim,Order,Real>,Real,Dim>
+class OutDataTypesInfo<DeformationGradientTypes<Dim,Dim,Order,Real> >
 {
 public:
+    typedef typename DeformationGradientTypes<Dim,Dim,Order,Real>::VecMaterialCoord VecMaterialCoord;
     enum {primitive_order = DeformationGradientTypes<Dim,Dim,Order,Real>::order};
 };
-
-
-
-template<class Out> struct MaterialTraits
-{
-    typedef vector<Vec<3,typename Out::Real> > VecMaterialCoord;
-};
-
-template< class Real, int Dim, int Order>
-struct MaterialTraits<DeformationGradientTypes<Dim,Dim,Order,Real> >
-{
-    typedef typename DeformationGradientTypes<Dim,Dim,Order,Real>::VecMaterialCoord VecMaterialCoord;
-};
-
 
 
 
@@ -103,7 +91,7 @@ public:
     typedef typename In::Real InReal;
     static const bool isPhysical = IsPhysical;
     static const unsigned num_spatial_dimensions=In::spatial_dimensions;
-    enum {InVSize= defaulttype::InDataTypesInfo<In,InReal,num_spatial_dimensions>::VSize};
+    enum {InVSize= defaulttype::InDataTypesInfo<In>::VSize};
     typedef FrameMass<num_spatial_dimensions,InVSize,InReal> FrameMassType;
     typedef sofa::component::topology::PointData<FrameMassType> VecMass;
     typedef helper::vector<FrameMassType> MassVector;
@@ -127,7 +115,7 @@ class SampleData : public  virtual core::objectmodel::BaseObject
 public:
     // Output types
     typedef TOut Out;
-    typedef typename MaterialTraits<Out>::VecMaterialCoord VecMaterialCoord;
+    typedef typename OutDataTypesInfo<Out>::VecMaterialCoord VecMaterialCoord;
 
     Data<VecMaterialCoord> f_materialPoints;
 
