@@ -26,36 +26,47 @@
 ******************************************************************************/
 #define FRAME_FRAMEFORCEFIELD_CPP
 
-#include "FrameForceField.h"
-#include "DeformationGradientTypes.h"
-#include <sofa/core/behavior/ForceField.inl>
+#include "FrameForceField.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace behavior
+namespace forcefield
 {
 
 using namespace sofa::defaulttype;
 
+SOFA_DECL_CLASS(FrameForceField)
+
+// Register in the Factory
+int FrameForceFieldClass = core::RegisterObject("Compute forces on deformation gradients")
 #ifndef SOFA_FLOAT
-template class SOFA_FRAME_API ForceField<Affine3dTypes>;
-template class SOFA_FRAME_API ForceField<Quadratic3dTypes>;
-template class SOFA_FRAME_API ForceField<DeformationGradient331dTypes>;
-template class SOFA_FRAME_API ForceField<DeformationGradient332dTypes>;
+        .add< FrameForceField<DeformationGradient331dTypes> >()
+        .add< FrameForceField<DeformationGradient332dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API ForceField<Quadratic3fTypes>;
-template class SOFA_FRAME_API ForceField<Affine3fTypes>;
-template class SOFA_FRAME_API ForceField<DeformationGradient331fTypes>;
-template class SOFA_FRAME_API ForceField<DeformationGradient332fTypes>;
+        .add< FrameForceField<DeformationGradient331fTypes> >()
+        .add< FrameForceField<DeformationGradient332fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_FRAME_API FrameForceField<DeformationGradient331dTypes>;
+template class SOFA_FRAME_API FrameForceField<DeformationGradient332dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_FRAME_API FrameForceField<DeformationGradient331fTypes>;
+template class SOFA_FRAME_API FrameForceField<DeformationGradient332fTypes>;
 #endif
 
-} // namespace behavior
 
-} // namespace core
+
+}
+}
 
 } // namespace sofa
+

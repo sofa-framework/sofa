@@ -104,7 +104,7 @@ void GridMaterial< MaterialTypes>::init()
     Inherited::init();
 }
 
-// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+// WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
@@ -115,7 +115,7 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStr
     Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
     stressDiagonal = f * (1 - poissonRatio);
     stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio) /2;
+    shear = f * (1 - 2 * poissonRatio);// /2;
 
     for( unsigned i=0; i<stresses.size(); i++ )
     {
@@ -132,7 +132,7 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStr
 }
 
 
-// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+// WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStrStr* stressStrainMatrices, const VecStrain4& strains, const VecStrain4& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
@@ -143,7 +143,7 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
     Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
     stressDiagonal = f * (1 - poissonRatio);
     stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio) /2;
+    shear = f * (1 - 2 * poissonRatio);// /2;
 
     for( unsigned i=0; i<stresses.size(); i++ )
     {
@@ -162,7 +162,7 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
     }
 }
 
-// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+// WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecStrStr* stressStrainMatrices, const VecStrain10& strains, const VecStrain10& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
@@ -172,7 +172,7 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecSt
     Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
     stressDiagonal = f * (1 - poissonRatio);
     stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio) /2;
+    shear = f * (1 - 2 * poissonRatio);// /2;
 
     for( unsigned i=0; i<stresses.size(); i++ )
     {
@@ -191,7 +191,7 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecSt
     }
 }
 
-// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+// WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, const VecStrain1& strains, const VecMaterialCoord& /*point*/  )
 {
@@ -201,7 +201,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, 
     Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
     stressDiagonal = f * (1 - poissonRatio);
     stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio) /2;
+    shear = f * (1 - 2 * poissonRatio);// /2;
 
     for( unsigned i=0; i<stresses.size(); i++ )
     {
@@ -212,7 +212,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, 
         }
     }
 }
-// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+// WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, const VecStrain4& strains, const VecMaterialCoord& /*point*/  )
 {
@@ -222,7 +222,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, 
     Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
     stressDiagonal = f * (1 - poissonRatio);
     stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio) /2;
+    shear = f * (1 - 2 * poissonRatio);// /2;
 
     for( unsigned i=0; i<stresses.size(); i++ )
     {
@@ -233,7 +233,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, 
         }
     }
 }
-// WARNING : The strain is defined as exx, eyy, ezz, 2eyz, 2ezx, 2exy
+// WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses, const VecStrain10& strains, const VecMaterialCoord& /*point*/  )
 {
@@ -243,7 +243,7 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses,
     Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
     stressDiagonal = f * (1 - poissonRatio);
     stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio) /2;
+    shear = f * (1 - 2 * poissonRatio);// /2;
 
     for( unsigned i=0; i<stresses.size(); i++ )
     {

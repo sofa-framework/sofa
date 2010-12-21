@@ -22,18 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAME_COROTATIONALFORCEFIELD_INL
-#define FRAME_COROTATIONALFORCEFIELD_INL
+#ifndef FRAME_FRAMEFORCEFIELD_INL
+#define FRAME_FRAMEFORCEFIELD_INL
 
 
 #include <sofa/core/behavior/ForceField.inl>
-#include "CorotationalForceField.h"
+#include "FrameForceField.h"
 #include "DeformationGradientTypes.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/ForceField.inl>
 /*
 NB fjourdes: I don t get why this include is required to stop
-warning C4661 occurences while compiling CorotationalForceField.cpp
+warning C4661 occurences while compiling FrameForceField.cpp
 */
 #include <sofa/core/Mapping.inl>
 /*
@@ -56,24 +56,24 @@ using namespace helper;
 
 
 template <class DataTypes>
-CorotationalForceField<DataTypes>::CorotationalForceField(core::behavior::MechanicalState<DataTypes> *mm )
+FrameForceField<DataTypes>::FrameForceField(core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit1(mm)
 {}
 
 template <class DataTypes>
-CorotationalForceField<DataTypes>::~CorotationalForceField()
+FrameForceField<DataTypes>::~FrameForceField()
 {}
 
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::init()
+void FrameForceField<DataTypes>::init()
 {
     Inherit1::init();
     core::objectmodel::BaseContext* context = this->getContext();
     sampleData = context->get<SampleData>();
     if( sampleData==NULL )
     {
-        cerr<<"CorotationalForceField<DataTypes>::init(), material not found"<< endl;
+        cerr<<"FrameForceField<DataTypes>::init(), material not found"<< endl;
     }
 
 
@@ -81,7 +81,7 @@ void CorotationalForceField<DataTypes>::init()
     material = context->get<Material>();
     if( material==NULL )
     {
-        cerr<<"CorotationalForceField<DataTypes>::init(), material not found"<< endl;
+        cerr<<"FrameForceField<DataTypes>::init(), material not found"<< endl;
     }
 
 
@@ -109,14 +109,14 @@ void CorotationalForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v , const core::MechanicalParams* /*mparams*/)
+void FrameForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v , const core::MechanicalParams* /*mparams*/)
 {
     ReadAccessor<DataVecCoord> x(_x);
     ReadAccessor<DataVecDeriv> v(_v);
     WriteAccessor<DataVecDeriv> f(_f);
     ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
     stressStrainMatrices.resize(x.size());
-    rotation.resize(x.size());
+    //rotation.resize(x.size());
     strain.resize(x.size());
     strainRate.resize(x.size());
     stress.resize(x.size());
@@ -124,12 +124,12 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     // compute strains and strain rates
     for(unsigned i=0; i<x.size(); i++)
     {
-        StrainType::apply(x[i], strain[i],&rotation[i]);
-        StrainType::mult(v[i], strainRate[i],&rotation[i]);
+        StrainType::apply(x[i], strain[i]/*,&rotation[i]*/);
+        StrainType::mult(v[i], strainRate[i]/*,&rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"CorotationalForceField<DataTypes>::addForce, deformation gradient = " << x[i] << endl;
-            cerr<<"CorotationalForceField<DataTypes>::addForce, strain = " << strain[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addForce, deformation gradient = " << x[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addForce, strain = " << strain[i] << endl;
         }
     }
     material->computeStress( stress, &stressStrainMatrices, strain, strainRate, out.ref() );
@@ -137,17 +137,17 @@ void CorotationalForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVe
     // integrate and compute force
     for(unsigned i=0; i<x.size(); i++)
     {
-        StrainType::addMultTranspose(f[i], x[i], stress[i], this->integFactors[i], &rotation[i]);
+        StrainType::addMultTranspose(f[i], x[i], stress[i], this->integFactors[i]/*, &rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"CorotationalForceField<DataTypes>::addForce, stress = " << stress[i] << endl;
-            cerr<<"CorotationalForceField<DataTypes>::addForce, stress deformation gradient form= " << f[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addForce, stress = " << stress[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addForce, stress deformation gradient form= " << f[i] << endl;
         }
     }
 }
 
 template <class DataTypes>
-void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
+void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
 {
     ReadAccessor<DataVecDeriv> dx(_dx);
     WriteAccessor<DataVecDeriv> df(_df);
@@ -158,12 +158,12 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     // compute strains changes
     for(unsigned i=0; i<dx.size(); i++)
     {
-        StrainType::mult(dx[i], strainRate[i],&rotation[i]);
+        StrainType::mult(dx[i], strainRate[i]/*,&rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"CorotationalForceField<DataTypes>::addDForce, deformation gradient change = " << dx[i] << endl;
-            cerr<<"CorotationalForceField<DataTypes>::addDForce, strain change = " << strainRate[i] << endl;
-            cerr<<"CorotationalForceField<DataTypes>::addDForce, stress deformation gradient change before accumulating = " << df[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addDForce, deformation gradient change = " << dx[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addDForce, strain change = " << strainRate[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addDForce, stress deformation gradient change before accumulating = " << df[i] << endl;
         }
     }
 
@@ -176,7 +176,7 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     {
         if( this->f_printLog.getValue() )
         {
-            cerr<<"CorotationalForceField<DataTypes>::addDForce, stress change = " << stressChange[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addDForce, stress change = " << stressChange[i] << endl;
         }
         StrainType::mult(stressChange[i], kFactor);
     }
@@ -184,10 +184,10 @@ void CorotationalForceField<DataTypes>::addDForce(DataVecDeriv& _df , const Data
     // integrate and compute force
     for(unsigned i=0; i<dx.size(); i++)
     {
-        StrainType::addMultTranspose(df[i], dx[i], stressChange[i], this->integFactors[i], &rotation[i]);
+        StrainType::addMultTranspose(df[i], dx[i], stressChange[i], this->integFactors[i]/*, &rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"CorotationalForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << endl;
+            cerr<<"FrameForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << endl;
         }
     }
 }
