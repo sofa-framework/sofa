@@ -1,6 +1,6 @@
 <Node name="root"  >
-	<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
-	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 	<Node name="Turtle" showBehaviorModels="1" showCollisionModels="1">
 		<GridMaterial name="gridmaterial" template="Material3" 
@@ -33,15 +33,13 @@
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
 		</Node>
 -->
-		<Node name="CollisionNode">
-			<MeshLoader name="MeshLoader" filename="mesh/Turtle.obj"/>
-			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
-			<TriangleSetTopologyContainer name="Container" />
-			<TriangleSetTopologyModifier name="Modifier" />
-			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"  input="@../DOFs"  output="@Triangles" />
-			<TriangleModel name="CollisionModel"  printLog="0" />
+
+		<Node name="Collision">
+			<MeshLoader name="MeshLoader" filename="mesh/turtle.obj"/>
+      		<Mesh /> 
+      		<MechanicalObject  name="PointSet"/>
+      		<Triangle />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
 </Node>

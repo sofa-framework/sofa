@@ -83,10 +83,9 @@ inline Mat<Dim, Dim, Real> covNN(const Vec<Dim,Real>& v1, const Vec<Dim,Real>& v
 {
     Mat<Dim, Dim, Real> res;
     for ( unsigned int i = 0; i < Dim; ++i)
-        for ( unsigned int j = i; j < Dim; ++j)
+        for ( unsigned int j = 0; j < Dim; ++j)
         {
             res[i][j] = v1[i] * v2[j];
-            res[j][i] = res[i][j];
         }
     return res;
 }
@@ -96,10 +95,9 @@ inline Mat<Dim1, Dim2, Real> covMN(const Vec<Dim1,Real>& v1, const Vec<Dim2,Real
 {
     Mat<Dim1, Dim2, Real> res;
     for ( unsigned int i = 0; i < Dim1; ++i)
-        for ( unsigned int j = i; j < Dim2; ++j)
+        for ( unsigned int j = 0; j < Dim2; ++j)
         {
             res[i][j] = v1[i] * v2[j];
-            res[j][i] = res[i][j];
         }
     return res;
 }
@@ -168,7 +166,6 @@ struct LinearBlendTypes<
             Jb[i].Pt= w[i];
         }
         if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
-        //                cerr << "weights = " << w << endl;
     }
 
     OutCoord apply( const VecInCoord& d )  // Called in Apply
@@ -986,6 +983,8 @@ struct LinearBlendTypes<
         MaterialFrameGradient dFa0;  ///< = d gradF_k = dMa_i ( grad(w_i)_k \bar M_i + \bar M_i p_0 grad(dw_i)_k + grad(\bar M_i p_0)_k dw_i)
         MaterialFrameGradient dFa;  ///< = d gradF_k = Omega_i x [ Ma_i ( grad(w_i)_k \bar M_i + \bar M_i p_0 grad(dw_i)_k + grad(\bar M_i p_0)_k dw_i) ]
         MaterialMat dFt;  ///< = d gradF_k = dMt_i (grad(dw_i)_k)
+
+
 
     };
 

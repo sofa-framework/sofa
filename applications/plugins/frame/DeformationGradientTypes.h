@@ -181,18 +181,13 @@ public:
         if(iscorotational)
         {
             // order 0: e = [R^T Fr + Fr^T R ]/2
-            if(rotation!=NULL)
-            {
-                strain[0] = getStrainVec( rotation->multTranspose(F.getMaterialFrame()) );
-            }
-            else
-            {
-                strain[0] = getStrainVec( F.getMaterialFrame() );
-            }
+            if(rotation!=NULL) strain[0] = getStrainVec( rotation->multTranspose(F.getMaterialFrame()) );
+            else strain[0] = getStrainVec( F.getMaterialFrame() );
 
             if(strain_order==0) return;
             // order 1 : de =  [R^T dFr + dFr^T R ]/2
-            for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( rotation->multTranspose( F.getMaterialFrameGradient()[i-1] ) );
+            if(rotation!=NULL) { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( rotation->multTranspose( F.getMaterialFrameGradient()[i-1] ) ); }
+            else { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( F.getMaterialFrameGradient()[i-1] ); }
         }
         else // green-lagrange strain (order 0 or 2) : E= [F^T.F - I ]/2
         {
@@ -441,8 +436,8 @@ public:
     const MaterialFrame& getMaterialFrame() const { return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
 
     /// gradient of the local frame (if order>=2)
-    MaterialFrameGradient& getMaterialFrameGradient() { return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions]); }
-    const MaterialFrameGradient& getMaterialFrameGradient() const { return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions]); }
+    MaterialFrameGradient& getMaterialFrameGradient() { return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions+material_dimensions * material_dimensions]); }
+    const MaterialFrameGradient& getMaterialFrameGradient() const { return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions+material_dimensions * material_dimensions]); }
 
     static const unsigned total_size = VSize;
     typedef Real value_type;

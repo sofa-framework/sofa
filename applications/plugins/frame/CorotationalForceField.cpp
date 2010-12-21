@@ -1,6 +1,5 @@
 #define FRAME_COROTATIONALFORCEFIELD_CPP
 
-#include "DeformationGradientTypes.h"
 #include "CorotationalForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 

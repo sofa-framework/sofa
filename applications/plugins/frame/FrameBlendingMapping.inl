@@ -35,8 +35,6 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/DualQuat.h>
-//#include <sofa/component/topology/DistanceOnGrid.inl>
-//#include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <string>
 #include <iostream>
@@ -403,17 +401,17 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     if(m_weights[i][0]>d) {m_weights[i][0]=d; index[i][0]=j;}
                     else if(m_weights[i][1]>d) {m_weights[i][1]=d; index[i][1]=j;}
                 }
+                // compute weight
                 Vec<3,InReal> cfrom1; In::get( cfrom1[0],cfrom1[1],cfrom1[2], xfrom[index[i][0]] );
                 Vec<3,InReal> cfrom2; In::get( cfrom2[0],cfrom2[1],cfrom2[2], xfrom[index[i][1]] );
                 Vec<3,InReal> u=cfrom2-cfrom1;
                 InReal d=u.norm2(); u=u/d;
-                InReal d1=dot(cto-cfrom1,u),d2=dot(cto-cfrom2,u);
-                if(d1<0) d1=-d1; if(d2<0) d2=-d2;
-                if(d1>d) m_weights[i][1]=1;
-                else if(d2>d) m_weights[i][0]=1;
+                InReal w2=dot(cto-cfrom1,u),w1=-dot(cto-cfrom2,u);
+                if(w1<0) {m_weights[i][1]=0; m_weights[i][1]=1; }
+                else if(w2<0) {m_weights[i][0]=1; m_weights[i][1]=0; }
                 else
                 {
-                    m_weights[i][0]=d2; m_weights[i][1]=d1;
+                    m_weights[i][0]=w1; m_weights[i][1]=w2;
                     m_dweight[i][0]=-u; m_dweight[i][1]=u;
                 }
             }
@@ -429,12 +427,10 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     m_weights[i][j]=0;
                     index[i][j]=0;
                 }
-                //  cerr<<"FrameBlendingMapping<TIn, TOut>::updateWeights, xto = "<< xto[i] << endl;
                 for (unsigned int j=0; j<xfrom.size(); j++ )
                 {
                     Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
                     InReal w=(cto-cfrom)*(cto-cfrom);
-                    // cerr<<"  distance = "<< sqrt(w) << endl;
                     if(w!=0) w=1./w;
                     else w=std::numeric_limits<InReal>::max();
                     unsigned m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
@@ -453,7 +449,6 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 for (unsigned j=0; j<nbRef; j++ )
                 {
                     InReal w=m_weights[i][j];
-                    //    cerr<<"  weight = "<< w << endl;
                     m_dweight[i][j].fill(0);
                     m_ddweight[i][j].fill(0);
                     if (w)
@@ -461,11 +456,8 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                         InReal w2=w*w,w3=w2*w;
                         Vec<3,InReal> u;
                         for(unsigned k=0; k<3; k++)
-                            u[k]=(xto[i][k]-xfrom[j][k]);
+                            u[k]=(xto[i][k]-xfrom[index[i][j]][k]);
                         m_dweight[i][j] = - u * w2* 2.0;
-                        // m_dweight[i][j] = u * w2; // hack FF for a special case. Todo: compute this right.
-                        //  cerr<<" xfrom[j]  = "<< xfrom[j] << endl;
-                        //  cerr<<"  m_dweight = "<< m_dweight[i][j] << endl;
                         for(unsigned k=0; k<num_spatial_dimensions; k++)
                             m_ddweight[i][j][k][k]= - w2* 2.0;
                         for(unsigned k=0; k<num_spatial_dimensions; k++)
@@ -478,6 +470,52 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
 
     }
     normalizeWeights();
+}
+
+
+
+template <class TIn, class TOut>
+void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
+{
+    const unsigned int xtoSize = this->toModel->getX()->size();
+    WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
+    WriteAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > > m_dweight  ( weightDeriv );
+    WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
+
+    for (unsigned int i = 0; i < xtoSize; ++i)
+    {
+        InReal sumWeights = 0,wn;
+        MaterialDeriv sumGrad,dwn;			sumGrad.fill(0);
+        MaterialMat sumGrad2,ddwn;				sumGrad2.fill(0);
+
+        // Compute norm
+        for (unsigned int j = 0; j < nbRef; ++j)
+        {
+            sumWeights += m_weights[i][j];
+            sumGrad += m_dweight[i][j];
+            sumGrad2 += m_ddweight[i][j];
+        }
+
+        // Normalise
+        if(sumWeights!=0)
+        {
+            for (unsigned int j = 0; j < nbRef; ++j)
+            {
+                wn=m_weights[i][j]/sumWeights;
+                dwn=(m_dweight[i][j] - sumGrad*wn)/sumWeights;
+                for(unsigned int o=0; o<num_material_dimensions; o++)
+                {
+                    for(unsigned int p=0; p<num_material_dimensions; p++)
+                    {
+                        ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
+                    }
+                }
+                m_ddweight[i][j]=ddwn;
+                m_dweight[i][j]=dwn;
+                m_weights[i][j] =wn;
+            }
+        }
+    }
 }
 
 
@@ -538,53 +576,7 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
     }
 
     this->f_mass0.endEdit();
-    //for(unsigned int i=0;i<in.size();i++) std::cout<<"mass["<<i<<"]="<<frameMass[i].inertiaMassMatrix<<std::endl;
-}
-
-
-template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
-{
-    const unsigned int xtoSize = this->toModel->getX()->size();
-    WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
-    WriteAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > > m_dweight  ( weightDeriv );
-    WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
-
-    for (unsigned int i = 0; i < xtoSize; ++i)
-    {
-        InReal sumWeights = 0,wn;
-        MaterialDeriv sumGrad,dwn;			sumGrad.fill(0);
-        MaterialMat sumGrad2,ddwn;				sumGrad2.fill(0);
-
-        // Compute norm
-        for (unsigned int j = 0; j < nbRef; ++j)
-        {
-            sumWeights += m_weights[i][j];
-            sumGrad += m_dweight[i][j];
-            sumGrad2 += m_ddweight[i][j];
-        }
-
-        // Normalise
-        if(sumWeights!=0)
-        {
-            for (unsigned int j = 0; j < nbRef; ++j)
-            {
-                wn=m_weights[i][j]/sumWeights;
-                dwn=(m_dweight[i][j] - sumGrad*wn)/sumWeights;
-                for(unsigned int o=0; o<num_material_dimensions; o++)
-                {
-                    for(unsigned int p=0; p<num_material_dimensions; p++)
-                    {
-                        ddwn[o][p]=(m_ddweight[i][j][o][p] - wn*sumGrad2[o][p] - sumGrad[o]*dwn[p] - sumGrad[p]*dwn[o])/sumWeights;
-                    }
-                }
-                m_ddweight[i][j]=ddwn;
-                m_dweight[i][j]=dwn;
-                m_weights[i][j] =wn;
-                //                            cerr<<"  normalized weight = "<< wn << endl;
-            }
-        }
-    }
+    for(unsigned int i=0; i<in.size(); i++) std::cout<<"mass["<<i<<"]="<<massVector[i].inertiaMassMatrix<<std::endl;
 }
 
 

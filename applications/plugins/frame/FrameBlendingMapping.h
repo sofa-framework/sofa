@@ -117,14 +117,14 @@ public:
     FrameBlendingMapping (core::State<In>* from, core::State<Out>* to );
     virtual ~FrameBlendingMapping();
 
-    void init();
+    virtual void init();
 
-    void draw();
+    virtual void draw();
 
-    void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
-    void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
-    void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
-    void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+    virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
+    virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
+    virtual void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
 
     inline void findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex);
 
@@ -214,6 +214,7 @@ extern template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, Deforma
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
+extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, DeformationGradient331fTypes >;
 extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, Vec3fTypes >;
 extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3dTypes, ExtVec3fTypes >;
 //extern template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, ExtVec3dTypes >;

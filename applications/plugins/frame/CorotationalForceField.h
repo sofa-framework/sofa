@@ -24,14 +24,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAME_CorotationalForceField_H
-#define FRAME_CorotationalForceField_H
+#ifndef FRAME_COROTATIONALFORCEFIELD_H
+#define FRAME_COROTATIONALFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
 #include "AffineTypes.h"
 #include "initFrame.h"
 #include "GridMaterial.h"
-#include "FrameBlendingMapping.h"
+#include "MappingTypes.h"
 
 namespace sofa
 {
@@ -71,10 +71,6 @@ public:
     static const unsigned strainenergy_size = StrainType::strainenergy_size;
     typedef typename StrainType::StrainEnergyVec StrainEnergyVec;
 
-    //    typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
-    //                typedef Vec<material_dimensions*(material_dimensions+1)/2> StrainVec;  ///< strain or stress in vector form
-    //              typedef typename DataTypes::Coord::Strain Strain;    ///< Strain in vector form, and possibly its gradient, depending on the order of DataTypes
-
 //                typedef material::GridMaterial<material::MaterialTypes<material_dimensions,Real> > Material;
     typedef material::Material<material::MaterialTypes<material_dimensions,Real> > Material;
     typedef typename Material::StrStr StressStrainMatrix;
@@ -100,15 +96,11 @@ protected :
     VecFrame rotation; ///< rotation matrices
     vector<Strain> strain, strainRate, stress, strainChange, stressChange;
     Material* material;
-    typedef mapping::SampleData<DataTypes> SampleData; // contains precomputed moments
+    typedef defaulttype::SampleData<DataTypes> SampleData; // contains precomputed moments
     SampleData* sampleData;
 
-//            StrainEnergyVec integVec;  ///< vector describing a quantity and its derivatives that we want to integrate
-
-//            typedef defaulttype::CStrain<DataTypes,true> StrainType;
-//            static const unsigned VecIntegOrder=StrainType::strainenergy_order  ; // =0 for order 1 def gradients ; =4 for order 2 deformation gradients  (by default as we don't know if corotational strain is used)
     typedef typename StrainType::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
-    vector< VecInteg > sampleInteg;
+    vector< VecInteg > integFactors;
     vector< StressStrainMatrix > stressStrainMatrices;
 
 };
