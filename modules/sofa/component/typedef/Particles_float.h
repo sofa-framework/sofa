@@ -62,6 +62,22 @@ typedef Rigid3f::Deriv                  DerivRigid3f;
 typedef Rigid3f::Coord                  CoordRigid3f;
 
 
+typedef sofa::defaulttype::ExtVec1fTypes ExtVec1f;
+typedef ExtVec1f::VecCoord               VecCoordExtVec1f;
+typedef ExtVec1f::VecDeriv               VecDerivExtVec1f;
+typedef ExtVec1f::Deriv                  DerivExtVec1f;
+typedef ExtVec1f::Coord                  CoordExtVec1f;
+typedef sofa::defaulttype::ExtVec2fTypes ExtVec2f;
+typedef ExtVec2f::VecCoord               VecCoordExtVec2f;
+typedef ExtVec2f::VecDeriv               VecDerivExtVec2f;
+typedef ExtVec2f::Deriv                  DerivExtVec2f;
+typedef ExtVec2f::Coord                  CoordExtVec2f;
+typedef sofa::defaulttype::ExtVec3fTypes ExtVec3f;
+typedef ExtVec3f::VecCoord               VecCoordExtVec3f;
+typedef ExtVec3f::VecDeriv               VecDerivExtVec3f;
+typedef ExtVec3f::Deriv                  DerivExtVec3f;
+typedef ExtVec3f::Coord                  CoordExtVec3f;
+
 #ifdef SOFA_FLOAT
 
 typedef Particles1f          Particles1;
@@ -96,6 +112,21 @@ typedef VecCoordRigid3f      VecCoordRigid3;
 typedef Quat3f		     Quat3;
 typedef DerivRigid3f	     DerivRigid3;
 typedef CoordRigid3f	     CoordRigid3;
+
+typedef ExtVec1f ExtVec1;
+typedef ExtVec2f ExtVec2;
+typedef ExtVec3f ExtVec3;
+
+typedef sofa::core::State<Particles1> State1;
+typedef sofa::core::State<Particles2> State2;
+typedef sofa::core::State<Particles3> State3;
+typedef sofa::core::State<Particles6> State6;
+typedef sofa::core::State<Rigid2>     RigidState2;
+typedef sofa::core::State<Rigid3>     RigidState3;
+
+typedef sofa::core::State<ExtVec1>     ExtVecState1;
+typedef sofa::core::State<ExtVec2>     ExtVecState2;
+typedef sofa::core::State<ExtVec3>     ExtVecState3;
 
 #endif
 

@@ -41,6 +41,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/topology/CubeTopology.h>
+#include <sofa/helper/vector.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -54,17 +55,14 @@ using namespace sofa::component::container;
 using namespace sofa::component::topology;
 using namespace sofa::component::collision;
 
-Node* createCube(double dx, double dy, double dz, bool implicit = false)
+Node* createCube(double dx, double dy, double dz)
 {
     static int i = 1;
     std::ostringstream oss;
     oss << "cube_" << i++;
-    std::string scheme="Implicit";
 
-    if (!implicit) scheme="Explicit";
 
-    Node* cube_node =  sofa::ObjectCreator::CreateEulerSolverNode(oss.str(), scheme);
-
+    Node* cube_node =getSimulation()->newNode(oss.str());
     MechanicalObject3* DOF = new MechanicalObject3;
     cube_node->addObject(DOF);
     DOF->setName("cube");
@@ -112,19 +110,28 @@ int main( int argc, char** argv )
     Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
     root->setGravityInWorld( Coord3(0,0,0) );
 
+    std::string scheme="Implicit";
 
+    if (!implicit) scheme="Explicit";
 
-    Node* cube1 = createCube( 0,0,0,   implicit  );
-    Node* cube2 = createCube( 10,0,0,  implicit );
-    Node* cube3 = createCube( 0,0,10,  implicit );
-    Node* cube4 = createCube( 10,0,10, implicit);
+    Node* SolverNode = sofa::ObjectCreator::CreateEulerSolverNode("SolverNode", scheme);
+
+    root->addChild(SolverNode);
+
+    Node* cube1 = createCube( 0,0,0   );
+    Node* cube2 = createCube( 10,0,0  );
+    Node* cube3 = createCube( 0,0,10  );
+    Node* cube4 = createCube( 10,0,10 );
     Node* MultiParentsNode = getSimulation()->newNode("MultiParentsNode");
 
     MechanicalObject3* dofMultiMapping = new MechanicalObject3; dofMultiMapping->setName("Center Of Mass");
 
     MultiParentsNode->addObject(dofMultiMapping);
 
-    CenterOfMassMechanicalMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMechanicalMultiMapping3_to_3;
+    sofa::helper::vector<State3*> stateIn;
+    sofa::helper::vector<State3*> stateOut;
+
+    CenterOfMassMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMultiMapping3_to_3(stateIn,stateOut);
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube1->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube2->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube3->getMechanicalState()) );
@@ -144,10 +151,10 @@ int main( int argc, char** argv )
     cube3->addChild(MultiParentsNode);
     cube4->addChild(MultiParentsNode);
 
-    root->addChild( cube1 );
-    root->addChild( cube2 );
-    root->addChild( cube3 );
-    root->addChild( cube4 );
+    SolverNode->addChild( cube1 );
+    SolverNode->addChild( cube2 );
+    SolverNode->addChild( cube3 );
+    SolverNode->addChild( cube4 );
 
 
     MultiParentsNode->setShowCollisionModels(true);
