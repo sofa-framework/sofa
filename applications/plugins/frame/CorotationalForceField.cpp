@@ -17,7 +17,7 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(CorotationalForceField)
 
 // Register in the Factory
-int CorotationalForceFieldClass = core::RegisterObject("Define a specific mass for each particle")
+int CorotationalForceFieldClass = core::RegisterObject("Compute corotational forces on deformation gradients")
 #ifndef SOFA_FLOAT
         .add< CorotationalForceField<DeformationGradient331dTypes> >()
         .add< CorotationalForceField<DeformationGradient332dTypes> >()

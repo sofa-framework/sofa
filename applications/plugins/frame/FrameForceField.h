@@ -27,37 +27,98 @@
 #ifndef FRAME_FRAMEFORCEFIELD_H
 #define FRAME_FRAMEFORCEFIELD_H
 
+#include <sofa/core/behavior/ForceField.h>
 #include "AffineTypes.h"
-#include "QuadraticTypes.h"
 #include "initFrame.h"
-#include "FrameMechanicalObject.h"
+#include "GridMaterial.h"
+#include "MappingTypes.h"
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace behavior
+namespace forcefield
 {
+
+using helper::vector;
 
 using namespace sofa::defaulttype;
+/** Compute strain and apply material law
+*/
+template <class DataTypes>
+class FrameForceField : public core::behavior::ForceField<DataTypes>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(FrameForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
+    typedef typename DataTypes::Real Real;
+    static const int material_dimensions = DataTypes::material_dimensions;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef Data<typename DataTypes::VecCoord> DataVecCoord;
+    typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
+    typedef typename DataTypes::MaterialFrame Frame;
+    typedef vector<Frame> VecFrame;
+
+    typedef defaulttype::CStrain<DataTypes,false> StrainType;
+    typedef typename StrainType::StrainVec StrainVec;
+    typedef typename StrainType::StrStr StrStrMat;
+    typedef typename StrainType::Strain Strain;
+    typedef typename StrainType::Stress Stress;
+
+    static const unsigned strainenergy_size = StrainType::strainenergy_size;
+    typedef typename StrainType::StrainEnergyVec StrainEnergyVec;
+
+//                typedef material::GridMaterial<material::MaterialTypes<material_dimensions,Real> > Material;
+    typedef material::Material<material::MaterialTypes<material_dimensions,Real> > Material;
+    typedef typename Material::StrStr StressStrainMatrix;
+    typedef typename Material::VecMaterialCoord VecMaterialCoord;
+
+
+public:
+    FrameForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL);
+    virtual ~FrameForceField();
+
+
+    // -- ForceField interface
+    void init();
+    void addForce(DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v , const core::MechanicalParams* /*mparams*/);
+    void addDForce(DataVecDeriv&   df , const DataVecDeriv&   dx , const core::MechanicalParams* mparams );
+
+
+    //        virtual void draw();
+
+
+protected :
+
+    // VecFrame rotation; ///< rotation matrices
+    vector<Strain> strain, strainRate, stress, strainChange, stressChange;
+    Material* material;
+    typedef defaulttype::SampleData<DataTypes> SampleData; // contains precomputed moments
+    SampleData* sampleData;
+
+    typedef typename StrainType::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
+    vector< VecInteg > integFactors;
+    vector< StressStrainMatrix > stressStrainMatrices;
+
+};
 
 #if defined(WIN32) && !defined(FRAME_FRAMEFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_FRAME_API ForceField<Affine3dTypes>;
-extern template class SOFA_FRAME_API ForceField<Quadratic3dTypes>;
+extern template class SOFA_FRAME_API FrameForceField<DeformationGradient331dTypes>;
+extern template class SOFA_FRAME_API FrameForceField<DeformationGradient332dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API ForceField<Quadratic3fTypes>;
-extern template class SOFA_FRAME_API ForceField<Affine3fTypes>;
+extern template class SOFA_FRAME_API FrameForceField<DeformationGradient331fTypes>;
+extern template class SOFA_FRAME_API FrameForceField<DeformationGradient332fTypes>;
 #endif
 #endif
 
-} // namespace behavior
+} //
 
-} // namespace core
+} //
 
 } // namespace sofa
 

@@ -408,7 +408,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     }
     else
     {
-        if(xfrom.size()==2)  // linear weights based on 2 closest primitives
+        if(xfrom.size()==20)  // linear weights based on 2 closest primitives
         {
             for (unsigned int i=0; i<xto.size(); i++ )
             {

@@ -33,19 +33,14 @@ HEADERS += \
            FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
-#            FrameDualQuatSkinningMapping.h \
-#            FrameDualQuatSkinningMapping.inl \
            FrameFixedConstraint.h \
            FrameFixedConstraint.inl \
            FrameForceField.h \
-#           FrameHookeForceField.h \
-#           FrameHookeForceField.inl \
+	     FrameForceField.inl \
            FrameMass.h \
            FrameMechanicalObject.h \
            FrameRigidConstraint.h \
            FrameRigidConstraint.inl \
-#           FrameSpringForceField2.h \
-#           FrameSpringForceField2.inl \
            GridMaterial.h \
            GridMaterial.inl \
            initFrame.h \
@@ -53,8 +48,6 @@ HEADERS += \
            NewMaterial.h \
            NewHookeMaterial.h \
            NewHookeMaterial.inl \
-#           PrimitiveSkinningMapping.h \
-#           PrimitiveSkinningMapping.inl \
            QuadraticTypes.h
            
 SOURCES += \
@@ -62,14 +55,10 @@ SOURCES += \
            FrameBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
-#           FrameDualQuatSkinningMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
-#           FrameHookeForceField.cpp \
            FrameMechanicalObject.cpp \
            FrameRigidConstraint.cpp \
-#           FrameSpringForceField2.cpp \
            GridMaterial.cpp \
            NewHookeMaterial.cpp \
-#           PrimitiveSkinningMapping.cpp \
            initFrame.cpp

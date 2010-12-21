@@ -255,6 +255,14 @@ struct LinearBlendTypes<
                 res[index[i]].getVAffine()[j] += Jb[i].Pa * d.getCenter()[j];
                 res[index[i]].getVAffine()[j] += Jb[i].Fa * (d.getMaterialFrame()[j]);
             }
+
+            //std::cout<<"Jt["<<i<<"]="<<Jb[i].Ft<<std::endl;
+            //std::cout<<"Ja["<<i<<"]="<<Jb[i].Fa<<std::endl;
+            //std::cout<<"dt="<<d.getCenter()<<std::endl;
+            //std::cout<<"dF="<<d.getMaterialFrame()<<std::endl;
+            //std::cout<<"ft["<<i<<"]="<<res[index[i]].getVCenter()<<std::endl;
+            //std::cout<<"fa["<<i<<"]="<<res[index[i]].getVAffine()<<std::endl;
+
         }
     }
 };
