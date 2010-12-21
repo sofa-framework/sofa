@@ -38,6 +38,43 @@
 namespace sofa
 {
 
+namespace defaulttype
+{
+
+inline const Vec<3,double>& center(const DeformationGradientTypes<3, 3, 1, double>::Coord& c)
+{
+    return c.getCenter();
+}
+
+inline const Vec<3,double>& center(const DeformationGradientTypes<3, 3, 2, double>::Coord& c)
+{
+    return c.getCenter();
+}
+
+inline const Vec<3,float>& center(const DeformationGradientTypes<3, 3, 1, float>::Coord& c)
+{
+    return c.getCenter();
+}
+
+inline const Vec<3,float>& center(const DeformationGradientTypes<3, 3, 2, float>::Coord& c)
+{
+    return c.getCenter();
+}
+
+template<class Real>
+inline const Vec<3,Real>& center(const Vec<3,Real>& c)
+{
+    return c;
+}
+
+template<class _Real>
+inline Vec<3,_Real>& center(Vec<3,_Real>& c)
+{
+    return c;
+}
+
+}
+
 namespace component
 {
 
@@ -321,7 +358,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
     gridMaterial->computeLinearRegionsSampling(p,0.1);
 
-    WriteAccessor<Data<typename defaulttype::MaterialTraits<typename Out::Coord>::VecMaterialCoord> >  points(this->f_materialPoints);
+    WriteAccessor<Data<typename defaulttype::MaterialTraits<Out>::VecMaterialCoord> >  points(this->f_materialPoints);
     points.resize(p.size());
     for(unsigned i=0; i<p.size(); i++ )
         points[i] = p[i];
@@ -613,7 +650,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                     glColor4d ( coef,coef,0,1 );
                     glColor4d ( 1,1,1,1 );
                     helper::gl::glVertexT ( xfrom[idxReps].getCenter() );
-                    helper::gl::glVertexT ( xto[i] );
+                    helper::gl::glVertexT ( defaulttype::center(xto[i]) );
                 }
             }
         }
