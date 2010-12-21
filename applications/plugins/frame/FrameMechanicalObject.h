@@ -42,8 +42,6 @@ namespace component
 namespace container
 {
 
-using namespace sofa::defaulttype;
-
 #if defined(WIN32) && !defined(FRAME_FRAMEMECHANICALOBJECT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API MechanicalObject<defaulttype::Affine3dTypes>;

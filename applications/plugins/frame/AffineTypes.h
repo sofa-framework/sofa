@@ -269,6 +269,7 @@ public:
         {
             return v[i];
         }
+
         /// Write the OpenGL transformation matrix
         void writeOpenGlMatrix ( float m[16] ) const
         {
@@ -290,6 +291,7 @@ public:
             m[14] = ( float ) getCenter()[2];
             m[15] = 1;
         }
+
         /// Project a point from the child frame to the parent frame
         SpatialCoord pointToParent( const SpatialCoord& v ) const
         {
@@ -303,6 +305,7 @@ public:
             affineInv.invert( getAffine() );
             return affineInv * (v-getCenter());
         }
+
     };
 
     typedef vector<Coord> VecCoord;

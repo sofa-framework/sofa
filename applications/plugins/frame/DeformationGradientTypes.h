@@ -500,6 +500,115 @@ public:
     {
         return v[i];
     }
+
+    /// Write the OpenGL transformation matrix
+    void writeOpenGlMatrix ( float m[16] ) const
+    {
+        BOOST_STATIC_ASSERT(spatial_dimensions == 3);
+        m[0] = (float)getMaterialFrame()(0,0);
+        m[4] = (float)getMaterialFrame()(0,1);
+        m[8] = (float)getMaterialFrame()(0,2);
+        m[1] = (float)getMaterialFrame()(1,0);
+        m[5] = (float)getMaterialFrame()(1,1);
+        m[9] = (float)getMaterialFrame()(1,2);
+        m[2] = (float)getMaterialFrame()(2,0);
+        m[6] = (float)getMaterialFrame()(2,1);
+        m[10] = (float)getMaterialFrame()(2,2);
+        m[3] = 0;
+        m[7] = 0;
+        m[11] = 0;
+        m[12] = ( float ) getCenter()[0];
+        m[13] = ( float ) getCenter()[1];
+        m[14] = ( float ) getCenter()[2];
+        m[15] = 1;
+    }
+    /*
+                /// Write the OpenGL transformation matrix
+                void drawDeformationGradient( const float& scale) const
+                {
+                    BOOST_STATIC_ASSERT(spatial_dimensions == 3);
+                    glPushMatrix();
+                    //drawCylinder();
+                    glPopMatrix();
+                }
+
+                void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec<4,float> colour, int subdRadius, int subdLength)
+                  {
+                    Vector3 tmp = p2-p1;
+                    simulation::getSimulation()->DrawUtility.setMaterial(colour);
+                    // create Vectors p and q, co-planar with the cylinder's cross-sectional disk
+                    Vector3 p=tmp;
+                    if (fabs(p[0]) + fabs(p[1]) < 0.00001*tmp.norm())
+                      p[0] += 1.0;
+                    else
+                      p[2] += 1.0;
+                    Vector3 q;
+                    q = p.cross(tmp);
+                    p = tmp.cross(q);
+                    // do the normalization outside the segment loop
+                    p.normalize();
+                    q.normalize();
+
+                    int i2;
+                    float theta, st, ct;
+                    // build the cylinder from rectangular subd
+                    std::vector<Vector3> points;
+                    std::vector<Vec<4,int> > indices;
+                    std::vector<Vector3> normals;
+
+                    std::vector<Vector3> pointsCloseCylinder1;
+                    std::vector<Vector3> normalsCloseCylinder1;
+                    std::vector<Vector3> pointsCloseCylinder2;
+                    std::vector<Vector3> normalsCloseCylinder2;
+
+                    Vector3 dir=p1-p2; dir.normalize();
+                    pointsCloseCylinder1.push_back(p1);
+                    normalsCloseCylinder1.push_back(dir);
+                    pointsCloseCylinder2.push_back(p2);
+                    normalsCloseCylinder2.push_back(-dir);
+
+
+                    Vector3 dtmp = tmp / (double)subdLength;
+                    for( int j = 0; j < subdLength; ++j) // Length subdivision
+                    {
+                        for (i2=0 ; i2<=subd ; i2++)
+                        {
+                            // sweep out a circle
+                            theta =  i2 * 2.0 * 3.14 / subd;
+                            st = sin(theta);
+                            ct = cos(theta);
+                            // construct normal
+                            tmp = p*ct+q*st;
+                            // set the normal for the two subseqent points
+                            normals.push_back(tmp);
+
+                            // point on disk 1
+                            Vector3 w(p1 + dtmp*j);
+                            w += tmp*radius;
+                            points.push_back(w);
+                            pointsCloseCylinder1.push_back(w);
+                            normalsCloseCylinder1.push_back(dir);
+
+                            // point on disk 2
+                            w=p1 + dtmp*(j+1);
+                            w += tmp*radius;
+                            points.push_back(w);
+                            pointsCloseCylinder2.push_back(w);
+                            normalsCloseCylinder2.push_back(-dir);
+                        }
+                    }
+                    pointsCloseCylinder1.push_back(pointsCloseCylinder1[1]);
+                    normalsCloseCylinder1.push_back(normalsCloseCylinder1[1]);
+                    pointsCloseCylinder2.push_back(pointsCloseCylinder2[1]);
+                    normalsCloseCylinder2.push_back(normalsCloseCylinder2[1]);
+
+                    simulation::getSimulation()->DrawUtility.drawTriangleStrip(points, normals,colour);
+                    if (radius1 > 0) simulation::getSimulation()->DrawUtility.drawTriangleFan(pointsCloseCylinder1, normalsCloseCylinder1,colour);
+                    if (radius2 > 0) simulation::getSimulation()->DrawUtility.drawTriangleFan(pointsCloseCylinder2, normalsCloseCylinder2,colour);
+
+                    simulation::getSimulation()->DrawUtility.resetMaterial(colour);
+                  }
+    */
 };
 
 

@@ -531,7 +531,7 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
 
     MassVector& massVector = *this->f_mass0.beginEdit();
     massVector.resize(in.size());
-    for(unsigned int i=0; i<in.size(); i++) massVector[i].clear();
+    for(unsigned int i=0; i<in.size(); i++) { massVector[i].clear(); massVector[i].mass = 1.0;}
 
     vector<Vec<nbRef,unsigned> > reps;
     vector<Vec<nbRef,InReal> > w;
@@ -568,15 +568,19 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
                     m[findex].clear();
                     map.addMultTranspose( m , map.mult(d) );  // get the contribution of j to each column l of the mass = mass(j).J^T.J.[0...1...0]^T
                     m[findex]*=masses[j];
-                    for(unsigned int col=0; col<InVSize; col++)  massVector[findex].inertiaMassMatrix[col][l]+= m[findex][col];
+                    for(unsigned int col=0; col<InVSize; col++)  massVector[findex].inertiaMatrix[col][l]+= m[findex][col];
                     d[reps[j][k]][l]=0;
                 }
+                massVector[findex].recalc();
             }
         }
     }
 
     this->f_mass0.endEdit();
-    for(unsigned int i=0; i<in.size(); i++) std::cout<<"mass["<<i<<"]="<<massVector[i].inertiaMassMatrix<<std::endl;
+    MassVector& massV = *this->f_mass.beginEdit();
+    massV = massVector;
+    this->f_mass.endEdit();
+    //for(unsigned int i=0;i<in.size();i++) std::cout<<"mass["<<i<<"]="<<massVector[i].inertiaMassMatrix<<std::endl;
 }
 
 

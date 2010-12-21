@@ -49,32 +49,20 @@ void MechanicalObject<Affine3dTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     typedef Vec<3,double> Vec3d;
-    typedef Vec<4,float> Vec4f;
-    std::vector<Vec3d> points;
-//                cerr<<"MechanicalObject<Affine3dTypes>::draw()"<<endl;
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
     glLineWidth(10);
+    const Affine3dTypes::VecCoord& x = (*getX());
+    const float& scale = debugViewIndicesScale.getValue();
     for(int i=0; i<this->getSize(); i++ )
     {
-        const Affine3dTypes::Coord& c = (*getX())[i];
-//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.getCenter() = " << c.getCenter() << endl;
-//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.gAffine() = " << c.getMaterialFrame() << endl;
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+c.getAffine()[0][0], c.getCenter()[1]+c.getAffine()[1][0], c.getCenter()[2]+c.getAffine()[2][0] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+c.getAffine()[0][1], c.getCenter()[1]+c.getAffine()[1][1], c.getCenter()[2]+c.getAffine()[2][1] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back( Vec3d(c.getCenter()[0]+c.getAffine()[0][2], c.getCenter()[1]+c.getAffine()[1][2], c.getCenter()[2]+c.getAffine()[2][2] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
-
+        glPushMatrix();
+        float glTransform[16];
+        x[i].writeOpenGlMatrix( glTransform);
+        glMultMatrixf( glTransform);
+        glScalef(scale,scale,scale);
+        simulation::getSimulation()->DrawUtility.drawFrame(Vec3d(), Quat(), Vec3d(1,1,1)*debugViewIndicesScale.getValue());
+        glPopMatrix();
     }
     glPopAttrib();
 }
@@ -85,31 +73,20 @@ void MechanicalObject<Quadratic3dTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     typedef Vec<3,double> Vec3d;
-    typedef Vec<4,float> Vec4f;
-    std::vector<Vec3d> points;
-//                cerr<<"MechanicalObject<Quadratic3dTypes>::draw()"<<endl;
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
     glLineWidth(10);
+    const Quadratic3dTypes::VecCoord& x = (*getX());
+    const float& scale = debugViewIndicesScale.getValue();
     for(int i=0; i<this->getSize(); i++ )
     {
-        const Quadratic3dTypes::Coord& c = (*getX())[i];
-        points.clear();
-        Quadratic3dTypes::Affine aff = c.getAffine();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+aff[0][0], c.getCenter()[1]+aff[1][0], c.getCenter()[2]+aff[2][0] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+aff[0][1], c.getCenter()[1]+aff[1][1], c.getCenter()[2]+aff[2][1] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back( Vec3d(c.getCenter()[0]+aff[0][2], c.getCenter()[1]+aff[1][2], c.getCenter()[2]+aff[2][2] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
-
+        glPushMatrix();
+        float glTransform[16];
+        x[i].writeOpenGlMatrix( glTransform);
+        glMultMatrixf( glTransform);
+        glScalef(scale,scale,scale);
+        simulation::getSimulation()->DrawUtility.drawFrame(Vec3d(), Quat(), Vec3d(1,1,1)*debugViewIndicesScale.getValue());
+        glPopMatrix();
     }
     glPopAttrib();
 }
@@ -120,32 +97,20 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     typedef Vec<3,double> Vec3d;
-    typedef Vec<4,float> Vec4f;
-    std::vector<Vec3d> points;
-//                cerr<<"MechanicalObject<Affine3dTypes>::draw()"<<endl;
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
     glLineWidth(10);
+    const DeformationGradient331dTypes::VecCoord& x = (*getX());
+    const float& scale = debugViewIndicesScale.getValue();
     for(int i=0; i<this->getSize(); i++ )
     {
-        const DeformationGradient331dTypes::Coord& c = (*getX())[i];
-//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.getCenter() = " << c.getCenter() << endl;
-//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.gAffine() = " << c.getMaterialFrame() << endl;
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][0], c.getCenter()[1]+c.getMaterialFrame()[1][0], c.getCenter()[2]+c.getMaterialFrame()[2][0] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][1], c.getCenter()[1]+c.getMaterialFrame()[1][1], c.getCenter()[2]+c.getMaterialFrame()[2][1] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back( Vec3d(c.getCenter()[0]+c.getMaterialFrame()[0][2], c.getCenter()[1]+c.getMaterialFrame()[1][2], c.getCenter()[2]+c.getMaterialFrame()[2][2] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
-
+        glPushMatrix();
+        float glTransform[16];
+        x[i].writeOpenGlMatrix( glTransform);
+        glMultMatrixf( glTransform);
+        glScalef(scale,scale,scale);
+        simulation::getSimulation()->DrawUtility.drawPlus(debugViewIndicesScale.getValue(), Vec<4,float>(1.0, 1.0, 0.0, 1.0));
+        glPopMatrix();
     }
     glPopAttrib();
 }
@@ -155,32 +120,20 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     typedef Vec<3,double> Vec3d;
-    typedef Vec<4,float> Vec4f;
-    std::vector<Vec3d> points;
-//                cerr<<"MechanicalObject<Affine3dTypes>::draw()"<<endl;
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
     glLineWidth(10);
+    const DeformationGradient332dTypes::VecCoord& x = (*getX());
+    const float& scale = debugViewIndicesScale.getValue();
     for(int i=0; i<this->getSize(); i++ )
     {
-        const DeformationGradient332dTypes::Coord& c = (*getX())[i];
-//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.getCenter() = " << c.getCenter() << endl;
-//                    cerr<<"MechanicalObject<Affine3dTypes>::draw, c.gAffine() = " << c.getMaterialFrame() << endl;
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][0], c.getCenter()[1]+c.getMaterialFrame()[1][0], c.getCenter()[2]+c.getMaterialFrame()[2][0] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(1,0,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back(Vec3d( c.getCenter()[0]+c.getMaterialFrame()[0][1], c.getCenter()[1]+c.getMaterialFrame()[1][1], c.getCenter()[2]+c.getMaterialFrame()[2][1] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,1,0,1));
-
-        points.clear();
-        points.push_back(Vec3d(c.getCenter()[0], c.getCenter()[1], c.getCenter()[2] ));
-        points.push_back( Vec3d(c.getCenter()[0]+c.getMaterialFrame()[0][2], c.getCenter()[1]+c.getMaterialFrame()[1][2], c.getCenter()[2]+c.getMaterialFrame()[2][2] ));
-        simulation::getSimulation()->DrawUtility.drawLines(points,2,Vec4d(0,0,1,1));
-
+        glPushMatrix();
+        float glTransform[16];
+        x[i].writeOpenGlMatrix( glTransform);
+        glMultMatrixf( glTransform);
+        glScalef(scale,scale,scale);
+        simulation::getSimulation()->DrawUtility.drawPlus(debugViewIndicesScale.getValue(), Vec<4,float>(1.0, 1.0, 0.0, 1.0));
+        glPopMatrix();
     }
     glPopAttrib();
 }
