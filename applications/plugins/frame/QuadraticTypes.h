@@ -40,6 +40,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
+#include <sofa/helper/PolarDecompose.h>
 
 namespace sofa
 {
@@ -108,6 +109,34 @@ public:
                 for (unsigned int j = 0; j < 3; ++j)
                     m[i][j]=getVQuadratic()[i][j];
             return  m;
+        }
+
+
+        /// project to a rigid motion
+        void setRigid()
+        {
+            Quadratic& q = getVQuadratic();
+            // first matrix is skew-symmetric
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                q[i][i] = 0.0;
+            }
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                for(unsigned j=i+1; j<spatial_dimensions; j++)
+                {
+                    q[i][j] = (q[i][j] - q[j][i]) *0.5;
+                    q[j][i] = - q[i][j];
+                }
+            }
+            // the rest is null (?)
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                for(unsigned j=spatial_dimensions; j<spatial_dimensions*spatial_dimensions; j++)
+                {
+                    q[i][j] = 0.;
+                }
+            }
         }
 
 
@@ -223,6 +252,31 @@ public:
                     m[i][j]=getQuadratic()[i][j];
             return  m;
         }
+
+        /// project to a rigid motion
+        void setRigid()
+        {
+            Quadratic& q = getQuadratic();
+            // first matrix is pure rotation
+            Affine a = getAffine(), rotation, def;
+            polar_decomp(a, rotation, def);
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                for(unsigned j=0; j<spatial_dimensions; j++)
+                {
+                    q[i][j] = rotation[i][j];
+                }
+            }
+            // the rest is null (?)
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                for(unsigned j=spatial_dimensions; j<spatial_dimensions*spatial_dimensions; j++)
+                {
+                    q[i][j] = 0.;
+                }
+            }
+        }
+
 
         static const unsigned spatial_dimensions = N;
         static const unsigned total_size = VSize;

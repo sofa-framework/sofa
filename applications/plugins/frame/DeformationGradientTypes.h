@@ -122,7 +122,7 @@ public:
         {
             for( unsigned k=0; k<material_dimensions-j; k++ )
             {
-                f[k][k+j] = f[k+j][k] = s[ei] ;
+                f[k][k+j] = f[k+j][k] = s[ei] ;  // first diagonal, then second diagonal…
                 if(0!=j) {f[k][k+j] *= 0.5; f[k+j][k] *= 0.5;}
                 ei++;
             }
@@ -393,196 +393,23 @@ public:
 
 
 
-//  void setStress( const Stress& stress  ) // replace deformation gradient by stress
-//{
-//    getMaterialFrame() = getFrame(stress[0]);
-//}
-
-//void getCorotationalStrain( MaterialFrame& rotation, Strain& strain ) const
-//{
-//        MaterialFrame local_deformation_gradient;
-//        helper::polar_decomp(this->getMaterialFrame(), rotation, local_deformation_gradient); // decompose F=RD
-//        strain[0] = getStrainVec( local_deformation_gradient );
-// }
-
-//void getCorotationalStrainRate( Strain& strainRate, const MaterialFrame& rotation  ) const {
-//    // FF: assuming that the strain rate  can be decomposed using the same rotation as the strain
-//        strainRate[0] = getStrainVec( rotation.multTranspose(this->getMaterialFrame()) );
-// }
 
 
 
-/*
-template<int _spatial_dimensions, int _material_dimensions, typename _Real>
-        class DeformationGradient<_spatial_dimensions, _material_dimensions, 1, _Real>
-{
-
-public:
-    static const unsigned spatial_dimensions = _spatial_dimensions;
-    static const unsigned material_dimensions = _material_dimensions;
-    enum {order = 1 };
-    static const unsigned NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
-    static const unsigned VSize = spatial_dimensions +  NumMatrices * spatial_dimensions * spatial_dimensions;  // number of entries
-    typedef _Real Real;
-    typedef vector<Real> VecReal;
-    typedef Vec<10,Real> SampleIntegVector;  ///< used to precompute the integration of deformation energy over a sample region
-
-    // ------------    Types and methods defined for easier data access
-    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-    typedef Mat<spatial_dimensions,spatial_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
-    typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
 
 
-    static const unsigned strain_size = spatial_dimensions * (1+spatial_dimensions) / 2; ///< independent entries in the strain tensor
-    typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
-    typedef Vec<NumMatrices,StrainVec> Strain;  ///< Strain and its gradient, in vector form
-    typedef Strain Stress;
-
-
-protected:
-    Vec<VSize,Real> v;
-
-public:
-    DeformationGradient(){ v.clear(); }
-    DeformationGradient( const Vec<VSize,Real>& d):v(d){}
-    void clear(){ v.clear(); }
-
-    /// seen as a vector
-    Vec<VSize,Real>& getVec(){ return v; }
-    const Vec<VSize,Real>& getVec() const { return v; }
-
-    /// point
-    SpatialCoord& getCenter(){ return *reinterpret_cast<SpatialCoord*>(&v[0]); }
-    const SpatialCoord& getCenter() const { return *reinterpret_cast<const SpatialCoord*>(&v[0]); }
-
-    /// local frame (if order>=1)
-    MaterialFrame& getMaterialFrame(){ return *reinterpret_cast<MaterialFrame*>(&v[spatial_dimensions]); }
-    const MaterialFrame& getMaterialFrame() const { return *reinterpret_cast<const MaterialFrame*>(&v[spatial_dimensions]); }
-
-    static const unsigned total_size = VSize;
-    typedef Real value_type;
-
-    static void multStrain( Strain& s, Real r )
-    {
-        for(unsigned i=0; i<s.size(); i++)
-            s[i] *= r;
-    }
-
-    static StrainVec getStrainVec(  const MaterialFrame& f ) // symmetric matrix
-    {
-        StrainVec s;
-        unsigned ei=0;
-        for(unsigned j=0; j<material_dimensions; j++){
-            for( unsigned k=j; k<material_dimensions; k++ ){
-                s[ei] = f[j][k];
-                ei++;
-            }
-        }
-        return s;
-    }
-
-    static MaterialFrame getFrame( const StrainVec& s  )
-    {
-        MaterialFrame f;
-        unsigned ei=0;
-        for(unsigned j=0; j<material_dimensions; j++){
-            for( unsigned k=j; k<material_dimensions; k++ ){
-                f[k][j] = f[j][k] = s[ei] ;
-                ei++;
-            }
-        }
-        return f;
-    }
-
-      void setStress( const Stress& stress  )
-    {
-        getMaterialFrame() = getFrame(stress[0]);
-    }
-
-    void getCorotationalStrain( MaterialFrame& rotation, Strain& strain ) const
-    {
-            MaterialFrame local_deformation_gradient;
-            helper::polar_decomp(this->getMaterialFrame(), rotation, local_deformation_gradient); // decompose F=RD
-            strain[0] = getStrainVec( local_deformation_gradient );
-     }
-
-    void getCorotationalStrainRate( Strain& strainRate, const MaterialFrame& rotation  ) const {
-        // FF: assuming that the strain rate  can be decomposed using the same rotation as the strain
-            strainRate[0] = getStrainVec( rotation.multTranspose(this->getMaterialFrame()) );
-     }
-
-
-
-    DeformationGradient operator +(const DeformationGradient& a) const { return DeformationGradient(v+a.v); }
-    void operator +=(const DeformationGradient& a){ v+=a.v; }
-
-    DeformationGradient operator -(const DeformationGradient& a) const { return DeformationGradient(v-a.v); }
-    void operator -=(const DeformationGradient& a){ v-=a.v; }
-
-
-    template<typename real2>
-    DeformationGradient operator *(real2 a) const { return DeformationGradient(v*a); }
-    template<typename real2>
-    void operator *=(real2 a){ v *= a; }
-
-    template<typename real2>
-    void operator /=(real2 a){ v /= a; }
-
-    DeformationGradient operator - () const { return DeformationGradient(-v); }
-
-
-    /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator*(const DeformationGradient& a) const
-    {
-        return v*a.v;
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const DeformationGradient& c ){
-        out<<c.v;
-        return out;
-    }
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, DeformationGradient& c ){
-        in>>c.v;
-        return in;
-    }
-
-
-    Real* ptr() { return v.ptr(); }
-    const Real* ptr() const { return v.ptr(); }
-
-    /// Vector size
-    static unsigned size() { return VSize; }
-
-    /// Access to i-th element.
-    Real& operator[](int i)
-    {
-        return v[i];
-    }
-
-    /// Const access to i-th element.
-    const Real& operator[](int i) const
-    {
-        return v[i];
-    }
-};
-
-*/
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-class DeformationGradient // <_spatial_dimensions, _material_dimensions, _order, _Real>
+class DeformationGradient
 {
 
 public:
     static const unsigned spatial_dimensions = _spatial_dimensions;
     static const unsigned material_dimensions = _material_dimensions;
     static const unsigned order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient
-    //       enum {order = 2 };
     static const unsigned NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
     static const unsigned VSize = spatial_dimensions +  NumMatrices * material_dimensions * material_dimensions;  // number of entries
     typedef _Real Real;
     typedef vector<Real> VecReal;
-    //        typedef Vec<35,Real> SampleIntegVector;  ///< used to precompute the integration of deformation energy over a sample region
 
     // ------------    Types and methods defined for easier data access
     typedef Vec<material_dimensions, Real> MaterialCoord;
@@ -591,10 +418,6 @@ public:
     typedef Mat<material_dimensions,material_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
     typedef Vec<material_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
 
-    //static const unsigned strain_size = spatial_dimensions * (1+spatial_dimensions) / 2; ///< independent entries in the strain tensor
-    //typedef Vec<strain_size,Real> StrainVec;   ///< Strain in vector form
-    //typedef Vec<NumMatrices,StrainVec> Strain; ///< Strain and its gradient, in vector form
-    //typedef Strain Stress;
 
 
 protected:
@@ -624,66 +447,6 @@ public:
     static const unsigned total_size = VSize;
     typedef Real value_type;
 
-    //static void multStrain( Strain& s, Real r )
-    //{
-    //    for(unsigned i=0; i<s.size(); i++)
-    //        s[i] *= r;
-    //}
-
-    //static StrainVec getStrainVec(  const MaterialFrame& f )
-    //{
-    //    StrainVec s;
-    //    unsigned ei=0;
-    //    for(unsigned j=0; j<material_dimensions; j++){
-    //        for( unsigned k=j; k<material_dimensions; k++ ){
-    //            s[ei] = f[j][k];
-    //            ei++;
-    //        }
-    //    }
-    //    return s;
-    //}
-
-    //static MaterialFrame getFrame( const StrainVec& s  )
-    //{
-    //    MaterialFrame f;
-    //    unsigned ei=0;
-    //    for(unsigned j=0; j<material_dimensions; j++){
-    //        for( unsigned k=j; k<material_dimensions; k++ ){
-    //            f[k][j] = f[j][k] = s[ei] ;
-    //            ei++;
-    //        }
-    //    }
-    //    return f;
-    //}
-
-    //void setStress( const Stress& stress  )
-    //{
-    //    getMaterialFrame() = getFrame(stress[0]);
-    //    MaterialFrameGradient& g= this->getMaterialFrameGradient();
-    //    for(unsigned i=0; i<spatial_dimensions; i++ ){
-    //        g[i] = getFrame( stress[1+i] ); // FF: assuming that the gradient of F can be decomposed using the same rotation as F
-    //    }
-    //}
-
-    // void getCorotationalStrain( MaterialFrame& rotation, Strain& strain ) const {
-    //        MaterialFrame local_deformation_gradient;
-    //        helper::polar_decomp(this->getMaterialFrame(), rotation, local_deformation_gradient); // decompose F=RD
-    //        strain[0] = getStrainVec( local_deformation_gradient );
-
-    //        const MaterialFrameGradient& g= this->getMaterialFrameGradient();
-    //        for(unsigned i=0; i<spatial_dimensions; i++ ){
-    //            strain[1+i] = getStrainVec( rotation.multTranspose(g[i]) ); // FF: assuming that the gradient of F can be decomposed using the same rotation as F
-    //        }
-    //}
-
-    //void getCorotationalStrainRate( Strain& strainRate, const MaterialFrame& rotation  ) const {
-    //    // FF: assuming that the strain rate  can be decomposed using the same rotation as the strain
-    //        strainRate[0] = getStrainVec( rotation.multTranspose(this->getMaterialFrame()) );
-    //        const MaterialFrameGradient& g= this->getMaterialFrameGradient();
-    //        for(unsigned i=0; i<spatial_dimensions; i++ ){
-    //            strainRate[1+i] = getStrainVec( rotation.multTranspose(g[i]) );
-    //        }
-    //}
 
 
 
@@ -760,15 +523,7 @@ struct DeformationGradientTypes
     static const unsigned material_dimensions = _material_dimensions;
     static const unsigned order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient
     typedef _Real Real;
-    //            static const unsigned NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
-    //            static const unsigned VSize = spatial_dimensions +  NumMatrices * spatial_dimensions * spatial_dimensions;  // number of entries
     typedef vector<Real> VecReal;
-    //
-    // ------------    Types and methods defined for easier data access
-    //            typedef Vec<material_dimensions, Real> MaterialCoord;
-    //            typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-    //            typedef Mat<material_dimensions,spatial_dimensions, Real> MaterialFrame;      ///< Matrix representing a deformation gradient
-    //            typedef Vec<spatial_dimensions, MaterialFrame> MaterialFrameGradient;                 ///< Gradient of a deformation gradient
 
 
     typedef DeformationGradient<spatial_dimensions,material_dimensions,order,Real> Coord;
@@ -831,6 +586,7 @@ struct DeformationGradientTypes
 
 
 
+// ==========================================================================
 
 /** Mass associated with a sampling point
 */

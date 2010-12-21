@@ -40,6 +40,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
+#include <sofa/helper/PolarDecompose.h>
 
 namespace sofa
 {
@@ -83,6 +84,25 @@ public:
         /// local frame
         Affine& getVAffine() { return *reinterpret_cast<Affine*>(&v[spatial_dimensions]); }
         const Affine& getVAffine() const { return *reinterpret_cast<const Affine*>(&v[spatial_dimensions]); }
+
+        /// project to a rigid motion
+        void setRigid()
+        {
+            Affine& a = getVAffine();
+            // make skew-symmetric
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                a[i][i] = 0.0;
+            }
+            for(unsigned i=0; i<spatial_dimensions; i++)
+            {
+                for(unsigned j=i+1; j<spatial_dimensions; j++)
+                {
+                    a[i][j] = (a[i][j] - a[j][i]) *0.5;
+                    a[j][i] = - a[i][j];
+                }
+            }
+        }
 
 
         static const unsigned spatial_dimensions = N;
@@ -175,6 +195,14 @@ public:
         /// local frame
         Affine& getAffine() { return *reinterpret_cast<Affine*>(&v[spatial_dimensions]); }
         const Affine& getAffine() const { return *reinterpret_cast<const Affine*>(&v[spatial_dimensions]); }
+
+        /// project to a rigid displacement
+        void setRigid()
+        {
+            Affine rotation, def;
+            polar_decomp( getAffine(), rotation, def );
+            getAffine() = rotation;
+        }
 
 
         static const unsigned spatial_dimensions = N;
