@@ -52,7 +52,7 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices<defaulttype::Vec2d> >()
         .add< ValuesFromIndices<defaulttype::Vec3d> >()
         .add< ValuesFromIndices<defaulttype::Rigid2dTypes::Coord> >()
-        .add< ValuesFromIndices<defaulttype::Rigid2dTypes::Deriv> >()
+//.add< ValuesFromIndices<defaulttype::Rigid2dTypes::Deriv> >()  WARNING: removed because «duplicate instanciation» (changes on RigidDeriv)
         .add< ValuesFromIndices<defaulttype::Rigid3dTypes::Coord> >()
         .add< ValuesFromIndices<defaulttype::Rigid3dTypes::Deriv> >()
 #endif //SOFA_FLOAT
@@ -61,7 +61,7 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices<defaulttype::Vec2f> >()
         .add< ValuesFromIndices<defaulttype::Vec3f> >()
         .add< ValuesFromIndices<defaulttype::Rigid2fTypes::Coord> >()
-        .add< ValuesFromIndices<defaulttype::Rigid2fTypes::Deriv> >()
+//.add< ValuesFromIndices<defaulttype::Rigid2fTypes::Deriv> >() WARNING: removed because «duplicate instanciation» (changes on RigidDeriv)
         .add< ValuesFromIndices<defaulttype::Rigid3fTypes::Coord> >()
         .add< ValuesFromIndices<defaulttype::Rigid3fTypes::Deriv> >()
 #endif //SOFA_DOUBLE
