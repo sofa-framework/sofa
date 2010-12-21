@@ -222,6 +222,11 @@ public :
         return m[j][i];
     }
 
+    T* operator[] ( int i )
+    {
+        return m[i];
+    }
+
     const T* operator[] ( int i ) const
     {
         return m[i];

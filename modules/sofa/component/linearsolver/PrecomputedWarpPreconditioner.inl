@@ -74,8 +74,8 @@ namespace linearsolver
 using namespace sofa::component::odesolver;
 using namespace sofa::component::linearsolver;
 
-template<class TDataTypes,class TMatrix,class TVector>
-PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::PrecomputedWarpPreconditioner()
+template<class TDataTypes>
+PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
     : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
@@ -89,26 +89,27 @@ PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::PrecomputedWarpPreco
     usePrecond = true;
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMatrix(const core::MechanicalParams* mparams)
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
     // Update the matrix only the first time
     if (first)
     {
-        first = false;
         init_mFact = mparams->mFactor();
         init_bFact = mparams->bFactor();
         init_kFact = mparams->kFactor();
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix();
+        this->currentGroup->needInvert = true;
     }
-
-    this->currentGroup->needInvert = usePrecond;
+    else
+    {
+        this->currentGroup->needInvert = usePrecond;
+    }
 }
 
 //Solve x = R * M^-1 * R^t * b
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix& /*M*/, TVector& z, TVector& r)
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::solve (TMatrix& /*M*/, TVector& z, TVector& r)
 {
     if (usePrecond)
     {
@@ -150,8 +151,8 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix&
     else z = r;
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix()
 {
     unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
     dt = this->getContext()->getDt();
@@ -214,34 +215,25 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
     }
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCSparse()
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse()
 {
 #ifdef SOFA_HAVE_CSPARSE
     cout << "Compute the initial invert matrix with CS_PARSE" << endl;
 
-    CompressedRowSparseMatrix<double> matSolv;
-    FullVector<double> r;
-    FullVector<double> b;
+    FullVector<Real> r;
+    FullVector<Real> b;
 
     unsigned systemSize = this->currentGroup->systemMatrix->colSize();
 
-    matSolv.resize(systemSize,systemSize);
     r.resize(systemSize);
     b.resize(systemSize);
-    SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
+    SparseCholeskySolver<CompressedRowSparseMatrix<Real>, FullVector<Real> > solver;
 
-    for (unsigned int j=0; j<systemSize; j++)
-    {
-        for (unsigned int i=0; i<systemSize; i++)
-        {
-            if (this->currentGroup->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->currentGroup->systemMatrix->element(j,i));
-        }
-        b.set(j,0.0);
-    }
+    for (unsigned int j=0; j<systemSize; j++) b.set(j,0.0);
 
     std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
-    solver.invert(matSolv);
+    solver.invert(*this->currentGroup->systemMatrix);
 
     for (unsigned int j=0; j<systemSize; j++)
     {
@@ -252,7 +244,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
 
-        solver.solve(matSolv,r,b);
+        solver.solve(*this->currentGroup->systemMatrix,r,b);
         for (unsigned int i=0; i<systemSize; i++)
         {
             internalData.MinvPtr->set(j,i,r.element(i)*factInt);
@@ -267,8 +259,8 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
 #endif
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithSolver()
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 {
     usePrecond = false;//Don'Use precond during precomputing
 
@@ -484,14 +476,24 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
     usePrecond = true;
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::invert(TMatrix& /*M*/)
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::invert(TMatrix& M)
 {
-    this->rotateConstraints();
+    if (usePrecond)
+    {
+        if (first)
+        {
+            first = false;
+            if (this->currentGroup->systemMatrix==NULL) this->currentGroup->systemMatrix=&M;
+            loadMatrix();
+        }
+
+        this->rotateConstraints();
+    }
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstraints()
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
 {
     _rotate = true;
     if (! use_rotations.getValue()) return;
@@ -562,28 +564,29 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstrain
 
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-bool PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+template<class TDataTypes>
+bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
 {
     if (! _rotate) this->rotateConstraints();  //already rotate with Preconditionner
     _rotate = false;
-
     if (J->colSize() == 0) return true;
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
     {
         ComputeResult(result, *j, (float) fact);
+        return true;
     }
     else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
     {
         ComputeResult(result, *j, (float) fact);
-    } return false;
+        return true;
+    }
 
-    return true;
+    return false;
 }
 
-template<class TDataTypes,class TMatrix,class TVector> template<class JMatrix>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
+template<class TDataTypes> template<class JMatrix>
+void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
 {
     unsigned nl;
     internalData.JR.clear();
@@ -666,15 +669,15 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::ComputeResult(de
     }
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::init()
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::init()
 {
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
     if (node != NULL) mstate = node->get<MState> ();
 }
 
-template<class TDataTypes,class TMatrix,class TVector>
-void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::draw()
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::draw()
 {
     if (! use_rotations.getValue()) return;
     if (draw_rotations_scale.getValue() <= 0.0) return;
