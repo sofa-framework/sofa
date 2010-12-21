@@ -98,7 +98,6 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
     , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
-    , showDistancesValues ( initData ( &showDistancesValues, false, "showDistancesValues","Show dstances values." ) )
     , showWeights ( initData ( &showWeights, false, "showWeights","Show coeficients." ) )
     , showGammaCorrection ( initData ( &showGammaCorrection, 1.0, "showGammaCorrection","Correction of the Gamma by a power" ) )
     , showWeightsValues ( initData ( &showWeightsValues, false, "showWeightsValues","Show coeficients values." ) )
@@ -118,6 +117,10 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
 //                maskTo = NULL;
 //                if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( to ) )
 //                    maskTo = &stateTo->forceMask;
+
+    // These sout are here to check if the template interface work well
+    sout << "In VSize: " << defaulttype::InDataTypesInfo<In>::VSize << sendl;
+    sout << "Out order: " << defaulttype::OutDataTypesInfo<TOut>::primitive_order << sendl;
 }
 
 template <class TIn, class TOut>
@@ -358,7 +361,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
     gridMaterial->computeLinearRegionsSampling(p,0.1);
 
-    WriteAccessor<Data<typename defaulttype::MaterialTraits<Out>::VecMaterialCoord> >  points(this->f_materialPoints);
+    WriteAccessor<Data<typename defaulttype::OutDataTypesInfo<Out>::VecMaterialCoord> >  points(this->f_materialPoints);
     points.resize(p.size());
     for(unsigned i=0; i<p.size(); i++ )
         points[i] = p[i];
@@ -667,22 +670,6 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             sofa::helper::gl::GlText::draw ( m_reps[i][0]*scale, p, textScale );
         }
     }
-
-    // Display distances for each points
-    //if ( showDistancesValues.getValue())
-    //{
-    //    glColor3f( 1.0, 1.0, 1.0);
-    //    for ( unsigned int i=0;i<xto.size();i++ )
-    //    {
-    //        bool influenced;
-    //        unsigned int refIndex;
-    //        findIndexInRepartition(influenced, refIndex, i, showFromIndex.getValue()%nbRefs.getValue());
-    //        if ( influenced)
-    //        {
-    //            sofa::helper::gl::GlText::draw ( (int)(distances[refIndex][i]*scale), xto[i], textScale );
-    //        }
-    //    }
-    //}
 
     // Display distance gradients values for each points
     if ( showGradientsValues.getValue())

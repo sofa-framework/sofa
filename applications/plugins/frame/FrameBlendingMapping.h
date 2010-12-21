@@ -60,7 +60,7 @@ using defaulttype::SampleData;
 /** Linear blend skinning, from a variety of input types to a variety of output types.
  */
 template <class TIn, class TOut>
-class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut,typename TOut::Real,TOut::spatial_dimensions>::primitive_order > 0)>, public SampleData<TOut>
+class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)>, public SampleData<TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -97,15 +97,15 @@ public:
     typedef typename GridMat::SHessian  MaterialMat;
 
     // Mass types
-    enum {InVSize= defaulttype::InDataTypesInfo<In,InReal,num_spatial_dimensions>::VSize};
-    typedef FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut,typename TOut::Real,TOut::spatial_dimensions>::primitive_order > 0)> FData;
+    enum {InVSize= defaulttype::InDataTypesInfo<In>::VSize};
+    typedef FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)> FData;
     typedef typename FData::FrameMassType FrameMassType;
     typedef typename FData::VecMass VecMass;
     typedef typename FData::MassVector MassVector;
 
     // Conversion types
     static const unsigned nbRef = GridMat::nbRef;
-    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out,OutReal,num_spatial_dimensions>::primitive_order > InOut;
+    typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::primitive_order > InOut;
 
 
 public:
@@ -152,7 +152,6 @@ public:
     Data<bool> showDefTensorsValues;
     Data<double> showDefTensorScale;
     Data<unsigned int> showFromIndex;
-    Data<bool> showDistancesValues;
     Data<bool> showWeights;
     Data<double> showGammaCorrection;
     Data<bool> showWeightsValues;
