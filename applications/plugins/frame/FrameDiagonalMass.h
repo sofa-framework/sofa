@@ -29,19 +29,9 @@
 #pragma once
 #endif
 
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/topology/PointData.h>
-#include <sofa/helper/SVector.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include "QuadraticTypes.h"
-#include "AffineTypes.h"
 #include "FrameMass.h"
 #include "MappingTypes.h"
-#include <sofa/core/objectmodel/DataFileName.h>
 #include "initFrame.h"
 
 namespace sofa
@@ -52,9 +42,8 @@ namespace component
 
 namespace mass
 {
-using helper::SVector;
 using sofa::defaulttype::FrameData;
-using namespace sofa::defaulttype;
+using defaulttype::Quat;
 
 template <class DataTypes, class TMassType>
 class FrameDiagonalMass : public core::behavior::Mass<DataTypes>
@@ -72,72 +61,21 @@ public:
     typedef TMassType MassType;
     enum { N=DataTypes::spatial_dimensions };
     enum { InDerivDim=DataTypes::Deriv::total_size };
-    typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Mat<3,3,Real> Mat33;
-    typedef defaulttype::Mat<3,6,Real> Mat36;
-    typedef SVector<Mat36> VMat36;
-    typedef SVector<VMat36> VVMat36;
-    typedef defaulttype::Mat<3,8,Real> Mat38;
-    typedef defaulttype::Mat<3,9,Real> Mat39;
-    typedef defaulttype::Mat<3,InDerivDim,Real> Mat3xIn;
-    typedef SVector<Mat3xIn> VMat3xIn;
-    typedef SVector<VMat3xIn> VVMat3xIn;
-    typedef defaulttype::Mat<4,4,Real> Mat44;
-    typedef defaulttype::Mat<6,3,Real> Mat63;
-    typedef defaulttype::Mat<InDerivDim,3,Real> MatInx3;
-    typedef SVector<MatInx3> VMatInx3;
-    typedef SVector<VMatInx3> VVMatInx3;
-    typedef defaulttype::Mat<6,6,Real> Mat66;
     typedef defaulttype::Mat<InDerivDim,InDerivDim,Real> MatInxIn;
-    typedef SVector<Mat66> VMat66;
-    typedef SVector<VMat66> VVMat66;
-    typedef defaulttype::Mat<8,3,Real> Mat83;
-    typedef defaulttype::Mat<8,6,Real> Mat86;
-    typedef SVector<Mat86> VMat86;
-    typedef defaulttype::Mat<8,8,Real> Mat88;
-    typedef SVector<Mat88> VMat88;
     typedef defaulttype::Vec<3,Real> Vec3;
-    typedef SVector<Vec3> VVec3;
-    typedef SVector<VVec3> VVVec3;
-    typedef defaulttype::Vec<4,Real> Vec4;
-    typedef defaulttype::Vec<6,Real> Vec6;
-    typedef SVector<Vec6> VVec6;
-    typedef SVector<VVec6> VVVec6;
-    typedef defaulttype::Vec<8,Real> Vec8;
-    typedef SVector<Real> VD;
+    typedef defaulttype::Vec<InDerivDim,Real> VecIn;
     typedef FrameData<DataTypes,true> FData;
-
-    typedef SVector<unsigned int> VUI;
-    typedef SVector<VUI> VVUI;
-
-    // In case of non 3D template
-    typedef Vec<3,MassType> Vec3Mass;
-    typedef StdVectorTypes< Vec3Mass, Vec3Mass, MassType > GeometricalTypes ; /// assumes the geometry object type is 3D
-
     typedef typename FData::VecMass VecMass;
     typedef typename FData::MassVector MassVector;
 
-    /// the mass density used to compute the mass from a mesh topology and geometry
-    Data< Real > m_massDensity; // Used to fix mass density of all the samples.
-
     /// to display the center of gravity of the system
-    Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;
     core::objectmodel::DataFileName fileMass;
     Data< float > damping;
 
-protected:
-    //VecMass masses;
-
-    class Loader;
-
-public:
-
     FrameDiagonalMass();
-
     ~FrameDiagonalMass();
-
-    //virtual const char* getTypeName() const { return "FrameDiagonalMass"; }
 
     bool load(const char *filename);
 
@@ -146,17 +84,6 @@ public:
     virtual void init();
     virtual void reinit();
     virtual void bwdInit();
-
-    Real getMassDensity() const
-    {
-        return m_massDensity.getValue();
-    }
-
-    void setMassDensity(Real m)
-    {
-        m_massDensity.setValue(m);
-    }
-
 
     void addMass(const MassType& mass);
 
@@ -181,11 +108,12 @@ public:
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
-    bool isDiagonal() {return true;};
+    bool isDiagonal()
+    {
+        return true;
+    };
 
     void draw();
-
-    bool addBBox(double* minBBox, double* maxBBox);
 
     virtual std::string getTemplateName() const
     {
@@ -200,14 +128,19 @@ public:
         return name;
     }
 
+protected:
+    class Loader;
+
 private:
-    FData* frameData;
+    FData* frameData; // Storage and computation of the mass blocks
 
     void updateMass();
-    void computeRelRot ( Mat33& relRot, const Coord& xi, const Coord& xi0);
+    void computeRelRot (Mat33& relRot, const Quat& q, const Quat& q0);
     void rotateM( MatInxIn& M, const MatInxIn& M0, const Mat33& R);
     void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);
 };
+
+
 
 #if defined(WIN32) && !defined(FRAME_FRAMEDIAGONALMASS_CPP)
 #pragma warning(disable : 4231)

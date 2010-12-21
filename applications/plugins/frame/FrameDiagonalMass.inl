@@ -26,16 +26,12 @@
 #define FRAME_FRAMEDIAGONALMASS_INL
 
 #include "FrameDiagonalMass.h"
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/template.h>
-#include "AffineTypes.h"
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
-#include "FrameMass.h"
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/simulation/common/Visitor.h>
 
 
 namespace sofa
@@ -47,15 +43,9 @@ namespace component
 namespace mass
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-
-
 template <class DataTypes, class MassType>
 FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
-    : m_massDensity ( initData ( &m_massDensity, ( Real ) 1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0" ) )
-    , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    : showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , damping ( initData ( &damping, 0.0f, "damping", "add a force which is \"- damping * speed\"" ) )
 {
@@ -71,6 +61,9 @@ FrameDiagonalMass<DataTypes, MassType>::~FrameDiagonalMass()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::clear()
 {
+    MassVector& masses0 = *frameData->f_mass0.beginEdit();
+    masses0.clear();
+    frameData->f_mass0.endEdit();
     MassVector& masses = *frameData->f_mass.beginEdit();
     masses.clear();
     frameData->f_mass.endEdit();
@@ -151,12 +144,12 @@ double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoo
     double e = 0;
     const MassVector& masses = frameData->f_mass.getValue();
     // gravity
-    Vec<3,Real> g ( this->getContext()->getLocalGravity() );
-    Vec<InDerivDim,Real> theGravity;
+    Vec3 g ( this->getContext()->getLocalGravity() );
+    VecIn theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
     for ( unsigned int i=0; i<x.size(); i++ )
     {
-        Vec<InDerivDim> translation;
+        VecIn translation;
         translation[0]=(float)x[i].getCenter()[0],  translation[0]=(float)x[1].getCenter()[1], translation[2]=(float)x[i].getCenter()[2];
         const MatInxIn& m = masses[i].inertiaMatrix;
         e -= translation * (m * theGravity);
@@ -178,13 +171,12 @@ void FrameDiagonalMass<DataTypes, MassType>::addMToMatrix ( defaulttype::BaseMat
 template <class DataTypes, class MassType>
 double FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int /*index*/ ) const
 {
-//                return ( SReal ) ( f_mass.getValue() [index] );
+//  return ( SReal ) ( frameData->f_mass.getValue() [index] );
     cerr<<"WARNING : double FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index ) const IS NOT IMPLEMENTED" << endl;
     return 0;
 }
 
 
-//TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index, defaulttype::BaseMatrix *m ) const
 {
@@ -209,7 +201,6 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::reinit()
 {
     const unsigned int& fromSize = this->mstate->getX()->size();
-
     this->resize ( fromSize );
     frameData->LumpMassesToFrames();
 
@@ -226,10 +217,10 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     sofa::core::objectmodel::BaseContext* context=  this->getContext();
     context->get<FData>( &vFData, core::objectmodel::BaseContext::SearchDown);
     FData* tmpFData = NULL;
-    for( typename vector<FData *>::iterator it = vFData.begin(); it != vFData.end(); it++)
+    for ( typename vector<FData *>::iterator it = vFData.begin(); it != vFData.end(); it++)
     {
         tmpFData = (*it);
-        if( tmpFData && tmpFData->isPhysical)
+        if ( tmpFData && tmpFData->isPhysical)
         {
             frameData = tmpFData;
             break;
@@ -254,7 +245,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addGravityToV (core::MultiVecDerivI
         helper::WriteAccessor< DataVecDeriv > v = *vid[this->mstate].write();
 
         // gravity
-        Vec3d g ( this->getContext()->getLocalGravity() );
+        Vec3 g ( this->getContext()->getLocalGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * ( typename DataTypes::Real ) mparams->dt();
@@ -270,14 +261,13 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& v )
 {
     const unsigned int& fromSize = this->mstate->getX()->size();
-    this->resize ( fromSize );
-
     const VecCoord& xfrom = *this->mstate->getX();
     const MassVector& vecMass0 = frameData->f_mass0.getValue();
     const MassVector& vecMass = frameData->f_mass.getValue();
-    if( vecMass0.size() != xfrom.size())
+    if ( vecMass0.size() != xfrom.size())
     {
-        // Update the mass
+        // ReCompute the blocks
+        this->resize ( fromSize );
         frameData->LumpMassesToFrames();
     }
 
@@ -288,7 +278,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
         return;
 
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
+    Vec3 g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2] );
 
@@ -323,54 +313,16 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
     const MassVector& masses = frameData->f_mass.getValue();
     if ( !this->getContext()->getShowBehaviorModels() ) return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
-    if( x.size() != masses.size()) return;
-//                Real totalMass=0;
-//                RigidTypes::Vec3 gravityCenter;
+    if ( x.size() != masses.size()) return;
     for ( unsigned int i=0; i<x.size(); i++ )
     {
         glPushMatrix();
         float glTransform[16];
         x[i].writeOpenGlMatrix( glTransform);
         glMultMatrixf( glTransform);
-        simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3d(1,1,1)*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3(1,1,1)*showAxisSize.getValue() );
         glPopMatrix();
-
-//                    const Vec3& center = x[i].getCenter();
-//                    gravityCenter += ( center * masses[i].mass );
-//                    totalMass += masses[i].mass;
     }
-
-//                if ( showCenterOfGravity.getValue() )
-//                {
-//                    glColor3f ( 1,1,0 );
-//                    glBegin ( GL_LINES );
-//                    gravityCenter /= totalMass;
-//                    helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-//                    helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
-//                    helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-//                    helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
-//                    helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-//                    helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
-//                    glEnd();
-//                }
-}
-
-template <class DataTypes, class MassType>
-bool FrameDiagonalMass<DataTypes, MassType>::addBBox ( double* minBBox, double* maxBBox )
-{
-    const VecCoord& x = *this->mstate->getX();
-    for ( unsigned int i=0; i<x.size(); i++ )
-    {
-        //const Coord& p = x[i];
-        Real p[3] = {0.0, 0.0, 0.0};
-        DataTypes::get ( p[0],p[1],p[2],x[i] );
-        for ( int c=0; c<3; c++ )
-        {
-            if ( p[c] > maxBBox[c] ) maxBBox[c] = p[c];
-            if ( p[c] < minBBox[c] ) minBBox[c] = p[c];
-        }
-    }
-    return true;
 }
 
 template <class DataTypes, class MassType>
@@ -407,10 +359,10 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass()
     MassVector& vecMass = *frameData->f_mass.beginEdit();
 
     // Rotate the mass
-    for( unsigned int i = 0; i < xfrom.size(); ++i)
+    for ( unsigned int i = 0; i < xfrom.size(); ++i)
     {
         Mat33 relRot;
-        computeRelRot( relRot, xfrom[i], xfrom0[i]);
+        computeRelRot( relRot, xfrom[i].getOrientation(), xfrom0[i].getOrientation());
         rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, relRot);
         vecMass[i].recalc();
     }
@@ -419,12 +371,13 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass()
 
 
 template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::computeRelRot ( Mat33& relRot, const Coord& xi, const Coord& xi0)
+void FrameDiagonalMass<DataTypes, MassType>::computeRelRot (Mat33& relRot, const Quat& q, const Quat& q0)
 {
-    const Quat& q  = xi.getOrientation();
-    const Quat& q0 = xi0.getOrientation();
-
-    Quat q0_inv; q0_inv[0]=-q0[0]; q0_inv[1]=-q0[1]; q0_inv[2]=-q0[2]; q0_inv[3]=q0[3];
+    Quat q0_inv;
+    q0_inv[0]=-q0[0];
+    q0_inv[1]=-q0[1];
+    q0_inv[2]=-q0[2];
+    q0_inv[3]=q0[3];
     Quat qrel;
     qrel = q * q0_inv;
     QtoR( relRot, qrel);
@@ -436,16 +389,17 @@ void FrameDiagonalMass<DataTypes, MassType>::rotateM( MatInxIn& M, const MatInxI
 {
     int i,j,k;
 
-    MatInxIn M1; M1.fill(0);
+    MatInxIn M1;
+    M1.fill(0);
     M.fill(0);
-    for(i=0; i<3; i++) for(j=0; j<3; j++) for(k=0; k<3; k++)
+    for (i=0; i<3; i++) for (j=0; j<3; j++) for (k=0; k<3; k++)
             {
                 M1[i][j]+=R[i][k]*M0[k][j];
                 M1[i][j+3]+=R[i][k]*M0[k][j+3];
                 M1[i+3][j]+=R[i][k]*M0[k+3][j];
                 M1[i+3][j+3]+=R[i][k]*M0[k+3][j+3];
             }
-    for(i=0; i<3; i++) for(j=0; j<3; j++) for(k=0; k<3; k++)
+    for (i=0; i<3; i++) for (j=0; j<3; j++) for (k=0; k<3; k++)
             {
                 M[i][j]+=M1[i][k]*R[j][k];
                 M[i][j+3]+=M1[i][k+3]*R[j][k];
@@ -462,9 +416,15 @@ void FrameDiagonalMass<DataTypes, MassType>::QtoR( Mat33& M, const sofa::helper:
     Real wx = q[3]*xs, wy = q[3]*ys, wz = q[3]*zs;
     Real xx = q[0]*xs, xy = q[0]*ys, xz = q[0]*zs;
     Real yy = q[1]*ys, yz = q[1]*zs, zz = q[2]*zs;
-    M[0][0] = (Real)1.0 - (yy + zz); M[0][1]= xy - wz; M[0][2] = xz + wy;
-    M[1][0] = xy + wz; M[1][1] = (Real)1.0 - (xx + zz); M[1][2] = yz - wx;
-    M[2][0] = xz - wy; M[2][1] = yz + wx; M[2][2] = (Real)1.0 - (xx + yy);
+    M[0][0] = (Real)1.0 - (yy + zz);
+    M[0][1]= xy - wz;
+    M[0][2] = xz + wy;
+    M[1][0] = xy + wz;
+    M[1][1] = (Real)1.0 - (xx + zz);
+    M[1][2] = yz - wx;
+    M[2][0] = xz - wy;
+    M[2][1] = yz + wx;
+    M[2][2] = (Real)1.0 - (xx + yy);
 }
 
 

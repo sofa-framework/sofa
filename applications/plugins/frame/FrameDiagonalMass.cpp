@@ -23,10 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define FRAME_FRAMEDIAGONALMASS_CPP
+
 #include "FrameDiagonalMass.inl"
-#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/Axis.h>
 
 namespace sofa
 {
@@ -62,35 +61,9 @@ template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3x6dMass>;
 template class SOFA_FRAME_API FrameDiagonalMass<Rigid3fTypes,Frame3x6fMass>;
 #endif
 
+template<> void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::updateMass() {}
 
-///////////////////////////////////////////////////////////////////////////////
-//                     Affine3dTypes, Frame3x12dMass                         //
-///////////////////////////////////////////////////////////////////////////////
-template<>
-void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::updateMass()
-{
-}
-
-
-template<>
-void FrameDiagonalMass<Affine3dTypes, Frame3x12dMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
-//                     Affine3fTypes, Frame3x12fMass                         //
-///////////////////////////////////////////////////////////////////////////////
-template<>
-void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::updateMass()
-{
-}
-
-
-template<>
-void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
-{
-}
-
+template<> void FrameDiagonalMass<Affine3fTypes, Frame3x12fMass>::updateMass() {}
 
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
@@ -99,37 +72,9 @@ template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;
 template class SOFA_FRAME_API FrameDiagonalMass<Affine3fTypes,Frame3x12fMass>;
 #endif
 
+template<> void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::updateMass() {}
 
-
-///////////////////////////////////////////////////////////////////////////////
-//                    Quadratic3dTypes, Frame3x30dMass                       //
-///////////////////////////////////////////////////////////////////////////////
-
-template<>
-void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::updateMass()
-{
-}
-
-template<>
-void FrameDiagonalMass<Quadratic3dTypes, Frame3x30dMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
-//                    Quadratic3fTypes, Frame3x30fMass                       //
-///////////////////////////////////////////////////////////////////////////////
-
-template<>
-void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::updateMass()
-{
-}
-
-
-template<>
-void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::computeRelRot ( Mat33& , const Coord& , const Coord& )
-{
-}
-
+template<> void FrameDiagonalMass<Quadratic3fTypes, Frame3x30fMass>::updateMass() {}
 
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API FrameDiagonalMass<Quadratic3dTypes,Frame3x30dMass>;
