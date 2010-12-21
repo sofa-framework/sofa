@@ -42,6 +42,8 @@ HEADERS += \
 #           FrameHookeForceField.inl \
            FrameMass.h \
            FrameMechanicalObject.h \
+           FrameRigidConstraint.h \
+           FrameRigidConstraint.inl \
 #           FrameSpringForceField2.h \
 #           FrameSpringForceField2.inl \
            GridMaterial.h \
@@ -65,6 +67,7 @@ SOURCES += \
            FrameForceField.cpp \
 #           FrameHookeForceField.cpp \
            FrameMechanicalObject.cpp \
+           FrameRigidConstraint.cpp \
 #           FrameSpringForceField2.cpp \
            GridMaterial.cpp \
            NewHookeMaterial.cpp \

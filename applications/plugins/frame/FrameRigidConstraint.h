@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAME_FRAMEFIXEDCONSTRAINT_H
-#define FRAME_FRAMEFIXEDCONSTRAINT_H
+#ifndef FRAME_FrameRigidConstraint_H
+#define FRAME_FrameRigidConstraint_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include "AffineTypes.h"
@@ -46,31 +46,23 @@ using namespace sofa::defaulttype;
 /** Attach given particles to their initial positions.
 */
 template <class DataTypes>
-class FrameFixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class FrameRigidConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FrameFixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(FrameRigidConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
     typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
-    static const unsigned dimensions = DataTypes::Deriv::total_size;
-    typedef Vec<dimensions, int> VecAllowed;
+//        static const unsigned dimensions = DataTypes::Deriv::total_size;
 
-//protected:
-//
-//    template <class DataDeriv>
-//    void projectResponseT(DataDeriv& dx, const core::MechanicalParams* mparams);
-
-public:
     Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
-    Data<vector<VecAllowed > > f_allowed;  ///< Allowed displacements of the constrained frames
     Data<double> _drawSize;
 
-    FrameFixedConstraint();
+    FrameRigidConstraint();
 
-    virtual ~FrameFixedConstraint();
+    virtual ~FrameRigidConstraint();
 
 
     // -- Constraint interface
@@ -102,11 +94,11 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(FRAME_FRAMEFIXEDCONSTRAINT_CPP)
-extern template class SOFA_FRAME_API FrameFixedConstraint<Affine3dTypes>;
-extern template class SOFA_FRAME_API FrameFixedConstraint<Quadratic3dTypes>;
-extern template class SOFA_FRAME_API FrameFixedConstraint<Affine3fTypes>;
-extern template class SOFA_FRAME_API FrameFixedConstraint<Quadratic3fTypes>;
+#if defined(WIN32) && !defined(FRAME_FrameRigidConstraint_CPP)
+extern template class SOFA_FRAME_API FrameRigidConstraint<Affine3dTypes>;
+extern template class SOFA_FRAME_API FrameRigidConstraint<Quadratic3dTypes>;
+extern template class SOFA_FRAME_API FrameRigidConstraint<Affine3fTypes>;
+extern template class SOFA_FRAME_API FrameRigidConstraint<Quadratic3fTypes>;
 #endif
 
 } // namespace behavior
