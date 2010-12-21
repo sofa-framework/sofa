@@ -66,7 +66,7 @@ public:
 
     static bool read_system(int & size,std::string & fileName,TMatrix & matrix,sofa::defaulttype::BaseVector * solution,sofa::defaulttype::BaseVector * unknown,bool print);
     template<class JMatrix>
-    static bool read_J(int max_size,int size,std::string & fileName,JMatrix & J,double & fact,bool print);
+    static bool read_J(int & max_size,int size,std::string & fileName,JMatrix & J,double & fact,bool print);
 
     static bool generate_system(int size,double sparsity,TMatrix & matrix,sofa::defaulttype::BaseVector * solution,sofa::defaulttype::BaseVector * unknown,bool print);
 };

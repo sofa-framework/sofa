@@ -67,13 +67,17 @@ private :
     css *S;
     csn *N;
     cs A;
-    helper::vector<int> A_i, A_p;
-    helper::vector<double> A_x;
-    double * tmp;
+    int * A_i;
+    int * A_p;
+    helper::vector<double> A_x,z_tmp,r_tmp,tmp;
+
+    void solveT(double * z, double * r);
+    void solveT(float * z, float * r);
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_LINEARSOLVER)
 extern template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 #endif
 
 } // namespace linearsolver

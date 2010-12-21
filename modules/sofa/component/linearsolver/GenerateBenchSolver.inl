@@ -265,7 +265,7 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_system(int & max_size,std::strin
 }
 
 template<class TMatrix, class TVector> template<class JMatrix>
-bool GenerateBenchSolver<TMatrix,TVector>::read_J(int max_size,int size,std::string & fileName,JMatrix & J,double & fact,bool print)
+bool GenerateBenchSolver<TMatrix,TVector>::read_J(int & max_size,int size,std::string & fileName,JMatrix & J,double & fact,bool print)
 {
     std::ifstream file(fileName.c_str(), std::ifstream::binary);
 
@@ -287,11 +287,8 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_J(int max_size,int size,std::str
             return false;
         }
 
-        if (sizeY < max_size)
-        {
-            std::cerr << "Error the J matrix contains only " << sizeY << " Contacts you cannot generate a bench with " << max_size << std::endl;
-            return false;
-        }
+        if (sizeY < max_size) std::cerr << "WARNING the J matrix contains only " << sizeY << std::endl;
+        max_size = sizeY;
 
         if (size_type!=sizeof(Real))
         {

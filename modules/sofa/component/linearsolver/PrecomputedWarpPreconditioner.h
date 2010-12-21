@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
@@ -59,7 +59,8 @@ class PrecomputedWarpPreconditionerInternalData
 public :
     typedef typename TDataTypes::Coord Coord;
     typedef typename Coord::value_type Real;
-    typedef FullMatrix<Real> TBaseMatrix ;
+    typedef FullMatrix<Real> TBaseMatrix;
+    typedef FullVector<Real> TBaseVector;
 
     SparseMatrix<Real> JR;
     FullMatrix<Real> JRMinv;
@@ -72,12 +73,12 @@ public :
 
     ~PrecomputedWarpPreconditionerInternalData()
     {
-        if (!shared) delete MinvPtr;
+        if (!shared && MinvPtr!=NULL) delete MinvPtr;
     }
 
     void setMinv(FullMatrix<Real>* m, bool shared = true)
     {
-        if (!this->shared) delete this->MinvPtr;
+        if (!this->shared && MinvPtr!=NULL) delete this->MinvPtr;
         this->MinvPtr = m;
         this->shared = shared;
     }
@@ -90,11 +91,17 @@ public :
 };
 
 /// Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix
-template<class TDataTypes, class TMatrix, class TVector>
-class PrecomputedWarpPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+template<class TDataTypes>
+class PrecomputedWarpPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<CompressedRowSparseMatrix<typename TDataTypes::Real>,typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseVector>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(PrecomputedWarpPreconditioner,TDataTypes,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    typedef typename TDataTypes::Real Real;
+    typedef CompressedRowSparseMatrix<Real> TMatrix;
+    typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseVector TVector;
+    typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+
+    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedWarpPreconditioner,TDataTypes),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
     typedef TDataTypes DataTypes;
     typedef typename TDataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -102,11 +109,6 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename behavior::MechanicalState<DataTypes> MState;
 
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
-
-
-    typedef typename Coord::value_type Real;
     typedef MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> jmjt_twostep;
@@ -147,7 +149,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const PrecomputedWarpPreconditioner<DataTypes,TMatrix,TVector>* = NULL)
+    static std::string templateName(const PrecomputedWarpPreconditioner<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
