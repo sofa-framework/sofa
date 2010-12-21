@@ -160,8 +160,8 @@ protected :
     PrecomputedWarpPreconditionerInternalData<TDataTypes> internalData;
 
     void rotateConstraints();
-    void loadMatrix();
-    void loadMatrixWithCSparse();
+    void loadMatrix(TMatrix& M);
+    void loadMatrixWithCSparse(TMatrix& M);
     void loadMatrixWithSolver();
 
     template<class JMatrix>

@@ -152,9 +152,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::solve (TMatrix& /*M*/, TVector& 
 }
 
 template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix()
+void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 {
-    unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
+    unsigned systemSize = M.rowSize();
     dt = this->getContext()->getDt();
 
     EulerImplicitSolver* EulerSolver;
@@ -186,7 +186,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix()
         else
         {
             cout << "Precompute : " << fname << " compliance" << endl;
-            if (solverName.getValue().empty()) loadMatrixWithCSparse();
+            if (solverName.getValue().empty()) loadMatrixWithCSparse(M);
             else loadMatrixWithSolver();
 
             if (use_file.getValue())
@@ -216,7 +216,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix()
 }
 
 template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse()
+void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
 #ifdef SOFA_HAVE_CSPARSE
     cout << "Compute the initial invert matrix with CS_PARSE" << endl;
@@ -224,7 +224,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse()
     FullVector<Real> r;
     FullVector<Real> b;
 
-    unsigned systemSize = this->currentGroup->systemMatrix->colSize();
+    unsigned systemSize = M.colSize();
 
     r.resize(systemSize);
     b.resize(systemSize);
@@ -233,7 +233,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse()
     for (unsigned int j=0; j<systemSize; j++) b.set(j,0.0);
 
     std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
-    solver.invert(*this->currentGroup->systemMatrix);
+    solver.invert(M);
 
     for (unsigned int j=0; j<systemSize; j++)
     {
@@ -244,7 +244,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse()
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
 
-        solver.solve(*this->currentGroup->systemMatrix,r,b);
+        solver.solve(M,r,b);
         for (unsigned int i=0; i<systemSize; i++)
         {
             internalData.MinvPtr->set(j,i,r.element(i)*factInt);
@@ -484,8 +484,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::invert(TMatrix& M)
         if (first)
         {
             first = false;
-            if (this->currentGroup->systemMatrix==NULL) this->currentGroup->systemMatrix=&M;
-            loadMatrix();
+            loadMatrix(M);
         }
 
         this->rotateConstraints();
