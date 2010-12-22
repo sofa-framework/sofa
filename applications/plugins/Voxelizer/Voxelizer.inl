@@ -79,12 +79,13 @@ Voxelizer<DataTypes>::~Voxelizer()
     if (valueImg) delete valueImg;
     if (segmentationImg) delete segmentationImg;
 
-    if ( rasterizedVolumes)
-    {
-        for (unsigned int i = 0; i < 3; ++i)
-            delete [] rasterizedVolumes[i];
-        delete [] rasterizedVolumes;
-    }
+    // TODO Properly delete this structure. This code leads to a seg fault
+    //if ( rasterizedVolumes)
+    //{
+    //    for (unsigned int i = 0; i < 3; ++i)
+    //        delete [] rasterizedVolumes[i];
+    //    delete [] rasterizedVolumes;
+    //}
 }
 
 
