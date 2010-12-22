@@ -160,9 +160,9 @@ public:
 
             // order 1: Ei = [Fi^T.F +  F^T.Fi ]/2
             unsigned ei=1;
-            for(unsigned i=1; i<=material_dimensions; i++)
+            for(unsigned i=0; i<material_dimensions; i++)
             {
-                strainmat = F.getMaterialFrame().multTranspose( F.getMaterialFrameGradient()[i-1] );
+                strainmat = F.getMaterialFrame().multTranspose( F.getMaterialFrameGradient()[i] );
                 strain[ei] = getStrainVec( strainmat ); ei++;
             }
 
@@ -176,199 +176,44 @@ public:
         }
     }
 
-    static void mult( const Deriv& F, StrainDeriv& strain , const MaterialFrame* rotation=NULL)
+    static void mult( const Deriv& dF, const Coord& F, StrainDeriv& strain , const MaterialFrame* rotation=NULL)
     // ApplyJ : dstrain = J(dF)  convert deformation gradient change to strain change
     {
         if(iscorotational)
         {
-            // order 0: e = [R^T Fr + Fr^T R ]/2
-            if(rotation!=NULL) strain[0] = getStrainVec( rotation->multTranspose(F.getMaterialFrame()) );
-            else strain[0] = getStrainVec( F.getMaterialFrame() );
+            // order 0: de =  [R^T dF + dF^T R ]/2
+            if(rotation!=NULL) strain[0] = getStrainVec( rotation->multTranspose(dF.getMaterialFrame()) );
+            else strain[0] = getStrainVec( dF.getMaterialFrame() );
 
             if(strain_order==0) return;
-            // order 1 : de =  [R^T dFr + dFr^T R ]/2
-            if(rotation!=NULL) { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( rotation->multTranspose( F.getMaterialFrameGradient()[i-1] ) ); }
-            else { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( F.getMaterialFrameGradient()[i-1] ); }
+            // order 1 : de =  [R^T dF + dF^T R ]/2
+            if(rotation!=NULL) { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( rotation->multTranspose( dF.getMaterialFrameGradient()[i-1] ) ); }
+            else { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( dF.getMaterialFrameGradient()[i-1] ); }
         }
-        else // green-lagrange strain (order 0 or 2) : E= [F^T.F - I ]/2
+        else
         {
-            // to do
-        }
-    }
-
-    static void addMultTranspose( Deriv& dF , const Deriv& F, const StrainDeriv& s, const StrainEnergyVec& integ, const MaterialFrame* rotation=NULL)
-    // for each dof Fi, add Fi+= sum_p  (dE/dFi dp )^T dE dp = [(dE /dFi )^T dE ]^(order 2) . sum_p  dp^(order 2)
-    {
-        if(iscorotational) // cauchy strain (order 0 or 1) : e= [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I
-        {
-            // order 0: dF -= R.dE * vol
-            MaterialFrame s0 = *rotation * getFrame( s[0] );
-            dF.getMaterialFrame() -= s0 *integ[0];
-
+            // order 0: dE = [ F^T.dF + dF^T.F ]/2
+            MaterialFrame strainmat=F.getMaterialFrame().multTranspose( dF.getMaterialFrame() );
+            strain[0] = getStrainVec( strainmat );
             if(strain_order==0) return;
 
-            Vec<material_dimensions,MaterialFrame> si;
-            for(unsigned i=0; i<material_dimensions; i++) si[i]=*rotation * getFrame( s[i+1] );
-            unsigned ci=1;
-
-            // order 1: dF -= R.dEi * sum dpi
-            //			dFi -= R.dE * sum dpi
-
+            // order 1: Ei = [dFi^T.F +  F^T.dFi ]/2 + [Fi^T.dF +  dF^T.Fi ]/2
+            unsigned ei=1;
             for(unsigned i=0; i<material_dimensions; i++)
             {
-                dF.getMaterialFrame() -= si[i]*integ[ci];
-                dF.getMaterialFrameGradient()[i] -= s0*integ[ci];
-                ci++;
+                strainmat = F.getMaterialFrame().multTranspose( dF.getMaterialFrameGradient()[i] ) + F.getMaterialFrameGradient()[i].multTranspose( dF.getMaterialFrame() );
+                strain[ei] = getStrainVec( strainmat ); ei++;
             }
 
-            // order 2: dFi -= R.dEj * sum dpidpj
-            //			dFj -= R.dEi * sum dpidpj
-
+            // order 2: Eij = [dFi^T.Fj +  Fj^T.dFi ]/2 + [Fi^T.dFj +  dFj^T.Fi ]/2
             for(unsigned i=0; i<material_dimensions; i++)
-            {
-                for(unsigned j=i; i<material_dimensions; i++)
+                for(unsigned j=i; j<material_dimensions; j++)
                 {
-                    dF.getMaterialFrameGradient()[i] -= si[j]*integ[ci];
-                    if(i!=j) dF.getMaterialFrameGradient()[j] -= si[i]*integ[ci];
-                    ci++;
+                    strainmat = F.getMaterialFrameGradient()[i].multTranspose( dF.getMaterialFrameGradient()[j] ) + F.getMaterialFrameGradient()[j].multTranspose( dF.getMaterialFrameGradient()[i] );
+                    strain[ei] = getStrainVec( strainmat ); ei++;
                 }
-            }
-
-        }
-        else // green-lagrange strain (order 0 or 2)
-        {
-            // order 0: dF -= (F.dE) * vol
-            MaterialFrame s0=getFrame( s[0] );
-            MaterialFrame F0s0=F.getMaterialFrame()*s0;
-            dF.getMaterialFrame() -= F0s0*integ[0];
-            if(strain_order==0) return;
-
-            // compute Fi.dEj
-            unsigned i,j,k;
-
-            Vec<NumStrainVec,MaterialFrame> si;
-            for(i=0; i<NumStrainVec; i++) si[i]=getFrame( s[i] );
-            Mat<material_dimensions+1,NumStrainVec,MaterialFrame> Fisj;
-
-            Fisj[0][0]=F0s0;
-            for(j=1; j<NumStrainVec; j++)
-                Fisj[0][j]=F.getMaterialFrame()*si[j];
-            for(i=1; i<material_dimensions+1; i++)
-                for(j=0; j<NumStrainVec; j++)
-                    Fisj[i][j]=F.getMaterialFrameGradient()[i-1]*si[j];
-
-            unsigned ci=1+material_dimensions;
-            Mat<material_dimensions,material_dimensions,unsigned> indexij; // index of terms in i.j
-            for(i=0; i<material_dimensions; i++)
-                for(j=i; j<material_dimensions; j++)
-                    indexij[i][j]=indexij[j][i]=ci;
-
-            // order 1: dF -= (F.dEi +  Fi.dE) * sum dpi
-            //			dFi-= (F.dE) * sum dpi
-
-            ci=1;
-            for(i=0; i<material_dimensions; i++)
-            {
-                dF.getMaterialFrame() -= (Fisj[0][i+1] + Fisj[i+1][0])*integ[ci];
-                dF.getMaterialFrameGradient()[i] -= Fisj[0][0]*integ[ci];
-                ci++;
-            }
-
-            // order 2: dF -= (F.dEij +  Fi.dEj +  Fj.dEi) * sum dpidpj
-            //			dFi-= (Fj.dE + F.dEj ) * sum dpidpj
-            //			dFj-= (Fi.dE + F.dEi) * sum dpidpj
-
-            for(i=0; i<material_dimensions; i++)
-                for(j=i; j<material_dimensions; j++)
-                {
-                    dF.getMaterialFrame() -= ( Fisj[0][ci] + Fisj[i+1][j+1] ) *integ[ci];
-                    if(i!=j) dF.getMaterialFrame() -= ( Fisj[j+1][i+1] ) *integ[ci];
-                    dF.getMaterialFrameGradient()[i] -= (Fisj[0][j+1] + Fisj[j+1][0])*integ[ci];
-                    if(i!=j) dF.getMaterialFrameGradient()[j] -= (Fisj[0][i+1] + Fisj[i+1][0])*integ[ci];
-                    ci++;
-                }
-
-            // order 3: term ijk (only in 3D)	dF -= (Fi.dEjk +  Fj.dEik +  Fk.dEij) * sum dpidpjdpk
-            //									dFi-= (F.dEjk + Fj.dEk + Fk.dEj ) * sum dpidpjdpk
-            //									dFj-= (F.dEik + Fi.dEk + Fk.dEi) * sum dpidpjdpk
-            //									dFk-= (F.dEji + Fj.dEi + Fi.dEj) * sum dpidpjdpk
-
-            if(material_dimensions==3)
-            {
-                dF.getMaterialFrame() -= ( Fisj[1][indexij[1][2]] + Fisj[2][indexij[0][2]] + Fisj[3][indexij[0][1]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[0] -= ( Fisj[0][ci] + Fisj[2][3] + Fisj[3][2] ) *integ[ci];
-                dF.getMaterialFrameGradient()[1] -= ( Fisj[0][ci] + Fisj[1][3] + Fisj[3][1] ) *integ[ci];
-                dF.getMaterialFrameGradient()[2] -= ( Fisj[0][ci] + Fisj[2][1] + Fisj[1][2] ) *integ[ci];
-                ci++;
-            }
-
-            // order 3: dF -= (Fj.dEii +  Fi.dEij ) * sum dpi^2dpj
-            //			dFi-= (Fj.dEi + F.dEij + Fi.dEj ) * sum dpi^2dpj
-            //			dFj-= (Fi.dEi + Fi.dEij ) * sum dpi^2dpj
-
-
-            for(i=0; i<material_dimensions; i++)
-                for(j=0; j<material_dimensions; j++)
-                {
-                    dF.getMaterialFrame() -= ( Fisj[i+1][indexij[i][j]] ) *integ[ci];
-                    if(i!=j) dF.getMaterialFrame() -= ( Fisj[j+1][indexij[i][i]] ) *integ[ci];
-                    dF.getMaterialFrameGradient()[i] -= ( Fisj[j+1][i+1] + Fisj[0][indexij[i][j]] ) *integ[ci];
-                    if(i!=j) dF.getMaterialFrameGradient()[i] -= ( Fisj[i+1][j+1] ) *integ[ci];
-                    if(i!=j) dF.getMaterialFrameGradient()[j] -= ( Fisj[i+1][i+1] + Fisj[0][indexij[i][i]] ) *integ[ci];
-                    ci++;
-                }
-
-            // order 4: dFi-= (Fi.dEjj + Fj.dEij ) * sum dpi^2dpj^2
-            //			dFj-= (Fj.dEii + Fi.dEij ) * sum dpi^2dpj^2
-
-            for(i=0; i<material_dimensions; i++)
-                for(j=i; j<material_dimensions; j++)
-                {
-                    dF.getMaterialFrameGradient()[i] -= ( Fisj[i+1][indexij[j][j]] ) *integ[ci];
-                    if(i!=j) dF.getMaterialFrameGradient()[i] -= ( Fisj[j+1][indexij[i][j]] ) *integ[ci];
-                    if(i!=j) dF.getMaterialFrameGradient()[j] -= ( Fisj[j+1][indexij[i][i]] + Fisj[i+1][indexij[i][j]] ) *integ[ci];
-                    ci++;
-                }
-
-            // order 4: term i^2jk (only in 3D)		dFi-= (Fi.dEjk + Fj.dEij + Fk.dEij ) * sum dpi^2dpjdpk
-            //										dFj-= (Fi.dEik + Fk.dEii ) * sum dpi^2dpjdpk
-            //										dFk-= (Fi.dEij + Fj.dEii ) * sum dpi^2dpjdpk
-
-            if(material_dimensions==3)
-            {
-                i=0; j=1; k=2;
-                dF.getMaterialFrameGradient()[i] -= ( Fisj[i+1][indexij[j][k]] + Fisj[j+1][indexij[i][k]] + Fisj[k+1][indexij[i][j]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[j] -= ( Fisj[i+1][indexij[i][k]] + Fisj[k+1][indexij[i][i]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[k] -= ( Fisj[i+1][indexij[i][j]] + Fisj[j+1][indexij[i][i]]  ) *integ[ci];
-                ci++;
-
-                i=1; j=0; k=2;
-                dF.getMaterialFrameGradient()[i] -= ( Fisj[i+1][indexij[j][k]] + Fisj[j+1][indexij[i][k]] + Fisj[k+1][indexij[i][j]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[j] -= ( Fisj[i+1][indexij[i][k]] + Fisj[k+1][indexij[i][i]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[k] -= ( Fisj[i+1][indexij[i][j]] + Fisj[j+1][indexij[i][i]]  ) *integ[ci];
-                ci++;
-
-                i=2; j=1; k=1;
-                dF.getMaterialFrameGradient()[i] -= ( Fisj[i+1][indexij[j][k]] + Fisj[j+1][indexij[i][k]] + Fisj[k+1][indexij[i][j]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[j] -= ( Fisj[i+1][indexij[i][k]] + Fisj[k+1][indexij[i][i]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[k] -= ( Fisj[i+1][indexij[i][j]] + Fisj[j+1][indexij[i][i]]  ) *integ[ci];
-                ci++;
-            }
-
-            // order 4: dFi-= (Fj.dEii + Fi.dEij ) * sum dpi^3dpj
-            //			dFj-= (Fi.dEii ) * sum dpi^3dpj
-
-            for(i=0; i<material_dimensions; i++)
-                for(j=i; j<material_dimensions; j++)
-                    if(i!=j)
-                    {
-                        dF.getMaterialFrameGradient()[i] -= ( Fisj[j+1][indexij[i][i]] + Fisj[i+1][indexij[i][j]] ) *integ[ci];
-                        dF.getMaterialFrameGradient()[j] -= ( Fisj[i+1][indexij[i][i]] ) *integ[ci];
-                        ci++;
-                    }
         }
     }
-
 
     static void addMultTranspose( Deriv& dF , const Coord& F, const StrainDeriv& s, const StrainEnergyVec& integ, const MaterialFrame* rotation=NULL)
     // for each dof Fi, add Fi+= sum_p  (dE/dFi dp )^T dE dp = [(dE /dFi )^T dE ]^(order 2) . sum_p  dp^(order 2)
@@ -542,6 +387,7 @@ public:
                     }
         }
     }
+
 
 
 

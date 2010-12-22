@@ -101,7 +101,6 @@ protected :
     typedef typename StrainType::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
     vector< VecInteg > integFactors;
     vector< StressStrainMatrix > stressStrainMatrices;
-
 };
 
 #if defined(WIN32) && !defined(FRAME_COROTATIONALFORCEFIELD_CPP)
