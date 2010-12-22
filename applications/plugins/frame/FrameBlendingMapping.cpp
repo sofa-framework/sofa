@@ -109,13 +109,13 @@ struct LinearBlendTypes<
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             //                    inverseInitialTransform[index[i]] = In::inverse(InitialTransform[index[i]]);
@@ -128,7 +128,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord result;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             result += d[index[i]].getCenter() * Jb[i].Pt + d[index[i]].getAffine() * Jb[i].Pa;
         }
@@ -138,7 +138,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutCoord result;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             result += d[index[i]].getVCenter() * Jb[i].Pt + d[index[i]].getVAffine() * Jb[i].Pa;
         }
@@ -150,7 +150,7 @@ struct LinearBlendTypes<
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
           */
 
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
             res[index[i]].getVCenter() += d * Jb[i].Pt;
@@ -199,13 +199,13 @@ struct LinearBlendTypes<
         MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
@@ -223,7 +223,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getAffine( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter(), Jb[i].Ft) + d[index[i]].getAffine() * Jb[i].Fa;
@@ -234,7 +234,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getVCenter( ) * Jb[i].Pt + d[index[i]].getVAffine( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getVCenter(), Jb[i].Ft) + d[index[i]].getVAffine( ) * Jb[i].Fa;
@@ -244,7 +244,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
             res[index[i]].getVCenter() +=  d.getCenter() * Jb[i].Pt;
@@ -310,13 +310,13 @@ struct LinearBlendTypes<
         MaterialMat dFt;  ///< = d gradF_k = dMt_i (grad(dw_i)_k)
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
@@ -336,7 +336,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getAffine( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getAffine( ) * Jb[i].Fa;
@@ -349,7 +349,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getVCenter( ) * Jb[i].Pt + d[index[i]].getVAffine( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getVCenter( ), Jb[i].Ft) + d[index[i]].getVAffine( ) * Jb[i].Fa;
@@ -361,7 +361,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res[index[i]].getVCenter() +=  d.getCenter() * Jb[i].Pt;
@@ -413,13 +413,13 @@ struct LinearBlendTypes<
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
@@ -434,7 +434,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutCoord res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res +=  d[index[i]].getCenter() * Jb[i].Pt +  d[index[i]].getQuadratic() * Jb[i].Pa;
         }
@@ -444,7 +444,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res +=  d[index[i]].getVCenter() * Jb[i].Pt +  d[index[i]].getVQuadratic() * Jb[i].Pa;
         }
@@ -453,7 +453,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res[index[i]].getVCenter() += d * Jb[i].Pt;
@@ -501,13 +501,13 @@ struct LinearBlendTypes<
         MaterialDeriv Ft; ///< = dF = dMt_i (dw_i)
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
@@ -527,7 +527,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutCoord res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getQuadratic ( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getQuadratic( ) * Jb[i].Fa;
@@ -538,7 +538,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getVCenter( ) * Jb[i].Pt + d[index[i]].getVQuadratic ( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getVCenter( ), Jb[i].Ft) + d[index[i]].getVQuadratic( ) * Jb[i].Fa;
@@ -549,7 +549,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
             res[index[i]].getVCenter() += d.getCenter() * Jb[i].Pt;
@@ -610,13 +610,13 @@ struct LinearBlendTypes<
         MaterialMat dFt;  ///< = d gradF_k = dMt_i (grad(dw_i)_k)
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
@@ -644,7 +644,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d ) // Called in Apply
     {
         OutCoord res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getQuadratic ( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getQuadratic( ) * Jb[i].Fa;
@@ -659,7 +659,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getVCenter( ) * Jb[i].Pt + d[index[i]].getVQuadratic ( ) * Jb[i].Pa;
             res.getMaterialFrame() += covNN( d[index[i]].getVCenter( ), Jb[i].Ft) + d[index[i]].getVQuadratic( ) * Jb[i].Fa;
@@ -674,7 +674,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res[index[i]].getVCenter() +=  d.getCenter() * Jb[i].Pt;
@@ -726,14 +726,14 @@ struct LinearBlendTypes<
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& /*dw*/, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             Jb[i].Pa0= InitialTransform[index[i]].pointToChild(InitialPos) * w[i] ;
@@ -747,7 +747,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& in )  // Called in Apply
     {
         OutCoord result;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             Jb[i].Pa=in[index[i]].rotate(Jb[i].Pa0); // = update of J according to current transform
             result += in[index[i]].getCenter() * Jb[i].Pt + Jb[i].Pa;
@@ -758,7 +758,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& in ) // Called in ApplyJ
     {
         OutDeriv result;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
             result += getLinear( in[index[i]] ) * Jb[i].Pt + cross(getAngular(in[index[i]]), Jb[i].Pa);
         }
@@ -769,7 +769,7 @@ struct LinearBlendTypes<
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
           */
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
             getLinear(res[index[i]])  += d * Jb[i].Pt;
             getAngular(res[index[i]]) += cross(Jb[i].Pa, d);
@@ -821,13 +821,13 @@ struct LinearBlendTypes<
 
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  /*ddw*/)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
 
@@ -856,7 +856,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             Jb[i].Pa =d[index[i]].rotate(Jb[i].Pa0); // = update of J according to current transform
@@ -875,7 +875,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res.getCenter() +=  getLinear( d[index[i]] ) * Jb[i].Pt +  cross(getAngular(d[index[i]]), Jb[i].Pa);
@@ -887,7 +887,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             getLinear(res[index[i]]) +=  d.getCenter() * Jb[i].Pt;
@@ -953,13 +953,13 @@ struct LinearBlendTypes<
 
     };
 
-    Vec<nbRef,unsigned> index;
+    Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
-    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
+    void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
-        unsigned i=0;
+        unsigned int i=0;
         for ( ; i<nbRef && w[i]>0; i++ )
         {
 
@@ -980,7 +980,7 @@ struct LinearBlendTypes<
             Jb[i].Ft=dw[i];
 
             Jb[i].dFt=ddw[i].transposed();
-            for (unsigned int k = 0; k < 3; ++k)
+            for (unsigned int  k = 0; k < 3; ++k)
             {
                 Jb[i].dFa0[k] = inverseInitialTransform33 * dw[i][k] + covNN( vectorInLocalCoordinates, Jb[i].dFt[k]) + covNN(inverseInitialTransformT[k],dw[i]); // dFa
                 Jb[i].dFa[k] = InitialTransform33 *  Jb[i].dFa0[k];
@@ -995,7 +995,7 @@ struct LinearBlendTypes<
     OutCoord apply( const VecInCoord& d )  // Called in Apply
     {
         OutCoord res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             Jb[i].Pa =d[index[i]].rotate(Jb[i].Pa0); // = update of J according to current transform
@@ -1019,7 +1019,7 @@ struct LinearBlendTypes<
     OutDeriv mult( const VecInDeriv& d ) // Called in ApplyJ
     {
         OutDeriv res;
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             res.getCenter() +=  getLinear( d[index[i]] ) * Jb[i].Pt +  cross(getAngular(d[index[i]]), Jb[i].Pa);
@@ -1033,7 +1033,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
-        for ( unsigned i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
 
             getLinear(res[index[i]]) +=  d.getCenter() * Jb[i].Pt;

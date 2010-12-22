@@ -71,24 +71,24 @@ public:
     typedef typename DeformationGradientType::Deriv Deriv;
     typedef typename DeformationGradientType::Real Real;
 
-    static const unsigned material_dimensions = DeformationGradientType::material_dimensions;
+    static const unsigned int material_dimensions = DeformationGradientType::material_dimensions;
     typedef Mat<material_dimensions,material_dimensions, Real> MaterialFrame;
 
     enum {order = DeformationGradientType::order }; // order = 1 -> deformationgradient // order = 2 -> deformationgradient + spatial derivatives
 
-    static const unsigned strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
+    static const unsigned int strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
     typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
     typedef Mat<strain_size,strain_size,Real> StrStr;
 
-    static const unsigned strain_order = order==1? 0 : ( (order==2 && iscorotational)? 1 : ( (order==2 && !iscorotational)? 2 : 0 )) ;
-    static const unsigned NumStrainVec = strain_order==0? 1 : ( strain_order==1? 1 + material_dimensions : ( strain_order==2? 1 + material_dimensions*(material_dimensions+3)/2 : 0 )) ;
+    static const unsigned int strain_order = order==1? 0 : ( (order==2 && iscorotational)? 1 : ( (order==2 && !iscorotational)? 2 : 0 )) ;
+    static const unsigned int NumStrainVec = strain_order==0? 1 : ( strain_order==1? 1 + material_dimensions : ( strain_order==2? 1 + material_dimensions*(material_dimensions+3)/2 : 0 )) ;
     typedef Vec<NumStrainVec,StrainVec> Strain;  ///< Strain and its gradient, in vector form
     typedef Strain Stress;
     typedef Strain StrainDeriv;  ///< Strain change and its gradient, in vector form
     typedef Stress StressDeriv;  ///< Strain change and its gradient, in vector form
 
-    static const unsigned strainenergy_order = 2*strain_order; 	///< twice the order of strain
-    static const unsigned strainenergy_size = strainenergy_order==0? 1 : (
+    static const unsigned int strainenergy_order = 2*strain_order; 	///< twice the order of strain
+    static const unsigned int strainenergy_size = strainenergy_order==0? 1 : (
             strainenergy_order==2? 1 + material_dimensions*(material_dimensions+3)/2 : (
                     (strainenergy_order==4 && material_dimensions==1)? 5 : (
                             (strainenergy_order==4 && material_dimensions==2)? 15 : (
@@ -101,10 +101,10 @@ public:
     {
 //                cerr<<"static StrainVec getStrainVec, f = "<< f << endl;
         StrainVec s;
-        unsigned ei=0;
-        for(unsigned j=0; j<material_dimensions; j++)
+        unsigned int ei=0;
+        for(unsigned int j=0; j<material_dimensions; j++)
         {
-            for( unsigned k=0; k<material_dimensions-j; k++ )
+            for( unsigned int k=0; k<material_dimensions-j; k++ )
             {
                 s[ei] = (f[k][k+j]+f[k+j][k])*(Real)0.5;  // first diagonal, then second diagonalâ€¦
                 //if(0==j)  s[ei] *= 0.5;
@@ -117,10 +117,10 @@ public:
     static MaterialFrame getFrame( const StrainVec& s  ) // voigt notation to symmetric matrix (F+F^T)/2  Fxx=exx, Fxy=Fyx=exy/2, etc.
     {
         MaterialFrame f;
-        unsigned ei=0;
-        for(unsigned j=0; j<material_dimensions; j++)
+        unsigned int ei=0;
+        for(unsigned int j=0; j<material_dimensions; j++)
         {
-            for( unsigned k=0; k<material_dimensions-j; k++ )
+            for( unsigned int k=0; k<material_dimensions-j; k++ )
             {
                 f[k][k+j] = f[k+j][k] = s[ei] ;  // first diagonal, then second diagonalâ€¦
                 if(0!=j) {f[k][k+j] *= 0.5; f[k+j][k] *= 0.5;}
@@ -141,34 +141,34 @@ public:
             helper::polar_decomp(F.getMaterialFrame(), *rotation, strainmat); // decompose F=RD
 
             // order 0: e = [R^T F + F^T R ]/2 - I = D - I
-            for(unsigned j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
+            for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
             strain[0] = getStrainVec( strainmat );
             if(strain_order==0) return;
 
             // order 1 : de =  [R^T dF + dF^T R ]/2
-            for(unsigned i=1; i<NumStrainVec; i++)
+            for(unsigned int i=1; i<NumStrainVec; i++)
                 strain[i] = getStrainVec( rotation->multTranspose( F.getMaterialFrameGradient()[i-1] ) );
         }
         else // green-lagrange strain (order 0 or 2) : E= [F^T.F - I ]/2
         {
             MaterialFrame strainmat=F.getMaterialFrame().multTranspose( F.getMaterialFrame() );
             // order 0: E = [F^T.F - I ]/2
-            for(unsigned j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
+            for(unsigned int j=0; j<material_dimensions; j++) strainmat[j][j]-=1.;
             strainmat*=(Real)0.5;
             strain[0] = getStrainVec( strainmat );
             if(strain_order==0) return;
 
             // order 1: Ei = [Fi^T.F +  F^T.Fi ]/2
-            unsigned ei=1;
-            for(unsigned i=0; i<material_dimensions; i++)
+            unsigned int ei=1;
+            for(unsigned int i=0; i<material_dimensions; i++)
             {
                 strainmat = F.getMaterialFrame().multTranspose( F.getMaterialFrameGradient()[i] );
                 strain[ei] = getStrainVec( strainmat ); ei++;
             }
 
             // order 2: Eij = [Fi^T.Fj +  Fj^T.Fi ]/2
-            for(unsigned i=0; i<material_dimensions; i++)
-                for(unsigned j=i; j<material_dimensions; j++)
+            for(unsigned int i=0; i<material_dimensions; i++)
+                for(unsigned int j=i; j<material_dimensions; j++)
                 {
                     strainmat = F.getMaterialFrameGradient()[i].multTranspose( F.getMaterialFrameGradient()[j] );
                     strain[ei] = getStrainVec( strainmat ); ei++;
@@ -187,8 +187,8 @@ public:
 
             if(strain_order==0) return;
             // order 1 : de =  [R^T dF + dF^T R ]/2
-            if(rotation!=NULL) { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( rotation->multTranspose( dF.getMaterialFrameGradient()[i-1] ) ); }
-            else { for(unsigned i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( dF.getMaterialFrameGradient()[i-1] ); }
+            if(rotation!=NULL) { for(unsigned int i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( rotation->multTranspose( dF.getMaterialFrameGradient()[i-1] ) ); }
+            else { for(unsigned int i=1; i<NumStrainVec; i++)  strain[i] = getStrainVec( dF.getMaterialFrameGradient()[i-1] ); }
         }
         else
         {
@@ -198,16 +198,16 @@ public:
             if(strain_order==0) return;
 
             // order 1: Ei = [dFi^T.F +  F^T.dFi ]/2 + [Fi^T.dF +  dF^T.Fi ]/2
-            unsigned ei=1;
-            for(unsigned i=0; i<material_dimensions; i++)
+            unsigned int ei=1;
+            for(unsigned int i=0; i<material_dimensions; i++)
             {
                 strainmat = F.getMaterialFrame().multTranspose( dF.getMaterialFrameGradient()[i] ) + F.getMaterialFrameGradient()[i].multTranspose( dF.getMaterialFrame() );
                 strain[ei] = getStrainVec( strainmat ); ei++;
             }
 
             // order 2: Eij = [dFi^T.Fj +  Fj^T.dFi ]/2 + [Fi^T.dFj +  dFj^T.Fi ]/2
-            for(unsigned i=0; i<material_dimensions; i++)
-                for(unsigned j=i; j<material_dimensions; j++)
+            for(unsigned int i=0; i<material_dimensions; i++)
+                for(unsigned int j=i; j<material_dimensions; j++)
                 {
                     strainmat = F.getMaterialFrameGradient()[i].multTranspose( dF.getMaterialFrameGradient()[j] ) + F.getMaterialFrameGradient()[j].multTranspose( dF.getMaterialFrameGradient()[i] );
                     strain[ei] = getStrainVec( strainmat ); ei++;
@@ -227,13 +227,13 @@ public:
             if(strain_order==0) return;
 
             Vec<material_dimensions,MaterialFrame> si;
-            for(unsigned i=0; i<material_dimensions; i++) si[i]=*rotation * getFrame( s[i+1] );
-            unsigned ci=1;
+            for(unsigned int i=0; i<material_dimensions; i++) si[i]=*rotation * getFrame( s[i+1] );
+            unsigned int ci=1;
 
             // order 1: dF -= R.dEi * sum dpi
             //			dFi -= R.dE * sum dpi
 
-            for(unsigned i=0; i<material_dimensions; i++)
+            for(unsigned int i=0; i<material_dimensions; i++)
             {
                 dF.getMaterialFrame() -= si[i]*integ[ci];
                 dF.getMaterialFrameGradient()[i] -= s0*integ[ci];
@@ -243,9 +243,9 @@ public:
             // order 2: dFi -= R.dEj * sum dpidpj
             //			dFj -= R.dEi * sum dpidpj
 
-            for(unsigned i=0; i<material_dimensions; i++)
+            for(unsigned int i=0; i<material_dimensions; i++)
             {
-                for(unsigned j=i; i<material_dimensions; i++)
+                for(unsigned int j=i; i<material_dimensions; i++)
                 {
                     dF.getMaterialFrameGradient()[i] -= si[j]*integ[ci];
                     if(i!=j) dF.getMaterialFrameGradient()[j] -= si[i]*integ[ci];
@@ -263,7 +263,7 @@ public:
             if(strain_order==0) return;
 
             // compute Fi.dEj
-            unsigned i,j,k;
+            unsigned int i,j,k;
 
             Vec<NumStrainVec,MaterialFrame> si;
             for(i=0; i<NumStrainVec; i++) si[i]=getFrame( s[i] );
@@ -276,8 +276,8 @@ public:
                 for(j=0; j<NumStrainVec; j++)
                     Fisj[i][j]=F.getMaterialFrameGradient()[i-1]*si[j];
 
-            unsigned ci=1+material_dimensions;
-            Mat<material_dimensions,material_dimensions,unsigned> indexij; // index of terms in i.j
+            unsigned int ci=1+material_dimensions;
+            Mat<material_dimensions,material_dimensions,unsigned int> indexij; // index of terms in i.j
             for(i=0; i<material_dimensions; i++)
                 for(j=i; j<material_dimensions; j++)
                     indexij[i][j]=indexij[j][i]=ci;
@@ -393,7 +393,7 @@ public:
 
     static void mult( Strain& s, Real r )
     {
-        for(unsigned i=0; i<s.size(); i++)
+        for(unsigned int i=0; i<s.size(); i++)
             s[i] *= r;
     }
 
@@ -401,7 +401,7 @@ public:
     // compute H.s -> returns a vector of the order of the input strain
     {
         Strain ret;
-        for(unsigned i=0; i<s.size(); i++)
+        for(unsigned int i=0; i<s.size(); i++)
             ret[i] = H*s[i];
         return ret;
     }
@@ -422,11 +422,11 @@ public:
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
 struct DeformationGradientTypes
 {
-    static const unsigned spatial_dimensions = _spatial_dimensions;
-    static const unsigned material_dimensions = _material_dimensions;
-    static const unsigned order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient
-    static const unsigned NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
-    static const unsigned VSize = spatial_dimensions +  NumMatrices * material_dimensions * material_dimensions;  // number of entries
+    static const unsigned int spatial_dimensions = _spatial_dimensions;
+    static const unsigned int material_dimensions = _material_dimensions;
+    static const unsigned int order = _order;  ///< 0: only a point, no gradient 1:deformation gradient, 2: deformation gradient and its gradient
+    static const unsigned int NumMatrices = order==0? 0 : (order==1? 1 : (order==2? 1 + material_dimensions : -1 ));
+    static const unsigned int VSize = spatial_dimensions +  NumMatrices * material_dimensions * material_dimensions;  // number of entries
     typedef _Real Real;
     typedef vector<Real> VecReal;
 
@@ -463,7 +463,7 @@ struct DeformationGradientTypes
         MaterialFrameGradient& getMaterialFrameGradient() { return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions+material_dimensions * material_dimensions]); }
         const MaterialFrameGradient& getMaterialFrameGradient() const { return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions+material_dimensions * material_dimensions]); }
 
-        static const unsigned total_size = VSize;
+        static const unsigned int total_size = VSize;
         typedef Real value_type;
 
 
@@ -511,7 +511,7 @@ struct DeformationGradientTypes
         const Real* ptr() const { return v.ptr(); }
 
         /// Vector size
-        static unsigned size() { return VSize; }
+        static unsigned int size() { return VSize; }
 
         /// Access to i-th element.
         Real& operator[](int i)
@@ -556,7 +556,7 @@ struct DeformationGradientTypes
         MaterialFrameGradient& getMaterialFrameGradient() { return *reinterpret_cast<MaterialFrameGradient*>(&v[spatial_dimensions+material_dimensions * material_dimensions]); }
         const MaterialFrameGradient& getMaterialFrameGradient() const { return *reinterpret_cast<const MaterialFrameGradient*>(&v[spatial_dimensions+material_dimensions * material_dimensions]); }
 
-        static const unsigned total_size = VSize;
+        static const unsigned int total_size = VSize;
         typedef Real value_type;
 
 
@@ -607,7 +607,7 @@ struct DeformationGradientTypes
         const Real* ptr() const { return v.ptr(); }
 
         /// Vector size
-        static unsigned size() { return VSize; }
+        static unsigned int size() { return VSize; }
 
         /// Access to i-th element.
         Real& operator[](int i)

@@ -56,7 +56,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
     , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
-    , showWeightIndex ( initData ( &showWeightIndex, ( unsigned ) 0, "showWeightIndex","Weight index." ) )
+    , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
     , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
 {
     helper::OptionsGroup distanceTypeOptions(3,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
@@ -94,7 +94,7 @@ void GridMaterial< MaterialTypes>::init()
     VecSCoord samples;
     computeUniformSampling(samples,50);
 
-    //	  Vec<nbRef,unsigned> reps; vector<Real> w; VecSGradient dw; VecSHessian ddw;
+    //	  Vec<nbRef,unsigned int> reps; vector<Real> w; VecSGradient dw; VecSHessian ddw;
     // for(unsigned int j=0;j<samples.size();j++) lumpWeightsRepartition(samples[j],reps,w,&dw,&ddw);
     }*/
     ////
@@ -117,7 +117,7 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStr
     stressOffDiagonal = poissonRatio * f;
     shear = f * (1 - 2 * poissonRatio);// /2;
 
-    for( unsigned i=0; i<stresses.size(); i++ )
+    for( unsigned int i=0; i<stresses.size(); i++ )
     {
         Str& stress = stresses[i][0];
         const Str& strain = strains[i][0];
@@ -145,9 +145,9 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
     stressOffDiagonal = poissonRatio * f;
     shear = f * (1 - 2 * poissonRatio);// /2;
 
-    for( unsigned i=0; i<stresses.size(); i++ )
+    for( unsigned int i=0; i<stresses.size(); i++ )
     {
-        for(unsigned j=0; j<4; j++ )
+        for(unsigned int j=0; j<4; j++ )
         {
             Str& stress = stresses[i][j];
             const Str& strain = strains[i][j];
@@ -174,9 +174,9 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecSt
     stressOffDiagonal = poissonRatio * f;
     shear = f * (1 - 2 * poissonRatio);// /2;
 
-    for( unsigned i=0; i<stresses.size(); i++ )
+    for( unsigned int i=0; i<stresses.size(); i++ )
     {
-        for(unsigned j=0; j<10; j++ )
+        for(unsigned int j=0; j<10; j++ )
         {
             Str& stress = stresses[i][j];
             const Str& strain = strains[i][j];
@@ -203,9 +203,9 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, 
     stressOffDiagonal = poissonRatio * f;
     shear = f * (1 - 2 * poissonRatio);// /2;
 
-    for( unsigned i=0; i<stresses.size(); i++ )
+    for( unsigned int i=0; i<stresses.size(); i++ )
     {
-        for(unsigned j=0; j<1; j++ )
+        for(unsigned int j=0; j<1; j++ )
         {
 
             stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
@@ -224,9 +224,9 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, 
     stressOffDiagonal = poissonRatio * f;
     shear = f * (1 - 2 * poissonRatio);// /2;
 
-    for( unsigned i=0; i<stresses.size(); i++ )
+    for( unsigned int i=0; i<stresses.size(); i++ )
     {
-        for(unsigned j=0; j<4; j++ )
+        for(unsigned int j=0; j<4; j++ )
         {
 
             stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
@@ -245,9 +245,9 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses,
     stressOffDiagonal = poissonRatio * f;
     shear = f * (1 - 2 * poissonRatio);// /2;
 
-    for( unsigned i=0; i<stresses.size(); i++ )
+    for( unsigned int i=0; i<stresses.size(); i++ )
     {
-        for(unsigned j=0; j<10; j++ )
+        for(unsigned int j=0; j<10; j++ )
         {
 
             stresses[i][j] = hookeStress( strains[i][j], stressDiagonal, stressOffDiagonal, shear );
@@ -1375,7 +1375,7 @@ void GridMaterial< MaterialTypes>::offsetWeightsOutsideObject(unsigned int offes
 
     // get voxels within offsetdist
     VUI neighbors;
-    vector<unsigned> update((int)nbVoxels,0);
+    vector<unsigned int> update((int)nbVoxels,0);
     for (i=0; i<nbVoxels; i++)
         if(grid.data()[i])
         {
@@ -2183,7 +2183,7 @@ template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::areRepsSimilar(const unsigned int i1,const unsigned int i2)
 {
     Vec<nbRef,bool> checked; checked.fill(false);
-    unsigned i,j;
+    unsigned int i,j;
     for(i=0; i<nbRef; i++)
         if(v_weights[i1][i])
         {

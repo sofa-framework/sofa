@@ -78,7 +78,7 @@ public:
 
     // Output types
     typedef TOut Out;
-    static const unsigned num_spatial_dimensions=Out::spatial_dimensions;
+    static const unsigned int num_spatial_dimensions=Out::spatial_dimensions;
     typedef typename Out::VecCoord VecOutCoord;
     typedef typename Out::VecDeriv VecOutDeriv;
     typedef typename Out::Coord OutCoord;
@@ -89,7 +89,7 @@ public:
     // Material types
     typedef MaterialTypes<num_spatial_dimensions,InReal> materialType;
     typedef GridMaterial<materialType> GridMat;
-    static const unsigned num_material_dimensions = GridMat::num_material_dimensions;
+    static const unsigned int num_material_dimensions = GridMat::num_material_dimensions;
     typedef typename GridMat::Coord  MaterialCoord;
     typedef vector<MaterialCoord>  VecMaterialCoord;
     typedef typename GridMat::SCoord  SpatialCoord;
@@ -104,7 +104,7 @@ public:
     typedef typename FData::MassVector MassVector;
 
     // Conversion types
-    static const unsigned nbRef = GridMat::nbRef;
+    static const unsigned int nbRef = GridMat::nbRef;
     typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::primitive_order > InOut;
 
 
@@ -137,7 +137,7 @@ protected:
 //                helper::ParticleMask* maskTo;
 
     Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
-    Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
+    Data< vector<Vec<nbRef,unsigned int> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.
 
     Data< vector<Vec<nbRef,InReal> > >       weight;
     Data< vector<Vec<nbRef,MaterialCoord> > > weightDeriv;

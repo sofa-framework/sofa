@@ -97,7 +97,7 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
     , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
-    , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
+    , showFromIndex ( initData ( &showFromIndex, ( unsigned int ) 0, "showFromIndex","Displayed From Index." ) )
     , showWeights ( initData ( &showWeights, false, "showWeights","Show coeficients." ) )
     , showGammaCorrection ( initData ( &showGammaCorrection, 1.0, "showGammaCorrection","Correction of the Gamma by a power" ) )
     , showWeightsValues ( initData ( &showWeightsValues, false, "showWeightsValues","Show coeficients values." ) )
@@ -146,15 +146,15 @@ void FrameBlendingMapping<TIn, TOut>::init()
         initSamples();
     }
 
-    //   unsigned numParents = this->fromModel->getSize();
-    unsigned numChildren = this->toModel->getSize();
+    //   unsigned int numParents = this->fromModel->getSize();
+    unsigned int numChildren = this->toModel->getSize();
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     WriteAccessor<Data<VecOutCoord> > initPos(this->f_initPos);
 
     if( this->f_initPos.getValue().size() != numChildren )
     {
         initPos.resize(out.size());
-        for(unsigned i=0; i<out.size(); i++ )
+        for(unsigned int i=0; i<out.size(); i++ )
             initPos[i] = out[i];
     }
 
@@ -165,7 +165,7 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
     // init jacobians for mapping
     inout.resize( out.size() );
-    for(unsigned i=0; i<out.size(); i++ )
+    for(unsigned int i=0; i<out.size(); i++ )
     {
         inout[i].init(
             this->f_initPos.getValue()[i],
@@ -227,7 +227,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
 //                    ParticleMask::InternalStorage::const_iterator it;
 //                    for ( it=indices.begin();it!=indices.end();it++ )
 //                    {
-//                        unsigned i= ( unsigned ) ( *it );
+//                        unsigned int i= ( unsigned int ) ( *it );
 //                        out[i] = inout[i].mult( in );
 //                    }
 //                }
@@ -375,7 +375,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 
     // copy to sampledata
     points.resize(p.size());
-    for(unsigned i=0; i<p.size(); i++ )
+    for(unsigned int i=0; i<p.size(); i++ )
         points[i] = p[i];
 }
 
@@ -389,7 +389,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     WriteAccessor<Data<vector<Vec<nbRef,InReal> > > >       m_weights  ( weight );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > > m_dweight  ( weightDeriv );
     WriteAccessor<Data<vector<Vec<nbRef,MaterialMat> > > >   m_ddweight ( weightDeriv2 );
-    WriteAccessor<Data<vector<Vec<nbRef,unsigned> > > > index ( f_index );
+    WriteAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
 
     index.resize( xto.size() );
     m_weights.resize ( xto.size() );
@@ -403,7 +403,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
         if(this->isPhysical) std::cout<<"Lumping weights to gauss points..."<<std::endl;
         SpatialCoord point;
 
-        for (unsigned i=0; i<xto.size(); i++ )
+        for (unsigned int i=0; i<xto.size(); i++ )
         {
             Out::get(point[0],point[1],point[2], xto[i]);
 
@@ -469,10 +469,10 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     InReal w=(cto-cfrom)*(cto-cfrom);
                     if(w!=0) w=1./w;
                     else w=std::numeric_limits<InReal>::max();
-                    unsigned m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
+                    unsigned int m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
                     if(m!=nbRef)
                     {
-                        for (unsigned k=nbRef-1; k>m; k--)
+                        for (unsigned int k=nbRef-1; k>m; k--)
                         {
                             m_weights[i][k]=m_weights[i][k-1];
                             index[i][k]=index[i][k-1];
@@ -482,7 +482,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     }
                 }
                 // compute weight gradients
-                for (unsigned j=0; j<nbRef; j++ )
+                for (unsigned int j=0; j<nbRef; j++ )
                 {
                     InReal w=m_weights[i][j];
                     m_dweight[i][j].fill(0);
@@ -491,13 +491,13 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                     {
                         InReal w2=w*w,w3=w2*w;
                         Vec<3,InReal> u;
-                        for(unsigned k=0; k<3; k++)
+                        for(unsigned int k=0; k<3; k++)
                             u[k]=(xto[i][k]-xfrom[index[i][j]][k]);
                         m_dweight[i][j] = - u * w2* 2.0;
-                        for(unsigned k=0; k<num_spatial_dimensions; k++)
+                        for(unsigned int k=0; k<num_spatial_dimensions; k++)
                             m_ddweight[i][j][k][k]= - w2* 2.0;
-                        for(unsigned k=0; k<num_spatial_dimensions; k++)
-                            for(unsigned m=0; m<num_spatial_dimensions; m++)
+                        for(unsigned int k=0; k<num_spatial_dimensions; k++)
+                            for(unsigned int m=0; m<num_spatial_dimensions; m++)
                                 m_ddweight[i][j][k][m]+=u[k]*u[m]*w3* 8.0;
                     }
                 }
@@ -569,7 +569,7 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
     massVector.resize(in.size());
     for(unsigned int i=0; i<in.size(); i++) { massVector[i].clear(); massVector[i].mass = 1.0;}
 
-    vector<Vec<nbRef,unsigned> > reps;
+    vector<Vec<nbRef,unsigned int> > reps;
     vector<Vec<nbRef,InReal> > w;
     vector<SpatialCoord> pts;
     vector<InReal> masses;
@@ -631,7 +631,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 {
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
-    ReadAccessor<Data<vector<Vec<nbRef,unsigned> > > > m_reps = this->f_index;
+    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > m_reps = this->f_index;
     ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights = weight ;
     ReadAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > >  m_dweights = weightDeriv ;
     const int valueScale = showValuesNbDecimals.getValue();
@@ -875,7 +875,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex)
 {
-    ReadAccessor<Data<vector<Vec<nbRef,unsigned> > > >  m_reps( f_index );
+    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > >  m_reps( f_index );
     influenced = false;
     for ( unsigned int j = 0; j < nbRef; ++j)
     {
