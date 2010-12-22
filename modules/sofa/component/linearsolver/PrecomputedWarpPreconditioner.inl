@@ -216,7 +216,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 }
 
 template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
+void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& /*M*/)
 {
 #ifdef SOFA_HAVE_CSPARSE
     cout << "Compute the initial invert matrix with CS_PARSE" << endl;

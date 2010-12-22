@@ -351,7 +351,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     using container::ArticulatedHierarchyContainer;
 
     Data<OutVecCoord>* xtoData = m_toModel->write(core::VecCoordId::position());
-    const Data<InVecCoord>* xfromData = m_fromModel->read(core::ConstVecCoordId::position());
+    //const Data<InVecCoord>* xfromData = m_fromModel->read(core::ConstVecCoordId::position());
 
     /*apply(*xtoData->beginEdit(), xfromData->getValue(),
           (m_fromRootModel==NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
