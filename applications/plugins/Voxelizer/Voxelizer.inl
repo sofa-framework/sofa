@@ -79,7 +79,7 @@ Voxelizer<DataTypes>::~Voxelizer()
     if (valueImg) delete valueImg;
     if (segmentationImg) delete segmentationImg;
 
-    if( rasterizedVolumes)
+    if ( rasterizedVolumes)
     {
         for (unsigned int i = 0; i < 3; ++i)
             delete [] rasterizedVolumes[i];
@@ -108,7 +108,7 @@ void Voxelizer<DataTypes>::init()
 
     // Get the rasterizer
     ((simulation::Node*)simulation::getSimulation()->getContext())->get(rasterizer);
-    if( ! rasterizer)
+    if ( ! rasterizer)
     {
         serr << "Rasterizer not found" << sendl;
         return;
@@ -118,10 +118,10 @@ void Voxelizer<DataTypes>::init()
     const string& targetPaths = triangularModelPath.getValue();
     std::list<std::string> allPaths;
     size_t pos1 = 0;
-    while( true)
+    while ( true)
     {
         size_t pos2 = std::min(targetPaths.find(",", pos1), targetPaths.find("\n", pos1));
-        if( pos2 == string::npos)
+        if ( pos2 == string::npos)
         {
             allPaths.push_back( targetPaths.substr( pos1));
             break;
@@ -135,7 +135,7 @@ void Voxelizer<DataTypes>::init()
     simulation::Node* rootNode = static_cast<simulation::Node*>(simulation::getSimulation()->getContext());
     for (std::list<std::string>::const_iterator it = allPaths.begin(); it != allPaths.end(); ++it)
     {
-        if( it->compare( "NULL") == 0)
+        if ( it->compare( "NULL") == 0)
         {
             vTriangularModel.push_back(NULL);
         }
@@ -146,15 +146,15 @@ void Voxelizer<DataTypes>::init()
             //if( name.substr(0, 3).compare("../") == 0)
             //    name = name.substr( 3);
             MTopology* model = findObject<MTopology>(name, rootNode);
-            if( !model) serr << "impossible to cast :" << name << "." << sendl;
+            if ( !model) serr << "impossible to cast :" << name << "." << sendl;
             vTriangularModel.push_back(model);
         }
     }
 
     // Check everybody has the same size.
-    if( useROI.getValue() &&
-        (vROICenter.getValue().size() != vROIRadius.getValue().size() ||
-                vROICenter.getValue().size() != vTriangularModel.size() ))
+    if ( useROI.getValue() &&
+            (vTriangularModel.size() != vROIRadius.getValue().size() ||
+                    vTriangularModel.size() != vROICenter.getValue().size() ))
     {
         serr << "vROICenter.getValue().size() " << vROICenter.getValue().size() << sendl;
         serr << "vROIRadius.getValue().size() " << vROIRadius.getValue().size() << sendl;
@@ -210,8 +210,8 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
         return true;
     }
 
-    if( valueImg) delete valueImg;
-    if( segmentationImg) delete segmentationImg;
+    if ( valueImg) delete valueImg;
+    if ( segmentationImg) delete segmentationImg;
     valueImg = new helper::io::ImageRAW;
     segmentationImg = new helper::io::ImageRAW;
 
@@ -250,7 +250,7 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
                 Vec3d vecHalfVoxelSize (voxelsSize[0]/2.0, voxelsSize[1]/2.0, voxelsSize[2]/2.0);
                 BBox box( pos - vecHalfVoxelSize, pos + vecHalfVoxelSize);
                 unsigned int segID = isCoordIntersecting( box, rasterizedVolume[0], 0);
-                if( segID)
+                if ( segID)
                 {
                     if (checkROI)
                     {
@@ -271,7 +271,7 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
                     segData[indexPixel] = 0;
                     for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
                     {
-                        if( ! vTriangularModel[i])
+                        if ( ! vTriangularModel[i])
                         {
                             if (checkROI)
                             {
@@ -477,10 +477,10 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                             int indexFirstLayer = -1;
                             for (int incpt = 0; incpt <= incount; ++incpt)
                             {
-                                if( inobjs[incpt] == obj) indexFirstLayer = inLayers[incpt];
+                                if ( inobjs[incpt] == obj) indexFirstLayer = inLayers[incpt];
                             }
 
-                            if( indexFirstLayer == -1)
+                            if ( indexFirstLayer == -1)
                             {
                                 serr << "Returned indexFirstLayer == -1. Object not stored ?" << sendl;
                                 continue;
@@ -505,9 +505,9 @@ void Voxelizer<DataTypes>::generateFullVolumes( RasterizedVol** rasterizedVolume
                             int indexMesh = -1;
                             current_model = rasterizer->vmtopology[obj];
                             for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
-                                if( current_model == vTriangularModel[i])
+                                if ( current_model == vTriangularModel[i])
                                     indexMesh = i;
-                            if( indexMesh == -1)
+                            if ( indexMesh == -1)
                             {
                                 serr << "indexMesh is NULL. It should'nt be ! Fixed tags are wrong." << sendl;
                                 continue;
@@ -548,7 +548,7 @@ bool Voxelizer<DataTypes>::isCoordInside( const Vec3d& position, const Rasterize
             for (std::multimap<double, std::pair< double, double> >::const_iterator it2 = it->second.begin();
                     it2 != it->second.end(); ++it2)
             {
-                if( it2->first > y - psize || it2->first < y + psize)
+                if ( it2->first > y - psize || it2->first < y + psize)
                 {
                     const std::pair< double, double>& depth = it2->second;
                     if (z > depth.first && z < depth.second)
@@ -566,7 +566,7 @@ unsigned int Voxelizer<DataTypes>::isCoordInside( const Vec3d& position, const R
 {
     for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
     {
-        if( isCoordInside( position, rasterizedVolume[i], axis))
+        if ( isCoordInside( position, rasterizedVolume[i], axis))
             return i+1;
     }
     return 0;
@@ -602,7 +602,7 @@ unsigned int Voxelizer<DataTypes>::isCoordInside( const BBox& bbox, const Raster
 {
     for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
     {
-        if( isCoordInside( bbox, rasterizedVolume[i], axis))
+        if ( isCoordInside( bbox, rasterizedVolume[i], axis))
             return i+1;
     }
     return 0;
@@ -613,13 +613,13 @@ template <class DataTypes>
 unsigned int Voxelizer<DataTypes>::isCoordInside( const BBox& /*bbox*/, const RasterizedVol** /*rasterizedVolume*/)
 {
     /*
-     bool inside = true;
-     for (unsigned int axis = 0; axis < 3; ++axis)
-     {
-         if( !isCoordInside( bbox, rasterizedVolume[axis], axis))
-             inside = false;
-     }
-       return inside;*/
+         bool inside = true;
+         for (unsigned int axis = 0; axis < 3; ++axis)
+         {
+             if( !isCoordInside( bbox, rasterizedVolume[axis], axis))
+                 inside = false;
+         }
+           return inside;*/
     serr << "not yet implemented !" << sendl;
     return 0;
 }
@@ -654,7 +654,7 @@ unsigned int Voxelizer<DataTypes>::isCoordIntersecting( const BBox& bbox, const 
 {
     for (unsigned int i = 0; i < vTriangularModel.size(); ++i)
     {
-        if( isCoordIntersecting( bbox, rasterizedVolume[i], axis))
+        if ( isCoordIntersecting( bbox, rasterizedVolume[i], axis))
             return i+1;
     }
     return 0;
@@ -665,13 +665,13 @@ template <class DataTypes>
 unsigned int Voxelizer<DataTypes>::isCoordIntersecting( const BBox& /*bbox*/, const RasterizedVol** /*rasterizedVolume*/)
 {
     /*
-     bool inside = true;
-     for (unsigned int axis = 0; axis < 3; ++axis)
-     {
-         if( !isCoordIntersecting( bbox, rasterizedVolume[axis], axis))
-             inside = false;
-     }
-       return inside;*/
+         bool inside = true;
+         for (unsigned int axis = 0; axis < 3; ++axis)
+         {
+             if( !isCoordIntersecting( bbox, rasterizedVolume[axis], axis))
+                 inside = false;
+         }
+           return inside;*/
     serr << "not yet implemented !" << sendl;
     return 0;
 }
@@ -693,11 +693,11 @@ void Voxelizer<DataTypes>::temporaryChangeTags()
 
     // Add tag "RasterizeOnLoad" on objects
     for (vector<MTopology*>::const_iterator it = vTriangularModel.begin(); it != vTriangularModel.end(); ++it)
-        if( *it != NULL)
+        if ( *it != NULL)
         {
             hadSelfCollisionTag.push_back( (*it)->hasTag (Tag("SelfCollision")));
             (*it)->addTag( Tag("RasterizeOnLoad"));
-            if( !(*it)->hasTag (Tag("SelfCollision"))) (*it)->addTag( Tag("SelfCollision"));
+            if ( !(*it)->hasTag (Tag("SelfCollision"))) (*it)->addTag( Tag("SelfCollision"));
 
             //for (TagSet::const_iterator it2 = (*it)->getTags().begin(); it2 != (*it)->getTags().end(); ++it2)
             //    serr << "Pour l'obj " << (*it)->getName() << ": " << *it2 << sendl;
@@ -717,7 +717,7 @@ void Voxelizer<DataTypes>::restoreTags()
     // Remove tag "RasterizeOnLoad" on objects
     unsigned int i = 0;
     for (vector<MTopology*>::const_iterator it = vTriangularModel.begin(); it != vTriangularModel.end(); ++it)
-        if( *it != NULL)
+        if ( *it != NULL)
         {
             (*it)->removeTag( Tag("RasterizeOnLoad"));
             if (!hadSelfCollisionTag[i]) (*it)->removeTag( Tag("SelfCollision"));
@@ -749,7 +749,7 @@ T* Voxelizer<DataTypes>::findObject( string path, const BaseContext* context)
         if (path.substr(0,3).compare("../") == 0)
         {
             const sofa::simulation::tree::GNode* currentGNode = dynamic_cast< const sofa::simulation::tree::GNode *>(context);
-            if( !currentGNode)
+            if ( !currentGNode)
             {
                 serr << "can not cast the current node into GNode" << sendl;
                 return NULL;
@@ -818,7 +818,8 @@ void Voxelizer<DataTypes>::loadInfos()
 
     // Voxel Type
     fileStream >> str;
-    char vtype[32]; fileStream.getline(vtype,32); // voxeltype not used yet
+    char vtype[32];
+    fileStream.getline(vtype,32); // voxeltype not used yet
 
     // Resolution
     fileStream >> str;
@@ -836,7 +837,7 @@ void Voxelizer<DataTypes>::loadInfos()
     fileStream >> str;
     Vec3d voxelsize;
     fileStream >> voxelsize;
-    if( voxelsize != voxelSize.getValue())
+    if ( voxelsize != voxelSize.getValue())
         serr << "The RAW file loaded deos not match with the wanted resolution" << sendl;
 
     fileStream.close();
@@ -888,7 +889,7 @@ void Voxelizer<DataTypes>::draw()
     const Real& psize = std::min( std::min(voxelSize.getValue()[0],voxelSize.getValue()[1]),voxelSize.getValue()[2]);
 
     // Display volumes retrieved from depth peeling textures
-    if( showRasterizedVolumes.getValue())
+    if ( showRasterizedVolumes.getValue())
     {
         if (this->getContext()->getShowWireFrame() || showWireFrameMode.getValue()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glPushAttrib(GL_LIGHTING_BIT);
@@ -901,13 +902,13 @@ void Voxelizer<DataTypes>::draw()
             const int iZ =  axis;
 
             const unsigned int nbModel = vTriangularModel.size();
-            for( unsigned int indexModel = 0; indexModel < nbModel; ++indexModel)
+            for ( unsigned int indexModel = 0; indexModel < nbModel; ++indexModel)
             {
-                if( axis == 0)
+                if ( axis == 0)
                     glColor3f( (indexModel+1)/(double)nbModel, 0, 0);
-                else if( axis == 1)
+                else if ( axis == 1)
                     glColor3f( 0, (indexModel+1)/(double)nbModel, 0);
-                else if( axis == 2)
+                else if ( axis == 2)
                     glColor3f( 0, 0, (indexModel+1)/(double)nbModel);
 
                 RasterizedVol& rasterizedVolume = rasterizedVolumes[axis][indexModel];
@@ -928,7 +929,7 @@ void Voxelizer<DataTypes>::draw()
                         box[1][iX] = x + ( psize*0.5 );
                         box[1][iY] = y + ( psize*0.5 );
                         box[1][iZ] = zMax;
-                        if( axis == 0)
+                        if ( axis == 0)
                         {
                             glBegin( GL_QUADS);
                             // z min face
@@ -944,7 +945,7 @@ void Voxelizer<DataTypes>::draw()
                             glVertex3f( box[1][0], box[1][1], box[0][2]);
                             glEnd();
                         }
-                        else if( axis == 1)
+                        else if ( axis == 1)
                         {
                             glBegin( GL_QUADS);
                             // z min face
@@ -960,7 +961,7 @@ void Voxelizer<DataTypes>::draw()
                             glVertex3f( box[0][0], box[1][1], box[1][2]);
                             glEnd();
                         }
-                        else if( axis == 2)
+                        else if ( axis == 2)
                         {
                             glBegin( GL_QUADS);
                             // z min face
