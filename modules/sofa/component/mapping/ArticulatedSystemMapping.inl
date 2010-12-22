@@ -140,7 +140,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::reset()
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord* inroot  )
 {
-    //std::cout<<" ArticulatedSystemMapping<TIn, TOut>::apply called with in: "<<in<<"  -- inroot"<<(*inroot)<<std::endl;
+//    std::cout << " --> ArticulatedSystemMapping<TIn, TOut>::apply called with in: " << in << "  -- inroot" << (*inroot) << std::endl;
 
     const Data< OutVecCoord > &xtoData = *m_toModel->read(core::VecCoordId::position());
     out.resize(xtoData.getValue().size());
@@ -341,6 +341,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     //		serr<<"input root: "<<*rootModel->getXfree();
     //	serr<<"  - input: "<<*m_fromModel->getXfree()<<"  output : "<<*m_toModel->getXfree()<<sendl;
     //}
+
+//	  std::cout << " <-- ArticulatedSystemMapping<TIn, TOut>::apply called with in: " << in << "  -- inroot" << (*inroot) << std::endl;
 }
 
 template <class TIn, class TInRoot, class TOut>
@@ -351,11 +353,16 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     Data<OutVecCoord>* xtoData = m_toModel->write(core::VecCoordId::position());
     const Data<InVecCoord>* xfromData = m_fromModel->read(core::ConstVecCoordId::position());
 
-    apply(*xtoData->beginEdit(), xfromData->getValue(),
-            (m_fromRootModel==NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
-    xtoData->endEdit();
+    /*apply(*xtoData->beginEdit(), xfromData->getValue(),
+          (m_fromRootModel==NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
+
+    xtoData->endEdit();*/
 
     const OutVecCoord& xto = xtoData->getValue();
+
+    /*std::cout << "--> applyJ : \n";
+    std::cout << "xto=" << xto << std::endl;
+    std::cout << "xfrom=" << xfromData->getValue() << std::endl;*/
 
     //sout<<" \n ApplyJ ";
 
@@ -427,6 +434,10 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     //		serr<<"input root: "<<*m_fromRootModel->getDx();
     //	serr<<"  - input: "<<*m_fromModel->getDx()<<"  output : "<<*m_toModel->getDx()<<sendl;
     //}
+
+    /*std::cout << "<-- applyJ : \n";
+    std::cout << "xto=" << xto << std::endl;
+    std::cout << "xfrom=" << xfromData->getValue() << std::endl;*/
 }
 
 
@@ -522,6 +533,11 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
     using container::ArticulatedHierarchyContainer;
 
     const OutVecCoord& xto = *m_toModel->getX();
+
+    //std::cout << "applyJT (constraints) : \n";
+    //std::cout << "xto = " << xto << std::endl;
+    //std::cout << "xfrom = " << *m_fromModel->getX() << std::endl;
+    //std::cout << "xfromFree = " << m_fromModel->read(core::VecCoordId::freePosition())->getValue() << std::endl;
 
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
 
