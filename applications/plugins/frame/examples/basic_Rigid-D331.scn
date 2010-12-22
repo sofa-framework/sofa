@@ -4,7 +4,7 @@
 
 	<Node name="Beam">
 		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -1 0 0 0 1 0 0 1 0 0 0 1" position="0 0 -1 0 0 0 1 0 0 2 0 0 0 1"/>
-		<FrameDiagonalMass template="RigidFrame3x6dMass"/>
+		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/>
 		<HookeMaterial3 template="Material3" />
 
 		<FrameFixedConstraint template="Rigid" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
@@ -14,9 +14,7 @@
 			<MechanicalObject template="DeformationGradient331" name="PointSet"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
 -->
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
-     			<Mesh /> 
-     			<MechanicalObject  template="DeformationGradient331" name="PointSet"  />
-     			<Triangle />
+     			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05"/>
 
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />

@@ -21,7 +21,7 @@
 
 		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0 1" 
 									     position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0.707106781187 0.707106781187 "/> 
-		<FrameDiagonalMass template="RigidFrame3x6dMass"/>  
+		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/> 
 
 		<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
 				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.2 0.2 0.2" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
@@ -36,7 +36,7 @@
 				/>
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" name="PointSet"  useMask="1" restScale="1" />
+			<MechanicalObject template="DeformationGradient332" name="PointSet"  showObject="1" showObjectScale="0.2"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
 			<CorotationalForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>

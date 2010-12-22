@@ -1,14 +1,14 @@
-<Node name="root"  gravity="0 0 0" dt="1" showVisualModels="1"  showCollisionModels="0"  showBehaviorModels="0">
+<Node name="root"  gravity="0 0 0" dt="1" showVisualModels="1"  showCollisionModels="0"  showBehaviorModels="1">
 	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
-	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
+	<CGLinearSolver template="GraphScattered" iterations="50"  threshold="1e-008" />
 
-	<Node name="Turtle" showBehaviorModels="1" showCollisionModels="1">
+	<Node name="Turtle" >
 		<GridMaterial name="gridmaterial" template="Material3" 
 				imageFile="textures/Turtle_32_32_32.raw" 
-				labelToStiffnessPairs="1 1
-2 20000
-3 1"  
-				labelToDensityPairs="1 1000"  
+				labelToStiffnessPairs="1 100
+2 2000
+3 100"  
+				labelToDensityPairs="1 3000"  
 				distanceType="Geodesic" 
 				biasDistances="true"
 				showVoxelData="None" 
@@ -17,23 +17,22 @@
 		<MechanicalObject name="DOFs" template="Affine" useMask="1"  
 				position="0.8 0 0.3 [1 0 0, 0 1 0, 0 0 1] -0.15 0 0.2 [1 0 0, 0 1 0, 0 0 1]"  
 				/>
-		<FrameDiagonalMass template="AffineFrame3x12dMass" />
+		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
 		<Node name="Physics" showBehaviorModels="0">
-			<MechanicalObject name="Samples" template="DeformationGradient331"  />
- 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" 
+			<MechanicalObject name="Samples" template="DeformationGradient332"  />
+ 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" 
 				input="@../DOFs"  output="@Samples"  
 				targetFrameNumber="7"
 				targetSampleNumber="10"
 				/>
-			<FrameForceField template="DeformationGradient331"  />  
+			<CorotationalForceField template="DeformationGradient332"  />  
 		</Node>
-<!--
+
 		<Node name="Visual" >
 			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Turtle.obj"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
 		</Node>
--->
 
 		<Node name="Collision">
 			<MeshLoader name="MeshLoader" filename="mesh/turtle.obj"/>
