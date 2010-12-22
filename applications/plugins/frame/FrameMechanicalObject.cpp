@@ -96,7 +96,6 @@ void MechanicalObject<Affine3dTypes>::draw()
 
     if (showObject.getValue())
     {
-        typedef Vec<3,double> Vec3d;
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
         const Affine3dTypes::VecCoord& x = (*getX());
@@ -108,7 +107,7 @@ void MechanicalObject<Affine3dTypes>::draw()
             x[i].writeOpenGlMatrix( glTransform);
             glMultMatrixf( glTransform);
             glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawFrame(Vec3d(), Quat(), Vec3d(1,1,1)*showObjectScale.getValue());
+            simulation::getSimulation()->DrawUtility.drawFrame(Vector3(), Quat(), Vector3(1,1,1));
             glPopMatrix();
         }
         glPopAttrib();
@@ -168,7 +167,6 @@ void MechanicalObject<Quadratic3dTypes>::draw()
 
     if (showObject.getValue())
     {
-        typedef Vec<3,double> Vec3d;
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
         const Quadratic3dTypes::VecCoord& x = (*getX());
@@ -180,7 +178,7 @@ void MechanicalObject<Quadratic3dTypes>::draw()
             x[i].writeOpenGlMatrix( glTransform);
             glMultMatrixf( glTransform);
             glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawFrame(Vec3d(), Quat(), Vec3d(1,1,1)*showObjectScale.getValue());
+            simulation::getSimulation()->DrawUtility.drawFrame(Vector3(), Quat(), Vector3(1,1,1));
             glPopMatrix();
         }
         glPopAttrib();
@@ -255,7 +253,6 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
 
     if (showObject.getValue())
     {
-        typedef Vec<3,double> Vec3d;
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
         const DeformationGradient331dTypes::VecCoord& x = (*getX());
@@ -267,7 +264,7 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
             x[i].writeOpenGlMatrix( glTransform);
             glMultMatrixf( glTransform);
             glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawPlus(showObjectScale.getValue(), Vec<4,float>(1.0, 1.0, 0.0, 1.0));
+            simulation::getSimulation()->DrawUtility.drawPlus(0.1, Vec<4,float>(1.0, 1.0, 0.0, 1.0));
             glPopMatrix();
         }
         glPopAttrib();
@@ -296,13 +293,15 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context;
+
+    context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+    glColor3f(1.0,1.0,1.0);
+    glDisable(GL_LIGHTING);
+    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+
     if (showIndices.getValue())
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -342,9 +341,8 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
 
     if (showObject.getValue())
     {
-        typedef Vec<3,double> Vec3d;
         glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
+        glEnable(GL_LIGHTING);
         const DeformationGradient332dTypes::VecCoord& x = (*getX());
         const float& scale = showObjectScale.getValue();
         for(int i=0; i<this->getSize(); i++ )
@@ -354,7 +352,7 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
             x[i].writeOpenGlMatrix( glTransform);
             glMultMatrixf( glTransform);
             glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawPlus(showObjectScale.getValue(), Vec<4,float>(1.0, 1.0, 0.0, 1.0));
+            simulation::getSimulation()->DrawUtility.drawPlus(0.1, Vec<4,float>(1.0, 1.0, 0.0, 1.0));
             glPopMatrix();
         }
         glPopAttrib();
