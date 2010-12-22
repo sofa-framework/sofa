@@ -128,10 +128,7 @@ int main( int argc, char** argv )
 
     MultiParentsNode->addObject(dofMultiMapping);
 
-    sofa::helper::vector<State3*> stateIn;
-    sofa::helper::vector<State3*> stateOut;
-
-    CenterOfMassMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMultiMapping3_to_3(stateIn,stateOut);
+    CenterOfMassMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMultiMapping3_to_3();
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube1->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube2->getMechanicalState()) );
     multiMappingCOM->addInputModel( dynamic_cast<MechanicalObject3*>(cube3->getMechanicalState()) );
