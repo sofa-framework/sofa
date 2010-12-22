@@ -53,6 +53,10 @@ public:
     typedef typename helper::vector<const In1VecCoord*> vecConstIn1VecCoord;
     typedef typename helper::vector<const In2VecCoord*> vecConstIn2VecCoord;
 
+    CenterOfMassMulti2Mapping()
+        :Inherit()
+    {}
+
     CenterOfMassMulti2Mapping(helper::vector< core::State<In1>* > in1,
             helper::vector< core::State<In2>* > in2,
             helper::vector< core::State<Out>* > out)

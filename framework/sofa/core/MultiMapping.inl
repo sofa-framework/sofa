@@ -35,6 +35,14 @@ namespace sofa
 namespace core
 {
 
+template< class In, class Out>
+MultiMapping<In,Out>::MultiMapping()
+    : m_inputObjects(initData(&m_inputObjects, "input", "Input Object(s)"))
+    , m_outputObjects(initData(&m_outputObjects, "output", "Output Object(s)"))
+{
+
+}
+
 template < class In, class Out >
 MultiMapping<In,Out>::MultiMapping(helper::vector< State<In>* > in, helper::vector< State<Out>* > out)
     : fromModels(in), toModels(out)

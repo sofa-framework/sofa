@@ -76,6 +76,8 @@ protected:
     helper::vector<State<Out>*> toModels;
 
 public:
+    /// Default Construtor , used by cpp examples.
+    MultiMapping();
     /// Constructor
     MultiMapping(helper::vector< State<In>* > in, helper::vector< State<Out>* > out);
     /// Destructor
