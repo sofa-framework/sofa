@@ -237,7 +237,7 @@ Node *createChainHybrid(Node *root)
 
     MechanicalObject3* dofMultiMapping = new MechanicalObject3; dofMultiMapping->setName("Center Of Mass");
     MultiParentsNode->addObject(dofMultiMapping);
-    CenterOfMassMechanicalMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMechanicalMultiMapping3_to_3;
+    CenterOfMassMultiMapping3_to_3* multiMappingCOM = new CenterOfMassMultiMapping3_to_3;
     multiMappingCOM->addInputModel(dofFEM);
     multiMappingCOM->addInputModel(dofFFD);
     multiMappingCOM->addInputModel(dofSpring);
