@@ -44,6 +44,11 @@ public:
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
     typedef typename helper::vector<const InVecCoord*> vecConstInVecCoord;
 
+    CenterOfMassMultiMapping()
+        : Inherit()
+    {
+    }
+
     CenterOfMassMultiMapping(helper::vector< core::State<In>* > in, helper::vector< core::State<Out>* > out)
         : Inherit(in, out)
     {

@@ -36,6 +36,16 @@ namespace core
 {
 
 template < class In1, class In2, class Out >
+Multi2Mapping<In1,In2,Out>::Multi2Mapping()
+    : m_inputObjects1(initData(&m_inputObjects1, "input1", "Input Object(s) (1st Data type)"))
+    , m_inputObjects2(initData(&m_inputObjects2, "input2", "Input Object(s) (2nd Data type)"))
+    , m_outputObjects(initData(&m_outputObjects, "output", "Output Object(s)"))
+{
+
+}
+
+
+template < class In1, class In2, class Out >
 Multi2Mapping<In1,In2,Out>::Multi2Mapping(helper::vector< State<In1>* > in1, helper::vector< State<In2>* > in2, helper::vector< State<Out>* > out)
     : fromModels1(in1), fromModels2(in2), toModels(out)
     , m_inputObjects1(initData(&m_inputObjects1, "input1", "Input Object(s) (1st Data type)"))
