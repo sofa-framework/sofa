@@ -5,16 +5,14 @@
 	<Node name="Beam">
 		<MechanicalObject template="Quadratic" name="DOFs" rest_position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]" position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 2 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]"/>
 		<HookeMaterial3 template="Material3" />
-		<FrameDiagonalMass template="QuadraticFrame3x30dMass"/> 
+		<FrameDiagonalMass template="QuadraticFrame3x30dMass" showAxisSizeFactor="0.2"/>
 
 		<Node name="Physics">
 <!--
 			<MechanicalObject template="DeformationGradient332" name="PointSet"  position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 -->
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
-     			<Mesh /> 
-     			<MechanicalObject  template="DeformationGradient332" name="PointSet"  />
-     			<Triangle />
+     			<MechanicalObject  template="DeformationGradient332" name="PointSet"   showObject="1" showObjectScale="0.05"/>
 
 			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,DeformationGradient332&gt;"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient332"   printLog="0" />
