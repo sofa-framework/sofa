@@ -50,15 +50,15 @@ void MechanicalObject<Affine3dTypes>::draw()
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context;
-    if (showIndices.getValue())
+    if ( showIndices.getValue() )
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
+        glColor3f ( 1.0,1.0,1.0 );
+        glDisable ( GL_LIGHTING );
+        sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
+        float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
 
-        for (int i=0 ; i< vsize ; i++)
+        for ( int i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -67,26 +67,26 @@ void MechanicalObject<Affine3dTypes>::draw()
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
-            glScalef(scale,scale,scale);
+            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            glScalef ( scale,scale,scale );
 
             // Makes text always face the viewer by removing the scene rotation
             // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
+            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
+            glTranslatef ( temp[0], temp[1], temp[2] );
+            glScalef ( scale,scale,scale );
 
-            while(*s)
+            while ( *s )
             {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
                 s++;
             }
 
@@ -94,20 +94,20 @@ void MechanicalObject<Affine3dTypes>::draw()
         }
     }
 
-    if (showObject.getValue())
+    if ( showObject.getValue() )
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
-        const Affine3dTypes::VecCoord& x = (*getX());
+        glPushAttrib ( GL_LIGHTING_BIT );
+        glDisable ( GL_LIGHTING );
+        const Affine3dTypes::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
-        for(int i=0; i<this->getSize(); i++ )
+        for ( int i=0; i<this->getSize(); i++ )
         {
             glPushMatrix();
             float glTransform[16];
-            x[i].writeOpenGlMatrix( glTransform);
-            glMultMatrixf( glTransform);
-            glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawFrame(Vector3(), Quat(), Vector3(1,1,1));
+            x[i].writeOpenGlMatrix ( glTransform );
+            glMultMatrixf ( glTransform );
+            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility.drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
             glPopMatrix();
         }
         glPopAttrib();
@@ -121,15 +121,15 @@ void MechanicalObject<Quadratic3dTypes>::draw()
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context;
-    if (showIndices.getValue())
+    if ( showIndices.getValue() )
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
+        glColor3f ( 1.0,1.0,1.0 );
+        glDisable ( GL_LIGHTING );
+        sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
+        float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
 
-        for (int i=0 ; i< vsize ; i++)
+        for ( int i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -138,26 +138,26 @@ void MechanicalObject<Quadratic3dTypes>::draw()
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
-            glScalef(scale,scale,scale);
+            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            glScalef ( scale,scale,scale );
 
             // Makes text always face the viewer by removing the scene rotation
             // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
+            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
+            glTranslatef ( temp[0], temp[1], temp[2] );
+            glScalef ( scale,scale,scale );
 
-            while(*s)
+            while ( *s )
             {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
                 s++;
             }
 
@@ -165,20 +165,20 @@ void MechanicalObject<Quadratic3dTypes>::draw()
         }
     }
 
-    if (showObject.getValue())
+    if ( showObject.getValue() )
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
-        const Quadratic3dTypes::VecCoord& x = (*getX());
+        glPushAttrib ( GL_LIGHTING_BIT );
+        glDisable ( GL_LIGHTING );
+        const Quadratic3dTypes::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
-        for(int i=0; i<this->getSize(); i++ )
+        for ( int i=0; i<this->getSize(); i++ )
         {
             glPushMatrix();
             float glTransform[16];
-            x[i].writeOpenGlMatrix( glTransform);
-            glMultMatrixf( glTransform);
-            glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawFrame(Vector3(), Quat(), Vector3(1,1,1));
+            x[i].writeOpenGlMatrix ( glTransform );
+            glMultMatrixf ( glTransform );
+            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility.drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
             glPopMatrix();
         }
         glPopAttrib();
@@ -194,7 +194,7 @@ public:
     Data<bool> showDefTensorsValues;
     Data<double> showDefTensorScale;
 
-    MechanicalObjectInternalData(Main* mObj = NULL)
+    MechanicalObjectInternalData ( Main* mObj = NULL )
         : showDefTensors ( mObj->initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
         , showDefTensorsValues ( mObj->initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
         , showDefTensorScale ( mObj->initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
@@ -207,15 +207,15 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context;
-    if (showIndices.getValue())
+    if ( showIndices.getValue() )
     {
-        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+        context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
+        glColor3f ( 1.0,1.0,1.0 );
+        glDisable ( GL_LIGHTING );
+        sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
+        float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
 
-        for (int i=0 ; i< vsize ; i++)
+        for ( int i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -224,26 +224,26 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
-            glScalef(scale,scale,scale);
+            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            glScalef ( scale,scale,scale );
 
             // Makes text always face the viewer by removing the scene rotation
             // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
+            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
+            glTranslatef ( temp[0], temp[1], temp[2] );
+            glScalef ( scale,scale,scale );
 
-            while(*s)
+            while ( *s )
             {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
                 s++;
             }
 
@@ -251,20 +251,20 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
         }
     }
 
-    if (showObject.getValue())
+    if ( showObject.getValue() )
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
-        const DeformationGradient331dTypes::VecCoord& x = (*getX());
+        glPushAttrib ( GL_LIGHTING_BIT );
+        glDisable ( GL_LIGHTING );
+        const DeformationGradient331dTypes::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
-        for(int i=0; i<this->getSize(); i++ )
+        for ( int i=0; i<this->getSize(); i++ )
         {
             glPushMatrix();
             float glTransform[16];
-            x[i].writeOpenGlMatrix( glTransform);
-            glMultMatrixf( glTransform);
-            glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawPlus(0.1, Vec<4,float>(1.0, 1.0, 0.0, 1.0));
+            x[i].writeOpenGlMatrix ( glTransform );
+            glMultMatrixf ( glTransform );
+            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility.drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
             glPopMatrix();
         }
         glPopAttrib();
@@ -280,7 +280,7 @@ public:
     Data<bool> showDefTensorsValues;
     Data<double> showDefTensorScale;
 
-    MechanicalObjectInternalData(Main* mObj = NULL)
+    MechanicalObjectInternalData ( Main* mObj = NULL )
         : showDefTensors ( mObj->initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
         , showDefTensorsValues ( mObj->initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
         , showDefTensorScale ( mObj->initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
@@ -294,16 +294,16 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context;
 
-    context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-    glColor3f(1.0,1.0,1.0);
-    glDisable(GL_LIGHTING);
-    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
+    context = dynamic_cast<sofa::simulation::Node*> ( this->getContext() );
+    glColor3f ( 1.0,1.0,1.0 );
+    glDisable ( GL_LIGHTING );
+    sofa::simulation::getSimulation()->computeBBox ( ( sofa::simulation::Node* ) context, sceneMinBBox.ptr(), sceneMaxBBox.ptr() );
+    float scale = ( sceneMaxBBox - sceneMinBBox ).norm() * showIndicesScale.getValue();
 
-    if (showIndices.getValue())
+    if ( showIndices.getValue() )
     {
 
-        for (int i=0 ; i< vsize ; i++)
+        for ( int i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -312,26 +312,26 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
 
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
-            glScalef(scale,scale,scale);
+            glTranslatef ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            glScalef ( scale,scale,scale );
 
             // Makes text always face the viewer by removing the scene rotation
             // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
+            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
             glLoadIdentity();
 
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
+            glTranslatef ( temp[0], temp[1], temp[2] );
+            glScalef ( scale,scale,scale );
 
-            while(*s)
+            while ( *s )
             {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
                 s++;
             }
 
@@ -339,20 +339,20 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
         }
     }
 
-    if (showObject.getValue())
+    if ( showObject.getValue() )
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glEnable(GL_LIGHTING);
-        const DeformationGradient332dTypes::VecCoord& x = (*getX());
+        glPushAttrib ( GL_LIGHTING_BIT );
+        glEnable ( GL_LIGHTING );
+        const DeformationGradient332dTypes::VecCoord& x = ( *getX() );
         const float& scale = showObjectScale.getValue();
-        for(int i=0; i<this->getSize(); i++ )
+        for ( int i=0; i<this->getSize(); i++ )
         {
             glPushMatrix();
             float glTransform[16];
-            x[i].writeOpenGlMatrix( glTransform);
-            glMultMatrixf( glTransform);
-            glScalef(scale,scale,scale);
-            simulation::getSimulation()->DrawUtility.drawPlus(0.1, Vec<4,float>(1.0, 1.0, 0.0, 1.0));
+            x[i].writeOpenGlMatrix ( glTransform );
+            glMultMatrixf ( glTransform );
+            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility.drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
             glPopMatrix();
         }
         glPopAttrib();
@@ -361,11 +361,11 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
 
 
 
-SOFA_DECL_CLASS(FrameMechanicalObject)
+SOFA_DECL_CLASS ( FrameMechanicalObject )
 
 using namespace sofa::defaulttype;
 
-int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
+int MechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
 #ifndef SOFA_FLOAT
         .add< MechanicalObject<Affine3dTypes> >()
         .add< MechanicalObject<Quadratic3dTypes> >()
