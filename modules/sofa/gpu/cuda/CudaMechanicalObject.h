@@ -110,6 +110,7 @@ public:
     };
     PrefetchOp< VResetForce > preVResetForce;
 
+    MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >* = NULL) {};
     static void accumulateForce(Main* m, bool prefetch = false);
     static void addDxToCollisionModel(Main* m, bool prefetch = false);
     static void vAlloc(Main* m, VecId v);
@@ -189,6 +190,7 @@ public:
     };
     PrefetchOp< VResetForce > preVResetForce;
 
+    MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaRigidTypes<N, real > >* = NULL) {};
     static void accumulateForce(Main* m, bool prefetch = false);
     static void addDxToCollisionModel(Main* m, bool prefetch = false);
     static void vAlloc(Main* m, VecId v);

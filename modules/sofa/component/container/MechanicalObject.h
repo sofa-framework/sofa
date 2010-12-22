@@ -55,10 +55,14 @@ using namespace core::objectmodel;
 using sofa::defaulttype::Vector3;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
+template <class DataTypes>
+class MechanicalObject;
+
 template<class DataTypes>
 class MechanicalObjectInternalData
 {
 public:
+    MechanicalObjectInternalData(MechanicalObject<DataTypes>* = NULL) {};
 };
 
 /**
@@ -120,8 +124,10 @@ public:
 
     Data< SReal > restScale;
 
-    Data< bool >	debugViewIndices;
-    Data< float >	debugViewIndicesScale;
+    Data< bool >  showObject;
+    Data< float > showObjectScale;
+    Data< bool >  showIndices;
+    Data< float > showIndicesScale;
 
     virtual void init();
     virtual void reinit();
