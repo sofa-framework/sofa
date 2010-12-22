@@ -248,12 +248,12 @@ public:
 
             Vec<NumStrainVec,MaterialFrame> si;
             for(i=0; i<NumStrainVec; i++) si[i]=getFrame( s[i] );
-            Mat<material_dimensions,NumStrainVec,MaterialFrame> Fisj;
+            Mat<material_dimensions+1,NumStrainVec,MaterialFrame> Fisj;
 
             Fisj[0][0]=F0s0;
             for(j=1; j<NumStrainVec; j++)
                 Fisj[0][j]=F.getMaterialFrame()*si[j];
-            for(i=1; i<material_dimensions; i++)
+            for(i=1; i<material_dimensions+1; i++)
                 for(j=0; j<NumStrainVec; j++)
                     Fisj[i][j]=F.getMaterialFrameGradient()[i-1]*si[j];
 
@@ -422,12 +422,12 @@ public:
 
             Vec<NumStrainVec,MaterialFrame> si;
             for(i=0; i<NumStrainVec; i++) si[i]=getFrame( s[i] );
-            Mat<material_dimensions,NumStrainVec,MaterialFrame> Fisj;
+            Mat<material_dimensions+1,NumStrainVec,MaterialFrame> Fisj;
 
             Fisj[0][0]=F0s0;
             for(j=1; j<NumStrainVec; j++)
                 Fisj[0][j]=F.getMaterialFrame()*si[j];
-            for(i=1; i<material_dimensions; i++)
+            for(i=1; i<material_dimensions+1; i++)
                 for(j=0; j<NumStrainVec; j++)
                     Fisj[i][j]=F.getMaterialFrameGradient()[i-1]*si[j];
 

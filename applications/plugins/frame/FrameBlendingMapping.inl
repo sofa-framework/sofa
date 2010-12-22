@@ -338,6 +338,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     WriteAccessor<Data<VecOutCoord> >  xto0 = *this->toModel->write(core::VecCoordId::restPosition());
     WriteAccessor<Data<VecOutCoord> >  xto = *this->toModel->write(core::VecCoordId::position());
     WriteAccessor<Data<VecOutCoord> >  xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
+    WriteAccessor<Data<typename defaulttype::OutDataTypesInfo<Out>::VecMaterialCoord> >  points(this->f_materialPoints);
     unsigned int num_points=xto0.size();
 
     core::behavior::MechanicalState< Out >* mstateto = dynamic_cast<core::behavior::MechanicalState< Out >* >( this->toModel);
@@ -361,18 +362,21 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
     // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
     gridMaterial->computeLinearRegionsSampling(p,0.1);
 
-    WriteAccessor<Data<typename defaulttype::OutDataTypesInfo<Out>::VecMaterialCoord> >  points(this->f_materialPoints);
+    std::cout<<"Inserting "<<p.size()<<" gauss points..."<<std::endl;
+
+    // copy to out
+    this->toModel->resize(p.size());
+    for ( unsigned int i=num_points; i<p.size(); i++ )
+    {
+        xto[i].clear(); xto0[i].clear(); xtoReset[i].clear();
+        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+            xto[i][j] = xto0[i][j] = xtoReset[i][j]= p[i][j];
+    }
+
+    // copy to sampledata
     points.resize(p.size());
     for(unsigned i=0; i<p.size(); i++ )
         points[i] = p[i];
-
-    std::cout<<"Inserting "<<points.size()<<" gauss points..."<<std::endl;
-
-    // copy
-    this->toModel->resize(points.size());
-    for ( unsigned int i=num_points; i<points.size(); i++ )
-        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
-            xto[i][j] = xto0[i][j] = xtoReset[i][j]= points[i][j];
 }
 
 
@@ -603,15 +607,18 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
                     for(unsigned int col=0; col<InVSize; col++)  massVector[findex].inertiaMatrix[col][l]+= m[findex][col];
                     d[reps[j][k]][l]=0;
                 }
-                massVector[findex].recalc();
             }
         }
     }
 
+    for(unsigned int i=0; i<in.size(); i++)  massVector[i].recalc();
     this->f_mass0.endEdit();
+
+    // copy mass0 to current mass
     MassVector& massV = *this->f_mass.beginEdit();
     massV = massVector;
     this->f_mass.endEdit();
+
     //for(unsigned int i=0;i<in.size();i++) std::cout<<"mass["<<i<<"]="<<massVector[i].inertiaMassMatrix<<std::endl;
 }
 

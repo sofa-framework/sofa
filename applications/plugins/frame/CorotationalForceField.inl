@@ -97,14 +97,15 @@ void CorotationalForceField<DataTypes>::init()
         if(material)
         {
             vector<Real> moments;
-            material->computeVolumeIntegrationFactors(i,point,StrainType::strain_order,moments);  // lumpMoments
+            material->computeVolumeIntegrationFactors(i,point,StrainType::strainenergy_order,moments);  // lumpMoments
             for(unsigned int j=0; j<moments.size() && j<this->integFactors[i].size() ; j++)
                 this->integFactors[i][j]=moments[j];
         }
-        else this->integFactors[i][0]=1; // default value for the volume when model vertices are used as gauss points
-    }
+        else this->integFactors[i][0]=1; // default value when there is no material
 
-    //for(unsigned int i=0;i<out.size();i++) std::cout<<"IntegVector["<<i<<"]="<<integFactors[i]<<std::endl;
+        if( this->f_printLog.getValue() )
+            std::cout<<"FrameForceField<DataTypes>::IntegFactor["<<i<<"](coord "<<point<<")="<<integFactors[i]<<std::endl;
+    }
 }
 
 
