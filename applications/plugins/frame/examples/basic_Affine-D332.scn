@@ -1,30 +1,32 @@
-<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="0" showBehaviorModels="1">
-	<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
-	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
-	<HookeMaterial3 template="Material3" />
+<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1">
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
+
 	<Node name="Beam">
 		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 2 [1 0 0, 0 1 0, 0 0 1] "/>
+		<HookeMaterial3 name="hookeMat" template="Material3" youngModulus="2000" poissonRatio="0.3" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass"/>
-		<Node name="TrianglesNode">
-			<MechanicalObject template="DeformationGradient332" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  showDefTensors="1" useElastons="0" />
-			<HookeMaterial3 name="hookeMat" template="Material3" youngModulus="2000" poissonRatio="0.3" />
+
+		<Node name="Physics">
+<!--
+			<MechanicalObject template="DeformationGradient332" name="PointSet"  position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+-->
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+     			<Mesh /> 
+     			<MechanicalObject  template="DeformationGradient332" name="PointSet"  />
+     			<Triangle />
+
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient332"   printLog="0" />
 		</Node>
 
 		<Node name="Collision">
-			<MeshLoader name="MeshLoader" filename="mesh/Turtle.obj"/>
-      		<Mesh /> 
-      		<MechanicalObject  name="PointSet"/>
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+    		  	<Mesh /> 
+     		 	<MechanicalObject  name="PointSet"  />
       		<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
 		</Node>
-
-		<Node 	name="Visual" >
-			<OglModel template="ExtVec3d" name="Visual" fileMesh="mesh/Turtle.obj"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
-		</Node>
--->
 
 	</Node>
 </Node>

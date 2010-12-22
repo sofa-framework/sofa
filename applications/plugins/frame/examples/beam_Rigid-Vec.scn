@@ -1,21 +1,61 @@
-<Node 	name="Scene" gravity="0 0 0" dt="0.2" showVisualModels="0" showBehaviorModels="1"  showCollisionModels="1"  >
-	<EulerImplicitSolver name="default2"  rayleighStiffness="0.5"  rayleighMass="0.5" />
-	<CGLinearSolver template="GraphScattered" name="default3"  iterations="150"  threshold="1e-008" />
-	<Node 	name="Beam" >
-<!--		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -100 0 0 0 1 0 0 100 0 0 0 1" position="0 0 -100 0 0 0 1 0 0 200 0.4472135955 0.707106781187 0.4472135955 0.316227766017"/>-->
-		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -100 0 0 0 1 0 0 100 0 0 0 1" position="0 0 -100 0 0 0 1 0 0 70 0.2 0 0 0.8"/>
-		<HookeMaterial3 name="hookeMat" template="Material3" youngModulus="200"  poissonRatio="0.3" />
-		<FrameDiagonalMass template="RigidFrame3x6dMass" name="Mass"  massDensity="1"  showAxisSizeFactor="20"  damping="0" />
-		<FrameHookeForceField template="Rigid" name="Hooke"  />
-		<Node 	name="TrianglesNode" >
-			<MeshLoader name="MeshLoader"  filename="mesh/beam.obj" />
-			<MechanicalObject template="Vec3d" name="Triangles"  restScale="1" />
-			<TriangleSetTopologyContainer name="Container" />
-			<TriangleSetTopologyModifier name="Modifier" />
-			<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-			<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-			<SkinningMapping template="Mapping&lt;Rigid,Vec3d&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  computeAllMatrices="1"  showDefTensors="1"  enableSkinning="0"  useElastons="0"  wheightingType="InvDistSquare"  distanceType="Euclidian" />
-			<TTriangleModel name="CollisionModel"  printLog="0" />
+
+
+
+<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showCollisionModels="0" showBehaviorModels="0">
+	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.8" responseType="1" responseStiffness="30" drawIntersection="0" drawSides="0" drawSubVols="0" />
+	<DiscreteIntersection />
+	<CollisionResponse response="default" name="LDIPenality"/>
+	<CollisionGroup/>
+
+	<Node name="Beam-RAW_generation">
+		<MeshLoader name="meshLoader"  filename="mesh/beam.obj"/>
+		<Mesh name="modelTopo" tags="LDI SelfCollision"/>
+		<MechanicalObject />
+	</Node>
+
+	<Node name="Beam">
+
+		<!--	<EulerSolver /> -->
+		<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+		<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
+
+		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0 1" 
+									     position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0.707106781187 0.707106781187 "/> 
+		<FrameDiagonalMass template="RigidFrame3x6dMass"/>  
+
+		<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
+				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.2 0.2 0.2" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
+				infoFileName="beam-Affine-Vec-seg.nfo" useROI="true"/>
+		<GridMaterial name="gridmaterial" 
+				imageFile="@VoxelLoader.segmentationFileName"
+				labelToStiffnessPairs="1 1000"  
+				labelToDensityPairs="1 3000"
+				distanceType="Geodesic"
+				biasDistances="true"
+				showVoxelData="None"
+				/>
+
+		<Node name="Physics">
+			<MechanicalObject template="DeformationGradient332" name="PointSet"  useMask="1" restScale="1" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
+			<CorotationalForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
+
+		<Node name="Collision">
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+      		<Mesh /> 
+      		<MechanicalObject  name="PointSet"/>
+      		<Triangle />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" />
+		</Node>
+
+		<Node name="Visu">
+			<OglModel name="Beam" fileMesh="mesh/beam.obj" normals="0"   color="0.1 .8 .3 1" />
+			<FrameBlendingMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="SMapping"  input="@../DOFs"  output="@Beam"/>
+		</Node>
+
 	</Node>
 </Node>
+
+
+

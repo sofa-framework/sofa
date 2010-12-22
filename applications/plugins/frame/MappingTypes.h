@@ -90,7 +90,7 @@ public:
     typedef TIn In;
     typedef typename In::Real InReal;
     static const bool isPhysical = IsPhysical;
-    static const unsigned num_spatial_dimensions=In::spatial_dimensions;
+    static const unsigned int num_spatial_dimensions=In::spatial_dimensions;
     enum {InVSize= defaulttype::InDataTypesInfo<In>::VSize};
     typedef FrameMass<num_spatial_dimensions,InVSize,InReal> FrameMassType;
     typedef sofa::component::topology::PointData<FrameMassType> VecMass;

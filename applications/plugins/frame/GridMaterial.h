@@ -82,10 +82,10 @@ public:
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
     typedef unsigned char voxelType;
 
-    static const unsigned num_material_dimensions = 3;
-    static const unsigned num_spatial_dimensions = 3;
+    static const unsigned int num_material_dimensions = 3;
+    static const unsigned int num_spatial_dimensions = 3;
 
-    static const unsigned nbRef = 4;
+    static const unsigned int nbRef = 4;
 
     typedef Vec<num_material_dimensions,Real> Coord;    ///< Material coordinate: parameters of a point in the object (1 for a wire, 2 for a hull, 3 for a volumetric object)
     typedef vector<Coord> VecCoord;
@@ -107,7 +107,7 @@ public:
     typedef Vec<nbRef,SCoord> VRefCoord;
     typedef Vec<nbRef,SGradient> VRefGradient;
     typedef Vec<nbRef,SHessian> VRefHessian;
-    typedef Vec<nbRef,unsigned> VRef;
+    typedef Vec<nbRef,unsigned int> VRef;
 
     typedef vector<unsigned int> VUI;
 
@@ -190,7 +190,7 @@ public:
     A first-order elaston models the strain as a linear function using the strain at the point and the gradient of the strain at this point, while a second-order elaston models the strain, the strain gradient and the strain Hessian.
 
       */
-    //  Real computeUniformSampling( VecVec3& points, vector<Real>& point_data, unsigned num_points, unsigned order );
+    //  Real computeUniformSampling( VecVec3& points, vector<Real>& point_data, unsigned int num_points, unsigned int order );
 
 //    /// implementation of the abstract function
 //    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );

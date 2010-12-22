@@ -123,7 +123,7 @@ void FrameForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord&
     stress.resize(x.size());
 
     // compute strains and strain rates
-    for(unsigned i=0; i<x.size(); i++)
+    for(unsigned int i=0; i<x.size(); i++)
     {
         StrainType::apply(x[i], strain[i]/*,&rotation[i]*/);
         StrainType::mult(v[i], x[i], strainRate[i]/*,&rotation[i]*/);
@@ -136,7 +136,7 @@ void FrameForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord&
     material->computeStress( stress, &stressStrainMatrices, strain, strainRate, out.ref() );
 
     // integrate and compute force
-    for(unsigned i=0; i<x.size(); i++)
+    for(unsigned int i=0; i<x.size(); i++)
     {
         StrainType::addMultTranspose(f[i], x[i], stress[i], this->integFactors[i]/*, &rotation[i]*/);
         if( this->f_printLog.getValue() )
@@ -151,7 +151,6 @@ template <class DataTypes>
 void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
 {
     ReadAccessor<DataVecCoord> x (*this->getMState()->read(core::ConstVecCoordId::position()));
-//                ReadAccessor<DataVecCoord> x(*this->getMState()->getX());
     ReadAccessor<DataVecDeriv> dx(_dx);
     WriteAccessor<DataVecDeriv> df(_df);
     strainChange.resize(dx.size());
@@ -159,7 +158,7 @@ void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeri
     ReadAccessor<Data<VecMaterialCoord> > out (sampleData->f_materialPoints);
 
     // compute strains changes
-    for(unsigned i=0; i<dx.size(); i++)
+    for(unsigned int i=0; i<dx.size(); i++)
     {
         StrainType::mult(dx[i], x[i], strainRate[i]/*,&rotation[i]*/);
         if( this->f_printLog.getValue() )
@@ -175,7 +174,7 @@ void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeri
 
     // apply factor
     Real kFactor = (Real)mparams->kFactor();
-    for(unsigned i=0; i<dx.size(); i++)
+    for(unsigned int i=0; i<dx.size(); i++)
     {
         if( this->f_printLog.getValue() )
         {
@@ -185,7 +184,7 @@ void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeri
     }
 
     // integrate and compute force
-    for(unsigned i=0; i<dx.size(); i++)
+    for(unsigned int i=0; i<dx.size(); i++)
     {
         StrainType::addMultTranspose(df[i], x[i], stressChange[i], this->integFactors[i]/*, &rotation[i]*/);
         if( this->f_printLog.getValue() )

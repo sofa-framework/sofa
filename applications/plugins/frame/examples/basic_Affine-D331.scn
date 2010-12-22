@@ -1,17 +1,34 @@
-<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="0" showBehaviorModels="1">
-	<EulerImplicitSolver  rayleighStiffness="0"  rayleighMass="0" verbose="1" />
-	<CGLinearSolver template="GraphScattered"  iterations="150"  threshold="1e-008"  verbose="1" />
-	<HookeMaterial3 template="Material3" />
+<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1">
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
+
 	<Node name="Beam">
 		<MechanicalObject template="Affine" name="DOFs" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1.2 [1 0 0, 0 1 0, 0 0 1] "/>
-<!--		<FrameDiagonalMass template="AffineFrame3x12dMass"/> -->
+		<HookeMaterial3 template="Material3" />
+		<FrameDiagonalMass template="AffineFrame3x12dMass"/> 
+
 		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 1 1 1 1 1 1 1 1 1" />
 		<FrameRigidConstraint template="Affine" indices="0" />
-		<Node name="TrianglesNode">
-			<MechanicalObject template="DeformationGradient331" name="Triangles"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;" name="default2"  input="@../DOFs"  output="@Triangles"  printLog="1" />
-			<CorotationalForceField template="DeformationGradient331"   printLog="1" />
+
+		<Node name="Physics">
+<!--
+			<MechanicalObject template="DeformationGradient331" name="PointSet"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
+-->
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+     			<Mesh /> 
+     			<MechanicalObject  template="DeformationGradient331" name="PointSet"  />
+     			<Triangle />
+
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
+			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
 
+		<Node name="Collision">
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+    		  	<Mesh /> 
+     		 	<MechanicalObject  name="PointSet"  />
+      		<Triangle />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
+		</Node>
 	</Node>
 </Node>

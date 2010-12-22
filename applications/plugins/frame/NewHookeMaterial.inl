@@ -56,7 +56,7 @@ namespace material
 //            template<class MaterialTypes>
 //            void HookeMaterial2<MaterialTypes>::computeStress  ( VecStr& stress, const VecStr& strain, const VecStr&, const VecMaterialCoord& )
 //            {
-//                for(unsigned i=0; i<stress.size(); i++)
+//                for(unsigned int i=0; i<stress.size(); i++)
 //                {
 //                    stress[i][0] += stressDiagonal * strain[i][0] + stressOffDiagonal * strain[i][1];
 //                    stress[i][1] += stressOffDiagonal * strain[i][0] + stressDiagonal * strain[i][1];
@@ -96,7 +96,7 @@ void HookeMaterial3<MaterialTypes>::reinit()
 template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
-    for(unsigned i=0; i<stresses.size(); i++)
+    for(unsigned int i=0; i<stresses.size(); i++)
     {
         stresses[i][0] = hookeStress(strains[i][0], stressDiagonal, stressOffDiagonal,  shear);
 
@@ -112,9 +112,9 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain1& stresses, VecSt
 template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStrStr* stressStrainMatrices, const VecStrain4& strains, const VecStrain4& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
-    for(unsigned i=0; i<stresses.size(); i++)
+    for(unsigned int i=0; i<stresses.size(); i++)
     {
-        for(unsigned j=0; j<4; j++)
+        for(unsigned int j=0; j<4; j++)
         {
             stresses[i][j] = hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
@@ -130,9 +130,9 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain4& stresses, VecSt
 template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain10& stresses, VecStrStr* stressStrainMatrices, const VecStrain10& strains, const VecStrain10& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
-    for(unsigned i=0; i<stresses.size(); i++)
+    for(unsigned int i=0; i<stresses.size(); i++)
     {
-        for(unsigned j=0; j<10; j++)
+        for(unsigned int j=0; j<10; j++)
         {
             stresses[i][j] = hookeStress(strains[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
@@ -148,7 +148,7 @@ void HookeMaterial3<MaterialTypes>::computeStress  ( VecStrain10& stresses, VecS
 template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain1& stressChanges, const VecStrain1& strainChanges, const VecMaterialCoord& /*point*/  )
 {
-    for(unsigned i=0; i<stressChanges.size(); i++)
+    for(unsigned int i=0; i<stressChanges.size(); i++)
     {
         stressChanges[i][0] = hookeStress(strainChanges[i][0], stressDiagonal, stressOffDiagonal,  shear);
     }
@@ -157,9 +157,9 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain1& stressCha
 template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain4& stressChanges, const VecStrain4& strainChanges, const VecMaterialCoord& /*point*/  )
 {
-    for(unsigned i=0; i<stressChanges.size(); i++)
+    for(unsigned int i=0; i<stressChanges.size(); i++)
     {
-        for(unsigned j=0; j<4; j++)
+        for(unsigned int j=0; j<4; j++)
         {
             stressChanges[i][j] = hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
@@ -169,9 +169,9 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain4& stressCha
 template<class MaterialTypes>
 void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain10& stressChanges, const VecStrain10& strainChanges, const VecMaterialCoord& /*point*/  )
 {
-    for(unsigned i=0; i<stressChanges.size(); i++)
+    for(unsigned int i=0; i<stressChanges.size(); i++)
     {
-        for(unsigned j=0; j<10; j++)
+        for(unsigned int j=0; j<10; j++)
         {
             stressChanges[i][j] = hookeStress(strainChanges[i][j], stressDiagonal, stressOffDiagonal,  shear);
         }
@@ -192,7 +192,7 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
 //template<class MaterialTypes>
 //void HookeMaterial3<MaterialTypes>::computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& )
 //{
-//    for(unsigned i=0; i<stress.size(); i++)
+//    for(unsigned int i=0; i<stress.size(); i++)
 //    {
 //        stress[i][0] = stressDiagonal * strain[i][0] + stressOffDiagonal * strain[i][1] + stressOffDiagonal * strain[i][2];
 //        stress[i][1] = stressOffDiagonal * strain[i][0] + stressDiagonal * strain[i][1] + stressOffDiagonal * strain[i][2];
@@ -208,7 +208,7 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
 //        m[0][0][0] = m[0][1][1] = m[0][2][2] = stressDiagonal;
 //        m[0][0][1] = m[0][0][2] = m[0][1][0] = m[0][1][2] = m[0][2][0] = m[0][2][1] = stressOffDiagonal;
 //        m[0][3][3] = m[0][4][4] = m[0][5][5] = shear;
-//        for( unsigned i=1; i<m.size(); i++ ){
+//        for( unsigned int i=1; i<m.size(); i++ ){
 //            m[i] = m[0];
 //        }
 //    }
@@ -218,8 +218,8 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
 //template<class MaterialTypes>
 //void HookeMaterial3<MaterialTypes>::computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& )
 //{
-//    for(unsigned e=0; e<10; e++)
-//    for(unsigned i=0; i<stress.size(); i++)
+//    for(unsigned int e=0; e<10; e++)
+//    for(unsigned int i=0; i<stress.size(); i++)
 //    {
 //        stress[i][0][e] = stressDiagonal * strain[i][0][e] + stressOffDiagonal * strain[i][1][e] + stressOffDiagonal * strain[i][2][e];
 //        stress[i][1][e] = stressOffDiagonal * strain[i][0][e] + stressDiagonal * strain[i][1][e] + stressOffDiagonal * strain[i][2][e];
@@ -235,7 +235,7 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
 //        m[0][0][0] = m[0][1][1] = m[0][2][2] = stressDiagonal;
 //        m[0][0][1] = m[0][0][2] = m[0][1][0] = m[0][1][2] = m[0][2][0] = m[0][2][1] = stressOffDiagonal;
 //        m[0][3][3] = m[0][4][4] = m[0][5][5] = shear;
-//        for( unsigned i=1; i<m.size(); i++ ){
+//        for( unsigned int i=1; i<m.size(); i++ ){
 //            m[i] = m[0];
 //        }
 //    }
@@ -245,7 +245,7 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
 //            template<class MaterialTypes>
 //            void HookeMaterial3<MaterialTypes>::computeDStress  ( VecStr& stress, const VecStr& strain )
 //            {
-//                for(unsigned i=0; i<stress.size(); i++)
+//                for(unsigned int i=0; i<stress.size(); i++)
 //                {
 //                    stress[i][0] = stressDiagonal * strain[i][0] + stressOffDiagonal * strain[i][1] + stressOffDiagonal * strain[i][2];
 //                    stress[i][1] = stressOffDiagonal * strain[i][0] + stressDiagonal * strain[i][1] + stressOffDiagonal * strain[i][2];
