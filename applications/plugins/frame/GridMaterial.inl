@@ -586,7 +586,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
     vector<Real> W((int)(maxlabel+1),0);
     for (i=0; i<nbVoxels; i++) if(voronoi[i]==(int)sampleindex) for (j=0; j<nbRef; j++) if(v_weights[i][j]!=0) W[v_index[i][j]]+=v_weights[i][j];
 
-    for (i=0; i<maxlabel; i++)
+    for (i=0; i<maxlabel+1; i++)
     {
         j=0; while (j!=nbRef && w[j]>W[i]) j++;
         if(j!=nbRef)
@@ -1565,6 +1565,7 @@ void GridMaterial< MaterialTypes>::draw()
     {
         //glDisable ( GL_LIGHTING );
         //glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
+        glLineWidth(1);
 
         unsigned int i;
         //        Real s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
