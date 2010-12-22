@@ -94,14 +94,14 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
     , weightDeriv2 ( initData ( &weightDeriv2,"weightHessians","weight Hessians" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
-    , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
-    , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
-    , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
+/*                        , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
+                        , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
+                        , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )*/
     , showFromIndex ( initData ( &showFromIndex, ( unsigned int ) 0, "showFromIndex","Displayed From Index." ) )
     , showWeights ( initData ( &showWeights, false, "showWeights","Show coeficients." ) )
     , showGammaCorrection ( initData ( &showGammaCorrection, 1.0, "showGammaCorrection","Correction of the Gamma by a power" ) )
     , showWeightsValues ( initData ( &showWeightsValues, false, "showWeightsValues","Show coeficients values." ) )
-    , showReps ( initData ( &showReps, true, "showReps","Show repartition." ) )
+    , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
     , showValuesNbDecimals ( initData ( &showValuesNbDecimals, 0, "showValuesNbDecimals","Multiply floating point by 10^n." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
     , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
@@ -631,7 +631,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 {
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
-    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > m_reps = this->f_index;
+    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index = this->f_index;
     ReadAccessor<Data<vector<Vec<nbRef,InReal> > > > m_weights = weight ;
     ReadAccessor<Data<vector<Vec<nbRef,MaterialDeriv> > > >  m_dweights = weightDeriv ;
     const int valueScale = showValuesNbDecimals.getValue();
@@ -653,7 +653,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         {
             for ( unsigned int m=0 ; m<nbRef; m++ )
             {
-                const int idxReps=m_reps[i][m];
+                const int idxReps=index[i][m];
                 double coef = m_weights[i][m];
                 if ( coef > 0.0 )
                 {
@@ -667,14 +667,14 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         glEnd();
     }
 
-    // Display  m_reps for each points
+    // Display index for each points
     if ( showReps.getValue())
     {
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
             SpatialCoord p;
             Out::get(p[0],p[1],p[2],xto[i]);
-            sofa::helper::gl::GlText::draw ( m_reps[i][0]*scale, p, textScale );
+            sofa::helper::gl::GlText::draw ( index[i][0]*scale, p, textScale );
         }
     }
 
@@ -875,11 +875,11 @@ void FrameBlendingMapping<TIn, TOut>::draw()
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::findIndexInRepartition( bool& influenced, unsigned int& realIndex, const unsigned int& pointIndex, const unsigned int& frameIndex)
 {
-    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > >  m_reps( f_index );
+    ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > >  index( f_index );
     influenced = false;
     for ( unsigned int j = 0; j < nbRef; ++j)
     {
-        if ( m_reps[pointIndex][j] == frameIndex)
+        if ( index[pointIndex][j] == frameIndex)
         {
             influenced = true;
             realIndex = j;

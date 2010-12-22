@@ -148,9 +148,6 @@ protected:
 
 public:
     Data<bool> showBlendedFrame;
-    Data<bool> showDefTensors;
-    Data<bool> showDefTensorsValues;
-    Data<double> showDefTensorScale;
     Data<unsigned int> showFromIndex;
     Data<bool> showWeights;
     Data<double> showGammaCorrection;
