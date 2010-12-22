@@ -17,9 +17,8 @@
 		<FrameDiagonalMass template="AffineFrame3x12dMass" />
 
 		<Node name="Material">
-			<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
-				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="5 5 5" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
-				infoFileName="beam-Affine-Vec-seg.nfo" useROI="true"/>
+			<Voxelizer name="VoxelLoader" filename="" triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="5 5 5"
+				valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw" infoFileName="beam-Affine-Vec-seg.nfo"/>
 			<GridMaterial name="gridmaterial" 
 				imageFile="@VoxelLoader.segmentationFileName"
 				labelToStiffnessPairs="1 10"  

@@ -137,7 +137,7 @@ protected:
 //                helper::ParticleMask* maskTo;
 
     Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
-    Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.
+    Data< vector<Vec<nbRef,unsigned> > > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
 
     Data< vector<Vec<nbRef,InReal> > >       weight;
     Data< vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
