@@ -73,7 +73,7 @@ void FrameForceField<DataTypes>::init()
     sampleData = context->get<SampleData>();
     if( sampleData==NULL )
     {
-        cerr<<"FrameForceField<DataTypes>::init(), material not found"<< endl;
+        cerr<<"FrameForceField<DataTypes>::init(), sampledata not found"<< endl;
     }
 
 

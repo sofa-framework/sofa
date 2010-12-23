@@ -178,7 +178,8 @@ public:
 
 
     /// implementation of the abstract function
-    bool computeVolumeIntegrationFactors(const unsigned int sampleindex,const MaterialCoord& point,const unsigned int order,vector<Real>& moments);
+    virtual Real getBulkModulus(const unsigned int sampleindex);
+    virtual bool computeVolumeIntegrationFactors(const unsigned int sampleindex,const MaterialCoord& point,const unsigned int order,vector<Real>& moments);
     virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrices, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point );
     virtual void computeStress  ( VecStrain4& stress, VecStrStr* stressStrainMatrices, const VecStrain4& strain, const VecStrain4& strainRate, const VecMaterialCoord& point );
     virtual void computeStress  ( VecStrain10& stress, VecStrStr* stressStrainMatrices, const VecStrain10& strain, const VecStrain10& strainRate, const VecMaterialCoord& point );

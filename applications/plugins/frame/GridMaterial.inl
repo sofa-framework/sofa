@@ -255,6 +255,56 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses,
     }
 }
 
+template < class MaterialTypes>
+typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStiffness(const unsigned int sampleindex)
+{
+    if (!nbVoxels) return 0;
+    if (voronoi.size()!=nbVoxels) return 0;
+
+    Real ret=0;
+    unsigned int count=0;
+    for(unsigned int i=0; i<nbVoxels; i++)
+        if(voronoi[i]==sampleindex)
+        {
+            ret+=getStiffness(grid.data()[i]); count++;
+        }
+    if(count!=0) ret/=(Real)count;
+    return ret;
+}
+
+template < class MaterialTypes>
+typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensity(const unsigned int sampleindex)
+{
+    if (!nbVoxels) return 0;
+    if (voronoi.size()!=nbVoxels) return 0;
+
+    Real ret=0;
+    unsigned int count=0;
+    for(unsigned int i=0; i<nbVoxels; i++)
+        if(voronoi[i]==sampleindex)
+        {
+            ret+=getDensity(grid.data()[i]); count++;
+        }
+    if(count!=0) ret/=(Real)count;
+    return ret;
+}
+
+template < class MaterialTypes>
+typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkModulus(const unsigned int sampleindex)
+{
+    if (!nbVoxels) return 0;
+    if (voronoi.size()!=nbVoxels) return 0;
+
+    Real ret=0;
+    unsigned int count=0;
+    for(unsigned int i=0; i<nbVoxels; i++)
+        if(voronoi[i]==sampleindex)
+        {
+            ret+=getBulkModulus(grid.data()[i]); count++;
+        }
+    if(count!=0) ret/=(Real)count;
+    return ret;
+}
 
 
 template < class MaterialTypes>

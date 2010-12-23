@@ -209,6 +209,19 @@ public:
 
     void draw();
 
+
+    /*************************/
+    /* material properties	  */
+    /*************************/
+
+    // return the average value from in the voronoi region of sample
+    Real getStiffness(const unsigned int sampleindex);
+    // return the average value from in the voronoi region of sample
+    Real getDensity(const unsigned int sampleindex);
+    // return the average value from in the voronoi region of sample
+    virtual Real getBulkModulus(const unsigned int sampleindex);
+
+
     /*************************/
     /*   Lumping			  */
     /*************************/
@@ -220,7 +233,7 @@ public:
     /// return sum(vol_i) in the voronoi region labeled 'sampleindex'
     bool lumpVolume(const unsigned int sampleindex,Real& vol);
     /// return sum(Stiffness_i.(p_i-p)^(order).vol_i) in the voronoi region labeled 'sampleindex' centered on point
-    bool computeVolumeIntegrationFactors(const unsigned int sampleindex,const SCoord& point,const unsigned int order,vector<Real>& moments);
+    virtual bool computeVolumeIntegrationFactors(const unsigned int sampleindex,const SCoord& point,const unsigned int order,vector<Real>& moments);
     /// return the weights of the voronoi region labeled 'sampleindex'
     bool lumpWeightsRepartition(const unsigned int sampleindex,const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw=NULL,VRefHessian* ddw=NULL);
     /// return the interpolated weights

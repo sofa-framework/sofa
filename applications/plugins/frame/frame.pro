@@ -39,6 +39,8 @@ HEADERS += \
            FrameFixedConstraint.inl \
            FrameForceField.h \
 	     FrameForceField.inl \
+           FrameVolumePreservationForceField.h \
+           FrameVolumePreservationForceField.inl \
            FrameMass.h \
            FrameMechanicalObject.h \
            FrameRigidConstraint.h \
@@ -60,6 +62,7 @@ SOURCES += \
            FrameDQBlendingMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
+           FrameVolumePreservationForceField.cpp \
            FrameMechanicalObject.cpp \
            FrameRigidConstraint.cpp \
            GridMaterial.cpp \

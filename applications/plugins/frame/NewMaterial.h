@@ -77,6 +77,7 @@ public:
 
     /** \brief Compute stress based on local strain and strain rate at each point.
     */
+    virtual Real getBulkModulus(const unsigned int sampleindex)=0;
     virtual bool computeVolumeIntegrationFactors(const unsigned int sampleindex,const MaterialCoord& point,const unsigned int order,vector<Real>& moments)=0;
     virtual void computeStress  ( VecStrain1& stress, VecStrStr* stressStrainMatrices, const VecStrain1& strain, const VecStrain1& strainRate, const VecMaterialCoord& point )=0;
     virtual void computeStressChange  ( VecStrain1& stressChange, const VecStrain1& strainChange, const VecMaterialCoord& point )=0;
