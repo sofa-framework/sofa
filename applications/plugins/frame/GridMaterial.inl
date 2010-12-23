@@ -1182,7 +1182,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
         Real maxerr=0;
         for (j=0; j<indices.size(); j++) if(errors[j]>maxerr) {maxerr=errors[j]; i=j;}
         SubdivideVoronoiRegion(i,indices.size());
-        j=0; while(voronoi[j]!=indices.size() && j<nbVoxels) j++;
+        j=0; while((unsigned int)voronoi[j]!=indices.size() && j<(unsigned int)nbVoxels) j++;
         if(j==nbVoxels) {errors[j]=0; continue;} //unable to add region
         else
         {
@@ -1190,7 +1190,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
             // update errors
             errors[i]=0;
             getCoord(indices[i],point);
-            ptlist.clear();  for (j=0; j<nbVoxels; j++) if (voronoi[j]==i) ptlist.push_back(j);
+            ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
             for (j=0; j<nbRef; j++)
                 if(v_weights[indices[i]][j]!=0)
                 {
@@ -1200,7 +1200,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
             i=indices.size()-1;
             errors[i]=0;
             getCoord(indices[i],point);
-            ptlist.clear();  for (j=0; j<nbVoxels; j++) if (voronoi[j]==i) ptlist.push_back(j);
+            ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
             for (j=0; j<nbRef; j++)
                 if(v_weights[indices[i]][j]!=0)
                 {
@@ -1239,17 +1239,17 @@ bool GridMaterial< MaterialTypes>::SubdivideVoronoiRegion( const unsigned int vo
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
 
-    unsigned int i,i1,i2;
+    unsigned int i,i1,i2=0;
     SCoord p1,p2;
 
     // initialization: take the first point and its farthest point inside the voronoi region
-    i1=0; while(voronoi[i1]!=voronoiindex && i1<nbVoxels) i1++;
+    i1=0; while((unsigned int)voronoi[i1]!=voronoiindex && i1<nbVoxels) i1++;
     if(i1==nbVoxels) return false;
     getCoord(i1,p1);
 
     Real d,dmax=0;
     for (i=0; i<nbVoxels; i++)
-        if(voronoi[i]==voronoiindex)
+        if((unsigned int)voronoi[i]==voronoiindex)
         {
             getCoord(i,p2); d=(p2-p1).norm2();
             if(d>dmax) {i2=i; dmax=d;}
@@ -1267,7 +1267,7 @@ bool GridMaterial< MaterialTypes>::SubdivideVoronoiRegion( const unsigned int vo
         nb1=nb2=0;
         cp1.fill(0); cp2.fill(0);
         for (i=0; i<nbVoxels; i++)
-            if(voronoi[i]==voronoiindex)
+            if((unsigned int)voronoi[i]==voronoiindex)
             {
                 getCoord(i,p);
                 d1=(p1-p).norm2(); d2=(p2-p).norm2();
@@ -1282,7 +1282,7 @@ bool GridMaterial< MaterialTypes>::SubdivideVoronoiRegion( const unsigned int vo
 
     // fill one region with new index
     for (i=0; i<nbVoxels; i++)
-        if(voronoi[i]==voronoiindex)
+        if((unsigned int)voronoi[i]==voronoiindex)
         {
             getCoord(i,p);
             d1=(p1-p).norm2(); d2=(p2-p).norm2();
