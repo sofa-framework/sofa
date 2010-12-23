@@ -20,9 +20,9 @@
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
 		<Node name="Physics" showBehaviorModels="0">
-			<MechanicalObject name="Samples" template="DeformationGradient332"  />
+			<MechanicalObject name="PointSet" template="DeformationGradient332" useMask="0"  />
  			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" 
-				input="@../DOFs"  output="@Samples"  
+				input="@../DOFs"  output="@PointSet"  
 				targetFrameNumber="7"
 				targetSampleNumber="10"
 				/>
