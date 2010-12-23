@@ -34,7 +34,7 @@
 		<Node name="Physics">
 			<MechanicalObject template="DeformationGradient332" name="PointSet"  showObject="1" showObjectScale="0.2"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
-			<CorotationalForceField template="DeformationGradient332"  printLog="0"/>  
+			<FrameForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
 
 		<Node name="Collision">

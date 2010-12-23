@@ -185,6 +185,7 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
     moments.resize(dim);
     moments[0] = 1;
     for (unsigned int i=1; i<dim; i++) moments[i]=0;
+
     return true;
 }
 

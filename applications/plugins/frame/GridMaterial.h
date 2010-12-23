@@ -49,6 +49,13 @@
 #define SHOWVOXELS_DISTANCES 6
 #define SHOWVOXELS_WEIGHTS 7
 
+
+
+
+
+
+
+
 namespace sofa
 {
 
@@ -331,7 +338,7 @@ protected:
     bool HeatDiffusion( const VecSCoord& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
 
     /// fit 1st, 2d or 3d polynomial to the dense weight map in the region defined by indices
-    bool lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL,Real* meanerr=NULL,Real* maxerr=NULL);
+    bool lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL,Real* err=NULL);
     /// interpolate weights (and weight derivatives) in the dense weight map.
     bool interpolateWeights(const SCoord& point,Real& w);
 

@@ -154,8 +154,8 @@ void FrameFixedConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, con
     helper::WriteAccessor<DataVecDeriv> res = resData;
     const vector<unsigned> & indices = f_index.getValue();
     const vector<VecAllowed> & allowed = f_allowed.getValue();
-    cerr<<"FrameFixedConstraint<DataTypes>::projectResponse, indices = "<< indices << endl;
-    cerr<<"FrameFixedConstraint<DataTypes>::projectResponse, motion changes allowed = "<< allowed << endl;
+    //cerr<<"FrameFixedConstraint<DataTypes>::projectResponse, indices = "<< indices << endl;
+    //cerr<<"FrameFixedConstraint<DataTypes>::projectResponse, motion changes allowed = "<< allowed << endl;
     for(unsigned i=0; i<indices.size(); i++)
     {
         for(unsigned j=0; j<dimensions; j++ )
