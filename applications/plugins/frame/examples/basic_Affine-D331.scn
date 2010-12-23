@@ -7,8 +7,8 @@
 		<HookeMaterial3 template="Material3" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
-		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 1 1 1 1 1 1 1 1 1" />
-		<FrameRigidConstraint template="Affine" indices="0" />
+		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0 0 0 0" />
+		<FrameRigidConstraint template="Affine" indices="1" />
 
 		<Node name="Physics">
 <!--

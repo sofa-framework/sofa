@@ -571,6 +571,8 @@ bool GridMaterial< MaterialTypes>::computeVolumeIntegrationFactors(const unsigne
 }
 
 
+
+
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sampleindex,const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw,VRefHessian* ddw)
 {
@@ -599,7 +601,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
 
     // get point indices in voronoi
     VUI neighbors;   for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)sampleindex) neighbors.push_back((unsigned int)i);
-    bool dilatevoronoi=true;
+    bool dilatevoronoi=false;
     if (dilatevoronoi)
         for (i=0; i<nbVoxels; i++)
         {
@@ -625,15 +627,47 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
 
 
 
+template<class real>
+inline real determ(vector<vector<real> >& m, int S)
+{
+    if (S < 2) {return 0;}
+    else if (S == 2) { return m[0][0] * m[1][1] - m[1][0] * m[0][1]; }
+    else
+    {
+        int i,j,j1,j2;
+        real det = 0;
+        vector<vector<real> > m1(S-1,vector<real>(S-1));
+        for (j1=0; j1<S; j1++)
+        {
+            for (i=1; i<S; i++)
+            {
+                j2 = 0;
+                for (j=0; j<S; j++)
+                {
+                    if (j == j1) continue;
+                    m1[i-1][j2] = m[i][j];
+                    j2++;
+                }
+            }
+            det += pow(-1.0,1.0+j1+1.0) * m[0][j1] * determ(m1,S-1);
+        }
+        return(det);
+    }
+}
+
+
+
+
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw,SHessian* ddw,Real* meanerr,Real* maxerr)
+bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw,SHessian* ddw,Real* err)
 {
     if (!nbVoxels) return false;
     if (weights.size()!=nbVoxels) return false; // point not in grid or no weight computed
 
-//	std::cout<<"fit on "<<neighbors.size()<<" voxels"<<std::endl;
+    //sout<<"fit on "<<indices.size()<<" voxels"<<sendl;
 
     unsigned int i,j,k;
+    Real MIN_DET=1E-2;
 
     // least squares fit
     unsigned int order=0;
@@ -645,11 +679,11 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& 
     for (j=0; j<indices.size(); j++)
     {
         getCoord(indices[j],pi);
-//	std::cout<<"dp["<<j<<"]="<<pi-point<<std::endl;
+        //sout<<"dp["<<j<<"]="<<pi-point<<",w="<<weights[indices[j]]<<sendl;
         accumulateCovariance(pi-point,order,Cov);
     }
 
-//	std::cout<<"Cov="<<Cov<<std::endl;
+    //sout<<"Cov="<<Cov<<sendl;
 
     // invert covariance matrix
     vector<vector<Real> > invCov((int)dim,vector<Real>((int)dim,(Real)0));
@@ -658,15 +692,16 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& 
     {
         Mat<4,4,Real> tmp,invtmp;
         for (i=0; i<4; i++) for (j=0; j<4; j++) tmp[i][j]=Cov[i][j];
-        if (!invtmp.invert(tmp)) invCov[0][0]=1./Cov[0][0];    // coplanar points->not invertible->go back to simple average
-        else	for (i=0; i<4; i++) for (j=0; j<4; j++) invCov[i][j]=invtmp[i][j];
+
+        if (determ(Cov,dim)<MIN_DET) invCov[0][0]=1./Cov[0][0];    // coplanar points->not invertible->go back to simple average
+        else	{ invtmp.invert(tmp); for (i=0; i<4; i++) for (j=0; j<4; j++) invCov[i][j]=invtmp[i][j];}
     }
     else if (order==2)
     {
         Mat<10,10,Real> tmp,invtmp;
         for (i=0; i<10; i++) for (j=0; j<10; j++) tmp[i][j]=Cov[i][j];
-        if (!invtmp.invert(tmp)) invCov[0][0]=1./Cov[0][0];    // coplanar points->not invertible->go back to simple average
-        else  for (i=0; i<10; i++) for (j=0; j<10; j++) invCov[i][j]=invtmp[i][j];
+        if (determ(Cov,dim)<MIN_DET) invCov[0][0]=1./Cov[0][0];    // coplanar points->not invertible->go back to simple average
+        else { invtmp.invert(tmp); for (i=0; i<10; i++) for (j=0; j<10; j++) invCov[i][j]=invtmp[i][j];}
     }
 
     // compute weights and its derivatives
@@ -681,26 +716,24 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& 
     vector<Real> W((int)dim,(Real)0);
     for (i=0; i<dim; i++) for (j=0; j<dim; j++) W[i]+=invCov[i][j]*wdp[j];
 
-//std::cout<<"wdp="; for (i=0;i<dim;i++) std::cout<<wdp[i]<<","; std::cout<<std::endl;
-//std::cout<<"W="; for (i=0;i<dim;i++) std::cout<<W[i]<<","; std::cout<<std::endl;
-//std::cout<<"invCov="; for (i=0;i<dim;i++) for (j=0;j<dim;j++) std::cout<<invCov[i][j]<<","; std::cout<<std::endl;
-    if(meanerr)
+
+//
+//sout<<"wdp="; for (i=0;i<dim;i++) sout<<wdp[i]<<","; sout<<sendl;
+//vector<Real> sdp((int)dim,(Real)0);
+//for (j=0;j<indices.size();j++) { getCoord(indices[j],pi); getCompleteBasis(pi-point,order,basis); for (i=0;i<dim;i++) sdp[i]+=basis[i]; }
+//sout<<"sdp="; for (i=0;i<dim;i++) sout<<sdp[i]<<","; sout<<sendl;
+//sout<<"W="; for (i=0;i<dim;i++) sout<<W[i]<<","; sout<<sendl;
+//sout<<"invCov="; for (i=0;i<dim;i++) for (j=0;j<dim;j++) sout<<invCov[i][j]<<","; sout<<sendl;
+    if(err)
     {
-        Real err;
-        *meanerr=0;
         for (j=0; j<indices.size(); j++)
         {
             getCoord(indices[j],pi);
             getCompleteBasis(pi-point,order,basis);
-            err=0; for (k=0; k<dim; k++) err+=basis[k]*W[k];
-//std::cout<<"wi,wt,err="<<weights[indices[j]]<<"/"<<err<<"/";
-            err=weights[indices[j]]-err; if(err<0) err*=-1;
-//std::cout<<err<<" ";
-            *meanerr+=err;
-            if(maxerr) if(err>*maxerr) *maxerr=err;
+            Real er=0; for (k=0; k<dim; k++) er+=basis[k]*W[k];
+            er=weights[indices[j]]-er; if(er<0) er*=-1;
+            *err+=er;
         }
-        *meanerr/=(Real)indices.size();
-//	std::cout<<"mean/max err="<<*meanerr<<"/"<<*maxerr<<std::endl;
     }
 
     w=W[0];
@@ -1132,16 +1165,15 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
         getCoord(indices[j],point);
         ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
 
-        Real meanerr=0,maxerr=0; unsigned int count=0;
+        Real err=0; unsigned int count=0;
         for (i=0; i<nbRef; i++)
             if(v_weights[indices[j]][i]!=0)
             {
                 pasteRepartioninWeight(v_index[indices[j]][i]);
-                lumpWeights(ptlist,point,w,&dw,NULL,&meanerr,&maxerr);
+                lumpWeights(ptlist,point,w,&dw,NULL,&err);
                 count++;
             }
-        meanerr/=(Real)count;
-        std::cout<<"err["<<j<<"]="<<meanerr<<"/"<<maxerr<<std::endl;
+        std::cout<<"err["<<j<<"]="<<err<<std::endl;
     }
 
     // insert gauss points in the center of voronoi regions

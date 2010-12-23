@@ -166,11 +166,12 @@ public:
                 strain[ei] = getStrainVec( strainmat ); ei++;
             }
 
-            // order 2: Eij = [Fi^T.Fj +  Fj^T.Fi ]/2
+            // order 2: Eij = [Fi^T.Fj +  Fj^T.Fi ]/2 , Eii = [Fi^T.Fi]/2
             for(unsigned int i=0; i<material_dimensions; i++)
                 for(unsigned int j=i; j<material_dimensions; j++)
                 {
                     strainmat = F.getMaterialFrameGradient()[i].multTranspose( F.getMaterialFrameGradient()[j] );
+                    if(i==j) strainmat*=(Real)0.5;
                     strain[ei] = getStrainVec( strainmat ); ei++;
                 }
         }
@@ -205,11 +206,12 @@ public:
                 strain[ei] = getStrainVec( strainmat ); ei++;
             }
 
-            // order 2: Eij = [dFi^T.Fj +  Fj^T.dFi ]/2 + [Fi^T.dFj +  dFj^T.Fi ]/2
+            // order 2: Eij = [dFi^T.Fj +  Fj^T.dFi ]/2 + [Fi^T.dFj +  dFj^T.Fi ]/2  , Eii = [Fi^T.dFi + dFi^T.Fi]/2
             for(unsigned int i=0; i<material_dimensions; i++)
                 for(unsigned int j=i; j<material_dimensions; j++)
                 {
-                    strainmat = F.getMaterialFrameGradient()[i].multTranspose( dF.getMaterialFrameGradient()[j] ) + F.getMaterialFrameGradient()[j].multTranspose( dF.getMaterialFrameGradient()[i] );
+                    if(i==j) strainmat = F.getMaterialFrameGradient()[i].multTranspose( dF.getMaterialFrameGradient()[i] ) ;
+                    else strainmat = F.getMaterialFrameGradient()[i].multTranspose( dF.getMaterialFrameGradient()[j] ) + F.getMaterialFrameGradient()[j].multTranspose( dF.getMaterialFrameGradient()[i] );
                     strain[ei] = getStrainVec( strainmat ); ei++;
                 }
         }
@@ -280,7 +282,10 @@ public:
             Mat<material_dimensions,material_dimensions,unsigned int> indexij; // index of terms in i.j
             for(i=0; i<material_dimensions; i++)
                 for(j=i; j<material_dimensions; j++)
+                {
                     indexij[i][j]=indexij[j][i]=ci;
+                    ci++;
+                }
 
             // order 1: dF -= (F.dEi +  Fi.dE) * sum dpi
             //			dFi-= (F.dE) * sum dpi
@@ -315,9 +320,9 @@ public:
             if(material_dimensions==3)
             {
                 dF.getMaterialFrame() -= ( Fisj[1][indexij[1][2]] + Fisj[2][indexij[0][2]] + Fisj[3][indexij[0][1]] ) *integ[ci];
-                dF.getMaterialFrameGradient()[0] -= ( Fisj[0][ci] + Fisj[2][3] + Fisj[3][2] ) *integ[ci];
-                dF.getMaterialFrameGradient()[1] -= ( Fisj[0][ci] + Fisj[1][3] + Fisj[3][1] ) *integ[ci];
-                dF.getMaterialFrameGradient()[2] -= ( Fisj[0][ci] + Fisj[2][1] + Fisj[1][2] ) *integ[ci];
+                dF.getMaterialFrameGradient()[0] -= ( Fisj[0][indexij[1][2]] + Fisj[2][3] + Fisj[3][2] ) *integ[ci];
+                dF.getMaterialFrameGradient()[1] -= ( Fisj[0][indexij[0][2]] + Fisj[1][3] + Fisj[3][1] ) *integ[ci];
+                dF.getMaterialFrameGradient()[2] -= ( Fisj[0][indexij[0][1]] + Fisj[2][1] + Fisj[1][2] ) *integ[ci];
                 ci++;
             }
 
@@ -367,7 +372,7 @@ public:
                 dF.getMaterialFrameGradient()[k] -= ( Fisj[i+1][indexij[i][j]] + Fisj[j+1][indexij[i][i]]  ) *integ[ci];
                 ci++;
 
-                i=2; j=1; k=1;
+                i=2; j=1; k=0;
                 dF.getMaterialFrameGradient()[i] -= ( Fisj[i+1][indexij[j][k]] + Fisj[j+1][indexij[i][k]] + Fisj[k+1][indexij[i][j]] ) *integ[ci];
                 dF.getMaterialFrameGradient()[j] -= ( Fisj[i+1][indexij[i][k]] + Fisj[k+1][indexij[i][i]] ) *integ[ci];
                 dF.getMaterialFrameGradient()[k] -= ( Fisj[i+1][indexij[i][j]] + Fisj[j+1][indexij[i][i]]  ) *integ[ci];
@@ -378,7 +383,7 @@ public:
             //			dFj-= (Fi.dEii ) * sum dpi^3dpj
 
             for(i=0; i<material_dimensions; i++)
-                for(j=i; j<material_dimensions; j++)
+                for(j=0; j<material_dimensions; j++)
                     if(i!=j)
                     {
                         dF.getMaterialFrameGradient()[i] -= ( Fisj[j+1][indexij[i][i]] + Fisj[i+1][indexij[i][j]] ) *integ[ci];

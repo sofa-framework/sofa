@@ -1,9 +1,6 @@
 <Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1">
-	<EulerSolver />
-<!--
 	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
--->
 
 	<Node name="Beam">
 		<MechanicalObject template="Quadratic" name="DOFs" rest_position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]" position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 2 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]"/>
