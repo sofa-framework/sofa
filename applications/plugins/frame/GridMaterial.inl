@@ -264,7 +264,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStif
     Real ret=0;
     unsigned int count=0;
     for(unsigned int i=0; i<nbVoxels; i++)
-        if(voronoi[i]==sampleindex)
+        if((unsigned int)voronoi[i]==sampleindex)
         {
             ret+=getStiffness(grid.data()[i]); count++;
         }
@@ -281,7 +281,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getDens
     Real ret=0;
     unsigned int count=0;
     for(unsigned int i=0; i<nbVoxels; i++)
-        if(voronoi[i]==sampleindex)
+        if((unsigned int)voronoi[i]==sampleindex)
         {
             ret+=getDensity(grid.data()[i]); count++;
         }
@@ -298,7 +298,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulk
     Real ret=0;
     unsigned int count=0;
     for(unsigned int i=0; i<nbVoxels; i++)
-        if(voronoi[i]==sampleindex)
+        if((unsigned int)voronoi[i]==sampleindex)
         {
             ret+=getBulkModulus(grid.data()[i]); count++;
         }
