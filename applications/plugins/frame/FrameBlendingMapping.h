@@ -63,7 +63,7 @@ template <class TIn, class TOut>
 class FrameBlendingMapping : public core::Mapping<TIn, TOut>, public FrameData<TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)>, public SampleData<TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS3(SOFA_TEMPLATE2(FrameBlendingMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut), SOFA_TEMPLATE2(FrameData,TIn,(defaulttype::OutDataTypesInfo<TOut>::primitive_order > 0)), SOFA_TEMPLATE(SampleData,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
 

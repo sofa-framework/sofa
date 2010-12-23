@@ -42,6 +42,9 @@ using sofa::defaulttype::FrameMass;
 template<class In, class Out, class Material, int nbRef, int order>
 class LinearBlendTypes;
 
+template<class In, class Out, class Material, int nbRef, int order>
+class DualQuatBlendTypes;
+
 
 
 template< class Primitive>

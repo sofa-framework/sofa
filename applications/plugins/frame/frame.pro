@@ -33,6 +33,8 @@ HEADERS += \
            FrameConstantForceField.h \
            FrameDiagonalMass.h \
            FrameDiagonalMass.inl \
+           FrameDQBlendingMapping.h \
+           FrameDQBlendingMapping.inl \
            FrameFixedConstraint.h \
            FrameFixedConstraint.inl \
            FrameForceField.h \
@@ -55,6 +57,7 @@ SOURCES += \
            FrameBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
+           FrameDQBlendingMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
            FrameMechanicalObject.cpp \
