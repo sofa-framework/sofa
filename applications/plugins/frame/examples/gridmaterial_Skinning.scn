@@ -4,7 +4,7 @@
 
 	<Node name="Turtle" >
 		<GridMaterial name="gridmaterial" template="Material3" 
-				imageFile="textures/Turtle_32_32_32.raw" 
+				imageFile="textures/Turtle_64_64_64.raw" 
 				labelToStiffnessPairs="1 100
 2 2000
 3 100"  
@@ -20,11 +20,11 @@
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
 		<Node name="Physics" showBehaviorModels="0">
-			<MechanicalObject name="PointSet" template="DeformationGradient332" useMask="0"  />
+			<MechanicalObject name="PointSet" template="DeformationGradient332" useMask="0"  showObject="1" showObjectScale="0.1"/>
  			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" 
 				input="@../DOFs"  output="@PointSet"  
 				targetFrameNumber="7"
-				targetSampleNumber="10"
+				targetSampleNumber="15"
 				/>
 			<CorotationalForceField template="DeformationGradient332"  />  
 		</Node>

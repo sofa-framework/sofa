@@ -95,7 +95,7 @@ protected :
     VecFrame rotation; ///< rotation matrices
     vector<Strain> strain, strainRate, stress, strainChange, stressChange;
     Material* material;
-    typedef defaulttype::SampleData<DataTypes> SampleData; // contains precomputed moments
+    typedef defaulttype::SampleData<DataTypes> SampleData;
     SampleData* sampleData;
 
     typedef typename StrainType::StrainEnergyVec  VecInteg; // vec or order VecIntegOrder
