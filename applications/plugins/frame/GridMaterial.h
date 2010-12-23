@@ -240,7 +240,9 @@ public:
     bool computeRegularSampling ( VecSCoord& points, const unsigned int step);
     /// Identify regions where weights are linear up to the tolerance
     //  -> returns points and store id/distances in voronoi/distances
-    bool computeLinearRegionsSampling ( VecSCoord& points, const Real tolerance);
+    bool computeLinearRegionsSampling ( VecSCoord& points, const unsigned int num_points);
+    /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
+    bool computeGeodesicalDistances ( const VecSCoord& points, const Real distMax =std::numeric_limits<Real>::max());
 
 
     virtual std::string getTemplateName() const
@@ -324,11 +326,12 @@ protected:
     bool computeGeodesicalDistances ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max());
     bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
-    bool computeGeodesicalDistances ( const VecSCoord& points, const Real distMax =std::numeric_limits<Real>::max());
     bool computeGeodesicalDistances ( const vector<int>& indices, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Geodesical distance between the border of the voronoi cell containing point and all other voxels -> stored in distances
     bool computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max());
     bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
+    // subdivide a voronoi region in two subregions using lloyd relaxation and euclidean distances
+    bool SubdivideVoronoiRegion( const unsigned int voronoiindex, const unsigned int newvoronoiindex, const unsigned int max_iterations =100);
 
     /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
     bool computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point,const Real factor=2.);
