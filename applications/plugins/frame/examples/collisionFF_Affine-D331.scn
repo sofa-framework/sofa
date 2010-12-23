@@ -1,0 +1,59 @@
+<Node name="Scene" gravity="0 -1 0" dt="0.05" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1">
+	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.005" responseType="1" responseStiffness="3000" drawIntersection="0" drawSides="0" drawSubVols="0" />
+	<DiscreteIntersection />
+	<CollisionResponse response="default" name="LDIPenality"/>
+	<CollisionGroup/>
+<!--
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<NewProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
+	<DefaultContactManager name="Response"  response="default" />
+-->
+
+	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
+	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
+
+	<Node name="Beam">
+		<MechanicalObject template="Affine" name="DOFs" position="0 2 -1 [1 0 0, 0 1 0, 0 0 1] 0 2 1 [1 0 0, 0 1 0, 0 0 1]" useMask="0"/>
+		<HookeMaterial3 template="Material3" />
+		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
+
+		<Node name="Physics">
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" translation="0 2 0" useMask="0"/>
+			<FrameBlendingMapping template="Mapping&lt;Affine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
+			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
+		</Node>
+
+		<Node name="Collision">
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+			<Mesh tags="LDI"/>
+			<MechanicalObject  name="PointSet" translation="0 2 0" useMask="0"/>
+			<PlaneForceField name="Plane" stiffness="500" normal="0 1 0"/>
+			<Triangle />
+			<FrameBlendingMapping template="Mapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
+		</Node>
+	</Node>
+
+
+	<Node 	name="RigidBody" gravity="0 -9.81 0"  >
+		<EulerImplicitSolver name="default11"  rayleighStiffness="0.01" />
+		<CGLinearSolver template="GraphScattered" name="default12"  iterations="25"  threshold="1e-08" />
+		<MechanicalObject template="Rigid" name="default13"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  translation="0 2 5"  rotation="0 0 0"  scale3d="1 1 1" />
+		<UniformMass template="Rigid" name="default14" />
+		<Node 	name="VisualNode" tags="Visual" gravity="0 -9.81 0"  >
+			<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/cube.obj"  scale3d="1 1 1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
+			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default15"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
+		</Node>
+		<Node 	name="CollisionNode" gravity="0 -9.81 0"  >
+			<MeshLoader name="collisionLoader"  filename="mesh/cube.obj" />
+			<MeshTopology name="default16" />
+			<MechanicalObject template="Vec3d" name="default17"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  scale3d="1 1 1" useMask="0"/>
+			<PlaneForceField name="Plane" stiffness="500" normal="0 1 0"/>
+			<TTriangleModel template="Vec3d" name="default18"  contactStiffness="200" />
+			<LineModel name="default19"  contactStiffness="@[-1].contactStiffness" />
+			<PointModel name="default20"  contactStiffness="@[-1].contactStiffness" />
+			<RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" name="default21"  input="@.."  output="@." />
+		</Node>
+	</Node>
+</Node>
