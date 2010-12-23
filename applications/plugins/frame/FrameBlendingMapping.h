@@ -133,8 +133,8 @@ protected:
     vector<InOut> inout;  ///< Data specific to the conversion between the types
 
 
-//                helper::ParticleMask* maskFrom;
-//                helper::ParticleMask* maskTo;
+    helper::ParticleMask* maskFrom;
+    helper::ParticleMask* maskTo;
 
     Data<VecOutCoord> f_initPos;            // initial child coordinates in the world reference frame
     Data< vector<Vec<nbRef,unsigned int> > > f_index;   ///< The numChildren * numRefs column indices. index[j][i] is the index of the j-th parent influencing child i.
