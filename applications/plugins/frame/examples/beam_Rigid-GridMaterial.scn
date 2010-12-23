@@ -1,6 +1,3 @@
-
-
-
 <Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showCollisionModels="0" showBehaviorModels="0">
 	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.8" responseType="1" responseStiffness="30" drawIntersection="0" drawSides="0" drawSubVols="0" />
 	<DiscreteIntersection />
@@ -19,8 +16,8 @@
 		<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
 		<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
-		<MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0 1" 
-									     position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0.707106781187 0.707106781187 "/> 
+		<MechanicalObject template="Rigid" name="DOFs" useMask="0" rest_position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0 1" 
+									     			position="0 0 -0.99 0 0 0 1 0 0 0.99 0 0 0.707106781187 0.707106781187 "/> 
 		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/> 
 
 		<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
@@ -36,7 +33,7 @@
 				/>
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" name="PointSet"  showObject="1" showObjectScale="0.2"/>
+			<MechanicalObject template="DeformationGradient332" name="PointSet" useMask="0"  showObject="1" showObjectScale="0.2"/>
 			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
 			<FrameForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>

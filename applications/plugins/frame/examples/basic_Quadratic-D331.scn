@@ -3,16 +3,16 @@
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 	<Node name="Beam">
-		<MechanicalObject template="Quadratic" name="DOFs" rest_position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]" position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 2 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]"/>
+		<MechanicalObject template="Quadratic" name="DOFs" useMask="0" rest_position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]" position="0 0 -1 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0] 0 0 2 [1 0 0 0 0 0 0 0 0, 0 1 0 0 0 0 0 0 0, 0 0 1 0 0 0 0 0 0]"/>
 		<HookeMaterial3 template="Material3" />
 		<FrameDiagonalMass template="QuadraticFrame3x30dMass" showAxisSizeFactor="0.2"/>
 
 		<Node name="Physics">
 <!--
-			<MechanicalObject template="DeformationGradient331" name="PointSet"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
+			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
 -->
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
-     			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05"/>
+     			<MechanicalObject  template="DeformationGradient331" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
 
 			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
