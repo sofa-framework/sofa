@@ -36,8 +36,11 @@
 				/>
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" name="PointSet"  showObject="1" showObjectScale="0.2"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
+			<MechanicalObject template="DeformationGradient332" name="PointSet" showObject="1" showObjectScale="0.2" 
+position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" 
+				targetFrameNumber="2"
+				targetSampleNumber="0" />
 			<FrameForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
 

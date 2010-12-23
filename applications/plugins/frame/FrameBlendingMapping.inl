@@ -108,8 +108,8 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showGradientsValues ( initData ( &showGradientsValues, false, "showGradientsValues","Show Gradients Values." ) )
     , showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.0001, "showGradientsScaleFactor","Gradients Scale Factor." ) )
     , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to improve numerical integration" ) )
-    , targetFrameNumber ( initData ( &targetFrameNumber, "targetFrameNumber","Target frames number" ) )
-    , targetSampleNumber ( initData ( &targetSampleNumber, "targetSampleNumber","Target samples number" ) )
+    , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Target frames number" ) )
+    , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
 {
     maskFrom = NULL;
     if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
@@ -289,7 +289,7 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& /*out*
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::initFrames()
 {
-    if( targetFrameNumber.getValue() == 0) return;
+    if( targetFrameNumber.getValue() == 0) return; // use user-defined frames
 
     // Get references
     WriteAccessor<Data<VecInCoord> > xfrom0 = *this->fromModel->write(core::VecCoordId::restPosition());
@@ -329,49 +329,55 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
 {
     if(!this->isPhysical)  return; // no gauss point -> use visual/collision or used-define points
 
-    // Get references
     WriteAccessor<Data<VecOutCoord> >  xto0 = *this->toModel->write(core::VecCoordId::restPosition());
-    WriteAccessor<Data<VecOutCoord> >  xto = *this->toModel->write(core::VecCoordId::position());
-    WriteAccessor<Data<VecOutCoord> >  xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
     WriteAccessor<Data<typename defaulttype::OutDataTypesInfo<Out>::VecMaterialCoord> >  points(this->f_materialPoints);
-    unsigned int num_points=xto0.size();
 
-    core::behavior::MechanicalState< Out >* mstateto = dynamic_cast<core::behavior::MechanicalState< Out >* >( this->toModel);
-    if ( !mstateto)
+    if(this->targetSampleNumber.getValue()==0)   // use user-defined samples
     {
-        serr << "Error: try to insert new samples, which are not mechanical states !" << sendl;
-        return;
+        // update voronoi in gridmaterial
+        vector<MaterialCoord> p(xto0.size());
+        for(unsigned int i=0; i<xto0.size(); i++ )
+            for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+                p[i][j] = xto0[i][j];
+        gridMaterial->computeGeodesicalDistances ( p );
     }
-
-    // retrieve initial samples -> is problematic when there is no user sample : the mechanical object is always initialized with one sample centered on 0
-    /*vector<SpatialCoord> points(num_points);
-    for ( unsigned int i=0;i<num_points;i++ )
-    	for ( unsigned int j=0;j<num_spatial_dimensions;j++ )
-    		points[i][j]= xto0[i][j];*/
-
-    num_points=0;
-    vector<MaterialCoord> p(num_points);
-
-    // Insert new samples
-    //gridMaterial->computeRegularSampling(p,3);
-    // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
-    gridMaterial->computeLinearRegionsSampling(p,0.1);
-
-    std::cout<<"Inserting "<<p.size()<<" gauss points..."<<std::endl;
-
-    // copy to out
-    this->toModel->resize(p.size());
-    for ( unsigned int i=num_points; i<p.size(); i++ )
+    else  // use automatic sampling
     {
-        xto[i].clear(); xto0[i].clear(); xtoReset[i].clear();
-        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
-            xto[i][j] = xto0[i][j] = xtoReset[i][j]= p[i][j];
+        // Get references
+        WriteAccessor<Data<VecOutCoord> >  xto = *this->toModel->write(core::VecCoordId::position());
+        WriteAccessor<Data<VecOutCoord> >  xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
+
+        core::behavior::MechanicalState< Out >* mstateto = dynamic_cast<core::behavior::MechanicalState< Out >* >( this->toModel);
+        if ( !mstateto)
+        {
+            serr << "Error: try to insert new samples, which are not mechanical states !" << sendl;
+            return;
+        }
+
+        vector<MaterialCoord> p;
+
+        // Insert new samples
+        //gridMaterial->computeRegularSampling(p,3);
+        // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
+        gridMaterial->computeLinearRegionsSampling(p,targetSampleNumber.getValue());
+
+        std::cout<<"Inserting "<<p.size()<<" gauss points..."<<std::endl;
+
+        // copy to out
+        this->toModel->resize(p.size());
+        for ( unsigned int i=0; i<p.size(); i++ )
+        {
+            xto[i].clear(); xto0[i].clear(); xtoReset[i].clear();
+            for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+                xto[i][j] = xto0[i][j] = xtoReset[i][j]= p[i][j];
+        }
     }
 
     // copy to sampledata
-    points.resize(p.size());
-    for(unsigned int i=0; i<p.size(); i++ )
-        points[i] = p[i];
+    points.resize(xto0.size());
+    for(unsigned int i=0; i<xto0.size(); i++ )
+        for ( unsigned int j=0; j<num_spatial_dimensions; j++ )
+            points[i][j] = xto0[i][j];
 }
 
 

@@ -700,7 +700,11 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& 
     {
         Mat<10,10,Real> tmp,invtmp;
         for (i=0; i<10; i++) for (j=0; j<10; j++) tmp[i][j]=Cov[i][j];
-        if (determ(Cov,dim)<MIN_DET) invCov[0][0]=1./Cov[0][0];    // coplanar points->not invertible->go back to simple average
+        if (determ(Cov,dim)<MIN_DET) // try order 1
+        {
+            ddw->fill(0);
+            return lumpWeights(indices,point,w,dw,NULL,err);
+        }
         else { invtmp.invert(tmp); for (i=0; i<10; i++) for (j=0; j<10; j++) invCov[i][j]=invtmp[i][j];}
     }
 
@@ -1112,7 +1116,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& points, const Real /*tolerance*/)
+bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& points, const unsigned int num_points)
 {
     if (!nbVoxels) return false;
 
@@ -1158,23 +1162,55 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
         }
 
 
-    // check linearity in each region
+    // check linearity in each region and subdivide region of highest error until num_points is reached
+    vector<Real> errors(indices.size(),(Real)0.);
     Real w; SGradient dw; SHessian ddw; VUI ptlist;  SCoord point;
     for (j=0; j<indices.size(); j++)
     {
         getCoord(indices[j],point);
         ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
-
-        Real err=0; unsigned int count=0;
         for (i=0; i<nbRef; i++)
             if(v_weights[indices[j]][i]!=0)
             {
                 pasteRepartioninWeight(v_index[indices[j]][i]);
-                lumpWeights(ptlist,point,w,&dw,NULL,&err);
-                count++;
+                lumpWeights(ptlist,point,w,&dw,NULL,&errors[j]);
             }
-        std::cout<<"err["<<j<<"]="<<err<<std::endl;
     }
+
+    while(indices.size()<num_points)
+    {
+        Real maxerr=0;
+        for (j=0; j<indices.size(); j++) if(errors[j]>maxerr) {maxerr=errors[j]; i=j;}
+        SubdivideVoronoiRegion(i,indices.size());
+        j=0; while(voronoi[j]!=indices.size() && j<nbVoxels) j++;
+        if(j==nbVoxels) {errors[j]=0; continue;} //unable to add region
+        else
+        {
+            indices.push_back(j); errors.push_back(0);
+            // update errors
+            errors[i]=0;
+            getCoord(indices[i],point);
+            ptlist.clear();  for (j=0; j<nbVoxels; j++) if (voronoi[j]==i) ptlist.push_back(j);
+            for (j=0; j<nbRef; j++)
+                if(v_weights[indices[i]][j]!=0)
+                {
+                    pasteRepartioninWeight(v_index[indices[i]][j]);
+                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
+                }
+            i=indices.size()-1;
+            errors[i]=0;
+            getCoord(indices[i],point);
+            ptlist.clear();  for (j=0; j<nbVoxels; j++) if (voronoi[j]==i) ptlist.push_back(j);
+            for (j=0; j<nbRef; j++)
+                if(v_weights[indices[i]][j]!=0)
+                {
+                    pasteRepartioninWeight(v_index[indices[i]][j]);
+                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
+                }
+        }
+    }
+    Real err=0; for (j=0; j<errors.size(); j++) err+=errors[j];
+    std::cout<<"Error in weights="<<err<<std::endl;
 
     // insert gauss points in the center of voronoi regions
     points.resize(indices.size());
@@ -1186,7 +1222,6 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
         if(count!=0)
         {
             points[j]/=(Real)count;
-            indices[j]=getIndex(points[j]); // is always valid (inside grid and no matter if outside voronoi)
         }
     }
 
@@ -1194,6 +1229,70 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     //std::cout<<"Added " << indices.size()-initial_num_points << " samples"<<std::endl;
     return true;
 }
+
+
+
+
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::SubdivideVoronoiRegion( const unsigned int voronoiindex, const unsigned int newvoronoiindex, const unsigned int max_iterations )
+{
+    if (!nbVoxels) return false;
+    if (voronoi.size()!=nbVoxels) return false;
+
+    unsigned int i,i1,i2;
+    SCoord p1,p2;
+
+    // initialization: take the first point and its farthest point inside the voronoi region
+    i1=0; while(voronoi[i1]!=voronoiindex && i1<nbVoxels) i1++;
+    if(i1==nbVoxels) return false;
+    getCoord(i1,p1);
+
+    Real d,dmax=0;
+    for (i=0; i<nbVoxels; i++)
+        if(voronoi[i]==voronoiindex)
+        {
+            getCoord(i,p2); d=(p2-p1).norm2();
+            if(d>dmax) {i2=i; dmax=d;}
+        }
+    if(dmax==0) return false;
+    getCoord(i2,p2);
+
+    // Lloyd relaxation
+    Real d1,d2;
+    SCoord p,cp1,cp2;
+    unsigned int nb1,nb2,nbiterations=0;
+    while (nbiterations<max_iterations)
+    {
+        // mode points to the centroid of their voronoi regions
+        nb1=nb2=0;
+        cp1.fill(0); cp2.fill(0);
+        for (i=0; i<nbVoxels; i++)
+            if(voronoi[i]==voronoiindex)
+            {
+                getCoord(i,p);
+                d1=(p1-p).norm2(); d2=(p2-p).norm2();
+                if(d1<d2) { cp1+=p; nb1++; }
+                else { cp2+=p; nb2++; }
+            }
+        if(nb1!=0) cp1/=(Real)nb1;	nb1=getIndex(cp1);
+        if(nb2!=0) cp2/=(Real)nb2;	nb2=getIndex(cp2);
+        if(nb1==i1 && nb2==i2) nbiterations=max_iterations;
+        else {i1=nb1; getCoord(i1,p1); i2=nb2; getCoord(i2,p2); nbiterations++; }
+    }
+
+    // fill one region with new index
+    for (i=0; i<nbVoxels; i++)
+        if(voronoi[i]==voronoiindex)
+        {
+            getCoord(i,p);
+            d1=(p1-p).norm2(); d2=(p2-p).norm2();
+            if(d1<d2) voronoi[i]=newvoronoiindex;
+        }
+
+    return true;
+}
+
+
 
 
 template < class MaterialTypes>
