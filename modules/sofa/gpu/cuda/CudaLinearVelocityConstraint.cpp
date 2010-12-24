@@ -35,8 +35,10 @@ namespace component
 
 namespace projectiveconstraintset
 {
+template class LinearVelocityConstraint<gpu::cuda::CudaVec6fTypes>;
 template class LinearVelocityConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
+template class LinearVelocityConstraint<gpu::cuda::CudaVec6dTypes>;
 template class LinearVelocityConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 }// namespace projectiveconstraintset
@@ -52,8 +54,10 @@ namespace cuda
 SOFA_DECL_CLASS(CudaLinearVelocityConstraint)
 
 int LinearVelocityConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaVec6fTypes> >()
         .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaVec6dTypes> >()
         .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;

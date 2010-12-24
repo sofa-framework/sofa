@@ -43,10 +43,12 @@ namespace container
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 template class MechanicalObject<CudaVec3fTypes>;
 template class MechanicalObject<CudaVec3f1Types>;
+template class MechanicalObject<CudaVec6fTypes>;
 template class MechanicalObject<CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class MechanicalObject<CudaVec3dTypes>;
 template class MechanicalObject<CudaVec3d1Types>;
+template class MechanicalObject<CudaVec6dTypes>;
 template class MechanicalObject<CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
@@ -65,10 +67,12 @@ SOFA_DECL_CLASS(CudaMechanicalObject)
 int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::container::MechanicalObject<CudaVec3fTypes> >()
         .add< component::container::MechanicalObject<CudaVec3f1Types> >()
+        .add< component::container::MechanicalObject<CudaVec6fTypes> >()
         .add< component::container::MechanicalObject<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::container::MechanicalObject<CudaVec3dTypes> >()
         .add< component::container::MechanicalObject<CudaVec3d1Types> >()
+        .add< component::container::MechanicalObject<CudaVec6dTypes> >()
         .add< component::container::MechanicalObject<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
@@ -76,10 +80,12 @@ int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computat
 int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::container::MappedObject<CudaVec3fTypes> >()
         .add< component::container::MappedObject<CudaVec3f1Types> >()
+        .add< component::container::MappedObject<CudaVec6fTypes> >()
         .add< component::container::MappedObject<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::container::MappedObject<CudaVec3dTypes> >()
         .add< component::container::MappedObject<CudaVec3d1Types> >()
+        .add< component::container::MappedObject<CudaVec6dTypes> >()
         .add< component::container::MappedObject<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
