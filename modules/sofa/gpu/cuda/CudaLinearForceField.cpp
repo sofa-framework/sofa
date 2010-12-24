@@ -36,8 +36,10 @@ namespace component
 namespace forcefield
 {
 
+template class LinearForceField<gpu::cuda::CudaVec6fTypes>;
 template class LinearForceField<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
+template class LinearForceField<gpu::cuda::CudaVec6dTypes>;
 template class LinearForceField<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
@@ -54,8 +56,10 @@ namespace cuda
 SOFA_DECL_CLASS(CudaLinearForceField)
 
 int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
+        .add< component::forcefield::LinearForceField<CudaVec6fTypes> >()
         .add< component::forcefield::LinearForceField<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::forcefield::LinearForceField<CudaVec6dTypes> >()
         .add< component::forcefield::LinearForceField<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
