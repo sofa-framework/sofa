@@ -16,6 +16,7 @@
         Barbara Andre
         Pierre-Jean Bensoussan
         Stephane Cotin
+        Marie Durand
         Christian Duriez
         Herve Delingette
         Florent Falipou
@@ -23,9 +24,12 @@
         Sylvere Fonteneau
         Laure Heigeas
         Lenka Jerabkova
+        Francois Jourdes
         Cesar Mendoza
         Matthieu Nesme
         Paul Neumann
+        Chi-Thanh Nguyen
+        Erik Pernod
         Juan Pablo de la Plata Alcalde
         Francois Poyer
         Frederick Roy
