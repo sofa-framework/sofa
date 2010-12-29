@@ -70,7 +70,6 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
 {
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
-    usePrecond = true;
     first = true;
 }
 
@@ -121,8 +120,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
 
     if (preconditioners.size()==0) return;
 
-    usePrecond = f_use_precond.getValue();
-
     if (first)   //We initialize all the preconditioners for the first step
     {
         for (unsigned int i=0; i<preconditioners.size(); ++i)
@@ -132,7 +129,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
         first = false;
         next_refresh_step = 1;
     }
-    else if (f_use_precond.getValue())     // We use only the first precond in the list
+    else if (f_use_precond.getValue() && (this->preconditioners.size()>0))     // We use only the first precond in the list
     {
         sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
         sofa::helper::AdvancedTimer::stepBegin("PCG::PrecondSetSystemMBKMatrix");
@@ -213,7 +210,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     r = M*x;
 
     bool apply_precond = false;
-    if (((int) this->preconditioners.size()>=0) && usePrecond)
+    if ((this->preconditioners.size()>0) && f_use_precond.getValue())
     {
         for (unsigned int i=0; i<preconditioners.size(); ++i)
         {
@@ -283,7 +280,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
             cgstep_alpha(r,q,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
         }
 
-        if (this->preconditioners.size()>0 && usePrecond)
+        if (this->preconditioners.size()>0 && f_use_precond.getValue())
         {
             if (f_max_use_by_step.getValue()==0) apply_precond = true;
             else if (f_max_use_by_step.getValue()>0)

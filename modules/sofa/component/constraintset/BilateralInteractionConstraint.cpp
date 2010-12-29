@@ -48,8 +48,12 @@ using namespace sofa::helper;
 template<>
 void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    for(int i=0; i<6; i++)
-        resTab[offset++] = new BilateralConstraintResolution();
+    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        for(int i=0; i<6; i++)
+            resTab[offset++] = new BilateralConstraintResolution();
+    }
 }
 #endif
 
@@ -57,59 +61,64 @@ template <>
 void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
 {
-    int tm1 = m1.getValue();
-    int tm2 = m2.getValue();
+    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    cid.resize(minp);
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        int tm1 = m1.getValue()[pid];
+        int tm2 = m2.getValue()[pid];
 
-    MatrixDeriv &c1 = *c1_d.beginEdit();
-    MatrixDeriv &c2 = *c2_d.beginEdit();
+        MatrixDeriv &c1 = *c1_d.beginEdit();
+        MatrixDeriv &c2 = *c2_d.beginEdit();
 
-    const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+        const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 //	const Vec<3, Real> qId = q.toEulerVector();
-    const Vec<3, Real> vZero(0,0,0);
+        const Vec<3, Real> vZero(0,0,0);
 
-    cid = constraintId;
-    constraintId += 6;
+        cid[pid] = constraintId;
+        constraintId += 6;
 
-    //Apply constraint for position
-    MatrixDerivRowIterator c1_it = c1.writeLine(cid);
-    c1_it.addCol(tm1, Deriv(-cx, vZero));
+        //Apply constraint for position
+        MatrixDerivRowIterator c1_it = c1.writeLine(cid[pid]);
+        c1_it.addCol(tm1, Deriv(-cx, vZero));
 
-    MatrixDerivRowIterator c2_it = c2.writeLine(cid);
-    c2_it.addCol(tm2, Deriv(cx, vZero));
+        MatrixDerivRowIterator c2_it = c2.writeLine(cid[pid]);
+        c2_it.addCol(tm2, Deriv(cx, vZero));
 
-    c1_it = c1.writeLine(cid + 1);
-    c1_it.setCol(tm1, Deriv(-cy, vZero));
+        c1_it = c1.writeLine(cid[pid] + 1);
+        c1_it.setCol(tm1, Deriv(-cy, vZero));
 
-    c2_it = c2.writeLine(cid + 1);
-    c2_it.setCol(tm2, Deriv(cy, vZero));
+        c2_it = c2.writeLine(cid[pid] + 1);
+        c2_it.setCol(tm2, Deriv(cy, vZero));
 
-    c1_it = c1.writeLine(cid + 2);
-    c1_it.setCol(tm1, Deriv(-cz, vZero));
+        c1_it = c1.writeLine(cid[pid] + 2);
+        c1_it.setCol(tm1, Deriv(-cz, vZero));
 
-    c2_it = c2.writeLine(cid + 2);
-    c2_it.setCol(tm2, Deriv(cz, vZero));
+        c2_it = c2.writeLine(cid[pid] + 2);
+        c2_it.setCol(tm2, Deriv(cz, vZero));
 
-    //Apply constraint for orientation
-    c1_it = c1.writeLine(cid + 3);
-    c1_it.setCol(tm1, Deriv(vZero, -cx));
+        //Apply constraint for orientation
+        c1_it = c1.writeLine(cid[pid] + 3);
+        c1_it.setCol(tm1, Deriv(vZero, -cx));
 
-    c2_it = c2.writeLine(cid + 3);
-    c2_it.setCol(tm2, Deriv(vZero, cx));
+        c2_it = c2.writeLine(cid[pid] + 3);
+        c2_it.setCol(tm2, Deriv(vZero, cx));
 
-    c1_it = c1.writeLine(cid + 4);
-    c1_it.setCol(tm1, Deriv(vZero, -cy));
+        c1_it = c1.writeLine(cid[pid] + 4);
+        c1_it.setCol(tm1, Deriv(vZero, -cy));
 
-    c2_it = c2.writeLine(cid + 4);
-    c2_it.setCol(tm2, Deriv(vZero, cy));
+        c2_it = c2.writeLine(cid[pid] + 4);
+        c2_it.setCol(tm2, Deriv(vZero, cy));
 
-    c1_it = c1.writeLine(cid + 5);
-    c1_it.setCol(tm1, Deriv(vZero, -cz));
+        c1_it = c1.writeLine(cid[pid] + 5);
+        c1_it.setCol(tm1, Deriv(vZero, -cz));
 
-    c2_it = c2.writeLine(cid + 5);
-    c2_it.setCol(tm2, Deriv(vZero, cz));
+        c2_it = c2.writeLine(cid[pid] + 5);
+        c2_it.setCol(tm2, Deriv(vZero, cz));
 
-    c1_d.endEdit();
-    c2_d.endEdit();
+        c1_d.endEdit();
+        c2_d.endEdit();
+    }
 }
 
 
@@ -117,14 +126,19 @@ template <>
 void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/, const core::ConstraintParams* /*cParams*/)
 {
-    const Coord dof1 = x1.getValue()[m1.getValue()];
-    const Coord dof2 = x2.getValue()[m2.getValue()];
+    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    dfree.resize(minp);
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        const Coord dof1 = x1.getValue()[m1.getValue()[pid]];
+        const Coord dof2 = x2.getValue()[m2.getValue()[pid]];
 
-    getVCenter(dfree) = dof2.getCenter() - dof1.getCenter();
-    getVOrientation(dfree) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
+        getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
+        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
 
-    for (unsigned int i=0 ; i<dfree.size() ; i++)
-        v->set(cid+i, dfree[i]);
+        for (unsigned int i=0 ; i<dfree[pid].size() ; i++)
+            v->set(cid[pid]+i, dfree[pid][i]);
+    }
 }
 #endif
 
@@ -133,59 +147,64 @@ template <>
 void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
 {
-    int tm1 = m1.getValue();
-    int tm2 = m2.getValue();
+    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    cid.resize(minp);
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        int tm1 = m1.getValue()[pid];
+        int tm2 = m2.getValue()[pid];
 
-    MatrixDeriv &c1 = *c1_d.beginEdit();
-    MatrixDeriv &c2 = *c2_d.beginEdit();
+        MatrixDeriv &c1 = *c1_d.beginEdit();
+        MatrixDeriv &c2 = *c2_d.beginEdit();
 
-    const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+        const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 //	const Vec<3, Real> qId = q.toEulerVector();
-    const Vec<3, Real> vZero(0,0,0);
+        const Vec<3, Real> vZero(0,0,0);
 
-    cid = constraintId;
-    constraintId += 6;
+        cid[pid] = constraintId;
+        constraintId += 6;
 
-    //Apply constraint for position
-    MatrixDerivRowIterator c1_it = c1.writeLine(cid);
-    c1_it.addCol(tm1, Deriv(-cx, vZero));
+        //Apply constraint for position
+        MatrixDerivRowIterator c1_it = c1.writeLine(cid[pid]);
+        c1_it.addCol(tm1, Deriv(-cx, vZero));
 
-    MatrixDerivRowIterator c2_it = c2.writeLine(cid);
-    c2_it.addCol(tm2, Deriv(cx, vZero));
+        MatrixDerivRowIterator c2_it = c2.writeLine(cid[pid]);
+        c2_it.addCol(tm2, Deriv(cx, vZero));
 
-    c1_it = c1.writeLine(cid + 1);
-    c1_it.setCol(tm1, Deriv(-cy, vZero));
+        c1_it = c1.writeLine(cid[pid] + 1);
+        c1_it.setCol(tm1, Deriv(-cy, vZero));
 
-    c2_it = c2.writeLine(cid + 1);
-    c2_it.setCol(tm2, Deriv(cy, vZero));
+        c2_it = c2.writeLine(cid[pid] + 1);
+        c2_it.setCol(tm2, Deriv(cy, vZero));
 
-    c1_it = c1.writeLine(cid + 2);
-    c1_it.setCol(tm1, Deriv(-cz, vZero));
+        c1_it = c1.writeLine(cid[pid] + 2);
+        c1_it.setCol(tm1, Deriv(-cz, vZero));
 
-    c2_it = c2.writeLine(cid + 2);
-    c2_it.setCol(tm2, Deriv(cz, vZero));
+        c2_it = c2.writeLine(cid[pid] + 2);
+        c2_it.setCol(tm2, Deriv(cz, vZero));
 
-    //Apply constraint for orientation
-    c1_it = c1.writeLine(cid + 3);
-    c1_it.setCol(tm1, Deriv(vZero, -cx));
+        //Apply constraint for orientation
+        c1_it = c1.writeLine(cid[pid] + 3);
+        c1_it.setCol(tm1, Deriv(vZero, -cx));
 
-    c2_it = c2.writeLine(cid + 3);
-    c2_it.setCol(tm2, Deriv(vZero, cx));
+        c2_it = c2.writeLine(cid[pid] + 3);
+        c2_it.setCol(tm2, Deriv(vZero, cx));
 
-    c1_it = c1.writeLine(cid + 4);
-    c1_it.setCol(tm1, Deriv(vZero, -cy));
+        c1_it = c1.writeLine(cid[pid] + 4);
+        c1_it.setCol(tm1, Deriv(vZero, -cy));
 
-    c2_it = c2.writeLine(cid + 4);
-    c2_it.setCol(tm2, Deriv(vZero, cy));
+        c2_it = c2.writeLine(cid[pid] + 4);
+        c2_it.setCol(tm2, Deriv(vZero, cy));
 
-    c1_it = c1.writeLine(cid + 5);
-    c1_it.setCol(tm1, Deriv(vZero, -cz));
+        c1_it = c1.writeLine(cid[pid] + 5);
+        c1_it.setCol(tm1, Deriv(vZero, -cz));
 
-    c2_it = c2.writeLine(cid + 5);
-    c2_it.setCol(tm2, Deriv(vZero, cz));
+        c2_it = c2.writeLine(cid[pid] + 5);
+        c2_it.setCol(tm2, Deriv(vZero, cz));
 
-    c1_d.endEdit();
-    c2_d.endEdit();
+        c1_d.endEdit();
+        c2_d.endEdit();
+    }
 }
 
 
@@ -193,22 +212,31 @@ template <>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/, const core::ConstraintParams* /*cParams*/)
 {
-    Coord dof1 = x1.getValue()[m1.getValue()];
-    Coord dof2 = x2.getValue()[m1.getValue()];
+    unsigned min = min(m1.getValue().size(),m2.getValue().size());
+    dfree.resize(min);
+    for (unsigned pid=0; pid<min; pid++)
+    {
+        Coord dof1 = x1.getValue()[m1.getValue()[pid]];
+        Coord dof2 = x2.getValue()[m1.getValue()[pid]];
 
-    getVCenter(dfree) = dof2.getCenter() - dof1.getCenter();
-    getVOrientation(dfree) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
+        getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
+        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
 
-    for (unsigned int i=0 ; i<dfree.size() ; i++)
-        v->set(cid+i, dfree[i]);
+        for (unsigned int i=0 ; i<dfree[pid].size() ; i++)
+            v->set(cid[pid]+i, dfree[pid][i]);
+    }
 }
 
 #ifdef SOFA_DEV
 template<>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    for(int i=0; i<6; i++)
-        resTab[offset++] = new BilateralConstraintResolution();
+    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        for(int i=0; i<6; i++)
+            resTab[offset++] = new BilateralConstraintResolution();
+    }
 }
 #endif
 

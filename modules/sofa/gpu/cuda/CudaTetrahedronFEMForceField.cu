@@ -328,6 +328,98 @@ public:
     }
 };
 
+//////////////////////////////////////////DOUBLE
+
+static texture<double,1,cudaReadModeElementType> tex_3d_x;
+static texture<double,1,cudaReadModeElementType> tex_3d_dx;
+
+template<>
+class CudaTetrahedronFEMForceFieldInputTextures<double, CudaVec3<double> >
+{
+public:
+    typedef double real;
+    typedef CudaVec3<real> TIn;
+
+    static __host__ void setX(const void* x)
+    {
+        static const void* cur = NULL;
+        if (x!=cur)
+        {
+            cudaBindTexture((size_t*)NULL, tex_3d_x, x);
+            cur = x;
+        }
+    }
+
+    static __inline__ __device__ CudaVec3<real> getX(int i, const TIn* x)
+    {
+        int i3 = umul24(i,3);
+        double x1 = tex1Dfetch(tex_3d_x, i3);
+        double x2 = tex1Dfetch(tex_3d_x, i3+1);
+        double x3 = tex1Dfetch(tex_3d_x, i3+2);
+        return CudaVec3<real>::make(x1,x2,x3);
+    }
+
+    static __host__ void setDX(const void* dx)
+    {
+        static const void* cur = NULL;
+        if (dx!=cur)
+        {
+            cudaBindTexture((size_t*)NULL, tex_3d_dx, dx);
+            cur = dx;
+        }
+    }
+
+    static __inline__ __device__ CudaVec3<real> getDX(int i, const TIn* dx)
+    {
+        int i3 = umul24(i,3);
+        double x1 = tex1Dfetch(tex_3d_dx, i3);
+        double x2 = tex1Dfetch(tex_3d_dx, i3+1);
+        double x3 = tex1Dfetch(tex_3d_dx, i3+2);
+        return CudaVec3<real>::make(x1,x2,x3);
+    }
+};
+
+static texture<double4,1,cudaReadModeElementType> tex_3d1_x;
+static texture<double4,1,cudaReadModeElementType> tex_3d1_dx;
+
+template<>
+class CudaTetrahedronFEMForceFieldInputTextures<double, CudaVec4<double> >
+{
+public:
+    typedef double real;
+    typedef CudaVec4<real> TIn;
+
+    static __host__ void setX(const void* x)
+    {
+        static const void* cur = NULL;
+        if (x!=cur)
+        {
+            cudaBindTexture((size_t*)NULL, tex_3d1_x, x);
+            cur = x;
+        }
+    }
+
+    static __inline__ __device__ CudaVec3<real> getX(int i, const TIn* x)
+    {
+        return CudaVec3<real>::make(tex1Dfetch(tex_3d1_x, i));
+    }
+
+    static __host__ void setDX(const void* dx)
+    {
+        static const void* cur = NULL;
+        if (dx!=cur)
+        {
+            cudaBindTexture((size_t*)NULL, tex_3d1_dx, dx);
+            cur = dx;
+        }
+    }
+
+    static __inline__ __device__ CudaVec3<real> getDX(int i, const TIn* dx)
+    {
+        return CudaVec3<real>::make(tex1Dfetch(tex_3d1_dx, i));
+    }
+};
+
 #endif
 
 
@@ -385,6 +477,63 @@ public:
     static __inline__ __device__ CudaVec3<real> getElementForce(int i, const TIn* x)
     {
         return CudaVec3<real>::make(tex1Dfetch(tex_3f1_eforce, i));
+    }
+};
+
+
+//////////////////////////////////////////////DOUBLE
+static texture<double,1,cudaReadModeElementType> tex_3d_eforce;
+
+template<>
+class CudaTetrahedronFEMForceFieldTempTextures<double, CudaVec3<double> >
+{
+public:
+    typedef double real;
+    typedef CudaVec3<real> TIn;
+
+    static __host__ void setElementForce(const void* x)
+    {
+        static const void* cur = NULL;
+        if (x!=cur)
+        {
+            cudaBindTexture((size_t*)NULL, tex_3d_eforce, x);
+            cur = x;
+        }
+    }
+
+    static __inline__ __device__ CudaVec3<real> getElementForce(int i, const TIn* x)
+    {
+        int i3 = umul24(i,3);
+        double x1 = tex1Dfetch(tex_3d_eforce, i3);
+        double x2 = tex1Dfetch(tex_3d_eforce, i3+1);
+        double x3 = tex1Dfetch(tex_3d_eforce, i3+2);
+        return CudaVec3<real>::make(x1,x2,x3);
+    }
+};
+
+static texture<double4,1,cudaReadModeElementType> tex_3d1_eforce;
+
+template<>
+class CudaTetrahedronFEMForceFieldTempTextures<double, CudaVec4<double> >
+{
+public:
+    typedef double real;
+    typedef CudaVec4<real> TIn;
+    typedef CudaVec3<real> TOut;
+
+    static __host__ void setElementForce(const void* x)
+    {
+        static const void* cur = NULL;
+        if (x!=cur)
+        {
+            cudaBindTexture((size_t*)NULL, tex_3d1_eforce, x);
+            cur = x;
+        }
+    }
+
+    static __inline__ __device__ CudaVec3<real> getElementForce(int i, const TIn* x)
+    {
+        return CudaVec3<real>::make(tex1Dfetch(tex_3d1_eforce, i));
     }
 };
 
