@@ -315,6 +315,17 @@ public :
         return m.getPitchDevice();
     }
 
+    int getPitchHost()
+    {
+        return m.getPitchHost();
+    }
+
+    friend std::ostream& operator<< ( std::ostream& os, const CudaBaseMatrix<T> & mat )
+    {
+        os << mat;
+        return os;
+    }
+
 private :
     CudaMatrix<T> m;
 };

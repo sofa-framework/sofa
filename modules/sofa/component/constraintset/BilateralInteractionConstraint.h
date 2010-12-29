@@ -95,14 +95,14 @@ public:
 
         invertMatrix(invW, temp);
 
-        std::cout<<"BilateralConstraintResolution3Dof Init"<<std::endl;
+        // std::cout<<"BilateralConstraintResolution3Dof Init"<<std::endl;
 
         if(_vec && _vec->size()>=3)
         {
             force[line  ] = (*_vec)[0];
             force[line+1] = (*_vec)[1];
             force[line+2] = (*_vec)[2];
-            std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
+            //     std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 
@@ -113,7 +113,7 @@ public:
             force[line  ] =  (*_vec)[0];
             force[line+1] =  (*_vec)[1];
             force[line+2] =  (*_vec)[2];
-            std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
+            //std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 
@@ -129,7 +129,7 @@ public:
 
     void store(int line, double* force, bool /*convergence*/)
     {
-        std::cout<<"BilateralConstraintResolution3Dof Store"<<std::endl;
+        //std::cout<<"BilateralConstraintResolution3Dof Store"<<std::endl;
         if(_vec)
         {
             _vec->clear();
@@ -137,7 +137,7 @@ public:
             (*_vec)[0] = force[line];
             (*_vec)[1] = force[line+1];
             (*_vec)[2] = force[line+2];
-            std::cout<<"store force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
+            //std::cout<<"store force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 
@@ -170,13 +170,13 @@ protected:
 
     bool yetIntegrated;
 
-    Deriv dfree;
+    std::vector<Deriv> dfree;
     defaulttype::Quaternion q;
 
-    unsigned int cid;
+    std::vector<unsigned int> cid;
 
-    Data<int> m1;
-    Data<int> m2;
+    Data<helper::vector<int> > m1;
+    Data<helper::vector<int> > m2;
 
     std::vector<double> prevForces;
 public:
@@ -184,23 +184,23 @@ public:
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
         , yetIntegrated(false)
-        , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
-        , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , m1(initData(&m1, "first_point","index of the constraint on the first model"))
+        , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     {
     }
 
     BilateralInteractionConstraint(MechanicalState* object)
         : Inherit(object, object)
         , yetIntegrated(false)
-        , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
-        , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , m1(initData(&m1, "first_point","index of the constraint on the first model"))
+        , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     {
     }
 
     BilateralInteractionConstraint()
         : yetIntegrated(false)
-        , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
-        , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , m1(initData(&m1, "first_point","index of the constraint on the first model"))
+        , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     {
     }
 

@@ -88,6 +88,16 @@ public :
         static std::map< std::string,FullMatrix<Real> > matrices;
         return &(matrices[name]);
     }
+
+    void readMinvFomFile(std::ifstream & compFileIn)
+    {
+        compFileIn.read((char*) (*MinvPtr)[0], MinvPtr->colSize() * MinvPtr->rowSize() * sizeof(Real));
+    }
+
+    void writeMinvFomFile(std::ofstream & compFileOut)
+    {
+        compFileOut.write((char*) (*MinvPtr)[0], MinvPtr->colSize() * MinvPtr->rowSize() * sizeof(Real));
+    }
 };
 
 /// Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix
@@ -118,6 +128,7 @@ public:
     Data <std::string> solverName;
     Data<bool> use_rotations;
     Data<double> draw_rotations_scale;
+    Data<helper::vector<int> > sub_compliance_index;
 
     MState * mstate;
 
@@ -129,6 +140,7 @@ public:
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
     void draw();
     void init();
+    void loadMatrix(TMatrix& M);
 
     TBaseMatrix * getSystemMatrixInv()
     {
@@ -157,15 +169,19 @@ public:
 protected :
     TVector R;
     TVector T;
+    TVector subR;
+    TVector subZ;
     PrecomputedWarpPreconditionerInternalData<TDataTypes> internalData;
 
     void rotateConstraints();
-    void loadMatrix(TMatrix& M);
     void loadMatrixWithCSparse(TMatrix& M);
     void loadMatrixWithSolver();
 
     template<class JMatrix>
     void ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact);
+
+    template<class JMatrix>
+    void filterSubJ(JMatrix& J);
 
     bool first;
     bool _rotate;
@@ -175,6 +191,12 @@ protected :
     double init_kFact;
     double dt;
     double factInt;
+    unsigned systemSize;
+    unsigned dof_on_node;
+    unsigned nb_dofs;
+    unsigned matrixSize;
+    SparseMatrix<Real> subJ;
+    std::vector<int> sub_sorted_index;
 };
 
 

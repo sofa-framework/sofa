@@ -31,6 +31,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
 
+#define min(a,b) (a<b?a:b)
+
 namespace sofa
 {
 
@@ -53,37 +55,42 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
 {
-    int tm1 = m1.getValue();
-    int tm2 = m2.getValue();
+    unsigned minp = min(m1.getValue().size(),m2.getValue().size());
+    cid.resize(minp);
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        int tm1 = m1.getValue()[pid];
+        int tm2 = m2.getValue()[pid];
 
-    MatrixDeriv &c1 = *c1_d.beginEdit();
-    MatrixDeriv &c2 = *c2_d.beginEdit();
+        MatrixDeriv &c1 = *c1_d.beginEdit();
+        MatrixDeriv &c2 = *c2_d.beginEdit();
 
-    const defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+        const defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 
-    cid = constraintId;
-    constraintId += 3;
+        cid[pid] = constraintId;
+        constraintId += 3;
 
-    MatrixDerivRowIterator c1_it = c1.writeLine(cid);
-    c1_it.addCol(tm1, -cx);
+        MatrixDerivRowIterator c1_it = c1.writeLine(cid[pid]);
+        c1_it.addCol(tm1, -cx);
 
-    MatrixDerivRowIterator c2_it = c2.writeLine(cid);
-    c2_it.addCol(tm2, cx);
+        MatrixDerivRowIterator c2_it = c2.writeLine(cid[pid]);
+        c2_it.addCol(tm2, cx);
 
-    c1_it = c1.writeLine(cid + 1);
-    c1_it.setCol(tm1, -cy);
+        c1_it = c1.writeLine(cid[pid] + 1);
+        c1_it.setCol(tm1, -cy);
 
-    c2_it = c2.writeLine(cid + 1);
-    c2_it.setCol(tm2, cy);
+        c2_it = c2.writeLine(cid[pid] + 1);
+        c2_it.setCol(tm2, cy);
 
-    c1_it = c1.writeLine(cid + 2);
-    c1_it.setCol(tm1, -cz);
+        c1_it = c1.writeLine(cid[pid] + 2);
+        c1_it.setCol(tm1, -cz);
 
-    c2_it = c2.writeLine(cid + 2);
-    c2_it.setCol(tm2, cz);
+        c2_it = c2.writeLine(cid[pid] + 2);
+        c2_it.setCol(tm2, cz);
 
-    c1_d.endEdit();
-    c2_d.endEdit();
+        c1_d.endEdit();
+        c2_d.endEdit();
+    }
 }
 
 
@@ -91,19 +98,28 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/, const core::ConstraintParams*)
 {
-    dfree = x2.getValue()[m2.getValue()] - x1.getValue()[m1.getValue()];
+    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    dfree.resize(minp);
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        dfree[pid] = x2.getValue()[m2.getValue()[pid]] - x1.getValue()[m1.getValue()[pid]];
 
-    v->set(cid, dfree[0]);
-    v->set(cid+1, dfree[1]);
-    v->set(cid+2, dfree[2]);
+        v->set(cid[pid]  , dfree[pid][0]);
+        v->set(cid[pid]+1, dfree[pid][1]);
+        v->set(cid[pid]+2, dfree[pid][2]);
+    }
 }
 
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces);
-    offset += 3;
+    unsigned minp=min(m1.getValue().size(),m2.getValue().size());
+    for (unsigned pid=0; pid<minp; pid++)
+    {
+        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces);
+        offset += 3;
+    }
 }
 
 
@@ -112,14 +128,17 @@ void BilateralInteractionConstraint<DataTypes>::draw()
 {
     if (!this->getContext()->getShowInteractionForceFields()) return;
 
-    glDisable(GL_LIGHTING);
-    glPointSize(10);
-    glBegin(GL_POINTS);
-    glColor4f(1,0,1,1);
-    helper::gl::glVertexT((*this->mstate1->getX())[m1.getValue()]);
-    helper::gl::glVertexT((*this->mstate2->getX())[m2.getValue()]);
-    glEnd();
-    glPointSize(1);
+    for (unsigned i=0; i<min(m1.getValue().size(),m2.getValue().size()); i++)
+    {
+        glDisable(GL_LIGHTING);
+        glPointSize(10);
+        glBegin(GL_POINTS);
+        glColor4f(1,0,1,1);
+        helper::gl::glVertexT((*this->mstate1->getX())[m1.getValue()[i]]);
+        helper::gl::glVertexT((*this->mstate2->getX())[m2.getValue()[i]]);
+        glEnd();
+        glPointSize(1);
+    }
 }
 
 #ifndef SOFA_FLOAT

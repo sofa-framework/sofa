@@ -75,7 +75,6 @@ private :
     unsigned next_refresh_iteration;
     unsigned next_refresh_step;
 
-    bool usePrecond;
     bool first;
 
 protected:
