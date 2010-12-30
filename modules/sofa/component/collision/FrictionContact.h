@@ -99,7 +99,7 @@ protected:
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraintset::UnilateralInteractionConstraint<Vec3Types>* c;
+    constraintset::UnilateralInteractionConstraint<Vec3Types>* m_constraint;
     core::objectmodel::BaseContext* parent;
 
     Data<double> mu;
@@ -129,7 +129,7 @@ public:
 
 long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
 {
-    // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
+    // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
     return (long)(((x+y)*(x+y)+3*x+y)/2);
 }
 
@@ -152,9 +152,6 @@ public:
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
 
-
-
-
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(this->model1,this->model2); }
 
     ContinuousFrictionContact() {}
@@ -166,18 +163,22 @@ public:
     void cleanup();
 
     /// Set the generic description of a contact point
-    void setDetectionOutputs(OutputVector* outputs) ;
+    void setDetectionOutputs(OutputVector* outputs);
 
-    void createResponse(core::objectmodel::BaseContext* group) ;
+    void createResponse(core::objectmodel::BaseContext* group);
 
-    virtual void removeResponse() ;
+    virtual void removeResponse();
 
 protected:
 
     bool findMappingOrUseMapper( bool case1);
     void activateConstraint();
 
-    int mapTheContinuousContact(Vector3 &, int ,  Vector3 &, bool) {serr<<"Warning: mapTheContinuousContact is not defined for these collision elements"<<sendl; return 0;}
+    int mapTheContinuousContact(Vector3 &, int, Vector3 &, bool)
+    {
+        serr << "Warning: mapTheContinuousContact is not defined for these collision elements" << sendl;
+        return 0;
+    }
 
     bool use_mapper_for_state1;
     bool use_mapper_for_state2;
@@ -185,21 +186,14 @@ protected:
     MechanicalState1 *mstate1;
     MechanicalState2 *mstate2;
 
-
-    component::container::MechanicalObject<DataTypes1 >* constraintModel1;
-    component::container::MechanicalObject<DataTypes2 >* constraintModel2;
+    component::container::MechanicalObject< DataTypes1 >* constraintModel1;
+    component::container::MechanicalObject< DataTypes2 >* constraintModel2;
 
     sofa::core::BaseMapping *map1;
     sofa::core::BaseMapping *map2;
 
     std::vector<Vector3> barycentricValues1;
     std::vector<Vector3> barycentricValues2;
-
-
-
-
-
-
 };
 
 
