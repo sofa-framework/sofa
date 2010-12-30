@@ -339,42 +339,86 @@ public:
 
     // LINEAR ALGEBRA
 
+    // BUG (J.A. 12/31/2010): gcc 4.0 does not support templated
+    // operators that are restricted to scalar types using static_assert.
+    // So for now we are defining them as templated method, and the
+    // operators then simply call them with the right types.
+
     /// Multiplication by a scalar f.
     template<class real2>
-    Vec<N,real> operator*(real2 f) const
+    Vec<N,real> mulscalar(real2 f) const
     {
+        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
         return r;
     }
 
-    /// On-place multiplication by a scalar f.
+    Vec<N,real> operator*(         float     f) const {  return mulscalar(f);  }
+    Vec<N,real> operator*(         double    f) const {  return mulscalar(f);  }
+    Vec<N,real> operator*(         int       f) const {  return mulscalar(f);  }
+    Vec<N,real> operator*(unsigned int       f) const {  return mulscalar(f);  }
+    Vec<N,real> operator*(         long      f) const {  return mulscalar(f);  }
+    Vec<N,real> operator*(unsigned long      f) const {  return mulscalar(f);  }
+    Vec<N,real> operator*(         long long f) const {  return mulscalar(f);  }
+    Vec<N,real> operator*(unsigned long long f) const {  return mulscalar(f);  }
+
+    /// In-place multiplication by a scalar f.
     template<class real2>
-    void operator*=(real2 f)
+    void eqmulscalar(real2 f)
     {
+        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
         for (int i=0; i<N; i++)
             this->elems[i]*=(real)f;
     }
 
+    void operator*=(         float     f) {  eqmulscalar(f);  }
+    void operator*=(         double    f) {  eqmulscalar(f);  }
+    void operator*=(         int       f) {  eqmulscalar(f);  }
+    void operator*=(unsigned int       f) {  eqmulscalar(f);  }
+    void operator*=(         long      f) {  eqmulscalar(f);  }
+    void operator*=(unsigned long      f) {  eqmulscalar(f);  }
+    void operator*=(         long long f) {  eqmulscalar(f);  }
+    void operator*=(unsigned long long f) {  eqmulscalar(f);  }
 
     /// Division by a scalar f.
     template<class real2>
-    Vec<N,real> operator/(real2 f) const
+    Vec<N,real> divscalar(real2 f) const
     {
+        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
         return r;
     }
 
-    /// On-place division by a scalar f.
+    Vec<N,real> operator/(         float     f) const {  return divscalar(f);  }
+    Vec<N,real> operator/(         double    f) const {  return divscalar(f);  }
+    Vec<N,real> operator/(         int       f) const {  return divscalar(f);  }
+    Vec<N,real> operator/(unsigned int       f) const {  return divscalar(f);  }
+    Vec<N,real> operator/(         long      f) const {  return divscalar(f);  }
+    Vec<N,real> operator/(unsigned long      f) const {  return divscalar(f);  }
+    Vec<N,real> operator/(         long long f) const {  return divscalar(f);  }
+    Vec<N,real> operator/(unsigned long long f) const {  return divscalar(f);  }
+
+    /// In-place division by a scalar f.
     template<class real2>
-    void operator/=(real2 f)
+    void eqdivscalar(real2 f)
     {
+        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
         for (int i=0; i<N; i++)
             this->elems[i]/=(real)f;
     }
+
+    void operator/=(         float     f) {  eqdivscalar(f);  }
+    void operator/=(         double    f) {  eqdivscalar(f);  }
+    void operator/=(         int       f) {  eqdivscalar(f);  }
+    void operator/=(unsigned int       f) {  eqdivscalar(f);  }
+    void operator/=(         long      f) {  eqdivscalar(f);  }
+    void operator/=(unsigned long      f) {  eqdivscalar(f);  }
+    void operator/=(         long long f) {  eqdivscalar(f);  }
+    void operator/=(unsigned long long f) {  eqdivscalar(f);  }
 
     /// Dot product.
     template<class real2>
@@ -417,7 +461,7 @@ public:
         return r;
     }
 
-    /// On-place vector addition.
+    /// In-place vector addition.
     template<class real2>
     void operator+=(const Vec<N,real2>& v)
     {
@@ -435,7 +479,7 @@ public:
         return r;
     }
 
-    /// On-place vector subtraction.
+    /// In-place vector subtraction.
     template<class real2>
     void operator-=(const Vec<N,real2>& v)
     {
