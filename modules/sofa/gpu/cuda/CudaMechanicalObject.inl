@@ -110,6 +110,22 @@ extern "C"
     int MechanicalObjectCudaVec3f1_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 
+    void MechanicalObjectCudaVec6f_vAssign(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec6f_vClear(unsigned int size, void* res);
+    void MechanicalObjectCudaVec6f_vMEq(unsigned int size, void* res, float f);
+    void MechanicalObjectCudaVec6f_vEqBF(unsigned int size, void* res, const void* b, float f);
+    void MechanicalObjectCudaVec6f_vPEq(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec6f_vPEqBF(unsigned int size, void* res, const void* b, float f);
+    void MechanicalObjectCudaVec6f_vAdd(unsigned int size, void* res, const void* a, const void* b);
+    void MechanicalObjectCudaVec6f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
+//        void MechanicalObjectCudaVec6f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
+//        void MechanicalObjectCudaVec6f_vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2);
+//        void MechanicalObjectCudaVec6f_vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
+//                void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24);
+//        void MechanicalObjectCudaVec6f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2);
+    int MechanicalObjectCudaVec6f_vDotTmpSize(unsigned int size);
+    void MechanicalObjectCudaVec6f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
+
 
     void MechanicalObjectCudaRigid3f_vAssignCoord(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaRigid3f_vAssignDeriv(unsigned int size, void* res, const void* a);
@@ -175,6 +191,21 @@ extern "C"
     int MechanicalObjectCudaVec3d1_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp);
 
+    void MechanicalObjectCudaVec6d_vAssign(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec6d_vClear(unsigned int size, void* res);
+    void MechanicalObjectCudaVec6d_vMEq(unsigned int size, void* res, double f);
+    void MechanicalObjectCudaVec6d_vEqBF(unsigned int size, void* res, const void* b, double f);
+    void MechanicalObjectCudaVec6d_vPEq(unsigned int size, void* res, const void* a);
+    void MechanicalObjectCudaVec6d_vPEqBF(unsigned int size, void* res, const void* b, double f);
+    void MechanicalObjectCudaVec6d_vAdd(unsigned int size, void* res, const void* a, const void* b);
+    void MechanicalObjectCudaVec6d_vOp(unsigned int size, void* res, const void* a, const void* b, double f);
+//    void MechanicalObjectCudaVec6d_vIntegrate(unsigned int size, const void* a, void* v, void* x, double f_v_v, double f_v_a, double f_x_x, double f_x_v);
+//    void MechanicalObjectCudaVec6d_vPEqBF2(unsigned int size, void* res1, const void* b1, double f1, void* res2, const void* b2, double f2);
+//    void MechanicalObjectCudaVec6d_vPEq4BF2(unsigned int size, void* res1, const void* b11, double f11, const void* b12, double f12, const void* b13, double f13, const void* b14, double f14,
+//    	void* res2, const void* b21, double f21, const void* b22, double f22, const void* b23, double f23, const void* b24, double f24);
+//    void MechanicalObjectCudaVec6d_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, double f1, void* res2, const void* a2, const void* b2, double f2);
+    int MechanicalObjectCudaVec6d_vDotTmpSize(unsigned int size);
+    void MechanicalObjectCudaVec6d_vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp);
 
 
     void MechanicalObjectCudaRigid3d_vAssignCoord(unsigned int size, void* res, const void* a);
@@ -308,6 +339,56 @@ public:
     static bool supportMultiVClear() { return false; }
     static void multiVClear(unsigned int, VClearOp*)
     {}
+};
+
+template<>
+class CudaKernelsMechanicalObject<CudaVec6fTypes>
+{
+public:
+    static void vAssign(unsigned int size, void* res, const void* a)
+    {   MechanicalObjectCudaVec6f_vAssign(size, res, a); }
+    static void vClear(unsigned int size, void* res)
+    {   MechanicalObjectCudaVec6f_vClear(size, res); }
+    static void vMEq(unsigned int size, void* res, float f)
+    {   MechanicalObjectCudaVec6f_vMEq(size, res, f); }
+    static void vEqBF(unsigned int size, void* res, const void* b, float f)
+    {   MechanicalObjectCudaVec6f_vEqBF(size, res, b, f); }
+    static void vPEq(unsigned int size, void* res, const void* a)
+    {   MechanicalObjectCudaVec6f_vPEq(size, res, a); }
+    static void vPEqBF(unsigned int size, void* res, const void* b, float f)
+    {   MechanicalObjectCudaVec6f_vPEqBF(size, res, b, f); }
+    static void vAdd(unsigned int size, void* res, const void* a, const void* b)
+    {   MechanicalObjectCudaVec6f_vAdd(size, res, a, b); }
+    static void vOp(unsigned int size, void* res, const void* a, const void* b, float f)
+    {   MechanicalObjectCudaVec6f_vOp(size, res, a, b, f); }
+    static void vIntegrate(unsigned int /* size */, const void* /* a */, void* /* v */, void* /* x */, float /* f_v_v */, float /* f_v_a */, float /* f_x_x */, float /* f_x_v */)
+    {   /* MechanicalObjectCudaVec6f_vIntegrate(size, a, v, x, f_v_v, f_v_a, f_x_x, f_x_v); */ }
+    static void vPEqBF2(unsigned int /* size */, void* /* res1 */, const void* /* b1 */, float /* f1 */, void* /* res2 */, const void* /* b2 */, float /* f2 */)
+    {   /* MechanicalObjectCudaVec6f_vPEqBF2(size, res1, b1, f1, res2, b2, f2); */ }
+    static void vPEq4BF2(unsigned int /* size */, void* /* res1 */, const void* /* b11 */, float /* f11 */, const void* /* b12 */, float /* f12 */, const void* /* b13 */, float /* f13 */, const void* /* b14 */, float /* f14 */,
+            void* /* res2 */, const void* /* b21 */, float /* f21 */, const void* /* b22 */, float /* f22 */, const void* /* b23 */, float /* f23 */, const void* /* b24 */, float /* f24 */)
+    {
+        /* MechanicalObjectCudaVec6f_vPEq4BF2(size, res1, b11, f11, b12, f12, b13, f13, b14, f14,
+        res2, b21, f21, b22, f22, b23, f23, b24, f24); */
+    }
+    static void vOp2(unsigned int /* size */, void* /* res1 */, const void* /* a1 */, const void* /* b1 */, float /* f1 */, void* /* res2 */, const void* /* a2 */, const void* /* b2 */, float /* f2 */)
+    {   /* MechanicalObjectCudaVec6f_vOp2(size, res1, a1, b1, f1, res2, a2, b2, f2); */ }
+    static int vDotTmpSize(unsigned int size)
+    {   return MechanicalObjectCudaVec6f_vDotTmpSize(size); }
+    static void vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp)
+    {   MechanicalObjectCudaVec6f_vDot(size, res, a, b, tmp, cputmp); }
+    static bool supportMultiVDot() { /* return mycudaMultiOpMax>0; */ return false; }
+    static int multiVDotTmpSize(unsigned int /* n */, VDotOp* /* ops */)
+    {   return 0; /* return MultiMechanicalObjectCudaVec3f_vDotTmpSize(n, ops); */ }
+    static void multiVDot(unsigned int /* n */, VDotOp* /* ops */, double* /* results */, void* /* tmp */, float* /* cputmp */)
+    {   /* MultiMechanicalObjectCudaVec6f_vDot(n, ops, results, tmp, cputmp); */ }
+    typedef VOpF VOp;
+    static bool supportMultiVOp() { /* return mycudaMultiOpMax>0; */ return false; }
+    static void multiVOp(unsigned int /* n */, VOp* /* ops */)
+    {   /* MultiMechanicalObjectCudaVec6f_vOp(n, ops); */ }
+    static bool supportMultiVClear() { /* return mycudaMultiOpMax>0; */ return false; }
+    static void multiVClear(unsigned int /* n */, VClearOp* /* ops */)
+    {   /* MultiMechanicalObjectCudaVec6f_vClear(n, ops); */ }
 };
 
 template<>
@@ -484,6 +565,56 @@ public:
     static bool supportMultiVClear() { return false; }
     static void multiVClear(unsigned int, VClearOp*)
     {}
+};
+
+template<>
+class CudaKernelsMechanicalObject<CudaVec6dTypes>
+{
+public:
+    static void vAssign(unsigned int size, void* res, const void* a)
+    {   MechanicalObjectCudaVec6d_vAssign(size, res, a); }
+    static void vClear(unsigned int size, void* res)
+    {   MechanicalObjectCudaVec6d_vClear(size, res); }
+    static void vMEq(unsigned int size, void* res, double f)
+    {   MechanicalObjectCudaVec6d_vMEq(size, res, f); }
+    static void vEqBF(unsigned int size, void* res, const void* b, double f)
+    {   MechanicalObjectCudaVec6d_vEqBF(size, res, b, f); }
+    static void vPEq(unsigned int size, void* res, const void* a)
+    {   MechanicalObjectCudaVec6d_vPEq(size, res, a); }
+    static void vPEqBF(unsigned int size, void* res, const void* b, double f)
+    {   MechanicalObjectCudaVec6d_vPEqBF(size, res, b, f); }
+    static void vAdd(unsigned int size, void* res, const void* a, const void* b)
+    {   MechanicalObjectCudaVec6d_vAdd(size, res, a, b); }
+    static void vOp(unsigned int size, void* res, const void* a, const void* b, double f)
+    {   MechanicalObjectCudaVec6d_vOp(size, res, a, b, f); }
+    static void vIntegrate(unsigned int /* size */, const void* /* a */, void* /* v */, void* /* x */, double /* f_v_v */, double /* f_v_a */, double /* f_x_x */, double /* f_x_v */)
+    { /*  MechanicalObjectCudaVec6d_vIntegrate(size, a, v, x, f_v_v, f_v_a, f_x_x, f_x_v); */ }
+    static void vPEqBF2(unsigned int /* size */, void* /* res1 */, const void* /* b1 */, double /* f1 */, void* /* res2 */, const void* /* b2 */, double /* f2 */)
+    { /* MechanicalObjectCudaVec6d_vPEqBF2(size, res1, b1, f1, res2, b2, f2); */ }
+    static void vPEq4BF2(unsigned int /* size */, void* /* res1 */, const void* /* b11 */, double /* f11 */, const void* /* b12 */, double /* f12 */, const void* /* b13 */, double /* f13 */, const void* /* b14 */, double /* f14 */,
+            void* /* res2 */, const void* /* b21 */, double /* f21 */, const void* /* b22 */, double /* f22 */, const void* /* b23 */, double /* f23 */, const void* /* b24 */, double /* f24 */)
+    {
+        /*   MechanicalObjectCudaVec6d_vPEq4BF2(size, res1, b11, f11, b12, f12, b13, f13, b14, f14,
+                                                    res2, b21, f21, b22, f22, b23, f23, b24, f24); */
+    }
+    static void vOp2(unsigned int /* size */, void* /* res1 */, const void* /* a1 */, const void* /* b1 */, double /* f1 */, void* /* res2 */, const void* /* a2 */, const void* /* b2 */, double /* f2 */)
+    { /*  MechanicalObjectCudaVec6d_vOp2(size, res1, a1, b1, f1, res2, a2, b2, f2); */ }
+    static int vDotTmpSize(unsigned int size)
+    {   return MechanicalObjectCudaVec6d_vDotTmpSize(size); }
+    static void vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp)
+    {   MechanicalObjectCudaVec6d_vDot(size, res, a, b, tmp, cputmp); }
+    static bool supportMultiVDot() { /* return mycudaMultiOpMax>0; */ return false; }
+    static int multiVDotTmpSize(unsigned int /* n */, VDotOp* /* ops */)
+    {  return 0; /* return MultiMechanicalObjectCudaVec6d_vDotTmpSize(n, ops); */ }
+    static void multiVDot(unsigned int /* n */, VDotOp* /* ops */, double* /* results */, void* /* tmp */, double* /* cputmp */)
+    { /*  MultiMechanicalObjectCudaVec6d_vDot(n, ops, results, tmp, cputmp); */ }
+    typedef VOpF VOp;
+    static bool supportMultiVOp() { /* return mycudaMultiOpMax>0; */ return false; }
+    static void multiVOp(unsigned int /* n */, VOp* /* ops */)
+    {  /* MultiMechanicalObjectCudaVec6d_vOp(n, ops); */ }
+    static bool supportMultiVClear() { /* return mycudaMultiOpMax>0; */ return false; }
+    static void multiVClear(unsigned int /* n */, VClearOp* /* ops */)
+    { /*  MultiMechanicalObjectCudaVec6d_vClear(n, ops); */ }
 };
 
 template<>
@@ -2356,6 +2487,7 @@ else data.addFromBaseVectorSameSize(this, dest,src,offset); }
 
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3f1Types);
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec6fTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3fTypes);
 
 
@@ -2363,6 +2495,7 @@ CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3fTypes);
 
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3dTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3d1Types);
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec6dTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3dTypes);
 
 #endif // SOFA_GPU_CUDA_DOUBLE

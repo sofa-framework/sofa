@@ -225,12 +225,14 @@ public:
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec6fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3fTypes);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3dTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3d1Types);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec6dTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -249,6 +251,7 @@ CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 using sofa::gpu::cuda::CudaVec3fTypes;
 using sofa::gpu::cuda::CudaVec3f1Types;
+using sofa::gpu::cuda::CudaVec6fTypes;
 using sofa::gpu::cuda::CudaRigid3fTypes;
 
 
@@ -256,13 +259,16 @@ using sofa::gpu::cuda::CudaRigid3fTypes;
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 extern template class sofa::component::container::MechanicalObject<CudaVec3fTypes>;
 extern template class sofa::component::container::MechanicalObject<CudaVec3f1Types>;
+extern template class sofa::component::container::MechanicalObject<CudaVec6fTypes>;
 extern template class sofa::component::container::MechanicalObject<CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 using sofa::gpu::cuda::CudaVec3dTypes;
 using sofa::gpu::cuda::CudaVec3d1Types;
+using sofa::gpu::cuda::CudaVec6dTypes;
 using sofa::gpu::cuda::CudaRigid3dTypes;
 extern template class sofa::component::container::MechanicalObject<CudaVec3dTypes>;
 extern template class sofa::component::container::MechanicalObject<CudaVec3d1Types>;
+extern template class sofa::component::container::MechanicalObject<CudaVec6dTypes>;
 extern template class sofa::component::container::MechanicalObject<CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
