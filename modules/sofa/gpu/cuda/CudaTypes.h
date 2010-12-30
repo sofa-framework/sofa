@@ -1059,7 +1059,7 @@ inline const char* CudaVec3d1Types::Name()
     return "CudaVec3d1";
 }
 
-typedef CudaVectorTypes<Vec6d,Vec6d,float> CudaVec6dTypes;
+typedef CudaVectorTypes<Vec6d,Vec6d,double> CudaVec6dTypes;
 // typedef CudaVec6dTypes CudaVec6Types;
 
 template<>
