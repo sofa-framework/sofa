@@ -136,6 +136,10 @@ public:
     {
         CudaVec6<float> r; r.pos.x = v.x; r.pos.y = v.y;  r.pos.z = v.z; r.rot.x = w.x; r.rot.y = w.y; r.rot.z = w.z; return r;
     }
+    static __inline__ __device__ __host__ CudaVec6<float> make(Real x, Real y, Real z, Real rx, Real ry, Real rz)
+    {
+        CudaVec6<float> r; r.pos.x = x; r.pos.y = y; r.pos.z = z; r.rot.x = rx; r.rot.y = ry; r.rot.z = rz; return r;
+    }
     static __inline__ __device__ __host__ CudaVec6<float> make(float6 v)
     {
         CudaVec6<float> r; r.pos.x = v.pos.x; r.pos.y = v.pos.y; r.pos.z = v.pos.z; r.rot.x = v.rot.x; r.rot.y = v.rot.y; r.rot.z = v.rot.z; return r;
@@ -236,7 +240,7 @@ template<>
 class CudaVec6<double> : public double6
 {
 public:
-    typedef float Real;
+    typedef double Real;
     static __inline__ __device__ __host__ CudaVec6<double> make(Real x, Real y, Real z=0)
     {
         CudaVec6<double> r; r.pos.x = x; r.pos.y = y;  r.pos.z = z; return r;
@@ -244,6 +248,10 @@ public:
     static __inline__ __device__ __host__ CudaVec6<double> make(double3 v, double3 w)
     {
         CudaVec6<double> r; r.pos.x = v.x; r.pos.y = v.y;  r.pos.z = v.z; r.rot.x = w.x; r.rot.y = w.y; r.rot.z = w.z; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec6<double> make(Real x, Real y, Real z, Real rx, Real ry, Real rz)
+    {
+        CudaVec6<double> r; r.pos.x = x; r.pos.y = y; r.pos.z = z; r.rot.x = rx; r.rot.y = ry; r.rot.z = rz; return r;
     }
     static __inline__ __device__ __host__ CudaVec6<double> make(double6 v)
     {
@@ -452,6 +460,16 @@ __device__ CudaVec4<real> vectQuatMult(CudaVec4<real> a, const CudaVec3<real> ve
     return ret;
 }
 
+template<class real>
+__device__ void operator+=(CudaVec6<real>& a, CudaVec6<real> b)
+{
+    a.pos.x += b.pos.x;
+    a.pos.y += b.pos.y;
+    a.pos.z += b.pos.z;
+    a.rot.x += b.rot.x;
+    a.rot.y += b.rot.y;
+    a.rot.z += b.rot.z;
+}
 
 template<class real>
 class /*__align__(4)*/ matrix3

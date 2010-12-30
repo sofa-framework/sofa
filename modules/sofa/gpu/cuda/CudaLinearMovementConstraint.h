@@ -50,6 +50,49 @@ namespace component
 namespace projectiveconstraintset
 {
 
+template<class TCoord, class TDeriv, class TReal>
+class LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
+{
+public:
+    typedef LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > Data;
+    typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    typedef LinearMovementConstraint<DataTypes> Main;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef topology::PointSubset SetIndex;
+    typedef helper::vector<unsigned int> SetIndexArray;
+
+    typedef sofa::core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef sofa::core::objectmodel::Data<MatrixDeriv> DataMatrixDeriv;
+
+    typedef gpu::cuda::CudaKernelsLinearMovementConstraint<DataTypes> Kernels;
+
+    // vector of indices for general case
+    gpu::cuda::CudaVector<int> indices;
+
+    // initial positions
+    gpu::cuda::CudaVector<Coord> x0;
+
+    int size;
+
+    static void init(Main* m, VecCoord& x);
+
+    static void addIndex(Main* m, unsigned int index);
+
+    static void removeIndex(Main* m, unsigned int index);
+
+    static void projectResponse(Main* m, VecDeriv& dx);
+    static void projectPosition(Main* m, VecCoord& x);
+    static void projectVelocity(Main* m, VecDeriv& dx);
+
+};
+
+
 template<int N, class real>
 class LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >
 {
@@ -97,6 +140,24 @@ public:
 // void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::init();
 
 template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::addIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::removeIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::addIndex(unsigned int index);
 
 template<>
@@ -118,6 +179,24 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(Da
 
 // template<>
 // void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::init();
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::addIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::removeIndex(unsigned int index);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectJacobianMatrix(DataMatrixDeriv& dx, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* mparams);
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* mparams);
 
 template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::addIndex(unsigned int index);

@@ -40,17 +40,41 @@ namespace cuda
 extern "C"
 {
 
+    void LinearMovementConstraintCudaVec6f_projectResponseIndexed(unsigned size, const void* indices, void* dx);
+    void LinearMovementConstraintCudaVec6f_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
+    void LinearMovementConstraintCudaVec6f_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
     void LinearMovementConstraintCudaRigid3f_projectResponseIndexed(unsigned size, const void* indices, void* dx);
     void LinearMovementConstraintCudaRigid3f_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
     void LinearMovementConstraintCudaRigid3f_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
+    void LinearMovementConstraintCudaVec6d_projectResponseIndexed(unsigned size, const void* indices, void* dx);
+    void LinearMovementConstraintCudaVec6d_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
+    void LinearMovementConstraintCudaVec6d_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
     void LinearMovementConstraintCudaRigid3d_projectResponseIndexed(unsigned size, const void* indices, void* dx);
     void LinearMovementConstraintCudaRigid3d_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
     void LinearMovementConstraintCudaRigid3d_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// extern "C"
+
+template<>
+class CudaKernelsLinearMovementConstraint< CudaVec6fTypes >
+{
+public:
+    static void projectResponse(unsigned size, const void* indices, void* dx)
+    {
+        LinearMovementConstraintCudaVec6f_projectResponseIndexed(size, indices, dx);
+    }
+    static void projectPosition(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
+    {
+        LinearMovementConstraintCudaVec6f_projectPositionIndexed(size, indices, dir, x0, x);
+    }
+    static void projectVelocity(unsigned size, const void* indices, const void* dir, void* dx)
+    {
+        LinearMovementConstraintCudaVec6f_projectVelocityIndexed(size, indices, dir, dx);
+    }
+};// CudaKernelsLinearMovementConstraint
 
 template<>
 class CudaKernelsLinearMovementConstraint< CudaRigid3fTypes >
@@ -71,6 +95,24 @@ public:
 };// CudaKernelsLinearMovementConstraint
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
+
+template<>
+class CudaKernelsLinearMovementConstraint< CudaVec6dTypes >
+{
+public:
+    static void projectResponse(unsigned size, const void* indices, void* dx)
+    {
+        LinearMovementConstraintCudaVec6d_projectResponseIndexed(size, indices, dx);
+    }
+    static void projectPosition(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
+    {
+        LinearMovementConstraintCudaVec6d_projectPositionIndexed(size, indices, dir, x0, x);
+    }
+    static void projectVelocity(unsigned size, const void* indices, const void* dir, void* dx)
+    {
+        LinearMovementConstraintCudaVec6d_projectVelocityIndexed(size, indices, dir, dx);
+    }
+};// CudaKernelsLinearMovementConstraint
 
 template<>
 class CudaKernelsLinearMovementConstraint< CudaRigid3dTypes >
@@ -101,6 +143,144 @@ namespace component
 
 namespace projectiveconstraintset
 {
+
+/////////////////////////////////////
+// CudaVectorTypes specializations
+/////////////////////////////////////
+template<class TCoord, class TDeriv, class TReal>
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addIndex(Main* m, unsigned index)
+{
+    Data& data = *m->data;
+
+    m->m_indices.beginEdit()->push_back(index);
+    m->m_indices.endEdit();
+
+    data.indices.push_back(index);
+    // TODO : then it becomes non-consistent and also in the main version !!!
+//  data.x0.push_back();
+
+}// LinearMovementConstraintInternalData::addIndex
+
+template<class TCoord, class TDeriv, class TReal>
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeIndex(Main* m, unsigned index)
+{
+    // Data& data = m->data;
+
+    removeValue(*m->m_indices.beginEdit(),index);
+    m->m_indices.endEdit();
+
+    // removeValue(data.indices, index);
+    // TODO : then it becomes non-consistent and also in the main version !!!
+//  data.x0.push_back();
+
+}// LinearMovementConstraintInternalData::removeIndex
+
+template<class TCoord, class TDeriv, class TReal>
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m, VecCoord& x)
+{
+    Data& data = *m->data;
+    const SetIndexArray & indices = m->m_indices.getValue().getArray();
+//  m->x0.resize( indices.size() );
+//  for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+//    m->x0[*it] = x[*it];
+
+    // gpu part
+    data.size = indices.size();
+    data.indices.resize(data.size);
+    unsigned index =0;
+    for (typename SetIndex::const_iterator it = indices.begin(); it != indices.end(); it++)
+    {
+        data.indices[index] = *it;
+        index++;
+    }
+
+    data.x0.resize(data.size);
+    index = 0;
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        data.x0[index] = x[*it];
+        index++;
+    }
+}// LinearMovementConstraintInternalData::init
+
+template<class TCoord, class TDeriv, class TReal>
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::projectResponse(Main* m, VecDeriv& dx)
+{
+    Data& data = *m->data;
+
+    Real cT = (Real) m->getContext()->getTime();
+
+    if ((cT != m->currentTime) || !m->finished)
+    {
+        m->findKeyTimes();
+    }
+
+    if (m->finished && m->nextT != m->prevT)
+    {
+        Kernels::projectResponse(
+            data.size,
+            data.indices.deviceRead(),
+            dx.deviceWrite()
+        );
+    }
+}// LinearMovementConstraintInternalData::projectResponse
+
+template<class TCoord, class TDeriv, class TReal>
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::projectPosition(Main* m, VecCoord& x)
+{
+    Data& data = *m->data;
+
+    Real cT = (Real) m->getContext()->getTime();
+
+    // initialize initial Dofs positions, if it's not done
+    if (m->x0.size() == 0)
+    {
+        data.init(m, x);
+    }
+
+    if ((cT != m->currentTime) || !m->finished)
+    {
+        m->findKeyTimes();
+    }
+
+    if (m->finished && m->nextT != m->prevT)
+    {
+        Real dt = (cT - m->prevT) / (m->nextT - m->prevT);
+        Deriv depl = m->prevM + (m->nextM-m->prevM)*dt;
+
+        Kernels::projectPosition(
+            data.size,
+            data.indices.deviceRead(),
+            depl.ptr(),
+            data.x0.deviceRead(),
+            x.deviceWrite()
+        );
+    }
+}// LinearMovementConstraintInternalData::projectPosition
+
+template<class TCoord, class TDeriv, class TReal>
+void LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::projectVelocity(Main* m, VecDeriv& dx)
+{
+    Data& data = *m->data;
+
+    Real cT = (Real) m->getContext()->getTime();
+
+    if ((cT != m->currentTime) || !m->finished)
+        m->findKeyTimes();
+
+    if (m->finished && m->nextT != m->prevT)
+    {
+        Deriv dv = (m->nextM - m->prevM)*(1.0/(m->nextT - m->prevT));
+
+        Kernels::projectVelocity(
+            data.size,
+            data.indices.deviceRead(),
+            dv.ptr(),
+            dx.deviceWrite()
+        );
+    }
+}// LinearMovementConstraintInternalData::projectVelocity
+
 
 /////////////////////////////////////
 // CudaRigidTypes specializations
@@ -252,6 +432,48 @@ void LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >:
 // }
 
 template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::addIndex(unsigned int index)
+{
+    data->addIndex(this, index);
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::removeIndex(unsigned int index)
+{
+    data->removeIndex(this, index);
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& _dx = *dx.beginEdit();
+    data->projectResponse(this, _dx);
+    dx.endEdit();
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectJacobianMatrix(DataMatrixDeriv& /*dx*/, const core::MechanicalParams* /* mparams */)
+{
+    /*  data.projectResponseT(this, index); */
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* /* mparams */)
+{
+    VecCoord& _x = *x.beginEdit();
+    data->projectPosition(this, _x);
+    x.endEdit();
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6fTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& _dx = *dx.beginEdit();
+    data->projectVelocity(this, _dx);
+    dx.endEdit();
+}
+
+template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::addIndex(unsigned int index)
 {
     data->addIndex(this, index);
@@ -299,6 +521,48 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3fTypes >::projectVelocity(Da
 // {
 //   data->init(this);
 // }
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::addIndex(unsigned int index)
+{
+    data->addIndex(this, index);
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::removeIndex(unsigned int index)
+{
+    data->removeIndex(this, index);
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectResponse(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& _dx = *dx.beginEdit();
+    data->projectResponse(this, _dx);
+    dx.endEdit();
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectJacobianMatrix(DataMatrixDeriv& /*dx*/, const core::MechanicalParams* /* mparams */)
+{
+    /*  data.projectResponseT(this, index); */
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectPosition(DataVecCoord& x, const core::MechanicalParams* /* mparams */)
+{
+    VecCoord& _x = *x.beginEdit();
+    data->projectPosition(this, _x);
+    x.endEdit();
+}
+
+template<>
+void LinearMovementConstraint< gpu::cuda::CudaVec6dTypes >::projectVelocity(DataVecDeriv& dx, const core::MechanicalParams* /* mparams */)
+{
+    VecDeriv& _dx = *dx.beginEdit();
+    data->projectVelocity(this, _dx);
+    dx.endEdit();
+}
 
 template<>
 void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::addIndex(unsigned int index)
