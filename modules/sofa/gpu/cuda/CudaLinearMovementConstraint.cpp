@@ -54,10 +54,12 @@ SOFA_DECL_CLASS(CudaLinearMovementConstraint)
 int LinearMovementConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 // .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3fTypes> >()
 // .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3f1Types> >()
+        .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec6fTypes> >()
         .add< component::projectiveconstraintset::LinearMovementConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
 // .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3dTypes> >()
 // .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec3d1Types> >()
+        .add< component::projectiveconstraintset::LinearMovementConstraint<CudaVec6dTypes> >()
         .add< component::projectiveconstraintset::LinearMovementConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;

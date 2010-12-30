@@ -39,11 +39,17 @@ namespace cuda
 extern "C"
 {
 
+    void LinearMovementConstraintCudaVec6f_projectResponseIndexed(unsigned size, const void* indices, void* dx);
+    void LinearMovementConstraintCudaVec6f_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
+    void LinearMovementConstraintCudaVec6f_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
     void LinearMovementConstraintCudaRigid3f_projectResponseIndexed(unsigned size, const void* indices, void* dx);
     void LinearMovementConstraintCudaRigid3f_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
     void LinearMovementConstraintCudaRigid3f_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
+    void LinearMovementConstraintCudaVec6d_projectResponseIndexed(unsigned size, const void* indices, void* dx);
+    void LinearMovementConstraintCudaVec6d_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
+    void LinearMovementConstraintCudaVec6d_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
     void LinearMovementConstraintCudaRigid3d_projectResponseIndexed(unsigned size, const void* indices, void* dx);
     void LinearMovementConstraintCudaRigid3d_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x);
     void LinearMovementConstraintCudaRigid3d_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx);
@@ -54,6 +60,19 @@ extern "C"
 //////////////////////
 // GPU-side methods //
 //////////////////////
+
+template<class real>
+__global__ void LinearMovementConstraintCudaVec6t_projectPositionIndexed_kernel(unsigned size, const int* indices, real dirX, real dirY, real dirZ, real dirU, real dirV, real dirW, const CudaVec6<real>* x0, CudaVec6<real>* x)
+{
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+
+    CudaVec6<real> m = CudaVec6<real>::make(dirX, dirY, dirZ, dirU, dirV, dirW);
+    if (index < size)
+    {
+        x[indices[index]] = x0[index];
+        x[indices[index]] += m;
+    }
+}// projectPositionIndexed_kernel
 
 template<class real>
 __global__ void LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel(unsigned size, const int* indices, CudaRigidDeriv3<real>* dx)
@@ -95,6 +114,28 @@ __global__ void LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kerne
 //////////////////////
 // CPU-side methods //
 //////////////////////
+void LinearMovementConstraintCudaVec6f_projectResponseIndexed(unsigned size, const void* indices, void* dx)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<float>*)dx);
+}
+
+void LinearMovementConstraintCudaVec6f_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    LinearMovementConstraintCudaVec6t_projectPositionIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices,
+            ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5],
+            (const CudaVec6<float>*) x0, (CudaVec6<float>*)x);
+}
+
+void LinearMovementConstraintCudaVec6f_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, ((float*)dir)[0], ((float*)dir)[1], ((float*)dir)[2], ((float*)dir)[3], ((float*)dir)[4], ((float*)dir)[5], (CudaRigidDeriv3<float>*)dx);
+}
 void LinearMovementConstraintCudaRigid3f_projectResponseIndexed(unsigned size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE, 1);
@@ -117,6 +158,29 @@ void LinearMovementConstraintCudaRigid3f_projectVelocityIndexed(unsigned size, c
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
+void LinearMovementConstraintCudaVec6d_projectResponseIndexed(unsigned size, const void* indices, void* dx)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, (CudaRigidDeriv3<double>*)dx);
+}
+
+void LinearMovementConstraintCudaVec6d_projectPositionIndexed(unsigned size, const void* indices, const void* dir, const void* x0, void* x)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    LinearMovementConstraintCudaVec6t_projectPositionIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices,
+            ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5],
+            (const CudaVec6<double>*) x0, (CudaVec6<double>*)x);
+}
+
+void LinearMovementConstraintCudaVec6d_projectVelocityIndexed(unsigned size, const void* indices, const void* dir, void* dx)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel<double><<< grid, threads >>>(size, (const int*)indices, ((double*)dir)[0], ((double*)dir)[1], ((double*)dir)[2], ((double*)dir)[3], ((double*)dir)[4], ((double*)dir)[5], (CudaRigidDeriv3<double>*)dx);
+}
+
 void LinearMovementConstraintCudaRigid3d_projectResponseIndexed(unsigned size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE, 1);
