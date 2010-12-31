@@ -113,8 +113,8 @@ public:
     typedef typename DistanceOnGrid< DoGType >::Coord GeoCoord;
     typedef typename DistanceOnGrid< DoGType >::VecVecCoord GeoVecVecCoord;
 #else
-    typedef Coord DoGCoord;
-    typedef VecCoord DoGVecCoord;
+    typedef Coord GeoCoord;
+    typedef VecCoord GeoVecCoord;
 #endif
 
 protected:
