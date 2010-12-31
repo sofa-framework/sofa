@@ -650,6 +650,12 @@ Visitor::Result MechanicalVInitVisitor<vtype>::fwdMappedMechanicalState(simulati
     return RESULT_CONTINUE;
 }
 
+template< VecType vtype>
+std::string  MechanicalVInitVisitor<vtype>::getInfos() const
+{
+    std::string name = "[" + vDest.getName() + "]";
+    return name;
+}
 
 template< VecType vtype>
 Visitor::Result  MechanicalVAvailVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
@@ -660,10 +666,25 @@ Visitor::Result  MechanicalVAvailVisitor<vtype>::fwdMechanicalState(simulation::
 }
 
 template< VecType vtype>
+std::string  MechanicalVAvailVisitor<vtype>::getInfos() const
+{
+    std::string name="[" + v.getName() + "]";
+    return name;
+}
+
+template< VecType vtype>
 Visitor::Result MechanicalVAllocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->vAlloc(v.getId(mm), this->params );
     return RESULT_CONTINUE;
+}
+
+
+template< VecType vtype>
+std::string  MechanicalVAllocVisitor<vtype>::getInfos() const
+{
+    std::string name="[" + v.getName() + "]";
+    return name;
 }
 
 template< VecType vtype>
@@ -671,6 +692,13 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMechanicalState(simulation::No
 {
     mm->vFree( v.getId(mm), this->params );
     return RESULT_CONTINUE;
+}
+
+template< VecType vtype>
+std::string  MechanicalVFreeVisitor<vtype>::getInfos() const
+{
+    std::string name="[" + v.getName() + "]";
+    return name;
 }
 
 Visitor::Result MechanicalVOpVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)

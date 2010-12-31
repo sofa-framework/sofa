@@ -484,7 +484,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVAvailVisitor"; }
-    virtual std::string getInfos() const { std::string name="[" + v.getName() + "]"; return name;  }
+    virtual std::string getInfos() const;
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -541,11 +541,7 @@ public:
         return "MechanicalVInitVisitor";
     }
 
-    virtual std::string getInfos() const
-    {
-        std::string name = "[" + vDest.getName() + "]";
-        return name;
-    }
+    virtual std::string getInfos() const;
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -583,7 +579,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVAllocVisitor"; }
-    virtual std::string getInfos() const {std::string name="[" + v.getName() + "]"; return name;}
+    virtual std::string getInfos() const;
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -616,7 +612,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVFreeVisitor"; }
-    virtual std::string getInfos() const {std::string name="[" + v.getName() + "]"; return name;}
+    virtual std::string getInfos() const;
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
