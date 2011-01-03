@@ -251,31 +251,32 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::
         resTab[offset] = temp;
         offset += 3;
     }
+}
 #endif
 
 #endif
 
 
-    SOFA_DECL_CLASS(BilateralInteractionConstraint)
+SOFA_DECL_CLASS(BilateralInteractionConstraint)
 
-    int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
+int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
 #ifndef SOFA_FLOAT
-            .add< BilateralInteractionConstraint<Vec3dTypes> >()
-            .add< BilateralInteractionConstraint<Rigid3dTypes> >()
+        .add< BilateralInteractionConstraint<Vec3dTypes> >()
+        .add< BilateralInteractionConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-            .add< BilateralInteractionConstraint<Vec3fTypes> >()
-            .add< BilateralInteractionConstraint<Rigid3fTypes> >()
+        .add< BilateralInteractionConstraint<Vec3fTypes> >()
+        .add< BilateralInteractionConstraint<Rigid3fTypes> >()
 #endif
-            ;
+        ;
 
 #ifndef SOFA_FLOAT
-    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3dTypes>;
-    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3fTypes>;
-    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3fTypes>;
 #endif
 
 } // namespace constraintset
