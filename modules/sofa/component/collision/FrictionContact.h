@@ -171,7 +171,11 @@ public:
 
 protected:
 
-    bool findMappingOrUseMapper( bool case1);
+    std::pair<bool,bool> findMappingOrUseMapper();
+
+    template< class T >
+    bool findMappingOrUseMapper(core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *constraintModel, core::BaseMapping *map);
+
     void activateConstraint();
 
     int mapTheContinuousContact(Vector3 &, int, Vector3 &, bool)
