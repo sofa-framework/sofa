@@ -51,8 +51,15 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::
     unsigned minp=min(m1.getValue().size(),m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {
-        for(int i=0; i<6; i++)
-            resTab[offset++] = new BilateralConstraintResolution();
+        // 	for(int i=0; i<6; i++)
+        // 	resTab[offset++] = new BilateralConstraintResolution();
+
+        resTab[offset] = new BilateralConstraintResolution3Dof();
+        offset += 3;
+        BilateralConstraintResolution3Dof* temp = new BilateralConstraintResolution3Dof();
+        temp->tolerance = 0.0001;	// specific (smaller) tolerance for the rotation
+        resTab[offset] = temp;
+        offset += 3;
     }
 }
 #endif
@@ -72,7 +79,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(DataMat
         MatrixDeriv &c2 = *c2_d.beginEdit();
 
         const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
-//	const Vec<3, Real> qId = q.toEulerVector();
+        //	const Vec<3, Real> qId = q.toEulerVector();
         const Vec<3, Real> vZero(0,0,0);
 
         cid[pid] = constraintId;
@@ -158,7 +165,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(DataMat
         MatrixDeriv &c2 = *c2_d.beginEdit();
 
         const Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
-//	const Vec<3, Real> qId = q.toEulerVector();
+        //	const Vec<3, Real> qId = q.toEulerVector();
         const Vec<3, Real> vZero(0,0,0);
 
         cid[pid] = constraintId;
@@ -220,7 +227,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(defaul
         Coord dof2 = x2.getValue()[m1.getValue()[pid]];
 
         getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
-        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
+        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation()));
 
         for (unsigned int i=0 ; i<dfree[pid].size() ; i++)
             v->set(cid[pid]+i, dfree[pid][i]);
@@ -234,35 +241,41 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::
     unsigned minp=min(m1.getValue().size(),m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {
-        for(int i=0; i<6; i++)
-            resTab[offset++] = new BilateralConstraintResolution();
+        // 	for(int i=0; i<6; i++)
+        // 	resTab[offset++] = new BilateralConstraintResolution();
+
+        resTab[offset] = new BilateralConstraintResolution3Dof();
+        offset += 3;
+        BilateralConstraintResolution3Dof* temp = new BilateralConstraintResolution3Dof();
+        temp->tolerance = 0.0001;	// specific (smaller) tolerance for the rotation
+        resTab[offset] = temp;
+        offset += 3;
     }
-}
 #endif
 
 #endif
 
 
-SOFA_DECL_CLASS(BilateralInteractionConstraint)
+    SOFA_DECL_CLASS(BilateralInteractionConstraint)
 
-int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
+    int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
 #ifndef SOFA_FLOAT
-        .add< BilateralInteractionConstraint<Vec3dTypes> >()
-        .add< BilateralInteractionConstraint<Rigid3dTypes> >()
+            .add< BilateralInteractionConstraint<Vec3dTypes> >()
+            .add< BilateralInteractionConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BilateralInteractionConstraint<Vec3fTypes> >()
-        .add< BilateralInteractionConstraint<Rigid3fTypes> >()
+            .add< BilateralInteractionConstraint<Vec3fTypes> >()
+            .add< BilateralInteractionConstraint<Rigid3fTypes> >()
 #endif
-        ;
+            ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3dTypes>;
+    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3dTypes>;
+    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3fTypes>;
+    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Vec3fTypes>;
+    template class SOFA_COMPONENT_CONSTRAINTSET_API BilateralInteractionConstraint<Rigid3fTypes>;
 #endif
 
 } // namespace constraintset

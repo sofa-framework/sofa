@@ -50,7 +50,6 @@ void BilateralInteractionConstraint<DataTypes>::init()
     prevForces.clear();
 }
 
-
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/, const core::ConstraintParams* /*cParams*/)
