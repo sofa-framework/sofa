@@ -70,6 +70,7 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     if(force[line] < 0)
     {
         force[line]=0; force[line+1]=0; force[line+2]=0;
+        m_state = NONE;
         return;
     }
 
@@ -84,7 +85,10 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     {
         force[line+1] *= _mu*force[line]/normFt;
         force[line+2] *= _mu*force[line]/normFt;
+        m_state = SLIDING;
     }
+    else
+        m_state = STICKY;
 }
 
 void UnilateralConstraintResolutionWithFriction::store(int line, double* force, bool /*convergence*/)
@@ -139,6 +143,23 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     c.contactId = id;
     c.localId = localid;
 
+    Deriv PPfree = Pfree-P;
+    Deriv QQfree = Qfree-Q;
+    Real ref_dist = PPfree.norm()+QQfree.norm();
+
+    if (rabs(delta) < 0.00001*ref_dist && rabs(deltaFree) < 0.00001*ref_dist  )
+    {
+
+        std::cout<<" case0 "<<std::endl;
+
+        dt=0.0;
+        c.dfree = deltaFree;
+        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
+        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
+
+        return;
+
+    }
 
     if (rabs(delta - deltaFree) > 0.001 * delta)
     {
@@ -204,6 +225,10 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatri
             c.id = contactId++;
 
             MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
+            /*
+            c1_it.addCol(c.m1, Deriv(1,0,0) * (-c.norm * Deriv(1,0,0)));
+            c1_it.addCol(c.m2, Deriv(1,0,0) * (c.norm * Deriv(1,0,0)));
+            */
             c1_it.addCol(c.m1, -c.norm);
             c1_it.addCol(c.m2, c.norm);
 
@@ -234,10 +259,18 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(DataMatri
 
             c.id = contactId++;
 
+//			std::cout << c.norm << std::endl;
+
+            const Deriv u(1,0,0);
+
+//			std::cout << c.norm.linearProduct(u) << std::endl;
+
             MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
             c1_it.addCol(c.m1, -c.norm);
+            //	c1_it.addCol(c.m1, -c.norm.linearProduct(u));
 
             MatrixDerivRowIterator c2_it = c2.writeLine(c.id);
+            //	c2_it.addCol(c.m2, c.norm.linearProduct(u));
             c2_it.addCol(c.m2, c.norm);
 
             if (c.mu > 0.0)

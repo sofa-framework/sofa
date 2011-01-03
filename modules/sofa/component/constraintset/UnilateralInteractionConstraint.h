@@ -89,16 +89,32 @@ protected:
 class UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
-    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL) : _mu(mu), _prev(prev), _active(active) { nbLines=3; }
+    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL)
+        : _mu(mu)
+        , _prev(prev)
+        , _active(active)
+        , m_state(NONE)
+    {
+        nbLines=3;
+    }
+
     virtual void init(int line, double** w, double* force);
     virtual void resolution(int line, double** w, double* d, double* force);
     virtual void store(int line, double* force, bool /*convergence*/);
+
+    enum ContactState { NONE=0, SLIDING, STICKY };
+
+    ContactState getContactState()
+    {
+        return m_state;
+    }
 
 protected:
     double _mu;
     double _W[6];
     PreviousForcesContainer* _prev;
     bool* _active; // Will set this after the resolution
+    ContactState m_state;
 };
 
 #endif // SOFA_DEV
