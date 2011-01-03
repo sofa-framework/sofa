@@ -296,19 +296,18 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
         this->parent = NULL;
         this->m_constraint = NULL;
 
-        if(constraintModel1!=NULL)
+        if (constraintModel1)
         {
             constraintModel1->resize(0);
-            constraintModel1=NULL;
+            constraintModel1 = NULL;
             map1->beginAddContactPoint();
             map1 = NULL;
-
         }
 
-        if(constraintModel2!=NULL)
+        if (constraintModel2)
         {
             constraintModel2->resize(0);
-            constraintModel2=NULL;
+            constraintModel2 = NULL;
             map2->beginAddContactPoint();
             map2 = NULL;
         }
@@ -327,9 +326,9 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
 template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
-    if(!use_mapper_for_state1)
+    if (!use_mapper_for_state1)
     {
-        if(map1 != NULL)
+        if (map1)
         {
             std::cout<<"  TODO : replace beginAddContactPoint by follow Contacts "<<std::endl;
             map1->beginAddContactPoint();
@@ -337,9 +336,10 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionO
         else
             serr<<"map1 is not defined in setDetectionOutputs"<<sendl;
     }
-    if(!use_mapper_for_state2)
+
+    if (!use_mapper_for_state2)
     {
-        if(map2 != NULL)
+        if (map2)
         {
             std::cout<<"  TODO : replace beginAddContactPoint by follow Contacts "<<std::endl;
             map2->beginAddContactPoint();
@@ -352,58 +352,49 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionO
 }
 
 
-template < class TCollisionModel1, class TCollisionModel2 >
-bool ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::findMappingOrUseMapper(bool case1)
+template< class TCollisionModel1, class TCollisionModel2 >
+template< class T >
+bool ContinuousFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingOrUseMapper(
+    core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *constraintModel, core::BaseMapping *map)
 {
-    sofa::core::BaseMapping* map = NULL;
-    core::objectmodel::BaseContext *child, *parent = NULL;
+    using sofa::core::objectmodel::BaseContext;
+    using sofa::simulation::Node;
 
-    if (case1)
+    if (constraintModel && map)
     {
-        child = mstate1->getContext();
-        if (constraintModel1!=NULL && map1!=NULL)
-        {
-            //std::cout<<"constraintModel1 already created / found"<<std::endl;
-            return true;
-        }
-    }
-    else
-    {
-        child = mstate2->getContext();
-        if (constraintModel2!=NULL && map2!=NULL)
-        {
-            //std::cout<<"constraintModel2 already created / found"<<std::endl;
-            return true;
-        }
+        return true;
     }
 
-    child->get(map);
+    BaseContext *child = mState->getContext();
 
-    sofa::simulation::Node* childNode = NULL;
-    sofa::simulation::Node* parentNode = NULL;
+    sofa::core::BaseMapping* baseMap = NULL;
+    child->get(baseMap);
 
-    if (map)
+    Node* childNode = NULL;
+    Node* parentNode = NULL;
+
+    if (baseMap)
     {
-        helper::vector<core::BaseState*> fromObjects = map->getFrom();
+        helper::vector< core::BaseState* > fromObjects = baseMap->getFrom();
 
-        if (fromObjects.size( ) == 0)
+        if (fromObjects.empty())
         {
-            serr<<" problem with fromObjects size="<<fromObjects.size( )<<sendl;
+            serr << "ContinuousFrictionContact::Problem with fromObjects size = " << fromObjects.size() << sendl;
             return false;
         }
 
         parent = fromObjects[0]->getContext();
-        parentNode = dynamic_cast<simulation::Node*>(parent);
+        parentNode = dynamic_cast< Node* >(parent);
     }
     else
     {
-        // specific case: the collision model is not mapped => it is directly put on the degrees of freedom
-        parentNode = dynamic_cast<simulation::Node*>(child);
+        // Specific case: the collision model is not mapped => it is directly put on the degrees of freedom
+        parentNode = dynamic_cast< Node* >(child);
     }
 
     if (parentNode == NULL)
     {
-        serr<<" the cast is not working for parentNode"<<sendl;
+        serr << "ContinuousFrictionContact::Error 1 in findMappingOrUseMapper" << sendl;
         return false;
     }
 
@@ -411,44 +402,26 @@ bool ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::findMappingOr
 
     if (childNode != NULL)
     {
-        std::cout<<" THE CHILD ALREADY EXISTS !! => only resize MObject"<<std::endl;
+        std::cout << " THE CHILD ALREADY EXISTS !! => only resize MObject" << std::endl;
 
-        if (case1)
-        {
-            constraintModel1 = dynamic_cast<component::container::MechanicalObject<DataTypes1 >* > (childNode->getMechanicalState());
-            childNode->get(map1);
-            if(constraintModel1 != NULL && map1 != NULL)
-            {
-                //std::cout<<"MObject1 is named "<<constraintModel1->getName()<<" and mapping is named "<<map1->getName()<<std::endl;
-                return true;
-            }
-            else
-            {
-                serr<<"WARNING dynamic Cast failed => use mapper and not continuousFrictionResponse"<<sendl;
-                return false;
-            }
-        }
-        else
-        {
-            constraintModel2 = dynamic_cast<component::container::MechanicalObject<DataTypes2 >* > (childNode->getMechanicalState());
-            childNode->get(map2);
-            if(constraintModel2 != NULL && map2 != NULL)
-            {
-                //std::cout<<"MObject2 is named "<<constraintModel2->getName()<<" and mapping is named "<<map2->getName()<<std::endl;
-                return true;
-            }
-            else
-            {
-                serr<<"WARNING dynamic Cast failed => use mapper and not continuousFrictionResponse"<<sendl;
-                return false;
-            }
-        }
+        constraintModel = dynamic_cast< container::MechanicalObject<T >* > (childNode->getMechanicalState());
+        childNode->get(map1);
+        return (constraintModel != NULL && map != NULL);
     }
     else
-    {
-        //std::cout<<" no child Node named : ContinuousFrictionResponse found"<<std::endl;
         return false;
-    }
+}
+
+
+template< class TCollisionModel1, class TCollisionModel2 >
+std::pair<bool, bool> ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::findMappingOrUseMapper()
+{
+    std::pair<bool, bool> retValue;
+
+    retValue.first = findMappingOrUseMapper(mstate1, constraintModel1, map1);
+    retValue.second = findMappingOrUseMapper(mstate2, constraintModel2, map2);
+
+    return retValue;
 
     /*
     // CODE POUR CREER UN NOUVEAU NOEUD !!!
@@ -478,84 +451,51 @@ bool ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::findMappingOr
 template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::activateConstraint()
 {
-    /*
-      if(use_mapper_for_state1)
-      {
-          std::cerr<<"activateMappers call for state1"<<std::endl;
-      }
-      else
-          std::cerr<<"*********\nthis->constraintModel1 ="<<this->constraintModel1->getName()<<std::endl;
-      if(use_mapper_for_state2)
-      {
-          std::cerr<<"activateMappers call for state2"<<std::endl;
-      }
-      else
-          std::cerr<<"*********\nthis->constraintModel2 ="<<this->constraintModel2->getName()<<std::endl;
-    */
-
-
     ////////////////////////////////////// STEP 1 : creation de la contrainte et/ou
     if (!this->m_constraint)
     {
         // TODO : verify that the constraint do not already exists //
 
         // Get the mechanical model from mapper1 to fill the constraint vector
-        MechanicalState1* mmodel1;
-        MechanicalState2* mmodel2;
+        MechanicalState1 *mmodel1 = use_mapper_for_state1 ? this->mapper1.createMapping() : (MechanicalState1*)this->constraintModel1;
 
-        if (use_mapper_for_state1)
-        {
-            mmodel1 = this->mapper1.createMapping();
-        }
-        else
-        {
-            mmodel1 = (MechanicalState1*) this->constraintModel1;
-        }
+        MechanicalState2 *mmodel2;
 
-        if(use_mapper_for_state2)
+        if (use_mapper_for_state2)
         {
             mmodel2 = this->selfCollision ? mmodel1 : this->mapper2.createMapping();
         }
         else
         {
-            if(this->selfCollision && use_mapper_for_state1!=use_mapper_for_state2)
+            if (this->selfCollision && use_mapper_for_state1 != use_mapper_for_state2)
             {
                 this->f_printLog.setValue(true);
-                serr<<" problem : selfColision but not same targetting state => constraint not created"<<sendl;
+                serr << "Problem : selfColision but not same targetting state => constraint not created" << sendl;
                 return;
             }
-            if(this->selfCollision)
-            {
-                std::cout<<"selfCollision"<<std::endl;
-                mmodel2 = mmodel1;
-            }
-            else
-            {
-                std::cout<<" get Mechanical Model mmodel2 from constraintModel"<<std::endl;
-                mmodel2 = (MechanicalState2*) this->constraintModel2;
-            }
+
+            mmodel2 = this->selfCollision ? mmodel1 : (MechanicalState2*)this->constraintModel2;
         }
 
         this->m_constraint = new constraintset::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
-        std::cerr<<"constraint created"<<std::endl;
+        std::cerr << "Constraint created" << std::endl;
         this->m_constraint->setName( this->getName() );
     }
 
     int size = this->contacts.size();
     this->m_constraint->clear(size);
 
-    if(use_mapper_for_state1)
+    if (use_mapper_for_state1)
     {
-        if(this->selfCollision)
+        if (this->selfCollision)
             this->mapper1.resize(2*size);
         else
             this->mapper1.resize(size);
     }
 
-    if(use_mapper_for_state2 && !this->selfCollision)
+    if (use_mapper_for_state2 && !this->selfCollision)
         this->mapper2.resize(size);
 
-//    std::cerr<<"step2"<<std::endl;
     ////////////////////////////////////// STEP 2  : creation des "mappedContacts" + corrections associées par rapport à la ddc
 
     int i = 0;
@@ -576,7 +516,7 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         typename DataTypes2::Real r2 = 0.0;
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
-        if(use_mapper_for_state1)
+        if (use_mapper_for_state1)
         {
             // Create mapping for first point
             index1 = this->mapper1.addPoint(o->point[0], index1, r1);
@@ -589,7 +529,8 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             index1 = this->mapTheContinuousContact(o->baryCoords[0], index1, posColpoint, true);
             distance -= this->model1->getProximity() ;
         }
-        if(use_mapper_for_state2)
+
+        if (use_mapper_for_state2)
         {
             // Create mapping for second point
             index2 = this->selfCollision ? this->mapper1.addPoint(o->point[1], index2, r2) : this->mapper2.addPoint(o->point[1], index2, r2);
@@ -634,22 +575,20 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         map2->apply(sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     }
 
-    //std::cout<<" ===================== "<<std::endl;
-//    i = 0;
-//    for (std::vector<DetectionOutput*>::const_iterator it = this->contacts.begin(); it!=this->contacts.end(); it++, i++)
-//    {
-//        DetectionOutput* o = *it;
+//	std::cout<<" ===================== "<<std::endl;
+//	i = 0;
+//	for (std::vector<DetectionOutput*>::const_iterator it = this->contacts.begin(); it!=this->contacts.end(); it++, i++)
+//	{
+//		DetectionOutput* o = *it;
 //
-//        if(!use_mapper_for_state2 && this->constraintModel2!=NULL)
-//        {
-//            Vector3 thickness = o->normal * this->model2->getProximity();
-//            int i2 = this->mappedContacts[i].first.second;
-//            //std::cout<<" i2 = "<<i2<<std::endl;
-//            //std::cout<<" contact["<<i<<"] : xfree before :"<<o->freePoint[1]-thickness<<" after: "<<(*this->constraintModel2->getXfree())[i2]<<"  x before : "<<o->point[1]-thickness<<"  after : "<<(*this->constraintModel2->getX())[i2]<<std::endl;
-//        }
-//
-//    }
-
+//		if(!use_mapper_for_state2 && this->constraintModel2!=NULL)
+//		{
+//			Vector3 thickness = o->normal * this->model2->getProximity();
+//			int i2 = this->mappedContacts[i].first.second;
+//			//std::cout<<" i2 = "<<i2<<std::endl;
+//			//std::cout<<" contact["<<i<<"] : xfree before :"<<o->freePoint[1]-thickness<<" after: "<<(*this->constraintModel2->getXfree())[i2]<<"  x before : "<<o->point[1]-thickness<<"  after : "<<(*this->constraintModel2->getX())[i2]<<std::endl;
+//		}
+//	}
 
     // std::cerr<<" end activateMappers call"<<std::endl;
 }
@@ -658,10 +597,8 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
 template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
-    use_mapper_for_state1 = !findMappingOrUseMapper(true);
-    use_mapper_for_state2 = !findMappingOrUseMapper(false);
-
-    //std::cout<<" use_mapper_for_state1 :"<<use_mapper_for_state1<<" - use_mapper_for_state2"<<use_mapper_for_state2<<std::endl;
+    use_mapper_for_state1 = !findMappingOrUseMapper(mstate1, constraintModel1, map1);
+    use_mapper_for_state2 = !findMappingOrUseMapper(mstate2, constraintModel2, map2);
 
     activateConstraint();
 
@@ -669,14 +606,13 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 
     double mu_ = this->mu.getValue();
 
-    // mu_=0.8;
-
     if (this->m_constraint)
     {
-        int i=0;
-        for (std::vector<DetectionOutput*>::const_iterator it = this->contacts.begin(); it!=this->contacts.end(); it++, i++)
+        int i = 0;
+
+        for (std::vector<DetectionOutput*>::const_iterator it = this->contacts.begin(); it != this->contacts.end(); it++, i++)
         {
-            DetectionOutput* o = *it;
+            DetectionOutput *o = *it;
             int index1 = this->mappedContacts[i].first.first;
             int index2 = this->mappedContacts[i].first.second;
             double distance = this->mappedContacts[i].second;
@@ -702,10 +638,11 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
                     this->parent->removeObject(this->m_constraint);
             }
         }
+
         this->parent = group;
+
         if (this->parent!=NULL)
         {
-
             this->parent->addObject(this);
 
             if (!this->use_mapper_for_state1 && map1 != NULL )
