@@ -181,7 +181,9 @@ public:
         : Inherit(object1, object2)
         , epsilon(Real(0.001))
         , yetIntegrated(false)
+#ifdef SOFA_DEV
         , contactsStatus(NULL)
+#endif
     {
     }
 
@@ -189,21 +191,27 @@ public:
         : Inherit(object, object)
         , epsilon(Real(0.001))
         , yetIntegrated(false)
+#ifdef SOFA_DEV
         , contactsStatus(NULL)
+#endif
     {
     }
 
     UnilateralInteractionConstraint()
         : epsilon(Real(0.001))
         , yetIntegrated(false)
+#ifdef SOFA_DEV
         , contactsStatus(NULL)
+#endif
     {
     }
 
     virtual ~UnilateralInteractionConstraint()
     {
+#ifdef SOFA_DEV
         if(contactsStatus)
             delete[] contactsStatus;
+#endif
     }
 
     void clear(int reserve = 0)
