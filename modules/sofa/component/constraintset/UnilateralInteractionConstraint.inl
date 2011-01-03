@@ -372,7 +372,9 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
     {
         glLineWidth(1);
         const Contact& c = contacts[i];
+#ifdef SOFA_DEV
         if(contactsStatus && contactsStatus[i]) glColor4f(1,0,0,1); else if(c.dfree < 0) glColor4f(1,0,1,1); else
+#endif
             glColor4f(1,0.5,0,1);
         helper::gl::glVertexT(c.P);
         helper::gl::glVertexT(c.Q);
