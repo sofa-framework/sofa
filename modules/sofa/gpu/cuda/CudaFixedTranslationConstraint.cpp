@@ -45,6 +45,66 @@ template<>
 void FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw();
 #endif // SOFA_GPU_CUDA_DOUBLE
 
+
+template <>
+void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw()
+{
+    const SetIndexArray & indices = f_indices.getValue().getArray();
+    if (!this->getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *this->mstate->getX();
+    glDisable(GL_LIGHTING);
+    glPointSize(10);
+    glColor4f(1, 0.5, 0.5, 1);
+    glBegin(GL_POINTS);
+    if (f_fixAll.getValue() == true)
+    {
+        for (unsigned i = 0; i < x.size(); i++)
+        {
+            gl::glVertexT(Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+        }
+    }
+    else
+    {
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+        }
+    }
+    glEnd();
+}
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template <>
+void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw()
+{
+    const SetIndexArray & indices = f_indices.getValue().getArray();
+    if (!this->getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *this->mstate->getX();
+    glDisable(GL_LIGHTING);
+    glPointSize(10);
+    glColor4f(1, 0.5, 0.5, 1);
+    glBegin(GL_POINTS);
+    if (f_fixAll.getValue() == true)
+    {
+        for (unsigned i = 0; i < x.size(); i++)
+        {
+            gl::glVertexT(Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+        }
+    }
+    else
+    {
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+        }
+    }
+    glEnd();
+}
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+
 template class FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>;
 template class FixedTranslationConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -77,65 +137,6 @@ int FixedTranslationConstraintCudaClass = core::RegisterObject("Supports GPU-sid
         .add< component::projectiveconstraintset::FixedTranslationConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
-
-
-template <>
-void component::projectiveconstraintset::FixedTranslationConstraint<CudaVec6fTypes>::draw()
-{
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!this->getContext()->getShowBehaviorModels())
-        return;
-    const VecCoord& x = *this->mstate->getX();
-    glDisable(GL_LIGHTING);
-    glPointSize(10);
-    glColor4f(1, 0.5, 0.5, 1);
-    glBegin(GL_POINTS);
-    if (f_fixAll.getValue() == true)
-    {
-        for (unsigned i = 0; i < x.size(); i++)
-        {
-            gl::glVertexT(Vec<3,float>(x[i][0], x[i][1], x[i][2]));
-        }
-    }
-    else
-    {
-        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        {
-            gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
-        }
-    }
-    glEnd();
-}
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template <>
-void component::projectiveconstraintset::FixedTranslationConstraint<CudaVec6dTypes>::draw()
-{
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-    if (!this->getContext()->getShowBehaviorModels())
-        return;
-    const VecCoord& x = *this->mstate->getX();
-    glDisable(GL_LIGHTING);
-    glPointSize(10);
-    glColor4f(1, 0.5, 0.5, 1);
-    glBegin(GL_POINTS);
-    if (f_fixAll.getValue() == true)
-    {
-        for (unsigned i = 0; i < x.size(); i++)
-        {
-            gl::glVertexT(Vec<3,float>(x[i][0], x[i][1], x[i][2]));
-        }
-    }
-    else
-    {
-        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        {
-            gl::glVertexT(Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
-        }
-    }
-    glEnd();
-}
-#endif // SOFA_GPU_CUDA_DOUBLE
 
 
 } // namespace cuda
