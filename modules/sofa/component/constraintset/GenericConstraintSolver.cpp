@@ -463,7 +463,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 break;
             }
         }
-        else if(error < tol && i>0) // do not stop at the first iteration (that is used for initial guess computation)
+        else if(error < tol/* && i>0*/) // do not stop at the first iteration (that is used for initial guess computation)
         {
             convergence = true;
             break;
@@ -473,7 +473,12 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     if(solver)
     {
         if(!convergence)
-            solver->serr << "No convergence in gaussSeidelConstraint : error = " << error << solver->sendl;
+        {
+            if(solver->f_printLog.getValue())
+                solver->serr << "No convergence : error = " << error << solver->sendl;
+            else
+                solver->sout << "No convergence : error = " << error << solver->sendl;
+        }
         else if(solver->displayTime.getValue())
             solver->sout<<" Convergence after " << i+1 << " iterations " << solver->sendl;
     }

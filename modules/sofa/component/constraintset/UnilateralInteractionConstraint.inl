@@ -47,15 +47,14 @@ void UnilateralConstraintResolutionWithFriction::init(int line, double** w, doub
     _W[4]=w[line+1][line+2];
     _W[5]=w[line+2][line+2];
 
-    return;
-
+//	return;
 
     ////////////////// christian : the following does not work ! /////////
-    if(_vec && _vec->size()>=3)
+    if(_prev)
     {
-        force[line] = _vec->front(); _vec->pop_front();
-        force[line+1] = _vec->front(); _vec->pop_front();
-        force[line+2] = _vec->front(); _vec->pop_front();
+        force[line] = _prev->popForce();
+        force[line+1] = _prev->popForce();
+        force[line+2] = _prev->popForce();
     }
 
 }
@@ -90,66 +89,18 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
 
 void UnilateralConstraintResolutionWithFriction::store(int line, double* force, bool /*convergence*/)
 {
-    if(_vec)
+    if(_prev)
     {
-        _vec->push_back(force[line]);
-        _vec->push_back(force[line+1]);
-        _vec->push_back(force[line+2]);
-    }
-}
-
-void UnilateralConstraintResolutionSticky::resolution(int line, double** /*w*/, double* d, double* force)
-{
-    /*	force[line] =- d[line] / _W[0];
-    	if(d[line]>0)
-    	{
-    		if(_delta>d[line] || force[line]<-0.1)
-    			force[line] = 0.0;
-    	}
-    */
-    double td[3];
-    double normFt;
-
-    // evaluation of the current normal position
-    td[0] = _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2] + d[line];
-    // evaluation of the new contact force
-    force[line] -= td[0]/_W[0];
-
-    bool bSticky = false;
-    // TODO : coefficient de "collage" à calculer ou à définir à l'extérieur
-    if(force[line] < 0)
-    {
-        if(_delta>td[0] || force[line]<-0.2)
-        {
-            force[line]=0; force[line+1]=0; force[line+2]=0;
-            return;
-        }
-        bSticky = true;
-        force[line] = -force[line];
+        _prev->pushForce(force[line]);
+        _prev->pushForce(force[line+1]);
+        _prev->pushForce(force[line+2]);
     }
 
-    // evaluation of the current tangent positions
-    td[1] = _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2] + d[line+1];
-    td[2] = _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2] + d[line+2];
-
-    // evaluation of the new fricton forces
-    force[line+1] -= 2*td[1]/(_W[3]+_W[5]);
-    force[line+2] -= 2*td[2]/(_W[3]+_W[5]);
-
-    normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
-
-    if(normFt > _mu*force[line])
+    if(_active)
     {
-        force[line+1] *= _mu*force[line]/normFt;
-        force[line+2] *= _mu*force[line]/normFt;
+        *_active = (force[line] != 0);
+        _active = NULL; // Won't be used in the haptic thread
     }
-
-    if(bSticky)
-        force[line] = -force[line];
-
-    d[line]   += _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2];
-    d[line+1] += _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2];
-    d[line+2] += _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2];
 }
 
 #endif // SOFA_DEV
@@ -368,19 +319,44 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(VecConstraint
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
+    if(contactsStatus)
+        delete[] contactsStatus;
+    contactsStatus = new bool[contacts.size()];
+    memset(contactsStatus, 0, sizeof(bool)*contacts.size());
+
     for(unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
         if(c.mu > 0.0)
         {
-            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu);
-            //	resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces);
-            //	resTab[offset] = new UnilateralConstraintResolutionSticky(c.mu, c.delta);
+//			bool& temp = contactsStatus.at(i);
+            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
+            // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
+//			resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces, &contactsStatus[i]);
             offset += 3;
         }
         else
             resTab[offset++] = new UnilateralConstraintResolution();
     }
+}
+
+template<class DataTypes>
+bool UnilateralInteractionConstraint<DataTypes>::isActive()
+{
+//	if(!contactsStatus)
+    {
+        for(unsigned int i=0; i<contacts.size(); i++)
+            if(contacts[i].dfree < 0)
+                return true;
+
+        return false;
+    }
+    /*
+    	for(unsigned int i=0; i<contacts.size(); i++)
+    		if(contactsStatus[i])
+    			return true;
+    */
+    return false;
 }
 #endif
 
@@ -395,8 +371,9 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         glLineWidth(1);
-        glColor4f(1,0,0,1);
         const Contact& c = contacts[i];
+        if(contactsStatus && contactsStatus[i]) glColor4f(1,0,0,1); else if(c.dfree < 0) glColor4f(1,0,1,1); else
+            glColor4f(1,0.5,0,1);
         helper::gl::glVertexT(c.P);
         helper::gl::glVertexT(c.Q);
         glColor4f(1,1,0,1);

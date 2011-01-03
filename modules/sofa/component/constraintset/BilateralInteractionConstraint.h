@@ -95,14 +95,11 @@ public:
 
         invertMatrix(invW, temp);
 
-        // std::cout<<"BilateralConstraintResolution3Dof Init"<<std::endl;
-
         if(_vec && _vec->size()>=3)
         {
             force[line  ] = (*_vec)[0];
             force[line+1] = (*_vec)[1];
             force[line+2] = (*_vec)[2];
-            //     std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 
@@ -113,7 +110,6 @@ public:
             force[line  ] =  (*_vec)[0];
             force[line+1] =  (*_vec)[1];
             force[line+2] =  (*_vec)[2];
-            //std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 
@@ -129,7 +125,6 @@ public:
 
     void store(int line, double* force, bool /*convergence*/)
     {
-        //std::cout<<"BilateralConstraintResolution3Dof Store"<<std::endl;
         if(_vec)
         {
             _vec->clear();
@@ -137,7 +132,6 @@ public:
             (*_vec)[0] = force[line];
             (*_vec)[1] = force[line+1];
             (*_vec)[2] = force[line+2];
-            //std::cout<<"store force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 

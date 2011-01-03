@@ -55,10 +55,41 @@ public:
     }
 };
 
+// A little experiment on how to best save the forces for the hot start.
+//  TODO : save as a map (index of the contact <-> force)
+class PreviousForcesContainer
+{
+public:
+    PreviousForcesContainer() : resetFlag(true) {}
+    double popForce()
+    {
+        resetFlag = true;
+        if(forces.empty()) return 0;
+        double f = forces.front();
+        forces.pop_front();
+        return f;
+    }
+
+    void pushForce(double f)
+    {
+        if(resetFlag)
+        {
+            forces.clear();
+            resetFlag = false;
+        }
+
+        forces.push_back(f);
+    }
+
+protected:
+    std::deque<double> forces;
+    bool resetFlag; // We delete all forces that were not read
+};
+
 class UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
-    UnilateralConstraintResolutionWithFriction(double mu, std::deque<double>* vec=NULL) : _mu(mu), _vec(vec) { nbLines=3; }
+    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL) : _mu(mu), _prev(prev), _active(active) { nbLines=3; }
     virtual void init(int line, double** w, double* force);
     virtual void resolution(int line, double** w, double* d, double* force);
     virtual void store(int line, double* force, bool /*convergence*/);
@@ -66,17 +97,8 @@ public:
 protected:
     double _mu;
     double _W[6];
-    std::deque<double>* _vec;
-};
-
-class UnilateralConstraintResolutionSticky : public UnilateralConstraintResolutionWithFriction
-{
-public:
-    UnilateralConstraintResolutionSticky(double mu, double delta) : UnilateralConstraintResolutionWithFriction(mu), _delta(delta)  { nbLines=3; }
-    virtual void resolution(int line, double** w, double* d, double* force);
-
-protected:
-    double _delta;
+    PreviousForcesContainer* _prev;
+    bool* _active; // Will set this after the resolution
 };
 
 #endif // SOFA_DEV
@@ -145,7 +167,11 @@ protected:
     Real epsilon;
     bool yetIntegrated;
 
-    std::deque<double> prevForces;
+#ifdef SOFA_DEV
+    PreviousForcesContainer prevForces;
+    bool* contactsStatus;
+//	sofa::helper::vector<bool> contactsStatus;
+#endif
 
 public:
 
@@ -155,6 +181,7 @@ public:
         : Inherit(object1, object2)
         , epsilon(Real(0.001))
         , yetIntegrated(false)
+        , contactsStatus(NULL)
     {
     }
 
@@ -162,17 +189,21 @@ public:
         : Inherit(object, object)
         , epsilon(Real(0.001))
         , yetIntegrated(false)
+        , contactsStatus(NULL)
     {
     }
 
     UnilateralInteractionConstraint()
         : epsilon(Real(0.001))
         , yetIntegrated(false)
+        , contactsStatus(NULL)
     {
     }
 
     virtual ~UnilateralInteractionConstraint()
     {
+        if(contactsStatus)
+            delete[] contactsStatus;
     }
 
     void clear(int reserve = 0)
@@ -213,6 +244,7 @@ public:
 
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    bool isActive();
 #endif
 
     void draw();
