@@ -383,7 +383,7 @@ bool ContinuousFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
             return false;
         }
 
-        parent = fromObjects[0]->getContext();
+        BaseContext *parent = fromObjects[0]->getContext();
         parentNode = dynamic_cast< Node* >(parent);
     }
     else
