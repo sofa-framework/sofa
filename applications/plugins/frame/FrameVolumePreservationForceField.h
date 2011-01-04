@@ -83,6 +83,9 @@ protected :
     typedef defaulttype::SampleData<DataTypes> SampleData;
     SampleData* sampleData;
     vector< Real > bulkModulus;
+    vector< Real > volume;
+    vector< Frame > ddet;
+    vector< Real > det;
 
 };
 
