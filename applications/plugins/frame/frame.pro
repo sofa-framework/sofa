@@ -38,7 +38,7 @@ HEADERS += \
            FrameFixedConstraint.h \
            FrameFixedConstraint.inl \
            FrameForceField.h \
-	     FrameForceField.inl \
+           FrameForceField.inl \
            FrameVolumePreservationForceField.h \
            FrameVolumePreservationForceField.inl \
            FrameMass.h \
@@ -47,6 +47,8 @@ HEADERS += \
            FrameRigidConstraint.inl \
            GridMaterial.h \
            GridMaterial.inl \
+           Interpolater.h \
+           Interpolater.inl \
            initFrame.h \
            MappingTypes.h \
            NewMaterial.h \
@@ -66,5 +68,6 @@ SOURCES += \
            FrameMechanicalObject.cpp \
            FrameRigidConstraint.cpp \
            GridMaterial.cpp \
+           Interpolater.cpp \
            NewHookeMaterial.cpp \
            initFrame.cpp
