@@ -60,10 +60,20 @@ public:
 
     /// The resolution object can do precomputation with the compliance matrix, and give an initial guess.
     virtual void init(int /*line*/, double** /*w*/, double* /*force*/) {}
+
     /// The resolution object can provide an initial guess
     virtual void initForce(int /*line*/, double* /*force*/) {}
+
     /// Resolution of the constraint for one Gauss-Seidel iteration
-    virtual void resolution(int line, double** w, double* d, double* force) = 0;
+    virtual void resolution(int line, double** w, double* d, double* force, double * /*dFree*/)
+    {
+        resolution(line, w, d, force);
+    };
+
+    /// Resolution of the constraint for one Gauss-Seidel iteration
+    /// @deprecated
+    virtual void resolution(int /*line*/, double** /*w*/, double* /*d*/, double* /*force*/) {};
+
     /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
     virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/) {}
 

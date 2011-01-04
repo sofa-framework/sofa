@@ -93,20 +93,20 @@ public:
         : _mu(mu)
         , _prev(prev)
         , _active(active)
-        , m_state(NONE)
+        , m_contactState(NONE)
     {
         nbLines=3;
     }
 
     virtual void init(int line, double** w, double* force);
-    virtual void resolution(int line, double** w, double* d, double* force);
+    virtual void resolution(int line, double** w, double* d, double* force, double *dFree);
     virtual void store(int line, double* force, bool /*convergence*/);
 
     enum ContactState { NONE=0, SLIDING, STICKY };
 
     ContactState getContactState()
     {
-        return m_state;
+        return m_contactState;
     }
 
 protected:
@@ -114,7 +114,7 @@ protected:
     double _W[6];
     PreviousForcesContainer* _prev;
     bool* _active; // Will set this after the resolution
-    ContactState m_state;
+    ContactState m_contactState;
 };
 
 #endif // SOFA_DEV
@@ -274,6 +274,36 @@ public:
     void draw();
 };
 
+template<class DataTypes>
+class ContinuousUnilateralInteractionConstraint : public UnilateralInteractionConstraint<DataTypes>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(ContinuousUnilateralInteractionConstraint, DataTypes), SOFA_TEMPLATE(UnilateralInteractionConstraint, DataTypes));
+
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+
+    ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
+        : UnilateralInteractionConstraint(object1, object2)
+    {
+    }
+
+    ContinuousUnilateralInteractionConstraint(MechanicalState* object)
+        : UnilateralInteractionConstraint(object)
+    {
+    }
+
+    ContinuousUnilateralInteractionConstraint()
+        : UnilateralInteractionConstraint()
+    {
+    }
+
+    virtual ~ContinuousUnilateralInteractionConstraint()
+    {
+    }
+
+    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
+};
+
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
 #pragma warning(disable : 4231)
@@ -292,6 +322,12 @@ extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionCons
 //extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec6fTypes>;
 //extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid3fTypes>;
 //extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid2fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API ContinuousUnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_CONSTRAINTSET_API ContinuousUnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
 #endif
 #endif
 
