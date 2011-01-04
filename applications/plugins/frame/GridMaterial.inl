@@ -472,8 +472,6 @@ bool GridMaterial< MaterialTypes>::loadImage()
         // Extrud Z dimension of the image to the wanted size.
         if (dimension.getValue()[2] > 1)
             grid.resize(grid.width(), grid.height(), dimension.getValue()[2], grid.spectrum(), 0, 1); // no interpolation, extrude values
-
-        serr << "image has been resized" << sendl;
     }
 
     // offset by one voxel to prevent from interpolation outside the grid
@@ -1900,6 +1898,36 @@ void GridMaterial< MaterialTypes>::drawCube(const double& x, const double& y, co
 
 
 template < class MaterialTypes>
+GLuint GridMaterial< MaterialTypes>::createVBO(const void* data, int dataSize, GLenum target, GLenum usage)
+{
+    GLuint id = 0;  // 0 is reserved, glGenBuffersARB() will return non-zero id if success
+
+    glGenBuffersARB(1, &id);                        // create a vbo
+    glBindBufferARB(target, id);                    // activate vbo id to use
+    glBufferDataARB(target, dataSize, data, usage); // upload data to video card
+
+    // check data size in VBO is same as input array, if not return 0 and delete VBO
+    int bufferSize = 0;
+    glGetBufferParameterivARB(target, GL_BUFFER_SIZE_ARB, &bufferSize);
+    if(dataSize != bufferSize)
+    {
+        glDeleteBuffersARB(1, &id);
+        id = 0;
+        std::cout << "[createVBO()] Data size is mismatch with input array\n";
+    }
+
+    return id;      // return VBO id
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::deleteVBO(const GLuint vboId)
+{
+    glDeleteBuffersARB(1, &vboId);
+}
+
+
+template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::initVBO()
 {
     vboSupported = false; // TODO Check it later
@@ -1958,36 +1986,6 @@ void GridMaterial< MaterialTypes>::initVBO()
         glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
         std::cout << "Index Array in VBO: " << bufferSize << " bytes\n";
     }
-}
-
-
-template < class MaterialTypes>
-GLuint GridMaterial< MaterialTypes>::createVBO(const void* data, int dataSize, GLenum target, GLenum usage)
-{
-    GLuint id = 0;  // 0 is reserved, glGenBuffersARB() will return non-zero id if success
-
-    glGenBuffersARB(1, &id);                        // create a vbo
-    glBindBufferARB(target, id);                    // activate vbo id to use
-    glBufferDataARB(target, dataSize, data, usage); // upload data to video card
-
-    // check data size in VBO is same as input array, if not return 0 and delete VBO
-    int bufferSize = 0;
-    glGetBufferParameterivARB(target, GL_BUFFER_SIZE_ARB, &bufferSize);
-    if(dataSize != bufferSize)
-    {
-        glDeleteBuffersARB(1, &id);
-        id = 0;
-        std::cout << "[createVBO()] Data size is mismatch with input array\n";
-    }
-
-    return id;      // return VBO id
-}
-
-
-template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::deleteVBO(const GLuint vboId)
-{
-    glDeleteBuffersARB(1, &vboId);
 }
 
 

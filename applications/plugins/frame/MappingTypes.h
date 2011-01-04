@@ -99,15 +99,8 @@ public:
     typedef sofa::component::topology::PointData<FrameMassType> VecMass;
     typedef helper::vector<FrameMassType> MassVector;
 
-    VecMass f_mass0;
-    VecMass f_mass;
-
-    FrameData()
-        : f_mass0 ( initData ( &f_mass0,"f_mass0","vector of lumped blocks of the mass matrix in the rest position." ) )
-        , f_mass ( initData ( &f_mass,"f_mass","vector of lumped blocks of the mass matrix." ) )
-    {
-    }
-    virtual void LumpMassesToFrames () = 0;
+    FrameData() {}
+    virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass) = 0;
 };
 
 

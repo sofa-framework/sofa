@@ -45,7 +45,9 @@ namespace mass
 
 template <class DataTypes, class MassType>
 FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
-    : showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    : f_mass0 ( initData ( &f_mass0,"f_mass0","vector of lumped blocks of the mass matrix in the rest position." ) )
+    , f_mass ( initData ( &f_mass,"f_mass","vector of lumped blocks of the mass matrix." ) )
+    , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , damping ( initData ( &damping, 0.0f, "damping", "add a force which is \"- damping * speed\"" ) )
 {
@@ -61,41 +63,41 @@ FrameDiagonalMass<DataTypes, MassType>::~FrameDiagonalMass()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::clear()
 {
-    MassVector& masses0 = *frameData->f_mass0.beginEdit();
+    MassVector& masses0 = *f_mass0.beginEdit();
     masses0.clear();
-    frameData->f_mass0.endEdit();
-    MassVector& masses = *frameData->f_mass.beginEdit();
+    f_mass0.endEdit();
+    MassVector& masses = *f_mass.beginEdit();
     masses.clear();
-    frameData->f_mass.endEdit();
+    f_mass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMass ( const MassType& m )
 {
-    MassVector& masses0 = *frameData->f_mass0.beginEdit();
+    MassVector& masses0 = *f_mass0.beginEdit();
     masses0.push_back (m);
-    frameData->f_mass0.endEdit();
-    MassVector& masses = *frameData->f_mass.beginEdit();
+    f_mass0.endEdit();
+    MassVector& masses = *f_mass.beginEdit();
     masses.push_back (m);
-    frameData->f_mass.endEdit();
+    f_mass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::resize ( int vsize )
 {
-    MassVector& masses0 = *frameData->f_mass0.beginEdit();
+    MassVector& masses0 = *f_mass0.beginEdit();
     masses0.resize (vsize);
-    frameData->f_mass0.endEdit();
-    MassVector& masses = *frameData->f_mass.beginEdit();
+    f_mass0.endEdit();
+    MassVector& masses = *f_mass.beginEdit();
     masses.resize (vsize);
-    frameData->f_mass.endEdit();
+    f_mass.endEdit();
 }
 
 // -- Mass interface
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDeriv& dx, double factor )
 {
-    const MassVector& masses = frameData->f_mass.getValue();
+    const MassVector& masses = f_mass.getValue();
     if ( factor == 1.0 )
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
@@ -118,7 +120,7 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::accFromF ( VecDeriv& a, const VecDeriv& f )
 {
 
-    const MassVector& masses = frameData->f_mass.getValue();
+    const MassVector& masses = f_mass.getValue();
     for ( unsigned int i=0; i<f.size(); i++ )
     {
         a[i] = f[i] / masses[i];
@@ -129,7 +131,7 @@ template <class DataTypes, class MassType>
 double FrameDiagonalMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& v ) const
 {
 
-    const MassVector& masses = frameData->f_mass.getValue();
+    const MassVector& masses = f_mass.getValue();
     double e = 0;
     for ( unsigned int i=0; i<masses.size(); i++ )
     {
@@ -142,7 +144,7 @@ template <class DataTypes, class MassType>
 double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& x ) const
 {
     double e = 0;
-    const MassVector& masses = frameData->f_mass.getValue();
+    const MassVector& masses = f_mass.getValue();
     // gravity
     Vec3 g ( this->getContext()->getLocalGravity() );
     VecIn theGravity;
@@ -160,7 +162,7 @@ double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoo
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMToMatrix ( defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset )
 {
-    const MassVector& masses = frameData->f_mass.getValue();
+    const MassVector& masses = f_mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     for ( unsigned int i=0; i<masses.size(); i++ )
@@ -171,7 +173,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addMToMatrix ( defaulttype::BaseMat
 template <class DataTypes, class MassType>
 double FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int /*index*/ ) const
 {
-//  return ( SReal ) ( frameData->f_mass.getValue() [index] );
+//  return ( SReal ) ( f_mass.getValue() [index] );
     cerr<<"WARNING : double FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index ) const IS NOT IMPLEMENTED" << endl;
     return 0;
 }
@@ -184,7 +186,7 @@ void FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index
     if ( m->rowSize() != dimension || m->colSize() != dimension ) m->resize ( dimension,dimension );
 
     m->clear();
-    const MassVector& masses = frameData->f_mass.getValue();
+    const MassVector& masses = f_mass.getValue();
     AddMToMatrixFunctor<Deriv,MassType>() ( m, masses[index], 0, 1 );
 }
 
@@ -202,8 +204,11 @@ void FrameDiagonalMass<DataTypes, MassType>::reinit()
 {
     const unsigned int& fromSize = this->mstate->getX()->size();
     this->resize ( fromSize );
-    frameData->LumpMassesToFrames();
-
+    MassVector& mass0 = *f_mass0.beginEdit();
+    MassVector& mass  = *f_mass .beginEdit();
+    frameData->LumpMassesToFrames(mass0, mass);
+    f_mass0.endEdit();
+    f_mass .endEdit();
     Inherited::reinit();
 }
 
@@ -234,7 +239,11 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 
     const unsigned int& fromSize = this->mstate->getX()->size();
     this->resize ( fromSize );
-    frameData->LumpMassesToFrames();
+    MassVector& mass0 = *f_mass0.beginEdit();
+    MassVector& mass  = *f_mass .beginEdit();
+    frameData->LumpMassesToFrames(mass0, mass);
+    f_mass0.endEdit();
+    f_mass .endEdit();
 }
 
 template <class DataTypes, class MassType>
@@ -262,13 +271,17 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
 {
     const unsigned int& fromSize = this->mstate->getX()->size();
     const VecCoord& xfrom = *this->mstate->getX();
-    const MassVector& vecMass0 = frameData->f_mass0.getValue();
-    const MassVector& vecMass = frameData->f_mass.getValue();
+    const MassVector& vecMass0 = f_mass0.getValue();
+    const MassVector& vecMass = f_mass.getValue();
     if ( vecMass0.size() != xfrom.size())
     {
         // ReCompute the blocks
         this->resize ( fromSize );
-        frameData->LumpMassesToFrames();
+        MassVector& mass0 = *f_mass0.beginEdit();
+        MassVector& mass  = *f_mass .beginEdit();
+        frameData->LumpMassesToFrames(mass0, mass);
+        f_mass0.endEdit();
+        f_mass .endEdit();
     }
 
     updateMass();
@@ -310,7 +323,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::draw()
 {
-    const MassVector& masses = frameData->f_mass.getValue();
+    const MassVector& masses = f_mass.getValue();
     if ( !this->getContext()->getShowBehaviorModels() ) return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
     if ( x.size() != masses.size()) return;
@@ -355,8 +368,8 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass()
 {
     const VecCoord& xfrom0 = *this->mstate->getX0();
     const VecCoord& xfrom = *this->mstate->getX();
-    const MassVector& vecMass0 = frameData->f_mass0.getValue();
-    MassVector& vecMass = *frameData->f_mass.beginEdit();
+    const MassVector& vecMass0 = f_mass0.getValue();
+    MassVector& vecMass = *f_mass.beginEdit();
 
     // Rotate the mass
     for ( unsigned int i = 0; i < xfrom.size(); ++i)
@@ -366,7 +379,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass()
         rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, relRot);
         vecMass[i].recalc();
     }
-    frameData->f_mass.endEdit();
+    f_mass.endEdit();
 }
 
 
