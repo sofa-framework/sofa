@@ -180,8 +180,9 @@ public:
     {};
     //--
 
-    virtual void clear( int reserve=0 ) =0;
+    int addContactPointFromInputMapping(const typename In::VecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/) {return 0;};
 
+    virtual void clear( int reserve=0 ) =0;
 
     //Nothing to do
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out > & ) {return in;}
@@ -881,6 +882,8 @@ public:
     virtual void handlePointEvents(std::list< const core::topology::TopologyChange *>::const_iterator,
             std::list< const core::topology::TopologyChange *>::const_iterator);
 
+    int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTetrahedronSetTopology<In, Out> &b )
     {
         unsigned int size_vec;
@@ -1109,6 +1112,11 @@ public:
 
     // handle topology changes depending on the topology
     virtual void handleTopologyChange(core::topology::Topology* t);
+
+    // interface for continuous friction contact
+    void beginAddContactPoint();
+    int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
+
 
     TopologyBarycentricMapper<InDataTypes,OutDataTypes> *getMapper()
     {

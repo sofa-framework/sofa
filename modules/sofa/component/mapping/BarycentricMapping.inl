@@ -778,6 +778,54 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::init ( const typename Out:
     }
 }
 
+
+template <class In, class Out>
+int BarycentricMapperTetrahedronSetTopology<In,Out>::addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& pos
+        , std::vector< std::pair<int, double> > & /*baryCoords*/)
+{
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+
+    sofa::helper::vector<Matrix3> bases;
+    sofa::helper::vector<Vector3> centers;
+
+    bases.resize ( tetrahedra.size() );
+    centers.resize ( tetrahedra.size() );
+    for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+    {
+        Mat3x3d m,mt;
+        m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
+        m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
+        m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
+        mt.transpose ( m );
+        bases[t].invert ( mt );
+        centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
+    }
+
+    Vector3 coefs;
+    int index = -1;
+    double distance = 1e10;
+    for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+    {
+        Vec3d v = bases[t] * ( pos - in[tetrahedra[t][0]] );
+        double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
+
+        if (d > 0)
+            d = (pos - centers[t]).norm2();
+
+        if (d < distance)
+        {
+            coefs = v;
+            distance = d;
+            index = t;
+        }
+    }
+
+    addPointInTetra (index, coefs.ptr() );
+
+    return map.getValue().size() - 1;
+}
+
+
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::clear ( int reserve )
 {
@@ -4086,6 +4134,29 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 
         dynamicMapper->handlePointEvents ( itBegin, itEnd );
     }
+}
+
+template <class TIn, class TOut>
+void BarycentricMapping<TIn, TOut>::beginAddContactPoint()
+{
+    if (this->mapper)
+    {
+        this->mapper->clear(0);
+    }
+
+    this->toModel->resize(0);
+}
+
+template <class TIn, class TOut>
+int BarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > &baryCoords)
+{
+    if (this->mapper)
+    {
+        const typename In::VecCoord& xfrom = *this->fromModel->getX();
+        return mapper->addContactPointFromInputMapping(xfrom, pos, baryCoords);
+    }
+
+    return 0;
 }
 
 } // namespace mapping
