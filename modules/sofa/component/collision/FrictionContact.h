@@ -174,7 +174,7 @@ protected:
     std::pair<bool,bool> findMappingOrUseMapper();
 
     template< class T >
-    bool findMappingOrUseMapper(core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *constraintModel, core::BaseMapping *map);
+    bool findMappingOrUseMapper(core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *&constraintModel, core::BaseMapping *&map);
 
     void activateConstraint();
 
