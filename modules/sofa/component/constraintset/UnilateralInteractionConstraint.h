@@ -288,22 +288,22 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef Inherited::PersistentID PersistentID;
+    typedef typename Inherited::PersistentID PersistentID;
 
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
-        : UnilateralInteractionConstraint(object1, object2)
+        : Inherited(object1, object2)
     {
     }
 
     ContinuousUnilateralInteractionConstraint(MechanicalState* object)
-        : UnilateralInteractionConstraint(object)
+        : Inherited(object)
     {
     }
 
     ContinuousUnilateralInteractionConstraint()
-        : UnilateralInteractionConstraint()
+        : Inherited()
     {
     }
 
