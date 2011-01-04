@@ -357,7 +357,7 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionO
 template< class TCollisionModel1, class TCollisionModel2 >
 template< class T >
 bool ContinuousFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingOrUseMapper(
-    core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *constraintModel, core::BaseMapping *map)
+    core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *&constraintModel, core::BaseMapping *&map)
 {
     using sofa::core::objectmodel::BaseContext;
     using sofa::simulation::Node;
@@ -407,8 +407,8 @@ bool ContinuousFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
         std::cout << " THE CHILD ALREADY EXISTS !! => only resize MObject" << std::endl;
 
         constraintModel = dynamic_cast< container::MechanicalObject<T >* > (childNode->getMechanicalState());
-        childNode->get(map1);
-        return (constraintModel != NULL && map != NULL);
+        childNode->get(map);
+        return (constraintModel && map);
     }
     else
         return false;
