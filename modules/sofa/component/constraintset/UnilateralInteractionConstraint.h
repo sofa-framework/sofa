@@ -290,8 +290,6 @@ public:
 
     typedef typename Inherited::PersistentID PersistentID;
 
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-
     ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherited(object1, object2)
     {

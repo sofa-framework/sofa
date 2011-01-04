@@ -441,7 +441,7 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
     Real dt;
     int i = this->contacts.size();
     this->contacts.resize(i+1);
-    Inherited::Contact& c = this->contacts[i];
+    typename Inherited::Contact& c = this->contacts[i];
 
     //sout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<sendl;
     //sout<<"P : "<<P<<" - PFree : "<<Pfree <<sendl;
