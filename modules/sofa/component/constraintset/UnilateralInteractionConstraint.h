@@ -280,6 +280,16 @@ class ContinuousUnilateralInteractionConstraint : public UnilateralInteractionCo
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ContinuousUnilateralInteractionConstraint, DataTypes), SOFA_TEMPLATE(UnilateralInteractionConstraint, DataTypes));
 
+    typedef UnilateralInteractionConstraint<DataTypes> Inherited;
+    typedef typename Inherited::VecCoord VecCoord;
+    typedef typename Inherited::VecDeriv VecDeriv;
+    typedef typename Inherited::Coord Coord;
+    typedef typename Inherited::Deriv Deriv;
+    typedef typename Coord::value_type Real;
+    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+
+    typedef Inherited::PersistentID PersistentID;
+
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)

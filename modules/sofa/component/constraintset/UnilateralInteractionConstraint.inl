@@ -439,9 +439,9 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
     Real delta = dot(P-Q, norm) - contactDistance;
     Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
     Real dt;
-    int i = contacts.size();
-    contacts.resize(i+1);
-    Contact& c = contacts[i];
+    int i = this->contacts.size();
+    this->contacts.resize(i+1);
+    Contact& c = this->contacts[i];
 
     //sout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<sendl;
     //sout<<"P : "<<P<<" - PFree : "<<Pfree <<sendl;
@@ -473,7 +473,7 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
     if (rabs(delta) < 0.00001*ref_dist && rabs(deltaFree) < 0.00001*ref_dist  )
     {
 
-        std::cout<<" case0 "<<std::endl;
+//        std::cout<<" case0 "<<std::endl;
 
         dt=0.0;
         c.dfree = deltaFree;
