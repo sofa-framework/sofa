@@ -471,7 +471,9 @@ bool GridMaterial< MaterialTypes>::loadImage()
 
         // Extrud Z dimension of the image to the wanted size.
         if (dimension.getValue()[2] > 1)
-            grid.resize(grid.width(), grid.height(), dimension.getValue()[2], 0, 1); // no interpolation, extrude values
+            grid.resize(grid.width(), grid.height(), dimension.getValue()[2], grid.spectrum(), 0, 1); // no interpolation, extrude values
+
+        serr << "image has been resized" << sendl;
     }
 
     // offset by one voxel to prevent from interpolation outside the grid
