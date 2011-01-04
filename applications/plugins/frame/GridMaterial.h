@@ -115,13 +115,14 @@ public:
     typedef Vec<nbRef,SGradient> VRefGradient;
     typedef Vec<nbRef,SHessian> VRefHessian;
     typedef Vec<nbRef,unsigned int> VRef;
+    typedef Vec<3,unsigned int> Vec3i;
 
     typedef vector<unsigned int> VUI;
 
     typedef map<Real,Real> mapLabelType; // voxeltype does not work..
 
     GridMaterial();
-    virtual ~GridMaterial() {}
+    virtual ~GridMaterial();
 
     /// Recompute the stress-strain matrix when the parameters are changed.
     virtual void init();
@@ -389,10 +390,24 @@ protected:
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
     Data<unsigned int> showWeightIndex;    ///
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
-    void genListCube();
-    void drawCube(const double& x, const double& y, const double& z);
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
+    Data<bool> show3DValues;
+    bool vboSupported;
+    GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
+    GLuint vboValuesId2; // ID of VBO for 3DValues index array
+    GLfloat* valuesVertices;
+    GLfloat* valuesNormals;
+    GLfloat* valuesIndices;
+
+    float getLabel( const int&x, const int& y, const int& z);
+    void genListCube();
+    void drawCube(const double& x, const double& y, const double& z) const;
+    void initVBO();
+    GLuint createVBO(const void* data, int dataSize, GLenum target, GLenum usage);
+    void deleteVBO(const GLuint vboId);
+    void updateValuesVBO( const bool& showvox, const float& labelmax) ;
+    void displayValuesVBO( const int& size, const int& axis) const;
 };
 
 //#ifdef SOFA_FLOAT

@@ -58,6 +58,13 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
     , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
+    , show3DValues ( initData ( &show3DValues, false, "show3DValues","When show plane is activated, values are displayed in 3D." ) )
+    , vboSupported(false)
+    , vboValuesId1(0)
+    , vboValuesId2(0)
+    , valuesVertices(NULL)
+    , valuesNormals(NULL)
+    , valuesIndices(NULL)
 {
     helper::OptionsGroup distanceTypeOptions(3,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
@@ -67,6 +74,14 @@ GridMaterial< MaterialTypes>::GridMaterial()
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 }
+
+
+template<class MaterialTypes>
+GridMaterial< MaterialTypes >::~GridMaterial()
+{
+    deleteVBO(vboValuesId2);
+}
+
 
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::init()
@@ -99,6 +114,7 @@ void GridMaterial< MaterialTypes>::init()
     }*/
     ////
 
+    initVBO();
     genListCube();
 
     Inherited::init();
@@ -436,7 +452,13 @@ template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::loadImage()
 {
     if (!imageFile.isSet()) return false;
-    grid.load_raw(imageFile.getFullPath().c_str(),dimension.getValue()[0],dimension.getValue()[1],dimension.getValue()[2]);
+
+    std::string fName (imageFile.getValue());
+    if( strcmp( fName.substr(fName.find_last_of('.')+1).c_str(), "raw") == 0 ||
+        strcmp( fName.substr(fName.find_last_of('.')+1).c_str(), "RAW") == 0)
+        grid.load_raw(imageFile.getFullPath().c_str(),dimension.getValue()[0],dimension.getValue()[1],dimension.getValue()[2]);
+    else
+        grid.load(imageFile.getFullPath().c_str());
 
     // offset by one voxel to prevent from interpolation outside the grid
     int offset=5;
@@ -456,6 +478,7 @@ bool GridMaterial< MaterialTypes>::loadImage()
     return true;
 }
 
+
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::saveImage()
 {
@@ -464,8 +487,6 @@ bool GridMaterial< MaterialTypes>::saveImage()
     grid.save_raw(imageFile.getFullPath().c_str());
     return true;
 }
-
-
 
 
 template < class MaterialTypes>
@@ -1753,7 +1774,7 @@ void GridMaterial< MaterialTypes>::draw()
         float defaultcolor[4]= {0.8,0.8,0.8,0.3},color[4];
         showWireframe=this->getContext()->getShowWireFrame();
 
-        float label,labelmax=-1;
+        float label=-1,labelmax=-1;
 
         if (showvox==SHOWVOXELS_DATAVALUE)
         {
@@ -1808,42 +1829,50 @@ void GridMaterial< MaterialTypes>::draw()
                 //    continue;
             }
 
-            label=-1;
             if (labelmax!=-1)
-            {
-                if (showvox==SHOWVOXELS_DATAVALUE) label=(float)grid(x,y,z);
-                else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
-                else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
-                else if (showvox==SHOWVOXELS_BULKMODULUS) label=(float)getBulkModulus(grid(x,y,z));
-                else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(GCoord(x,y,z))]+1.;
-                else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
-                else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
-            }
+                label = getLabel(x,y,z);
+
             if (label<=0) continue;
 
-            //if (label==-1)
-            //{
-            //    glColor4fv(defaultcolor);
-            //    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,defaultcolor);
-            //}
-            //else
-            {
-                if (label>labelmax) label=labelmax;
-                helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
-                glGetFloatv(GL_CURRENT_COLOR, color);
-                glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-            }
+            if (label>labelmax) label=labelmax;
+            helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
+            glGetFloatv(GL_CURRENT_COLOR, color);
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+
             SCoord coord;
             getCoord(GCoord(x,y,z),coord);
             drawCube((double)coord[0],(double)coord[1],(double)coord[2]);
-            //GlText::draw ( (int), coord, showTextScaleFactor.getValue() );
         }
+
+        if (show3DValues.getValue() && slicedisplay && vboSupported)
+        {
+            updateValuesVBO(showvox,labelmax);
+            //displayValuesVBO();
+        }
+
     }
 }
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::drawCube(const double& x, const double& y, const double& z)
+float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const int& z)
+{
+    float label = -1;
+    const unsigned int& showvox=this->showVoxels.getValue().getSelectedId();
+
+    if (showvox==SHOWVOXELS_DATAVALUE) label=(float)grid(x,y,z);
+    else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
+    else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
+    else if (showvox==SHOWVOXELS_BULKMODULUS) label=(float)getBulkModulus(grid(x,y,z));
+    else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(GCoord(x,y,z))]+1.;
+    else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
+    else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { /*if (grid(x,y,z))*/ label=(float)weights[getIndex(GCoord(x,y,z))]; /*else label=0;*/ }
+    return label;
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::drawCube(const double& x, const double& y, const double& z) const
 {
     const SCoord& size = voxelSize.getValue();
     glPushMatrix();
@@ -1851,6 +1880,174 @@ void GridMaterial< MaterialTypes>::drawCube(const double& x, const double& y, co
     glScaled(size[0]*0.5, size[1]*0.5, size[2]*0.5);
     if(showWireframe) glCallList(wcubeList); else glCallList(cubeList);
     glPopMatrix();
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::initVBO()
+{
+    vboSupported = false; // TODO Check it later
+
+    if(vboSupported)
+    {
+        int bufferSize; //TODO: allocate and initialize three views in the same VBO
+
+        // Allocate
+        unsigned int vertexSize = 3*((grid.width()+1) * (grid.height()+1) * (grid.depth()+1));
+        unsigned int normalSize = vertexSize;
+        unsigned int indicesSize = 0;
+        valuesVertices = new GLfloat[vertexSize];
+        valuesNormals = new GLfloat[normalSize];
+        valuesIndices = new GLfloat[indicesSize];
+
+        // Initialize
+        /*
+        unsigned int dim0 = (grid.width()+1) * (grid.height()+1);
+        unsigned int dim1 = grid.width()+1;
+        float vSX = voxelSize.getValue()[0];
+        float vSY = voxelSize.getValue()[1];
+        float vSZ = voxelSize.getValue()[2];
+        float vSX2 = voxelSize.getValue()[0] * .5;
+        float vSY2 = voxelSize.getValue()[1] * .5;
+        float vSZ2 = voxelSize.getValue()[2] * .5;
+        const SCoord& ori = origin.getValue();
+        for (int x = 0; x < grid.width()+1; ++x)
+        {
+            for (int y = 0; y < grid.height()+1; ++y)
+            {
+                for (int z = 0; z < grid.depth()+1; ++z)
+                {
+                    for (unsigned int w = 0; w < 3; ++w)
+                    {
+                        //const unsigned int index = z+y*dim1+x*dim0;
+                        //valuesVertices[w+3*(index)] = (ori + SCoord(x*vSX-vSX2,y*vSY-vSY2,z*vSZ-vSZ2))[w]; // TODO
+                        //valuesNormals[w+3*(z+y*dim1+x*dim0)] = SCoord(-vSX, -vSY, -vSZ)[w]; // TODO
+                    }
+                    //valuesIndices[6*(z+y*dim1+x*dim0)+0] = index; // TODO
+                }
+            }
+        }
+        */
+
+        // Allocate on GPU
+        glGenBuffersARB(1, &vboValuesId1);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(valuesVertices)+sizeof(valuesNormals), 0, GL_STREAM_DRAW_ARB);
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(valuesVertices), valuesVertices);
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(valuesVertices), sizeof(valuesNormals), valuesNormals);
+        glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
+        std::cout << "Vertex and Normal Array in VBO: " << bufferSize << " bytes\n";
+
+        vboValuesId2 = createVBO(valuesIndices, sizeof(valuesIndices), GL_ELEMENT_ARRAY_BUFFER_ARB, GL_STATIC_DRAW_ARB);
+        glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
+        std::cout << "Index Array in VBO: " << bufferSize << " bytes\n";
+    }
+}
+
+
+template < class MaterialTypes>
+GLuint GridMaterial< MaterialTypes>::createVBO(const void* data, int dataSize, GLenum target, GLenum usage)
+{
+    GLuint id = 0;  // 0 is reserved, glGenBuffersARB() will return non-zero id if success
+
+    glGenBuffersARB(1, &id);                        // create a vbo
+    glBindBufferARB(target, id);                    // activate vbo id to use
+    glBufferDataARB(target, dataSize, data, usage); // upload data to video card
+
+    // check data size in VBO is same as input array, if not return 0 and delete VBO
+    int bufferSize = 0;
+    glGetBufferParameterivARB(target, GL_BUFFER_SIZE_ARB, &bufferSize);
+    if(dataSize != bufferSize)
+    {
+        glDeleteBuffersARB(1, &id);
+        id = 0;
+        std::cout << "[createVBO()] Data size is mismatch with input array\n";
+    }
+
+    return id;      // return VBO id
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::deleteVBO(const GLuint vboId)
+{
+    glDeleteBuffersARB(1, &vboId);
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::updateValuesVBO( const bool& /*showvox*/, const float& /*labelmax*/)
+{
+    /*
+    unsigned int dimX, dimY;
+    Vec3i dimension;
+    if( axis == 0) // Z axis
+    {
+        dimX = grid.width();
+        dimY = grid.height();
+    }
+    else if( axis == 1) // X axis
+    {
+        dimX = grid.depth();
+        dimY = grid.width();
+    }
+    else if( axis == 2) // Y axis
+    {
+        dimX = grid.height();
+        dimY = grid.depth();
+    }
+    else
+    {
+        return;
+    }
+    */
+
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
+    float *ptr = (float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_READ_WRITE_ARB);
+    if(ptr)
+    {
+        unsigned int dim0 = grid.width() * grid.height();
+        unsigned int dim1 = grid.width();
+        cimg_forXYZ(grid,x,y,z)
+        {
+            if(x!=showPlane.getValue()[0] && y!=showPlane.getValue()[1] && z!=showPlane.getValue()[2])
+                continue;
+
+            SCoord coord;
+            getCoord(GCoord(x,y,z),coord);
+            for(unsigned int w = 0; w < 3; ++w)
+                ptr[w+3*(z+y*dim1+x*dim0)] = coord[w];
+        }
+
+        glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+    }
+
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::displayValuesVBO( const int& /*size*/, const int& /*axis*/) const
+{
+    // Enable VBO
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    // before draw, specify vertex and index arrays with their offsets
+    glNormalPointer(GL_FLOAT, 0, (void*)sizeof(valuesVertices));
+    glVertexPointer(3, GL_FLOAT, 0, 0);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, vboValuesId2);
+    glIndexPointer(GL_UNSIGNED_SHORT, 0, 0);
+
+    // use only offset here instead of absolute pointer addresses
+    glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_SHORT, (GLushort*)0+0); // TODO display following the indices size.
+
+    // Disable VBO
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+
+    // Bind the buffers to 0 by safety
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
 }
 
 
@@ -1870,7 +2067,7 @@ void GridMaterial< MaterialTypes>::genListCube()
     glEnd ();
     glEndList();
 
-    wcubeList = glGenLists(2);
+    wcubeList = glGenLists(1);
     glNewList(wcubeList, GL_COMPILE);
     glBegin(GL_LINE_LOOP);
     glNormal3f(1,0,0); glVertex3d(1.0,-1.0,-1.0); glVertex3d(1.0,-1.0,1.0); glVertex3d(1.0,1.0,1.0); glVertex3d(1.0,1.0,-1.0);
