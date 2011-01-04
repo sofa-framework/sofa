@@ -456,9 +456,23 @@ bool GridMaterial< MaterialTypes>::loadImage()
     std::string fName (imageFile.getValue());
     if( strcmp( fName.substr(fName.find_last_of('.')+1).c_str(), "raw") == 0 ||
         strcmp( fName.substr(fName.find_last_of('.')+1).c_str(), "RAW") == 0)
+    {
         grid.load_raw(imageFile.getFullPath().c_str(),dimension.getValue()[0],dimension.getValue()[1],dimension.getValue()[2]);
+    }
     else
+    {
         grid.load(imageFile.getFullPath().c_str());
+
+        // Convert image to black and white to avoid access problems
+        cimg_forXY(grid,x,y)
+        {
+            grid(x,y)=(grid(x,y,0)+grid(x,y,1)+grid(x,y,2))/3.0;
+        }
+
+        // Extrud Z dimension of the image to the wanted size.
+        if (dimension.getValue()[2] > 1)
+            grid.resize(grid.width(), grid.height(), dimension.getValue()[2], 0, 1); // no interpolation, extrude values
+    }
 
     // offset by one voxel to prevent from interpolation outside the grid
     int offset=5;
@@ -1866,7 +1880,7 @@ float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const i
     else if (showvox==SHOWVOXELS_BULKMODULUS) label=(float)getBulkModulus(grid(x,y,z));
     else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(GCoord(x,y,z))]+1.;
     else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
-    else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { /*if (grid(x,y,z))*/ label=(float)weights[getIndex(GCoord(x,y,z))]; /*else label=0;*/ }
+    else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
     return label;
 }
 
