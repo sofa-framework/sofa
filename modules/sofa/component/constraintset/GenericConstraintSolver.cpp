@@ -386,7 +386,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                     d[j+l] += w[j+l][k] * force[k];
 
             //3. the specific resolution of the constraint(s) is called
-            constraintsResolutions[j]->resolution(j, w, d, force);
+            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
 
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
             double contraintError = 0.0;

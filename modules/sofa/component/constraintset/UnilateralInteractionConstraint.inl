@@ -59,7 +59,7 @@ void UnilateralConstraintResolutionWithFriction::init(int line, double** w, doub
 
 }
 
-void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force)
+void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
 {
     double f[2];
     double normFt;
@@ -70,7 +70,7 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     if(force[line] < 0)
     {
         force[line]=0; force[line+1]=0; force[line+2]=0;
-        m_state = NONE;
+        m_contactState = NONE;
         return;
     }
 
@@ -85,10 +85,10 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     {
         force[line+1] *= _mu*force[line]/normFt;
         force[line+2] *= _mu*force[line]/normFt;
-        m_state = SLIDING;
+        m_contactState = SLIDING;
     }
     else
-        m_state = STICKY;
+        m_contactState = STICKY;
 }
 
 void UnilateralConstraintResolutionWithFriction::store(int line, double* force, bool /*convergence*/)
@@ -431,6 +431,103 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
     glEnd();
 }
 
+
+template<class DataTypes>
+void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid)
+{
+    // compute dt and delta
+    Real delta = dot(P-Q, norm) - contactDistance;
+    Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
+    Real dt;
+    int i = contacts.size();
+    contacts.resize(i+1);
+    Contact& c = contacts[i];
+
+    //sout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<sendl;
+    //sout<<"P : "<<P<<" - PFree : "<<Pfree <<sendl;
+    //sout<<"Q : "<<Q<<" - QFree : "<<Qfree <<sendl;
+
+
+// for visu
+    c.P = P;
+    c.Q = Q;
+    c.Pfree = Pfree;
+    c.Qfree = Qfree;
+//
+    c.m1 = m1;
+    c.m2 = m2;
+    c.norm = norm;
+    c.delta = delta;
+    c.t = Deriv(norm.z(), norm.x(), norm.y());
+    c.s = cross(norm,c.t);
+    c.s = c.s / c.s.norm();
+    c.t = cross((-norm), c.s);
+    c.mu = mu;
+    c.contactId = id;
+    c.localId = localid;
+
+    Deriv PPfree = Pfree-P;
+    Deriv QQfree = Qfree-Q;
+    Real ref_dist = PPfree.norm()+QQfree.norm();
+
+    if (rabs(delta) < 0.00001*ref_dist && rabs(deltaFree) < 0.00001*ref_dist  )
+    {
+
+        std::cout<<" case0 "<<std::endl;
+
+        dt=0.0;
+        c.dfree = deltaFree;
+        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
+        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
+
+        return;
+
+    }
+
+    if (rabs(delta - deltaFree) > 0.001 * delta)
+    {
+        dt = delta / (delta - deltaFree);
+        if (dt > 0.0 && dt < 1.0  )
+        {
+            sofa::defaulttype::Vector3 Qt, Pt;
+            Qt = Q*(1-dt) + Qfree*dt;
+            Pt = P*(1-dt) + Pfree*dt;
+            c.dfree = deltaFree;// dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
+            c.dfree_t = dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
+            c.dfree_s = dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
+            //printf("\n ! dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
+        }
+        else
+        {
+            if (deltaFree < 0.0)
+            {
+                dt=0.0;
+                c.dfree = deltaFree; // dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
+                //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
+                c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
+                c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
+            }
+            else
+            {
+                dt=1.0;
+                c.dfree = deltaFree;
+                c.dfree_t = 0;
+                c.dfree_s = 0;
+            }
+        }
+    }
+    else
+    {
+        dt = 0;
+        c.dfree = deltaFree;
+        c.dfree_t = 0;
+        c.dfree_s = 0;
+        //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
+    }
+
+
+    //sout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<sendl;
+}
 } // namespace constraintset
 
 } // namespace component

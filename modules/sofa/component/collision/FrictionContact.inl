@@ -276,11 +276,13 @@ ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::ContinuousFriction
     std::cout<<" ContinuousFrictionContact created between  mstate1 named " << mstate1->getName() << " and mtate2 named" << mstate2->getName()<<std::endl;
 }
 
+
 template < class TCollisionModel1, class TCollisionModel2 >
 ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::~ContinuousFrictionContact()
 {
     std::cout<<"!!!! destructor of ContinuousFrictionContact is called !!!!"<<std::endl;
 }
+
 
 template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
@@ -477,7 +479,7 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             mmodel2 = this->selfCollision ? mmodel1 : (MechanicalState2*)this->constraintModel2;
         }
 
-        this->m_constraint = new constraintset::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
+        this->m_constraint = new constraintset::ContinuousUnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
         std::cerr << "Constraint created" << std::endl;
         this->m_constraint->setName( this->getName() );
     }
