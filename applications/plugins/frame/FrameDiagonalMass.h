@@ -69,6 +69,9 @@ public:
     typedef typename FData::VecMass VecMass;
     typedef typename FData::MassVector MassVector;
 
+    VecMass f_mass0;
+    VecMass f_mass;
+
     /// to display the center of gravity of the system
     Data< float > showAxisSize;
     core::objectmodel::DataFileName fileMass;

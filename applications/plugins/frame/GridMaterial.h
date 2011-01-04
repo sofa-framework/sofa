@@ -403,9 +403,9 @@ protected:
     float getLabel( const int&x, const int& y, const int& z);
     void genListCube();
     void drawCube(const double& x, const double& y, const double& z) const;
-    void initVBO();
     GLuint createVBO(const void* data, int dataSize, GLenum target, GLenum usage);
     void deleteVBO(const GLuint vboId);
+    void initVBO();
     void updateValuesVBO( const bool& showvox, const float& labelmax) ;
     void displayValuesVBO( const int& size, const int& axis) const;
 };

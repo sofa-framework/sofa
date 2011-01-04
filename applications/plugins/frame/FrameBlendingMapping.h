@@ -128,7 +128,7 @@ protected:
     inline void initFrames();
     inline void updateWeights ();
     inline void normalizeWeights();
-    virtual void LumpMassesToFrames ();
+    virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
 
     vector<InOut> inout;  ///< Data specific to the conversion between the types
 

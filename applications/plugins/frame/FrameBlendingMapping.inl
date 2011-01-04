@@ -161,7 +161,6 @@ void FrameBlendingMapping<TIn, TOut>::init()
 
     // init weights and sample info (mass, moments) todo: ask the Material
     updateWeights();
-    LumpMassesToFrames ();
 
     // init jacobians for mapping
     inout.resize( out.size() );
@@ -558,7 +557,7 @@ void FrameBlendingMapping<TIn, TOut>::normalizeWeights()
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
+void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass)
 {
 
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
@@ -566,7 +565,7 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
 
     if(!this->isPhysical) return; // no gauss point here -> no need for lumping
 
-    MassVector& massVector = *this->f_mass0.beginEdit();
+    MassVector& massVector = f_mass0;
     massVector.resize(in.size());
     for(unsigned int i=0; i<in.size(); i++) { massVector[i].clear(); massVector[i].mass = 1.0;}
 
@@ -613,12 +612,9 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames ( )
     }
 
     for(unsigned int i=0; i<in.size(); i++)  massVector[i].recalc();
-    this->f_mass0.endEdit();
 
     // copy mass0 to current mass
-    MassVector& massV = *this->f_mass.beginEdit();
-    massV = massVector;
-    this->f_mass.endEdit();
+    f_mass = massVector;
 
     //for(unsigned int i=0;i<in.size();i++) std::cout<<"mass["<<i<<"]="<<massVector[i].inertiaMassMatrix<<std::endl;
 }
