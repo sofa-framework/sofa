@@ -85,7 +85,7 @@ void FrameVolumePreservationForceField<DataTypes>::init()
     for(unsigned int i=0; i<out.size(); i++) // treat each sample
     {
         if(material) this->bulkModulus[i]=(Real)material->getBulkModulus(i);
-        else this->bulkModulus[i]=(Real)1000.;
+        else this->bulkModulus[i]=(Real)1000;
         if( this->f_printLog.getValue() )
             std::cout<<"FrameVolumePreservationForceField<DataTypes>::bulkModulus["<<i<<"]"<<bulkModulus[i]<<std::endl;
     }
@@ -109,7 +109,7 @@ void FrameVolumePreservationForceField<DataTypes>::init()
     }
 }
 
-#define MIN_DETERMINANT  1.0e-100
+#define MIN_DETERMINANT  1.0e-2
 
 template <class DataTypes>
 void FrameVolumePreservationForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& /*_v */, const core::MechanicalParams* /*mparams*/)
@@ -122,50 +122,94 @@ void FrameVolumePreservationForceField<DataTypes>::addForce(DataVecDeriv& _f , c
     for(unsigned int i=0; i<x.size(); i++)
     {
         det[i]=determinant(x[i].getMaterialFrame());
-        if(det[i]>MIN_DETERMINANT)
+        if(det[i]>MIN_DETERMINANT || det[i]<-MIN_DETERMINANT)
         {
             invertMatrix(ddet[i],x[i].getMaterialFrame());
             ddet[i].transpose();
-            ddet[i]*=det[i];
             // energy W=vol.k[det-1]^2/2
+            ddet[i]*=det[i];
             f[i].getMaterialFrame()-=ddet[i]*volume[i]*bulkModulus[i]*(det[i]-(Real)1.); // force f=-vol.k[det-1]ddet
+            // energy W=vol.k[log|det|^2]/2
+//						f[i].getMaterialFrame()-=ddet[i]*volume[i]*bulkModulus[i]*log(fabs(det[i])); // force f=-vol.k.log|det|.ddet
         }
         else ddet[i].fill(0);
 
         if( this->f_printLog.getValue() )
-            cerr<<"FrameVolumePreservationForceField<DataTypes>::addForce, stress deformation gradient form = " << f[i] << endl;
+            if(i==100)
+            {
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addForce, F = " << x[i].getMaterialFrame() << sendl;
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addForce, det = " << det[i] << sendl;
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addForce, ddet = " << ddet[i] << sendl;
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addForce, stress deformation gradient form = " << f[i] << sendl;
+            }
     }
 }
 
 template <class DataTypes>
 void FrameVolumePreservationForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
 {
+    ReadAccessor<DataVecCoord> x (*this->getMState()->read(core::ConstVecCoordId::position()));
     ReadAccessor<DataVecDeriv> dx(_dx);
     WriteAccessor<DataVecDeriv> df(_df);
 
-
     Real kFactor = (Real)mparams->kFactor();
-    // force variation df = vol.k.[ (1-1/det)ddet.dF^T.ddet  - (2-1/det)ddet.Trace(dF^T.ddet) ]
+
+    Real det2; Frame ddet2,x2;
+    for(unsigned int i=0; i<dx.size(); i++)
+    {
+        x2=x[i].getMaterialFrame()+dx[i].getMaterialFrame();
+        det2=determinant(x2);
+        if(det2>MIN_DETERMINANT || det2<-MIN_DETERMINANT)
+        {
+            invertMatrix(ddet2,x2);
+            ddet2.transpose();
+            ddet2*=det2;
+            df[i].getMaterialFrame()+=(ddet[i]*(det[i]-(Real)1.)-ddet2*(det2-(Real)1.))*kFactor*volume[i]*bulkModulus[i];  // force f=-vol.k[det-1]ddet
+//					df[i].getMaterialFrame()+=(ddet[i]*log(fabs(det[i]))-ddet2*log(fabs(det2)))*kFactor*volume[i]*bulkModulus[i];   // force f=-vol.k.log|det|.ddet
+        }
+        else ddet2.fill(0);
+
+        if( this->f_printLog.getValue() )
+            if(i==100)
+            {
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, dF = " << dx[i].getMaterialFrame() << sendl;
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, det = " << det[i] << sendl;
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, ddet = " << ddet[i] << sendl;
+                sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << sendl;
+            }
+    }
+
+
+    /*
+    // derivative of the force based on the energy vol.k[det-1]^2/2 :  df = vol.k.[ (1-1/det)ddet.dF^T.ddet  - (2-1/det)ddet.Trace(dF^T.ddet) ]
     Real trace,invdet;
     Frame M;
     for(unsigned int i=0; i<dx.size(); i++)
     {
-        if(det[i]>MIN_DETERMINANT)
-        {
-            invdet=(Real)1./det[i];
-            trace=0;
-            for(unsigned int k=0; k<material_dimensions; k++) for(unsigned int l=0; l<material_dimensions; l++) trace+=dx[i].getMaterialFrame()[k][l]*ddet[i][k][l];
-            trace*=((Real)2.-invdet);
-            M=ddet[i]*dx[i].getMaterialFrame().multTranspose(ddet[i])*((Real)1.-invdet);
-            M-=ddet[i]*trace;
-            df[i].getMaterialFrame()+=volume[i]*bulkModulus[i]*kFactor*M;
-        }
-
-        if( this->f_printLog.getValue() )
-        {
-            cerr<<"FrameVolumePreservationForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << endl;
+    	if(det[i]>MIN_DETERMINANT || det[i]<-MIN_DETERMINANT)	{
+    	invdet=(Real)1./det[i];
+    	trace=0;
+    	for(unsigned int k=0; k<material_dimensions; k++) for(unsigned int l=0; l<material_dimensions; l++) trace+=dx[i].getMaterialFrame()[k][l]*ddet[i][k][l];
+    	trace*=((Real)2.-invdet);
+    	M=ddet[i]*dx[i].getMaterialFrame().multTranspose(ddet[i])*((Real)1.-invdet);
+    	M-=ddet[i]*trace;
+    	df[i].getMaterialFrame()+=volume[i]*bulkModulus[i]*kFactor*M;
+    	if(i==100)
+    	{
+            sout<<"trace = " << trace << sendl;
+            sout<<"M = " << volume[i]*bulkModulus[i]*kFactor*M << sendl;
+    	}
+    	}
+    	if( this->f_printLog.getValue() )
+    	if(i==100)
+    	{
+            sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, dF = " << dx[i].getMaterialFrame() << sendl;
+            sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, det = " << det[i] << sendl;
+            sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, ddet = " << ddet[i] << sendl;
+            sout<<"FrameVolumePreservationForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << sendl;
         }
     }
+    */
 }
 }
 }
