@@ -4153,7 +4153,9 @@ int BarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::d
     if (this->mapper)
     {
         const typename In::VecCoord& xfrom = *this->fromModel->getX();
-        return mapper->addContactPointFromInputMapping(xfrom, pos, baryCoords);
+        int index = mapper->addContactPointFromInputMapping(xfrom, pos, baryCoords);
+        this->toModel->resize(index+1);
+        return index;
     }
 
     return 0;
