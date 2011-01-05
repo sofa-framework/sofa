@@ -90,7 +90,8 @@ HEADERS += viewer/SofaViewer.h \
            QMenuFilesRecentlyOpened.h \
            ImageQt.h 
 
-SOURCES += viewer/ViewerFactory.cpp \
+SOURCES += viewer/SofaViewer.cpp \
+           viewer/ViewerFactory.cpp \
            GraphListenerQListView.cpp \
            GenGraphForm.cpp \
            AddObject.cpp \
