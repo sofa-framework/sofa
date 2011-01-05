@@ -165,7 +165,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
             //3. the specific resolution of the constraint(s) is called
             //double** w = this->_W.ptr();
             //std::cout<<" 3 ";
-            _constraintsResolutions[j]->resolution(j, this->getW()->lptr(), this->getD()->ptr(), this->getF()->ptr());
+            _constraintsResolutions[j]->resolution(j, this->getW()->lptr(), this->getD()->ptr(), this->getF()->ptr(), _dFree.ptr());
 
 
             //std::cout<<" 4 ";
@@ -809,7 +809,7 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
             //////////////////////////////
 
             //3. the specific resolution of the constraint(s) is called
-            res[j]->resolution(j, w, d, force);
+            res[j]->resolution(j, w, d, force, dfree);
 
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
             double contraintError = 0.0;
