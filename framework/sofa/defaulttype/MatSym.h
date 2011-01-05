@@ -77,8 +77,6 @@ public:
     }
 
 
-
-
     /// Constructor from an element
     explicit MatSym(const int sizeM,const real& v)
     {
@@ -140,6 +138,24 @@ public:
         for (int j=0; j<D; j++)
             for (int i=0; i <= j; i++)
                 W(i,j) = (Real)((M(i,j) + M(j,i))/2.0);
+    }
+
+    // convert to Voigt notation
+
+    inline Vec<D*(D+1)/2 ,real> getVoigt()
+    {
+        Vec<D*(D+1)/2 ,real> result;
+        if (D==2)
+        {
+            result[0] = this->elems[0]; result[1] = this->elems[2]; result[2] = 2*this->elems[1];
+        }
+        else
+        {
+            result[0] = this->elems[0]; result[1] = this->elems[2]; result[2] = this->elems[5];
+            result[3]=2*this->elems[4]; result[4]=2*this->elems[3]; result[5]=2*this->elems[1];
+        }
+        return result;
+
     }
 
 
@@ -376,7 +392,10 @@ public:
 
     }
 
+
+
 };
+
 
 
 /// Determinant of a 3x3 matrix.
@@ -399,6 +418,21 @@ inline real determinant(const MatSym<2,real>& m)
 }
 
 #define MIN_DETERMINANT  1.0e-100
+
+
+/// Trace of a 3x3 matrix.
+template<class real>
+inline real trace(const MatSym<3,real>& m)
+{
+    return m(0,0)+m(1,1)+m(2,2);
+
+}
+/// Trace of a 2x2 matrix.
+template<class real>
+inline real trace(const MatSym<2,real>& m)
+{
+    return m(0,0)+m(1,1);
+}
 
 /// Matrix inversion (general case).
 template<int S, class real>
@@ -435,7 +469,7 @@ bool invertMatrix(MatSym<S,real>& dest, const MatSym<S,real>& from)
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            cerr<<"Warning (MatSym.h) : invertMatrix finds too small determinant, matrix = "<<from<<endl;
+            cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
             return false;
         }
 
@@ -490,7 +524,7 @@ bool invertMatrix(MatSym<3,real>& dest, const MatSym<3,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        cerr<<"Warning (MatSym.h) : invertMatrix finds too small determinant, matrix = "<<from<<endl;
+        cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
         return false;
     }
 
@@ -512,7 +546,7 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        cerr<<"Warning (MatSym.h) : invertMatrix finds too small determinant, matrix = "<<from<<endl;
+        cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
         return false;
     }
 

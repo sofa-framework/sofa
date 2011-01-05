@@ -664,6 +664,7 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
+    std::cout<<" \n  \n ************\n removeResponse called \n ************\n"<<std::endl;
     if (this->m_constraint!=NULL)
     {
         this->mapper1.resize(0);

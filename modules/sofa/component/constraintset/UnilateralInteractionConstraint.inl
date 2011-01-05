@@ -120,9 +120,9 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     contacts.resize(i+1);
     Contact& c = contacts[i];
 
-    //sout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<sendl;
-    //sout<<"P : "<<P<<" - PFree : "<<Pfree <<sendl;
-    //sout<<"Q : "<<Q<<" - QFree : "<<Qfree <<sendl;
+    std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
+    std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
+    std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;
 
 
 // for visu
@@ -166,6 +166,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
         dt = delta / (delta - deltaFree);
         if (dt > 0.0 && dt < 1.0  )
         {
+            std::cout<<" case1 : dt = "<<dt<<std::endl;
             sofa::defaulttype::Vector3 Qt, Pt;
             Qt = Q*(1-dt) + Qfree*dt;
             Pt = P*(1-dt) + Pfree*dt;
@@ -178,6 +179,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
         {
             if (deltaFree < 0.0)
             {
+                std::cout<<" case2 "<<std::endl;
                 dt=0.0;
                 c.dfree = deltaFree; // dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
                 //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
@@ -186,6 +188,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
             }
             else
             {
+                std::cout<<" case3 "<<std::endl;
                 dt=1.0;
                 c.dfree = deltaFree;
                 c.dfree_t = 0;
@@ -195,10 +198,11 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     }
     else
     {
+        std::cout<<" case4 "<<std::endl;
         dt = 0;
         c.dfree = deltaFree;
-        c.dfree_t = 0;
-        c.dfree_s = 0;
+        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
+        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
         //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
     }
 
@@ -311,6 +315,8 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(defaultt
         {
             v->set(c.id+1,c.dfree_t); // dfree_t & dfree_s are added to v to compute the friction
             v->set(c.id+2,c.dfree_s);
+
+            std::cout<<"constraint ["<<i<<"] => dfree = ["<<c.dfree<<" "<<c.dfree_t<<" "<<c.dfree_s<<"]"<<std::endl;
         }
     }
 }
