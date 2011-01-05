@@ -89,13 +89,21 @@ public:
         inertiaMassMatrix.clear();
         invInertiaMatrix.clear();
         invInertiaMassMatrix.clear();
+
+        for ( unsigned int i = 0; i < Nc; i++ )
+            invInertiaMatrix[i][i]=inertiaMatrix[i][i]=invInertiaMassMatrix[i][i]=inertiaMassMatrix[i][i]=(Real)1.;
     }
 
 
     void recalc()
     {
         inertiaMassMatrix = inertiaMatrix * mass;
-        invInertiaMatrix.invert ( inertiaMatrix );
+        if(!invInertiaMatrix.invert ( inertiaMatrix ))
+        {
+            clear();
+            cerr<<"Warning (FrameMass) : set Mass to identity "<<endl;
+            return;
+        }
         /*
         bool nullMatrix = true;
         for ( int i = 0; i < 6; i++ )

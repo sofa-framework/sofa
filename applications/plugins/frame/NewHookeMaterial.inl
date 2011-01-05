@@ -189,9 +189,13 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
 {
     unsigned int dim=(order+1)*(order+2)*(order+3)/6; // complete basis in 3D
     moments.resize(dim);
-    moments[0] = 1;
-    for (unsigned int i=1; i<dim; i++) moments[i]=0;
-
+    Real vol=1; // default volume of a gauss point
+    Real dl=(Real)pow(vol,(Real)1./(Real)3.); // default width a the cube
+    moments[0] = vol;
+    if(order<2) return true;
+    moments[4] = vol*dl*dl/12.;  moments[7] = vol*dl*dl/12.;  moments[9] = vol*dl*dl/12.;
+    if(order<4) return true;
+    moments[20] = vol*dl*dl*dl*dl/80.;  moments[21] = vol*dl*dl*dl*dl/144.;  moments[22] = vol*dl*dl*dl*dl/144.;  moments[23] = vol*dl*dl*dl*dl/80.;  moments[24] = vol*dl*dl*dl*dl/144.;  moments[25] = vol*dl*dl*dl*dl/80.;
     return true;
 }
 
