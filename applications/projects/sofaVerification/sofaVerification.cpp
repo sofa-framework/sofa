@@ -239,7 +239,8 @@ int main(int argc, char** argv)
 {
     sofa::helper::BackTrace::autodump();
 
-    std::string directory;
+    std::string refdir;
+    std::string dataPath;
     std::vector<std::string> fileArguments;
     std::vector<std::string> sceneFiles;
     std::vector<std::string> plugins;
@@ -255,12 +256,13 @@ int main(int argc, char** argv)
         "This is SOFA verification. "
         "To use it, specify in the command line the scene files you want to test, "
         "or a \".ini\" file containing the path to the scenes.")
-    .option(&reinit, 'r', "reinit", "Recreate the references state files")
+    .option(&reinit,     'r', "reinit",    "Recreate the references state files")
     .option(&iterations, 'i', "iteration", "Number of iterations for testing")
-    .option(&directory, 'd', "directory", "The directory for reference files")
-    .option(&plugins,'p',"plugin","load given plugins")
-    .option(&topology, 't', "topology", "Specific mode to run tests on topology")
-    .option(&lifetime, 'l', "lifetime", "Maximum execution time in seconds (default: 0 -> no limit")
+    .option(&refdir,     'd', "refdir",    "The directory for reference files")
+    .option(&dataPath,   'a', "datapath",  "A colon-separated (semi-colon on Windows) list of directories to search for data files (scenes, resources...)")
+    .option(&plugins,    'p', "plugin",    "Load given plugins")
+    .option(&topology,   't', "topology",  "Specific mode to run tests on topology")
+    .option(&lifetime,   'l', "lifetime",  "Maximum execution time in seconds (default: 0 -> no limit")
     (argc, argv);
 
 #ifdef SOFA_HAVE_BOOST
@@ -271,10 +273,12 @@ int main(int argc, char** argv)
     }
 #endif
 
-    for (unsigned int i=0; i<plugins.size(); i++)
+    for(unsigned int i = 0; i < plugins.size(); i++)
+    {
         loadPlugin(plugins[i].c_str());
+    }
 
-
+    DataRepository.addLastPath(dataPath);
     for(size_t i = 0; i < fileArguments.size(); ++i)
     {
         std::string currentFile = fileArguments[i];
@@ -317,7 +321,7 @@ int main(int argc, char** argv)
         std::cout << "  " << sceneFiles[i] << '\n';
     }
 
-    apply(directory, sceneFiles, iterations, reinit, topology);
+    apply(refdir, sceneFiles, iterations, reinit, topology);
 
     return 0;
 }
