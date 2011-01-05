@@ -38,9 +38,6 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/DrawManager.h>
 
-#ifdef SOFA_GUI_QTOGREVIEWER
-#include <OgreTexture.h>
-#endif
 
 namespace sofa
 {
@@ -103,14 +100,6 @@ public:
     void createColorBuffer();
     void initDepthBuffer();
     void initColorBuffer();
-
-private:
-#ifdef SOFA_GUI_QTOGREVIEWER
-    void _initOGRE( unsigned int width, unsigned int height);
-    Ogre::TexturePtr _texture;
-#endif
-
-
 };
 
 } //gl

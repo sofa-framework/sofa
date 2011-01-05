@@ -33,12 +33,6 @@
 #include <cassert>
 #include <sofa/helper/gl/FrameBufferObject.h>
 
-#ifdef SOFA_GUI_QTOGREVIEWER
-#include <OgreTextureManager.h>
-
-#include <OgreHardwarePixelBuffer.h>
-#include <OgreRenderTexture.h>
-#endif
 
 namespace sofa
 {
@@ -300,24 +294,7 @@ void FrameBufferObject::initColorBuffer()
     glBindTexture(GL_TEXTURE_2D, 0);
 
 }
-#ifdef SOFA_GUI_QTOGREVIEWER
-void FrameBufferObject::_initOGRE(unsigned int width, unsigned int height)
-{
-    _texture = Ogre::TextureManager::getSingleton().createManual("rttText",
-            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-            Ogre::TEX_TYPE_2D,width,height,0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_RENDERTARGET);
-    /*
-    Ogre::RenderTexture *renderTexture = texture->getBuffer()->getRenderTarget();
 
-    Ogre::Camera* mCamera = mSceneMgr->getCamera("sofaCamera");
-
-    renderTexture->addViewport(mCamera);
-    renderTexture->getViewport(0)->setClearEveryFrame(true);
-    renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
-    renderTexture->getViewport(0)->setOverlaysEnabled(false);
-    */
-}
-#endif
 
 } //namespace gl
 
