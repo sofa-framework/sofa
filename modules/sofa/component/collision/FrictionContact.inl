@@ -285,6 +285,14 @@ ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::~ContinuousFrictio
 
 
 template < class TCollisionModel1, class TCollisionModel2 >
+void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::init()
+{
+    use_mapper_for_state1 = !findMappingOrUseMapper(mstate1, constraintModel1, map1);
+    use_mapper_for_state2 = !findMappingOrUseMapper(mstate2, constraintModel2, map2);
+}
+
+
+template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
 {
     std::cout<<"\n*******\n*******ContinuousFrictionContact : ENTERING CLEAN UP\n*******\n*******"<<std::endl;

@@ -169,6 +169,8 @@ public:
 
     virtual void removeResponse();
 
+    void init();
+
 protected:
 
     std::pair<bool,bool> findMappingOrUseMapper();
