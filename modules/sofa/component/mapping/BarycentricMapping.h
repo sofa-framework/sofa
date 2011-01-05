@@ -180,7 +180,7 @@ public:
     {};
     //--
 
-    int addContactPointFromInputMapping(const typename In::VecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/) {return 0;};
+    virtual int addContactPointFromInputMapping(const typename In::VecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/) {return 0;};
 
     virtual void clear( int reserve=0 ) =0;
 
@@ -882,7 +882,7 @@ public:
     virtual void handlePointEvents(std::list< const core::topology::TopologyChange *>::const_iterator,
             std::list< const core::topology::TopologyChange *>::const_iterator);
 
-    int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+    virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTetrahedronSetTopology<In, Out> &b )
     {
