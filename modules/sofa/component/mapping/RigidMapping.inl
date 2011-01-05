@@ -186,6 +186,8 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::beginAddContactPoint()
 {
+
+    std::cout<<" beginAddContactPoint : pos="<<(*this->toModel->getX())<<" before suppr the contact"<<std::endl;
     this->clear(0);
     this->toModel->resize(0);
 }
@@ -193,6 +195,8 @@ void RigidMapping<TIn, TOut>::beginAddContactPoint()
 template <class TIn, class TOut>
 int RigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
+
+    std::cout<<"addContactPointFromInputMapping  Pos Ref = "<<pos<<std::endl;
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
 
     Coord posContact;
