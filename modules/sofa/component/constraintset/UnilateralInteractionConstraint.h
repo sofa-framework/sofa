@@ -30,6 +30,7 @@
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>
+#include <map>
 #include <deque>
 
 
@@ -86,6 +87,10 @@ protected:
     bool resetFlag; // We delete all forces that were not read
 };
 
+template<class DataTypes>
+class ContinuousUnilateralInteractionConstraint;
+
+template<class DataTypes>
 class UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
@@ -93,7 +98,7 @@ public:
         : _mu(mu)
         , _prev(prev)
         , _active(active)
-        , m_contactState(NONE)
+        , m_constraint(0)
     {
         nbLines=3;
     }
@@ -102,19 +107,19 @@ public:
     virtual void resolution(int line, double** w, double* d, double* force, double *dFree);
     virtual void store(int line, double* force, bool /*convergence*/);
 
-    enum ContactState { NONE=0, SLIDING, STICKY };
-
-    ContactState getContactState()
+    void setConstraint(ContinuousUnilateralInteractionConstraint<DataTypes> *c)
     {
-        return m_contactState;
+        m_constraint = c;
     }
+
+    enum ContactState { NONE=0, SLIDING, STICKY };
 
 protected:
     double _mu;
     double _W[6];
     PreviousForcesContainer* _prev;
     bool* _active; // Will set this after the resolution
-    ContactState m_contactState;
+    ContinuousUnilateralInteractionConstraint<DataTypes> *m_constraint;
 };
 
 #endif // SOFA_DEV
@@ -289,6 +294,8 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename Inherited::PersistentID PersistentID;
+    typedef typename Inherited::Contact Contact;
+    typedef typename UnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
 
     ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherited(object1, object2)
@@ -310,6 +317,28 @@ public:
     }
 
     virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
+
+#ifdef SOFA_DEV
+    void getConstraintResolution(std::vector< core::behavior::ConstraintResolution* >& resTab, unsigned int& offset);
+#endif
+
+protected:
+    std::map< int, ContactState > contactStates;
+
+public:
+
+    /// @name Contact State API
+    /// @{
+
+    bool isSticked(int id);
+
+    void setContactState(int id, ContactState s);
+
+    void clearContactStates();
+
+    void debugContactStates();
+
+    // @}
 };
 
 

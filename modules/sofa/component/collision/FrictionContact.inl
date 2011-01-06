@@ -214,10 +214,10 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::ob
             int index2 = mappedContacts[i].first.second;
             double distance = mappedContacts[i].second;
 
-            // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
+            // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
             long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);
 
-            // add contact in unilateral constraint
+            // Add contact in unilateral constraint
             m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
         }
 
@@ -334,8 +334,107 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
 
 
 template < class TCollisionModel1, class TCollisionModel2 >
+void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::filterDuplicatedDetectionOutputs(TOutputVector &input, DetectionOutputVector &output)
+{
+    const double MinDist2 = 0.00000001f;
+
+    int inputVectorSize = input.size();
+
+    // The following procedure cancels the duplicated detection outputs
+    for (int cpt = 0; cpt < inputVectorSize; cpt++)
+    {
+        DetectionOutput* o = &input[cpt];
+
+        bool found = false;
+
+        for (unsigned int i = 0; i < output.size() && !found; i++)
+        {
+            DetectionOutput* p = output[i];
+
+            if ((o->point[0] - p->point[0]).norm2() + (o->point[1] - p->point[1]).norm2() < MinDist2)
+            {
+                found = true;
+            }
+        }
+
+        if (!found)
+            output.push_back(o);
+    }
+}
+
+
+template < class TCollisionModel1, class TCollisionModel2 >
+void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyContacts(DetectionOutputVector &input)
+{
+    using sofa::core::collision::DetectionOutput;
+    typedef constraintset::ContinuousUnilateralInteractionConstraint< Vec3Types > ContinuousConstraint;
+
+    const double MinDist = 0.01f;
+
+    if (this->m_constraint)
+    {
+        ContinuousConstraint *cc = static_cast< ContinuousConstraint* >(this->m_constraint);
+
+        // cc->debugContactStates();
+
+        DetectionOutputVector::iterator it = input.begin();
+        DetectionOutputVector::iterator itEnd = input.end();
+
+        while (it != itEnd)
+        {
+            DetectionOutputVector::iterator itOld = this->contacts.begin();
+            DetectionOutputVector::iterator itOldEnd = this->contacts.end();
+
+            while (itOld != itOldEnd)
+            {
+                if (cc->isSticked(m_generatedContacts[(*itOld)->id]))
+                {
+                    if (((*it)->point[0] - (*itOld)->point[0]).norm2() + ((*it)->point[1] - (*itOld)->point[1]).norm2() < MinDist)
+                    {
+                        (*it)->point[0] = (*itOld)->point[0];
+                        (*it)->point[1] = (*itOld)->point[1];
+
+                        this->contacts.erase(itOld);
+
+                        std::cout << "Found a remaining sticked contact\n";
+
+                        break;
+                    }
+                }
+
+                ++itOld;
+            }
+
+            ++it;
+        }
+
+        cc->clearContactStates();
+    }
+
+    m_generatedContacts.clear();
+
+    // Update contacts structure
+    this->contacts.clear();
+    this->contacts.reserve(input.size());
+
+    for (unsigned int i = 0; i < input.size(); i++)
+    {
+        this->contacts.push_back(input[i]);
+    }
+}
+
+
+template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
+    TOutputVector& outputs = *static_cast< TOutputVector* >(o);
+
+    DetectionOutputVector filteredOutputs;
+
+    filterDuplicatedDetectionOutputs(outputs, filteredOutputs);
+
+    keepStickyContacts(filteredOutputs);
+
     if (!use_mapper_for_state1)
     {
         if (map1)
@@ -632,6 +731,8 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 
             // add contact in unilateral constraint
             this->m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
+
+            m_generatedContacts.insert(std::make_pair(o->id, index));
         }
 
         if (this->parent!=NULL)
@@ -673,7 +774,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
     std::cout<<" \n  \n ************\n removeResponse called \n ************\n"<<std::endl;
-    if (this->m_constraint!=NULL)
+    if (this->m_constraint != NULL)
     {
         this->mapper1.resize(0);
         this->mapper2.resize(0);

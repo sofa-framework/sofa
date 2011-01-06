@@ -103,7 +103,7 @@ protected:
     core::objectmodel::BaseContext* parent;
 
     Data<double> mu;
-    std::vector<sofa::core::collision::DetectionOutput*> contacts;
+    std::vector< sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
 
     void activateMappers();
@@ -134,11 +134,10 @@ long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::
 }
 
 
-/////// TEST:
 template <class TCollisionModel1, class TCollisionModel2>
 class ContinuousFrictionContact : public FrictionContact<TCollisionModel1, TCollisionModel2>
 {
-    SOFA_CLASS(SOFA_TEMPLATE2(ContinuousFrictionContact,TCollisionModel1,TCollisionModel2), SOFA_TEMPLATE2(FrictionContact,TCollisionModel1,TCollisionModel2));
+    SOFA_CLASS(SOFA_TEMPLATE2(ContinuousFrictionContact, TCollisionModel1, TCollisionModel2), SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2));
 
 public:
     typedef TCollisionModel1 CollisionModel1;
@@ -151,6 +150,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
+    typedef std::vector< sofa::core::collision::DetectionOutput* > DetectionOutputVector;
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(this->model1,this->model2); }
 
@@ -186,6 +186,11 @@ protected:
         return 0;
     }
 
+    /// Removes duplicate contacts
+    void filterDuplicatedDetectionOutputs(TOutputVector &input, DetectionOutputVector &output);
+
+    void keepStickyContacts(DetectionOutputVector &output);
+
     bool use_mapper_for_state1;
     bool use_mapper_for_state2;
 
@@ -198,8 +203,10 @@ protected:
     sofa::core::BaseMapping *map1;
     sofa::core::BaseMapping *map2;
 
-    std::vector<Vector3> barycentricValues1;
-    std::vector<Vector3> barycentricValues2;
+    std::vector< Vector3 > barycentricValues1;
+    std::vector< Vector3 > barycentricValues2;
+
+    std::map< int64_t, int > m_generatedContacts;
 };
 
 
