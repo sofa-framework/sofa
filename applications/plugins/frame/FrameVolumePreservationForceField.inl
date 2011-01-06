@@ -184,7 +184,7 @@ void FrameVolumePreservationForceField<DataTypes>::addDForce(DataVecDeriv& _df ,
             if(material) bulkModulus=(Real)material->getBulkModulus(i);
             invdet=(Real)1./det[i];
             trace=0;
-            for(unsigned int k=0; k<material_dimensions; k++) for(unsigned int l=0; l<material_dimensions; l++) trace+=dx[i].getMaterialFrame()[k][l]*ddet[i][k][l];
+            for(int k=0; k<material_dimensions; k++) for(int l=0; l<material_dimensions; l++) trace+=dx[i].getMaterialFrame()[k][l]*ddet[i][k][l];
             trace*=((Real)2.-invdet);
             M=ddet[i]*dx[i].getMaterialFrame().multTranspose(ddet[i])*((Real)1.-invdet);
             M-=ddet[i]*trace;

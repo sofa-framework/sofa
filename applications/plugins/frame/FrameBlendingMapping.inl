@@ -505,7 +505,6 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 }
             }
         }
-
     }
     normalizeWeights();
 }

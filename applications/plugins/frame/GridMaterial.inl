@@ -48,16 +48,18 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , voxelSize ( initData ( &voxelSize, SCoord ( 0,0,0 ), "voxelSize", "Voxel size." ) )
     , origin ( initData ( &origin, SCoord ( 0,0,0 ), "origin", "Grid origin." ) )
     , dimension ( initData ( &dimension, GCoord ( 0,0,0 ), "dimension", "Grid dimensions." ) )
+    , gridOffset (5)
+    , nbVoxels (0)
     , labelToStiffnessPairs ( initData ( &labelToStiffnessPairs, "labelToStiffnessPairs","Correspondances between grid value and material stiffness." ) )
     , labelToDensityPairs ( initData ( &labelToDensityPairs, "labelToDensityPairs","Correspondances between grid value and material density." ) )
     , labelToBulkModulusPairs ( initData ( &labelToBulkModulusPairs, "labelToBulkModulusPairs","Correspondances between grid value and material bulk modulus." ) )
     , labelToPoissonRatioPairs ( initData ( &labelToPoissonRatioPairs, "labelToPoissonRatioPairs","Correspondances between grid value and material Poisson Ratio." ) )
+    , imageFile( initData(&imageFile,"imageFile","Image file."))
+    , weightFile( initData(&weightFile,"weightFile","Voxel weight file."))
     , bulkModulus ( initData ( &bulkModulus, "bulkModulus","Sample bulk Modulus." ) )
     , stiffness ( initData ( &stiffness, "stiffness","Sample stiffness." ) )
     , density ( initData ( &density, "density","Sample density." ) )
     , poissonRatio ( initData ( &poissonRatio, "poissonRatio","Sample poisson Ratio." ) )
-    , imageFile( initData(&imageFile,"imageFile","Image file."))
-    , weightFile( initData(&weightFile,"weightFile","Voxel weight file."))
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
     , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
@@ -304,7 +306,7 @@ void GridMaterial< MaterialTypes>::updateSampleMaterialProperties()
 
     unsigned int nbsamples=0;
     for(unsigned int i=0; i<nbVoxels; i++)
-        if((unsigned int)voronoi[i]!=-1) if((unsigned int)voronoi[i]>nbsamples) nbsamples=(unsigned int)voronoi[i];
+        if(voronoi[i]!=-1) if((unsigned int)voronoi[i]>nbsamples) nbsamples=(unsigned int)voronoi[i];
     nbsamples++; // indices in voronoi start from 0
 
     WriteAccessor<Data<vector<Real> > >  m_bulkModulus  ( bulkModulus );	m_bulkModulus.resize(nbsamples);
@@ -528,10 +530,10 @@ bool GridMaterial< MaterialTypes>::loadImage()
     }
 
     // offset by one voxel to prevent from interpolation outside the grid
-    int offset=5;
-    GCoord off; off.fill(2*offset);
+    gridOffset = 5;
+    GCoord off; off.fill(2*gridOffset);
     dimension.setValue(dimension.getValue()+off);
-    origin.setValue(origin.getValue()-voxelSize.getValue()*(Real)offset);
+    origin.setValue(origin.getValue()-voxelSize.getValue()*(Real)gridOffset);
 
     grid.resize(dimension.getValue()[0],dimension.getValue()[1],dimension.getValue()[2],1,0,0,0.5,0.5,0.5,0.5);
 
@@ -542,6 +544,7 @@ bool GridMaterial< MaterialTypes>::loadImage()
     }
     std::cout << "Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << std::endl;
     this->nbVoxels = dimension.getValue()[0]*dimension.getValue()[1]*dimension.getValue()[2];
+    updateMaxValues();
     return true;
 }
 
@@ -712,7 +715,7 @@ bool GridMaterial< MaterialTypes>::computeVolumeIntegrationFactors(const unsigne
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sampleindex,const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw,VRefHessian* ddw)
+bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sampleindex,const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw,VRefHessian* /*ddw*/)
 {
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels || v_weights.size()!=nbVoxels || v_index.size()!=nbVoxels) return false; // weights not computed
@@ -997,6 +1000,8 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
     std::cout<<"Grid weight computation completed"<<std::endl;
     if (weightFile.isSet()) saveWeightRepartion();
     showedrepartition=-1;
+
+    updateMaxValues();
     return true;
 }
 
@@ -1117,6 +1122,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
         }
         fifo.pop();
     }
+    updateMaxValues();
     return true;
 }
 
@@ -1175,6 +1181,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
         }
         fifo.pop();
     }
+    updateMaxValues();
     return true;
 }
 
@@ -1240,6 +1247,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
         fifo.pop();
     }
 
+    updateMaxValues();
     return true;
 }
 
@@ -1358,6 +1366,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 
 
     //std::cout<<"Added " << indices.size()-initial_num_points << " samples"<<std::endl;
+    updateMaxValues();
     return true;
 }
 
@@ -1420,6 +1429,7 @@ bool GridMaterial< MaterialTypes>::SubdivideVoronoiRegion( const unsigned int vo
             if(d1<d2) voronoi[i]=newvoronoiindex;
         }
 
+    updateMaxValues();
     return true;
 }
 
@@ -1834,35 +1844,10 @@ void GridMaterial< MaterialTypes>::draw()
         float defaultcolor[4]= {0.8,0.8,0.8,0.3},color[4];
         showWireframe=this->getContext()->getShowWireFrame();
 
-        float label=-1,labelmax=-1;
+        float label=-1;
 
-        if (showvox==SHOWVOXELS_DATAVALUE)
+        if (showvox==SHOWVOXELS_WEIGHTS)
         {
-            for (i=0; i<nbVoxels; i++) if (grid.data()[i]>labelmax) labelmax=(float)grid.data()[i];
-        }
-        else if (showvox==SHOWVOXELS_STIFFNESS)
-        {
-            labelmax=20000;
-        }
-        else if (showvox==SHOWVOXELS_DENSITY)
-        {
-            labelmax=10000;
-        }
-        else if (showvox==SHOWVOXELS_BULKMODULUS)
-        {
-            labelmax=0.5;
-        }
-        else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)
-        {
-            for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (voronoi[i]+1>labelmax) labelmax=(float)voronoi[i]+1;
-        }
-        else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)
-        {
-            for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]>labelmax) labelmax=(float)distances[i];
-        }
-        else if (showvox==SHOWVOXELS_WEIGHTS)
-        {
-            labelmax=1;
             if (v_weights.size()==nbVoxels && v_index.size()==nbVoxels) // paste v_weights into weights
             {
                 if (showedrepartition!=(int)showWeightIndex.getValue()) pasteRepartioninWeight(showWeightIndex.getValue());
@@ -1873,6 +1858,7 @@ void GridMaterial< MaterialTypes>::draw()
         bool slicedisplay=false;
         for (i=0; i<3; i++) if(showPlane.getValue()[i]>=0 && showPlane.getValue()[i]<dimension.getValue()[i]) slicedisplay=true;
 
+        float labelMax = maxValues[showvox];
         cimg_forXYZ(grid,x,y,z)
         {
 //                        if (grid(x,y,z)==0) continue;
@@ -1889,13 +1875,11 @@ void GridMaterial< MaterialTypes>::draw()
                 //    continue;
             }
 
-            if (labelmax!=-1)
-                label = getLabel(x,y,z);
-
+            label = (labelMax>0)?getLabel(x,y,z):-1.0f;
             if (label<=0) continue;
+            if (label>labelMax) label=labelMax;
 
-            if (label>labelmax) label=labelmax;
-            helper::gl::Color::setHSVA(240.*label/labelmax,1.,.8,defaultcolor[3]);
+            helper::gl::Color::setHSVA(240.*label/labelMax,1.,.8,defaultcolor[3]);
             glGetFloatv(GL_CURRENT_COLOR, color);
             glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
 
@@ -1906,8 +1890,8 @@ void GridMaterial< MaterialTypes>::draw()
 
         if (show3DValues.getValue() && slicedisplay && vboSupported)
         {
-            updateValuesVBO(showvox,labelmax);
-            //displayValuesVBO();
+            updateValuesVBO(showvox,labelMax);
+            displayValuesVBO();
         }
 
     }
@@ -1977,61 +1961,156 @@ void GridMaterial< MaterialTypes>::deleteVBO(const GLuint vboId)
 template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::initVBO()
 {
-    vboSupported = false; // TODO Check it later
+    vboSupported = true; // TODO Check it later
 
     if(vboSupported)
     {
-        int bufferSize; //TODO: allocate and initialize three views in the same VBO
+        int bufferSize;
 
-        // Allocate
-        unsigned int vertexSize = 3*((grid.width()+1) * (grid.height()+1) * (grid.depth()+1));
+        unsigned int realGridSizeX = grid.width() - 2*gridOffset;
+        unsigned int realGridSizeY = grid.height() - 2*gridOffset;
+        unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+
+        // Allocate a plane mesh for each axis
+        unsigned int vertexSize = 3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ + realGridSizeX * realGridSizeY);
         unsigned int normalSize = vertexSize;
-        unsigned int indicesSize = 0;
+        unsigned int indicesSize = 4*(((realGridSizeY-1)*(realGridSizeZ-1))+((realGridSizeX-1)*(realGridSizeZ-1))+((realGridSizeX-1)*(realGridSizeY-1)));
         valuesVertices = new GLfloat[vertexSize];
         valuesNormals = new GLfloat[normalSize];
-        valuesIndices = new GLfloat[indicesSize];
+        valuesIndices = new GLushort[indicesSize];
 
         // Initialize
-        /*
-        unsigned int dim0 = (grid.width()+1) * (grid.height()+1);
-        unsigned int dim1 = grid.width()+1;
-        float vSX = voxelSize.getValue()[0];
-        float vSY = voxelSize.getValue()[1];
-        float vSZ = voxelSize.getValue()[2];
-        float vSX2 = voxelSize.getValue()[0] * .5;
-        float vSY2 = voxelSize.getValue()[1] * .5;
-        float vSZ2 = voxelSize.getValue()[2] * .5;
-        const SCoord& ori = origin.getValue();
-        for (int x = 0; x < grid.width()+1; ++x)
-        {
-            for (int y = 0; y < grid.height()+1; ++y)
-            {
-                for (int z = 0; z < grid.depth()+1; ++z)
-                {
-                    for (unsigned int w = 0; w < 3; ++w)
-                    {
-                        //const unsigned int index = z+y*dim1+x*dim0;
-                        //valuesVertices[w+3*(index)] = (ori + SCoord(x*vSX-vSX2,y*vSY-vSY2,z*vSZ-vSZ2))[w]; // TODO
-                        //valuesNormals[w+3*(z+y*dim1+x*dim0)] = SCoord(-vSX, -vSY, -vSZ)[w]; // TODO
-                    }
-                    //valuesIndices[6*(z+y*dim1+x*dim0)+0] = index; // TODO
-                }
-            }
-        }
-        */
+        int vOffSet1 = realGridSizeY * realGridSizeZ;
+        int vOffSet2 = realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ;
+        int iOffSet1 = (realGridSizeY-1) * (realGridSizeZ-1);
+        int iOffSet2 = (realGridSizeY-1) * (realGridSizeZ-1) + (realGridSizeX-1) * (realGridSizeZ-1);
+        initPlaneGeometry ( 0, 0, 0);
+        initPlaneGeometry ( 1, vOffSet1, iOffSet1);
+        initPlaneGeometry ( 2, vOffSet2, iOffSet2);
 
         // Allocate on GPU
         glGenBuffersARB(1, &vboValuesId1);
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
-        glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(valuesVertices)+sizeof(valuesNormals), 0, GL_STREAM_DRAW_ARB);
-        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(valuesVertices), valuesVertices);
-        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(valuesVertices), sizeof(valuesNormals), valuesNormals);
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(GLfloat)*(vertexSize+normalSize), 0, GL_STREAM_DRAW_ARB);
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(GLfloat)*vertexSize, valuesVertices);
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(GLfloat)*vertexSize, sizeof(GLfloat)*normalSize, valuesNormals);
         glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-        std::cout << "Vertex and Normal Array in VBO: " << bufferSize << " bytes\n";
+        //std::cout << "Vertex and Normal Array in VBO: " << bufferSize << " bytes\n";
 
-        vboValuesId2 = createVBO(valuesIndices, sizeof(valuesIndices), GL_ELEMENT_ARRAY_BUFFER_ARB, GL_STATIC_DRAW_ARB);
+        vboValuesId2 = createVBO(valuesIndices, sizeof(GLushort)*indicesSize, GL_ELEMENT_ARRAY_BUFFER_ARB, GL_STATIC_DRAW_ARB);
         glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-        std::cout << "Index Array in VBO: " << bufferSize << " bytes\n";
+        //std::cout << "Index Array in VBO: " << bufferSize << " bytes\n";
+
+        delete [] valuesVertices;
+        delete [] valuesNormals;
+        delete [] valuesIndices;
+    }
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::initPlaneGeometry( const int& axis, const int nbVerticesOffset, const int nbIndicesOffset)
+{
+    const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset;
+    unsigned int realGridSizeX = grid.width() - 2*gridOffset;
+    unsigned int realGridSizeY = grid.height() - 2*gridOffset;
+    unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+    SCoord dimGrid(realGridSizeX, realGridSizeY, realGridSizeZ);
+
+    unsigned int iX = (axis+1)%3;
+    unsigned int iY = (axis+2)%3;
+    unsigned int iZ = axis;
+
+    float vSX = voxelSize.getValue()[iX];
+    float vSY = voxelSize.getValue()[iY];
+    float vSZ = voxelSize.getValue()[iZ];
+    unsigned int nbVertices = 0;
+    unsigned int nbFaces = 0;
+    int maxX = dimGrid[iX];
+    int maxY = dimGrid[iY];
+    for (int x = 0; x < maxX; ++x)
+    {
+        for (int y = 0; y < maxY; ++y)
+        {
+            if( x > 0 && y > 0)
+            {
+                valuesIndices[4*nbIndicesOffset+4*nbFaces  ] = nbVerticesOffset+nbVertices;
+                valuesIndices[4*nbIndicesOffset+4*nbFaces+1] = nbVerticesOffset+nbVertices-maxY;
+                valuesIndices[4*nbIndicesOffset+4*nbFaces+2] = nbVerticesOffset+nbVertices-maxY-1;
+                valuesIndices[4*nbIndicesOffset+4*nbFaces+3] = nbVerticesOffset+nbVertices-1;
+                nbFaces++;
+            }
+            SCoord coord;
+            coord[iX] = x;
+            coord[iY] = y;
+            coord[iZ] = showPlane.getValue()[iZ];
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iX] = ori[iX] + x*vSX + .5*vSX;
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iY] = ori[iY] + y*vSY + .5*vSY;
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iZ] = ori[iZ] + showPlane.getValue()[iZ]*vSZ/* + getLabel(coord[0],coord[1],coord[2]) / maxValues[showvox] * scaleZ*/;
+            nbVertices++;
+        }
+    }
+
+    /*
+    if( axis == 2)
+    {
+        std::cout << "nbVerticesOffset: " << nbVerticesOffset << std::endl;
+        std::cout << "nbIndicesOffset: " << nbIndicesOffset << std::endl;
+        for( int i = 0; i < maxX*maxY; ++i)
+            std::cout << "vertex["<<i<<"]" << valuesVertices[3*nbVerticesOffset+3*i] << ", " << valuesVertices[3*nbVerticesOffset+3*i+1] << ", " << valuesVertices[3*nbVerticesOffset+3*i+2] << std::endl;
+        for( int i = 0; i < (maxX-1)*(maxY-1); ++i)
+            std::cout << "face["<<i<<"]" << valuesIndices[4*nbIndicesOffset+4*i] << ", " << valuesIndices[4*nbIndicesOffset+4*i+1] << ", " << valuesIndices[4*nbIndicesOffset+4*i+2] << ", " << valuesIndices[4*nbIndicesOffset+4*i+3] << std::endl;
+    }*/
+    /*
+    // Compute face normals
+    GLfloat faceNormals[3*(maxX-1)*(maxY-1)];
+    nbFaces = 0;
+    for (int x = 0; x < maxX; ++x)
+    {
+        for (int y = 0; y < maxY; ++y)
+        {
+            if( x > 0 && y > 0)
+            {
+                faceNormals[3*nbFaces  ] = ;
+                faceNormals[3*nbFaces+1] = ;
+                faceNormals[3*nbFaces+2] = ;
+                nbFaces++;
+            }
+        }
+    }*/
+
+    unsigned int nbNormals = 0;
+    for (int x = 0; x < maxX; ++x)
+    {
+        for (int y = 0; y < maxY; ++y)
+        {
+            // TODO compute each face normal, then vertex normal
+            for (int i = 0; i < 3; ++i)
+            {
+                valuesNormals[3*nbVerticesOffset+nbNormals] = (i == axis); nbNormals++;
+            }
+
+            /*
+            // Compute Laplacian
+            float n[3];
+            unsigned int index = nbNormals;
+            for (unsigned int w = 0; w < 3; ++w)
+            {
+                n[w] = 0.0f;
+                float nbContrib = 0;
+                if (x >   0   ) {n[w] += valuesVertices[vertexOffset+index-maxY]; nbContrib++;}
+                if (x < maxX-1) {n[w] += valuesVertices[vertexOffset+index+maxY]; nbContrib++;}
+                if (y >   0   ) {n[w] += valuesVertices[vertexOffset+index-1]; nbContrib++;}
+                if (y < maxY-1) {n[w] += valuesVertices[vertexOffset+index+1]; nbContrib++;}
+                n[w] /= nbContrib; index++;
+            }
+            // Normalize
+            float norm = sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+            valuesNormals[vertexOffset+nbNormals] = n[0] / norm; nbNormals++;
+            valuesNormals[vertexOffset+nbNormals] = n[1] / norm; nbNormals++;
+            valuesNormals[vertexOffset+nbNormals] = n[2] / norm; nbNormals++;
+            */
+        }
     }
 }
 
@@ -2039,68 +2118,103 @@ void GridMaterial< MaterialTypes>::initVBO()
 template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::updateValuesVBO( const bool& /*showvox*/, const float& /*labelmax*/)
 {
-    /*
-    unsigned int dimX, dimY;
-    Vec3i dimension;
-    if( axis == 0) // Z axis
-    {
-        dimX = grid.width();
-        dimY = grid.height();
-    }
-    else if( axis == 1) // X axis
-    {
-        dimX = grid.depth();
-        dimY = grid.width();
-    }
-    else if( axis == 2) // Y axis
-    {
-        dimX = grid.height();
-        dimY = grid.depth();
-    }
-    else
-    {
-        return;
-    }
-    */
-
+    unsigned int realGridSizeX = grid.width() - 2*gridOffset;
+    unsigned int realGridSizeY = grid.height() - 2*gridOffset;
+    unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+    unsigned int showvox=this->showVoxels.getValue().getSelectedId();
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
     float *ptr = (float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_READ_WRITE_ARB);
     if(ptr)
     {
-        unsigned int dim0 = grid.width() * grid.height();
-        unsigned int dim1 = grid.width();
-        cimg_forXYZ(grid,x,y,z)
+        unsigned int offSet[] = {0,3*(realGridSizeY * realGridSizeZ),3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ)};
+        const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset;
+        for (unsigned int axis = 0; axis < 3; ++axis)
         {
-            if(x!=showPlane.getValue()[0] && y!=showPlane.getValue()[1] && z!=showPlane.getValue()[2])
+            unsigned int iX = axis;
+            unsigned int iY = (axis+1)%3;
+            unsigned int iZ = (axis+2)%3;
+            float vSZ = voxelSize.getValue()[iZ];
+            SCoord dimGrid(grid.width(), grid.height(), grid.depth());
+            int scaleZ = 5 * vSZ;//std::min( dimGrid[iX], dimGrid[iY]) / 5.0;
+            if(showPlane.getValue()[axis] != -1)
                 continue;
 
-            SCoord coord;
-            getCoord(GCoord(x,y,z),coord);
-            for(unsigned int w = 0; w < 3; ++w)
-                ptr[w+3*(z+y*dim1+x*dim0)] = coord[w];
+            unsigned int nbVertices = 0;
+            int maxX = dimGrid[iX];
+            int maxY = dimGrid[iY];
+            for (int x = 0; x < maxX; ++x)
+            {
+                for (int y = 0; y < maxY; ++y)
+                {
+                    SCoord coord;
+                    coord[iX] = x;
+                    coord[iY] = y;
+                    coord[iZ] = showPlane.getValue()[iZ];
+                    ptr[3*offSet[axis]+3*nbVertices+iZ] = ori[iZ] + showPlane.getValue()[iZ]*vSZ + getLabel(coord[0],coord[1],coord[2]) / maxValues[showvox] * scaleZ;
+                    nbVertices++;
+                }
+            }
+
+            glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
         }
-
-        glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
     }
-
 }
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::displayValuesVBO( const int& /*size*/, const int& /*axis*/) const
+void GridMaterial< MaterialTypes>::displayValuesVBO() const
 {
-    // Enable VBO
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
+    unsigned int realGridSizeX = grid.width() - 2*gridOffset;
+    unsigned int realGridSizeY = grid.height() - 2*gridOffset;
+    unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+    unsigned int vertexSize = 3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ + realGridSizeX * realGridSizeY);
 
     // before draw, specify vertex and index arrays with their offsets
-    glNormalPointer(GL_FLOAT, 0, (void*)sizeof(valuesVertices));
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
+    glNormalPointer(GL_FLOAT, 0, (void*)vertexSize);
     glVertexPointer(3, GL_FLOAT, 0, 0);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, vboValuesId2);
     glIndexPointer(GL_UNSIGNED_SHORT, 0, 0);
 
+    /***************************************
+    float shininess = 15.0f;
+    float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
+    float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
+
+    // set specular and shiniess using glMaterial (gold-yellow)
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
+
+    // set ambient and diffuse color using glColorMaterial (gold-yellow)
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glColor3fv(diffuseColor);
+    ****************************************/
+
+    // Enable VBO
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     // use only offset here instead of absolute pointer addresses
-    glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_SHORT, (GLushort*)0+0); // TODO display following the indices size.
+    if(showPlane.getValue()[0] != -1)
+    {
+        drawPlaneBBox(0);
+        glColor4f(1.0,0.0,0.0,0.8);
+        glDrawElements(GL_QUADS, 4*(realGridSizeY-1)*(realGridSizeZ-1), GL_UNSIGNED_SHORT, (GLushort*)0+0);
+    }
+    if(showPlane.getValue()[1] != -1)
+    {
+        drawPlaneBBox(1);
+        glColor4f(0.0,1.0,0.0,0.8);
+        glDrawElements(GL_QUADS, 4*(realGridSizeX-1)*(realGridSizeZ-1), GL_UNSIGNED_SHORT, (GLushort*)0+4*(realGridSizeY-1)*(realGridSizeZ-1));
+    }
+    if(showPlane.getValue()[2] != -1)
+    {
+        drawPlaneBBox(2);
+        glColor4f(0.0,0.0,1.0,0.8);
+        glDrawElements(GL_QUADS, 4*(realGridSizeX-1)*(realGridSizeY-1), GL_UNSIGNED_SHORT, (GLushort*)0+4*((realGridSizeY-1)*(realGridSizeZ-1)+(realGridSizeX-1)*(realGridSizeZ-1)));
+    }
 
     // Disable VBO
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -2109,6 +2223,34 @@ void GridMaterial< MaterialTypes>::displayValuesVBO( const int& /*size*/, const 
     // Bind the buffers to 0 by safety
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::drawPlaneBBox( const int& /*axis*/) const
+{
+    /*
+       const unsigned int iX = (axis+1)%3;
+       const unsigned int iY = (axis+2)%3;
+       const unsigned int iZ = axis;
+
+       SCoord minBox(origin.getValue());
+       SCoord maxBox(origin.getValue()+dimension.getValue()*voxelSize.getValue());
+       glColor3f(1.0,0.0,0.0);
+       glBegin (GL_LINES);
+       glVertex3f(minBox[0],minBox[1],minBox[2]);
+       glVertex3f(maxBox[0],minBox[1],minBox[2]);
+       glVertex3f(minBox[0],minBox[1],minBox[2]);
+       glVertex3f(minBox[0],maxBox[1],minBox[2]);
+       glVertex3f(minBox[0],minBox[1],minBox[2]);
+       glVertex3f(minBox[0],minBox[1],maxBox[2]);
+       glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
+       glVertex3f(minBox[0],maxBox[1],maxBox[2]);
+       glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
+       glVertex3f(maxBox[0],minBox[1],maxBox[2]);
+       glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
+       glVertex3f(maxBox[0],maxBox[1],minBox[2]);
+       glEnd();*/
 }
 
 
@@ -2150,6 +2292,23 @@ void GridMaterial< MaterialTypes>::genListCube()
     glEnd ();
     glEndList();
 
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::updateMaxValues()
+{
+    // Determine max values
+    unsigned int i;
+    for (i=0; i < 8; ++i) maxValues[i] = -1.0f;
+    for (i=0; i<nbVoxels; i++) if ((float)grid.data()[i]>maxValues[SHOWVOXELS_DATAVALUE]) maxValues[SHOWVOXELS_DATAVALUE]=(float)grid.data()[i];
+    for (typename mapLabelType::const_iterator it = labelToStiffnessPairs.getValue().begin(); it != labelToStiffnessPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_STIFFNESS]) maxValues[SHOWVOXELS_STIFFNESS]=(float)it->second;
+    for (typename mapLabelType::const_iterator it = labelToDensityPairs.getValue().begin(); it != labelToDensityPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_DENSITY]) maxValues[SHOWVOXELS_DENSITY]=(float)it->second;
+    for (typename mapLabelType::const_iterator it = labelToBulkModulusPairs.getValue().begin(); it != labelToBulkModulusPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_BULKMODULUS]) maxValues[SHOWVOXELS_BULKMODULUS]=(float)it->second;
+    for (typename mapLabelType::const_iterator it = labelToPoissonRatioPairs.getValue().begin(); it != labelToPoissonRatioPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_POISSONRATIO]) maxValues[SHOWVOXELS_POISSONRATIO]=(float)it->second;
+    for (i=0; i<voronoi.size(); i++) if (grid.data()[i] && voronoi[i]+1>maxValues[SHOWVOXELS_VORONOI]) maxValues[SHOWVOXELS_VORONOI]=(float)voronoi[i]+1;
+    for (i=0; i<distances.size(); i++) if (grid.data()[i] && distances[i]>maxValues[SHOWVOXELS_DISTANCES]) maxValues[SHOWVOXELS_DISTANCES]=(float)distances[i];
+    maxValues[SHOWVOXELS_WEIGHTS]=1.0f;
 }
 
 
