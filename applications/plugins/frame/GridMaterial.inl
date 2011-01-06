@@ -352,7 +352,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulk
 template < class MaterialTypes>
 typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStiffness(const voxelType label)
 {
-    if(label==0) return (Real)1;
+    if(label==0) return (Real)0;
 
     const mapLabelType& pairs = labelToStiffnessPairs.getValue();
     if (pairs.size()==0) return (Real)1; // no map defined -> return 1
@@ -378,7 +378,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStif
 template < class MaterialTypes>
 typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensity(const voxelType label)
 {
-    if(label==0) return (Real)1;
+    if(label==0) return (Real)0;
 
     const mapLabelType& pairs = labelToDensityPairs.getValue();
     if (pairs.size()==0) return (Real)1; // no map defined -> return 1
@@ -739,16 +739,22 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
 
     // get point indices in voronoi
     VUI neighbors;   for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)sampleindex) neighbors.push_back((unsigned int)i);
-    bool dilatevoronoi=false;
-    if (dilatevoronoi)
-        for (i=0; i<nbVoxels; i++)
+    bool dilatevoronoi=true;
+    if (dilatevoronoi) // take points outside grid for non-singular fitting
+    {
+        unsigned int nbneighb=neighbors.size();
+        for (i=0; i<nbneighb; i++)
         {
             VUI tmp;
-            get26Neighbors(i, tmp);
-            bool insert=false;
-            for (j=0; j<tmp.size(); j++) if (voronoi[tmp[j]]==(int)sampleindex) insert=true;
-            if (insert) neighbors.push_back((unsigned int)i);
+            get6Neighbors(neighbors[i], tmp);
+            for (j=0; j<tmp.size(); j++)
+                if (grid.data()[tmp[j]]==0)
+                {
+                    k=nbneighb; while(k<neighbors.size() && neighbors[k]!=tmp[j]) k++;
+                    if (k==neighbors.size()) neighbors.push_back(tmp[j]);
+                }
         }
+    }
 
     // lump the weights
     for (i=0; i<nbRef; i++)
@@ -831,7 +837,7 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& 
     {
         Mat<4,4,Real> tmp,invtmp;
         for (i=0; i<4; i++) for (j=0; j<4; j++) tmp[i][j]=Cov[i][j];
-
+        //sout<<"det="<<determ(Cov,dim)<<sendl;
         if (determ(Cov,dim)<MIN_DET) invCov[0][0]=1./Cov[0][0];    // coplanar points->not invertible->go back to simple average
         else	{ invtmp.invert(tmp); for (i=0; i<4; i++) for (j=0; j<4; j++) invCov[i][j]=invtmp[i][j];}
     }
