@@ -17,7 +17,7 @@
 		<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 		<MechanicalObject template="Affine" name="DOFs" useMask="0" rest_position="0 0 -0.99 [1 0 0, 0 1 0, 0 0 1] 0 0 0.99 [1 0 0, 0 1 0, 0 0 1]" 
-												position="0 0 -0.99 [1 0 0, 0 1 0, 0 0 1] 0 0 0.99 [0 1 0, -1 0 0, 0 0 1] "/> 
+												position="0 0 -0.99 [1 0 0, 0 1 0, 0 0 1] 0 0 2 [1 0 0, 0 1 0, 0 0 1]"/> 
 		<FrameDiagonalMass template="AffineFrame3x12dMass"  showAxisSizeFactor="0.2"/>
 
 		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0 0 0 0" />
@@ -30,6 +30,8 @@
 				imageFile="@VoxelLoader.segmentationFileName"
 				labelToStiffnessPairs="1 1000"  
 				labelToDensityPairs="1 3000"
+				labelToPoissonRatioPairs="1 0"
+				labelToBulkModulusPairs="1 50"
 				distanceType="Geodesic"
 				biasDistances="true"
 				showVoxelData="None"
@@ -41,6 +43,7 @@ position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" 
 				targetFrameNumber="2"
 				targetSampleNumber="0" />
+			<FrameVolumePreservationForceField template="DeformationGradient332"  printLog="0"/>  
 			<FrameForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
 

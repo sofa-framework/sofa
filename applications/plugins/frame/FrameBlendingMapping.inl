@@ -356,11 +356,11 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
         vector<MaterialCoord> p;
 
         // Insert new samples
+        std::cout<<"Inserting "<<p.size()<<" gauss points..."<<std::endl;
+
         //gridMaterial->computeRegularSampling(p,3);
         // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
         gridMaterial->computeLinearRegionsSampling(p,targetSampleNumber.getValue());
-
-        std::cout<<"Inserting "<<p.size()<<" gauss points..."<<std::endl;
 
         // copy to out
         this->toModel->resize(p.size());
@@ -372,6 +372,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
         }
     }
 
+    gridMaterial->updateSampleMaterialProperties();
     // copy to sampledata
     points.resize(xto0.size());
     for(unsigned int i=0; i<xto0.size(); i++ )

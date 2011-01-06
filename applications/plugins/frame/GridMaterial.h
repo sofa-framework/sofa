@@ -45,13 +45,10 @@
 #define SHOWVOXELS_STIFFNESS 2
 #define SHOWVOXELS_DENSITY 3
 #define SHOWVOXELS_BULKMODULUS 4
-#define SHOWVOXELS_VORONOI 5
-#define SHOWVOXELS_DISTANCES 6
-#define SHOWVOXELS_WEIGHTS 7
-
-
-
-
+#define SHOWVOXELS_POISSONRATIO 5
+#define SHOWVOXELS_VORONOI 6
+#define SHOWVOXELS_DISTANCES 7
+#define SHOWVOXELS_WEIGHTS 8
 
 
 
@@ -83,8 +80,6 @@ public:
     typedef typename Inherited::VecMaterialCoord VecMaterialCoord;
     typedef typename Inherited::Str Str;            ///< Strain or stress tensor defined as a vector with 6 entries for 3d material coordinates, 3 entries for 2d coordinates, and 1 entry for 1d coordinates.
     typedef typename Inherited::VecStr VecStr;      ///< Vector of strain or stress tensors
-    //typedef typename Inherited::El2Str ElStr;            ///< Elaston strain or stress, see DefaultMaterialTypes
-    //typedef typename Inherited::VecEl2Str VecElStr;      ///< Vector of elaston strain or stress
     typedef typename Inherited::StrStr StrStr;			///< Stress-strain matrix
     typedef typename Inherited::VecStrStr VecStrStr;      ///< Vector of Stress-strain matrices
     typedef unsigned char voxelType;
@@ -126,7 +121,7 @@ public:
 
     /// Recompute the stress-strain matrix when the parameters are changed.
     virtual void init();
-
+    virtual void reinit();
 
     typedef typename Inherited::Strain1 Strain1;
     typedef typename Inherited::VecStrain1 VecStrain1;
@@ -144,46 +139,6 @@ public:
     virtual void computeStressChange  ( VecStrain4& stressChange, const VecStrain4& strainChange, const VecMaterialCoord& point );
     virtual void computeStressChange  ( VecStrain10& stressChange, const VecStrain10& strainChange, const VecMaterialCoord& point );
 
-//    virtual void computeStress  ( Str& stress, StrStr* stressStrainMatrix, const Str& strain, const Str& strainRate, const VecCoord& points );
-
-    ///// implementation of the abstract function
-    //virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
-
-    //virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate );
-
-    //typedef defaulttype::DeformationGradient<3,3,1,Real> DeformationGradient331;
-    //typedef typename DeformationGradient331::SampleIntegVector SampleIntegVector331;
-    //typedef vector<SampleIntegVector331>  VecSampleIntegVector331;
-    //typedef typename DeformationGradient331::Strain            Strain331;
-    //typedef vector<Strain331>  VecStrain331;
-
-    ///** \brief Compute stress based on local strain and strain rate at each point.
-    //*/
-    //virtual void computeStress  ( VecStrain331& stress, const VecStrain331& strain, const VecStrain331& strainRate, const VecSampleIntegVector331& integ ){}
-
-    ///** \brief Compute stress change based on strain change
-    // */
-    //virtual void computeStressChange  ( VecStrain331& stressChange, const VecStrain331& strainChange, const VecSampleIntegVector331& integ ){}
-
-
-    //typedef defaulttype::DeformationGradient<3,3,2,Real> DeformationGradient332;
-    //typedef typename DeformationGradient332::SampleIntegVector SampleIntegVector332;
-    //typedef vector<SampleIntegVector332>  VecSampleIntegVector332;
-    //typedef typename DeformationGradient332::Strain            Strain332;
-    //typedef vector<Strain332>  VecStrain332;
-
-    ///** \brief Compute stress based on local strain and strain rate at each point.
-    //*/
-    //virtual void computeStress  ( VecStrain332& stress, const VecStrain332& strain, const VecStrain332& strainRate, const VecSampleIntegVector332& integ ){}
-
-    ///** \brief Compute stress change based on strain change
-    // */
-    //virtual void computeStressChange  ( VecStrain332& stressChange, const VecStrain332& strainChange, const VecSampleIntegVector332& integ ){}
-
-
-
-
-
 
     /** Compute uniformly distributed point positions using Lloyd relaxation.
     Parameter points is InOut. The points passed to the method are considered fixed.
@@ -198,11 +153,6 @@ public:
     A first-order elaston models the strain as a linear function using the strain at the point and the gradient of the strain at this point, while a second-order elaston models the strain, the strain gradient and the strain Hessian.
 
       */
-    //  Real computeUniformSampling( VecVec3& points, vector<Real>& point_data, unsigned int num_points, unsigned int order );
-
-//    /// implementation of the abstract function
-//    virtual void computeDStress ( VecStr& stressChange, const VecStr& strainChange );
-
 
     /*************************/
     /*   draw	              */
@@ -215,11 +165,7 @@ public:
     /* material properties	  */
     /*************************/
 
-    // return the average value from in the voronoi region of sample
-    Real getStiffness(const unsigned int sampleindex);
-    // return the average value from in the voronoi region of sample
-    Real getDensity(const unsigned int sampleindex);
-    // return the average value from in the voronoi region of sample
+    void updateSampleMaterialProperties();
     virtual Real getBulkModulus(const unsigned int sampleindex);
 
 
@@ -286,6 +232,7 @@ protected:
     Data<mapLabelType> labelToStiffnessPairs;
     Data<mapLabelType> labelToDensityPairs;
     Data<mapLabelType> labelToBulkModulusPairs;
+    Data<mapLabelType> labelToPoissonRatioPairs;
 
     // temporary grid data
     vector<Real> distances;
@@ -295,7 +242,6 @@ protected:
     // voxel data
     vector<VRefReal> v_weights;
     vector<VRef> v_index;
-
 
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
 
@@ -317,12 +263,20 @@ protected:
     /* material properties	  */
     /*************************/
 
+    // store sample material properties to speed up access during simulation
+    Data<vector<Real> > bulkModulus;
+    Data<vector<Real> > stiffness;
+    Data<vector<Real> > density;
+    Data<vector<Real> > poissonRatio;
+
     // return the linearly interpolated value from the label/stiffness pairs
     Real getStiffness(const voxelType label);
     // return the linearly interpolated value from the label/density pairs
     Real getDensity(const voxelType label);
     // return the linearly interpolated value from the label/bulkModulus pairs
     Real getBulkModulus(const voxelType label);
+    // return the linearly interpolated value from the label/PoissonRatio pairs
+    Real getPoissonRatio(const voxelType label);
 
     /*********************************/
     /*   Compute distances/weights   */

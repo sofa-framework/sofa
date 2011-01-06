@@ -48,9 +48,14 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , voxelSize ( initData ( &voxelSize, SCoord ( 0,0,0 ), "voxelSize", "Voxel size." ) )
     , origin ( initData ( &origin, SCoord ( 0,0,0 ), "origin", "Grid origin." ) )
     , dimension ( initData ( &dimension, GCoord ( 0,0,0 ), "dimension", "Grid dimensions." ) )
-    , labelToStiffnessPairs ( initData ( &labelToStiffnessPairs, "labelToStiffnessPairs","Correspondances between grid value and stiffness." ) )
+    , labelToStiffnessPairs ( initData ( &labelToStiffnessPairs, "labelToStiffnessPairs","Correspondances between grid value and material stiffness." ) )
     , labelToDensityPairs ( initData ( &labelToDensityPairs, "labelToDensityPairs","Correspondances between grid value and material density." ) )
     , labelToBulkModulusPairs ( initData ( &labelToBulkModulusPairs, "labelToBulkModulusPairs","Correspondances between grid value and material bulk modulus." ) )
+    , labelToPoissonRatioPairs ( initData ( &labelToPoissonRatioPairs, "labelToPoissonRatioPairs","Correspondances between grid value and material Poisson Ratio." ) )
+    , bulkModulus ( initData ( &bulkModulus, "bulkModulus","Sample bulk Modulus." ) )
+    , stiffness ( initData ( &stiffness, "stiffness","Sample stiffness." ) )
+    , density ( initData ( &density, "density","Sample density." ) )
+    , poissonRatio ( initData ( &poissonRatio, "poissonRatio","Sample poisson Ratio." ) )
     , imageFile( initData(&imageFile,"imageFile","Image file."))
     , weightFile( initData(&weightFile,"weightFile","Voxel weight file."))
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
@@ -70,7 +75,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
-    helper::OptionsGroup showVoxelsOptions(8,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Voronoi", "Distances", "Weights");
+    helper::OptionsGroup showVoxelsOptions(8,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Distances", "Weights");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 }
@@ -120,21 +125,29 @@ void GridMaterial< MaterialTypes>::init()
     Inherited::init();
 }
 
+
+template<class MaterialTypes>
+void GridMaterial< MaterialTypes>::reinit()
+{
+    updateSampleMaterialProperties();
+}
+
 // WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
-
-    Real stressDiagonal, stressOffDiagonal, shear;
-    Real poissonRatio=0.3;
-
-    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration vector
-    stressDiagonal = f * (1 - poissonRatio);
-    stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio);// /2;
+    Real stressDiagonal, stressOffDiagonal, shear, poissRatio,youngModulus;
 
     for( unsigned int i=0; i<stresses.size(); i++ )
     {
+        if(poissonRatio.getValue().size()>i) poissRatio= poissonRatio.getValue()[i]; else poissRatio=0;
+        if(stiffness.getValue().size()>i) youngModulus= stiffness.getValue()[i]; else youngModulus=1;
+
+        Real f = youngModulus/((1 + poissRatio)*(1 - 2 * poissRatio));
+        stressDiagonal = f * (1 - poissRatio);
+        stressOffDiagonal = poissRatio * f;
+        shear = f * (1 - 2 * poissRatio);
+
         Str& stress = stresses[i][0];
         const Str& strain = strains[i][0];
 
@@ -152,17 +165,18 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStr
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStrStr* stressStrainMatrices, const VecStrain4& strains, const VecStrain4& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
-
-    Real stressDiagonal, stressOffDiagonal, shear;
-    Real poissonRatio=0.3;
-
-    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
-    stressDiagonal = f * (1 - poissonRatio);
-    stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio);// /2;
+    Real stressDiagonal, stressOffDiagonal, shear, poissRatio,youngModulus;
 
     for( unsigned int i=0; i<stresses.size(); i++ )
     {
+        if(poissonRatio.getValue().size()>i) poissRatio= poissonRatio.getValue()[i]; else poissRatio=0;
+        if(stiffness.getValue().size()>i) youngModulus= stiffness.getValue()[i]; else youngModulus=1;
+
+        Real f = youngModulus/((1 + poissRatio)*(1 - 2 * poissRatio));
+        stressDiagonal = f * (1 - poissRatio);
+        stressOffDiagonal = poissRatio * f;
+        shear = f * (1 - 2 * poissRatio);
+
         for(unsigned int j=0; j<4; j++ )
         {
             Str& stress = stresses[i][j];
@@ -182,16 +196,18 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain4& stresses, VecStr
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecStrStr* stressStrainMatrices, const VecStrain10& strains, const VecStrain10& /*strainRates*/, const VecMaterialCoord& /*point*/  )
 {
-    Real stressDiagonal, stressOffDiagonal, shear;
-    Real poissonRatio=0.3;
-
-    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
-    stressDiagonal = f * (1 - poissonRatio);
-    stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio);// /2;
+    Real stressDiagonal, stressOffDiagonal, shear, poissRatio, youngModulus;
 
     for( unsigned int i=0; i<stresses.size(); i++ )
     {
+        if(poissonRatio.getValue().size()>i) poissRatio= poissonRatio.getValue()[i]; else poissRatio=0;
+        if(stiffness.getValue().size()>i) youngModulus= stiffness.getValue()[i]; else youngModulus=1;
+
+        Real f = youngModulus/((1 + poissRatio)*(1 - 2 * poissRatio));
+        stressDiagonal = f * (1 - poissRatio);
+        stressOffDiagonal = poissRatio * f;
+        shear = f * (1 - 2 * poissRatio);
+
         for(unsigned int j=0; j<10; j++ )
         {
             Str& stress = stresses[i][j];
@@ -211,16 +227,18 @@ void GridMaterial< MaterialTypes>::computeStress  ( VecStrain10& stresses, VecSt
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, const VecStrain1& strains, const VecMaterialCoord& /*point*/  )
 {
-    Real stressDiagonal, stressOffDiagonal, shear;
-    Real poissonRatio=0.3;
-
-    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
-    stressDiagonal = f * (1 - poissonRatio);
-    stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio);// /2;
+    Real stressDiagonal, stressOffDiagonal, shear, poissRatio,youngModulus;
 
     for( unsigned int i=0; i<stresses.size(); i++ )
     {
+        if(poissonRatio.getValue().size()>i) poissRatio= poissonRatio.getValue()[i]; else poissRatio=0;
+        if(stiffness.getValue().size()>i) youngModulus= stiffness.getValue()[i]; else youngModulus=1;
+
+        Real f = youngModulus/((1 + poissRatio)*(1 - 2 * poissRatio));
+        stressDiagonal = f * (1 - poissRatio);
+        stressOffDiagonal = poissRatio * f;
+        shear = f * (1 - 2 * poissRatio);
+
         for(unsigned int j=0; j<1; j++ )
         {
 
@@ -228,20 +246,23 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain1& stresses, 
         }
     }
 }
+
 // WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, const VecStrain4& strains, const VecMaterialCoord& /*point*/  )
 {
-    Real stressDiagonal, stressOffDiagonal, shear;
-    Real poissonRatio=0.3;
-
-    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
-    stressDiagonal = f * (1 - poissonRatio);
-    stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio);// /2;
+    Real stressDiagonal, stressOffDiagonal, shear, poissRatio,youngModulus;
 
     for( unsigned int i=0; i<stresses.size(); i++ )
     {
+        if(poissonRatio.getValue().size()>i) poissRatio= poissonRatio.getValue()[i]; else poissRatio=0;
+        if(stiffness.getValue().size()>i) youngModulus= stiffness.getValue()[i]; else youngModulus=1;
+
+        Real f = youngModulus/((1 + poissRatio)*(1 - 2 * poissRatio));
+        stressDiagonal = f * (1 - poissRatio);
+        stressOffDiagonal = poissRatio * f;
+        shear = f * (1 - 2 * poissRatio);
+
         for(unsigned int j=0; j<4; j++ )
         {
 
@@ -249,20 +270,23 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain4& stresses, 
         }
     }
 }
+
 // WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses, const VecStrain10& strains, const VecMaterialCoord& /*point*/  )
 {
-    Real stressDiagonal, stressOffDiagonal, shear;
-    Real poissonRatio=0.3;
-
-    Real f = 1/((1 + poissonRatio)*(1 - 2 * poissonRatio)); // note: young modulus is contained in the integration factors (particular case of linear materials)
-    stressDiagonal = f * (1 - poissonRatio);
-    stressOffDiagonal = poissonRatio * f;
-    shear = f * (1 - 2 * poissonRatio);// /2;
+    Real stressDiagonal, stressOffDiagonal, shear, poissRatio,youngModulus;
 
     for( unsigned int i=0; i<stresses.size(); i++ )
     {
+        if(poissonRatio.getValue().size()>i) poissRatio= poissonRatio.getValue()[i]; else poissRatio=0;
+        if(stiffness.getValue().size()>i) youngModulus= stiffness.getValue()[i]; else youngModulus=1;
+
+        Real f = youngModulus/((1 + poissRatio)*(1 - 2 * poissRatio));
+        stressDiagonal = f * (1 - poissRatio);
+        stressOffDiagonal = poissRatio * f;
+        shear = f * (1 - 2 * poissRatio);
+
         for(unsigned int j=0; j<10; j++ )
         {
 
@@ -271,65 +295,67 @@ void GridMaterial< MaterialTypes>::computeStressChange  ( VecStrain10& stresses,
     }
 }
 
-template < class MaterialTypes>
-typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStiffness(const unsigned int sampleindex)
-{
-    if (!nbVoxels) return 0;
-    if (voronoi.size()!=nbVoxels) return 0;
-
-    Real ret=0;
-    unsigned int count=0;
-    for(unsigned int i=0; i<nbVoxels; i++)
-        if((unsigned int)voronoi[i]==sampleindex)
-        {
-            ret+=getStiffness(grid.data()[i]); count++;
-        }
-    if(count!=0) ret/=(Real)count;
-    return ret;
-}
 
 template < class MaterialTypes>
-typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensity(const unsigned int sampleindex)
+void GridMaterial< MaterialTypes>::updateSampleMaterialProperties()
 {
-    if (!nbVoxels) return 0;
-    if (voronoi.size()!=nbVoxels) return 0;
+    if (!nbVoxels) return ;
+    if (voronoi.size()!=nbVoxels) return ;
 
-    Real ret=0;
-    unsigned int count=0;
+    unsigned int nbsamples=0;
     for(unsigned int i=0; i<nbVoxels; i++)
-        if((unsigned int)voronoi[i]==sampleindex)
+        if((unsigned int)voronoi[i]!=-1) if((unsigned int)voronoi[i]>nbsamples) nbsamples=(unsigned int)voronoi[i];
+    nbsamples++; // indices in voronoi start from 0
+
+    WriteAccessor<Data<vector<Real> > >  m_bulkModulus  ( bulkModulus );	m_bulkModulus.resize(nbsamples);
+    WriteAccessor<Data<vector<Real> > >  m_stiffness  ( stiffness );		m_stiffness.resize(nbsamples);
+    WriteAccessor<Data<vector<Real> > >  m_density  ( density );			m_density.resize(nbsamples);
+    WriteAccessor<Data<vector<Real> > >  m_poissonRatio  ( poissonRatio );	m_poissonRatio.resize(nbsamples);
+
+    for(unsigned int sampleindex=0; sampleindex<nbsamples; sampleindex++)
+    {
+        unsigned int count=0;
+        m_bulkModulus[sampleindex]=0;
+        m_stiffness[sampleindex]=0;
+        m_density[sampleindex]=0;
+        m_poissonRatio[sampleindex]=0;
+
+        for(unsigned int i=0; i<nbVoxels; i++)
+            if((unsigned int)voronoi[i]==sampleindex)
+            {
+                m_bulkModulus[sampleindex]+=getBulkModulus(grid.data()[i]);
+                m_stiffness[sampleindex]+=getStiffness(grid.data()[i]);;
+                m_density[sampleindex]+=getDensity(grid.data()[i]);;
+                m_poissonRatio[sampleindex]+=getPoissonRatio(grid.data()[i]);
+                count++;
+            }
+        if(count!=0)
         {
-            ret+=getDensity(grid.data()[i]); count++;
+            m_bulkModulus[sampleindex]/=(Real)count;
+            m_stiffness[sampleindex]/=(Real)count;
+            m_density[sampleindex]/=(Real)count;
+            m_poissonRatio[sampleindex]/=(Real)count;
         }
-    if(count!=0) ret/=(Real)count;
-    return ret;
+    }
+
 }
+
 
 template < class MaterialTypes>
 typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkModulus(const unsigned int sampleindex)
 {
-    if (!nbVoxels) return 0;
-    if (voronoi.size()!=nbVoxels) return 0;
-
-    Real ret=0;
-    unsigned int count=0;
-    for(unsigned int i=0; i<nbVoxels; i++)
-        if((unsigned int)voronoi[i]==sampleindex)
-        {
-            ret+=getBulkModulus(grid.data()[i]); count++;
-        }
-    if(count!=0) ret/=(Real)count;
-    return ret;
+    if (bulkModulus.getValue().size()>sampleindex) return bulkModulus.getValue()[sampleindex]; else return 0;
 }
+
 
 
 template < class MaterialTypes>
 typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStiffness(const voxelType label)
 {
-    if(label==0) return 0;
+    if(label==0) return (Real)1;
 
     const mapLabelType& pairs = labelToStiffnessPairs.getValue();
-    if (pairs.size()==0) return (Real)label; // no map defined -> return label
+    if (pairs.size()==0) return (Real)1; // no map defined -> return 1
 
     typename mapLabelType::const_iterator mit;
     for (typename mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
@@ -352,10 +378,10 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStif
 template < class MaterialTypes>
 typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensity(const voxelType label)
 {
-    if(label==0) return 0;
+    if(label==0) return (Real)1;
 
     const mapLabelType& pairs = labelToDensityPairs.getValue();
-    if (pairs.size()==0) return (Real)label; // no map defined -> return label
+    if (pairs.size()==0) return (Real)1; // no map defined -> return 1
 
     typename mapLabelType::const_iterator mit;
     for (typename mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
@@ -378,10 +404,10 @@ typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensi
 template < class MaterialTypes>
 typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkModulus(const voxelType label)
 {
-    if(label==0) return 0;
+    if(label==0) return (Real)0;
 
     const mapLabelType& pairs = labelToBulkModulusPairs.getValue();
-    if (pairs.size()==0) return (Real)label; // no map defined -> return label
+    if (pairs.size()==0) return (Real)0; // no map defined -> return 0
 
     typename mapLabelType::const_iterator mit;
     for (typename mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
@@ -400,6 +426,33 @@ typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkM
     }
     return mit->second;
 }
+
+template < class MaterialTypes>
+typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getPoissonRatio(const voxelType label)
+{
+    if(label==0) return (Real)0;
+
+    const mapLabelType& pairs = labelToPoissonRatioPairs.getValue();
+    if (pairs.size()==0) return (Real)0; // no map defined -> return 0
+
+    typename mapLabelType::const_iterator mit;
+    for (typename mapLabelType::const_iterator pit=pairs.begin(); pit!=pairs.end(); pit++)
+    {
+        if ((Real)pit->first>(Real)label)
+        {
+            if (pit==pairs.begin()) return pit->second;
+            else
+            {
+                Real vlow=mit->second,vup=pit->second;
+                Real alpha=(((Real)pit->first-(Real)label)/((Real)pit->first-(Real)mit->first));
+                return alpha*vlow+(1.-alpha)*vup;
+            }
+        }
+        mit=pit;
+    }
+    return mit->second;
+}
+
 /*************************/
 /*   IO               */
 /*************************/
@@ -649,8 +702,8 @@ bool GridMaterial< MaterialTypes>::computeVolumeIntegrationFactors(const unsigne
         {
             getCoord(i,G);
             getCompleteBasis(G-point,order,momentPG);
-            //for (j=0;j<dim;j++) moments[j]+=momentPG[j]*voxelvolume;
-            for (j=0; j<dim; j++) moments[j]+=momentPG[j]*voxelvolume*getStiffness(grid.data()[i]); // for linear materials stiffness can be integrated into the precomputed factors
+            for (j=0; j<dim; j++) moments[j]+=momentPG[j]*voxelvolume;
+            //for (j=0;j<dim;j++) moments[j]+=momentPG[j]*voxelvolume*getStiffness(grid.data()[i]); // for linear materials stiffness can be integrated into the precomputed factors -> need to update compute stress in this case // not use here to be able to modify stiffness through the gui
         }
     return true;
 }
@@ -683,6 +736,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             reps[j]=i;
         }
     }
+//std::cout<<"Lumping step1"<<std::endl;
 
     // get point indices in voronoi
     VUI neighbors;   for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)sampleindex) neighbors.push_back((unsigned int)i);
@@ -697,6 +751,7 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             if (insert) neighbors.push_back((unsigned int)i);
         }
 
+//std::cout<<"Lumping step2"<<std::endl;
 
     // lump the weights
     for (i=0; i<nbRef; i++)
@@ -705,6 +760,8 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             pasteRepartioninWeight(reps[i]);
             if(!dw) lumpWeights(neighbors,point,w[i]); else if(!ddw) lumpWeights(neighbors,point,w[i],&(*dw)[i]); else lumpWeights(neighbors,point,w[i],&(*dw)[i],&(*ddw)[i]);
         }
+
+//std::cout<<"Lumping weights done"<<std::endl;
 
     return true;
 }
@@ -865,7 +922,7 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
     if (!nbVoxels) return false;
 
     int index=getIndex(point);
-    if (index==-1) std::cout<<"problem with point:"<<point<<std::endl;
+    if (index==-1) std::cout<<"problem with point:"<<point<<" (out of voxels)"<<std::endl;
 
     if (index==-1) return false; // point not in grid
     if (v_weights.size()!=nbVoxels || v_index.size()!=nbVoxels) return false; // weights not computed
@@ -1232,16 +1289,16 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     for (i=0; i<this->nbVoxels; i++)
         if(grid.data()[i])
         {
-            Real stiffness=getStiffness(grid.data()[i]);
+            Real stiff=getStiffness(grid.data()[i]);
             k=-1;
             for (j=0; j<(unsigned int)indices.size() && k==-1; j++) // detect similar already inserted repartitions and stiffness
-                if(stiffnesses[j]==stiffness) if(areRepsSimilar(i,indices[j])) k=j;
+                if(stiffnesses[j]==stiff) if(areRepsSimilar(i,indices[j])) k=j;
 
             if(k==-1)   // insert
             {
                 voronoi[i]=indices.size();
                 indices.push_back(i);
-                stiffnesses.push_back(stiffness);
+                stiffnesses.push_back(stiff);
             }
             else voronoi[i]=k;
         }
@@ -1878,6 +1935,7 @@ float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const i
     else if (showvox==SHOWVOXELS_STIFFNESS) label=(float)getStiffness(grid(x,y,z));
     else if (showvox==SHOWVOXELS_DENSITY) label=(float)getDensity(grid(x,y,z));
     else if (showvox==SHOWVOXELS_BULKMODULUS) label=(float)getBulkModulus(grid(x,y,z));
+    else if (showvox==SHOWVOXELS_POISSONRATIO) label=(float)getPoissonRatio(grid(x,y,z));
     else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  label=(float)voronoi[getIndex(GCoord(x,y,z))]+1.;
     else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
     else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
