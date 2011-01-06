@@ -68,6 +68,7 @@ template<class MaterialTypes>
 HookeMaterial3<MaterialTypes>::HookeMaterial3()
     : youngModulus(initData(&youngModulus, (Real)1.0, "youngModulus", "Stiffness, typically denoted using symbol E"))
     , poissonRatio(initData(&poissonRatio, (Real)0.0, "poissonRatio", "Volume conservation, typically denoted using symbol \nu. Should be positive and less than 0.5 in 3d, respectively 1 in 2d. 0 means no volume conservation and 0.5 (resp. 1) means perfect volume conservation. Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead."))
+    , bulkModulus(initData(&bulkModulus, (Real)1.0, "bulkModulus", "bulkModulus, to prevent from inversion of the deformation gradient."))
 {
     //                reinit();
     //                Inherited::reinit();
@@ -181,7 +182,7 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain10& stressCh
 template<class MaterialTypes>
 typename HookeMaterial3<MaterialTypes>::Real HookeMaterial3<MaterialTypes>::getBulkModulus(const unsigned int /*sampleindex*/)
 {
-    return (Real)1000.;
+    return bulkModulus.getValue();
 }
 
 template<class MaterialTypes>
@@ -193,9 +194,9 @@ bool HookeMaterial3<MaterialTypes>::computeVolumeIntegrationFactors(const unsign
     Real dl=(Real)pow(vol,(Real)1./(Real)3.); // default width a the cube
     moments[0] = vol;
     if(order<2) return true;
-    moments[4] = vol*dl*dl/12.;  moments[7] = vol*dl*dl/12.;  moments[9] = vol*dl*dl/12.;
+    moments[4] = vol*dl*dl/(Real)12.;  moments[7] = vol*dl*dl/(Real)12.;  moments[9] = vol*dl*dl/(Real)12.;
     if(order<4) return true;
-    moments[20] = vol*dl*dl*dl*dl/80.;  moments[21] = vol*dl*dl*dl*dl/144.;  moments[22] = vol*dl*dl*dl*dl/144.;  moments[23] = vol*dl*dl*dl*dl/80.;  moments[24] = vol*dl*dl*dl*dl/144.;  moments[25] = vol*dl*dl*dl*dl/80.;
+    moments[20] = vol*dl*dl*dl*dl/(Real)80.;  moments[21] = vol*dl*dl*dl*dl/(Real)144.;  moments[22] = vol*dl*dl*dl*dl/(Real)144.;  moments[23] = vol*dl*dl*dl*dl/(Real)80.;  moments[24] = vol*dl*dl*dl*dl/(Real)144.;  moments[25] = vol*dl*dl*dl*dl/(Real)80.;
     return true;
 }
 
