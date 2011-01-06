@@ -75,7 +75,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
-    helper::OptionsGroup showVoxelsOptions(8,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Distances", "Weights");
+    helper::OptionsGroup showVoxelsOptions(9,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Distances", "Weights");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 }
