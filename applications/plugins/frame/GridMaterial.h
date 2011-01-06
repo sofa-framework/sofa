@@ -310,8 +310,6 @@ protected:
 
     /// fit 1st, 2d or 3d polynomial to the dense weight map in the region defined by indices
     bool lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL,Real* err=NULL);
-    /// interpolate weights (and weight derivatives) in the dense weight map.
-    bool interpolateWeights(const SCoord& point,Real& w);
 
     /*********************************/
     /*         Utils				  */
