@@ -226,6 +226,7 @@ protected:
     Data< GCoord > dimension;
 
     CImg<voxelType> grid;
+    unsigned int gridOffset; // Use to enlarge weight interpolation
     unsigned int nbVoxels;
 
     // material properties
@@ -344,13 +345,14 @@ protected:
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
+    float maxValues[9];
     Data<bool> show3DValues;
     bool vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
     GLuint vboValuesId2; // ID of VBO for 3DValues index array
     GLfloat* valuesVertices;
     GLfloat* valuesNormals;
-    GLfloat* valuesIndices;
+    GLushort* valuesIndices;
 
     float getLabel( const int&x, const int& y, const int& z);
     void genListCube();
@@ -359,7 +361,10 @@ protected:
     void deleteVBO(const GLuint vboId);
     void initVBO();
     void updateValuesVBO( const bool& showvox, const float& labelmax) ;
-    void displayValuesVBO( const int& size, const int& axis) const;
+    void displayValuesVBO() const;
+    void initPlaneGeometry( const int& axis, const int vertexOffset, const int indexOffset);
+    void updateMaxValues();
+    void drawPlaneBBox( const int& axis) const;
 };
 
 //#ifdef SOFA_FLOAT
