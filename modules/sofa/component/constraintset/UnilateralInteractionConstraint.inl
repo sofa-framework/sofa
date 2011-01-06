@@ -573,35 +573,37 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
 
 
 template<class DataTypes>
-bool ContinuousUnilateralInteractionConstraint<DataTypes>::isSticked(int _contactId)
+bool ContinuousUnilateralInteractionConstraint<DataTypes>::isSticked(int /*_contactId*/)
 {
-    sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
+    /*sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
     sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
 
     while (it != itEnd)
     {
-        if (it->contactId == _contactId)
-            break;
+    	if (it->contactId == _contactId)
+    		break;
 
-        ++it;
+    	++it;
     }
 
     if (it != itEnd)
-        return (contactStates[it->id] == UnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
+    	return (contactStates[it->id] == UnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
     else
-        return false;
+    	return false;*/
+
+    return false;
 }
 
 template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::setContactState(int id, ContactState s)
+void ContinuousUnilateralInteractionConstraint<DataTypes>::setContactState(int /*id*/, ContactState /*s*/)
 {
-    contactStates.insert(std::make_pair(id, s));
+//	contactStates.insert(std::make_pair(id, s));
 }
 
 template<class DataTypes>
 void ContinuousUnilateralInteractionConstraint<DataTypes>::clearContactStates()
 {
-    contactStates.clear();
+//	contactStates.clear();
 }
 
 template<class DataTypes>
@@ -609,14 +611,14 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
 {
     std::cout << "-------------->debugContactStates\n";
 
-    std::map< int, ContactState >::iterator it = contactStates.begin();
+    /*std::map< int, ContactState >::iterator it = contactStates.begin();
     std::map< int, ContactState >::iterator itEnd = contactStates.end();
 
     while (it != itEnd)
     {
-        std::cout << it->first << " : " << it->second << std::endl;
-        ++it;
-    }
+    	std::cout << it->first << " : " << it->second << std::endl;
+    	++it;
+    }*/
 }
 
 } // namespace constraintset
