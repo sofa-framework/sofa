@@ -569,7 +569,6 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
             resTab[offset++] = new UnilateralConstraintResolution();
     }
 }
-#endif
 
 
 template<class DataTypes>
@@ -620,6 +619,8 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
     	++it;
     }*/
 }
+
+#endif
 
 } // namespace constraintset
 
