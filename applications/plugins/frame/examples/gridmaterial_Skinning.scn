@@ -9,6 +9,8 @@
 2 2000
 3 100"  
 				labelToDensityPairs="1 3000"  
+				labelToPoissonRatioPairs="1 0"
+				labelToBulkModulusPairs="1 50"
 				distanceType="Geodesic" 
 				biasDistances="true"
 				showVoxelData="None" 
@@ -24,9 +26,10 @@
  			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" 
 				input="@../DOFs"  output="@PointSet"  
 				targetFrameNumber="7"
-				targetSampleNumber="15"
+				targetSampleNumber="50"
 				/>
-			<CorotationalForceField template="DeformationGradient332"  />  
+			<FrameVolumePreservationForceField template="DeformationGradient332"  printLog="0"/>  
+			<FrameForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
 
 		<Node name="Visual" >

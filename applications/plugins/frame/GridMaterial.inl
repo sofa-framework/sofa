@@ -924,12 +924,16 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
     if (index==-1) return false; // point not in grid
     if (v_weights.size()!=nbVoxels || v_index.size()!=nbVoxels) return false; // weights not computed
 
-    for (unsigned int i=0; i<nbRef; i++)
+    VUI ptlist; get26Neighbors(index,ptlist);
+    SGradient dw;
+
+    unsigned int i,j;
+    for (i=0; i<nbRef; i++)
         if(v_weights[index][i]!=0)
         {
             reps[i]=v_index[index][i];
-            pasteRepartioninWeight(v_index[index][i]);
-            interpolateWeights(point,w[i]);
+            for (j=0; j<ptlist.size(); j++) weights[ptlist[j]]=findWeightInRepartition(ptlist[j],reps[i]);
+            lumpWeights(ptlist,point,w[i],&dw,NULL);
         }
         else reps[i]=w[i]=0;
 
@@ -938,26 +942,6 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
     return true;
 }
 
-
-
-template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::interpolateWeights(const SCoord& point,Real& w)
-{
-    if (!nbVoxels) return false;
-    if(weights.size()!=nbVoxels) {w=0; return false; }  //no weight computed
-
-    // get weights of the underlying voxel
-    int index=getIndex(point);
-    if (index==-1 || weights.size()!=nbVoxels) {w=0; return false; } // point not in grid
-
-    //w=weights[index]; return true; // temporary: no interpolation
-
-    VUI ptlist; get26Neighbors(index,ptlist);
-    SGradient dwvox;   SHessian ddwvox;
-    lumpWeights(ptlist,point,w,&dwvox,NULL);
-    if(w<0) w=0; else if(w>1) w=1;
-    return true;
-}
 
 
 
