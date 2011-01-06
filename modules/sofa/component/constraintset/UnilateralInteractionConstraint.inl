@@ -549,18 +549,18 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
 template<class DataTypes>
 void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    if(contactsStatus)
-        delete[] contactsStatus;
+    if (this->contactsStatus)
+        delete[] this->contactsStatus;
 
-    contactsStatus = new bool[contacts.size()];
-    memset(contactsStatus, 0, sizeof(bool)*contacts.size());
+    this->contactsStatus = new bool[this->contacts.size()];
+    memset(this->contactsStatus, 0, sizeof(bool)*this->contacts.size());
 
-    for(unsigned int i=0; i<contacts.size(); i++)
+    for(unsigned int i=0; i<this->contacts.size(); i++)
     {
-        Contact& c = contacts[i];
+        Contact& c = this->contacts[i];
         if(c.mu > 0.0)
         {
-            UnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new UnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &contactsStatus[i]);
+            UnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new UnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &this->contactsStatus[i]);
             cRes->setConstraint(this);
             resTab[offset] = cRes;
             offset += 3;
