@@ -367,6 +367,8 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyContacts(DetectionOutputVector &input)
 {
     using sofa::core::collision::DetectionOutput;
+
+#ifdef SOFA_DEV
     typedef constraintset::ContinuousUnilateralInteractionConstraint< Vec3Types > ContinuousConstraint;
 
     const double MinDist = 0.01f;
@@ -410,6 +412,7 @@ void ContinuousFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
 
         cc->clearContactStates();
     }
+#endif
 
     m_generatedContacts.clear();
 

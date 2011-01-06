@@ -295,7 +295,9 @@ public:
 
     typedef typename Inherited::PersistentID PersistentID;
     typedef typename Inherited::Contact Contact;
+#ifdef SOFA_DEV
     typedef typename UnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
+#endif
 
     ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherited(object1, object2)
@@ -320,7 +322,7 @@ public:
 
 #ifdef SOFA_DEV
     void getConstraintResolution(std::vector< core::behavior::ConstraintResolution* >& resTab, unsigned int& offset);
-#endif
+
 
 protected:
     std::map< int, ContactState > contactStates;
@@ -339,6 +341,7 @@ public:
     void debugContactStates();
 
     // @}
+#endif
 };
 
 
