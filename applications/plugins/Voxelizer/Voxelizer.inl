@@ -250,7 +250,7 @@ bool Voxelizer<DataTypes>::createImages(RasterizedVol** rasterizedVolume)
 
                 Vec3d vecHalfVoxelSize (voxelsSize[0]/2.0, voxelsSize[1]/2.0, voxelsSize[2]/2.0);
                 BBox box( pos - vecHalfVoxelSize, pos + vecHalfVoxelSize);
-                unsigned int segID = isCoordIntersecting( box, rasterizedVolume[0], 0);
+                unsigned int segID = isCoordInside( box, rasterizedVolume[0], 0);
                 if ( segID)
                 {
                     if (checkROI)
