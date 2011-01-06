@@ -174,7 +174,7 @@ bool GenerateBenchSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatrix* r
     }
     else
     {
-        serr << "ERROR : Unknown matrix format in ParallelMatrixLinearSolver<Matrix,Vector>::addWarrpedJMInvJt" << sendl;
+        serr << "ERROR : Unknown matrix format in ParallelMatrixLinearSolver<Matrix,Vector>::addJMInvJt" << sendl;
         return false;
     }
 }
