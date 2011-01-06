@@ -3,22 +3,25 @@
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 	<Node name="Beam">
-		<MechanicalObject template="Affine" name="DOFs" useMask="0" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1.2 [1 0 0, 0 1 0, 0 0 1] "/>
-		<HookeMaterial3 template="Material3" />
+		<MechanicalObject template="Affine" name="DOFs" useMask="0" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [10 0 0, 0 1 0, 0 0 1] "/>
+		<HookeMaterial3 name="hookeMat" template="Material3" youngModulus="2000" poissonRatio="0.3" bulkModulus="100" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
 		<FrameFixedConstraint template="Affine" indices="0" allowed="0 0 0 0 0 0 0 0 0 0 0 0" />
+<!--
 		<FrameRigidConstraint template="Affine" indices="1" />
+-->
 
 		<Node name="Physics">
 <!--
-			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
+			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  showObject="1" showObjectScale="0.05" position="0 0 0  1 0 0 0 1 0 0 0 1" />
 -->
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
      			<MechanicalObject  template="DeformationGradient331" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
 
+			<FrameForceField template="DeformationGradient331"   printLog="0" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
-			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
+			<FrameVolumePreservationForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
 
 		<Node name="Collision">
