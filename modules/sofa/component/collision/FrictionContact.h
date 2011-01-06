@@ -150,6 +150,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
+    typedef typename FrictionContact<TCollisionModel1, TCollisionModel2>::TOutputVector TOutputVector;
     typedef std::vector< sofa::core::collision::DetectionOutput* > DetectionOutputVector;
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(this->model1,this->model2); }
