@@ -736,7 +736,6 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             reps[j]=i;
         }
     }
-//std::cout<<"Lumping step1"<<std::endl;
 
     // get point indices in voronoi
     VUI neighbors;   for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)sampleindex) neighbors.push_back((unsigned int)i);
@@ -751,17 +750,15 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             if (insert) neighbors.push_back((unsigned int)i);
         }
 
-//std::cout<<"Lumping step2"<<std::endl;
-
     // lump the weights
     for (i=0; i<nbRef; i++)
         if(w[i]!=0)
         {
             pasteRepartioninWeight(reps[i]);
-            if(!dw) lumpWeights(neighbors,point,w[i]); else if(!ddw) lumpWeights(neighbors,point,w[i],&(*dw)[i]); else lumpWeights(neighbors,point,w[i],&(*dw)[i],&(*ddw)[i]);
+            if(!dw) lumpWeights(neighbors,point,w[i]);
+            else /*if(!ddw)*/ lumpWeights(neighbors,point,w[i],&(*dw)[i]);
+            //else lumpWeights(neighbors,point,w[i],&(*dw)[i],&(*ddw)[i]);  // desctivated for speed... (weights are supposed to be linear and not quadratic)
         }
-
-//std::cout<<"Lumping weights done"<<std::endl;
 
     return true;
 }
@@ -1262,7 +1259,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 {
     if (!nbVoxels) return false;
 
-    unsigned int i,j,initial_num_points=points.size();
+    unsigned int i,j,initial_num_points=points.size(),nbnonemptyvoxels=0;
     int k;
 
     // identify regions with similar repartitions and similar stiffness
@@ -1289,6 +1286,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     for (i=0; i<this->nbVoxels; i++)
         if(grid.data()[i])
         {
+            nbnonemptyvoxels++;
             Real stiff=getStiffness(grid.data()[i]);
             k=-1;
             for (j=0; j<(unsigned int)indices.size() && k==-1; j++) // detect similar already inserted repartitions and stiffness
@@ -1352,7 +1350,8 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
         }
     }
     Real err=0; for (j=0; j<errors.size(); j++) err+=errors[j];
-    std::cout<<"Error in weights="<<err<<std::endl;
+    err/=(Real)nbnonemptyvoxels;
+    std::cout<<"Average error in weights per voxel="<<err<<std::endl;
 
     // insert gauss points in the center of voronoi regions
     points.resize(indices.size());
