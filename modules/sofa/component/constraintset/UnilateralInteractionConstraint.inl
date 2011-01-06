@@ -38,7 +38,8 @@ namespace component
 namespace constraintset
 {
 #ifdef SOFA_DEV
-void UnilateralConstraintResolutionWithFriction::init(int line, double** w, double* force)
+template< class DataTypes >
+void UnilateralConstraintResolutionWithFriction< DataTypes >::init(int line, double** w, double* force)
 {
     _W[0]=w[line  ][line  ];
     _W[1]=w[line  ][line+1];
@@ -59,7 +60,8 @@ void UnilateralConstraintResolutionWithFriction::init(int line, double** w, doub
 
 }
 
-void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
+template< class DataTypes >
+void UnilateralConstraintResolutionWithFriction< DataTypes >::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
 {
     double f[2];
     double normFt;
@@ -70,7 +72,10 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     if(force[line] < 0)
     {
         force[line]=0; force[line+1]=0; force[line+2]=0;
-        m_contactState = NONE;
+
+        if (m_constraint)
+            m_constraint->setContactState(line, NONE);
+
         return;
     }
 
@@ -85,13 +90,19 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     {
         force[line+1] *= _mu*force[line]/normFt;
         force[line+2] *= _mu*force[line]/normFt;
-        m_contactState = SLIDING;
+
+        if (m_constraint)
+            m_constraint->setContactState(line, SLIDING);
     }
     else
-        m_contactState = STICKY;
+    {
+        if (m_constraint)
+            m_constraint->setContactState(line, STICKY);
+    }
 }
 
-void UnilateralConstraintResolutionWithFriction::store(int line, double* force, bool /*convergence*/)
+template< class DataTypes >
+void UnilateralConstraintResolutionWithFriction< DataTypes >::store(int line, double* force, bool /*convergence*/)
 {
     if(_prev)
     {
@@ -369,7 +380,8 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
         if(c.mu > 0.0)
         {
 //			bool& temp = contactsStatus.at(i);
-            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
+            resTab[offset] = new UnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &contactsStatus[i]);
+
             // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
 //			resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces, &contactsStatus[i]);
             offset += 3;
@@ -530,10 +542,83 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
         c.dfree_s = 0;
         //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
     }
-
-
     //sout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<sendl;
 }
+
+#ifdef SOFA_DEV
+template<class DataTypes>
+void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+{
+    if(contactsStatus)
+        delete[] contactsStatus;
+
+    contactsStatus = new bool[contacts.size()];
+    memset(contactsStatus, 0, sizeof(bool)*contacts.size());
+
+    for(unsigned int i=0; i<contacts.size(); i++)
+    {
+        Contact& c = contacts[i];
+        if(c.mu > 0.0)
+        {
+            UnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new UnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &contactsStatus[i]);
+            cRes->setConstraint(this);
+            resTab[offset] = cRes;
+            offset += 3;
+        }
+        else
+            resTab[offset++] = new UnilateralConstraintResolution();
+    }
+}
+#endif
+
+
+template<class DataTypes>
+bool ContinuousUnilateralInteractionConstraint<DataTypes>::isSticked(int _contactId)
+{
+    sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
+    sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
+
+    while (it != itEnd)
+    {
+        if (it->contactId == _contactId)
+            break;
+
+        ++it;
+    }
+
+    if (it != itEnd)
+        return (contactStates[it->id] == UnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
+    else
+        return false;
+}
+
+template<class DataTypes>
+void ContinuousUnilateralInteractionConstraint<DataTypes>::setContactState(int id, ContactState s)
+{
+    contactStates.insert(std::make_pair(id, s));
+}
+
+template<class DataTypes>
+void ContinuousUnilateralInteractionConstraint<DataTypes>::clearContactStates()
+{
+    contactStates.clear();
+}
+
+template<class DataTypes>
+void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
+{
+    std::cout << "-------------->debugContactStates\n";
+
+    std::map< int, ContactState >::iterator it = contactStates.begin();
+    std::map< int, ContactState >::iterator itEnd = contactStates.end();
+
+    while (it != itEnd)
+    {
+        std::cout << it->first << " : " << it->second << std::endl;
+        ++it;
+    }
+}
+
 } // namespace constraintset
 
 } // namespace component
