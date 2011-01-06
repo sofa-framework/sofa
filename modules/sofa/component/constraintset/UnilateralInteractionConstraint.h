@@ -294,8 +294,8 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename Inherited::PersistentID PersistentID;
-    typedef Inherited::Contact Contact;
-    typedef UnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
+    typedef typename Inherited::Contact Contact;
+    typedef typename UnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
 
     ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherited(object1, object2)
