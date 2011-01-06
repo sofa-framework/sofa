@@ -1,4 +1,4 @@
-<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showCollisionModels="0" showBehaviorModels="0">
+<Node name="Scene" gravity="0 0.01 0" dt="1" showVisualModels="1" showCollisionModels="0" showBehaviorModels="1">
 	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.8" responseType="1" responseStiffness="30" drawIntersection="0" drawSides="0" drawSubVols="0" />
 	<DiscreteIntersection />
 	<CollisionResponse response="default" name="LDIPenality"/>
@@ -24,7 +24,7 @@
 		<!--	<FrameRigidConstraint template="Affine" indices="1" />  -->
 
 		<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
-				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.2 0.2 0.2" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
+				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.05 0.05 0.05" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
 				infoFileName="beam-Affine-Vec-seg.nfo" useROI="true"/>
 		<GridMaterial name="gridmaterial" 
 				imageFile="@VoxelLoader.segmentationFileName"
@@ -38,11 +38,11 @@
 				/>
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="1" showObjectScale="0.2" 
+			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="1" showObjectScale="0.1" 
 position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" 
-				targetFrameNumber="2"
-				targetSampleNumber="0" />
+				targetFrameNumber="5"
+				targetSampleNumber="50" />
 			<FrameVolumePreservationForceField template="DeformationGradient332"  printLog="0"/>  
 			<FrameForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
