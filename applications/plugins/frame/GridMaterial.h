@@ -47,10 +47,9 @@
 #define SHOWVOXELS_BULKMODULUS 4
 #define SHOWVOXELS_POISSONRATIO 5
 #define SHOWVOXELS_VORONOI 6
-#define SHOWVOXELS_DISTANCES 7
-#define SHOWVOXELS_WEIGHTS 8
-
-
+#define SHOWVOXELS_VORONOI_FR 7
+#define SHOWVOXELS_DISTANCES 8
+#define SHOWVOXELS_WEIGHTS 9
 
 
 namespace sofa
@@ -194,7 +193,8 @@ public:
     bool computeWeights(const VecSCoord& points);
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation
     //  -> returns points and store id/distances in voronoi/distances
-    bool computeUniformSampling ( VecSCoord& points, const unsigned int num_points,const unsigned int max_iterations = 100);
+    Data<unsigned int> maxLloydIterations;
+    bool computeUniformSampling ( VecSCoord& points, const unsigned int num_points);
     /// Regular sampling based on step size
     //  -> returns points and store id/distances in voronoi/distances
     bool computeRegularSampling ( VecSCoord& points, const unsigned int step);
@@ -238,6 +238,7 @@ protected:
     // temporary grid data
     vector<Real> distances;
     vector<int> voronoi;
+    vector<int> voronoi_frames;
     vector<Real> weights;
 
     // voxel data
@@ -345,7 +346,7 @@ protected:
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
-    float maxValues[9];
+    float maxValues[10];
     Data<bool> show3DValues;
     bool vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
