@@ -71,7 +71,7 @@ using namespace sofa::defaulttype;
  * This is equivalent with multiplying vectors with a projection matrix \f$P\f$.
  * Finally, the equation system set by this ode solver is:
  *
- *   \f$ P ( (1+r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + h K dv - r_M M dv )\f$
+ *   \f$ P ( (1+r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + (h + r_K) K dv - r_M M dv )\f$
  *
  *** 1st Order ***
  *
