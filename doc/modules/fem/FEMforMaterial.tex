@@ -474,9 +474,67 @@ Therefor 3/2*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] Real values for one elem
 \item 8NodesFEHexaType   ,  27pQuadratureHexaType :12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]*[8]*[27]*[3]*[4]= 93312 bytes == 93kB
 \end{itemize}
 
+\subsection{Time integration in SOFA - OdeSolver: }
+An example in EulerImplicit Solver to see how works the ode solver, which integration schemes used. 
+\paragraph{Without mass damping :} This paragraph show the Euler Implicite scheme (semi time discretization) used in (Baraff and Witkin, Large Steps in Cloth Simulation, SIGGRAPH 1998). Equation of motion :
+ \[
+M.a=f \text{    ,  or at time n+1 :   }M.a_{n+1}=f_{n+1}
+\]
+Where $M$ is the mass matrice, $a$, $f$ are respectively acceleration and system force. By the implicit scheme, $f_{n+1}$ must be discretized in term of $f_{n}$ and $df_{n+1}$ :
 
 
-
+\[
+\begin{array}{rl}
+f_{n+1} &       = f_n + \frac{ df_{n+1} }{dt}.dt + \circ(dt) \\
+        & \approx f_n + \frac{\partial f}{\partial x}.\frac{\partial x}{\partial t}.dt + \frac{\partial f}{\partial v}.\frac{\partial v}{\partial t}.dt  \\
+        &       = f_n + \frac{\partial f}{\partial x}.v_{n+1}.dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
+\end{array}
+\]
+Again, by discretizing the velocity $v_{n+1} \approx v_{n}+a_{n+1}.dt$, semi time discretization scheme becomes :
+\[
+f_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
+\]
+Here, we have the linear system with $a_{n+1}$ the unknown : 
+\[
+M.a_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
+\]
+or
+\[
+(I - dt^2.M^{-1}.\frac{\partial f}{\partial x} - dt.M^{-1}.\frac{\partial f}{\partial v}).a_{n+1}= M^{-1}(f_n + \frac{\partial f}{\partial x}.v_n)
+\]
+\paragraph{With Rayleight mass damping :} This paragraph show the Euler Implicite scheme (formule implemented in Sofa by the EulerImplicitSolver component) using Rayleight mass damping with the damping term is the 
+\[
+[C](v) =[ -r_M.M + r_K.\frac{\partial f}{\partial x} ](v)
+\]
+where $[C]$ is the damping matrix, $r_M,r_K$ are respectively Rayleight mass and Rayleight stiffness coefficients. The different with the scheme above is only to add the damping term in the scheme for more stability in time integration. For more detail, it's needed to take a look about damping theory. The motion equation become :
+ \[
+M.a=f + C(v) \text{    ,  or at time n+1 :   }M.a_{n+1}=f_{n+1} + C(v_{n+1})
+\]
+The scheme adding the damping term is : 
+\[
+f_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  + (r_K.\frac{\partial f}{\partial x} - r_M.M)(v_{n+1})
+\]
+The linear system with the unknown $a_{n+1}$ :
+\[
+M.a_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt   + (r_K.\frac{\partial f}{\partial x} - r_M.M)(v_{n}+a_{n+1}.dt)
+\]
+and it's implemented in EulerImplicitSolver by the result : 
+\[
+[(1+r_M).M  - dt.\frac{\partial f}{\partial v} - (dt^2+dt.r_K).\frac{\partial f}{\partial x}] a_{n+1} 
+     = f_n + (dt + r_K).\frac{\partial f}{\partial x}.v_n - r_M.M.v_n
+\]
+where,
+\[
+\left\{ 
+\begin{array}{l}
+dt \text {  is time step :  } dt=t_{n+1}-t_{n} \\
+r_M \text { is the Rayleight mass coefficient} \\
+r_K \text { is the Rayleight stiffness coefficient} \\
+M \text { the mass matrix} \\
+\frac{\partial f}{\partial v} \text { is B matrix} \\
+\frac{\partial f}{\partial x} \text { is K matrix} 
+\end{array}\right.
+\]
 \subsection{Auto-test : }
 These function on FEM are mostly linear transformation which is invertible. So we can verify all the computation, or pre-computation by the its inverted transformation. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
