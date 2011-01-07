@@ -1,5 +1,5 @@
 <Node name="Scene" gravity="0 0.01 0" dt="1" showVisualModels="1" showCollisionModels="0" showBehaviorModels="1">
-	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.8" responseType="1" responseStiffness="30" drawIntersection="0" drawSides="0" drawSubVols="0" />
+	<CudaRasterizer template="Vec3d" tags="LDI" subVolumeResolution="32" keepDist="1" useAtomics="1" maxLayers="64" zsortBits="16" pixelSize="0.049" responseType="1" responseStiffness="30" drawIntersection="0" drawSides="0" drawSubVols="0" />
 	<DiscreteIntersection />
 	<CollisionResponse response="default" name="LDIPenality"/>
 	<CollisionGroup/>
@@ -24,7 +24,7 @@
 		<!--	<FrameRigidConstraint template="Affine" indices="1" />  -->
 
 		<Voxelizer name="VoxelLoader" filename="" vROICenter="0 0 0" vROIRadius="500"
-				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.05 0.05 0.05" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
+				triangularModelPath="Beam-RAW_generation/modelTopo" voxelSize="0.049 0.049 0.049" valueFileName="beam-Affine-Vec.raw" segmentationFileName="beam-Affine-Vec-seg.raw"
 				infoFileName="beam-Affine-Vec-seg.nfo" useROI="true"/>
 		<GridMaterial name="gridmaterial" 
 				imageFile="@VoxelLoader.segmentationFileName"
