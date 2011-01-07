@@ -358,7 +358,7 @@ protected:
     GLuint createVBO (const void* data, int dataSize, GLenum target, GLenum usage);
     void deleteVBO (const GLuint vboId);
     void initVBO ();
-    void initPlaneGeometry (GLfloat* valuesVertices, GLfloat* valuesNormals, GLushort* valuesIndices, const int& axis, const int nbVerticesOffset, const int nbIndicesOffset);
+    void initPlaneGeometry (GLfloat* valuesVertices, GLfloat* valuesNormals, GLfloat* valuesColors, GLushort* valuesIndices, const int& axis, const int nbVerticesOffset, const int nbIndicesOffset);
     void updateValuesVBO () const;
     void displayValuesVBO () const;
     void drawPlaneBBox (const int& axis) const;

@@ -42,29 +42,34 @@ Color::~Color() {}
 
 void Color::setHSVA( float h, float s, float v, float a )
 {
+    float rgba[4];
+    getHSVA( rgba, h, s, v, a);
+    glColor4fv(rgba);
+}
+
+void Color::getHSVA( float* rgba, float h, float s, float v, float a )
+{
     // H [0, 360] S, V and A [0.0, 1.0].
     int i = (int)floor(h/60.0f) % 6;
     float f = h/60.0f - floor(h/60.0f);
     float p = v * (float)(1 - s);
     float q = v * (float)(1 - s * f);
     float t = v * (float)(1 - (1 - f) * s);
-    float rgb[4]= {0,0,0,a};
+    rgba[3]=a;
     switch (i)
     {
-    case 0: rgb[0]=v; rgb[1]=t; rgb[2]=p;
+    case 0: rgba[0]=v; rgba[1]=t; rgba[2]=p;
         break;
-    case 1: rgb[0]=q; rgb[1]=v; rgb[2]=p;
+    case 1: rgba[0]=q; rgba[1]=v; rgba[2]=p;
         break;
-    case 2: rgb[0]=p; rgb[1]=v; rgb[2]=t;
+    case 2: rgba[0]=p; rgba[1]=v; rgba[2]=t;
         break;
-    case 3: rgb[0]=p; rgb[1]=q; rgb[2]=v;
+    case 3: rgba[0]=p; rgba[1]=q; rgba[2]=v;
         break;
-    case 4: rgb[0]=t; rgb[1]=p; rgb[2]=v;
+    case 4: rgba[0]=t; rgba[1]=p; rgba[2]=v;
         break;
-    case 5: rgb[0]=v; rgb[1]=p; rgb[2]=q;
-
+    case 5: rgba[0]=v; rgba[1]=p; rgba[2]=q;
     }
-    glColor4fv(rgb);
 }
 
 
