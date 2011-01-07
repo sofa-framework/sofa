@@ -39,12 +39,13 @@ HEADERS += \
            FrameFixedConstraint.inl \
            FrameForceField.h \
            FrameForceField.inl \
-           FrameVolumePreservationForceField.h \
-           FrameVolumePreservationForceField.inl \
+           FrameLinearMovementConstraint.h \
            FrameMass.h \
            FrameMechanicalObject.h \
            FrameRigidConstraint.h \
            FrameRigidConstraint.inl \
+           FrameVolumePreservationForceField.h \
+           FrameVolumePreservationForceField.inl \
            GridMaterial.h \
            GridMaterial.inl \
            Interpolater.h \
@@ -64,9 +65,10 @@ SOURCES += \
            FrameDQBlendingMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameForceField.cpp \
-           FrameVolumePreservationForceField.cpp \
+           FrameLinearMovementConstraint.cpp \
            FrameMechanicalObject.cpp \
            FrameRigidConstraint.cpp \
+           FrameVolumePreservationForceField.cpp \
            GridMaterial.cpp \
            Interpolater.cpp \
            NewHookeMaterial.cpp \

@@ -396,6 +396,9 @@ public:
     static const SpatialCoord& getCPos(const Coord& c) { return c.getCenter(); }
     static void setCPos(Coord& c, const SpatialCoord& v) { c.getCenter() = v; }
 
+    static const SpatialCoord& getDPos(const Deriv& d) { return d.getVCenter(); }
+    static void setDPos(Deriv& d, const SpatialCoord& v) { d.getVCenter() = v; }
+
     template<typename T>
     static void set ( Deriv& c, T x, T y, T z )
     {

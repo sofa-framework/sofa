@@ -33,7 +33,7 @@
 		<Node name="Collision">
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh tags="LDI"/>
-			<MechanicalObject  name="PointSet" useMask="1"/>
+			<MechanicalObject  name="PointSet" useMask="0"/>
 			<Triangle />
 			<FrameBlendingMapping template="Mapping&lt;Affine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
 		</Node>
