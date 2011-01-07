@@ -1995,8 +1995,7 @@ void GridMaterial< MaterialTypes>::draw()
             if (label<=0) continue;
             if (label>labelMax) label=labelMax;
 
-            helper::gl::Color::setHSVA(240.*label/labelMax,1.,.8,defaultcolor[3]);
-            glGetFloatv(GL_CURRENT_COLOR, color);
+            helper::gl::Color::getHSVA(color, 240.*label/labelMax,1.,.8,defaultcolor[3]);
             glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
 
             SCoord coord;
@@ -2087,9 +2086,11 @@ void GridMaterial< MaterialTypes>::initVBO()
         // Allocate a plane mesh for each axis
         unsigned int vertexSize = 3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ + realGridSizeX * realGridSizeY);
         unsigned int normalSize = vertexSize;
+        unsigned int colorSize = vertexSize;
         unsigned int indicesSize = 4*(((realGridSizeY-1)*(realGridSizeZ-1))+((realGridSizeX-1)*(realGridSizeZ-1))+((realGridSizeX-1)*(realGridSizeY-1)));
         GLfloat* valuesVertices = new GLfloat[vertexSize];
         GLfloat* valuesNormals = new GLfloat[normalSize];
+        GLfloat* valuesColors = new GLfloat[colorSize];
         GLushort* valuesIndices = new GLushort[indicesSize];
 
         // Initialize
@@ -2097,16 +2098,17 @@ void GridMaterial< MaterialTypes>::initVBO()
         int vOffSet2 = realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ;
         int iOffSet1 = (realGridSizeY-1) * (realGridSizeZ-1);
         int iOffSet2 = (realGridSizeY-1) * (realGridSizeZ-1) + (realGridSizeX-1) * (realGridSizeZ-1);
-        initPlaneGeometry ( valuesVertices, valuesNormals, valuesIndices, 0, 0, 0);
-        initPlaneGeometry ( valuesVertices, valuesNormals, valuesIndices, 1, vOffSet1, iOffSet1);
-        initPlaneGeometry ( valuesVertices, valuesNormals, valuesIndices, 2, vOffSet2, iOffSet2);
+        initPlaneGeometry ( valuesVertices, valuesNormals, valuesColors, valuesIndices, 0, 0, 0);
+        initPlaneGeometry ( valuesVertices, valuesNormals, valuesColors, valuesIndices, 1, vOffSet1, iOffSet1);
+        initPlaneGeometry ( valuesVertices, valuesNormals, valuesColors, valuesIndices, 2, vOffSet2, iOffSet2);
 
         // Allocate on GPU
         glGenBuffersARB(1, &vboValuesId1);
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
-        glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(GLfloat)*(vertexSize+normalSize), 0, GL_STREAM_DRAW_ARB);
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(GLfloat)*(vertexSize+normalSize+colorSize), 0, GL_STREAM_DRAW_ARB);
         glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(GLfloat)*vertexSize, valuesVertices);
         glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(GLfloat)*vertexSize, sizeof(GLfloat)*normalSize, valuesNormals);
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(GLfloat)*(vertexSize+normalSize), sizeof(GLfloat)*colorSize, valuesColors);
         glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
         //std::cout << "Vertex and Normal Array in VBO: " << bufferSize << " bytes\n";
 
@@ -2116,13 +2118,14 @@ void GridMaterial< MaterialTypes>::initVBO()
 
         delete [] valuesVertices;
         delete [] valuesNormals;
+        delete [] valuesColors;
         delete [] valuesIndices;
     }
 }
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::initPlaneGeometry( GLfloat* valuesVertices, GLfloat* valuesNormals, GLushort* valuesIndices, const int& axis, const int nbVerticesOffset, const int nbIndicesOffset)
+void GridMaterial< MaterialTypes>::initPlaneGeometry( GLfloat* valuesVertices, GLfloat* valuesNormals, GLfloat* valuesColors, GLushort* valuesIndices, const int& axis, const int nbVerticesOffset, const int nbIndicesOffset)
 {
     const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset;
     unsigned int realGridSizeX = grid.width() - 2*gridOffset;
@@ -2189,6 +2192,7 @@ void GridMaterial< MaterialTypes>::initPlaneGeometry( GLfloat* valuesVertices, G
     }*/
 
     unsigned int nbNormals = 0;
+    unsigned int nbColors = 0;
     for (int x = 0; x < maxX; ++x)
     {
         for (int y = 0; y < maxY; ++y)
@@ -2196,8 +2200,13 @@ void GridMaterial< MaterialTypes>::initPlaneGeometry( GLfloat* valuesVertices, G
             // TODO compute each face normal, then vertex normal
             for (int i = 0; i < 3; ++i)
             {
-                valuesNormals[3*nbVerticesOffset+nbNormals] = (i == axis)?1.0:0.0; nbNormals++;
+                valuesNormals[3*nbVerticesOffset+nbNormals] = (i == axis)?1.0:0.0;
+                nbNormals++;
             }
+            valuesColors[3*nbVerticesOffset+3*nbColors+0] = 0.5;
+            valuesColors[3*nbVerticesOffset+3*nbColors+1] = 0.5;
+            valuesColors[3*nbVerticesOffset+3*nbColors+2] = 0.5;
+            nbColors++;
 
             /*
             // Compute Laplacian
@@ -2230,6 +2239,7 @@ void GridMaterial< MaterialTypes>::updateValuesVBO() const
     unsigned int realGridSizeX = grid.width() - 2*gridOffset;
     unsigned int realGridSizeY = grid.height() - 2*gridOffset;
     unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+    unsigned int vertexSize = 3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ + realGridSizeX * realGridSizeY);
     unsigned int showvox=this->showVoxels.getValue().getSelectedId();
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
     float *ptr = (float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
@@ -2254,6 +2264,7 @@ void GridMaterial< MaterialTypes>::updateValuesVBO() const
             {
                 for (int y = 0; y < maxY; ++y)
                 {
+                    // Vertices
                     SCoord coord;
                     coord[iX] = gridOffset+x;
                     coord[iY] = gridOffset+y;
@@ -2261,6 +2272,19 @@ void GridMaterial< MaterialTypes>::updateValuesVBO() const
                     float value = getLabel(coord[0],coord[1],coord[2]);
                     if( value < 0 ) value = 0;
                     ptr[3*offSet[axis]+3*nbVertices+iZ] = ori[iZ] + (zCoord-gridOffset+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+
+                    // Normals
+                    //ptr[vertexSize+3*offSet[axis]+3*nbVertices+iX] = ;
+                    //ptr[vertexSize+3*offSet[axis]+3*nbVertices+iY] = ;
+                    //ptr[vertexSize+3*offSet[axis]+3*nbVertices+iZ] = ;
+
+                    // Colors
+                    float color[4];
+                    helper::gl::Color::getHSVA(color, 240.*value/maxValues[showvox],1.,.8,.8);
+                    ptr[2*vertexSize+3*offSet[axis]+3*nbVertices+0] = color[0];
+                    ptr[2*vertexSize+3*offSet[axis]+3*nbVertices+1] = color[1];
+                    ptr[2*vertexSize+3*offSet[axis]+3*nbVertices+2] = color[2];
+
                     nbVertices++;
                 }
             }
@@ -2284,54 +2308,37 @@ void GridMaterial< MaterialTypes>::displayValuesVBO() const
 
     // before draw, specify vertex and index arrays with their offsets
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
-    glNormalPointer(GL_FLOAT, 0, (void*)vertexSize);
     glVertexPointer(3, GL_FLOAT, 0, 0);
+    glNormalPointer(GL_FLOAT, 0, (void*)vertexSize);
+    glColorPointer(3, GL_FLOAT, 0, (void*)(2*vertexSize));
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, vboValuesId2);
     glIndexPointer(GL_UNSIGNED_SHORT, 0, 0);
 
-    /***************************************
-    float shininess = 15.0f;
-    float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
-    float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
-
-    // set specular and shiniess using glMaterial (gold-yellow)
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
-
-    // set ambient and diffuse color using glColorMaterial (gold-yellow)
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glColor3fv(diffuseColor);
-    ****************************************/
-
     // Enable VBO
-    glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // use only offset here instead of absolute pointer addresses
     if(showPlane.getValue()[0] != -1)
     {
-        float color[] = {1.0,0.0,0.0,0.8};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glDrawElements(GL_QUADS, 4*(realGridSizeY-1)*(realGridSizeZ-1), GL_UNSIGNED_SHORT, (GLushort*)0+0);
     }
     if(showPlane.getValue()[1] != -1)
     {
-        float color[] = {0.0,1.0,0.0,0.8};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glDrawElements(GL_QUADS, 4*(realGridSizeX-1)*(realGridSizeZ-1), GL_UNSIGNED_SHORT, (GLushort*)0+4*(realGridSizeY-1)*(realGridSizeZ-1));
     }
     if(showPlane.getValue()[2] != -1)
     {
-        float color[] = {0.0,0.0,1.0,0.8};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glDrawElements(GL_QUADS, 4*(realGridSizeX-1)*(realGridSizeY-1), GL_UNSIGNED_SHORT, (GLushort*)0+4*((realGridSizeY-1)*(realGridSizeZ-1)+(realGridSizeX-1)*(realGridSizeZ-1)));
     }
 
     // Disable VBO
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
 
     // Bind the buffers to 0 by safety and restore ARRAY context
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
