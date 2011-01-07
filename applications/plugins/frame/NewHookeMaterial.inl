@@ -180,7 +180,7 @@ void HookeMaterial3<MaterialTypes>::computeStressChange  ( VecStrain10& stressCh
 }
 
 template<class MaterialTypes>
-typename HookeMaterial3<MaterialTypes>::Real HookeMaterial3<MaterialTypes>::getBulkModulus(const unsigned int /*sampleindex*/)
+typename HookeMaterial3<MaterialTypes>::Real HookeMaterial3<MaterialTypes>::getBulkModulus(const unsigned int /*sampleindex*/) const
 {
     return bulkModulus.getValue();
 }
