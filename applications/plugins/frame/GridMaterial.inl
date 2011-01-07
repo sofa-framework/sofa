@@ -71,9 +71,6 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , vboSupported(false)
     , vboValuesId1(0)
     , vboValuesId2(0)
-    , valuesVertices(NULL)
-    , valuesNormals(NULL)
-    , valuesIndices(NULL)
 {
     helper::OptionsGroup distanceTypeOptions(3,"Geodesic", "HeatDiffusion", "AnisotropicHeatDiffusion");
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
@@ -346,7 +343,7 @@ void GridMaterial< MaterialTypes>::updateSampleMaterialProperties()
 
 
 template < class MaterialTypes>
-typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkModulus(const unsigned int sampleindex)
+typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkModulus(const unsigned int sampleindex) const
 {
     if (bulkModulus.getValue().size()>sampleindex) return bulkModulus.getValue()[sampleindex]; else return 0;
 }
@@ -354,7 +351,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulk
 
 
 template < class MaterialTypes>
-typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStiffness(const voxelType label)
+typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStiffness(const voxelType label) const
 {
     if(label==0) return (Real)0;
 
@@ -380,7 +377,7 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial<MaterialTypes>::getStif
 }
 
 template < class MaterialTypes>
-typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensity(const voxelType label)
+typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensity(const voxelType label) const
 {
     if(label==0) return (Real)0;
 
@@ -406,7 +403,7 @@ typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getDensi
 }
 
 template < class MaterialTypes>
-typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkModulus(const voxelType label)
+typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkModulus(const voxelType label) const
 {
     if(label==0) return (Real)0;
 
@@ -432,7 +429,7 @@ typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getBulkM
 }
 
 template < class MaterialTypes>
-typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getPoissonRatio(const voxelType label)
+typename GridMaterial<MaterialTypes>::Real GridMaterial<MaterialTypes>::getPoissonRatio(const voxelType label) const
 {
     if(label==0) return (Real)0;
 
@@ -2008,17 +2005,13 @@ void GridMaterial< MaterialTypes>::draw()
         }
 
         if (show3DValues.getValue() && slicedisplay && vboSupported)
-        {
-            updateValuesVBO(showvox,labelMax);
             displayValuesVBO();
-        }
-
     }
 }
 
 
 template < class MaterialTypes>
-float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const int& z)
+float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const int& z) const
 {
     float label = -1;
     const unsigned int& showvox=this->showVoxels.getValue().getSelectedId();
@@ -2095,18 +2088,18 @@ void GridMaterial< MaterialTypes>::initVBO()
         unsigned int vertexSize = 3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ + realGridSizeX * realGridSizeY);
         unsigned int normalSize = vertexSize;
         unsigned int indicesSize = 4*(((realGridSizeY-1)*(realGridSizeZ-1))+((realGridSizeX-1)*(realGridSizeZ-1))+((realGridSizeX-1)*(realGridSizeY-1)));
-        valuesVertices = new GLfloat[vertexSize];
-        valuesNormals = new GLfloat[normalSize];
-        valuesIndices = new GLushort[indicesSize];
+        GLfloat* valuesVertices = new GLfloat[vertexSize];
+        GLfloat* valuesNormals = new GLfloat[normalSize];
+        GLushort* valuesIndices = new GLushort[indicesSize];
 
         // Initialize
         int vOffSet1 = realGridSizeY * realGridSizeZ;
         int vOffSet2 = realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ;
         int iOffSet1 = (realGridSizeY-1) * (realGridSizeZ-1);
         int iOffSet2 = (realGridSizeY-1) * (realGridSizeZ-1) + (realGridSizeX-1) * (realGridSizeZ-1);
-        initPlaneGeometry ( 0, 0, 0);
-        initPlaneGeometry ( 1, vOffSet1, iOffSet1);
-        initPlaneGeometry ( 2, vOffSet2, iOffSet2);
+        initPlaneGeometry ( valuesVertices, valuesNormals, valuesIndices, 0, 0, 0);
+        initPlaneGeometry ( valuesVertices, valuesNormals, valuesIndices, 1, vOffSet1, iOffSet1);
+        initPlaneGeometry ( valuesVertices, valuesNormals, valuesIndices, 2, vOffSet2, iOffSet2);
 
         // Allocate on GPU
         glGenBuffersARB(1, &vboValuesId1);
@@ -2129,7 +2122,7 @@ void GridMaterial< MaterialTypes>::initVBO()
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::initPlaneGeometry( const int& axis, const int nbVerticesOffset, const int nbIndicesOffset)
+void GridMaterial< MaterialTypes>::initPlaneGeometry( GLfloat* valuesVertices, GLfloat* valuesNormals, GLushort* valuesIndices, const int& axis, const int nbVerticesOffset, const int nbIndicesOffset)
 {
     const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset;
     unsigned int realGridSizeX = grid.width() - 2*gridOffset;
@@ -2160,13 +2153,9 @@ void GridMaterial< MaterialTypes>::initPlaneGeometry( const int& axis, const int
                 valuesIndices[4*nbIndicesOffset+4*nbFaces+3] = nbVerticesOffset+nbVertices-1;
                 nbFaces++;
             }
-            SCoord coord;
-            coord[iX] = x;
-            coord[iY] = y;
-            coord[iZ] = showPlane.getValue()[iZ];
-            valuesVertices[3*nbVerticesOffset+3*nbVertices+iX] = ori[iX] + x*vSX + .5*vSX;
-            valuesVertices[3*nbVerticesOffset+3*nbVertices+iY] = ori[iY] + y*vSY + .5*vSY;
-            valuesVertices[3*nbVerticesOffset+3*nbVertices+iZ] = ori[iZ] + showPlane.getValue()[iZ]*vSZ/* + getLabel(coord[0],coord[1],coord[2]) / maxValues[showvox] * scaleZ*/;
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iX] = ori[iX] + x*vSX;
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iY] = ori[iY] + y*vSY;
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+.5)*vSZ;
             nbVertices++;
         }
     }
@@ -2207,7 +2196,7 @@ void GridMaterial< MaterialTypes>::initPlaneGeometry( const int& axis, const int
             // TODO compute each face normal, then vertex normal
             for (int i = 0; i < 3; ++i)
             {
-                valuesNormals[3*nbVerticesOffset+nbNormals] = (i == axis); nbNormals++;
+                valuesNormals[3*nbVerticesOffset+nbNormals] = (i == axis)?1.0:0.0; nbNormals++;
             }
 
             /*
@@ -2236,47 +2225,47 @@ void GridMaterial< MaterialTypes>::initPlaneGeometry( const int& axis, const int
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::updateValuesVBO( const bool& /*showvox*/, const float& /*labelmax*/)
+void GridMaterial< MaterialTypes>::updateValuesVBO() const
 {
     unsigned int realGridSizeX = grid.width() - 2*gridOffset;
     unsigned int realGridSizeY = grid.height() - 2*gridOffset;
     unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
     unsigned int showvox=this->showVoxels.getValue().getSelectedId();
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
-    float *ptr = (float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_READ_WRITE_ARB);
+    float *ptr = (float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
     if(ptr)
     {
-        unsigned int offSet[] = {0,3*(realGridSizeY * realGridSizeZ),3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ)};
+        unsigned int offSet[] = {0,(realGridSizeY * realGridSizeZ),(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ)};
         const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset;
+        SCoord dimGrid(realGridSizeX, realGridSizeY, realGridSizeZ);
         for (unsigned int axis = 0; axis < 3; ++axis)
         {
-            unsigned int iX = axis;
-            unsigned int iY = (axis+1)%3;
-            unsigned int iZ = (axis+2)%3;
+            unsigned int iX = (axis+1)%3;
+            unsigned int iY = (axis+2)%3;
+            unsigned int iZ = axis;
+            int zCoord = showPlane.getValue()[iZ];
+            if(zCoord < 0 || zCoord > dimGrid[axis]) continue;
             float vSZ = voxelSize.getValue()[iZ];
-            SCoord dimGrid(grid.width(), grid.height(), grid.depth());
-            int scaleZ = 5 * vSZ;//std::min( dimGrid[iX], dimGrid[iY]) / 5.0;
-            if(showPlane.getValue()[axis] != -1)
-                continue;
-
-            unsigned int nbVertices = 0;
+            float scaleZ = 4 * vSZ;
             int maxX = dimGrid[iX];
             int maxY = dimGrid[iY];
+            unsigned int nbVertices = 0;
             for (int x = 0; x < maxX; ++x)
             {
                 for (int y = 0; y < maxY; ++y)
                 {
                     SCoord coord;
-                    coord[iX] = x;
-                    coord[iY] = y;
-                    coord[iZ] = showPlane.getValue()[iZ];
-                    ptr[3*offSet[axis]+3*nbVertices+iZ] = ori[iZ] + showPlane.getValue()[iZ]*vSZ + getLabel(coord[0],coord[1],coord[2]) / maxValues[showvox] * scaleZ;
+                    coord[iX] = gridOffset+x;
+                    coord[iY] = gridOffset+y;
+                    coord[iZ] = gridOffset+zCoord;
+                    float value = getLabel(coord[0],coord[1],coord[2]);
+                    if( value < 0 ) value = 0;
+                    ptr[3*offSet[axis]+3*nbVertices+iZ] = ori[iZ] + (zCoord-gridOffset+.5)*vSZ + value / maxValues[showvox] * scaleZ;
                     nbVertices++;
                 }
             }
-
-            glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
         }
+        glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
     }
 }
 
@@ -2288,6 +2277,10 @@ void GridMaterial< MaterialTypes>::displayValuesVBO() const
     unsigned int realGridSizeY = grid.height() - 2*gridOffset;
     unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
     unsigned int vertexSize = 3*(realGridSizeY * realGridSizeZ + realGridSizeX * realGridSizeZ + realGridSizeX * realGridSizeY);
+
+    glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT); // Save context
+
+    updateValuesVBO();
 
     // before draw, specify vertex and index arrays with their offsets
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboValuesId1);
@@ -2319,20 +2312,20 @@ void GridMaterial< MaterialTypes>::displayValuesVBO() const
     // use only offset here instead of absolute pointer addresses
     if(showPlane.getValue()[0] != -1)
     {
-        drawPlaneBBox(0);
-        glColor4f(1.0,0.0,0.0,0.8);
+        float color[] = {1.0,0.0,0.0,0.8};
+        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glDrawElements(GL_QUADS, 4*(realGridSizeY-1)*(realGridSizeZ-1), GL_UNSIGNED_SHORT, (GLushort*)0+0);
     }
     if(showPlane.getValue()[1] != -1)
     {
-        drawPlaneBBox(1);
-        glColor4f(0.0,1.0,0.0,0.8);
+        float color[] = {0.0,1.0,0.0,0.8};
+        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glDrawElements(GL_QUADS, 4*(realGridSizeX-1)*(realGridSizeZ-1), GL_UNSIGNED_SHORT, (GLushort*)0+4*(realGridSizeY-1)*(realGridSizeZ-1));
     }
     if(showPlane.getValue()[2] != -1)
     {
-        drawPlaneBBox(2);
-        glColor4f(0.0,0.0,1.0,0.8);
+        float color[] = {0.0,0.0,1.0,0.8};
+        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glDrawElements(GL_QUADS, 4*(realGridSizeX-1)*(realGridSizeY-1), GL_UNSIGNED_SHORT, (GLushort*)0+4*((realGridSizeY-1)*(realGridSizeZ-1)+(realGridSizeX-1)*(realGridSizeZ-1)));
     }
 
@@ -2340,37 +2333,74 @@ void GridMaterial< MaterialTypes>::displayValuesVBO() const
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
 
-    // Bind the buffers to 0 by safety
+    // Bind the buffers to 0 by safety and restore ARRAY context
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    glPopClientAttrib();
+
+    // Red BBox
+    float color[] = {0.8,0.0,0.0,1.0};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+
+    if(showPlane.getValue()[0] != -1)
+        drawPlaneBBox(0);
+    if(showPlane.getValue()[1] != -1)
+        drawPlaneBBox(1);
+    if(showPlane.getValue()[2] != -1)
+        drawPlaneBBox(2);
 }
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::drawPlaneBBox( const int& /*axis*/) const
+void GridMaterial< MaterialTypes>::drawPlaneBBox( const int& axis) const
 {
-    /*
-       const unsigned int iX = (axis+1)%3;
-       const unsigned int iY = (axis+2)%3;
-       const unsigned int iZ = axis;
+    const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset - voxelSize.getValue()*.5;
+    unsigned int iX = (axis+1)%3;
+    unsigned int iY = (axis+2)%3;
+    unsigned int iZ = axis;
 
-       SCoord minBox(origin.getValue());
-       SCoord maxBox(origin.getValue()+dimension.getValue()*voxelSize.getValue());
-       glColor3f(1.0,0.0,0.0);
-       glBegin (GL_LINES);
-       glVertex3f(minBox[0],minBox[1],minBox[2]);
-       glVertex3f(maxBox[0],minBox[1],minBox[2]);
-       glVertex3f(minBox[0],minBox[1],minBox[2]);
-       glVertex3f(minBox[0],maxBox[1],minBox[2]);
-       glVertex3f(minBox[0],minBox[1],minBox[2]);
-       glVertex3f(minBox[0],minBox[1],maxBox[2]);
-       glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
-       glVertex3f(minBox[0],maxBox[1],maxBox[2]);
-       glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
-       glVertex3f(maxBox[0],minBox[1],maxBox[2]);
-       glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
-       glVertex3f(maxBox[0],maxBox[1],minBox[2]);
-       glEnd();*/
+    unsigned int realGridSizeX = grid.width() - 2*gridOffset;
+    unsigned int realGridSizeY = grid.height() - 2*gridOffset;
+    unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+    SCoord dimGrid(realGridSizeX, realGridSizeY, realGridSizeZ);
+
+    const SCoord& vSize = voxelSize.getValue();
+
+    SCoord minBox, maxBox;
+    minBox[iX] = ori[iX];
+    minBox[iY] = ori[iY];
+    minBox[iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+1)*vSize[iZ];
+    maxBox[iX] = ori[iX] + dimGrid[iX] * vSize[iX];
+    maxBox[iY] = ori[iY] + dimGrid[iY] * vSize[iY];
+    maxBox[iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+5)*vSize[iZ];
+    glLineWidth(2.0);
+    glBegin (GL_LINES);
+    glVertex3f(minBox[0],minBox[1],minBox[2]);
+    glVertex3f(maxBox[0],minBox[1],minBox[2]);
+    glVertex3f(minBox[0],minBox[1],minBox[2]);
+    glVertex3f(minBox[0],maxBox[1],minBox[2]);
+    glVertex3f(minBox[0],minBox[1],minBox[2]);
+    glVertex3f(minBox[0],minBox[1],maxBox[2]);
+    glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
+    glVertex3f(minBox[0],maxBox[1],maxBox[2]);
+    glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
+    glVertex3f(maxBox[0],minBox[1],maxBox[2]);
+    glVertex3f(maxBox[0],maxBox[1],maxBox[2]);
+    glVertex3f(maxBox[0],maxBox[1],minBox[2]);
+    glVertex3f(minBox[0],maxBox[1],minBox[2]);
+    glVertex3f(minBox[0],maxBox[1],maxBox[2]);
+    glVertex3f(minBox[0],maxBox[1],minBox[2]);
+    glVertex3f(maxBox[0],maxBox[1],minBox[2]);
+    glVertex3f(maxBox[0],minBox[1],minBox[2]);
+    glVertex3f(maxBox[0],maxBox[1],minBox[2]);
+    glVertex3f(maxBox[0],minBox[1],minBox[2]);
+    glVertex3f(maxBox[0],minBox[1],maxBox[2]);
+    glVertex3f(minBox[0],minBox[1],maxBox[2]);
+    glVertex3f(maxBox[0],minBox[1],maxBox[2]);
+    glVertex3f(minBox[0],minBox[1],maxBox[2]);
+    glVertex3f(minBox[0],maxBox[1],maxBox[2]);
+    glEnd();
+    glLineWidth(1.0);
 }
 
 
@@ -2437,7 +2467,7 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
 /*         Utils         */
 /*************************/
 template < class MaterialTypes>
-int GridMaterial< MaterialTypes>::getIndex(const GCoord& icoord)
+int GridMaterial< MaterialTypes>::getIndex(const GCoord& icoord) const
 {
     if (!nbVoxels) return -1;
     for (int i=0; i<3; i++) if (icoord[i]<0 || icoord[i]>=dimension.getValue()[i]) return -1; // invalid icoord (out of grid)
@@ -2445,7 +2475,7 @@ int GridMaterial< MaterialTypes>::getIndex(const GCoord& icoord)
 }
 
 template < class MaterialTypes>
-int GridMaterial< MaterialTypes>::getIndex(const SCoord& coord)
+int GridMaterial< MaterialTypes>::getIndex(const SCoord& coord) const
 {
     if (!nbVoxels) return -1;
     GCoord icoord;
@@ -2454,7 +2484,7 @@ int GridMaterial< MaterialTypes>::getIndex(const SCoord& coord)
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getiCoord(const SCoord& coord, GCoord& icoord)
+bool GridMaterial< MaterialTypes>::getiCoord(const SCoord& coord, GCoord& icoord) const
 {
     if (!nbVoxels) return false;
     Real val;
@@ -2469,7 +2499,7 @@ bool GridMaterial< MaterialTypes>::getiCoord(const SCoord& coord, GCoord& icoord
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getiCoord(const int& index, GCoord& icoord)
+bool GridMaterial< MaterialTypes>::getiCoord(const int& index, GCoord& icoord) const
 {
     if (!nbVoxels) return false;
     if (index<0 || index>=(int)nbVoxels) return false; // invalid index
@@ -2480,7 +2510,7 @@ bool GridMaterial< MaterialTypes>::getiCoord(const int& index, GCoord& icoord)
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getCoord(const GCoord& icoord, SCoord& coord)
+bool GridMaterial< MaterialTypes>::getCoord(const GCoord& icoord, SCoord& coord) const
 {
     if (!nbVoxels) return false;
     for (unsigned int i=0; i<3; i++) if (icoord[i]<0 || icoord[i]>=dimension.getValue()[i]) return false; // invalid icoord (out of grid)
@@ -2490,7 +2520,7 @@ bool GridMaterial< MaterialTypes>::getCoord(const GCoord& icoord, SCoord& coord)
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::getCoord(const int& index, SCoord& coord)
+bool GridMaterial< MaterialTypes>::getCoord(const int& index, SCoord& coord) const
 {
     if (!nbVoxels) return false;
     GCoord icoord;
@@ -2499,7 +2529,7 @@ bool GridMaterial< MaterialTypes>::getCoord(const int& index, SCoord& coord)
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::get6Neighbors ( const int& index, VUI& neighbors )
+bool GridMaterial< MaterialTypes>::get6Neighbors ( const int& index, VUI& neighbors ) const
 {
     neighbors.clear();
     if (!nbVoxels) return false;
@@ -2521,7 +2551,7 @@ bool GridMaterial< MaterialTypes>::get6Neighbors ( const int& index, VUI& neighb
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::get18Neighbors ( const int& index, VUI& neighbors )
+bool GridMaterial< MaterialTypes>::get18Neighbors ( const int& index, VUI& neighbors ) const
 {
     neighbors.clear();
     if (!nbVoxels) return false;
@@ -2572,7 +2602,7 @@ bool GridMaterial< MaterialTypes>::get18Neighbors ( const int& index, VUI& neigh
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neighbors )
+bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neighbors ) const
 {
     neighbors.clear();
     if (!nbVoxels) return false;
@@ -2665,7 +2695,7 @@ bool GridMaterial< MaterialTypes>::get26Neighbors ( const int& index, VUI& neigh
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis)
+void GridMaterial< MaterialTypes>::getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis) const
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
     basis.resize(dim);
@@ -2727,7 +2757,7 @@ void GridMaterial< MaterialTypes>::getCompleteBasis(const SCoord& p,const unsign
 }
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::getCompleteBasisDeriv(const SCoord& p,const unsigned int order,vector<SGradient>& basisDeriv)
+void GridMaterial< MaterialTypes>::getCompleteBasisDeriv(const SCoord& p,const unsigned int order,vector<SGradient>& basisDeriv) const
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
 
@@ -2802,7 +2832,7 @@ void GridMaterial< MaterialTypes>::getCompleteBasisDeriv(const SCoord& p,const u
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::getCompleteBasisDeriv2(const SCoord& p,const unsigned int order,vector<SHessian>& basisDeriv)
+void GridMaterial< MaterialTypes>::getCompleteBasisDeriv2(const SCoord& p,const unsigned int order,vector<SHessian>& basisDeriv) const
 {
     unsigned int j,k,count=0,dim=(order+1)*(order+2)*(order+3)/6; // complete basis of order 'order'
 

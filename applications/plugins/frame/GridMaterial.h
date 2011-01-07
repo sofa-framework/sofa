@@ -165,7 +165,7 @@ public:
     /*************************/
 
     void updateSampleMaterialProperties();
-    virtual Real getBulkModulus(const unsigned int sampleindex);
+    virtual Real getBulkModulus(const unsigned int sampleindex) const;
 
 
     /*************************/
@@ -272,13 +272,13 @@ protected:
     Data<vector<Real> > poissonRatio;
 
     // return the linearly interpolated value from the label/stiffness pairs
-    Real getStiffness(const voxelType label);
+    Real getStiffness(const voxelType label) const;
     // return the linearly interpolated value from the label/density pairs
-    Real getDensity(const voxelType label);
+    Real getDensity(const voxelType label) const;
     // return the linearly interpolated value from the label/bulkModulus pairs
-    Real getBulkModulus(const voxelType label);
+    Real getBulkModulus(const voxelType label) const;
     // return the linearly interpolated value from the label/PoissonRatio pairs
-    Real getPoissonRatio(const voxelType label);
+    Real getPoissonRatio(const voxelType label) const;
 
     /*********************************/
     /*   Compute distances/weights   */
@@ -317,22 +317,22 @@ protected:
     /*         Utils				  */
     /*********************************/
 
-    inline int getIndex(const GCoord& icoord);
-    inline int getIndex(const SCoord& coord);
-    inline bool getiCoord(const SCoord& coord, GCoord& icoord);
-    inline bool getiCoord(const int& index, GCoord& icoord);
-    inline bool getCoord(const GCoord& icoord, SCoord& coord) ;
-    inline bool getCoord(const int& index, SCoord& coord) ;
-    inline bool get6Neighbors ( const int& index, VUI& neighbors ) ;
-    inline bool get18Neighbors ( const int& index, VUI& neighbors ) ;
-    inline bool get26Neighbors ( const int& index, VUI& neighbors ) ;
+    inline int getIndex(const GCoord& icoord) const;
+    inline int getIndex(const SCoord& coord) const;
+    inline bool getiCoord(const SCoord& coord, GCoord& icoord) const;
+    inline bool getiCoord(const int& index, GCoord& icoord) const;
+    inline bool getCoord(const GCoord& icoord, SCoord& coord) const;
+    inline bool getCoord(const int& index, SCoord& coord) const;
+    inline bool get6Neighbors ( const int& index, VUI& neighbors ) const;
+    inline bool get18Neighbors ( const int& index, VUI& neighbors ) const;
+    inline bool get26Neighbors ( const int& index, VUI& neighbors ) const;
     inline Real findWeightInRepartition(const unsigned int& pointIndex, const unsigned int& frameIndex);
     inline bool areRepsSimilar(const unsigned int i1,const unsigned int i2);
 
     inline void accumulateCovariance(const SCoord& p,const unsigned int order,vector<vector<Real> >& Cov);
-    inline void getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis);
-    inline void getCompleteBasisDeriv(const SCoord& p,const unsigned int order,vector<SGradient>& basisDeriv);
-    inline void getCompleteBasisDeriv2(const SCoord& p,const unsigned int order,vector<SHessian>& basisDeriv);
+    inline void getCompleteBasis(const SCoord& p,const unsigned int order,vector<Real>& basis) const;
+    inline void getCompleteBasisDeriv(const SCoord& p,const unsigned int order,vector<SGradient>& basisDeriv) const;
+    inline void getCompleteBasisDeriv2(const SCoord& p,const unsigned int order,vector<SHessian>& basisDeriv) const;
     inline void addWeightinRepartion(const unsigned int index); // add dense weights relative to index, in weight repartion of size nbref if it is large enough
     inline void pasteRepartioninWeight(const unsigned int index); // paste weight relative to index in the dense weight map
     inline void normalizeWeightRepartion();
@@ -351,21 +351,18 @@ protected:
     bool vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
     GLuint vboValuesId2; // ID of VBO for 3DValues index array
-    GLfloat* valuesVertices;
-    GLfloat* valuesNormals;
-    GLushort* valuesIndices;
 
-    float getLabel( const int&x, const int& y, const int& z);
-    void genListCube();
-    void drawCube(const double& x, const double& y, const double& z) const;
-    GLuint createVBO(const void* data, int dataSize, GLenum target, GLenum usage);
-    void deleteVBO(const GLuint vboId);
-    void initVBO();
-    void updateValuesVBO( const bool& showvox, const float& labelmax) ;
-    void displayValuesVBO() const;
-    void initPlaneGeometry( const int& axis, const int vertexOffset, const int indexOffset);
-    void updateMaxValues();
-    void drawPlaneBBox( const int& axis) const;
+    float getLabel (const int&x, const int& y, const int& z) const;
+    void genListCube ();
+    void drawCube (const double& x, const double& y, const double& z) const;
+    GLuint createVBO (const void* data, int dataSize, GLenum target, GLenum usage);
+    void deleteVBO (const GLuint vboId);
+    void initVBO ();
+    void initPlaneGeometry (GLfloat* valuesVertices, GLfloat* valuesNormals, GLushort* valuesIndices, const int& axis, const int nbVerticesOffset, const int nbIndicesOffset);
+    void updateValuesVBO () const;
+    void displayValuesVBO () const;
+    void drawPlaneBBox (const int& axis) const;
+    void updateMaxValues ();
 };
 
 //#ifdef SOFA_FLOAT
