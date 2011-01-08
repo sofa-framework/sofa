@@ -89,11 +89,13 @@ void FrameRigidConstraint<DataTypes>::projectResponse(DataVecDeriv& resData, con
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
     const vector<unsigned> & indices = f_index.getValue();
-//                cerr<<"FrameRigidConstraint<DataTypes>::projectResponse, indices = "<< indices << endl;
-//                cerr<<"FrameRigidConstraint<DataTypes>::projectResponse, motion changes allowed = "<< allowed << endl;
+    //                cerr<<"FrameRigidConstraint<DataTypes>::projectResponse, indices = "<< indices << endl;
+    //                cerr<<"FrameRigidConstraint<DataTypes>::projectResponse, motion changes allowed = "<< allowed << endl;
     for(unsigned i=0; i<indices.size(); i++)
     {
-        res[indices[i]].setRigid();
+//                    cerr<<"FrameRigidConstraint<DataTypes>::projectResponse, res to project = "<<    res[indices[i]] << endl;
+//                    res[indices[i]].setRigid();
+//                    cerr<<"FrameRigidConstraint<DataTypes>::projectResponse, res projected = "<<    res[indices[i]] << endl;
     }
 
 }
@@ -110,7 +112,9 @@ void FrameRigidConstraint<DataTypes>::projectVelocity(DataVecDeriv& vData, const
     const vector<unsigned> & indices = f_index.getValue();
     for(unsigned i=0; i<indices.size(); i++)
     {
+//                    cerr<<"FrameRigidConstraint<DataTypes>::projectVelocity, velocity to project = "<<    res[indices[i]] << endl;
         res[indices[i]].setRigid();
+//                    cerr<<"FrameRigidConsraint<DataTypes>::projectVelocity, velocity projected = "<<    res[indices[i]] << endl;
     }
 }
 
@@ -122,7 +126,9 @@ void FrameRigidConstraint<DataTypes>::projectPosition(DataVecCoord& xData, const
     const vector<unsigned> & indices = f_index.getValue();
     for(unsigned i=0; i<indices.size(); i++)
     {
+//                    cerr<<"FrameRigidConstraint<DataTypes>::projectPosition, position to project = "<<    res[indices[i]] << endl;
         res[indices[i]].setRigid();
+//                    cerr<<"FrameRigidConstraint<DataTypes>::projectPosition, position projected = "<<    res[indices[i]] << endl;
     }
 }
 

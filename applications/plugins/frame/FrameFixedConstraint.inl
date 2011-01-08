@@ -293,19 +293,19 @@ void FrameFixedConstraint<DataTypes>::draw()
     }
 }
 
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void FrameFixedConstraint<Rigid3dTypes >::draw();
-template <>
-void FrameFixedConstraint<Rigid2dTypes >::draw();
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void FrameFixedConstraint<Rigid3fTypes >::draw();
-template <>
-void FrameFixedConstraint<Rigid2fTypes >::draw();
-#endif
+//            // Specialization for rigids
+//#ifndef SOFA_FLOAT
+//            template <>
+//                    void FrameFixedConstraint<Rigid3dTypes >::draw();
+//            template <>
+//                    void FrameFixedConstraint<Rigid2dTypes >::draw();
+//#endif
+//#ifndef SOFA_DOUBLE
+//            template <>
+//                    void FrameFixedConstraint<Rigid3fTypes >::draw();
+//            template <>
+//                    void FrameFixedConstraint<Rigid2fTypes >::draw();
+//#endif
 
 
 
