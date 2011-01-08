@@ -53,7 +53,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(FrameVolumePreservationForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename DataTypes::Real Real;
-    static const int material_dimensions = DataTypes::material_dimensions;
+    static const unsigned material_dimensions = DataTypes::material_dimensions;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;

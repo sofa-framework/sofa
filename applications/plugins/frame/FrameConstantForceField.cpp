@@ -49,10 +49,12 @@ int FrameConstantForceFieldClass = core::RegisterObject("Attach given particles 
 #ifndef SOFA_FLOAT
         .add< ConstantForceField<Affine3dTypes> >()
         .add< ConstantForceField<Quadratic3dTypes> >()
+//.add< ConstantForceField<DeformationGradient331dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< ConstantForceField<Affine3fTypes> >()
         .add< ConstantForceField<Quadratic3fTypes> >()
+//.add< ConstantForceField<DeformationGradient331fTypes> >()
 #endif
         ;
 
@@ -93,10 +95,12 @@ double ConstantForceField<Quadratic3fTypes>::getPotentialEnergy(const DataVecCoo
 #ifndef SOFA_FLOAT
 template class SOFA_FRAME_API ConstantForceField<Affine3dTypes>;
 template class SOFA_FRAME_API ConstantForceField<Quadratic3dTypes>;
+//         template class SOFA_FRAME_API ConstantForceField<DeformationGradient331dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_FRAME_API ConstantForceField<Affine3fTypes>;
 template class SOFA_FRAME_API ConstantForceField<Quadratic3fTypes>;
+//         template class SOFA_FRAME_API ConstantForceField<DeformationGradient331fTypes>;
 #endif
 
 
