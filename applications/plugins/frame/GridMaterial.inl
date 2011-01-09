@@ -64,6 +64,8 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , poissonRatio ( initData ( &poissonRatio, "poissonRatio","Sample poisson Ratio." ) )
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
     , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
+    , useDijkstra ( initData ( &useDijkstra, true, "useDijkstra","Use Dijkstra's algorithm to compute the distance fields." ) )
+    , optimizeLinearity ( initData ( &optimizeLinearity, true, "optimizeLinearity","Insert Gauss points to create integration volumes containing as linear as possible weights." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
     , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
@@ -868,13 +870,13 @@ bool GridMaterial< MaterialTypes>::lumpWeights(const VUI& indices,const SCoord& 
     for (i=0; i<dim; i++) for (j=0; j<dim; j++) W[i]+=invCov[i][j]*wdp[j];
 
 
-//
-//sout<<"wdp="; for (i=0;i<dim;i++) sout<<wdp[i]<<","; sout<<sendl;
-//vector<Real> sdp((int)dim,(Real)0);
-//for (j=0;j<indices.size();j++) { getCoord(indices[j],pi); getCompleteBasis(pi-point,order,basis); for (i=0;i<dim;i++) sdp[i]+=basis[i]; }
-//sout<<"sdp="; for (i=0;i<dim;i++) sout<<sdp[i]<<","; sout<<sendl;
-//sout<<"W="; for (i=0;i<dim;i++) sout<<W[i]<<","; sout<<sendl;
-//sout<<"invCov="; for (i=0;i<dim;i++) for (j=0;j<dim;j++) sout<<invCov[i][j]<<","; sout<<sendl;
+    //
+    //sout<<"wdp="; for (i=0;i<dim;i++) sout<<wdp[i]<<","; sout<<sendl;
+    //vector<Real> sdp((int)dim,(Real)0);
+    //for (j=0;j<indices.size();j++) { getCoord(indices[j],pi); getCompleteBasis(pi-point,order,basis); for (i=0;i<dim;i++) sdp[i]+=basis[i]; }
+    //sout<<"sdp="; for (i=0;i<dim;i++) sout<<sdp[i]<<","; sout<<sendl;
+    //sout<<"W="; for (i=0;i<dim;i++) sout<<W[i]<<","; sout<<sendl;
+    //sout<<"invCov="; for (i=0;i<dim;i++) for (j=0;j<dim;j++) sout<<invCov[i][j]<<","; sout<<sendl;
     if(err)
     {
         for (j=0; j<indices.size(); j++)
@@ -1086,6 +1088,8 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const SCoord& po
     return computeGeodesicalDistances (index, distMax );
 }
 
+
+
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index, const Real distMax )
 {
@@ -1098,62 +1102,100 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
     if (!grid.data()[index]) return false;  // voxel out of object
 
     VUI neighbors;
-    /*
-    				/// dijkstra algorithm
-    				Real d,dmin;
-    				std::list<unsigned int> ptlist;
-    				std::list<unsigned int>::iterator it,itmin;
-    				for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
-    				distances[index]=0;
-    				bool ok=false;
-    				while (!ok)
-    					{
-    					// take the non-treated voxel with minimum distance
-    					dmin=distMax;
-    					for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
-    					if(dmin==distMax) { ok=true; continue;}
 
-    					// update distance of neighbors
-                        get26Neighbors(*itmin, neighbors);
-                        for (i=0;i<neighbors.size();i++)
-                        {
-                            index2=neighbors[i];
-                            if (grid.data()[index2]) // test if voxel is not void
-                            {
-                                d=dmin+getDistance(*itmin,index2);
-    							if (distances[index2]>d) {distances[index2]=d; }
-                            }
-                        }
-    					ptlist.erase(itmin);
-    					}
-    				/// end dijkstra algorithm
-    */
-    /// propagation algorithm
-    Real d;
-    unsigned int index1;
-    std::queue<int> fifo;
-    distances[index]=0;
-    fifo.push(index);
-    while (!fifo.empty())
+    if( useDijkstra.getValue()==true )
     {
-        index1=fifo.front();
-        get26Neighbors(index1, neighbors);
-        for (i=0; i<neighbors.size(); i++)
+
+        /// dijkstra algorithm
+        typedef std::pair<Real,unsigned> DistanceToPoint;
+        std::set<DistanceToPoint> q; // priority queue
+        q.insert( DistanceToPoint(0.,index) );
+        distances[index]=0;
+
+        while( !q.empty() )
         {
-            index2=neighbors[i];
-            if (grid.data()[index2]) // test if voxel is not void
+            DistanceToPoint top = *q.begin();
+            q.erase(q.begin());
+            unsigned v = top.second;
+
+            get26Neighbors(v, neighbors);
+            for (i=0; i<neighbors.size(); i++)
             {
-                d=distances[index1]+getDistance(index1,index2);
-                if (distances[index2]>d)
+                unsigned v2 = neighbors[i];
+                if (grid.data()[v2])
                 {
-                    distances[index2]=d;
-                    fifo.push(index2);
+                    Real cost = getDistance(v,v2);
+                    if(distances[v2] > distances[v] + cost)
+                    {
+                        if(distances[v2] != distMax)
+                        {
+                            q.erase(q.find(DistanceToPoint(distances[v2],v2)));
+                        }
+                        distances[v2] = distances[v] + cost;
+                        q.insert( DistanceToPoint(distances[v2],v2) );
+                    }
                 }
             }
         }
-        fifo.pop();
+
+
+        //                    Real d,dmin;
+        //                    std::list<unsigned int> ptlist;
+        //                    std::list<unsigned int>::iterator it,itmin;
+        //                    for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
+        //                    distances[index]=0;
+        //                    bool ok=false;
+        //                    while (!ok)
+        //                    {
+        //                        // take the non-treated voxel with minimum distance
+        //                        dmin=distMax;
+        //                        for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
+        //                        if(dmin==distMax) { ok=true; continue;}
+        //
+        //                        // update distance of neighbors
+        //                        get26Neighbors(*itmin, neighbors);
+        //                        for (i=0;i<neighbors.size();i++)
+        //                        {
+        //                            index2=neighbors[i];
+        //                            if (grid.data()[index2]) // test if voxel is not void
+        //                            {
+        //                                d=dmin+getDistance(*itmin,index2);
+        //                                if (distances[index2]>d) {distances[index2]=d; }
+        //                            }
+        //                        }
+        //                        ptlist.erase(itmin);
+        //                    }
+        /// end dijkstra algorithm
     }
-    /// end propagation algorithm
+    else
+    {
+        /// propagation algorithm
+        Real d;
+        unsigned int index1;
+        std::queue<int> fifo;
+        distances[index]=0;
+        fifo.push(index);
+        while (!fifo.empty())
+        {
+            index1=fifo.front();
+            get26Neighbors(index1, neighbors);
+            for (i=0; i<neighbors.size(); i++)
+            {
+                index2=neighbors[i];
+                if (grid.data()[index2]) // test if voxel is not void
+                {
+                    d=distances[index1]+getDistance(index1,index2);
+                    if (distances[index2]>d)
+                    {
+                        distances[index2]=d;
+                        fifo.push(index2);
+                    }
+                }
+            }
+            fifo.pop();
+        }
+        /// end propagation algorithm
+    }
 
     updateMaxValues();
     return true;
@@ -1184,72 +1226,118 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
     }
     VUI neighbors;
 
-    /*
-    				/// dijkstra algorithm
-    				Real d,dmin;
-    				std::list<unsigned int> ptlist;
-    				std::list<unsigned int>::iterator it,itmin;
-    				for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
-                    for (i=0;i<nbi;i++) if (indices[i]>=0 && indices[i]<(int)nbVoxels) if (grid.data()[indices[i]]!=0) {
-                        distances[indices[i]]=0;
-                        voronoi[indices[i]]=i;
-                    }
-    				bool ok=false;
-    				while (!ok)
-    					{
-    					// take the non-treated voxel with minimum distance
-    					dmin=distMax;
-    					for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
-    					if(dmin==distMax) { ok=true; continue;}
-
-    					// update distance of neighbors
-                        get26Neighbors(*itmin, neighbors);
-                        for (i=0;i<neighbors.size();i++)
-                        {
-                            index2=neighbors[i];
-                            if (grid.data()[index2]) // test if voxel is not void
-                            {
-                                d=dmin+getDistance(*itmin,index2);
-    							if (distances[index2]>d) {distances[index2]=d;   voronoi[index2]=voronoi[*itmin];}
-                            }
-                        }
-    					ptlist.erase(itmin);
-    					}
-    				/// end dijkstra algorithm
-    */
-
-    /// propagation algorithm
-    Real d;
-    unsigned int index1;
-    std::queue<unsigned int> fifo;
-    for (i=0; i<nbi; i++) if (indices[i]>=0 && indices[i]<(int)nbVoxels) if (grid.data()[indices[i]]!=0)
-            {
-                distances[indices[i]]=0;
-                voronoi[indices[i]]=i;
-                fifo.push(indices[i]);
-            }
-    if (fifo.empty()) return false; // all input voxels out of grid
-    while (!fifo.empty())
+    if( useDijkstra.getValue()==true )
     {
-        index1=fifo.front();
-        get26Neighbors(index1, neighbors);
-        for (i=0; i<neighbors.size(); i++)
+        /// dijkstra algorithm
+        typedef std::pair<Real,unsigned> DistanceToPoint;
+        std::set<DistanceToPoint> q; // priority queue
+        for (i=0; i<nbi; i++)
         {
-            index2=neighbors[i];
-            if (grid.data()[index2]) // test if voxel is not void
-            {
-                d=distances[index1]+getDistance(index1,index2);
-                if (distances[index2]>d)
+            if (indices[i]>=0 && indices[i]<(int)nbVoxels) if (grid.data()[indices[i]]!=0)
                 {
-                    distances[index2]=d;
-                    voronoi[index2]=voronoi[index1];
-                    fifo.push(index2);
+                    q.insert( DistanceToPoint(0.,indices[i]) );
+                    distances[indices[i]]=0;
+                    voronoi[indices[i]]=i;
+                }
+        }
+
+        while( !q.empty() )
+        {
+            DistanceToPoint top = *q.begin();
+            q.erase(q.begin());
+            unsigned v = top.second;
+
+            get26Neighbors(v, neighbors);
+            for (i=0; i<neighbors.size(); i++)
+            {
+                unsigned v2 = neighbors[i];
+                if (grid.data()[v2])
+                {
+                    Real d = distances[v] + getDistance(v,v2);
+                    if(distances[v2] > d )
+                    {
+                        if(distances[v2] != distMax)
+                        {
+                            q.erase(q.find(DistanceToPoint(distances[v2],v2)));
+                        }
+                        voronoi[v2]=voronoi[v];
+                        distances[v2] = d;
+                        q.insert( DistanceToPoint(d,v2) );
+                    }
                 }
             }
         }
-        fifo.pop();
+
+        //                    Real d,dmin;
+        //                    std::list<unsigned int> ptlist;
+        //                    std::list<unsigned int>::iterator it,itmin;
+        //                    for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
+        //                    for (i=0;i<nbi;i++) if (indices[i]>=0 && indices[i]<(int)nbVoxels) if (grid.data()[indices[i]]!=0) {
+        //                        distances[indices[i]]=0;
+        //                        voronoi[indices[i]]=i;
+        //                    }
+        //                    bool ok=false;
+        //                    while (!ok)
+        //                    {
+        //                        // take the non-treated voxel with minimum distance
+        //                        dmin=distMax;
+        //                        for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
+        //                        if(dmin==distMax) { ok=true; continue;}
+        //
+        //                        // update distance of neighbors
+        //                        get26Neighbors(*itmin, neighbors);
+        //                        for (i=0;i<neighbors.size();i++)
+        //                        {
+        //                            index2=neighbors[i];
+        //                            if (grid.data()[index2]) // test if voxel is not void
+        //                            {
+        //                                d=dmin+getDistance(*itmin,index2);
+        //                                if (distances[index2]>d) {
+        //                                    distances[index2]=d;
+        //                                    voronoi[index2]=voronoi[*itmin];
+        //                                }
+        //                            }
+        //                        }
+        //                        ptlist.erase(itmin);
+        //                    }
+        /// end dijkstra algorithm
     }
-    /// end propagation algorithm
+    else
+    {
+
+        /// propagation algorithm
+        Real d;
+        unsigned int index1;
+        std::queue<unsigned int> fifo;
+        for (i=0; i<nbi; i++) if (indices[i]>=0 && indices[i]<(int)nbVoxels) if (grid.data()[indices[i]]!=0)
+                {
+                    distances[indices[i]]=0;
+                    voronoi[indices[i]]=i;
+                    fifo.push(indices[i]);
+                }
+        if (fifo.empty()) return false; // all input voxels out of grid
+        while (!fifo.empty())
+        {
+            index1=fifo.front();
+            get26Neighbors(index1, neighbors);
+            for (i=0; i<neighbors.size(); i++)
+            {
+                index2=neighbors[i];
+                if (grid.data()[index2]) // test if voxel is not void
+                {
+                    d=distances[index1]+getDistance(index1,index2);
+                    if (distances[index2]>d)
+                    {
+                        distances[index2]=d;
+                        voronoi[index2]=voronoi[index1];
+                        fifo.push(index2);
+                    }
+                }
+            }
+            fifo.pop();
+        }
+        /// end propagation algorithm
+    }
 
 
     updateMaxValues();
@@ -1283,84 +1371,136 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
     if (voronoi[index]==-1) return false;  // no voronoi defined
 
     VUI neighbors;
-    /*
-    				/// dijkstra algorithm
-    				Real d,dmin;
-    				std::list<unsigned int> ptlist;
-    				std::list<unsigned int>::iterator it,itmin;
-    				for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
-    				for (i=0;i<nbVoxels;i++)
-                        if(voronoi[i]==voronoi[index])
-                        {
-                        get6Neighbors((int)i, neighbors);
-                        for (j=0;j<neighbors.size();j++)
-                            if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
-                            {
-                            distances[i]=0;
-                            j=neighbors.size();
-                        }
-                    }
-
-    				bool ok=false;
-    				while (!ok)
-    					{
-    					// take the non-treated voxel with minimum distance
-    					dmin=distMax;
-    					for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
-    					if(dmin==distMax) { ok=true; continue;}
-
-    					// update distance of neighbors
-                        get26Neighbors(*itmin, neighbors);
-                        for (i=0;i<neighbors.size();i++)
-                        {
-                            index2=neighbors[i];
-                            if (grid.data()[index2]) // test if voxel is not void
-                            {
-                                d=dmin+getDistance(*itmin,index2);
-    							if (distances[index2]>d) {distances[index2]=d; }
-                            }
-                        }
-    					ptlist.erase(itmin);
-    					}
-    				/// end dijkstra algorithm
-    */
-
-
-    /// propagation algorithm
-    Real d;
-    unsigned int index1;
-    std::queue<int> fifo;
-    for (i=0; i<nbVoxels; i++)
-        if(voronoi[i]==voronoi[index])
-        {
-            get6Neighbors((int)i, neighbors);
-            for (j=0; j<neighbors.size(); j++)
-                if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
-                {
-                    distances[i]=0; fifo.push((int)i);
-                    j=neighbors.size();
-                }
-        }
-    while (!fifo.empty())
+    if( useDijkstra.getValue()==true )
     {
-        index1=fifo.front();
-        get26Neighbors(index1, neighbors);
-        for (i=0; i<neighbors.size(); i++)
+        /// dijkstra algorithm
+        //                    std::list<unsigned int> ptlist;
+        //                    for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
+        //                    for (i=0;i<nbVoxels;i++){
+        //                        if(voronoi[i]==voronoi[index])
+        //                        {
+        //                            get6Neighbors((int)i, neighbors);
+        //                            for (j=0;j<neighbors.size();j++){
+        //                                if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
+        //                                {
+        //                                    distances[i]=0;
+        //                                    j=neighbors.size();
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                    Real d,dmin;
+        //                    std::list<unsigned int>::iterator it,itmin;
+        //                    bool ok=false;
+        //                    while (!ok)
+        //                    {
+        //                        // take the non-treated voxel with minimum distance
+        //                        dmin=distMax;
+        //                        for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
+        //                        if(dmin==distMax) { ok=true; continue;}
+        //
+        //                        // update distance of neighbors
+        //                        get26Neighbors(*itmin, neighbors);
+        //                        for (i=0;i<neighbors.size();i++)
+        //                        {
+        //                            index2=neighbors[i];
+        //                            if (grid.data()[index2]) // test if voxel is not void
+        //                            {
+        //                                d=dmin+getDistance(*itmin,index2);
+        //                                if (distances[index2]>d) {distances[index2]=d; }
+        //                            }
+        //                        }
+        //                        ptlist.erase(itmin);
+        //                    }
+
+        typedef std::pair<Real,unsigned> DistanceToPoint;
+        std::set<DistanceToPoint> q; // priority queue
+
+        for (i=0; i<nbVoxels; i++)
         {
-            index2=neighbors[i];
-            if (grid.data()[index2]) // test if voxel is not void
+            if(voronoi[i]==voronoi[index])
             {
-                d=distances[index1]+getDistance(index1,index2);
-                if (distances[index2]>d)
+                get6Neighbors((int)i, neighbors);
+                for (j=0; j<neighbors.size(); j++)
                 {
-                    distances[index2]=d;
-                    fifo.push(index2);
+                    if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
+                    {
+                        q.insert( DistanceToPoint(0.,i) );
+                        distances[i]=0;
+                        j=neighbors.size();
+                    }
                 }
             }
         }
-        fifo.pop();
+
+        while( !q.empty() )
+        {
+            DistanceToPoint top = *q.begin();
+            q.erase(q.begin());
+            unsigned v = top.second;
+
+            get26Neighbors(v, neighbors);
+            for (i=0; i<neighbors.size(); i++)
+            {
+                unsigned v2 = neighbors[i];
+                if (grid.data()[v2])
+                {
+                    Real d = distances[v] + getDistance(v,v2);
+                    if(distances[v2] > d )
+                    {
+                        if(distances[v2] != distMax)
+                        {
+                            q.erase(q.find(DistanceToPoint(distances[v2],v2)));
+                        }
+                        distances[v2] = d;
+                        q.insert( DistanceToPoint(d,v2) );
+                    }
+                }
+            }
+        }
+
+        /// end dijkstra algorithm
     }
-    /// end propagation algorithm
+    else
+    {
+
+
+        /// propagation algorithm
+        Real d;
+        unsigned int index1;
+        std::queue<int> fifo;
+        for (i=0; i<nbVoxels; i++)
+            if(voronoi[i]==voronoi[index])
+            {
+                get6Neighbors((int)i, neighbors);
+                for (j=0; j<neighbors.size(); j++)
+                    if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
+                    {
+                        distances[i]=0; fifo.push((int)i);
+                        j=neighbors.size();
+                    }
+            }
+        while (!fifo.empty())
+        {
+            index1=fifo.front();
+            get26Neighbors(index1, neighbors);
+            for (i=0; i<neighbors.size(); i++)
+            {
+                index2=neighbors[i];
+                if (grid.data()[index2]) // test if voxel is not void
+                {
+                    d=distances[index1]+getDistance(index1,index2);
+                    if (distances[index2]>d)
+                    {
+                        distances[index2]=d;
+                        fifo.push(index2);
+                    }
+                }
+            }
+            fifo.pop();
+        }
+        /// end propagation algorithm
+    }
 
     updateMaxValues();
     return true;
@@ -1416,55 +1556,58 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 
 
     // check linearity in each region and subdivide region of highest error until num_points is reached
-    vector<Real> errors(indices.size(),(Real)0.);
-    Real w; SGradient dw; SHessian ddw; VUI ptlist;  SCoord point;
-    for (j=0; j<indices.size(); j++)
+    if( this->optimizeLinearity.getValue() )
     {
-        getCoord(indices[j],point);
-        ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
-        for (i=0; i<nbRef; i++)
-            if(v_weights[indices[j]][i]!=0)
-            {
-                pasteRepartioninWeight(v_index[indices[j]][i]);
-                lumpWeights(ptlist,point,w,&dw,NULL,&errors[j]);
-            }
-    }
-
-    while(indices.size()<num_points)
-    {
-        Real maxerr=0;
-        for (j=0; j<indices.size(); j++) if(errors[j]>maxerr) {maxerr=errors[j]; i=j;}
-        SubdivideVoronoiRegion(i,indices.size());
-        j=0; while((unsigned int)voronoi[j]!=indices.size() && j<(unsigned int)nbVoxels) j++;
-        if(j==nbVoxels) {errors[j]=0; continue;} //unable to add region
-        else
+        vector<Real> errors(indices.size(),(Real)0.);
+        Real w; SGradient dw; SHessian ddw; VUI ptlist;  SCoord point;
+        for (j=0; j<indices.size(); j++)
         {
-            indices.push_back(j); errors.push_back(0);
-            // update errors
-            errors[i]=0;
-            getCoord(indices[i],point);
-            ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
-            for (j=0; j<nbRef; j++)
-                if(v_weights[indices[i]][j]!=0)
+            getCoord(indices[j],point);
+            ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
+            for (i=0; i<nbRef; i++)
+                if(v_weights[indices[j]][i]!=0)
                 {
-                    pasteRepartioninWeight(v_index[indices[i]][j]);
-                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
-                }
-            i=indices.size()-1;
-            errors[i]=0;
-            getCoord(indices[i],point);
-            ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
-            for (j=0; j<nbRef; j++)
-                if(v_weights[indices[i]][j]!=0)
-                {
-                    pasteRepartioninWeight(v_index[indices[i]][j]);
-                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
+                    pasteRepartioninWeight(v_index[indices[j]][i]);
+                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[j]);
                 }
         }
+
+        while(indices.size()<num_points)
+        {
+            Real maxerr=0;
+            for (j=0; j<indices.size(); j++) if(errors[j]>maxerr) {maxerr=errors[j]; i=j;}
+            SubdivideVoronoiRegion(i,indices.size());
+            j=0; while((unsigned int)voronoi[j]!=indices.size() && j<(unsigned int)nbVoxels) j++;
+            if(j==nbVoxels) {errors[j]=0; continue;} //unable to add region
+            else
+            {
+                indices.push_back(j); errors.push_back(0);
+                // update errors
+                errors[i]=0;
+                getCoord(indices[i],point);
+                ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
+                for (j=0; j<nbRef; j++)
+                    if(v_weights[indices[i]][j]!=0)
+                    {
+                        pasteRepartioninWeight(v_index[indices[i]][j]);
+                        lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
+                    }
+                i=indices.size()-1;
+                errors[i]=0;
+                getCoord(indices[i],point);
+                ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
+                for (j=0; j<nbRef; j++)
+                    if(v_weights[indices[i]][j]!=0)
+                    {
+                        pasteRepartioninWeight(v_index[indices[i]][j]);
+                        lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
+                    }
+            }
+        }
+        Real err=0; for (j=0; j<errors.size(); j++) err+=errors[j];
+        err/=(Real)nbnonemptyvoxels;
+        std::cout<<"Average error in weights per voxel="<<err<<std::endl;
     }
-    Real err=0; for (j=0; j<errors.size(); j++) err+=errors[j];
-    err/=(Real)nbnonemptyvoxels;
-    std::cout<<"Average error in weights per voxel="<<err<<std::endl;
 
     // insert gauss points in the center of voronoi regions
     points.resize(indices.size());
@@ -1977,7 +2120,7 @@ void GridMaterial< MaterialTypes>::draw()
         float labelMax = maxValues[showvox];
         cimg_forXYZ(grid,x,y,z)
         {
-//                        if (grid(x,y,z)==0) continue;
+            //                        if (grid(x,y,z)==0) continue;
             if (slicedisplay)
             {
                 if(x!=showPlane.getValue()[0] && y!=showPlane.getValue()[1] && z!=showPlane.getValue()[2])

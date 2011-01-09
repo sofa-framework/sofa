@@ -286,6 +286,8 @@ protected:
 
     Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
     Data<bool> biasDistances;
+    Data<bool> useDijkstra;
+    Data<bool> optimizeLinearity;
 
     /// diffuse the weights outside the objects to avoid interpolation problems
     void offsetWeightsOutsideObject(unsigned int offestdist=2);
