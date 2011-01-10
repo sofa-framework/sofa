@@ -1502,9 +1502,10 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     {
         Real maxerr=0;
         for (j=0; j<indices.size(); j++) if(errors[j]>maxerr) {maxerr=errors[j]; i=j;}
+        if (maxerr == 0) break;
         SubdivideVoronoiRegion(i,indices.size());
-        j=0; while((unsigned int)voronoi[j]!=indices.size() && j<(unsigned int)nbVoxels) j++;
-        if(j==nbVoxels) {errors[j]=0; continue;} //unable to add region
+        j=0; while(j<(unsigned int)nbVoxels && (unsigned int)voronoi[j]!=indices.size()) j++;
+        if(j==nbVoxels) {errors[i]=0; continue;} //unable to add region
         else
         {
             indices.push_back(j); errors.push_back(0);
@@ -1566,7 +1567,7 @@ bool GridMaterial< MaterialTypes>::SubdivideVoronoiRegion( const unsigned int vo
     SCoord p1,p2;
 
     // initialization: take the first point and its farthest point inside the voronoi region
-    i1=0; while((unsigned int)voronoi[i1]!=voronoiindex && i1<nbVoxels) i1++;
+    i1=0; while(i1<nbVoxels && (unsigned int)voronoi[i1]!=voronoiindex) i1++;
     if(i1==nbVoxels) return false;
     getCoord(i1,p1);
 
@@ -1684,7 +1685,7 @@ bool GridMaterial< MaterialTypes>::rigidPartsSampling ( VecSCoord& points)
             }
         c/=(Real)count;
         index=getIndex(c);
-        if(index!=-1) if(grid.data()[index]==labellist[l]) {points.push_back(c); continue;}
+        if(index!=-1) if((unsigned int)grid.data()[index]==labellist[l]) {points.push_back(c); continue;}
 
         // treat special case of concave regions
         Real d,dmin=1E10;
@@ -2140,7 +2141,8 @@ void GridMaterial< MaterialTypes>::draw()
 
     if ( showvox!=SHOWVOXELS_NONE)
     {
-        //glDisable ( GL_LIGHTING );
+        glPushAttrib( GL_LIGHTING_BIT);
+        glEnable ( GL_LIGHTING );
         //glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
         glLineWidth(1);
 
@@ -2194,6 +2196,8 @@ void GridMaterial< MaterialTypes>::draw()
 
         if (show3DValues.getValue() && slicedisplay && vboSupported)
             displayValuesVBO();
+
+        glPopAttrib();
     }
 }
 
@@ -2262,7 +2266,7 @@ void GridMaterial< MaterialTypes>::deleteVBO(const GLuint vboId)
 template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::initVBO()
 {
-    vboSupported = true; // TODO Check it later
+    vboSupported = false; // TODO Check it later
 
     if(vboSupported)
     {
