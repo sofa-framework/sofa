@@ -55,6 +55,7 @@ public:
     Data< std::string >  file_system;
     Data<bool> dump_constraint;
     Data< std::string >  file_constraint;
+    Data< bool > f_one_step;
 
     GenerateBenchSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
