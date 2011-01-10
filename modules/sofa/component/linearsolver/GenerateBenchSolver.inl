@@ -56,6 +56,7 @@ GenerateBenchSolver<TMatrix,TVector>::GenerateBenchSolver()
     , file_system( initData(&file_system,std::string("file_system"),"file_system","Filename for the system") )
     , dump_constraint( initData(&dump_constraint,false,"dump_constraint","Dump the Jmatrix at the next time step") )
     , file_constraint( initData(&file_constraint,std::string("file_constraint"),"file_constraint","Filename for the J matrix") )
+    , f_one_step( initData(&f_one_step,true,"one_step","Generate the matrix only for the next step else erase the file each step") )
 {
 }
 
@@ -64,9 +65,12 @@ void GenerateBenchSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
 {
     if (dump_system.getValue())
     {
-        bool * dump = dump_system.beginEdit();
-        dump[0] = false;
-        dump_system.endEdit();
+        if (f_one_step.getValue())
+        {
+            bool * dump = dump_system.beginEdit();
+            dump[0] = false;
+            dump_system.endEdit();
+        }
 
         std::ofstream file(file_system.getValue().c_str(), std::fstream::out | std::fstream::binary);
 
@@ -106,9 +110,12 @@ bool GenerateBenchSolver<TMatrix,TVector>::addJMInvJt(RMatrix& /*result*/, JMatr
 {
     if (dump_constraint.getValue())
     {
-        bool * dump = dump_constraint.beginEdit();
-        dump[0] = false;
-        dump_constraint.endEdit();
+        if (f_one_step.getValue())
+        {
+            bool * dump = dump_constraint.beginEdit();
+            dump[0] = false;
+            dump_constraint.endEdit();
+        }
 
         std::ofstream file(file_constraint.getValue().c_str(), std::fstream::out | std::fstream::binary);
         //file.seekp(0, std::ios::end);
