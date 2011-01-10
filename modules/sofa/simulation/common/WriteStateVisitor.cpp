@@ -52,9 +52,9 @@ WriteStateVisitor::~WriteStateVisitor()
 
 Visitor::Result WriteStateVisitor::processNodeTopDown( simulation::Node* gnode )
 {
-    for( simulation::Node::ObjectIterator i=gnode->object.begin(), iend=gnode->object.end(); i!=iend; i++ )
+    if (gnode->mechanicalState != NULL)
     {
-        (*i)->writeState(m_out);
+        gnode->mechanicalState->writeState(m_out);
     }
     return Visitor::RESULT_CONTINUE;
 }

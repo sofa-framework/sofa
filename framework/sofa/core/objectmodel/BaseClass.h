@@ -47,6 +47,7 @@ namespace objectmodel
  *
  *  This class provides information on the class and parent classes of components.
  *  It is created by using the SOFA_CLASS macro on each new class declaration.
+ *  All classes deriving from Base should use the SOFA_CLASS macro within their declaration.
  *
  */
 class SOFA_CORE_API BaseClass

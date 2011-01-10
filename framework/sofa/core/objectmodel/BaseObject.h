@@ -27,11 +27,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -39,7 +34,6 @@
 #include <sofa/defaulttype/SharedTypes.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectTasks.h>
-
 #include <sofa/helper/set.h>
 #endif
 #ifdef SOFA_SMP_NUMA
@@ -57,8 +51,6 @@ namespace core
 namespace topology
 {
 class Topology;
-//class BaseTopology;
-//class BaseMeshTopology;
 } // namespace topology
 
 namespace objectmodel
@@ -141,9 +133,6 @@ public:
     /// Reset to initial state
     virtual void reset();
 
-    /// Write current state to the given output stream
-    virtual void writeState( std::ostream& out );
-
     /// Called just before deleting this object
     /// Any object in the tree bellow this object that are to be removed will be removed only after this call,
     /// so any references this object holds should still be valid.
@@ -161,16 +150,12 @@ public:
     virtual void handleEvent( Event* );
 
     /// Handle topological Changes
+    /// @deprecated topological changes now rely on TopologyEngine
     virtual void handleTopologyChange() {}
 
     /// Handle topological Changes from a given Topology
+    /// @deprecated topological changes now rely on TopologyEngine
     virtual void handleTopologyChange(core::topology::Topology* t);
-
-    /// Handle state Changes
-    virtual void handleStateChange() {}
-
-    /// Handle state Changes from a given Topology
-    virtual void handleStateChange(core::topology::Topology* t);
 
     ///@}
 

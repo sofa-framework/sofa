@@ -46,7 +46,6 @@ BaseMechanicalState::~BaseMechanicalState()
 {
 }
 
-
 /// Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
 ///
 /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
@@ -88,6 +87,16 @@ void BaseMechanicalState::vMultiOp(const VMultiOp& ops, const ExecParams* /* par
         }
     }
 }
+
+/// Handle state Changes from a given Topology
+void BaseMechanicalState::handleStateChange(core::topology::Topology* t)
+{
+    if (t == this->getContext()->getTopology())
+        handleStateChange();
+}
+
+void BaseMechanicalState::writeState( std::ostream& )
+{ }
 
 } // namespace behavior
 

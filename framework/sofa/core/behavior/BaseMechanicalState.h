@@ -243,8 +243,25 @@ public:
 
     /// @}
 
+    /// @name events
+    ///   Methods related to Event processing
+    /// @{
+
+    /// Handle state Changes
+    /// @deprecated topological changes now rely on TopologyEngine
+    virtual void handleStateChange() {}
+
+    /// Handle state Changes from a given Topology
+    /// @deprecated topological changes now rely on TopologyEngine
+    virtual void handleStateChange(core::topology::Topology* t);
+
+    ///@}
+
     /// @name Misc properties and actions
     /// @{
+
+    /// Write current state to the given output stream
+    virtual void writeState( std::ostream& out );
 
     virtual unsigned int getCoordDimension() const { return 0; }
     virtual unsigned int getDerivDimension() const { return 0; }

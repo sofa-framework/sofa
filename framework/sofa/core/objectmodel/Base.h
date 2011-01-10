@@ -52,7 +52,8 @@ namespace objectmodel
  *  \brief Base class for everything
  *
  *  This class contains all functionnality shared by every objects in SOFA.
- *  Most importantly it defines how to retrieve information about an object (name, type, fields).
+ *  Most importantly it defines how to retrieve information about an object (name, type, data fields).
+ *  All classes deriving from Base should use the SOFA_CLASS macro within their declaration (see BaseClass.h).
  *
  */
 class SOFA_CORE_API Base
