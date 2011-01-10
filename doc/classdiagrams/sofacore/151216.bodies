@@ -1,0 +1,36 @@
+class BaseLMConstraint
+!!!189744.cpp!!!	getConstraintViolation(inout v : defaulttype::BaseVector, in cparams : ConstraintParams) : void
+  getConstraintViolation(v,cparams->constOrder());
+!!!189872.cpp!!!	getConstraintViolation(inout v : defaulttype::BaseVector, in Order : ConstOrder) : void
+  const helper::vector< ConstraintGroup* > &constraints = constraintOrder[Order];
+  for (unsigned int idxGroupConstraint=0;idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
+  {
+    ConstraintGroup *group=constraints[idxGroupConstraint];
+    std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
+
+    for (ConstraintGroup::EquationIterator equation = range.first; equation != range.second;++equation)
+    {
+      v->set(equation->constraintId, equation->correction);
+    }
+  }
+
+!!!190512.cpp!!!	getNumConstraint(in Order : ConstOrder) : uint
+    unsigned int result=0;
+    const helper::vector< ConstraintGroup* > &vec = constraintOrder[Order];
+    for (unsigned int i=0;i<vec.size();++i) result+=vec[i]->getNumConstraint();
+    return result;
+!!!191408.cpp!!!	resetConstraint() : void
+	std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup*> >::iterator it;
+    for (it=constraintOrder.begin(); it!=constraintOrder.end();it++)
+    {
+        helper::vector< ConstraintGroup* > &v=it->second;
+        for (unsigned int i=0;i<v.size();++i)
+        {
+            delete v[i];
+        }
+    }
+    constraintOrder.clear();
+!!!191536.cpp!!!	addGroupConstraint(in id : ConstOrder) : ConstraintGroup
+    ConstraintGroup *c = new ConstraintGroup(id);
+    constraintOrder[id].push_back(c);
+    return c;

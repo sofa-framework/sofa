@@ -1,0 +1,407 @@
+class Base
+!!!264752.cpp!!!	Base()
+    name.setParentClass("Base");
+    f_printLog.setParentClass("Base");
+    f_tags.setParentClass("Base");
+    sendl.setParent(this);
+!!!265136.cpp!!!	getName() : std::string
+    return name.getValue();
+!!!265264.cpp!!!	setName(in na : std::string) : void
+    name.setValue(na);
+!!!265776.cpp!!!	decodeFullName(in t : std::type_info) : std::string
+  std::string name;
+#ifdef __GNUC__
+  int status;
+	/* size_t length; */ // although it should, length would not be filled in by the following call
+  char* allocname = abi::__cxa_demangle(t.name(), 0, /*&length*/0, &status);
+  if(allocname == 0)
+  {
+      std::cerr << "Unable to demangle symbol: " << t.name() << std::endl;
+  }
+  else
+  {
+		int length = 0;
+		while(allocname[length] != '\0')
+		{
+			length++;
+		}
+		name.resize(length);
+		for(int i=0; i<(int)length; i++)
+			name[i] = allocname[i];
+		free(allocname);
+  }
+#else
+  name = t.name();
+#endif
+  return name;
+!!!265904.cpp!!!	decodeTypeName(in t : std::type_info) : std::string
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
+    name.resize(len+1);
+    int start = 0;
+    int dest = 0;
+    char cprev = '\0';
+    //sout << "name = "<<realname<<sendl;
+    for (int i=0; i<len; i++)
+    {
+        char c = realname[i];
+        if (c == ':') // && cprev == ':')
+        {
+            start = i+1;
+        }
+        else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
+        {
+            start = i+1;
+        }
+        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+        {
+            // write result
+            while (start < i)
+            {
+                name[dest++] = realname[start++];
+            }
+        }
+        cprev = c;
+        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" name = "<<name<<sendl;
+    }
+    while (start < len)
+    {
+        name[dest++] = realname[start++];
+    }
+    name.resize(dest);
+    return name;
+/*
+    // Remove namespaces
+    std::string cname;
+    for(;;)
+    {
+        std::string::size_type pos = name.find("::");
+        if (pos == std::string::npos) break;
+        std::string::size_type first = name.find_last_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_",pos-1);
+        if (first == std::string::npos) first = 0;
+        else first++;
+        name.erase(first,pos-first+2);
+        //sout << "name="<<name<<sendl;
+    }
+    // Remove "class "
+    for(;;)
+    {
+        std::string::size_type pos = name.find("class ");
+        if (pos == std::string::npos) break;
+        name.erase(pos,6);
+    }
+    //sout << "TYPE NAME="<<name<<sendl;
+    return name;
+*/
+!!!266032.cpp!!!	decodeClassName(in t : std::type_info) : std::string
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
+    name.resize(len+1);
+    int start = 0;
+    int dest = 0;
+    int i;
+    char cprev = '\0';
+    //sout << "name = "<<realname<<sendl;
+    for (i=0; i<len; i++)
+    {
+        char c = realname[i];
+        if (c == '<') break;
+        if (c == ':') // && cprev == ':')
+        {
+            start = i+1;
+        }
+        else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
+        {
+            start = i+1;
+        }
+        else if (c == ' ' && i >= 6 && realname[i-6] == 's' && realname[i-5] == 't' && realname[i-4] == 'r' && realname[i-3] == 'u' && realname[i-2] == 'c' && realname[i-1] == 't')
+        {
+            start = i+1;
+        }
+        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+        {
+            // write result
+            while (start < i)
+            {
+                name[dest++] = realname[start++];
+            }
+        }
+        cprev = c;
+    }
+
+    while (start < i)
+    {
+        name[dest++] = realname[start++];
+    }
+    name.resize(dest);
+    return name;
+/*
+    std::string name = decodeTypeName(t);
+    // Find template
+    std::string::size_type pos = name.find("<");
+    if (pos != std::string::npos)
+    {
+        name.erase(pos,name.length()-pos);
+    }
+    //sout << "CLASS NAME="<<name<<sendl;
+    return name;
+*/
+!!!266160.cpp!!!	decodeNamespaceName(in t : std::type_info) : std::string
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
+    int start = 0;
+    int last = len-1;
+    int i;
+    for (i=0; i<len; i++)
+    {
+        char c = realname[i];
+        if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
+        {
+            start = i+1;
+        }
+        else if (c == ':' && (i<1 || realname[i-1]!=':'))
+        {
+            last = i-1;
+        }
+        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+        {
+            // write result
+            break;
+        }
+    }
+    name = realname.substr(start, last-start+1);
+    return name;
+!!!266288.cpp!!!	decodeTemplateName(in t : std::type_info) : std::string
+    std::string name;
+    std::string realname = decodeFullName(t);
+    int len = realname.length();
+    name.resize(len+1);
+    int start = 0;
+    int dest = 0;
+    int i = 0;
+    char cprev = '\0';
+    while (i < len && realname[i]!='<')
+        ++i;
+    start = i+1; ++i;
+    for (; i<len; i++)
+    {
+        char c = realname[i];
+        //if (c == '<') break;
+        if (c == ':') // && cprev == ':')
+        {
+            start = i+1;
+        }
+        else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
+        {
+            start = i+1;
+        }
+        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+        {
+            // write result
+            while (start <= i)
+            {
+                name[dest++] = realname[start++];
+            }
+        }
+        cprev = c;
+    }
+    while (start < i)
+    {
+        name[dest++] = realname[start++];
+    }
+    name.resize(dest);
+    return name;
+/*
+    std::string name = decodeTypeName(t);
+    // Find template
+    std::string::size_type pos = name.find("<");
+    if (pos != std::string::npos)
+    {
+        name = name.substr(pos+1,name.length()-pos-2);
+    }
+    else
+    {
+        name = "";
+    }
+    //sout << "TEMPLATE NAME="<<name<<sendl;
+    return name;
+*/
+!!!266928.cpp!!!	parseFields(in str : std::list<std::string>) : void
+    string name;
+    while( !str.empty() ) {
+        name = str.front();
+        str.pop_front();
+        // field name
+        std::vector< BaseData* > fields=findGlobalField(name);
+        if( fields.size() != 0 ) {
+            std::string s = str.front();
+            for (unsigned int i=0;i<fields.size();++i)
+              {
+                          if( !(fields[i]->read( s ))) serr<<"could not read value for option " << name <<": "<< s << sendl;
+              }
+        } else {
+            str.pop_front();
+                        serr<<"Unknown option: "<< name << sendl;
+        }
+    }
+!!!267056.cpp!!!	parseFields(in args : std::map<std::string,std::string*>) : void
+    // build  std::list<std::string> str
+    using std::string;
+    string key,val;
+    for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; i++ ) {
+        if( (*i).second!=NULL ) {
+            key=(*i).first;
+            val=*(*i).second;
+            std::vector< BaseData* > fields=findGlobalField(key);
+            if( fields.size() != 0 ) {
+              for (unsigned int i=0;i<fields.size();++i)
+                {
+                        if( !(fields[i]->read( val ))) serr<<"could not read value for option "<<key<<": "<<val << sendl;
+                }
+            } else {
+                                if ((key!="name") && (key!="type")) serr<<"Unknown option: " << key << sendl;
+            }
+        }
+    }
+!!!267184.cpp!!!	writeDatas(inout args : std::map<std::string,std::string*>) : void
+//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+  for (unsigned int i=0;i<m_fieldVec.size();i++)
+    {
+        string valueString;
+        BaseData* field = m_fieldVec[i].second;
+
+        if( args[m_fieldVec[i].first] != NULL )
+            *args[ m_fieldVec[i].first] = field->getValueString();
+        else
+            args[ m_fieldVec[i].first] =  new string(field->getValueString());
+    }
+!!!267312.cpp!!!	xmlWriteNodeDatas(inout out : std::ostream, in level : uint) : void
+  
+  for (unsigned int i=0;i<m_fieldVec.size();i++)
+  {
+    BaseData* field = m_fieldVec[ i ].second;
+    if(  field->isPersistent() && field->isSet() )
+    {
+        if (field->getLinkPath().empty() )
+        {
+            if (!field->getValueString().empty())
+                out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
+        }
+        else
+        {
+            out << m_fieldVec[ i ].first << "=\""<< field->getLinkPath() << "\" ";
+        }
+    }
+  }
+!!!267440.cpp!!!	xmlWriteDatas(inout out : std::ostream, in level : uint, in compact : bool) : void
+//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+  if (compact)
+  {
+    for (unsigned int i=0;i<m_fieldVec.size();i++)
+    {
+      BaseData* field = m_fieldVec[ i ].second;
+
+      if (!field->getLinkPath().empty() )
+      {
+          out << " " << m_fieldVec[ i ].first << "=\""<< field->getLinkPath() << "\" ";
+      }
+      else
+      {
+          if(  field->isPersistent() && field->isSet())
+          {
+              if (!field->getValueString().empty() )
+                  out << " " <<m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
+          }
+      }
+    }
+  }
+  else
+  {
+    for (unsigned int i=0;i<m_fieldVec.size();i++)
+    {
+      BaseData* field = m_fieldVec[ i ].second;
+      if( field->isPersistent() && field->isSet() && (!field->getValueString().empty() || !field->getLinkPath().empty() ) ){
+        for (unsigned l=0;l<level;l++) out << "\t";
+        out << "<Attribute type=\"" << m_fieldVec[ i ].first << "\">\n" ;
+
+        for (unsigned l=0;l<=level;l++) out << "\t";
+        if (field->getLinkPath().empty())
+            out  << "<Data value=\"" << field->getValueString() << "\"/>\n";
+        else
+            out  << "<Data value=\"" << field->getLinkPath() << "\"/>\n";
+
+        for (unsigned l=0;l<level;l++) out << "\t";
+        out << "</Attribute>\n";
+      }
+    }
+  }
+!!!267568.cpp!!!	findField(in name : std::string) : BaseData
+    std::string ln(name);
+    //Search in the aliases
+    typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
+    std::pair< multimapIterator, multimapIterator> range = m_aliasData.equal_range(name);
+    if (range.first != range.second)
+        return range.first->second;
+    else
+        return NULL;
+!!!267696.cpp!!!	findGlobalField(in name : std::string) : std::vector< BaseData* >
+    std::string ln(name);
+    std::vector<BaseData*> result;
+    //Search in the aliases
+    typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
+    std::pair< multimapIterator, multimapIterator> range = m_aliasData.equal_range(name);
+    for (multimapIterator itAlias=range.first;itAlias!=range.second;itAlias++)
+        result.push_back(itAlias->second);
+    return result;
+!!!268336.cpp!!!	hasTag(in t : Tag) : bool
+    return (f_tags.getValue().count( t ) > 0 );
+!!!268464.cpp!!!	addTag(in t : Tag) : void
+    f_tags.beginEdit()->insert(t);
+    f_tags.endEdit();
+!!!268592.cpp!!!	removeTag(in t : Tag) : void
+    f_tags.beginEdit()->erase(t);
+    f_tags.endEdit();
+!!!268720.cpp!!!	parse(inout arg : BaseObjectDescription) : void
+    //this->parseFields ( arg->getAttributeMap() );
+  std::vector< std::string > attributeList;
+  arg->getAttributeList(attributeList);
+  for (unsigned int i=0;i<attributeList.size();++i)
+    {
+       std::vector< BaseData* > dataModif = findGlobalField(attributeList[i]);
+       for (unsigned int d=0;d<dataModif.size();++d)
+       {
+        const char* val = arg->getAttribute(attributeList[i]);
+        if (val)
+        {
+            std::string valueString(val);
+                        if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
+        }
+       }
+    }
+!!!269104.cpp!!!	getWarnings() : std::string
+    return warnings;
+!!!269232.cpp!!!	getOutputs() : std::string
+    return outputs;	
+!!!269360.cpp!!!	clearWarnings() : void
+    warnings.clear();
+!!!269488.cpp!!!	clearOutputs() : void
+    outputs.clear();
+!!!269616.cpp!!!	processStream(inout out : std::ostream) : void
+    if (&out == &serr)
+    {	    
+        serr << "\n";
+         //if (f_printLog.getValue())
+        std::cerr<< "WARNING[" << getName() << "(" << getClassName() << ")]: "<<serr.str();
+        warnings += serr.str();
+        serr.str("");
+    }
+    else if (&out == &sout)
+    {
+        sout << "\n";
+        if (f_printLog.getValue()) std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< sout.str();
+        outputs += sout.str();
+        sout.str("");
+    }

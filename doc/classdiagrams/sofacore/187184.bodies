@@ -1,0 +1,3 @@
+class KeyreleasedEvent
+!!!332976.cpp!!!	getKey() : char
+    return m_char;

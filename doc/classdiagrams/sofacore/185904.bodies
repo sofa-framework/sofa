@@ -1,0 +1,6 @@
+class DataFileNameVector
+!!!324272.cpp!!!	updatePath() : void
+    fullpath = m_value.getValue();
+    if (!fullpath.empty())
+		for (unsigned int i=0 ; i<fullpath.size() ; i++)
+			helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));

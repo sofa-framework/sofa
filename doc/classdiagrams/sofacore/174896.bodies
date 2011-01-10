@@ -1,0 +1,33 @@
+class Contact
+!!!247472.cpp!!!	Create(in type : std::string, inout model1 : CollisionModel, inout model2 : CollisionModel, inout intersectionMethod : Intersection) : Contact
+    std::string::size_type args = type.find('?');
+    if (args == std::string::npos)
+    {
+	return Factory::CreateObject(type,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
+    }
+    else
+    {
+	std::string otype(type, 0, args);
+	std::cout << otype << " :";
+	Contact * c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
+	while (args != std::string::npos)
+	{
+	    std::string::size_type next = type.find_first_of("&?",args+1);
+	    std::string::size_type eq = type.find("=",args+1);
+	    if (eq != std::string::npos && (next == std::string::npos || eq < next))
+	    {
+		std::string var(type, args+1, eq-args-1);
+		std::string val(type, eq+1, (next == std::string::npos ? type.size() : next) - (eq+1));
+		std::cout << " " << var << " = " << val;
+		std::vector< objectmodel::BaseData* > v = c->findGlobalField( var.c_str() );
+		if (v.empty())
+		    std::cerr << "ERROR: parameter " << var << " not found in contact type " << otype << std::endl;
+		else
+		    for (unsigned int i=0;i<v.size();++i)
+			v[i]->read(val);
+	    }
+	    args = next;
+	}
+	std::cout << std::endl;
+	return c;
+    }

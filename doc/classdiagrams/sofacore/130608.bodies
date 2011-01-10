@@ -1,0 +1,60 @@
+class CategoryLibrary
+!!!134064.cpp!!!	addComponent(in componentName : std::string, inout entry : ClassEntry, in exampleFiles : std::vector< std::string >) : ComponentLibrary
+        
+        //Special case of Mapping and MechanicalMapping
+        bool isMechanicalMapping = (name == "MechanicalMapping");
+        bool isMapping           = (name == "Mapping");
+        
+        ComponentLibrary* component = createComponent(componentName, entry, exampleFiles);
+
+        //Add the corresponding templates
+        typedef std::list< std::pair< std::string, Creator*> >::iterator IteratorEntry;
+        IteratorEntry itTemplate;
+        
+        //It exists Mappings only Mechanical or only Visual. So, we must add the component if only a creator is available for the current category
+        bool componentCreationPossible=false;
+        //read all the template possible, and remove unused (for Mapping processing)
+        std::list<std::string> templates;
+        for (itTemplate=entry->creatorList.begin(); itTemplate!= entry->creatorList.end();itTemplate++)
+          {
+            const std::string &templateName = itTemplate->first;
+            //If the component corresponds to a MechanicalMapping, we must remove the template related to the visual mapping
+            if (isMechanicalMapping)
+              {
+                const std::string nonMechanical = templateName.substr(0,7);
+                if (nonMechanical == "Mapping") continue;
+              }
+            //If the component corresponds to a Mapping, we must remove the template related to the Mechanical Mapping
+            else if (isMapping)
+              {
+                const std::string mechanical    = templateName.substr(0,17);   
+                if (mechanical == "MechanicalMapping") continue;
+              }
+            componentCreationPossible=true;
+            //component->addTemplate(itTemplate->first);
+            if (templateName == (entry->defaultTemplate.empty() ? std::string("Vec3d") : entry->defaultTemplate))
+                templates.push_front(templateName); // make sure the default template is first
+            else
+                templates.push_back(templateName);
+          }
+        for (std::list<std::string>::const_iterator it = templates.begin(); it != templates.end(); ++it)
+            component->addTemplate(*it);
+        component->endConstruction();
+
+        //If no constructor is available, we delete the component
+        if (!componentCreationPossible) 
+          {
+            delete component;
+            component=NULL;
+          }
+        else
+          components.push_back(component);
+
+        return component;
+!!!134576.cpp!!!	getComponent(in categoryName : std::string) : ComponentLibrary
+        for (VecComponentIterator it=components.begin(); it != components.end(); ++it) 
+          {
+            if ((*it)->getName().find(categoryName) != std::string::npos) 
+              return *it;
+          }
+        return NULL;

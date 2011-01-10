@@ -1,0 +1,9 @@
+class TData
+!!!312624.cpp!!!	printValue(inout out : std::ostream) : void
+  out << virtualGetValue() << " ";
+!!!312752.cpp!!!	getValueString() : std::string
+    std::ostringstream out;
+    out << virtualGetValue();
+    return out.str();
+!!!312880.cpp!!!	getValueTypeString() : std::string
+    return BaseData::typeName(&virtualGetValue());

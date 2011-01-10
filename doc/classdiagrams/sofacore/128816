@@ -1,0 +1,290 @@
+format 73
+"sofa helper" // core::objectmodel::sofa helper
+  revision 1
+  modified_by 48 "allardj"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  cpp_h_dir "/home/allardj/work/Sofa/framework/sofa/core/objectmodel/"
+  cpp_src_dir "/home/allardj/work/Sofa/framework/sofa/core/objectmodel/"
+  cpp_namespace "sofa::helper"
+  classview 128816 "objectmodel"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 184496 "ReadAccessor<core::objectmodel::Data<T> >"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " namespace objectmodel
+ namespace core
+ Overload helper::ReadAccessor and helper::WriteAccessor"
+      classrelation 166576 // <generalisation>
+	relation 166576 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 166576 // <generalisation>
+	  b parent class_ref 184624 // typedef14
+      end
+
+      class 184752 "Inherit"
+	visibility package stereotype "typedef" explicit_base_type "ReadAccessor<T>"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      class 184880 "data_container_type"
+	visibility package stereotype "typedef" explicit_base_type "core::objectmodel::Data<T>"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      class 185008 "container_type"
+	visibility package stereotype "typedef" explicit_base_type "T"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      classrelation 166704 // data (<unidirectional association>)
+	relation 166704 --->
+	  a role_name "data" const_relation protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	    classrelation_ref 166704 // data (<unidirectional association>)
+	  b parent class_ref 184880 // data_container_type
+      end
+
+      operation 320048 "ReadAccessor"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "d" type class_ref 184880 // data_container_type
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw} : Inherit(d.getValue()), data(d) {};
+"
+	
+	
+	
+	
+      end
+
+      operation 320176 "~ReadAccessor"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 184624 "typedef14"
+      visibility package stereotype "typedef" explicit_base_type "ReadAccessor<T>"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 185136 "WriteAccessor<core::objectmodel::Data<T> >"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 166832 // <generalisation>
+	relation 166832 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 166832 // <generalisation>
+	  b parent class_ref 185264 // typedef15
+      end
+
+      class 185392 "Inherit"
+	visibility package stereotype "typedef" explicit_base_type "WriteAccessor<T>"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      class 185520 "data_container_type"
+	visibility package stereotype "typedef" explicit_base_type "core::objectmodel::Data<T>"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      class 185648 "container_type"
+	visibility package stereotype "typedef" explicit_base_type "T"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      classrelation 166960 // data (<unidirectional association>)
+	relation 166960 --->
+	  a role_name "data" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	    classrelation_ref 166960 // data (<unidirectional association>)
+	  b parent class_ref 185520 // data_container_type
+      end
+
+      operation 320304 "WriteAccessor"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param inout name "d" type class_ref 185520 // data_container_type
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} & ${p0}${v0}${)}${volatile}${throw} : Inherit(*d.beginEdit()), data(d) {};
+"
+	
+	
+	
+	
+      end
+
+      operation 320432 "~WriteAccessor"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} { data.endEdit(); };
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 185264 "typedef15"
+      visibility package stereotype "typedef" explicit_base_type "WriteAccessor<T>"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+  end
+
+  deploymentview 128688 "sofa helper"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 138928 "Data"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 184624 // typedef14
+	class_ref 184496 // ReadAccessor<core::objectmodel::Data<T> >
+	class_ref 185264 // typedef15
+	class_ref 185136 // WriteAccessor<core::objectmodel::Data<T> >
+      end
+    end
+  end
+end

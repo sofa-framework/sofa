@@ -1,0 +1,57 @@
+class DDGNode
+!!!324528.cpp!!!	~DDGNode()
+    for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
+        (*it)->doDelOutput(this);
+    for(std::list< DDGNode* >::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+        (*it)->doDelInput(this);
+!!!324656.cpp!!!	addInput(inout n : DDGNode) : void
+    doAddInput(n);
+    n->doAddOutput(this);
+    setDirtyValue();
+!!!324784.cpp!!!	delInput(inout n : DDGNode) : void
+    doDelInput(n);
+    n->doDelOutput(this);
+!!!324912.cpp!!!	addOutput(inout n : DDGNode) : void
+    doAddOutput(n);
+    n->doAddInput(this);
+    n->setDirtyValue();
+!!!325040.cpp!!!	delOutput(inout n : DDGNode) : void
+    doDelOutput(n);
+    n->doDelInput(this);
+!!!325168.cpp!!!	getInputs() : std::list<DDGNode*>
+    return inputs;
+!!!325296.cpp!!!	getOutputs() : std::list<DDGNode*>
+    return outputs;
+!!!325680.cpp!!!	setDirtyValue() : void
+    if (!dirtyValue)
+    {
+        dirtyValue = true;
+
+        // TRACE LOG (HACK...)
+        BaseData* d = dynamic_cast<BaseData*>(this);
+        if (d && d->getOwner())
+            d->getOwner()->sout << "Data " << d->getName() << " is now dirty." << d->getOwner()->sendl;
+
+        setDirtyOutputs();
+    }
+!!!325808.cpp!!!	setDirtyOutputs() : void
+    if (!dirtyOutputs)
+    {
+        dirtyOutputs = true;
+        for(std::list<DDGNode*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+        {
+            (*it)->setDirtyValue();
+        }
+    }
+!!!325936.cpp!!!	cleanDirty() : void
+    if (dirtyValue)
+    {
+        dirtyValue = false;
+
+        BaseData* d = dynamic_cast<BaseData*>(this);
+        if (d && d->getOwner())
+            d->getOwner()->sout << "Data " << d->getName() << " has been updated." << d->getOwner()->sendl;
+
+        for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
+            (*it)->dirtyOutputs = false;
+    }

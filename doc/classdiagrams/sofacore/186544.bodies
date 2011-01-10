@@ -1,0 +1,7 @@
+class AxisEvent
+!!!328496.cpp!!!	AxisEvent(in index : int, in value : float)
+	assert( (value >= -1.f) && (value <= 1.f) && "Value must be in range [-1, 1]" );
+!!!328752.cpp!!!	getIndex() : int
+	return m_index;
+!!!328880.cpp!!!	getValue() : float
+	return m_value;

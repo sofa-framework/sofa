@@ -8,16 +8,16 @@
 
 
 \section{Brief overview}
-\sofa is an open-source C++ library for physical simulation, primarily targeted to medical simulation.
+\sofa{} is an open-source C++ library for physical simulation, primarily targeted to medical simulation.
 It can be used as an external library in another program, or using one of the associated GUI applications.
 
-The main feature of \sofa  compared with other libraries is its high flexibility. 
+The main feature of \sofa{}  compared with other libraries is its high flexibility. 
 It allows the use of multiple interacting geometrical models of the same object, typically, a mechanical model with mass and constitutive laws, a collision model with simple geometry, and a visual model with detailed geometry and rendering parameters. 
 Each model can be designed independently of the others. 
 During run-time, consistency is maintained using mappings.
 
 
-Additionally, \sofa  scenes are modeled using a data structure similar to hierarchical scene graphs commonly used in graphics libraries. 
+Additionally, \sofa{}  scenes are modeled using a data structure similar to hierarchical scene graphs commonly used in graphics libraries. 
 This allows the splitting of the physical objects into collections of independent components, each of them describing one feature of the model, such as mass, force functions and constraints.
 For example, you can replace spring forces with finite element forces by simply replacing one component with another, all the rest (mass, collision geometry, time integration, etc.) remaining unchanged.
 
@@ -63,7 +63,7 @@ Each component implements a reduced set of functionalities.
 
 One of the most important type of component is the \texttt{MechanicalObject}, which contains a list of \textit{degrees of freedom} (DOF), i.e. coordinates, velocities, and associated auxiliary vectors such as forces and accelerations.
 All the coordinates in a \texttt{MechanicalObject} have the same type, e.g. 3D vectors for particles, or (translation, rotation) pairs for rigid bodies. 
-\texttt{MechanicalObject}, like many other \sofa classes, is a generic (C++ template) class instantiated on the types of DOF it stores.
+\texttt{MechanicalObject}, like many other \sofa{} classes, is a generic (C++ template) class instantiated on the types of DOF it stores.
 The particle DOFs are drawn as white points, whereas the rigid body DOFs are drawn as red, green, blue reference frame axes.
 There can be at most one \texttt{MechanicalObject} attached to a given node. 
 This guarantees that all the components attached to the same node process the same types of DOF. 
@@ -101,7 +101,7 @@ The abstract component classes are defined in namespace \texttt{core::componentm
 
 So far, we have discussed the physical model of the scene.
 To animate it, we need to solve an \textit{Ordinary Differential Equation} (ODE) in time.
-There are plenty of ODE solvers, and \sofa allows the design and the re-use of a wide variety of them.
+There are plenty of ODE solvers, and \sofa{} allows the design and the re-use of a wide variety of them.
 Here we use a simple explicit Euler method, modeled using an \texttt{EulerSolver} component.
 It triggers computations such as force accumulation, acceleration computation and linear operations on state vectors.
 More sophisticated solvers are available in \sofa, and can be used by simply replacing the  \texttt{EulerSolver} component by another one, e.g \texttt{RungeKutta4} or \texttt{CGImplicit}.
@@ -224,7 +224,7 @@ In the second line, the acceleration is deduced by dividing the force by the mas
 Then the accelerations of the fixed points are canceled.
 Finally, position and velocity are updated.
 
-This algorithm can not be directly implemented in \sofa because there are no state vectors x,v,f,a which gather the state values of all the objects in the scene.
+This algorithm can not be directly implemented in \sofa{} because there are no state vectors x,v,f,a which gather the state values of all the objects in the scene.
 The solver processes an arbitrary number of objects, of possibly different types, such as particles and rigid bodies. Each physical object carries its state values and auxiliary vectors in its own \texttt{MechanicalObject} component, which is not directly accessible to the solver.
 
 The solvers represent state vectors as \texttt{MultiVector} objects using symbolic identificators implemented in class \texttt{VecId}.
