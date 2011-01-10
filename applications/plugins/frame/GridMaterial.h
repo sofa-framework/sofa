@@ -50,6 +50,7 @@
 #define SHOWVOXELS_VORONOI_FR 7
 #define SHOWVOXELS_DISTANCES 8
 #define SHOWVOXELS_WEIGHTS 9
+#define SHOWVOXELS_DISTANCESCALEFACTOR 10
 
 
 namespace sofa
@@ -240,6 +241,8 @@ protected:
     vector<int> voronoi;
     vector<int> voronoi_frames;
     vector<Real> weights;
+    vector<Real> distanceScaleFactor;
+    vector<unsigned int> ancestors;
 
     // voxel data
     vector<VRefReal> v_weights;
@@ -287,7 +290,6 @@ protected:
     Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
     Data<bool> biasDistances;
     Data<bool> useDijkstra;
-    Data<bool> optimizeLinearity;
 
     /// diffuse the weights outside the objects to avoid interpolation problems
     void offsetWeightsOutsideObject(unsigned int offestdist=2);
@@ -305,10 +307,15 @@ protected:
     // subdivide a voronoi region in two subregions using lloyd relaxation and euclidean distances
     bool SubdivideVoronoiRegion( const unsigned int voronoiindex, const unsigned int newvoronoiindex, const unsigned int max_iterations =100);
 
+    // scale the distance according to frame-to-voronoi border paths
+    Data<bool> useDistanceScaleFactor;
+    bool computeDistanceScaleFactors( const VecSCoord& points);
+
+    Data<Real> weightSupport;  ///< support of the weight function (2=interpolating, >2 = approximating)
     /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
-    bool computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point,const Real factor=2.);
+    bool computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point);
     /// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
-    bool computeLinearWeightsInVoronoi ( const SCoord& point,const Real factor=2.);
+    bool computeLinearWeightsInVoronoi ( const SCoord& point);
     /// Heat diffusion with fixed temperature at points (or regions with same value in grid) -> weights stored in weights
     bool HeatDiffusion( const VecSCoord& points, const unsigned int hotpointindex,const bool fixdatavalue=false,const unsigned int max_iterations=2000,const Real precision=1E-10);
 
@@ -348,7 +355,7 @@ protected:
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
-    float maxValues[10];
+    float maxValues[11];
     Data<bool> show3DValues;
     bool vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
