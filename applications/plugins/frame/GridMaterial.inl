@@ -1752,57 +1752,62 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
         indices[i]=indexmax;
     }
     // Lloyd relaxation
-    SCoord pos,u,pos_point,pos_voxel;
-    unsigned int count,nbiterations=0;
-    bool ok=false,ok2;
-    Real d,dmin;
-    int indexmin;
-
-    while (!ok && nbiterations<maxLloydIterations.getValue())
+    if(initial_num_points!=nb_points)
     {
-        ok2=true;
-        computeGeodesicalDistances(indices); // Voronoi
-        vector<bool> flag((int)nbVoxels,false);
-        for (i=initial_num_points; i<nb_points; i++) // move to centroid of Voronoi cells
+        SCoord pos,u,pos_point,pos_voxel;
+        unsigned int count,nbiterations=0;
+        bool ok=false,ok2;
+        Real d,dmin;
+        int indexmin;
+
+        while (!ok && nbiterations<maxLloydIterations.getValue())
         {
-            // estimate centroid given the measured distances = p + 1/N sum d(p,pi)*(pi-p)/|pi-p|
-            getCoord(indices[i],pos_point);
-            pos.fill(0);
-            count=0;
-            for (k=0; k<nbVoxels; k++)
-                if (voronoi[k]==(int)i)
-                {
-                    getCoord(k,pos_voxel);
-                    u=pos_voxel-pos_point;
-                    u.normalize();
-                    pos+=u*(Real)distances[k];
-                    count++;
-                }
-            pos/=(Real)count;
-            if (this->biasDistances.getValue()) pos*=getStiffness(grid.data()[indices[i]]);
-            pos+=pos_point;
-            // get closest unoccupied point in object
-            dmin=std::numeric_limits<Real>::max();
-            indexmin=-1;
-            for (k=0; k<nbVoxels; k++) if (!flag[k]) if (grid.data()[k]!=0)
+            ok2=true;
+            computeGeodesicalDistances(indices); // Voronoi
+            vector<bool> flag((int)nbVoxels,false);
+            for (i=initial_num_points; i<nb_points; i++) // move to centroid of Voronoi cells
+            {
+                // estimate centroid given the measured distances = p + 1/N sum d(p,pi)*(pi-p)/|pi-p|
+                getCoord(indices[i],pos_point);
+                pos.fill(0);
+                count=0;
+                for (k=0; k<nbVoxels; k++)
+                    if (voronoi[k]==(int)i)
                     {
                         getCoord(k,pos_voxel);
-                        d=(pos-pos_voxel).norm2();
-                        if (d<dmin)
-                        {
-                            dmin=d;
-                            indexmin=k;
-                        }
+                        u=pos_voxel-pos_point;
+                        u.normalize();
+                        pos+=u*(Real)distances[k];
+                        count++;
                     }
-            flag[indexmin]=true;
-            if (indices[i]!=indexmin)
-            {
-                ok2=false;
-                indices[i]=indexmin;
+                pos/=(Real)count;
+                if (this->biasDistances.getValue()) pos*=getStiffness(grid.data()[indices[i]]);
+                pos+=pos_point;
+                // get closest unoccupied point in object
+                dmin=std::numeric_limits<Real>::max();
+                indexmin=-1;
+                for (k=0; k<nbVoxels; k++) if (!flag[k]) if (grid.data()[k]!=0)
+                        {
+                            getCoord(k,pos_voxel);
+                            d=(pos-pos_voxel).norm2();
+                            if (d<dmin)
+                            {
+                                dmin=d;
+                                indexmin=k;
+                            }
+                        }
+                flag[indexmin]=true;
+                if (indices[i]!=indexmin)
+                {
+                    ok2=false;
+                    indices[i]=indexmin;
+                }
             }
+            ok=ok2;
+            nbiterations++;
         }
-        ok=ok2;
-        nbiterations++;
+        if (nbiterations==maxLloydIterations.getValue()) serr<<"Lloyd relaxation has not converged in "<<nbiterations<<" iterations"<<sendl;
+        else std::cout<<"Lloyd relaxation completed in "<<nbiterations<<" iterations"<<std::endl;
     }
 
     // save voronoi/distances for further visualization
@@ -1811,12 +1816,6 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
     // get points from indices
     for (i=initial_num_points; i<nb_points; i++)	getCoord(indices[i],points[i]) ;
 
-    if (nbiterations==maxLloydIterations.getValue())
-    {
-        serr<<"Lloyd relaxation has not converged in "<<nbiterations<<" iterations"<<sendl;
-        return false;
-    }
-    else std::cout<<"Lloyd relaxation completed in "<<nbiterations<<" iterations"<<std::endl;
     return true;
 }
 
@@ -1891,25 +1890,22 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
     }
     else // method based on distance to frame and distance to voronoi
     {
+        dmax*=weightSupport.getValue();
         // compute distance to voronoi border
         computeGeodesicalDistancesToVoronoi(point,dmax);
         vector<Real> dtovoronoi(distances);
         // compute distance to frame up to the weight function support size
-        dmax*=weightSupport.getValue();
         computeGeodesicalDistances(point,dmax);
         Real support=weightSupport.getValue();
         for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax)
                 {
-
-                    if(voronoi[i]!=voronoi[index] && voronoi[i]!=-1)
+                    if(weightSupport.getValue()!=2.)
                     {
-                        support=backupdistance[i]/dmaxinvoronoi[voronoi[i]]*(weightSupport.getValue()-(Real)2.)+(Real)2.;
+                        support=backupdistance[i]*(Real)2./(dmaxinvoronoi[voronoi[i]]+dmaxinvoronoi[voronoi[index]])*(weightSupport.getValue()-(Real)2.)+(Real)2.;
                     }
-                    else support=2.;
-
                     if(distances[i]==0) weights[i]=1;
-                    //else if(voronoi[i]==voronoi[index]) weights[i]=(support-1.)/support-distances[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                    //else weights[i]=(support-1.)/support-distances[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+                    //else if(voronoi[i]==voronoi[index]) weights[i]=1.-distances[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                    //else weights[i]=1.-distances[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
                     else if(voronoi[i]==voronoi[index]) weights[i]=(support-1.)/support + dtovoronoi[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
                     else weights[i]=(support-1.)/support - dtovoronoi[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
                     if(weights[i]<0) weights[i]=0;

@@ -319,8 +319,7 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
     // Insert new frames and compute associated voxel weights
     std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
     gridMaterial->rigidPartsSampling(points);
-    if(points.size()<targetFrameNumber.getValue())
-        gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
+    gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
     std::cout<<"Computing weights in grid..."<<std::endl;
     gridMaterial->computeWeights(points);
 
