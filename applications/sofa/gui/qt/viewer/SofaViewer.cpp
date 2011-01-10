@@ -12,8 +12,8 @@ namespace viewer
 
 SofaViewer::SofaViewer()
     : groot(NULL)
-    , m_isControlPressed(false)
     , currentCamera(NULL)
+    , m_isControlPressed(false)
     , _video(false)
     , _shadow(false)
     , _gl_shadow(false)
