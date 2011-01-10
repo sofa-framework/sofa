@@ -1,0 +1,3 @@
+class KeypressedEvent
+!!!332464.cpp!!!	getKey() : char
+    return m_char;

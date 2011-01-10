@@ -1,0 +1,8 @@
+class MouseEvent
+!!!333232.cpp!!!	MouseEvent(in state : State, in wheelDelta : int = 0)
+	m_posX = 0;
+	m_posY = 0;
+!!!333360.cpp!!!	MouseEvent(in state : State, in posX : int, in posY : int)
+
+!!!333488.cpp!!!	~MouseEvent()
+

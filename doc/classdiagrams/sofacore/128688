@@ -1,0 +1,1471 @@
+format 73
+"loader" // core::loader
+  revision 1
+  modified_by 48 "allardj"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  cpp_h_dir "/home/allardj/work/Sofa/framework/sofa/core/loader/"
+  cpp_src_dir "/home/allardj/work/Sofa/framework/sofa/core/loader/"
+  cpp_namespace "sofa::core::loader"
+  classview 128688 "loader"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 178480 "BaseLoader"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "#include <iostream>
+#include <sofa/helper/vector.h>"
+      classrelation 160560 // <generalisation>
+	relation 160560 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 160560 // <generalisation>
+	  b parent class_ref 178608 // typedef12
+      end
+
+      classrelation 160688 // <generalisation>
+	relation 160688 ---|>
+	  a private
+	    cpp default "${type}"
+	    classrelation_ref 160688 // <generalisation>
+	  b parent class_ref 128304 // BaseObject
+      end
+
+      operation 258352 "BaseLoader"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} : m_filename(initData(&m_filename,\"filename\",\"Filename of the object\")) {};
+"
+	
+	
+	
+	
+	comment "/Constructor"
+      end
+
+      operation 258480 "~BaseLoader"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} { };
+"
+	
+	
+	
+	
+	comment "/Destructor"
+      end
+
+      operation 258608 "load"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+	comment " virtual bool load(const char *filename) = 0;"
+      end
+
+      operation 258736 "canLoad"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 258864 "setFilename"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "f" explicit_type "std::string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+      m_filename.setValue(f);
+    };
+"
+	
+	
+	
+	
+      end
+
+      operation 258992 "getFilename"
+	cpp_inline public explicit_return_type "std::string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+      return m_filename.getValue();
+    };
+"
+	
+	
+	
+	
+      end
+
+      operation 259120 "skipToEOL"
+	class_operation cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "f" explicit_type "FILE"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+      int ch;
+      while ((ch = fgetc(f)) != EOF && ch != '\\n') ;
+    };
+"
+	
+	
+	
+	
+      end
+
+      operation 259248 "readLine"
+	class_operation cpp_inline public explicit_return_type "bool"
+	nparams 3
+	  param inout name "buf" explicit_type "char"
+	  param in name "size" explicit_type "int"
+	  param inout name "f" explicit_type "FILE"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} * ${p2}${v2}${)}${const}${volatile}${throw}${abstract} {
+      buf[0] = '\\0';
+      if (fgets(buf, size, f) == NULL)
+      return false;
+      if ((int)strlen(buf)==size-1 && buf[size-1] != '\\n')
+	skipToEOL(f);
+      return true;
+    };
+"
+	
+	
+	
+	
+      end
+
+      classrelation 160816 // m_filename (<directional composition>)
+	relation 160816 *-->
+	  a role_name "m_filename" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 160816 // m_filename (<directional composition>)
+	  b parent class_ref 178736 // DataFileName
+      end
+    end
+
+    class 178608 "typedef12"
+      visibility package stereotype "typedef" explicit_base_type "virtual"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 178864 "ImageLoader"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 160944 // <generalisation>
+	relation 160944 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 160944 // <generalisation>
+	  b parent class_ref 178480 // BaseLoader
+      end
+    end
+
+    class 178992 "Material"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 148016 "name"
+	public explicit_type "std::string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " name of material "
+      end
+
+      attribute 148144 "diffuse"
+	public explicit_type "defaulttype::Vec4f"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " diffuse component "
+      end
+
+      attribute 148272 "ambient"
+	public explicit_type "defaulttype::Vec4f"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " ambient component "
+      end
+
+      attribute 148400 "specular"
+	public explicit_type "defaulttype::Vec4f"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " specular component "
+      end
+
+      attribute 148528 "emissive"
+	public explicit_type "defaulttype::Vec4f"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " emmissive component "
+      end
+
+      attribute 148656 "shininess"
+	public explicit_type "float"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " specular exponent "
+      end
+
+      attribute 148784 "useDiffuse"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148912 "useSpecular"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149040 "useAmbient"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149168 "useEmissive"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149296 "useShininess"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149424 "activated"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 259376 "setColor"
+	cpp_inline public explicit_return_type "void"
+	nparams 4
+	  param in name "r" explicit_type "float"
+	  param in name "g" explicit_type "float"
+	  param in name "b" explicit_type "float"
+	  param in name "a" explicit_type "float"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${throw}${abstract} {
+	float f[4] = { r, g, b, a };
+	for (int i=0;i<4;i++)
+	{
+		ambient = defaulttype::Vec4f(f[0]*0.2f,f[1]*0.2f,f[2]*0.2f,f[3]);
+		diffuse = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
+		specular = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
+		emissive = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
+	}
+  };
+"
+	
+	
+	
+	
+      end
+
+      operation 259504 "operator <<"
+	friend cpp_inline public explicit_return_type "std::ostream"
+	nparams 2
+	  param inout name "out" explicit_type "std::ostream"
+	  param in name "m" type class_ref 178992 // Material
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract} {
+      out   << m.name         << \" \";
+      out  << \"Diffuse\"       << \" \" <<  m.useDiffuse   << \" \" <<  m.diffuse      << \" \";
+      out  << \"Ambient\"       << \" \" <<  m.useAmbient   << \" \" <<  m.ambient      << \" \";
+      out  << \"Specular\"      << \" \" <<  m.useSpecular  << \" \" <<  m.specular     << \" \";
+      out  << \"Emissive\"      << \" \" <<  m.useEmissive  << \" \" <<  m.emissive     << \" \";
+      out  << \"Shininess\"     << \" \" <<  m.useShininess << \" \" <<  m.shininess ;
+      return out;
+    };
+"
+	
+	
+	
+	
+      end
+
+      operation 259632 "operator >>"
+	friend cpp_inline public explicit_return_type "std::istream"
+	nparams 2
+	  param inout name "in" explicit_type "std::istream"
+	  param inout name "m" type class_ref 178992 // Material
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract} {
+
+      std::string element;
+      in  >>  m.name ;
+      for (unsigned int i=0;i<5;++i)
+      {
+	in  >>  element;
+	if      (element == std::string(\"Diffuse\")   || element == std::string(\"diffuse\")   ) { in  >>  m.useDiffuse   ;in >> m.diffuse;   }
+	else if (element == std::string(\"Ambient\")   || element == std::string(\"ambient\")   ) { in  >>  m.useAmbient   ;in >> m.ambient;   }
+	else if (element == std::string(\"Specular\")  || element == std::string(\"specular\")  ) { in  >>  m.useSpecular  ;in >> m.specular;  }
+	else if (element == std::string(\"Emissive\")  || element == std::string(\"emissive\")  ) { in  >>  m.useEmissive  ;in >> m.emissive;  }
+	else if (element == std::string(\"Shininess\") || element == std::string(\"shininess\") ) { in  >>  m.useShininess ;in >> m.shininess; }
+      }
+      return in;
+    };
+"
+	
+	
+	
+	
+      end
+
+      operation 259760 "Material"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
+	  ambient =  defaulttype::Vec4f( 0.2f,0.2f,0.2f,1.0f);
+	  diffuse =  defaulttype::Vec4f( 0.75f,0.75f,0.75f,1.0f);
+	  specular =  defaulttype::Vec4f( 1.0f,1.0f,1.0f,1.0f);
+	  emissive =  defaulttype::Vec4f( 0.0f,0.0f,0.0f,0.0f);
+
+	  shininess =  45.0f;
+	  name = \"Default\";
+	  useAmbient =  true;
+	  useDiffuse =  true;
+	  useSpecular =  false;
+	  useEmissive =  false;
+	  useShininess =  false;
+	  activated = false;
+  };
+"
+	
+	
+	
+	
+      end
+
+      operation 259888 "Material"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "mat" type class_ref 178992 // Material
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw} {
+	  ambient =  mat.ambient;
+	  diffuse =  mat.diffuse;
+	  specular =  mat.specular;
+	  emissive =  mat.emissive;
+
+	  shininess =  mat.shininess;
+	  name = mat.name;
+	  useAmbient =  mat.useAmbient;
+	  useDiffuse =  mat.useDiffuse ;
+	  useSpecular =  mat.useSpecular ;
+	  useEmissive =  mat.useEmissive;
+	  useShininess =  mat.useShininess ;
+	  activated = mat.activated;
+  };
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 179120 "MeshLoader"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 161072 // <generalisation>
+	relation 161072 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 161072 // <generalisation>
+	  b parent class_ref 178608 // typedef12
+      end
+
+      classrelation 161200 // <generalisation>
+	relation 161200 ---|>
+	  a private
+	    cpp default "${type}"
+	    classrelation_ref 161200 // <generalisation>
+	  b parent class_ref 178480 // BaseLoader
+      end
+
+      operation 260016 "MeshLoader"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)} : BaseLoader()
+			   , positions(initData(&positions,\"position\",\"Vertices of the mesh loaded\"))
+			   , edges(initData(&edges,\"edges\",\"Edges of the mesh loaded\"))
+			   , triangles(initData(&triangles,\"triangles\",\"Triangles of the mesh loaded\"))
+			   , quads(initData(&quads,\"quads\",\"Quads of the mesh loaded\"))
+			   , polygons(initData(&polygons,\"polygons\",\"Polygons of the mesh loaded\"))
+			   , tetrahedra(initData(&tetrahedra,\"tetrahedra\",\"Tetrahedra of the mesh loaded\"))
+			   , hexahedra(initData(&hexahedra,\"hexahedra\",\"Hexahedra of the mesh loaded\"))
+			   , normals(initData(&normals,\"normals\",\"Normals of the mesh loaded\"))
+			   , edgesGroups(initData(&edgesGroups,\"edgesGroups\",\"Groups of Edges\"))
+			   , trianglesGroups(initData(&trianglesGroups,\"trianglesGroups\",\"Groups of Triangles\"))
+			   , quadsGroups(initData(&quadsGroups,\"quadsGroups\",\"Groups of Quads\"))
+			   , polygonsGroups(initData(&polygonsGroups,\"polygonsGroups\",\"Groups of Polygons\"))
+			   , tetrahedraGroups(initData(&tetrahedraGroups,\"tetrahedraGroups\",\"Groups of Tetrahedra\"))
+			   , hexahedraGroups(initData(&hexahedraGroups,\"hexahedraGroups\",\"Groups of Hexahedra\"))
+			   , flipNormals(initData(&flipNormals, false,\"flipNormals\",\"Flip Normals\"))
+				, triangulate(initData(&triangulate,false,\"triangulate\",\"Divide all polygons into triangles\"))
+				, onlyAttachedPoints(initData(&onlyAttachedPoints, false,\"onlyAttachedPoints\",\"Only keep points attached to elements of the mesh\"))
+				, translation(initData(&translation, Vector3(), \"translation\", \"Translation of the DOFs\"))
+				, rotation(initData(&rotation, Vector3(), \"rotation\", \"Rotation of the DOFs\"))
+				, scale(initData(&scale, Vector3(1.0,1.0,1.0), \"scale3d\", \"Scale of the DOFs in 3 dimensions\"))
+${throw}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 260144 "canLoad"
+	preserve_cpp_body_indent cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 260272 "parse"
+	preserve_cpp_body_indent cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param inout name "arg" type class_ref 141232 // BaseObjectDescription
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "virtual void init();"
+      end
+
+      operation 260400 "reinit"
+	preserve_cpp_body_indent cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 260528 "applyTranslation"
+	preserve_cpp_body_indent cpp_virtual public explicit_return_type "void"
+	nparams 3
+	  param in name "dx" explicit_type "SReal"
+	  param in name "dy" explicit_type "SReal"
+	  param in name "dz" explicit_type "SReal"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} ${p0}${v0}, const ${t1} ${p1}${v1}, const ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} ${p0}, const ${t1} ${p1}, const ${t2} ${p2}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "/ Apply translation vector to the position."
+      end
+
+      operation 260656 "applyRotation"
+	preserve_cpp_body_indent cpp_virtual public explicit_return_type "void"
+	nparams 3
+	  param in name "rx" explicit_type "SReal"
+	  param in name "ry" explicit_type "SReal"
+	  param in name "rz" explicit_type "SReal"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} ${p0}${v0}, const ${t1} ${p1}${v1}, const ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} ${p0}, const ${t1} ${p1}, const ${t2} ${p2}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "/ Apply rotation using Euler Angles in degree."
+      end
+
+      operation 260784 "applyRotation"
+	preserve_cpp_body_indent cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "q" explicit_type "defaulttype::Quat"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "/ Apply rotation using quaternion."
+      end
+
+      operation 260912 "applyScale"
+	preserve_cpp_body_indent cpp_virtual public explicit_return_type "void"
+	nparams 3
+	  param in name "sx" explicit_type "SReal"
+	  param in name "sy" explicit_type "SReal"
+	  param in name "sz" explicit_type "SReal"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} ${p0}${v0}, const ${t1} ${p1}${v1}, const ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} ${p0}, const ${t1} ${p1}, const ${t2} ${p2}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "/ Apply Scale to the positions"
+      end
+
+      operation 261040 "setTranslation"
+	cpp_inline public explicit_return_type "void"
+	nparams 3
+	  param in name "dx" explicit_type "double"
+	  param in name "dy" explicit_type "double"
+	  param in name "dz" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract} {translation.setValue(Vector3(dx,dy,dz));};
+"
+	
+	
+	
+	
+	comment "/ @name Initial transformations accessors.
+/ @{"
+      end
+
+      operation 261168 "setRotation"
+	cpp_inline public explicit_return_type "void"
+	nparams 3
+	  param in name "rx" explicit_type "double"
+	  param in name "ry" explicit_type "double"
+	  param in name "rz" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract} {rotation.setValue(Vector3(rx,ry,rz));};
+"
+	
+	
+	
+	
+      end
+
+      operation 261296 "setScale"
+	cpp_inline public explicit_return_type "void"
+	nparams 3
+	  param in name "sx" explicit_type "double"
+	  param in name "sy" explicit_type "double"
+	  param in name "sz" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract} {scale.setValue(Vector3(sx,sy,sz));};
+"
+	
+	
+	
+	
+      end
+
+      operation 261424 "getTranslation"
+	const cpp_virtual cpp_inline public explicit_return_type "Vector3"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {return translation.getValue();};
+"
+	
+	
+	
+	
+      end
+
+      operation 261552 "getRotation"
+	const cpp_virtual cpp_inline public explicit_return_type "Vector3"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {return rotation.getValue();};
+"
+	
+	
+	
+	
+      end
+
+      operation 261680 "getScale"
+	const cpp_virtual cpp_inline public explicit_return_type "Vector3"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {return scale.getValue();};
+"
+	
+	
+	
+	
+      end
+
+      attribute 149552 "positions"
+	public explicit_type " helper::vector<sofa::defaulttype::Vec<3,SReal> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149680 "edges"
+	public explicit_type " helper::vector< helper::fixed_array <unsigned int,2> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149808 "triangles"
+	public explicit_type " helper::vector< helper::fixed_array <unsigned int,3> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149936 "quads"
+	public explicit_type " helper::vector< helper::fixed_array <unsigned int,4> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150064 "polygons"
+	public explicit_type " helper::vector< helper::vector <unsigned int> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150192 "tetrahedra"
+	public explicit_type " helper::vector< helper::fixed_array<unsigned int,4> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150320 "hexahedra"
+	public explicit_type " helper::vector< helper::fixed_array<unsigned int,8> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150448 "normals"
+	public explicit_type " helper::vector<sofa::defaulttype::Vec<3,SReal> > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150576 "edgesGroups"
+	public explicit_type " helper::vector< PrimitiveGroup > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150704 "trianglesGroups"
+	public explicit_type " helper::vector< PrimitiveGroup > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150832 "quadsGroups"
+	public explicit_type " helper::vector< PrimitiveGroup > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150960 "polygonsGroups"
+	public explicit_type " helper::vector< PrimitiveGroup > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151088 "tetrahedraGroups"
+	public explicit_type " helper::vector< PrimitiveGroup > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151216 "hexahedraGroups"
+	public explicit_type " helper::vector< PrimitiveGroup > "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151344 "flipNormals"
+	public explicit_type " bool "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151472 "triangulate"
+	public explicit_type " bool "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151600 "onlyAttachedPoints"
+	public explicit_type " bool "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151728 "translation"
+	public explicit_type " Vector3 "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151856 "rotation"
+	public explicit_type " Vector3 "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151984 "scale"
+	public explicit_type " Vector3 "
+	stereotype "Data"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 261808 "updateMesh"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 261936 "updateElements"
+	preserve_cpp_body_indent private explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262064 "updatePoints"
+	preserve_cpp_body_indent private explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262192 "updateNormals"
+	preserve_cpp_body_indent private explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262320 "addPosition"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 2
+	  param inout name "pPositions" explicit_type "helper::vector<sofa::defaulttype::Vec<3,SReal> >"
+	  param in name "p" explicit_type "sofa::defaulttype::Vec<3,SReal>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262448 "addPosition"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 4
+	  param inout name "pPositions" explicit_type "helper::vector<sofa::defaulttype::Vec<3,SReal> >"
+	  param in name "x" explicit_type "SReal"
+	  param in name "y" explicit_type "SReal"
+	  param in name "z" explicit_type "SReal"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262576 "addEdge"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 2
+	  param inout name "pEdges" explicit_type "helper::vector<helper::fixed_array <unsigned int,2> >"
+	  param in name "p" explicit_type "helper::fixed_array<unsigned int,2>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262704 "addEdge"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 3
+	  param inout name "pEdges" explicit_type "helper::vector<helper::fixed_array <unsigned int,2> >"
+	  param in name "p0" explicit_type "uint"
+	  param in name "p1" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262832 "addTriangle"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 2
+	  param inout name "pTriangles" explicit_type "helper::vector<helper::fixed_array <unsigned int,3> >"
+	  param in name "p" explicit_type "helper::fixed_array<unsigned int,3>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 262960 "addTriangle"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 4
+	  param inout name "pTriangles" explicit_type "helper::vector<helper::fixed_array <unsigned int,3> >"
+	  param in name "p0" explicit_type "uint"
+	  param in name "p1" explicit_type "uint"
+	  param in name "p2" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 263088 "addQuad"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 2
+	  param inout name "pQuads" explicit_type "helper::vector<helper::fixed_array <unsigned int,4> >"
+	  param in name "p" explicit_type "helper::fixed_array<unsigned int,4>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 263216 "addQuad"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 5
+	  param inout name "pQuads" explicit_type "helper::vector<helper::fixed_array <unsigned int,4> >"
+	  param in name "p0" explicit_type "uint"
+	  param in name "p1" explicit_type "uint"
+	  param in name "p2" explicit_type "uint"
+	  param in name "p3" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 263344 "addPolygon"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 2
+	  param inout name "pPolygons" explicit_type "helper::vector< helper::vector <unsigned int> >"
+	  param in name "p" explicit_type "helper::vector<unsigned int>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 263472 "addTetrahedron"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 2
+	  param inout name "pTetrahedra" explicit_type "helper::vector< helper::fixed_array<unsigned int,4> >"
+	  param in name "p" explicit_type "helper::fixed_array<unsigned int,4>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 263600 "addTetrahedron"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 5
+	  param inout name "pTetrahedra" explicit_type "helper::vector< helper::fixed_array<unsigned int,4> >"
+	  param in name "p0" explicit_type "uint"
+	  param in name "p1" explicit_type "uint"
+	  param in name "p2" explicit_type "uint"
+	  param in name "p3" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 263728 "addHexahedron"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 2
+	  param inout name "pHexahedra" explicit_type "helper::vector< helper::fixed_array<unsigned int,8> >"
+	  param in name "p" explicit_type "helper::fixed_array<unsigned int,8>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 263856 "addHexahedron"
+	preserve_cpp_body_indent protected explicit_return_type "void"
+	nparams 9
+	  param inout name "pHexahedra" explicit_type "helper::vector< helper::fixed_array<unsigned int,8> >"
+	  param in name "p0" explicit_type "uint"
+	  param in name "p1" explicit_type "uint"
+	  param in name "p2" explicit_type "uint"
+	  param in name "p3" explicit_type "uint"
+	  param in name "p4" explicit_type "uint"
+	  param in name "p5" explicit_type "uint"
+	  param in name "p6" explicit_type "uint"
+	  param in name "p7" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}, ${t6} ${p6}${v6}, ${t7} ${p7}${v7}, ${t8} ${p8}${v8}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}, ${t8} ${p8}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 179248 "PrimitiveGroup"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 152112 "materialName"
+	public explicit_type "std::string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152240 "groupName"
+	public explicit_type "std::string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152368 "materialId"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 263984 "operator <<"
+	friend cpp_inline public explicit_return_type "std::ostream"
+	nparams 2
+	  param inout name "out" explicit_type "std::ostream"
+	  param in name "g" type class_ref 179248 // PrimitiveGroup
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract} {
+        out << g.groupName << \" \" << g.materialName << \" \" << g.materialId << \" \" << g.p0 << \" \" << g.nbp;
+        return out;
+    };
+"
+	
+	
+	
+	
+      end
+
+      operation 264112 "operator >>"
+	friend cpp_inline public explicit_return_type "std::istream"
+	nparams 2
+	  param inout name "in" explicit_type "std::istream"
+	  param inout name "g" type class_ref 179248 // PrimitiveGroup
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract} {
+        in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
+        return in;
+    };
+"
+	
+	
+	
+	
+      end
+
+      operation 264240 "operator <"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 1
+	  param in name "p" type class_ref 179248 // PrimitiveGroup
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+    	return p0 < p.p0;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 264368 "PrimitiveGroup"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} : p0(0), nbp(0), materialId(-1) {};
+"
+	
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 128432 "loader"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 136624 "BaseLoader"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 178608 // typedef12
+	class_ref 178480 // BaseLoader
+      end
+    end
+
+    artifact 136752 "ImageLoader"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 178864 // ImageLoader
+      end
+    end
+
+    artifact 136880 "Material"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 178992 // Material
+      end
+    end
+
+    artifact 137008 "MeshLoader"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 179120 // MeshLoader
+      end
+    end
+
+    artifact 137136 "PrimitiveGroup"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 179248 // PrimitiveGroup
+      end
+    end
+  end
+end

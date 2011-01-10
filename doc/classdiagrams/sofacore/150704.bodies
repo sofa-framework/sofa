@@ -1,0 +1,10 @@
+class ConstraintGroup
+!!!188080.cpp!!!	addConstraint(inout constraintId : uint, in idx : uint, in c : SReal) : void
+  equations.resize(equations.size()+1);
+  ConstraintEquation &eq=equations.back();
+
+  eq.idx = idx;
+  eq.correction=c;
+
+  eq.constraintId = constraintId;
+  constraintId++;

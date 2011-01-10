@@ -1,0 +1,170 @@
+class RegisterObject
+!!!167856.cpp!!!	RegisterObject(in description : std::string)
+      if (!description.empty()){
+        //std::cerr<<"description.size() = "<<description.size()<<", value = "<<description<<std::endl;
+        addDescription(description);
+      }
+!!!167984.cpp!!!	addAlias(in val : std::string) : RegisterObject
+      entry.aliases.insert(val);
+      return *this;
+!!!168112.cpp!!!	addDescription(in val : std::string) : RegisterObject
+      //std::cout << "ObjectFactory: add description "<<val<<std::endl;
+      val += '\n';
+      entry.description += val;
+      return *this;
+!!!168240.cpp!!!	addAuthor(in val : std::string) : RegisterObject
+      //std::cout << "ObjectFactory: add author "<<val<<std::endl;
+      val += ' ';
+      entry.authors += val;
+      return *this;
+!!!168368.cpp!!!	addLicense(in val : std::string) : RegisterObject
+      //std::cout << "ObjectFactory: add license "<<val<<std::endl;
+      entry.license += val;
+      return *this;
+!!!168496.cpp!!!	addBaseClasses(in mclass : BaseClass) : RegisterObject
+    if (mclass->hasParent(objectmodel::ContextObject::GetClass()))
+        entry.baseClasses.insert("ContextObject");
+    if (mclass->hasParent(VisualModel::GetClass()))
+        entry.baseClasses.insert("VisualModel");
+    if (mclass->hasParent(BehaviorModel::GetClass()))
+        entry.baseClasses.insert("BehaviorModel");
+    if (mclass->hasParent(CollisionModel::GetClass()))
+        entry.baseClasses.insert("CollisionModel");
+    if (mclass->hasParent(core::behavior::BaseMechanicalState::GetClass()))
+        entry.baseClasses.insert("MechanicalState");
+    if (mclass->hasParent(core::behavior::BaseForceField::GetClass()))
+        entry.baseClasses.insert("ForceField");
+    if (mclass->hasParent(core::behavior::BaseInteractionForceField::GetClass()))
+        entry.baseClasses.insert("InteractionForceField");
+    if (mclass->hasParent(core::behavior::BaseProjectiveConstraintSet::GetClass()))
+        entry.baseClasses.insert("ProjectiveConstraintSet");
+    if (mclass->hasParent(core::behavior::BaseConstraintSet::GetClass()))
+        entry.baseClasses.insert("ConstraintSet");
+    if (mclass->hasParent(core::BaseMapping::GetClass()))
+        entry.baseClasses.insert("Mapping");
+    if (mclass->hasParent(core::DataEngine::GetClass()))
+        entry.baseClasses.insert("Engine");
+    if (mclass->hasParent(core::topology::TopologicalMapping::GetClass()))
+        entry.baseClasses.insert("TopologicalMapping");
+    if (mclass->hasParent(core::behavior::BaseMass::GetClass()))
+        entry.baseClasses.insert("Mass");
+    if (mclass->hasParent(core::behavior::OdeSolver::GetClass()))
+        entry.baseClasses.insert("OdeSolver");
+    if (mclass->hasParent(core::behavior::ConstraintSolver::GetClass()))
+        entry.baseClasses.insert("ConstraintSolver");
+    if (mclass->hasParent(core::behavior::BaseConstraintCorrection::GetClass()))
+        entry.baseClasses.insert("ConstraintSolver");
+    if (mclass->hasParent(core::behavior::LinearSolver::GetClass()))
+        entry.baseClasses.insert("LinearSolver");
+    if (mclass->hasParent(core::behavior::MasterSolver::GetClass()))
+        entry.baseClasses.insert("MasterSolver");
+    if (mclass->hasParent(core::topology::Topology::GetClass()))
+        entry.baseClasses.insert("Topology");
+    if (mclass->hasParent(core::topology::BaseTopologyObject::GetClass()))
+        entry.baseClasses.insert("TopologyObject");
+    if (mclass->hasParent(core::behavior::BaseController::GetClass()))
+        entry.baseClasses.insert("Controller");
+    if (mclass->hasParent(core::loader::BaseLoader::GetClass()))
+        entry.baseClasses.insert("Loader");
+    if (mclass->hasParent(core::collision::CollisionAlgorithm::GetClass()))
+        entry.baseClasses.insert("CollisionAlgorithm");
+    if (mclass->hasParent(core::collision::Pipeline::GetClass()))
+        entry.baseClasses.insert("CollisionAlgorithm");
+    if (mclass->hasParent(core::collision::Intersection::GetClass()))
+        entry.baseClasses.insert("CollisionAlgorithm");
+    if (mclass->hasParent(core::objectmodel::ConfigurationSetting::GetClass()))
+        entry.baseClasses.insert("ConfigurationSetting");
+    return *this;
+!!!168624.cpp!!!	addCreator(in classname : std::string, in templatename : std::string, in creator : std::auto_ptr<ObjectFactory::Creator>) : RegisterObject
+    //std::cout << "ObjectFactory: add creator "<<classname<<" with template "<<templatename<<std::endl;
+    // check if the SOFA_CLASS macro is correctly used
+#ifdef LOG_MISSING_CLASS
+    if (entry.className.empty() && classname != creator->getClass()->className)
+    {
+        std::cerr << "CODE WARNING: MISSING SOFA_CLASS in class declaration " << classname;
+        if (!templatename.empty())
+            std::cerr << "<" << templatename << ">";
+        std::cerr << std::endl;
+        std::cerr << "  A code similar to the following needs to be added in " << classname << ".h: \n";
+        std::cerr << "    SOFA_CLASS(";
+        if (templatename.empty())
+            std::cerr << classname;
+        else
+            std::cerr << "SOFA_TEMPLATE(" << classname << ",DataTypes)";
+        std::cerr << ",";
+        if (creator->getClass()->templateName.empty())
+            std::cerr << creator->getClass()->namespaceName << "::" << creator->getClass()->className;
+        else
+            std::cerr << "SOFA_TEMPLATE(" << creator->getClass()->namespaceName << "::" << creator->getClass()->className << ",DataTypes)";
+        std::cerr << ");" << std::endl;
+    }
+#endif
+
+    if (!entry.className.empty() && entry.className != classname)
+    {
+        std::cerr << "ERROR: ObjectFactory: all templated class should have the same base classname ("<<entry.className<<"!="<<classname<<")\n";
+    }
+    else if (entry.creatorMap.find(templatename) != entry.creatorMap.end())
+    {
+        std::cerr << "ERROR: ObjectFactory: class "<<classname<<"<"<<templatename<<"> already registered\n";
+    }
+    else
+    {
+        entry.className = classname;
+        entry.creatorMap.insert(std::make_pair(templatename, creator.get()));
+        entry.creatorList.push_back(std::make_pair(templatename, creator.release()));
+    }
+    return *this;
+!!!168880.cpp!!!	operator int()
+      if (entry.className.empty())
+        {
+          return 0;
+        }
+      else
+        {
+          //std::cout << "ObjectFactory: commit"<<std::endl;
+          ObjectFactory::ClassEntry* reg = ObjectFactory::getInstance()->getEntry(entry.className);
+          reg->description += entry.description;
+          reg->authors += entry.authors;
+          reg->license += entry.license;
+          if (!entry.defaultTemplate.empty())
+            {
+              if (!reg->defaultTemplate.empty())
+                {
+                  std::cerr << "ERROR: ObjectFactory: default template for class "<<entry.className<<" already registered <"<<reg->defaultTemplate<<">, do not register <"<<entry.defaultTemplate<<"> as default.\n";
+                }
+              else
+                {
+                  reg->defaultTemplate = entry.defaultTemplate;
+                }
+            }
+          for (ObjectFactory::CreatorMap::iterator itc = entry.creatorMap.begin(), itcend = entry.creatorMap.end(); itc != itcend; ++itc)
+            {
+              if (reg->creatorMap.find(itc->first) != reg->creatorMap.end())
+                {
+                  std::cerr << "ERROR: ObjectFactory: class "<<entry.className<<"<"<<itc->first<<"> already registered\n";
+                }
+              else
+                {
+                  reg->creatorMap.insert(*itc);
+                  reg->creatorList.push_back(*itc);
+                  itc->second = 0;
+                }
+            }
+          for (std::set<std::string>::iterator it = entry.aliases.begin(), itend = entry.aliases.end(); it != itend; ++it)
+            {
+              if (reg->aliases.find(*it) == reg->aliases.end())
+                {
+                  ObjectFactory::getInstance()->addAlias(*it,entry.className);
+                }
+            }
+          for (std::set<std::string>::iterator it = entry.baseClasses.begin(), itend = entry.baseClasses.end(); it != itend; ++it)
+            {
+              if (reg->baseClasses.find(*it) == reg->baseClasses.end())
+                {
+                  reg->baseClasses.insert(*it);
+                }
+            }
+          //std::cout << "ObjectFactory: commit end"<<std::endl;
+          return 1;
+        }

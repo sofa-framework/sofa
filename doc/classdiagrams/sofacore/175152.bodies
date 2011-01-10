@@ -1,0 +1,4 @@
+class Factory
+!!!247088.cpp!!!	getInstance() : Factory
+	static Factory instance;
+	return &instance;

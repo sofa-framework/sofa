@@ -1,0 +1,19 @@
+window_sizes 1575 918 326 1243 704 136
+diagrams
+  active  classdiagram_ref 135088 // sofacore-behavior1
+    1243 704 150 19 0 0
+  classdiagram_ref 134960 // sofacore-objectmodel1
+    994 563 150 19 0 0
+  classdiagram_ref 135216 // sofacore-behavior2
+    994 563 100 18 0 0
+end
+show_stereotypes
+selected classdiagram_ref 135088 // sofacore-behavior1
+open
+  classview_ref 129072 // classview
+  classview_ref 128048 // core
+  class_ref 184112 // DataContainer<T,false>
+  deploymentview_ref 128560 // objectmodel
+  class_ref 152624 // BaseVectorOperations
+end
+end

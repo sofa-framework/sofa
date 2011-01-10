@@ -1,0 +1,238 @@
+class BaseMeshTopology
+!!!342320.cpp!!!	BaseMeshTopology()
+  addAlias(&fileTopology,"filename");
+!!!342448.cpp!!!	init() : void
+    if (!fileTopology.getValue().empty())
+    {
+        this->load(fileTopology.getFullPath().c_str());
+    }
+!!!342576.cpp!!!	load(in filename : char) : bool
+    clear();
+    std::string meshFilename(filename);
+    if (!sofa::helper::system::DataRepository.findFile (meshFilename))
+    {
+        serr << "Mesh \""<< filename <<"\" not found"<< sendl;
+        return false;
+    }
+    this->fileTopology.setValue( filename );
+    DefaultMeshTopologyLoader loader(this);
+    if (!loader.load(meshFilename.c_str()))
+    {
+        serr << "Unable to load Mesh \""<<filename << "\"" << sendl;
+        return false;
+    }
+    return true;
+!!!345520.cpp!!!	getEdgesAroundVertex(in i : PointID) : EdgesAroundVertex
+    if (getNbEdges()) serr<<"getEdgesAroundVertex unsupported."<<sendl;
+    static EdgesAroundVertex empty;
+    return empty;
+!!!345648.cpp!!!	getEdgesInTriangle(in i : TriangleID) : EdgesInTriangle
+    if (getNbEdges()) serr<<"getEdgesInTriangle unsupported."<<sendl;
+    static EdgesInTriangle empty;
+    empty.assign(InvalidID);
+    return empty;
+!!!345776.cpp!!!	getEdgesInQuad(in i : QuadID) : EdgesInQuad
+    if (getNbEdges()) serr<<"getEdgesInQuad unsupported."<<sendl;
+    static EdgesInQuad empty;
+    empty.assign(InvalidID);
+    return empty;
+!!!345904.cpp!!!	getEdgesInTetrahedron(in i : TetraID) : EdgesInTetrahedron
+    if (getNbEdges()) serr<<"getEdgesInTetrahedron unsupported."<<sendl;
+    static EdgesInTetrahedron empty;
+    empty.assign(InvalidID);
+    return empty;
+!!!346032.cpp!!!	getEdgesInHexahedron(in i : HexaID) : EdgesInHexahedron
+    if (getNbEdges()) serr<<"getEdgesInHexahedron unsupported."<<sendl;
+    static EdgesInHexahedron empty;
+    empty.assign(InvalidID);
+    return empty;
+!!!346160.cpp!!!	getTrianglesAroundVertex(in i : PointID) : TrianglesAroundVertex
+    if (getNbTriangles()) serr<<"getTrianglesAroundVertex unsupported."<<sendl;
+    static TrianglesAroundVertex empty;
+    return empty;
+!!!346288.cpp!!!	getTrianglesAroundEdge(in i : EdgeID) : TrianglesAroundEdge
+    if (getNbTriangles()) serr<<"getEdgesAroundVertex unsupported."<<sendl;
+    static TrianglesAroundEdge empty;
+    return empty;
+!!!346416.cpp!!!	getTrianglesInTetrahedron(in i : TetraID) : TrianglesInTetrahedron
+    if (getNbTriangles()) serr<<"getTrianglesInTetrahedron unsupported."<<sendl;
+    static TrianglesInTetrahedron empty;
+    empty.assign(InvalidID);
+    return empty;
+!!!346544.cpp!!!	getQuadsAroundVertex(in i : PointID) : QuadsAroundVertex
+    if (getNbQuads()) serr<<"getQuadsAroundVertex unsupported."<<sendl;
+    static QuadsAroundVertex empty;
+    return empty;
+!!!346672.cpp!!!	getQuadsAroundEdge(in i : EdgeID) : QuadsAroundEdge
+    if (getNbQuads()) serr<<"getQuadsAroundEdge unsupported."<<sendl;
+    static QuadsAroundEdge empty;
+    return empty;
+!!!346800.cpp!!!	getQuadsInHexahedron(in i : HexaID) : QuadsInHexahedron
+    if (getNbQuads()) serr<<"getQuadsInHexahedron unsupported."<<sendl;
+    static QuadsInHexahedron empty;
+    empty.assign(InvalidID);
+    return empty;
+!!!346928.cpp!!!	getTetrahedraAroundVertex(in i : PointID) : TetrahedraAroundVertex
+    if (getNbTetrahedra()) serr<<"getTetrahedraAroundVertex unsupported."<<sendl;
+    static TetrahedraAroundVertex empty;
+    return empty;
+!!!347056.cpp!!!	getTetrahedraAroundEdge(in i : EdgeID) : TetrahedraAroundEdge
+    if (getNbTetrahedra()) serr<<"getTetrahedraAroundEdge unsupported."<<sendl;
+    static TetrahedraAroundEdge empty;
+    return empty;
+!!!347184.cpp!!!	getTetrahedraAroundTriangle(in i : TriangleID) : TetrahedraAroundTriangle
+    if (getNbTetrahedra()) serr<<"getTetrahedraAroundTriangle unsupported."<<sendl;
+    static TetrahedraAroundTriangle empty;
+    return empty;
+!!!347312.cpp!!!	getHexahedraAroundVertex(in i : PointID) : HexahedraAroundVertex
+    if (getNbHexahedra()) serr<<"getHexahedraAroundVertex unsupported."<<sendl;
+    static HexahedraAroundVertex empty;
+    return empty;
+!!!347440.cpp!!!	getHexahedraAroundEdge(in i : EdgeID) : HexahedraAroundEdge
+    if (getNbHexahedra()) serr<<"getHexahedraAroundEdge unsupported."<<sendl;
+    static HexahedraAroundEdge empty;
+    return empty;
+!!!347568.cpp!!!	getHexahedraAroundQuad(in i : QuadID) : HexahedraAroundQuad
+    if (getNbHexahedra()) serr<<"getHexahedraAroundQuad unsupported."<<sendl;
+    static HexahedraAroundQuad empty;
+    return empty;
+!!!347696.cpp!!!	getVerticesAroundVertex(in i : PointID) : VerticesAroundVertex
+    const SeqEdges& edges = getEdges();
+    const EdgesAroundVertex& shell = getEdgesAroundVertex(i);
+    VerticesAroundVertex adjacentVertices;
+    
+    for (unsigned int j = 0; j<shell.size(); j++)
+    {
+	Edge theEdge = edges[ shell[j] ];
+	if ( theEdge[0] == i )
+	    adjacentVertices.push_back ( theEdge[1] );
+	else
+	    adjacentVertices.push_back ( theEdge[0] );
+    }
+
+    return adjacentVertices;
+!!!347824.cpp!!!	getElementAroundElement(in elem : index_type) : vector<index_type>
+    static vector<index_type> empty;
+    return empty;
+!!!347952.cpp!!!	getElementAroundElements(in elems : vector<index_type>) : vector<index_type>
+    static vector<index_type> empty;
+    return empty;
+!!!348080.cpp!!!	getEdgeIndex(in v1 : PointID, in v2 : PointID) : int
+        serr<<"getEdgeIndex() not supported." << sendl;
+	return 0;
+!!!348208.cpp!!!	getTriangleIndex(in v1 : PointID, in v2 : PointID, in v3 : PointID) : int
+        serr<<"getTriangleIndex() not supported." << sendl;
+	return 0;
+!!!348336.cpp!!!	getQuadIndex(in v1 : PointID, in v2 : PointID, in v3 : PointID, in v4 : PointID) : int
+        serr<<"getQuadIndex() not supported." << sendl;
+	return 0;
+!!!348464.cpp!!!	getTetrahedronIndex(in v1 : PointID, in v2 : PointID, in v3 : PointID, in v4 : PointID) : int
+        serr<<"getTetrahedronIndex() not supported." << sendl;
+	return 0;
+!!!348592.cpp!!!	getHexahedronIndex(in v1 : PointID, in v2 : PointID, in v3 : PointID, in v4 : PointID, in v5 : PointID, in v6 : PointID, in v7 : PointID, in v8 : PointID) : int
+        serr<<"getHexahedronIndex() not supported." << sendl;
+	return 0;
+!!!348720.cpp!!!	getVertexIndexInTriangle(in t : Triangle, in vertexIndex : PointID) : int
+        serr<<"getVertexIndexInTriangle() not supported." << sendl;
+	return 0;
+!!!348848.cpp!!!	getEdgeIndexInTriangle(in t : EdgesInTriangle, in edgeIndex : EdgeID) : int
+        serr<<"getEdgeIndexInTriangle() not supported." << sendl;
+	return 0;
+!!!348976.cpp!!!	getVertexIndexInQuad(in t : Quad, in vertexIndex : PointID) : int
+        serr<<"getVertexIndexInQuad() not supported." << sendl;
+	return 0;
+!!!349104.cpp!!!	getEdgeIndexInQuad(in t : EdgesInQuad, in edgeIndex : EdgeID) : int
+        serr<<"getEdgeIndexInQuad() not supported." << sendl;
+	return 0;
+!!!349232.cpp!!!	getVertexIndexInTetrahedron(in t : Tetra, in vertexIndex : PointID) : int
+        serr<<"getVertexIndexInTetrahedron() not supported." << sendl;
+	return 0;
+!!!349360.cpp!!!	getEdgeIndexInTetrahedron(in t : EdgesInTetrahedron, in edgeIndex : EdgeID) : int
+        serr<<"getEdgeIndexInTetrahedron() not supported." << sendl;
+	return 0;
+!!!349488.cpp!!!	getTriangleIndexInTetrahedron(in t : TrianglesInTetrahedron, in triangleIndex : TriangleID) : int
+        serr<<"getTriangleIndexInTetrahedron() not supported." << sendl;
+	return 0;
+!!!349616.cpp!!!	getVertexIndexInHexahedron(in t : Hexa, in vertexIndex : PointID) : int
+        serr<<"getVertexIndexInHexahedron() not supported." << sendl;
+	return 0;
+!!!349744.cpp!!!	getEdgeIndexInHexahedron(in t : EdgesInHexahedron, in edgeIndex : EdgeID) : int
+        serr<<"getEdgeIndexInHexahedron() not supported." << sendl;
+	return 0;
+!!!349872.cpp!!!	getQuadIndexInHexahedron(in t : QuadsInHexahedron, in quadIndex : QuadID) : int
+        serr<<"getQuadIndexInHexahedron() not supported." << sendl;
+	return 0;
+!!!350000.cpp!!!	getLocalEdgesInTetrahedron(in i : PointID) : Edge
+	static BaseMeshTopology::Edge empty;
+        serr<<"getLocalEdgesInTetrahedron() not supported." << sendl;
+	return empty;
+!!!350128.cpp!!!	getLocalTrianglesInTetrahedron(in i : PointID) : Triangle
+	static BaseMeshTopology::Triangle empty;
+        serr<<"getLocalTrianglesInTetrahedron() not supported." << sendl;
+	return empty;
+!!!350256.cpp!!!	getLocalEdgesInHexahedron(in i : PointID) : Edge
+	static BaseMeshTopology::Edge empty;
+        serr<<"getLocalEdgesInHexahedron() not supported." << sendl;
+	return empty;
+!!!350384.cpp!!!	getLocalQuadsInHexahedron(in i : PointID) : Quad
+	static BaseMeshTopology::Quad empty;
+        serr<<"getLocalQuadsInHexahedron() not supported." << sendl;
+	return empty;
+!!!351792.cpp!!!	clear() : void
+    serr<<"clear() not supported." << sendl;
+!!!351920.cpp!!!	addPoint(in px : double, in py : double, in pz : double) : void
+    serr<<"addPoint() not supported." << sendl;
+!!!352048.cpp!!!	addEdge(in a : int, in b : int) : void
+    serr<<"addEdge() not supported." << sendl;
+!!!352304.cpp!!!	addTriangle(in a : int, in b : int, in c : int) : void
+    serr<<"addTriangle() not supported." << sendl;
+!!!352432.cpp!!!	addQuad(in a : int, in b : int, in c : int, in d : int) : void
+    serr<<"addQuad() not supported." << sendl;
+!!!352560.cpp!!!	addTetra(in a : int, in b : int, in c : int, in d : int) : void
+    serr<<"addTetra() not supported." << sendl;
+!!!352688.cpp!!!	addHexa(in a : int, in b : int, in c : int, in d : int, in e : int, in f : int, in g : int, in h : int) : void
+    serr<<"addHexa() not supported." << sendl;
+!!!353072.cpp!!!	getConnectedElement(in elem : index_type) : vector<index_type>
+   static vector<index_type> empty;
+   return empty;
+!!!353328.cpp!!!	reOrientateTriangle(in id : TriangleID) : void
+    serr<<"reOrientateTriangle() not supported." << sendl;
+!!!353456.cpp!!!	beginChange() : sofa::helper::list<const TopologyChange *>::const_iterator
+   serr << "beginChange() not supported." << sendl;
+   sofa::helper::list<const TopologyChange *>::const_iterator l;
+	return l;
+!!!353584.cpp!!!	endChange() : sofa::helper::list<const TopologyChange *>::const_iterator
+   serr<<"endChange() not supported." << sendl;
+   sofa::helper::list<const TopologyChange *>::const_iterator l;
+	return l;
+!!!353712.cpp!!!	beginStateChange() : sofa::helper::list<const TopologyChange *>::const_iterator
+   serr<<"beginStateChange() not supported." << sendl;
+   sofa::helper::list<const TopologyChange *>::const_iterator l;
+	return l;
+!!!353840.cpp!!!	endStateChange() : sofa::helper::list<const TopologyChange *>::const_iterator
+   serr<<"endStateChange() not supported." << sendl;
+   sofa::helper::list<const TopologyChange *>::const_iterator l;
+	return l;
+!!!353968.cpp!!!	addTopologyEngine(inout _topologyEngine : TopologyEngine) : void
+   serr<<"addTopologyEngine() not supported." << sendl;
+   (void)_topologyEngine;
+!!!354096.cpp!!!	beginTopologyEngine() : sofa::helper::list<TopologyEngine *>::const_iterator
+   serr<<"beginTopologyEngine() not supported." << sendl;
+   sofa::helper::list<TopologyEngine *>::const_iterator l;
+   return l;
+!!!354224.cpp!!!	endTopologyEngine() : sofa::helper::list<TopologyEngine *>::const_iterator
+   serr<<"endTopologyEngine() not supported." << sendl;
+   sofa::helper::list<TopologyEngine *>::const_iterator l;
+   return l;
+!!!354352.cpp!!!	getTrianglesOnBorder() : sofa::helper::vector<TriangleID>
+    serr<<"getTrianglesOnBorder unsupported."<<sendl;
+    static sofa::helper::vector <BaseMeshTopology::TriangleID> empty;
+    return empty;
+!!!354480.cpp!!!	getEdgesOnBorder() : sofa::helper::vector<EdgeID>
+    serr<<"getEdgesOnBorder unsupported."<<sendl;
+    static sofa::helper::vector <BaseMeshTopology::EdgeID> empty;
+    return empty;
+!!!354608.cpp!!!	getPointsOnBorder() : sofa::helper::vector<PointID>
+    serr<<"getPointsOnBorder unsupported."<<sendl;
+    static sofa::helper::vector <BaseMeshTopology::PointID> empty;
+    return empty;

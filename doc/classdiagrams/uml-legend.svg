@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Bouml (http://bouml.free.fr/) -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="437" height="303" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g>
+	<rect fill="#ededed" stroke="black" stroke-width="1" stroke-opacity="1" x="14" y="12" width="161" height="29" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="175" y="18" width="5" height="22" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" text-anchor="middle" x="95" y="34">namespace</text>
+	<rect fill="#ededed" stroke="black" stroke-width="1" stroke-opacity="1" x="14" y="41" width="405" height="244" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="419" y="47" width="5" height="243" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="20" y="285" width="404" height="5" />
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="394" y="220" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="214" y="268" width="185" height="5" />
+	<rect fill="#ffa858" stroke="black" stroke-width="1" stroke-opacity="1" x="208" y="214" width="186" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="301" y="232">RecentMinorClass</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="155" y="70" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="43" y="118" width="117" height="5" />
+	<rect fill="#ffd700" stroke="black" stroke-width="1" stroke-opacity="1" x="37" y="64" width="118" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="96" y="82">MajorClass</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="393" y="70" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="215" y="118" width="183" height="5" />
+	<rect fill="#c05800" stroke="black" stroke-width="1" stroke-opacity="1" x="209" y="64" width="184" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="301" y="82">RecentMajorClass</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="165" y="147" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="33" y="195" width="137" height="5" />
+	<rect fill="#ffeb60" stroke="black" stroke-width="1" stroke-opacity="1" x="27" y="141" width="138" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="96" y="159">RegularClass</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="156" y="220" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="42" y="268" width="119" height="5" />
+	<rect fill="#ffffc0" stroke="black" stroke-width="1" stroke-opacity="1" x="36" y="214" width="120" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="96" y="232">MinorClass</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="403" y="147" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="205" y="195" width="203" height="5" />
+	<rect fill="#ff8000" stroke="black" stroke-width="1" stroke-opacity="1" x="199" y="141" width="204" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="301" y="159">RecentRegularClass</text>
+</g>
+</svg>
