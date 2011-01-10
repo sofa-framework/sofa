@@ -87,10 +87,6 @@ protected:
     bool resetFlag; // We delete all forces that were not read
 };
 
-template<class DataTypes>
-class ContinuousUnilateralInteractionConstraint;
-
-template<class DataTypes>
 class UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
@@ -98,7 +94,6 @@ public:
         : _mu(mu)
         , _prev(prev)
         , _active(active)
-        , m_constraint(0)
     {
         nbLines=3;
     }
@@ -107,19 +102,11 @@ public:
     virtual void resolution(int line, double** w, double* d, double* force, double *dFree);
     virtual void store(int line, double* force, bool /*convergence*/);
 
-    void setConstraint(ContinuousUnilateralInteractionConstraint<DataTypes> *c)
-    {
-        m_constraint = c;
-    }
-
-    enum ContactState { NONE=0, SLIDING, STICKY };
-
 protected:
     double _mu;
     double _W[6];
     PreviousForcesContainer* _prev;
     bool* _active; // Will set this after the resolution
-    ContinuousUnilateralInteractionConstraint<DataTypes> *m_constraint;
 };
 
 #endif // SOFA_DEV
@@ -279,71 +266,6 @@ public:
     void draw();
 };
 
-template<class DataTypes>
-class ContinuousUnilateralInteractionConstraint : public UnilateralInteractionConstraint<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(ContinuousUnilateralInteractionConstraint, DataTypes), SOFA_TEMPLATE(UnilateralInteractionConstraint, DataTypes));
-
-    typedef UnilateralInteractionConstraint<DataTypes> Inherited;
-    typedef typename Inherited::VecCoord VecCoord;
-    typedef typename Inherited::VecDeriv VecDeriv;
-    typedef typename Inherited::Coord Coord;
-    typedef typename Inherited::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-
-    typedef typename Inherited::PersistentID PersistentID;
-    typedef typename Inherited::Contact Contact;
-#ifdef SOFA_DEV
-    typedef typename UnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
-#endif
-
-    ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
-        : Inherited(object1, object2)
-    {
-    }
-
-    ContinuousUnilateralInteractionConstraint(MechanicalState* object)
-        : Inherited(object)
-    {
-    }
-
-    ContinuousUnilateralInteractionConstraint()
-        : Inherited()
-    {
-    }
-
-    virtual ~ContinuousUnilateralInteractionConstraint()
-    {
-    }
-
-    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
-
-#ifdef SOFA_DEV
-    void getConstraintResolution(std::vector< core::behavior::ConstraintResolution* >& resTab, unsigned int& offset);
-
-
-protected:
-    std::map< int, ContactState > contactStates;
-
-public:
-
-    /// @name Contact State API
-    /// @{
-
-    bool isSticked(int id);
-
-    void setContactState(int id, ContactState s);
-
-    void clearContactStates();
-
-    void debugContactStates();
-
-    // @}
-#endif
-};
-
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
 #pragma warning(disable : 4231)
@@ -362,12 +284,6 @@ extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionCons
 //extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Vec6fTypes>;
 //extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid3fTypes>;
 //extern template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<defaulttype::Rigid2fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API ContinuousUnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_CONSTRAINTSET_API ContinuousUnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
 #endif
 #endif
 

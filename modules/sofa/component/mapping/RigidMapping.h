@@ -107,10 +107,6 @@ public:
     Data<sofa::helper::vector<unsigned int> > repartition;
     Data<bool> globalToLocalCoords;
 
-    ///// new: functions for continuous friction contact
-    Data<bool> contactDuplicate;
-    Data<std::string> nameOfInputMap;
-
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
 
@@ -120,13 +116,7 @@ public:
     int addPoint(const Coord& c);
     int addPoint(const Coord& c, int indexFrom);
 
-    // interface for continuous friction contact
-    void beginAddContactPoint();
-    int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
-
-
     void init();
-    void bwdInit();
 
     //void disable(); //useless now that points are saved in a Data
 
@@ -153,8 +143,6 @@ protected:
     void load(const char* filename);
     const VecCoord& getPoints();
     void setJMatrixBlock(unsigned outIdx, unsigned inIdx);
-
-    RigidMapping<TIn, TOut> *_inputMapping; // for continuous_friction_contact:
 
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;

@@ -311,6 +311,8 @@ public:
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
+    int addContactPointFromInputMapping(const typename In::VecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {
         unsigned int size_vec;
@@ -1116,6 +1118,7 @@ public:
     // interface for continuous friction contact
     void beginAddContactPoint();
     int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
+    bool m_init;
 
 
     TopologyBarycentricMapper<InDataTypes,OutDataTypes> *getMapper()

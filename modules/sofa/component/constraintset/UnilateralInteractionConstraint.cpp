@@ -59,15 +59,6 @@ template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<
 template class SOFA_COMPONENT_CONSTRAINTSET_API UnilateralInteractionConstraint<Vec3fTypes>;
 #endif
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINTSET_API ContinuousUnilateralInteractionConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINTSET_API ContinuousUnilateralInteractionConstraint<Vec3fTypes>;
-#endif
-
-
-
 
 } // namespace constraintset
 

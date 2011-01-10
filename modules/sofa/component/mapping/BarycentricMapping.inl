@@ -78,6 +78,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::
 #endif
 {
     createMapperFromTopology ( topology );
+    m_init = false;
 }
 
 template <class In, class Out>
@@ -484,6 +485,194 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         }
     }
 }
+
+
+template <class In, class Out>
+int BarycentricMapperMeshTopology<In,Out>::addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& _pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+{
+    updateJ = true;
+    int retValue = 0;
+
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
+#ifdef SOFA_NEW_HEXA
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
+#else
+    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
+#endif
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
+
+    sofa::helper::vector<Matrix3> bases;
+    sofa::helper::vector<Vector3> centers;
+
+    if ( tetrahedra.empty() && cubes.empty() )
+    {
+        if ( triangles.empty() && quads.empty() )
+        {
+            //no 3D elements, nor 2D elements -> map on 1D elements
+
+            const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = this->fromTopology->getEdges();
+            if ( edges.empty() )
+                return retValue;
+
+            sofa::helper::vector< SReal >   lengthEdges;
+            sofa::helper::vector< Vector3 > unitaryVectors;
+
+            unsigned int e;
+            for ( e=0; e<edges.size(); e++ )
+            {
+                lengthEdges.push_back ( ( in[edges[e][1]]-in[edges[e][0]] ).norm() );
+
+                Vector3 V12 = ( in[edges[e][1]]-in[edges[e][0]] );
+                V12.normalize();
+                unitaryVectors.push_back ( V12 );
+            }
+
+            SReal coef=0;
+            for ( e=0; e<edges.size(); e++ )
+            {
+                SReal lengthEdge = lengthEdges[e];
+                Vector3 V12 = unitaryVectors[e];
+
+                coef = ( V12 ) *Vector3 ( _pos - in[edges[e][0]] ) / lengthEdge;
+                if ( coef >= 0 && coef <= 1 )
+                {
+                    retValue = addPointInLine ( e,&coef );
+                    break;
+                }
+            }
+            //If no good coefficient has been found, we add to the last element
+            if ( e == edges.size() )
+                retValue = addPointInLine ( edges.size()-1,&coef );
+        }
+        else
+        {
+            // no 3D elements -> map on 2D elements
+            int c0 = triangles.size();
+            bases.resize ( triangles.size() + quads.size() );
+            centers.resize ( triangles.size() + quads.size() );
+
+            for ( unsigned int t = 0; t < triangles.size(); t++ )
+            {
+                Mat3x3d m,mt;
+                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+                m[2] = cross ( m[0],m[1] );
+                mt.transpose ( m );
+                bases[t].invert ( mt );
+                centers[t] = ( in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]] ) /3;
+            }
+
+            for ( unsigned int c = 0; c < quads.size(); c++ )
+            {
+                Mat3x3d m,mt;
+                m[0] = in[quads[c][1]]-in[quads[c][0]];
+                m[1] = in[quads[c][3]]-in[quads[c][0]];
+                m[2] = cross ( m[0],m[1] );
+                mt.transpose ( m );
+                bases[c0+c].invert ( mt );
+                centers[c0+c] = ( in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]] ) *0.25;
+            }
+
+            Vector3 coefs;
+            int index = -1;
+            double distance = 1e10;
+
+            for ( unsigned int t = 0; t < triangles.size(); t++ )
+            {
+                Vec3d v = bases[t] * ( _pos - in[triangles[t][0]] );
+                double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
+                if ( d>0 ) d = ( _pos-centers[t] ).norm2();
+                if ( d<distance ) { coefs = v; distance = d; index = t; }
+            }
+
+            for ( unsigned int c = 0; c < quads.size(); c++ )
+            {
+                Vec3d v = bases[c0+c] * ( _pos - in[quads[c][0]] );
+                double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
+                if ( d>0 ) d = ( _pos-centers[c0+c] ).norm2();
+                if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
+            }
+
+            if ( index < c0 )
+                retValue = addPointInTriangle ( index, coefs.ptr() );
+            else
+                retValue = addPointInQuad ( index-c0, coefs.ptr() );
+        }
+    }
+    else
+    {
+        int c0 = tetrahedra.size();
+        bases.resize ( tetrahedra.size() +cubes.size() );
+        centers.resize ( tetrahedra.size() +cubes.size() );
+
+        for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+        {
+            Mat3x3d m,mt;
+            m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
+            m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
+            m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
+            mt.transpose ( m );
+            bases[t].invert ( mt );
+            centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
+        }
+
+        for ( unsigned int c = 0; c < cubes.size(); c++ )
+        {
+            Mat3x3d m,mt;
+            m[0] = in[cubes[c][1]]-in[cubes[c][0]];
+#ifdef SOFA_NEW_HEXA
+            m[1] = in[cubes[c][3]]-in[cubes[c][0]];
+#else
+            m[1] = in[cubes[c][2]]-in[cubes[c][0]];
+#endif
+            m[2] = in[cubes[c][4]]-in[cubes[c][0]];
+            mt.transpose ( m );
+            bases[c0+c].invert ( mt );
+            centers[c0+c] = ( in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]] ) *0.125;
+        }
+
+        Vector3 coefs;
+        int index = -1;
+        double distance = 1e10;
+
+        for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
+        {
+            Vector3 v = bases[t] * ( _pos - in[tetrahedra[t][0]] );
+            double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
+            if ( d>0 )
+                d = ( _pos-centers[t] ).norm2();
+            if ( d<distance )
+            {
+                coefs = v;
+                distance = d;
+                index = t;
+            }
+        }
+
+        for ( unsigned int c = 0; c < cubes.size(); c++ )
+        {
+            Vector3 v = bases[c0+c] * ( _pos - in[cubes[c][0]] );
+            double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
+            if ( d>0 )
+                d = ( _pos-centers[c0+c] ).norm2();
+            if ( d<distance )
+            {
+                coefs = v;
+                distance = d;
+                index = c0+c;
+            }
+        }
+
+        if ( index < c0 )
+            retValue = addPointInTetra ( index, coefs.ptr() );
+        else
+            retValue = addPointInCube ( index-c0, coefs.ptr() );
+    }
+
+    return retValue;
+}
+
 
 template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::clear ( int reserve )
@@ -4139,12 +4328,19 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::beginAddContactPoint()
 {
-    if (this->mapper)
+    if (!m_init)
     {
-        this->mapper->clear(0);
-    }
+        if (this->mapper)
+        {
+            this->mapper->clear(0);
+        }
 
-    this->toModel->resize(0);
+        this->toModel->resize(0);
+
+        m_init = true;
+    }
+    else
+        m_init = false;
 }
 
 template <class TIn, class TOut>

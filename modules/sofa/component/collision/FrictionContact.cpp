@@ -42,12 +42,6 @@ sofa::core::collision::DetectionOutput::ContactId Identifier::cpt=0;
 std::list<sofa::core::collision::DetectionOutput::ContactId> Identifier::availableId;
 
 SOFA_DECL_CLASS(FrictionContact)
-SOFA_DECL_CLASS(ContinuousFrictionContact)
-Creator<Contact::Factory, ContinuousFrictionContact<PointModel, PointModel> > PointPointContinuousFrictionContactClass("ContinuousFrictionContact",true);
-Creator<Contact::Factory, ContinuousFrictionContact<LineModel, PointModel> > LinePointContinuousFrictionContactClass("ContinuousFrictionContact",true);
-Creator<Contact::Factory, ContinuousFrictionContact<LineModel, LineModel> > LineLineContinuousFrictionContactClass("ContinuousFrictionContact",true);
-Creator<Contact::Factory, ContinuousFrictionContact<TriangleModel, PointModel> > TrianglePointContinuousFrictionContactContactClass("ContinuousFrictionContact",true);
-
 
 Creator<Contact::Factory, FrictionContact<PointModel, PointModel> > PointPointFrictionContactClass("FrictionContact",true);
 Creator<Contact::Factory, FrictionContact<LineModel, SphereModel> > LineSphereFrictionContactClass("FrictionContact",true);
@@ -84,83 +78,6 @@ Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, PointMo
 Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereFrictionContactClass("FrictionContact", true);
 Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleFrictionContactClass("FrictionContact", true);
 
-
-template<>
-int ContinuousFrictionContact<PointModel, PointModel>::mapTheContinuousContact(Vector3 &/*baryCoord*/, int index, Vector3 &pos, bool case1)
-{
-    std::vector<std::pair<int, double> > barycentricData;
-
-    if (case1)
-    {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
-        return map1->addContactPointFromInputMapping(pos, barycentricData);
-    }
-    else
-    {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
-        return map2->addContactPointFromInputMapping(pos, barycentricData);
-    }
-}
-
-template<>
-int ContinuousFrictionContact<LineModel, PointModel>::mapTheContinuousContact(Vector3 &baryCoord, int index, Vector3 &pos, bool case1)
-{
-    std::vector<std::pair<int, double> > barycentricData;
-
-    if (case1)
-    {
-        Line *l=new Line(this->model1, index);
-        barycentricData.push_back( std::pair<int, double> (l->i1(),1.0-baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (l->i2(),baryCoord[0]) );
-        return map1->addContactPointFromInputMapping(pos, barycentricData);
-    }
-    else
-    {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
-        return map2->addContactPointFromInputMapping(pos, barycentricData);
-    }
-}
-
-template<>
-int ContinuousFrictionContact<LineModel, LineModel>::mapTheContinuousContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
-{
-    std::vector<std::pair<int, double> > barycentricData;
-
-    if (case1)
-    {
-        Line *l=new Line(this->model1, index);
-        barycentricData.push_back( std::pair<int, double> (l->i1(),1.0-baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (l->i2(),baryCoord[0]) );
-        return map1->addContactPointFromInputMapping(pos, barycentricData);
-    }
-    else
-    {
-        Line *l=new Line(this->model2, index);
-        barycentricData.push_back( std::pair<int, double> (l->i1(),1.0-baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (l->i2(),baryCoord[0]) );
-        return map2->addContactPointFromInputMapping(pos, barycentricData);
-    }
-}
-
-template<>
-int ContinuousFrictionContact<TriangleModel, PointModel>::mapTheContinuousContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
-{
-    std::vector<std::pair<int, double> > barycentricData;
-
-    if (case1)
-    {
-        Triangle *t=new Triangle(this->model1, index);
-        barycentricData.push_back( std::pair<int, double> (t->p1Index(),1.0-baryCoord[0]-baryCoord[1]) );
-        barycentricData.push_back( std::pair<int, double> (t->p2Index(),baryCoord[0]) );
-        barycentricData.push_back( std::pair<int, double> (t->p3Index(),baryCoord[1]) );
-        return map1->addContactPointFromInputMapping(pos, barycentricData);
-    }
-    else
-    {
-        barycentricData.push_back( std::pair<int, double> (index,1.0) );
-        return map2->addContactPointFromInputMapping(pos, barycentricData);
-    }
-}
 
 } // namespace collision
 

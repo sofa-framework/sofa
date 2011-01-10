@@ -38,8 +38,7 @@ namespace component
 namespace constraintset
 {
 #ifdef SOFA_DEV
-template< class DataTypes >
-void UnilateralConstraintResolutionWithFriction< DataTypes >::init(int line, double** w, double* force)
+void UnilateralConstraintResolutionWithFriction::init(int line, double** w, double* force)
 {
     _W[0]=w[line  ][line  ];
     _W[1]=w[line  ][line+1];
@@ -60,8 +59,7 @@ void UnilateralConstraintResolutionWithFriction< DataTypes >::init(int line, dou
 
 }
 
-template< class DataTypes >
-void UnilateralConstraintResolutionWithFriction< DataTypes >::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
+void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
 {
     double f[2];
     double normFt;
@@ -72,10 +70,6 @@ void UnilateralConstraintResolutionWithFriction< DataTypes >::resolution(int lin
     if(force[line] < 0)
     {
         force[line]=0; force[line+1]=0; force[line+2]=0;
-
-        if (m_constraint)
-            m_constraint->setContactState(line, NONE);
-
         return;
     }
 
@@ -90,19 +84,10 @@ void UnilateralConstraintResolutionWithFriction< DataTypes >::resolution(int lin
     {
         force[line+1] *= _mu*force[line]/normFt;
         force[line+2] *= _mu*force[line]/normFt;
-
-        if (m_constraint)
-            m_constraint->setContactState(line, SLIDING);
-    }
-    else
-    {
-        if (m_constraint)
-            m_constraint->setContactState(line, STICKY);
     }
 }
 
-template< class DataTypes >
-void UnilateralConstraintResolutionWithFriction< DataTypes >::store(int line, double* force, bool /*convergence*/)
+void UnilateralConstraintResolutionWithFriction::store(int line, double* force, bool /*convergence*/)
 {
     if(_prev)
     {
@@ -380,7 +365,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
         if(c.mu > 0.0)
         {
 //			bool& temp = contactsStatus.at(i);
-            resTab[offset] = new UnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &contactsStatus[i]);
+            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
 
             // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
 //			resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces, &contactsStatus[i]);
@@ -448,179 +433,6 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
     }
     glEnd();
 }
-
-
-template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid)
-{
-    // compute dt and delta
-    Real delta = dot(P-Q, norm) - contactDistance;
-    Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
-    Real dt;
-    int i = this->contacts.size();
-    this->contacts.resize(i+1);
-    typename Inherited::Contact& c = this->contacts[i];
-
-    //sout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<sendl;
-    //sout<<"P : "<<P<<" - PFree : "<<Pfree <<sendl;
-    //sout<<"Q : "<<Q<<" - QFree : "<<Qfree <<sendl;
-
-
-// for visu
-    c.P = P;
-    c.Q = Q;
-    c.Pfree = Pfree;
-    c.Qfree = Qfree;
-//
-    c.m1 = m1;
-    c.m2 = m2;
-    c.norm = norm;
-    c.delta = delta;
-    c.t = Deriv(norm.z(), norm.x(), norm.y());
-    c.s = cross(norm,c.t);
-    c.s = c.s / c.s.norm();
-    c.t = cross((-norm), c.s);
-    c.mu = mu;
-    c.contactId = id;
-    c.localId = localid;
-
-    Deriv PPfree = Pfree-P;
-    Deriv QQfree = Qfree-Q;
-    Real ref_dist = PPfree.norm()+QQfree.norm();
-
-    if (rabs(delta) < 0.00001*ref_dist && rabs(deltaFree) < 0.00001*ref_dist  )
-    {
-
-//        std::cout<<" case0 "<<std::endl;
-
-        dt=0.0;
-        c.dfree = deltaFree;
-        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-
-        return;
-
-    }
-
-    if (rabs(delta - deltaFree) > 0.001 * delta)
-    {
-        dt = delta / (delta - deltaFree);
-        if (dt > 0.0 && dt < 1.0  )
-        {
-            sofa::defaulttype::Vector3 Qt, Pt;
-            Qt = Q*(1-dt) + Qfree*dt;
-            Pt = P*(1-dt) + Pfree*dt;
-            c.dfree = deltaFree;// dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
-            c.dfree_t = dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
-            c.dfree_s = dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
-            //printf("\n ! dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-        }
-        else
-        {
-            if (deltaFree < 0.0)
-            {
-                dt=0.0;
-                c.dfree = deltaFree; // dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
-                //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-                c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-                c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-            }
-            else
-            {
-                dt=1.0;
-                c.dfree = deltaFree;
-                c.dfree_t = 0;
-                c.dfree_s = 0;
-            }
-        }
-    }
-    else
-    {
-        dt = 0;
-        c.dfree = deltaFree;
-        c.dfree_t = 0;
-        c.dfree_s = 0;
-        //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-    }
-    //sout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<sendl;
-}
-
-#ifdef SOFA_DEV
-template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
-{
-    if (this->contactsStatus)
-        delete[] this->contactsStatus;
-
-    this->contactsStatus = new bool[this->contacts.size()];
-    memset(this->contactsStatus, 0, sizeof(bool)*this->contacts.size());
-
-    for(unsigned int i=0; i<this->contacts.size(); i++)
-    {
-        Contact& c = this->contacts[i];
-        if(c.mu > 0.0)
-        {
-            UnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new UnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &this->contactsStatus[i]);
-            cRes->setConstraint(this);
-            resTab[offset] = cRes;
-            offset += 3;
-        }
-        else
-            resTab[offset++] = new UnilateralConstraintResolution();
-    }
-}
-
-
-template<class DataTypes>
-bool ContinuousUnilateralInteractionConstraint<DataTypes>::isSticked(int /*_contactId*/)
-{
-    /*sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
-    sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
-
-    while (it != itEnd)
-    {
-    	if (it->contactId == _contactId)
-    		break;
-
-    	++it;
-    }
-
-    if (it != itEnd)
-    	return (contactStates[it->id] == UnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
-    else
-    	return false;*/
-
-    return false;
-}
-
-template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::setContactState(int /*id*/, ContactState /*s*/)
-{
-//	contactStates.insert(std::make_pair(id, s));
-}
-
-template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::clearContactStates()
-{
-//	contactStates.clear();
-}
-
-template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
-{
-    std::cout << "-------------->debugContactStates\n";
-
-    /*std::map< int, ContactState >::iterator it = contactStates.begin();
-    std::map< int, ContactState >::iterator itEnd = contactStates.end();
-
-    while (it != itEnd)
-    {
-    	std::cout << it->first << " : " << it->second << std::endl;
-    	++it;
-    }*/
-}
-
-#endif
 
 } // namespace constraintset
 
