@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
 
 #include "FrameBlendingMapping.h"
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Color.h>
@@ -81,7 +80,6 @@ namespace component
 namespace mapping
 {
 
-using sofa::component::topology::TriangleSetTopologyContainer;
 using helper::WriteAccessor;
 using helper::ReadAccessor;
 
@@ -94,9 +92,6 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , weightDeriv ( initData ( &weightDeriv,"weightGradients","weight gradients" ) )
     , weightDeriv2 ( initData ( &weightDeriv2,"weightHessians","weight Hessians" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
-/*                        , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
-, showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
-, showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )*/
     , showFromIndex ( initData ( &showFromIndex, ( unsigned int ) 0, "showFromIndex","Displayed From Index." ) )
     , showWeights ( initData ( &showWeights, false, "showWeights","Show coeficients." ) )
     , showGammaCorrection ( initData ( &showGammaCorrection, 1.0, "showGammaCorrection","Correction of the Gamma by a power" ) )
@@ -107,6 +102,8 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
     , showGradientsValues ( initData ( &showGradientsValues, false, "showGradientsValues","Show Gradients Values." ) )
     , showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.0001, "showGradientsScaleFactor","Gradients Scale Factor." ) )
+    , showStrain ( initData ( &showStrain, false, "showStrain","Show Computed Strain Tensors." ) )
+    , showStrainScaleFactor ( initData ( &showStrainScaleFactor, 1.0, "showStrainScaleFactor","Strain Tensors Scale Factor." ) )
     , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to improve numerical integration" ) )
     , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Target frames number" ) )
     , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
@@ -174,6 +171,14 @@ void FrameBlendingMapping<TIn, TOut>::init()
             weightDeriv.getValue()[i],
             weightDeriv2.getValue()[i]
         );
+    }
+
+    // Get the topology of toModel to display the weights and the strain tensors on the triangular model.
+    MeshLoader *meshLoader;
+    this->getContext()->get( meshLoader, core::objectmodel::BaseContext::Local);
+    if (meshLoader)
+    {
+        meshLoader->getTriangles(triangles);
     }
 
     Inherit::init();
@@ -453,8 +458,8 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 Vec<3,InReal> u=cfrom2-cfrom1;
                 InReal d=u.norm2(); u=u/d;
                 InReal w2=dot(cto-cfrom1,u),w1=-dot(cto-cfrom2,u);
-                if(w1<0) {m_weights[i][1]=0; m_weights[i][1]=1; }
-                else if(w2<0) {m_weights[i][0]=1; m_weights[i][1]=0; }
+                if(w1<=0) {m_weights[i][0]=0; m_weights[i][1]=1;}
+                else if(w2<=0) {m_weights[i][0]=1; m_weights[i][1]=0;}
                 else
                 {
                     m_weights[i][0]=w1; m_weights[i][1]=w2;
@@ -766,26 +771,23 @@ void FrameBlendingMapping<TIn, TOut>::draw()
             }
         }
 
-        TriangleSetTopologyContainer *mesh;
-        this->getContext()->get( mesh);
-        if ( mesh)
+        if ( ! triangles.empty())
         {
             glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
             std::vector< defaulttype::Vector3 > points;
             std::vector< defaulttype::Vector3 > normals;
             std::vector< defaulttype::Vec<4,float> > colors;
-            const TriangleSetTopologyContainer::SeqTriangles& tri = mesh->getTriangles();
-            for ( unsigned int i = 0; i < mesh->getNumberOfTriangles(); i++)
+            for ( unsigned int i = 0; i < triangles.size(); i++)
             {
                 for ( unsigned int j = 0; j < 3; j++)
                 {
                     bool influenced;
                     unsigned int indexRep;
                     //                                findIndexInRepartition(influenced, indexRep, i, showFromIndex.getValue()%nbRef);  FF
-                    findIndexInRepartition(influenced, indexRep, tri[i][j], showFromIndex.getValue()%nbRef);
+                    findIndexInRepartition(influenced, indexRep, triangles[i][j], showFromIndex.getValue()%nbRef);
                     if (influenced)
                     {
-                        const unsigned int& indexPoint = tri[i][j];
+                        const unsigned int& indexPoint = triangles[i][j];
                         float color = (float)(m_weights[indexPoint][indexRep] - minValue) / (maxValue - minValue);
                         color = (float)pow((float)color, (float)showGammaCorrection.getValue());
                         points.push_back(defaulttype::Vector3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
@@ -817,63 +819,91 @@ void FrameBlendingMapping<TIn, TOut>::draw()
         }
     }
 
-    //                // Display def tensor values for each points
-    //                if ( this->showDefTensorsValues.getValue())
-    //                {
-    //                    char txt[100];
-    //                    glColor3f( 0.5, 0.5, 0.5);
-    //                    for ( unsigned int i=0;i<xto.size();i++ )
-    //                    {
-    //                        const Vec6& e = this->deformationTensors[i];
-    //                        sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
-    //                        sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
-    //                    }
-    //                }
+    /*
+    // Display def tensor values for each points
+    if ( this->showDefTensorsValues.getValue())
+    {
+        char txt[100];
+        glColor3f( 0.5, 0.5, 0.5);
+        for ( unsigned int i=0;i<xto.size();i++ )
+        {
+            const Vec6& e = this->deformationTensors[i];
+            sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
+            sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+        }
+    }
+    */
 
-    //                // Deformation tensor show
-    //                if ( this->showDefTensors.getValue() && this->computeAllMatrices.getValue() )
-    //                {
-    //                    TriangleSetTopologyContainer *mesh;
-    //                    this->getContext()->get( mesh);
-    //                    if ( mesh)
-    //                    {
-    //                        glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
-    //                        glDisable( GL_LIGHTING);
-    //                        glBegin( GL_TRIANGLES);
-    //                        const TriangleSetTopologyContainer::SeqTriangles& tri = mesh->getTriangles();
-    //                        for ( unsigned int i = 0; i < mesh->getNumberOfTriangles(); i++)
-    //                        {
-    //                            for ( unsigned int j = 0; j < 3; j++)
-    //                            {
-    //                                const Vec6& e = this->deformationTensors[tri[i][j]];
-    //                                float color = 0.5 + ( e[0] + e[1] + e[2])/this->showDefTensorScale.getValue();
-    //                                glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
-    //                                glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
-    //                            }
-    //                        }
-    //                        glEnd();
-    //                        glPopAttrib();
-    //                    }
-    //                    else // Show by points
-    //                    {
-    //                        glPointSize( 10);
-    //                        glBegin( GL_POINTS);
-    //                        for ( unsigned int i = 0; i < xto.size(); i++)
-    //                        {
-    //                            const Vec6& e = this->deformationTensors[i];
-    //                            float mult=500;
-    //                            float color = (e[0]+e[1]+e[2])/3.;
-    //                            if (color<0) color=2*color/(color+1.);
-    //                            color*=mult;
-    //                            color+=120;
-    //                            if (color<0) color=0;
-    //                            if (color>240) color=240;
-    //                            sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
-    //                            glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
-    //                        }
-    //                        glEnd();
-    //                    }
-    //                }
+    // Deformation tensor show
+    if ( this->showStrain.getValue())
+    {
+        if (!this->isPhysical)
+        {
+            serr << "The Frame Blending Mapping must be physical to display the strain tensors." << sendl;
+        }
+        else
+        {
+            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+            glDisable( GL_LIGHTING);
+            typedef Vec<3,double> Vec3;
+            if ( ! triangles.empty())
+            {
+                glBegin( GL_TRIANGLES);
+                for ( unsigned int i = 0; i < triangles.size(); i++)
+                {
+                    for ( unsigned int j = 0; j < 3; j++)
+                    {
+                        const unsigned int& indexP = triangles[i][j];
+                        Vec3 e(0,0,0);
+                        // (Ft * F - I) /2.0
+                        for (unsigned int k = 0; k < 3; ++k)
+                        {
+                            for (unsigned int l = 0; l < 3; ++l)
+                                e[k] += xto[indexP][3+3*l+k]*xto[indexP][3+3*l+k];
+                            e[k] -= 1.0;
+                            e[k] /= 2.0;
+                        }
+                        float color = ( e[0] + e[1] + e[2])/3.0;
+                        if (color<0) color=2*color/(color+1.);
+                        color*=1000 * this->showStrainScaleFactor.getValue();
+                        color+=120;
+                        if (color<0) color=0;
+                        if (color>240) color=240;
+                        sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
+                        glVertex3f( xto[indexP][0], xto[indexP][1], xto[indexP][2]);
+                    }
+                }
+                glEnd();
+            }
+            else // Show by points
+            {
+                glPointSize( 10);
+                glBegin( GL_POINTS);
+                for ( unsigned int i = 0; i < xto.size(); i++)
+                {
+                    Vec3 e(0,0,0);
+                    // (Ft * F - I) /2.0
+                    for (unsigned int k = 0; k < 3; ++k)
+                    {
+                        for (unsigned int l = 0; l < 3; ++l)
+                            e[k] += xto[i][3+3*l+k]*xto[i][3+3*l+k];
+                        e[k] -= 1.0;
+                        e[k] /= 2.0;
+                    }
+                    float color = ( e[0] + e[1] + e[2])/3.0;
+                    if (color<0) color=2*color/(color+1.);
+                    color*=1000 * this->showStrainScaleFactor.getValue();
+                    color+=120;
+                    if (color<0) color=0;
+                    if (color>240) color=240;
+                    sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
+                    glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
+                }
+                glEnd();
+            }
+            glPopAttrib();
+        }
+    }
 }
 
 

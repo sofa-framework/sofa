@@ -32,6 +32,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/container/MeshLoader.h>
 
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
@@ -55,6 +56,7 @@ using sofa::component::material::MaterialTypes;
 using sofa::component::material::GridMaterial;
 using defaulttype::FrameData;
 using defaulttype::SampleData;
+using sofa::component::container::MeshLoader;
 
 
 /** Linear blend skinning, from a variety of input types to a variety of output types.
@@ -158,6 +160,10 @@ public:
     Data<bool> showGradients;
     Data<bool> showGradientsValues;
     Data<double> showGradientsScaleFactor;
+    Data<bool> showStrain;
+    Data<double> showStrainScaleFactor;
+
+    MeshLoader::SeqTriangles triangles; // Topology of toModel (used for strain display)
 
     Data<bool> useElastons; // temporary
 
