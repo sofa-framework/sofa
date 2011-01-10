@@ -65,7 +65,8 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
     , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
     , useDijkstra ( initData ( &useDijkstra, true, "useDijkstra","Use Dijkstra's algorithm to compute the distance fields." ) )
-    , optimizeLinearity ( initData ( &optimizeLinearity, true, "optimizeLinearity","Insert Gauss points to create integration volumes containing as linear as possible weights." ) )
+    , useDistanceScaleFactor ( initData ( &useDistanceScaleFactor,true, "useDistanceScaleFactor","useDistanceScaleFactor." ) )
+    , weightSupport ( initData ( &weightSupport,(Real)2., "weightSupport","Support of the weight function (2=interpolating, >2 = approximating)." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
     , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
@@ -78,7 +79,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
-    helper::OptionsGroup showVoxelsOptions(10,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Voronoi Frames", "Distances", "Weights");
+    helper::OptionsGroup showVoxelsOptions(11,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Voronoi Frames", "Distances", "Weights", "DistanceScaleFactor");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 }
@@ -978,6 +979,7 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
     if (dtype==DISTANCE_GEODESIC)
     {
         computeGeodesicalDistances (points); // voronoi
+        if(useDistanceScaleFactor.getValue()) computeDistanceScaleFactors (points);
         for (i=0; i<nbp; i++)
         {
             computeAnisotropicLinearWeightsInVoronoi(points[i]);
@@ -1125,6 +1127,8 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
                 if (grid.data()[v2])
                 {
                     Real cost = getDistance(v,v2);
+                    if(useDistanceScaleFactor.getValue() && distanceScaleFactor.size()==this->nbVoxels)	cost*=distanceScaleFactor[v2];
+
                     if(distances[v2] > distances[v] + cost)
                     {
                         if(distances[v2] != distMax)
@@ -1138,34 +1142,6 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
             }
         }
 
-
-        //                    Real d,dmin;
-        //                    std::list<unsigned int> ptlist;
-        //                    std::list<unsigned int>::iterator it,itmin;
-        //                    for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
-        //                    distances[index]=0;
-        //                    bool ok=false;
-        //                    while (!ok)
-        //                    {
-        //                        // take the non-treated voxel with minimum distance
-        //                        dmin=distMax;
-        //                        for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
-        //                        if(dmin==distMax) { ok=true; continue;}
-        //
-        //                        // update distance of neighbors
-        //                        get26Neighbors(*itmin, neighbors);
-        //                        for (i=0;i<neighbors.size();i++)
-        //                        {
-        //                            index2=neighbors[i];
-        //                            if (grid.data()[index2]) // test if voxel is not void
-        //                            {
-        //                                d=dmin+getDistance(*itmin,index2);
-        //                                if (distances[index2]>d) {distances[index2]=d; }
-        //                            }
-        //                        }
-        //                        ptlist.erase(itmin);
-        //                    }
-        /// end dijkstra algorithm
     }
     else
     {
@@ -1184,10 +1160,11 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
                 index2=neighbors[i];
                 if (grid.data()[index2]) // test if voxel is not void
                 {
-                    d=distances[index1]+getDistance(index1,index2);
-                    if (distances[index2]>d)
+                    d=getDistance(index1,index2);
+                    if(useDistanceScaleFactor.getValue() && distanceScaleFactor.size()==this->nbVoxels)	d*=distanceScaleFactor[index2];
+                    if (distances[index2]>d+distances[index1])
                     {
-                        distances[index2]=d;
+                        distances[index2]=d+distances[index1];
                         fifo.push(index2);
                     }
                 }
@@ -1268,39 +1245,6 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
             }
         }
 
-        //                    Real d,dmin;
-        //                    std::list<unsigned int> ptlist;
-        //                    std::list<unsigned int>::iterator it,itmin;
-        //                    for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
-        //                    for (i=0;i<nbi;i++) if (indices[i]>=0 && indices[i]<(int)nbVoxels) if (grid.data()[indices[i]]!=0) {
-        //                        distances[indices[i]]=0;
-        //                        voronoi[indices[i]]=i;
-        //                    }
-        //                    bool ok=false;
-        //                    while (!ok)
-        //                    {
-        //                        // take the non-treated voxel with minimum distance
-        //                        dmin=distMax;
-        //                        for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
-        //                        if(dmin==distMax) { ok=true; continue;}
-        //
-        //                        // update distance of neighbors
-        //                        get26Neighbors(*itmin, neighbors);
-        //                        for (i=0;i<neighbors.size();i++)
-        //                        {
-        //                            index2=neighbors[i];
-        //                            if (grid.data()[index2]) // test if voxel is not void
-        //                            {
-        //                                d=dmin+getDistance(*itmin,index2);
-        //                                if (distances[index2]>d) {
-        //                                    distances[index2]=d;
-        //                                    voronoi[index2]=voronoi[*itmin];
-        //                                }
-        //                            }
-        //                        }
-        //                        ptlist.erase(itmin);
-        //                    }
-        /// end dijkstra algorithm
     }
     else
     {
@@ -1365,6 +1309,8 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
 
     unsigned int i,j,index2;
     distances.resize(this->nbVoxels);
+    if(useDistanceScaleFactor.getValue()) ancestors.resize(this->nbVoxels);
+
     for (i=0; i<this->nbVoxels; i++) distances[i]=distMax;
     if (index<0 || index>=(int)nbVoxels) return false; // voxel out of grid
     if (!grid.data()[index]) return false;  // voxel out of object
@@ -1373,46 +1319,6 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
     VUI neighbors;
     if( useDijkstra.getValue()==true )
     {
-        /// dijkstra algorithm
-        //                    std::list<unsigned int> ptlist;
-        //                    for (i=0;i<this->nbVoxels;i++) ptlist.push_back(i); // voxels to be treated
-        //                    for (i=0;i<nbVoxels;i++){
-        //                        if(voronoi[i]==voronoi[index])
-        //                        {
-        //                            get6Neighbors((int)i, neighbors);
-        //                            for (j=0;j<neighbors.size();j++){
-        //                                if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
-        //                                {
-        //                                    distances[i]=0;
-        //                                    j=neighbors.size();
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                    Real d,dmin;
-        //                    std::list<unsigned int>::iterator it,itmin;
-        //                    bool ok=false;
-        //                    while (!ok)
-        //                    {
-        //                        // take the non-treated voxel with minimum distance
-        //                        dmin=distMax;
-        //                        for (it=ptlist.begin(); it!=ptlist.end(); ++it) if(distances[*it]<dmin) {itmin=it; dmin=distances[*itmin];}
-        //                        if(dmin==distMax) { ok=true; continue;}
-        //
-        //                        // update distance of neighbors
-        //                        get26Neighbors(*itmin, neighbors);
-        //                        for (i=0;i<neighbors.size();i++)
-        //                        {
-        //                            index2=neighbors[i];
-        //                            if (grid.data()[index2]) // test if voxel is not void
-        //                            {
-        //                                d=dmin+getDistance(*itmin,index2);
-        //                                if (distances[index2]>d) {distances[index2]=d; }
-        //                            }
-        //                        }
-        //                        ptlist.erase(itmin);
-        //                    }
-
         typedef std::pair<Real,unsigned> DistanceToPoint;
         std::set<DistanceToPoint> q; // priority queue
 
@@ -1423,10 +1329,12 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                 get6Neighbors((int)i, neighbors);
                 for (j=0; j<neighbors.size(); j++)
                 {
-                    if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
+                    if(voronoi[neighbors[j]]!=voronoi[index] && voronoi[neighbors[j]]!=-1) // voronoi frontier
                     {
-                        q.insert( DistanceToPoint(0.,i) );
-                        distances[i]=0;
+                        Real d = 0; //getDistance(i,neighbors[j])/(Real)2.; // distance from border
+                        q.insert( DistanceToPoint(d,i) );
+                        distances[i]=d;
+                        if(useDistanceScaleFactor.getValue()) ancestors[i]=i;
                         j=neighbors.size();
                     }
                 }
@@ -1454,6 +1362,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                         }
                         distances[v2] = d;
                         q.insert( DistanceToPoint(d,v2) );
+                        if(useDistanceScaleFactor.getValue()) ancestors[v2]=ancestors[v];
                     }
                 }
             }
@@ -1474,9 +1383,11 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
             {
                 get6Neighbors((int)i, neighbors);
                 for (j=0; j<neighbors.size(); j++)
-                    if(voronoi[neighbors[j]]!=voronoi[index] || grid.data()[neighbors[j]]) // voronoi frontier
+                    if(voronoi[neighbors[j]]!=voronoi[index] && voronoi[neighbors[j]]!=-1) // voronoi frontier
                     {
-                        distances[i]=0; fifo.push((int)i);
+                        Real d = 0; //getDistance(i,neighbors[j])/(Real)2.; // distance from border
+                        distances[i]=d; fifo.push((int)i);
+                        if(useDistanceScaleFactor.getValue()) ancestors[i]=i;
                         j=neighbors.size();
                     }
             }
@@ -1493,6 +1404,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                     if (distances[index2]>d)
                     {
                         distances[index2]=d;
+                        if(useDistanceScaleFactor.getValue()) ancestors[index2]=ancestors[index1];
                         fifo.push(index2);
                     }
                 }
@@ -1543,7 +1455,8 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
             Real stiff=getStiffness(grid.data()[i]);
             k=-1;
             for (j=0; j<(unsigned int)indices.size() && k==-1; j++) // detect similar already inserted repartitions and stiffness
-                if(stiffnesses[j]==stiff) if(areRepsSimilar(i,indices[j])) k=j;
+                //if(stiffnesses[j]==stiff)
+                if(areRepsSimilar(i,indices[j])) k=j;
 
             if(k==-1)   // insert
             {
@@ -1556,58 +1469,55 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 
 
     // check linearity in each region and subdivide region of highest error until num_points is reached
-    if( this->optimizeLinearity.getValue() )
+    vector<Real> errors(indices.size(),(Real)0.);
+    Real w; SGradient dw; SHessian ddw; VUI ptlist;  SCoord point;
+    for (j=0; j<indices.size(); j++)
     {
-        vector<Real> errors(indices.size(),(Real)0.);
-        Real w; SGradient dw; SHessian ddw; VUI ptlist;  SCoord point;
-        for (j=0; j<indices.size(); j++)
+        getCoord(indices[j],point);
+        ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
+        for (i=0; i<nbRef; i++)
+            if(v_weights[indices[j]][i]!=0)
+            {
+                pasteRepartioninWeight(v_index[indices[j]][i]);
+                lumpWeights(ptlist,point,w,&dw,NULL,&errors[j]);
+            }
+    }
+
+    while(indices.size()<num_points)
+    {
+        Real maxerr=0;
+        for (j=0; j<indices.size(); j++) if(errors[j]>maxerr) {maxerr=errors[j]; i=j;}
+        SubdivideVoronoiRegion(i,indices.size());
+        j=0; while((unsigned int)voronoi[j]!=indices.size() && j<(unsigned int)nbVoxels) j++;
+        if(j==nbVoxels) {errors[j]=0; continue;} //unable to add region
+        else
         {
-            getCoord(indices[j],point);
-            ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
-            for (i=0; i<nbRef; i++)
-                if(v_weights[indices[j]][i]!=0)
+            indices.push_back(j); errors.push_back(0);
+            // update errors
+            errors[i]=0;
+            getCoord(indices[i],point);
+            ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
+            for (j=0; j<nbRef; j++)
+                if(v_weights[indices[i]][j]!=0)
                 {
-                    pasteRepartioninWeight(v_index[indices[j]][i]);
-                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[j]);
+                    pasteRepartioninWeight(v_index[indices[i]][j]);
+                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
+                }
+            i=indices.size()-1;
+            errors[i]=0;
+            getCoord(indices[i],point);
+            ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
+            for (j=0; j<nbRef; j++)
+                if(v_weights[indices[i]][j]!=0)
+                {
+                    pasteRepartioninWeight(v_index[indices[i]][j]);
+                    lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
                 }
         }
-
-        while(indices.size()<num_points)
-        {
-            Real maxerr=0;
-            for (j=0; j<indices.size(); j++) if(errors[j]>maxerr) {maxerr=errors[j]; i=j;}
-            SubdivideVoronoiRegion(i,indices.size());
-            j=0; while((unsigned int)voronoi[j]!=indices.size() && j<(unsigned int)nbVoxels) j++;
-            if(j==nbVoxels) {errors[j]=0; continue;} //unable to add region
-            else
-            {
-                indices.push_back(j); errors.push_back(0);
-                // update errors
-                errors[i]=0;
-                getCoord(indices[i],point);
-                ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
-                for (j=0; j<nbRef; j++)
-                    if(v_weights[indices[i]][j]!=0)
-                    {
-                        pasteRepartioninWeight(v_index[indices[i]][j]);
-                        lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
-                    }
-                i=indices.size()-1;
-                errors[i]=0;
-                getCoord(indices[i],point);
-                ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==i) ptlist.push_back(j);
-                for (j=0; j<nbRef; j++)
-                    if(v_weights[indices[i]][j]!=0)
-                    {
-                        pasteRepartioninWeight(v_index[indices[i]][j]);
-                        lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
-                    }
-            }
-        }
-        Real err=0; for (j=0; j<errors.size(); j++) err+=errors[j];
-        err/=(Real)nbnonemptyvoxels;
-        std::cout<<"Average error in weights per voxel="<<err<<std::endl;
     }
+    Real err=0; for (j=0; j<errors.size(); j++) err+=errors[j];
+    err/=(Real)(errors.size()*nbnonemptyvoxels);
+    std::cout<<"Average error in weights per voxel="<<err<<std::endl;
 
     // insert gauss points in the center of voronoi regions
     points.resize(indices.size());
@@ -1836,8 +1746,47 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
     return true;
 }
 
+
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point, const Real factor)
+bool GridMaterial< MaterialTypes>::computeDistanceScaleFactors( const VecSCoord& points)
+// scale the distance according to frame-to-voronoi border paths
+// suppose that voronoi and distances in voronoi have been computed before
+{
+    if (!this->nbVoxels) return false;
+    if (voronoi.size()!=nbVoxels) return false;
+    if (distances.size()!=nbVoxels) return false;
+
+    unsigned int i,p,index;
+
+    vector<Real> backupdistance;
+    backupdistance.swap(distances); // backup distances inside voronoi
+
+    distanceScaleFactor.resize(this->nbVoxels);
+
+    for (p=0; p<points.size(); p++)
+    {
+        index=getIndex(points[p]);
+        // largest distance inside voronoi
+        Real dmax=0;
+        for (i=0; i<nbVoxels; i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (backupdistance[i]>dmax) dmax=backupdistance[i];
+        if (dmax==0) continue;
+        // compute distance to voronoi border and track ancestors
+        computeGeodesicalDistancesToVoronoi(index,dmax);
+        // update distanceScaleFactor
+        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if(voronoi[i]==voronoi[index])
+                    distanceScaleFactor[i]=(Real)1./(weightSupport.getValue()*backupdistance[ancestors[i]]);
+
+    }
+
+    updateMaxValues();
+
+    backupdistance.swap(distances);
+    return true;
+}
+
+
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point)
 /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
 {
     unsigned int i;
@@ -1847,34 +1796,44 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
     int index=getIndex(point);
     if (voronoi.size()!=nbVoxels) return false;
     if (voronoi[index]==-1) return false;
-    Real dmax=0;
-    for (i=0; i<nbVoxels; i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (distances[i]>dmax) dmax=distances[i];
-    if (dmax==0) return false;
-    dmax*=factor;
 
     vector<Real> backupdistance;
     backupdistance.swap(distances);
-    computeGeodesicalDistances(point,dmax);
-    vector<Real> d(distances);
-    computeGeodesicalDistancesToVoronoi(point,dmax);
-    for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (d[i]<dmax)
-            {
-                if(d[i]==0) weights[i]=1;
-                //else if(voronoi[i]==voronoi[index]) weights[i]=1.-d[i]/(factor*(d[i]+distances[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                //else weights[i]=1.-d[i]/(factor*(d[i]-distances[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                else if(voronoi[i]==voronoi[index]) weights[i]=(factor-1.)/factor + distances[i]/(factor*(d[i]+distances[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                else weights[i]=(factor-1.)/factor - distances[i]/(factor*(d[i]-distances[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                if(weights[i]<0) weights[i]=0;
-                else if(weights[i]>1) weights[i]=1;
-            }
+    if(useDistanceScaleFactor.getValue()) // method based on DistanceScaleFactor
+    {
+        Real dmax=1;
+        computeGeodesicalDistances(point,dmax);
+        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax)
+                    weights[i]=(Real)1.-distances[i];
+    }
+    else // method based on distance to frame and distance to voronoi
+    {
+        Real dmax=0;
+        for (i=0; i<nbVoxels; i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (backupdistance[i]>dmax) dmax=backupdistance[i];
+        if (dmax==0) return false;
+        dmax*=weightSupport.getValue();
+        computeGeodesicalDistances(point,dmax);
+        vector<Real> d(distances);
+        computeGeodesicalDistancesToVoronoi(point,dmax);
+        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (d[i]<dmax)
+                {
+                    if(d[i]==0) weights[i]=1;
+                    //else if(voronoi[i]==voronoi[index]) weights[i]=1.-d[i]/(weightSupport*(d[i]+distances[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                    //else weights[i]=1.-d[i]/(weightSupport*(d[i]-distances[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+                    else if(voronoi[i]==voronoi[index]) weights[i]=(weightSupport.getValue()-1.)/weightSupport.getValue() + distances[i]/(weightSupport.getValue()*(d[i]+distances[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                    else weights[i]=(weightSupport.getValue()-1.)/weightSupport.getValue() - distances[i]/(weightSupport.getValue()*(d[i]-distances[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+                    if(weights[i]<0) weights[i]=0;
+                    else if(weights[i]>1) weights[i]=1;
+                }
+    }
     backupdistance.swap(distances);
     showedrepartition=-1;
-    return true;  // 1 point = voxels its his voronoi region
+    return true;
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const SCoord& point, const Real factor)
-/// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
+bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const SCoord& point)
+/// linearly decreasing weight with support=weightSupport*distmax_in_voronoi -> weight= weightSupport*(1-d/distmax)
 {
     unsigned int i;
     weights.resize(this->nbVoxels);
@@ -1886,14 +1845,14 @@ bool GridMaterial< MaterialTypes>::computeLinearWeightsInVoronoi ( const SCoord&
     Real dmax=0;
     for (i=0; i<nbVoxels; i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (distances[i]>dmax) dmax=distances[i];
     if (dmax==0) return false;
-    dmax*=factor;
+    dmax*=weightSupport.getValue();
     vector<Real> backupdistance;
     backupdistance.swap(distances);
     computeGeodesicalDistances(point,dmax);
     for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax) weights[i]=1.-distances[i]/dmax;
     backupdistance.swap(distances);
     showedrepartition=-1;
-    return true;  // 1 point = voxels its his voronoi region
+    return true;
 }
 
 
@@ -2167,6 +2126,7 @@ float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const i
     else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)  && distances.size()!=0) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
     else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)   && weights.size()!=0 ) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
     else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI_FR)  {if (voronoi_frames.size()!=0) label=(float)voronoi_frames[getIndex(GCoord(x,y,z))]+1.; }
+    else if (distanceScaleFactor.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCESCALEFACTOR)  {if (grid(x,y,z)  && distanceScaleFactor.size()!=0) label=(float)distanceScaleFactor[getIndex(GCoord(x,y,z))]; else label=0; }
     return label;
 }
 
@@ -2600,7 +2560,7 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
 {
     // Determine max values
     unsigned int i;
-    for (i=0; i < 8; ++i) maxValues[i] = -1.0f;
+    for (i=0; i < 11; ++i) maxValues[i] = -1.0f;
     for (i=0; i<nbVoxels; i++) if ((float)grid.data()[i]>maxValues[SHOWVOXELS_DATAVALUE]) maxValues[SHOWVOXELS_DATAVALUE]=(float)grid.data()[i];
     for (typename mapLabelType::const_iterator it = labelToStiffnessPairs.getValue().begin(); it != labelToStiffnessPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_STIFFNESS]) maxValues[SHOWVOXELS_STIFFNESS]=(float)it->second;
     for (typename mapLabelType::const_iterator it = labelToDensityPairs.getValue().begin(); it != labelToDensityPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_DENSITY]) maxValues[SHOWVOXELS_DENSITY]=(float)it->second;
@@ -2609,6 +2569,7 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
     for (i=0; i<voronoi.size(); i++) if (grid.data()[i] && voronoi[i]+1>maxValues[SHOWVOXELS_VORONOI]) maxValues[SHOWVOXELS_VORONOI]=(float)voronoi[i]+1;
     for (i=0; i<distances.size(); i++) if (grid.data()[i] && distances[i]>maxValues[SHOWVOXELS_DISTANCES]) maxValues[SHOWVOXELS_DISTANCES]=(float)distances[i];
     for (i=0; i<voronoi_frames.size(); i++) if (grid.data()[i] && voronoi_frames[i]+1>maxValues[SHOWVOXELS_VORONOI_FR]) maxValues[SHOWVOXELS_VORONOI_FR]=(float)voronoi_frames[i]+1;
+    for (i=0; i<distanceScaleFactor.size(); i++) if (grid.data()[i] && distanceScaleFactor[i]>maxValues[SHOWVOXELS_DISTANCESCALEFACTOR]) maxValues[SHOWVOXELS_DISTANCESCALEFACTOR]=(float)distanceScaleFactor[i];
     maxValues[SHOWVOXELS_WEIGHTS]=1.0f;
 }
 
