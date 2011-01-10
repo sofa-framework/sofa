@@ -38,7 +38,7 @@ StateChangeVisitor::StateChangeVisitor(core::topology::Topology* source, const s
 {
 }
 
-void StateChangeVisitor::processStateChange(core::objectmodel::BaseObject* obj)
+void StateChangeVisitor::processStateChange(core::behavior::BaseMechanicalState* obj)
 {
     obj->handleStateChange(source);
 }
