@@ -1685,7 +1685,7 @@ bool GridMaterial< MaterialTypes>::rigidPartsSampling ( VecSCoord& points)
             }
         c/=(Real)count;
         index=getIndex(c);
-        if(index!=-1) if((unsigned int)grid.data()[index]==labellist[l]) {points.push_back(c); continue;}
+        if((int)index!=-1) if(grid.data()[index]==labellist[l]) {points.push_back(c); continue;}
 
         // treat special case of concave regions
         Real d,dmin=1E10;
@@ -2148,7 +2148,7 @@ void GridMaterial< MaterialTypes>::draw()
 
         unsigned int i;
         //        Real s=(voxelSize.getValue()[0]+voxelSize.getValue()[1]+voxelSize.getValue()[2])/3.;
-        float defaultcolor[4]= {0.8,0.8,0.8,0.3},color[4];
+        float color[4], specular[]= {0,0,0,0};
         showWireframe=this->getContext()->getShowWireFrame();
 
         float label=-1;
@@ -2186,8 +2186,11 @@ void GridMaterial< MaterialTypes>::draw()
             if (label<=0) continue;
             if (label>labelMax) label=labelMax;
 
-            helper::gl::Color::getHSVA(color, 240.*label/labelMax,1.,.8,defaultcolor[3]);
+            helper::gl::Color::getHSVA(color, 240.*label/labelMax,1.,.8,0.7);
+
             glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+            glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
+            glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
 
             SCoord coord;
             getCoord(GCoord(x,y,z),coord);
