@@ -44,7 +44,7 @@ void LMatrixManipulator::init(const SparseMatrixEigen& L)
     const unsigned int numConstraint=L.rows();
     const unsigned int numDofs=L.cols();
     LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(0.3*numDofs);
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(numDofs*3/10);
     for (int k=0; k<L.outerSize(); ++k)
     {
         for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)

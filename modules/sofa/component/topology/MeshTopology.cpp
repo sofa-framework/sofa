@@ -141,15 +141,6 @@ void MeshTopology::init()
             }
         }
 
-        for (unsigned int i=0; i<seqUVs.getValue().size(); i++)
-        {
-            for (unsigned int j=0; j<seqUVs.getValue()[i].size(); j++)
-            {
-                if (n <= seqUVs.getValue()[i][j])
-                    n = 1 + seqUVs.getValue()[i][j];
-            }
-        }
-
         nbPoints = n;
     }
 }
