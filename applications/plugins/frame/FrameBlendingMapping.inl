@@ -303,6 +303,13 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
         return;
     }
 
+    // ignore if one frame initialized at 0 (done by the mechanical object, not the user)
+    if(num_points==1)
+    {
+        unsigned int i=0; while(i!=num_spatial_dimensions && xfrom0[0][i]==0) i++;
+        if(i==num_spatial_dimensions) num_points=0;
+    }
+
     // retrieve initial frames
     vector<SpatialCoord> points(num_points);
     for ( unsigned int i=0; i<num_points; i++ )
@@ -311,7 +318,9 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
 
     // Insert new frames and compute associated voxel weights
     std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
-    gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
+    gridMaterial->rigidPartsSampling(points);
+    if(points.size()<targetFrameNumber.getValue())
+        gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
     std::cout<<"Computing weights in grid..."<<std::endl;
     gridMaterial->computeWeights(points);
 
@@ -505,6 +514,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 }
             }
         }
+
     }
     normalizeWeights();
 }
