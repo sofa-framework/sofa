@@ -13,13 +13,14 @@ namespace viewer
 SofaViewer::SofaViewer()
     : groot(NULL)
     , m_isControlPressed(false)
+    , currentCamera(NULL)
     , _video(false)
     , _shadow(false)
     , _gl_shadow(false)
     , _axis(false)
     , backgroundColour(Vector3())
-    , backgroundImage("textures/SOFA_logo.bmp"), ambientColour(Vector3())
-    , currentCamera(NULL)
+    , backgroundImage("textures/SOFA_logo.bmp")
+    , ambientColour(Vector3())
 {
 }
 

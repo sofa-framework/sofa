@@ -73,5 +73,4 @@ else {
 
 
 #add local libraries to the modeler
-!include(lib-local.cfg) {
-}
+exists(lib-local.cfg): include(lib-local.cfg)

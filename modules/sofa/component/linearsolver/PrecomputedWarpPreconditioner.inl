@@ -270,10 +270,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     }
 }
 
+#ifdef SOFA_HAVE_CSPARSE
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
-#ifdef SOFA_HAVE_CSPARSE
     cout << "Compute the initial invert matrix with CS_PARSE" << endl;
 
     FullVector<Real> r;
@@ -322,11 +322,15 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 
     std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" << std::endl;
     std::cout.flush();
+}
 #else
+template<class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& /*M*/)
+{
     std::cout << "WARNING ; you don't have CS_parse CG will be use, (if also can specify solverName to accelerate the precomputation" << std::endl;
     loadMatrixWithSolver();
-#endif
 }
+#endif
 
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
