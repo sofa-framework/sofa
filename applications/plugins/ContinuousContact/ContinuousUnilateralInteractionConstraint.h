@@ -87,7 +87,6 @@ public:
     typedef typename Inherited::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-
     typedef typename Inherited::PersistentID PersistentID;
     typedef typename Inherited::Contact Contact;
 #ifdef SOFA_DEV

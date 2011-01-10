@@ -31,6 +31,7 @@
 
 #include <sofa/helper/rmath.h>
 
+
 namespace sofa
 {
 
@@ -240,8 +241,8 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
 template<class DataTypes>
 bool ContinuousUnilateralInteractionConstraint<DataTypes>::isSticked(int _contactId)
 {
-    sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
-    sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
+    typename sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
+    typename sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
 
     while (it != itEnd)
     {
@@ -281,8 +282,8 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
 {
     std::cout << "-------------->debugContactStates\n";
 
-    std::map< int, ContactState >::iterator it = contactStates.begin();
-    std::map< int, ContactState >::iterator itEnd = contactStates.end();
+    typename std::map< int, ContactState >::iterator it = contactStates.begin();
+    typename std::map< int, ContactState >::iterator itEnd = contactStates.end();
 
     std::string s;
 
