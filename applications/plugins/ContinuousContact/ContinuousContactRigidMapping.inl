@@ -59,7 +59,7 @@ void ContinuousContactRigidMapping<TIn, TOut>::beginAddContactPoint()
     if (!m_init)
     {
         std::cout << "BeginAddContactPoint : pos = " << (*this->toModel->getX()) << " before suppr the contact" << std::endl;
-        m_previousPoints = points.getValue();
+        m_previousPoints = this->points.getValue();
         this->clear(0);
         this->toModel->resize(0);
         m_init = true;
@@ -89,7 +89,7 @@ int ContinuousContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(co
 
     this->addPoint(x_local, inputIdx);
 
-    int index = points.getValue().size() -1;
+    int index = this->points.getValue().size() -1;
     this->toModel->resize(index+1);
 
     return index;
@@ -114,7 +114,7 @@ int ContinuousContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(c
 
     this->addPoint(m_previousPoints[_index], inputIdx);
 
-    int index = points.getValue().size() -1;
+    int index = this->points.getValue().size() -1;
     this->toModel->resize(index+1);
 
     return index;

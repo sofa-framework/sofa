@@ -63,10 +63,12 @@ int ContinuousContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapp
     if (this->mapper)
     {
         const typename In::VecCoord& xfrom = *this->fromModel->getX();
+
         typename Out::VecCoord xto;
         xto.resize(1);
         xto[0] = pos;
-        this->mapper->init(xfrom, xto);
+
+        this->mapper->init(xto, xfrom);
 
         /// @TODO get index in mapper
         int index = 0;
