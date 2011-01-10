@@ -143,7 +143,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     Deriv QQfree = Qfree-Q;
     Real ref_dist = PPfree.norm()+QQfree.norm();
 
-    if (rabs(delta) < 0.00001*ref_dist && rabs(deltaFree) < 0.00001*ref_dist  )
+    if (helper::rabs(delta) < 0.00001*ref_dist && helper::rabs(deltaFree) < 0.00001*ref_dist  )
     {
 
         std::cout<<" case0 "<<std::endl;
@@ -157,7 +157,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 
     }
 
-    if (rabs(delta - deltaFree) > 0.001 * delta)
+    if (helper::rabs(delta - deltaFree) > 0.001 * delta)
     {
         dt = delta / (delta - deltaFree);
         if (dt > 0.0 && dt < 1.0  )
