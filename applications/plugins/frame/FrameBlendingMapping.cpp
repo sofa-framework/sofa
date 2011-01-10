@@ -511,14 +511,24 @@ struct LinearBlendTypes<
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
+
+            // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
             Affine invaff = inverseInitialTransform.getAffine();
             QuadraticCoord vectorInLocalCoordinates = In::convertToQuadraticCoord( (invaff*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
+            MaterialFrame2 dinverseInitialTransform;
+            for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j) dinverseInitialTransform[ii][j]=invaff[ii][j];
+            for (unsigned int j=0; j<3; ++j) dinverseInitialTransform[3+j][j]+=2.*vectorInLocalCoordinates[j];
+            dinverseInitialTransform[6][0]+=vectorInLocalCoordinates[1]; dinverseInitialTransform[6][1]+=vectorInLocalCoordinates[0];
+            dinverseInitialTransform[7][1]+=vectorInLocalCoordinates[2]; dinverseInitialTransform[7][2]+=vectorInLocalCoordinates[1];
+            dinverseInitialTransform[8][0]+=vectorInLocalCoordinates[2]; dinverseInitialTransform[8][2]+=vectorInLocalCoordinates[0];
+
             Jb[i].Pa=vectorInLocalCoordinates*w[i];
             Jb[i].Pt=w[i];
             Jb[i].Fa=covMN(vectorInLocalCoordinates, dw[i]);
-            // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
-            for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j)  Jb[i].Fa[ii][j]+=invaff[ii][j] * w[i];
+            Jb[i].Fa+=dinverseInitialTransform * w[i];
             Jb[i].Ft=dw[i];
+
+            //std::cout<<"vectorInLocalCoordinates["<<i<<"]="<<vectorInLocalCoordinates<<std::endl;
         }
         if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
     }
@@ -549,6 +559,7 @@ struct LinearBlendTypes<
 
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
+
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
@@ -560,6 +571,16 @@ struct LinearBlendTypes<
                 res[index[i]].getVQuadratic()[j] += Jb[i].Pa * d.getCenter()[j];
                 res[index[i]].getVQuadratic()[j] += Jb[i].Fa * (d.getMaterialFrame()[j]);
             }
+
+            //std::cout<<"JPt["<<i<<"]="<<Jb[i].Pt<<std::endl;
+            //std::cout<<"JFt["<<i<<"]="<<Jb[i].Ft<<std::endl;
+            //std::cout<<"JPa["<<i<<"]="<<Jb[i].Pa<<std::endl;
+            //std::cout<<"JFa["<<i<<"]="<<Jb[i].Fa<<std::endl;
+            //std::cout<<"dt="<<d.getCenter()<<std::endl;
+            //std::cout<<"dF="<<d.getMaterialFrame()<<std::endl;
+            //std::cout<<"ft["<<i<<"]="<<res[index[i]].getVCenter()<<std::endl;
+            //std::cout<<"fa["<<i<<"]="<<res[index[i]].getVQuadratic()<<std::endl;
+
         }
     }
 };
@@ -620,22 +641,30 @@ struct LinearBlendTypes<
         for ( ; i<nbRef && w[i]>0; i++ )
         {
             InCoord inverseInitialTransform = In::inverse(InitialTransform[index[i]]);
+
+            // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
             Affine invaff = inverseInitialTransform.getAffine();
             QuadraticCoord vectorInLocalCoordinates = In::convertToQuadraticCoord( (invaff*InitialPos.getCenter() + inverseInitialTransform.getCenter()) );
+            MaterialFrame2 dinverseInitialTransform;
+            for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j) dinverseInitialTransform[ii][j]=invaff[ii][j];
+            for (unsigned int j=0; j<3; ++j) dinverseInitialTransform[3+j][j]+=2.*vectorInLocalCoordinates[j];
+            dinverseInitialTransform[6][0]+=vectorInLocalCoordinates[1]; dinverseInitialTransform[6][1]+=vectorInLocalCoordinates[0];
+            dinverseInitialTransform[7][1]+=vectorInLocalCoordinates[2]; dinverseInitialTransform[7][2]+=vectorInLocalCoordinates[1];
+            dinverseInitialTransform[8][0]+=vectorInLocalCoordinates[2]; dinverseInitialTransform[8][2]+=vectorInLocalCoordinates[0];
+
             Jb[i].Pa=vectorInLocalCoordinates*w[i];
             Jb[i].Pt=w[i];
             Jb[i].Fa=covMN(vectorInLocalCoordinates, dw[i]);
-            // use only the inverse of the linear part (affine+translation), squared and crossterms part undefined
-            for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j)  Jb[i].Fa[ii][j]+=invaff[ii][j] * w[i];
+            Jb[i].Fa+=dinverseInitialTransform * w[i];
             Jb[i].Ft=dw[i];
 
             Jb[i].dFt=ddw[i].transposed();
-            MaterialFrame inverseInitialTransformT=invaff.transposed();
+            Mat<3,9,Real> dinverseInitialTransformT=dinverseInitialTransform.transposed();
             for (unsigned int k = 0; k < 3; ++k)
             {
                 Jb[i].dFa[k] = covMN( vectorInLocalCoordinates, Jb[i].dFt[k]);
-                MaterialFrame m=covNN(inverseInitialTransformT[k],dw[i] ); // dFa
-                for (unsigned int ii=0; ii<3; ++ii) for (unsigned int j=0; j<3; ++j)  Jb[i].dFa[k][ii][j]+=m[ii][j]+inverseInitialTransform.getAffine()[ii][j] * dw[i][k];
+                MaterialFrame2 m=covMN(dinverseInitialTransformT[k],dw[i] ); // dFa
+                Jb[i].dFa[k]+=m+ dinverseInitialTransform * dw[i][k];
             }
         }
         if ( i<nbRef ) Jb[i].Pt=(Real)0; // used for loop terminations
