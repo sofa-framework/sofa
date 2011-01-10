@@ -50,8 +50,6 @@
 #define SHOWVOXELS_VORONOI_FR 7
 #define SHOWVOXELS_DISTANCES 8
 #define SHOWVOXELS_WEIGHTS 9
-#define SHOWVOXELS_DISTANCESCALEFACTOR 10
-
 
 namespace sofa
 {
@@ -192,6 +190,8 @@ public:
 
     /// compute voxel weights related to 'points' according to 'distanceType' method -> stored in weightsRepartition and repartition
     bool computeWeights(const VecSCoord& points);
+    // insert a point in each rigid part where stifness>=STIFFNESS_RIGID
+    bool rigidPartsSampling ( VecSCoord& points);
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation
     //  -> returns points and store id/distances in voronoi/distances
     Data<unsigned int> maxLloydIterations;
@@ -241,8 +241,7 @@ protected:
     vector<int> voronoi;
     vector<int> voronoi_frames;
     vector<Real> weights;
-    vector<Real> distanceScaleFactor;
-    vector<unsigned int> ancestors;
+    vector<Real> dmaxinvoronoi;
 
     // voxel data
     vector<VRefReal> v_weights;
@@ -297,20 +296,18 @@ protected:
     /// (biased) Euclidean distance between two voxels
     Real getDistance(const unsigned int& index1,const unsigned int& index2);
     /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
-    bool computeGeodesicalDistances ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max());
-    bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistances ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max(),const vector<Real>* distanceScaleFactors=NULL);
+    bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max(),const vector<Real>* distanceScaleFactors=NULL);
     /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
     bool computeGeodesicalDistances ( const vector<int>& indices, const Real distMax =std::numeric_limits<Real>::max());
     /// (biased) Geodesical distance between the border of the voronoi cell containing point and all other voxels -> stored in distances
-    bool computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max());
-    bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max());
+    bool computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max(), VUI* ancestors =NULL);
+    bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max(), VUI* ancestors =NULL);
     // subdivide a voronoi region in two subregions using lloyd relaxation and euclidean distances
     bool SubdivideVoronoiRegion( const unsigned int voronoiindex, const unsigned int newvoronoiindex, const unsigned int max_iterations =100);
 
     // scale the distance according to frame-to-voronoi border paths
     Data<bool> useDistanceScaleFactor;
-    bool computeDistanceScaleFactors( const VecSCoord& points);
-
     Data<Real> weightSupport;  ///< support of the weight function (2=interpolating, >2 = approximating)
     /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
     bool computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point);
@@ -355,7 +352,7 @@ protected:
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
-    float maxValues[11];
+    float maxValues[10];
     Data<bool> show3DValues;
     bool vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)

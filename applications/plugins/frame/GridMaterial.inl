@@ -65,7 +65,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
     , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
     , useDijkstra ( initData ( &useDijkstra, true, "useDijkstra","Use Dijkstra's algorithm to compute the distance fields." ) )
-    , useDistanceScaleFactor ( initData ( &useDistanceScaleFactor,true, "useDistanceScaleFactor","useDistanceScaleFactor." ) )
+    , useDistanceScaleFactor ( initData ( &useDistanceScaleFactor,false, "useDistanceScaleFactor","useDistanceScaleFactor." ) )
     , weightSupport ( initData ( &weightSupport,(Real)2., "weightSupport","Support of the weight function (2=interpolating, >2 = approximating)." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
@@ -79,7 +79,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
-    helper::OptionsGroup showVoxelsOptions(11,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Voronoi Frames", "Distances", "Weights", "DistanceScaleFactor");
+    helper::OptionsGroup showVoxelsOptions(10,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Voronoi Frames", "Distances", "Weights");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 }
@@ -978,14 +978,16 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
 
     if (dtype==DISTANCE_GEODESIC)
     {
-        computeGeodesicalDistances (points); // voronoi
-        if(useDistanceScaleFactor.getValue()) computeDistanceScaleFactors (points);
+        computeGeodesicalDistances (points); // compute voronoi and distances inside voronoi
+//VUI ancestors; vector<Real> distanceScaleFactors; if(useDistanceScaleFactor.getValue()) computeDistanceScaleFactors( points,ancestors,distanceScaleFactors);
         for (i=0; i<nbp; i++)
         {
             computeAnisotropicLinearWeightsInVoronoi(points[i]);
             offsetWeightsOutsideObject();
             addWeightinRepartion(i);
         }
+//distances.clear(); distances.insert(distances.begin(),weights.begin(),weights.end());
+
     }
     else if (dtype==DISTANCE_DIFFUSION || dtype==DISTANCE_ANISOTROPICDIFFUSION)
     {
@@ -1065,6 +1067,8 @@ void GridMaterial< MaterialTypes>::normalizeWeightRepartion()
 }
 
 
+
+
 template < class MaterialTypes>
 typename GridMaterial< MaterialTypes>::Real GridMaterial< MaterialTypes>::getDistance(const unsigned int& index1,const unsigned int& index2)
 {
@@ -1076,24 +1080,31 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial< MaterialTypes>::getDis
 
     if (this->biasDistances.getValue()) // bias distances according to stiffness
     {
-        Real meanstiff=(getStiffness(grid.data()[index1])+getStiffness(grid.data()[index2]))/2.;
+        const Real STIFFNESS_RIGID = (Real)1.5E10; // 15GPa=bone stiffness
+
+        Real s1=getStiffness(grid.data()[index1]),s2=getStiffness(grid.data()[index2]);
+        if(s1>=STIFFNESS_RIGID && s2>=STIFFNESS_RIGID)
+        {
+            if(grid.data()[index1]!=grid.data()[index2]) return (Real)1E10; else  return (Real)0;
+        }
+        Real meanstiff=(s1+s2)/2.;
         return ((Real)(coord2-coord1).norm()/meanstiff);
     }
     else return (Real)(coord2-coord1).norm();
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const SCoord& point, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const SCoord& point, const Real distMax ,const vector<Real>* distanceScaleFactors)
 {
     if (!nbVoxels) return false;
     int index=getIndex(point);
-    return computeGeodesicalDistances (index, distMax );
+    return computeGeodesicalDistances (index, distMax ,distanceScaleFactors);
 }
 
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index, const Real distMax ,const vector<Real>* distanceScaleFactors)
 {
     if (!nbVoxels) return false;
     unsigned int i,index2;
@@ -1127,7 +1138,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
                 if (grid.data()[v2])
                 {
                     Real cost = getDistance(v,v2);
-                    if(useDistanceScaleFactor.getValue() && distanceScaleFactor.size()==this->nbVoxels)	cost*=distanceScaleFactor[v2];
+                    if(distanceScaleFactors)	cost*=(*distanceScaleFactors)[v2];
 
                     if(distances[v2] > distances[v] + cost)
                     {
@@ -1161,7 +1172,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const int& index
                 if (grid.data()[index2]) // test if voxel is not void
                 {
                     d=getDistance(index1,index2);
-                    if(useDistanceScaleFactor.getValue() && distanceScaleFactor.size()==this->nbVoxels)	d*=distanceScaleFactor[index2];
+                    if(distanceScaleFactors)	d*=(*distanceScaleFactors)[index2];
                     if (distances[index2]>d+distances[index1])
                     {
                         distances[index2]=d+distances[index1];
@@ -1283,6 +1294,10 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
         /// end propagation algorithm
     }
 
+    // update dmax in voronoi
+    dmaxinvoronoi.resize(nbi);
+    for (i=0; i<nbi; i++) dmaxinvoronoi[i]=0;
+    for (i=0; i<this->nbVoxels; i++) if(voronoi[i]!=-1) if(dmaxinvoronoi[voronoi[i]]<distances[i])  dmaxinvoronoi[voronoi[i]]=distances[i];
 
     updateMaxValues();
     return true;
@@ -1291,25 +1306,25 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
 
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax,  VUI* ancestors  )
 {
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
     int index=getIndex(point);
     if (voronoi[index]==-1) return false;
 
-    return computeGeodesicalDistancesToVoronoi (index, distMax );
+    return computeGeodesicalDistancesToVoronoi (index, distMax ,ancestors);
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax , VUI* ancestors )
 {
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
 
     unsigned int i,j,index2;
     distances.resize(this->nbVoxels);
-    if(useDistanceScaleFactor.getValue()) ancestors.resize(this->nbVoxels);
+    if(ancestors) ancestors->resize(this->nbVoxels);
 
     for (i=0; i<this->nbVoxels; i++) distances[i]=distMax;
     if (index<0 || index>=(int)nbVoxels) return false; // voxel out of grid
@@ -1334,7 +1349,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                         Real d = 0; //getDistance(i,neighbors[j])/(Real)2.; // distance from border
                         q.insert( DistanceToPoint(d,i) );
                         distances[i]=d;
-                        if(useDistanceScaleFactor.getValue()) ancestors[i]=i;
+                        if(ancestors) (*ancestors)[i]=i;
                         j=neighbors.size();
                     }
                 }
@@ -1362,7 +1377,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                         }
                         distances[v2] = d;
                         q.insert( DistanceToPoint(d,v2) );
-                        if(useDistanceScaleFactor.getValue()) ancestors[v2]=ancestors[v];
+                        if(ancestors) (*ancestors)[v2]=(*ancestors)[v];
                     }
                 }
             }
@@ -1387,7 +1402,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                     {
                         Real d = 0; //getDistance(i,neighbors[j])/(Real)2.; // distance from border
                         distances[i]=d; fifo.push((int)i);
-                        if(useDistanceScaleFactor.getValue()) ancestors[i]=i;
+                        if(ancestors) (*ancestors)[i]=i;
                         j=neighbors.size();
                     }
             }
@@ -1404,7 +1419,7 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                     if (distances[index2]>d)
                     {
                         distances[index2]=d;
-                        if(useDistanceScaleFactor.getValue()) ancestors[index2]=ancestors[index1];
+                        if(ancestors) (*ancestors)[index2]=(*ancestors)[index1];
                         fifo.push(index2);
                     }
                 }
@@ -1632,6 +1647,65 @@ bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecSCoord& points, c
 
 
 template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::rigidPartsSampling ( VecSCoord& points)
+{
+    const Real STIFFNESS_RIGID = (Real)1.5E10; // 15GPa=bone stiffness
+
+    if (!nbVoxels) return false;
+    unsigned int i,k,index,initial_num_points=points.size();
+
+    // insert initial points and get labels of  the different rigid parts
+    VUI labellist;
+    for (i=0; i<initial_num_points; i++)
+    {
+        index=getIndex(points[i]);
+        if(getStiffness(grid.data()[index])>=STIFFNESS_RIGID) labellist.push_back(grid.data()[index]);
+    }
+    unsigned int startlabelinsertion=labellist.size();
+    for (i=0; i<this->nbVoxels; i++)
+        if(grid.data()[i]!=0)
+            if(getStiffness(grid.data()[i])>=STIFFNESS_RIGID)
+            {
+                k=0; if(labellist.size()!=0) while(k<labellist.size() && grid.data()[i]!=labellist[k]) k++;
+                if(k==labellist.size())	labellist.push_back(grid.data()[i]);
+            }
+
+    // insert new points in the center of rigid regions
+    for (unsigned int l=startlabelinsertion; l<labellist.size(); l++)
+    {
+        unsigned int count=0;
+        SCoord c(0,0,0),p;
+        for (i=0; i<this->nbVoxels; i++)
+            if(grid.data()[i]==labellist[l])
+            {
+                getCoord(i,p);
+                c+=p;
+                count++;
+            }
+        c/=(Real)count;
+        index=getIndex(c);
+        if(index!=-1) if(grid.data()[index]==labellist[l]) {points.push_back(c); continue;}
+
+        // treat special case of concave regions
+        Real d,dmin=1E10;
+        for (i=0; i<this->nbVoxels; i++)
+            if(grid.data()[i]==labellist[l])
+            {
+                getCoord(i,p);
+                d=(p-c).norm2();
+                if(d<dmin) {dmin=d; index=i;}
+            }
+        getCoord(index,c);
+
+        points.push_back(c);
+    }
+
+    if(initial_num_points!=points.size()) std::cout<<"Added "<<points.size()-initial_num_points<<" frames in rigid parts"<<std::endl;
+    return true;
+}
+
+
+template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, const unsigned int num_points)
 {
     if (!nbVoxels) return false;
@@ -1746,44 +1820,41 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
     return true;
 }
 
+/*
+            template < class MaterialTypes>
+                    bool GridMaterial< MaterialTypes>::computeDistanceScaleFactors( const VecSCoord& points,VUI& ancestors,vector<Real> &distanceScaleFactors)
+					// scale the distance according to frame-to-voronoi border paths
+					// suppose that voronoi and distances in voronoi have been computed before
+            {
+                if (!this->nbVoxels) return false;
+                if (voronoi.size()!=nbVoxels) return false;
+                if (distances.size()!=nbVoxels) return false;
 
-template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeDistanceScaleFactors( const VecSCoord& points)
-// scale the distance according to frame-to-voronoi border paths
-// suppose that voronoi and distances in voronoi have been computed before
-{
-    if (!this->nbVoxels) return false;
-    if (voronoi.size()!=nbVoxels) return false;
-    if (distances.size()!=nbVoxels) return false;
+				unsigned int i,p,index;
 
-    unsigned int i,p,index;
+                vector<Real> backupdistance;
+                backupdistance.swap(distances); // backup distances inside voronoi
 
-    vector<Real> backupdistance;
-    backupdistance.swap(distances); // backup distances inside voronoi
+				distanceScaleFactors.resize(this->nbVoxels);
 
-    distanceScaleFactor.resize(this->nbVoxels);
+				for (p=0;p<points.size();p++)
+					{
+					index=getIndex(points[p]);
+					// largest distance inside voronoi
+					Real dmax=0;
+					for (i=0;i<nbVoxels;i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (backupdistance[i]>dmax) dmax=backupdistance[i];
+					if (dmax==0) continue;
+					// compute distance to voronoi border and track ancestors
+					computeGeodesicalDistancesToVoronoi(index,dmax,&ancestors);
+					// update distanceScaleFactor
+					for (i=0;i<nbVoxels;i++) if (grid.data()[i]) if(voronoi[i]==voronoi[index])	if(backupdistance[ancestors[i]]!=0)
+							distanceScaleFactors[i]=(Real)1./(weightSupport.getValue()*backupdistance[ancestors[i]]);
 
-    for (p=0; p<points.size(); p++)
-    {
-        index=getIndex(points[p]);
-        // largest distance inside voronoi
-        Real dmax=0;
-        for (i=0; i<nbVoxels; i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (backupdistance[i]>dmax) dmax=backupdistance[i];
-        if (dmax==0) continue;
-        // compute distance to voronoi border and track ancestors
-        computeGeodesicalDistancesToVoronoi(index,dmax);
-        // update distanceScaleFactor
-        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if(voronoi[i]==voronoi[index])
-                    distanceScaleFactor[i]=(Real)1./(weightSupport.getValue()*backupdistance[ancestors[i]]);
-
-    }
-
-    updateMaxValues();
-
-    backupdistance.swap(distances);
-    return true;
-}
-
+ 					}
+                backupdistance.swap(distances);
+                return true;
+            }
+*/
 
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point)
@@ -1796,37 +1867,57 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
     int index=getIndex(point);
     if (voronoi.size()!=nbVoxels) return false;
     if (voronoi[index]==-1) return false;
+    Real dmax=dmaxinvoronoi[voronoi[index]]; // largest distance inside voronoi
+    if (dmax==0) return false;
 
     vector<Real> backupdistance;
     backupdistance.swap(distances);
     if(useDistanceScaleFactor.getValue()) // method based on DistanceScaleFactor
     {
-        Real dmax=1;
-        computeGeodesicalDistances(point,dmax);
+        // compute distance to voronoi border and track ancestors
+        VUI ancestors;
+        computeGeodesicalDistancesToVoronoi(point,dmax,&ancestors);
+
+        // update DistanceScaleFactors
+        vector<Real> distanceScaleFactors((int)nbVoxels,(Real)1E10);
+        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if(distances[i]<dmax)	if(backupdistance[ancestors[i]]!=0)
+                        distanceScaleFactors[i]=(Real)1./(weightSupport.getValue()*backupdistance[ancestors[i]]);
+
+        dmax=1;
+        computeGeodesicalDistances(point,dmax,&distanceScaleFactors);
         for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax)
                     weights[i]=(Real)1.-distances[i];
+
     }
     else // method based on distance to frame and distance to voronoi
     {
-        Real dmax=0;
-        for (i=0; i<nbVoxels; i++) if (grid.data()[i])  if (voronoi[i]==voronoi[index]) if (backupdistance[i]>dmax) dmax=backupdistance[i];
-        if (dmax==0) return false;
+        // compute distance to voronoi border
+        computeGeodesicalDistancesToVoronoi(point,dmax);
+        vector<Real> dtovoronoi(distances);
+        // compute distance to frame up to the weight function support size
         dmax*=weightSupport.getValue();
         computeGeodesicalDistances(point,dmax);
-        vector<Real> d(distances);
-        computeGeodesicalDistancesToVoronoi(point,dmax);
-        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (d[i]<dmax)
+        Real support=weightSupport.getValue();
+        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax)
                 {
-                    if(d[i]==0) weights[i]=1;
-                    //else if(voronoi[i]==voronoi[index]) weights[i]=1.-d[i]/(weightSupport*(d[i]+distances[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                    //else weights[i]=1.-d[i]/(weightSupport*(d[i]-distances[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                    else if(voronoi[i]==voronoi[index]) weights[i]=(weightSupport.getValue()-1.)/weightSupport.getValue() + distances[i]/(weightSupport.getValue()*(d[i]+distances[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                    else weights[i]=(weightSupport.getValue()-1.)/weightSupport.getValue() - distances[i]/(weightSupport.getValue()*(d[i]-distances[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+
+                    if(voronoi[i]!=voronoi[index] && voronoi[i]!=-1)
+                    {
+                        support=backupdistance[i]/dmaxinvoronoi[voronoi[i]]*(weightSupport.getValue()-(Real)2.)+(Real)2.;
+                    }
+                    else support=2.;
+
+                    if(distances[i]==0) weights[i]=1;
+                    //else if(voronoi[i]==voronoi[index]) weights[i]=(support-1.)/support-distances[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                    //else weights[i]=(support-1.)/support-distances[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+                    else if(voronoi[i]==voronoi[index]) weights[i]=(support-1.)/support + dtovoronoi[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                    else weights[i]=(support-1.)/support - dtovoronoi[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
                     if(weights[i]<0) weights[i]=0;
                     else if(weights[i]>1) weights[i]=1;
                 }
     }
     backupdistance.swap(distances);
+
     showedrepartition=-1;
     return true;
 }
@@ -2126,7 +2217,6 @@ float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const i
     else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)  && distances.size()!=0) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
     else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)   && weights.size()!=0 ) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
     else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI_FR)  {if (voronoi_frames.size()!=0) label=(float)voronoi_frames[getIndex(GCoord(x,y,z))]+1.; }
-    else if (distanceScaleFactor.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCESCALEFACTOR)  {if (grid(x,y,z)  && distanceScaleFactor.size()!=0) label=(float)distanceScaleFactor[getIndex(GCoord(x,y,z))]; else label=0; }
     return label;
 }
 
@@ -2560,7 +2650,7 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
 {
     // Determine max values
     unsigned int i;
-    for (i=0; i < 11; ++i) maxValues[i] = -1.0f;
+    for (i=0; i < 10; ++i) maxValues[i] = -1.0f;
     for (i=0; i<nbVoxels; i++) if ((float)grid.data()[i]>maxValues[SHOWVOXELS_DATAVALUE]) maxValues[SHOWVOXELS_DATAVALUE]=(float)grid.data()[i];
     for (typename mapLabelType::const_iterator it = labelToStiffnessPairs.getValue().begin(); it != labelToStiffnessPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_STIFFNESS]) maxValues[SHOWVOXELS_STIFFNESS]=(float)it->second;
     for (typename mapLabelType::const_iterator it = labelToDensityPairs.getValue().begin(); it != labelToDensityPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_DENSITY]) maxValues[SHOWVOXELS_DENSITY]=(float)it->second;
@@ -2569,7 +2659,6 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
     for (i=0; i<voronoi.size(); i++) if (grid.data()[i] && voronoi[i]+1>maxValues[SHOWVOXELS_VORONOI]) maxValues[SHOWVOXELS_VORONOI]=(float)voronoi[i]+1;
     for (i=0; i<distances.size(); i++) if (grid.data()[i] && distances[i]>maxValues[SHOWVOXELS_DISTANCES]) maxValues[SHOWVOXELS_DISTANCES]=(float)distances[i];
     for (i=0; i<voronoi_frames.size(); i++) if (grid.data()[i] && voronoi_frames[i]+1>maxValues[SHOWVOXELS_VORONOI_FR]) maxValues[SHOWVOXELS_VORONOI_FR]=(float)voronoi_frames[i]+1;
-    for (i=0; i<distanceScaleFactor.size(); i++) if (grid.data()[i] && distanceScaleFactor[i]>maxValues[SHOWVOXELS_DISTANCESCALEFACTOR]) maxValues[SHOWVOXELS_DISTANCESCALEFACTOR]=(float)distanceScaleFactor[i];
     maxValues[SHOWVOXELS_WEIGHTS]=1.0f;
 }
 
