@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CONTINUOUSUNILATERALINTERACTIONCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_CONTINUOUSUNILATERALINTERACTIONCONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_H
 
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.h>
 
-#include "ContinuousContact.h"
+#include "PersistentContact.h"
 
 namespace sofa
 {
@@ -39,13 +39,13 @@ namespace constraintset
 {
 
 template<class DataTypes>
-class ContinuousUnilateralInteractionConstraint;
+class PersistentUnilateralInteractionConstraint;
 
 template<class DataTypes>
-class ContinuousUnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
+class PersistentUnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
-    ContinuousUnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL)
+    PersistentUnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL)
         : _mu(mu)
         , _prev(prev)
         , _active(active)
@@ -58,7 +58,7 @@ public:
     virtual void resolution(int line, double** w, double* d, double* force, double *dFree);
     virtual void store(int line, double* force, bool /*convergence*/);
 
-    void setConstraint(ContinuousUnilateralInteractionConstraint<DataTypes> *c)
+    void setConstraint(PersistentUnilateralInteractionConstraint<DataTypes> *c)
     {
         m_constraint = c;
     }
@@ -70,15 +70,15 @@ protected:
     double _W[6];
     PreviousForcesContainer* _prev;
     bool* _active; // Will set this after the resolution
-    ContinuousUnilateralInteractionConstraint<DataTypes> *m_constraint;
+    PersistentUnilateralInteractionConstraint<DataTypes> *m_constraint;
 };
 
 
 template<class DataTypes>
-class ContinuousUnilateralInteractionConstraint : public UnilateralInteractionConstraint<DataTypes>
+class PersistentUnilateralInteractionConstraint : public UnilateralInteractionConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ContinuousUnilateralInteractionConstraint, DataTypes), SOFA_TEMPLATE(UnilateralInteractionConstraint, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PersistentUnilateralInteractionConstraint, DataTypes), SOFA_TEMPLATE(UnilateralInteractionConstraint, DataTypes));
 
     typedef UnilateralInteractionConstraint<DataTypes> Inherited;
     typedef typename Inherited::VecCoord VecCoord;
@@ -90,25 +90,25 @@ public:
     typedef typename Inherited::PersistentID PersistentID;
     typedef typename Inherited::Contact Contact;
 #ifdef SOFA_DEV
-    typedef typename ContinuousUnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
+    typedef typename PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::ContactState ContactState;
 #endif
 
-    ContinuousUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
+    PersistentUnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherited(object1, object2)
     {
     }
 
-    ContinuousUnilateralInteractionConstraint(MechanicalState* object)
+    PersistentUnilateralInteractionConstraint(MechanicalState* object)
         : Inherited(object)
     {
     }
 
-    ContinuousUnilateralInteractionConstraint()
+    PersistentUnilateralInteractionConstraint()
         : Inherited()
     {
     }
 
-    virtual ~ContinuousUnilateralInteractionConstraint()
+    virtual ~PersistentUnilateralInteractionConstraint()
     {
     }
 
@@ -142,10 +142,10 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousUnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousUnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
 #endif
 #endif
 
@@ -155,4 +155,4 @@ extern template class SOFA_CONTINUOUSCONTACT_API ContinuousUnilateralInteraction
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_CONTINUOUSUNILATERALINTERACTIONCONSTRAINT_H
+#endif // SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_H

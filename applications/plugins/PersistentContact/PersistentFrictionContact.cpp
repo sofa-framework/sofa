@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ContinuousFrictionContact.inl"
+#include "PersistentFrictionContact.inl"
 
 namespace sofa
 {
@@ -36,16 +36,16 @@ namespace collision
 using namespace defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(ContinuousFrictionContact)
+SOFA_DECL_CLASS(PersistentFrictionContact)
 
-Creator<Contact::Factory, ContinuousFrictionContact<PointModel, PointModel> > PointPointContinuousFrictionContactClass("ContinuousFrictionContact",true);
-Creator<Contact::Factory, ContinuousFrictionContact<LineModel, PointModel> > LinePointContinuousFrictionContactClass("ContinuousFrictionContact",true);
-Creator<Contact::Factory, ContinuousFrictionContact<LineModel, LineModel> > LineLineContinuousFrictionContactClass("ContinuousFrictionContact",true);
-Creator<Contact::Factory, ContinuousFrictionContact<TriangleModel, PointModel> > TrianglePointContinuousFrictionContactContactClass("ContinuousFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<PointModel, PointModel> > PointPointPersistentFrictionContactClass("PersistentFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<LineModel, PointModel> > LinePointPersistentFrictionContactClass("PersistentFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<LineModel, LineModel> > LineLinePersistentFrictionContactClass("PersistentFrictionContact",true);
+Creator<Contact::Factory, PersistentFrictionContact<TriangleModel, PointModel> > TrianglePointPersistentFrictionContactContactClass("PersistentFrictionContact",true);
 
 
 template<>
-int ContinuousFrictionContact<PointModel, PointModel>::mapTheContinuousContact(Vector3 &/*baryCoord*/, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<PointModel, PointModel>::mapThePersistentContact(Vector3 &/*baryCoord*/, int index, Vector3 &pos, bool case1)
 {
     std::vector<std::pair<int, double> > barycentricData;
 
@@ -62,7 +62,7 @@ int ContinuousFrictionContact<PointModel, PointModel>::mapTheContinuousContact(V
 }
 
 template<>
-int ContinuousFrictionContact<LineModel, PointModel>::mapTheContinuousContact(Vector3 &baryCoord, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<LineModel, PointModel>::mapThePersistentContact(Vector3 &baryCoord, int index, Vector3 &pos, bool case1)
 {
     std::vector<std::pair<int, double> > barycentricData;
 
@@ -81,7 +81,7 @@ int ContinuousFrictionContact<LineModel, PointModel>::mapTheContinuousContact(Ve
 }
 
 template<>
-int ContinuousFrictionContact<LineModel, LineModel>::mapTheContinuousContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<LineModel, LineModel>::mapThePersistentContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
 {
     std::vector<std::pair<int, double> > barycentricData;
 
@@ -102,7 +102,7 @@ int ContinuousFrictionContact<LineModel, LineModel>::mapTheContinuousContact(Vec
 }
 
 template<>
-int ContinuousFrictionContact<TriangleModel, PointModel>::mapTheContinuousContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
+int PersistentFrictionContact<TriangleModel, PointModel>::mapThePersistentContact(Vector3 & baryCoord, int index, Vector3 &pos, bool case1)
 {
     std::vector<std::pair<int, double> > barycentricData;
 

@@ -22,13 +22,13 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_H
-#define SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_H
+#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_H
 
 #include <sofa/component/mapping/RigidMapping.h>
 
-#include "ContinuousContactMapping.h"
-#include "ContinuousContact.h"
+#include "PersistentContactMapping.h"
+#include "PersistentContact.h"
 
 namespace sofa
 {
@@ -40,10 +40,10 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-class ContinuousContactRigidMapping : public RigidMapping<TIn, TOut>, public ContinuousContactMapping
+class PersistentContactRigidMapping : public RigidMapping<TIn, TOut>, public PersistentContactMapping
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(ContinuousContactRigidMapping,TIn,TOut), SOFA_TEMPLATE2(RigidMapping,TIn,TOut), ContinuousContactMapping);
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactRigidMapping,TIn,TOut), SOFA_TEMPLATE2(RigidMapping,TIn,TOut), PersistentContactMapping);
 
     typedef RigidMapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -77,9 +77,9 @@ public:
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    ContinuousContactRigidMapping(core::State< In >* from, core::State< Out >* to);
+    PersistentContactRigidMapping(core::State< In >* from, core::State< Out >* to);
 
-    virtual ~ContinuousContactRigidMapping() {}
+    virtual ~PersistentContactRigidMapping() {}
 
     Data< bool > contactDuplicate;
     Data< std::string > nameOfInputMap;
@@ -122,23 +122,23 @@ using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2dTypes, Vec2dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2fTypes, Vec2fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3fTypes, Vec3dTypes >;
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2dTypes, Vec2fTypes >;
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2fTypes, Vec2dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2dTypes >;
 #endif
 #endif
 #endif
@@ -149,4 +149,4 @@ extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< 
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_H
+#endif // SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_H

@@ -22,10 +22,10 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_INL
 
-#include "ContinuousContactRigidMapping.h"
+#include "PersistentContactRigidMapping.h"
 
 #include <sofa/component/mapping/RigidMapping.inl>
 
@@ -45,16 +45,16 @@ using namespace sofa::defaulttype;
 
 
 template <class TIn, class TOut>
-ContinuousContactRigidMapping<TIn, TOut>::ContinuousContactRigidMapping(core::State< In >* from, core::State< Out >* to)
+PersistentContactRigidMapping<TIn, TOut>::PersistentContactRigidMapping(core::State< In >* from, core::State< Out >* to)
     : Inherit(from, to)
-    , contactDuplicate(initData(&contactDuplicate, false, "contactDuplicate", "if true, this mapping is a copy of an input mapping and is used to gather contact points (ContinuousFrictionContact Response)"))
+    , contactDuplicate(initData(&contactDuplicate, false, "contactDuplicate", "if true, this mapping is a copy of an input mapping and is used to gather contact points (PersistentFrictionContact Response)"))
     , nameOfInputMap(initData(&nameOfInputMap, "nameOfInputMap", "if contactDuplicate==true, it provides the name of the input mapping"))
 {
 }
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::beginAddContactPoint()
+void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
 {
     if (!m_init)
     {
@@ -72,7 +72,7 @@ void ContinuousContactRigidMapping<TIn, TOut>::beginAddContactPoint()
 
 
 template <class TIn, class TOut>
-int ContinuousContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     std::cout << "addContactPointFromInputMapping  Pos Ref = " << pos <<std::endl;
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
@@ -97,7 +97,7 @@ int ContinuousContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(co
 
 
 template <class TIn, class TOut>
-int ContinuousContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(const int _index)
+int PersistentContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(const int _index)
 {
     std::cout << "keepContactPointFromInputMapping index = " << _index <<std::endl;
 
@@ -122,7 +122,7 @@ int ContinuousContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(c
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::init()
+void PersistentContactRigidMapping<TIn, TOut>::init()
 {
     this->f_listening.setValue(true);
     m_init = false;
@@ -134,14 +134,14 @@ void ContinuousContactRigidMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::reset()
+void PersistentContactRigidMapping<TIn, TOut>::reset()
 {
     setDefaultValues();
 }
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::setDefaultValues()
+void PersistentContactRigidMapping<TIn, TOut>::setDefaultValues()
 {
     m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     m_previousDx.resize(m_previousFreePosition.size());
@@ -149,7 +149,7 @@ void ContinuousContactRigidMapping<TIn, TOut>::setDefaultValues()
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::bwdInit()
+void PersistentContactRigidMapping<TIn, TOut>::bwdInit()
 {
     if (contactDuplicate.getValue())
     {
@@ -165,7 +165,7 @@ void ContinuousContactRigidMapping<TIn, TOut>::bwdInit()
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* ev)
+void PersistentContactRigidMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* ev)
 {
     if (dynamic_cast< simulation::AnimateEndEvent* >(ev))
     {
@@ -175,7 +175,7 @@ void ContinuousContactRigidMapping<TIn, TOut>::handleEvent(sofa::core::objectmod
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
+void PersistentContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
 {
     m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::freePosition())->getValue();
     m_previousDx = this->fromModel->read(core::ConstVecDerivId::dx())->getValue();
@@ -183,7 +183,7 @@ void ContinuousContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
 
 
 template <class TIn, class TOut>
-void ContinuousContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
+void PersistentContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
 {
     Data< VecCoord > newXFree;
     Data< InVecCoord > prevXFree;
@@ -216,4 +216,4 @@ void ContinuousContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_INL
+#endif // SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_INL

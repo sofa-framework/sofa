@@ -22,13 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_H
-#define SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_H
+#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_H
 
 #include <sofa/component/mapping/BarycentricMapping.h>
 
-#include "ContinuousContactMapping.h"
-#include "ContinuousContact.h"
+#include "PersistentContactMapping.h"
+#include "PersistentContact.h"
 
 namespace sofa
 {
@@ -40,10 +40,10 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-class ContinuousContactBarycentricMapping : public BarycentricMapping<TIn, TOut>, public ContinuousContactMapping
+class PersistentContactBarycentricMapping : public BarycentricMapping<TIn, TOut>, public PersistentContactMapping
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(ContinuousContactBarycentricMapping,TIn,TOut), SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut), ContinuousContactMapping);
+    SOFA_CLASS2(SOFA_TEMPLATE2(PersistentContactBarycentricMapping,TIn,TOut), SOFA_TEMPLATE2(BarycentricMapping,TIn,TOut), PersistentContactMapping);
 
     typedef BarycentricMapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -67,12 +67,12 @@ public:
     typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
     typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
 
-    ContinuousContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
+    PersistentContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
     {
     }
 
-    virtual ~ContinuousContactBarycentricMapping()
+    virtual ~PersistentContactBarycentricMapping()
     {
     }
 
@@ -89,17 +89,17 @@ public:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 #endif
@@ -110,4 +110,4 @@ extern template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMap
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_H
+#endif // SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_H

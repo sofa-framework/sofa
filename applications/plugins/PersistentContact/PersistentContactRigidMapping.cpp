@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTRIGIDMAPPING_CPP
-#include "ContinuousContactRigidMapping.inl"
+#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_CPP
+#include "PersistentContactRigidMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,47 +35,47 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(ContinuousContactRigidMapping)
+SOFA_DECL_CLASS(PersistentContactRigidMapping)
 
 using namespace defaulttype;
 
 // Register in the Factory
-int ContinuousContactRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
+int PersistentContactRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
 #ifndef SOFA_FLOAT
-        .add< ContinuousContactRigidMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< ContinuousContactRigidMapping< Rigid2dTypes, Vec2dTypes > >()
+        .add< PersistentContactRigidMapping< Rigid3dTypes, Vec3dTypes > >()
+        .add< PersistentContactRigidMapping< Rigid2dTypes, Vec2dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ContinuousContactRigidMapping< Rigid3fTypes, Vec3fTypes > >()
-        .add< ContinuousContactRigidMapping< Rigid2fTypes, Vec2fTypes > >()
+        .add< PersistentContactRigidMapping< Rigid3fTypes, Vec3fTypes > >()
+        .add< PersistentContactRigidMapping< Rigid2fTypes, Vec2fTypes > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< ContinuousContactRigidMapping< Rigid3dTypes, Vec3fTypes > >()
-        .add< ContinuousContactRigidMapping< Rigid3fTypes, Vec3dTypes > >()
-        .add< ContinuousContactRigidMapping< Rigid2dTypes, Vec2fTypes > >()
-        .add< ContinuousContactRigidMapping< Rigid2fTypes, Vec2dTypes > >()
+        .add< PersistentContactRigidMapping< Rigid3dTypes, Vec3fTypes > >()
+        .add< PersistentContactRigidMapping< Rigid3fTypes, Vec3dTypes > >()
+        .add< PersistentContactRigidMapping< Rigid2dTypes, Vec2fTypes > >()
+        .add< PersistentContactRigidMapping< Rigid2fTypes, Vec2dTypes > >()
 #endif
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2dTypes, Vec2dTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3dTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3fTypes, Vec3fTypes >;
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2fTypes, Vec2fTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3fTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3dTypes, Vec3fTypes >;
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid3fTypes, Vec3dTypes >;
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2dTypes, Vec2fTypes >;
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactRigidMapping< Rigid2fTypes, Vec2dTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3fTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3dTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2fTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2dTypes >;
 #endif
 #endif
 
