@@ -377,24 +377,6 @@ double BaseObject::getTime() const
     return getContext()->getTime();
 }
 
-#ifdef WIN32
-__declspec(thread)
-#elif !defined(__APPLE__)
-__thread
-#endif
-bool tls_prefetching = false;
-
-void BaseObject::setPrefetching(bool b)
-{
-    tls_prefetching = b;
-}
-
-bool BaseObject::isPrefetching()
-{
-    return tls_prefetching;
-}
-
-
 } // namespace objectmodel
 
 } // namespace core

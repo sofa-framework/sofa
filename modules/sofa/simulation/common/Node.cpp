@@ -598,16 +598,7 @@ void Node::executeVisitor(Visitor* action)
     for (int i=0; i<level; ++i) std::cerr << ' ';
     std::cerr << ">" << decodeClassName(typeid(*action)) << " on " << this->getPathName();
     if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
-    {
-        MultiNodeDataMap* nodeMap = v->getNodeMap();
-        if (nodeMap && !nodeMap->empty())
-        {
-            MultiNodeDataMap::const_iterator it = nodeMap->find(this);
-            if (it != nodeMap->end())
-                std::cerr << " [SELECTED, value = " << it->second << "]";
-        }
-    }
-    std::string infos = action->getInfos();
+        std::string infos = action->getInfos();
     if (!infos.empty())
         std::cerr << "  : " << infos;
     std::cerr << std::endl;
@@ -623,16 +614,6 @@ void Node::executeVisitor(Visitor* action)
     --level;
     for (int i=0; i<level; ++i) std::cerr << ' ';
     std::cerr << "<" << decodeClassName(typeid(*action)) << " on " << this->getPathName();
-    if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
-    {
-        MultiNodeDataMap* nodeMap = v->getNodeMap();
-        if (nodeMap)
-        {
-            MultiNodeDataMap::const_iterator it = nodeMap->find(this);
-            if (it != nodeMap->end())
-                std::cerr << " [SELECTED, value = " << it->second << "]";
-        }
-    }
     std::cerr << std::endl;
 #endif
 

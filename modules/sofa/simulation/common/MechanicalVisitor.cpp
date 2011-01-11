@@ -212,42 +212,6 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
     ctx.root = root;
     ctx.node = node;
     ctx.nodeData = rootData;
-
-    const bool writeData = writeNodeData();
-    const bool readData = readNodeData();
-    const bool useNodeData = readData || writeData;
-
-    if (nodeMap && !nodeMap->empty())
-    {
-        // only apply visitor to the specified subset of child nodes from the root
-        if (node == root)
-        {
-            tmpNodeDataMap.clear();
-        }
-        else if (node->hasParent(root))
-        {
-            MultiNodeDataMap::iterator it = nodeMap->find(node->getContext());
-            if (it == nodeMap->end())
-                return RESULT_PRUNE;
-            if (useNodeData)
-                ctx.nodeData = &(it->second);
-        }
-        else
-        {
-            if (useNodeData)
-            {
-                std::map<simulation::Node*, double*>::iterator it = tmpNodeDataMap.find(node);
-                if (it != tmpNodeDataMap.end())
-                    ctx.nodeData = it->second;
-            }
-        }
-        if (useNodeData && ctx.nodeData != rootData)
-        {
-            // propagate the pointer to node-specific data to child nodes
-            for (Node::ChildIterator it = node->child.begin(), itend = node->child.end(); it != itend; ++it)
-                tmpNodeDataMap[*it] = ctx.nodeData;
-        }
-    }
     return processNodeTopDown(node, &ctx);
 }
 
@@ -258,43 +222,7 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node)
     ctx.root = root;
     ctx.node = node;
     ctx.nodeData = rootData;
-
-    const bool writeData = writeNodeData();
-    const bool readData = readNodeData();
-    const bool useNodeData = readData || writeData;
-
-    if (nodeMap && !nodeMap->empty())
-    {
-        // only apply visitor to the specified subset of child nodes from the root
-        if (node == root)
-        {
-            tmpNodeDataMap.clear();
-        }
-        else if (node->hasParent(root))
-        {
-            MultiNodeDataMap::iterator it = nodeMap->find(node->getContext());
-            if (it == nodeMap->end())
-                return; // RESULT_PRUNE;
-            if (useNodeData)
-                ctx.nodeData = &(it->second);
-        }
-        else
-        {
-            if (useNodeData)
-            {
-                std::map<simulation::Node*, double*>::iterator it = tmpNodeDataMap.find(node);
-                if (it != tmpNodeDataMap.end())
-                    ctx.nodeData = it->second;
-            }
-        }
-    }
-
     processNodeBottomUp(node, &ctx);
-
-
-    if (writeData && nodeMap && !nodeMap->empty() && node->hasParent(root) && rootData != ctx.nodeData)
-        addNodeData(node, rootData, ctx.nodeData);
-
 }
 
 
@@ -311,44 +239,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
     ctx.nodeData = rootData;
 
     const bool writeData = writeNodeData();
-    const bool readData = readNodeData();
-    const bool useNodeData = readData || writeData;
-
-    if (nodeMap && !nodeMap->empty())
-    {
-        // only apply visitor to the specified subset of child nodes from the root
-
-        if (node == root)
-        {
-        }
-        else if (node->hasParent(root))
-        {
-            MultiNodeDataMap::iterator it = nodeMap->find(node->getContext());
-            if (it == nodeMap->end())
-                return RESULT_PRUNE;
-            if (useNodeData)
-            {
-                ctx.nodeData = &(it->second);
-                stack->push(ctx.nodeData);
-            }
-        }
-        else
-        {
-            if (useNodeData)
-            {
-                double* parentData = stack->empty() ? rootData : (double*)stack->top();
-                if (!writeData)
-                    ctx.nodeData = parentData;
-                else // must create a local copy
-                {
-                    ctx.nodeData = new double(0.0);
-                    setNodeData(node, ctx.nodeData, parentData);
-                    stack->push(ctx.nodeData);
-                }
-            }
-        }
-    }
-    else if (writeData)
+    if (writeData)
     {
         // create temporary accumulation buffer for parallel reductions (dot products)
         if (node != root)
@@ -373,38 +264,8 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalSto
     double* parentData = rootData;
 
     const bool writeData = writeNodeData();
-    const bool readData = readNodeData();
-    const bool useNodeData = readData || writeData;
 
-    if (nodeMap && !nodeMap->empty())
-    {
-        // only apply visitor to the specified subset of child nodes from the root
-        if (node == root)
-        {
-        }
-        else if (node->hasParent(root))
-        {
-            MultiNodeDataMap::iterator it = nodeMap->find(node->getContext());
-            if (it == nodeMap->end())
-                return; // RESULT_PRUNE;
-            if (useNodeData)
-            {
-                ctx.nodeData = &(it->second);
-                stack->pop();
-            }
-        }
-        else
-        {
-            if (useNodeData)
-            {
-                ctx.nodeData = (double*)stack->top();
-                if (writeData)
-                    stack->pop();
-                parentData = stack->empty() ? rootData : (double*)stack->top();
-            }
-        }
-    }
-    else if (writeData)
+    if (writeData)
     {
         // use temporary accumulation buffer for parallel reductions (dot products)
         if (node != root)
@@ -721,19 +582,7 @@ Visitor::Result MechanicalVOpVisitor::fwdMappedMechanicalState(VisitorContext* c
 Visitor::Result MechanicalVMultiOpVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
     //cerr<<"    MechanicalVOpVisitor::fwdMechanicalState, model "<<mm->getName()<<endl;
-    if (ctx->nodeData && *ctx->nodeData != 1.0)
-    {
-        VMultiOp ops2 = ops;
-        const double fact = *ctx->nodeData;
-        for (VMultiOp::iterator it = ops2.begin(), itend = ops2.end(); it != itend; ++it)
-            for (unsigned int i = 1; i < it->second.size(); ++i)
-                it->second[i].second *= fact;
-        mm->vMultiOp(ops2, this->params );
-    }
-    else
-    {
-        mm->vMultiOp(ops, this->params );
-    }
+    mm->vMultiOp(ops, this->params );
     return RESULT_CONTINUE;
 }
 

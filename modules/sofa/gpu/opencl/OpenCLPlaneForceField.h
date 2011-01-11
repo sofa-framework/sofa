@@ -46,9 +46,6 @@ struct GPUPlane
     real damping;
 };
 
-template<class real>
-struct PlaneDForceOp;
-
 } // namespace opencl
 
 } // namespace gpu
@@ -66,28 +63,14 @@ class PlaneForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 {
 public:
     typedef TReal Real;
-    typedef gpu::opencl::PlaneDForceOp<Real> DForceOp;
 
     gpu::opencl::GPUPlane<Real> plane;
     gpu::opencl::OpenCLVector<Real> penetration;
 
-
-    int preDForceOpID;
-
-    static helper::vector<DForceOp>& opsDForce()
-    {
-        static helper::vector<DForceOp> v;
-        return v;
-    }
-
     PlaneForceFieldInternalData()
-        : preDForceOpID(-1)
     {}
 
 };
-
-template <>
-bool PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::canPrefetch() const;
 
 template <>
 void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
@@ -115,36 +98,9 @@ void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce (VecDeriv& f, con
 template <>
 void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
-
-
-
 }
 }
-
-
-
-
-
 
 } // namespace sofa
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

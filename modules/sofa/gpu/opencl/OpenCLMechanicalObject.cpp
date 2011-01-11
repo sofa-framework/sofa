@@ -730,18 +730,6 @@ void MechanicalObjectOpenCLVec3d_vMEq(size_t size, _device_pointer res, double f
 
 
 
-
-int MultiMechanicalObjectOpenCLVec3f_vDotTmpSize(size_t  /*n*/, VDotOp*  /*ops*/) {NOT_IMPLEMENTED(); return 0;}
-void MultiMechanicalObjectOpenCLVec3f_vDot(size_t  /*n*/, VDotOp*  /*ops*/, double*  /*results*/, _device_pointer /*tmp*/, float*  /*cputmp*/) {NOT_IMPLEMENTED();}
-
-
-void MultiMechanicalObjectOpenCLVec3f_vOp(size_t  /*n*/, VOpF*  /*ops*/) {NOT_IMPLEMENTED();}
-
-
-void MultiMechanicalObjectOpenCLVec3f_vClear(size_t  /*n*/, VClearOp*  /*ops*/) {NOT_IMPLEMENTED();}
-
-
-
 void MechanicalObjectOpenCLVec3f1_vMEq(size_t /*size*/, _device_pointer /*res*/, float /*f*/) {NOT_IMPLEMENTED();}
 void MechanicalObjectOpenCLVec3f1_vEqBF(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*b*/, float /*f*/) {NOT_IMPLEMENTED();}
 void MechanicalObjectOpenCLVec3f1_vPEq(size_t /*size*/, _device_pointer /*res*/, const _device_pointer /*a*/) {NOT_IMPLEMENTED();}

@@ -46,28 +46,13 @@ public:
     real damping;
 };
 
-template<class real>
-struct PlaneDForceOp
-{
-    unsigned int size;
-    GPUPlane<real> plane;
-    const real* penetration;
-    real* f;
-    const real* dx;
-};
-
 typedef GPUPlane<float> GPUPlane3f;
 typedef GPUPlane<double> GPUPlane3d;
-
-typedef PlaneDForceOp<float> PlaneDForceOp3f;
-typedef PlaneDForceOp<double> PlaneDForceOp3d;
 
 extern "C"
 {
     void PlaneForceFieldCuda3f_addForce(unsigned int size, GPUPlane3f* plane, float* penetration, void* f, const void* x, const void* v);
     void PlaneForceFieldCuda3f_addDForce(unsigned int size, GPUPlane3f* plane, const float* penetration, void* f, const void* dx); //, const void* dfdx);
-
-    void MultiPlaneForceFieldCuda3f_addDForce(int n, PlaneDForceOp3f* ops);
 
     void PlaneForceFieldCuda3f1_addForce(unsigned int size, GPUPlane3f* plane, float* penetration, void* f, const void* x, const void* v);
     void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane3f* plane, const float* penetration, void* f, const void* dx); //, const void* dfdx);
@@ -251,64 +236,6 @@ __global__ void PlaneForceFieldCuda3t1_addDForce_kernel(int size, GPUPlane<real>
     df[index] = dfi;
 }
 
-enum { MULTI_NMAX = 64 };
-__constant__ PlaneDForceOp3f multiPlaneDForceOps3f[MULTI_NMAX];
-
-__global__ void MultiPlaneForceFieldCuda3f_addDForce_kernel()
-{
-    int index0 = umul24(blockIdx.x,BSIZE);
-    if (index0 >= multiPlaneDForceOps3f[blockIdx.y].size) return;
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
-    const float* penetration = multiPlaneDForceOps3f[blockIdx.y].penetration;
-    float* df = multiPlaneDForceOps3f[blockIdx.y].f;
-    const float* dx = multiPlaneDForceOps3f[blockIdx.y].dx;
-
-    penetration += index0;
-    df += index0_3;
-    dx += index0_3;
-
-    int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
-
-    //! Dynamically allocated shared memory to reorder global memory access
-    __shared__  float temp[BSIZE*3];
-
-    temp[index        ] = dx[index        ];
-    temp[index+  BSIZE] = dx[index+  BSIZE];
-    temp[index+2*BSIZE] = dx[index+2*BSIZE];
-
-    __syncthreads();
-
-    CudaVec3<float> dxi = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
-    float d = penetration[index];
-
-    CudaVec3<float> dforce = CudaVec3<float>::make(0,0,0);
-
-    if (d<0)
-    {
-        CudaVec3<float> normal = CudaVec3<float>::make(multiPlaneDForceOps3f[blockIdx.y].plane.normal_x,multiPlaneDForceOps3f[blockIdx.y].plane.normal_y,multiPlaneDForceOps3f[blockIdx.y].plane.normal_z);
-        dforce = normal * (-multiPlaneDForceOps3f[blockIdx.y].plane.stiffness * dot(dxi, normal));
-    }
-
-    __syncthreads();
-
-    temp[index        ] = df[index        ];
-    temp[index+  BSIZE] = df[index+  BSIZE];
-    temp[index+2*BSIZE] = df[index+2*BSIZE];
-
-    __syncthreads();
-
-    temp[index_3+0] += dforce.x;
-    temp[index_3+1] += dforce.y;
-    temp[index_3+2] += dforce.z;
-
-    __syncthreads();
-
-    df[index        ] = temp[index        ];
-    df[index+  BSIZE] = temp[index+  BSIZE];
-    df[index+2*BSIZE] = temp[index+2*BSIZE];
-}
-
 //////////////////////
 // CPU-side methods //
 //////////////////////
@@ -339,29 +266,6 @@ void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane3f* plane, cons
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     PlaneForceFieldCuda3t1_addDForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx);
-}
-
-void MultiPlaneForceFieldCuda3f_addDForce(int n, PlaneDForceOp3f* ops)
-{
-    int totalblocs = 0;
-    for (unsigned int i0 = 0; i0 < n; i0 += MULTI_NMAX)
-    {
-        int n2 = (n-i0 > MULTI_NMAX) ? MULTI_NMAX : n-i0;
-        int maxnblocs = 0;
-        PlaneDForceOp3f* ops2 = ops + i0;
-        for (unsigned int i = 0; i < n2; ++i)
-        {
-            int nblocs = (ops2[i].size+BSIZE-1)/BSIZE;
-            if (nblocs > maxnblocs) maxnblocs = nblocs;
-        }
-        cudaMemcpyToSymbol(multiPlaneDForceOps3f, ops2, n2 * sizeof(PlaneDForceOp3f), 0, cudaMemcpyHostToDevice);
-
-        dim3 threads(BSIZE,1);
-        dim3 grid(maxnblocs,n2);
-        MultiPlaneForceFieldCuda3f_addDForce_kernel<<< grid, threads >>>();
-
-        totalblocs += maxnblocs * n2;
-    }
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE

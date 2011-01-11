@@ -37,23 +37,11 @@ namespace gpu
 namespace cuda
 {
 
-template<class real>
-struct PlaneDForceOp
-{
-    unsigned int size;
-    GPUPlane<real> plane;
-    const void* penetration;
-    void* f;
-    const void* dx;
-};
-
 extern "C"
 {
 
     void PlaneForceFieldCuda3f_addForce(unsigned int size, GPUPlane<float>* plane, void* penetration, void* f, const void* x, const void* v);
     void PlaneForceFieldCuda3f_addDForce(unsigned int size, GPUPlane<float>* plane, const void* penetration, void* f, const void* dx); //, const void* dfdx);
-
-    void MultiPlaneForceFieldCuda3f_addDForce(int n, PlaneDForceOp<float>* ops);
 
     void PlaneForceFieldCuda3f1_addForce(unsigned int size, GPUPlane<float>* plane, void* penetration, void* f, const void* x, const void* v);
     void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane<float>* plane, const void* penetration, void* f, const void* dx); //, const void* dfdx);
@@ -83,16 +71,8 @@ namespace forcefield
 using namespace gpu::cuda;
 
 template <>
-bool PlaneForceField<gpu::cuda::CudaVec3fTypes>::canPrefetch() const
-{
-    return mycudaMultiOpMax != 0;
-}
-
-template <>
 void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /*mparams*/)
 {
-    if (this->isPrefetching()) return;
-
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
@@ -116,42 +96,6 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(DataVecDeriv& d_df, c
     double kFactor = mparams->kFactor();
 
     df.resize(dx.size());
-    if (this->isPrefetching())
-    {
-        PlaneDForceOp<float> op;
-        op.size = dx.size();
-        op.plane = data.plane;
-        op.plane.stiffness *= (Real)kFactor;
-        op.penetration = data.penetration.deviceRead();
-        op.f = df.deviceWrite();
-        op.dx = dx.deviceRead();
-
-        data.preDForceOpID = data.opsDForce().size();
-        data.opsDForce().push_back(op);
-        return;
-    }
-    else if (data.preDForceOpID != -1)
-    {
-        helper::vector<PlaneDForceOp<float> >& ops = data.opsDForce();
-        if (!ops.empty())
-        {
-            if (ops.size() == 1)
-            {
-                // only one object -> use regular kernel
-                data.preDForceOpID = -1;
-            }
-            else
-            {
-                MultiPlaneForceFieldCuda3f_addDForce(ops.size(), &(ops[0]));
-            }
-            ops.clear();
-        }
-        if (data.preDForceOpID != -1)
-        {
-            data.preDForceOpID = -1;
-            return;
-        }
-    }
     double stiff = data.plane.stiffness;
     data.plane.stiffness *= (Real)kFactor;
     PlaneForceFieldCuda3f_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());

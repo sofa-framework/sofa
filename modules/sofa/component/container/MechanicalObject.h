@@ -102,8 +102,6 @@ public:
 
     virtual ~MechanicalObject();
 
-    virtual bool canPrefetch() const { return false; }
-
     virtual bool load(const char* filename);
 
     virtual void parse ( BaseObjectDescription* arg );

@@ -34,27 +34,11 @@ namespace sofa
 namespace simulation
 {
 
-
-
-void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool doPrefetch)
+void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
 {
-    if (doPrefetch && getSimulation()->isPrefetchingUsed())
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        const std::string prefetchName=std::string("Prefetch--") + std::string(getClassName());
-        printNode(prefetchName);
-#endif
-        prefetching = true;
-        sofa::core::objectmodel::BaseObject::setPrefetching(true);
-        c->executeVisitor(this);
-        prefetching = false;
-        sofa::core::objectmodel::BaseObject::setPrefetching(false);
-#ifdef SOFA_DUMP_VISITOR_INFO
-        printCloseNode(prefetchName);
-#endif
-    }
     c->executeVisitor(this);
 }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
 Visitor::ctime_t Visitor::initDumpTime;
 std::vector< Visitor::ctime_t  > Visitor::initNodeTime=std::vector< Visitor::ctime_t >();

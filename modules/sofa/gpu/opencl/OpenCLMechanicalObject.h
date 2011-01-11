@@ -73,51 +73,13 @@ public:
     /// Temporary storate for dot product operation
     VecDeriv tmpdot;
 
-    template<class T>
-    class PrefetchOp : public T
-    {
-    public:
-        int id; ///< ID in multi-operation, or -1 if inactive
-        static helper::vector < Main* >& objects()
-        {
-            static helper::vector < Main* > v;
-            return v;
-        }
-        PrefetchOp() : id(-1) {}
-    };
-
-    struct VDot
-    {
-        VecId a;
-        VecId b;
-        int size;
-        double result;
-    };
-    PrefetchOp<VDot> preVDot;
-
-    struct VOp
-    {
-        VecId v;
-        VecId a;
-        VecId b;
-        double f;
-        int size;
-    };
-    PrefetchOp< helper::vector<VOp> > preVOp;
-
-    struct VResetForce
-    {
-        int size;
-    };
-    PrefetchOp< VResetForce > preVResetForce;
-
-    static void accumulateForce(Main* m, bool prefetch = false);
-    static void addDxToCollisionModel(Main* m, bool prefetch = false);
+    static void accumulateForce(Main* m);
+    static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
-    static void vOp(Main* m, VecId v, VecId a, VecId b, double f, bool prefetch = false);
-    static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
-    static double vDot(Main* m, VecId a, VecId b, bool prefetch = false);
-    static void resetForce(Main* m, bool prefetch = false);
+    static void vOp(Main* m, VecId v, VecId a, VecId b, double f);
+    static void vMultiOp(Main* m, const VMultiOp& ops);
+    static double vDot(Main* m, VecId a, VecId b);
+    static void resetForce(Main* m);
 };
 
 
@@ -125,7 +87,6 @@ public:
 #define OpenCLMechanicalObject_DeclMethods(T) \
 	template<> double MechanicalObject< T >::vDot(VecId a, VecId b);					\
 	template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f);	\
-	template<> bool MechanicalObject< T >::canPrefetch() const;							\
 	template<> void MechanicalObject< T >::accumulateForce();							\
 	template <> void MechanicalObject< T >::addDxToCollisionModel();					\
 	template<> void MechanicalObject< T >::resetForce();								\

@@ -117,8 +117,6 @@ public:
     {
     }
 
-    virtual bool canPrefetch() const { return false; }
-
     void setSphere(const Coord& center, Real radius)
     {
         sphereCenter.setValue( center );

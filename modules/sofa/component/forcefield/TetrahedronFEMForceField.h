@@ -267,8 +267,6 @@ public:
 // 	    _gatherBsize = NULL
     }
 
-    virtual bool canPrefetch() const { return false; }
-
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
 
     void setYoungModulus(Real val)

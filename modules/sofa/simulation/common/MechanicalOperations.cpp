@@ -151,10 +151,10 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
     setF(result);
     if (clear)
     {
-        executeVisitor( MechanicalResetForceVisitor(result, false, &mparams), true ); // enable prefetching
+        executeVisitor( MechanicalResetForceVisitor(result, false, &mparams) );
         //finish();
     }
-    executeVisitor( MechanicalComputeForceVisitor(result, accumulate, &mparams) , true ); // enable prefetching
+    executeVisitor( MechanicalComputeForceVisitor(result, accumulate, &mparams) );
 }
 
 /// Compute the current force delta (given the latest propagated displacement)

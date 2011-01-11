@@ -41,9 +41,6 @@ namespace cuda
 template<class DataTypes>
 class CudaKernelsTetrahedronFEMForceField;
 
-struct TetraFEMForceOp;
-struct TetraFEMDForceOp;
-
 } // namespace cuda
 
 } // namespace gpu
@@ -216,7 +213,7 @@ public:
     int GATHER_PT;
     int GATHER_BSIZE;
     gpu::cuda::CudaVector<int> velems;
-    TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0), preForceOpID(-1), preDForceOpID(-1) {}
+    TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0) {}
     void init(int nbe, int v0, int nbv, int nbelemperv)
     {
         elems.clear();
@@ -300,31 +297,12 @@ public:
     }
 
     static void reinit(Main* m);
-    static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, bool prefetch);
-    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor, bool prefetch);
+    static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
+    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
     static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, double kFactor, unsigned int& offset);
-    static void getRotations(Main* m, VecReal& rotations, bool prefetch);
-    static void getRotations(Main* m, defaulttype::BaseMatrix * rotations,int offset, bool prefetch);
+    static void getRotations(Main* m, VecReal& rotations);
+    static void getRotations(Main* m, defaulttype::BaseMatrix * rotations,int offset);
     static void handleEvent(Main* m, sofa::core::objectmodel::Event* event);
-
-    typedef gpu::cuda::TetraFEMForceOp ForceOp;
-    int preForceOpID;
-
-    static helper::vector<ForceOp>& opsForce()
-    {
-        static helper::vector<ForceOp> v;
-        return v;
-    }
-
-    typedef gpu::cuda::TetraFEMDForceOp DForceOp;
-    int preDForceOpID;
-
-    static helper::vector<DForceOp>& opsDForce()
-    {
-        static helper::vector<DForceOp> v;
-        return v;
-    }
-
 
     VecReal vecTmpRotation;
     gpu::cuda::CudaVector<GPUElementState> parallelRotation;
@@ -351,7 +329,6 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_DeclMethods(T) \
-    template<> bool TetrahedronFEMForceField< T >::canPrefetch() const; \
     template<> void TetrahedronFEMForceField< T >::reinit(); \
     template<> void TetrahedronFEMForceField< T >::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams); \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
