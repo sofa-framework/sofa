@@ -233,7 +233,7 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     }
     if ( ! frameData )
     {
-        serr << "Can't find FrameStorage component (present in linear or dualquat skinning mappings)." << sendl;
+        serr << "Can't find FrameBlendingMapping component." << sendl;
         return;
     }
 
