@@ -82,6 +82,8 @@ GridMaterial< MaterialTypes>::GridMaterial()
     helper::OptionsGroup showVoxelsOptions(10,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Voronoi Frames", "Distances", "Weights");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
+
+
 }
 
 
@@ -1612,8 +1614,6 @@ bool GridMaterial< MaterialTypes>::SubdivideVoronoiRegion( const unsigned int vo
             d1=(p1-p).norm2(); d2=(p2-p).norm2();
             if(d1<d2) voronoi[i]=newvoronoiindex;
         }
-
-    updateMaxValues();
     return true;
 }
 
@@ -1653,14 +1653,17 @@ bool GridMaterial< MaterialTypes>::rigidPartsSampling ( VecSCoord& points)
     const Real STIFFNESS_RIGID = (Real)1.5E10; // 15GPa=bone stiffness
 
     if (!nbVoxels) return false;
-    unsigned int i,k,index,initial_num_points=points.size();
+    unsigned int i,k,initial_num_points=points.size();
+    int index;
 
     // insert initial points and get labels of  the different rigid parts
     VUI labellist;
     for (i=0; i<initial_num_points; i++)
     {
         index=getIndex(points[i]);
-        if(getStiffness(grid.data()[index])>=STIFFNESS_RIGID) labellist.push_back(grid.data()[index]);
+        if (index == -1)
+            serr << "Given Frame Coord of index " << i << " is outside of the grid !" << sendl;
+        else if(getStiffness(grid.data()[index])>=STIFFNESS_RIGID) labellist.push_back(grid.data()[index]);
     }
     unsigned int startlabelinsertion=labellist.size();
     for (i=0; i<this->nbVoxels; i++)
@@ -2663,6 +2666,9 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
     for (i=0; i<distances.size(); i++) if (grid.data()[i] && distances[i]>maxValues[SHOWVOXELS_DISTANCES]) maxValues[SHOWVOXELS_DISTANCES]=(float)distances[i];
     for (i=0; i<voronoi_frames.size(); i++) if (grid.data()[i] && voronoi_frames[i]+1>maxValues[SHOWVOXELS_VORONOI_FR]) maxValues[SHOWVOXELS_VORONOI_FR]=(float)voronoi_frames[i]+1;
     maxValues[SHOWVOXELS_WEIGHTS]=1.0f;
+
+    for (unsigned int i = 0; i < showVoxels.getValue().size(); ++i)
+        sout << "maxValues["<<showVoxels.getValue()[i]<<"]: " << maxValues[i] << sendl;
 }
 
 
