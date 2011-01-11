@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_H
 
-//#include <sofa/simulation/common/SolverImpl.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
@@ -125,9 +124,9 @@ public:
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     virtual void invertSystem()
     {
-        for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
+        for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
         {
-            if (!isMultiSolve()) setGroup(g);
+            setGroup(g);
             if (currentGroup->needInvert)
             {
                 this->invert(*currentGroup->systemMatrix);
@@ -144,10 +143,6 @@ public:
 
     void prepareVisitor(simulation::BaseMechanicalVisitor* v)
     {
-        /*if (v->writeNodeData())
-            v->setNodeMap(this->getWriteNodeMap());
-        else
-            v->setNodeMap(this->getNodeMap());*/
         prepareVisitor((Visitor*)v);
     }
 
@@ -288,24 +283,6 @@ public:
         return multiGroup.getValue();
     }
 
-    /// Returns true if this implementation can handle all integration groups at once
-    virtual bool isMultiSolve() const
-    {
-        return false;
-    }
-
-    virtual simulation::MultiNodeDataMap* getNodeMap()
-    {
-        if (isMultiGroup()) return &this->nodeMap;
-        else                       return NULL;
-    }
-
-    virtual simulation::MultiNodeDataMap* getWriteNodeMap()
-    {
-        if (isMultiGroup()) return &this->writeNodeMap;
-        else                       return NULL;
-    }
-
     virtual void createGroups(const core::MechanicalParams* mparams);
 
     int getNbGroups() const
@@ -321,36 +298,13 @@ public:
         {
             currentNode = groups[i];
             currentGroup = &(gData[currentNode]);
-            nodeMap.clear();
-            nodeMap[currentNode] = 1.0;
-            writeNodeMap.clear();
-            writeNodeMap[currentNode] = 0.0;
         }
         else
         {
             currentNode = dynamic_cast<simulation::Node*>(this->getContext());
             currentGroup = &defaultGroup;
-            nodeMap.clear();
-            writeNodeMap.clear();
         }
     }
-#if 0
-    double multiv_dot(core::MultiVecDerivId a, core::MultiVecDerivId b, helper::vector<double>& res)
-    {
-        this->v_dot(a,b);
-        finish();
-        res.resize(groups.size());
-        for (unsigned int g=0; g<groups.size(); ++g)
-        {
-            simulation::MultiNodeDataMap::const_iterator it = writeNodeMap.find(groups[g]);
-            if (it == writeNodeMap.end())
-                res[g] = 0.0;
-            else
-                res[g] = it->second;
-        }
-        return result;
-    }
-#endif
 
 protected:
 
@@ -378,9 +332,6 @@ protected:
 
     MatrixInvertData * getMatrixInvertData(Matrix * m);
     virtual MatrixInvertData * createInvertData();
-
-    simulation::MultiNodeDataMap nodeMap;
-    simulation::MultiNodeDataMap writeNodeMap;
 
     class GroupData
     {
@@ -451,43 +402,23 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
     //defaultGroup.node = root;
-    nodeMap.clear();
-    writeNodeMap.clear();
     for (GroupDataMapIter it = gData.begin(), itend = gData.end(); it != itend; ++it)
         it->second.systemSize = 0;
     if (isMultiGroup())
     {
-        for (unsigned int g=0; g<root->child.size(); ++g)
-        {
-            simulation::Node* n = root->child[g];
-            nodeMap[n] = 0.0;
-        }
-
         double dim = 0;
-        simulation::MechanicalGetDimensionVisitor(&dim, mparams).setNodeMap(&nodeMap).execute(root);
-
         groups.clear();
-
         for (unsigned int g=0; g<root->child.size(); ++g)
         {
             simulation::Node* n = root->child[g];
-            double gdim = nodeMap[ n ];
+            double gdim = 0;
+            simulation::MechanicalGetDimensionVisitor(&gdim, mparams).execute(n);
             if (gdim <= 0) continue;
             groups.push_back(n);
             gData[n].systemSize = (int)gdim;
             dim += gdim;
         }
-
         defaultGroup.systemSize = (int)dim;
-
-        // set nodemap to default (i.e. factor 1 for all non empty groups
-        nodeMap.clear();
-        writeNodeMap.clear();
-        for (unsigned int g=0; g<groups.size(); ++g)
-        {
-            nodeMap[ groups[g] ] = 1.0;
-            writeNodeMap[ groups[g] ] = 0.0;
-        }
     }
     else
     {
@@ -503,9 +434,9 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 {
-    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
-        if (!isMultiSolve()) setGroup(g);
+        setGroup(g);
         if (!this->frozen)
         {
             if (currentGroup->systemMatrix) currentGroup->systemMatrix->clear();
@@ -536,9 +467,9 @@ template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
     createGroups(mparams);
-    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
-        if (!isMultiSolve()) setGroup(g);
+        setGroup(g);
         if (!this->frozen)
         {
             simulation::common::MechanicalOperations mops(this->getContext(), mparams);
@@ -565,9 +496,9 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(core::MultiVecDerivId v)
 {
-    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
-        if (!isMultiSolve()) setGroup(g);
+        setGroup(g);
         //this->multiVector2BaseVector(v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor));
         executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
     }
@@ -576,9 +507,9 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(core::MultiVecDerivId 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId v)
 {
-    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
-        if (!isMultiSolve()) setGroup(g);
+        setGroup(g);
         currentGroup->solutionVecId = v;
         //this->multiVector2BaseVector(v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
         executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
@@ -588,9 +519,9 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::solveSystem()
 {
-    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
     {
-        if (!isMultiSolve()) setGroup(g);
+        setGroup(g);
         if (currentGroup->needInvert)
         {
             this->invert(*currentGroup->systemMatrix);

@@ -40,7 +40,6 @@ HEADERS += common.h \
            ResetVisitor.h \
            Simulation.h \
            SolveVisitor.h \
-           SolverImpl.h \
            StateChangeVisitor.h \
            TopologyChangeVisitor.h \
            TransformationVisitor.h \

@@ -52,7 +52,6 @@ class SOFA_SIMULATION_COMMON_API Visitor
 {
 protected:
     const core::ExecParams* params;
-    bool prefetching;
 public:
 
     class VisitorContext
@@ -67,7 +66,7 @@ public:
 #endif
 
     Visitor(const core::ExecParams* params)
-        : params(params), prefetching(false)
+        : params(params)
     {
         //params = core::MechanicalParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -191,7 +190,6 @@ public:
     // or if no tag is set to the visitor
     bool testTags(core::objectmodel::BaseObject* obj)
     {
-        if (prefetching && !obj->canPrefetch()) return false;
         if(subsetsToManage.empty())
             return true;
         else
@@ -217,8 +215,7 @@ public:
 
 
     /// Alias for context->executeVisitor(this)
-    virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch);
-    virtual void execute(core::objectmodel::BaseContext* node) { execute(node, false); }
+    virtual void execute(core::objectmodel::BaseContext* node);
     virtual ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
 #ifdef SOFA_DUMP_VISITOR_INFO
             obj

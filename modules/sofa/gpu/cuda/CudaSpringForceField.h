@@ -43,8 +43,6 @@ namespace cuda
 template<class DataTypes>
 class CudaKernelsSpringForceField;
 
-struct SpringDForceOp;
-
 } // namespace cuda
 
 } // namespace gpu
@@ -71,8 +69,6 @@ public:
     typedef typename DataTypes::Real Real;
 
     typedef gpu::cuda::CudaKernelsSpringForceField<DataTypes> Kernels;
-    //typedef typename Kernels::SpringDForceOp SpringDForceOp;
-    typedef gpu::cuda::SpringDForceOp SpringDForceOp;
 
     //enum { BSIZE=16 };
     struct GPUSpring
@@ -138,21 +134,12 @@ public:
     GPUSpringSet springs1; ///< springs from model1 to model2
     GPUSpringSet springs2; ///< springs from model2 to model1 (only used if model1 != model2)
 
-    int preDForceOpID;
-
-    static helper::vector<SpringDForceOp>& opsDForce()
-    {
-        static helper::vector<SpringDForceOp> v;
-        return v;
-    }
-
     SpringForceFieldInternalData()
-        : preDForceOpID(-1)
     {}
 
     static void init(Main* m, bool stiff);
-    static void addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2, bool prefetch);
-    static void addDForce (Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor, bool prefetch);
+    static void addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    static void addDForce (Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 };
 
 //
@@ -161,7 +148,6 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaSpringForceField_DeclMethods(T) \
-    template<> inline bool SpringForceField< T >::canPrefetch() const; \
     template<> inline void SpringForceField< T >::init(); \
     template<> inline void SpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* mparams); \
     template<> inline void StiffSpringForceField< T >::init(); \

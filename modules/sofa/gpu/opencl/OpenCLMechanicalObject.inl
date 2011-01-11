@@ -64,99 +64,6 @@ extern "C"
     extern int MechanicalObjectOpenCLVec3f_vDotTmpSize(size_t size);
     extern void MechanicalObjectOpenCLVec3f_vDot(size_t size, float* res, const _device_pointer a, const _device_pointer b, _device_pointer tmp, float* cputmp);
 
-    /*
-    struct VDotOp
-    {
-    	const void* a;
-    	const void* b;
-    	int size;
-    };
-    */
-
-    struct VDotOp
-    {
-        /*const*/ _device_pointer a;
-        /*const*/ _device_pointer b;
-        int size;
-    };
-
-
-    extern int MultiMechanicalObjectOpenCLVec3f_vDotTmpSize(size_t n, VDotOp* ops);
-    extern void MultiMechanicalObjectOpenCLVec3f_vDot(size_t n, VDotOp* ops, double* results, _device_pointer tmp, float* cputmp);
-
-
-    /*
-    struct VOpF
-    {
-    	void* res;
-    	const void* a;
-    	const void* b;
-    	double f;
-    	int size;
-    };
-    */
-
-    /*modif
-    struct VOpF
-    {
-    	sofa::gpu::opencl::_device_pointer res;
-    	//const
-    	sofa::gpu::opencl::_device_pointer a;
-    	//const
-    	 sofa::gpu::opencl::_device_pointer b;
-    	float f;
-    	int size;
-    };
-    */
-
-    struct VOpF
-    {
-        _device_pointer res;
-        //const
-        _device_pointer a;
-        //const
-        _device_pointer b;
-        float f;
-        int size;
-    };
-
-    /*
-    struct VOpD
-    {
-    	void* res;
-    	const void* a;
-    	const void* b;
-    	double f;
-    	int size;
-    };*/
-
-    struct VOpD
-    {
-        _device_pointer res;
-        /*const*/ _device_pointer a;
-        /*const*/ _device_pointer b;
-        float f;
-        int size;
-    };
-
-    extern void MultiMechanicalObjectOpenCLVec3f_vOp(size_t n, VOpF* ops);
-
-    /*
-    struct VClearOp
-    {
-    	void* res;
-    	int size;
-    };
-    */
-
-    struct VClearOp
-    {
-        _device_pointer res;
-        int size;
-    };
-
-    extern void MultiMechanicalObjectOpenCLVec3f_vClear(size_t n, VClearOp* ops);
-
     extern void MechanicalObjectOpenCLVec3f1_vAssign(size_t size, _device_pointer res, const _device_pointer a);
     extern void MechanicalObjectOpenCLVec3f1_vClear(size_t size, _device_pointer res);
     extern void MechanicalObjectOpenCLVec3f1_vMEq(size_t size, _device_pointer res, float f);
@@ -249,18 +156,6 @@ public:
     {   return MechanicalObjectOpenCLVec3f_vDotTmpSize(size); }
     static void vDot(size_t size, float* res, const _device_pointer a, const _device_pointer b, _device_pointer tmp, float* cputmp)
     {   MechanicalObjectOpenCLVec3f_vDot(size, res, a, b, tmp, cputmp); }
-    static bool supportMultiVDot() { return myopenclMultiOpMax>0; }
-    static int multiVDotTmpSize(size_t n, VDotOp* ops)
-    {   return MultiMechanicalObjectOpenCLVec3f_vDotTmpSize(n, ops); }
-    static void multiVDot(size_t n, VDotOp* ops, double* results, _device_pointer tmp, float* cputmp)
-    {   MultiMechanicalObjectOpenCLVec3f_vDot(n, ops, results, tmp, cputmp); }
-    typedef VOpF VOp;
-    static bool supportMultiVOp() { return myopenclMultiOpMax>0; }
-    static void multiVOp(size_t n, VOp* ops)
-    {   MultiMechanicalObjectOpenCLVec3f_vOp(n, ops); }
-    static bool supportMultiVClear() { return myopenclMultiOpMax>0; }
-    static void multiVClear(size_t n, VClearOp* ops)
-    {   MultiMechanicalObjectOpenCLVec3f_vClear(n, ops); }
 };
 
 template<>
@@ -299,18 +194,6 @@ public:
     {   return MechanicalObjectOpenCLVec3f1_vDotTmpSize(size); }
     static void vDot(size_t size, float* res, const _device_pointer a, const _device_pointer b, _device_pointer tmp, float* cputmp)
     {   MechanicalObjectOpenCLVec3f1_vDot(size, res, a, b, tmp, cputmp); }
-    static bool supportMultiVDot() { return false; }
-    static int multiVDotTmpSize(size_t, VDotOp*)
-    {   return 0; }
-    static void multiVDot(size_t, VDotOp*, double*, _device_pointer, float*)
-    {}
-    typedef VOpF VOp;
-    static bool supportMultiVOp() { return false /*myopenclMultiOpMax>0*/; }
-    static void multiVOp(size_t /*n*/, VOp* /*ops*/)
-    {   /*MultiMechanicalObjectOpenCLVec3f1_vOp(n, ops);*/ }
-    static bool supportMultiVClear() { return false; }
-    static void multiVClear(size_t, VClearOp*)
-    {}
 };
 
 
@@ -350,18 +233,6 @@ public:
     {   return MechanicalObjectOpenCLVec3d_vDotTmpSize(size); }
     static void vDot(size_t size, double* res, const _device_pointer a, const _device_pointer b, _device_pointer tmp, double* cputmp)
     {   MechanicalObjectOpenCLVec3d_vDot(size, res, a, b, tmp, cputmp); }
-    static bool supportMultiVDot() { return false; }
-    static int multiVDotTmpSize(size_t, VDotOp*)
-    {   return 0; }
-    static void multiVDot(size_t, VDotOp*, double*, _device_pointer, double*)
-    {}
-    typedef VOpD VOp;
-    static bool supportMultiVOp() { return false /*myopenclMultiOpMax>0*/; }
-    static void multiVOp(size_t /*n*/, VOp* /*ops*/)
-    {   /*MultiMechanicalObjectOpenCLVec3d_vOp(n, ops);*/ }
-    static bool supportMultiVClear() { return false; }
-    static void multiVClear(size_t, VClearOp*)
-    {}
 };
 
 template<>
@@ -400,18 +271,6 @@ public:
     {   return MechanicalObjectOpenCLVec3d1_vDotTmpSize(size); }
     static void vDot(size_t size, double* res, const _device_pointer a, const _device_pointer b, _device_pointer tmp, double* cputmp)
     {   MechanicalObjectOpenCLVec3d1_vDot(size, res, a, b, tmp, cputmp); }
-    static bool supportMultiVDot() { return false; }
-    static int multiVDotTmpSize(size_t, VDotOp*)
-    {   return 0; }
-    static void multiVDot(size_t, VDotOp*, double*, _device_pointer, double*)
-    {}
-    typedef VOpD VOp;
-    static bool supportMultiVOp() { return false /*myopenclMultiOpMax>0*/; }
-    static void multiVOp(size_t /*n*/, VOp* /*ops*/)
-    {   /*MultiMechanicalObjectOpenCLVec3d1_vOp(n, ops);*/ }
-    static bool supportMultiVClear() { return false; }
-    static void multiVClear(unsigned int, VClearOp*)
-    {}
 };
 
 
@@ -434,10 +293,9 @@ namespace container
 using namespace gpu::opencl;
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::accumulateForce(Main* m, bool prefetch)
+void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::accumulateForce(Main* m)
 {
     DEBUG_TEXT("*MechanicalObjectInternalData::accumulateForce ");
-    if (prefetch) return;
     if (!m->externalForces.getValue().empty())
     {
         //std::cout << "ADD: external forces, size = "<< m->externalForces.getValue().size() << std::endl;
@@ -448,10 +306,9 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::addDxToCollisionModel(Main* m, bool prefetch)
+void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::addDxToCollisionModel(Main* m)
 {
     DEBUG_TEXT("*MechanicalObjectInternalData::addDxToCollisionModel ");
-    if (prefetch) return;
     Kernels::vAdd(m->xfree.getValue().size(), m->x.beginEdit()->deviceWrite(), m->xfree.getValue().deviceRead(), m->dx.getValue().deviceRead());
     m->x.endEdit();
 }
@@ -479,72 +336,9 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vOp(Main* m, VecId v, VecId a, VecId b, double f, bool prefetch)
+void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vOp(Main* m, VecId v, VecId a, VecId b, double f)
 {
     DEBUG_TEXT(" MechanicalObjectInternalData::vOp ");
-
-    if (prefetch)
-    {
-        if (!Kernels::supportMultiVOp()) return; // no kernel available for combining multiple operations
-        if (v.isNull() || a.isNull() || b.isNull()) return; // ignore invalid or simple operations
-        VOp op;
-        op.v = v;
-        op.a = a;
-        op.b = b;
-        op.f = f;
-        op.size = (a.type == sofa::core::V_COORD) ? m->getVecCoord(a.index)->size() : m->getVecDeriv(a.index)->size();
-        m->data.preVOp.push_back(op);
-        m->data.preVOp.id = m->data.preVOp.objects().size();
-        m->data.preVOp.objects().push_back(m);
-        DEBUG_TEXT("~MechanicalObjectInternalData::vOp ");
-        return;
-    }
-    else if (m->data.preVOp.id >= 0)
-    {
-        helper::vector<Main*>& objects = m->data.preVOp.objects();
-        if (!objects.empty())
-        {
-            if (objects.size() == 1 && m->data.preVOp.size() == 1)
-            {
-                // only one operation -> use regular kernel
-                m->data.preVOp.id = -1;
-                m->data.preVOp.clear();
-            }
-            else
-            {
-                int nops = 0;
-                for (unsigned int i=0; i<objects.size(); ++i)
-                    nops += objects[i]->data.preVOp.size();
-                helper::vector< typename Kernels::VOp > ops(nops);
-                nops = 0;
-                for (unsigned int i=0; i<objects.size(); ++i)
-                {
-                    Main* o = objects[i];
-                    helper::vector<VOp>& oops = o->data.preVOp;
-                    for (unsigned int j=0; j<oops.size(); ++j)
-                    {
-
-                        ops[nops].res = (oops[j].v.type == sofa::core::V_COORD) ? o->getVecCoord(v.index)->deviceWrite() : o->getVecDeriv(v.index)->deviceWrite();
-                        ops[nops].a   = (oops[j].a.type == sofa::core::V_COORD) ? o->getVecCoord(a.index)->deviceRead() : o->getVecDeriv(a.index)->deviceRead();
-                        ops[nops].b   = (oops[j].b.type == sofa::core::V_COORD) ? o->getVecCoord(b.index)->deviceRead() : o->getVecDeriv(b.index)->deviceRead();
-                        ops[nops].f   = (Real)oops[j].f;
-                        ops[nops].size = oops[j].size;
-                        ++nops;
-                    }
-                }
-                Kernels::multiVOp(nops, &(ops[0]));
-            }
-            objects.clear();
-        }
-        if (m->data.preVOp.id != -1) // prefetching was done
-        {
-            m->data.preVOp.resize(m->data.preVOp.size()-1);
-            if (m->data.preVOp.empty())
-                m->data.preVOp.id = -1;
-            DEBUG_TEXT("~MechanicalObjectInternalData::vOp " );
-            return;
-        }
-    }
     if(v.isNull())
     {
         // ERROR
@@ -787,11 +581,10 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vMultiOp(Main* m, const VMultiOp& ops, bool prefetch)
+void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vMultiOp(Main* m, const VMultiOp& ops)
 {
     DEBUG_TEXT(" MechanicalObjectInternalData::vMultiOp ");
 
-    if (prefetch) return;
     // optimize common integration case: v += a*dt, x += v*dt
     if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].first.type == sofa::core::V_DERIV && ops[0].second[1].first.type == sofa::core::V_DERIV
         && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[0].first == ops[1].second[1].first && ops[1].first.type == sofa::core::V_COORD)
@@ -882,80 +675,9 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-double MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vDot(Main* m, VecId a, VecId b, bool prefetch)
+double MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vDot(Main* m, VecId a, VecId b)
 {
     DEBUG_TEXT(" MechanicalObjectInternalData::vDot ");
-    if (prefetch)
-    {
-        if (!Kernels::supportMultiVDot()) {DEBUG_TEXT("~MechanicalObjectInternalData::vDot "); return 0.0;} // no kernel available for combining multiple operations
-        m->data.preVDot.a = a;
-        m->data.preVDot.b = b;
-        if (a.type == sofa::core::V_COORD && b.type == sofa::core::V_COORD)
-            m->data.preVDot.size = m->getVecCoord(a.index)->size();
-        else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
-            m->data.preVDot.size = m->getVecDeriv(a.index)->size();
-        else {DEBUG_TEXT("~MechanicalObjectInternalData::vDot"); return 0.0;} // invalid operation -> ignore prefetching
-        if (m->data.preVDot.size == 0) return 0.0; // empty operation -> ignore prefetching
-
-        m->data.preVDot.id = m->data.preVDot.objects().size();
-        m->data.preVDot.objects().push_back(m);
-        DEBUG_TEXT("~MechanicalObjectInternalData::vDot ");
-        return 0.0;
-    }
-    else if (m->data.preVDot.id >= 0)
-    {
-        helper::vector<Main*>& objects = m->data.preVDot.objects();
-        if (!objects.empty())
-        {
-            if (objects.size() == 1)
-            {
-                // only one object -> use regular kernel
-                m->data.preVDot.id = -1;
-            }
-            else //if (objects.size() > 1)
-            {
-                //std::cout << "PREFETCH VDOT: " << m->data.preVDot.objects().size() << " objects" << std::endl;
-                helper::vector<VDotOp> ops(objects.size());
-                helper::vector<double> results(objects.size());
-                for (unsigned int i=0; i<objects.size(); ++i)
-                {
-                    VecId a = objects[i]->data.preVDot.a;
-                    VecId b = objects[i]->data.preVDot.b;
-                    ops[i].a = (a.type == sofa::core::V_COORD) ? objects[i]->getVecCoord(a.index)->deviceRead() : objects[i]->getVecDeriv(a.index)->deviceRead();
-                    ops[i].b = (b.type == sofa::core::V_COORD) ? objects[i]->getVecCoord(b.index)->deviceRead() : objects[i]->getVecDeriv(b.index)->deviceRead();
-                    ops[i].size = objects[i]->data.preVDot.size;
-                    results[i] = 0.0;
-                }
-                unsigned int nmax = (unsigned int)myopenclMultiOpMax;
-                for (unsigned int i0 = 0; i0 < ops.size();)
-                {
-                    unsigned int n = (ops.size()-i0 > nmax) ? nmax : ops.size()-i0;
-                    int tmpsize = Kernels::multiVDotTmpSize(n, &(ops[i0]));
-                    if (tmpsize == 0)
-                    {
-                        Kernels::multiVDot(n, &(ops[i0]), &(results[i0]), _device_pointer(), NULL);
-                    }
-                    else
-                    {
-                        m->data.tmpdot.recreate(tmpsize);
-                        Kernels::multiVDot(n, &(ops[i0]), &(results[i0]), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
-                    }
-                    i0 += n;
-                }
-                for (unsigned int i=0; i<objects.size(); ++i)
-                {
-                    objects[i]->data.preVDot.result = results[i];
-                }
-            }
-            objects.clear();
-        }
-        if (m->data.preVDot.id != -1) // prefetching was done
-        {
-            m->data.preVDot.id = -1;
-            DEBUG_TEXT("~MechanicalObjectInternalData::vDot ");
-            return m->data.preVDot.result;
-        }
-    }
     Real r = 0.0f;
     if (a.type == sofa::core::V_COORD && b.type == sofa::core::V_COORD)
     {
@@ -1004,71 +726,29 @@ double MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeri
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::resetForce(Main* m, bool prefetch)
+void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::resetForce(Main* m)
 {
     DEBUG_TEXT("*MechanicalObjectInternalData::resetForce ");
     VecDeriv& f= *m->getF();
     if (f.size() == 0) return;
-    if (prefetch)
-    {
-        if (!Kernels::supportMultiVClear()) return; // no kernel available for combining multiple operations
-        m->data.preVResetForce.size = f.size();
-        m->data.preVResetForce.id = m->data.preVResetForce.objects().size();
-        m->data.preVResetForce.objects().push_back(m);
-        return;
-    }
-    else if (m->data.preVResetForce.id >= 0)
-    {
-        helper::vector<Main*>& objects = m->data.preVResetForce.objects();
-        if (!objects.empty())
-        {
-            if (objects.size() == 1)
-            {
-                // only one operation -> use regular kernel
-                m->data.preVResetForce.id = -1;
-            }
-            else
-            {
-                int nops = objects.size();
-                helper::vector< VClearOp > ops(nops);
-                for (unsigned int i=0; i<objects.size(); ++i)
-                {
-                    Main* o = objects[i];
-                    ops[i].res = o->getF()->deviceWrite();
-                    ops[i].size = o->data.preVResetForce.size;
-                }
-                Kernels::multiVClear(nops, &(ops[0]));
-            }
-            objects.clear();
-        }
-        if (m->data.preVResetForce.id != -1) // prefetching was done
-        {
-            m->data.preVResetForce.id = -1;
-            return;
-        }
-    }
     Kernels::vClear(f.size(), f.deviceWrite());
-
-//	exit(1);
 }
 
 
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLMechanicalObject_ImplMethods(T)										\
 	template<> double MechanicalObject< T >::vDot(VecId a, VecId b)					\
-	{ return data.vDot(this, a, b, this->isPrefetching()); }						\
+	{ return data.vDot(this, a, b); }						\
 	template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f) \
-	{ data.vOp(this, v, a, b, f, this->isPrefetching()); }							\
-	template<> bool MechanicalObject< T >::canPrefetch() const						\
-	{ return true; }																\
+	{ data.vOp(this, v, a, b, f); }							\
 	template<> void MechanicalObject< T >::accumulateForce()						\
-	{ data.accumulateForce(this, this->isPrefetching()); }							\
+	{ data.accumulateForce(this); }							\
 	template<> void MechanicalObject< T >::addDxToCollisionModel()					\
-	{ data.addDxToCollisionModel(this, this->isPrefetching()); }					\
+	{ data.addDxToCollisionModel(this); }					\
 	template<> void MechanicalObject< T >::resetForce()								\
-	{ data.resetForce(this, this->isPrefetching()); }								\
+	{ data.resetForce(this); }								\
 	template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops)			\
-	{ data.vMultiOp(this, ops, this->isPrefetching()); }							\
+	{ data.vMultiOp(this, ops); }							\
 //*/
 
 OpenCLMechanicalObject_ImplMethods(gpu::opencl::OpenCLVec3fTypes);

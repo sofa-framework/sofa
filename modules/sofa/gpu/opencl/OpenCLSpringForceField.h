@@ -42,7 +42,6 @@ namespace opencl
 
 template<class DataTypes>
 class OpenCLKernelsSpringForceField;
-struct SpringDForceOp;
 
 } // namespace cuda
 
@@ -70,8 +69,6 @@ public:
     typedef typename DataTypes::Real Real;
 
     typedef gpu::opencl::OpenCLKernelsSpringForceField<DataTypes> Kernels;
-    //typedef typename Kernels::SpringDForceOp SpringDForceOp;
-    typedef gpu::opencl::SpringDForceOp SpringDForceOp;
 
     enum { BSIZE=16 };
     struct GPUSpring
@@ -137,21 +134,12 @@ public:
     GPUSpringSet springs1; ///< springs from model1 to model2
     GPUSpringSet springs2; ///< springs from model2 to model1 (only used if model1 != model2)
 
-    int preDForceOpID;
-
-    static helper::vector<SpringDForceOp>& opsDForce()
-    {
-        static helper::vector<SpringDForceOp> v;
-        return v;
-    }
-
     SpringForceFieldInternalData()
-        : preDForceOpID(-1)
     {}
 
     static void init(Main* m, bool stiff);
-    static void addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2, bool prefetch);
-    static void addDForce (Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor, bool prefetch);
+    static void addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    static void addDForce (Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 };
 
 //
@@ -160,7 +148,6 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLSpringForceField_DeclMethods(T) \
-	template<> bool SpringForceField< T >::canPrefetch() const; \
 	template<> void SpringForceField< T >::init(); \
 	template<> void SpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2); \
 	template<> void StiffSpringForceField< T >::init(); \

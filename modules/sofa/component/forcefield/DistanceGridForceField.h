@@ -198,8 +198,6 @@ public:
 
     virtual void init();
 
-    virtual bool canPrefetch() const { return false; }
-
     void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 
     void setStiffness(Real stiffIn, Real stiffOut)

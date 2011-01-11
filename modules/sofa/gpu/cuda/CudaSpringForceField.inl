@@ -50,19 +50,6 @@ extern "C"
     void StiffSpringForceFieldCuda3f_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx, double factor);
     void StiffSpringForceFieldCuda3f_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor);
 
-    struct SpringDForceOp
-    {
-        int size;
-        unsigned int nbSpringPerVertex;
-        const void* springs;
-        void* f;
-        const void* dx;
-        const void* x;
-        const void* dfdx;
-    };
-
-    void MultiStiffSpringForceFieldCuda3f_addDForce(int n, SpringDForceOp* ops, double factor);
-
     void SpringForceFieldCuda3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v);
     void SpringForceFieldCuda3f1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2);
     void StiffSpringForceFieldCuda3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx);
@@ -107,10 +94,6 @@ public:
     {   StiffSpringForceFieldCuda3f_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
     static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor)
     {   StiffSpringForceFieldCuda3f_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx, factor); }
-
-    static bool supportMultiAddDForce() { return mycudaMultiOpMax>0; }
-    static void multiAddDForce(int n, SpringDForceOp* ops, double factor)
-    {   MultiStiffSpringForceFieldCuda3f_addDForce(n, ops, factor); }
 };
 
 template<>
@@ -129,10 +112,6 @@ public:
     {   StiffSpringForceFieldCuda3f1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
     static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor)
     {   StiffSpringForceFieldCuda3f1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx, factor); }
-
-    static bool supportMultiAddDForce() { return false; }
-    static void multiAddDForce(int, SpringDForceOp*, double)
-    {}
 };
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -153,10 +132,6 @@ public:
     {   StiffSpringForceFieldCuda3d_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
     static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor)
     {   StiffSpringForceFieldCuda3d_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx, factor); }
-
-    static bool supportMultiAddDForce() { return false; }
-    static void multiAddDForce(int, SpringDForceOp*, double)
-    {}
 };
 
 template<>
@@ -175,10 +150,6 @@ public:
     {   StiffSpringForceFieldCuda3d1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
     static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor)
     {   StiffSpringForceFieldCuda3d1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx, factor); }
-
-    static bool supportMultiAddDForce() { return false; }
-    static void multiAddDForce(int, SpringDForceOp*, double)
-    {}
 };
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -282,10 +253,9 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 
 // -- InteractionForceField interface
 template<class TCoord, class TDeriv, class TReal>
-void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2, bool prefetch)
+void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
     Data& data = m->data;
-    if (prefetch) return;
 
     if (m->mstate1 == m->mstate2)
     {
@@ -367,59 +337,10 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/, bool prefetch)
+void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
 {
     if (!stiff) return;
     Data& data = m->data;
-    if (prefetch)
-    {
-        if (m->mstate1 == m->mstate2)
-        {
-            if (!Kernels::supportMultiAddDForce()) return;
-            VecDeriv& df = df1;
-            const VecDeriv& dx = dx1;
-            const VecCoord& x = *m->mstate1->getX();
-            df.resize(x.size());
-            int d = data.springs1.vertex0;
-            if (data.springs1.nbSpringPerVertex > 0)
-            {
-                SpringDForceOp op;
-                op.size = data.springs1.nbVertex;
-                op.nbSpringPerVertex = data.springs1.nbSpringPerVertex;
-                op.springs = data.springs1.springs.deviceRead();
-                op.f  = (      Deriv*)df.deviceWrite() + d;
-                op.dx = (const Deriv*)dx.deviceRead() + d;
-                op.x  = (const Coord*)x.deviceRead()  + d;
-                op.dfdx = data.springs1.dfdx.deviceRead();
-
-                data.preDForceOpID = data.opsDForce().size();
-                data.opsDForce().push_back(op);
-            }
-        }
-        return;
-    }
-    else if (data.preDForceOpID != -1)
-    {
-        helper::vector<SpringDForceOp>& ops = data.opsDForce();
-        if (!ops.empty())
-        {
-            if (ops.size() == 1)
-            {
-                // only one object -> use regular kernel
-                m->data.preDForceOpID = -1;
-            }
-            else
-            {
-                Kernels::multiAddDForce(ops.size(), &(ops[0]), kFactor);
-            }
-            ops.clear();
-        }
-        if (data.preDForceOpID != -1)
-        {
-            m->data.preDForceOpID = -1;
-            return;
-        }
-    }
     if (m->mstate1 == m->mstate2)
     {
         VecDeriv& df = df1;
@@ -479,8 +400,6 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaSpringForceField_ImplMethods(T) \
-    template<> bool SpringForceField< T >::canPrefetch() const \
-    { return true; } \
     template<> void SpringForceField< T >::init() \
     { data.init(this, false); } \
     template<> void SpringForceField< T >::addForce(DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2, const core::MechanicalParams* /*mparams*/) \
@@ -491,7 +410,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 		VecDeriv& f2 = *d_f2.beginEdit(); \
 		const VecCoord& x2 = d_x2.getValue(); \
 		const VecDeriv& v2 = d_v2.getValue(); \
-		data.addForce(this, false, f1, f2, x1, x2, v1, v2, this->isPrefetching());\
+		data.addForce(this, false, f1, f2, x1, x2, v1, v2);\
 		d_f1.endEdit(); \
 		d_f2.endEdit(); \
 	} \
@@ -505,7 +424,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 		VecDeriv& f2 = *d_f2.beginEdit(); \
 		const VecCoord& x2 = d_x2.getValue(); \
 		const VecDeriv& v2 = d_v2.getValue(); \
-		data.addForce(this, true, f1, f2, x1, x2, v1, v2, this->isPrefetching()); \
+		data.addForce(this, true, f1, f2, x1, x2, v1, v2); \
 		d_f1.endEdit(); \
 		d_f2.endEdit(); \
 	} \
@@ -515,7 +434,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 		const VecDeriv& dx1 = d_dx1.getValue(); \
 		VecDeriv& df2 = *d_df2.beginEdit(); \
 		const VecDeriv& dx2 = d_dx2.getValue(); \
-		data.addDForce(this, true, df1, df2, dx1, dx2, mparams->kFactor(), mparams->bFactor(), this->isPrefetching()); \
+		data.addDForce(this, true, df1, df2, dx1, dx2, mparams->kFactor(), mparams->bFactor()); \
 		d_df1.endEdit(); \
 		d_df2.endEdit(); \
 	}

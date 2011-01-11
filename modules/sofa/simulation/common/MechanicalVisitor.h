@@ -64,8 +64,6 @@ using std::endl;
 using namespace sofa::core;
 using namespace sofa::defaulttype;
 
-typedef std::map<core::objectmodel::BaseContext*, double> MultiNodeDataMap;
-
 /** Base class for easily creating new actions for mechanical simulation.
 
 During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node.
@@ -80,13 +78,8 @@ class SOFA_SIMULATION_COMMON_API BaseMechanicalVisitor : public Visitor
 {
 
 protected:
-    bool prefetching;
     simulation::Node* root; ///< root node from which the visitor was executed
     double* rootData; ///< data for root node
-    MultiNodeDataMap* nodeMap;
-
-    /// Temporary node -> double* map to sequential traversals requiring node-specific data
-    std::map<simulation::Node*, double*> tmpNodeDataMap;
 
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
@@ -103,12 +96,8 @@ public:
 
     BaseMechanicalVisitor(const core::ExecParams* params)
         : Visitor(params)
-        , prefetching(false), root(NULL), rootData(NULL), nodeMap(NULL)
+        , root(NULL), rootData(NULL)
     {}
-
-    BaseMechanicalVisitor& setNodeMap(MultiNodeDataMap* m) { nodeMap = m; return *this; }
-
-    MultiNodeDataMap* getNodeMap() { return nodeMap; }
 
     /// Return true if this visitor need to read the node-specific data if given
     virtual bool readNodeData() const
@@ -138,9 +127,6 @@ public:
     {
         std::for_each( v.begin(), v.end(), std::bind2nd( forceMaskActivator(), false ) );
     }
-
-    //virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch) { Visitor::execute(node, doPrefetch); }
-    //virtual void execute(core::objectmodel::BaseContext* node) { Visitor::execute(node, true); }
 
 
     /// Return a class name for this visitor

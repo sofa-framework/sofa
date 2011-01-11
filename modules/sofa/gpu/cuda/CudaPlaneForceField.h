@@ -46,9 +46,6 @@ struct GPUPlane
     real damping;
 };
 
-template<class real>
-struct PlaneDForceOp;
-
 } // namespace cuda
 
 } // namespace gpu
@@ -64,28 +61,14 @@ class PlaneForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
 public:
     typedef TReal Real;
-    typedef gpu::cuda::PlaneDForceOp<Real> DForceOp;
 
     gpu::cuda::GPUPlane<Real> plane;
     gpu::cuda::CudaVector<Real> penetration;
 
-
-    int preDForceOpID;
-
-    static helper::vector<DForceOp>& opsDForce()
-    {
-        static helper::vector<DForceOp> v;
-        return v;
-    }
-
     PlaneForceFieldInternalData()
-        : preDForceOpID(-1)
     {}
-
 };
 
-template <>
-bool PlaneForceField<gpu::cuda::CudaVec3fTypes>::canPrefetch() const;
 
 template <>
 void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* mparams);

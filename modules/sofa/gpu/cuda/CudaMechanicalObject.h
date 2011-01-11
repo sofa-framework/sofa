@@ -72,52 +72,15 @@ public:
     /// Temporary storate for dot product operation
     VecDeriv tmpdot;
 
-    template<class T>
-    class PrefetchOp : public T
-    {
-    public:
-        int id; ///< ID in multi-operation, or -1 if inactive
-        static helper::vector < Main* >& objects()
-        {
-            static helper::vector < Main* > v;
-            return v;
-        }
-        PrefetchOp() : id(-1) {}
-    };
-
-    struct VDot
-    {
-        ConstVecId a;
-        ConstVecId b;
-        int size;
-        double result;
-    };
-    PrefetchOp<VDot> preVDot;
-
-    struct VOp
-    {
-        VecId v;
-        ConstVecId a;
-        ConstVecId b;
-        double f;
-        int size;
-    };
-    PrefetchOp< helper::vector<VOp> > preVOp;
-
-    struct VResetForce
-    {
-        int size;
-    };
-    PrefetchOp< VResetForce > preVResetForce;
-
-    MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >* = NULL) {};
-    static void accumulateForce(Main* m, bool prefetch = false);
-    static void addDxToCollisionModel(Main* m, bool prefetch = false);
+    MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >* = NULL)
+    {}
+    static void accumulateForce(Main* m);
+    static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
-    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f, bool prefetch = false);
-    static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
-    static double vDot(Main* m, ConstVecId a, ConstVecId b, bool prefetch = false);
-    static void resetForce(Main* m, bool prefetch = false);
+    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
+    static void vMultiOp(Main* m, const VMultiOp& ops);
+    static double vDot(Main* m, ConstVecId a, ConstVecId b);
+    static void resetForce(Main* m);
 
     //loadInBaseVector
     static void copyToBaseVector(Main* m,defaulttype::BaseVector * dest, ConstVecId src, unsigned int &offset);
@@ -152,52 +115,15 @@ public:
     /// Temporary storate for dot product operation
     VecDeriv tmpdot;
 
-    template<class T>
-    class PrefetchOp : public T
-    {
-    public:
-        int id; ///< ID in multi-operation, or -1 if inactive
-        static helper::vector < Main* >& objects()
-        {
-            static helper::vector < Main* > v;
-            return v;
-        }
-        PrefetchOp() : id(-1) {}
-    };
-
-    struct VDot
-    {
-        ConstVecId a;
-        ConstVecId b;
-        int size;
-        double result;
-    };
-    PrefetchOp<VDot> preVDot;
-
-    struct VOp
-    {
-        VecId v;
-        ConstVecId a;
-        ConstVecId b;
-        double f;
-        int size;
-    };
-    PrefetchOp< helper::vector<VOp> > preVOp;
-
-    struct VResetForce
-    {
-        int size;
-    };
-    PrefetchOp< VResetForce > preVResetForce;
-
-    MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaRigidTypes<N, real > >* = NULL) {};
-    static void accumulateForce(Main* m, bool prefetch = false);
-    static void addDxToCollisionModel(Main* m, bool prefetch = false);
+    MechanicalObjectInternalData(MechanicalObject< gpu::cuda::CudaRigidTypes<N, real > >* = NULL)
+    {}
+    static void accumulateForce(Main* m);
+    static void addDxToCollisionModel(Main* m);
     static void vAlloc(Main* m, VecId v);
-    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f, bool prefetch = false);
-    static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
-    static double vDot(Main* m, ConstVecId a, ConstVecId b, bool prefetch = false);
-    static void resetForce(Main* m, bool prefetch = false);
+    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
+    static void vMultiOp(Main* m, const VMultiOp& ops);
+    static double vDot(Main* m, ConstVecId a, ConstVecId b);
+    static void resetForce(Main* m);
 
 //    static void loadInBaseVector(Main* m,defaulttype::BaseVector * dest, VecId src, unsigned int &offset);
     static void copyToBaseVector(Main* m,defaulttype::BaseVector * dest, ConstVecId src, unsigned int &offset);
@@ -213,7 +139,6 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
-    template<> inline bool MechanicalObject< T >::canPrefetch() const; \
     template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params); \
     template<> inline void MechanicalObject< T >::vOp(core::VecId v, core::ConstVecId a, core::ConstVecId b, double f, const core::ExecParams* params); \
     template<> inline void MechanicalObject< T >::vMultiOp(const VMultiOp& ops, const core::ExecParams* params); \

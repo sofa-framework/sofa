@@ -45,19 +45,6 @@ extern "C"
     void StiffSpringForceFieldCuda3f_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx, double factor);
     void StiffSpringForceFieldCuda3f_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor);
 
-    struct SpringDForceOp
-    {
-        int size;
-        unsigned int nbSpringPerVertex;
-        const void* springs;
-        void* f;
-        const void* dx;
-        const void* x;
-        const void* dfdx;
-    };
-
-    void MultiStiffSpringForceFieldCuda3f_addDForce(int n, SpringDForceOp* ops, double factor);
-
     void SpringForceFieldCuda3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v);
     void SpringForceFieldCuda3f1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2);
     void StiffSpringForceFieldCuda3f1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx);
@@ -1224,104 +1211,6 @@ __global__ void StiffSpringForceFieldCuda3t_addDForce_kernel(unsigned int nbSpri
     f[iext+2*BSIZE] += temp[index1+2*BSIZE];
 }
 
-enum { MULTI_NMAX = 64 };
-__constant__ SpringDForceOp multiSpringDForceOps[MULTI_NMAX];
-
-template<class real>
-__global__ void MultiStiffSpringForceFieldCuda3t_addDForce_kernel(real factor)
-{
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
-    if (index0 >= multiSpringDForceOps[blockIdx.y].size) return;
-
-    unsigned int nbSpringPerVertex = multiSpringDForceOps[blockIdx.y].nbSpringPerVertex;
-    const GPUSpring* springs = (const GPUSpring*) multiSpringDForceOps[blockIdx.y].springs;
-    real* f = (real*) multiSpringDForceOps[blockIdx.y].f;
-    const real* dx = (const real*) multiSpringDForceOps[blockIdx.y].dx;
-    const real* x = (const real*) multiSpringDForceOps[blockIdx.y].x;
-    const real* dfdx = (const real*) multiSpringDForceOps[blockIdx.y].dfdx;
-
-    int index1 = threadIdx.x;
-
-    //! Dynamically allocated shared memory to reorder global memory access
-    __shared__  real temp[BSIZE*6];
-    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
-    int index3 = umul24(index1,3); //3*index1;
-
-    // First copy dx and x inside temp
-    temp[index1        ] = dx[iext        ];
-    temp[index1+  BSIZE] = dx[iext+  BSIZE];
-    temp[index1+2*BSIZE] = dx[iext+2*BSIZE];
-    temp[index1+3*BSIZE] = x[iext        ];
-    temp[index1+4*BSIZE] = x[iext+  BSIZE];
-    temp[index1+5*BSIZE] = x[iext+2*BSIZE];
-
-    __syncthreads();
-
-    CudaVec3<real> dpos1 = CudaVec3<real>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
-    CudaVec3<real> pos1 = CudaVec3<real>::make(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
-
-    CudaVec3<real> dforce = CudaVec3<real>::make(0.0f,0.0f,0.0f);
-
-    springs+=(umul24(index0,nbSpringPerVertex)<<1)+index1;
-    dfdx+=umul24(index0,nbSpringPerVertex)+index1;
-
-    for (int s = 0; s < nbSpringPerVertex; s++)
-    {
-        GPUSpring spring = *springs;
-        --spring.index;
-        springs+=BSIZE;
-        //GPUSpring2 spring2 = *(const GPUSpring2*)springs;
-        springs+=BSIZE;
-        real tgt = *dfdx;
-        dfdx+=BSIZE;
-        if (spring.index != -1)
-        {
-            CudaVec3<real> du;
-            CudaVec3<real> u;
-
-            if (spring.index >= index0 && spring.index < index0+BSIZE)
-            {
-                // 'local' point
-                int i3 = umul24(spring.index - index0, 3);
-                du = CudaVec3<real>::make(temp[i3  ], temp[i3+1], temp[i3+2]);
-                u = CudaVec3<real>::make(temp[i3  +3*BSIZE], temp[i3+1+3*BSIZE], temp[i3+2+3*BSIZE]);
-            }
-            else
-            {
-                // general case
-                du = ((const CudaVec3<real>*)dx)[spring.index];
-                u = ((const CudaVec3<real>*)x)[spring.index];
-            }
-
-            du -= dpos1;
-            u -= pos1;
-
-            real uxux = u.x*u.x;
-            real uyuy = u.y*u.y;
-            real uzuz = u.z*u.z;
-            real uxuy = u.x*u.y;
-            real uxuz = u.x*u.z;
-            real uyuz = u.y*u.z;
-            real fact = (spring.ks-tgt)/(uxux+uyuy+uzuz);
-            dforce.x += fact*(uxux*du.x+uxuy*du.y+uxuz*du.z)+tgt*du.x;
-            dforce.y += fact*(uxuy*du.x+uyuy*du.y+uyuz*du.z)+tgt*du.y;
-            dforce.z += fact*(uxuz*du.x+uyuz*du.y+uzuz*du.z)+tgt*du.z;
-        }
-    }
-
-    __syncthreads();
-
-    temp[index3  ] = dforce.x*factor;
-    temp[index3+1] = dforce.y*factor;
-    temp[index3+2] = dforce.z*factor;
-
-    __syncthreads();
-
-    f[iext        ] += temp[index1        ];
-    f[iext+  BSIZE] += temp[index1+  BSIZE];
-    f[iext+2*BSIZE] += temp[index1+2*BSIZE];
-}
-
 //////////////////////
 // CPU-side methods //
 //////////////////////
@@ -1439,30 +1328,6 @@ void StiffSpringForceFieldCuda3f1_addExternalDForce(unsigned int size, unsigned 
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     StiffSpringForceFieldCuda3t1_addDForce_kernel<float><<< grid, threads >>>(nbSpringPerVertex, (const GPUSpring*)springs, (CudaVec4<float>*)f1, (const CudaVec4<float>*)dx1, (const CudaVec4<float>*)x1, (const CudaVec4<float>*)dx2, (const CudaVec4<float>*)x2, (const float*)dfdx, (float)factor);
 }
-
-void MultiStiffSpringForceFieldCuda3f_addDForce(int n, SpringDForceOp* ops, double factor)
-{
-    int totalblocs = 0;
-    for (unsigned int i0 = 0; i0 < n; i0 += MULTI_NMAX)
-    {
-        int n2 = (n-i0 > MULTI_NMAX) ? MULTI_NMAX : n-i0;
-        int maxnblocs = 0;
-        SpringDForceOp* ops2 = ops + i0;
-        for (unsigned int i = 0; i < n2; ++i)
-        {
-            int nblocs = (ops2[i].size+BSIZE-1)/BSIZE;
-            if (nblocs > maxnblocs) maxnblocs = nblocs;
-        }
-        cudaMemcpyToSymbol(multiSpringDForceOps, ops2, n2 * sizeof(SpringDForceOp), 0, cudaMemcpyHostToDevice);
-
-        dim3 threads(BSIZE,1);
-        dim3 grid(maxnblocs,n2);
-        MultiStiffSpringForceFieldCuda3t_addDForce_kernel<float><<< grid, threads >>>((float)factor);
-
-        totalblocs += maxnblocs * n2;
-    }
-}
-
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 

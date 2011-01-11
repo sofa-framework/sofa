@@ -25,8 +25,6 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
 #define SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
 
-//#include <sofa/simulation/common/SolverImpl.h>
-//#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/LinearSolver.h>

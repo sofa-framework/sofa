@@ -31,7 +31,6 @@ using namespace sofa::defaulttype::SharedTypes;
 #endif
 
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
-// #include <sofa/simulation/common/SolverImpl.h>
 
 namespace sofa
 {
