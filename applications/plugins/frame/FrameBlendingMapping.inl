@@ -104,6 +104,8 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.0001, "showGradientsScaleFactor","Gradients Scale Factor." ) )
     , showStrain ( initData ( &showStrain, false, "showStrain","Show Computed Strain Tensors." ) )
     , showStrainScaleFactor ( initData ( &showStrainScaleFactor, 1.0, "showStrainScaleFactor","Strain Tensors Scale Factor." ) )
+    , showDetF ( initData ( &showDetF, false, "showDetF","Show Computed Det F." ) )
+    , showDetFScaleFactor ( initData ( &showDetFScaleFactor, 1.0, "showDetFScaleFactor","Det F Scale Factor." ) )
     , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to improve numerical integration" ) )
     , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Target frames number" ) )
     , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
@@ -893,6 +895,65 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                     float color = ( e[0] + e[1] + e[2])/3.0;
                     if (color<0) color=2*color/(color+1.);
                     color*=1000 * this->showStrainScaleFactor.getValue();
+                    color+=120;
+                    if (color<0) color=0;
+                    if (color>240) color=240;
+                    sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
+                    glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
+                }
+                glEnd();
+            }
+            glPopAttrib();
+        }
+    }
+
+    // Det F show
+    if ( this->showDetF.getValue())
+    {
+        if (!this->isPhysical)
+        {
+            serr << "The Frame Blending Mapping must be physical to display the strain tensors." << sendl;
+        }
+        else
+        {
+            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+            glDisable( GL_LIGHTING);
+            typedef Vec<3,double> Vec3;
+            if ( ! triangles.empty())
+            {
+                glBegin( GL_TRIANGLES);
+                for ( unsigned int i = 0; i < triangles.size(); i++)
+                {
+                    for ( unsigned int j = 0; j < 3; j++)
+                    {
+                        const unsigned int& indexP = triangles[i][j];
+                        // Det( F )
+                        float color = xto[indexP][3]*(xto[indexP][ 7]*xto[indexP][11]-xto[indexP][10]*xto[indexP][ 8])
+                                -xto[indexP][6]*(xto[indexP][10]*xto[indexP][ 5]-xto[indexP][ 4]*xto[indexP][11])
+                                +xto[indexP][9]*(xto[indexP][ 4]*xto[indexP][ 8]-xto[indexP][ 7]*xto[indexP][ 5]);
+                        if (color<0) color=2*color/(color+1.);
+                        color*=1000 * this->showDetFScaleFactor.getValue();
+                        color+=120;
+                        if (color<0) color=0;
+                        if (color>240) color=240;
+                        sofa::helper::gl::Color::setHSVA(color,1.,.8,1.);
+                        glVertex3f( xto[indexP][0], xto[indexP][1], xto[indexP][2]);
+                    }
+                }
+                glEnd();
+            }
+            else // Show by points
+            {
+                glPointSize( 10);
+                glBegin( GL_POINTS);
+                for ( unsigned int i = 0; i < xto.size(); i++)
+                {
+                    // Det( F )
+                    float color = xto[i][3]*(xto[7]*xto[11]-xto[10]*xto[8])
+                            -xto[i][6]*(xto[10]*xto[5]-xto[4]*xto[11])
+                            +xto[i][9]*(xto[4]*xto[8]-xto[7]*xto[5]);
+                    if (color<0) color=2*color/(color+1.);
+                    color*=1000 * this->showDetFScaleFactor.getValue();
                     color+=120;
                     if (color<0) color=0;
                     if (color>240) color=240;
