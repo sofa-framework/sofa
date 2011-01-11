@@ -1005,7 +1005,7 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
             offsetWeightsOutsideObject();
             addWeightinRepartion(i);
         }
-        distances.clear(); distances.insert(distances.begin(),weights.begin(),weights.end());
+//distances.clear(); distances.insert(distances.begin(),weights.begin(),weights.end());
 
     }
     else if (dtype==DISTANCE_DIFFUSION || dtype==DISTANCE_ANISOTROPICDIFFUSION)
