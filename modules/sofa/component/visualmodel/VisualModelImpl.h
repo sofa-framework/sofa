@@ -317,6 +317,7 @@ public:
     void drawTransparent();
     void drawShadow();
 
+    virtual bool loadTextures() {return false;}
     virtual bool loadTexture(const std::string& /*filename*/) { return false; }
 
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);

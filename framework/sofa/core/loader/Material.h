@@ -30,6 +30,8 @@
 
 #include <sofa/core/core.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
@@ -54,7 +56,11 @@ public:
     bool   useAmbient;
     bool   useEmissive;
     bool   useShininess;
+    bool   useTexture;
+    bool   useBumpMapping;
     bool   activated;
+    std::string   textureFilename; // path to the texture linked to the material
+    std::string   bumpTextureFilename; // path to the bump texture linked to the material
 
     void setColor(float r, float g, float b, float a)
     {
@@ -75,7 +81,25 @@ public:
         out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
         out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
         out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
-        out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess ;
+        out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess   << " ";
+
+        if (m.useTexture)
+        {
+            out << "Texture linked to the material : " << m.textureFilename << " ";
+        }
+        else
+        {
+            out << "No texture linked to the material ";
+        }
+
+        if (m.useBumpMapping)
+        {
+            out << "Bump texture linked to the material : " << m.bumpTextureFilename << " ";
+        }
+        else
+        {
+            out << "No bump texture linked to the material ";
+        }
         return out;
     }
     inline friend std::istream& operator >> (std::istream& in, Material &m )
@@ -110,6 +134,12 @@ public:
         useEmissive =  false;
         useShininess =  false;
         activated = false;
+
+        useTexture = false;
+        textureFilename ="DEFAULT";
+
+        useBumpMapping = false;
+        bumpTextureFilename ="DEFAULT";
     }
 
     Material(const Material& mat)
@@ -127,6 +157,12 @@ public:
         useEmissive =  mat.useEmissive;
         useShininess =  mat.useShininess ;
         activated = mat.activated;
+
+        useTexture = mat.useTexture;
+        textureFilename = mat.textureFilename;
+
+        useBumpMapping = mat.useBumpMapping;
+        bumpTextureFilename = mat.bumpTextureFilename;
     }
 };
 

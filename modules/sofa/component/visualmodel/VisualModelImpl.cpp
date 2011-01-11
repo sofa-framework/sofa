@@ -438,7 +438,10 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     {
         std::string textureFilename(textureName);
         if (sofa::helper::system::DataRepository.findFile(textureFilename))
+        {
+            std::cout << "loading file " << textureName << std::endl;
             tex = loadTexture(textureName);
+        }
         else
             serr << "Texture \"" << textureName << "\" not found" << sendl;
     }
@@ -478,6 +481,25 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                 //setMesh(*objLoader,tex);
                 setMesh(*objLoader, true);
                 //sout << "VisualModel::load, vertices.size = "<< vertices.size() <<sendl;
+            }
+
+            if(textureName.empty())
+            {
+                //we check how many textures are linked with a material only if a texture name is not defined in the scn file
+                bool isATextureLinked = false;
+                for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
+                {
+                    //we count only the texture with an activated material
+                    if (this->materials.getValue()[i].useTexture && this->materials.getValue()[i].activated)
+                    {
+                        isATextureLinked=true;
+                        break;
+                    }
+                }
+                if (isATextureLinked)
+                {
+                    loadTextures();
+                }
             }
         }
         else

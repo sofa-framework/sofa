@@ -348,6 +348,51 @@ void MeshOBJ::readMTL(const char* filename)
                 if( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
                     std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                 break;
+
+            case 'm':
+            {
+                //texture map
+                char charFilename[128] = {0};
+                if (fgets(charFilename, sizeof(charFilename), file)==NULL)
+                {
+                    std::cerr << "Error: MeshOBJ: fgets has encountered an error" << std::endl;
+                }
+                else
+                {
+                    mat->useTexture = true;
+
+                    //store the filename of the texture map in the material
+
+                    std::string stringFilename(charFilename);
+                    //delete carriage return from the string assuming the next property of the .mtl file is at the next line
+                    stringFilename.erase(stringFilename.end()-1, stringFilename.end());
+                    stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
+                    mat->textureFilename = stringFilename;
+                }
+            }
+            break;
+            case 'b':
+            {
+                //bump mapping texture map
+                char charFilename[128] = {0};
+                if (fgets(charFilename, sizeof(charFilename), file)==NULL)
+                {
+                    std::cerr << "Error: MeshOBJ: fgets has encountered an error" << std::endl;
+                }
+                else
+                {
+                    mat->useBumpMapping = true;
+
+                    //store the filename of the texture map in the material
+
+                    std::string stringFilename(charFilename);
+                    //delete carriage return from the string assuming the next property of the .mtl file is at the next line
+                    stringFilename.erase(stringFilename.end()-1, stringFilename.end());
+                    stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
+                    mat->bumpTextureFilename = stringFilename;
+                }
+            }
+            break;
             default:
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == NULL)
@@ -363,6 +408,7 @@ void MeshOBJ::readMTL(const char* filename)
         }
         fclose(file);
     }
+
     if (mat != NULL)
     {
         materials.push_back(*mat);
