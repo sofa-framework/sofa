@@ -22,8 +22,8 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTMAPPING_H
-#define SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H
+#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
@@ -40,9 +40,9 @@ namespace mapping
 {
 
 /**
- * @brief ContinuousContactMapping API
+ * @brief PersistentContactMapping API
  */
-class ContinuousContactMapping : public virtual sofa::core::objectmodel::BaseObject
+class PersistentContactMapping : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
 
@@ -79,4 +79,4 @@ public:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTMAPPING_H
+#endif // SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H

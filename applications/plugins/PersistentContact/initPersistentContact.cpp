@@ -26,7 +26,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 
-#include "ContinuousContact.h"
+#include "PersistentContact.h"
 
 namespace sofa
 {
@@ -37,12 +37,12 @@ namespace component
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-    SOFA_CONTINUOUSCONTACT_API void initExternalModule();
-    SOFA_CONTINUOUSCONTACT_API const char* getModuleName();
-    SOFA_CONTINUOUSCONTACT_API const char* getModuleVersion();
-    SOFA_CONTINUOUSCONTACT_API const char* getModuleLicense();
-    SOFA_CONTINUOUSCONTACT_API const char* getModuleDescription();
-    SOFA_CONTINUOUSCONTACT_API const char* getModuleComponentList();
+    SOFA_PERSISTENTCONTACT_API void initExternalModule();
+    SOFA_PERSISTENTCONTACT_API const char* getModuleName();
+    SOFA_PERSISTENTCONTACT_API const char* getModuleVersion();
+    SOFA_PERSISTENTCONTACT_API const char* getModuleLicense();
+    SOFA_PERSISTENTCONTACT_API const char* getModuleDescription();
+    SOFA_PERSISTENTCONTACT_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -56,7 +56,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "Plugin Continuous Contact";
+    return "Plugin Persistent Contact";
 }
 
 const char* getModuleVersion()
@@ -71,12 +71,12 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "Continuous contact management for friction contacts";
+    return "Persistent contact management for friction contacts";
 }
 
 const char* getModuleComponentList()
 {
-    return "ContinuousContactBarycentricMapping, ContinuousFrictionContact, ContinuousContactRigidMapping, ContinuousUnilateralInteractionConstraint";
+    return "PersistentContactBarycentricMapping, PersistentFrictionContact, PersistentContactRigidMapping, PersistentUnilateralInteractionConstraint";
 }
 
 } // namespace component
@@ -84,8 +84,8 @@ const char* getModuleComponentList()
 } // namespace sofa
 
 
-SOFA_LINK_CLASS(ContinuousContactBarycentricMapping)
-SOFA_LINK_CLASS(ContinuousContactRigidMapping)
-SOFA_LINK_CLASS(ContinuousFrictionContact)
-SOFA_LINK_CLASS(ContinuousUnilateralInteractionConstraint)
+SOFA_LINK_CLASS(PersistentContactBarycentricMapping)
+SOFA_LINK_CLASS(PersistentContactRigidMapping)
+SOFA_LINK_CLASS(PersistentFrictionContact)
+SOFA_LINK_CLASS(PersistentUnilateralInteractionConstraint)
 

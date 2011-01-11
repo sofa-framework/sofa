@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_CPP
-#include "ContinuousContactBarycentricMapping.inl"
+#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_CPP
+#include "PersistentContactBarycentricMapping.inl"
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -40,34 +40,34 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ContinuousContactBarycentricMapping)
+SOFA_DECL_CLASS(PersistentContactBarycentricMapping)
 
 // Register in the Factory
-int ContinuousContactBarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
+int PersistentContactBarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
 #ifndef SOFA_FLOAT
-        .add< ContinuousContactBarycentricMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< PersistentContactBarycentricMapping< Vec3dTypes, Vec3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ContinuousContactBarycentricMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< PersistentContactBarycentricMapping< Vec3fTypes, Vec3fTypes > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< ContinuousContactBarycentricMapping< Vec3fTypes, Vec3dTypes > >()
-        .add< ContinuousContactBarycentricMapping< Vec3dTypes, Vec3fTypes > >()
+        .add< PersistentContactBarycentricMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< PersistentContactBarycentricMapping< Vec3dTypes, Vec3fTypes > >()
 #endif
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3dTypes, Vec3fTypes >;
-template class SOFA_CONTINUOUSCONTACT_API ContinuousContactBarycentricMapping< Vec3fTypes, Vec3dTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3dTypes >;
 #endif
 #endif
 

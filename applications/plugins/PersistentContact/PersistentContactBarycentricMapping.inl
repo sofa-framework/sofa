@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_INL
 
-#include "ContinuousContactBarycentricMapping.h"
+#include "PersistentContactBarycentricMapping.h"
 
 #include <sofa/component/mapping/BarycentricMapping.inl>
 
@@ -40,7 +40,7 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-void ContinuousContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
+void PersistentContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
 {
     if (!m_init)
     {
@@ -58,7 +58,7 @@ void ContinuousContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
 }
 
 template <class TIn, class TOut>
-int ContinuousContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     if (this->mapper)
     {
@@ -81,7 +81,7 @@ int ContinuousContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapp
 }
 
 template <class TIn, class TOut>
-void ContinuousContactBarycentricMapping<TIn, TOut>::init()
+void PersistentContactBarycentricMapping<TIn, TOut>::init()
 {
     m_init = false;
 
@@ -94,4 +94,4 @@ void ContinuousContactBarycentricMapping<TIn, TOut>::init()
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_MAPPING_CONTINUOUSCONTACTBARYCENTRICMAPPING_INL
+#endif // SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_INL

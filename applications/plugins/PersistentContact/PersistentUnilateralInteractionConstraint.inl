@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CONTINUOUSUNILATERALINTERACTIONCONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_CONTINUOUSUNILATERALINTERACTIONCONSTRAINT_INL
+#ifndef SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_INL
 
-#include "ContinuousUnilateralInteractionConstraint.h"
+#include "PersistentUnilateralInteractionConstraint.h"
 
 #include <sofa/component/constraintset/UnilateralInteractionConstraint.inl>
 
@@ -42,7 +42,7 @@ namespace constraintset
 {
 
 template< class DataTypes >
-void ContinuousUnilateralConstraintResolutionWithFriction< DataTypes >::init(int line, double** w, double* force)
+void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::init(int line, double** w, double* force)
 {
     _W[0]=w[line  ][line  ];
     _W[1]=w[line  ][line+1];
@@ -63,7 +63,7 @@ void ContinuousUnilateralConstraintResolutionWithFriction< DataTypes >::init(int
 }
 
 template< class DataTypes >
-void ContinuousUnilateralConstraintResolutionWithFriction< DataTypes >::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
+void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
 {
     double f[2];
     double normFt;
@@ -104,7 +104,7 @@ void ContinuousUnilateralConstraintResolutionWithFriction< DataTypes >::resoluti
 }
 
 template< class DataTypes >
-void ContinuousUnilateralConstraintResolutionWithFriction< DataTypes >::store(int line, double* force, bool /*convergence*/)
+void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::store(int line, double* force, bool /*convergence*/)
 {
     if(_prev)
     {
@@ -122,7 +122,7 @@ void ContinuousUnilateralConstraintResolutionWithFriction< DataTypes >::store(in
 
 
 template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid)
+void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid)
 {
     // compute dt and delta
     Real delta = dot(P-Q, norm) - contactDistance;
@@ -214,7 +214,7 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
 
 
 template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void PersistentUnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     if (this->contactsStatus)
         delete[] this->contactsStatus;
@@ -227,7 +227,7 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
         Contact& c = this->contacts[i];
         if(c.mu > 0.0)
         {
-            ContinuousUnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new ContinuousUnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &this->contactsStatus[i]);
+            PersistentUnilateralConstraintResolutionWithFriction<DataTypes> *cRes = new PersistentUnilateralConstraintResolutionWithFriction<DataTypes>(c.mu, NULL, &this->contactsStatus[i]);
             cRes->setConstraint(this);
             resTab[offset] = cRes;
             offset += 3;
@@ -239,7 +239,7 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::getConstraintResoluti
 
 
 template<class DataTypes>
-bool ContinuousUnilateralInteractionConstraint<DataTypes>::isSticked(int _contactId)
+bool PersistentUnilateralInteractionConstraint<DataTypes>::isSticked(int _contactId)
 {
     typename sofa::helper::vector< Contact >::iterator it = this->contacts.begin();
     typename sofa::helper::vector< Contact >::iterator itEnd = this->contacts.end();
@@ -253,13 +253,13 @@ bool ContinuousUnilateralInteractionConstraint<DataTypes>::isSticked(int _contac
     }
 
     if (it != itEnd)
-        return (contactStates[it->id] == ContinuousUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
+        return (contactStates[it->id] == PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY);
     else
         return false;
 }
 
 template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::setContactState(int id, ContactState s)
+void PersistentUnilateralInteractionConstraint<DataTypes>::setContactState(int id, ContactState s)
 {
     if (contactStates.find(id) != contactStates.end())
     {
@@ -272,13 +272,13 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::setContactState(int i
 }
 
 template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::clearContactStates()
+void PersistentUnilateralInteractionConstraint<DataTypes>::clearContactStates()
 {
     contactStates.clear();
 }
 
 template<class DataTypes>
-void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
+void PersistentUnilateralInteractionConstraint<DataTypes>::debugContactStates()
 {
     std::cout << "-------------->debugContactStates\n";
 
@@ -291,15 +291,15 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
     {
         switch (it->second)
         {
-        case ContinuousUnilateralConstraintResolutionWithFriction<DataTypes>::NONE :
+        case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::NONE :
             s = "NONE";
             break;
 
-        case ContinuousUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING :
+        case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING :
             s = "SLIDING";
             break;
 
-        case ContinuousUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY :
+        case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY :
             s = "STICKY";
             break;
         }
@@ -315,4 +315,4 @@ void ContinuousUnilateralInteractionConstraint<DataTypes>::debugContactStates()
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_CONTINUOUSUNILATERALINTERACTIONCONSTRAINT_INL
+#endif // SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_INL

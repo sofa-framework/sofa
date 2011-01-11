@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINTSET_CONTINUOUSUNILATERALINTERACTIONCONSTRAINT_CPP
+#define SOFA_COMPONENT_CONSTRAINTSET_PERSISTENTUNILATERALINTERACTIONCONSTRAINT_CPP
 
-#include "ContinuousUnilateralInteractionConstraint.inl"
+#include "PersistentUnilateralInteractionConstraint.inl"
 
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -39,13 +39,13 @@ namespace constraintset
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(ContinuousUnilateralInteractionConstraint)
+SOFA_DECL_CLASS(PersistentUnilateralInteractionConstraint)
 
 #ifndef SOFA_FLOAT
-template class SOFA_CONTINUOUSCONTACT_API ContinuousUnilateralInteractionConstraint<Vec3dTypes>;
+template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_CONTINUOUSCONTACT_API ContinuousUnilateralInteractionConstraint<Vec3fTypes>;
+template class SOFA_PERSISTENTCONTACT_API PersistentUnilateralInteractionConstraint<Vec3fTypes>;
 #endif
 
 

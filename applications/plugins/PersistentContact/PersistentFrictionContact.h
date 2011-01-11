@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CONTINUOUSFRICTIONCONTACT_H
-#define SOFA_COMPONENT_COLLISION_CONTINUOUSFRICTIONCONTACT_H
+#ifndef SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_H
+#define SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_H
 
 #include <sofa/component/collision/FrictionContact.h>
 
-#include "ContinuousContactMapping.h"
+#include "PersistentContactMapping.h"
 
 namespace sofa
 {
@@ -70,9 +70,9 @@ struct ContactInfo
 
 
 template <class TCollisionModel1, class TCollisionModel2>
-class ContinuousFrictionContact : public FrictionContact<TCollisionModel1, TCollisionModel2>
+class PersistentFrictionContact : public FrictionContact<TCollisionModel1, TCollisionModel2>
 {
-    SOFA_CLASS(SOFA_TEMPLATE2(ContinuousFrictionContact, TCollisionModel1, TCollisionModel2), SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2));
+    SOFA_CLASS(SOFA_TEMPLATE2(PersistentFrictionContact, TCollisionModel1, TCollisionModel2), SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2));
 
 public:
     typedef TCollisionModel1 CollisionModel1;
@@ -91,11 +91,11 @@ public:
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(this->model1,this->model2); }
 
-    ContinuousFrictionContact() {}
+    PersistentFrictionContact() {}
 
-    ContinuousFrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
+    PersistentFrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
 
-    ~ContinuousFrictionContact();
+    ~PersistentFrictionContact();
 
     void cleanup();
 
@@ -113,19 +113,19 @@ protected:
     std::pair<bool,bool> findMappingOrUseMapper();
 
     template< class T >
-    bool findMappingOrUseMapper(core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *&constraintModel, component::mapping::ContinuousContactMapping *&map);
+    bool findMappingOrUseMapper(core::behavior::MechanicalState<T> *mState, container::MechanicalObject<T> *&constraintModel, component::mapping::PersistentContactMapping *&map);
 
     void activateConstraint();
 
-    void resetContinuousContactMappings();
+    void resetPersistentContactMappings();
 
-    int mapTheContinuousContact(Vector3 &, int, Vector3 &, bool)
+    int mapThePersistentContact(Vector3 &, int, Vector3 &, bool)
     {
-        serr << "Warning: mapTheContinuousContact is not defined for these collision elements" << sendl;
+        serr << "Warning: mapThePersistentContact is not defined for these collision elements" << sendl;
         return 0;
     }
 
-    int keepTheContinuousContact(int, bool);
+    int keepThePersistentContact(int, bool);
 
     /// Removes duplicate contacts
     void filterDuplicatedDetectionOutputs(TOutputVector &input, DetectionOutputVector &output);
@@ -145,8 +145,8 @@ protected:
     component::container::MechanicalObject< DataTypes1 >* constraintModel1;
     component::container::MechanicalObject< DataTypes2 >* constraintModel2;
 
-    sofa::component::mapping::ContinuousContactMapping *map1;
-    sofa::component::mapping::ContinuousContactMapping *map2;
+    sofa::component::mapping::PersistentContactMapping *map1;
+    sofa::component::mapping::PersistentContactMapping *map2;
 
     std::vector< Vector3 > barycentricValues1;
     std::vector< Vector3 > barycentricValues2;
@@ -164,4 +164,4 @@ protected:
 
 } // sofa
 
-#endif // SOFA_COMPONENT_COLLISION_CONTINUOUSFRICTIONCONTACT_H
+#endif // SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_H
