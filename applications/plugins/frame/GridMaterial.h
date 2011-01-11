@@ -182,7 +182,7 @@ public:
     /// return the weights of the voronoi region labeled 'sampleindex'
     bool lumpWeightsRepartition(const unsigned int sampleindex,const SCoord& point,VRef& reps,VRefReal& w,VRefGradient* dw=NULL,VRefHessian* ddw=NULL);
     /// return the interpolated weights
-    bool interpolateWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w);
+    bool interpolateWeightsRepartition(const SCoord& point,VRef& reps,VRefReal& w,const int restrictToLabel=-1);
 
     /*********************************/
     /*   Compute distances/weights   */
@@ -191,6 +191,7 @@ public:
     /// compute voxel weights related to 'points' according to 'distanceType' method -> stored in weightsRepartition and repartition
     bool computeWeights(const VecSCoord& points);
     // insert a point in each rigid part where stifness>=STIFFNESS_RIGID
+    bool isRigid(const voxelType label) const;
     bool rigidPartsSampling ( VecSCoord& points);
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation
     //  -> returns points and store id/distances in voronoi/distances
@@ -294,7 +295,7 @@ protected:
     void offsetWeightsOutsideObject(unsigned int offestdist=2);
 
     /// (biased) Euclidean distance between two voxels
-    Real getDistance(const unsigned int& index1,const unsigned int& index2);
+    Real getDistance(const unsigned int& index1,const unsigned int& index2,const int fromLabel=-1);
     /// (biased) Geodesical distance between a voxel and all other voxels -> stored in distances
     bool computeGeodesicalDistances ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max(),const vector<Real>* distanceScaleFactors=NULL);
     bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max(),const vector<Real>* distanceScaleFactors=NULL);

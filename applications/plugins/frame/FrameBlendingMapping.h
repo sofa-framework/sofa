@@ -167,11 +167,10 @@ public:
 
     MeshLoader::SeqTriangles triangles; // Topology of toModel (used for strain display)
 
-    Data<bool> useElastons; // temporary
-
     GridMaterial< materialType>* gridMaterial;
     Data<unsigned int> targetFrameNumber;
     Data<unsigned int> targetSampleNumber;
+    Data<int> restrictInterpolationToLabel;  ///< restrict interpolation to a certain label in the gridmaterial
 };
 
 using sofa::defaulttype::Vec3dTypes;
