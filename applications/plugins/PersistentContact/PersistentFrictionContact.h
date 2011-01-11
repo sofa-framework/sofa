@@ -127,13 +127,13 @@ protected:
 
     int keepThePersistentContact(int, bool);
 
-    /// Removes duplicate contacts
+    /// Removes duplicate contacts.
     void filterDuplicatedDetectionOutputs(TOutputVector &input, DetectionOutputVector &output);
 
     void keepStickyContacts(DetectionOutputVector &output);
 
-    void clearMappedContactPoints();
-
+    /// Checks if the DetectionOutput is corresponding to a sticked contact
+    /// according to the previous contact resolution.
     bool isSticked(sofa::core::collision::DetectionOutput*);
 
     bool use_mapper_for_state1;
