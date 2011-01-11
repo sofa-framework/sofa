@@ -2176,7 +2176,9 @@ void GridMaterial< MaterialTypes>::draw()
             if (label<=0) continue;
             if (label>labelMax) label=labelMax;
 
-            helper::gl::Color::getHSVA(color, 240.*label/labelMax,1.,.8,0.7);
+            float value = 240.*(1.0-label/labelMax);
+            if (showvox == SHOWVOXELS_DISTANCES) value = 240.*label/labelMax;
+            helper::gl::Color::getHSVA(color, value,1.,.8,0.7);
 
             glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
             glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
