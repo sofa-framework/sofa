@@ -106,9 +106,9 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showStrainScaleFactor ( initData ( &showStrainScaleFactor, 1.0, "showStrainScaleFactor","Strain Tensors Scale Factor." ) )
     , showDetF ( initData ( &showDetF, false, "showDetF","Show Computed Det F." ) )
     , showDetFScaleFactor ( initData ( &showDetFScaleFactor, 1.0, "showDetFScaleFactor","Det F Scale Factor." ) )
-    , useElastons ( initData ( &useElastons, false, "useElastons","Use Elastons to improve numerical integration" ) )
     , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Target frames number" ) )
     , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
+    , restrictInterpolationToLabel ( initData ( &restrictInterpolationToLabel, ( int ) -1, "restrictInterpolationToLabel","Restrict interpolation to a label in gridmaterial." ) )
 {
     maskFrom = NULL;
     if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( from ) )
@@ -425,7 +425,7 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
             Out::get(point[0],point[1],point[2], xto[i]);
 
             if(!this->isPhysical)  // no gauss point here -> interpolate weights in the grid
-                gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i]);
+                gridMaterial->interpolateWeightsRepartition(point,index[i],m_weights[i],restrictInterpolationToLabel.getValue());
             else // gauss points generated -> approximate weights over a set of voxels by least squares fitting
                 gridMaterial->lumpWeightsRepartition(i,point,index[i],m_weights[i],&m_dweight[i],&m_ddweight[i]);
         }
