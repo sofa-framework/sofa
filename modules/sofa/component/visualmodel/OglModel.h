@@ -38,7 +38,7 @@
 #include <windows.h>
 #endif // _WIN32
 
-
+#define   NB_MAX_TEXTURES 16
 
 namespace sofa
 {
@@ -65,7 +65,7 @@ public:
 protected:
     Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
     Data<int> cullFace;
-    helper::gl::Texture *tex;
+    helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
     unsigned int oldVerticesSize, oldTrianglesSize, oldQuadsSize;
@@ -77,6 +77,10 @@ protected:
     virtual void pushTransformMatrix(float* matrix) { glPushMatrix(); glMultMatrixf(matrix); }
     virtual void popTransformMatrix() { glPopMatrix(); }
 
+    helper::gl::Texture * textures[NB_MAX_TEXTURES]; //this texture array is the textures linked with a material
+    unsigned int numberOfTextures;
+
+    std::map<int, int> materialTextureIdMap; //link between a material and a texture
 
 public:
 
@@ -85,6 +89,7 @@ public:
     ~OglModel();
 
     bool loadTexture(const std::string& filename);
+    bool loadTextures() ;
 
     void initTextures();
     virtual void initVisual();
