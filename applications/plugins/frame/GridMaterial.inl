@@ -949,7 +949,7 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
                 d=(point-coord).norm2();
                 if(d<dmin) {dmin=d; index=i;}
             }
-        if(index==-1) return false;
+        if(index==-1) return interpolateWeightsRepartition(point,reps,w);
         for (unsigned int i=0; i<nbRef; i++) { reps[i]=v_index[index][i]; w[i]=v_weights[index][i];} // take the weight of the closest voxel (ok for rigid parts). To do: interpolate linearly in the voxels of the label
         return true;
     }
@@ -967,7 +967,23 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
         }
         else reps[i]=w[i]=0;
 
-    if (w[0]==0) std::cout<<"problem with point:"<<point<<" data:"<<(int)grid.data()[index]<<" rep:"<<v_index[index]<<" wghts:"<<v_weights[index]<<std::endl;
+    if (w[0]==0)
+    {
+        std::cout<<"problem with point:"<<point<<" data:"<<(int)grid.data()[index]<<" rep:"<<v_index[index]<<" wghts:"<<v_weights[index]<<std::endl;
+        // take the weight of the closest voxel.
+        SCoord coord;
+        Real d,dmin=std::numeric_limits<Real>::max();
+        index=-1;
+        for (unsigned int i=0; i<this->nbVoxels; i++) if(v_weights[i][0]!=0)
+            {
+                getCoord(i,coord);
+                d=(point-coord).norm2();
+                if(d<dmin) {dmin=d; index=i;}
+            }
+        if(index==-1) return false;
+        for (unsigned int i=0; i<nbRef; i++) { reps[i]=v_index[index][i]; w[i]=v_weights[index][i];}
+        return true;
+    }
 
     return true;
 }
