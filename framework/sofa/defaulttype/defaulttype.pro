@@ -45,13 +45,4 @@ SOURCES += \
           Frame.cpp \
           SolidTypes.cpp
 
-contains(DEFINES,SOFA_HAVE_PLUGIN_FEM){ # BEGIN SOFA_HAVE_PLUGIN_FEM
 
-HEADERS += \
-	       ElementDataTypes.h    \
-	       FEDataTypes.h     \
-	       QuadratureDataTypes.h 
-
-SOURCES += 
-
-} # END SOFA_HAVE_PLUGIN_FEM
