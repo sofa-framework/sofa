@@ -162,6 +162,8 @@ public:
     Data<double> showGradientsScaleFactor;
     Data<bool> showStrain;
     Data<double> showStrainScaleFactor;
+    Data<bool> showDetF;
+    Data<double> showDetFScaleFactor;
 
     MeshLoader::SeqTriangles triangles; // Topology of toModel (used for strain display)
 
