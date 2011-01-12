@@ -195,8 +195,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
         }
     }
 
-    const VecDeriv v;
-    dof_on_node = v[0].size();
+    dof_on_node = Deriv::size();
     systemSize = M.rowSize();
     if (sub_sorted_index.empty()) nb_dofs = systemSize/dof_on_node;
     else nb_dofs = sub_sorted_index.size();
@@ -246,6 +245,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
                 //compFileOut.write((char*)(*internalData.MinvPtr)[0], matrixSize * matrixSize * sizeof(Real));
                 compFileOut.close();
             }
+            compFileIn.close();
         }
 
         for (unsigned int j=0; j<matrixSize; j++)

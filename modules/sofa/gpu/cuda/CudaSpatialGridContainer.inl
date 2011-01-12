@@ -42,7 +42,9 @@
 #include <sofa/helper/gl/template.h>
 
 #ifdef SOFA_DEV
+#ifndef SOFA_GPU_CUDPP
 #include "radixsort.h"
+#endif
 #endif
 
 namespace sofa
@@ -111,7 +113,11 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updat
 #ifdef SOFA_DEV
     int nbbits = 8;
     while (nbbits < cellBits + 1) ++nbbits;
+#ifndef SOFA_GPU_CUDPP
     radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, nbbits);
+#else
+    std::cout << "ERROR : CUDPP is not compatible with SpatialGrid\n";
+#endif
 #endif
     gpu::cuda::SpatialGridContainer_findCellRange(cellBits, index0, cellWidth, nbPoints, particleHash, cells, cellGhost);
 }
@@ -123,7 +129,11 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_upda
 #ifdef SOFA_DEV
     int nbbits = 8;
     while (nbbits < cellBits + 1) ++nbbits;
+#ifndef SOFA_GPU_CUDPP
     radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, nbbits);
+#else
+    std::cout << "ERROR : CUDPP is not compatible with SpatialGrid\n";
+#endif
 #endif
     gpu::cuda::SpatialGridContainer_findCellRange(cellBits, index0, cellWidth, nbPoints, particleHash, cells, cellGhost);
 }
@@ -162,7 +172,11 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     /*particleIndex*/ cells.recreate(index0+nbPoints*8,8*BSIZE);
     particleHash.recreate(nbPoints*8,8*BSIZE);
 #ifdef SOFA_DEV
+#ifndef SOFA_GPU_CUDPP
     sortTmp.recreate(radixSortTempStorage(nbPoints*8));
+#else
+    std::cout << "ERROR : CUDPP is not compatible with SpatialGrid\n";
+#endif
 #endif
     //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
