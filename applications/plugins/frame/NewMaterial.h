@@ -86,6 +86,9 @@ public:
     virtual void computeStress  ( VecStrain10& stress, VecStrStr* stressStrainMatrices, const VecStrain10& strain, const VecStrain10& strainRate, const VecMaterialCoord& point )=0;
     virtual void computeStressChange  ( VecStrain10& stressChange, const VecStrain10& strainChange, const VecMaterialCoord& point )=0;
 
+    /// get the StressStrain matrices at the given points, assuming null strain or linear material
+    virtual void getStressStrainMatrix( StrStr& matrix, const MaterialCoord& point ) const =0;
+
     inline Str hookeStress  ( const Str& strain, Real stressDiagonal, Real stressOffDiagonal, Real shear  ) const
     {
         return Str(

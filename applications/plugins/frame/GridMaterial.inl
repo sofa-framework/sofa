@@ -139,6 +139,36 @@ void GridMaterial< MaterialTypes>::reinit()
     updateMaxValues();
 }
 
+template<class MaterialTypes>
+void GridMaterial<MaterialTypes>::getStressStrainMatrix( StrStr& materialMatrix, const MaterialCoord& point ) const
+{
+
+    GCoord gcoord;
+    getiCoord( point, gcoord);
+    int voxelIndex = getIndex(gcoord);
+    Real young = this->getStiffness(grid.data()[voxelIndex]);
+    Real poisson = this->getPoissonRatio(grid.data()[voxelIndex]);
+//                            cerr<<"GridMaterial<MaterialTypes>::getStressStrainMatrix, point = "<<point <<", gcoord = "<< gcoord << ", young = " << young << endl;
+
+
+    materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
+    materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] =
+            materialMatrix[1][2] = materialMatrix[2][0] = materialMatrix[2][1] = poisson/(1-poisson);
+    materialMatrix[0][3] = materialMatrix[0][4] = materialMatrix[0][5] = 0;
+    materialMatrix[1][3] = materialMatrix[1][4] = materialMatrix[1][5] = 0;
+    materialMatrix[2][3] = materialMatrix[2][4] = materialMatrix[2][5] = 0;
+    materialMatrix[3][0] = materialMatrix[3][1] = materialMatrix[3][2] =
+            materialMatrix[3][4] = materialMatrix[3][5] = 0;
+    materialMatrix[4][0] = materialMatrix[4][1] = materialMatrix[4][2] =
+            materialMatrix[4][3] = materialMatrix[4][5] = 0;
+    materialMatrix[5][0] = materialMatrix[5][1] = materialMatrix[5][2] =
+            materialMatrix[5][3] = materialMatrix[5][4] = 0;
+    materialMatrix[3][3] = materialMatrix[4][4] = materialMatrix[5][5] =
+            (1-2*poisson)/(2*(1-poisson));
+    materialMatrix *= (young*(1-poisson))/((1+poisson)*(1-2*poisson));
+}
+
+
 // WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
 void GridMaterial< MaterialTypes>::computeStress  ( VecStrain1& stresses, VecStrStr* stressStrainMatrices, const VecStrain1& strains, const VecStrain1& /*strainRates*/, const VecMaterialCoord& /*point*/  )
@@ -483,7 +513,7 @@ bool GridMaterial<MaterialTypes>::loadInfos()
         fileStream >> str; SCoord& origin = *this->origin.beginEdit();       fileStream >> origin;   this->origin.endEdit();
         fileStream >> str; SCoord& voxelsize = *this->voxelSize.beginEdit(); fileStream >> voxelsize; this->voxelSize.endEdit();
         fileStream.close();
-        std::cout << "Loaded info file "<< infoFile << std::endl;
+        std::cout << "Loaded info file "<< infoFile <<", dim = "<< dimension.getValue() <<", origin = " << this->origin.getValue() <<", voxelSize = " << this->voxelSize.getValue() << std::endl;
     }
     return true;
 }
@@ -540,7 +570,17 @@ bool GridMaterial< MaterialTypes>::loadImage()
     dimension.setValue(dimension.getValue()+off);
     origin.setValue(origin.getValue()-voxelSize.getValue()*(Real)gridOffset);
 
+//                cerr<<"GridMaterial< MaterialTypes>::loadImage, values before " << (int)grid(0,0,0) << ", " << (int)grid(1,0,0) << endl;
+//                typeof(grid) grid2(grid);
+//                cerr<<"GridMaterial< MaterialTypes>::loadImage, values before " << (int)grid2(0,0,0) << ", " << (int)grid2(1,0,0) << endl;
     grid.resize(dimension.getValue()[0],dimension.getValue()[1],dimension.getValue()[2],1,0,0,0.5,0.5,0.5,0.5);
+//                for( unsigned i = gridOffset; i<dimension.getValue()[0]-gridOffset; i++ )
+//                    for( unsigned j = gridOffset; j<dimension.getValue()[1]-gridOffset; j++ )
+//                        for( unsigned k = gridOffset; k<dimension.getValue()[2]-gridOffset; k++ )
+//                            grid(i,j,k) = grid2(i-gridOffset,j-gridOffset,k-gridOffset);
+//                cerr<<"GridMaterial< MaterialTypes>::loadImage, values after " << (int)grid(5,5,5) << ", " << (int)grid(6,5,5) << endl;
+//                cerr<<"GridMaterial< MaterialTypes>::loadImage, values after " << (int)grid(0,0,0) << ", " << (int)grid(1,0,0) << endl;
+//                cerr<<"GridMaterial< MaterialTypes>::loadImage, values after " << (int)grid2(0,0,0) << ", " << (int)grid2(1,0,0) << endl;
 
     if (grid.size()==0)
     {
@@ -2685,7 +2725,7 @@ int GridMaterial< MaterialTypes>::getIndex(const GCoord& icoord) const
 {
     if (!nbVoxels) return -1;
     for (int i=0; i<3; i++) if (icoord[i]<0 || icoord[i]>=dimension.getValue()[i]) return -1; // invalid icoord (out of grid)
-    return icoord[0]+dimension.getValue()[0]*icoord[1]+dimension.getValue()[0]*dimension.getValue()[1]*icoord[2];
+    return icoord[0]+dimension.getValue()[0]*(icoord[1]+dimension.getValue()[1]*icoord[2]);
 }
 
 template < class MaterialTypes>
@@ -2702,6 +2742,7 @@ bool GridMaterial< MaterialTypes>::getiCoord(const SCoord& coord, GCoord& icoord
 {
     if (!nbVoxels) return false;
     Real val;
+//                cerr<<"GridMaterial< MaterialTypes>::getiCoord, coord = "<< coord <<", origin = "<< origin.getValue() <<", voxelSize = " << voxelSize.getValue() << endl;
     for (unsigned int i=0; i<3; i++)
     {
         val=(coord[i]-(Real)origin.getValue()[i])/(Real)voxelSize.getValue()[i];

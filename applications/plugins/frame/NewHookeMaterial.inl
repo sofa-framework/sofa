@@ -92,6 +92,29 @@ void HookeMaterial3<MaterialTypes>::reinit()
     Inherited::reinit();
 }
 
+template<class MaterialTypes>
+void HookeMaterial3<MaterialTypes>::getStressStrainMatrix( StrStr& materialMatrix, const MaterialCoord& /*points*/ ) const
+{
+    Real young = this->youngModulus.getValue();
+    Real poisson = this->poissonRatio.getValue();
+
+    materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
+    materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] =
+            materialMatrix[1][2] = materialMatrix[2][0] = materialMatrix[2][1] = poisson/(1-poisson);
+    materialMatrix[0][3] = materialMatrix[0][4] = materialMatrix[0][5] = 0;
+    materialMatrix[1][3] = materialMatrix[1][4] = materialMatrix[1][5] = 0;
+    materialMatrix[2][3] = materialMatrix[2][4] = materialMatrix[2][5] = 0;
+    materialMatrix[3][0] = materialMatrix[3][1] = materialMatrix[3][2] =
+            materialMatrix[3][4] = materialMatrix[3][5] = 0;
+    materialMatrix[4][0] = materialMatrix[4][1] = materialMatrix[4][2] =
+            materialMatrix[4][3] = materialMatrix[4][5] = 0;
+    materialMatrix[5][0] = materialMatrix[5][1] = materialMatrix[5][2] =
+            materialMatrix[5][3] = materialMatrix[5][4] = 0;
+    materialMatrix[3][3] = materialMatrix[4][4] = materialMatrix[5][5] =
+            (1-2*poisson)/(2*(1-poisson));
+    materialMatrix *= (young*(1-poisson))/((1+poisson)*(1-2*poisson));
+}
+
 
 // WARNING : The strain is defined as exx, eyy, ezz, exy, eyz, ezx
 template<class MaterialTypes>
