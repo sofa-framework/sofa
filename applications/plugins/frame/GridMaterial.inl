@@ -2703,7 +2703,7 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
     unsigned int i;
     for (i=0; i < 10; ++i) maxValues[i] = -1.0f;
     for (i=0; i<nbVoxels; i++) if ((float)grid.data()[i]>maxValues[SHOWVOXELS_DATAVALUE]) maxValues[SHOWVOXELS_DATAVALUE]=(float)grid.data()[i];
-    for (typename mapLabelType::const_iterator it = labelToStiffnessPairs.getValue().begin(); it != labelToStiffnessPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_STIFFNESS]) maxValues[SHOWVOXELS_STIFFNESS]=(float)it->second;
+    for (typename mapLabelType::const_iterator it = labelToStiffnessPairs.getValue().begin(); it != labelToStiffnessPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_STIFFNESS] && it->second != 15000000000) maxValues[SHOWVOXELS_STIFFNESS]=(float)it->second;
     for (typename mapLabelType::const_iterator it = labelToDensityPairs.getValue().begin(); it != labelToDensityPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_DENSITY]) maxValues[SHOWVOXELS_DENSITY]=(float)it->second;
     for (typename mapLabelType::const_iterator it = labelToBulkModulusPairs.getValue().begin(); it != labelToBulkModulusPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_BULKMODULUS]) maxValues[SHOWVOXELS_BULKMODULUS]=(float)it->second;
     for (typename mapLabelType::const_iterator it = labelToPoissonRatioPairs.getValue().begin(); it != labelToPoissonRatioPairs.getValue().end(); ++it) if (it->second > maxValues[SHOWVOXELS_POISSONRATIO]) maxValues[SHOWVOXELS_POISSONRATIO]=(float)it->second;
