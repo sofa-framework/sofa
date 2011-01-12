@@ -107,6 +107,7 @@ FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, co
     , showDetF ( initData ( &showDetF, false, "showDetF","Show Computed Det F." ) )
     , showDetFScaleFactor ( initData ( &showDetFScaleFactor, 1.0, "showDetFScaleFactor","Det F Scale Factor." ) )
     , targetFrameNumber ( initData ( &targetFrameNumber, ( unsigned int ) 0, "targetFrameNumber","Target frames number" ) )
+    , initializeFramesInRigidParts ( initData ( &initializeFramesInRigidParts, false, "initializeFramesInRigidParts","Automatically initialize frames in rigid parts if stiffness>15E6." ) )
     , targetSampleNumber ( initData ( &targetSampleNumber, ( unsigned int ) 0, "targetSampleNumber","Target samples number" ) )
     , restrictInterpolationToLabel ( initData ( &restrictInterpolationToLabel, ( int ) -1, "restrictInterpolationToLabel","Restrict interpolation to a label in gridmaterial." ) )
 {
@@ -325,7 +326,7 @@ void FrameBlendingMapping<TIn, TOut>::initFrames()
 
     // Insert new frames and compute associated voxel weights
     std::cout<<"Inserting "<<targetFrameNumber.getValue()-num_points<<" frames..."<<std::endl;
-    gridMaterial->rigidPartsSampling(points);
+    if(initializeFramesInRigidParts.getValue()) gridMaterial->rigidPartsSampling(points);
     gridMaterial->computeUniformSampling(points,targetFrameNumber.getValue());
     std::cout<<"Computing weights in grid..."<<std::endl;
     gridMaterial->computeWeights(points);
