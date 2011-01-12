@@ -297,7 +297,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     {
         serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
     }
-    parallelDataSimu->materialsStiffnesses[i] /= volumes6*6; // 36*Volume in the formula
+    parallelDataSimu->materialsStiffnesses[i] /= (volumes6*6); // 36*Volume in the formula
 }
 
 template<class DataTypes>
@@ -330,7 +330,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
     {
         serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
     }
-    materialMatrix  /= volumes6*6;
+    materialMatrix  /= (volumes6*6);
 }
 
 template<class DataTypes>

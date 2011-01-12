@@ -189,6 +189,10 @@ public:
     //virtual void computeStress  ( VecStr& stress, VecStrStr* stressStrainMatrices, const VecStr& strain, const VecStr& strainRate );
     //virtual void computeStress  ( VecElStr& stress, VecStrStr* stressStrainMatrices, const VecElStr& strain, const VecElStr& strainRate );
 
+    /// get the StressStrain matrices at the given points, assuming null strain or linear material
+    virtual void getStressStrainMatrix( StrStr& matrix, const MaterialCoord& point ) const;
+
+
     Data<Real> bulkModulus;  ///< bulkModulus, to prevent from inversion of the deformation gradient
 
     Data<Real> youngModulus;  ///< Stiffness, typically denoted using symbol \f$ E \f$

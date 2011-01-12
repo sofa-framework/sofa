@@ -138,6 +138,9 @@ public:
     virtual void computeStressChange  ( VecStrain10& stressChange, const VecStrain10& strainChange, const VecMaterialCoord& point );
 
 
+    /// get the StressStrain matrices at the given points, assuming null strain or linear material
+    virtual void getStressStrainMatrix( StrStr& matrix, const MaterialCoord& point ) const;
+
     /** Compute uniformly distributed point positions using Lloyd relaxation.
     Parameter points is InOut. The points passed to the method are considered fixed.
     The method creates points.size()-num_points points, moves them to get an as-uniform-as-possible sampling, and appends them to the vector.

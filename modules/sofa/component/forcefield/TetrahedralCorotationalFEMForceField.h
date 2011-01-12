@@ -214,7 +214,9 @@ protected:
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacementTransposed &J, const Transformation& Rot );
 
     void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
-    void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, double localStiffnessFactor=1);
+
+    /// overloaded by classes with non-uniform stiffness
+    virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, double localStiffnessFactor=1);
 
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacementTransposed &J );
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacementTransposed &J, double fact );
