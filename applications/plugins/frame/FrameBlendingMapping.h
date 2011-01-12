@@ -169,6 +169,7 @@ public:
 
     GridMaterial< materialType>* gridMaterial;
     Data<unsigned int> targetFrameNumber;
+    Data<bool> initializeFramesInRigidParts;
     Data<unsigned int> targetSampleNumber;
     Data<int> restrictInterpolationToLabel;  ///< restrict interpolation to a certain label in the gridmaterial
 };

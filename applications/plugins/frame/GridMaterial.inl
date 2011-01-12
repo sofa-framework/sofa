@@ -1724,7 +1724,7 @@ bool GridMaterial< MaterialTypes>::computeRegularSampling ( VecSCoord& points, c
 template < class MaterialTypes>
 bool GridMaterial< MaterialTypes>::isRigid(const voxelType label) const
 {
-    if(getStiffness(label)>=(Real)1.5E10) return true; // 15GPa=bone stiffness
+    if(getStiffness(label)>=(Real)1.5E6) return true; // 15E6 N/cm^2 = bone stiffness
     else return false;
 }
 
