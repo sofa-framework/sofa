@@ -49,7 +49,7 @@ template <class DataTypes>
 SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_pressure(initData(&m_pressure, (Real)0.0, "pressure", "Pressure force per unit area")),
     m_min(initData(&m_min, Coord(), "min", "Lower bond of the selection box")),
-    m_max(initData(&m_max, Coord(), "max", "Lower bond of the selection box")),
+    m_max(initData(&m_max, Coord(), "max", "Upper bond of the selection box")),
     m_pulseMode(initData(&m_pulseMode, false, "pulseMode", "Cyclic pressure application")),
     m_pressureLowerBound(initData(&m_pressureLowerBound, (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)")),
     m_pressureSpeed(initData(&m_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),

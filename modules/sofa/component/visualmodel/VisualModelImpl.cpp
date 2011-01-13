@@ -485,7 +485,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
 
             if(textureName.empty())
             {
-                //we check how many textures are linked with a material only if a texture name is not defined in the scn file
+                //we check how many textures are linked with a material (only if a texture name is not defined in the scn file)
                 bool isATextureLinked = false;
                 for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
                 {

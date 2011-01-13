@@ -1,0 +1,22 @@
+<Node name="root" gravity="0 0 -9.81" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
+	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
+	<Object type="BruteForceDetection" name="N2" />
+	<Object type="MinProximityIntersection" name="Proximity" usePointPoint="1" alarmDistance="3.5" contactDistance="2.2" />
+	<Object type="CollisionResponse" name="Response" response="default" />
+	<Object type="CollisionGroup" name="Group" />
+	
+	
+	<Node name="Cylinder">
+		<Object type="CGImplicit" iterations="30" />
+		<MeshLoader name="meshLoader" filename="mesh/liver.msh" />
+		<Object type="MechanicalObject"/>
+		<MeshTopology name="Static Mesh" fileTopology="mesh/liver.msh"/>
+		<UniformMass mass="0.2" />
+		<MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
+		<BuoyantForceField fluidDensity="1.2"/>
+		<TetrahedronModel name="Models"/>
+		<OglModel name="Visual" template="ExtVec3f" color="red"/>
+		<IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@." output="@Visual"/>
+		
+	</Node>
+</Node>
