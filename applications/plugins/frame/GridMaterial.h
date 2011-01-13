@@ -354,7 +354,7 @@ protected:
     inline void normalizeWeightRepartion();
 
     /*********************************/
-    /*   draw						  */
+    /*   draw                        */
     /*********************************/
 
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
@@ -363,7 +363,7 @@ protected:
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
     float maxValues[11];
-    Data<bool> show3DValues;
+    Data<float> show3DValuesHeight;
     bool vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
     GLuint vboValuesId2; // ID of VBO for 3DValues index array
