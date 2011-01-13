@@ -88,7 +88,8 @@ HEADERS += viewer/SofaViewer.h \
 		   QSofaRecorder.h \
 		   QSofaStatWidget.h \
            QMenuFilesRecentlyOpened.h \
-           ImageQt.h 
+           ImageQt.h \ 
+    viewer/qtogre/OgreReflectionTexture.h
 
 SOURCES += viewer/SofaViewer.cpp \
            viewer/ViewerFactory.cpp \
@@ -120,7 +121,8 @@ SOURCES += viewer/SofaViewer.cpp \
 		   QSofaRecorder.cpp \
 		   QSofaStatWidget.cpp \
            QMenuFilesRecentlyOpened.cpp \
-           ImageQt.cpp 
+           ImageQt.cpp \ 
+    viewer/qtogre/OgreReflectionTexture.cpp
 
 contains (DEFINES, SOFA_QT4){
 HEADERS += QModelViewTableDataContainer.h \
