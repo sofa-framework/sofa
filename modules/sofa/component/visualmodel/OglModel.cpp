@@ -67,6 +67,7 @@ OglModel::OglModel()
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
 {
+    this->numberOfTextures = 0;
 }
 
 OglModel::~OglModel()
