@@ -102,11 +102,21 @@ public:
 
     void applyLinearizedPosition();
 
+    void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams)
+    {
+        m_previousPosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+
+        std::cout<<"applyJT   m_previousPosition = "<<m_previousPosition<<std::endl;
+
+        Inherit::applyJT(out, in, cparams);
+    }
+
 protected:
 
     Inherit *m_inputMapping;
     bool m_init;
     VecCoord m_previousPoints;
+    InVecCoord m_previousPosition;
     InVecCoord m_previousFreePosition;
     InVecDeriv m_previousDx;
 

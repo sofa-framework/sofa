@@ -143,6 +143,7 @@ void PersistentContactRigidMapping<TIn, TOut>::reset()
 template <class TIn, class TOut>
 void PersistentContactRigidMapping<TIn, TOut>::setDefaultValues()
 {
+    m_previousPosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     m_previousDx.resize(m_previousFreePosition.size());
 }
@@ -179,6 +180,12 @@ void PersistentContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
 {
     m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::freePosition())->getValue();
     m_previousDx = this->fromModel->read(core::ConstVecDerivId::dx())->getValue();
+
+    std::cout<< "===== end of the time ste =========\n stored Free Pos : "<<m_previousFreePosition<<std::endl;
+    std::cout<<" stored DX : "<<m_previousDx<<std::endl;
+
+    this->applyLinearizedPosition();
+    std::cout<<" ============================ "<<std::endl;
 }
 
 
@@ -190,6 +197,12 @@ void PersistentContactRigidMapping<TIn, TOut>::applyLinearizedPosition()
     prevXFree.setValue(m_previousFreePosition);
 
     this->apply(newXFree, prevXFree, 0);
+
+    // We need to apply the previous position to obtain the right linearization
+    Data< VecCoord > tempValue;
+    Data< InVecCoord > prevX;
+    prevX.setValue(m_previousPosition);
+    this->apply(tempValue, prevX, 0);
 
     Data< VecDeriv > newDx;
     Data< InVecDeriv > prevDx;
