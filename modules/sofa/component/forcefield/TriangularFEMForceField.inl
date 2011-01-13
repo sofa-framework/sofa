@@ -174,6 +174,9 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_fracturable(initData(&f_fracturable,false,"fracturable","the forcefield computes the next fracturable Edge"))
     , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
+    , m_rotatedInitialElements(initData(&m_rotatedInitialElements,"rotatedInitialElements","Flag activating rendering of stress directions within each triangle"))
+    , m_initialTransformation(initData(&m_initialTransformation,"initialTransformation","Flag activating rendering of stress directions within each triangle"))
+
 {
     _anisotropicMaterial = false;
 }
@@ -443,9 +446,14 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
 
     tinfo->initialTransformation.identity();
 
-    tinfo->rotatedInitialElements[0] = (*_initialPoints)[a] - (*_initialPoints)[a]; // always (0,0,0)
-    tinfo->rotatedInitialElements[1] = (*_initialPoints)[b] - (*_initialPoints)[a];
-    tinfo->rotatedInitialElements[2] = (*_initialPoints)[c] - (*_initialPoints)[a];
+    if (m_rotatedInitialElements.isSet())
+        tinfo->rotatedInitialElements = m_rotatedInitialElements.getValue()[i];
+    else
+    {
+        tinfo->rotatedInitialElements[0] = (*_initialPoints)[a] - (*_initialPoints)[a]; // always (0,0,0)
+        tinfo->rotatedInitialElements[1] = (*_initialPoints)[b] - (*_initialPoints)[a];
+        tinfo->rotatedInitialElements[2] = (*_initialPoints)[c] - (*_initialPoints)[a];
+    }
 
     computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
 
@@ -467,19 +475,29 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
 
     TriangleInformation *tinfo = &triangleInf[i];
 
-    // Rotation matrix (initial triangle/world)
-    // first vector on first edge
-    // second vector in the plane of the two first edges
-    // third vector orthogonal to first and second
-    Transformation R_0_1;
+    if (m_initialTransformation.isSet() && m_rotatedInitialElements.isSet())
+    {
+        Transformation R_0_1;
+        R_0_1 = m_initialTransformation.getValue()[i];
+        tinfo->initialTransformation = R_0_1;
+        tinfo->rotatedInitialElements = m_rotatedInitialElements.getValue()[i];
+    }
+    else
+    {
+        // Rotation matrix (initial triangle/world)
+        // first vector on first edge
+        // second vector in the plane of the two first edges
+        // third vector orthogonal to first and second
+        Transformation R_0_1;
 
-    computeRotationLarge( R_0_1, (*_initialPoints), a, b, c );
+        computeRotationLarge( R_0_1, (*_initialPoints), a, b, c );
 
-    tinfo->initialTransformation = R_0_1;
+        tinfo->initialTransformation = R_0_1;
 
-    tinfo->rotatedInitialElements[0] = R_0_1 * ((*_initialPoints)[a] - (*_initialPoints)[a]); // always (0,0,0)
-    tinfo->rotatedInitialElements[1] = R_0_1 * ((*_initialPoints)[b] - (*_initialPoints)[a]);
-    tinfo->rotatedInitialElements[2] = R_0_1 * ((*_initialPoints)[c] - (*_initialPoints)[a]);
+        tinfo->rotatedInitialElements[0] = R_0_1 * ((*_initialPoints)[a] - (*_initialPoints)[a]); // always (0,0,0)
+        tinfo->rotatedInitialElements[1] = R_0_1 * ((*_initialPoints)[b] - (*_initialPoints)[a]);
+        tinfo->rotatedInitialElements[2] = R_0_1 * ((*_initialPoints)[c] - (*_initialPoints)[a]);
+    }
 
     triangleInfo.endEdit();
 }
