@@ -2231,10 +2231,7 @@ void GridMaterial< MaterialTypes>::draw()
             label = (labelMax>0)?getLabel(x,y,z):-1.0f;
             if (label<=0) continue;
             if (label>labelMax) label=labelMax;
-
-            float value = 240.*(1.0-label/labelMax);
-            if (showvox == SHOWVOXELS_DISTANCES) value = 240.*label/labelMax;
-            helper::gl::Color::getHSVA(color, value,1.,.8,0.7);
+            getColor( color, label);
 
             glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
             glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
@@ -2245,8 +2242,26 @@ void GridMaterial< MaterialTypes>::draw()
             drawCube((double)coord[0],(double)coord[1],(double)coord[2]);
         }
 
+        /*
         if (show3DValues.getValue() && slicedisplay && vboSupported)
+        {
             displayValuesVBO();
+        /*/
+        if (show3DValues.getValue() && slicedisplay)
+        {
+            displayValues();
+            //*/
+            // Red BBox
+            float color[] = {0.8,0.0,0.0,1.0};
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+
+            if(showPlane.getValue()[0] != -1)
+                drawPlaneBBox(0);
+            if(showPlane.getValue()[1] != -1)
+                drawPlaneBBox(1);
+            if(showPlane.getValue()[2] != -1)
+                drawPlaneBBox(2);
+        }
 
         glPopAttrib();
     }
@@ -2269,6 +2284,17 @@ float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const i
     else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)   && weights.size()!=0 ) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
     else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI_FR)  {if (voronoi_frames.size()!=0) label=(float)voronoi_frames[getIndex(GCoord(x,y,z))]+1.; }
     return label;
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::getColor( float* color, const float& label) const
+{
+    unsigned int showvox=this->showVoxels.getValue().getSelectedId();
+    float labelMax = maxValues[showvox];
+    float value = 240.*(1.0-label/labelMax);
+    if (showvox == SHOWVOXELS_DISTANCES) value = 240.*label/labelMax;
+    helper::gl::Color::getHSVA(color, value,1.,.8,0.7);
 }
 
 
@@ -2317,7 +2343,7 @@ void GridMaterial< MaterialTypes>::deleteVBO(const GLuint vboId)
 template < class MaterialTypes>
 void GridMaterial< MaterialTypes>::initVBO()
 {
-    vboSupported = false; // TODO Check it later
+    vboSupported = true; // TODO Check it later
 
     if(vboSupported)
     {
@@ -2435,8 +2461,7 @@ void GridMaterial< MaterialTypes>::initPlaneGeometry( GLfloat* valuesVertices, G
         }
     }*/
 
-    unsigned int nbNormals = 0;
-    unsigned int nbColors = 0;
+    unsigned int nbElt = 0;
     for (int x = 0; x < maxX; ++x)
     {
         for (int y = 0; y < maxY; ++y)
@@ -2444,13 +2469,12 @@ void GridMaterial< MaterialTypes>::initPlaneGeometry( GLfloat* valuesVertices, G
             // TODO compute each face normal, then vertex normal
             for (int i = 0; i < 3; ++i)
             {
-                valuesNormals[3*nbVerticesOffset+nbNormals] = (i == axis)?1.0:0.0;
-                nbNormals++;
+                valuesNormals[3*nbVerticesOffset+3*nbElt+i] = (i == axis)?1.0:0.0;
             }
-            valuesColors[3*nbVerticesOffset+3*nbColors+0] = 0.5;
-            valuesColors[3*nbVerticesOffset+3*nbColors+1] = 0.5;
-            valuesColors[3*nbVerticesOffset+3*nbColors+2] = 0.5;
-            nbColors++;
+            valuesColors[3*nbVerticesOffset+3*nbElt+0] = 0.5;
+            valuesColors[3*nbVerticesOffset+3*nbElt+1] = 0.5;
+            valuesColors[3*nbVerticesOffset+3*nbElt+2] = 0.5;
+            nbElt++;
 
             /*
             // Compute Laplacian
@@ -2515,6 +2539,7 @@ void GridMaterial< MaterialTypes>::updateValuesVBO() const
                     coord[iZ] = gridOffset+zCoord;
                     float value = getLabel(coord[0],coord[1],coord[2]);
                     if( value < 0 ) value = 0;
+                    if( value > maxValues[showvox] ) value = maxValues[showvox];
                     ptr[3*offSet[axis]+3*nbVertices+iZ] = ori[iZ] + (zCoord-gridOffset+.5)*vSZ + value / maxValues[showvox] * scaleZ;
 
                     // Normals
@@ -2524,7 +2549,9 @@ void GridMaterial< MaterialTypes>::updateValuesVBO() const
 
                     // Colors
                     float color[4];
-                    helper::gl::Color::getHSVA(color, 240.*value/maxValues[showvox],1.,.8,.8);
+                    float intensity = 240.*(1.0-value/maxValues[showvox]);
+                    if (showvox == SHOWVOXELS_DISTANCES) intensity = 240.*value/maxValues[showvox];
+                    helper::gl::Color::getHSVA(color, intensity,1.,.8,0.7);
                     ptr[2*vertexSize+3*offSet[axis]+3*nbVertices+0] = color[0];
                     ptr[2*vertexSize+3*offSet[axis]+3*nbVertices+1] = color[1];
                     ptr[2*vertexSize+3*offSet[axis]+3*nbVertices+2] = color[2];
@@ -2565,6 +2592,9 @@ void GridMaterial< MaterialTypes>::displayValuesVBO() const
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    //float colorPlane[] = {1.0, 1.0, 1.0, 1.0};
+    //glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,colorPlane);
+
     // use only offset here instead of absolute pointer addresses
     if(showPlane.getValue()[0] != -1)
     {
@@ -2588,17 +2618,6 @@ void GridMaterial< MaterialTypes>::displayValuesVBO() const
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     glPopClientAttrib();
-
-    // Red BBox
-    float color[] = {0.8,0.0,0.0,1.0};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-
-    if(showPlane.getValue()[0] != -1)
-        drawPlaneBBox(0);
-    if(showPlane.getValue()[1] != -1)
-        drawPlaneBBox(1);
-    if(showPlane.getValue()[2] != -1)
-        drawPlaneBBox(2);
 }
 
 
@@ -2693,6 +2712,249 @@ void GridMaterial< MaterialTypes>::genListCube()
     glEnd ();
     glEndList();
 
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::displayValues() const
+{
+    for(unsigned int i = 0; i < 3; ++i)
+        if(showPlane.getValue()[i] != -1)
+            displayPlane(i);
+}
+
+
+template < class MaterialTypes>
+void GridMaterial< MaterialTypes>::displayPlane( const int& axis) const
+{
+    unsigned int showvox=this->showVoxels.getValue().getSelectedId();
+    const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset;
+    unsigned int realGridSizeX = grid.width() - 2*gridOffset;
+    unsigned int realGridSizeY = grid.height() - 2*gridOffset;
+    unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+    SCoord dimGrid(realGridSizeX, realGridSizeY, realGridSizeZ);
+
+    unsigned int iX = (axis+1)%3;
+    unsigned int iY = (axis+2)%3;
+    unsigned int iZ = axis;
+
+    float vSX = voxelSize.getValue()[iX];
+    float vSY = voxelSize.getValue()[iY];
+    float vSZ = voxelSize.getValue()[iZ];
+    int maxX = dimGrid[iX];
+    int maxY = dimGrid[iY];
+
+    // Simple normal
+    float normal[3];
+    normal[iZ] = 1.0;
+    glNormal3f(normal[0],normal[1],normal[2]);
+
+    float scaleZ = 4 * vSZ;
+    float zCoord = showPlane.getValue()[iZ];
+    SCoord coord, coord2;
+    float value;
+    float color[4];
+    glBegin( GL_QUADS);
+    for (int x = 1; x < maxX; ++x)
+    {
+        for (int y = 1; y < maxY; ++y)
+        {
+            // Vertex 0 //
+            // Value
+            coord2[iX] = gridOffset+x;
+            coord2[iY] = gridOffset+y;
+            coord2[iZ] = gridOffset+zCoord;
+            value = getLabel(coord2[0],coord2[1],coord2[2]);
+            if( value < 0 ) value = 0;
+            if( value > maxValues[showvox] ) value = maxValues[showvox];
+
+            // Color
+            getColor( color, value);
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+
+            // Position
+            coord[iX] = ori[iX] + x*vSX;
+            coord[iY] = ori[iY] + y*vSY;
+            coord[iZ] = ori[iZ] + (zCoord-gridOffset+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            glVertex3f(coord[0],coord[1],coord[2]);
+
+            // Vertex 1 //
+            // Value
+            coord2[iX] = gridOffset+x-1;
+            coord2[iY] = gridOffset+y;
+            coord2[iZ] = gridOffset+zCoord;
+            value = getLabel(coord2[0],coord2[1],coord2[2]);
+            if( value < 0 ) value = 0;
+            if( value > maxValues[showvox] ) value = maxValues[showvox];
+
+            // Color
+            getColor( color, value);
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+
+            // Position
+            coord[iX] = ori[iX] + (x-1)*vSX;
+            coord[iY] = ori[iY] + y*vSY;
+            coord[iZ] = ori[iZ] + (zCoord-gridOffset+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            glVertex3f(coord[0],coord[1],coord[2]);
+
+            // Vertex 2 //
+            // Value
+            coord2[iX] = gridOffset+x-1;
+            coord2[iY] = gridOffset+y-1;
+            coord2[iZ] = gridOffset+zCoord;
+            value = getLabel(coord2[0],coord2[1],coord2[2]);
+            if( value < 0 ) value = 0;
+            if( value > maxValues[showvox] ) value = maxValues[showvox];
+
+            // Color
+            getColor( color, value);
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+
+            // Position
+            coord[iX] = ori[iX] + (x-1)*vSX;
+            coord[iY] = ori[iY] + (y-1)*vSY;
+            coord[iZ] = ori[iZ] + (zCoord-gridOffset+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            glVertex3f(coord[0],coord[1],coord[2]);
+
+            // Vertex 3 //
+            // Value
+            coord2[iX] = gridOffset+x;
+            coord2[iY] = gridOffset+y-1;
+            coord2[iZ] = gridOffset+zCoord;
+            value = getLabel(coord2[0],coord2[1],coord2[2]);
+            if( value < 0 ) value = 0;
+            if( value > maxValues[showvox] ) value = maxValues[showvox];
+
+            // Color
+            getColor( color, value);
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+
+            // Position
+            coord[iX] = ori[iX] + x*vSX;
+            coord[iY] = ori[iY] + (y-1)*vSY;
+            coord[iZ] = ori[iZ] + (zCoord-gridOffset+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            glVertex3f(coord[0],coord[1],coord[2]);
+
+//                        if( x > 0 && y > 0)
+//                        {
+//                            valuesIndices[4*nbIndicesOffset+4*nbFaces  ] = nbVerticesOffset+nbVertices;
+//                            valuesIndices[4*nbIndicesOffset+4*nbFaces+1] = nbVerticesOffset+nbVertices-maxY;
+//                            valuesIndices[4*nbIndicesOffset+4*nbFaces+2] = nbVerticesOffset+nbVertices-maxY-1;
+//                            valuesIndices[4*nbIndicesOffset+4*nbFaces+3] = nbVerticesOffset+nbVertices-1;
+//                            nbFaces++;
+//                        }
+//                        valuesVertices[3*nbVerticesOffset+3*nbVertices+iX] = ori[iX] + x*vSX;
+//                        valuesVertices[3*nbVerticesOffset+3*nbVertices+iY] = ori[iY] + y*vSY;
+//                        valuesVertices[3*nbVerticesOffset+3*nbVertices+iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+.5)*vSZ;
+//                        nbVertices++;
+        }
+    }
+    glEnd();
+
+    /*
+    const SCoord& ori = origin.getValue() + voxelSize.getValue() * gridOffset;
+    unsigned int realGridSizeX = grid.width() - 2*gridOffset;
+    unsigned int realGridSizeY = grid.height() - 2*gridOffset;
+    unsigned int realGridSizeZ = grid.depth() - 2*gridOffset;
+    SCoord dimGrid(realGridSizeX, realGridSizeY, realGridSizeZ);
+
+    unsigned int iX = (axis+1)%3;
+    unsigned int iY = (axis+2)%3;
+    unsigned int iZ = axis;
+
+    float vSX = voxelSize.getValue()[iX];
+    float vSY = voxelSize.getValue()[iY];
+    float vSZ = voxelSize.getValue()[iZ];
+    unsigned int nbVertices = 0;
+    unsigned int nbFaces = 0;
+    int maxX = dimGrid[iX];
+    int maxY = dimGrid[iY];
+    for (int x = 0; x < maxX; ++x)
+    {
+        for (int y = 0; y < maxY; ++y)
+        {
+            if( x > 0 && y > 0)
+            {
+                valuesIndices[4*nbIndicesOffset+4*nbFaces  ] = nbVerticesOffset+nbVertices;
+                valuesIndices[4*nbIndicesOffset+4*nbFaces+1] = nbVerticesOffset+nbVertices-maxY;
+                valuesIndices[4*nbIndicesOffset+4*nbFaces+2] = nbVerticesOffset+nbVertices-maxY-1;
+                valuesIndices[4*nbIndicesOffset+4*nbFaces+3] = nbVerticesOffset+nbVertices-1;
+                nbFaces++;
+            }
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iX] = ori[iX] + x*vSX;
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iY] = ori[iY] + y*vSY;
+            valuesVertices[3*nbVerticesOffset+3*nbVertices+iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+.5)*vSZ;
+            nbVertices++;
+        }
+    }
+
+    /*
+    if( axis == 2)
+    {
+        std::cout << "nbVerticesOffset: " << nbVerticesOffset << std::endl;
+        std::cout << "nbIndicesOffset: " << nbIndicesOffset << std::endl;
+        for( int i = 0; i < maxX*maxY; ++i)
+            std::cout << "vertex["<<i<<"]" << valuesVertices[3*nbVerticesOffset+3*i] << ", " << valuesVertices[3*nbVerticesOffset+3*i+1] << ", " << valuesVertices[3*nbVerticesOffset+3*i+2] << std::endl;
+        for( int i = 0; i < (maxX-1)*(maxY-1); ++i)
+            std::cout << "face["<<i<<"]" << valuesIndices[4*nbIndicesOffset+4*i] << ", " << valuesIndices[4*nbIndicesOffset+4*i+1] << ", " << valuesIndices[4*nbIndicesOffset+4*i+2] << ", " << valuesIndices[4*nbIndicesOffset+4*i+3] << std::endl;
+    }*/
+    /*
+    // Compute face normals
+    GLfloat faceNormals[3*(maxX-1)*(maxY-1)];
+    nbFaces = 0;
+    for (int x = 0; x < maxX; ++x)
+    {
+        for (int y = 0; y < maxY; ++y)
+        {
+            if( x > 0 && y > 0)
+            {
+                faceNormals[3*nbFaces  ] = ;
+                faceNormals[3*nbFaces+1] = ;
+                faceNormals[3*nbFaces+2] = ;
+                nbFaces++;
+            }
+        }
+    }*/
+    /*
+    unsigned int nbNormals = 0;
+    unsigned int nbColors = 0;
+    for (int x = 0; x < maxX; ++x)
+    {
+        for (int y = 0; y < maxY; ++y)
+        {
+            // TODO compute each face normal, then vertex normal
+            for (int i = 0; i < 3; ++i)
+            {
+                valuesNormals[3*nbVerticesOffset+nbNormals] = (i == axis)?1.0:0.0;
+                nbNormals++;
+            }
+            valuesColors[3*nbVerticesOffset+3*nbColors+0] = 0.5;
+            valuesColors[3*nbVerticesOffset+3*nbColors+1] = 0.5;
+            valuesColors[3*nbVerticesOffset+3*nbColors+2] = 0.5;
+            nbColors++;
+
+            /*
+            // Compute Laplacian
+            float n[3];
+            unsigned int index = nbNormals;
+            for (unsigned int w = 0; w < 3; ++w)
+            {
+                n[w] = 0.0f;
+                float nbContrib = 0;
+                if (x >   0   ) {n[w] += valuesVertices[vertexOffset+index-maxY]; nbContrib++;}
+                if (x < maxX-1) {n[w] += valuesVertices[vertexOffset+index+maxY]; nbContrib++;}
+                if (y >   0   ) {n[w] += valuesVertices[vertexOffset+index-1]; nbContrib++;}
+                if (y < maxY-1) {n[w] += valuesVertices[vertexOffset+index+1]; nbContrib++;}
+                n[w] /= nbContrib; index++;
+            }
+            // Normalize
+            float norm = sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+            valuesNormals[vertexOffset+nbNormals] = n[0] / norm; nbNormals++;
+            valuesNormals[vertexOffset+nbNormals] = n[1] / norm; nbNormals++;
+            valuesNormals[vertexOffset+nbNormals] = n[2] / norm; nbNormals++;
+            */
+    /* }
+    }*/
 }
 
 

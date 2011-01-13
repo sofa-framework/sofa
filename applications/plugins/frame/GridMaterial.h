@@ -363,6 +363,7 @@ protected:
     GLuint vboValuesId2; // ID of VBO for 3DValues index array
 
     float getLabel (const int&x, const int& y, const int& z) const;
+    void getColor( float* color, const float& label) const;
     void genListCube ();
     void drawCube (const double& x, const double& y, const double& z) const;
     GLuint createVBO (const void* data, int dataSize, GLenum target, GLenum usage);
@@ -373,6 +374,8 @@ protected:
     void displayValuesVBO () const;
     void drawPlaneBBox (const int& axis) const;
     void updateMaxValues ();
+    void displayValues() const;
+    void displayPlane( const int& axis) const;
 };
 
 //#ifdef SOFA_FLOAT
