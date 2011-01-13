@@ -67,21 +67,16 @@ OglModel::OglModel()
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
 {
-    this->numberOfTextures = 0;
+    textures.clear();
 }
 
 OglModel::~OglModel()
 {
     if (tex!=NULL) delete tex;
 
-    for (unsigned int i = 0 ; i < this->numberOfTextures ; i++)
+    for (unsigned int i = 0 ; i < textures.size() ; i++)
     {
-        if (textures[i]!=NULL)
-        {
-            delete textures[i];
-            textures[i] = NULL;
-        }
-
+        delete textures[i];
     }
 }
 
@@ -115,7 +110,6 @@ void OglModel::drawGroup(int ig, bool transparent)
     {
         //get the texture id corresponding to the current material
         int indexInTextureArray = materialTextureIdMap[g.materialId];
-
         if (textures[indexInTextureArray])
         {
             textures[indexInTextureArray]->bind();
@@ -135,8 +129,6 @@ void OglModel::drawGroup(int ig, bool transparent)
         {
             //get the texture coordinates
             const ResizableExtVector<TexCoord>& vtexcoords = this->getVtexcoords();
-//            for (unsigned int i = 0 ; i < vtexcoords.size() ; i++)
-//                std::cout << "Texture coordinate " << i << "/" << vtexcoords.size() << " : " << vtexcoords[i] << std::endl;
             glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
         }
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -229,7 +221,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             glDrawElements(GL_QUADS, g.nbq * 4, GL_UNSIGNED_INT, quads.getData() + g.q0);
     }
 
-    if (!tex && m.useTexture && numberOfTextures>0)
+    if (!tex && m.useTexture && m.activated)
     {
         int indexInTextureArray = materialTextureIdMap[g.materialId];
         if (textures[indexInTextureArray])
@@ -473,7 +465,6 @@ void OglModel::internalDraw(bool transparent)
 
 bool OglModel::loadTexture(const std::string& filename)
 {
-    std::cout << "OglModel:" <<  filename << " is founded and is loaded" << std::endl;
     helper::io::Image *img = helper::io::Image::Create(filename);
     if (!img)
         return false;
@@ -483,10 +474,11 @@ bool OglModel::loadTexture(const std::string& filename)
 
 bool OglModel::loadTextures()
 {
-    this->numberOfTextures = 0;
+    textures.clear();
     for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
     {
         //we count only the texture with an activated material
+
         if (this->materials.getValue()[i].useTexture && this->materials.getValue()[i].activated)
         {
             sofa::core::objectmodel::DataFileName texturepath(this->materials.getValue()[i].textureFilename);
@@ -506,11 +498,9 @@ bool OglModel::loadTextures()
                 std::cerr << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].textureFilename << std::endl;
                 return false;
             }
-            textures[this->numberOfTextures] = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
-
-            materialTextureIdMap.insert(std::pair<int, int>(i, this->numberOfTextures));
-
-            this->numberOfTextures++;
+            helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
+            materialTextureIdMap.insert(std::pair<int, int>(i,textures.size()));
+            textures.push_back( text );
         }
     }
     return true;
@@ -518,17 +508,7 @@ bool OglModel::loadTextures()
 
 void OglModel::initVisual()
 {
-    if (tex)
-    {
-        tex->init();
-    }
-    else
-    {
-        for (unsigned int i = 0 ; i < numberOfTextures ; i++)
-        {
-            textures[i]->init();
-        }
-    }
+    initTextures();
 
     initDone = true;
 #ifdef SOFA_HAVE_GLEW
@@ -553,9 +533,12 @@ void OglModel::initTextures()
     }
     else
     {
-        for (unsigned int i = 0 ; i < numberOfTextures ; i++)
+        if (!textures.empty())
         {
-            textures[i]->init();
+            for (unsigned int i = 0 ; i < textures.size() ; i++)
+            {
+                textures[i]->init();
+            }
         }
     }
 }
@@ -598,7 +581,7 @@ void OglModel::initVertexBuffer()
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    if (tex || putOnlyTexCoords.getValue() || numberOfTextures>0)
+    if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
@@ -662,7 +645,7 @@ void OglModel::updateVertexBuffer()
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    if (tex || putOnlyTexCoords.getValue() || numberOfTextures>0)
+    if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
@@ -687,7 +670,7 @@ void OglModel::updateVertexBuffer()
             vnormals.getData());
 
     //Texture coords
-    if(tex || putOnlyTexCoords.getValue() || numberOfTextures>0)
+    if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
     {
         glBufferSubDataARB(GL_ARRAY_BUFFER,
                 positionsBufferSize + normalsBufferSize,

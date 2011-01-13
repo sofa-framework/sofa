@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
 #define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
 
+#include <vector>
 #include <string>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Texture.h>
@@ -77,8 +78,7 @@ protected:
     virtual void pushTransformMatrix(float* matrix) { glPushMatrix(); glMultMatrixf(matrix); }
     virtual void popTransformMatrix() { glPopMatrix(); }
 
-    helper::gl::Texture * textures[NB_MAX_TEXTURES]; //this texture array is the textures linked with a material
-    unsigned int numberOfTextures;
+    std::vector<helper::gl::Texture*> textures;
 
     std::map<int, int> materialTextureIdMap; //link between a material and a texture
 
