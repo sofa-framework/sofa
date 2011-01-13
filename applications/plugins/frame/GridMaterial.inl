@@ -70,7 +70,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
     , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
-    , show3DValues ( initData ( &show3DValues, false, "show3DValues","When show plane is activated, values are displayed in 3D." ) )
+    , show3DValuesHeight ( initData ( &show3DValuesHeight, (float)0.0, "show3DValuesHeight","When show plane is activated, values are displayed in 3D." ) )
     , vboSupported(false)
     , vboValuesId1(0)
     , vboValuesId2(0)
@@ -1539,7 +1539,7 @@ bool GridMaterial< MaterialTypes>::updateLinearityError()
     for (i=0; i<indices.size(); i++)
     {
         getCoord(indices[i],point);
-        ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==voronoi[indices[i]]) ptlist.push_back(j);
+        ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if (voronoi[j]==voronoi[indices[i]]) ptlist.push_back(j);
         lumpWeights(ptlist,point,w,&dw,NULL);
         Real err=0; bool allzero=true;
         for (j=0; j<ptlist.size(); j++)
@@ -2307,14 +2307,16 @@ void GridMaterial< MaterialTypes>::draw()
         }
 
         /*
-        if (show3DValues.getValue() && slicedisplay && vboSupported)
+        if (show3DValuesHeight.getValue() > 0 && slicedisplay && vboSupported)
         {
             displayValuesVBO();
         /*/
-        if (show3DValues.getValue() && slicedisplay)
+        if (show3DValuesHeight.getValue() >0 && slicedisplay)
         {
             displayValues();
             //*/
+
+            /*
             // Red BBox
             float color[] = {0.8,0.0,0.0,1.0};
             glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
@@ -2325,6 +2327,7 @@ void GridMaterial< MaterialTypes>::draw()
                 drawPlaneBBox(1);
             if(showPlane.getValue()[2] != -1)
                 drawPlaneBBox(2);
+            */
         }
 
         glPopAttrib();
@@ -2589,7 +2592,7 @@ void GridMaterial< MaterialTypes>::updateValuesVBO() const
             int zCoord = showPlane.getValue()[iZ]-gridOffset;
             if(zCoord < 0 || zCoord > dimGrid[axis]) continue;
             float vSZ = voxelSize.getValue()[iZ];
-            float scaleZ = 4 * vSZ;
+            float scaleZ = show3DValuesHeight.getValue() * vSZ;
             int maxX = dimGrid[iX];
             int maxY = dimGrid[iY];
             unsigned int nbVertices = 0;
@@ -2705,7 +2708,7 @@ void GridMaterial< MaterialTypes>::drawPlaneBBox( const int& axis) const
     minBox[iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+1)*vSize[iZ];
     maxBox[iX] = ori[iX] + dimGrid[iX] * vSize[iX];
     maxBox[iY] = ori[iY] + dimGrid[iY] * vSize[iY];
-    maxBox[iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+5)*vSize[iZ];
+    maxBox[iZ] = ori[iZ] + (showPlane.getValue()[iZ]-gridOffset+1+show3DValuesHeight.getValue())*vSize[iZ];
     glLineWidth(2.0);
     glBegin (GL_LINES);
     glVertex3f(minBox[0],minBox[1],minBox[2]);
@@ -2812,7 +2815,7 @@ void GridMaterial< MaterialTypes>::displayPlane( const int& axis) const
     normal[iZ] = 1.0;
     glNormal3f(normal[0],normal[1],normal[2]);
 
-    float scaleZ = 4 * vSZ;
+    float scaleZ = show3DValuesHeight.getValue() * vSZ;
     float zCoord = showPlane.getValue()[iZ]-gridOffset;
     SCoord coord, coord2;
     float value;
@@ -2838,7 +2841,7 @@ void GridMaterial< MaterialTypes>::displayPlane( const int& axis) const
             // Position
             coord[iX] = ori[iX] + x*vSX;
             coord[iY] = ori[iY] + y*vSY;
-            coord[iZ] = ori[iZ] + (zCoord+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            coord[iZ] = ori[iZ] + (zCoord+.51)*vSZ + value / maxValues[showvox] * scaleZ;
             glVertex3f(coord[0],coord[1],coord[2]);
 
             // Vertex 1 //
@@ -2857,7 +2860,7 @@ void GridMaterial< MaterialTypes>::displayPlane( const int& axis) const
             // Position
             coord[iX] = ori[iX] + (x-1)*vSX;
             coord[iY] = ori[iY] + y*vSY;
-            coord[iZ] = ori[iZ] + (zCoord+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            coord[iZ] = ori[iZ] + (zCoord+.51)*vSZ + value / maxValues[showvox] * scaleZ;
             glVertex3f(coord[0],coord[1],coord[2]);
 
             // Vertex 2 //
@@ -2876,7 +2879,7 @@ void GridMaterial< MaterialTypes>::displayPlane( const int& axis) const
             // Position
             coord[iX] = ori[iX] + (x-1)*vSX;
             coord[iY] = ori[iY] + (y-1)*vSY;
-            coord[iZ] = ori[iZ] + (zCoord+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            coord[iZ] = ori[iZ] + (zCoord+.51)*vSZ + value / maxValues[showvox] * scaleZ;
             glVertex3f(coord[0],coord[1],coord[2]);
 
             // Vertex 3 //
@@ -2895,7 +2898,7 @@ void GridMaterial< MaterialTypes>::displayPlane( const int& axis) const
             // Position
             coord[iX] = ori[iX] + x*vSX;
             coord[iY] = ori[iY] + (y-1)*vSY;
-            coord[iZ] = ori[iZ] + (zCoord+.5)*vSZ + value / maxValues[showvox] * scaleZ;
+            coord[iZ] = ori[iZ] + (zCoord+.51)*vSZ + value / maxValues[showvox] * scaleZ;
             glVertex3f(coord[0],coord[1],coord[2]);
         }
     }
