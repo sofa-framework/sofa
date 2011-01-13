@@ -79,7 +79,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     distanceTypeOptions.setSelectedItem(DISTANCE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 
-    helper::OptionsGroup showVoxelsOptions(10,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi", "Voronoi Frames", "Distances", "Weights");
+    helper::OptionsGroup showVoxelsOptions(11,"None", "Data", "Stiffness", "Density", "Bulk modulus", "Poisson ratio", "Voronoi Samples", "Voronoi Frames", "Distances", "Weights","Linearity Error");
     showVoxelsOptions.setSelectedItem(SHOWVOXELS_NONE);
     showVoxels.setValue(showVoxelsOptions);
 
@@ -106,6 +106,7 @@ void GridMaterial< MaterialTypes>::init()
     }
     if (weightFile.isSet()) loadWeightRepartion();
     showedrepartition=-1;
+    showederror=-1;
     showWireframe=false;
 
     //TEST
@@ -813,7 +814,6 @@ bool GridMaterial< MaterialTypes>::lumpWeightsRepartition(const unsigned int sam
             else /*if(!ddw)*/ lumpWeights(neighbors,point,w[i],&(*dw)[i]);
             //else lumpWeights(neighbors,point,w[i],&(*dw)[i],&(*ddw)[i]);  // desctivated for speed... (weights are supposed to be linear and not quadratic)
         }
-
     return true;
 }
 
@@ -1505,6 +1505,58 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
         }
         /// end propagation algorithm
     }
+
+    updateMaxValues();
+    return true;
+}
+
+template < class MaterialTypes>
+bool GridMaterial< MaterialTypes>::updateLinearityError()
+{
+    if (!nbVoxels) return false;
+    if (voronoi.size()!=nbVoxels) return false;
+
+    unsigned int i,j;
+    int k;
+
+    // get voxel indices of different voronoi regions
+    vector<unsigned int> indices;
+    for (i=0; i<this->nbVoxels; i++)
+        if(voronoi[i]!=-1)
+        {
+            k=-1;
+            for (j=0; j<(unsigned int)indices.size() && k==-1; j++) if(voronoi[i]==voronoi[indices[j]]) k=j;
+            if(k==-1) indices.push_back(i);
+        }
+    if(!indices.size()) return false;
+
+    // compute error
+    linearityError.resize(this->nbVoxels);
+    for (i=0; i<this->nbVoxels; i++) linearityError[i]=0;
+    VUI ptlist; SCoord point,point2;
+    Real w; SGradient dw;
+    Real meanerror=0,minerror=1E10,maxerror=0; unsigned int count=0;
+    for (i=0; i<indices.size(); i++)
+    {
+        getCoord(indices[i],point);
+        ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if ((unsigned int)voronoi[j]==voronoi[indices[i]]) ptlist.push_back(j);
+        lumpWeights(ptlist,point,w,&dw,NULL);
+        Real err=0; bool allzero=true;
+        for (j=0; j<ptlist.size(); j++)
+        {
+            getCoord(ptlist[j],point2);
+            linearityError[ptlist[j]]=weights[ptlist[j]] - dot(point2-point,dw) -w;
+            if(linearityError[ptlist[j]]<0) linearityError[ptlist[j]]*=(Real)-1;
+            if(weights[ptlist[j]]!=0) allzero=false;
+            if(linearityError[ptlist[j]]<1E-12) linearityError[ptlist[j]]=0; // clamp for visualization..
+            err+=linearityError[ptlist[j]];
+            if(minerror>linearityError[ptlist[j]]) minerror=linearityError[ptlist[j]];
+            if(maxerror<linearityError[ptlist[j]]) maxerror=linearityError[ptlist[j]];
+        }
+        if(!allzero) {meanerror+=err; count+=ptlist.size();}
+    }
+    if(count) meanerror/=(Real)count;
+    std::cout<<"Min/Average/Max error in influenced regions per voxel="<<minerror<<"/"<<meanerror<<"/"<<maxerror<<std::endl;
 
     updateMaxValues();
     return true;
@@ -2207,6 +2259,18 @@ void GridMaterial< MaterialTypes>::draw()
                 showedrepartition=(int)showWeightIndex.getValue();
             }
         }
+        else if(showvox==SHOWVOXELS_LINEARITYERROR)
+        {
+            if(linearityError.size()!=nbVoxels || showederror!=(int)showWeightIndex.getValue())
+            {
+                pasteRepartioninWeight(showWeightIndex.getValue());
+                updateLinearityError();
+            }
+            showederror=(int)showWeightIndex.getValue();
+            showedrepartition=(int)showWeightIndex.getValue();
+        }
+
+
 
         bool slicedisplay=false;
         for (i=0; i<3; i++) if(showPlane.getValue()[i]>=0 && showPlane.getValue()[i]<dimension.getValue()[i]) slicedisplay=true;
@@ -2280,9 +2344,10 @@ float GridMaterial< MaterialTypes>::getLabel( const int&x, const int& y, const i
     else if (showvox==SHOWVOXELS_BULKMODULUS) label=(float)getBulkModulus(grid(x,y,z));
     else if (showvox==SHOWVOXELS_POISSONRATIO) label=(float)getPoissonRatio(grid(x,y,z));
     else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI)  {if (voronoi.size()!=0) label=(float)voronoi[getIndex(GCoord(x,y,z))]+1.;}
-    else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)  && distances.size()!=0) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
-    else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)   && weights.size()!=0 ) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
+    else if (distances.size()==nbVoxels && showvox==SHOWVOXELS_DISTANCES)  {if (grid(x,y,z)) label=(float)distances[getIndex(GCoord(x,y,z))]; else label=0; }
+    else if (weights.size()==nbVoxels && showvox==SHOWVOXELS_WEIGHTS)  { if (grid(x,y,z)) label=(float)weights[getIndex(GCoord(x,y,z))]; else label=0; }
     else if (voronoi.size()==nbVoxels && showvox==SHOWVOXELS_VORONOI_FR)  {if (voronoi_frames.size()!=0) label=(float)voronoi_frames[getIndex(GCoord(x,y,z))]+1.; }
+    else if ( linearityError.size()==nbVoxels && showvox==SHOWVOXELS_LINEARITYERROR) {if (grid(x,y,z)) label=(float)linearityError[getIndex(GCoord(x,y,z))]; else label=0; }
     return label;
 }
 
@@ -2843,12 +2908,12 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
 {
     // Determine max values
     unsigned int i;
-    for (i=0; i < 10; ++i) maxValues[i] = -1.0f;
+    for (i=0; i < 11; ++i) maxValues[i] = -1.0f;
     for (i=0; i<nbVoxels; i++) if ((float)grid.data()[i]>maxValues[SHOWVOXELS_DATAVALUE]) maxValues[SHOWVOXELS_DATAVALUE]=(float)grid.data()[i];
     bool rigidPart = false;
     for (typename mapLabelType::const_iterator it = labelToStiffnessPairs.getValue().begin(); it != labelToStiffnessPairs.getValue().end(); ++it)
     {
-        if (it->second == 15000000000)
+        if (isRigid(it->second))
             rigidPart = true;
         else if (it->second > maxValues[SHOWVOXELS_STIFFNESS])
             maxValues[SHOWVOXELS_STIFFNESS]=(float)it->second;
@@ -2861,7 +2926,7 @@ void GridMaterial< MaterialTypes>::updateMaxValues()
     for (i=0; i<distances.size(); i++) if (grid.data()[i] && distances[i]>maxValues[SHOWVOXELS_DISTANCES]) maxValues[SHOWVOXELS_DISTANCES]=(float)distances[i];
     for (i=0; i<voronoi_frames.size(); i++) if (grid.data()[i] && voronoi_frames[i]+1>maxValues[SHOWVOXELS_VORONOI_FR]) maxValues[SHOWVOXELS_VORONOI_FR]=(float)voronoi_frames[i]+1;
     maxValues[SHOWVOXELS_WEIGHTS]=1.0f;
-
+    for (i=0; i<linearityError.size(); i++) if (grid.data()[i] && linearityError[i]>maxValues[SHOWVOXELS_LINEARITYERROR]) maxValues[SHOWVOXELS_LINEARITYERROR]=(float)linearityError[i];
     for (unsigned int i = 0; i < showVoxels.getValue().size(); ++i)
         sout << "maxValues["<<showVoxels.getValue()[i]<<"]: " << maxValues[i] << sendl;
 }

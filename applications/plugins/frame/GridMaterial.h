@@ -50,6 +50,7 @@
 #define SHOWVOXELS_VORONOI_FR 7
 #define SHOWVOXELS_DISTANCES 8
 #define SHOWVOXELS_WEIGHTS 9
+#define SHOWVOXELS_LINEARITYERROR 10
 
 namespace sofa
 {
@@ -245,6 +246,7 @@ protected:
     vector<int> voronoi;
     vector<int> voronoi_frames;
     vector<Real> weights;
+    vector<Real> linearityError;
     vector<Real> dmaxinvoronoi;
 
     // voxel data
@@ -252,6 +254,7 @@ protected:
     vector<VRef> v_index;
 
     int showedrepartition; // to improve visualization (no need to paste weights on each draw)
+    int showederror; // to improve visualization (no need to recompute error on each draw)
 
     /*********************************/
     /*   IO						  */
@@ -323,6 +326,9 @@ protected:
     /// fit 1st, 2d or 3d polynomial to the dense weight map in the region defined by indices
     bool lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL,Real* err=NULL);
 
+    // compute and store in the map "linearity error" the approximation error of each voxel weight according the fit in its voronoi region
+    bool updateLinearityError();
+
     /*********************************/
     /*         Utils				  */
     /*********************************/
@@ -356,7 +362,7 @@ protected:
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
     Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
-    float maxValues[10];
+    float maxValues[11];
     Data<bool> show3DValues;
     bool vboSupported;
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
