@@ -89,7 +89,7 @@ HEADERS += viewer/SofaViewer.h \
 		   QSofaStatWidget.h \
            QMenuFilesRecentlyOpened.h \
            ImageQt.h \ 
-    viewer/qtogre/OgreReflectionTexture.h
+
 
 SOURCES += viewer/SofaViewer.cpp \
            viewer/ViewerFactory.cpp \
@@ -122,7 +122,7 @@ SOURCES += viewer/SofaViewer.cpp \
 		   QSofaStatWidget.cpp \
            QMenuFilesRecentlyOpened.cpp \
            ImageQt.cpp \ 
-    viewer/qtogre/OgreReflectionTexture.cpp
+
 
 contains (DEFINES, SOFA_QT4){
 HEADERS += QModelViewTableDataContainer.h \
@@ -186,7 +186,8 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
                    viewer/qtogre/OgreVisualModel.cpp \
                    viewer/qtogre/OgreShaderParameter.cpp \
                    viewer/qtogre/OgreShaderTextureUnit.cpp \
-                   viewer/qtogre/QOgreLightWidget.cpp
+                   viewer/qtogre/QOgreLightWidget.cpp \
+                   viewer/qtogre/OgreReflectionTexture.cpp
 			   
 	HEADERS += viewer/qtogre/DotSceneLoader.h \
                viewer/qtogre/HelperLogics.h \
@@ -195,6 +196,7 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
                viewer/qtogre/OgreShaderEntryPoint.h \
                viewer/qtogre/OgreShaderParameter.h \
                viewer/qtogre/OgreShaderTextureUnit.h \
-               viewer/qtogre/QOgreLightWidget.h
+               viewer/qtogre/QOgreLightWidget.h \
+              viewer/qtogre/OgreReflectionTexture.h
                
 }
