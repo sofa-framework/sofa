@@ -223,6 +223,8 @@ public:
     Data<bool> f_fracturable;
     Data<bool> showStressValue;
     Data<bool> showStressVector;
+    Data< sofa::helper::vector <helper::fixed_array<Coord,3> > > m_rotatedInitialElements;
+    Data< sofa::helper::vector <Transformation> > m_initialTransformation;
 
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val)
