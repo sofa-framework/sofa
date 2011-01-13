@@ -50,11 +50,39 @@ private:
     bool repeat, linearInterpolation, generateMipmaps, srgbColorspace;
     float minLod, maxLod;
 public:
+
+    Texture()
+        :image(NULL),id(0),repeat(true), linearInterpolation(true), generateMipmaps(false),
+         srgbColorspace(false), minLod(-1000), maxLod(1000)
+    {
+    }
+
     Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true, bool generateMipmaps = false,
             bool srgbColorspace = false, float minLod = -1000, float maxLod = 1000)
         :image(img),id(0),repeat(repeat), linearInterpolation(linearInterpolation), generateMipmaps(generateMipmaps),
          srgbColorspace(srgbColorspace), minLod(minLod), maxLod(maxLod)
     {}
+
+    Texture(const Texture& tex)
+        :image(tex.image),id(tex.id), repeat(tex.repeat), linearInterpolation(tex.linearInterpolation), generateMipmaps(tex.generateMipmaps),
+         srgbColorspace(tex.srgbColorspace), minLod(tex.minLod), maxLod(tex.maxLod)
+    {
+    }
+
+    Texture operator=(const Texture& tex)
+    {
+
+        image = tex.image;
+        id = tex.id;
+        repeat = tex.repeat;
+        linearInterpolation = tex.linearInterpolation;
+        generateMipmaps = tex.generateMipmaps;
+        srgbColorspace = tex.srgbColorspace;
+        minLod = tex.minLod;
+        maxLod = tex.maxLod;
+
+        return *this;
+    }
 
     io::Image* getImage(void);
     GLuint getTarget() const { return target; }
