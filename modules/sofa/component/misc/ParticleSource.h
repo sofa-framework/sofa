@@ -357,6 +357,19 @@ protected :
 
 };
 
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP)
+#pragma warning(disable : 4231)
+using namespace sofa::defaulttype;
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2fTypes>;
+#endif
+#endif
+
 } // namespace misc
 
 } // namespace component
