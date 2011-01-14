@@ -77,7 +77,7 @@ void BuoyantForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v, const core::MechanicalParams* /* mparams */)
+void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/, const core::MechanicalParams* /* mparams */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
