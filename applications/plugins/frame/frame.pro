@@ -56,8 +56,8 @@ HEADERS += \
            NewHookeMaterial.h \
            NewHookeMaterial.inl \
            QuadraticTypes.h \
-           #TetrahedralCorotationalFEMForceField2.h \
-           #TetrahedralCorotationalFEMForceField2.inl
+           TetrahedralCorotationalFEMForceField2.h \
+           TetrahedralCorotationalFEMForceField2.inl
 
 SOURCES += \
            CorotationalForceField.cpp \
@@ -74,5 +74,5 @@ SOURCES += \
            GridMaterial.cpp \
            Interpolater.cpp \
            NewHookeMaterial.cpp \
-           #TetrahedralCorotationalFEMForceField2.cpp \
+           TetrahedralCorotationalFEMForceField2.cpp \
            initFrame.cpp

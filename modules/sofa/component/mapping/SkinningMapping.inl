@@ -683,51 +683,27 @@ void SkinningMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const 
     const unsigned int& nbRef = this->nbRefs.getValue();
     const vector<unsigned int>& m_reps = this->repartition.getValue();
     const VVD& m_weights = weights.getValue();
-    const unsigned int nbp = this->fromModel->getX()->size();
-    Deriv omega;
-    typename In::VecDeriv v;
-    vector<bool> flags;
 
-    typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-
-    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != in.end(); ++rowIt)
     {
-        v.clear();
-        v.resize(nbp);
-        flags.clear();
-        flags.resize(nbp);
+        typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
 
-        typename In::MatrixDeriv::RowIterator o = out.end();
-
-        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
-
-        for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+        for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
         {
             unsigned int indexPoint = colIt.index();
             Deriv data = ( Deriv ) colIt.val();
 
             for (unsigned int j = 0 ; j < nbRef; j++)
             {
+                typename In::Deriv v;
                 const int idxReps=m_reps[nbRef *indexPoint+j];
-                omega = cross(rotatedPoints[nbRef * indexPoint + j], data);
-                flags[idxReps] = true;
-                getVCenter(v[idxReps]) += data * m_weights[indexPoint][j];
-                getVOrientation(v[idxReps]) += omega * m_weights[indexPoint][j];
+                Deriv omega = cross(rotatedPoints[nbRef * indexPoint + j], data);
+                getVCenter(v) += data * m_weights[indexPoint][j];
+                getVOrientation(v) += omega * m_weights[indexPoint][j];
+
+                o.addCol(idxReps, v);
             }
 
-            for (unsigned int j = 0 ; j < nbp; j++)
-            {
-                if (flags[j])
-                {
-                    // Create an unique new line for each contraint
-                    if (o == out.end())
-                    {
-                        o = out.writeLine(rowIt.index());
-                    }
-
-                    o.addCol(j, v[j]);
-                }
-            }
         }
     }
 }

@@ -99,12 +99,14 @@ struct LinearBlendTypes<
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         OutCoord Pa;    ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
@@ -148,13 +150,24 @@ struct LinearBlendTypes<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec12 product, and apply the transpose of this matrix
-          */
+        */
 
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
 
             res[index[i]].getVCenter() += d * Jb[i].Pt;
             for (unsigned int j = 0; j < 3; ++j) res[index[i]].getVAffine()[j] += Jb[i].Pa * d[j];
+        }
+    }
+
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT to build a contraint equation on the independent DOF
+    {
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            InDeriv parentJacobianVec;
+            parentJacobianVec.getVCenter() += childJacobianVec * Jb[i].Pt;
+            for (unsigned int j = 0; j < 3; ++j) parentJacobianVec.getVAffine()[j] += Jb[i].Pa * childJacobianVec[j];
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
     }
 
@@ -187,12 +200,14 @@ struct LinearBlendTypes<
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         SpatialCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
@@ -265,6 +280,23 @@ struct LinearBlendTypes<
 
         }
     }
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT
+    {
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+
+            InDeriv parentJacobianVec;
+            parentJacobianVec.getVCenter() +=  childJacobianVec.getCenter() * Jb[i].Pt;
+            parentJacobianVec.getVCenter() += childJacobianVec.getMaterialFrame() * Jb[i].Ft;
+
+            for (unsigned int j = 0; j < 3; ++j)
+            {
+                parentJacobianVec.getVAffine()[j] += Jb[i].Pa * childJacobianVec.getCenter()[j];
+                parentJacobianVec.getVAffine()[j] += Jb[i].Fa * (childJacobianVec.getMaterialFrame()[j]);
+            }
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
 };
 
 
@@ -295,13 +327,15 @@ struct LinearBlendTypes<
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         SpatialCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
@@ -313,6 +347,7 @@ struct LinearBlendTypes<
     Vec<nbRef,unsigned int> index;
     Vec<nbRef,JacobianBlock> Jb;
 
+    InDeriv parentJacobianVec;
     void init( const OutCoord& InitialPos, const Vec<nbRef,unsigned int>& Index, const VecInCoord& InitialTransform, const Vec<nbRef,Real>& w, const Vec<nbRef,MaterialDeriv>& dw, const Vec<nbRef,MaterialMat>&  ddw)
     {
         index = Index;
@@ -339,6 +374,7 @@ struct LinearBlendTypes<
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
         {
             res.getCenter() += d[index[i]].getCenter( ) * Jb[i].Pt + d[index[i]].getAffine( ) * Jb[i].Pa;
+            InDeriv parentJacobianVec;
             res.getMaterialFrame() += covNN( d[index[i]].getCenter( ), Jb[i].Ft) + d[index[i]].getAffine( ) * Jb[i].Fa;
             for (unsigned int k = 0; k < 3; ++k)
                 res.getMaterialFrameGradient()[k] += covNN( d[index[i]].getCenter( ), Jb[i].dFt[k]) + d[index[i]].getAffine( ) * Jb[i].dFa[k];
@@ -377,6 +413,26 @@ struct LinearBlendTypes<
         }
     }
 
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec  ) // Called in ApplyJT
+    {
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+
+            InDeriv parentJacobianVec;
+            parentJacobianVec.getVCenter() +=  childJacobianVec.getCenter() * Jb[i].Pt;
+            parentJacobianVec.getVCenter() += childJacobianVec.getMaterialFrame() * Jb[i].Ft;
+            for (unsigned int k = 0; k < 3; ++k) parentJacobianVec.getVCenter() += childJacobianVec.getMaterialFrameGradient()[k] * Jb[i].dFt[k];
+
+            for (unsigned int m = 0; m < 3; ++m)
+            {
+                parentJacobianVec.getVAffine()[m] += Jb[i].Pa * childJacobianVec.getCenter()[m];
+                parentJacobianVec.getVAffine()[m] += Jb[i].Fa * childJacobianVec.getMaterialFrame()[m];
+                for (unsigned int k = 0; k < 3; ++k) parentJacobianVec.getVAffine()[m] += Jb[i].dFa[k] * childJacobianVec.getMaterialFrameGradient()[k][m];
+            }
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
+
 };
 
 
@@ -403,12 +459,14 @@ struct LinearBlendTypes<
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         QuadraticCoord Pa;    ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
     };
@@ -460,6 +518,17 @@ struct LinearBlendTypes<
             for (unsigned int j = 0; j < 3; ++j) res[index[i]].getVQuadratic()[j] += Jb[i].Pa * d[j];
         }
     }
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec  ) // Called in ApplyJT
+    {
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+            InDeriv parentJacobianVec;
+
+            parentJacobianVec.getVCenter() += childJacobianVec * Jb[i].Pt;
+            for (unsigned int j = 0; j < 3; ++j) parentJacobianVec.getVQuadratic()[j] += Jb[i].Pa * childJacobianVec[j];
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
 
 };
 
@@ -489,12 +558,14 @@ struct LinearBlendTypes<
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
     typedef Mat<9,3,Real> MaterialFrame2;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         QuadraticCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
         MaterialFrame2 Fa;  ///< = dF = dMa_i (w_i \bar M_i + \bar M_i p_0 dw_i)
@@ -583,6 +654,24 @@ struct LinearBlendTypes<
 
         }
     }
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT
+    {
+
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+
+            InDeriv parentJacobianVec;
+            parentJacobianVec.getVCenter() += childJacobianVec.getCenter() * Jb[i].Pt;
+            parentJacobianVec.getVCenter() += childJacobianVec.getMaterialFrame() * Jb[i].Ft;
+
+            for (unsigned int j = 0; j < 3; ++j)
+            {
+                parentJacobianVec.getVQuadratic()[j] += Jb[i].Pa * childJacobianVec.getCenter()[j];
+                parentJacobianVec.getVQuadratic()[j] += Jb[i].Fa * (childJacobianVec.getMaterialFrame()[j]);
+            }
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
 };
 
 
@@ -615,12 +704,14 @@ struct LinearBlendTypes<
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         //                JacobianBlock(){}
         //                JacobianBlock(const SpatialCoord2& p2, const Real& w,  const MaterialFrame2& f2,  const MaterialDeriv& dw,  const MaterialFrameGradient2& df2,  const MaterialMat& ddw):Pa(p2),Pt(w),Fa(f2),Ft(dw),dFa(df2),dFt(ddw){}
         QuadraticCoord Pa;  ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
@@ -718,6 +809,25 @@ struct LinearBlendTypes<
             }
         }
     }
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT
+    {
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+
+            InDeriv parentJacobianVec;
+            parentJacobianVec.getVCenter() +=  childJacobianVec.getCenter() * Jb[i].Pt;
+            parentJacobianVec.getVCenter() += childJacobianVec.getMaterialFrame() * Jb[i].Ft;
+            for (unsigned int k = 0; k < 3; ++k) parentJacobianVec.getVCenter() += childJacobianVec.getMaterialFrameGradient()[k] * Jb[i].dFt[k];
+
+            for (unsigned int m = 0; m < 3; ++m)
+            {
+                parentJacobianVec.getVQuadratic()[m] += Jb[i].Pa * childJacobianVec.getCenter()[m];
+                parentJacobianVec.getVQuadratic()[m] += Jb[i].Fa * childJacobianVec.getMaterialFrame()[m];
+                for (unsigned int k = 0; k < 3; ++k) parentJacobianVec.getVQuadratic()[m] += Jb[i].dFa[k] * childJacobianVec.getMaterialFrameGradient()[k][m];
+            }
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
 };
 
 
@@ -744,12 +854,14 @@ struct LinearBlendTypes<
     typedef typename Out::Deriv OutDeriv;
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         OutCoord Pa0; ///< weighted point in local frame:   dp = dMa_i (w_i \bar M_i p_0)  : affine part
         OutCoord Pa;  ///< rotated point :  dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
@@ -797,11 +909,23 @@ struct LinearBlendTypes<
     void addMultTranspose( VecInDeriv& res, const OutDeriv& d ) // Called in ApplyJT
     {
         /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
-          */
+        */
         for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
         {
             getLinear(res[index[i]])  += d * Jb[i].Pt;
             getAngular(res[index[i]]) += cross(Jb[i].Pa, d);
+        }
+    }
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT
+    {
+        /* To derive this method, rewrite the product Jacobian * InDeriv as a matrix * Vec6 product, and apply the transpose of this matrix
+        */
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0; i++ )
+        {
+            InDeriv parentJacobianVec;
+            getLinear(parentJacobianVec)  += childJacobianVec * Jb[i].Pt;
+            getAngular(parentJacobianVec) += cross(Jb[i].Pa, childJacobianVec);
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
         }
     }
 
@@ -834,12 +958,14 @@ struct LinearBlendTypes<
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
     typedef Mat<3,3,Real> Mat33;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         SpatialCoord Pa0; ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         SpatialCoord Pa;  ///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
@@ -929,6 +1055,23 @@ struct LinearBlendTypes<
             getAngular(res[index[i]])[2] += dot(Jb[i].Fa[0],d.getMaterialFrame()[1]) - dot(Jb[i].Fa[1],d.getMaterialFrame()[0]);
         }
     }
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT
+    {
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+
+            InDeriv parentJacobianVec;
+            getLinear(parentJacobianVec) +=  childJacobianVec.getCenter() * Jb[i].Pt;
+            getLinear(parentJacobianVec) += childJacobianVec.getMaterialFrame() * Jb[i].Ft;
+
+            getAngular(parentJacobianVec) += cross(Jb[i].Pa, childJacobianVec.getCenter());
+
+            getAngular(parentJacobianVec)[0] += dot(Jb[i].Fa[1],childJacobianVec.getMaterialFrame()[2]) - dot(Jb[i].Fa[2],childJacobianVec.getMaterialFrame()[1]);
+            getAngular(parentJacobianVec)[1] += dot(Jb[i].Fa[2],childJacobianVec.getMaterialFrame()[0]) - dot(Jb[i].Fa[0],childJacobianVec.getMaterialFrame()[2]);
+            getAngular(parentJacobianVec)[2] += dot(Jb[i].Fa[0],childJacobianVec.getMaterialFrame()[1]) - dot(Jb[i].Fa[1],childJacobianVec.getMaterialFrame()[0]);
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
 
 };
 
@@ -960,12 +1103,14 @@ struct LinearBlendTypes<
     typedef typename In::VecCoord VecInCoord;
     typedef typename In::VecDeriv VecInDeriv;
     typedef Mat<3,3,Real> Mat33;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv::RowIterator ParentJacobianRow;
 
     struct JacobianBlock
     {
         /** Linear blend skinning: p = \sum_i w_i M_i \bar M_i p_0  where \bar M_i is the inverse of M_i in the reference configuration, and p_0 is the position of p in the reference configuration.
-          The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
-          */
+        The variation of p when a change dM_i is applied is thus w_i dM_i \bar M_i p_0, which we can compute as: dM_i * ( w_i \bar M_i p_0 )  in homogeneous coordinates.
+        */
         SpatialCoord Pa0; ///< = dp = dMa_i (w_i \bar M_i p_0)  : affine part
         SpatialCoord Pa;  ///< = dp = Omega_i x [ Ma_i (w_i \bar M_i p_0) ]  : affine part
         Real Pt;      ///< = dp = dMt_i (w_i)  : translation part
@@ -1083,6 +1228,31 @@ struct LinearBlendTypes<
             }
         }
     }
+    void addMultTranspose( ParentJacobianRow& parentJacobianRow, const OutDeriv& childJacobianVec ) // Called in ApplyJT
+    {
+        for ( unsigned int i=0; i<nbRef && Jb[i].Pt>0.; i++ )
+        {
+
+            InDeriv parentJacobianVec;
+            getLinear(parentJacobianVec) +=  childJacobianVec.getCenter() * Jb[i].Pt;
+            getLinear(parentJacobianVec) += childJacobianVec.getMaterialFrame() * Jb[i].Ft;
+            for (unsigned int k = 0; k < 3; ++k) getLinear(parentJacobianVec) += childJacobianVec.getMaterialFrameGradient()[k] * Jb[i].dFt[k];
+
+            getAngular(parentJacobianVec) += cross(Jb[i].Pa, childJacobianVec.getCenter());
+
+            getAngular(parentJacobianVec)[0] += dot(Jb[i].Fa[1],childJacobianVec.getMaterialFrame()[2]) - dot(Jb[i].Fa[2],childJacobianVec.getMaterialFrame()[1]);
+            getAngular(parentJacobianVec)[1] += dot(Jb[i].Fa[2],childJacobianVec.getMaterialFrame()[0]) - dot(Jb[i].Fa[0],childJacobianVec.getMaterialFrame()[2]);
+            getAngular(parentJacobianVec)[2] += dot(Jb[i].Fa[0],childJacobianVec.getMaterialFrame()[1]) - dot(Jb[i].Fa[1],childJacobianVec.getMaterialFrame()[0]);
+
+            for (unsigned int k = 0; k < 3; ++k)
+            {
+                getAngular(parentJacobianVec)[0] += dot(Jb[i].dFa[k][1],childJacobianVec.getMaterialFrameGradient()[k][2]) - dot(Jb[i].dFa[k][2],childJacobianVec.getMaterialFrameGradient()[k][1]);
+                getAngular(parentJacobianVec)[1] += dot(Jb[i].dFa[k][2],childJacobianVec.getMaterialFrameGradient()[k][0]) - dot(Jb[i].dFa[k][0],childJacobianVec.getMaterialFrameGradient()[k][2]);
+                getAngular(parentJacobianVec)[2] += dot(Jb[i].dFa[k][0],childJacobianVec.getMaterialFrameGradient()[k][1]) - dot(Jb[i].dFa[k][1],childJacobianVec.getMaterialFrameGradient()[k][0]);
+            }
+            parentJacobianRow.addCol(index[i],parentJacobianVec);
+        }
+    }
 
 };
 
@@ -1121,9 +1291,6 @@ int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of
         .add< FrameBlendingMapping< Rigid3dTypes, DeformationGradient332dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
-        // .add< FrameBlendingMapping< Affine3fTypes, Vec3fTypes > >()
-        // .add< FrameBlendingMapping< Affine3fTypes, ExtVec3fTypes > >()
-        //.add< FrameBlendingMapping< Affine3dTypes, DeformationGradient332fTypes > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
@@ -1149,9 +1316,6 @@ template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGra
 template class SOFA_FRAME_API FrameBlendingMapping< Rigid3dTypes, DeformationGradient332dTypes >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-//template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, Vec3fTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, ExtVec3fTypes >;
-//template class SOFA_FRAME_API FrameBlendingMapping< Affine3fTypes, DeformationGradient332fTypes >;
 #endif //SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE

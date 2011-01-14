@@ -241,19 +241,22 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
     if ( ! ( this->maskTo->isInUse() ) )
     {
         this->maskFrom->setInUse ( false );
-        //if( this->f_printLog.getValue() ){
-        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
-        //}
+        if( this->f_printLog.getValue() )
+        {
+            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
+        }
         for ( unsigned int i=0; i<in.size(); i++ ) // VecType
         {
             inout[i].addMultTranspose( out, in[i] );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
-            //}
+            if( this->f_printLog.getValue() )
+            {
+                std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+            }
         }
-        //if( this->f_printLog.getValue() ){
-        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
-        //}
+        if( this->f_printLog.getValue() )
+        {
+            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
+        }
     }
     else
     {
@@ -262,34 +265,61 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
         ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
 
         ParticleMask::InternalStorage::const_iterator it;
-        //if( this->f_printLog.getValue() ){
-        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
-        //}
+        if( this->f_printLog.getValue() )
+        {
+            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, use mask, parent values before = "<< out << std::endl;
+        }
         for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
         {
             const int i= ( int ) ( *it );
             inout[i].addMultTranspose( out, in[i] );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
-            //}
+            if( this->f_printLog.getValue() )
+            {
+                std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+            }
             for (unsigned int j = 0; j < nbRef; ++j)
                 maskFrom->insertEntry ( index[i][j] );
         }
-        //if( this->f_printLog.getValue() ){
-        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
-        //}
+        if( this->f_printLog.getValue() )
+        {
+            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
+        }
     }
 }
 
 
 template <class TIn, class TOut>
-void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/ )
+void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacobians, const typename Out::MatrixDeriv& childJacobians )
 {
-    //                if( this->f_printLog.getValue() ){
-    //                    std::cerr<<"WARNING ! FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) not implemented"<< std::endl;
-    //                }
-}
+//                 const unsigned int& nbRef = this->nbRefs.getValue();
+//                const vector<unsigned int>& m_reps = this->repartition.getValue();
+//                const VVD& m_weights = weights.getValue();
 
+    for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
+    {
+        typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
+
+        for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
+        {
+            unsigned int childIndex = childParticle.index();
+            const OutDeriv& childJacobianVec = /*( Deriv )*/ childParticle.val();
+
+            inout[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
+
+//                        for (unsigned int j = 0 ; j < nbRef; j++)
+//                        {
+//                            typename In::Deriv parentJacobianVec;
+//                            const int parentIndex = m_reps[nbRef *childIndex+j];
+//                            Deriv omega = cross(rotatedPoints[nbRef * childIndex + j], childJacobianVec);
+//                            getVCenter(parentJacobianVec) += childJacobianVec * m_weights[childIndex][j];
+//                            getVOrientation(parentJacobianVec) += omega * m_weights[childIndex][j];
+//
+//                            parentJacobian.addCol(parentIndex, parentJacobianVec);
+//                        }
+
+        }
+    }
+}
 
 
 
