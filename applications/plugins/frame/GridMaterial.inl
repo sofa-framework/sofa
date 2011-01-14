@@ -1405,7 +1405,7 @@ bool GridMaterial< MaterialTypes>::computeVoronoiRecursive ( const unsigned int 
 
         typedef std::pair<Real,unsigned> DistanceToPoint;
         std::set<DistanceToPoint> q; // priority queue
-        std::set<DistanceToPoint>::iterator qit;
+        typename std::set<DistanceToPoint>::iterator qit;
 
         for (unsigned int nbs=0; nbs<nbVoronoiSubdivisions.getValue(); nbs++)
         {
