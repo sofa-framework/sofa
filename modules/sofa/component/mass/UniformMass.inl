@@ -464,7 +464,7 @@ void UniformMass<DataTypes, MassType>::draw()
         color = colorTab[proc%12];
     }
 #endif
-    simulation::getSimulation()->DrawUtility.drawPoints ( points, 2, color);
+    simulation::getSimulation()->DrawUtility().drawPoints ( points, 2, color);
 
     if ( showCenterOfGravity.getValue() )
     {

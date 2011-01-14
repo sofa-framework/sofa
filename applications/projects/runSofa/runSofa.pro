@@ -31,6 +31,7 @@ macx : {
 }
 
 unix {
+        LIBS += -ldl
         # The following is a workaround to get KDevelop to detect the name of the program to start
 	!macx: QMAKE_POST_LINK = ln -sf runSofa$$SUFFIX $$DESTDIR/runSofa-latest
 }

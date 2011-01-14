@@ -642,7 +642,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
         totalMass += masses[i];
     }
 
-    simulation::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+    simulation::getSimulation()->DrawUtility().drawPoints(points, 2, Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {

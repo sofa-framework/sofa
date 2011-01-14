@@ -386,7 +386,7 @@ void LinearMovementConstraint<DataTypes>::draw()
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
+        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
     }
 }
 

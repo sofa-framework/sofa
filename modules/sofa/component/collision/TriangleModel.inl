@@ -647,7 +647,7 @@ void TTriangleModel<DataTypes>::drawColourPicking(const ColourCode method)
         break;
     default: assert(false);
     }
-    sofa::simulation::getSimulation()->DrawUtility.drawTriangles(points,normals,colours);
+    sofa::simulation::getSimulation()->DrawUtility().drawTriangles(points,normals,colours);
 
 
 }
@@ -673,11 +673,11 @@ void TTriangleModel<DataTypes>::draw()
         //  updateFromTopology();
 
         if (bothSide.getValue() || getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility.setPolygonMode(0,getContext()->getShowWireFrame());
+            simulation::getSimulation()->DrawUtility().setPolygonMode(0,getContext()->getShowWireFrame());
         else
         {
-            simulation::getSimulation()->DrawUtility.setPolygonMode(2,true);
-            simulation::getSimulation()->DrawUtility.setPolygonMode(1,false);
+            simulation::getSimulation()->DrawUtility().setPolygonMode(2,true);
+            simulation::getSimulation()->DrawUtility().setPolygonMode(1,false);
         }
 
         std::vector< Vector3 > points;
@@ -695,10 +695,10 @@ void TTriangleModel<DataTypes>::draw()
             index+=3;
         }
 
-        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
-        simulation::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
-        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
-        simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
+        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(true);
+        simulation::getSimulation()->DrawUtility().drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
+        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
+        simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
 
 
         if (getContext()->getShowNormals())
@@ -711,7 +711,7 @@ void TTriangleModel<DataTypes>::draw()
                 points.push_back(points.back()+t.n());
             }
 
-            simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,1,1));
+            simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(1,1,1,1));
 
         }
     }

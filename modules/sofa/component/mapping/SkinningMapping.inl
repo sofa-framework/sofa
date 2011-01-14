@@ -875,7 +875,7 @@ void SkinningMapping<TIn, TOut>::draw()
                     }
                 }
             }
-            simulation::getSimulation()->DrawUtility.drawTriangles(points, normals, colors);
+            simulation::getSimulation()->DrawUtility().drawTriangles(points, normals, colors);
             glPopAttrib();
         }
         else // Show by points

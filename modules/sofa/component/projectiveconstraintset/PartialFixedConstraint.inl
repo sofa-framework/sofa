@@ -333,7 +333,7 @@ void PartialFixedConstraint<DataTypes>::draw()
                 points.push_back(point);
             }
         }
-        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
+        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
     }
     else // new drawing by spheres
     {
@@ -356,7 +356,7 @@ void PartialFixedConstraint<DataTypes>::draw()
                 points.push_back(point);
             }
         }
-        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float) _drawSize.getValue(), Vec<4, float> (1.0f, 0.35f, 0.35f, 1.0f));
+        simulation::getSimulation()->DrawUtility().drawSpheres(points, (float) _drawSize.getValue(), Vec<4, float> (1.0f, 0.35f, 0.35f, 1.0f));
     }
 }
 

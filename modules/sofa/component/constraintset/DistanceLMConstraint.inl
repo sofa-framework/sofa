@@ -210,7 +210,7 @@ void DistanceLMConstraint<DataTypes>::draw()
             points.push_back(x1[edges[i][0]]);
             points.push_back(x2[edges[i][1]]);
         }
-        simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
 }
 

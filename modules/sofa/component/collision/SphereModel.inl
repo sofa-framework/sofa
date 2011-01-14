@@ -155,9 +155,9 @@ void TSphereModel<DataTypes>::draw()
             radius.push_back(t.r());
         }
 
-        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true); //Enable lightning
-        simulation::getSimulation()->DrawUtility.drawSpheres(points, radius, Vec<4,float>(getColor4f()));
-        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false); //Disable lightning
+        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(true); //Enable lightning
+        simulation::getSimulation()->DrawUtility().drawSpheres(points, radius, Vec<4,float>(getColor4f()));
+        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false); //Disable lightning
 
     }
     glDisable(GL_LIGHTING);

@@ -244,11 +244,11 @@ void FixedLMConstraint<DataTypes>::draw()
     }
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else
     {
-        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        simulation::getSimulation()->DrawUtility().drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
 

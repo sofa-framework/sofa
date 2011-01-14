@@ -829,7 +829,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw()
         point = Out::getCPos(x[i]);
         points.push_back(point);
     }
-    simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility().drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 }
 
 } // namespace mapping

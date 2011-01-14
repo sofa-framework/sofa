@@ -139,7 +139,8 @@ public:
     helper::vector< Node* > instruments;
     Data< int > instrumentInUse;
 
-    sofa::helper::gl::DrawManager DrawUtility;
+    sofa::helper::gl::DrawManager& DrawUtility();
+    void setDrawUtility(sofa::helper::gl::DrawManager* _NewDrawUtility);
 
     bool paused;
 
@@ -151,6 +152,9 @@ public:
     static Node* processXML(xml::BaseElement* xml, const char *filename);
 
     static std::auto_ptr<Simulation> theSimulation;
+
+private:
+    sofa::helper::gl::DrawManager* mDrawUtility;
 };
 
 /// Set the (unique) simulation which controls the scene

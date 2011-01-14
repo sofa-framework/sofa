@@ -414,7 +414,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw()
     }
 
 
-    simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
+    simulation::getSimulation()->DrawUtility().drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
 }
 
 

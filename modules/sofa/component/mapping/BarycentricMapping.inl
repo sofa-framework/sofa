@@ -3112,7 +3112,7 @@ void BarycentricMapping<TIn, TOut>::draw()
     const InVecCoord& in = *this->fromModel->getX();
     if ( mapper!=NULL ) mapper->draw ( out, in );
 
-    simulation::getSimulation()->DrawUtility.drawPoints ( points, 7, Vec<4,float> ( 1,1,0,1 ) );
+    simulation::getSimulation()->DrawUtility().drawPoints ( points, 7, Vec<4,float> ( 1,1,0,1 ) );
 }
 
 template <class In, class Out>
@@ -3264,7 +3264,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw ( const typename Out::VecCoord&
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
@@ -3311,7 +3311,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw ( const typename Out::Ve
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
 
 }
 
@@ -3358,7 +3358,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw ( const typename Out::Vec
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
 
 }
 
@@ -3394,7 +3394,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::draw ( const typename Out::VecCoo
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
@@ -3425,7 +3425,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::draw ( const typename Out::Ve
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
@@ -3456,7 +3456,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::draw ( const typename Out::VecCoo
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
@@ -3489,7 +3489,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::draw ( const typename Out:
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 template <class In, class Out>
@@ -3526,7 +3526,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw ( const typename Out::
             }
         }
     }
-    simulation::getSimulation()->DrawUtility.drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    simulation::getSimulation()->DrawUtility().drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
 }
 
 /************************************* PropagateConstraint ***********************************/

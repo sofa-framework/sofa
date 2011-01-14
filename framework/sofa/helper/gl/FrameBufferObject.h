@@ -73,15 +73,13 @@ private:
     bool depthTexture;
     bool enableDepth;
     bool enableColor;
-    sofa::helper::gl::DrawManager::MODEDISPLAY _systemDraw;
 
 public:
     FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true);
     virtual ~FrameBufferObject();
 
     FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true);
-    void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; };
-    void setModeDisplay( const sofa::helper::gl::DrawManager::MODEDISPLAY systemDraw) { _systemDraw = systemDraw; };
+    void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; }
 
     void init(unsigned int width, unsigned height);
     void destroy();

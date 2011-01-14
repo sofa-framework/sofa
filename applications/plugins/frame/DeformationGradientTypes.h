@@ -660,7 +660,7 @@ struct DeformationGradientTypes
                     void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const Vec<4,float> colour, int subdRadius, int subdLength)
                       {
                         Vector3 tmp = p2-p1;
-                        simulation::getSimulation()->DrawUtility.setMaterial(colour);
+                        simulation::getSimulation()->DrawUtility().setMaterial(colour);
                         // create Vectors p and q, co-planar with the cylinder's cross-sectional disk
                         Vector3 p=tmp;
                         if (fabs(p[0]) + fabs(p[1]) < 0.00001*tmp.norm())
@@ -727,11 +727,11 @@ struct DeformationGradientTypes
                         pointsCloseCylinder2.push_back(pointsCloseCylinder2[1]);
                         normalsCloseCylinder2.push_back(normalsCloseCylinder2[1]);
 
-                        simulation::getSimulation()->DrawUtility.drawTriangleStrip(points, normals,colour);
-                        if (radius1 > 0) simulation::getSimulation()->DrawUtility.drawTriangleFan(pointsCloseCylinder1, normalsCloseCylinder1,colour);
-                        if (radius2 > 0) simulation::getSimulation()->DrawUtility.drawTriangleFan(pointsCloseCylinder2, normalsCloseCylinder2,colour);
+                        simulation::getSimulation()->DrawUtility().drawTriangleStrip(points, normals,colour);
+                        if (radius1 > 0) simulation::getSimulation()->DrawUtility().drawTriangleFan(pointsCloseCylinder1, normalsCloseCylinder1,colour);
+                        if (radius2 > 0) simulation::getSimulation()->DrawUtility().drawTriangleFan(pointsCloseCylinder2, normalsCloseCylinder2,colour);
 
-                        simulation::getSimulation()->DrawUtility.resetMaterial(colour);
+                        simulation::getSimulation()->DrawUtility().resetMaterial(colour);
                       }
         */
     };

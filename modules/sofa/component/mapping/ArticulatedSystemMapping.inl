@@ -661,8 +661,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw()
         }
     }
 
-    simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    simulation::getSimulation()->DrawUtility.drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
+    simulation::getSimulation()->DrawUtility().drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    simulation::getSimulation()->DrawUtility().drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
 
     //
     //OutVecCoord& xto = *m_toModel->getX();

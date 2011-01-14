@@ -51,6 +51,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/gl/DrawManagerGL.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -86,15 +87,35 @@ Simulation::Simulation()
       nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Steps number of computation", true, false)),
       gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
       instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used")),
-      paused(false)
-{}
+      paused(false),mDrawUtility(0l)
+{
+/// By default, initialise the Viewer with openGL
+/// We can switch Viewer between GL, OGRE and OSG with the setDrawUtility method
+    this->setDrawUtility(new sofa::helper::gl::DrawManagerGL() );
+}
+
 
 Simulation::~Simulation()
 {
 }
-
 /// The (unique) simulation which controls the scene
 std::auto_ptr<Simulation> Simulation::theSimulation;
+
+
+sofa::helper::gl::DrawManager& Simulation::DrawUtility()
+{
+    return *mDrawUtility;
+}
+
+
+void Simulation::setDrawUtility(sofa::helper::gl::DrawManager * _NewDrawUtility)
+{
+    sofa::helper::gl::DrawManager * old = mDrawUtility;
+    mDrawUtility = _NewDrawUtility;
+    if(mDrawUtility != NULL)
+        delete old;
+}
+
 
 void setSimulation ( Simulation* s )
 {

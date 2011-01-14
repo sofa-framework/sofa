@@ -31,6 +31,7 @@ HEADERS += helper.h \
     gl/Color.h \
     gl/Cylinder.h \
     gl/DrawManager.h \
+    gl/DrawManagerGL.h \
     gl/glfont.h \
     gl/glText.inl \
     gl/glText.h \
@@ -93,7 +94,7 @@ HEADERS += helper.h \
     io/ImageDDS.h \
 	OptionsGroup.h \ 
     Polynomial_LD.h \
-    Polynomial_LD.inl 
+    Polynomial_LD.inl
 SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
     Factory.cpp \
@@ -101,7 +102,7 @@ SOURCES += ArgumentParser.cpp \
     gl/Capture.cpp \
     gl/Color.cpp \
     gl/Cylinder.cpp \
-    gl/DrawManager.cpp \
+    gl/DrawManagerGL.cpp \
     gl/glfont.cpp \
     gl/glText.cpp \
     gl/Texture.cpp \
@@ -164,3 +165,10 @@ contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
     	gl/VideoRecorder.cpp 
 }
 
+contains(DEFINES,SOFA_GUI_QTOGREVIEWER) { # Compile the Ogre interface
+    HEADERS += \
+        gl/DrawManagerOGRE.h
+
+    SOURCES += \
+        gl/DrawManagerOGRE.cpp
+}

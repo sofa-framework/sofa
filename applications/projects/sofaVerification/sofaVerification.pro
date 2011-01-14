@@ -15,6 +15,10 @@ contains(CONFIGSTATIC, static) {
 	LIBS += -Wl,--end-group
 }
 
+unix {
+        LIBS += -ldl
+}
+
 SOURCES = sofaVerification.cpp
 
 HEADERS = 
