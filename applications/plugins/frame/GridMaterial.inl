@@ -2200,30 +2200,37 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
     }
     else
     {
-        // to do: implement weightsupport in the recursive method
-        computeVoronoiRecursive(fromLabel);
+        if(nbVoronoiSubdivisions.getValue()!=0)
+        {
+            // to do: implement weightsupport in the recursive method
+            if(weightSupport.getValue()!=2) serr<<"Weightsupport not supported with voronoi subdivisions"<<sendl;
+            computeVoronoiRecursive(fromLabel);
+        }
+        else
+        {
+            // method equivalent to nbsubdivision=0 but weightsupport (will be suppressed..)
+            dmax*=weightSupport.getValue();
+            // compute distance to voronoi border
+            computeGeodesicalDistancesToVoronoi(fromLabel,dmax);
+            vector<Real> dtovoronoi(distances);
+            // compute distance to frame up to the weight function support size
+            computeGeodesicalDistances(index,dmax);
+            Real support=weightSupport.getValue();
+
+            for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax)
+                    {
+                        if(distances[i]==0) weights[i]=1;
+                        //else if(voronoi_frames[i]==voronoi_frames[index]) weights[i]=1.-distances[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                        //else weights[i]=1.-distances[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+                        else if(voronoi_frames[i]==voronoi_frames[index]) weights[i]=(support-1.)/support + dtovoronoi[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+                        else weights[i]=(support-1.)/support - dtovoronoi[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+                        if(weights[i]<0) weights[i]=0;
+                        else if(weights[i]>1) weights[i]=1;
+                    }
+        }
     }
 
-    /*{// method based on distance to frame and distance to voronoi ->   weight ~ 1-dtopoint/(factor*(dtopoint+-disttovoronoi)) ~ (support-1)/support +- disttovoronoi/(factor*(dtopoint+-disttovoronoi))
-    dmax*=weightSupport.getValue();
-    // compute distance to voronoi border
-    computeGeodesicalDistancesToVoronoi(fromLabel,dmax);
-    vector<Real> dtovoronoi(distances);
-    // compute distance to frame up to the weight function support size
-    computeGeodesicalDistances(index,dmax);
-    Real support=weightSupport.getValue();
 
-    for (i=0;i<nbVoxels;i++) if (grid.data()[i]) if (distances[i]<dmax)
-    	{
-    	if(distances[i]==0) weights[i]=1;
-    	//else if(voronoi_frames[i]==voronoi_frames[index]) weights[i]=1.-distances[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-    	//else weights[i]=1.-distances[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-    	else if(voronoi_frames[i]==voronoi_frames[index]) weights[i]=(support-1.)/support + dtovoronoi[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-    	else weights[i]=(support-1.)/support - dtovoronoi[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-    	if(weights[i]<0) weights[i]=0;
-    	else if(weights[i]>1) weights[i]=1;
-    	}
-    }*/
 
     distances.clear(); distances.insert(distances.begin(),backupdistance.begin(),backupdistance.end()); // store initial distances from frames
 
