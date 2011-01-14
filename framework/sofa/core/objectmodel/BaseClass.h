@@ -242,8 +242,8 @@ public:
 
     static const TClass<T, Parents>* get()
     {
-        static TClass<T, Parents> singleton;
-        return &singleton;
+        static TClass<T, Parents> *singleton = new TClass<T, Parents>;
+        return singleton;
     }
 };
 
