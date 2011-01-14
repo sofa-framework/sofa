@@ -333,7 +333,7 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
         float glTransform[16];
         x[i].writeOpenGlMatrix( glTransform);
         glMultMatrixf( glTransform);
-        simulation::getSimulation()->DrawUtility.drawFrame(Vec3(), Quat(), Vec3(1,1,1)*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility().drawFrame(Vec3(), Quat(), Vec3(1,1,1)*showAxisSize.getValue() );
         glPopMatrix();
     }
 }
