@@ -4,6 +4,7 @@
 
 \documentclass[a4paper,10pt]{article}
 \usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc} 
 
 \usepackage{lmodern}
 \usepackage[a4paper]{geometry}
@@ -540,20 +541,21 @@ M \text { the mass matrix} \\
 \left\{ 
 \begin{array}{l}
 \text {  definition : }             \\
-x_{k+1}     = x_k  + dt . v_{k+1/2} \\
-x_{k+1/2}  = 1/2 ( x_k + x_{k+1} )  \\
-v_{k+1}     = v_k  + dt . a_{k+1/2} \\
-v_{k+1/2}  = 1/2 ( v_k + v_{k+1} )  \\ \\
-\text { all can  be expressed in term of  }  x_{k+1/2} \text {  and  } x_k             \\ 
-v_{k+1/2}  = 2/dt ( x_{k+1/2} - x_k ) \\
-a_{k+1/2}  = 2/dt (  2/dt . x_{k+1/2}   -     2/dt . x_k    -     x_k    )
+x_{k+1}     = x_k  + dt . v_{k+ \frac{1}{2}} \\
+x_{k+\frac{1}{2}}  = \frac{ ( x_k + x_{k+1} ) }{2} \\
+v_{k+1}     = v_k  + dt . a_{k+\frac{1}{2}} \\
+v_{k+\frac{1}{2}}  = \frac{ ( v_k + v_{k+1} ) }{2} \\ \\
+\text { all can  be expressed in term of  }  x_{k+\frac{1}{2}} \text {  and  } x_k             \\ 
+v_{k+\frac{1}{2}}  = \frac{2}{dt} ( x_{k+\frac{1}{2}} - x_k ) \\
+a_{k+\frac{1}{2}}  = \frac{2}{dt} (  \frac{2}{dt} . x_{k+\frac{1}{2}}   -     \frac{2}{dt} . x_k    -     x_k    )
 \end{array}\right.
 \]
-see A_well_posed_semi_discretization_of_elastodynamic_contact_problems_with_friction-T.LIGURSKY_2010 (page 11-12). The continium equilibrum variational form then can be written term of x and v at instance {k+1/2},  as proposed Gonzalez in exact conserving energy paper. The difficulties is in term PK1 at instance {k+1/2} which is resolved by PK1_{algo}  of Gonzalez. It rest the term f_{k+1/2} (body force)  and g_{k+1/2} (boundary condition) that i don't know how to explain it in the scheme. It can be seen in thesis of Patrice Hauret for example.
+See the midpoint method~\cite{MidPoint}. The continium equilibrum variational form then can be written term of x and v at instance k+1/2,  as proposed Gonzalez in exact conserving energy paper. The difficulties is in term PK1 at instance k+1/2 which is resolved by $PK1_{algo}$  of Gonzalez ~\cite{Gonzalez1999}. It rest the term $f_{k+1/2}$ (body force)  and $g_{k+1/2}$ (boundary condition) that i don't know how to explain it in the scheme. It can be seen in thesis of Patrice Hauret~\cite{PHThesis} or Y.Ayyad~\cite{YAyyad} for example.
 
 \subsection{Auto-test : }
 These function on FEM are mostly linear transformation which is invertible. So we can verify all the computation, or pre-computation by the its inverted transformation. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
 
 						      %%%%%%%%%%%%%%%%%%%%%%%%%%  Writer %%%%%%%%%%%%%%%%%%%%%%%%
 						      \begin{flushright}
@@ -563,4 +565,6 @@ These function on FEM are mostly linear transformation which is invertible. So w
 						      \end{flushright}
 						      %%%%%%%%%%%%%%%%%%%%%%%%%%  Writer %%%%%%%%%%%%%%%%%%%%%%%%
 
+\bibliographystyle{siam}
+\bibliography{hyperelastodynamic}
 \end{document}

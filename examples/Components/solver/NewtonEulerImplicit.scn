@@ -5,8 +5,8 @@
 	<DefaultContactManager name="collision response"  response="default" />
 	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  >
 		<!--  changing NewtonEulerImplicit to EulerImplicit to see the difference   -->
-		<NewtonEulerImplicit name="cg_odesolver"  printLog="0" newtonError="0.1"/>
-		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="50"  tolerance="1e-09"  threshold="1e-09" />
+		<NewtonEulerImplicit name="cg_odesolver" firstOrder="false" printLog="0" newtonError="0.1" steps="10"/>
+		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="500"  tolerance="1e-09"  threshold="1e-09" />
 		<MeshLoader name="meshLoader"  filename="mesh/SimpleBeamTetra.msh"  />
 		<TetrahedronSetTopologyContainer name="TetraContainer" />
 		<MechanicalObject template="Vec3d" name="dofs" />
