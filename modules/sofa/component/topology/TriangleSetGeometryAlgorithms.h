@@ -64,9 +64,10 @@ public:
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
         , _drawColor(initData(&_drawColor, Vector3(0.2,1.0,1.0), "drawColorTriangles", "RGB code color used to draw edges."))
+        , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
+        , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
         , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
         , p_flipNormals(initData(&p_flipNormals, false, "flipNormals","if true, will flip normal of the first triangle used to recompute triangle orientation."))
-
     {
     }
 
@@ -266,6 +267,8 @@ protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
     Data<Vector3> _drawColor;
+    Data<bool> _drawNormals;
+    Data <SReal> _drawNormalLength;
     Data<bool> p_recomputeTrianglesOrientation;
     Data<bool> p_flipNormals;
 
