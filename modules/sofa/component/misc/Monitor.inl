@@ -172,7 +172,7 @@ void Monitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
 template<class DataTypes>
 void Monitor<DataTypes>::draw()
 {
-    sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
+    sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
     if (showPositions.getValue())
     {
         helper::vector<defaulttype::Vector3> points;
@@ -181,7 +181,7 @@ void Monitor<DataTypes>::draw()
             Coord posvertex = (*X)[indices.getValue()[i]];
             points.push_back(defaulttype::Vector3(posvertex[0],posvertex[1],posvertex[2]));
         }
-        sofa::simulation::getSimulation()->DrawUtility.drawPoints(points, (float)(showSizeFactor.getValue())*2.0f, positionsColor.getValue());
+        sofa::simulation::getSimulation()->DrawUtility().drawPoints(points, (float)(showSizeFactor.getValue())*2.0f, positionsColor.getValue());
 
     }
 
@@ -195,7 +195,7 @@ void Monitor<DataTypes>::draw()
             defaulttype::Vector3 p2(showSizeFactor.getValue()*velVertex[0],showSizeFactor.getValue()*velVertex[1],showSizeFactor.getValue()*velVertex[2]);
 
             if(p2.norm() > showMinThreshold.getValue())
-                sofa::simulation::getSimulation()->DrawUtility.drawArrow(p1, p1+p2, (float)(showSizeFactor.getValue()*p2.norm()/20.0), velocitiesColor.getValue());
+                sofa::simulation::getSimulation()->DrawUtility().drawArrow(p1, p1+p2, (float)(showSizeFactor.getValue()*p2.norm()/20.0), velocitiesColor.getValue());
         }
     }
 
@@ -209,7 +209,7 @@ void Monitor<DataTypes>::draw()
             defaulttype::Vector3 p2(showSizeFactor.getValue()*forceVertex[0],showSizeFactor.getValue()*forceVertex[1],showSizeFactor.getValue()*forceVertex[2]);
 
             if(p2.norm() > showMinThreshold.getValue())
-                sofa::simulation::getSimulation()->DrawUtility.drawArrow(p1, p1+p2, (float)(showSizeFactor.getValue()*p2.norm()/20.0), forcesColor.getValue());
+                sofa::simulation::getSimulation()->DrawUtility().drawArrow(p1, p1+p2, (float)(showSizeFactor.getValue()*p2.norm()/20.0), forcesColor.getValue());
         }
     }
 
@@ -227,7 +227,7 @@ void Monitor<DataTypes>::draw()
                 if(j!=0)
                     points.push_back(Vector3(point[0], point[1], point[2]));
             }
-            sofa::simulation::getSimulation()->DrawUtility.drawLines(points, (float)(showSizeFactor.getValue()*0.2), trajectoriesColor.getValue());
+            sofa::simulation::getSimulation()->DrawUtility().drawLines(points, (float)(showSizeFactor.getValue()*0.2), trajectoriesColor.getValue());
         }
     }
 }

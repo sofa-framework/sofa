@@ -754,10 +754,10 @@ void FlowVisualModel<DataTypes>::drawTetra()
         			colors[3].push_back(colorsTemp[0]);
         			colors[3].push_back(colorsTemp[1]);
         		}
-        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[0], colors[0]);
-        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[1], colors[1]);
-        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[2], colors[2]);
-        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[3], colors[3]);
+        //		simulation::getSimulation()->DrawUtility().drawTriangles(points[0], colors[0]);
+        //		simulation::getSimulation()->DrawUtility().drawTriangles(points[1], colors[1]);
+        //		simulation::getSimulation()->DrawUtility().drawTriangles(points[2], colors[2]);
+        //		simulation::getSimulation()->DrawUtility().drawTriangles(points[3], colors[3]);
         */
         core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         Coord v;

@@ -48,6 +48,7 @@
 #include <qevent.h>
 #include "GenGraphForm.h"
 
+#include <sofa/helper/gl/DrawManagerGL.h>
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
@@ -132,8 +133,7 @@ int QtGLViewer::DisableViewer()
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     : QGLViewer(parent, name)
 {
-    sofa::simulation::getSimulation()->DrawUtility.setSystemDraw(helper::gl::DrawManager::OPENGL);
-
+    sofa::simulation::getSimulation()->setDrawUtility(new sofa::helper::gl::DrawManagerGL);
 
     groot = NULL;
     initTexturesDone = false;

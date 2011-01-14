@@ -66,7 +66,6 @@ FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthT
     ,depthTexture(depthTexture)
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
-    ,_systemDraw(sofa::helper::gl::DrawManager::OPENGL)
 {
 }
 

@@ -489,7 +489,7 @@ void CurveMapping<TIn, TOut>::draw()
         point = DataTypes::getCPos(x[i]);
         points.push_back(point);
     }
-    simulation::getSimulation()->DrawUtility.drawPoints(points, 5, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility().drawPoints(points, 5, Vec<4,float>(1,1,0,1));
 
 }
 

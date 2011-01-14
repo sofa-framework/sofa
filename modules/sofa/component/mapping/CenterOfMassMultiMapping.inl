@@ -186,7 +186,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::draw()
         points.push_back(point2);
     }
 
-    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(1,1,0,1));
 }
 
 

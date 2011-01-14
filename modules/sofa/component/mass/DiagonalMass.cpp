@@ -118,7 +118,7 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
 
-        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, len*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
 
         gravityCenter += (center * masses[i].mass);
         totalMass += masses[i].mass;
@@ -209,7 +209,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw()
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
 
-        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, len*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
@@ -287,7 +287,7 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
 
-        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, len*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
 
         gravityCenter += (center * masses[i].mass);
         totalMass += masses[i].mass;
@@ -347,7 +347,7 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw()
 
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
-        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, len*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility().drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 

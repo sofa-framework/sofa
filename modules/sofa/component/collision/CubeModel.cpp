@@ -232,7 +232,7 @@ void CubeModel::draw()
         points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
     }
 
-    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(c));
+    simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(c));
 
 
     if (getPrevious()!=NULL)

@@ -367,11 +367,11 @@ void DistanceLMContactConstraint<DataTypes>::draw()
             }
         }
 
-        simulation::getSimulation()->DrawUtility.drawLines(points[VANISHING], 1, colorsContactState[VANISHING]);
-        simulation::getSimulation()->DrawUtility.drawLines(points[STICKING], 1, colorsContactState[STICKING]);
-        simulation::getSimulation()->DrawUtility.drawLines(points[SLIDING], 1, colorsContactState[SLIDING]);
+        simulation::getSimulation()->DrawUtility().drawLines(points[VANISHING], 1, colorsContactState[VANISHING]);
+        simulation::getSimulation()->DrawUtility().drawLines(points[STICKING], 1, colorsContactState[STICKING]);
+        simulation::getSimulation()->DrawUtility().drawLines(points[SLIDING], 1, colorsContactState[SLIDING]);
 
-        simulation::getSimulation()->DrawUtility.drawLines(slidingConstraints, 1, colorsContactState.back());
+        simulation::getSimulation()->DrawUtility().drawLines(slidingConstraints, 1, colorsContactState.back());
 
 
     }

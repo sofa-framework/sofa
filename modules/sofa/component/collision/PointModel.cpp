@@ -150,7 +150,7 @@ void PointModel::draw()
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
+            simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
 
 
         // Check topological modifications
@@ -175,11 +175,11 @@ void PointModel::draw()
                 }
             }
         }
-        simulation::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
-        simulation::getSimulation()->DrawUtility.drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
+        simulation::getSimulation()->DrawUtility().drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
+        simulation::getSimulation()->DrawUtility().drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
 
         if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
+            simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

@@ -2483,27 +2483,27 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
 
     if( _drawType.getValue() == 0 )
     {
-        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
+        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(true);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            sofa::simulation::getSimulation()->DrawUtility.drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue(), colour );
+            sofa::simulation::getSimulation()->DrawUtility().drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue(), colour );
         }
 
-        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
+        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
     }
     else
     {
         std::vector< Vector3 > points;
 
-        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
+        sofa::simulation::getSimulation()->DrawUtility().setLightingEnabled(false);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
             points.push_back( x[(*it)[0]] );
             points.push_back( x[(*it)[1]] );
         }
-        simulation::getSimulation()->DrawUtility.drawLines(points, _drawSize.getValue(),colour);
+        simulation::getSimulation()->DrawUtility().drawLines(points, _drawSize.getValue(),colour);
     }
 
 
@@ -2523,7 +2523,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
 
         std::vector< Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i) points.push_back( x[i] );
-        simulation::getSimulation()->DrawUtility.drawSpheres(points, _drawSize.getValue()*1.5f,colour);
+        simulation::getSimulation()->DrawUtility().drawSpheres(points, _drawSize.getValue()*1.5f,colour);
     }
 
 
@@ -2645,7 +2645,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
             points.push_back(pf);
 
         }
-        simulation::getSimulation()->DrawUtility.drawTriangles(points, colour);
+        simulation::getSimulation()->DrawUtility().drawTriangles(points, colour);
     }
 
 }

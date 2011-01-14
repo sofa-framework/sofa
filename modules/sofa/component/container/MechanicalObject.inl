@@ -2634,7 +2634,7 @@ void MechanicalObject<DataTypes>::draw()
         vector<Vector3> positions;
         for (int i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
-        simulation::getSimulation()->DrawUtility.drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+        simulation::getSimulation()->DrawUtility().drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
         glPopAttrib();
     }
 }
