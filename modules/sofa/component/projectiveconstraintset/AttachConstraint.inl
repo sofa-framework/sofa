@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
 
 #include <sofa/component/projectiveconstraintset/AttachConstraint.h>
+#include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -487,33 +488,16 @@ void AttachConstraint<DataTypes>::init()
         calcRestRotations();
 }
 
+
 template <class DataTypes>
 void AttachConstraint<DataTypes>::calcRestRotations()
 {
 }
 
+#ifndef SOFA_FLOAT
 template <>
-void AttachConstraint<Rigid3dTypes>::calcRestRotations()
-{
-    const SetIndexArray & indices2 = f_indices2.getValue().getArray();
-    const VecCoord& x0 = *this->mstate2->getX0();
-    restRotations.resize(indices2.size());
-    for (unsigned int i=0; i<indices2.size(); ++i)
-    {
-        Quat q(0,0,0,1);
-        if (indices2[i] < x0.size()-1)
-        {
-            Vector3 dp0 = x0[indices2[i]].vectorToChild(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
-            dp0.normalize();
-            Vector3 y = cross(dp0, Vector3(1,0,0));
-            y.normalize();
-            double alpha = acos(dp0[0]);
-            q = Quat(y,alpha);
-            sout << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vector3(1,0,0))<<sendl;
-        }
-        restRotations[i] = q;
-    }
-}
+void AttachConstraint<Rigid3dTypes>::calcRestRotations();
+#endif
 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::projectPosition(DataVecCoord& res1_d, DataVecCoord& res2_d, const core::MechanicalParams * /*mparams*/)

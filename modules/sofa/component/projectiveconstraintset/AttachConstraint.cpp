@@ -73,6 +73,32 @@ template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Vec1f
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Rigid3fTypes>;
 template class SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API AttachConstraint<Rigid2fTypes>;
 #endif
+
+#ifndef SOFA_FLOAT
+template <> SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_API
+void AttachConstraint<Rigid3dTypes>::calcRestRotations()
+{
+    const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const VecCoord& x0 = *this->mstate2->getX0();
+    restRotations.resize(indices2.size());
+    for (unsigned int i=0; i<indices2.size(); ++i)
+    {
+        Quat q(0,0,0,1);
+        if (indices2[i] < x0.size()-1)
+        {
+            Vector3 dp0 = x0[indices2[i]].vectorToChild(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
+            dp0.normalize();
+            Vector3 y = cross(dp0, Vector3(1,0,0));
+            y.normalize();
+            double alpha = acos(dp0[0]);
+            q = Quat(y,alpha);
+            sout << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vector3(1,0,0))<<sendl;
+        }
+        restRotations[i] = q;
+    }
+}
+#endif
+
 } // namespace projectiveconstraintset
 
 } // namespace component
