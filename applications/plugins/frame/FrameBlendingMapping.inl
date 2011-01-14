@@ -404,7 +404,7 @@ void FrameBlendingMapping<TIn, TOut>::initSamples()
         // Insert new samples
 
         //gridMaterial->computeRegularSampling(p,3);
-        // gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue(),100);
+        //gridMaterial->computeUniformSampling(p,targetSampleNumber.getValue());
         gridMaterial->computeLinearRegionsSampling(p,targetSampleNumber.getValue());
 
         std::cout<<"Inserting "<<p.size()<<" gauss points..."<<std::endl;
