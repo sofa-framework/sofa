@@ -1938,7 +1938,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
 
     while (!_neighTri.empty() && cpt_secu < max)
     {
-
         for (unsigned int i=0; i<_neighTri.size(); ++i)
         {
             unsigned int triId = _neighTri[i];
@@ -1946,7 +1945,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
             //std::cout << "triNormal: "<< triNormal << std::endl;
             double prod = (firstNormal*triNormal)/(firstNormal.norm()*triNormal.norm());
             //std::cout << "prod: "<< prod << std::endl;
-            if (prod < 0.0) //change orientation
+            if (prod < 0.15) //change orientation
                 this->m_topology->reOrientateTriangle(triId);
         }
 
@@ -2234,6 +2233,47 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             glEnd();
         }
     }
+
+
+    if (_drawNormals.getValue())
+    {
+        const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
+        unsigned int nbrTtri = triangleArray.size();
+
+        Coord point2;
+        Vec<3,double> colors;
+        SReal normalLength = _drawNormalLength.getValue();
+        unsigned int _size = sizeof(point2)/sizeof(SReal);
+
+        glDisable(GL_LIGHTING);
+        glBegin(GL_LINES);
+
+        for (unsigned int i =0; i<nbrTtri; i++)
+        {
+            Triangle _tri = triangleArray[i];
+            sofa::defaulttype::Vec<3,double> normal = this->computeTriangleNormal(i);
+            normal.normalize();
+
+            // compute bary triangle
+            Coord point1 = this->getPointPosition(_tri[0]);
+            for (unsigned int j = 1; j<3; j++)
+                point1 += this->getPointPosition(_tri[j]);
+            point1 = point1/3;
+
+            for(unsigned int j=0; j<_size; j++)
+                point2[j] = point1[j] + normal[j]*normalLength;
+
+            for(unsigned int j=0; j<3; j++)
+                colors[j] = fabs (normal[j]);
+
+            glColor3f (colors[0], colors[1], colors[2]);
+
+            glVertex3d(point1[0], point1[1], point1[2]);
+            glVertex3d(point2[0], point2[1], point2[2]);
+        }
+        glEnd();
+    }
+
 
 }
 
