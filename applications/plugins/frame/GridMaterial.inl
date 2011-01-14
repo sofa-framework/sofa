@@ -67,6 +67,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , useDijkstra ( initData ( &useDijkstra, true, "useDijkstra","Use Dijkstra's algorithm to compute the distance fields." ) )
     , useDistanceScaleFactor ( initData ( &useDistanceScaleFactor,false, "useDistanceScaleFactor","useDistanceScaleFactor." ) )
     , weightSupport ( initData ( &weightSupport,(Real)2., "weightSupport","Support of the weight function (2=interpolating, >2 = approximating)." ) )
+    , nbVoronoiSubdivisions ( initData ( &nbVoronoiSubdivisions,(unsigned int)0, "nbVoronoiSubdivisions","number of subdvisions of the voronoi during weight computation (1 by default)." ) )
     , showVoxels ( initData ( &showVoxels, "showVoxelData","Show voxel data." ) )
     , showWeightIndex ( initData ( &showWeightIndex, ( unsigned int ) 0, "showWeightIndex","Weight index." ) )
     , showPlane ( initData ( &showPlane, GCoord ( -1,-1,-1 ), "showPlane","Indices of slices to be shown." ) )
@@ -1061,7 +1062,7 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
             offsetWeightsOutsideObject();
             addWeightinRepartion(i);
         }
-//distances.clear(); distances.insert(distances.begin(),weights.begin(),weights.end());
+
 
     }
     else if (dtype==DISTANCE_DIFFUSION || dtype==DISTANCE_ANISOTROPICDIFFUSION)
@@ -1370,30 +1371,240 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistances ( const vector<int
         /// end propagation algorithm
     }
 
-    // update dmax in voronoi
-    dmaxinvoronoi.resize(nbi);
-    for (i=0; i<nbi; i++) dmaxinvoronoi[i]=0;
-    for (i=0; i<this->nbVoxels; i++) if(voronoi[i]!=-1) if(dmaxinvoronoi[voronoi[i]]<distances[i])  dmaxinvoronoi[voronoi[i]]=distances[i];
-
     updateMaxValues();
     return true;
 }
 
 
 
+
+
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax,  VUI* ancestors  )
+bool GridMaterial< MaterialTypes>::computeVoronoiRecursive ( const unsigned int fromLabel )
+// compute voronoi of voronoi "nbVoronoiSubdivisions" times
+// input : a region initialized at 1 in "voronoi"
+//       : distances used to compute the voronoi
+//       : nbVoronoiSubdivisions data
+// returns  : linearly decreasing weights from 0 to 1
+//			: the distance from the region center in "distances"
 {
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
-    int index=getIndex(point);
-    if (voronoi[index]==-1) return false;
 
-    return computeGeodesicalDistancesToVoronoi (index, distMax ,ancestors);
+    unsigned int i,j;
+
+    VUI neighbors;
+
+    vector<bool> isaseed((int)this->nbVoxels);
+    Real precision=(Real)1.;
+
+        weights.resize((int)this->nbVoxels); for (i=0; i<nbVoxels; i++) if(voronoi[i]==1) weights[i]=1; else weights[i]=0;
+
+    if( useDijkstra.getValue()==true )    // Dijkstra algorithm
+    {
+
+        typedef std::pair<Real,unsigned> DistanceToPoint;
+        std::set<DistanceToPoint> q; // priority queue
+        std::set<DistanceToPoint>::iterator qit;
+
+        for (unsigned int nbs=0; nbs<nbVoronoiSubdivisions.getValue(); nbs++)
+        {
+            // insert seeds
+            for (i=0; i<nbVoxels; i++)
+                if(weights[i]>0)
+                {
+                    isaseed[i]=false;
+                    if(distances[i]!=0)	  // prevent from adding a seed at a frame
+                    {
+                        get6Neighbors((int)i, neighbors);
+                        for (j=0; j<neighbors.size(); j++)
+                            if(grid.data()[neighbors[j]])
+                                if(weights[neighbors[j]]<weights[i])  // voronoi frontier
+                                {
+                                    Real d = 0;
+                                    q.insert( DistanceToPoint(d,i) );
+                                    distances[i]=d;
+                                    j=neighbors.size();
+                                    isaseed[i]=true;
+                                }
+                    }
+                }
+            if(q.empty()) {std::cout<<"Recursive voronoi has converged in "<<nbs<<" iterations"<<std::endl; return true;}
+            // update voronoi with new regions at seeds
+            for (i=0; i<nbVoxels; i++)
+                if(weights[i]>0)
+                {
+                    weights[i]*=(Real)2.;
+                    if(isaseed[i]) weights[i]-=precision;
+                }
+
+            // propagate distance from seeds
+            while( !q.empty() )
+            {
+                DistanceToPoint top = *q.begin();
+                q.erase(q.begin());
+                unsigned v = top.second;
+
+                get26Neighbors(v, neighbors);
+                for (i=0; i<neighbors.size(); i++)
+                {
+                    unsigned v2 = neighbors[i];
+                    if (grid.data()[v2])
+                    {
+                        Real d = distances[v] + getDistance(v,v2,fromLabel);
+                        if(distances[v2] > d )
+                        {
+                            qit=q.find(DistanceToPoint(distances[v2],v2));
+                            if(qit != q.end()) q.erase(qit);
+                            distances[v2] = d;
+                            q.insert( DistanceToPoint(d,v2) );
+                            weights[v2]=weights[v];
+                        }
+                    }
+                }
+            }
+            // renormalize weights
+            for (i=0; i<nbVoxels; i++) if(weights[i]>0)  weights[i]/=(Real)2.;
+            precision/=(Real)2.;
+        }
+
+
+
+        // linear interpolation of weights in each region (requires a final propagation slighlty different at the extremity)
+
+        // new distance grid for interpolation and fill extermities with dmax
+        vector<Real> distances2; distances2.resize((int)nbVoxels);
+        vector<Real> weights2; weights2.resize((int)nbVoxels);
+
+        //dmax
+        Real dmax=(Real)0.;
+        for (i=0; i<nbVoxels; i++) if(grid.data()[i]) if(dmax<distances[i]) dmax=distances[i];
+        for (i=0; i<nbVoxels; i++) {distances2[i]=dmax; weights2[i]=0;}
+
+        // insert seeds
+        for (i=0; i<nbVoxels; i++)
+            if(weights[i]>0)
+            {
+                isaseed[i]=false;
+                if(distances[i]!=0)	  // prevent from adding a seed at a frame
+                {
+                    get6Neighbors((int)i, neighbors);
+                    for (j=0; j<neighbors.size(); j++)
+                        if(grid.data()[neighbors[j]])
+                            if(weights[neighbors[j]]<weights[i])  //  frontier
+                            {
+                                Real d = 0;
+                                q.insert( DistanceToPoint(d,i) );
+                                distances2[i]=d;
+                                j=neighbors.size();
+                                isaseed[i]=true;
+                            }
+                }
+            }
+        precision/=(Real)2.;
+        for (i=0; i<nbVoxels; i++) if(weights[i]>0) if(isaseed[i]) weights2[i]=weights[i]-precision;
+
+        // propagate distance from seeds
+        while( !q.empty() )
+        {
+            DistanceToPoint top = *q.begin();
+            q.erase(q.begin());
+            unsigned v = top.second;
+
+            get26Neighbors(v, neighbors);
+            for (i=0; i<neighbors.size(); i++)
+            {
+                unsigned v2 = neighbors[i];
+                if (grid.data()[v2])
+                {
+                    Real d = distances2[v] + getDistance(v,v2,fromLabel);
+                    if(distances2[v2] > d )
+                    {
+                        qit=q.find(DistanceToPoint(distances2[v2],v2));
+                        if(qit != q.end()) q.erase(qit);
+                        distances2[v2] = d;
+                        q.insert( DistanceToPoint(d,v2) );
+                        weights2[v2]=weights2[v];
+                    }
+                }
+            }
+        }
+        // particular case of the end extremity (don't want to have increasing weights behind the frame)
+        // the weight is not interpolated by extrapolated
+
+        for (i=0; i<nbVoxels; i++) if(grid.data()[i]) if(weights[i]==0) {distances[i]=dmax;}
+
+        // insert seeds between 0 and the rest
+        for (i=0; i<nbVoxels; i++)
+            if(weights[i]>0)
+            {
+                isaseed[i]=false;
+                if(distances[i]!=0)	  // prevent from adding a seed at a frame
+                {
+                    get6Neighbors((int)i, neighbors);
+                    for (j=0; j<neighbors.size(); j++)
+                        if(grid.data()[neighbors[j]])
+                            if(weights[neighbors[j]]==0)
+                            {
+                                Real d = 0;
+                                q.insert( DistanceToPoint(d,i) );
+                                j=neighbors.size();
+                            }
+                }
+            }
+        // propagate distance from seeds
+        while( !q.empty() )
+        {
+            DistanceToPoint top = *q.begin();
+            q.erase(q.begin());
+            unsigned v = top.second;
+            get26Neighbors(v, neighbors);
+            for (i=0; i<neighbors.size(); i++)
+            {
+                unsigned v2 = neighbors[i];
+                if (grid.data()[v2])
+                    if(weights[v2]==0)
+                    {
+                        Real d = distances[v] + getDistance(v,v2,fromLabel);
+                        if(distances[v2] > d )
+                        {
+                            qit=q.find(DistanceToPoint(distances[v2],v2));
+                            if(qit != q.end()) q.erase(qit);
+                            distances[v2] = d;
+                            q.insert( DistanceToPoint(d,v2) );
+                        }
+                    }
+            }
+        }
+
+
+        // interpolation
+        for (i=0; i<nbVoxels; i++)
+            if(weights[i]>0 || distances2[i]!=dmax)
+                if(distances[i]!=0)
+                {
+                    if(weights[i]==0)
+                    {
+                        weights[i] +=precision*((Real)1. - (Real)2.* distances2[i]/distances[i]);
+                    }
+                    else
+                    {
+                        if(weights2[i]>weights[i]) weights[i] +=precision*distances[i]/(distances[i]+distances2[i]);
+                        else weights[i] -=precision*distances[i]/(distances[i]+distances2[i]);
+                    }
+                }
+
+    } // end Dijkstra
+
+
+
+    return true;
 }
 
+
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax , VUI* ancestors )
+bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const unsigned int fromLabel,const Real distMax , VUI* ancestors )
+// compute distances from the border of the region initialized at 1 in "voronoi"
 {
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
@@ -1403,25 +1614,21 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
     if(ancestors) ancestors->resize(this->nbVoxels);
 
     for (i=0; i<this->nbVoxels; i++) distances[i]=distMax;
-    if (index<0 || index>=(int)nbVoxels) return false; // voxel out of grid
-    int fromLabel=(int)grid.data()[index];
-    if (!fromLabel) return false;  // voxel out of object
-    if (voronoi[index]==-1) return false;  // no voronoi defined
 
     VUI neighbors;
-    if( useDijkstra.getValue()==true )
+    if( useDijkstra.getValue()==true )    // Dijkstra algorithm
     {
         typedef std::pair<Real,unsigned> DistanceToPoint;
         std::set<DistanceToPoint> q; // priority queue
 
         for (i=0; i<nbVoxels; i++)
         {
-            if(voronoi[i]==voronoi[index])
+            if(voronoi[i]>0)
             {
                 get6Neighbors((int)i, neighbors);
                 for (j=0; j<neighbors.size(); j++)
                 {
-                    if(voronoi[neighbors[j]]!=voronoi[index] && voronoi[neighbors[j]]!=-1) // voronoi frontier
+                    if(voronoi[neighbors[j]]<voronoi[i] && voronoi[neighbors[j]]!=-1) // voronoi frontier
                     {
                         Real d = 0; //getDistance(i,neighbors[j],fromLabel)/(Real)2.; // distance from border
                         q.insert( DistanceToPoint(d,i) );
@@ -1459,23 +1666,18 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
                 }
             }
         }
-
-        /// end dijkstra algorithm
     }
-    else
+    else                       /// propagation algorithm
     {
-
-
-        /// propagation algorithm
         Real d;
         unsigned int index1;
         std::queue<int> fifo;
         for (i=0; i<nbVoxels; i++)
-            if(voronoi[i]==voronoi[index])
+            if(voronoi[i]>0)
             {
                 get6Neighbors((int)i, neighbors);
                 for (j=0; j<neighbors.size(); j++)
-                    if(voronoi[neighbors[j]]!=voronoi[index] && voronoi[neighbors[j]]!=-1) // voronoi frontier
+                    if(voronoi[neighbors[j]]<voronoi[i] && voronoi[neighbors[j]]!=-1) // voronoi frontier
                     {
                         Real d = 0; //getDistance(i,neighbors[j],fromLabel)/(Real)2.; // distance from border
                         distances[i]=d; fifo.push((int)i);
@@ -1503,7 +1705,6 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const i
             }
             fifo.pop();
         }
-        /// end propagation algorithm
     }
 
     updateMaxValues();
@@ -1959,22 +2160,32 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
 /// linearly decreasing weight with support*dist(point,closestVoronoiBorder)
 {
     unsigned int i;
-    weights.resize(this->nbVoxels);
-    for (i=0; i<this->nbVoxels; i++)  weights[i]=0;
     if (!this->nbVoxels) return false;
     int index=getIndex(point);
-    if (voronoi.size()!=nbVoxels) return false;
-    if (voronoi[index]==-1) return false;
-    Real dmax=dmaxinvoronoi[voronoi[index]]; // largest distance inside voronoi
-    if (dmax==0) return false;
+    if(index==-1) return false;
+    if (voronoi_frames.size()!=nbVoxels) return false;
+    if (voronoi_frames[index]==-1) return false;
+    unsigned int fromLabel=(unsigned int)grid.data()[index];
 
-    vector<Real> backupdistance;
-    backupdistance.swap(distances);
+    // update voronoi of the considered frame
+    for (i=0; i<this->nbVoxels; i++)
+        if(voronoi_frames[i]==-1) voronoi[i]=-1;
+        else if(voronoi_frames[i]==voronoi_frames[index]) voronoi[i]=1;
+        else voronoi[i]=0;
+
+    // update dmax in voronoi
+    Real dmax=0; for (i=0; i<this->nbVoxels; i++) if(voronoi_frames[i]==voronoi_frames[index]) if(dmax<distances[i])  dmax=distances[i];
+    weights.resize(this->nbVoxels);
+    for (i=0; i<this->nbVoxels; i++)  weights[i]=0;
+
+    vector<Real> backupdistance; backupdistance.clear();	backupdistance.insert(backupdistance.begin(),distances.begin(),distances.end());
+
     if(useDistanceScaleFactor.getValue()) // method based on DistanceScaleFactor -> weight = sum_point^voxel dl' with dl'=dl/(support*dist(point,closestVoronoiBorder))
     {
+
         // compute distance to voronoi border and track ancestors
         VUI ancestors;
-        computeGeodesicalDistancesToVoronoi(point,dmax,&ancestors);
+        computeGeodesicalDistancesToVoronoi(fromLabel,dmax,&ancestors);
 
         // update DistanceScaleFactors
         vector<Real> distanceScaleFactors((int)nbVoxels,(Real)1E10);
@@ -1987,31 +2198,34 @@ bool GridMaterial< MaterialTypes>::computeAnisotropicLinearWeightsInVoronoi ( co
                     weights[i]=(Real)1.-distances[i];
 
     }
-    else // method based on distance to frame and distance to voronoi ->   weight ~ 1-dtopoint/(factor*(dtopoint+-disttovoronoi)) ~ (support-1)/support +- disttovoronoi/(factor*(dtopoint+-disttovoronoi))
+    else
     {
-        dmax*=weightSupport.getValue();
-        // compute distance to voronoi border
-        computeGeodesicalDistancesToVoronoi(point,dmax);
-        vector<Real> dtovoronoi(distances);
-        // compute distance to frame up to the weight function support size
-        computeGeodesicalDistances(point,dmax);
-        Real support=weightSupport.getValue();
-        for (i=0; i<nbVoxels; i++) if (grid.data()[i]) if (distances[i]<dmax)
-                {
-//if(weightSupport.getValue()!=2.)
-//{
-//support=backupdistance[i]*(Real)2./(dmaxinvoronoi[voronoi[i]]+dmaxinvoronoi[voronoi[index]])*(weightSupport.getValue()-(Real)2.)+(Real)2.;
-//}
-                    if(distances[i]==0) weights[i]=1;
-                    //else if(voronoi[i]==voronoi[index]) weights[i]=1.-distances[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                    //else weights[i]=1.-distances[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                    else if(voronoi[i]==voronoi[index]) weights[i]=(support-1.)/support + dtovoronoi[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
-                    else weights[i]=(support-1.)/support - dtovoronoi[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
-                    if(weights[i]<0) weights[i]=0;
-                    else if(weights[i]>1) weights[i]=1;
-                }
+        // to do: implement weightsupport in the recursive method
+        computeVoronoiRecursive(fromLabel);
     }
-    backupdistance.swap(distances);
+
+    /*{// method based on distance to frame and distance to voronoi ->   weight ~ 1-dtopoint/(factor*(dtopoint+-disttovoronoi)) ~ (support-1)/support +- disttovoronoi/(factor*(dtopoint+-disttovoronoi))
+    dmax*=weightSupport.getValue();
+    // compute distance to voronoi border
+    computeGeodesicalDistancesToVoronoi(fromLabel,dmax);
+    vector<Real> dtovoronoi(distances);
+    // compute distance to frame up to the weight function support size
+    computeGeodesicalDistances(index,dmax);
+    Real support=weightSupport.getValue();
+
+    for (i=0;i<nbVoxels;i++) if (grid.data()[i]) if (distances[i]<dmax)
+    	{
+    	if(distances[i]==0) weights[i]=1;
+    	//else if(voronoi_frames[i]==voronoi_frames[index]) weights[i]=1.-distances[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+    	//else weights[i]=1.-distances[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+    	else if(voronoi_frames[i]==voronoi_frames[index]) weights[i]=(support-1.)/support + dtovoronoi[i]/(support*(distances[i]+dtovoronoi[i])); // inside voronoi: dist(frame,closestVoronoiBorder)=d+disttovoronoi
+    	else weights[i]=(support-1.)/support - dtovoronoi[i]/(support*(distances[i]-dtovoronoi[i]));	// outside voronoi: dist(frame,closestVoronoiBorder)=d-disttovoronoi
+    	if(weights[i]<0) weights[i]=0;
+    	else if(weights[i]>1) weights[i]=1;
+    	}
+    }*/
+
+    distances.clear(); distances.insert(distances.begin(),backupdistance.begin(),backupdistance.end()); // store initial distances from frames
 
     showedrepartition=-1;
     return true;

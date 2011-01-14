@@ -247,7 +247,6 @@ protected:
     vector<int> voronoi_frames;
     vector<Real> weights;
     vector<Real> linearityError;
-    vector<Real> dmaxinvoronoi;
 
     // voxel data
     vector<VRefReal> v_weights;
@@ -307,15 +306,30 @@ protected:
     bool computeGeodesicalDistances ( const int& index, const Real distMax =std::numeric_limits<Real>::max(),const vector<Real>* distanceScaleFactors=NULL);
     /// (biased) Geodesical distance between a set of voxels and all other voxels -> id/distances stored in voronoi/distances
     bool computeGeodesicalDistances ( const vector<int>& indices, const Real distMax =std::numeric_limits<Real>::max());
-    /// (biased) Geodesical distance between the border of the voronoi cell containing point and all other voxels -> stored in distances
-    bool computeGeodesicalDistancesToVoronoi ( const SCoord& point, const Real distMax =std::numeric_limits<Real>::max(), VUI* ancestors =NULL);
-    bool computeGeodesicalDistancesToVoronoi ( const int& index, const Real distMax =std::numeric_limits<Real>::max(), VUI* ancestors =NULL);
+
+
+    // compute voronoi of voronoi "nbVoronoiSubdivisions" times
+    // input : a region initialized at 1 in "voronoi"
+    //       : distances used to compute the voronoi
+    //       : nbVoronoiSubdivisions data
+    // returns  : linearly decreasing weights from 0 to 1
+    //			: the distance from the region center in "distances"
+    bool computeVoronoiRecursive ( const unsigned int fromLabel );
+
+    // compute distance from voronoi
+    // input : a region initialized at 1 in "voronoi"
+    // return : the distance from the border
+    bool computeGeodesicalDistancesToVoronoi ( const unsigned int fromLabel,const Real distMax =std::numeric_limits<Real>::max(), VUI* ancestors =NULL);
+
+
     // subdivide a voronoi region in two subregions using lloyd relaxation and euclidean distances
     bool SubdivideVoronoiRegion( const unsigned int voronoiindex, const unsigned int newvoronoiindex, const unsigned int max_iterations =100);
 
     // scale the distance according to frame-to-voronoi border paths
     Data<bool> useDistanceScaleFactor;
     Data<Real> weightSupport;  ///< support of the weight function (2=interpolating, >2 = approximating)
+    Data<unsigned int> nbVoronoiSubdivisions;  ///< number of subdvisions of the voronoi during weight computation (1 by default)
+
     /// linearly decreasing weight with support=factor*dist(point,closestVoronoiBorder) -> weight= 1-d/(factor*(d+-disttovoronoi))
     bool computeAnisotropicLinearWeightsInVoronoi ( const SCoord& point);
     /// linearly decreasing weight with support=factor*distmax_in_voronoi -> weight= factor*(1-d/distmax)
