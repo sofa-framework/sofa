@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP
 #include "ParticleSource.h"
 #include "sofa/core/behavior/Constraint.inl"
 #include <sofa/core/ObjectFactory.h>
@@ -49,6 +50,15 @@ int ParticleSourceClass = core::RegisterObject("Parametrable particle generator"
         .add< ParticleSource<defaulttype::Vec2fTypes> >()
 #endif
         ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_MISC_API ParticleSource<defaulttype::Vec2fTypes>;
+#endif
 
 }
 }

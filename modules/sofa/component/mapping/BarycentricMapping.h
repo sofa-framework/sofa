@@ -531,7 +531,7 @@ public:
 
 
 /// Base class for barycentric mapping topology-specific mappers. Enables topological changes.
-class BarycentricMapperDynamicTopology
+class SOFA_COMPONENT_MAPPING_API BarycentricMapperDynamicTopology
 {
 public:
     virtual ~BarycentricMapperDynamicTopology() {}
