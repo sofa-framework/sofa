@@ -45,7 +45,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-#include <tinyxml.h>
+class TiXmlElement;
 
 namespace sofa
 {
