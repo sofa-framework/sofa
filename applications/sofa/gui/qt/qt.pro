@@ -198,6 +198,7 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
                viewer/qtogre/OgreShaderTextureUnit.h \
                viewer/qtogre/QOgreLightWidget.h \
               viewer/qtogre/OgreReflectionTexture.h
-               
-	  LIBS += -lboost_thread
+        win32{
+                  LIBS += -lboost_thread
+        }
 }
