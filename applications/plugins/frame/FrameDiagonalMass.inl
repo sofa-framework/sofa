@@ -329,12 +329,12 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
     if ( x.size() != masses.size()) return;
     for ( unsigned int i=0; i<x.size(); i++ )
     {
-        glPushMatrix();
+        simulation::getSimulation()->DrawUtility().pushMatrix();
         float glTransform[16];
-        x[i].writeOpenGlMatrix( glTransform);
-        glMultMatrixf( glTransform);
-        simulation::getSimulation()->DrawUtility().drawFrame(Vec3(), Quat(), Vec3(1,1,1)*showAxisSize.getValue() );
-        glPopMatrix();
+        x[i].writeOpenGlMatrix ( glTransform );
+        simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
+        simulation::getSimulation()->DrawUtility().drawFrame ( Vec3(), Quat(), Vec3 ( 1,1,1 )*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility().popMatrix();
     }
 }
 
