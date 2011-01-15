@@ -102,13 +102,13 @@ void MechanicalObject<Affine3dTypes>::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            glPushMatrix();
+            simulation::getSimulation()->DrawUtility().pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            glMultMatrixf ( glTransform );
-            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
+            simulation::getSimulation()->DrawUtility().scale ( scale);
             simulation::getSimulation()->DrawUtility().drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
-            glPopMatrix();
+            simulation::getSimulation()->DrawUtility().popMatrix();
         }
         glPopAttrib();
     }
@@ -173,13 +173,13 @@ void MechanicalObject<Quadratic3dTypes>::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            glPushMatrix();
+            simulation::getSimulation()->DrawUtility().pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            glMultMatrixf ( glTransform );
-            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
+            simulation::getSimulation()->DrawUtility().scale ( scale);
             simulation::getSimulation()->DrawUtility().drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
-            glPopMatrix();
+            simulation::getSimulation()->DrawUtility().popMatrix();
         }
         glPopAttrib();
     }
@@ -259,13 +259,13 @@ void MechanicalObject<DeformationGradient331dTypes>::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            glPushMatrix();
+            simulation::getSimulation()->DrawUtility().pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            glMultMatrixf ( glTransform );
-            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
+            simulation::getSimulation()->DrawUtility().scale ( scale);
             simulation::getSimulation()->DrawUtility().drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
-            glPopMatrix();
+            simulation::getSimulation()->DrawUtility().popMatrix();
         }
         glPopAttrib();
     }
@@ -347,13 +347,13 @@ void MechanicalObject<DeformationGradient332dTypes >::draw()
         const float& scale = showObjectScale.getValue();
         for ( int i=0; i<this->getSize(); i++ )
         {
-            glPushMatrix();
+            simulation::getSimulation()->DrawUtility().pushMatrix();
             float glTransform[16];
             x[i].writeOpenGlMatrix ( glTransform );
-            glMultMatrixf ( glTransform );
-            glScalef ( scale,scale,scale );
+            simulation::getSimulation()->DrawUtility().multMatrix( glTransform );
+            simulation::getSimulation()->DrawUtility().scale ( scale);
             simulation::getSimulation()->DrawUtility().drawPlus ( 0.1, Vec<4,float> ( 1.0, 1.0, 0.0, 1.0 ) );
-            glPopMatrix();
+            simulation::getSimulation()->DrawUtility().popMatrix();
         }
         glPopAttrib();
     }
