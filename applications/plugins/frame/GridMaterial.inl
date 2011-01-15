@@ -974,7 +974,7 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
     if (!nbVoxels) return false;
 
     int index=getIndex(point);
-    if (index==-1) std::cout<<"problem with point:"<<point<<" (out of voxels)"<<std::endl;
+    if (index==-1) std::cout<<"problem with point:"<<point<<" (out of the grid)"<<std::endl;
 
     if (index==-1) return false; // point not in grid
     if (v_weights.size()!=nbVoxels || v_index.size()!=nbVoxels) return false; // weights not computed
@@ -999,18 +999,20 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
     SGradient dw;
 
     unsigned int i,j;
+    bool ok=false;
     for (i=0; i<nbRef; i++)
         if(v_weights[index][i]!=0)
         {
             reps[i]=v_index[index][i];
             for (j=0; j<ptlist.size(); j++) weights[ptlist[j]]=findWeightInRepartition(ptlist[j],reps[i]);
             lumpWeights(ptlist,point,w[i],&dw,NULL);
+            if(w[i]>0) ok=true;
         }
         else reps[i]=w[i]=0;
 
-    if (w[0]==0)
+    if (!ok)
     {
-        std::cout<<"problem with point:"<<point<<" data:"<<(int)grid.data()[index]<<" rep:"<<v_index[index]<<" wghts:"<<v_weights[index]<<std::endl;
+        std::cout<<"problem with point:"<<point<<" data:"<<(int)grid.data()[index]<<" (out of data)"<<std::endl;
         // take the weight of the closest voxel.
         SCoord coord;
         Real d,dmin=std::numeric_limits<Real>::max();
@@ -1023,6 +1025,7 @@ bool GridMaterial< MaterialTypes>::interpolateWeightsRepartition(const SCoord& p
             }
         if(index==-1) return false;
         for (unsigned int i=0; i<nbRef; i++) { reps[i]=v_index[index][i]; w[i]=v_weights[index][i];}
+        std::cout<<"resolved using the closest voxel:"<<index<<std::endl;
         return true;
     }
 
