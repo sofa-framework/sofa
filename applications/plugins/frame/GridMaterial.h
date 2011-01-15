@@ -294,6 +294,7 @@ protected:
 
     Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
     Data<bool> biasDistances;
+    Data<Real> distanceBiasFactor; Real biasFactor;
     Data<bool> useDijkstra;
 
     /// diffuse the weights outside the objects to avoid interpolation problems

@@ -64,6 +64,7 @@ GridMaterial< MaterialTypes>::GridMaterial()
     , poissonRatio ( initData ( &poissonRatio, "poissonRatio","Sample poisson Ratio." ) )
     , distanceType ( initData ( &distanceType,"distanceType","Distance measure." ) )
     , biasDistances ( initData ( &biasDistances,true, "biasDistances","Bias distances according to stiffness." ) )
+    , distanceBiasFactor ( initData ( &distanceBiasFactor,(Real)1., "distanceBiasFactor","Exponent factor of the stiffness during frame sampling (0=uniform sampling, 1=compliance distance-based sampling)." ) )
     , useDijkstra ( initData ( &useDijkstra, true, "useDijkstra","Use Dijkstra's algorithm to compute the distance fields." ) )
     , useDistanceScaleFactor ( initData ( &useDistanceScaleFactor,false, "useDistanceScaleFactor","useDistanceScaleFactor." ) )
     , weightSupport ( initData ( &weightSupport,(Real)2., "weightSupport","Support of the weight function (2=interpolating, >2 = approximating)." ) )
@@ -109,6 +110,7 @@ void GridMaterial< MaterialTypes>::init()
     showedrepartition=-1;
     showederror=-1;
     showWireframe=false;
+    biasFactor=(Real)1.;
 
     //TEST
     /*
@@ -1055,6 +1057,7 @@ bool GridMaterial< MaterialTypes>::computeWeights(const VecSCoord& points)
         this->v_weights[i].fill(0);
     }
 
+
     if (dtype==DISTANCE_GEODESIC)
     {
         computeGeodesicalDistances (points); // compute voronoi and distances inside voronoi
@@ -1159,13 +1162,15 @@ typename GridMaterial< MaterialTypes>::Real GridMaterial< MaterialTypes>::getDis
     SCoord coord2;
     if (!getCoord(index2,coord2)) return -1; // point2 not in grid
 
-    if (this->biasDistances.getValue()) // bias distances according to stiffness
+    if (this->biasDistances.getValue() && biasFactor!=(Real)0.) // bias distances according to stiffness
     {
         if(isRigid(fromLabel) && isRigid(grid.data()[index2])) // does not allow communication accross rigid parts
         {
             if(fromLabel!=grid.data()[index2]) return (Real)1E10; else  return (Real)0;
         }
         Real meanstiff=(getStiffness(grid.data()[index1])+getStiffness(grid.data()[index2]))/2.;
+        if(biasFactor!=(Real)1.) meanstiff=(Real)pow(meanstiff,biasFactor);
+
         return ((Real)(coord2-coord1).norm()/meanstiff);
     }
     else return (Real)(coord2-coord1).norm();
@@ -2082,6 +2087,8 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
     unsigned int i,k,initial_num_points=points.size(),nb_points=num_points;
     if(initial_num_points>num_points) nb_points=initial_num_points;
 
+    biasFactor=distanceBiasFactor.getValue(); // use user-specified exponent for biased the distance
+
     vector<int> indices((int)nb_points,-1);
     for (i=0; i<initial_num_points; i++) indices[i]=getIndex(points[i]);
     points.resize(nb_points);
@@ -2151,7 +2158,13 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
                         count++;
                     }
                 pos/=(Real)count;
-                if (this->biasDistances.getValue()) pos*=getStiffness(grid.data()[indices[i]]);
+                if (this->biasDistances.getValue() && biasFactor!=(Real)0.)
+                {
+                    Real stiff=getStiffness(grid.data()[indices[i]]);
+                    if(biasFactor!=(Real)1.) stiff=(Real)pow(stiff,biasFactor);
+                    pos*=stiff;
+                }
+
                 pos+=pos_point;
                 // get closest unoccupied point in object
                 dmin=std::numeric_limits<Real>::max();
@@ -2185,6 +2198,8 @@ bool GridMaterial< MaterialTypes>::computeUniformSampling ( VecSCoord& points, c
 
     // get points from indices
     for (i=initial_num_points; i<nb_points; i++)	getCoord(indices[i],points[i]) ;
+
+    biasFactor=(Real)1.; // restore compliance distance
 
     return true;
 }
@@ -2418,9 +2433,10 @@ bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecSCoord& points, const
                                     if (ip!=-1) if (grid.data()[ip]) neighbors.push_back(ip); else ip=i; else ip=i;
                                     if (im!=-1) if (grid.data()[im]) neighbors.push_back(im); else im=i; else im=i;
 
-                                if(biasDistances.getValue())
+                                if(biasDistances.getValue() && biasFactor!=(Real)0.)
                                 {
                                     meanstiff=(getStiffness(grid.data()[ip])+getStiffness(grid.data()[im]))/2.;
+                                    if(biasFactor!=(Real)1.) meanstiff=(Real)pow(meanstiff,biasFactor);
                                     diffw=(double)exp(-alphabias/(meanstiff*meanstiff));
                                 }
                                 else diffw=1;
@@ -2436,9 +2452,11 @@ bool GridMaterial< MaterialTypes>::HeatDiffusion( const VecSCoord& points, const
                             for (j=0; j<neighbors.size(); j++)
                                 if (grid.data()[neighbors[j]])
                                 {
-                                    if(biasDistances.getValue())
+
+                                    if(biasDistances.getValue() && biasFactor!=(Real)0.)
                                     {
                                         meanstiff=(getStiffness(grid.data()[i])+getStiffness(grid.data()[neighbors[j]]))/2.;
+                                        if(biasFactor!=(Real)1.) meanstiff=(Real)pow(meanstiff,biasFactor);
                                         diffw=(double)exp(-alphabias/(meanstiff*meanstiff));
                                     }
                                     else diffw=1.;
