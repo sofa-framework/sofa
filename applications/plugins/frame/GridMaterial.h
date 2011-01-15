@@ -341,7 +341,7 @@ protected:
     bool lumpWeights(const VUI& indices,const SCoord& point,Real& w,SGradient* dw=NULL,SHessian* ddw=NULL,Real* err=NULL);
 
     // compute and store in the map "linearity error" the approximation error of each voxel weight according the fit in its voronoi region
-    bool updateLinearityError();
+    bool updateLinearityError(const bool allweights);
 
     /*********************************/
     /*         Utils				  */
@@ -364,7 +364,7 @@ protected:
     inline void getCompleteBasisDeriv(const SCoord& p,const unsigned int order,vector<SGradient>& basisDeriv) const;
     inline void getCompleteBasisDeriv2(const SCoord& p,const unsigned int order,vector<SHessian>& basisDeriv) const;
     inline void addWeightinRepartion(const unsigned int index); // add dense weights relative to index, in weight repartion of size nbref if it is large enough
-    inline void pasteRepartioninWeight(const unsigned int index); // paste weight relative to index in the dense weight map
+    inline bool pasteRepartioninWeight(const unsigned int index); // paste weight relative to index in the dense weight map
     inline void normalizeWeightRepartion();
 
     /*********************************/

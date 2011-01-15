@@ -1115,15 +1115,17 @@ void GridMaterial< MaterialTypes>::addWeightinRepartion(const unsigned int index
 
 
 template < class MaterialTypes>
-void GridMaterial< MaterialTypes>::pasteRepartioninWeight(const unsigned int index)
+bool GridMaterial< MaterialTypes>::pasteRepartioninWeight(const unsigned int index)
 {
-    if (!nbVoxels) return;
-    if (v_index.size()!=nbVoxels) return;
-    if (v_weights.size()!=nbVoxels) return;
+    if (!nbVoxels) return false;
+    if (v_index.size()!=nbVoxels) return false;
+    if (v_weights.size()!=nbVoxels) return false;
     weights.resize(this->nbVoxels);
     unsigned int i;
-    for (i=0; i<nbVoxels; i++) weights[i]=findWeightInRepartition(i,index);
+    bool allzero=true;
+    for (i=0; i<nbVoxels; i++) {weights[i]=findWeightInRepartition(i,index); if(weights[i]!=0) allzero=false;}
     showedrepartition=-1;
+    if(allzero) return false; else return true;
 }
 
 template < class MaterialTypes>
@@ -1712,12 +1714,12 @@ bool GridMaterial< MaterialTypes>::computeGeodesicalDistancesToVoronoi ( const u
 }
 
 template < class MaterialTypes>
-bool GridMaterial< MaterialTypes>::updateLinearityError()
+bool GridMaterial< MaterialTypes>::updateLinearityError(const bool allweights)
 {
     if (!nbVoxels) return false;
     if (voronoi.size()!=nbVoxels) return false;
 
-    unsigned int i,j;
+    unsigned int i,j,ii;
     int k;
 
     // get voxel indices of different voronoi regions
@@ -1737,24 +1739,42 @@ bool GridMaterial< MaterialTypes>::updateLinearityError()
     VUI ptlist; SCoord point,point2;
     Real w; SGradient dw;
     Real meanerror=0,minerror=1E10,maxerror=0; unsigned int count=0;
+    unsigned int nbframes=1;
+
     for (i=0; i<indices.size(); i++)
     {
+        if(allweights) // get the highest frame index influencing the region
+        {
+            nbframes=0;
+            for (j=0; j<(unsigned int)nbVoxels; j++) if (voronoi[j]==voronoi[indices[i]]) for (ii=0; ii<nbRef; ii++) if(v_weights[j][ii]!=0) if(nbframes<v_index[j][ii]) nbframes=v_index[j][ii];
+        }
+
         getCoord(indices[i],point);
         ptlist.clear();  for (j=0; j<(unsigned int)nbVoxels; j++) if (voronoi[j]==voronoi[indices[i]]) ptlist.push_back(j);
-        lumpWeights(ptlist,point,w,&dw,NULL);
-        Real err=0; bool allzero=true;
-        for (j=0; j<ptlist.size(); j++)
+
+        for (ii=0; ii<nbframes; ii++)
         {
-            getCoord(ptlist[j],point2);
-            linearityError[ptlist[j]]=weights[ptlist[j]] - dot(point2-point,dw) -w;
-            if(linearityError[ptlist[j]]<0) linearityError[ptlist[j]]*=(Real)-1;
-            if(weights[ptlist[j]]!=0) allzero=false;
-            if(linearityError[ptlist[j]]<1E-12) linearityError[ptlist[j]]=0; // clamp for visualization..
-            err+=linearityError[ptlist[j]];
-            if(minerror>linearityError[ptlist[j]]) minerror=linearityError[ptlist[j]];
-            if(maxerror<linearityError[ptlist[j]]) maxerror=linearityError[ptlist[j]];
+            if(allweights)  {for (j=0; j<ptlist.size(); j++) weights[ptlist[j]]=findWeightInRepartition(ptlist[j],ii+1); }
+            Real err=0; bool allzero=true;
+            for (j=0; j<ptlist.size(); j++) if(weights[ptlist[j]]!=0) {allzero=false; j=ptlist.size();}
+
+            if(!allzero)
+            {
+                lumpWeights(ptlist,point,w,&dw,NULL);
+                for (j=0; j<ptlist.size(); j++)
+                {
+                    getCoord(ptlist[j],point2);
+                    err=weights[ptlist[j]] - dot(point2-point,dw) -w;
+                    if(err<0) err*=(Real)-1;
+                    if(err<1E-12) err=0; // clamp for visualization..
+                    if(minerror>err) minerror=err;
+                    if(maxerror<err) maxerror=err;
+                    linearityError[ptlist[j]]+=err;
+
+                    meanerror+=err; count++;
+                }
+            }
         }
-        if(!allzero) {meanerror+=err; count+=ptlist.size();}
     }
     if(count) meanerror/=(Real)count;
     std::cout<<"Min/Average/Max error in influenced regions per voxel="<<minerror<<"/"<<meanerror<<"/"<<maxerror<<std::endl;
@@ -1769,7 +1789,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
 {
     if (!nbVoxels) return false;
 
-    unsigned int i,j,initial_num_points=points.size(),nbnonemptyvoxels=0;
+    unsigned int i,j,ii,initial_num_points=points.size();
     int k;
 
     // identify regions with similar repartitions and similar stiffness
@@ -1796,7 +1816,6 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     for (i=0; i<this->nbVoxels; i++)
         if(grid.data()[i])
         {
-            nbnonemptyvoxels++;
             Real stiff=getStiffness(grid.data()[i]);
             k=-1;
             for (j=0; j<(unsigned int)indices.size() && k==-1; j++) // detect similar already inserted repartitions and stiffness
@@ -1816,6 +1835,7 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
     // check linearity in each region and subdivide region of highest error until num_points is reached
     vector<Real> errors(indices.size(),(Real)0.);
     Real w; SGradient dw; SHessian ddw; VUI ptlist;  SCoord point;
+
     for (j=0; j<indices.size(); j++)
     {
         getCoord(indices[j],point);
@@ -1823,7 +1843,8 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
         for (i=0; i<nbRef; i++)
             if(v_weights[indices[j]][i]!=0)
             {
-                pasteRepartioninWeight(v_index[indices[j]][i]);
+                for (ii=0; ii<ptlist.size(); ii++) weights[ptlist[ii]]=findWeightInRepartition(ptlist[ii],v_index[indices[j]][i]);
+                //pasteRepartioninWeight(v_index[indices[j]][i]);
                 lumpWeights(ptlist,point,w,&dw,NULL,&errors[j]);
             }
     }
@@ -1846,7 +1867,8 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
             for (j=0; j<nbRef; j++)
                 if(v_weights[indices[i]][j]!=0)
                 {
-                    pasteRepartioninWeight(v_index[indices[i]][j]);
+                    for (ii=0; ii<ptlist.size(); ii++) weights[ptlist[ii]]=findWeightInRepartition(ptlist[ii],v_index[indices[i]][j]);
+                    //pasteRepartioninWeight(v_index[indices[i]][j]);
                     lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
                 }
             i=indices.size()-1;
@@ -1856,14 +1878,23 @@ bool GridMaterial< MaterialTypes>::computeLinearRegionsSampling ( VecSCoord& poi
             for (j=0; j<nbRef; j++)
                 if(v_weights[indices[i]][j]!=0)
                 {
-                    pasteRepartioninWeight(v_index[indices[i]][j]);
+                    for (ii=0; ii<ptlist.size(); ii++) weights[ptlist[ii]]=findWeightInRepartition(ptlist[ii],v_index[indices[i]][j]);
+                    //pasteRepartioninWeight(v_index[indices[i]][j]);
                     lumpWeights(ptlist,point,w,&dw,NULL,&errors[i]);
                 }
         }
     }
-    Real err=0; for (j=0; j<errors.size(); j++) err+=errors[j];
-    err/=(Real)(errors.size()*nbnonemptyvoxels);
-    std::cout<<"Average error in weights per voxel="<<err<<std::endl;
+
+    Real err=0; unsigned int nbinfluences=0;
+    for (j=0; j<indices.size(); j++)
+    {
+        err+=errors[j];
+        ptlist.clear();  for (i=0; i<nbVoxels; i++) if (voronoi[i]==(int)j) ptlist.push_back(i);
+        for (i=0; i<nbRef; i++) if(v_weights[indices[j]][i]!=0)
+                nbinfluences+=ptlist.size(); // nb influencing frames x nb voxels
+    }
+    err/=(Real)(nbinfluences);
+    std::cout<<"Average kernel fitting error per voxel="<<err<<std::endl;
 
     // insert gauss points in the center of voronoi regions
     points.resize(indices.size());
@@ -2484,8 +2515,7 @@ void GridMaterial< MaterialTypes>::draw()
         {
             if(linearityError.size()!=nbVoxels || showederror!=(int)showWeightIndex.getValue())
             {
-                pasteRepartioninWeight(showWeightIndex.getValue());
-                updateLinearityError();
+                if(pasteRepartioninWeight(showWeightIndex.getValue())) updateLinearityError(false); else updateLinearityError(true);
             }
             showederror=(int)showWeightIndex.getValue();
             showedrepartition=(int)showWeightIndex.getValue();
