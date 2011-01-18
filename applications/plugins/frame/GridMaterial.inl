@@ -591,9 +591,13 @@ bool GridMaterial< MaterialTypes>::loadImage()
         serr << "Can not open " << imageFile << sendl;
         return false;
     }
-    std::cout << "Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << std::endl;
     this->nbVoxels = dimension.getValue()[0]*dimension.getValue()[1]*dimension.getValue()[2];
+
+    unsigned int count=0;
+    for(unsigned int i=0; i<this->nbVoxels; i++) if(grid.data()[i]) count++;
+
     updateMaxValues();
+    std::cout << "Loaded image "<< imageFile <<" of voxel type " << grid.pixel_type() << "( "<<count<<" non empty voxels)"<< std::endl;
     return true;
 }
 
