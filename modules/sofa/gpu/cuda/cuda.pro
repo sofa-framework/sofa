@@ -296,8 +296,10 @@ CUDA_SOURCES += CudaSPHFluidForceField.cu
 HEADERS += scan.h
 CUDA_SOURCES += scan.cu
 
+contains(DEFINES,SOFA_HAVE_CUDPP){
 HEADERS += radixsort.cuh radixsort_kernel.cu
 CUDA_SOURCES += radixsort.cu
+}
 
 #HEADERS += radixsort.h
 #CUDA_SOURCES += radixsort.cu
