@@ -128,6 +128,7 @@ public:
 protected:
     inline void initSamples();
     inline void initFrames();
+    Data<bool> useLinearWeights;
     inline void updateWeights ();
     inline void normalizeWeights();
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);

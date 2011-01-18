@@ -86,6 +86,7 @@ using helper::ReadAccessor;
 template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to ), FData(), SampleData<TOut>()
+    , useLinearWeights ( initData ( &useLinearWeights, false, "useLinearWeights","use linearly interpolated weights between the two closest frames." ) )
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
@@ -446,7 +447,44 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
     //if(primitiveorder > 1)
     m_ddweight.resize( xto.size() );
 
-    if(gridMaterial)
+    if(useLinearWeights.getValue())  // linear weights based on 2 closest primitives
+    {
+        for (unsigned int i=0; i<xto.size(); i++ )
+        {
+            Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] ); // OutReal??
+
+            // get the 2 closest primitives
+            for (unsigned int j=0; j<nbRef; j++ )
+            {
+                m_weights[i][j]=0; index[i][j]=0;
+                m_dweight[i][j].fill(0);
+                m_ddweight[i][j].fill(0);
+            }
+            m_weights[i][0]=std::numeric_limits<InReal>::max();
+            m_weights[i][1]=std::numeric_limits<InReal>::max();
+            for (unsigned int j=0; j<xfrom.size(); j++ )
+            {
+                Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
+                InReal d=(cto-cfrom).norm();
+                if(m_weights[i][0]>d) {m_weights[i][1]=m_weights[i][0]; index[i][1]=index[i][0]; m_weights[i][0]=d; index[i][0]=j; }
+                else if(m_weights[i][1]>d) {m_weights[i][1]=d; index[i][1]=j;}
+            }
+            // compute weight
+            Vec<3,InReal> cfrom1; In::get( cfrom1[0],cfrom1[1],cfrom1[2], xfrom[index[i][0]] );
+            Vec<3,InReal> cfrom2; In::get( cfrom2[0],cfrom2[1],cfrom2[2], xfrom[index[i][1]] );
+            Vec<3,InReal> u=cfrom2-cfrom1;
+            InReal d=u.norm2(); u=u/d;
+            InReal w2=dot(cto-cfrom1,u),w1=-dot(cto-cfrom2,u);
+            if(w1<=0) {m_weights[i][0]=0; m_weights[i][1]=1;}
+            else if(w2<=0) {m_weights[i][0]=1; m_weights[i][1]=0;}
+            else
+            {
+                m_weights[i][0]=w1; m_weights[i][1]=w2;
+                m_dweight[i][0]=-u; m_dweight[i][1]=u;
+            }
+        }
+    }
+    else if(gridMaterial)
     {
         if(this->isPhysical) std::cout<<"Lumping weights to gauss points..."<<std::endl;
         SpatialCoord point;
@@ -461,98 +499,59 @@ void FrameBlendingMapping<TIn, TOut>::updateWeights ()
                 gridMaterial->lumpWeightsRepartition(i,point,index[i],m_weights[i],&m_dweight[i],&m_ddweight[i]);
         }
     }
-    else
+
+    else	// 1/d^2 weights with Euclidean distance
     {
-        if(xfrom.size()==2)  // linear weights based on 2 closest primitives
+        for (unsigned int i=0; i<xto.size(); i++ )
         {
-            for (unsigned int i=0; i<xto.size(); i++ )
+            Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] ); // OutReal??
+            // get the nbRef closest primitives
+            for (unsigned int j=0; j<nbRef; j++ )
             {
-                Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] ); // OutReal??
-
-                // get the 2 closest primitives
-                for (unsigned int j=0; j<nbRef; j++ )
+                m_weights[i][j]=0;
+                index[i][j]=0;
+            }
+            for (unsigned int j=0; j<xfrom.size(); j++ )
+            {
+                Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
+                InReal w=(cto-cfrom)*(cto-cfrom);
+                if(w!=0) w=1./w;
+                else w=std::numeric_limits<InReal>::max();
+                unsigned int m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
+                if(m!=nbRef)
                 {
-                    m_weights[i][j]=0; index[i][j]=0;
-                    m_dweight[i][j].fill(0);
-                    m_ddweight[i][j].fill(0);
+                    for (unsigned int k=nbRef-1; k>m; k--)
+                    {
+                        m_weights[i][k]=m_weights[i][k-1];
+                        index[i][k]=index[i][k-1];
+                    }
+                    m_weights[i][m]=w;
+                    index[i][m]=j;
                 }
-                m_weights[i][0]=std::numeric_limits<InReal>::max();
-                m_weights[i][1]=std::numeric_limits<InReal>::max();
-                for (unsigned int j=0; j<xfrom.size(); j++ )
+            }
+            // compute weight gradients
+            for (unsigned int j=0; j<nbRef; j++ )
+            {
+                InReal w=m_weights[i][j];
+                m_dweight[i][j].fill(0);
+                m_ddweight[i][j].fill(0);
+                if (w)
                 {
-                    Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
-                    InReal d=(cto-cfrom).norm();
-                    if(m_weights[i][0]>d) {m_weights[i][0]=d; index[i][0]=j;}
-                    else if(m_weights[i][1]>d) {m_weights[i][1]=d; index[i][1]=j;}
-                }
-                // compute weight
-                Vec<3,InReal> cfrom1; In::get( cfrom1[0],cfrom1[1],cfrom1[2], xfrom[index[i][0]] );
-                Vec<3,InReal> cfrom2; In::get( cfrom2[0],cfrom2[1],cfrom2[2], xfrom[index[i][1]] );
-                Vec<3,InReal> u=cfrom2-cfrom1;
-                InReal d=u.norm2(); u=u/d;
-                InReal w2=dot(cto-cfrom1,u),w1=-dot(cto-cfrom2,u);
-                if(w1<=0) {m_weights[i][0]=0; m_weights[i][1]=1;}
-                else if(w2<=0) {m_weights[i][0]=1; m_weights[i][1]=0;}
-                else
-                {
-                    m_weights[i][0]=w1; m_weights[i][1]=w2;
-                    m_dweight[i][0]=-u; m_dweight[i][1]=u;
+                    InReal w2=w*w,w3=w2*w;
+                    Vec<3,InReal> u;
+                    for(unsigned int k=0; k<3; k++)
+                        u[k]=(xto[i][k]-xfrom[index[i][j]][k]);
+                    m_dweight[i][j] = - u * w2* 2.0;
+                    for(unsigned int k=0; k<num_spatial_dimensions; k++)
+                        m_ddweight[i][j][k][k]= - w2* 2.0;
+                    for(unsigned int k=0; k<num_spatial_dimensions; k++)
+                        for(unsigned int m=0; m<num_spatial_dimensions; m++)
+                            m_ddweight[i][j][k][m]+=u[k]*u[m]*w3* 8.0;
                 }
             }
         }
-        else	// 1/d^2 weights with Euclidean distance
-        {
-            for (unsigned int i=0; i<xto.size(); i++ )
-            {
-                Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] ); // OutReal??
-                // get the nbRef closest primitives
-                for (unsigned int j=0; j<nbRef; j++ )
-                {
-                    m_weights[i][j]=0;
-                    index[i][j]=0;
-                }
-                for (unsigned int j=0; j<xfrom.size(); j++ )
-                {
-                    Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
-                    InReal w=(cto-cfrom)*(cto-cfrom);
-                    if(w!=0) w=1./w;
-                    else w=std::numeric_limits<InReal>::max();
-                    unsigned int m=0; while (m!=nbRef && m_weights[i][m]>w) m++;
-                    if(m!=nbRef)
-                    {
-                        for (unsigned int k=nbRef-1; k>m; k--)
-                        {
-                            m_weights[i][k]=m_weights[i][k-1];
-                            index[i][k]=index[i][k-1];
-                        }
-                        m_weights[i][m]=w;
-                        index[i][m]=j;
-                    }
-                }
-                // compute weight gradients
-                for (unsigned int j=0; j<nbRef; j++ )
-                {
-                    InReal w=m_weights[i][j];
-                    m_dweight[i][j].fill(0);
-                    m_ddweight[i][j].fill(0);
-                    if (w)
-                    {
-                        InReal w2=w*w,w3=w2*w;
-                        Vec<3,InReal> u;
-                        for(unsigned int k=0; k<3; k++)
-                            u[k]=(xto[i][k]-xfrom[index[i][j]][k]);
-                        m_dweight[i][j] = - u * w2* 2.0;
-                        for(unsigned int k=0; k<num_spatial_dimensions; k++)
-                            m_ddweight[i][j][k][k]= - w2* 2.0;
-                        for(unsigned int k=0; k<num_spatial_dimensions; k++)
-                            for(unsigned int m=0; m<num_spatial_dimensions; m++)
-                                m_ddweight[i][j][k][m]+=u[k]*u[m]*w3* 8.0;
-                    }
-                }
-            }
-        }
-
     }
+
     normalizeWeights();
 }
 
