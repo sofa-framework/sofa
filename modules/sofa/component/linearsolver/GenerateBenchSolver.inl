@@ -213,7 +213,6 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_system(int & max_size,std::strin
             file.close();
             return false;
         }
-        max_size = size;
 
         if (print) std::cout << "file open : " << fileName << " size = " << size << " syze_type=" << size_type << " nb_val=" << n_val << std::endl;
 
@@ -238,16 +237,16 @@ bool GenerateBenchSolver<TMatrix,TVector>::read_system(int & max_size,std::strin
             return false;
         }
 
-        matrix.resize(size,size);
-        solution->resize(size);
-        unknown->resize(size);
-        for (int j=0; j<size; j++)
+        matrix.resize(max_size,max_size);
+        solution->resize(max_size);
+        unknown->resize(max_size);
+        for (int j=0; j<max_size; j++)
         {
             solution->set(j,sol[j]);
             unknown->set(j,unk[j]);
             for (int i=row_ind[j]; i<row_ind[j+1]; i++)
             {
-                matrix.set(j,col_ind[i],values[i]);
+                if (col_ind[i]<max_size) matrix.set(j,col_ind[i],values[i]);
             }
         }
 
