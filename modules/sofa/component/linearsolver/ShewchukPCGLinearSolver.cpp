@@ -248,7 +248,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         d = r;
     }
 
-
     double deltaNew = r.dot(d);
     double delta0 = deltaNew;
     double eps = f_tolerance.getValue() * f_tolerance.getValue()  * delta0;
@@ -327,6 +326,12 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     graph_error.push_back(sqrt(deltaNew/delta0));
     next_refresh_iteration=iter;
     sofa::helper::AdvancedTimer::valSet("PCG iterations", iter);
+
+    if (f_maxIter.getValue() == 0)
+    {
+        x = d;
+        return;
+    }
 
     f_graph.endEdit();
     vtmp.deleteTempVector(&r);

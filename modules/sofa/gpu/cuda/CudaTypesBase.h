@@ -142,7 +142,7 @@ public :
         v = e.v;
     }
 
-    const void* deviceRead()
+    const void* deviceRead() const
     {
         return v.deviceRead();
     }
@@ -152,7 +152,7 @@ public :
         return v.deviceWrite();
     }
 
-    const T* hostRead()
+    const T* hostRead() const
     {
         return v.hostRead();
     }
@@ -165,6 +165,12 @@ public :
     static const char* Name(); /* {
 			return "CudaBaseVector";
             }*/
+
+    friend std::ostream& operator<< ( std::ostream& os, const CudaBaseVector<T> & vec )
+    {
+        os << vec.v;
+        return os;
+    }
 
 private :
     CudaVector<T> v;
@@ -322,7 +328,7 @@ public :
 
     friend std::ostream& operator<< ( std::ostream& os, const CudaBaseMatrix<T> & mat )
     {
-        os << mat;
+        os << mat.m;
         return os;
     }
 
