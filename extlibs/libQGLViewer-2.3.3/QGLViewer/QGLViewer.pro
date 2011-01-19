@@ -139,7 +139,6 @@ unix {
   }
 
   MOC_DIR = .moc
-  OBJECTS_DIR = .obj
 
   # Adds a -P option so that "make install" as root creates files owned by root and links are preserved.
   # This is not a standard option, and it may have to be removed on old Unix flavors.
@@ -240,14 +239,6 @@ win32 {
     DEFINES *= CREATE_QGLVIEWER_DLL
   }
  MOC_DIR = moc
- contains (CONFIGDEBUG, debug) {
-	
-  	OBJECTS_DIR = obj\debug	
-  }
-  contains (CONFIGDEBUG, release) {
-	
-  	OBJECTS_DIR = obj\release	
-  }
   
 
   # Use the DLL version of Qt (needed for Qt3 only)

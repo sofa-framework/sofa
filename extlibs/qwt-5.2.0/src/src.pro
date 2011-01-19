@@ -21,14 +21,6 @@ TARGET  = qwt$${LIBSUFFIX}
 CONFIG += $$CONFIGLIBRARIES
 
 MOC_DIR           = moc
-contains (CONFIGDEBUG, debug) {
-	
-  	OBJECTS_DIR = obj\debug	
- }
- contains (CONFIGDEBUG, release) {
-	
- 	OBJECTS_DIR = obj\release	
-}
 
 contains(CONFIG, QwtDll ) {
     CONFIG += dll
