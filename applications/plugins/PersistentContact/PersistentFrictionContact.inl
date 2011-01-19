@@ -238,7 +238,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionO
 
     keepStickyContacts(filteredOutputs);
 
-    this->FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(o);
+//    this->FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(o);
 }
 
 

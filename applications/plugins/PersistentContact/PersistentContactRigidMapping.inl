@@ -64,10 +64,6 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
         this->toModel->resize(0);
         m_init = true;
     }
-    else
-    {
-        m_init = false;
-    }
 }
 
 
@@ -171,6 +167,7 @@ void PersistentContactRigidMapping<TIn, TOut>::handleEvent(sofa::core::objectmod
     if (dynamic_cast< simulation::AnimateEndEvent* >(ev))
     {
         storeFreePositionAndDx();
+        m_init = false;
     }
 }
 
@@ -184,7 +181,7 @@ void PersistentContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
     std::cout<< "===== end of the time ste =========\n stored Free Pos : "<<m_previousFreePosition<<std::endl;
     std::cout<<" stored DX : "<<m_previousDx<<std::endl;
 
-    this->applyLinearizedPosition();
+//    this->applyLinearizedPosition();
     std::cout<<" ============================ "<<std::endl;
 }
 

@@ -132,9 +132,9 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
     this->contacts.resize(i+1);
     typename Inherited::Contact& c = this->contacts[i];
 
-    std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
+    /*std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
     std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
-    std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;
+    std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;*/
 
 
 // for visu
@@ -205,8 +205,8 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
     {
         dt = 0;
         c.dfree = deltaFree;
-        c.dfree_t = 0;
-        c.dfree_s = 0;
+        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
+        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
         //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
     }
     //sout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<sendl;
