@@ -1145,6 +1145,12 @@ public:
     /// Multiply the transposed matrix by matrix m and store the result in matrix result
     virtual void opMulTM(BaseMatrix * result,BaseMatrix * m) const;
 
+    /// Subtract the matrix to the m matrix and strore the result in m
+    virtual void opAddM(defaulttype::BaseMatrix* m,double fact) const;
+
+    /// Subtract the transposed matrix to the m matrix and strore the result in m
+    virtual void opAddMT(defaulttype::BaseMatrix* m,double fact) const;
+
     /// @}
 };
 
