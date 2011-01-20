@@ -67,12 +67,10 @@ public:
     virtual ~Base();
 
 private:
-
     /// Copy constructor is not allowed
     Base(const Base& b);
 
 public:
-
     /// Accessor to the object name
     std::string getName() const;
 
@@ -80,23 +78,121 @@ public:
     void setName(const std::string& n);
 
     /// Get the type name of this object (i.e. class and template types)
-    virtual std::string getTypeName() const
-    {
-        return decodeTypeName(typeid(*this));
-    }
+    virtual std::string getTypeName() const;
 
     /// Get the class name of this object
-    virtual std::string getClassName() const
-    {
-        return decodeClassName(typeid(*this));
-    }
+    virtual std::string getClassName() const;
 
     /// Get the template type names (if any) used to instantiate this object
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const;
+
+    /// @name fields
+    ///   Data fields managment
+    /// @{
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    virtual void parse ( BaseObjectDescription* arg );
+
+    /// Assign the field values stored in the given list of name + value pairs of strings
+    void parseFields ( std::list<std::string> str );
+
+    /// Assign the field values stored in the given map of name -> value pairs
+    virtual void parseFields ( const std::map<std::string,std::string*>& str );
+
+    /// Write the current field values to the given map of name -> value pairs
+    void writeDatas (std::map<std::string,std::string*>& str);
+
+    /// Write the current Node values to the given XML output stream
+    void xmlWriteNodeDatas (std::ostream& out, unsigned level);
+
+    /// Write the current field values to the given XML output stream
+    void xmlWriteDatas (std::ostream& out, unsigned level, bool compact);
+
+    /// Find a field given its name. Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
+    BaseData* findField( const std::string &name ) const;
+
+    /// Find fields given a name: several can be found as we look into the alias map
+    std::vector< BaseData* > findGlobalField( const std::string &name ) const;
+
+    /// Helper method used to initialize a field containing a value of type T
+    template<class T>
+    BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
-        return decodeTemplateName(typeid(*this));
+        BaseData::BaseInitData res;
+        this->initData0(field, res, name, help, isDisplayed, isReadOnly);
+        return res;
     }
 
+    /// Helper method used to initialize a field containing a value of type T
+    template<class T>
+    typename Data<T>::InitData initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
+    {
+        typename Data<T>::InitData res;
+        this->initData0(field, res, value, name, help, isDisplayed, isReadOnly);
+        return res;
+    }
+
+    /// Add an alias to a Data
+    void addAlias( BaseData* field, const char* alias);
+
+    /// Accessor to the vector containing all the fields of this object
+    const std::vector< std::pair<std::string, BaseData*> >& getFields() const { return m_fieldVec; }
+    /// Accessor to the map containing all the aliases of this object
+    const std::multimap< std::string, BaseData* >& getAliases() const { return m_aliasData; }
+
+    /// @}
+
+    /// @name tags
+    ///   Methods related to tagged subsets
+    /// @{
+
+    /// Represents the subsets the object belongs to
+    const sofa::core::objectmodel::TagSet& getTags() const { return f_tags.getValue(); }
+
+    /// Return true if the object belong to the given subset
+    bool hasTag( Tag t ) const;
+
+    /// Add a subset qualification to the object
+    void addTag(Tag t);
+    /// Remove a subset qualification to the object
+    void removeTag(Tag t);
+
+    /// @}
+
+    /// @name logs
+    ///   Messages and warnings logging
+    /// @{
+
+    mutable sofa::helper::system::SofaOStream<Base> sendl;
+    mutable std::ostringstream                      serr;
+    mutable std::ostringstream                      sout;
+
+    const std::string& getWarnings() const;
+    const std::string& getOutputs() const;
+
+    void clearWarnings();
+    void clearOutputs();
+
+    void processStream(std::ostream& out);
+
+    /// @}
+
+protected:
+    /// Helper method used by initData()
+    void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
+
+    /// Helper method used by initData()
+    template<class T>
+    void initData0( Data<T>* field, typename Data<T>::InitData& res, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    {
+        initData0( field, res, name, help, isDisplayed, isReadOnly );
+        res.value = value;
+    }
+
+    /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
+    void addField(BaseData* f, const char* name);
+
+public:
     /// Helper method to decode the type name
     static std::string decodeFullName(const std::type_info& t);
 
@@ -156,157 +252,23 @@ public:
         return decodeTemplateName(typeid(T));
     }
 
-    /// Assign the field values stored in the given list of name + value pairs of strings
-    void parseFields ( std::list<std::string> str );
-
-    /// Assign the field values stored in the given map of name -> value pairs
-    virtual void parseFields ( const std::map<std::string,std::string*>& str );
-
-    /// Write the current field values to the given map of name -> value pairs
-    void writeDatas (std::map<std::string,std::string*>& str);
-
-    /// Write the current Node values to the given XML output stream
-    void xmlWriteNodeDatas (std::ostream& out, unsigned level);
-
-    /// Write the current field values to the given XML output stream
-    void xmlWriteDatas (std::ostream& out, unsigned level, bool compact);
-
-    /// Find a field given its name. Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
-    BaseData* findField( const std::string &name ) const;
-
-    /// Find fields given a name: several can be found as we look into the alias map
-    std::vector< BaseData* > findGlobalField( const std::string &name ) const;
-
-    /// Helper method used to initialize a field containing a value of type T
-    template<class T>
-    BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
-    {
-        BaseData::BaseInitData res;
-        this->initData0(field, res, name, help, isDisplayed, isReadOnly);
-        return res;
-    }
-
-    /// Helper method used to initialize a field containing a value of type T
-    template<class T>
-    typename Data<T>::InitData initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
-    {
-        typename Data<T>::InitData res;
-        this->initData0(field, res, value, name, help, isDisplayed, isReadOnly);
-        return res;
-    }
-
-    /// Helper method used to add an alias to a Data
-    void addAlias( BaseData* field, const char* alias)
-    {
-        m_aliasData.insert(std::make_pair(std::string(alias),field));
-    }
-
-
-    /// @name tags
-    ///   Methods related to subsets belonging
-    /// @{
-
-    /// Represents the subsets the object belongs to
-
-    const sofa::core::objectmodel::TagSet& getTags() const { return f_tags.getValue(); }
-
-    /// Return true if the object belong to the given subset
-    bool hasTag( Tag t ) const;
-
-    /// Add a subset qualification to the object
-    void addTag(Tag t);
-    /// Remove a subset qualification to the object
-    void removeTag(Tag t);
-
-    /// @}
-
-    /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( BaseObjectDescription* arg );
-
-    /// Accessor to the vector containing all the fields of this object
-    const std::vector< std::pair<std::string, BaseData*> >& getFields() const { return m_fieldVec; }
-    /// Accessor to the map containing all the aliases of this object
-    const std::multimap< std::string, BaseData* >& getAliases() const { return m_aliasData; }
-
-    mutable sofa::helper::system::SofaOStream<Base> sendl;
-    mutable std::ostringstream                serr;
-    mutable std::ostringstream                sout;
-
-    const std::string& getWarnings() const;
-    const std::string& getOutputs() const;
-
-    void clearWarnings();
-    void clearOutputs();
-
-    void processStream(std::ostream& out);
-
 protected:
-
     std::string warnings;
     std::string outputs;
-
-    void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
-    {
-        std::string ln(name);
-        if( ln.size()>0 && findField(ln) )
-        {
-            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-            exit( 1 );
-        }
-        m_fieldVec.push_back( std::make_pair(ln,field));
-        m_aliasData.insert(std::make_pair(ln,field));
-        res.owner = this;
-        res.data = field;
-        res.name = name;
-        res.helpMsg = help;
-        res.isDisplayed = isDisplayed;
-        res.isReadOnly = isReadOnly;
-
-        std::string nameStr(name);
-        if (nameStr.size() >= 4)
-        {
-            const std::string prefix=nameStr.substr(0,4);
-            if (prefix=="show" || prefix=="draw") res.group = "Visualization";
-        }
-    }
-
-    template<class T>
-    void initData0( Data<T>* field, typename Data<T>::InitData& res, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
-    {
-        initData0( field, res, name, help, isDisplayed, isReadOnly );
-        res.value = value;
-    }
 
     /// List of fields (Data instances)
     std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
     /// name -> Data multi-map (includes names and aliases)
     std::multimap< std::string, BaseData* > m_aliasData;
 
-    /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
-    void addField(BaseData* f, const char* name)
-    {
-        std::string ln(name);
-        if (ln.size() > 0 && findField(ln))
-        {
-            serr << "field name " << ln
-                    << " already used in this class or in a parent class !...aborting"
-                    << sendl;
-            exit(1);
-        }
-        m_fieldVec.push_back(std::make_pair(ln, f));
-        m_aliasData.insert(std::make_pair(ln, f));
-        f->setOwner(this);
-        f->setName(name);
-    }
-
 public:
-
     /// Name of the object.
     Data<std::string> name;
 
     Data<bool> f_printLog;
 
     Data< sofa::core::objectmodel::TagSet > f_tags;
+
 };
 
 } // namespace objectmodel

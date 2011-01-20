@@ -70,7 +70,7 @@ bool BaseData::validParent(BaseData* parent)
     if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
         return true;
     // No conversion found
-    return true;
+    return false;
 }
 
 bool BaseData::setParent(BaseData* parent)

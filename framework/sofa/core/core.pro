@@ -162,6 +162,7 @@ SOURCES +=  \
           SofaLibrary.cpp \
           CategoryLibrary.cpp \
           ComponentLibrary.cpp \
+          BaseMapping.cpp \
           Mapping.cpp \	   
           MultiMapping.cpp \
           Multi2Mapping.cpp \

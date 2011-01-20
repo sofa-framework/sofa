@@ -212,7 +212,7 @@ simulation::Node *ObjectCreator::CreateCollisionNodeVec3(MechanicalObject3* dof,
 
     BarycentricMapping3_to_3* mechaMapping = new BarycentricMapping3_to_3(dof, dof_surf);
     mechaMapping->setPathInputObject("@..");
-    mechaMapping->setPathOutPutObject("@.");
+    mechaMapping->setPathOutputObject("@.");
     CollisionNode->addObject(mechaMapping);
 
     return CollisionNode;
@@ -237,7 +237,7 @@ simulation::Node *ObjectCreator::CreateVisualNodeVec3(MechanicalObject3* dof,  c
     BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(dof, visual);
     mapping->setName("Mapping Visual");
     mapping->setPathInputObject(refDof);
-    mapping->setPathOutPutObject(refVisual);
+    mapping->setPathOutputObject(refVisual);
     VisualNode->addObject(mapping);
 
     return VisualNode;
@@ -271,7 +271,7 @@ simulation::Node *ObjectCreator::CreateCollisionNodeRigid(MechanicalObjectRigid3
 
     RigidMappingRigid3_to_3* mechaMapping = new RigidMappingRigid3_to_3(dofRigid, dof_surf);
     mechaMapping->setPathInputObject(refdofRigid);
-    mechaMapping->setPathOutPutObject(refdofSurf);
+    mechaMapping->setPathOutputObject(refdofSurf);
     CollisionNode->addObject(mechaMapping);
 
     return CollisionNode;
@@ -296,7 +296,7 @@ simulation::Node *ObjectCreator::CreateVisualNodeRigid(MechanicalObjectRigid3* d
     RigidMappingRigid3_to_Ext3* mappingRigid = new RigidMappingRigid3_to_Ext3(dofRigid, visualRigid);
     mappingRigid->setName("Mapping Visual");
     mappingRigid->setPathInputObject(refdofRigid);
-    mappingRigid->setPathOutPutObject(refVisual);
+    mappingRigid->setPathOutputObject(refVisual);
     RigidVisualNode->addObject(mappingRigid);
     return RigidVisualNode;
 }

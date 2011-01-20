@@ -81,17 +81,13 @@ public:
 
     /// @name Context accessors
     /// @{
+
     void setContext(BaseContext* n);
 
     const BaseContext* getContext() const;
 
     BaseContext* getContext();
-#ifdef SOFA_SMP
-    void setPartition(Iterative::IterativePartition* p);
-    Iterative::IterativePartition*  getPartition();
-    Iterative::IterativePartition*  prepareTask();
 
-#endif
     /// @}
 
     /// @name control
@@ -110,7 +106,6 @@ public:
     static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
     {
         obj = new T;
-
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);
     }
@@ -140,6 +135,20 @@ public:
 
     /// @}
 
+    /// Render internal data of this object, for debugging purposes.
+    virtual void draw() {}
+
+    ///@}
+
+    /// @name data access
+    ///   Access to external data
+    /// @{
+
+    /// Current time
+    double getTime() const;
+
+    /// @}
+
     /// @name events
     ///   Methods related to Event processing
     /// @{
@@ -159,21 +168,11 @@ public:
 
     ///@}
 
-    /**
-     *  \brief Render internal data of this object, for debugging purposes.
-     */
-    virtual void draw() {}
-
-    ///@}
-
-    /// @name data access
-    ///   Access to external data
-    /// @{
-
-    /// Current time
-    double getTime() const;
-
-    /// @}
+#ifdef SOFA_SMP
+    void setPartition(Iterative::IterativePartition* p);
+    Iterative::IterativePartition*  getPartition();
+    Iterative::IterativePartition*  prepareTask();
+#endif
 
 protected:
     BaseContext* context_;

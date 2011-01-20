@@ -143,7 +143,7 @@ int main(int, char** argv)
     std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
     std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     rigidMapping->setPathInputObject(pathobject1);
-    rigidMapping->setPathOutPutObject(pathobject2);
+    rigidMapping->setPathOutputObject(pathobject2);
     rigidParticles->addObject( rigidMapping );
     rigidMapping->setName("Map23");
 

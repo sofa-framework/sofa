@@ -148,14 +148,15 @@ public:
         return BaseData::copyValue(parent);
     }
 
-protected:
 
-    bool validParent(BaseData* parent)
+    virtual bool validParent(BaseData* parent)
     {
         if (dynamic_cast<TData<T>*>(parent))
             return true;
         return BaseData::validParent(parent);
     }
+
+protected:
 
     void doSetParent(BaseData* parent)
     {

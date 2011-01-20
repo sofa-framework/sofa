@@ -57,26 +57,15 @@ class BaseMapping : public virtual objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseMapping, objectmodel::BaseObject);
 
-    //Constructor
-    //Use only for data initialization
-    BaseMapping()
-        : f_mapForces(initData(&f_mapForces, true, "mapForces", "Are forces mapped ?"))
-        , f_mapConstraints(initData(&f_mapConstraints, true, "mapConstraints", "Are constraints mapped ?"))
-        , f_mapMasses(initData(&f_mapMasses, true, "mapMasses", "Are masses mapped ?"))
-    {
-        this->addAlias(&f_mapForces, "isMechanical");
-        this->addAlias(&f_mapMasses, "isMechanical");
-    }
+    /// Constructor
+    BaseMapping();
 
     /// Destructor
-    virtual ~BaseMapping() { }
+    virtual ~BaseMapping();
 
     Data<bool> f_mapForces;
     Data<bool> f_mapConstraints;
     Data<bool> f_mapMasses;
-
-    ///<TO REMOVE>
-    //virtual void updateMapping() = 0;
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void apply (MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position(), const MechanicalParams* mparams = MechanicalParams::defaultInstance() ) = 0;
@@ -93,54 +82,18 @@ public:
     virtual void applyJT(MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst, const ConstraintParams* mparams) = 0;
     virtual void computeAccFromMapping(MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc, const MechanicalParams* mparams) = 0;
 
-    virtual bool areForcesMapped() const
-    {
-        return f_mapForces.getValue();
-    }
+    virtual bool areForcesMapped() const;
+    virtual bool areConstraintsMapped() const;
+    virtual bool areMassesMapped() const;
 
-    virtual bool areConstraintsMapped() const
-    {
-        return f_mapConstraints.getValue();
-    }
+    virtual void setForcesMapped(bool b);
+    virtual void setConstraintsMapped(bool b);
+    virtual void setMassesMapped(bool b);
 
-    virtual bool areMassesMapped() const
-    {
-        return f_mapMasses.getValue();
-    }
-
-    virtual void setForcesMapped(bool b)
-    {
-        f_mapForces.setValue(b);
-    }
-
-    virtual void setConstraintsMapped(bool b)
-    {
-        f_mapConstraints.setValue(b);
-    }
-
-    virtual void setMassesMapped(bool b)
-    {
-        f_mapMasses.setValue(b);
-    }
-
-    virtual void setNonMechanical()
-    {
-        setForcesMapped(false);
-        setConstraintsMapped(false);
-        setMassesMapped(false);
-    }
+    virtual void setNonMechanical();
 
     /// Return true if this mapping should be used as a mechanical mapping.
-    virtual bool isMechanical() const
-    {
-        return areForcesMapped() || areConstraintsMapped() || areMassesMapped();
-    }
-
-    /// Determine if this mapping should only be used as a regular mapping instead of a mechanical mapping.
-    //virtual void setMechanical(bool b)
-    //{
-    //    f_isMechanical.setValue(b);
-    //}
+    virtual bool isMechanical() const;
 
     /// Return true if the destination model has the same topology as the source model.
     ///
@@ -159,17 +112,9 @@ public:
     /// @TODO Note that if the mapping provides this matrix, then a default implementation
     /// of all other related methods could be provided, or optionally used to verify the
     /// provided implementations for debugging.
-    virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* /*mparams*/)
-    {
-        serr << "Calling deprecated getJ() method in " << getClassName() << ". Use getJ(const MechanicalParams *) instead." << sendl;
-        return getJ();
-    }
+    virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* /*mparams*/);
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ()
-    {
-        serr << "BaseMechanicalMapping::getJ() NOT IMPLEMENTED BY " << getClassName() << sendl;
-        return NULL;
-    }
+    virtual const sofa::defaulttype::BaseMatrix* getJ();
 
     ///<TO REMOVE>
     ///Necessary ?
@@ -183,16 +128,7 @@ public:
     virtual void disable()=0;
 
 protected:
-    bool testMechanicalState(BaseState* state)
-    {
-        bool isMecha = false;
-        if(state)
-        {
-            behavior::BaseMechanicalState* toMechaModel = dynamic_cast<behavior::BaseMechanicalState* > (state);
-            isMecha = (toMechaModel) ? true : false;
-        }
-        return isMecha;
-    }
+    bool testMechanicalState(BaseState* state);
 };
 
 } // namespace core
