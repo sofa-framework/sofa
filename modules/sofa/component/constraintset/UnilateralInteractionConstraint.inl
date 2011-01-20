@@ -312,7 +312,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(defaultt
             v->set(c.id+1,c.dfree_t); // dfree_t & dfree_s are added to v to compute the friction
             v->set(c.id+2,c.dfree_s);
 
-            std::cout<<"constraint ["<<i<<"] => dfree = ["<<c.dfree<<" "<<c.dfree_t<<" "<<c.dfree_s<<"]"<<std::endl;
+            //    std::cout<<"constraint ["<<i<<"] => dfree = ["<<c.dfree<<" "<<c.dfree_t<<" "<<c.dfree_s<<"]"<<std::endl;
         }
     }
 }
