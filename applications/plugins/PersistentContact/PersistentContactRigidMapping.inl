@@ -47,9 +47,8 @@ using namespace sofa::defaulttype;
 template <class TIn, class TOut>
 PersistentContactRigidMapping<TIn, TOut>::PersistentContactRigidMapping(core::State< In >* from, core::State< Out >* to)
     : Inherit(from, to)
-    , contactDuplicate(initData(&contactDuplicate, false, "contactDuplicate", "if true, this mapping is a copy of an input mapping and is used to gather contact points (PersistentFrictionContact Response)"))
-    , nameOfInputMap(initData(&nameOfInputMap, "nameOfInputMap", "if contactDuplicate==true, it provides the name of the input mapping"))
 {
+    m_inputMapping = 0;
 }
 
 
@@ -141,6 +140,42 @@ void PersistentContactRigidMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
+void PersistentContactRigidMapping<TIn, TOut>::bwdInit()
+{
+    const std::string path = this->m_nameOfInputMap.getValue();
+
+    simulation::Node* parentNode = 0;
+    parentNode = static_cast< simulation::Node* >(this->fromModel->getContext());
+
+    if (parentNode)
+    {
+        helper::vector< Inherit* > inherits;
+
+        parentNode->getTreeObjects< Inherit, helper::vector< Inherit* > >(&inherits);
+
+        helper::vector< Inherit* >::const_iterator it = inherits.begin();
+        helper::vector< Inherit* >::const_iterator itEnd = inherits.end();
+
+        while (it != itEnd)
+        {
+            if ((*it)->getName() == path)
+            {
+                m_inputMapping = *it;
+                break;
+            }
+
+            ++it;
+        }
+    }
+
+    if (!m_inputMapping)
+        serr << "WARNING : can not found the input mapping" << sendl;
+    else
+        sout << "Input mapping named " << m_inputMapping->getName() << " is found" << sendl;
+}
+
+
+template <class TIn, class TOut>
 void PersistentContactRigidMapping<TIn, TOut>::reset()
 {
     setDefaultValues();
@@ -153,22 +188,6 @@ void PersistentContactRigidMapping<TIn, TOut>::setDefaultValues()
     m_previousPosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     m_previousDx.resize(m_previousFreePosition.size());
-}
-
-
-template <class TIn, class TOut>
-void PersistentContactRigidMapping<TIn, TOut>::bwdInit()
-{
-    if (contactDuplicate.getValue())
-    {
-        const std::string path = nameOfInputMap.getValue();
-        this->fromModel->getContext()->get(m_inputMapping, sofa::core::objectmodel::BaseContext::SearchRoot);
-
-        if (!m_inputMapping)
-            serr << "WARNING : can not found the input mapping" << sendl;
-        else
-            sout << "Input mapping named " << m_inputMapping->getName() << " is found" << sendl;
-    }
 }
 
 
@@ -191,9 +210,9 @@ void PersistentContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
 
     if (this->f_printLog.getValue())
     {
-        std::cout<< "===== end of the time ste =========\n stored Free Pos : "<<m_previousFreePosition<<std::endl;
-        std::cout<< " stored DX : " << m_previousDx << std::endl;
-        std::cout<< " ============================ " << std::endl;
+        std::cout << "===== end of the time ste =========\n stored Free Pos : " << m_previousFreePosition << std::endl;
+        std::cout << " stored DX : " << m_previousDx << std::endl;
+        std::cout << "============================" << std::endl;
     }
 
 //    this->applyLinearizedPosition();
