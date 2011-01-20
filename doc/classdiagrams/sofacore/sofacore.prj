@@ -1,6 +1,6 @@
 format 73
 "sofacore"
-  revision 2
+  revision 5
   modified_by 48 "allardj"
 
 
@@ -72,16 +72,28 @@ format 73
       size A5-Landscape
     end
 
-    classdiagram 135088 "sofacore-behavior1"
+    classdiagram 135216 "sofacore-behavior2"
+      draw_all_relations yes hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab yes class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow yes show_stereotype_properties default
+      class_color gold package_color lightgray 
+      size A4-Landscape
+    end
+
+    classdiagram 142000 "sofacore-behavior1"
       draw_all_relations no hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab yes class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow yes show_stereotype_properties default
       class_color gold package_color lightgray 
       size A5-Landscape
     end
 
-    classdiagram 135216 "sofacore-behavior2"
-      draw_all_relations yes hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab yes class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow yes show_stereotype_properties default
+    classdiagram 142128 "sofacore-collision"
+      draw_all_relations no hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab yes class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow yes show_stereotype_properties default
       class_color gold package_color lightgray 
-      size A4-Landscape
+      size A5-Landscape
+    end
+
+    classdiagram 142256 "sofacore-loader"
+      draw_all_relations no hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab yes class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow yes show_stereotype_properties default
+      class_color gold package_color lightgray 
+      size A5-Landscape
     end
   end
 

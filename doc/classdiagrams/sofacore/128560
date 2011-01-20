@@ -1,6 +1,6 @@
 format 73
-"collision" // core::collision
-  revision 1
+"collision" // sofa::core::collision
+  revision 3
   modified_by 48 "allardj"
   // class settings
   //class diagram settings
@@ -186,7 +186,7 @@ ${inlines}
     end
 
     class 174256 "Detection"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -213,22 +213,21 @@ ${inlines}
 	  b parent class_ref 174384 // CollisionAlgorithm
       end
 
-      classrelation 155824 // intersectionMethod (<unidirectional association>)
-	relation 155824 --->
-	  a role_name "intersectionMethod" protected
+      classrelation 155824 // ()
+	relation 155824 ---> name ""
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 155824 // intersectionMethod (<unidirectional association>)
+	    classrelation_ref 155824 // ()
 	  b parent class_ref 175408 // Intersection
       end
 
-      classrelation 155952 // storedIntersectionMethod (<unidirectional association>)
+      classrelation 155952 // <unidirectional association>
 	relation 155952 --->
-	  stereotype "std::map"
-	  a role_name "storedIntersectionMethod" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<Instance,${type}*> ${name}${value};
 "
-	    classrelation_ref 155952 // storedIntersectionMethod (<unidirectional association>)
+	    classrelation_ref 155952 // <unidirectional association>
 	  b parent class_ref 175408 // Intersection
       end
 
@@ -1271,6 +1270,24 @@ ${inlines}
 	
 	
       end
+
+      classrelation 185776 // <unidirectional association>
+	relation 185776 --->
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 185776 // <unidirectional association>
+	  b parent class_ref 175024 // DetectionOutputVector
+      end
+
+      classrelation 185904 // <directional composition>
+	relation 185904 *-->
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 185904 // <directional composition>
+	  b parent class_ref 174896 // Contact
+      end
     end
 
     class 175664 "NarrowPhaseDetection"
@@ -1448,6 +1465,24 @@ ${inlines}
 	
 	
       end
+
+      classrelation 185520 // <unidirectional association>
+	relation 185520 --->
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 185520 // <unidirectional association>
+	  b parent class_ref 175408 // Intersection
+      end
+
+      classrelation 185648 // <unidirectional association>
+	relation 185648 --->
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 185648 // <unidirectional association>
+	  b parent class_ref 175024 // DetectionOutputVector
+      end
     end
 
     class 176176 "DetectionOutput"
@@ -1462,7 +1497,7 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "*
+      comment "
  *  \\brief Generic description of a contact point, used for most collision models except special cases such as GPU-based collisions.
  *
  *  Each contact point is described by :
@@ -2443,98 +2478,95 @@ ${inlines}
 	  b parent class_ref 128304 // BaseObject
       end
 
-      classrelation 159152 // intersectionMethods (<unidirectional association>)
+      classrelation 159152 // <unidirectional association>
 	relation 159152 --->
-	  stereotype "sofa::helper::vector"
-	  a role_name "intersectionMethods" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};
 "
-	    classrelation_ref 159152 // intersectionMethods (<unidirectional association>)
+	    classrelation_ref 159152 // <unidirectional association>
 	  b parent class_ref 175408 // Intersection
       end
 
-      classrelation 159280 // broadPhaseDetections (<unidirectional association>)
+      classrelation 159280 // <unidirectional association>
 	relation 159280 --->
-	  stereotype "sofa::helper::vector"
-	  a role_name "broadPhaseDetections" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};
 "
-	    classrelation_ref 159280 // broadPhaseDetections (<unidirectional association>)
+	    classrelation_ref 159280 // <unidirectional association>
 	  b parent class_ref 174128 // BroadPhaseDetection
       end
 
-      classrelation 159408 // narrowPhaseDetections (<unidirectional association>)
+      classrelation 159408 // <unidirectional association>
 	relation 159408 --->
 	  stereotype "sofa::helper::vector"
-	  a role_name "narrowPhaseDetections" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};
 "
-	    classrelation_ref 159408 // narrowPhaseDetections (<unidirectional association>)
+	    classrelation_ref 159408 // <unidirectional association>
 	  b parent class_ref 175664 // NarrowPhaseDetection
       end
 
-      classrelation 159536 // contactManagers (<unidirectional association>)
+      classrelation 159536 // <unidirectional association>
 	relation 159536 --->
 	  stereotype "sofa::helper::vector"
-	  a role_name "contactManagers" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};
 "
-	    classrelation_ref 159536 // contactManagers (<unidirectional association>)
+	    classrelation_ref 159536 // <unidirectional association>
 	  b parent class_ref 175536 // ContactManager
       end
 
-      classrelation 159664 // groupManagers (<unidirectional association>)
+      classrelation 159664 // <unidirectional association>
 	relation 159664 --->
-	  stereotype "sofa::helper::vector"
-	  a role_name "groupManagers" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};
 "
-	    classrelation_ref 159664 // groupManagers (<unidirectional association>)
+	    classrelation_ref 159664 // <unidirectional association>
 	  b parent class_ref 174768 // CollisionGroupManager
       end
 
-      classrelation 159792 // intersectionMethod (<unidirectional association>)
+      classrelation 159792 // <unidirectional association>
 	relation 159792 --->
-	  a role_name "intersectionMethod" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 159792 // intersectionMethod (<unidirectional association>)
+	    classrelation_ref 159792 // <unidirectional association>
 	  b parent class_ref 175408 // Intersection
       end
 
-      classrelation 159920 // broadPhaseDetection (<unidirectional association>)
+      classrelation 159920 // <unidirectional association>
 	relation 159920 --->
-	  a role_name "broadPhaseDetection" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 159920 // broadPhaseDetection (<unidirectional association>)
+	    classrelation_ref 159920 // <unidirectional association>
 	  b parent class_ref 174128 // BroadPhaseDetection
       end
 
-      classrelation 160048 // narrowPhaseDetection (<unidirectional association>)
+      classrelation 160048 // <unidirectional association>
 	relation 160048 --->
-	  a role_name "narrowPhaseDetection" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 160048 // narrowPhaseDetection (<unidirectional association>)
+	    classrelation_ref 160048 // <unidirectional association>
 	  b parent class_ref 175664 // NarrowPhaseDetection
       end
 
-      classrelation 160176 // contactManager (<unidirectional association>)
+      classrelation 160176 // <unidirectional association>
 	relation 160176 --->
-	  a role_name "contactManager" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 160176 // contactManager (<unidirectional association>)
+	    classrelation_ref 160176 // <unidirectional association>
 	  b parent class_ref 175536 // ContactManager
       end
 
-      classrelation 160304 // groupManager (<unidirectional association>)
+      classrelation 160304 // <unidirectional association>
 	relation 160304 --->
-	  a role_name "groupManager" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 160304 // groupManager (<unidirectional association>)
+	    classrelation_ref 160304 // <unidirectional association>
 	  b parent class_ref 174768 // CollisionGroupManager
       end
 

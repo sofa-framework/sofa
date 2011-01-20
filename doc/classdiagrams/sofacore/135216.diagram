@@ -181,13 +181,6 @@ relationcanvas 131504 relation_ref 163632 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 139696 relation_ref 161456 // <directional composition>
-  from ref 130864 z 3012 stereotype "<<:helper::system::SofaOStream>>" xyz 541 110 3000 to point 634 103
-  line 139824 z 3012 to point 634 123
-  line 139952 z 3012 to ref 130864
-  role_a_pos 613 104 3000 no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 140336 relation_ref 141872 // <generalisation>
   from ref 140208 z 2017 to ref 129328
   no_role_a no_role_b
@@ -208,8 +201,8 @@ relationcanvas 141616 relation_ref 145840 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 141872 relation_ref 146864 // <realization>
-  from ref 141744 z 3006 label "<DataTypes->DataTypes>" xyz 248 306 3006 stereotype "<<bind>>" xyz 297 322 3006 to ref 141488
+relationcanvas 141872 relation_ref 146864 // <generalisation>
+  from ref 141744 z 3006 to ref 141488
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -233,8 +226,8 @@ relationcanvas 142640 relation_ref 138544 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 142768 relation_ref 147760 // <realization>
-  from ref 141232 z 2023 label "<DataTypes->TDataTypes>" xyz 157 218 2023 stereotype "<<bind>>" xyz 211 234 2023 to ref 142512
+relationcanvas 142768 relation_ref 147760 // <generalisation>
+  from ref 141232 z 2023 to ref 142512
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

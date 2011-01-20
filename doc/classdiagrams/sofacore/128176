@@ -1,6 +1,6 @@
 format 73
 "objectmodel" // sofa::core::objectmodel
-  revision 2
+  revision 3
   modified_by 48 "allardj"
   // class settings
   //class diagram settings
@@ -46,7 +46,7 @@ format 73
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
     class 128304 "BaseObject"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -992,7 +992,7 @@ ${inlines}
     end
 
     class 141104 "BaseContext"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2551,7 +2551,7 @@ ${inlines}
     end
 
     class 141232 "BaseObjectDescription"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2951,7 +2951,7 @@ ${inline}${type} * ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatil
     end
 
     class 141360 "BaseClass"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -3950,7 +3950,7 @@ ${inlines}
     end
 
     class 179376 "Base"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6277,7 +6277,7 @@ ${inlines}
     end
 
     class 182064 "Event"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -8500,7 +8500,7 @@ ${inlines}
     end
 
     class 183088 "Context"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
