@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Bouml (http://bouml.free.fr/) -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="577" height="466" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g>
+	<rect fill="#f6f6f6" stroke="black" stroke-width="1" stroke-opacity="1" x="5" y="8" width="221" height="29" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="226" y="14" width="5" height="22" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" text-anchor="middle" x="116" y="30">sofa</text>
+	<rect fill="#f6f6f6" stroke="black" stroke-width="1" stroke-opacity="1" x="5" y="37" width="554" height="411" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="559" y="43" width="5" height="410" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="11" y="448" width="553" height="5" />
+</g>
+<g>
+	<rect fill="#ededed" stroke="black" stroke-width="1" stroke-opacity="1" x="38" y="48" width="201" height="29" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="239" y="54" width="5" height="22" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" text-anchor="middle" x="139" y="70">core</text>
+	<rect fill="#ededed" stroke="black" stroke-width="1" stroke-opacity="1" x="38" y="77" width="506" height="358" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="544" y="83" width="5" height="357" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="44" y="435" width="505" height="5" />
+</g>
+<g>
+	<rect fill="#dcdcdc" stroke="black" stroke-width="1" stroke-opacity="1" x="77" y="86" width="115" height="29" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="192" y="92" width="5" height="22" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" text-anchor="middle" x="135" y="108">objectmodel</text>
+	<rect fill="#dcdcdc" stroke="black" stroke-width="1" stroke-opacity="1" x="77" y="115" width="290" height="87" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="367" y="121" width="5" height="86" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="83" y="202" width="289" height="5" />
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="222" y="136" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="106" y="184" width="121" height="5" />
+	<rect fill="#ffd700" stroke="black" stroke-width="1" stroke-opacity="1" x="100" y="130" width="122" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" font-style="italic" text-anchor="middle" x="161" y="148">BaseObject</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="341" y="136" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="287" y="184" width="59" height="5" />
+	<rect fill="#ffeb60" stroke="black" stroke-width="1" stroke-opacity="1" x="281" y="130" width="60" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" font-style="italic" text-anchor="middle" x="311" y="148">Base</text>
+</g>
+<g>
+	<line stroke="black" stroke-opacity="1" x1="228" y1="160" x2="274" y2="160" />
+	<line stroke="black" stroke-opacity="1" x1="280" y1="160" x2="274" y2="154" />
+	<line stroke="black" stroke-opacity="1" x1="280" y1="160" x2="274" y2="166" />
+	<line stroke="black" stroke-opacity="1" x1="274" y1="154" x2="274" y2="166" />
+</g>
+<g>
+	<rect fill="#dcdcdc" stroke="black" stroke-width="1" stroke-opacity="1" x="77" y="216" width="180" height="29" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="257" y="222" width="5" height="22" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" text-anchor="middle" x="167" y="238">loader</text>
+	<rect fill="#dcdcdc" stroke="black" stroke-width="1" stroke-opacity="1" x="77" y="245" width="452" height="175" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="529" y="251" width="5" height="174" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="83" y="420" width="451" height="5" />
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="229" y="356" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="99" y="404" width="135" height="5" />
+	<rect fill="#c05800" stroke="black" stroke-width="1" stroke-opacity="1" x="93" y="350" width="136" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" font-style="italic" text-anchor="middle" x="161" y="368">ImageLoader</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="511" y="356" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="429" y="404" width="87" height="5" />
+	<rect fill="#ffa858" stroke="black" stroke-width="1" stroke-opacity="1" x="423" y="350" width="88" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="467" y="368">Material</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="222" y="271" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="104" y="319" width="123" height="5" />
+	<rect fill="#ff8000" stroke="black" stroke-width="1" stroke-opacity="1" x="98" y="265" width="124" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" font-style="italic" text-anchor="middle" x="160" y="283">BaseLoader</text>
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="511" y="272" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="359" y="320" width="157" height="5" />
+	<rect fill="#ffa858" stroke="black" stroke-width="1" stroke-opacity="1" x="353" y="266" width="158" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="432" y="284">PrimitiveGroup</text>
+</g>
+<g>
+	<line stroke="black" stroke-opacity="1" x1="163" y1="264" x2="163" y2="196" />
+	<line stroke="black" stroke-opacity="1" x1="163" y1="190" x2="157" y2="196" />
+	<line stroke="black" stroke-opacity="1" x1="163" y1="190" x2="169" y2="196" />
+	<line stroke="black" stroke-opacity="1" x1="157" y1="196" x2="169" y2="196" />
+</g>
+<g>
+	<line stroke="black" stroke-opacity="1" x1="163" y1="349" x2="163" y2="331" />
+	<line stroke="black" stroke-opacity="1" x1="163" y1="325" x2="157" y2="331" />
+	<line stroke="black" stroke-opacity="1" x1="163" y1="325" x2="169" y2="331" />
+	<line stroke="black" stroke-opacity="1" x1="157" y1="331" x2="169" y2="331" />
+</g>
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="383" y="355" width="5" height="53" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="261" y="403" width="127" height="5" />
+	<rect fill="#c05800" stroke="black" stroke-width="1" stroke-opacity="1" x="255" y="349" width="128" height="54" />
+	<text font-family="Helvetica" font-size="15" fill="#000000" xml:space="preserve" font-weight="bold" font-style="italic" text-anchor="middle" x="319" y="367">MeshLoader</text>
+</g>
+<g>
+	<line stroke="black" stroke-opacity="1" x1="266" y1="348" x2="229" y2="327" />
+	<line stroke="black" stroke-opacity="1" x1="224" y1="325" x2="226" y2="333" />
+	<line stroke="black" stroke-opacity="1" x1="224" y1="325" x2="232" y2="322" />
+	<line stroke="black" stroke-opacity="1" x1="226" y1="333" x2="232" y2="322" />
+</g>
+<g>
+	<line stroke="black" stroke-opacity="1" x1="360" y1="348" x2="388" y2="326" />
+	<polygon fill="#000000" stroke="black" stroke-opacity="1" points="360,348 361,339 369,340 368,349" />
+</g>
+<g>
+	<line stroke="black" stroke-opacity="1" x1="389" y1="379" x2="422" y2="379" />
+	<polygon fill="#000000" stroke="black" stroke-opacity="1" points="389,379 395,373 401,379 395,385" />
+</g>
+</svg>

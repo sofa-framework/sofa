@@ -1,6 +1,6 @@
 format 73
 "core" // sofa::core
-  revision 2
+  revision 3
   modified_by 48 "allardj"
   // class settings
   //class diagram settings
@@ -3791,12 +3791,11 @@ ${inlines}
  *  corners of the cube, however this data is not stored inside Cube, instead
  *  it is stored inside the CubeData class within CubeModel.
  *"
-      classrelation 129968 // <realization>
-	relation 129968 -_-|>
-	  stereotype "bind"
+      classrelation 129968 // <generalisation>
+	relation 129968 ---|>
 	  a public
 	    cpp default "${type}"
-	    classrelation_ref 129968 // <realization>
+	    classrelation_ref 129968 // <generalisation>
 	  b parent class_ref 131504 // TCollisionElementIterator
       end
 
@@ -5154,7 +5153,7 @@ ${items}
     end
 
     class 133424 "DataEngine"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}

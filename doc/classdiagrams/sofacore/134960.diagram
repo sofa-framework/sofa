@@ -2,7 +2,7 @@ format 73
 
 packagecanvas 128176 
   package_ref 128048 // core
-    xyzwh 28 34 2000 702 382
+    xyzwh 28 34 2000 703 382
 end
 packagecanvas 128304 
   package_ref 128176 // objectmodel
@@ -134,7 +134,7 @@ classcanvas 138160 class_ref 141616 // RegisterObject
 end
 packagecanvas 139056 
   package_ref 129072 // sofa
-   color verylightgray  xyzwh 5 6.5 1995 735 423
+   color verylightgray  xyzwh 5 6 1995 735 423
 end
 relationcanvas 129200 relation_ref 161968 // <generalisation>
   from ref 129072 z 3012 to ref 128432
@@ -209,8 +209,8 @@ relationcanvas 136880 relation_ref 166320 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 137776 relation_ref 131632 // <generalisation>
-  from ref 137648 z 3012 to point 709.5 346
-  line 138928 z 3012 to point 709.5 146
+  from ref 137648 z 3012 to point 709 346
+  line 138928 z 3012 to point 709 146
   line 139184 z 3012 to ref 129456
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b

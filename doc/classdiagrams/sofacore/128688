@@ -1,6 +1,6 @@
 format 73
-"loader" // core::loader
-  revision 1
+"loader" // sofa::core::loader
+  revision 3
   modified_by 48 "allardj"
   // class settings
   //class diagram settings
@@ -208,7 +208,7 @@ ${inlines}
     end
 
     class 178864 "ImageLoader"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -488,10 +488,18 @@ ${inlines}
 	
 	
       end
+
+      classrelation 186416 // <aggregation>
+	relation_ref 186160 // <aggregation>
+      end
+
+      classrelation 186928 // <composition>
+	relation_ref 186416 // <composition>
+      end
     end
 
     class 179120 "MeshLoader"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1245,6 +1253,54 @@ ${throw}{
 	
 	
       end
+
+      classrelation 186032 // <aggregation>
+	relation 186032 o---
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 186032 // <aggregation>
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 186160 // <aggregation>
+      end
+
+      classrelation 186288 // <aggregation>
+	relation 186160 o---
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 186288 // <aggregation>
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 186416 // <aggregation>
+      end
+
+      classrelation 186544 // <composition>
+	relation 186288 *---
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 186544 // <composition>
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 186672 // <composition>
+      end
+
+      classrelation 186800 // <composition>
+	relation 186416 *---
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 186800 // <composition>
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 186928 // <composition>
+      end
     end
 
     class 179248 "PrimitiveGroup"
@@ -1344,6 +1400,14 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 186160 // <aggregation>
+	relation_ref 186032 // <aggregation>
+      end
+
+      classrelation 186672 // <composition>
+	relation_ref 186288 // <composition>
       end
     end
   end

@@ -1,19 +1,26 @@
 % ---- graphiques
 \usepackage[pdftex]{graphicx}
 \usepackage{wrapfig}
+\usepackage{color}
 
 % for latex2html
 \usepackage{html}
 
 % for accents
 \usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\definecolor{darkblue}{rgb}{0,0,0.4}
+\definecolor{darkgray}{rgb}{0.2,0.2,0.2}
 
 % ---- inclusion de codes
 \usepackage{listings}
-\lstset{showstringspaces=false,frame=trBL,frameround=tttt,tabsize=4,basicstyle=\tiny,breaklines=true,breakatwhitespace=true}
+\lstset{showstringspaces=false,tabsize=4,basicstyle=\scriptsize\sffamily,breaklines=true,breakatwhitespace=true,framexleftmargin=5mm, frame=shadowbox, framesep=1pt,rulesepcolor=\color{darkgray},rulesep=.5pt,keywordstyle=\bf\color{blue},commentstyle=\color{magenta},stringstyle=\color{red},numbers=left,numberstyle=\tiny,numbersep=5pt,columns=flexible}
+
 \lstdefinestyle{bash}{language=bash}
 \lstdefinestyle{Perl}{language=Perl}
-\lstdefinestyle{C++}{language=C++}
+\lstdefinestyle{C++}{language=C++,emph={__global__,__shared__,__syncthreads,blockIdx,threadIdx,float3,float4},emphstyle=\bf\color{darkgreen}}
 \lstdefinestyle{DTD}{language=XML}
 \lstdefinestyle{XML}{language=XML,usekeywordsintag=false,markfirstintag=true}
 %begin{latexonly}
@@ -31,7 +38,7 @@
 \lstnewenvironment{code_dtd}{\lstset{style=DTD}}{}
 \lstnewenvironment{code_xml}{\lstset{style=XML}}{}
 
-\newcommand{\textcode}[1]{{\small {\tt #1}}}
+\newcommand{\textcode}[1]{{\sf #1}}
 
 
 

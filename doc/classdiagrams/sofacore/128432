@@ -1,6 +1,6 @@
 format 73
 "behavior" // sofa::core::behavior
-  revision 2
+  revision 3
   modified_by 48 "allardj"
   // class settings
   //class diagram settings
@@ -942,7 +942,7 @@ ${inlines}
     end
 
     class 149552 "BaseController"
-      visibility package 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6705,7 +6705,7 @@ ${inlines}
     end
 
     class 158512 "Mass"
-      visibility package 
+      abstract visibility package 
       nformals 1
       formal name "DataTypes" type "class" explicit_default_value ""
         explicit_extends ""
