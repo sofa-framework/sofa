@@ -132,10 +132,12 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
     this->contacts.resize(i+1);
     typename Inherited::Contact& c = this->contacts[i];
 
-    /*std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
-    std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
-    std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;*/
-
+    if (this->f_printLog.getValue())
+    {
+        std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
+        std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
+        std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;
+    }
 
 // for visu
     c.P = P;

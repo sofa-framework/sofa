@@ -58,7 +58,11 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
 {
     if (!m_init)
     {
-        std::cout << "BeginAddContactPoint : pos = " << (*this->toModel->getX()) << " before suppr the contact" << std::endl;
+        if (this->f_printLog.getValue())
+        {
+            std::cout << "BeginAddContactPoint : pos = " << (*this->toModel->getX()) << " before suppr the contact" << std::endl;
+        }
+
         m_previousPoints = this->points.getValue();
         this->clear(0);
         this->toModel->resize(0);
@@ -70,7 +74,11 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
 template <class TIn, class TOut>
 int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
-    std::cout << "addContactPointFromInputMapping  Pos Ref = " << pos <<std::endl;
+    if (this->f_printLog.getValue())
+    {
+        std::cout << "addContactPointFromInputMapping  Pos Ref = " << pos <<std::endl;
+    }
+
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
 
     Coord posContact;
@@ -95,7 +103,10 @@ int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(co
 template <class TIn, class TOut>
 int PersistentContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(const int _index)
 {
-    std::cout << "keepContactPointFromInputMapping index = " << _index <<std::endl;
+    if (this->f_printLog.getValue())
+    {
+        std::cout << "keepContactPointFromInputMapping index = " << _index <<std::endl;
+    }
 
     unsigned int inputIdx = m_inputMapping->index.getValue();
 
@@ -104,7 +115,7 @@ int PersistentContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(c
 
     if (_index > (int)m_previousPoints.size())
     {
-        std::cout << "KeepContactPointFromInputMapping Critical Error\n";
+        std::cout << "\nKeepContactPointFromInputMapping Critical Error!!!!!\n";
         return 0;
     }
 
@@ -178,11 +189,15 @@ void PersistentContactRigidMapping<TIn, TOut>::storeFreePositionAndDx()
     m_previousFreePosition = this->fromModel->read(core::ConstVecCoordId::freePosition())->getValue();
     m_previousDx = this->fromModel->read(core::ConstVecDerivId::dx())->getValue();
 
-    std::cout<< "===== end of the time ste =========\n stored Free Pos : "<<m_previousFreePosition<<std::endl;
-    std::cout<<" stored DX : "<<m_previousDx<<std::endl;
+    if (this->f_printLog.getValue())
+    {
+        std::cout<< "===== end of the time ste =========\n stored Free Pos : "<<m_previousFreePosition<<std::endl;
+        std::cout<< " stored DX : " << m_previousDx << std::endl;
+        std::cout<< " ============================ " << std::endl;
+    }
 
 //    this->applyLinearizedPosition();
-    std::cout<<" ============================ "<<std::endl;
+
 }
 
 

@@ -151,7 +151,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
             comp_wN[5] =  usedComp[3] * wn3 +  usedComp[5] * wn4 +  usedComp[6] * wn5;
 
 
-            std::cout<<" normal"<<indexCurRowConst<<" = ["<<weightedNormal<<"];  comp_wN"<<indexCurRowConst<<" = ["<<comp_wN<<"];"<<std::endl;
+//            std::cout<<" normal"<<indexCurRowConst<<" = ["<<weightedNormal<<"];  comp_wN"<<indexCurRowConst<<" = ["<<comp_wN<<"];"<<std::endl;
             // serr << " - " << weightedNormal << sendl;
             // InvM_wN = weightedNormal / (*massValue);
             // InvM_wN *= dt * dt ;
@@ -322,7 +322,7 @@ SOFA_COMPONENT_CONSTRAINTSET_API void UncoupledConstraintCorrection< defaulttype
         x[i] += dx[i];
     }
 
-    std::cout << "dx "<< dx << std::endl;
+//    std::cout << "dx "<< dx << std::endl;
 //	std::cout << "UncoupledConstraintCorrection<defaulttype::Rigid3Types>: x = " << x << " \n        xfree = " << x_free << std::endl;
 //	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
 ////////////////////////////////////////////////////////////////////
