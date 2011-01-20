@@ -24,17 +24,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: Base
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <map>
@@ -68,6 +57,74 @@ Base::Base()
 
 Base::~Base()
 {
+}
+
+/// Helper method used by initData()
+void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
+{
+    std::string ln(name);
+    if( ln.size()>0 && findField(ln) )
+    {
+        serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
+        exit( 1 );
+    }
+    m_fieldVec.push_back( std::make_pair(ln,field));
+    m_aliasData.insert(std::make_pair(ln,field));
+    res.owner = this;
+    res.data = field;
+    res.name = name;
+    res.helpMsg = help;
+    res.isDisplayed = isDisplayed;
+    res.isReadOnly = isReadOnly;
+
+    std::string nameStr(name);
+    if (nameStr.size() >= 4)
+    {
+        const std::string prefix=nameStr.substr(0,4);
+        if (prefix=="show" || prefix=="draw") res.group = "Visualization";
+    }
+}
+
+/// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
+void Base::addField(BaseData* f, const char* name)
+{
+    std::string ln(name);
+    if (ln.size() > 0 && findField(ln))
+    {
+        serr << "field name " << ln
+                << " already used in this class or in a parent class !...aborting"
+                << sendl;
+        exit(1);
+    }
+    m_fieldVec.push_back(std::make_pair(ln, f));
+    m_aliasData.insert(std::make_pair(ln, f));
+    f->setOwner(this);
+    f->setName(name);
+}
+
+/// Add an alias to a Data
+void Base::addAlias( BaseData* field, const char* alias)
+{
+    m_aliasData.insert(std::make_pair(std::string(alias),field));
+}
+
+
+/// Get the type name of this object (i.e. class and template types)
+std::string Base::getTypeName() const
+{
+    return decodeTypeName(typeid(*this));
+}
+
+/// Get the class name of this object
+std::string Base::getClassName() const
+{
+    return decodeClassName(typeid(*this));
+}
+
+/// Get the template type names (if any) used to instantiate this object
+std::string Base::getTemplateName() const
+{
+    return decodeTemplateName(typeid(*this));
 }
 
 std::string Base::getName() const

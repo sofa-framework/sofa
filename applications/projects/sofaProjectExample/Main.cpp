@@ -231,7 +231,7 @@ int main(int argc, char** argv)
     BarycentricMapping3d_to_Ext3f* barycentricMapping = new BarycentricMapping3d_to_Ext3f(mechanicalObject, cylOglModel);
     barycentricMapping->setName("Barycentric");
     //barycentricMapping->setPathInputObject("../..");
-    //barycentricMapping->setPathOutPutObject("Visual");
+    //barycentricMapping->setPathOutputObject("Visual");
 
 
 
@@ -254,7 +254,7 @@ int main(int argc, char** argv)
     typedef BarycentricMapping< Vec3dTypes, Vec3dTypes > BarycentricMechanicalMapping3d_to_3d;
     BarycentricMechanicalMapping3d_to_3d* cylSurfBarycentricMapping = new BarycentricMechanicalMapping3d_to_3d(mechanicalObject, cylSurfMechanicalObject);
     //cylSurfBarycentricMapping->setPathInputObject("../..");
-    //cylSurfBarycentricMapping->setPathOutPutObject("..");
+    //cylSurfBarycentricMapping->setPathOutputObject("..");
 
     cylVisualNode->addObject(cylOglModel);
     cylVisualNode->addObject(barycentricMapping);

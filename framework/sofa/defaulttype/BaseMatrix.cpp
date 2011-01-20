@@ -470,8 +470,8 @@ struct BaseMatrixLinearOpAM_BlockSparse
 
     void operator()(const M1* m1, M2* m2, double & fact)
     {
-        const int rowSize = m1->rowSize();
-        const int colSize = m1->colSize();
+        //const int rowSize = m1->rowSize();
+        //const int colSize = m1->colSize();
         BlockData buffer;
 
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
@@ -521,8 +521,8 @@ struct BaseMatrixLinearOpAMS_BlockSparse
 
     void operator()(const M1* m1, M1* m2, double & fact)
     {
-        const int rowSize = m1->rowSize();
-        const int colSize = m1->colSize();
+        //const int rowSize = m1->rowSize();
+        //const int colSize = m1->colSize();
         BlockData buffer;
 
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();

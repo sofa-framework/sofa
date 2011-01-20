@@ -49,10 +49,8 @@ namespace core
  *  \li \code Deriv \endcode : derivative values (velocity).
  *  \li \code VecReal \endcode : container of scalar values with the same API as sofa::helper::vector.
  *  \li \code VecCoord \endcode : container of Coord values with the same API as sofa::helper::vector.
- *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::helper::vector
- *  \li \code MatrixDeriv \endcode : vector of Jacobians
- *
- *  \todo sofa::core::behavior::State is related to sofa::core::Mapping, and not to sofa::core::behavior::MechanicalMapping. It should be moved to sofa::core ?
+ *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::helper::vector.
+ *  \li \code MatrixDeriv \endcode : vector of Jacobians (sparse constraint matrices).
  *
  */
 template<class TDataTypes>
@@ -74,7 +72,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     /// Container of Deriv values with the same API as sofa::helper::vector.
     typedef typename DataTypes::VecDeriv VecDeriv;
-    /// Vector of Jacobians
+    /// Vector of Jacobians (sparse constraint matrices).
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 
     virtual ~State() { }

@@ -342,10 +342,10 @@ public:
 typedef TVecId<V_ALL, V_READ> ConstVecId;
 
 /// Identify one vector stored in State
-/// A VecId only provides a read-write access to the underlying vector.
-/// It derives from ConstVecId so that it can be used in all methods requiring read access
+/// A VecId provides a read-write access to the underlying vector.
 typedef TVecId<V_ALL, V_WRITE> VecId;
 
+/// Typedefs for each type of state vectors
 typedef TVecId<V_COORD, V_READ> ConstVecCoordId;
 typedef TVecId<V_COORD, V_WRITE>     VecCoordId;
 typedef TVecId<V_DERIV, V_READ> ConstVecDerivId;

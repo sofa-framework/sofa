@@ -102,7 +102,7 @@ public:
 
     /// Set the path to the objects mapped in the scene graph
     void setPathInputObject(const std::string &o) {m_inputObject.setValue(o);}
-    void setPathOutPutObject(const std::string &o) {m_outputObject.setValue(o);}
+    void setPathOutputObject(const std::string &o) {m_outputObject.setValue(o);}
 
     /// Return the pointer to the input model.
     State< In >* getFromModel();
