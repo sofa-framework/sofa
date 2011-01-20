@@ -24,7 +24,8 @@ LIBS += $$SOFA_EXT_LIBS
 
 INCLUDEPATH += $$SOFA_DIR/extlibs
 
-SOURCES = PersistentFrictionContact.cpp \
+SOURCES = PersistentContactMapping.cpp \
+		  PersistentFrictionContact.cpp \
 		  PersistentUnilateralInteractionConstraint.cpp \
 		  PersistentContactBarycentricMapping.cpp \
 		  PersistentContactRigidMapping.cpp \

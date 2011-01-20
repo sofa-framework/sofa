@@ -22,13 +22,8 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H
-#define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H
+#include "PersistentContactMapping.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <iostream>
 
 namespace sofa
 {
@@ -39,49 +34,16 @@ namespace component
 namespace mapping
 {
 
-/**
- * @brief PersistentContactMapping API
- */
-class PersistentContactMapping : public virtual sofa::core::objectmodel::BaseObject
+
+PersistentContactMapping::PersistentContactMapping()
+    : m_nameOfInputMap(initData(&m_nameOfInputMap, "nameOfInputMap", "if contactDuplicate == true, it provides the name of the input mapping"))
 {
-public:
 
-    /// Default Constructor.
-    PersistentContactMapping();
+}
 
-    /// Reset the Mapping.
-    virtual void beginAddContactPoint()
-    {
-        std::cout << "BeginAddContactPoint is not implemented for this mapping" << std::endl;
-    }
-
-    /// Add point in the duplicated mapping without using barycentric mappers.
-    virtual int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& , std::vector< std::pair< int, double> >& )
-    {
-        std::cout << "AddContactPointFromInputMapping is not implemented for this mapping" << std::endl;
-        return 0;
-    }
-
-    /// Maintains a remaining contact point in the duplicated mapping without using barycentric mappers.
-    virtual int keepContactPointFromInputMapping(const int)
-    {
-        std::cout << "KeepContactPointFromInputMapping is not implemented for this mapping" << std::endl;
-        return 0;
-    }
-
-    /// Apply linearized position.
-    virtual void applyLinearizedPosition()
-    {
-
-    }
-
-    Data< std::string > m_nameOfInputMap;
-};
 
 } // namespace mapping
 
 } // namespace component
 
 } // namespace sofa
-
-#endif // SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H

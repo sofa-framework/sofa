@@ -255,8 +255,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionO
     filterDuplicatedDetectionOutputs(outputs, filteredOutputs);
 
     keepStickyContacts(filteredOutputs);
-
-//    this->FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(o);
 }
 
 
@@ -317,7 +315,6 @@ bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
     sofa::core::BaseMapping* baseMap = NULL;
     child->get(baseMap);
 
-    Node* childNode = NULL;
     Node* parentNode = NULL;
 
     if (baseMap)
@@ -345,21 +342,28 @@ bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
         return false;
     }
 
-    childNode = parentNode->getChild("PersistentFrictionResponse");
+    typedef helper::vector< component::mapping::PersistentContactMapping* > PersistentContactMappings;
 
-    if (childNode != NULL)
+    PersistentContactMappings persistentMappings;
+
+    parentNode->getTreeObjects< component::mapping::PersistentContactMapping, PersistentContactMappings >(&persistentMappings);
+
+    PersistentContactMappings::const_iterator it = persistentMappings.begin();
+    PersistentContactMappings::const_iterator itEnd = persistentMappings.end();
+
+    while (it != itEnd)
     {
-        if (this->f_printLog.getValue())
+        if ((*it)->m_nameOfInputMap.getValue() == baseMap->getName())
         {
-            std::cout << " THE CHILD ALREADY EXISTS !! => only resize MObject" << std::endl;
+            map = *it;
+            constraintModel = dynamic_cast< container::MechanicalObject<T >* > ((*it)->getContext()->getMechanicalState());
+            return (constraintModel && map);
         }
 
-        constraintModel = dynamic_cast< container::MechanicalObject<T >* > (childNode->getMechanicalState());
-        childNode->get(map);
-        return (constraintModel && map);
+        ++it;
     }
-    else
-        return false;
+
+    return false;
 }
 
 

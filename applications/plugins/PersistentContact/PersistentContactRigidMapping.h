@@ -81,9 +81,6 @@ public:
 
     virtual ~PersistentContactRigidMapping() {}
 
-    Data< bool > contactDuplicate;
-    Data< std::string > nameOfInputMap;
-
     void beginAddContactPoint();
 
     int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
