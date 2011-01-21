@@ -456,23 +456,21 @@ By these informations, we can decide to stock or not for the data on all mesh, c
 \paragraph{FENodes }
 \paragraph{QuadratureInterpolation }
 \paragraph{StrainTensor }
-A interpolatedstrain is a symatric matrix [RdDIM]x[RdDIM], there are RdDIM*(RdDIM+1)/2 Real values.
-A interpolatedstress is a symatric matrix [RdDIM]x[RdDIM], there are RdDIM*(RdDIM+1)/2 Real values.
-ElementInterpolatedStrain is a Strain[RdDIM][nbNodes][nbQP], there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
+A interpolatedstrain is a symatric matrix [RdDIM]x[RdDIM], \\ there are RdDIM*(RdDIM+1)/2 Real values.
+A interpolatedstress is a symatric matrix [RdDIM]x[RdDIM], \\ there are RdDIM*(RdDIM+1)/2 Real values.
+ElementInterpolatedStrain is a Strain[RdDIM][nbNodes][nbQP], \\ there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
 \paragraph{Material }
-ElementInterpolatedStress is a Stress[RdDIM][nbNodes][nbQP], there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
+ElementInterpolatedStress is a Stress[RdDIM][nbNodes][nbQP], \\ there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
 
-For one Element there are also 2*ElementInterpolatedStrain (left and right in weak formulation), and ElementInterpolatedStress. 
-
-Therefor 3/2*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] Real values for one elements. Assumed a Real is a double (8bytes), for one elements, its needed 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] bytes.
+For one Element there are also 2*ElementInterpolatedStrain (left and right in weak formulation), and ElementInterpolatedStress. Therefor \\ 3/2*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] \\ Real values for one elements. Assumed a Real is a double (8bytes), for one elements, its needed \\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] bytes.
 \paragraph{Element Memory comsum }
 \begin{itemize}
-\item 4NodesFETetraType  , 1pQuadratureTetraType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [4]*[1]*[3]*[4]=  1728 bytes ==  2kB
-\item 4NodesFETetraType  , 4pQuadratureTetraType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [4]*[4]*[3]*[4]=  6912 bytes ==  7kB
-\item 10NodesFETetraType  , 4pQuadratureTetraType :12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]*[10]*[4]*[3]*[4]= 17280 bytes == 17kB
-\item 8NodesFEHexaType   ,  4pQuadratureHexaType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [8]*[4]*[3]*[4]= 13824 bytes == 14kB
-\item 8NodesFEHexaType   ,  8pQuadratureHexaType : 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]* [8]*[8]*[3]*[4]= 27648 bytes == 28kB
-\item 8NodesFEHexaType   ,  27pQuadratureHexaType :12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]=12*[3]*[8]*[27]*[3]*[4]= 93312 bytes == 93kB
+\item 4NodesFETetraType  , 1pQuadratureTetraType : \\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] \\ = 12*[3]* [4]*[1]*[3]*[4]=  1728 bytes ==  2kB
+\item 4NodesFETetraType  , 4pQuadratureTetraType : \\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] \\ = 12*[3]* [4]*[4]*[3]*[4]=  6912 bytes ==  7kB
+\item 10NodesFETetraType  , 4pQuadratureTetraType :\\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] \\ = 12*[3]*[10]*[4]*[3]*[4]= 17280 bytes == 17kB
+\item 8NodesFEHexaType   ,  4pQuadratureHexaType :\\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] \\ = 12*[3]* [8]*[4]*[3]*[4]= 13824 bytes == 14kB
+\item 8NodesFEHexaType   ,  8pQuadratureHexaType :\\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] \\ = 12*[3]* [8]*[8]*[3]*[4]= 27648 bytes == 28kB
+\item 8NodesFEHexaType   ,  27pQuadratureHexaType :\\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]\\  = 12*[3]*[8]*[27]*[3]*[4]= 93312 bytes == 93kB
 \end{itemize}
 
 \subsection{Time integration in SOFA - OdeSolver: }
@@ -551,6 +549,183 @@ a_{k+\frac{1}{2}}  = \frac{2}{dt} (  \frac{2}{dt} . x_{k+\frac{1}{2}}   -     \f
 \end{array}\right.
 \]
 See the midpoint method~\cite{MidPoint}. The continium equilibrum variational form then can be written term of x and v at instance k+1/2,  as proposed Gonzalez in exact conserving energy paper. The difficulties is in term PK1 at instance k+1/2 which is resolved by $PK1_{algo}$  of Gonzalez ~\cite{Gonzalez1999}. It rest the term $f_{k+1/2}$ (body force)  and $g_{k+1/2}$ (boundary condition) that i don't know how to explain it in the scheme. It can be seen in thesis of Patrice Hauret~\cite{PHThesis} or Y.Ayyad~\cite{YAyyad} for example.
+
+\subsection{Linearization: }
+The nonlinear elastodynamic base on two term : material nonlinearity and geometrical nonlinearity (see  ~\cite{FEMBook} p.338). A simple example of linearization for the geometry part can be explained in ~\cite{NonlinearGeo}. For linearization of meterial part, at first implementation, we assume the strain and stress are all symetric, and by using the continium tangent moduli at ~\cite{NonlinearGeo}p.337, constitutive law (stress and stress derivative) can be expressed by a fourth order tensor noted \textbf{C}$^{SE}$. Let's resume all with relation in Sofa. A Green-Lagrange strain can be expressed by  
+\[
+\textbf{E} = \textbf{B}^T_L U + \frac{1}{2} U^T \textbf{B}_{NL}  U             
+\]
+Where $\textbf{B}^T_L$ and $\textbf{B}_{NL}$ denote respectively linear and nonlinear part of strain, contains only interpolated derivative values, $U$ denote the nodal displacement. We can rewrite this relation by : 
+\[
+\left\{ 
+\begin{array}{rcl}
+\textbf{E}                      &=& [ \textbf{B}^T_L + \frac{1}{2} U^T \textbf{B}_{NL} ] U  \\  
+\frac{d\textbf{E}}{dU}(\bullet) &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (\bullet)     \\
+            &\text{we take} &                                                               \\
+      \textbf{B}   &=&  \textbf{B}^T_L +  U^T \textbf{B}_{NL}                               \\ 
+ \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
+\end{array}\right.
+\]
+Remark that $\textbf{B}$ and $\bar{\textbf{B}}$ are linearly dependent on nodal displacement $U$. This remark allow to evaluate their derivative in relation to $U$. By the second line, we can express the strain derivative 
+\[
+\left\{ 
+\begin{array}{rcl}
+\delta \textbf{E}  &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (\delta U)                 \\  
+d \textbf{E}       &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (dU)                       \\
+            &\text{or} &                                                                    \\
+\delta \textbf{E}  &=& \textbf{B} \delta U                                                  \\  
+d \textbf{E}       &=& \textbf{B} dU                        
+\end{array}\right.
+\]
+Where $\delta \textbf{E}$ is a variational of \textbf{E} relie to a disturbation of displacement $\delta U$, and the $d \textbf{E}$ is a variational of \textbf{E} relie to a variational of $d U$. In SOFA so : 
+\begin{itemize}
+ \item AddForce :
+      \[
+      \left\| 
+      \begin{array}{ll}
+      f = \int_\Omega  \delta \textbf{E} : \textbf{S}_{PK2}  d\Omega  &= \Sigma_{T} \int_{T}  \delta \textbf{E} : \textbf{S}_{PK2}  dV    \\   
+      \int_{T}     \delta \textbf{E} : \textbf{S}_{PK2}  dV             &= \int_{T}  [\frac{d\textbf{E}}{dU}\delta U ]^T . \textbf{C}^{SE} \textbf{E}  dV \\
+								       &= \int_{T}  \delta U^T \textbf{B}^T \textbf{C}^{SE}\bar{\textbf{B}} U
+      \end{array}\right.
+      \]
+ \item AddDForce :
+      \[
+      \left\| 
+      \begin{array}{rcl}
+      df  &=& \frac{d}{dU}\int_\Omega  \delta \textbf{E} : \textbf{S}_{PK2}  d\Omega     \\    
+	  &=& \int_\Omega \frac{d}{dU}( \delta \textbf{E} ): \textbf{S}_{PK2}  d\Omega    + \int_\Omega \delta \textbf{E} : \frac{d}{dU}( \textbf{S}_{PK2})  d\Omega   \\ 
+	  &=& \int_\Omega \delta U \frac{d \textbf{B}^T }{dU}: \textbf{S}_{PK2}  d\Omega    + 
+                            \int_\Omega  \delta U^T \textbf{B}^T : \frac{d\textbf{S}_{PK2}}{d\textbf{E}} \frac{d\textbf{E}}{dU}(dU)  d\Omega   \\   
+	  &=& \int_\Omega \delta U^T \textbf{B}^T_{NL}.\textbf{C}^{SE} \bar{\textbf{B}} dU     + \delta U^T \textbf{B}^T \dot{\textbf{C}}^{SE} \textbf{B} dU
+      \end{array}\right.
+      \]
+
+\end{itemize}
+where $\dot{\textbf{C}}^{SE}$ is the derivative of $\textbf{C}^{SE}$ in relation to $\textbf{E}$. In the general case, $\textbf{C}^{SE}$ may depend of $U$.
+\paragraph{Voigt notation :} By first implementation, assumed that we work only with symetrical strain and symetrical stress, it allow to work with the Voigt notation of strain and stress. In dimension $R^3$, a strain or stress value of one point can be stoked on an array of six real values. Thus, we define in dimension $R^d$, for one element:
+\[
+R^d
+\left\{ 
+\begin{array}{l}
+ \text{ VOIGT\_DIM }   = \frac{d(d+1)}{2} \\
+ \text{ nbDOF      }   = d*nbOfNodes  
+\end{array}\right.
+\]
+A very general formular of addForce or addDforce above is to construct a matrix K in the format : 
+\[
+ \textbf{ K }   = \textbf{M}_l  . \textbf{C} . \textbf{M}_r
+\]
+where $\textbf{M}_l$, $\textbf{M}_r$ denote the interpoler matrix, with the format transposed one to other, situated respectively on the left and right hand of matrix equation. These matrix called interpoler matrix because $\textbf{E}=\textbf{M}_r.U$. The format of these matrix will be :
+\[
+\textbf{M}_l 
+\left\{ 
+\begin{array}{l}
+\text{Lines:}       nbDOF        \\
+\text{Cols :}       VOIGT\_DIM
+\end{array}\right.
+\textbf{M}_r 
+\left\{ 
+\begin{array}{l}
+\text{Lines:}       VOIGT\_DIM  \\
+\text{Cols :}       nbDOF
+\end{array}\right.
+\textbf{C} 
+\left\{ 
+\begin{array}{l}
+\text{Lines:}       VOIGT\_DIM \\
+\text{Cols :}       VOIGT\_DIM
+\end{array}\right.
+\]
+An example for the simplest case is on the linear tetrahedron ($R^d=3, nbNode=4$) :
+\[
+\left[ 
+\begin{array}{ccc}
+  &  &     \\
+  &  &     \\
+  &  &     \\
+  &  &     
+\end{array}
+\right]_{12\times6}
+\left[ 
+\begin{array}{ccc}
+  &  &     \\
+  &  &     \\
+  &  &     
+\end{array}
+\right]_{6\times6}
+\left[ 
+\begin{array}{cccc}
+  &  &  &   \\
+  &  &  &   \\
+  &  &  &   
+\end{array}
+\right]_{6\times12}
+\left[ 
+\begin{array}{c}
+U_0  \\
+     \\
+     \\
+U_{11}
+\end{array}
+\right]_{12\times1}
+\]
+\paragraph{Constitutive law - stress computation :} By first implementation, we implement the linear material law, the isotropic Hookean one. On the dimension 3, this constitutive can be represented by a $6\times6$ matrix :  
+\[
+\left[ 
+\begin{array}{c}
+\sigma_{xx}      \\
+\sigma_{yy}      \\
+\sigma_{zz}      \\
+\sigma_{xy}      \\
+\sigma_{yz}      \\
+\sigma_{zx}   
+\end{array}
+\right]
+           =\frac{E}{(1+\nu)(1-\nu)}
+\left[ 
+\begin{array}{cccccc}
+1-\nu  &\nu   &\nu    & 0 & 0 & 0   \\
+ \nu   &1-\nu &\nu    & 0 & 0 & 0   \\
+ \nu   & \nu  & 1-\nu & 0 & 0 & 0   \\
+ 0 & 0 & 0 &               \frac{1}{2}-\nu   &         0      & 0  \\
+ 0 & 0 & 0 &                       0         &\frac{1}{2}-\nu &  0 \\
+ 0 & 0 & 0 &                       0         & 0              &\frac{1}{2}-\nu    
+\end{array}
+\right]
+.
+\left[ 
+\begin{array}{c}
+\varepsilon_{xx}      \\
+\varepsilon_{yy}      \\
+\varepsilon_{zz}      \\
+2\varepsilon_{xy}     \\
+2\varepsilon_{yz}      \\
+2\varepsilon_{zx}   
+\end{array}
+\right]
+\]
+Where $E$ is the Young modulus and $\nu$ is the Poisson's ratio.
+\paragraph{Strain Interpoler Matrix :} By these above construction matrix, we need to fill the matrix $\textbf{B}$, $\bar{\textbf{B}}$, and $\textbf{B}_{NL}$ for implementation of two methods :
+\begin{itemize}
+ \item addForce : construction of the secant stiffness matrix : $f+= \textbf{K}_s.U $ with
+      \[     \textbf{K}_s =  \textbf{B}^T \textbf{C}^{SE}\bar{\textbf{B}}   \]
+ \item addDForce: construction of the tangent stiffness matrix : $df+= \textbf{K}_t.dU $ with
+      \[
+      \left\{ 
+      \begin{array}{ccccc}
+	\textbf{K}_t   &=& \textbf{K}^{geo}_t &+& \textbf{K}^{mat}_t \\
+                       &=& \textbf{B}^T_{NL}.\textbf{C}^{SE} \bar{\textbf{B}} & + &\textbf{B}^T \dot{\textbf{C}}^{SE} \textbf{B} 
+      \end{array}\right.
+      \]
+\end{itemize}
+On the linear case, all these matrix are constant and independent to time ($X(t)$), but this not handle in the nonlinear case : 
+\[
+\left\| 
+\begin{array}{rcl}
+      \textbf{B}   &=&  \textbf{B}^T_L +  U^T \textbf{B}_{NL}                               \\ 
+ \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
+\end{array}\right.
+\]
 
 \subsection{Auto-test : }
 These function on FEM are mostly linear transformation which is invertible. So we can verify all the computation, or pre-computation by the its inverted transformation. 
