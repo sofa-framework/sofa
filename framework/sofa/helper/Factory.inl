@@ -89,6 +89,25 @@ TObject* Factory<TKey, TObject, TArgument>::createAnyObject(Argument arg)
 
 
 template <typename TKey, class TObject, typename TArgument>
+template< typename OutIterator >
+void Factory<TKey, TObject, TArgument>::uniqueKeys(OutIterator out)
+{
+
+    typename std::multimap<Key, Creator*>::iterator it;
+
+    const Key* p_key = NULL;
+    for ( it = registry.begin(); it != registry.end(); ++it)
+    {
+
+        if( p_key && *p_key == it->first ) continue;
+
+        p_key = &(it->first);
+        *out = *p_key;
+        out++;
+    }
+}
+
+template <typename TKey, class TObject, typename TArgument>
 bool Factory<TKey, TObject, TArgument>::hasKey(Key key)
 {
     return (this->registry.find(key) != this->registry.end());

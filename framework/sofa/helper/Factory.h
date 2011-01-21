@@ -84,6 +84,9 @@ public:
     Object* createObject(Key key, Argument arg);
     Object* createAnyObject(Argument arg);
 
+    template< typename OutIterator >
+    void uniqueKeys(OutIterator out);
+
     bool hasKey(Key key);
 
     static Factory<Key, Object, Argument>* getInstance();
