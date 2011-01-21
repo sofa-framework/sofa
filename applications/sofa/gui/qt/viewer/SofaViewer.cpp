@@ -22,6 +22,7 @@ SofaViewer::SofaViewer()
     , backgroundImage("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
 {
+
 }
 
 

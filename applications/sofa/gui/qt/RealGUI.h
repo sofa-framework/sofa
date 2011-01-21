@@ -36,7 +36,7 @@ under the terms of the GNU General Public License as published by the Free  *
 #include "SofaGUIQt.h"
 #include <sofa/gui/SofaGUI.h>
 #include <time.h>
-
+#include <sofa/gui/qt/viewer/ViewerFactory.h>
 #include <sofa/gui/qt/QSofaListView.h>
 #include <sofa/gui/qt/GraphListenerQListView.h>
 #include <sofa/gui/qt/FileManagement.h>
@@ -209,9 +209,6 @@ public slots:
     void Update();
     virtual void fileSaveAs(sofa::simulation::Node *node);
     void LockAnimation(bool);
-    virtual void viewerOpenGL();
-    virtual void viewerQGLViewer();
-    virtual void viewerOGRE();
 
     void fileRecentlyOpened(int id);
     void playpauseGUI(bool value);
@@ -242,6 +239,8 @@ public slots:
     void setExportGnuplot(bool);
     void setExportVisitor(bool);
     void currentTabChanged(QWidget*);
+protected slots:
+    void changeViewer();
 
 signals:
     void reload();
@@ -250,7 +249,7 @@ signals:
     void quit();
 
 protected:
-    void createViewers();
+    void createViewers(const char* viewerName);
 
     void initViewer();
     void eventNewStep();
@@ -270,6 +269,7 @@ protected:
     bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
 
+    std::map< QAction* , helper::SofaViewerFactory::Key > viewerMap;
 
     QWidget* currentTab;
     QWidget *tabInstrument;
@@ -313,8 +313,7 @@ private:
 
     void addViewer();
     void setGUI(void);
-    void changeViewer(const char* name);
-    void RegisterViewer( const char* name );
+
 
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);

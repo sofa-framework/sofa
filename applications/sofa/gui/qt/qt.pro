@@ -89,6 +89,8 @@ HEADERS += viewer/SofaViewer.h \
 		   QSofaStatWidget.h \
            QMenuFilesRecentlyOpened.h \
            ImageQt.h \ 
+    viewer/VisualModelPolicy.h \
+
 
 
 SOURCES += viewer/SofaViewer.cpp \
@@ -197,7 +199,8 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
                viewer/qtogre/OgreShaderParameter.h \
                viewer/qtogre/OgreShaderTextureUnit.h \
                viewer/qtogre/QOgreLightWidget.h \
-              viewer/qtogre/OgreReflectionTexture.h
+               viewer/qtogre/OgreReflectionTexture.h \
+               viewer/qtogre/OgreSofaViewer.h
         win32{
                   LIBS += -lboost_thread
         }

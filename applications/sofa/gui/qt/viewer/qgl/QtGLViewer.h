@@ -73,7 +73,7 @@ using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
 
-class QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::SofaViewer
+class QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
     typedef Vector3::value_type Real;
     Q_OBJECT
@@ -95,12 +95,6 @@ private:
 
     VisualParameters visualParameters;
 
-
-
-    //     float			_zoomSpeed;
-    //     float			_panSpeed;
-    //     Transformation	_sceneTransform;
-    //     Vector3			_previousEyePos;
     GLUquadricObj*	_arrow;
     GLUquadricObj*	_tube;
     GLUquadricObj*	_sphere;
@@ -108,9 +102,9 @@ private:
     GLuint			_numOBJmodels;
     GLuint			_materialMode;
     GLboolean		_facetNormal;
-    //     float			_zoom;
+
     int				_renderingMode;
-    //GLuint			_logoTexture;
+
     Texture			*texLogo;
 
     ctime_t			_beginTime;
@@ -118,34 +112,17 @@ private:
 
     bool _waitForRender;
 
-    /*
-              viewerOGREAction->setIconText(QApplication::translate("GUI", "OGRE", 0, QApplication::UnicodeUTF8));
-            viewerOGREAction->setText(QApplication::translate("GUI", "&OGRE", 0, QApplication::UnicodeUTF8));
-    */
+
 public:
 
-    static void create(QtGLViewer*& instance, const CreatorArgument& arg)
+    static void create(QtGLViewer*& instance, const SofaViewerArgument& arg)
     {
         instance = new QtGLViewer(arg.parent, arg.name.c_str() );
     }
 
-    virtual const char* getViewerName() const { return "QGLViewer"; }
+    static const char* viewerName()  { return "QGLViewer"; }
 
-    virtual const char* getAcceleratedViewerName() const { return "&QGLViewer"; }
-
-    /// Activate this class of viewer.
-    /// This method is called before the viewer is actually created
-    /// and can be used to register classes associated with in the the ObjectFactory.
-    static int EnableViewer();
-
-    /// Disable this class of viewer.
-    /// This method is called after the viewer is destroyed
-    /// and can be used to unregister classes associated with in the the ObjectFactory.
-    static int DisableViewer();
-
-    void RegisterVisualModels() ;
-
-    void UnregisterVisualModels() ;
+    static const char* acceleratedName()  { return "&QGLViewer"; }
 
     virtual void drawColourPicking (core::CollisionModel::ColourCode code);
 

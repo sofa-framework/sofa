@@ -86,45 +86,12 @@ using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
 using namespace sofa::simulation;
 
-//extern UserInterface*	GUI;
-//extern OBJmodel*		cubeModel;
-// Quaternion QtGLViewer::_newQuat;
-sofa::core::ObjectFactory::ClassEntry* classVisualModel;
-
-helper::Creator<SofaViewerFactory,QtGLViewer> QtGLViewer_class("qglviewer",false);
+helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 SOFA_DECL_CLASS ( QGLViewerGUI )
 
-static bool enabled = false;
+
 static bool LeftPressedForMove = false;
 static bool RightPressedForMove = false;
-
-/// Activate this class of viewer.
-/// This method is called before the viewer is actually created
-/// and can be used to register classes associated with in the the ObjectFactory.
-int QtGLViewer::EnableViewer()
-{
-    if (!enabled)
-    {
-        enabled = true;
-        // Replace generic visual models with OglModel
-        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
-                &classVisualModel);
-    }
-    return 0;
-}
-
-/// Disable this class of viewer.
-/// This method is called after the viewer is destroyed
-/// and can be used to unregister classes associated with in the the ObjectFactory.
-int QtGLViewer::DisableViewer()
-{
-    if (enabled)
-    {
-        enabled = false;
-        sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
-    }
-    return 0;
-}
 
 
 // ---------------------------------------------------------
