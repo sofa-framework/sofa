@@ -1,6 +1,8 @@
 SOFA_DIR =.
 TEMPLATE = subdirs
 
+message( "PRE-CONFIG: " $${CONFIG})
+
 include($${SOFA_DIR}/sofa.cfg) 
 
 SUBDIRS += extlibs/newmat
@@ -316,6 +318,11 @@ else {
 }
 
 message( "======================================")
+message( "|  CONFIG: " $${CONFIG})
+message( "|  DEFINES: " $${DEFINES})
+message( "======================================")
+
+
 
 unix {
   contains(DEFINES, SOFA_QT4):DOLLAR="\\$"
