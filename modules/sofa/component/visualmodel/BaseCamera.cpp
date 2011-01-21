@@ -60,6 +60,7 @@ BaseCamera::BaseCamera()
     ,p_widthViewport(initData(&p_widthViewport, (unsigned int) 800 , "widthViewport", "widthViewport"))
     ,p_heightViewport(initData(&p_heightViewport,(unsigned int) 600 , "heightViewport", "heightViewport"))
     ,p_type(initData(&p_type, (int) BaseCamera::PERSPECTIVE_TYPE, "type", "Camera Type (0 = Perspective, 1 = Orthographic)"))
+    ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
 {
 
 }
@@ -69,6 +70,20 @@ BaseCamera::~BaseCamera()
 
 }
 
+void BaseCamera::activate()
+{
+    p_activated.setValue(true);
+}
+
+void BaseCamera::desactivate()
+{
+    p_activated.setValue(false);
+}
+
+bool BaseCamera::isActivated()
+{
+    return p_activated.getValue();
+}
 
 void BaseCamera::init()
 {
@@ -169,6 +184,28 @@ BaseCamera::Vec3 BaseCamera::cameraToWorldTransform(const Vec3& v)
 BaseCamera::Vec3 BaseCamera::worldToCameraTransform(const Vec3& v)
 {
     return p_orientation.getValue().inverseRotate(v);
+}
+
+BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
+{
+    GLint viewport[4];
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLfloat winX, winY, winZ;
+    GLdouble posX, posY, posZ;
+
+    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+    glGetDoublev( GL_PROJECTION_MATRIX, projection );
+    glGetIntegerv( GL_VIEWPORT, viewport );
+
+    winX = (float)x;
+    winY = (float)viewport[3] - (float)y;
+    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+    //winZ = 1.0;
+
+    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+
+    return Vec3(posX, posY, posZ);
 }
 
 void BaseCamera::getOpenGLMatrix(double mat[16])
