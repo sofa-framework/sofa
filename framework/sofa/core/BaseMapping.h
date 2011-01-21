@@ -52,7 +52,7 @@ namespace core
  *  For example, we can have a mapping from a BehaviorModel to a VisualModel.
  *
  */
-class BaseMapping : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseMapping : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(BaseMapping, objectmodel::BaseObject);
