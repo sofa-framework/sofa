@@ -78,7 +78,7 @@ using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
 
-class QtViewer : public QGLWidget,  public sofa::gui::qt::viewer::SofaViewer
+class QtViewer : public QGLWidget,  public sofa::gui::qt::viewer::OglModelSofaViewer
 {
     Q_OBJECT
 
@@ -142,9 +142,19 @@ public:
     static const std::string VIEW_FILE_EXTENSION;
 
 
-    static void create(QtViewer*& instance, const CreatorArgument& arg)
+    static void create(QtViewer*& instance, const SofaViewerArgument& arg)
     {
         instance = new QtViewer(arg.parent, arg.name.c_str() );
+    }
+
+    static const char* viewerName()
+    {
+        return "OpenGL";
+    }
+
+    static const char* acceleratedName()
+    {
+        return "Open&GL";
     }
 
     /// Activate this class of viewer.

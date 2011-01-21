@@ -595,9 +595,6 @@
         <action name="VideoRecorderManagerAction"/>
     </item>
     <item text="&amp;View" name="View">
-        <action name="viewerOpenGLAction"/>
-        <action name="viewerQGLViewerAction"/>
-        <action name="viewerOGREAction"/>
     </item>
     <item text="Help" name="helpMenu">
         <action name="helpContentsAction"/>
@@ -882,54 +879,6 @@
         </property>
         <property name="text">
             <string>Viewer</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>viewerOpenGLAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="text">
-            <string>OpenGL</string>
-        </property>
-        <property name="menuText">
-            <string>Open&amp;GL</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>viewerQGLViewerAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>QGLViewer</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;QGLViewer</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>viewerOGREAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>OGRE</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;OGRE</string>
         </property>
     </action>
     <action>
