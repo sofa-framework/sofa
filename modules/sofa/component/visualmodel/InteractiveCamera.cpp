@@ -110,15 +110,23 @@ void InteractiveCamera::manageEvent(core::objectmodel::Event* e)
     core::objectmodel::KeypressedEvent* kpe;
     core::objectmodel::KeyreleasedEvent* kre;
 
-    //Dispatch event
-    if ((me = dynamic_cast<core::objectmodel::MouseEvent* > (e)))
-        processMouseEvent(me);
-    else if ((kpe = dynamic_cast<core::objectmodel::KeypressedEvent* > (e)))
-        processKeyPressedEvent(kpe);
-    else if ((kre = dynamic_cast<core::objectmodel::KeyreleasedEvent* > (e)))
-        processKeyReleasedEvent(kre);
+    if(p_activated.getValue())
+    {
+        //Dispatch event
+        if ((me = dynamic_cast<core::objectmodel::MouseEvent* > (e)))
+            processMouseEvent(me);
+        else if ((kpe = dynamic_cast<core::objectmodel::KeypressedEvent* > (e)))
+            processKeyPressedEvent(kpe);
+        else if ((kre = dynamic_cast<core::objectmodel::KeyreleasedEvent* > (e)))
+            processKeyReleasedEvent(kre);
 
-    internalUpdate();
+        internalUpdate();
+    }
+    else
+    {
+        isMoving = false;
+        currentMode = NONE_MODE;
+    }
 }
 
 void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
@@ -126,7 +134,6 @@ void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
     int posX = me->getPosX();
     int posY = me->getPosY();
     int wheelDelta = me->getWheelDelta();
-    //Vec3 &camPosition = *p_position.beginEdit();
 
     //Mouse Press
     if(me->getState() == core::objectmodel::MouseEvent::LeftPressed)
@@ -188,27 +195,26 @@ void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
 
 }
 
-void InteractiveCamera::processKeyPressedEvent(core::objectmodel::KeypressedEvent*  /* kpe */)
+void InteractiveCamera::processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe)
 {
-    /*char keyPressed = kpe->getKey();
+    char keyPressed = kpe->getKey();
 
     switch(keyPressed)
     {
-            case 'a':
-            case 'A':
-            {
-                    glPushMatrix();
-                    //glLoadIdentity();
-                    //helper::gl::Axis(p_position.getValue(), p_orientation.getValue(), 10.0);
-                    glPopMatrix();
-                    break;
-            }
-            default:
-            {
-                    break;
-            }
+    case 'a':
+    case 'A':
+    {
+        //glPushMatrix();
+        //glLoadIdentity();
+        //helper::gl::Axis(p_position.getValue(), p_orientation.getValue(), 10.0);
+        //glPopMatrix();
+        break;
     }
-    */
+    default:
+    {
+        break;
+    }
+    }
 }
 
 void InteractiveCamera::processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* /* kre */)

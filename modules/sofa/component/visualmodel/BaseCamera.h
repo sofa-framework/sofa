@@ -75,11 +75,17 @@ public:
     Data<unsigned int> p_widthViewport, p_heightViewport;
     Data<int> p_type;
 
+    Data<bool> p_activated;
+
     BaseCamera();
     virtual ~BaseCamera();
 
     virtual void init();
     virtual void reinit();
+
+    void activate();
+    void desactivate();
+    bool isActivated();
 
     bool exportParametersInFile(const std::string& viewFilename);
     bool importParametersFromFile(const std::string& viewFilename);
@@ -96,6 +102,7 @@ public:
     Vec3 worldToCameraCoordinates(const Vec3& p);
     Vec3 cameraToWorldTransform(const Vec3& v);
     Vec3 worldToCameraTransform(const Vec3& v);
+    Vec3 screenToWorldCoordinates(int x, int y);
 
     Vec3 getPosition()
     {
