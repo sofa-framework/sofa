@@ -30,6 +30,17 @@
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
+#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/TriangleSetTopologyChange.h>
+
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/TetrahedronSetTopologyChange.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+//#include <sofa/component/topology/EdgeSetTopologyChange.h>
+
 namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
 
 
@@ -69,15 +80,41 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+
+    enum FLUID { BOX, PLANE };
 
 protected:
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
+    sofa::core::topology::BaseMeshTopology* m_tetraTopology;
+
+    sofa::component::topology::TetrahedronSetTopologyContainer* m_tetraContainer;
+    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
 
     Data< Coord >   m_minBox;                       ///< Lower bound of the liquid box.
     Data< Coord >   m_maxBox;                       ///< Upper bound of the liquid box.
 
+    FLUID fluidModel;
+    Data< Real > m_fluidModel;
+
     Data <Real>     m_fluidDensity;
+    Data <Real>     m_fluidViscosity;
+    Data <Real>     m_atmosphericPressure;
+
+    Data <Real>     m_heightPlane;              //orthogonal to the gravity
+
+    sofa::helper::vector<int> m_surfaceTriangles;
+
+    Data<Real>      m_immersedVolume;
+    Data<Real>      m_immersedArea;
+    Data<Real>      m_globalForce;
+
+    sofa::helper::vector<Deriv> m_debugForce;
+    sofa::helper::vector<Deriv> m_debugPosition;
+
+    Data<bool>      m_enableViscosity;
+    Data<bool>      m_turbulentFlow;    //1 for turbulent, 0 for laminar
+
 
 public:
 
@@ -101,7 +138,15 @@ protected:
      * @brief Returns true if the x parameters belongs to the liquid modeled as a box.
      */
     inline bool isPointInFluid(const Coord& /*x*/) const;
-    inline bool isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x) const;
+    /**
+     * @brief Returns the number of point of a tetra included in the liquid
+     */
+    inline int isTetraInFluid(const Tetra& /*tetra*/, const VecCoord& x) const;
+    inline int isTriangleInFluid(const Triangle& /*tetra*/, const VecCoord& x) const;
+
+    inline Real getImmersedVolume(const Tetra &tetra, const VecCoord& x) const;
+
+    inline bool isCornerInTetra(const Tetra &tetra, const VecCoord& x) const;
 };
 
 
