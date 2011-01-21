@@ -57,10 +57,6 @@
 #include <athapascan-1>
 #endif /* SOFA_SMP */
 
-#ifdef SOFA_GPU_CUDA
-#include <sofa/gpu/cuda/mycuda.h>
-#endif
-
 #ifndef WIN32
 #include <dlfcn.h>
 bool loadPlugin(const char* filename)
@@ -185,9 +181,6 @@ int main(int argc, char** argv)
 #endif /* SOFA_SMP */
 
     if(gui!="batch") glutInit(&argc,argv);
-#ifdef SOFA_GPU_CUDA
-    sofa::gpu::cuda::mycudaInit();
-#endif
 
 #ifdef SOFA_DEV
     if (simulationType == "bgl")
