@@ -550,7 +550,7 @@ a_{k+\frac{1}{2}}  = \frac{2}{dt} (  \frac{2}{dt} . x_{k+\frac{1}{2}}   -     \f
 \]
 See the midpoint method~\cite{MidPoint}. The continium equilibrum variational form then can be written term of x and v at instance k+1/2,  as proposed Gonzalez in exact conserving energy paper. The difficulties is in term PK1 at instance k+1/2 which is resolved by $PK1_{algo}$  of Gonzalez ~\cite{Gonzalez1999}. It rest the term $f_{k+1/2}$ (body force)  and $g_{k+1/2}$ (boundary condition) that i don't know how to explain it in the scheme. It can be seen in thesis of Patrice Hauret~\cite{PHThesis} or Y.Ayyad~\cite{YAyyad} for example.
 
-\subsection{Linearization: }
+\subsection{Linearization - secant stiffness and tangent stiffness matrix: }
 The nonlinear elastodynamic base on two term : material nonlinearity and geometrical nonlinearity (see  ~\cite{FEMBook} p.338). A simple example of linearization for the geometry part can be explained in ~\cite{NonlinearGeo}. For linearization of meterial part, at first implementation, we assume the strain and stress are all symetric, and by using the continium tangent moduli at ~\cite{NonlinearGeo}p.337, constitutive law (stress and stress derivative) can be expressed by a fourth order tensor noted \textbf{C}$^{SE}$. Let's resume all with relation in Sofa. A Green-Lagrange strain can be expressed by  
 \[
 \textbf{E} = \textbf{B}^T_L U + \frac{1}{2} U^T \textbf{B}_{NL}  U             
@@ -643,6 +643,8 @@ An example for the simplest case is on the linear tetrahedron ($R^d=3, nbNode=4$
   &  &     \\
   &  &     \\
   &  &     \\
+  &  &     \\
+  &  &     \\
   &  &     
 \end{array}
 \right]_{12\times6}
@@ -654,17 +656,19 @@ An example for the simplest case is on the linear tetrahedron ($R^d=3, nbNode=4$
 \end{array}
 \right]_{6\times6}
 \left[ 
-\begin{array}{cccc}
-  &  &  &   \\
-  &  &  &   \\
-  &  &  &   
+\begin{array}{cccccc}
+  &  &  & & &  \\
+  &  &  & & & \\
+  &  &  & & &    
 \end{array}
 \right]_{6\times12}
 \left[ 
 \begin{array}{c}
-U_0  \\
-     \\
-     \\
+U_0      \\
+         \\
+\vdots   \\
+\vdots   \\
+         \\
 U_{11}
 \end{array}
 \right]_{12\times1}
@@ -726,6 +730,44 @@ On the linear case, all these matrix are constant and independent to time ($X(t)
  \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
 \end{array}\right.
 \]
+An explicit computation are shown for example of linear case of linear tetrahedron, the matrix $\textbf{B}=\textbf{B}_L$ is constant wiht values : 
+\[
+\bar{\textbf{B}}=\textbf{B}=\textbf{B}_L=
+\left[ 
+\begin{array}{cccccccccccc}
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & &         
+\end{array}
+\right]
+\]
+and the stress by Lame cofficients expressed by :
+\[
+\textbf{S}_{PK2}=\textbf{C}^{SE}_{Hook}.\textbf{B}_{L}=
+\left[ 
+\begin{array}{cccccccccccc}
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & &         
+\end{array}
+\right]
+\]
+When relation between Lame coefficients with Young's $E$ modulus and Poisson's ratio $\nu$ is :
+\[
+\left\{ 
+\begin{array}{ccc}
+      \lambda   &=& \frac{E\nu}{(1+\nu)(1-2\nu)}                           \\ 
+           \mu  &=& \frac{E}{2(1+\nu)}           
+\end{array}\right.
+\]
+
+% -\frac{1}{2}      \frac{1}{2}      
 
 \subsection{Auto-test : }
 These function on FEM are mostly linear transformation which is invertible. So we can verify all the computation, or pre-computation by the its inverted transformation. 
