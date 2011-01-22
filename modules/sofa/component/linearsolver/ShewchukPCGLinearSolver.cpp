@@ -202,10 +202,13 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     Vector& d = *vtmp.createTempVector();
     Vector& q = *vtmp.createTempVector();
     Vector& s = *vtmp.createTempVector();
-    const bool verbose  = f_verbose.getValue();
+    std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
+    sofa::helper::vector<double>& graph_error = graph["Error"];
+    graph_error.clear();
 
     unsigned iter=1;
     r = M*x;
+    cgstep_beta(r,b,-1);//for (int i=0; i<n; i++) r[i] = b[i] - r[i];
 
     bool apply_precond = false;
     if ((this->preconditioners.size()>0) && f_build_precond.getValue())
@@ -218,8 +221,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         else apply_precond = (((int) (iter-1))<(int) f_max_use_by_step.getValue());
     }
     else apply_precond = false;
-
-    cgstep_beta(r,b,-1);//for (int i=0; i<n; i++) r[i] = b[i] - r[i];
     if (apply_precond)
     {
         sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
@@ -249,17 +250,11 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     }
 
     double deltaNew = r.dot(d);
-    double delta0 = deltaNew;
-    double eps = f_tolerance.getValue() * f_tolerance.getValue()  * delta0;
-    std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
-    sofa::helper::vector<double>& graph_error = graph["Error"];
-    graph_error.clear();
+    double eps = f_tolerance.getValue() * f_tolerance.getValue();
 
     while ((iter <= f_maxIter.getValue()) && (deltaNew > eps))
     {
-        if (verbose) printf("CG iteration %d: current L2 error vs initial error=%G\n", iter, sqrt(deltaNew/delta0));
-
-        graph_error.push_back(sqrt(deltaNew/delta0));
+        graph_error.push_back(sqrt(deltaNew));
 
         q = M * d;
         double dtq = d.dot(q);
@@ -323,15 +318,9 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         iter++;
     }
 
-    graph_error.push_back(sqrt(deltaNew/delta0));
+    graph_error.push_back(sqrt(deltaNew));
     next_refresh_iteration=iter;
     sofa::helper::AdvancedTimer::valSet("PCG iterations", iter);
-
-    if (f_maxIter.getValue() == 0)
-    {
-        x = d;
-        return;
-    }
 
     f_graph.endEdit();
     vtmp.deleteTempVector(&r);

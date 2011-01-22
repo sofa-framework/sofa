@@ -150,8 +150,9 @@ protected:
 
     linearsolver::SparseMatrix<SReal> J; ///< constraint matrix
     linearsolver::FullVector<SReal> F; ///< forces computed from the constraints
+#if 0 // refMinv is not use in normal case    
     linearsolver::FullMatrix<SReal> refMinv; ///< reference inverse matrix
-
+#endif
 
 
 
