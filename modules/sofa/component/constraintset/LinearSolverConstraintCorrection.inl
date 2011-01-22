@@ -97,7 +97,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
         serr << "LinearSolverConstraintCorrection: ERROR no LinearSolver found."<<sendl;
         return;
     }
-
+#if 0 // refMinv is not use in normal case
     int n = mstate->getSize()*Deriv::size();
 
     std::stringstream ss;
@@ -113,6 +113,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
         compFileIn.read((char*)refMinv.ptr(), n*n*sizeof(double));
         compFileIn.close();
     }
+#endif
 }
 
 template<class DataTypes>
@@ -128,6 +129,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
     const unsigned int numDOFs = mstate->getSize();
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
+#if 0 // refMinv is not use in normal case    
     if (refMinv.rowSize() > 0)			// What's for ??
     {
         std::cout<<"refMinv.rowSize() > 0"<<std::endl;
@@ -158,7 +160,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
         sout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(SReal)(numDOFReals*numDOFReals)<<sendl;
         refMinv.resize(0,0);
     }
-
+#endif
     // Compute J
     const MatrixDeriv& c = *mstate->getC();
     const unsigned int totalNumConstraints = W->rowSize();
@@ -213,6 +215,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
     Minv->resize(numDOFReals,numDOFReals);
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     linearsolvers[0]->addJMInvJt(Minv, &J, factor);
+#if 0 // refMinv is not use in normal case
     double err=0,fact=0;
     for (unsigned int i=0; i<numDOFReals; ++i)
         for (unsigned int j=0; j<numDOFReals; ++j)
@@ -231,6 +234,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
         }
     sout << "LinearSolverConstraintCorrection: mean relative error: "<<err/(SReal)(numDOFReals*numDOFReals)<<sendl;
     sout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(SReal)(numDOFReals*numDOFReals)<<sendl;
+#endif
 }
 
 template<class DataTypes>
