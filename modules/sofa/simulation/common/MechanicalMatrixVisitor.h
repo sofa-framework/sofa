@@ -225,7 +225,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalMultiVectorFromBaseVectorVisitor"; }
 
     MechanicalMultiVectorFromBaseVectorVisitor(MultiVecId _dest,
             defaulttype::BaseVector * _src,

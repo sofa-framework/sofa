@@ -239,6 +239,7 @@ CUDA_SOURCES += \
 	   	CudaMatrixUtils.cu \
        	CudaSpatialGridContainer.cu \
         CudaHexahedronFEMForceField.cu \
+	CudaLinearSolverConstraintCorrection.cu \
 		#CudaHexahedronGeodesicalDistance.cu \
                CudaJointSpringForceField.cu \
        	CudaTetrahedronTLEDForceField.cu \
@@ -260,7 +261,8 @@ contains(DEFINES,SOFA_HAVE_CSPARSE){
 
 contains(DEFINES,SOFA_HAVE_TAUCS){ 
 	HEADERS += \
-		CudaSparseTaucsLUSolver.h
+		CudaSparseTaucsLUSolver.h \
+		CudaSparseTaucsLUSolver.inl
 
 	SOURCES += \	
 		CudaSparseTaucsLUSolver.cpp
