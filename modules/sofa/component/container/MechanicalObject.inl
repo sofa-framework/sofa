@@ -427,7 +427,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int outputIndex)
 {
-    const unsigned int maxIndex = std::max(inputIndex, outputIndex);
+    //const unsigned int maxIndex = std::max(inputIndex, outputIndex);
+    const unsigned int maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
 
     const unsigned int vecCoordSize = vectorsCoord.size();
     for (unsigned int i = 0; i < vecCoordSize; i++)
@@ -461,7 +462,8 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
 {
-    const unsigned int maxIndex = std::max(idx1, idx2);
+    //const unsigned int maxIndex = std::max(idx1, idx2);
+    const unsigned int maxIndex = idx1<idx2 ? idx2 : idx1;
 
     Coord tmp;
     Deriv tmp2;

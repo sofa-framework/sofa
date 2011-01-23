@@ -334,8 +334,8 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     }
     dataDx.endEdit();
     dataForce.endEdit();
-    xData.beginEdit();
-    vData.beginEdit();
+    xData.endEdit();
+    vData.endEdit();
 
     mstate->vFree(forceID);
 }
