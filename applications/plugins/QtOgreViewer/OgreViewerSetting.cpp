@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initQtOgreViewer.h"
+
+#include "OgreViewerSetting.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -31,63 +32,23 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_QTOGREVIEWER_API void initExternalModule();
-    SOFA_QTOGREVIEWER_API const char* getModuleName();
-    SOFA_QTOGREVIEWER_API const char* getModuleVersion();
-    SOFA_QTOGREVIEWER_API const char* getModuleLicense();
-    SOFA_QTOGREVIEWER_API const char* getModuleDescription();
-    SOFA_QTOGREVIEWER_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace configurationsetting
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
+SOFA_DECL_CLASS(OgreViewerSetting)
+int OgreViewerSettingClass = core::RegisterObject("Configuration for the Ogre Viewer")
+        .add< OgreViewerSetting >()
+        .addAlias("OgreViewer")
+        ;
+
+OgreViewerSetting::OgreViewerSetting():
+    shadows(initData(&shadows, false, "shadows", "Enabled Shadows"))
+    , compositors(initData(&compositors, "compositors", "List of compositor to be activated within the OgreViewer"))
 {
-    return "Ogre plugin for SOFA";
 }
 
-const char* getModuleVersion()
-{
-    return "0.1";
 }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
 }
 
-
-const char* getModuleDescription()
-{
-    return "Ogre viewer plugin for SOFA";
 }
-
-const char* getModuleComponentList()
-{
-    return "QtOgreViewer, OgreVisualModel, OgreShaderParameter, OgreShaderTextureUnit, OgreReflectionTexture, OgreViewerSetting";
-}
-
-} // namespace frame
-
-} // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(QtOgreViewer)
-SOFA_LINK_CLASS(OgreVisualModel)
-SOFA_LINK_CLASS(OgreShaderParameter)
-SOFA_LINK_CLASS(OgreShaderTextureUnit)
-SOFA_LINK_CLASS(OgreReflectionTexture);
-SOFA_LINK_CLASS(OgreViewerSetting)
-
-
-

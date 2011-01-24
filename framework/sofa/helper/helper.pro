@@ -165,10 +165,3 @@ contains(DEFINES,SOFA_HAVE_FFMPEG) { # SOFA_HAVE_FFMPEG
     	gl/VideoRecorder.cpp 
 }
 
-contains(DEFINES,SOFA_GUI_QTOGREVIEWER) { # Compile the Ogre interface
-    HEADERS += \
-        gl/DrawManagerOGRE.h
-
-    SOURCES += \
-        gl/DrawManagerOGRE.cpp
-}

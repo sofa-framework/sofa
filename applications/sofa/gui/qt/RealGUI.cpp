@@ -851,10 +851,8 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
     viewer->getQWidget()->setFocus();
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
-
-#ifdef SOFA_GUI_QTOGREVIEWER
     resetScene();
-#endif
+
 
 
 }
