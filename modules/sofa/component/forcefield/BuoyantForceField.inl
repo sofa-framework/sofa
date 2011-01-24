@@ -46,12 +46,12 @@ using namespace core::topology;
 
 template <class DataTypes>
 BuoyantForceField<DataTypes>::BuoyantForceField():
+    m_fluidModel(initData(&m_fluidModel, (Real)1.0f, "fluidModel", "1 for a plane, 2 for a box")),
     m_minBox(initData(&m_minBox, Coord(-100.0, -100,-100.0), "min", "Lower bound of the liquid box")),
     m_maxBox(initData(&m_maxBox, Coord(100.0, 100,0.0), "max", "Upper bound of the liquid box")),
+    m_heightPlane(initData(&m_heightPlane, (Real)0.0f, "heightPlane", "height of the fluid orthogonal to the gravity")),
     m_fluidDensity(initData(&m_fluidDensity, (Real)1.0f, "fluidDensity", "Fluid Density")),
     m_fluidViscosity(initData(&m_fluidViscosity, (Real)1e-3, "fluidViscosity", "Fluid Density")),
-    m_fluidModel(initData(&m_fluidModel, (Real)1.0f, "fluidModel", "1 for a plane, 2 for a box")),
-    m_heightPlane(initData(&m_heightPlane, (Real)0.0f, "heightPlane", "height of the fluid orthogonal to the gravity")),
     m_atmosphericPressure(initData(&m_atmosphericPressure, (Real)101325.0f, "atmosphericPressure", "atmospheric pressure")),
     m_enableViscosity(initData(&m_enableViscosity, true, "enableViscosity", "enable the effects of viscosity")),
     m_turbulentFlow(initData(&m_turbulentFlow, false, "turbulentFlow", "true for turbulent flow, false for laminar"))
@@ -151,7 +151,7 @@ void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoor
 
             //compute the immersed volume
             Real immersedVolume = static_cast<Real>(0.0f);
-            for (unsigned int i = 0 ; i < m_tetraContainer->getNbTetras() ; i++)
+            for (int i = 0 ; i < m_tetraContainer->getNbTetras() ; i++)
             {
                 Tetra tetra = m_tetraContainer->getTetra(i);
                 int nbPointsInside = isTetraInFluid(tetra, x);
@@ -492,7 +492,7 @@ void BuoyantForceField<DataTypes>::draw()
         glColor4f(1.f, 0.f, 0.0f, 1.0f);
 
         glBegin(GL_LINES);
-        for ( int i = 0 ; i < m_debugPosition.size() ; i++)
+        for ( unsigned int i = 0 ; i < m_debugPosition.size() ; i++)
         {
             glVertex3d(m_debugPosition[i][0], m_debugPosition[i][1], m_debugPosition[i][2]);
             glVertex3d(m_debugPosition[i][0] - m_debugForce[i][0], m_debugPosition[i][1] -  m_debugForce[i][1], m_debugPosition[i][2] - m_debugForce[i][2]);
