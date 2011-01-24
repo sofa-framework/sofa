@@ -551,11 +551,20 @@ a_{k+\frac{1}{2}}  = \frac{2}{dt} (  \frac{2}{dt} . x_{k+\frac{1}{2}}   -     \f
 See the midpoint method~\cite{MidPoint}. The continium equilibrum variational form then can be written term of x and v at instance k+1/2,  as proposed Gonzalez in exact conserving energy paper. The difficulties is in term PK1 at instance k+1/2 which is resolved by $PK1_{algo}$  of Gonzalez ~\cite{Gonzalez1999}. It rest the term $f_{k+1/2}$ (body force)  and $g_{k+1/2}$ (boundary condition) that i don't know how to explain it in the scheme. It can be seen in thesis of Patrice Hauret~\cite{PHThesis} or Y.Ayyad~\cite{YAyyad} for example.
 
 \subsection{Linearization - secant stiffness and tangent stiffness matrix: }
-The nonlinear elastodynamic base on two term : material nonlinearity and geometrical nonlinearity (see  ~\cite{FEMBook} p.338). A simple example of linearization for the geometry part can be explained in ~\cite{NonlinearGeo}. For linearization of meterial part, at first implementation, we assume the strain and stress are all symetric, and by using the continium tangent moduli at ~\cite{NonlinearGeo}p.337, constitutive law (stress and stress derivative) can be expressed by a fourth order tensor noted \textbf{C}$^{SE}$. Let's resume all with relation in Sofa. A Green-Lagrange strain can be expressed by  
+The nonlinear elastodynamic base on two term : material nonlinearity and geometrical nonlinearity (see  ~\cite{FEMBook} p.338). A simple example of linearization for the geometry part can be explained in ~\cite{NonlinearGeo}. For linearization of meterial part, at first implementation, we assume the strain and stress are all symetric, and by using the continium tangent moduli at ~\cite{NonlinearGeo}p.337, constitutive law (stress and stress derivative) can be expressed by a fourth order tensor noted \textbf{C}$^{SE}$. Let's resume all with relation in Sofa. An abstract Green-Lagrange strain tensor can be expressed by
+\[
+\begin{array}{ccccc}
+\textbf{E}_{ij}   &=& \frac{1}{2}( \triangledown U  +  \triangledown U^T  )  &+&  \frac{1}{2}( \triangledown U^T \triangledown U )\\
+                  &=& \underbrace{\frac{1}{2}( \frac{\partial U_i}{\partial X_j}  +  \frac{\partial U_j}{\partial X_i}  )}  &+&
+                      \underbrace{\frac{1}{2}\sum_{k=0}^{d-1}( \frac{\partial U_i}{\partial X_k}  +  \frac{\partial U_k}{\partial X_j} )}\\
+                  &=& \textbf{linear part}  &+&  \textbf{nonlinear part}
+\end{array}
+\]
+Using Lagrangian interpolation, these relation can be expressed by matricial form :   
 \[
 \textbf{E} = \textbf{B}^T_L U + \frac{1}{2} U^T \textbf{B}_{NL}  U             
 \]
-Where $\textbf{B}^T_L$ and $\textbf{B}_{NL}$ denote respectively linear and nonlinear part of strain, contains only interpolated derivative values, $U$ denote the nodal displacement. We can rewrite this relation by : 
+where $\textbf{B}^T_L$ and $\textbf{B}_{NL}$ denote respectively linear and nonlinear part of strain, contains only interpolated derivative values, $U$ denote the nodal displacement. We can rewrite this relation by : 
 \[
 \left\{ 
 \begin{array}{rcl}
@@ -607,6 +616,11 @@ where $\dot{\textbf{C}}^{SE}$ is the derivative of $\textbf{C}^{SE}$ in relation
 R^d
 \left\{ 
 \begin{array}{l}
+  \begin{array}{lccc}
+  \text{ iVoigt }   &=& i            & \text{if  } i==j\\
+  \text{ iVoigt }   &=& (d-1) +i +j  & \text{if  } i!=j 
+  \end{array} \\
+\text{with} \\
  \text{ VOIGT\_DIM }   = \frac{d(d+1)}{2} \\
  \text{ nbDOF      }   = d*nbOfNodes  
 \end{array}\right.
@@ -730,17 +744,18 @@ On the linear case, all these matrix are constant and independent to time ($X(t)
  \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
 \end{array}\right.
 \]
-An explicit computation are shown for example of linear case of linear tetrahedron, the matrix $\textbf{B}=\textbf{B}_L$ is constant wiht values : 
+An explicit computation are shown for example of linear case of linear tetrahedron, the matrix $\textbf{B}=\textbf{B}_L$ is constant with values : 
+% \ -frac{1}{2}
 \[
 \bar{\textbf{B}}=\textbf{B}=\textbf{B}_L=
 \left[ 
 \begin{array}{cccccccccccc}
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & &         
+-1 &  0 &  0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \\
+ 0 & -1 &  0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & \\
+ 0 &  0 & -1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \\
+-1 & -1 &  0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & \\
+ 0 & -1 & -1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & \\
+-1 &  0 & -1 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 &         
 \end{array}
 \right]
 \]
