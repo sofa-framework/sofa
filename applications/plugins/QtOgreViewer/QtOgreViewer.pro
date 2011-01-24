@@ -2,7 +2,7 @@
 TARGET = qtogreviewerplugin
 
 
-###### PREREQUISITES 
+###### PREREQUISITES
 # SOFA_GUI_QT
 # SOFA_QT4
 ######
@@ -17,13 +17,13 @@ include($${SOFA_DIR}/sofa.cfg)
 DESTDIR = $$SOFA_DIR/lib/sofa-plugins
 
 #set configuration to dynamic library
-contains (DEFINES, SOFA_QT4) {	
-	CONFIG += $$CONFIGLIBRARIES qt 
-	QT += opengl qt3support xml
+contains (DEFINES, SOFA_QT4) {
+        CONFIG += $$CONFIGLIBRARIES qt
+        QT += opengl qt3support xml
 }
 else{
-	CONFIG += $$CONFIGLIBRARIES qt
-	QT += opengl
+        CONFIG += $$CONFIGLIBRARIES qt
+        QT += opengl
 }
 CONFIG -= staticlib
 CONFIG += dll
@@ -43,8 +43,8 @@ INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES += DotSceneLoader.cpp \
            HelperLogics.cpp \
-           QtOgreViewer.cpp\ 
-           QtOgreViewer_slots.cpp\ 
+           QtOgreViewer.cpp\
+           QtOgreViewer_slots.cpp\
            OgreVisualModel.cpp \
            OgreShaderParameter.cpp \
            OgreShaderTextureUnit.cpp \
@@ -53,7 +53,7 @@ SOURCES += DotSceneLoader.cpp \
            DrawManagerOGRE.cpp \
            OgreViewerSetting.cpp \
            initQtOgreViewer.cpp
-			   
+
 HEADERS += DotSceneLoader.h \
            HelperLogics.h \
            QtOgreViewer.h \
@@ -71,19 +71,28 @@ HEADERS += DotSceneLoader.h \
 
 #README_FILE = PluginMeshSTEPLoader.txt
 
-unix {
- INCLUDEPATH += $$OGRE_INCLUDE_PATH
- macx:  QMAKE_CXXFLAGS += -Wno-unused
-
- !macx: {
- 	QMAKE_CXXFLAGS += $$system(pkg-config --cflags OGRE )
-        LIBS += $$system(pkg-config --libs OGRE )
+      macx {
+                QMAKE_CXXFLAGS += -Wno-unused
+                SOFA_EXT_LIBS += -framework Ogre -framework CoreFoundation
         }
-}   
 
-win32 {
-    INCLUDEPATH += $$OPEN_CASCADE_DIR/inc
-    LIBS += -l$$OPEN_CASCADE_DIR/win32/lib/*
- #   QMAKE_CXXFLAGS += /DWNT
- #   QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
-}
+        win32 {
+            OGRE_HOME= $$system(echo %OGRE_HOME%)
+            INCLUDEPATH += $(OGRE_HOME)/include
+                QMAKE_LIBDIR += $(OGRE_HOME)/lib
+                contains (CONFIGDEBUG, debug) {
+                        SOFA_EXT_LIBS += OgreMain_d.lib
+                }
+                else{
+                 SOFA_EXT_LIBS += OgreMain.lib
+                }
+        }
+
+
+        unix {
+                !macx: {
+                 QMAKE_CXXFLAGS += $$system(pkg-config --cflags OGRE )
+                  LIBS += $$system(pkg-config --libs OGRE )
+                }
+        }
+

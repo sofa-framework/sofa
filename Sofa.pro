@@ -282,7 +282,7 @@ else {
 
 !contains(DEFINES,SOFA_GUI_QTVIEWER) {
 !contains(DEFINES,SOFA_GUI_QGLVIEWER) {
-!contains(DEFINES,SOFA_GUI_QTOGREVIEWER) {
+{
   message( "|  Qt GUI: DISABLED")
 }
 else {
@@ -309,12 +309,6 @@ contains(DEFINES,SOFA_GUI_QGLVIEWER) {
 }
 else {
   message( "|  -  Qt QGLViewer viewer: DISABLED")
-}
-contains(DEFINES,SOFA_GUI_QTOGREVIEWER) {
-  message( "|  -  Qt OGRE 3D viewer: ENABLED")
-}
-else {
-  message( "|  -  Qt OGRE 3D viewer: DISABLED")
 }
 
 message( "======================================")
