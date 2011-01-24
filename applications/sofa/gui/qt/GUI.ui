@@ -1065,24 +1065,6 @@
         <slot>editFind()</slot>
     </connection>
     <connection>
-        <sender>viewerOpenGLAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>viewerOpenGL()</slot>
-    </connection>
-    <connection>
-        <sender>viewerQGLViewerAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>viewerQGLViewer()</slot>
-    </connection>
-    <connection>
-        <sender>viewerOGREAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>viewerOGRE()</slot>
-    </connection>
-    <connection>
         <sender>helpIndexAction</sender>
         <signal>activated()</signal>
         <receiver>GUI</receiver>
@@ -1153,9 +1135,6 @@
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>
     <slot>editFind()</slot>
-    <slot>viewerOpenGL()</slot>
-    <slot>viewerQGLViewer()</slot>
-    <slot>viewerOGRE()</slot>
     <slot>helpIndex()</slot>
     <slot>helpContents()</slot>
     <slot>helpAbout()</slot>

@@ -1,5 +1,5 @@
-#ifndef VISUALMODELPOLICY_H
-#define VISUALMODELPOLICY_H
+#ifndef SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
+#define SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -15,9 +15,9 @@ namespace viewer
 class VisualModelPolicy
 {
 public:
+    virtual ~VisualModelPolicy() {};
     virtual void load() = 0;
     virtual void unload() = 0;
-protected:
 
 };
 
@@ -48,4 +48,4 @@ public:
 
 
 
-#endif // VISUALMODELPOLICY_H
+#endif // SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
