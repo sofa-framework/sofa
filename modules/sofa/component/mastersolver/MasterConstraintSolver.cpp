@@ -59,7 +59,8 @@ using namespace helper::system::thread;
 using namespace core::behavior;
 
 
-ConstraintProblem::ConstraintProblem()
+ConstraintProblem::ConstraintProblem(bool printLog)
+    : m_printLog(printLog)
 {
     this->_tol = 0.0001;
     this->_dim = 0;
@@ -210,7 +211,11 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
         }
     }
 
-    std::cout<<"------  No convergence in gaussSeidelConstraint Timed before time criterion !: error = " << error <<" ------" <<std::endl;
+    if (m_printLog)
+    {
+        std::cout << "------  No convergence in gaussSeidelConstraint Timed before time criterion !: error = "
+                << error << " ------" << std::endl;
+    }
 }
 
 
@@ -894,10 +899,17 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
         }
     }
 
-    if(!convergence)
-        serr << "No convergence in gaussSeidelConstraint : error = " << error << sendl;
-    else if ( displayTime.getValue() )
-        sout<<" Convergence after " << i+1 << " iterations " << sendl;
+    if (debug)
+    {
+        if (!convergence)
+        {
+            serr << "No convergence in gaussSeidelConstraint : error = " << error << sendl;
+        }
+        else if (displayTime.getValue())
+        {
+            sout << "Convergence after " << i+1 << " iterations." << sendl;
+        }
+    }
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
 

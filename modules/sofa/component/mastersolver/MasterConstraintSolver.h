@@ -207,9 +207,10 @@ private:
     double _tol;
     int _dim;
     CTime *_timer;
+    bool m_printLog;
 
 public:
-    ConstraintProblem();
+    ConstraintProblem(bool printLog=false);
     ~ConstraintProblem();
     void clear(int dim, const double &tol);
 
@@ -223,8 +224,8 @@ public:
     inline double *getTolerance(void) {return &_tol;};
 
     void gaussSeidelConstraintTimed(double &timeout, int numItMax);
-
 };
+
 class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::MasterSolverImpl
 {
 public:
@@ -296,10 +297,6 @@ private:
     bool debug;
 
     unsigned int numConstraints;
-
-
-
-
 };
 
 } // namespace mastersolver
