@@ -15,7 +15,7 @@
 		<Node name="Physics">
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<MechanicalObject  template="DeformationGradient331" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
-			<FrameForceField template="DeformationGradient331"   printLog="0" />
+			<GreenLagrangeForceField template="DeformationGradient331"   printLog="0" />
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet" showStrain="1" />
 			<FrameVolumePreservationForceField template="DeformationGradient331"   printLog="0" />
 		</Node>

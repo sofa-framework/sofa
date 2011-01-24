@@ -27,6 +27,10 @@ HEADERS += \
            AffineTypes.h \
            CorotationalForceField.h \
            CorotationalForceField.inl \
+           GreenLagrangeForceField.h \
+           GreenLagrangeForceField.inl \
+           FrameVolumePreservationForceField.h \
+           FrameVolumePreservationForceField.inl \
            DeformationGradientTypes.h \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
@@ -37,15 +41,11 @@ HEADERS += \
            FrameDQBlendingMapping.inl \
            FrameFixedConstraint.h \
            FrameFixedConstraint.inl \
-           FrameForceField.h \
-           FrameForceField.inl \
            FrameLinearMovementConstraint.h \
            FrameMass.h \
            FrameMechanicalObject.h \
            FrameRigidConstraint.h \
            FrameRigidConstraint.inl \
-           FrameVolumePreservationForceField.h \
-           FrameVolumePreservationForceField.inl \
            GridMaterial.h \
            GridMaterial.inl \
            Interpolater.h \
@@ -61,16 +61,16 @@ HEADERS += \
 
 SOURCES += \
            CorotationalForceField.cpp \
+           GreenLagrangeForceField.cpp \
+           FrameVolumePreservationForceField.cpp \
            FrameBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
            FrameDQBlendingMapping.cpp \
            FrameFixedConstraint.cpp \
-           FrameForceField.cpp \
            FrameLinearMovementConstraint.cpp \
            FrameMechanicalObject.cpp \
            FrameRigidConstraint.cpp \
-           FrameVolumePreservationForceField.cpp \
            GridMaterial.cpp \
            Interpolater.cpp \
            NewHookeMaterial.cpp \

@@ -17,7 +17,7 @@
      			<MechanicalObject  template="DeformationGradient331" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
 
 			<FrameBlendingMapping template="MechanicalMapping&lt;Quadratic,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
-			<FrameForceField template="DeformationGradient331"   printLog="0" />
+			<GreenLagrangeForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
 
 		<Node name="Collision">

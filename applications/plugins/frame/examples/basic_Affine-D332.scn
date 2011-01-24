@@ -20,7 +20,7 @@
      			<MechanicalObject  template="DeformationGradient332" name="PointSet" useMask="0"  showObject="1" showObjectScale="0.05"/>
 -->
 			<FrameBlendingMapping template="MechanicalMapping&lt;Affine,DeformationGradient332&gt;" input="@../DOFs"  output="@PointSet" showStrain="1" />
-			<FrameForceField template="DeformationGradient332"   printLog="0" />
+			<GreenLagrangeForceField template="DeformationGradient332"   printLog="0" />
 			<FrameVolumePreservationForceField template="DeformationGradient332"   printLog="0" />
 		</Node>
 
