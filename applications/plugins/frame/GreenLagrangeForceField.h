@@ -24,8 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAME_FRAMEFORCEFIELD_H
-#define FRAME_FRAMEFORCEFIELD_H
+#ifndef FRAME_GREENLAGRANGEFORCEFIELD_H
+#define FRAME_GREENLAGRANGEFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
 #include "AffineTypes.h"
@@ -48,10 +48,10 @@ using namespace sofa::defaulttype;
 /** Compute strain and apply material law
 */
 template <class DataTypes>
-class FrameForceField : public core::behavior::ForceField<DataTypes>
+class GreenLagrangeForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FrameForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(GreenLagrangeForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename DataTypes::Real Real;
     static const int material_dimensions = DataTypes::material_dimensions;
@@ -78,8 +78,8 @@ public:
 
 
 public:
-    FrameForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL);
-    virtual ~FrameForceField();
+    GreenLagrangeForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL);
+    virtual ~GreenLagrangeForceField();
 
 
     // -- ForceField interface
@@ -103,14 +103,14 @@ protected :
 
 };
 
-#if defined(WIN32) && !defined(FRAME_FRAMEFORCEFIELD_CPP)
+#if defined(WIN32) && !defined(FRAME_GREENLAGRANGEFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_FRAME_API FrameForceField<DeformationGradient331dTypes>;
-extern template class SOFA_FRAME_API FrameForceField<DeformationGradient332dTypes>;
+extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331dTypes>;
+extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_FRAME_API FrameForceField<DeformationGradient331fTypes>;
-extern template class SOFA_FRAME_API FrameForceField<DeformationGradient332fTypes>;
+extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331fTypes>;
+extern template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332fTypes>;
 #endif
 #endif
 

@@ -24,9 +24,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FRAME_FRAMEFORCEFIELD_CPP
+#define FRAME_GREENLAGRANGEFORCEFIELD_CPP
 
-#include "FrameForceField.inl"
+#include "GreenLagrangeForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -40,27 +40,27 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(FrameForceField)
+SOFA_DECL_CLASS(GreenLagrangeForceField)
 
 // Register in the Factory
-int FrameForceFieldClass = core::RegisterObject("Compute forces on deformation gradients")
+int GreenLagrangeForceFieldClass = core::RegisterObject("Compute forces on deformation gradients")
 #ifndef SOFA_FLOAT
-        .add< FrameForceField<DeformationGradient331dTypes> >()
-        .add< FrameForceField<DeformationGradient332dTypes> >()
+        .add< GreenLagrangeForceField<DeformationGradient331dTypes> >()
+        .add< GreenLagrangeForceField<DeformationGradient332dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< FrameForceField<DeformationGradient331fTypes> >()
-        .add< FrameForceField<DeformationGradient332fTypes> >()
+        .add< GreenLagrangeForceField<DeformationGradient331fTypes> >()
+        .add< GreenLagrangeForceField<DeformationGradient332fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_FRAME_API FrameForceField<DeformationGradient331dTypes>;
-template class SOFA_FRAME_API FrameForceField<DeformationGradient332dTypes>;
+template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331dTypes>;
+template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_FRAME_API FrameForceField<DeformationGradient331fTypes>;
-template class SOFA_FRAME_API FrameForceField<DeformationGradient332fTypes>;
+template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient331fTypes>;
+template class SOFA_FRAME_API GreenLagrangeForceField<DeformationGradient332fTypes>;
 #endif
 
 

@@ -44,7 +44,7 @@ position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 				targetFrameNumber="2"
 				targetSampleNumber="50" />
 			<FrameVolumePreservationForceField template="DeformationGradient332"  printLog="0"/>  
-			<FrameForceField template="DeformationGradient332"  printLog="0"/>  
+			<GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
 
 		<Node name="Collision">

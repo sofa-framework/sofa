@@ -22,18 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAME_FRAMEFORCEFIELD_INL
-#define FRAME_FRAMEFORCEFIELD_INL
+#ifndef FRAME_GREENLAGRANGEFORCEFIELD_INL
+#define FRAME_GREENLAGRANGEFORCEFIELD_INL
 
 
 #include <sofa/core/behavior/ForceField.inl>
-#include "FrameForceField.h"
+#include "GreenLagrangeForceField.h"
 #include "DeformationGradientTypes.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/ForceField.inl>
 /*
 NB fjourdes: I don t get why this include is required to stop
-warning C4661 occurences while compiling FrameForceField.cpp
+warning C4661 occurences while compiling GreenLagrangeForceField.cpp
 */
 #include <sofa/core/Mapping.inl>
 /*
@@ -56,24 +56,24 @@ using namespace helper;
 
 
 template <class DataTypes>
-FrameForceField<DataTypes>::FrameForceField(core::behavior::MechanicalState<DataTypes> *mm )
+GreenLagrangeForceField<DataTypes>::GreenLagrangeForceField(core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit1(mm)
 {}
 
 template <class DataTypes>
-FrameForceField<DataTypes>::~FrameForceField()
+GreenLagrangeForceField<DataTypes>::~GreenLagrangeForceField()
 {}
 
 
 template <class DataTypes>
-void FrameForceField<DataTypes>::init()
+void GreenLagrangeForceField<DataTypes>::init()
 {
     Inherit1::init();
     core::objectmodel::BaseContext* context = this->getContext();
     sampleData = context->get<SampleData>();
     if( sampleData==NULL )
     {
-        cerr<<"FrameForceField<DataTypes>::init(), sampledata not found"<< endl;
+        cerr<<"GreenLagrangeForceField<DataTypes>::init(), sampledata not found"<< endl;
     }
 
 
@@ -81,7 +81,7 @@ void FrameForceField<DataTypes>::init()
     material = context->get<Material>();
     if( material==NULL )
     {
-        cerr<<"FrameForceField<DataTypes>::init(), material not found"<< endl;
+        cerr<<"GreenLagrangeForceField<DataTypes>::init(), material not found"<< endl;
     }
 
 
@@ -104,13 +104,13 @@ void FrameForceField<DataTypes>::init()
         else 	this->integFactors[i][0]=1; // default value when there is no material
 
         if( this->f_printLog.getValue() )
-            std::cout<<"FrameForceField<DataTypes>::IntegFactor["<<i<<"](coord "<<point<<")="<<integFactors[i]<<std::endl;
+            std::cout<<"GreenLagrangeForceField<DataTypes>::IntegFactor["<<i<<"](coord "<<point<<")="<<integFactors[i]<<std::endl;
     }
 }
 
 
 template <class DataTypes>
-void FrameForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v , const core::MechanicalParams* /*mparams*/)
+void GreenLagrangeForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v , const core::MechanicalParams* /*mparams*/)
 {
     ReadAccessor<DataVecCoord> x(_x);
     ReadAccessor<DataVecDeriv> v(_v);
@@ -129,8 +129,8 @@ void FrameForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord&
         StrainType::mult(v[i], x[i], strainRate[i]/*,&rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameForceField<DataTypes>::addForce, deformation gradient = " << x[i] << endl;
-            cerr<<"FrameForceField<DataTypes>::addForce, strain = " << strain[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addForce, deformation gradient = " << x[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addForce, strain = " << strain[i] << endl;
         }
     }
     material->computeStress( stress, &stressStrainMatrices, strain, strainRate, out.ref() );
@@ -141,14 +141,14 @@ void FrameForceField<DataTypes>::addForce(DataVecDeriv& _f , const DataVecCoord&
         StrainType::addMultTranspose(f[i], x[i], stress[i], this->integFactors[i]/*, &rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameForceField<DataTypes>::addForce, stress = " << stress[i] << endl;
-            cerr<<"FrameForceField<DataTypes>::addForce, stress deformation gradient form= " << f[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addForce, stress = " << stress[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addForce, stress deformation gradient form= " << f[i] << endl;
         }
     }
 }
 
 template <class DataTypes>
-void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
+void GreenLagrangeForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeriv&  _dx , const core::MechanicalParams* mparams)
 {
     ReadAccessor<DataVecCoord> x (*this->getMState()->read(core::ConstVecCoordId::position()));
     ReadAccessor<DataVecDeriv> dx(_dx);
@@ -163,9 +163,9 @@ void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeri
         StrainType::mult(dx[i], x[i], strainRate[i]/*,&rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameForceField<DataTypes>::addDForce, deformation gradient change = " << dx[i] << endl;
-            cerr<<"FrameForceField<DataTypes>::addDForce, strain change = " << strainRate[i] << endl;
-            cerr<<"FrameForceField<DataTypes>::addDForce, stress deformation gradient change before accumulating = " << df[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addDForce, deformation gradient change = " << dx[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addDForce, strain change = " << strainRate[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addDForce, stress deformation gradient change before accumulating = " << df[i] << endl;
         }
     }
 
@@ -178,7 +178,7 @@ void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeri
     {
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameForceField<DataTypes>::addDForce, stress change = " << stressChange[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addDForce, stress change = " << stressChange[i] << endl;
         }
         StrainType::mult(stressChange[i], kFactor);
     }
@@ -189,7 +189,7 @@ void FrameForceField<DataTypes>::addDForce(DataVecDeriv& _df , const DataVecDeri
         StrainType::addMultTranspose(df[i], x[i], stressChange[i], this->integFactors[i]/*, &rotation[i]*/);
         if( this->f_printLog.getValue() )
         {
-            cerr<<"FrameForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << endl;
+            cerr<<"GreenLagrangeForceField<DataTypes>::addDForce, stress deformation gradient change after accumulating "<< kFactor<<"* df = " << df[i] << endl;
         }
     }
 }
