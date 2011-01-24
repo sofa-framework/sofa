@@ -86,22 +86,22 @@ public:
 
 protected:
 
-    sofa::core::topology::BaseMeshTopology* m_tetraTopology;
 
-    sofa::component::topology::TetrahedronSetTopologyContainer* m_tetraContainer;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
+
+    FLUID fluidModel;
+    Data< Real > m_fluidModel;
 
     Data< Coord >   m_minBox;                       ///< Lower bound of the liquid box.
     Data< Coord >   m_maxBox;                       ///< Upper bound of the liquid box.
 
-    FLUID fluidModel;
-    Data< Real > m_fluidModel;
+    Data <Real>     m_heightPlane;              //orthogonal to the gravity
 
     Data <Real>     m_fluidDensity;
     Data <Real>     m_fluidViscosity;
     Data <Real>     m_atmosphericPressure;
 
-    Data <Real>     m_heightPlane;              //orthogonal to the gravity
+    Data<bool>      m_enableViscosity;
+    Data<bool>      m_turbulentFlow;    //1 for turbulent, 0 for laminar
 
     sofa::helper::vector<int> m_surfaceTriangles;
 
@@ -109,11 +109,14 @@ protected:
     Data<Real>      m_immersedArea;
     Data<Real>      m_globalForce;
 
+    sofa::core::topology::BaseMeshTopology* m_tetraTopology;
+
+    sofa::component::topology::TetrahedronSetTopologyContainer* m_tetraContainer;
+    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
+
     sofa::helper::vector<Deriv> m_debugForce;
     sofa::helper::vector<Deriv> m_debugPosition;
 
-    Data<bool>      m_enableViscosity;
-    Data<bool>      m_turbulentFlow;    //1 for turbulent, 0 for laminar
 
 
 public:
