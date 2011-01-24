@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initQtOgreViewer.h"
+#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_OGREVIEWER_H
+#define SOFA_COMPONENT_CONFIGURATIONSETTING_OGREVIEWER_H
+
+#include <sofa/component/configurationsetting/ViewerSetting.h>
 
 namespace sofa
 {
@@ -31,63 +33,38 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_QTOGREVIEWER_API void initExternalModule();
-    SOFA_QTOGREVIEWER_API const char* getModuleName();
-    SOFA_QTOGREVIEWER_API const char* getModuleVersion();
-    SOFA_QTOGREVIEWER_API const char* getModuleLicense();
-    SOFA_QTOGREVIEWER_API const char* getModuleDescription();
-    SOFA_QTOGREVIEWER_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace configurationsetting
 {
-    static bool first = true;
-    if (first)
+
+class SOFA_COMPONENT_CONFIGURATIONSETTING_API OgreViewerSetting: public ViewerSetting
+{
+public:
+    SOFA_CLASS(OgreViewerSetting,core::objectmodel::ConfigurationSetting);
+    OgreViewerSetting();
+
+    bool getShadows() const {return shadows.getValue();}
+    void setShadows(bool b) {shadows.setValue(b);};
+
+
+    OgreViewerSetting &addCompositor(const std::string &c)
     {
-        first = false;
+        compositors.beginEdit()->push_back(c);
+        compositors.endEdit();
+        return *this;
     }
+
+    void setCompositors( const helper::vector< std::string > &c) { compositors.setValue(c);}
+    const helper::vector< std::string > &getCompositors() const {return compositors.getValue();};
+
+
+protected:
+    Data< bool > shadows;
+    Data< helper::vector< std::string > > compositors;
+};
+
 }
 
-const char* getModuleName()
-{
-    return "Ogre plugin for SOFA";
 }
 
-const char* getModuleVersion()
-{
-    return "0.1";
 }
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "Ogre viewer plugin for SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "QtOgreViewer, OgreVisualModel, OgreShaderParameter, OgreShaderTextureUnit, OgreReflectionTexture, OgreViewerSetting";
-}
-
-} // namespace frame
-
-} // namespace sofa
-
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(QtOgreViewer)
-SOFA_LINK_CLASS(OgreVisualModel)
-SOFA_LINK_CLASS(OgreShaderParameter)
-SOFA_LINK_CLASS(OgreShaderTextureUnit)
-SOFA_LINK_CLASS(OgreReflectionTexture);
-SOFA_LINK_CLASS(OgreViewerSetting)
-
-
-
+#endif

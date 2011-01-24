@@ -50,7 +50,9 @@ SOURCES += DotSceneLoader.cpp \
            OgreShaderTextureUnit.cpp \
            QOgreLightWidget.cpp \
            OgreReflectionTexture.cpp \
-    initQtOgreViewer.cpp
+           DrawManagerOGRE.cpp \
+           OgreViewerSetting.cpp \
+           initQtOgreViewer.cpp
 			   
 HEADERS += DotSceneLoader.h \
            HelperLogics.h \
@@ -62,7 +64,9 @@ HEADERS += DotSceneLoader.h \
            QOgreLightWidget.h \
            OgreReflectionTexture.h \
            OgreSofaViewer.h \
-    initQtOgreViewer.h
+           DrawManagerOGRE.h \
+           OgreViewerSetting.h \
+           initQtOgreViewer.h
 
 
 #README_FILE = PluginMeshSTEPLoader.txt

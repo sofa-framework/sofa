@@ -35,12 +35,13 @@
 #include "OgreReflectionTexture.h"
 #include "OgreShaderParameter.h"
 #include "OgreShaderTextureUnit.h"
-#include <sofa/component/configurationsetting/OgreViewerSetting.h>
+#include "OgreViewerSetting.h"
+#include "DrawManagerOGRE.h"
+
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/qt/RealGUI.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/gl/DrawManagerOGRE.h>
 #include <sofa/helper/gl/DrawManagerGL.h>
 
 #include <sofa/helper/Factory.inl>
