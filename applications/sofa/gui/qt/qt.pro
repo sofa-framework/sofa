@@ -57,20 +57,21 @@ contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 }
 
 
-HEADERS += viewer/SofaViewer.h \
-		   viewer/ViewerFactory.h \
+HEADERS += viewer/VisualModelPolicy.h \
+	   viewer/SofaViewer.h \
+           viewer/ViewerFactory.h \
            GraphListenerQListView.h \
            GenGraphForm.h \
            AddObject.h \
            RealGUI.h \
-		   DataWidget.h \
-		   DataFilenameWidget.h \
+	   DataWidget.h \
+	   DataFilenameWidget.h \
            DisplayFlagWidget.h \
            GraphDataWidget.h \
-		   MaterialDataWidget.h \
+	   MaterialDataWidget.h \
            ModifyObject.h \
            SimpleDataWidget.h \
-		   SofaGUIQt.h \
+	   SofaGUIQt.h \
            StructDataWidget.h \
            TableDataWidget.h \
            WDoubleLineEdit.h \ 
@@ -79,17 +80,17 @@ HEADERS += viewer/SofaViewer.h \
            SofaMouseManager.h \
            SofaVideoRecorderManager.h \	
            QDataDescriptionWidget.h \
-		   QDisplayDataWidget.h \     
+	   QDisplayDataWidget.h \     
            QEnergyStatWidget.h \              
            QTabulationModifyObject.h \
            QTransformationWidget.h \
            QMouseOperations.h \
-		   QSofaListView.h \
-		   QSofaRecorder.h \
-		   QSofaStatWidget.h \
+	   QSofaListView.h \
+	   QSofaRecorder.h \
+	   QSofaStatWidget.h \
            QMenuFilesRecentlyOpened.h \
            ImageQt.h \ 
-    viewer/VisualModelPolicy.h \
+    
 
 
 
@@ -99,11 +100,11 @@ SOURCES += viewer/SofaViewer.cpp \
            GenGraphForm.cpp \
            AddObject.cpp \
            RealGUI.cpp \
-		   DataWidget.cpp \ 
-		   DataFilenameWidget.cpp \
+	   DataWidget.cpp \ 
+	   DataFilenameWidget.cpp \
            DisplayFlagWidget.cpp \
            GraphDataWidget.cpp \  
-		   MaterialDataWidget.cpp \
+	   MaterialDataWidget.cpp \
            ModifyObject.cpp \
            SimpleDataWidget.cpp \
            StructDataWidget.cpp \
@@ -114,14 +115,14 @@ SOURCES += viewer/SofaViewer.cpp \
            SofaVideoRecorderManager.cpp \
            SofaMouseManager.cpp \
            QDataDescriptionWidget.cpp \
-		   QDisplayDataWidget.cpp \
+	   QDisplayDataWidget.cpp \
            QEnergyStatWidget.cpp \       
-		   QMouseOperations.cpp \               
+	   QMouseOperations.cpp \               
            QTabulationModifyObject.cpp \
            QTransformationWidget.cpp \
-		   QSofaListView.cpp \
-		   QSofaRecorder.cpp \
-		   QSofaStatWidget.cpp \
+	   QSofaListView.cpp \
+	   QSofaRecorder.cpp \
+	   QSofaStatWidget.cpp \
            QMenuFilesRecentlyOpened.cpp \
            ImageQt.cpp \ 
 
@@ -173,35 +174,4 @@ contains( DEFINES, SOFA_GUI_QGLVIEWER){
 	SOURCES += viewer/qgl/QtGLViewer.cpp
 	HEADERS += viewer/qgl/QtGLViewer.h
 
-}
-
-########################################################################
-#  OGRE 3D
-########################################################################
-
-contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
-
-        SOURCES += viewer/qtogre/DotSceneLoader.cpp \
-                   viewer/qtogre/HelperLogics.cpp \
-                   viewer/qtogre/QtOgreViewer.cpp\ 
-                   viewer/qtogre/QtOgreViewer_slots.cpp\ 
-                   viewer/qtogre/OgreVisualModel.cpp \
-                   viewer/qtogre/OgreShaderParameter.cpp \
-                   viewer/qtogre/OgreShaderTextureUnit.cpp \
-                   viewer/qtogre/QOgreLightWidget.cpp \
-                   viewer/qtogre/OgreReflectionTexture.cpp
-			   
-	HEADERS += viewer/qtogre/DotSceneLoader.h \
-               viewer/qtogre/HelperLogics.h \
-               viewer/qtogre/QtOgreViewer.h \
-               viewer/qtogre/OgreVisualModel.h \
-               viewer/qtogre/OgreShaderEntryPoint.h \
-               viewer/qtogre/OgreShaderParameter.h \
-               viewer/qtogre/OgreShaderTextureUnit.h \
-               viewer/qtogre/QOgreLightWidget.h \
-               viewer/qtogre/OgreReflectionTexture.h \
-               viewer/qtogre/OgreSofaViewer.h
-        win32{
-                  LIBS += -lboost_thread
-        }
 }
