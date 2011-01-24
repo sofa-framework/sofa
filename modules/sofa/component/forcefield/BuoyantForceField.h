@@ -153,7 +153,7 @@ protected:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 
 #ifndef SOFA_FLOAT
