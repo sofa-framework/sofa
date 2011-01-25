@@ -25,8 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_CONSTRAINT_OTHERFAKEEXAMPLE_H
-#define SOFA_COMPONENT_CONSTRAINT_OTHERFAKEEXAMPLE_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_OtherFakeComponent_H
+#define SOFA_COMPONENT_CONSTRAINT_OtherFakeComponent_H
 
 
 #include <sofa/core/behavior/Constraint.h>

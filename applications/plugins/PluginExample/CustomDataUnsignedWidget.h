@@ -1,5 +1,5 @@
-#ifndef SOFA_GUI_QT_MYFAKECOMPONENTDATAWIDGET_H
-#define SOFA_GUI_QT_MYFAKECOMPONENTDATAWIDGET_H
+#ifndef SOFA_GUI_QT_CustomDataUnsignedWidget_H
+#define SOFA_GUI_QT_CustomDataUnsignedWidget_H
 
 #include <sofa/gui/qt/DataWidget.h>
 

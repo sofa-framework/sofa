@@ -36,12 +36,12 @@ LIBS += $$SOFA_EXT_LIBS
 INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES = MyFakeComponent.cpp \
-		  MyFakeComponentDataWidgets.cpp \
+                  CustomDataUnsignedWidget.cpp \
           OtherFakeComponent.cpp \
 	      initPluginExample.cpp
 
 HEADERS = MyFakeComponent.h \
-		  MyFakeComponentDataWidgets.h \
+                  CustomDataUnsignedWidget.h \
           OtherFakeComponent.h \
 		  OtherFakeComponent.inl 
 		  

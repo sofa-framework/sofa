@@ -25,8 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_MYFAKEEXAMPLE_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_MYFAKEEXAMPLE_H
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_MyFakeComponent_H
+#define SOFA_COMPONENT_BEHAVIORMODEL_MyFakeComponent_H
 
 
 #include <sofa/core/BehaviorModel.h>
