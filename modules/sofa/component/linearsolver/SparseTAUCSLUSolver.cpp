@@ -36,8 +36,6 @@
 #include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 
-#include <taucs_lib.h>
-
 namespace sofa
 {
 
@@ -102,16 +100,10 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
 
 //     if (this->f_printLog.getValue()) taucs_logfile((char*)"stdout");
 
-    printf("OK1\n");
     taucsmt_ccs_order(&data->matrix_taucs,&data->perm,&data->invperm,(char *) "metis");
-    //taucs_ccs_order((taucs_ccs_matrix*) &data->matrix_taucs,&data->perm,&data->invperm,(char *) "metis");
-    printf("OK2\n");
     data->PAPT = taucsmt_ccs_permute_symmetrically(&data->matrix_taucs,data->perm,data->invperm);
-    //data->PAPT = (taucsmt_ccs_matrix<Real> *) taucs_ccs_permute_symmetrically((taucs_ccs_matrix*) &data->matrix_taucs,data->perm,data->invperm);
-    printf("OK3\n");
-    //data->L = taucsmt_ccs_factor_llt(data->PAPT,f_dropTol.getValue(),true);
-    data->L = (taucsmt_ccs_matrix<Real> *) taucs_ccs_factor_llt((taucs_ccs_matrix*) data->PAPT,f_dropTol.getValue(),true);
-    printf("OK4\n");
+    data->L = taucsmt_ccs_factor_llt(data->PAPT,f_dropTol.getValue(),true);
+
 
 //     taucs_logfile((char*)"none");
 
