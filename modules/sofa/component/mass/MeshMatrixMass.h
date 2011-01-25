@@ -70,8 +70,8 @@ public:
     typedef typename DataTypes::Coord                       Coord;
     typedef typename DataTypes::Deriv                       Deriv;
     typedef typename DataTypes::Real                        Real;
-    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
-    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>               DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv>               DataVecDeriv;
     typedef TMassType                                       MassType;
     typedef helper::vector<MassType> MassVector;
 
@@ -110,6 +110,7 @@ protected:
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
     float massLumpingCoeff;
+    Real savedMass;
 
 
 public:
@@ -183,6 +184,9 @@ public:
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);
+
+    /// Answer wether mass matrix is lumped or not
+    bool isLumped() { return lumping.getValue(); }
 
 
 protected:
