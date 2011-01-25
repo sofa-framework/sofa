@@ -1,4 +1,4 @@
-#include "MyFakeComponentDataWidgets.h"
+#include "CustomDataUnsignedWidget.h"
 #include <sofa/helper/Factory.h>
 
 namespace sofa
