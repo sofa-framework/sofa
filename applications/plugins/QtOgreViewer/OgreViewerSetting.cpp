@@ -43,7 +43,7 @@ int OgreViewerSettingClass = core::RegisterObject("Configuration for the Ogre Vi
 
 OgreViewerSetting::OgreViewerSetting():
     shadows(initData(&shadows, false, "shadows", "Enabled Shadows"))
-    , compositors(initData(&compositors, "compositors", "List of compositor to be activated within the OgreViewer"))
+    // , compositors(initData(&compositors, "compositors", "List of compositor to be activated within the OgreViewer"))
 {
 }
 
