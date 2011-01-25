@@ -28,6 +28,7 @@
 #ifndef __WDOUBLELINEEDIT__
 #define __WDOUBLELINEEDIT__
 /* -------------------------------------------------------- */
+#include <sofa/gui/qt/SofaGUIQt.h>
 #include <qvalidator.h>
 #include <qlineedit.h>
 
@@ -37,7 +38,7 @@
 /* -------------------------------------------------------- */
 
 
-class WDoubleLineEdit : public QLineEdit
+class SOFA_SOFAGUIQT_API WDoubleLineEdit : public QLineEdit
 {
     Q_OBJECT
     Q_PROPERTY( double minValue READ minValue WRITE setMinValue )

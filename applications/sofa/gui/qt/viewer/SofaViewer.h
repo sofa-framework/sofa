@@ -27,6 +27,8 @@
 #ifndef SOFA_VIEWER_H
 #define SOFA_VIEWER_H
 
+#include <sofa/gui/qt/SofaGUIQt.h>
+
 #include <qstring.h>
 #include <qwidget.h>
 #include <sofa/helper/Factory.h>
@@ -102,7 +104,7 @@ enum
 
 
 
-class SofaViewer
+class SOFA_SOFAGUIQT_API SofaViewer
 {
 
 public:
