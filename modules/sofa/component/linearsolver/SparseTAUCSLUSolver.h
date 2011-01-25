@@ -43,7 +43,7 @@
 #include <float.h>
 #include <stdlib.h>
 
-#include <taucs_lib.h>
+#include <taucs-mt.h>
 
 namespace sofa
 {
@@ -71,9 +71,7 @@ public:
     Data<bool> f_verbose;
     Data<double> f_dropTol;
     Data<unsigned> f_nproc_simu;
-#ifdef SOFA_HAVE_CILK
-    Data<unsigned> f_nproc_fact;
-#endif
+
     SparseTAUCSLUSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
@@ -88,14 +86,14 @@ protected:
     {
     public :
         CompressedRowSparseMatrix<Real> Mfiltered;
-        taucs_ccs_matrix matrix_taucs; //use only pointeur of Mfiltered!
+        taucsmt_ccs_matrix<Real> matrix_taucs; //use only pointeur of Mfiltered!
         helper::vector<Real> B;
 // 	    helper::vector<double> R;
 
         int* perm; //premutation
         int* invperm; //premutation inverse
-        taucs_ccs_matrix * L; //factorization
-        taucs_ccs_matrix* PAPT; //reordered matrix
+        taucsmt_ccs_matrix<Real> * L; //factorization
+        taucsmt_ccs_matrix<Real> * PAPT; //reordered matrix
 
         SparseTAUCSLUSolverInvertData()
         {
@@ -107,10 +105,10 @@ protected:
 
         ~SparseTAUCSLUSolverInvertData()
         {
-            if (perm) taucs_free(perm);
-            if (invperm) taucs_free(invperm);
-            if (L) taucs_ccs_free(L);
-            if (PAPT) taucs_ccs_free(PAPT);
+            if (perm) free(perm);
+            if (invperm) free(invperm);
+            if (L) taucsmt_ccs_free(L);
+            if (PAPT) taucsmt_ccs_free(PAPT);
             L = NULL;
             perm    = NULL;
             invperm = NULL;
