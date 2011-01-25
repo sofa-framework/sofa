@@ -33,7 +33,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/ParallelMatrixLinearSolver.inl>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.inl>
 
 namespace sofa
@@ -60,8 +59,7 @@ SparseTAUCSSolver<TMatrix,TVector>::SparseTAUCSSolver()
     , f_symmetric( initData(&f_symmetric,true,"symmetric","Consider the system matrix as symmetric") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 #ifdef SOFA_HAVE_CILK
-    , f_nproc_simu( initData(&f_nproc_simu,(unsigned) 1,"nproc_simu","NB proc used for the simulation") )
-    , f_nproc_fact( initData(&f_nproc_fact,(unsigned) 1,"nproc_fact","NB proc used for the factorization") )
+    , f_nproc( initData(&f_nproc,(unsigned) 1,"nproc","NB proc used in taucs library") )
 #endif
 {
 }
@@ -116,7 +114,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
         for (unsigned int i=0; i<options.size(); ++i) opts.push_back((char*)options[i].c_str());
     }
 #ifdef SOFA_HAVE_CILK
-    if (f_nproc_fact.getValue()>1)
+    if (f_nproc.getValue()>1)
     {
         char buf[64];
         sprintf(buf,"taucs.cilk.nproc=%d",f_nproc_fact.getValue());
@@ -164,15 +162,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
     {
         for (unsigned int i=0; i<options.size(); ++i) opts.push_back((char*)options[i].c_str());
     }
-#ifdef SOFA_HAVE_CILK
-    if (f_nproc_simu.getValue()>1)
-    {
-        char buf[64];
-        sprintf(buf,"taucs.cilk.nproc=%d",f_nproc_simu.getValue());
-        opts.push_back(buf);
-        opts.push_back((char *) "taucs.factor.mf=true");
-    }
-#endif
+
     opts.push_back((char*)"taucs.factor=false");
     //opts.push_back((char*)"taucs.factor.symbolic=false");
     //opts.push_back((char*)"taucs.factor.numeric=false");
