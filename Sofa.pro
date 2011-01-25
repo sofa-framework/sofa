@@ -51,6 +51,13 @@ contains(DEFINES,SOFA_EXTLIBS_TAUCS){
 	}
 }
 
+#TAUCS-MT
+
+contains(DEFINES,SOFA_EXTLIBS_TAUCS_MT){
+	SUBDIRS += extlibs/taucs-mt
+}
+
+
 #FFMPEG
 contains(DEFINES,SOFA_EXTLIBS_FFMPEG){
 	SUBDIRS += extlibs/ffmpeg
