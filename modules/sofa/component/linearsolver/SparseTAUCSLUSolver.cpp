@@ -74,8 +74,6 @@ int get_taucs_lu_flags<float>() { return TAUCSMT_SINGLE; }
 template<class TMatrix, class TVector>
 void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
 {
-    M.compress();
-
     SparseTAUCSLUSolverInvertData * data = (SparseTAUCSLUSolverInvertData *) getMatrixInvertData(&M);
 
     if (data->perm) free(data->perm);
@@ -88,6 +86,7 @@ void SparseTAUCSLUSolver<TMatrix,TVector>::invert(Matrix& M)
     data->PAPT = NULL;
     data->L = NULL;
 
+    M.compress();
     data->Mfiltered.copyUpperNonZeros(M);
     data->Mfiltered.fullRows();
 
