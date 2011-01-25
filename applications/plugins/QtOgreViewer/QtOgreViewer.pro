@@ -73,26 +73,28 @@ HEADERS += DotSceneLoader.h \
 
       macx {
                 QMAKE_CXXFLAGS += -Wno-unused
-                SOFA_EXT_LIBS += -framework Ogre -framework CoreFoundation
+                LIBS += -framework Ogre -framework CoreFoundation
         }
 
         win32 {
-            OGRE_HOME= $$system(echo %OGRE_HOME%)
-            INCLUDEPATH += $(OGRE_HOME)/include
-                QMAKE_LIBDIR += $(OGRE_HOME)/lib
-                contains (CONFIGDEBUG, debug) {
-                        SOFA_EXT_LIBS += OgreMain_d.lib
-                }
-                else{
-                 SOFA_EXT_LIBS += OgreMain.lib
-                }
+            OGRE_HOME= E:\dev\ogre_src_v1-7-2\VCBuild\sdk
+            INCLUDEPATH += $${OGRE_HOME}/include/OGRE/
+            
+            contains (CONFIGDEBUG, debug) {
+				QMAKE_LIBDIR += $${OGRE_HOME}/lib/debug/
+                LIBS += OgreMain_d.lib
+            }
+            else{
+			    QMAKE_LIBDIR += $${OGRE_HOME}/lib/RelWithDebInfo/
+                LIBS += OgreMain.lib
+            }
         }
 
 
         unix {
                 !macx: {
                  QMAKE_CXXFLAGS += $$system(pkg-config --cflags OGRE )
-                  LIBS += $$system(pkg-config --libs OGRE )
+                 LIBS += $$system(pkg-config --libs OGRE )
                 }
         }
 

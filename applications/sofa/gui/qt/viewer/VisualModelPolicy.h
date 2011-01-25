@@ -1,6 +1,7 @@
 #ifndef SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
 #define SOFA_GUI_QT_VIEWER_VISUALMODELPOLICY_H
 
+#include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -12,7 +13,7 @@ namespace qt
 namespace viewer
 {
 
-class VisualModelPolicy
+class SOFA_SOFAGUIQT_API VisualModelPolicy
 {
 public:
     virtual ~VisualModelPolicy() {};

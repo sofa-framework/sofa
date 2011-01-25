@@ -1,6 +1,7 @@
 #ifndef SOFA_GUI_QT_VIEWERFACTORY_H
 #define SOFA_GUI_QT_VIEWERFACTORY_H
 
+#include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/gui/qt/viewer/SofaViewer.h>
@@ -41,7 +42,7 @@ public:
 };
 
 
-class SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::qt::viewer::SofaViewer, sofa::gui::qt::viewer::SofaViewerArgument >
+class SOFA_SOFAGUIQT_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::qt::viewer::SofaViewer, sofa::gui::qt::viewer::SofaViewerArgument >
 {
 public:
     typedef sofa::helper::Factory< std::string, sofa::gui::qt::viewer::SofaViewer, sofa::gui::qt::viewer::SofaViewerArgument > Inherited;
