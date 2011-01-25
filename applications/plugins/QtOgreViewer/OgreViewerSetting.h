@@ -36,7 +36,7 @@ namespace component
 namespace configurationsetting
 {
 
-class SOFA_COMPONENT_CONFIGURATIONSETTING_API OgreViewerSetting: public ViewerSetting
+class OgreViewerSetting: public ViewerSetting
 {
 public:
     SOFA_CLASS(OgreViewerSetting,core::objectmodel::ConfigurationSetting);
@@ -46,20 +46,20 @@ public:
     void setShadows(bool b) {shadows.setValue(b);};
 
 
-    OgreViewerSetting &addCompositor(const std::string &c)
+    /*OgreViewerSetting &addCompositor(const std::string &c)
     {
-        compositors.beginEdit()->push_back(c);
-        compositors.endEdit();
-        return *this;
-    }
+      compositors.beginEdit()->push_back(c);
+      compositors.endEdit();
+      return *this;
+    }*/
 
-    void setCompositors( const helper::vector< std::string > &c) { compositors.setValue(c);}
-    const helper::vector< std::string > &getCompositors() const {return compositors.getValue();};
-
+    /*    void setCompositors( const helper::vector< std::string > &c){ compositors.setValue(c);}
+        const helper::vector< std::string > &getCompositors() const {return compositors.getValue();};
+    */
 
 protected:
     Data< bool > shadows;
-    Data< helper::vector< std::string > > compositors;
+    // Data< helper::vector< std::string > > compositors;
 };
 
 }

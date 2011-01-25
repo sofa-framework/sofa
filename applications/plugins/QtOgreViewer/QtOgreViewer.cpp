@@ -1673,7 +1673,7 @@ void QtOgreViewer::configure(sofa::component::configurationsetting::ViewerSettin
     SofaViewer::configure(v);
     if (component::configurationsetting::OgreViewerSetting *viewerConf=dynamic_cast<component::configurationsetting::OgreViewerSetting *>(v))
     {
-        initCompositing=viewerConf->getCompositors();
+        //initCompositing=viewerConf->getCompositors();
         setLightActivated(viewerConf->getShadows());
         mCamera->getSceneManager()->setShadowTechnique(shadow);
 
