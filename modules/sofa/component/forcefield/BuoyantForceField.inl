@@ -148,6 +148,10 @@ void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoor
             //get the gravity
             Deriv gravity = this->getContext()->getLocalGravity();
             Real gravityNorm = gravity.norm();
+            if (!gravityNorm)
+            {
+                serr << "Error(BuoyantForceField):Buoyancy works with gravity, but gravity is null  here" << sendl;
+            }
 
             //compute the immersed volume
             Real immersedVolume = static_cast<Real>(0.0f);
@@ -169,24 +173,6 @@ void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoor
             //if there is a part of the volume of the object immersed
             if ( m_immersedVolume.getValue() > static_cast<Real>(0.f))
             {
-//                       Deriv globalForce = gravity * ( - m_fluidDensity.getValue() * m_immersedVolume.getValue());
-//                       m_globalForce.setValue(globalForce.norm());
-
-//                       std::cout << "Global Force >> " << m_globalForce.getValue() << std::endl;
-
-                //get the immersed area
-//                       Real immersedArea = static_cast<Real>(0.0f);
-//                       for ( unsigned int i = 0 ; i < m_surfaceTriangles.size() ; i++)
-//                       {
-//                           if (isTriangleInFluid(m_tetraTopology->getTriangle(m_surfaceTriangles[i]) , x))
-//                           {
-//                               Real area = m_tetraGeo->computeTriangleArea(m_surfaceTriangles[i]);
-//                               immersedArea+=area;
-//                           }
-//                       }
-//                       m_immersedArea.setValue(immersedArea);
-//                       std::cout << "Immersed Area >> " << m_immersedArea.getValue() << std::endl;
-
                 //for each triangle of the surface
                 for (unsigned int i = 0 ; i < m_surfaceTriangles.size() ; i++)
                 {
@@ -202,7 +188,7 @@ void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoor
                         Deriv centreTriangle =  m_tetraGeo->computeTriangleCenter(m_surfaceTriangles[i]);
 
                         //get the distance between the centroid and the surface of the fluid
-                        Real z = fabs(dot(gravity, centreTriangle) + m_heightPlane.getValue())/gravityNorm;
+                        Real z = fabs(dot(gravity/ gravityNorm, centreTriangle) + m_heightPlane.getValue());
 
                         //the pressure applied by the fluid on the current triangle
                         Real pressure = m_atmosphericPressure.getValue() + m_fluidDensity.getValue() * gravityNorm * z;
@@ -219,7 +205,7 @@ void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoor
                             {
                                 dragForce = - (Real)0.5f * m_fluidDensity.getValue() * area;
                             }
-                            else
+                            else //laminar flow
                             {
                                 Coord circumcenter = m_tetraGeo->computeTriangleCircumcenter(m_surfaceTriangles[i]);
                                 Coord firstCorner = x[tri[0]];
@@ -238,14 +224,15 @@ void BuoyantForceField<DataTypes>::addForce(DataVecDeriv& d_f, const DataVecCoor
                                 if ( m_turbulentFlow.getValue())
                                 {
                                     f[tri[j]] += velocity  * ( dragForce * velocity.norm() );
-                                    m_debugForce.push_back(velocity  * ( dragForce * velocity.norm()));
+//                                           m_debugForce.push_back(velocity  * ( dragForce * velocity.norm()));
                                 }
-                                else
+                                else //laminar flow
                                 {
                                     f[tri[j]] += velocity  * ( dragForce);
-                                    m_debugForce.push_back(velocity  * ( dragForce ));
+//                                           m_debugForce.push_back(velocity  * ( dragForce ));
                                 }
                             }
+                            m_debugForce.push_back(pointForcePressure);
                             //push back the force for debug
                             m_debugPosition.push_back(x[tri[j]]);
                         }
@@ -281,7 +268,7 @@ bool BuoyantForceField<DataTypes>::isPointInFluid(const Coord &x) const
         Deriv gravity = this->getContext()->getLocalGravity();
 
         //signed distance between the current point and the surface of the fluid
-        Real distance = gravity[0] * x[0] + gravity[1] * x[1] + gravity[2] * x[2] + m_heightPlane.getValue();
+        Real distance = dot(gravity / gravity.norm(), x)+ m_heightPlane.getValue();
 
         if ( distance > 0 )
         {
