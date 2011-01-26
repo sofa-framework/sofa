@@ -24,23 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-
-
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_PLUGINEXAMPLE_API
-#else
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_PLUGINEXAMPLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_PLUGINEXAMPLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-#endif
-
+#include "initPluginExample.h"
 
 namespace sofa
 {

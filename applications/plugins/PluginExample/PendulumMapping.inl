@@ -62,22 +62,22 @@ void PendulumMapping<In,Out>::draw()
 }
 
 template <class In, class Out>
-void PendulumMapping<In,Out>::apply(typename Out::VecCoord& out, const typename In::VecCoord& in)
+void PendulumMapping<In,Out>::apply(typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/)
 {
 }
 
 template <class In, class Out>
-void PendulumMapping<In,Out>::applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in)
+void PendulumMapping<In,Out>::applyJ(typename Out::VecDeriv& /*out*/, const typename In::VecDeriv& /*in*/)
 {
 }
 
 template <class In, class Out>
-void PendulumMapping<In,Out>::applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in)
+void PendulumMapping<In,Out>::applyJT(typename In::VecDeriv& /*out*/, const typename Out::VecDeriv& /*in*/)
 {
 }
 
 template <class In, class Out>
-void PendulumMapping<In,Out>::applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+void PendulumMapping<In,Out>::applyJT(typename In::MatrixDeriv& /*out*/, const typename Out::MatrixDeriv& /*in*/)
 {
 }
 

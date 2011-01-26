@@ -34,13 +34,14 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 
 
 template <class DataTypes>
 OtherFakeComponent<DataTypes>::OtherFakeComponent()
+    :core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
 {
 }
 
