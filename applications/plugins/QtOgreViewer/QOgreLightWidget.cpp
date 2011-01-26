@@ -169,8 +169,8 @@ void QOgreLightWidget::updateLight()
 {
     Ogre::Light *l = mSceneMgr->getLight(name);
     l->setCastShadows(castShadows->isChecked());
-    l->setDiffuseColour(diffuse[0]->getValue(),diffuse[1]->getValue(),diffuse[2]->getValue());
-    l->setSpecularColour(specular[0]->getValue(),specular[1]->getValue(),specular[2]->getValue());
+    l->setDiffuseColour(diffuse[0]->Value(),diffuse[1]->Value(),diffuse[2]->Value());
+    l->setSpecularColour(specular[0]->Value(),specular[1]->Value(),specular[2]->Value());
 }
 void QOgreLightWidget::updateInfo()
 {
@@ -255,7 +255,7 @@ void QOgreDirectionalLightWidget::updateLight()
 {
     Ogre::Light *l = mSceneMgr->getLight(name);
     QOgreLightWidget::updateLight();
-    l->setDirection(direction[0]->getValue(),direction[1]->getValue(),direction[2]->getValue());
+    l->setDirection(direction[0]->Value(),direction[1]->Value(),direction[2]->Value());
 }
 
 void QOgreDirectionalLightWidget::updateInfo()
@@ -336,7 +336,7 @@ void QOgrePointLightWidget::updateLight()
 {
     Ogre::Light *l = mSceneMgr->getLight(name);
     QOgreLightWidget::updateLight();
-    l->setPosition(position[0]->getValue(),position[1]->getValue(),position[2]->getValue());
+    l->setPosition(position[0]->Value(),position[1]->Value(),position[2]->Value());
 }
 
 void QOgrePointLightWidget::updateInfo()
@@ -464,10 +464,10 @@ void QOgreSpotLightWidget::updateLight()
 {
     Ogre::Light *l = mSceneMgr->getLight(name);
     QOgreLightWidget::updateLight();
-    l->setPosition(position[0]->getValue(),position[1]->getValue(),position[2]->getValue());
-    l->setDirection(direction[0]->getValue(),direction[1]->getValue(),direction[2]->getValue());
-    Ogre::Radian in (Ogre::Degree(range[0]->getValue()));
-    Ogre::Radian out(Ogre::Degree(range[1]->getValue()));
+    l->setPosition(position[0]->Value(),position[1]->Value(),position[2]->Value());
+    l->setDirection(direction[0]->Value(),direction[1]->Value(),direction[2]->Value());
+    Ogre::Radian in (Ogre::Degree(range[0]->Value()));
+    Ogre::Radian out(Ogre::Degree(range[1]->Value()));
     l->setSpotlightRange(in,out);
 }
 
