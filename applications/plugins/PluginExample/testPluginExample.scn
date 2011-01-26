@@ -1,7 +1,11 @@
 <Node 	name="Root"  >
-        <Node 	name="myTestingNode"   >
-        <MechanicalObject template="Vec3d" useMask="1"  restScale="1" />
-        <MyFakeComponent name="aMyFakeComponent" />
-        <OtherFakeComponent name="aOtherFakeComponent" />
+        <EulerImplicitSolver />
+        <CGLinearSolver template="GraphScattered" />
+        <MechanicalObject template="Vec1d" />
+        <Node 	name="myTestingNode" >
+                <MechanicalObject template="Vec3d" />
+                <MyMapping template="Vec3d" input="@.." output="@."/>
+                <MyFakeComponent name="aMyFakeComponent" />
+                <OtherFakeComponent name="aOtherFakeComponent" />
         </Node>
 </Node>
