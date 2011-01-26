@@ -25,8 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_CONSTRAINT_MyMapping_H
-#define SOFA_COMPONENT_CONSTRAINT_MyMapping_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_PendulumMapping_H
+#define SOFA_COMPONENT_CONSTRAINT_PendulumMapping_H
 
 
 #include <sofa/core/Mapping.h>
@@ -59,16 +59,16 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-class MyMapping : public core::Mapping<TIn, TOut>
+class PendulumMapping : public core::Mapping<TIn, TOut>
 {
 public:
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
-    SOFA_CLASS( SOFA_TEMPLATE2(MyMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut) );
+    SOFA_CLASS( SOFA_TEMPLATE2(PendulumMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut) );
 
-    MyMapping(core::State<In>* from, core::State<Out>* to );
-    ~MyMapping();
+    PendulumMapping(core::State<In>* from, core::State<Out>* to );
+    ~PendulumMapping();
 
     virtual void init();
     virtual void draw();
