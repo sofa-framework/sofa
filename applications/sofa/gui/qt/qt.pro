@@ -96,7 +96,6 @@ HEADERS += viewer/VisualModelPolicy.h \
 
 
 SOURCES += viewer/SofaViewer.cpp \
-           viewer/ViewerFactory.cpp \
            GraphListenerQListView.cpp \
            GenGraphForm.cpp \
            AddObject.cpp \
