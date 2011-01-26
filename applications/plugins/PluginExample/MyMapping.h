@@ -24,22 +24,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+
+#ifndef SOFA_COMPONENT_CONSTRAINT_MyMapping_H
+#define SOFA_COMPONENT_CONSTRAINT_MyMapping_H
+
+
+#include <sofa/core/Mapping.h>
+#include <sofa/component/component.h>
+#include <sofa/helper/OptionsGroup.h>
 
 
 #ifndef WIN32
 #define SOFA_EXPORT_DYNAMIC_LIBRARY
 #define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_PLUGINEXAMPLE_API
 #else
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
+#ifdef SOFA_BUILD_DYNAMICLIBEXAMPLE
 #define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_PLUGINEXAMPLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_PLUGINEXAMPLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 #endif
+
 
 
 namespace sofa
@@ -48,60 +55,44 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_PLUGINEXAMPLE_API void initExternalModule();
-    SOFA_PLUGINEXAMPLE_API const char* getModuleName();
-    SOFA_PLUGINEXAMPLE_API const char* getModuleVersion();
-    SOFA_PLUGINEXAMPLE_API const char* getModuleLicense();
-    SOFA_PLUGINEXAMPLE_API const char* getModuleDescription();
-    SOFA_PLUGINEXAMPLE_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace mapping
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
+template <class TIn, class TOut>
+class MyMapping : public core::Mapping<TIn, TOut>
 {
-    return "PluginExample";
+public:
+    typedef core::Mapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+    SOFA_CLASS( SOFA_TEMPLATE2(MyMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut) );
+
+    MyMapping(core::State<In>* from, core::State<Out>* to );
+    ~MyMapping();
+
+    virtual void init();
+    virtual void draw();
+
+    virtual void apply(typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in);
+    virtual void applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in);
+    virtual void applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in);
+
+
+protected:
+
+
+private:
+
+};
+
+
 }
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "a simple example of a plugin component module";
-}
-
-const char* getModuleComponentList()
-{
-    return "MyMapping, MyFakeComponent, OtherFakeComponent";
-}
-
-
-
 }
 
 }
 
 
-SOFA_LINK_CLASS(MyMapping)
-SOFA_LINK_CLASS(MyFakeComponent)
-SOFA_LINK_CLASS(OtherFakeComponent)
 
+#endif
