@@ -85,6 +85,8 @@ public:
     typedef typename core::behavior::Constraint<DataTypes> Inherit;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
 protected:
