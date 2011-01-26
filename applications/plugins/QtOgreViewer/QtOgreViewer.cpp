@@ -399,25 +399,6 @@ void QtOgreViewer::updateIntern()
             mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
         if (!groot->getContext()->getShowWireFrame() && mCamera->getPolygonMode()!= Ogre::PM_SOLID)
             mCamera->setPolygonMode(Ogre::PM_SOLID);
-        if (needUpdateParameters)
-        {
-            mSceneMgr->setAmbientLight(Ogre::ColourValue(ambient[0]->getValue(),ambient[1]->getValue(),ambient[2]->getValue(),1));
-
-            for (unsigned int i=0; i<dirLightOgreWidget.size(); ++i)
-            {
-                dirLightOgreWidget[i]->updateLight();
-            }
-            for (unsigned int i=0; i<pointLightOgreWidget.size(); ++i)
-            {
-                pointLightOgreWidget[i]->updateLight();
-            }
-            for (unsigned int i=0; i<spotLightOgreWidget.size(); ++i)
-            {
-                spotLightOgreWidget[i]->updateLight();
-            }
-
-            needUpdateParameters = false;
-        }
 
         //Not optimal, clear all the datas
         sofa::simulation::getSimulation()->DrawUtility().clear();
@@ -500,7 +481,20 @@ void QtOgreViewer::updateIntern()
 
 void QtOgreViewer::updateViewerParameters()
 {
-    needUpdateParameters = true;
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(ambient[0]->Value(),ambient[1]->Value(),ambient[2]->Value(),1));
+
+    for (unsigned int i=0; i<dirLightOgreWidget.size(); ++i)
+    {
+        dirLightOgreWidget[i]->updateLight();
+    }
+    for (unsigned int i=0; i<pointLightOgreWidget.size(); ++i)
+    {
+        pointLightOgreWidget[i]->updateLight();
+    }
+    for (unsigned int i=0; i<spotLightOgreWidget.size(); ++i)
+    {
+        spotLightOgreWidget[i]->updateLight();
+    }
     updateIntern();
 }
 
@@ -1173,7 +1167,9 @@ void QtOgreViewer::mouseReleaseEvent(QMouseEvent* evt)
         m_mouseMiddlePressed = false;
         m_mRotX = m_mRotY = Ogre::Degree(0);
         m_mTranslateVector = Ogre::Vector3::ZERO;
+
     }
+
 
 }
 
@@ -1214,7 +1210,7 @@ void QtOgreViewer::mouseMoveEvent(QMouseEvent* evt)
         }
 
         m_mousePos = evt->globalPos();
-        if (m_mouseLeftPressed || m_mouseMiddlePressed ||  m_mouseRightPressed ) updateIntern();
+        if (m_mouseLeftPressed || m_mouseMiddlePressed ||  m_mouseRightPressed ) this->update();
     }
 }
 
@@ -1230,7 +1226,7 @@ void QtOgreViewer::wheelEvent(QWheelEvent* evt)
         mCamera->setOrthoWindow(displacement*wRatio+mCamera->getOrthoWindowWidth(),
                 displacement+mCamera->getOrthoWindowHeight());
     }
-    updateIntern();
+    this->update();
 }
 
 
