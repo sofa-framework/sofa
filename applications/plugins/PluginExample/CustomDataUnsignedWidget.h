@@ -29,7 +29,7 @@ namespace qt
 * in the gui. In the .cpp file this widget is registered to represent
 * myData from MyFakeComponent in the gui.
 **/
-class SOFA_PLUGINEXAMPLE_API CustomDataUnsignedWidget : public TDataWidget<unsigned>
+class SOFA_PluginExample_API CustomDataUnsignedWidget : public TDataWidget<unsigned>
 {
     Q_OBJECT
 public :

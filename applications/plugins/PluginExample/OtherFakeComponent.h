@@ -71,7 +71,7 @@ private:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_PLUGINEXAMPLE)
+#if defined(WIN32) && !defined(SOFA_BUILD_PluginExample)
 #ifndef SOFA_FLOAT
 extern template class OtherFakeComponent<defaulttype::Vec3dTypes>;
 extern template class OtherFakeComponent<defaulttype::Rigid3dTypes>;

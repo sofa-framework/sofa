@@ -1,13 +1,13 @@
-#ifndef INITPLUGINEXAMPLE_H
-#define INITPLUGINEXAMPLE_H
+#ifndef INITPluginExample_H
+#define INITPluginExample_H
 
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
-#define SOFA_PLUGINEXAMPLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_PluginExample
+#define SOFA_PluginExample_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_PLUGINEXAMPLE_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_PluginExample_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITPLUGINEXAMPLE_H
+#endif // INITPluginExample_H
