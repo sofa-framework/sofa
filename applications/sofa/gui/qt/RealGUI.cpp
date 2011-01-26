@@ -269,6 +269,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
 
+    informationOnPickCallBack = InformationOnPickCallBack(this);
+
 #ifdef SOFA_QT4
     fileMenu->removeAction(Action);
 #endif
@@ -545,9 +547,7 @@ void RealGUI::createViewers(const char* viewerName)
         application->exit();
     }
     left_stack->addWidget ( viewer->getQWidget() );
-    viewer->getPickHandler()->addCallBack(new InformationOnPickCallBack(this));
     initViewer();
-
 }
 
 void RealGUI::initViewer()
@@ -605,7 +605,7 @@ void RealGUI::initViewer()
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
-    viewer->getPickHandler()->addCallBack( new InformationOnPickCallBack(this) );
+    viewer->getPickHandler()->addCallBack(&informationOnPickCallBack );
 
     guiName=viewerName;
 }

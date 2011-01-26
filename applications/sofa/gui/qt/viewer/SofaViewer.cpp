@@ -22,7 +22,7 @@ SofaViewer::SofaViewer()
     , backgroundImage("textures/SOFA_logo.bmp")
     , ambientColour(Vector3())
 {
-
+    colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
 }
 
 
@@ -81,6 +81,7 @@ void SofaViewer::setScene(sofa::simulation::Node* scene, const char* filename /*
 
     // init pickHandler
     pick.init();
+    pick.setColourRenderCallback(&colourPickingRenderCallBack);
 
 }
 
