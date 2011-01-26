@@ -28,7 +28,6 @@
 #define SOFA_VIEWER_H
 
 #include <sofa/gui/qt/SofaGUIQt.h>
-
 #include <qstring.h>
 #include <qwidget.h>
 #include <sofa/helper/Factory.h>
@@ -48,7 +47,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/PickHandler.h>
-
+#include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <qcursor.h>
 
 #include <sofa/helper/gl/Capture.h>
@@ -214,6 +213,7 @@ protected:
     Vector3 ambientColour;
 
     PickHandler pick;
+    ColourPickingRenderCallBack colourPickingRenderCallBack;
 
     //instruments handling
     int _navigationMode;
@@ -235,23 +235,6 @@ public:
 };
 
 typedef CustomPolicySofaViewer< OglModelPolicy > OglModelSofaViewer;
-
-
-class ColourPickingRenderCallBack : public sofa::gui::CallBackRender
-{
-public:
-    ColourPickingRenderCallBack(SofaViewer* viewer):_viewer(viewer) {};
-    virtual void render(core::CollisionModel::ColourCode code)
-    {
-        if(_viewer)
-        {
-            _viewer->drawColourPicking(code);
-        }
-    };
-protected:
-    SofaViewer* _viewer;
-
-};
 
 
 }

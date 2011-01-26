@@ -338,9 +338,6 @@ void QtGLViewer::init(void)
     setShortcut(QGLViewer::SAVE_SCREENSHOT, Qt::Key_S);
     setShortcut(QGLViewer::HELP, Qt::Key_H);
 
-    pick.setColourRenderCallback(new ColourPickingRenderCallBack(this) );
-
-
 }
 
 // ---------------------------------------------------------

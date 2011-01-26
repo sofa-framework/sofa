@@ -132,7 +132,7 @@ SofaPluginManager::SofaPluginManager()
             item->setSelectable(true);
         }
     }
-// 			settings.endArray();
+    // 			settings.endArray();
     settings.endGroup();
 }
 

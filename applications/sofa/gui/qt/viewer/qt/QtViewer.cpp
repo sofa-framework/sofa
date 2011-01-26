@@ -340,7 +340,7 @@ void QtViewer::initializeGL(void)
         printf("GL initialized\n");
     }
 
-    pick.setColourRenderCallback(new ColourPickingRenderCallBack(this) );
+
 
     // switch to preset view
     resetView();

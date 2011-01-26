@@ -114,11 +114,6 @@ public:
 
     void setColourRenderCallback(CallBackRender * colourRender)
     {
-        if(renderCallback != NULL)
-        {
-            delete renderCallback;
-            renderCallback = NULL;
-        }
         renderCallback = colourRender;
     }
 
@@ -132,7 +127,7 @@ public:
 
     void addCallBack(CallBackPicker *c) {callbacks.push_back(c);}
     helper::vector< CallBackPicker* > getCallBackPicker() {return callbacks;}
-    void clearCallBacks() {for (unsigned int i=0; i<callbacks.size(); ++i) delete callbacks[i]; callbacks.clear();}
+    void clearCallBacks() {for (unsigned int i=0; i<callbacks.size(); ++i) callbacks.clear();}
 
     static BodyPicked findCollisionUsingBruteForce(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, double maxLength);
     BodyPicked findCollisionUsingColourCoding(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction);

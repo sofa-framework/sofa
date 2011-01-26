@@ -59,6 +59,9 @@ public:
         static SofaPluginManager instance;
         return &instance;
     }
+signals:
+    void libraryAdded();
+    void libraryRemoved();
 
 public slots:
 
