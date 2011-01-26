@@ -28,24 +28,10 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_OtherFakeComponent_H
 #define SOFA_COMPONENT_CONSTRAINT_OtherFakeComponent_H
 
-
-#include <sofa/core/behavior/Constraint.h>
-
-
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#else
-#ifdef SOFA_BUILD_DYNAMICLIBEXAMPLE
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-#endif
-
-
+#include "initPluginExample.h"
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -53,14 +39,14 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 template <class DataTypes>
-class  OtherFakeComponent : public core::behavior::Constraint<DataTypes>
+class  OtherFakeComponent : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OtherFakeComponent,DataTypes),SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(OtherFakeComponent,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
     typedef typename  DataTypes::VecDeriv VecDeriv;
     typedef typename  DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename  DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
@@ -68,14 +54,14 @@ public:
     OtherFakeComponent();
     ~OtherFakeComponent();
 
-    virtual void init();
+    void init();
 
-    virtual void reinit();
+    void reinit();
 
     void projectResponse(MatrixDerivRowType& /*dx*/) {}
     void projectResponse(VecDeriv& /*dx*/) {}
-    virtual void projectVelocity(VecDeriv& /*dx*/) {}
-    virtual void projectPosition(VecCoord& /*x*/) {}
+    void projectVelocity(VecDeriv& /*dx*/) {}
+    void projectPosition(VecCoord& /*x*/) {}
 
 
 protected:
@@ -85,7 +71,16 @@ private:
 
 };
 
-
+#if defined(WIN32) && !defined(SOFA_BUILD_PLUGINEXAMPLE)
+#ifndef SOFA_FLOAT
+extern template class OtherFakeComponent<defaulttype::Vec3dTypes>;
+extern template class OtherFakeComponent<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class OtherFakeComponent<defaulttype::Vec3fTypes>;
+extern template class OtherFakeComponent<defaulttype::Rigid3fTypes>;
+#endif
+#endif
 }
 
 }

@@ -46,7 +46,8 @@ HEADERS = MyFakeComponent.h \
           PendulumMapping.h \
           PendulumMapping.inl \
           OtherFakeComponent.h \
-          OtherFakeComponent.inl
+          OtherFakeComponent.inl \
+		  initPluginExample.h
 		  
 README_FILE = PluginExample.txt
 

@@ -1,6 +1,7 @@
 #ifndef SOFA_GUI_QT_CustomDataUnsignedWidget_H
 #define SOFA_GUI_QT_CustomDataUnsignedWidget_H
 
+#include "initPluginExample.h"
 #include <sofa/gui/qt/DataWidget.h>
 
 #ifdef SOFA_QT4
@@ -28,7 +29,7 @@ namespace qt
 * in the gui. In the .cpp file this widget is registered to represent
 * myData from MyFakeComponent in the gui.
 **/
-class CustomDataUnsignedWidget : public TDataWidget<unsigned>
+class SOFA_PLUGINEXAMPLE_API CustomDataUnsignedWidget : public TDataWidget<unsigned>
 {
     Q_OBJECT
 public :

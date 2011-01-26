@@ -27,9 +27,6 @@
 
 #include "OtherFakeComponent.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
 
 namespace sofa
 {
@@ -37,7 +34,7 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -60,13 +57,12 @@ int OtherFakeComponentClass = core::RegisterObject("just an example of templated
         ;
 
 #ifndef SOFA_FLOAT
-template class OtherFakeComponent<Rigid3dTypes>;
-template class OtherFakeComponent<Vec3dTypes>;
-template class OtherFakeComponent<Vec1dTypes>;
+template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Rigid3dTypes>;
+template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class OtherFakeComponent<Rigid3fTypes>;
-template class OtherFakeComponent<Vec3fTypes>;
+template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Rigid3fTypes>;
+template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Vec3fTypes>;
 #endif
 
 

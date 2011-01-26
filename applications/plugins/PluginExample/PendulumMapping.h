@@ -33,22 +33,6 @@
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
 
-
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#else
-#ifdef SOFA_BUILD_DYNAMICLIBEXAMPLE
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-#endif
-
-
-
 namespace sofa
 {
 
