@@ -39,18 +39,6 @@ namespace constraintset
 {
 
 #ifdef SOFA_DEV
-/*
-class StopperConstraintResolution : public core::behavior::ConstraintResolution
-{
-public:
-
-	virtual void resolution(int line, double** w, double* d, double* force)
-	{
-		force[line] += 0.0; //d[line] / w[line][line];
-	}
-};
-*/
-
 class StopperConstraintResolution1Dof : public core::behavior::ConstraintResolution
 {
 protected:
@@ -96,24 +84,20 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename core::behavior::Constraint<DataTypes> Inherit;
 
+    typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
+
 protected:
 
-    bool yetIntegrated;
-
-    Coord dfree;
     unsigned int cid;
 
     Data<int> index;
-    Data<double> min;
-    Data<double> max;
-
-    sofa::core::behavior::OdeSolver* ode_integrator;
+    Data<double> min, max;
 
 public:
 
     StopperConstraint(MechanicalState* object)
         : Inherit(object)
-        , yetIntegrated(false)
         , index(initData(&index, 0, "index", "index of the stop constraint"))
         , min(initData(&min, -100.0, "min", "minimum value accepted"))
         , max(initData(&max, 100.0, "max", "maximum value accepted"))
@@ -122,44 +106,21 @@ public:
 
 
     StopperConstraint()
-        : yetIntegrated(false)
-        , index(initData(&index, 0, "index", "index of the stop constraint"))
+        : index(initData(&index, 0, "index", "index of the stop constraint"))
         , min(initData(&min, -100.0, "min", "minimum value accepted"))
         , max(initData(&max, 100.0, "max", "maximum value accepted"))
     {
-
     }
 
-    virtual ~StopperConstraint()
-    {
-    }
+    virtual ~StopperConstraint() {}
 
     virtual void init();
-
-    virtual void buildConstraintMatrix(unsigned int & /*constraintId*/, core::ConstMultiVecCoordId);
-
-    virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true );
-
-    int getIndex()
-    {
-        return index.getValue();
-    }
-
-    double getMin()
-    {
-        return min.getValue();
-    }
-
-    double getMax()
-    {
-        return max.getValue();
-    }
+    virtual void buildConstraintMatrix(DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
+    virtual void getConstraintViolation(defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v, const core::ConstraintParams* cParams=core::ConstraintParams::defaultInstance());
 
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif
-
-    void draw();
 };
 } // namespace constraintset
 

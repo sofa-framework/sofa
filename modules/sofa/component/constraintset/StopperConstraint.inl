@@ -41,14 +41,8 @@ namespace constraintset
 template<class DataTypes>
 void StopperConstraint<DataTypes>::init()
 {
+    this->mstate = dynamic_cast<MechanicalState*>(getContext()->getMechanicalState());
     assert(this->mstate);
-
-    this->getContext()->get(ode_integrator);
-
-    if(ode_integrator!= NULL)
-        std::cout<<"ode_integrator found named :"<< ode_integrator->getName()<<std::endl;
-    else
-        std::cout<<"no ode_integrator found"<<std::endl;
 
     helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
     VecCoord& x = xData.wref();
@@ -59,86 +53,34 @@ void StopperConstraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::buildConstraintMatrix(unsigned int &constraintId, core::ConstMultiVecCoordId)
+void StopperConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x, const core::ConstraintParams* /*cParams*/)
 {
-    int tm;
-    Coord cx = Coord(1.0);
+    cid = cIndex;
+    assert(mstate);
 
-    tm = index.getValue();
+    MatrixDeriv& c = *c_d.beginEdit();
 
-    assert(this->mstate);
+    MatrixDerivRowIterator c_it = c.writeLine(cid);
+    c_it.setCol(index.getValue(), Coord(1));
 
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
-    MatrixDeriv& c = cData.wref();
-
-    cid = constraintId;
-    constraintId += 1;
-
-    c.writeLine(cid).addCol(tm, cx);
+    cIndex++;
+    c_d.endEdit();
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
+void StopperConstraint<DataTypes>::getConstraintViolation(defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v, const core::ConstraintParams* /*cParams*/)
 {
-    if (!freeMotion)
-        sout<<"WARNING has to be implemented for method based on non freeMotion"<<sendl;
-
-    if (freeMotion)
-    {
-        dfree = (*this->mstate->getXfree())[index.getValue()];
-    }
-    else
-    {
-        serr<<"WARNING: StopperConstraint with no freeMotion not implemented "<<sendl;
-        /*
-        double positionFactor = ode_integrator->getIntegrationFactor(0, 0);
-        double velocityFactor = ode_integrator->getIntegrationFactor(1, 0);
-        std::cout<<"dt found = "<<dt<<std::endl;
-
-        dfree = (*this->object2->getX())[m2.getValue()] * positionFactor + (*this->object2->getV())[m2.getValue()]*velocityFactor
-        	  - (*this->object1->getX())[m1.getValue()] * positionFactor - (*this->object1->getV())[m1.getValue()]*velocityFactor  ;
-
-        dt = 1.0; // ode_integrator->getSolutionIntegrationFactor(0) * 2;
-        */
-    }
-
-    v->set(cid, dfree[0]);
+    resV->set(cid, x.getValue()[index.getValue()][0]);
 }
-
-//template<class DataTypes>
-//void StopperConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
-//{
-//	id[offset++] = cid;
-//}
 
 #ifdef SOFA_DEV
 template<class DataTypes>
 void StopperConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-//	resTab[offset] = new BilateralConstraintResolution3Dof();
-//	offset += 3;
-
     for(int i=0; i<1; i++)
         resTab[offset++] = new StopperConstraintResolution1Dof(min.getValue(), max.getValue());
 }
 #endif
-
-template<class DataTypes>
-void StopperConstraint<DataTypes>::draw()
-{
-    if (!this->getContext()->getShowInteractionForceFields()) return;
-
-    /*
-    	glDisable(GL_LIGHTING);
-    	glPointSize(10);
-    	glBegin(GL_POINTS);
-    	glColor4f(1,0,1,1);
-    	helper::gl::glVertexT((*this->object1->getX())[m1.getValue()]);
-    	helper::gl::glVertexT((*this->object2->getX())[m2.getValue()]);
-    	glEnd();
-    	glPointSize(1);
-    */
-}
 
 } // namespace constraintset
 

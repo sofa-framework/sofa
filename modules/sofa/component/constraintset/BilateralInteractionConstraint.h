@@ -162,8 +162,6 @@ public:
 
 protected:
 
-    bool yetIntegrated;
-
     std::vector<Deriv> dfree;
     defaulttype::Quaternion q;
 
@@ -177,7 +175,6 @@ public:
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2)
-        , yetIntegrated(false)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     {
@@ -185,15 +182,13 @@ public:
 
     BilateralInteractionConstraint(MechanicalState* object)
         : Inherit(object, object)
-        , yetIntegrated(false)
         , m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     {
     }
 
     BilateralInteractionConstraint()
-        : yetIntegrated(false)
-        , m1(initData(&m1, "first_point","index of the constraint on the first model"))
+        : m1(initData(&m1, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     {
     }
