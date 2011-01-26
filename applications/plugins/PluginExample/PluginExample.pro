@@ -38,13 +38,13 @@ INCLUDEPATH += $$SOFA_DIR/extlibs
 SOURCES = MyFakeComponent.cpp \
           CustomDataUnsignedWidget.cpp \
           OtherFakeComponent.cpp \
-          MyMapping.cpp \
+          PendulumMapping.cpp \
           initPluginExample.cpp
 
 HEADERS = MyFakeComponent.h \
           CustomDataUnsignedWidget.h \
-          MyMapping.h \
-          MyMapping.inl \
+          PendulumMapping.h \
+          PendulumMapping.inl \
           OtherFakeComponent.h \
           OtherFakeComponent.inl
 		  

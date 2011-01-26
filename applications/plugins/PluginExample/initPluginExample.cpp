@@ -91,7 +91,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "MyMapping, MyFakeComponent, OtherFakeComponent";
+    return "PendulumMapping, MyFakeComponent, OtherFakeComponent";
 }
 
 
@@ -101,7 +101,7 @@ const char* getModuleComponentList()
 }
 
 
-SOFA_LINK_CLASS(MyMapping)
+SOFA_LINK_CLASS(PendulumMapping)
 SOFA_LINK_CLASS(MyFakeComponent)
 SOFA_LINK_CLASS(OtherFakeComponent)
 

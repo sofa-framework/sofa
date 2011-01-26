@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "MyMapping.h"
+#include "PendulumMapping.h"
 
 
 namespace sofa
@@ -40,44 +40,44 @@ namespace mapping
 
 
 template <class In, class Out>
-MyMapping<In,Out>::MyMapping(core::State<In>* from, core::State<Out>* to)
+PendulumMapping<In,Out>::PendulumMapping(core::State<In>* from, core::State<Out>* to)
     : Inherit ( from, to )
 {
 }
 
 
 template <class In, class Out>
-MyMapping<In,Out>::~MyMapping()
+PendulumMapping<In,Out>::~PendulumMapping()
 {
 }
 
 template <class In, class Out>
-void MyMapping<In,Out>::init()
+void PendulumMapping<In,Out>::init()
 {
 }
 
 template <class In, class Out>
-void MyMapping<In,Out>::draw()
+void PendulumMapping<In,Out>::draw()
 {
 }
 
 template <class In, class Out>
-void MyMapping<In,Out>::apply(typename Out::VecCoord& out, const typename In::VecCoord& in)
+void PendulumMapping<In,Out>::apply(typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
 }
 
 template <class In, class Out>
-void MyMapping<In,Out>::applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in)
+void PendulumMapping<In,Out>::applyJ(typename Out::VecDeriv& out, const typename In::VecDeriv& in)
 {
 }
 
 template <class In, class Out>
-void MyMapping<In,Out>::applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in)
+void PendulumMapping<In,Out>::applyJT(typename In::VecDeriv& out, const typename Out::VecDeriv& in)
 {
 }
 
 template <class In, class Out>
-void MyMapping<In,Out>::applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
+void PendulumMapping<In,Out>::applyJT(typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in)
 {
 }
 

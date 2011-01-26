@@ -1,11 +1,14 @@
-<Node 	name="Root"  >
-        <EulerImplicitSolver />
-        <CGLinearSolver template="GraphScattered" />
-        <MechanicalObject template="Vec1d" />
-        <Node 	name="myTestingNode" >
-                <MechanicalObject template="Vec3d" />
-                <MyMapping template="Vec3d" input="@.." output="@."/>
-                <MyFakeComponent name="aMyFakeComponent" />
-                <OtherFakeComponent name="aOtherFakeComponent" />
-        </Node>
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -9.81 0" time="0" animate="0" showVisualModels="0" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="1" showMechanicalMappings="1" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+	<Node 	name="parent node with independent DOFs" >
+		<EulerImplicitSolver name="ODE solver" />
+		<CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" />
+		<MechanicalObject template="Vec1d" name="angles" />
+		<Node 	name="child node with DOFs mapped from the parent" >
+			<MechanicalObject template="Vec3d" name="endpoint coordinates" position="1 -0.1 0" />
+			<PendulumMapping template="Vec3d" name="angle->coord mapping" input="@.." output="@."/>
+			<MyFakeComponent name="dummy component" />
+			<OtherFakeComponent name="dummy component" />
+		</Node>
+	</Node>
 </Node>

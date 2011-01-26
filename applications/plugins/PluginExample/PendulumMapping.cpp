@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "MyMapping.inl"
+#include "PendulumMapping.inl"
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -44,25 +44,25 @@ using namespace sofa::defaulttype;
 
 
 
-SOFA_DECL_CLASS(MyMapping)
+SOFA_DECL_CLASS(PendulumMapping)
 
 
-int MyMappingClass = core::RegisterObject("just an example of templated component")
+int PendulumMappingClass = core::RegisterObject("just an example of templated component")
 #ifndef SOFA_FLOAT
-        .add< MyMapping<Vec1dTypes,Vec3dTypes> >()
-        .add< MyMapping<Vec1dTypes,Vec2dTypes> >()
+        .add< PendulumMapping<Vec1dTypes,Vec3dTypes> >()
+        .add< PendulumMapping<Vec1dTypes,Vec2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< MyMapping<Vec1fTypes,Vec3fTypes> >()
+        .add< PendulumMapping<Vec1fTypes,Vec3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class MyMapping<Vec1dTypes,Vec3dTypes>;
-template class MyMapping<Vec1dTypes,Vec2dTypes>;
+template class PendulumMapping<Vec1dTypes,Vec3dTypes>;
+template class PendulumMapping<Vec1dTypes,Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class MyMapping<Vec1fTypes,Vec3fTypes>;
+template class PendulumMapping<Vec1fTypes,Vec3fTypes>;
 #endif
 
 
