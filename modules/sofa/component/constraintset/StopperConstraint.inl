@@ -41,7 +41,7 @@ namespace constraintset
 template<class DataTypes>
 void StopperConstraint<DataTypes>::init()
 {
-    this->mstate = dynamic_cast<MechanicalState*>(getContext()->getMechanicalState());
+    this->mstate = dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState());
     assert(this->mstate);
 
     helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
