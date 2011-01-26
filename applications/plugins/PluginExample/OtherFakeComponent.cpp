@@ -57,12 +57,12 @@ int OtherFakeComponentClass = core::RegisterObject("just an example of templated
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Rigid3dTypes>;
-template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Vec3dTypes>;
+template class SOFA_PluginExample_API OtherFakeComponent<Rigid3dTypes>;
+template class SOFA_PluginExample_API OtherFakeComponent<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Rigid3fTypes>;
-template class SOFA_PLUGINEXAMPLE_API OtherFakeComponent<Vec3fTypes>;
+template class SOFA_PluginExample_API OtherFakeComponent<Rigid3fTypes>;
+template class SOFA_PluginExample_API OtherFakeComponent<Vec3fTypes>;
 #endif
 
 

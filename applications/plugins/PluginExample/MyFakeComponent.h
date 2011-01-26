@@ -41,7 +41,7 @@ namespace behaviormodel
 {
 
 
-class SOFA_PLUGINEXAMPLE_API MyFakeComponent : public sofa::core::BehaviorModel
+class SOFA_PluginExample_API MyFakeComponent : public sofa::core::BehaviorModel
 {
 public:
     SOFA_CLASS(MyFakeComponent,sofa::core::BehaviorModel);

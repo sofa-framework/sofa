@@ -29,6 +29,7 @@
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -41,13 +42,18 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec1fTypes;
 
 
 
 SOFA_DECL_CLASS(PendulumMapping)
 
 
-int PendulumMappingClass = core::RegisterObject("just an example of templated component")
+int PendulumMappingClass = core::RegisterObject("Mapping from an angle to a point in 2D")
 #ifndef SOFA_FLOAT
         .add< PendulumMapping<Vec1dTypes,Vec3dTypes> >()
         .add< PendulumMapping<Vec1dTypes,Vec2dTypes> >()
