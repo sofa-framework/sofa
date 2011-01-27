@@ -4,7 +4,7 @@
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_PluginExample
+#ifdef SOFA_BUILD_PLUGINEXAMPLE
 #define SOFA_PluginExample_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #define SOFA_PluginExample_API  SOFA_IMPORT_DYNAMIC_LIBRARY
