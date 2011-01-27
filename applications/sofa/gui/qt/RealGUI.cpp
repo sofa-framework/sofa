@@ -27,11 +27,13 @@
 #include <sofa/gui/qt/RealGUI.h>
 #include <sofa/gui/qt/ImageQt.h>
 #ifndef SOFA_GUI_QT_NO_RECORDER
-#include "QSofaRecorder.h"
+#include <sofa/gui/qt/QSofaRecorder.h>
 #endif
-#include "QSofaStatWidget.h"
-#include "GenGraphForm.h"
-#include "QSofaListView.h"
+#include <sofa/gui/qt/QSofaStatWidget.h>
+#include <sofa/gui/qt/GenGraphForm.h>
+#include <sofa/gui/qt/QSofaListView.h>
+#include <algorithm>
+
 
 #ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
@@ -414,9 +416,14 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
 #endif
     //--------
+    this->connect( SofaPluginManager::getInstance(), SIGNAL(libraryAdded() ),  this, SLOT( updateViewerList() ));
+    this->connect( SofaPluginManager::getInstance(), SIGNAL(libraryRemoved() ),  this, SLOT( updateViewerList() ));
+
     SofaPluginManager::getInstance()->hide();
+    SofaPluginManager::getInstance()->initPluginList();
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
+
 
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
@@ -526,7 +533,7 @@ void RealGUI::createViewers(const char* viewerName)
             action->setMenuText(  helper::SofaViewerFactory::getInstance()->getAcceleratedViewerName(*iter) );
             action->setToggleAction(true);
             action->addTo(View);
-            viewerMap[action] = *iter;
+            viewerMap[*iter] = action;
             action->setEnabled(true);
             connect(action, SIGNAL( activated() ), this, SLOT( changeViewer() ) );
             if( strcmp(iter->c_str(), viewerName )== 0 )
@@ -618,15 +625,14 @@ void RealGUI::changeViewer()
     QAction* action = static_cast<QAction*>(obj);
 
     action->setOn(true);
-    std::map< QAction* , helper::SofaViewerFactory::Key >::const_iterator iter_map;
+    std::map< helper::SofaViewerFactory::Key, QAction*  >::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
     {
 
-        if ( (*iter_map).first == action )
+        if ( (*iter_map).second == action )
         {
 
             /* cleanup previous viewer */
-            //viewer->UnregisterVisualModels();
             if ( viewer->getScene() !=NULL )
             {
                 simulation::getSimulation()->unload ( viewer->getScene() );
@@ -646,18 +652,92 @@ void RealGUI::changeViewer()
             arg.name = "viewer";
             arg.parent = left_stack;
             /* change viewer */
-            viewer =  helper::SofaViewerFactory::CreateObject( (*iter_map).second, arg);
+            viewer =  helper::SofaViewerFactory::CreateObject( (*iter_map).first, arg);
             left_stack->addWidget( viewer->getQWidget() );
             initViewer();
         }
         else
         {
-            (*iter_map).first->setOn(false);
+            (*iter_map).second->setOn(false);
         }
     }
     /* reload the scene */
     std::string filename(this->windowFilePath().ascii());
     fileOpen ( filename.c_str() ); // keep the current display flags
+}
+
+void RealGUI::updateViewerList()
+{
+    helper::vector< helper::SofaViewerFactory::Key > currentKeys;
+    std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map;
+    for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
+    {
+        currentKeys.push_back((*iter_map).first);
+    }
+    std::sort(currentKeys.begin(),currentKeys.end());
+    helper::vector< helper::SofaViewerFactory::Key > updatedKeys;
+    helper::SofaViewerFactory::getInstance()->uniqueKeys(std::back_inserter(updatedKeys));
+    std::sort(updatedKeys.begin(),updatedKeys.end());
+
+    helper::vector< helper::SofaViewerFactory::Key > diffKeys;
+
+    std::set_symmetric_difference(currentKeys.begin(),currentKeys.end(),updatedKeys.begin(),updatedKeys.end()
+            ,std::back_inserter(diffKeys));
+
+    helper::vector< helper::SofaViewerFactory::Key >::const_iterator it;
+    for( it = diffKeys.begin(); it != diffKeys.end(); ++it)
+    {
+
+        std::map< helper::SofaViewerFactory::Key, QAction* >::iterator itViewerMap;
+
+        if( (itViewerMap = viewerMap.find(*it)) != viewerMap.end() )
+        {
+            if( (*itViewerMap).second->isOn() )
+            {
+                if ( viewer->getScene() !=NULL )
+                {
+                    simulation::getSimulation()->unload ( viewer->getScene() );
+                    delete viewer->getScene() ;
+                    viewer->setScene(NULL);
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
+                    if(visualGraph->getListener() != NULL )
+                        simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
+#endif
+                }
+                viewer->removeViewerTab(tabs);
+                left_stack->removeWidget(viewer->getQWidget() );
+                delete viewer;
+                viewer = NULL;
+            }
+            (*itViewerMap).second->removeFrom(View);
+            viewerMap.erase(itViewerMap);
+        }
+        else
+        {
+            QAction* action = new QAction(this);
+            action->setText( helper::SofaViewerFactory::getInstance()->getViewerName(*it) );
+            action->setMenuText(  helper::SofaViewerFactory::getInstance()->getAcceleratedViewerName(*it) );
+            action->setToggleAction(true);
+            action->addTo(View);
+            viewerMap[*it] = action;
+            action->setEnabled(true);
+            connect(action, SIGNAL( activated() ), this, SLOT( changeViewer() ) );
+        }
+    }
+
+    if( viewer == NULL )
+    {
+        if(!viewerMap.empty())
+        {
+            viewer::SofaViewerArgument arg;
+            arg.name = "viewer";
+            arg.parent = left_stack;
+            /* change viewer */
+            viewer =  helper::SofaViewerFactory::CreateObject( viewerMap.begin()->first, arg);
+            left_stack->addWidget( viewer->getQWidget() );
+            initViewer();
+        }
+    }
 }
 
 

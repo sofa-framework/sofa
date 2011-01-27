@@ -241,6 +241,7 @@ public slots:
     void currentTabChanged(QWidget*);
 protected slots:
     void changeViewer();
+    void updateViewerList();
 
 signals:
     void reload();
@@ -269,7 +270,7 @@ protected:
     bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
 
-    std::map< QAction* , helper::SofaViewerFactory::Key > viewerMap;
+    std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
     InformationOnPickCallBack informationOnPickCallBack;
 
     QWidget* currentTab;

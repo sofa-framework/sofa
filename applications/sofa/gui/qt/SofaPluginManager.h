@@ -53,6 +53,7 @@ class SofaPluginManager: public PluginManager
 public:
 
     SofaPluginManager();
+    void initPluginList();
 
     static SofaPluginManager* getInstance()
     {
