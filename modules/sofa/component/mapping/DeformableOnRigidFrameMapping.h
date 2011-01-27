@@ -197,6 +197,12 @@ public:
             dataVecOutRootForce[0]->endEdit();
     }
 
+    virtual void applyDJT(core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/, const core::MechanicalParams* /*mparams*/)
+    {
+        serr<<"Warning ! DeformableOnRigidFrameMapping::applyDJT not implemented"<<sendl;
+    }
+
+
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
     void applyJT( const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,

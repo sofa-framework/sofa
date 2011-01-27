@@ -79,6 +79,7 @@ public:
 
     // BaseMechanicalMapping
     virtual void applyJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams) = 0;
+    virtual void applyDJT(MultiVecDerivId inForce, ConstMultiVecDerivId outForce, const MechanicalParams* mparams) = 0;
     virtual void applyJT(MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst, const ConstraintParams* mparams) = 0;
     virtual void computeAccFromMapping(MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc, const MechanicalParams* mparams) = 0;
 

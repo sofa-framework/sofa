@@ -177,6 +177,17 @@ public:
     virtual void applyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */) { };
 #endif //SOFA_DEPRECATE_OLD_API
 
+    /// ApplyDJT (Force)///
+    /// Apply the change of force due to the nonlinearity of the mapping.
+    /// The default implementation does nothing, assuming a linear mapping.
+    ///
+    /// If the MechanicalMapping can be represented as a matrix J, this method computes
+    /// $ parentForce += dJ^t childForce $
+    /// This requires that the child force vector has remained unchanged since the last computation of the force.
+    virtual void applyDJT(MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/, const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ ) {}
+
+
+
     /// ApplyJT (Constraint)///
     virtual void applyJT(MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst, const ConstraintParams* cparams = ConstraintParams::defaultInstance() )
     {
