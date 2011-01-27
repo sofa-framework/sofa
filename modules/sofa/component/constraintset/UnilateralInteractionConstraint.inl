@@ -116,10 +116,12 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     contacts.resize(i+1);
     Contact& c = contacts[i];
 
-    std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
-    std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
-    std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;
-
+    if (this->f_printLog.getValue())
+    {
+        std::cout << "delta : " << delta << " - deltaFree : " << deltaFree << std::endl;
+        std::cout << "P : " << P << " - PFree : " << Pfree << std::endl;
+        std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
+    }
 
 // for visu
     c.P = P;
@@ -146,7 +148,8 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     if (helper::rabs(delta) < 0.00001*ref_dist && helper::rabs(deltaFree) < 0.00001*ref_dist  )
     {
 
-        std::cout<<" case0 "<<std::endl;
+        if (this->f_printLog.getValue())
+            std::cout<<" case0 "<<std::endl;
 
         dt=0.0;
         c.dfree = deltaFree;
@@ -162,7 +165,9 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
         dt = delta / (delta - deltaFree);
         if (dt > 0.0 && dt < 1.0  )
         {
-            std::cout<<" case1 : dt = "<<dt<<std::endl;
+            if (this->f_printLog.getValue())
+                std::cout<<" case1 : dt = "<<dt<<std::endl;
+
             sofa::defaulttype::Vector3 Qt, Pt;
             Qt = Q*(1-dt) + Qfree*dt;
             Pt = P*(1-dt) + Pfree*dt;
@@ -175,7 +180,8 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
         {
             if (deltaFree < 0.0)
             {
-                std::cout<<" case2 "<<std::endl;
+                if (this->f_printLog.getValue())
+                    std::cout<<" case2 "<<std::endl;
                 dt=0.0;
                 c.dfree = deltaFree; // dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
                 //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
@@ -184,7 +190,8 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
             }
             else
             {
-                std::cout<<" case3 "<<std::endl;
+                if (this->f_printLog.getValue())
+                    std::cout<<" case3 "<<std::endl;
                 dt=1.0;
                 c.dfree = deltaFree;
                 c.dfree_t = 0;
@@ -194,7 +201,8 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     }
     else
     {
-        std::cout<<" case4 "<<std::endl;
+        if (this->f_printLog.getValue())
+            std::cout<<" case4 "<<std::endl;
         dt = 0;
         c.dfree = deltaFree;
         c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
@@ -402,25 +410,44 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
     if (!this->getContext()->getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    glColor4f(1,0,0,1);
+
     for (unsigned int i=0; i<contacts.size(); i++)
     {
-        glLineWidth(1);
         const Contact& c = contacts[i];
-#ifdef SOFA_DEV
-        if(contactsStatus && contactsStatus[i]) glColor4f(1,0,0,1); else if(c.dfree < 0) glColor4f(1,0,1,1); else
-#endif
-            glColor4f(1,0.5,0,1);
-        helper::gl::glVertexT(c.P);
-        helper::gl::glVertexT(c.Q);
-        glColor4f(1,1,0,1);
-        helper::gl::glVertexT(c.P);
-        helper::gl::glVertexT(c.P+c.norm*(c.dfree));
-        glColor4f(1,0,1,1);
-        helper::gl::glVertexT(c.Q);
-        helper::gl::glVertexT(c.Q-c.norm*(c.dfree));
 
+//#ifdef SOFA_DEV
+//		if(contactsStatus && contactsStatus[i]) glColor4f(1,0,0,1); else
+//		if(c.dfree < 0) glColor4f(1,0,1,1); else
+//#endif
+//		glColor4f(1,0.5,0,1);
+
+        glLineWidth(5);
+        glBegin(GL_LINES);
+
+        glColor4f(1,0,0,1);
+        helper::gl::glVertexT(c.P);
+        helper::gl::glVertexT(c.Q);
+
+        glEnd();
+
+        glLineWidth(3);
+        glBegin(GL_LINES);
+
+        glColor4f(0,0,1,1);
+        helper::gl::glVertexT(c.Pfree);
+        helper::gl::glVertexT(c.Qfree);
+
+        glColor4f(1,1,1,1);
+        helper::gl::glVertexT(c.P);
+        glColor4f(0,0.5,0.5,1);
+        helper::gl::glVertexT(c.P + c.norm);
+
+        glColor4f(0,0,0,1);
+        helper::gl::glVertexT(c.Q);
+        glColor4f(0,0.5,0.5,1);
+        helper::gl::glVertexT(c.Q - c.norm);
+
+        glEnd();
         /*
         if (c.dfree < 0)
         {
@@ -431,7 +458,6 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
         }
         */
     }
-    glEnd();
 }
 
 } // namespace constraintset
