@@ -78,6 +78,11 @@ SofaPluginManager::SofaPluginManager()
     this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateDescription(QListViewItem*) ));
 #endif
 
+
+}
+
+void SofaPluginManager::initPluginList()
+{
     //for compatibility with previous version : transfer plugin list from SOFA to sofa path (to be removed one day...)
     transferPluginsToNewPath();
 
@@ -130,10 +135,13 @@ SofaPluginManager::SofaPluginManager()
 
             Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
             item->setSelectable(true);
+            emit( libraryAdded() );
         }
     }
     // 			settings.endArray();
     settings.endGroup();
+
+
 }
 
 
@@ -209,6 +217,7 @@ void SofaPluginManager::addLibrary()
         settings.endGroup();
         settings.writeEntry("/size", size+1);
         settings.endGroup();
+        emit( libraryAdded() );
     }
     else
     {
@@ -250,6 +259,8 @@ void SofaPluginManager::removeLibrary()
     settings.endGroup();
     description->clear();
     listComponents->clear();
+
+    emit( libraryRemoved() );
 }
 
 
