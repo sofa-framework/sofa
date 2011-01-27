@@ -50,8 +50,6 @@ namespace qt
 namespace viewer
 {
 
-namespace qtogre
-{
 
 QOgreLightWidget::QOgreLightWidget(Ogre::SceneManager* s, QWidget * p, std::string lightName, const char * n ): Q3GroupBox(n,p), parent(p)
 {
@@ -487,7 +485,7 @@ void QOgreSpotLightWidget::updateInfo()
     range[0]->setValue(in.valueDegrees());
     range[1]->setValue(out.valueDegrees());
 }
-}
+
 }
 }
 }

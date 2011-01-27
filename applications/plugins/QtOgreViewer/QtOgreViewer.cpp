@@ -113,11 +113,6 @@ namespace qt
 
 namespace viewer
 {
-
-
-namespace qtogre
-{
-
 SOFA_DECL_CLASS (QtOgreViewer);
 helper::SofaViewerCreator<QtOgreViewer> QtOgreViewer_class("ogre",false);
 int QtOGREGUIClass = GUIManager::RegisterGUI ( "ogre", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 1 );
@@ -1702,27 +1697,25 @@ QString QtOgreViewer::helpString()
 {
 
     QString text("<H1>QtOgreViewer</H1><br>\
-                                     <ul>\
-                                     <li><b>Mouse</b>: TO NAVIGATE<br></li>\
-                                     <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
-                                     <li><b>A</b>: TO DRAW THE SCENE AXIS<br></li>\
-                                     <li><b>C</b>: TO CENTER THE VIEW<br></li>\
-                                     <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
-                                     <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
-                                     <li><b>L</b>: TO DRAW SHADOWS<br></li>\
-                                     <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
-                                     Each time the frame is updated an obj is exported<br></li>\
-                                     <li><b>I</b>: TO SAVE A SCREENSHOT<br>\
-                                     The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
-                                     <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
-                                     <li><b>V</b>: TO SAVE A VIDEO<br>\
-                                     Each time the frame is updated a screenshot is saved<br></li>\
-                                     <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
+                       <ul>\
+                       <li><b>Mouse</b>: TO NAVIGATE<br></li>\
+                       <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+                       <li><b>A</b>: TO DRAW THE SCENE AXIS<br></li>\
+                       <li><b>C</b>: TO CENTER THE VIEW<br></li>\
+                       <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
+                       <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+                       <li><b>L</b>: TO DRAW SHADOWS<br></li>\
+                       <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
+                       Each time the frame is updated an obj is exported<br></li>\
+                       <li><b>I</b>: TO SAVE A SCREENSHOT<br>\
+                       The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
+                       <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+                       <li><b>V</b>: TO SAVE A VIDEO<br>\
+                       Each time the frame is updated a screenshot is saved<br></li>\
+                       <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
 
     return text;
 }
-
-} //qtogre
 
 } //viewer
 

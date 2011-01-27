@@ -11,8 +11,6 @@ namespace qt
 {
 namespace viewer
 {
-namespace ogre
-{
 
 class OgreVisualModelPolicy : public VisualModelPolicy
 {
@@ -36,7 +34,7 @@ public:
 };
 
 typedef sofa::gui::qt::viewer::CustomPolicySofaViewer< OgreVisualModelPolicy > OgreSofaViewer;
-}
+
 }
 }
 }
