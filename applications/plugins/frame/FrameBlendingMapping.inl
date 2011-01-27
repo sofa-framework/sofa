@@ -292,9 +292,6 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
 template <class TIn, class TOut>
 void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacobians, const typename Out::MatrixDeriv& childJacobians )
 {
-//                 const unsigned int& nbRef = this->nbRefs.getValue();
-//                const vector<unsigned int>& m_reps = this->repartition.getValue();
-//                const VVD& m_weights = weights.getValue();
 
     for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
     {
@@ -303,20 +300,10 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parent
         for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
         {
             unsigned int childIndex = childParticle.index();
-            const OutDeriv& childJacobianVec = /*( Deriv )*/ childParticle.val();
+            const OutDeriv& childJacobianVec = childParticle.val();
 
             inout[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
 
-//                        for (unsigned int j = 0 ; j < nbRef; j++)
-//                        {
-//                            typename In::Deriv parentJacobianVec;
-//                            const int parentIndex = m_reps[nbRef *childIndex+j];
-//                            Deriv omega = cross(rotatedPoints[nbRef * childIndex + j], childJacobianVec);
-//                            getVCenter(parentJacobianVec) += childJacobianVec * m_weights[childIndex][j];
-//                            getVOrientation(parentJacobianVec) += omega * m_weights[childIndex][j];
-//
-//                            parentJacobian.addCol(parentIndex, parentJacobianVec);
-//                        }
 
         }
     }

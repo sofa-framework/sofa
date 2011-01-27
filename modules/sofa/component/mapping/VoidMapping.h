@@ -111,6 +111,8 @@ public:
     {
     }
 
+    virtual void applyDJT(core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/, const core::MechanicalParams* /*mparams*/) {}
+
     virtual void applyJT(core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */, const core::ConstraintParams * /*cparams*/)
     {
     }
