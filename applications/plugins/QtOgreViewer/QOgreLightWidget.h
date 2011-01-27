@@ -58,8 +58,6 @@ namespace qt
 namespace viewer
 {
 
-namespace qtogre
-{
 class QOgreLightWidget: public Q3GroupBox
 {
     Q_OBJECT
@@ -162,7 +160,7 @@ protected:
     WDoubleLineEdit *position[3];
     WDoubleLineEdit *range[2];
 };
-}
+
 }
 }
 }

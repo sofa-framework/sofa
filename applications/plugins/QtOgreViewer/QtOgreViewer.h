@@ -97,14 +97,10 @@ namespace qt
 namespace viewer
 {
 
-namespace qtogre
-{
-
-
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
 
-class QtOgreViewer : public QGLWidget, public sofa::gui::qt::viewer::ogre::OgreSofaViewer
+class QtOgreViewer : public QGLWidget, public sofa::gui::qt::viewer::OgreSofaViewer
 {
     Q_OBJECT
 public:
@@ -342,7 +338,6 @@ signals:
     void quit();
 
 };
-} //qtogre
 } //viewer
 } //qt
 } //gui

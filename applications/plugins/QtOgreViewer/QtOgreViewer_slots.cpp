@@ -44,8 +44,6 @@ namespace qt
 {
 namespace viewer
 {
-namespace qtogre
-{
 
 //*****************************************************************************************
 // Just modify the point of view, keep the simulation running.
@@ -141,9 +139,6 @@ void QtOgreViewer::saveView()
         std::cout << "View parameters saved in "<<viewFileName<<std::endl;
     }
 }
-
-
-} //qtogre
 } //viewer
 } //qt
 } //gui
