@@ -80,6 +80,10 @@ PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::~PersistentFrictio
 template < class TCollisionModel1, class TCollisionModel2 >
 void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::init()
 {
+//	m_mappedContacts.clear();
+    m_stickedContacts.clear();
+    m_generatedContacts.clear();
+
     use_mapper_for_state1 = !findMappingOrUseMapper(mstate1, constraintModel1, map1);
     use_mapper_for_state2 = !findMappingOrUseMapper(mstate2, constraintModel2, map2);
 }
@@ -90,44 +94,28 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
 {
     if (this->f_printLog.getValue())
     {
-        std::cout << "\n*******PersistentFrictionContact : ENTERING CLEAN UP\n*******" << std::endl;
+        std::cout << "--> PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()\n" << std::endl;
     }
 
-    if (this->m_constraint)
+    if (constraintModel1)
     {
-        this->m_constraint->cleanup();
-
-        if (this->parent)
-            this->parent->removeObject(this->m_constraint);
-
-        delete this->m_constraint;
-
-        this->parent = NULL;
-        this->m_constraint = NULL;
-
-        if (constraintModel1)
-        {
-            constraintModel1->resize(0);
-            constraintModel1 = NULL;
-            map1->beginAddContactPoint();
-            map1 = NULL;
-        }
-
-        if (constraintModel2)
-        {
-            constraintModel2->resize(0);
-            constraintModel2 = NULL;
-            map2->beginAddContactPoint();
-            map2 = NULL;
-        }
-
-        this->mapper1.cleanup();
-        if (!this->selfCollision)
-            this->mapper2.cleanup();
+        constraintModel1->resize(0);
+        constraintModel1 = NULL;
+        map1->beginAddContactPoint();
+        map1 = NULL;
     }
 
-    this->contacts.clear();
-    m_mappedContacts.clear();
+    if (constraintModel2)
+    {
+        constraintModel2->resize(0);
+        constraintModel2 = NULL;
+        map2->beginAddContactPoint();
+        map2 = NULL;
+    }
+
+//	m_mappedContacts.clear();
+
+    Inherit::cleanup();
 }
 
 
@@ -185,37 +173,38 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
 
         while (it != itEnd)
         {
-            DetectionOutputVector::iterator itOld = this->contacts.begin();
-            DetectionOutputVector::iterator itOldEnd = this->contacts.end();
+            MappedContactsMap::iterator itOld = m_generatedContacts.begin();
+            MappedContactsMap::iterator itOldEnd = m_generatedContacts.end();
 
             while (itOld != itOldEnd)
             {
-                if (cc->isSticked(m_generatedContacts[(*itOld)->id]))
+                ContactInfo oldContact = itOld->second;
+
+                if (cc->isSticked(oldContact.m_contactId))
                 {
-                    if (((*itOld)->elem.first == (*it)->elem.first) && ((*itOld)->elem.second == (*it)->elem.second))
+                    if ((oldContact.getFirstPrimitive() == (*it)->elem.first)
+                        && (oldContact.getSecondPrimitive() == (*it)->elem.second))
                     {
                         if (this->f_printLog.getValue())
                         {
-                            std::cout << "----------------------> Found a remaining sticked contact <---------------------------\n";
+                            std::cout << (*it)->id << " -> Found a persistent sticked contact between " << (*it)->elem.first.getCollisionModel()->getName()
+                                    << " and " << (*it)->elem.second.getCollisionModel()->getName() << "\n";
                         }
 
                         m_stickedContacts.insert(std::make_pair(*it, ContactInfo()));
 
-                        MappedContactsMap::iterator contactInfoIt = m_mappedContacts.find(*itOld);
-
-                        if (!contactInfoIt->second.m_mapper1)
+                        if (!oldContact.m_mapper1)
                         {
-                            m_stickedContacts[*it].m_index1 = contactInfoIt->second.m_index1;
+                            m_stickedContacts[*it].m_index1 = oldContact.m_index1;
                         }
 
-                        if (!contactInfoIt->second.m_mapper2)
+                        if (!oldContact.m_mapper2)
                         {
-                            m_stickedContacts[*it].m_index2 = contactInfoIt->second.m_index2;
+                            m_stickedContacts[*it].m_index2 = oldContact.m_index2;
                         }
 
                         // Remove related detection output info from old lists
-                        m_mappedContacts.erase(contactInfoIt);
-                        this->contacts.erase(itOld);
+                        m_generatedContacts.erase(itOld);
 
                         break;
                     }
@@ -233,7 +222,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::keepStickyCon
 
     // Replace contacts by new ones
     m_generatedContacts.clear();
-    m_mappedContacts.clear();
 
     this->contacts.clear();
     this->contacts.reserve(input.size());
@@ -265,13 +253,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::resetPersiste
     {
         if (map1)
         {
-            /// @TODO : replace beginAddContactPoint by follow Contacts "
-
-            /*std::cout << "----------> Keep Contacts on indices : ";
-            for (unsigned int i = 0; i < m_stickedVerticesIndices1.size(); i++)
-            	std::cout << m_stickedVerticesIndices1[i] << " ";
-            std::cout << " <---------\n";*/
-
             map1->beginAddContactPoint();
         }
         else
@@ -282,13 +263,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::resetPersiste
     {
         if (map2)
         {
-            /// @TODO : replace beginAddContactPoint by follow Contacts "
-
-            /*std::cout << "----------> Keep Contacts on indices : ";
-            for (unsigned int i = 0; i < m_stickedVerticesIndices2.size(); i++)
-            	std::cout << m_stickedVerticesIndices2[i] << " ";
-            std::cout << " <---------\n";*/
-
             map2->beginAddContactPoint();
         }
         else
@@ -376,29 +350,6 @@ std::pair<bool, bool> PersistentFrictionContact<TCollisionModel1,TCollisionModel
     retValue.second = findMappingOrUseMapper(mstate2, constraintModel2, map2);
 
     return retValue;
-
-    /*
-    // CODE POUR CREER UN NOUVEAU NOEUD !!!
-    child = simulation::getSimulation()->newNode("PersistentFrictionResponse");
-    parent_2->addChild(child);
-    std::cout<<"add child node to parent named:"<<parent_2->getName()<<std::endl;
-
-    constraintModel2 = new component::container::MechanicalObject<DataTypes2 >();
-
-    child->addObject(constraintModel2);
-    constraintModel2->init();
-    constraintModel2->resize(0);
-    child->updateSimulationContext();
-
-    sofa::core::behavior::MechanicalState<Rigid3Types> * mstateParent = dynamic_cast< sofa::core::behavior::MechanicalState<Rigid3Types> * > (parent_2->getMechanicalState());
-
-    sofa::component::mapping::AdaptiveBeamMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<Rigid3Types>, sofa::core::behavior::MechanicalState<Vec3Types> > >*
-    mapTest = new sofa::component::mapping::AdaptiveBeamMapping<sofa::core::behavior::MechanicalMapping< sofa::core::behavior::MechanicalState<Rigid3Types>, sofa::core::behavior::MechanicalState<Vec3Types> > >
-    (mstateParent, constraintModel2 );
-
-    child->addObject(mapTest);
-    mapTest->init();
-    */
 }
 
 
@@ -432,6 +383,8 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
         }
 
         this->m_constraint = new constraintset::PersistentUnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
+        std::cout << "mmodel1 = " << mmodel1->getName() << std::endl;
+        std::cout << "mmodel2 = " << mmodel2->getName() << std::endl;
 
         if (this->f_printLog.getValue())
         {
@@ -524,7 +477,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
             m2 = false;
         }
 
-        m_mappedContacts.insert(std::make_pair(*it, ContactInfo(index1, index2, m1, m2, distance)));
+        m_generatedContacts.insert(std::make_pair(*it, ContactInfo(index1, index2, m1, m2, distance)));
     }
 
     // Update mappings
@@ -535,7 +488,6 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
     }
     else
     {
-        //	dynamic_cast< core::BaseMapping* >(map1)->apply();
         map1->applyLinearizedPosition();
         dynamic_cast< core::BaseMapping* >(map1)->apply(sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     }
@@ -550,27 +502,9 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::activateConst
     }
     else
     {
-        //	dynamic_cast< core::BaseMapping* >(map2)->apply();
         map2->applyLinearizedPosition();
         dynamic_cast< core::BaseMapping* >(map2)->apply(sofa::core::VecCoordId::freePosition(), sofa::core::ConstVecCoordId::freePosition());
     }
-
-//	std::cout<<" ===================== "<<std::endl;
-//	i = 0;
-//	for (std::vector<DetectionOutput*>::const_iterator it = this->contacts.begin(); it!=this->contacts.end(); it++, i++)
-//	{
-//		DetectionOutput* o = *it;
-//
-//		if(!use_mapper_for_state2 && this->constraintModel2!=NULL)
-//		{
-//			Vector3 thickness = o->normal * this->model2->getProximity();
-//			int i2 = this->mappedContacts[i].first.second;
-//			//std::cout<<" i2 = "<<i2<<std::endl;
-//			//std::cout<<" contact["<<i<<"] : xfree before :"<<o->freePoint[1]-thickness<<" after: "<<(*this->constraintModel2->getXfree())[i2]<<"  x before : "<<o->point[1]-thickness<<"  after : "<<(*this->constraintModel2->getX())[i2]<<std::endl;
-//		}
-//	}
-
-    // std::cerr<<" end activateMappers call"<<std::endl;
 }
 
 
@@ -594,20 +528,34 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
         {
             DetectionOutput *o = *it;
 
-            int index1 = m_mappedContacts[o].m_index1;
-            int index2 = m_mappedContacts[o].m_index2;
-            double distance = m_mappedContacts[o].m_distance;
+            MappedContactsMap::iterator genContactIt = m_generatedContacts.find(o);
 
-            // Polynome de Cantor bijectif f(x,y)=((x+y)^2+3x+y)/2
-            long index = cantorPolynomia(o->id, this->id);
+            if (genContactIt != m_generatedContacts.end())
+            {
+                ContactInfo newContact = genContactIt->second;
 
-            // add contact in unilateral constraint
-            this->m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
+                int index1		= newContact.m_index1;
+                int index2		= newContact.m_index2;
+                double distance	= newContact.m_distance;
 
-            m_generatedContacts.insert(std::make_pair(o->id, index));
+                // Polynome de Cantor bijectif f(x,y)=((x+y)^2+3x+y)/2
+                long index = cantorPolynomia(o->id, this->id);
+
+                // Add contact in PersistentUnilateralInteractionConstraint
+                typedef constraintset::PersistentUnilateralInteractionConstraint<Vec3Types> PersistentConstraint;
+                PersistentConstraint *persistent_constraint = static_cast< PersistentConstraint * >(this->m_constraint);
+
+                persistent_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id/*, isSticked(o)*/);
+
+                // Store generated contact detectionOutput data and contact id
+                newContact.m_detectionOutputId = o->id;
+                newContact.m_contactId = index;
+                newContact.setFirstPrimitive(o->elem.first);
+                newContact.setSecondPrimitive(o->elem.second);
+            }
         }
 
-        if (this->parent!=NULL)
+        if (this->parent)
         {
             this->parent->removeObject(this);
 
@@ -624,7 +572,7 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 
         this->parent = group;
 
-        if (this->parent!=NULL)
+        if (this->parent)
         {
             this->parent->addObject(this);
 
@@ -645,14 +593,15 @@ void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::createRespons
 template < class TCollisionModel1, class TCollisionModel2 >
 void PersistentFrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
-    if (this->m_constraint != NULL)
+    if (this->m_constraint)
     {
         this->mapper1.resize(0);
         this->mapper2.resize(0);
-        if (this->parent!=NULL)
+
+        if (this->parent)
         {
-            //sout << "Removing contact response from "<<this->parent->getName()<<sendl;
             this->parent->removeObject(this);
+
             if (map1 && !use_mapper_for_state1)
                 map1->getContext()->removeObject(this->m_constraint);
             else

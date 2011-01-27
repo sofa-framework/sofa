@@ -112,7 +112,18 @@ public:
     {
     }
 
-    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
+    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0, bool sticked=false);
+
+    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0, bool sticked=false)
+    {
+        addContact(mu, norm,
+                this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
+                contactDistance, m1, m2,
+                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
+                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
+                id, localid, sticked);
+    }
 
 #ifdef SOFA_DEV
     void getConstraintResolution(std::vector< core::behavior::ConstraintResolution* >& resTab, unsigned int& offset);
@@ -136,6 +147,8 @@ public:
 
     // @}
 #endif
+
+    void draw();
 };
 
 

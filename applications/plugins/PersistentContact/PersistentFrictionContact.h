@@ -61,11 +61,37 @@ struct ContactInfo
     {
     }
 
+    // Contact data
     int m_index1;
     int m_index2;
     bool m_mapper1;
     bool m_mapper2;
     double m_distance;
+
+    // DetectionOutput data
+    std::pair< core::CollisionElementIterator, core::CollisionElementIterator > m_elem;
+    int64_t m_detectionOutputId;
+    int m_contactId;
+
+    core::CollisionElementIterator getFirstPrimitive()
+    {
+        return m_elem.first;
+    }
+
+    core::CollisionElementIterator getSecondPrimitive()
+    {
+        return m_elem.second;
+    }
+
+    void setFirstPrimitive(core::CollisionElementIterator c)
+    {
+        m_elem.first = c;
+    }
+
+    void setSecondPrimitive(core::CollisionElementIterator c)
+    {
+        m_elem.second = c;
+    }
 };
 
 
@@ -88,6 +114,8 @@ public:
     typedef typename FrictionContact<TCollisionModel1, TCollisionModel2>::TOutputVector TOutputVector;
     typedef std::vector< sofa::core::collision::DetectionOutput* > DetectionOutputVector;
     typedef std::map< const sofa::core::collision::DetectionOutput*, ContactInfo > MappedContactsMap;
+
+    typedef FrictionContact<TCollisionModel1, TCollisionModel2> Inherit;
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(this->model1,this->model2); }
 
@@ -151,9 +179,10 @@ protected:
     std::vector< Vector3 > barycentricValues1;
     std::vector< Vector3 > barycentricValues2;
 
-    std::map< int64_t, int > m_generatedContacts;
+//	std::map< int64_t, int > m_generatedContacts;
 
-    MappedContactsMap m_mappedContacts;
+    MappedContactsMap m_generatedContacts;
+//	MappedContactsMap m_mappedContacts;
     MappedContactsMap m_stickedContacts;
 };
 

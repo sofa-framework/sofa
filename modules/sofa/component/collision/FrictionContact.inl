@@ -75,18 +75,24 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
     if (m_constraint)
     {
         m_constraint->cleanup();
-        if (parent!=NULL)
+
+        if (parent != NULL)
             parent->removeObject(m_constraint);
+
         delete m_constraint;
+
         parent = NULL;
+
         m_constraint = NULL;
+
         mapper1.cleanup();
+
         if (!selfCollision)
             mapper2.cleanup();
     }
+
     contacts.clear();
     mappedContacts.clear();
-
 }
 
 

@@ -122,96 +122,112 @@ void PersistentUnilateralConstraintResolutionWithFriction< DataTypes >::store(in
 
 
 template<class DataTypes>
-void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid)
+void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid, bool isPersistent)
 {
-    // compute dt and delta
-    Real delta = dot(P-Q, norm) - contactDistance;
-    Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
-    Real dt;
-    int i = this->contacts.size();
-    this->contacts.resize(i+1);
-    typename Inherited::Contact& c = this->contacts[i];
+    /*
+    std::cout << "_norm = " << _norm << std::endl;
+
+    Deriv norm = P-Q;
+    norm.normalize();
+
+    if (dot(norm,_norm) < 0)
+    	norm = -norm;
+
+    std::cout << "norm = " << norm << std::endl;
+    */
+
+    // Compute dt and delta
+    const Real delta = dot(P-Q, norm) - contactDistance;
+    const Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
 
     if (this->f_printLog.getValue())
     {
-        std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
-        std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
-        std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;
+        std::cout << "delta : " << delta << " - deltaFree : " << deltaFree << std::endl;
+        std::cout << "P : " << P << " - PFree : " << Pfree << std::endl;
+        std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
     }
 
-// for visu
-    c.P = P;
-    c.Q = Q;
-    c.Pfree = Pfree;
-    c.Qfree = Qfree;
-//
-    c.m1 = m1;
-    c.m2 = m2;
-    c.norm = norm;
-    c.delta = delta;
-    c.t = Deriv(norm.z(), norm.x(), norm.y());
-    c.s = cross(norm,c.t);
-    c.s = c.s / c.s.norm();
-    c.t = cross((-norm), c.s);
-    c.mu = mu;
-    c.contactId = id;
-    c.localId = localid;
+    unsigned int lastContactIndex = this->contacts.size();
+    this->contacts.resize(lastContactIndex + 1);
 
-    Deriv PPfree = Pfree-P;
-    Deriv QQfree = Qfree-Q;
-    Real ref_dist = PPfree.norm()+QQfree.norm();
+    typename Inherited::Contact& c = this->contacts[lastContactIndex];
 
-    if (helper::rabs(delta) < 0.00001*ref_dist )
+    c.P				= P;
+    c.Q				= Q;
+    c.Pfree			= Pfree;
+    c.Qfree			= Qfree;
+    c.m1			= m1;
+    c.m2			= m2;
+    c.norm			= norm;
+    c.delta			= delta;
+    c.mu			= mu;
+    c.contactId		= id;
+    c.localId		= localid;
+    c.t				= Deriv(norm.z(), norm.x(), norm.y());
+    c.s				= cross(norm, c.t);
+    c.s				= c.s / c.s.norm();
+    c.t				= cross((-norm), c.s);
+
+    const Deriv PPfree = Pfree - P;
+    const Deriv QQfree = Qfree - Q;
+    const Real REF_DIST = PPfree.norm() + QQfree.norm();
+
+    if (isPersistent)
     {
-        dt=0.0;
-        c.dfree = deltaFree;
-        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
+
+        std::cout << "Persistent contact: \nP : " << P << " - PFree : " << Pfree << std::endl;
+        std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
+        c.dfree		= deltaFree;
+        c.dfree_t	= dot(Pfree - Qfree, c.t);
+        c.dfree_s	= dot(Pfree - Qfree, c.s);
+
+        return;
+    }
+
+    if (helper::rabs(delta) < 0.00001 * REF_DIST)
+    {
+        c.dfree		= deltaFree;
+        c.dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
+        c.dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
 
         return;
     }
 
     if (helper::rabs(delta - deltaFree) > 0.001 * delta)
     {
-        dt = delta / (delta - deltaFree);
-        if (dt > 0.0 && dt < 1.0  )
+        const Real dt = delta / (delta - deltaFree);
+
+        if (dt > 0.0 && dt < 1.0)
         {
-            sofa::defaulttype::Vector3 Qt, Pt;
-            Qt = Q*(1-dt) + Qfree*dt;
-            Pt = P*(1-dt) + Pfree*dt;
-            c.dfree = deltaFree;// dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
-            c.dfree_t = dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
-            c.dfree_s = dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
-            //printf("\n ! dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
+            const sofa::defaulttype::Vector3 Qt = Q * (1-dt) + Qfree * dt;
+            const sofa::defaulttype::Vector3 Pt = P * (1-dt) + Pfree * dt;
+
+            c.dfree		= deltaFree;
+            c.dfree_t	= dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
+            c.dfree_s	= dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
         }
         else
         {
             if (deltaFree < 0.0)
             {
-                dt=0.0;
-                c.dfree = deltaFree; // dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
-                //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-                c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-                c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
+                c.dfree		= deltaFree;
+                c.dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
+                c.dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
             }
             else
             {
-                dt=1.0;
-                c.dfree = deltaFree;
-                c.dfree_t = 0;
-                c.dfree_s = 0;
+                c.dfree		= deltaFree;
+                c.dfree_t	= 0;
+                c.dfree_s	= 0;
             }
         }
     }
     else
     {
-        dt = 0;
-        c.dfree = deltaFree;
-        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-        //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
+        c.dfree		= deltaFree;
+        c.dfree_t	= dot(PPfree, c.t) - dot(QQfree, c.t);
+        c.dfree_s	= dot(PPfree, c.s) - dot(QQfree, c.s);
     }
-    //sout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<sendl;
 }
 
 
@@ -308,6 +324,63 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::debugContactStates()
 
         std::cout << it->first << " : " << s << std::endl;
         ++it;
+    }
+}
+
+template<class DataTypes>
+void PersistentUnilateralInteractionConstraint<DataTypes>::draw()
+{
+    if (!this->getContext()->getShowInteractionForceFields()) return;
+
+    glDisable(GL_LIGHTING);
+
+    for (unsigned int i=0; i< this->contacts.size(); i++)
+    {
+        const Contact& c = this->contacts[i];
+
+        glLineWidth(5);
+        glBegin(GL_LINES);
+
+        switch (contactStates[c.id])
+        {
+        case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::NONE :
+            glColor4f(1,0,0,1);
+            break;
+
+        case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::SLIDING :
+            glColor4f(0,0,1,1);
+            break;
+
+        case PersistentUnilateralConstraintResolutionWithFriction<DataTypes>::STICKY :
+            glColor4f(0,1,0,1);
+            break;
+        }
+
+        helper::gl::glVertexT(c.P);
+        helper::gl::glVertexT(c.Q);
+
+        glEnd();
+
+        glLineWidth(1);
+        glBegin(GL_LINES);
+
+        glColor4f(1,1,1,1);
+        helper::gl::glVertexT(c.Pfree);
+        helper::gl::glVertexT(c.Qfree);
+
+        /*glColor4f(1,1,1,1);
+        helper::gl::glVertexT(c.P);
+        glColor4f(0,0.5,0.5,1);
+        helper::gl::glVertexT(c.P + c.norm);
+
+        glColor4f(0,0,0,1);
+        helper::gl::glVertexT(c.Q);
+        glColor4f(0,0.5,0.5,1);
+        helper::gl::glVertexT(c.Q - c.norm);*/
+
+        glEnd();
+
+        glLineWidth(1);
     }
 }
 
