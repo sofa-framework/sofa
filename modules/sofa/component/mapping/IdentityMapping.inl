@@ -121,12 +121,12 @@ extern void peq(defaulttype::RigidCoord<2,real1>& dest, const defaulttype::Rigid
     dest.getOrientation() += (real1)src.getOrientation();
 }
 
-template<typename real1, typename real2>
-extern void eq(defaulttype::Vec<3,real1>& dest, const defaulttype::Vec<3,real2>& src)
-{
-    getVCenter(dest) = getVCenter(src);
-    getVOrientation(dest) = getVOrientation(src);
-}
+// template<typename real1, typename real2>
+// extern void eq(defaulttype::Vec<3,real1>& dest, const defaulttype::Vec<3,real2>& src)
+// {
+//     getVCenter(dest) = getVCenter(src);
+//     getVOrientation(dest) = getVOrientation(src);
+// }
 template<typename real1, typename real2>
 extern void eq(defaulttype::Vec<6,real1>& dest, const defaulttype::Vec<6,real2>& src)
 {
@@ -148,12 +148,12 @@ extern void peq(defaulttype::Vec<6,real1>& dest, const defaulttype::Vec<6,real2>
     getVOrientation(dest) += getVOrientation(src);
 }
 
-template<typename real1, typename real2>
-extern void peq(defaulttype::Vec<3,real1>& dest, const defaulttype::Vec<3,real2>& src)
-{
-    getVCenter(dest) += getVCenter(src);
-    getVOrientation(dest) += (real1)getVOrientation(src);
-}
+// template<typename real1, typename real2>
+// extern void peq(defaulttype::Vec<3,real1>& dest, const defaulttype::Vec<3,real2>& src)
+// {
+//     getVCenter(dest) += getVCenter(src);
+//     getVOrientation(dest) += (real1)getVOrientation(src);
+// }
 
 template<int N, typename real1, typename real2>
 extern void eq(defaulttype::Vec<N,real1>& dest, const defaulttype::RigidCoord<N,real2>& src)
