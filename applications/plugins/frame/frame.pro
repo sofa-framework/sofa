@@ -24,7 +24,10 @@ LIBS += -lsofacomponentbase$$LIBSUFFIX
 INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
+           initFrame.h \
            AffineTypes.h \
+           DualQuatTypes.h \
+           QuadraticTypes.h \
            CorotationalForceField.h \
            CorotationalForceField.inl \
            GreenLagrangeForceField.h \
@@ -32,47 +35,42 @@ HEADERS += \
            FrameVolumePreservationForceField.h \
            FrameVolumePreservationForceField.inl \
            DeformationGradientTypes.h \
+           MappingTypes.h \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
-           FrameConstantForceField.h \
-           FrameDiagonalMass.h \
-           FrameDiagonalMass.inl \
            FrameDQBlendingMapping.h \
            FrameDQBlendingMapping.inl \
+           FrameConstantForceField.h \
+           FrameMass.h \
+           FrameDiagonalMass.h \
+           FrameDiagonalMass.inl \
            FrameFixedConstraint.h \
            FrameFixedConstraint.inl \
            FrameLinearMovementConstraint.h \
-           FrameMass.h \
-           FrameMechanicalObject.h \
            FrameRigidConstraint.h \
            FrameRigidConstraint.inl \
+           FrameMechanicalObject.h \
            GridMaterial.h \
            GridMaterial.inl \
-           Interpolater.h \
-           Interpolater.inl \
-           initFrame.h \
-           MappingTypes.h \
            NewMaterial.h \
            NewHookeMaterial.h \
            NewHookeMaterial.inl \
-           QuadraticTypes.h \
-           TetrahedralCorotationalFEMForceField2.h \
-           TetrahedralCorotationalFEMForceField2.inl
+           Interpolater.h \
+           Interpolater.inl 
 
 SOURCES += \
+           initFrame.cpp \
            CorotationalForceField.cpp \
            GreenLagrangeForceField.cpp \
            FrameVolumePreservationForceField.cpp \
            FrameBlendingMapping.cpp \
+           FrameDQBlendingMapping.cpp \
            FrameConstantForceField.cpp \
            FrameDiagonalMass.cpp \
-           FrameDQBlendingMapping.cpp \
            FrameFixedConstraint.cpp \
            FrameLinearMovementConstraint.cpp \
-           FrameMechanicalObject.cpp \
            FrameRigidConstraint.cpp \
+           FrameMechanicalObject.cpp \
            GridMaterial.cpp \
-           Interpolater.cpp \
            NewHookeMaterial.cpp \
-           TetrahedralCorotationalFEMForceField2.cpp \
-           initFrame.cpp
+           Interpolater.cpp 

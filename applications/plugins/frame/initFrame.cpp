@@ -53,7 +53,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "Frame Based Dynamic Plugin";
+    return "Frame based elastic models Plugin";
 }
 
 const char* getModuleVersion()
@@ -69,12 +69,12 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "Use frame based dynamic technic in SOFA";
+    return "Use frame based elastic models in SOFA";
 }
 
 const char* getModuleComponentList()
 {
-    return "FrameBlendingMapping, FrameDiagonalMass, FrameConstantForceField, FrameFixedConstraint, FrameHookeForceField, MechanicalObject, HookeMaterial3, GridMaterial";
+    return "FrameBlendingMapping, FrameDiagonalMass, FrameConstantForceField, FrameFixedConstraint, CorotationalForceField, GreenLagrangeForceField, FrameVolumePreservationForceField, MechanicalObject, HookeMaterial3, GridMaterial";
 }
 
 } // namespace frame
