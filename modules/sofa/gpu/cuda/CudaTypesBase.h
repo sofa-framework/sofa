@@ -152,6 +152,11 @@ public :
         return v.deviceWrite();
     }
 
+    void invalidateDevice()
+    {
+        v.invalidateDevice();
+    }
+
     const T* hostRead() const
     {
         return v.hostRead();

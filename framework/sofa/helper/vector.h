@@ -486,7 +486,7 @@ public:
 
     const T* hostRead ( int i=0 ) const
     {
-        DEBUG_OUT_V(if (!hostIsValid) {SPACEN << "hostWrite" << std::endl;});
+        DEBUG_OUT_V(if (!hostIsValid) {SPACEN << "hostRead" << std::endl;});
         copyToHost();
         return hostPointer+i;
     }

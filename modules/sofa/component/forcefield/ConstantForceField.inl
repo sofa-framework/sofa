@@ -112,6 +112,11 @@ void ConstantForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoor
     }
 }
 
+template<class DataTypes>
+void ConstantForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+{
+
+}
 
 template <class DataTypes>
 double ConstantForceField<DataTypes>::getPotentialEnergy(const DataVecCoord& x, const core::MechanicalParams* /*params*/) const
