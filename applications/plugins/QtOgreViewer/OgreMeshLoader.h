@@ -22,6 +22,12 @@ public:
 
 protected:
     bool readMesh(Ogre::Mesh* mesh);
+    void readMeshVertices(Ogre::VertexData* vertexData, helper::vector< sofa::defaulttype::Vector3 >& vertices);
+    void readMeshNormals(Ogre::VertexData* vertexData, helper::vector< sofa::defaulttype::Vector3 >& normal);
+    void readMeshTexCoords(Ogre::VertexData* vertexData, helper::vector< sofa::defaulttype::Vector2>& coord);
+    //void readMeshIndices(Ogre::VertexData* vertexData, helper::vector< helper::fixed_array <unsigned int,3> >& indices);
+
+    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
 
 };
 
