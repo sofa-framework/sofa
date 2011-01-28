@@ -97,13 +97,12 @@ public:
     ExtVec3fState()
         : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
         , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
-        , m_vnormals (initData (&m_vnormals, "normals", "Normals of the model"))
+        , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
         , modified(false)
     {
         m_positions.setGroup("Vector");
         m_restPositions.setGroup("Vector");
         m_vnormals.setGroup("Vector");
-        addAlias(&m_vnormals,"normal");
     }
 
     virtual void resize(int vsize)
