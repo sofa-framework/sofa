@@ -16,7 +16,9 @@ int OgreMeshLoaderClass = core::RegisterObject("Specific mesh loader for Ogre co
         .add< OgreMeshLoader >()
         ;
 
-OgreMeshLoader::OgreMeshLoader()
+OgreMeshLoader::OgreMeshLoader():
+    core::loader::MeshLoader(),
+    texCoords(initData(&texCoords,"texcoords","Texture coordinates of the mesh"))
 {
 
 }
@@ -25,18 +27,6 @@ bool OgreMeshLoader::load()
 {
     sout << "Loading MESH file: " << m_filename << sendl;
     bool fileRead = false;
-
-    /*   std::string parentDir = sofa::helper::system::SetDirectory::GetParentDir(filename);
-       Ogre::ResourceGroupManager* rgm = Ogre::ResourceGroupManager::getSingletonPtr();
-
-       if( !rgm->resourceLocationExists(parentDir,"General") || !rgm->resourceLocationExists(parentDir,"External") )
-       {
-         rgm->addResourceLocation(parentDir,"FileSystem","External");
-         rgm->initialiseResourceGroup("External");
-       }
-
-       std::string meshName = sofa::helper::system::SetDirectory::GetFileName(filename);
-       */
     try
     {
         Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().load(m_filename.getFullPath(),"General");
@@ -52,11 +42,11 @@ bool OgreMeshLoader::load()
 
 bool OgreMeshLoader::readMesh(Ogre::Mesh* mesh)
 {
-    typedef helper::fixed_array <unsigned int,3> Vec3ui;
     using namespace Ogre;
     helper::vector<sofa::defaulttype::Vector3>& vertices = *(positions.beginEdit());
-    helper::vector< Vec3ui >& indices = *(triangles.beginEdit());
-
+    helper::vector< helper::fixed_array <unsigned int,3> >& indices = *(triangles.beginEdit());
+    helper::vector<sofa::defaulttype::Vector2>& coords = *(texCoords.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& normal = *(normals.beginEdit());
 
     bool added_shared = false;
     size_t vertex_count   = 0;
@@ -94,6 +84,7 @@ bool OgreMeshLoader::readMesh(Ogre::Mesh* mesh)
 
     // Allocate space for the vertices and indices
     vertices.reserve(vertex_count);
+    coords.reserve(vertex_count);
     indices.reserve(index_count / 3);
 
     added_shared = false;
@@ -111,27 +102,9 @@ bool OgreMeshLoader::readMesh(Ogre::Mesh* mesh)
                 added_shared = true;
                 shared_offset = current_offset;
             }
-
-            const Ogre::VertexElement* posElem = vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
-            Ogre::HardwareVertexBufferSharedPtr vbuf = vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
-            unsigned char* vertex = static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-            Ogre::Real* pReal;
-
-            for(size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
-            {
-                posElem->baseVertexPointerToElement(vertex, &pReal);
-
-                sofa::defaulttype::Vector3 pt;
-
-                pt[0] = (*pReal++);
-                pt[1] = (*pReal++);
-                pt[2] = (*pReal++);
-
-                //pt = (orient * (pt * scale)) + position;
-                vertices.push_back(pt);
-                //vertices[current_offset + j] = pt;
-            }
-            vbuf->unlock();
+            readMeshVertices(vertex_data,vertices);
+            readMeshTexCoords(vertex_data,coords);
+            readMeshNormals(vertex_data,normal);
             next_offset += vertex_data->vertexCount;
         }
 
@@ -148,7 +121,7 @@ bool OgreMeshLoader::readMesh(Ogre::Mesh* mesh)
         for(size_t k = 0; k < numTris; ++k)
         {
             size_t offset = (submesh->useSharedVertices)?shared_offset:current_offset;
-            Vec3ui tri;
+            helper::fixed_array <unsigned int,3> tri;
             unsigned int vindex = use32bitindexes? *pInt++ : *pShort++;
             tri[0] = vindex + offset;
             vindex = use32bitindexes? *pInt++ : *pShort++;
@@ -161,10 +134,93 @@ bool OgreMeshLoader::readMesh(Ogre::Mesh* mesh)
         ibuf->unlock();
         current_offset = next_offset;
     }
-
-
+    positions.endEdit();
+    triangles.endEdit();
+    texCoords.endEdit();
+    normals.endEdit();
 
     return true;
+}
+
+void OgreMeshLoader::readMeshVertices(Ogre::VertexData* vertexData,
+        helper::vector< sofa::defaulttype::Vector3 >& vertices)
+{
+    const Ogre::VertexElement* posElem =
+        vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
+
+    if( !posElem ) return;
+
+    Ogre::HardwareVertexBufferSharedPtr vbuf =
+        vertexData->vertexBufferBinding->getBuffer(posElem->getSource());
+    unsigned char* vertex =
+        static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+    Ogre::Real* pReal;
+    for(size_t j = 0; j < vertexData->vertexCount; ++j, vertex += vbuf->getVertexSize())
+    {
+        posElem->baseVertexPointerToElement(vertex, &pReal);
+        sofa::defaulttype::Vector3 pt;
+        pt[0] = (*pReal++);
+        pt[1] = (*pReal++);
+        pt[2] = (*pReal++);
+        vertices.push_back(pt);
+    }
+    vbuf->unlock();
+}
+
+/*   void OgreMeshLoader::readMeshIndices(Ogre::VertexData* vertexData,
+     helper::vector< helper::fixed_array <unsigned int,3> >& indices)
+   {
+
+   }*/
+
+void OgreMeshLoader::readMeshNormals(Ogre::VertexData* vertexData,
+        helper::vector< sofa::defaulttype::Vector3 >& normal)
+{
+    const Ogre::VertexElement* normalElem =
+        vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_TEXTURE_COORDINATES);
+
+    if( ! normalElem ) return;
+
+    Ogre::HardwareVertexBufferSharedPtr vbuf =
+        vertexData->vertexBufferBinding->getBuffer(normalElem->getSource());
+    unsigned char* vertex =
+        static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+    Ogre::Real* pReal;
+    for(size_t j = 0; j < vertexData->vertexCount; ++j, vertex += vbuf->getVertexSize())
+    {
+        normalElem->baseVertexPointerToElement(vertex, &pReal);
+        sofa::defaulttype::Vector3 n;
+        n[0] = (*pReal++);
+        n[1] = (*pReal++);
+        n[2] = (*pReal++);
+        normal.push_back(n);
+    }
+    vbuf->unlock();
+}
+
+void OgreMeshLoader::readMeshTexCoords(Ogre::VertexData* vertexData,
+        helper::vector< sofa::defaulttype::Vector2>& coords)
+{
+    const Ogre::VertexElement* coordElem =
+        vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_TEXTURE_COORDINATES);
+
+    if( !coordElem ) return;
+
+    Ogre::HardwareVertexBufferSharedPtr vbuf =
+        vertexData->vertexBufferBinding->getBuffer(coordElem->getSource());
+    unsigned char* vertex =
+        static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+    Ogre::Real* pReal;
+    for(size_t j = 0; j < vertexData->vertexCount; ++j, vertex += vbuf->getVertexSize())
+    {
+        coordElem->baseVertexPointerToElement(vertex, &pReal);
+        sofa::defaulttype::Vector2 coord;
+        coord[0] = (*pReal++);
+        coord[1] = (*pReal++);
+        coords.push_back(coord);
+    }
+    vbuf->unlock();
+
 }
 
 } //namespace loader
