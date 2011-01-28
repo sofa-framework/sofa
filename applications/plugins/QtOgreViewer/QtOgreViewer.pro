@@ -46,6 +46,7 @@ SOURCES += DotSceneLoader.cpp \
            QtOgreViewer.cpp\
            QtOgreViewer_slots.cpp\
            OgreVisualModel.cpp \
+		   OgreMeshLoader.cpp \
            OgreShaderParameter.cpp \
            OgreShaderTextureUnit.cpp \
            QOgreLightWidget.cpp \
@@ -58,6 +59,7 @@ HEADERS += DotSceneLoader.h \
            HelperLogics.h \
            QtOgreViewer.h \
            OgreVisualModel.h \
+		   OgreMeshLoader.h \
            OgreShaderEntryPoint.h \
            OgreShaderParameter.h \
            OgreShaderTextureUnit.h \
