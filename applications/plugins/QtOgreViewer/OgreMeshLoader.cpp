@@ -177,7 +177,7 @@ void OgreMeshLoader::readMeshNormals(Ogre::VertexData* vertexData,
         helper::vector< sofa::defaulttype::Vector3 >& normal)
 {
     const Ogre::VertexElement* normalElem =
-        vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_TEXTURE_COORDINATES);
+        vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_NORMAL);
 
     if( ! normalElem ) return;
 
