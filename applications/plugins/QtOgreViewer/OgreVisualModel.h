@@ -124,6 +124,7 @@ public:
     static int materialUniqueIndex;
 protected:
 
+
     void computeGlobalToLocalPrimitives();
 
 
@@ -159,15 +160,16 @@ public:
     static bool lightsEnabled;
 protected:
 
-    bool prepareMeshSimple();
+    void updateNormals(const ResizableExtVector<Coord>& vertices,
+            const ResizableExtVector<Triangle>& triangles,
+            const ResizableExtVector<Quad>& quads);
+
     void prepareMesh();
     void updateVisibility();
     void uploadNormals();
     void convertManualToMesh();
 
     static int meshName;
-
-    Data< std::string > materialOgre;
     Data< std::string > materialFile;
     Data< bool > culling;
 
