@@ -20,7 +20,6 @@ OgreMeshLoader::OgreMeshLoader():
     core::loader::MeshLoader(),
     texCoords(initData(&texCoords,"texcoords","Texture coordinates of the mesh"))
 {
-
 }
 
 bool OgreMeshLoader::load()

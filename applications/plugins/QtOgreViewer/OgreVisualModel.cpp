@@ -100,7 +100,7 @@ void SubMesh::create(Ogre::ManualObject *ogreObject,
     shaderParameters=parameters;
 
     const bool hasTexCoords= !(textCoords.empty());
-    const bool hasNormals = !(normals.empty());
+
 
     for (unsigned int i=0; i<storage.size(); ++i)
     {
@@ -109,7 +109,7 @@ void SubMesh::create(Ogre::ManualObject *ogreObject,
         {
             const int idx=*it;
             model->position(positions[idx][0],positions[idx][1],positions[idx][2]);
-            if(hasNormals) model->normal(normals[idx][0],normals[idx][1],normals[idx][2]);
+            model->normal(normals[idx][0],normals[idx][1],normals[idx][2]);
             if (hasTexCoords) model->textureCoord(textCoords[idx][0],textCoords[idx][1]);
         }
 
@@ -164,7 +164,6 @@ void SubMesh::update(const ResizableExtVector<Coord>& positions,
 //-------------------------------------------
 
 OgreVisualModel::OgreVisualModel():
-    materialOgre(initData(&materialOgre,"OGREmaterialName", "Name of a material to be retrieved in the Ogre MaterialManager")),
     materialFile(initData(&materialFile,"OGREmaterialFile", "Entry of material definition in a .material file")),
     culling(initData(&culling,true, "culling", "Activate Back-face culling in Ogre")),
     ogreObject(NULL), ogreNormalObject(NULL), needUpdate(false)
@@ -196,8 +195,6 @@ void OgreVisualModel::reinit()
 {
     sofa::component::visualmodel::VisualModelImpl::reinit();
 
-    if(  !materialOgre.getValue().empty() ) return;
-
     if (materials.getValue().empty())
     {
         materialToMesh.begin()->second.updateMaterial(this->material.getValue());
@@ -219,68 +216,55 @@ bool OgreVisualModel::loadTexture(const std::string& filename)
     return sofa::helper::system::DataRepository.findFile(file);
 }
 
-bool OgreVisualModel::prepareMeshSimple()
+
+void OgreVisualModel::updateNormals(
+    const ResizableExtVector<Coord>& vertices,
+    const ResizableExtVector<Triangle>& triangles,
+    const ResizableExtVector<Quad>& quads)
 {
-    const std::string&  materialOgreName = materialOgre.getValue();
+    if(this->m_updateNormals == false && this->m_vnormals.getValue().size() == 0 ) return;
 
-    using namespace core::objectmodel;
+    ResizableExtVector<Deriv>& normals = *(this->m_vnormals.beginEdit());
+    int nbn = vertices.size();
 
-    BaseContext* context = this->getContext();
-    helper::vector< OgreReflectionTexture* > reflectionTextures;
-    context->get< OgreReflectionTexture >( &reflectionTextures, BaseContext::SearchRoot);
-    OgreReflectionTexture* texture = *reflectionTextures.begin();
-    std::ostringstream s;
-    s << "OgreVisualSimpleMaterial["<<meshName<<"]";
+    normals.resize(nbn);
 
-    Ogre::MaterialPtr matPtr = texture->getMaterialPtr(s.str());
+    for (int i = 0; i < nbn; i++)
+        normals[i].clear();
 
-    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
-    const ResizableExtVector<Quad>& quads = this->getQuads();
-    const ResizableExtVector<Coord>& vertices = this->getVertices();
-
-    ++meshName;
-    //Create a model for the normals
+    for (unsigned int i = 0; i < triangles.size(); i++)
     {
-        std::ostringstream s;
-        s << "OgreVisualNormalModel["<<meshName<<"]";
-        normalName=s.str();
-        ogreNormalObject = (Ogre::ManualObject *) mSceneMgr->createMovableObject(normalName,"ManualObject");
-        ogreNormalObject->setDynamic(true);
-        ogreNormalObject->setCastShadows(false);
+        const Coord v1 = vertices[triangles[i][0]];
+        const Coord v2 = vertices[triangles[i][1]];
+        const Coord v3 = vertices[triangles[i][2]];
+        Coord n = cross(v2-v1, v3-v1);
 
-        //Create the Material to draw the normals
-        s.str("");
-        s << "OgreNormalMaterial[" << ++SubMesh::materialUniqueIndex << "]" ;
-        currentMaterialNormals = Ogre::MaterialManager::getSingleton().create(s.str(), "General");
-        currentMaterialNormals->setLightingEnabled(false);
+        normals[triangles[i][0]] += n;
+        normals[triangles[i][1]] += n;
+        normals[triangles[i][2]] += n;
     }
 
-    //Create a model for the Mesh
+    for (unsigned int i = 0; i < quads.size(); i++)
     {
-        std::ostringstream s;
-        s << "OgreVisualModel["<<meshName<<"]";
-        modelName=s.str();
-        ogreObject = (Ogre::ManualObject *) mSceneMgr->createMovableObject(modelName,"ManualObject");
-        ogreObject->setDynamic(needUpdate);
-        ogreObject->setCastShadows(true);
+        const Coord & v1 = vertices[quads[i][0]];
+        const Coord & v2 = vertices[quads[i][1]];
+        const Coord & v3 = vertices[quads[i][2]];
+        const Coord & v4 = vertices[quads[i][3]];
+        Coord n1 = cross(v2-v1, v4-v1);
+        Coord n2 = cross(v3-v2, v1-v2);
+        Coord n3 = cross(v4-v3, v2-v3);
+        Coord n4 = cross(v1-v4, v3-v4);
 
-    }
-    SubMesh& mesh = materialToMesh[materialOgreName];
-    mesh.textureName = std::string();
-    for (int i=vertices.size()-1; i>=0; --i) mesh.indices.insert(i);
-    std::copy(triangles.begin(), triangles.end(), std::back_inserter(mesh.triangles));
-    std::copy(quads.begin(), quads.end(),  std::back_inserter(mesh.quads));
-    mesh.materialName = materialOgreName;
-    mesh.material = matPtr;
-
-    std::map<std::string, SubMesh>::iterator it;
-    int idx=0;
-    for (it=materialToMesh.begin(); it!=materialToMesh.end(); ++it)
-    {
-        it->second.init(idx);
+        normals[quads[i][0]] += n1;
+        normals[quads[i][1]] += n2;
+        normals[quads[i][2]] += n3;
+        normals[quads[i][3]] += n4;
     }
 
-    return true;
+    for (unsigned int i = 0; i < normals.size(); i++)
+        normals[i].normalize();
+
+    m_vnormals.endEdit();
 }
 
 void OgreVisualModel::prepareMesh()
@@ -289,6 +273,8 @@ void OgreVisualModel::prepareMesh()
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
     const ResizableExtVector<Coord>& vertices = this->getVertices();
+
+    OgreVisualModel::updateNormals(vertices,triangles,quads);
 
     ++meshName;
     //Create a model for the normals
@@ -562,17 +548,7 @@ void OgreVisualModel::internalDraw(bool /*transparent*/)
         //If visual model is empty, return
         if (getTriangles().empty() && getQuads().empty()) return;
 
-        if( materialOgre.getValue().empty())
-        {
-            prepareMesh();
-        }
-        else
-        {
-            if(! prepareMeshSimple() )
-            {
-                prepareMesh(); // we fall here if we failed to retrieve the MaterialPtr in the MaterialManager
-            }
-        }
+        prepareMesh();
 
         for (MatToMesh::iterator it=materialToMesh.begin(); it!=materialToMesh.end(); ++it)
             it->second.create(ogreObject,&shaderParameters,vertices,normals,texCoords);
