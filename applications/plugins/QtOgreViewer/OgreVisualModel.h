@@ -28,6 +28,9 @@
 #define OGREVISUALMODEL_H
 
 #include <Ogre.h>
+
+#include "SubMesh.h"
+
 #include "DotSceneLoader.h"
 
 #include "OgreShaderParameter.h"
@@ -49,91 +52,6 @@ namespace component
 namespace visualmodel
 {
 
-
-class SubMesh
-{
-
-    typedef VisualModelImpl::Triangle  Triangle;
-    typedef VisualModelImpl::Quad Quad;
-    typedef std::set< unsigned int > Indices;
-    typedef helper::vector< Triangle > VecTriangles;
-    typedef helper::vector< Quad > VecQuads;
-    typedef ExtVec3fTypes::Coord Coord;
-    typedef Vec<2, float> TexCoord;
-
-    struct InternalStructure
-    {
-        Indices indices;
-        VecTriangles triangles;
-        VecQuads quads;
-
-        template <class T>
-        void  updatePrimitive(T& primitive)
-        {
-            for (unsigned int i=0; i<T::size(); ++i) primitive[i] = globalToLocalPrimitives[ primitive[i] ];
-        }
-
-        void computeGlobalToLocalPrimitives()
-        {
-            globalToLocalPrimitives.clear();
-            unsigned int idx=0;
-            for (Indices::const_iterator it=indices.begin(); it!=indices.end(); ++it)
-                globalToLocalPrimitives.insert(std::make_pair(*it, idx++));
-
-            for (VecTriangles::iterator it=triangles.begin(); it!=triangles.end(); ++it) updatePrimitive(*it);
-            for (VecQuads::iterator it=quads.begin(); it!=quads.end(); ++it)             updatePrimitive(*it);
-        }
-
-        std::map< unsigned int, unsigned int > globalToLocalPrimitives;
-    };
-
-public:
-
-    SubMesh():maxPrimitives(10000) {};
-
-    int index;
-    Indices indices;
-    Ogre::MaterialPtr material;
-    std::string materialName;
-    std::string shaderName;
-    std::string textureName;
-    core::loader::Material sofaMaterial;
-
-    VecTriangles triangles;
-    VecQuads quads;
-
-    void init(int &idx);
-    void create(Ogre::ManualObject *,
-            helper::vector< BaseOgreShaderParameter*> *,
-            const ResizableExtVector<Coord>& positions,
-            const ResizableExtVector<Coord>& normals,
-            const ResizableExtVector<TexCoord>& textCoords) const;
-    void update(const ResizableExtVector<Coord>& positions,
-            const ResizableExtVector<Coord>& normals,
-            const ResizableExtVector<TexCoord>& textCoords) const ;
-
-    Ogre::MaterialPtr createMaterial(helper::vector< OgreShaderTextureUnit*> *, const core::loader::Material &sofaMaterial, const std::string &shaderName);
-    void updateMaterial(const core::loader::Material &sofaMaterial);
-
-    void updateMeshCustomParameter(Ogre::Entity *entity) const;
-    void updateManualObjectCustomParameter() const;
-
-    template <class ObjectType>
-    void updateCustomParameters(ObjectType *section) const;
-
-    static int materialUniqueIndex;
-protected:
-
-
-    void computeGlobalToLocalPrimitives();
-
-
-    helper::vector< InternalStructure > storage;
-    const unsigned int maxPrimitives;
-    mutable Ogre::ManualObject *model;
-    mutable helper::vector< BaseOgreShaderParameter*>* shaderParameters;
-    helper::vector< OgreShaderTextureUnit*>* shaderTextureUnits;
-};
 
 
 class OgreVisualModel : public sofa::component::visualmodel::VisualModelImpl
@@ -194,26 +112,7 @@ protected:
 };
 
 
-template <class ObjectType>
-void SubMesh::updateCustomParameters(ObjectType *section) const
-{
-    section->setCustomParameter(1, Ogre::Vector4(sofaMaterial.ambient.ptr()));
-    section->setCustomParameter(2, Ogre::Vector4(sofaMaterial.diffuse.ptr()));
-    section->setCustomParameter(3, Ogre::Vector4(sofaMaterial.specular.ptr()));
-    section->setCustomParameter(4, Ogre::Vector4(sofaMaterial.shininess,0,0,0));
 
-    for (unsigned int p=0; p<shaderParameters->size(); ++p)
-    {
-        if ((*shaderParameters)[p]->isDirty())
-        {
-            Ogre::Vector4 value;
-            BaseOgreShaderParameter* parameter=(*shaderParameters)[p];
-            parameter->getValue(value);
-            section->setCustomParameter(parameter->getEntryPoint(), value);
-        }
-    }
-
-};
 }
 }
 }
