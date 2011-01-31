@@ -53,7 +53,8 @@ SOURCES += DotSceneLoader.cpp \
            OgreReflectionTexture.cpp \
            DrawManagerOGRE.cpp \
            OgreViewerSetting.cpp \
-           initQtOgreViewer.cpp
+           initQtOgreViewer.cpp \
+		   SubMesh.cpp 
 
 HEADERS += DotSceneLoader.h \
            HelperLogics.h \
@@ -68,7 +69,8 @@ HEADERS += DotSceneLoader.h \
            OgreSofaViewer.h \
            DrawManagerOGRE.h \
            OgreViewerSetting.h \
-           initQtOgreViewer.h
+           initQtOgreViewer.h \
+		   SubMesh.h
 
 
 #README_FILE = PluginMeshSTEPLoader.txt
