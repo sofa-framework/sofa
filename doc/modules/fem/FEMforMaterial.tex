@@ -56,6 +56,19 @@
 \section{FEM For Engeenering Material}
 
 \paragraph{Abstract : }
+Finite Element Method (FEM) is a technique for numerical resolving an partial differential equation (PDE). Several simplest examples of PDE can see as below : 
+\begin{itemize}
+ \item Heat Equation : \[ \frac{\partial u}{\partial t} - \alpha \bigtriangleup u = 0 \]
+where $u : R^{3} \mapsto R $ is the temperature, the problem's solution.
+ \item Stokes's problem :   \[ - \nu \bigtriangleup \textbf{v} + \bigtriangledown p = 0 \]
+where $[\textbf{v},p] : R^{3} \mapsto R^{3}\bigotimes R $ is the velocity vector fields and the pressure, the problem's solution.
+\end{itemize}
+The finite element method aims at finding these solutions of the problem not in the continium form but the discrete one, approximated of the continium form. These functions, in the general form is a map from a domain to is codomain with respectively DIM\_DOMAIN and DIM\_CODOMAIN for dimensions. By this first-of-all functional definition, we can separate the notion of Element and Finite Element on the FEM configuration :
+\begin{itemize}
+ \item An Element Data Structure give locally all information on the domain of computation.
+ \item An Finite Element Data Structure  give locally all information on its codomain. 
+\end{itemize}    
+   
 
 \subsection{Equations for elastostatic: } 
 
