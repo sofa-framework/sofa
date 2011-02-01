@@ -135,6 +135,8 @@ protected:
 
     Data<std::string> PointActiverEngine;
 
+    Data<bool> m_displayFreePosition;
+
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
@@ -159,7 +161,13 @@ inline Point::Point(core::CollisionElementIterator& i)
 
 inline const Vector3& Point::p() const { return (*model->mstate->getX())[index]; }
 
-inline const Vector3& Point::pFree() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[index]; }
+inline const Vector3& Point::pFree() const
+{
+    if (hasFreePosition())
+        return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[index];
+    else
+        return p();
+}
 
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
 

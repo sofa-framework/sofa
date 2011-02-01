@@ -66,6 +66,7 @@ LineModel::LineModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
     , LineActiverEngine(initData(&LineActiverEngine,"LineActiverEngine", "path of a component LineActiver that activate or deactivate collision line during execution") )
+    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
 }
 
@@ -403,13 +404,6 @@ void LineModel::draw()
         if (getContext()->getShowWireFrame())
             simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
 
-        for (int i=0; i<size; i++) //elems.size()
-        {
-            if (elems[i].i1 < elems[i].i2) // only display non-edge lines
-                draw(i);
-        }
-
-
         std::vector< Vector3 > points;
         for (int i=0; i<size; i++)
         {
@@ -422,6 +416,22 @@ void LineModel::draw()
         }
 
         simulation::getSimulation()->DrawUtility().drawLines(points, 1, Vec<4,float>(getColor4f()));
+
+        if (m_displayFreePosition.getValue())
+        {
+            std::vector< Vector3 > pointsFree;
+            for (int i=0; i<size; i++)
+            {
+                Line l(this,i);
+                if(l.activated())
+                {
+                    pointsFree.push_back(l.p1Free());
+                    pointsFree.push_back(l.p2Free());
+                }
+            }
+
+            simulation::getSimulation()->DrawUtility().drawLines(pointsFree, 1, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
+        }
 
         if (getContext()->getShowWireFrame())
             simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
