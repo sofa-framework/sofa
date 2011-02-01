@@ -85,9 +85,8 @@ public slots:
     void updateDescription(Q3ListViewItem*);
 #else
     void updateComponentList(QListViewItem*);
-    void updateDescription(QListViewItem*)
+    void updateDescription(QListViewItem*);
 #endif
-
 private :
     void transferPluginsToNewPath();
     std::set< std::string > pluginList;
