@@ -135,12 +135,12 @@ protected:
 
     Data<std::string> PointActiverEngine;
 
-    Data<bool> m_displayFreePosition;
-
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
+
+    Data<bool> m_displayFreePosition;
 
     void updateNormals();
 
