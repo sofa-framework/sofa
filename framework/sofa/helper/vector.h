@@ -41,6 +41,10 @@
 /// uncomment if you want to allocate the minimum size on your device. however, this requires more reallocation if the size increase often
 #define MINIMUM_SIZE_DEVICE
 
+/// maximum number of bytes we allow to double the size when we reserve
+/// if MINIMUM_SIZE_DEVICE is disable, it also use this value else it use the minimum size
+#define MAXIMUM_DOUBLE_SIZE 32768
+
 //#define DEBUG_OUT_VECTOR
 
 #ifdef DEBUG_OUT_VECTOR
@@ -264,11 +268,11 @@ public:
     void reserve (size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
     {
 #ifdef MINIMUM_SIZE_DEVICE
-        if ( s > deviceAllocSize) deviceAllocSize = ( s+WARP_SIZE-1 ) & (size_type)(-(long)WARP_SIZE);
+        if ( s > deviceAllocSize) deviceAllocSize = ((s+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
 #endif
         if ( s <= allocSize ) return;
         DEBUG_OUT_V(SPACEP << "reserve " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std::endl);
-        allocSize = ( s>2*allocSize ) ?s:2*allocSize;
+        allocSize = ( s>2*allocSize || s>=MAXIMUM_DOUBLE_SIZE) ?s:2*allocSize;
         // always allocate multiples of BSIZE values
         allocSize = ( allocSize+WARP_SIZE-1 ) & (size_type)(-(long)WARP_SIZE);
 

@@ -213,6 +213,7 @@ SOURCES += \
 	   	CudaPrecomputedWarpPreconditioner.cpp \
 		CudaWarpPreconditioner.cpp \
 		CudaConstantForceField.cpp \
+		CudaAspirationForceField.cpp \
 		CudaJacobiPreconditioner.cpp \
 		CudaBlockJacobiPreconditioner.cpp \
 		CudaHexahedronFEMForceField.cpp \

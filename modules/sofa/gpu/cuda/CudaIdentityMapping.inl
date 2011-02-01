@@ -88,35 +88,35 @@ void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::appl
     dOut.endEdit();
 }
 
-// template <>
-// void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT(Data<InMatrixDeriv>& dOut, const Data<MatrixDeriv>& dIn, const core::ConstraintParams * /*cparams*/)
-// {
-// 	InMatrixDeriv& out = *dOut.beginEdit();
-// 	const MatrixDeriv & in = dIn.getValue();
-//
-// 	gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-//
-// 	for (gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
-// 	{
-// 		gpu::cuda::CudaVec3fTypes::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
-// 		gpu::cuda::CudaVec3fTypes::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
-//
-// 		// Creates a constraints if the input constraint is not empty.
-// 		if (colIt != colItEnd)
-// 		{
-// 			gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
-//
-// 			while (colIt != colItEnd)
-// 			{
-// 				o.addCol(colIt.index(), colIt.val());
-//
-// 				++colIt;
-// 			}
-// 		}
-// 	}
-//
-// 	dOut.endEdit();
-// }
+template <>
+void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT(Data<InMatrixDeriv>& dOut, const Data<MatrixDeriv>& dIn, const core::ConstraintParams * /*cparams*/)
+{
+    InMatrixDeriv& out = *dOut.beginEdit();
+    const MatrixDeriv & in = dIn.getValue();
+
+    gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+
+    for (gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        gpu::cuda::CudaVec3fTypes::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        gpu::cuda::CudaVec3fTypes::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+        // Creates a constraints if the input constraint is not empty.
+        if (colIt != colItEnd)
+        {
+            gpu::cuda::CudaVec3fTypes::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+
+            while (colIt != colItEnd)
+            {
+                o.addCol(colIt.index(), colIt.val());
+
+                ++colIt;
+            }
+        }
+    }
+
+    dOut.endEdit();
+}
 
 //////// CudaVec3f1
 

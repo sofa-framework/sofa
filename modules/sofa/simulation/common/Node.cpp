@@ -597,10 +597,9 @@ void Node::executeVisitor(Visitor* action)
     static int level = 0;
     for (int i=0; i<level; ++i) std::cerr << ' ';
     std::cerr << ">" << decodeClassName(typeid(*action)) << " on " << this->getPathName();
-    if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
-        std::string infos = action->getInfos();
-    if (!infos.empty())
-        std::cerr << "  : " << infos;
+//     if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
+    if (!action->getInfos().empty())
+        std::cerr << "  : " << action->getInfos();
     std::cerr << std::endl;
     ++level;
 #endif
