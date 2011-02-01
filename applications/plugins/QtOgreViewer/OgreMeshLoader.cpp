@@ -22,6 +22,24 @@ OgreMeshLoader::OgreMeshLoader():
 {
 }
 
+bool OgreMeshLoader::canLoad()
+{
+    bool canload = false;
+    if( Ogre::MeshManager::getSingletonPtr() == NULL )
+    {
+        // it is OK to step here from the Modeler...
+        // we do not have a clear policy to init and tidy external resources from a plugin.
+        // It is the case for Ogre (see Ogre::Root::initialise() and Ogre::Root::shutdown()
+        this->sout << "Ogre::MeshManager NULL." << sendl;
+        canload = false;
+    }
+    else
+    {
+        canload = core::loader::MeshLoader::canLoad();
+    }
+    return canload;
+}
+
 bool OgreMeshLoader::load()
 {
     sout << "Loading MESH file: " << m_filename << sendl;
