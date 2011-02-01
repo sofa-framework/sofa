@@ -78,11 +78,11 @@ The finite element method aims at finding these solutions in discrete form, appr
 \end{center}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{itemize}
- \item An Element Data Structure give locally all information on the domain of computation.
- \item An Finite Element Data Structure  give locally all information on its codomain in relation with the computational domain.
- \item An Quadrature Data Structure give information of quadrature points on the computational domain.   
+ \item An Element Data Structure give all information about a local domain of computation (information for one element).
+ \item An Finite Element Data Structure  give all information on local codomain in relation with the local computational domain.
+ \item An Quadrature Data Structure give information of quadrature points on the local computational domain.   
 \end{itemize}    
-The detail information is given by the class diagram :
+Remark that all of these Data Structure only locally model the domain and the codomain of computation. The detail information is given by the class diagram :
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{center}
  \includegraphics[scale=0.5]{FEMDefaulttype}
@@ -185,7 +185,27 @@ Giving an definition : A quadrature formular allow to evaluate appriximatively a
  \item Q\_Coord\_static\_size  
  \item supINFO\_QUADRATURE  
 \end{itemize}
-
+\subsection{Abstract space integration }
+After defining the discrete computational domain and discrete functional space (finite space), all discrete function in the finite space are of form :
+\[
+ f_h \sum_{i} f_i.w_i
+\]
+where $f_i$ are degree of freedom and $w_i$ are base of the finite space (test functions). Evaluating integration of an arbitary function in the finite space is done by accumulating locally these integration, element by element : 
+\[
+ \int_{\Omega_h} f_h = \int_{\Omega_h} \sum_{i} f_i.w_i  =   \sum_{T} \int_{T} \sum_{i} f_i.w_i = \sum_{i} \sum_{T} \int_{T} f_i.w_i
+\]
+We the that the global question becomes the local evaluating integration on an element. Theses local integrations can be evaluated by completely giving all values and derivative values of local test function (interpolation functions). For an arbitary local test function $w_i$, we have :  
+\[
+ \int_{T} w_i dT \approx \sum_{k} weight_{k} * w_i(qp_{k}) 
+\]  
+where $qp_{k}$ is the k-th local quadrature point and $weight_{k}$ its weight on the element. Thus, with assumption if giving all values and derivative values of all local interpolation functions on all local quadrature points, we can numerically evaluate all functions and its first derivative integration on the finite space. 
+\begin{center}
+ \includegraphics[scale=0.5]{FEMCore}
+\end{center}
+The figure above show the FEM API classes structure(not yet stable). Its idea is all blues components gives values and derivative values of all test functions on all quadrature points. Other component needs only read these values for appropriated use.    
+\paragraph{FENodes }components aims at giving an generic topology. Templated on and appropriated Finite Element Data, this component manage essentially the pass of local id node to its global id, and handling when the topology change. 
+\paragraph{QuadratureFormular }components aims at locally managing the quadrature points and its weight. Giving a quadrature table, one can give these points on the barycentric coordinates of the element. 
+\paragraph{QuadratureInterpolation }components aims at giving all values and derivative values of interpolation functions on all quadrature points.
 
 \subsection{Time integration in SOFA - OdeSolver: }
 An example in EulerImplicit Solver to see how works the ode solver, which integration schemes used. 
