@@ -18,6 +18,8 @@ public:
 
     OgreMeshLoader();
 
+    bool canLoad();
+
     bool load();
 
 protected:
