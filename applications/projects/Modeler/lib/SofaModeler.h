@@ -218,6 +218,9 @@ public slots:
 
     ///display the plugin manager window, to add/remove some external dynamic libraries
     void showPluginManager();
+
+
+    void updateViewerList();
 protected slots:
     void redirectStderr();
     void redirectStdout();
@@ -244,8 +247,11 @@ protected:
 
     SofaTutorialManager *tuto;
 
+
+
     //********************************************
     /// Menu runSofa for the GUI
+    Q3PopupMenu *runSofaGUI;
     std::vector< QAction* > listActionGUI;
     /// Menu preset
     Q3PopupMenu *preset;

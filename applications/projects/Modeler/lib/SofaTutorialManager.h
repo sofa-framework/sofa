@@ -85,6 +85,7 @@ signals:
     void undo();
     void redo();
     void editInModeler(const std::string& sceneFilename);
+
 protected:
     TutorialSelector *selector;
     GraphModeler *graph;
