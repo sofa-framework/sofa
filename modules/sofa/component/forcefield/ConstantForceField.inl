@@ -113,7 +113,7 @@ void ConstantForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoor
 }
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void ConstantForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /* mat */, SReal /* k */, unsigned int & /* offset */)
 {
 
 }

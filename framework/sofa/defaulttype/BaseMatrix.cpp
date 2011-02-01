@@ -665,17 +665,17 @@ public:
     }
 
     template <class Real, int NL, int NC, class M1, class M2>
-    static inline void opDynamicRealNLNC(const M1 * m1, M2 * m2, double fact, BaseMatrix::MatrixCategory category)
+    static inline void opDynamicRealNLNC(const M1 * m1, M2 * m2, double fact, BaseMatrix::MatrixCategory /* category */)
     {
-        switch(category)
-        {
+//        switch(category)
+//        {
 // 	  case BaseMatrix::MATRIX_DIAGONAL:
 // 	  {
 // 	      BaseMatrixLinearOpAM_BlockDiagonal<Real, NL, NC, add, transpose, M, V1, V2> op;
 // 	      op(m1, m2, fact);
 // 	      break;
 // 	  }
-        default: // default to sparse
+//	  default: // default to sparse
         {
             const int NL1 = m2->getBlockRows();
             const int NC2 = m2->getBlockCols();
@@ -689,28 +689,28 @@ public:
                 BaseMatrixLinearOpAM_BlockSparse<Real, NL, NC, transpose, M1 , M2 > op;
                 op(m1, m2, fact);
             }
-            break;
-        }
+//	      break;
+//	  }
         }
     }
 
     template <class Real, class M1, class M2>
-    static inline void opDynamicReal1(const M1 * m1, M2 * m2, double fact, BaseMatrix::MatrixCategory category)
+    static inline void opDynamicReal1(const M1 * m1, M2 * m2, double fact, BaseMatrix::MatrixCategory /* category */)
     {
-        switch(category)
-        {
+//        switch(category)
+//        {
 // 	  case BaseMatrix::MATRIX_DIAGONAL:
 // 	  {
 // 	      BaseMatrixLinearOpAM_BlockDiagonal<Real, NL, NC, add, transpose, M, V1, V2> op;
 // 	      op(m1, m2, fact);
 // 	      break;
 // 	  }
-        default: // default to sparse
+//	  default: // default to sparse
         {
             BaseMatrixLinearOpAM1_BlockSparse<Real , transpose, M1, M2 > op;
             op(m1, m2, fact);
-            break;
-        }
+//	      break;
+//	  }
         }
     }
 
