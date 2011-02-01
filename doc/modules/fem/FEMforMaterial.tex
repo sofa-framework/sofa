@@ -44,7 +44,7 @@
 %%%%%%%%%%%%%%%%%% DOCUMENT TITLE %%%%%%%%%%%%%%%%%%%%%%%%% To be deleted when include in the global document
 %\chapter{Mapping} %\section{Rigid Mapping} 
 \vspace{1.5cm}
-\begin{center}\resizebox{7cm}{0.6cm}{FEM For Engeenering Material}\end{center}
+\begin{center}\resizebox{7cm}{0.6cm}{Generic Finite Elemenet Method}\end{center}
 %%%%%%%%%%%%%%%%%% DOCUMENT TITLE %%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,7 +52,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{F.E.M}%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{FEM For Engeenering Material}
+\section{Generic Finite Elemenet Method}
 
 \paragraph{Abstract : }
 
@@ -105,8 +105,28 @@ After defining the geometric primitives, the generic element can be defined :
 typedef sofa::helper::fixed_array<PointID,NB_VERTEX>   Element;
 typedef sofa::helper::vector<Element>               seqElement;
 \end{lstlisting} 
+Several based geometric primitives (Topology Data Type) are defined as listed :
+\begin{center}
+  \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+    \hline
+                              &ID &V&E&T&Q&T&H&F \\
+    \hline
+    POINT\_TopologyData       & 0 &1&0&0&0&0&0&0 \\
+    \hline
+    EDGE\_TopologyData        & 1 &2&1&0&0&0&0&0 \\
+    \hline
+    TRIANGLE\_TopologyData    & 2 &3&3&1&0&0&0&1 \\
+    \hline
+    QUAD\_TopologyData        & 3 &4&4&0&1&0&0&1 \\
+    \hline
+    TETRAHEDRON\_TopologyData & 4 &4&6&4&0&1&0&4 \\
+    \hline
+    HEXAHEDRON\_TopologyData  & 5 &8&10&0&6&0&1&6 \\
+    \hline
+  \end{tabular}
+\end{center}
 \paragraph{Element data structure : }
-Giving an definition : An Element is defined by locally defining the computational domain. Because the Element Data Structure aims at modeling the computational domain, it must have information about dimension of computational space (1,2,3), the real value type (double, float)~\footnote{ in SOFA, these informations is given in TDataTypes (Vec1dType,Vec2fType ...)} , the barycentric coordinates (local coord), and the mesh type (Lagrangian, Eulerian). An Element is defined by giving the below informations : 
+Giving an definition : An Element is defined by locally defining the computational domain. Because the Element Data Structure aims at modeling the computational domain, it must have information about dimension of computational space (1,2,3), the real value type (double, float)~\footnote{ in SOFA, these informations is given in TDataTypes (Vec1dType,Vec2fType ...)} , the barycentric coordinates (local coord), and the mesh type (Lagrangian, Eulerian). An Element Data is defined by giving the below informations : 
 \begin{itemize}
  \item typedef DataType ( computational space ).
  \item typedef TopologyData ( geometric primitives ).
@@ -114,10 +134,62 @@ Giving an definition : An Element is defined by locally defining the computation
  \item MESH\_TYPE
  \item supINFO\_ELEMENT (extensibility of structure).
 \end{itemize}
+Several examples of Tetrahedron Elements :
+\begin{center}
+  \begin{tabular}{|r|c|c|c|c|c|}
+    \hline
+                                                &        DataType        &              TopologyData             &B&M&s  \\
+    \hline
+      \scriptsize LagrangianTetrahedron\_d\_Data& \scriptsize Vec3dTypes & \scriptsize TETRAHEDRON\_TopologyData &4&0&0 \\
+    \hline
+      \scriptsize LagrangianTetrahedron\_f\_Data& \scriptsize Vec3fTypes & \scriptsize TETRAHEDRON\_TopologyData &4&0&0 \\
+    \hline
+       \scriptsize  EulerianTetrahedron\_d\_Data& \scriptsize Vec3dTypes & \scriptsize TETRAHEDRON\_TopologyData &4&1&0 \\
+    \hline
+       \scriptsize  EulerianTetrahedron\_f\_Data& \scriptsize Vec3fTypes & \scriptsize TETRAHEDRON\_TopologyData &4&1&0 \\
+    \hline
+  \end{tabular}
+\end{center}
+\paragraph{Finite Element data structure : }
+Giving an definition : An Finite Element is defined by locally defining the discrete functional space of solution. Finite Element locally model the functional space, it must have information about the computational space, image space (codimension), and the set of local function (usually polynomial interpolation functions) can be modeled by giving the repartition of NODES on the element. The Finite Element Data Structure don't give detail infomation about interpolation function, but only about its structure i.e  the number of NODES and how are they distributed over an element. Then, and Finite Element Data is defined by giving the below informations : 
+\begin{itemize}
+ \item typedef ElementData ( local computational domain ).
+ \item NB\_NODES\_BY\_1VERTEX      
+ \item NB\_NODES\_BY\_1EDGE        
+ \item NB\_NODES\_BY\_1TRIANGLE   
+ \item NB\_NODES\_BY\_1QUAD        
+ \item NB\_NODES\_BY\_1TETRAHEDRON  
+ \item NB\_NODES\_BY\_1HEXAHEDRON  
+ \item supINFO\_FINITE\_ELEMENT  
+ \item DIM\_CODOMAIN  ~\footnote{in simple solid computation, DIM\_CODOMAIN = DIM\_DOMAIN}
+\end{itemize}
+Several examples of Tetrahedron Finite Elements :
+\begin{center}
+  \begin{tabular}{|r|c|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+                         & template     &V&E&T&Q&T&H&s&C   \\
+    \hline
+        \_4N\_TetraData  & TtetrahedronData &1&0&0&0&0&0&0&3  \\
+    \hline
+        \_5N\_TetraData  & TtetrahedronData &1&0&0&0&1&0&0&3  \\
+    \hline
+       \_10N\_TetraData  & TtetrahedronData &1&1&0&0&0&0&0&3  \\
+    \hline
+  \end{tabular}
+\end{center}
+\paragraph{Quadrature data structure : }
+Giving an definition : A quadrature formular allow to evaluate appriximatively a function's integration. On the FEM computational, numerical integration are locally evaluated then accumulated for the global integration. Combining with the definition of an Element, a quadrature formular give the rule for locally integrating functions on the computational domain. A Quadrature Data must so have information about the Element, the number of quadrature points, and the relation between the point given in quadrature table (QCoord) and the barycentric coordinates corespondant in the element. An Quadrature Data is defined by giving the below informations : 
+\begin{itemize}
+ \item typedef ElementData ( computational space ).
+ \item NB\_QPOINT
+ \item Q\_Coord\_static\_size  
+ \item supINFO\_QUADRATURE  
+\end{itemize}
+
 
 \subsection{Time integration in SOFA - OdeSolver: }
 An example in EulerImplicit Solver to see how works the ode solver, which integration schemes used. 
-\paragraph{Without mass damping :} This paragraph show the Euler Implicite scheme (semi time discretization) used in (Baraff and Witkin, Large Steps in Cloth Simulation, SIGGRAPH 1998). Equation of motion :
+\paragraph{Without mass damping :} This paragraph show the Euler Implicite scheme (semi time discretization) implemented in SOFA~\cite{SofaODERef}. Equation of motion :
  \[
 M.a=f \text{    ,  or at time n+1 :   }M.a_{n+1}=f_{n+1}
 \]
@@ -835,7 +907,7 @@ By these informations, we can decide to stock or not for the data on all mesh, c
 \paragraph{StrainTensor }
 A interpolatedstrain is a symatric matrix [RdDIM]x[RdDIM], \\ there are RdDIM*(RdDIM+1)/2 Real values.
 A interpolatedstress is a symatric matrix [RdDIM]x[RdDIM], \\ there are RdDIM*(RdDIM+1)/2 Real values.
-ElementInterpolatedStrain is a Strain[RdDIM][nbNodes][nbQP], \\ there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
+ElementInterpolatedStrain is a \\ Strain[RdDIM][nbNodes][nbQP], \\ there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
 \paragraph{Material }
 ElementInterpolatedStress is a Stress[RdDIM][nbNodes][nbQP], \\ there are [RdDIM]*[nbNodes]*[nbQP]*(RdDIM*(RdDIM+1)/2) Real values.
 
