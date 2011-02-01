@@ -75,6 +75,7 @@ PointModel::PointModel()
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , PointActiverEngine(initData(&PointActiverEngine,"PointActiverEngine", "path of a component PointActiver that activate or deactivate collision point during execution") )
     , m_lmdFilter( NULL )
+    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
 {
 }
 
@@ -152,7 +153,6 @@ void PointModel::draw()
         if (getContext()->getShowWireFrame())
             simulation::getSimulation()->DrawUtility().setPolygonMode(0,true);
 
-
         // Check topological modifications
         const int npoints = mstate->getX()->size();
         if (npoints != size)
@@ -175,12 +175,30 @@ void PointModel::draw()
                 }
             }
         }
+
         simulation::getSimulation()->DrawUtility().drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
         simulation::getSimulation()->DrawUtility().drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
+
+        if (m_displayFreePosition.getValue())
+        {
+            std::vector< Vector3 > pointsPFree;
+
+            for (int i = 0; i < size; i++)
+            {
+                Point p(this,i);
+                if (p.activated())
+                {
+                    pointsPFree.push_back(p.pFree());
+                }
+            }
+
+            simulation::getSimulation()->DrawUtility().drawPoints(pointsPFree, 3, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
+        }
 
         if (getContext()->getShowWireFrame())
             simulation::getSimulation()->DrawUtility().setPolygonMode(0,false);
     }
+
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();
 }
