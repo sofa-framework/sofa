@@ -72,6 +72,7 @@ public:
     typedef topology::Edge Element;
     typedef sofa::helper::vector<topology::Edge> VecElement;
     typedef helper::vector<unsigned int> VecIndex;
+    typedef Vec<3, Real> Vec3;
 
 protected:
 

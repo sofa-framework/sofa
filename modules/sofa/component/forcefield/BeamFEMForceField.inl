@@ -450,11 +450,11 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
     // Apply lambda transpose (we use the rotation value of point a for the beam)
 
-    Vec3d fa1 = x[a].getOrientation().rotate(Vec3d(force[0],force[1],force[2]));
-    Vec3d fa2 = x[a].getOrientation().rotate(Vec3d(force[3],force[4],force[5]));
+    Vec3 fa1 = x[a].getOrientation().rotate(Vec3d(force[0],force[1],force[2]));
+    Vec3 fa2 = x[a].getOrientation().rotate(Vec3d(force[3],force[4],force[5]));
 
-    Vec3d fb1 = x[a].getOrientation().rotate(Vec3d(force[6],force[7],force[8]));
-    Vec3d fb2 = x[a].getOrientation().rotate(Vec3d(force[9],force[10],force[11]));
+    Vec3 fb1 = x[a].getOrientation().rotate(Vec3d(force[6],force[7],force[8]));
+    Vec3 fb2 = x[a].getOrientation().rotate(Vec3d(force[9],force[10],force[11]));
 
 
     f[a] += Deriv(-fa1[0],-fa1[1],-fa1[2], -fa2[0],-fa2[1],-fa2[2]);
@@ -494,10 +494,10 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 
     Displacement local_force = beamsData.getValue()[i]._k_loc * local_depl;
 
-    Vec3d fa1 = q.rotate(Vec3d(local_force[0],local_force[1] ,local_force[2] ));
-    Vec3d fa2 = q.rotate(Vec3d(local_force[3],local_force[4] ,local_force[5] ));
-    Vec3d fb1 = q.rotate(Vec3d(local_force[6],local_force[7] ,local_force[8] ));
-    Vec3d fb2 = q.rotate(Vec3d(local_force[9],local_force[10],local_force[11]));
+    Vec3 fa1 = q.rotate(Vec3d(local_force[0],local_force[1] ,local_force[2] ));
+    Vec3 fa2 = q.rotate(Vec3d(local_force[3],local_force[4] ,local_force[5] ));
+    Vec3 fb1 = q.rotate(Vec3d(local_force[6],local_force[7] ,local_force[8] ));
+    Vec3 fb2 = q.rotate(Vec3d(local_force[9],local_force[10],local_force[11]));
 
 //	df[a] += Deriv(-fa1,-fa2) * fact;
 //        df[b] += Deriv(-fb1,-fb2) * fact;
