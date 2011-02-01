@@ -50,6 +50,7 @@
 #include <Q3DockArea>
 #include <QVBoxLayout>
 #include <QDesktopServices>
+#include <QSettings>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
@@ -61,6 +62,7 @@
 #include <qstatusbar.h>
 #include <qdockwindow.h>
 #include <qdockarea.h>
+#include <qsettings.h>
 #endif
 
 namespace sofa
@@ -79,6 +81,7 @@ typedef QDockWindow Q3DockWindow;
 
 
 SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
+    ,runSofaGUI(NULL)
 {
     //index to add in temporary scenes created by the Modeler
     count='0';
@@ -212,7 +215,9 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
     SofaPluginManager::getInstance()->hide();
+    SofaPluginManager::getInstance()->initPluginList();
     this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
+    this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( updateViewerList() ));
 
     rebuildLibrary();
 
@@ -232,30 +237,12 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     runSofaMenu->insertItem("Change Sofa Binary...", this, SLOT( changeSofaBinary()));
     sofaBinary=std::string();
 
-    Q3PopupMenu *runSofaGUI = new Q3PopupMenu(this);
+    runSofaGUI = new Q3PopupMenu(this);
     runSofaMenu->insertItem(QIconSet(), tr("Viewer"), runSofaGUI);
 
-    //Set the different available GUI
-    std::vector<std::string> listGUI = sofa::gui::GUIManager::ListSupportedGUI();
-    //Insert default GUI
-    {
-        QAction *act= new QAction(this, QString("default")+QString("Action"));
-        act->setText( "default");
-        act->setToggleAction( true ); act->setOn(true);
-        act->addTo( runSofaGUI);
-        listActionGUI.push_back(act);
-        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
-    }
-    //Add content of GUI Factory
-    for (unsigned int i=0; i<listGUI.size(); ++i)
-    {
-        QAction *act= new QAction(this, QString(listGUI[i].c_str())+QString("Action"));
-        act->setText( QString(listGUI[i].c_str()));
-        act->setToggleAction( true );
-        act->addTo( runSofaGUI);
-        listActionGUI.push_back(act);
-        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
-    }
+    updateViewerList();
+
+
 
     //----------------------------------------------------------------------
     //Add menu Preset
@@ -334,6 +321,41 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager("config/Modeler.ini")
     tuto=0;
     displayHelpModeler();
 };
+
+void SofaModeler::updateViewerList()
+{
+    //Clear the menu
+    std::vector<QAction*>::iterator it;
+    for( it = listActionGUI.begin(); it != listActionGUI.end(); ++it)
+    {
+        (*it)->removeFrom(runSofaGUI);
+    }
+    listActionGUI.clear();
+
+    //Set the different available GUI
+    std::vector<std::string> listGUI = sofa::gui::GUIManager::ListSupportedGUI();
+
+    //Insert default GUI
+    {
+        QAction *act= new QAction(this, QString("default")+QString("Action"));
+        act->setText( "default");
+        act->setToggleAction( true ); act->setOn(true);
+        act->addTo( runSofaGUI);
+        listActionGUI.push_back(act);
+        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
+    }
+    //Add content of GUI Factory
+    for (unsigned int i=0; i<listGUI.size(); ++i)
+    {
+        QAction *act= new QAction(this, QString(listGUI[i].c_str())+QString("Action"));
+        act->setText( QString(listGUI[i].c_str()));
+        act->setToggleAction( true );
+        act->addTo( runSofaGUI);
+        listActionGUI.push_back(act);
+        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
+    }
+
+}
 
 
 
@@ -912,6 +934,17 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
             break;
         }
     }
+
+    //retrive plugins
+    helper::vector<std::string> pluginList;
+    SofaPluginManager::getInstance()->getPluginList(std::back_inserter(pluginList));
+    helper::vector<std::string>::const_iterator it;
+    for( it = pluginList.begin(); it != pluginList.end(); ++it )
+    {
+        argv << "-l" << QString((*it).c_str()) << " ";
+        messageLaunch += QString("-l ") + QString((*it).c_str());
+    }
+
 
     argv << "-t";
 

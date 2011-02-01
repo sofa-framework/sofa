@@ -135,6 +135,7 @@ void SofaPluginManager::initPluginList()
 
             Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
             item->setSelectable(true);
+            pluginList.insert(std::string(sfile.ascii()) );
             emit( libraryAdded() );
         }
     }
@@ -217,6 +218,7 @@ void SofaPluginManager::addLibrary()
         settings.endGroup();
         settings.writeEntry("/size", size+1);
         settings.endGroup();
+        pluginList.insert(std::string(sfile.ascii()) );
         emit( libraryAdded() );
     }
     else
@@ -252,7 +254,10 @@ void SofaPluginManager::removeLibrary()
         settings.beginGroup(config);
         QString sfile = settings.readEntry("/location");
         if (sfile == location)
+        {
             settings.removeEntry("/location");
+            pluginList.erase(pluginList.find(std::string(sfile.ascii()) ) );
+        }
         settings.endGroup();
     }
 
