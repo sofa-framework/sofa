@@ -20,9 +20,8 @@
 \usepackage{amssymb}
 \usepackage{textcomp}
 %\usepackage{mathaccent}
-
 \usepackage{listings}
-\lstset{language=C++,basicstyle=\scriptsize \color{green},identifierstyle=\color{orange},keywordstyle=[1]\color{blue},columns=fullflexible}
+\lstset{language=C++,basicstyle=\scriptsize \color{green},identifierstyle=\color{orange},keywordstyle=[1]\color{blue},columns=fullflexible,commentstyle=\textit}
 
 \usepackage{color}
 
@@ -56,6 +55,8 @@
 \section{FEM For Engeenering Material}
 
 \paragraph{Abstract : }
+
+\subsection{Data Structure : }
 Finite Element Method (FEM) is a technique for numerical resolving an partial differential equation (PDE). Several simplest examples of PDE can see as below : 
 \begin{itemize}
  \item Heat Equation : \[ \frac{\partial u}{\partial t} - \alpha \bigtriangleup u = 0 \]
@@ -63,12 +64,375 @@ where $u : R^{3} \mapsto R $ is the temperature, the problem's solution.
  \item Stokes's problem :   \[ - \nu \bigtriangleup \textbf{v} + \bigtriangledown p = 0 \]
 where $[\textbf{v},p] : R^{3} \mapsto R^{3}\bigotimes R $ is the velocity vector fields and the pressure, the problem's solution.
 \end{itemize}
-The finite element method aims at finding these solutions of the problem not in the continium form but the discrete one, approximated of the continium form. These functions, in the general form is a map from a domain to is codomain with respectively DIM\_DOMAIN and DIM\_CODOMAIN for dimensions. By this first-of-all functional definition, we can separate the notion of Element and Finite Element on the FEM configuration :
+
+The finite element method aims at finding these solutions in discrete form, approximated of the continium one. These functions, in the general form is a map acting from a domain to its codomain with respectively DIM\_DOMAIN and DIM\_CODOMAIN for dimensions. These equations, after multiplying with the test function give the variational form. Variational form with numerical integration give the way to construct a linear system. The solution of this linear system is the distribution of values of the discrete function solution. On a generic FEM, there are many necessary information needed for computation. Here, we focus on three structures of data for all computation as below: 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+\begin{pspicture}(-7,-1)(7,2)
+\rput(0,1){\Rnode{ElementData}{\psframebox{Element Data}}}
+\rput(-2.5,0){\Rnode{QData}{\psframebox{Quadrature Data}}}
+\rput(4,0){\ovalnode{FEData}{Finite Element Data}}
+\ncline{->}{QData}{ElementData} 
+\ncline{->}{FEData}{ElementData}
+\end{pspicture}
+\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{itemize}
  \item An Element Data Structure give locally all information on the domain of computation.
- \item An Finite Element Data Structure  give locally all information on its codomain. 
+ \item An Finite Element Data Structure  give locally all information on its codomain in relation with the computational domain.
+ \item An Quadrature Data Structure give information of quadrature points on the computational domain.   
 \end{itemize}    
-   
+The detail information is given by the class diagram :
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+ \includegraphics[scale=0.5]{FEMDefaulttype}
+\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Topologycal data structure : }
+The idea of an topology structre is that give information about the geometric primitives. This is the simplest definition who use only unsigned integer for information. A geometric primitives is modeled by giving the below informations : 
+\begin{itemize}
+ \item ID\_TOPOTYPE
+ \item NB\_VERTEX
+ \item NB\_EDGE
+ \item NB\_TRIANGLE
+ \item NB\_QUAD
+ \item NB\_TETRAHEDRON 
+ \item NB\_HEXAHEDRON
+ \item NB\_FACE ~\footnote{ NB\_FACE is equal NB\_TRIANGLE for a tetrahedron, NB\_QUAD for a hexahedron}
+\end{itemize}
+After defining the geometric primitives, the generic element can be defined : 
+\begin{lstlisting}
+typedef sofa::helper::fixed_array<PointID,NB_VERTEX>   Element;
+typedef sofa::helper::vector<Element>               seqElement;
+\end{lstlisting} 
+\paragraph{Element data structure : }
+Giving an definition : An Element is defined by locally defining the computational domain. Because the Element Data Structure aims at modeling the computational domain, it must have information about dimension of computational space (1,2,3), the real value type (double, float)~\footnote{ in SOFA, these informations is given in TDataTypes (Vec1dType,Vec2fType ...)} , the barycentric coordinates (local coord), and the mesh type (Lagrangian, Eulerian). An Element is defined by giving the below informations : 
+\begin{itemize}
+ \item typedef DataType ( computational space ).
+ \item typedef TopologyData ( geometric primitives ).
+ \item DIM\_BARYCOORD
+ \item MESH\_TYPE
+ \item supINFO\_ELEMENT (extensibility of structure).
+\end{itemize}
+
+\subsection{Time integration in SOFA - OdeSolver: }
+An example in EulerImplicit Solver to see how works the ode solver, which integration schemes used. 
+\paragraph{Without mass damping :} This paragraph show the Euler Implicite scheme (semi time discretization) used in (Baraff and Witkin, Large Steps in Cloth Simulation, SIGGRAPH 1998). Equation of motion :
+ \[
+M.a=f \text{    ,  or at time n+1 :   }M.a_{n+1}=f_{n+1}
+\]
+Where $M$ is the mass matrice, $a$, $f$ are respectively acceleration and system force. By the implicit scheme, $f_{n+1}$ must be discretized in term of $f_{n}$ and $df_{n+1}$ :
+
+
+\[
+\begin{array}{rl}
+f_{n+1} &       = f_n + \frac{ df_{n+1} }{dt}.dt + \circ(dt) \\
+        & \approx f_n + \frac{\partial f}{\partial x}.\frac{\partial x}{\partial t}.dt + \frac{\partial f}{\partial v}.\frac{\partial v}{\partial t}.dt  \\
+        &       = f_n + \frac{\partial f}{\partial x}.v_{n+1}.dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
+\end{array}
+\]
+Again, by discretizing the velocity $v_{n+1} \approx v_{n}+a_{n+1}.dt$, semi time discretization scheme becomes :
+\[
+f_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
+\]
+Here, we have the linear system with $a_{n+1}$ the unknown : 
+\[
+M.a_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
+\]
+or
+\[
+(I - dt^2.M^{-1}.\frac{\partial f}{\partial x} - dt.M^{-1}.\frac{\partial f}{\partial v}).a_{n+1}= M^{-1}(f_n + \frac{\partial f}{\partial x}.v_n)
+\]
+\paragraph{With Rayleight mass damping :} This paragraph show the Euler Implicite scheme (formule implemented in Sofa by the EulerImplicitSolver component) using Rayleight mass damping with the damping term is the 
+\[
+[C](v) =[ -r_M.M + r_K.\frac{\partial f}{\partial x} ](v)
+\]
+where $[C]$ is the damping matrix, $r_M,r_K$ are respectively Rayleight mass and Rayleight stiffness coefficients. The different with the scheme above is only to add the damping term in the scheme for more stability in time integration. For more detail, it's needed to take a look about damping theory. The motion equation become :
+ \[
+M.a=f + C(v) \text{    ,  or at time n+1 :   }M.a_{n+1}=f_{n+1} + C(v_{n+1})
+\]
+The scheme adding the damping term is : 
+\[
+f_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  + (r_K.\frac{\partial f}{\partial x} - r_M.M)(v_{n+1})
+\]
+The linear system with the unknown $a_{n+1}$ :
+\[
+M.a_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt   + (r_K.\frac{\partial f}{\partial x} - r_M.M)(v_{n}+a_{n+1}.dt)
+\]
+and it's implemented in EulerImplicitSolver by the result : 
+\[
+[(1+r_M).M  - dt.\frac{\partial f}{\partial v} - (dt^2+dt.r_K).\frac{\partial f}{\partial x}] a_{n+1} 
+     = f_n + (dt + r_K).\frac{\partial f}{\partial x}.v_n - r_M.M.v_n
+\]
+where,
+\[
+\left\{ 
+\begin{array}{l}
+dt \text {  is time step :  } dt=t_{n+1}-t_{n} \\
+r_M \text { is the Rayleight mass coefficient} \\
+r_K \text { is the Rayleight stiffness coefficient} \\
+M \text { the mass matrix} \\
+\frac{\partial f}{\partial v} \text { is B matrix} \\
+\frac{\partial f}{\partial x} \text { is K matrix} 
+\end{array}\right.
+\]
+\paragraph{Midpoint scheme with conserving method :}  for midpoint scheme :
+\[
+\left\{ 
+\begin{array}{l}
+\text {  definition : }             \\
+x_{k+1}     = x_k  + dt . v_{k+ \frac{1}{2}} \\
+x_{k+\frac{1}{2}}  = \frac{ ( x_k + x_{k+1} ) }{2} \\
+v_{k+1}     = v_k  + dt . a_{k+\frac{1}{2}} \\
+v_{k+\frac{1}{2}}  = \frac{ ( v_k + v_{k+1} ) }{2} \\ \\
+\text { all can  be expressed in term of  }  x_{k+\frac{1}{2}} \text {  and  } x_k             \\ 
+v_{k+\frac{1}{2}}  = \frac{2}{dt} ( x_{k+\frac{1}{2}} - x_k ) \\
+a_{k+\frac{1}{2}}  = \frac{2}{dt} (  \frac{2}{dt} . x_{k+\frac{1}{2}}   -     \frac{2}{dt} . x_k    -     x_k    )
+\end{array}\right.
+\]
+See the midpoint method~\cite{MidPoint}. The continium equilibrum variational form then can be written term of x and v at instance k+1/2,  as proposed Gonzalez in exact conserving energy paper. The difficulties is in term PK1 at instance k+1/2 which is resolved by $PK1_{algo}$  of Gonzalez ~\cite{Gonzalez1999}. It rest the term $f_{k+1/2}$ (body force)  and $g_{k+1/2}$ (boundary condition) that i don't know how to explain it in the scheme. It can be seen in thesis of Patrice Hauret~\cite{PHThesis} or Y.Ayyad~\cite{YAyyad} for example.
+
+\subsection{Linearization - secant stiffness and tangent stiffness matrix: }
+The nonlinear elastodynamic base on two term : material nonlinearity and geometrical nonlinearity (see  ~\cite{FEMBook} p.338). A simple example of linearization for the geometry part can be explained in ~\cite{NonlinearGeo}. For linearization of meterial part, at first implementation, we assume the strain and stress are all symetric, and by using the continium tangent moduli at ~\cite{NonlinearGeo}p.337, constitutive law (stress and stress derivative) can be expressed by a fourth order tensor noted \textbf{C}$^{SE}$. Let's resume all with relation in Sofa. An abstract Green-Lagrange strain tensor can be expressed by
+\[
+\begin{array}{ccccc}
+\textbf{E}_{ij}   &=& \frac{1}{2}( \triangledown U  +  \triangledown U^T  )  &+&  \frac{1}{2}( \triangledown U^T \triangledown U )\\
+                  &=& \underbrace{\frac{1}{2}( \frac{\partial U_i}{\partial X_j}  +  \frac{\partial U_j}{\partial X_i}  )}  &+&
+                      \underbrace{\frac{1}{2}\sum_{k=0}^{d-1}( \frac{\partial U_i}{\partial X_k}  +  \frac{\partial U_k}{\partial X_j} )}\\
+                  &=& \textbf{linear part}  &+&  \textbf{nonlinear part}
+\end{array}
+\]
+Using Lagrangian interpolation, these relation can be expressed by matricial form :   
+\[
+\textbf{E} = \textbf{B}^T_L U + \frac{1}{2} U^T \textbf{B}_{NL}  U             
+\]
+where $\textbf{B}^T_L$ and $\textbf{B}_{NL}$ denote respectively linear and nonlinear part of strain, contains only interpolated derivative values, $U$ denote the nodal displacement. We can rewrite this relation by : 
+\[
+\left\{ 
+\begin{array}{rcl}
+\textbf{E}                      &=& [ \textbf{B}^T_L + \frac{1}{2} U^T \textbf{B}_{NL} ] U  \\  
+\frac{d\textbf{E}}{dU}(\bullet) &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (\bullet)     \\
+            &\text{we take} &                                                               \\
+      \textbf{B}   &=&  \textbf{B}^T_L +  U^T \textbf{B}_{NL}                               \\ 
+ \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
+\end{array}\right.
+\]
+Remark that $\textbf{B}$ and $\bar{\textbf{B}}$ are linearly dependent on nodal displacement $U$. This remark allow to evaluate their derivative in relation to $U$. By the second line, we can express the strain derivative 
+\[
+\left\{ 
+\begin{array}{rcl}
+\delta \textbf{E}  &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (\delta U)                 \\  
+d \textbf{E}       &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (dU)                       \\
+            &\text{or} &                                                                    \\
+\delta \textbf{E}  &=& \textbf{B} \delta U                                                  \\  
+d \textbf{E}       &=& \textbf{B} dU                        
+\end{array}\right.
+\]
+Where $\delta \textbf{E}$ is a variational of \textbf{E} relie to a disturbation of displacement $\delta U$, and the $d \textbf{E}$ is a variational of \textbf{E} relie to a variational of $d U$. In SOFA so : 
+\begin{itemize}
+ \item AddForce :
+      \[
+      \left\| 
+      \begin{array}{ll}
+      f = \int_\Omega  \delta \textbf{E} : \textbf{S}_{PK2}  d\Omega  &= \Sigma_{T} \int_{T}  \delta \textbf{E} : \textbf{S}_{PK2}  dV    \\   
+      \int_{T}     \delta \textbf{E} : \textbf{S}_{PK2}  dV             &= \int_{T}  [\frac{d\textbf{E}}{dU}\delta U ]^T . \textbf{C}^{SE} \textbf{E}  dV \\
+								       &= \int_{T}  \delta U^T \textbf{B}^T \textbf{C}^{SE}\bar{\textbf{B}} U
+      \end{array}\right.
+      \]
+ \item AddDForce :
+      \[
+      \left\| 
+      \begin{array}{rcl}
+      df  &=& \frac{d}{dU}\int_\Omega  \delta \textbf{E} : \textbf{S}_{PK2}  d\Omega     \\    
+	  &=& \int_\Omega \frac{d}{dU}( \delta \textbf{E} ): \textbf{S}_{PK2}  d\Omega    + \int_\Omega \delta \textbf{E} : \frac{d}{dU}( \textbf{S}_{PK2})  d\Omega   \\ 
+	  &=& \int_\Omega \delta U \frac{d \textbf{B}^T }{dU}: \textbf{S}_{PK2}  d\Omega    + 
+                            \int_\Omega  \delta U^T \textbf{B}^T : \frac{d\textbf{S}_{PK2}}{d\textbf{E}} \frac{d\textbf{E}}{dU}(dU)  d\Omega   \\   
+	  &=& \int_\Omega \delta U^T \textbf{B}^T_{NL}.\textbf{C}^{SE} \bar{\textbf{B}} dU     + \delta U^T \textbf{B}^T \dot{\textbf{C}}^{SE} \textbf{B} dU
+      \end{array}\right.
+      \]
+
+\end{itemize}
+where $\dot{\textbf{C}}^{SE}$ is the derivative of $\textbf{C}^{SE}$ in relation to $\textbf{E}$. In the general case, $\textbf{C}^{SE}$ may depend of $U$.
+\paragraph{Voigt notation :} By first implementation, assumed that we work only with symetrical strain and symetrical stress, it allow to work with the Voigt notation of strain and stress. In dimension $R^3$, a strain or stress value of one point can be stoked on an array of six real values. Thus, we define in dimension $R^d$, for one element:
+\[
+R^d
+\left\{ 
+\begin{array}{l}
+  \begin{array}{lccc}
+  \text{ iVoigt }   &=& i            & \text{if  } i==j\\
+  \text{ iVoigt }   &=& (d-1) +i +j  & \text{if  } i!=j 
+  \end{array} \\
+\text{with} \\
+ \text{ VOIGT\_DIM }   = \frac{d(d+1)}{2} \\
+ \text{ nbDOF      }   = d*nbOfNodes  
+\end{array}\right.
+\]
+A very general formular of addForce or addDforce above is to construct a matrix K in the format : 
+\[
+ \textbf{ K }   = \textbf{M}_l  . \textbf{C} . \textbf{M}_r
+\]
+where $\textbf{M}_l$, $\textbf{M}_r$ denote the interpoler matrix, with the format transposed one to other, situated respectively on the left and right hand of matrix equation. These matrix called interpoler matrix because $\textbf{E}=\textbf{M}_r.U$. The format of these matrix will be :
+\[
+\textbf{M}_l 
+\left\{ 
+\begin{array}{l}
+\text{Lines:}       nbDOF        \\
+\text{Cols :}       VOIGT\_DIM
+\end{array}\right.
+\textbf{M}_r 
+\left\{ 
+\begin{array}{l}
+\text{Lines:}       VOIGT\_DIM  \\
+\text{Cols :}       nbDOF
+\end{array}\right.
+\textbf{C} 
+\left\{ 
+\begin{array}{l}
+\text{Lines:}       VOIGT\_DIM \\
+\text{Cols :}       VOIGT\_DIM
+\end{array}\right.
+\]
+An example for the simplest case is on the linear tetrahedron ($R^d=3, nbNode=4$) :
+\[
+\left[ 
+\begin{array}{ccc}
+  &  &     \\
+  &  &     \\
+  &  &     \\
+  &  &     \\
+  &  &     \\
+  &  &     
+\end{array}
+\right]_{12\times6}
+\left[ 
+\begin{array}{ccc}
+  &  &     \\
+  &  &     \\
+  &  &     
+\end{array}
+\right]_{6\times6}
+\left[ 
+\begin{array}{cccccc}
+  &  &  & & &  \\
+  &  &  & & & \\
+  &  &  & & &    
+\end{array}
+\right]_{6\times12}
+\left[ 
+\begin{array}{c}
+U_0      \\
+         \\
+\vdots   \\
+\vdots   \\
+         \\
+U_{11}
+\end{array}
+\right]_{12\times1}
+\]
+\paragraph{Constitutive law - stress computation :} By first implementation, we implement the linear material law, the isotropic Hookean one. On the dimension 3, this constitutive can be represented by a $6\times6$ matrix :  
+\[
+\left[ 
+\begin{array}{c}
+\sigma_{xx}      \\
+\sigma_{yy}      \\
+\sigma_{zz}      \\
+\sigma_{xy}      \\
+\sigma_{yz}      \\
+\sigma_{zx}   
+\end{array}
+\right]
+           =\frac{E}{(1+\nu)(1-\nu)}
+\left[ 
+\begin{array}{cccccc}
+1-\nu  &\nu   &\nu    & 0 & 0 & 0   \\
+ \nu   &1-\nu &\nu    & 0 & 0 & 0   \\
+ \nu   & \nu  & 1-\nu & 0 & 0 & 0   \\
+ 0 & 0 & 0 &               \frac{1}{2}-\nu   &         0      & 0  \\
+ 0 & 0 & 0 &                       0         &\frac{1}{2}-\nu &  0 \\
+ 0 & 0 & 0 &                       0         & 0              &\frac{1}{2}-\nu    
+\end{array}
+\right]
+.
+\left[ 
+\begin{array}{c}
+\varepsilon_{xx}      \\
+\varepsilon_{yy}      \\
+\varepsilon_{zz}      \\
+2\varepsilon_{xy}     \\
+2\varepsilon_{yz}      \\
+2\varepsilon_{zx}   
+\end{array}
+\right]
+\]
+Where $E$ is the Young modulus and $\nu$ is the Poisson's ratio.
+\paragraph{Strain Interpoler Matrix :} By these above construction matrix, we need to fill the matrix $\textbf{B}$, $\bar{\textbf{B}}$, and $\textbf{B}_{NL}$ for implementation of two methods :
+\begin{itemize}
+ \item addForce : construction of the secant stiffness matrix : $f+= \textbf{K}_s.U $ with
+      \[     \textbf{K}_s =  \textbf{B}^T \textbf{C}^{SE}\bar{\textbf{B}}   \]
+ \item addDForce: construction of the tangent stiffness matrix : $df+= \textbf{K}_t.dU $ with
+      \[
+      \left\{ 
+      \begin{array}{ccccc}
+	\textbf{K}_t   &=& \textbf{K}^{geo}_t &+& \textbf{K}^{mat}_t \\
+                       &=& \textbf{B}^T_{NL}.\textbf{C}^{SE} \bar{\textbf{B}} & + &\textbf{B}^T \dot{\textbf{C}}^{SE} \textbf{B} 
+      \end{array}\right.
+      \]
+\end{itemize}
+On the linear case, all these matrix are constant and independent to time ($X(t)$), but this not handle in the nonlinear case : 
+\[
+\left\| 
+\begin{array}{rcl}
+      \textbf{B}   &=&  \textbf{B}^T_L +  U^T \textbf{B}_{NL}                               \\ 
+ \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
+\end{array}\right.
+\]
+An explicit computation are shown for example of linear case of linear tetrahedron, the matrix $\textbf{B}=\textbf{B}_L$ is constant with values : 
+% \ -frac{1}{2}
+\[
+\bar{\textbf{B}}=\textbf{B}=\textbf{B}_L=
+\left[ 
+\begin{array}{cccccccccccc}
+-1 &  0 &  0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \\
+ 0 & -1 &  0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & \\
+ 0 &  0 & -1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \\
+-1 & -1 &  0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & \\
+ 0 & -1 & -1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & \\
+-1 &  0 & -1 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 &         
+\end{array}
+\right]
+\]
+and the stress by Lame cofficients expressed by :
+\[
+\textbf{S}_{PK2}=\textbf{C}^{SE}_{Hook}.\textbf{B}_{L}=
+\left[ 
+\begin{array}{cccccccccccc}
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & & \\
+ & & & & & & & & & & &         
+\end{array}
+\right]
+\]
+When relation between Lame coefficients with Young's $E$ modulus and Poisson's ratio $\nu$ is :
+\[
+\left\{ 
+\begin{array}{ccc}
+      \lambda   &=& \frac{E\nu}{(1+\nu)(1-2\nu)}                           \\ 
+           \mu  &=& \frac{E}{2(1+\nu)}           
+\end{array}\right.
+\]
+
+% -\frac{1}{2}      \frac{1}{2}      
+
+
+
+
+
+
+
+
 
 \subsection{Equations for elastostatic: } 
 
@@ -485,317 +849,6 @@ For one Element there are also 2*ElementInterpolatedStrain (left and right in we
 \item 8NodesFEHexaType   ,  8pQuadratureHexaType :\\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1] \\ = 12*[3]* [8]*[8]*[3]*[4]= 27648 bytes == 28kB
 \item 8NodesFEHexaType   ,  27pQuadratureHexaType :\\ 12*[RdDIM]*[nbNodes]*[nbQP]*[RdDIM]*[RdDIM+1]\\  = 12*[3]*[8]*[27]*[3]*[4]= 93312 bytes == 93kB
 \end{itemize}
-
-\subsection{Time integration in SOFA - OdeSolver: }
-An example in EulerImplicit Solver to see how works the ode solver, which integration schemes used. 
-\paragraph{Without mass damping :} This paragraph show the Euler Implicite scheme (semi time discretization) used in (Baraff and Witkin, Large Steps in Cloth Simulation, SIGGRAPH 1998). Equation of motion :
- \[
-M.a=f \text{    ,  or at time n+1 :   }M.a_{n+1}=f_{n+1}
-\]
-Where $M$ is the mass matrice, $a$, $f$ are respectively acceleration and system force. By the implicit scheme, $f_{n+1}$ must be discretized in term of $f_{n}$ and $df_{n+1}$ :
-
-
-\[
-\begin{array}{rl}
-f_{n+1} &       = f_n + \frac{ df_{n+1} }{dt}.dt + \circ(dt) \\
-        & \approx f_n + \frac{\partial f}{\partial x}.\frac{\partial x}{\partial t}.dt + \frac{\partial f}{\partial v}.\frac{\partial v}{\partial t}.dt  \\
-        &       = f_n + \frac{\partial f}{\partial x}.v_{n+1}.dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
-\end{array}
-\]
-Again, by discretizing the velocity $v_{n+1} \approx v_{n}+a_{n+1}.dt$, semi time discretization scheme becomes :
-\[
-f_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
-\]
-Here, we have the linear system with $a_{n+1}$ the unknown : 
-\[
-M.a_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  
-\]
-or
-\[
-(I - dt^2.M^{-1}.\frac{\partial f}{\partial x} - dt.M^{-1}.\frac{\partial f}{\partial v}).a_{n+1}= M^{-1}(f_n + \frac{\partial f}{\partial x}.v_n)
-\]
-\paragraph{With Rayleight mass damping :} This paragraph show the Euler Implicite scheme (formule implemented in Sofa by the EulerImplicitSolver component) using Rayleight mass damping with the damping term is the 
-\[
-[C](v) =[ -r_M.M + r_K.\frac{\partial f}{\partial x} ](v)
-\]
-where $[C]$ is the damping matrix, $r_M,r_K$ are respectively Rayleight mass and Rayleight stiffness coefficients. The different with the scheme above is only to add the damping term in the scheme for more stability in time integration. For more detail, it's needed to take a look about damping theory. The motion equation become :
- \[
-M.a=f + C(v) \text{    ,  or at time n+1 :   }M.a_{n+1}=f_{n+1} + C(v_{n+1})
-\]
-The scheme adding the damping term is : 
-\[
-f_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt  + (r_K.\frac{\partial f}{\partial x} - r_M.M)(v_{n+1})
-\]
-The linear system with the unknown $a_{n+1}$ :
-\[
-M.a_{n+1} = f_n + \frac{\partial f}{\partial x}.(v_{n}+a_{n+1}.dt).dt + \frac{\partial f}{\partial v}.a_{n+1}.dt   + (r_K.\frac{\partial f}{\partial x} - r_M.M)(v_{n}+a_{n+1}.dt)
-\]
-and it's implemented in EulerImplicitSolver by the result : 
-\[
-[(1+r_M).M  - dt.\frac{\partial f}{\partial v} - (dt^2+dt.r_K).\frac{\partial f}{\partial x}] a_{n+1} 
-     = f_n + (dt + r_K).\frac{\partial f}{\partial x}.v_n - r_M.M.v_n
-\]
-where,
-\[
-\left\{ 
-\begin{array}{l}
-dt \text {  is time step :  } dt=t_{n+1}-t_{n} \\
-r_M \text { is the Rayleight mass coefficient} \\
-r_K \text { is the Rayleight stiffness coefficient} \\
-M \text { the mass matrix} \\
-\frac{\partial f}{\partial v} \text { is B matrix} \\
-\frac{\partial f}{\partial x} \text { is K matrix} 
-\end{array}\right.
-\]
-\paragraph{Midpoint scheme with conserving method :}  for midpoint scheme :
-\[
-\left\{ 
-\begin{array}{l}
-\text {  definition : }             \\
-x_{k+1}     = x_k  + dt . v_{k+ \frac{1}{2}} \\
-x_{k+\frac{1}{2}}  = \frac{ ( x_k + x_{k+1} ) }{2} \\
-v_{k+1}     = v_k  + dt . a_{k+\frac{1}{2}} \\
-v_{k+\frac{1}{2}}  = \frac{ ( v_k + v_{k+1} ) }{2} \\ \\
-\text { all can  be expressed in term of  }  x_{k+\frac{1}{2}} \text {  and  } x_k             \\ 
-v_{k+\frac{1}{2}}  = \frac{2}{dt} ( x_{k+\frac{1}{2}} - x_k ) \\
-a_{k+\frac{1}{2}}  = \frac{2}{dt} (  \frac{2}{dt} . x_{k+\frac{1}{2}}   -     \frac{2}{dt} . x_k    -     x_k    )
-\end{array}\right.
-\]
-See the midpoint method~\cite{MidPoint}. The continium equilibrum variational form then can be written term of x and v at instance k+1/2,  as proposed Gonzalez in exact conserving energy paper. The difficulties is in term PK1 at instance k+1/2 which is resolved by $PK1_{algo}$  of Gonzalez ~\cite{Gonzalez1999}. It rest the term $f_{k+1/2}$ (body force)  and $g_{k+1/2}$ (boundary condition) that i don't know how to explain it in the scheme. It can be seen in thesis of Patrice Hauret~\cite{PHThesis} or Y.Ayyad~\cite{YAyyad} for example.
-
-\subsection{Linearization - secant stiffness and tangent stiffness matrix: }
-The nonlinear elastodynamic base on two term : material nonlinearity and geometrical nonlinearity (see  ~\cite{FEMBook} p.338). A simple example of linearization for the geometry part can be explained in ~\cite{NonlinearGeo}. For linearization of meterial part, at first implementation, we assume the strain and stress are all symetric, and by using the continium tangent moduli at ~\cite{NonlinearGeo}p.337, constitutive law (stress and stress derivative) can be expressed by a fourth order tensor noted \textbf{C}$^{SE}$. Let's resume all with relation in Sofa. An abstract Green-Lagrange strain tensor can be expressed by
-\[
-\begin{array}{ccccc}
-\textbf{E}_{ij}   &=& \frac{1}{2}( \triangledown U  +  \triangledown U^T  )  &+&  \frac{1}{2}( \triangledown U^T \triangledown U )\\
-                  &=& \underbrace{\frac{1}{2}( \frac{\partial U_i}{\partial X_j}  +  \frac{\partial U_j}{\partial X_i}  )}  &+&
-                      \underbrace{\frac{1}{2}\sum_{k=0}^{d-1}( \frac{\partial U_i}{\partial X_k}  +  \frac{\partial U_k}{\partial X_j} )}\\
-                  &=& \textbf{linear part}  &+&  \textbf{nonlinear part}
-\end{array}
-\]
-Using Lagrangian interpolation, these relation can be expressed by matricial form :   
-\[
-\textbf{E} = \textbf{B}^T_L U + \frac{1}{2} U^T \textbf{B}_{NL}  U             
-\]
-where $\textbf{B}^T_L$ and $\textbf{B}_{NL}$ denote respectively linear and nonlinear part of strain, contains only interpolated derivative values, $U$ denote the nodal displacement. We can rewrite this relation by : 
-\[
-\left\{ 
-\begin{array}{rcl}
-\textbf{E}                      &=& [ \textbf{B}^T_L + \frac{1}{2} U^T \textbf{B}_{NL} ] U  \\  
-\frac{d\textbf{E}}{dU}(\bullet) &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (\bullet)     \\
-            &\text{we take} &                                                               \\
-      \textbf{B}   &=&  \textbf{B}^T_L +  U^T \textbf{B}_{NL}                               \\ 
- \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
-\end{array}\right.
-\]
-Remark that $\textbf{B}$ and $\bar{\textbf{B}}$ are linearly dependent on nodal displacement $U$. This remark allow to evaluate their derivative in relation to $U$. By the second line, we can express the strain derivative 
-\[
-\left\{ 
-\begin{array}{rcl}
-\delta \textbf{E}  &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (\delta U)                 \\  
-d \textbf{E}       &=& [ \textbf{B}^T_L +  U^T \textbf{B}_{NL} ] (dU)                       \\
-            &\text{or} &                                                                    \\
-\delta \textbf{E}  &=& \textbf{B} \delta U                                                  \\  
-d \textbf{E}       &=& \textbf{B} dU                        
-\end{array}\right.
-\]
-Where $\delta \textbf{E}$ is a variational of \textbf{E} relie to a disturbation of displacement $\delta U$, and the $d \textbf{E}$ is a variational of \textbf{E} relie to a variational of $d U$. In SOFA so : 
-\begin{itemize}
- \item AddForce :
-      \[
-      \left\| 
-      \begin{array}{ll}
-      f = \int_\Omega  \delta \textbf{E} : \textbf{S}_{PK2}  d\Omega  &= \Sigma_{T} \int_{T}  \delta \textbf{E} : \textbf{S}_{PK2}  dV    \\   
-      \int_{T}     \delta \textbf{E} : \textbf{S}_{PK2}  dV             &= \int_{T}  [\frac{d\textbf{E}}{dU}\delta U ]^T . \textbf{C}^{SE} \textbf{E}  dV \\
-								       &= \int_{T}  \delta U^T \textbf{B}^T \textbf{C}^{SE}\bar{\textbf{B}} U
-      \end{array}\right.
-      \]
- \item AddDForce :
-      \[
-      \left\| 
-      \begin{array}{rcl}
-      df  &=& \frac{d}{dU}\int_\Omega  \delta \textbf{E} : \textbf{S}_{PK2}  d\Omega     \\    
-	  &=& \int_\Omega \frac{d}{dU}( \delta \textbf{E} ): \textbf{S}_{PK2}  d\Omega    + \int_\Omega \delta \textbf{E} : \frac{d}{dU}( \textbf{S}_{PK2})  d\Omega   \\ 
-	  &=& \int_\Omega \delta U \frac{d \textbf{B}^T }{dU}: \textbf{S}_{PK2}  d\Omega    + 
-                            \int_\Omega  \delta U^T \textbf{B}^T : \frac{d\textbf{S}_{PK2}}{d\textbf{E}} \frac{d\textbf{E}}{dU}(dU)  d\Omega   \\   
-	  &=& \int_\Omega \delta U^T \textbf{B}^T_{NL}.\textbf{C}^{SE} \bar{\textbf{B}} dU     + \delta U^T \textbf{B}^T \dot{\textbf{C}}^{SE} \textbf{B} dU
-      \end{array}\right.
-      \]
-
-\end{itemize}
-where $\dot{\textbf{C}}^{SE}$ is the derivative of $\textbf{C}^{SE}$ in relation to $\textbf{E}$. In the general case, $\textbf{C}^{SE}$ may depend of $U$.
-\paragraph{Voigt notation :} By first implementation, assumed that we work only with symetrical strain and symetrical stress, it allow to work with the Voigt notation of strain and stress. In dimension $R^3$, a strain or stress value of one point can be stoked on an array of six real values. Thus, we define in dimension $R^d$, for one element:
-\[
-R^d
-\left\{ 
-\begin{array}{l}
-  \begin{array}{lccc}
-  \text{ iVoigt }   &=& i            & \text{if  } i==j\\
-  \text{ iVoigt }   &=& (d-1) +i +j  & \text{if  } i!=j 
-  \end{array} \\
-\text{with} \\
- \text{ VOIGT\_DIM }   = \frac{d(d+1)}{2} \\
- \text{ nbDOF      }   = d*nbOfNodes  
-\end{array}\right.
-\]
-A very general formular of addForce or addDforce above is to construct a matrix K in the format : 
-\[
- \textbf{ K }   = \textbf{M}_l  . \textbf{C} . \textbf{M}_r
-\]
-where $\textbf{M}_l$, $\textbf{M}_r$ denote the interpoler matrix, with the format transposed one to other, situated respectively on the left and right hand of matrix equation. These matrix called interpoler matrix because $\textbf{E}=\textbf{M}_r.U$. The format of these matrix will be :
-\[
-\textbf{M}_l 
-\left\{ 
-\begin{array}{l}
-\text{Lines:}       nbDOF        \\
-\text{Cols :}       VOIGT\_DIM
-\end{array}\right.
-\textbf{M}_r 
-\left\{ 
-\begin{array}{l}
-\text{Lines:}       VOIGT\_DIM  \\
-\text{Cols :}       nbDOF
-\end{array}\right.
-\textbf{C} 
-\left\{ 
-\begin{array}{l}
-\text{Lines:}       VOIGT\_DIM \\
-\text{Cols :}       VOIGT\_DIM
-\end{array}\right.
-\]
-An example for the simplest case is on the linear tetrahedron ($R^d=3, nbNode=4$) :
-\[
-\left[ 
-\begin{array}{ccc}
-  &  &     \\
-  &  &     \\
-  &  &     \\
-  &  &     \\
-  &  &     \\
-  &  &     
-\end{array}
-\right]_{12\times6}
-\left[ 
-\begin{array}{ccc}
-  &  &     \\
-  &  &     \\
-  &  &     
-\end{array}
-\right]_{6\times6}
-\left[ 
-\begin{array}{cccccc}
-  &  &  & & &  \\
-  &  &  & & & \\
-  &  &  & & &    
-\end{array}
-\right]_{6\times12}
-\left[ 
-\begin{array}{c}
-U_0      \\
-         \\
-\vdots   \\
-\vdots   \\
-         \\
-U_{11}
-\end{array}
-\right]_{12\times1}
-\]
-\paragraph{Constitutive law - stress computation :} By first implementation, we implement the linear material law, the isotropic Hookean one. On the dimension 3, this constitutive can be represented by a $6\times6$ matrix :  
-\[
-\left[ 
-\begin{array}{c}
-\sigma_{xx}      \\
-\sigma_{yy}      \\
-\sigma_{zz}      \\
-\sigma_{xy}      \\
-\sigma_{yz}      \\
-\sigma_{zx}   
-\end{array}
-\right]
-           =\frac{E}{(1+\nu)(1-\nu)}
-\left[ 
-\begin{array}{cccccc}
-1-\nu  &\nu   &\nu    & 0 & 0 & 0   \\
- \nu   &1-\nu &\nu    & 0 & 0 & 0   \\
- \nu   & \nu  & 1-\nu & 0 & 0 & 0   \\
- 0 & 0 & 0 &               \frac{1}{2}-\nu   &         0      & 0  \\
- 0 & 0 & 0 &                       0         &\frac{1}{2}-\nu &  0 \\
- 0 & 0 & 0 &                       0         & 0              &\frac{1}{2}-\nu    
-\end{array}
-\right]
-.
-\left[ 
-\begin{array}{c}
-\varepsilon_{xx}      \\
-\varepsilon_{yy}      \\
-\varepsilon_{zz}      \\
-2\varepsilon_{xy}     \\
-2\varepsilon_{yz}      \\
-2\varepsilon_{zx}   
-\end{array}
-\right]
-\]
-Where $E$ is the Young modulus and $\nu$ is the Poisson's ratio.
-\paragraph{Strain Interpoler Matrix :} By these above construction matrix, we need to fill the matrix $\textbf{B}$, $\bar{\textbf{B}}$, and $\textbf{B}_{NL}$ for implementation of two methods :
-\begin{itemize}
- \item addForce : construction of the secant stiffness matrix : $f+= \textbf{K}_s.U $ with
-      \[     \textbf{K}_s =  \textbf{B}^T \textbf{C}^{SE}\bar{\textbf{B}}   \]
- \item addDForce: construction of the tangent stiffness matrix : $df+= \textbf{K}_t.dU $ with
-      \[
-      \left\{ 
-      \begin{array}{ccccc}
-	\textbf{K}_t   &=& \textbf{K}^{geo}_t &+& \textbf{K}^{mat}_t \\
-                       &=& \textbf{B}^T_{NL}.\textbf{C}^{SE} \bar{\textbf{B}} & + &\textbf{B}^T \dot{\textbf{C}}^{SE} \textbf{B} 
-      \end{array}\right.
-      \]
-\end{itemize}
-On the linear case, all these matrix are constant and independent to time ($X(t)$), but this not handle in the nonlinear case : 
-\[
-\left\| 
-\begin{array}{rcl}
-      \textbf{B}   &=&  \textbf{B}^T_L +  U^T \textbf{B}_{NL}                               \\ 
- \bar{\textbf{B}}  &=&  \textbf{B}^T_L +  U^T \frac{1}{2}\textbf{B}_{NL}           
-\end{array}\right.
-\]
-An explicit computation are shown for example of linear case of linear tetrahedron, the matrix $\textbf{B}=\textbf{B}_L$ is constant with values : 
-% \ -frac{1}{2}
-\[
-\bar{\textbf{B}}=\textbf{B}=\textbf{B}_L=
-\left[ 
-\begin{array}{cccccccccccc}
--1 &  0 &  0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \\
- 0 & -1 &  0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & \\
- 0 &  0 & -1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \\
--1 & -1 &  0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & \\
- 0 & -1 & -1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & \\
--1 &  0 & -1 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 &         
-\end{array}
-\right]
-\]
-and the stress by Lame cofficients expressed by :
-\[
-\textbf{S}_{PK2}=\textbf{C}^{SE}_{Hook}.\textbf{B}_{L}=
-\left[ 
-\begin{array}{cccccccccccc}
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & & \\
- & & & & & & & & & & &         
-\end{array}
-\right]
-\]
-When relation between Lame coefficients with Young's $E$ modulus and Poisson's ratio $\nu$ is :
-\[
-\left\{ 
-\begin{array}{ccc}
-      \lambda   &=& \frac{E\nu}{(1+\nu)(1-2\nu)}                           \\ 
-           \mu  &=& \frac{E}{2(1+\nu)}           
-\end{array}\right.
-\]
-
-% -\frac{1}{2}      \frac{1}{2}      
 
 \subsection{Auto-test : }
 These function on FEM are mostly linear transformation which is invertible. So we can verify all the computation, or pre-computation by the its inverted transformation. 
