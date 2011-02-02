@@ -38,8 +38,6 @@ HEADERS += \
            MappingTypes.h \
            FrameBlendingMapping.h \
            FrameBlendingMapping.inl \
-           FrameDQBlendingMapping.h \
-           FrameDQBlendingMapping.inl \
            FrameConstantForceField.h \
            FrameMass.h \
            FrameDiagonalMass.h \

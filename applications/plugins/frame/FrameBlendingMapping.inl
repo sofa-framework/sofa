@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_FRAMEBLENDINGMAPPING_INL
 
 #include "FrameBlendingMapping.h"
+#include "FrameDQBlendingMapping.cpp"
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Color.h>
@@ -87,6 +88,7 @@ template <class TIn, class TOut>
 FrameBlendingMapping<TIn, TOut>::FrameBlendingMapping (core::State<In>* from, core::State<Out>* to )
     : Inherit ( from, to ), FData(), SampleData<TOut>()
     , useLinearWeights ( initData ( &useLinearWeights, false, "useLinearWeights","use linearly interpolated weights between the two closest frames." ) )
+    , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame" ) )
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , weight ( initData ( &weight,"weights","influence weights of the Dofs" ) )
@@ -164,17 +166,35 @@ void FrameBlendingMapping<TIn, TOut>::init()
     updateWeights();
 
     // init jacobians for mapping
-    inout.resize( out.size() );
-    for(unsigned int i=0; i<out.size(); i++ )
+    if(useDQ.getValue())
     {
-        inout[i].init(
-            this->f_initPos.getValue()[i],
-            f_index.getValue()[i],
-            this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
-            weight.getValue()[i],
-            weightDeriv.getValue()[i],
-            weightDeriv2.getValue()[i]
-        );
+        dqinout.resize( out.size() );
+        for(unsigned int i=0; i<out.size(); i++ )
+        {
+            dqinout[i].init(
+                this->f_initPos.getValue()[i],
+                f_index.getValue()[i],
+                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+                weight.getValue()[i],
+                weightDeriv.getValue()[i],
+                weightDeriv2.getValue()[i]
+            );
+        }
+    }
+    else
+    {
+        inout.resize( out.size() );
+        for(unsigned int i=0; i<out.size(); i++ )
+        {
+            inout[i].init(
+                this->f_initPos.getValue()[i],
+                f_index.getValue()[i],
+                this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),
+                weight.getValue()[i],
+                weightDeriv.getValue()[i],
+                weightDeriv2.getValue()[i]
+            );
+        }
     }
 
     // Get the topology of toModel to display the weights and the strain tensors on the triangular model.
@@ -196,13 +216,22 @@ void FrameBlendingMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const
     //if( this->f_printLog.getValue() ){
     //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, in = "<< in << std::endl;
     //}
-    for ( unsigned int i = 0 ; i < out.size(); i++ )
-    {
-        out[i] = inout[i].apply( in );
-        //if( this->f_printLog.getValue() ){
-        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
-        //}
-    }
+    if(useDQ.getValue())
+        for ( unsigned int i = 0 ; i < out.size(); i++ )
+        {
+            out[i] = dqinout[i].apply( in );
+            //if( this->f_printLog.getValue() ){
+            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
+            //}
+        }
+    else
+        for ( unsigned int i = 0 ; i < out.size(); i++ )
+        {
+            out[i] = inout[i].apply( in );
+            //if( this->f_printLog.getValue() ){
+            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::apply, out = "<< out[i] << std::endl;
+            //}
+        }
 
 }
 
@@ -214,13 +243,22 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
         //if( this->f_printLog.getValue() ){
         //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, in = "<< in << std::endl;
         //}
-        for ( unsigned int i=0; i<out.size(); i++ )
-        {
-            out[i] = inout[i].mult( in );
-            //if( this->f_printLog.getValue() ){
-            //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
-            //}
-        }
+        if(useDQ.getValue())
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                out[i] = dqinout[i].mult( in );
+                //if( this->f_printLog.getValue() ){
+                //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
+                //}
+            }
+        else
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                out[i] = inout[i].mult( in );
+                //if( this->f_printLog.getValue() ){
+                //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJ, out = "<< out[i] << std::endl;
+                //}
+            }
     }
     else
     {
@@ -228,11 +266,18 @@ void FrameBlendingMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, cons
         const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;
-        for ( it=indices.begin(); it!=indices.end(); it++ )
-        {
-            unsigned int i= ( unsigned int ) ( *it );
-            out[i] = inout[i].mult( in );
-        }
+        if(useDQ.getValue())
+            for ( it=indices.begin(); it!=indices.end(); it++ )
+            {
+                unsigned int i= ( unsigned int ) ( *it );
+                out[i] = dqinout[i].mult( in );
+            }
+        else
+            for ( it=indices.begin(); it!=indices.end(); it++ )
+            {
+                unsigned int i= ( unsigned int ) ( *it );
+                out[i] = inout[i].mult( in );
+            }
     }
 }
 
@@ -242,22 +287,29 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
     if ( ! ( this->maskTo->isInUse() ) )
     {
         this->maskFrom->setInUse ( false );
-        if( this->f_printLog.getValue() )
-        {
-            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
-        }
-        for ( unsigned int i=0; i<in.size(); i++ ) // VecType
-        {
-            inout[i].addMultTranspose( out, in[i] );
-            if( this->f_printLog.getValue() )
+        //if( this->f_printLog.getValue() ){
+        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values before = "<< out << std::endl;
+        //}
+        if(useDQ.getValue())
+            for ( unsigned int i=0; i<in.size(); i++ ) // VecType
             {
-                std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                dqinout[i].addMultTranspose( out, in[i] );
+                //if( this->f_printLog.getValue() ){
+                //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                // }
             }
-        }
-        if( this->f_printLog.getValue() )
-        {
-            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
-        }
+        else
+            for ( unsigned int i=0; i<in.size(); i++ ) // VecType
+            {
+                inout[i].addMultTranspose( out, in[i] );
+                //if( this->f_printLog.getValue() ){
+                //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                // }
+            }
+
+        //if( this->f_printLog.getValue() ){
+        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
+        //}
     }
     else
     {
@@ -266,25 +318,35 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, cons
         ReadAccessor<Data<vector<Vec<nbRef,unsigned int> > > > index ( f_index );
 
         ParticleMask::InternalStorage::const_iterator it;
-        if( this->f_printLog.getValue() )
-        {
-            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, use mask, parent values before = "<< out << std::endl;
-        }
-        for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
-        {
-            const int i= ( int ) ( *it );
-            inout[i].addMultTranspose( out, in[i] );
-            if( this->f_printLog.getValue() )
+        //if( this->f_printLog.getValue() ){
+        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, use mask, parent values before = "<< out << std::endl;
+        //}
+        if(useDQ.getValue())
+            for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
             {
-                std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                const int i= ( int ) ( *it );
+                dqinout[i].addMultTranspose( out, in[i] );
+                //  if( this->f_printLog.getValue() ){
+                //      std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                // }
+                for (unsigned int j = 0; j < nbRef; ++j)
+                    maskFrom->insertEntry ( index[i][j] );
             }
-            for (unsigned int j = 0; j < nbRef; ++j)
-                maskFrom->insertEntry ( index[i][j] );
-        }
-        if( this->f_printLog.getValue() )
-        {
-            std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
-        }
+        else
+            for ( it=indices.begin(); it!=indices.end(); it++ ) // VecType
+            {
+                const int i= ( int ) ( *it );
+                inout[i].addMultTranspose( out, in[i] );
+                //  if( this->f_printLog.getValue() ){
+                //      std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, child value = "<< in[i] << std::endl;
+                // }
+                for (unsigned int j = 0; j < nbRef; ++j)
+                    maskFrom->insertEntry ( index[i][j] );
+            }
+
+        //if( this->f_printLog.getValue() ){
+        //    std::cerr<<"FrameBlendingMapping<TIn, TOut>::applyJT, parent values after = "<< out << std::endl;
+        //}
     }
 }
 
@@ -297,15 +359,22 @@ void FrameBlendingMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parent
     {
         typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
 
-        for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
-        {
-            unsigned int childIndex = childParticle.index();
-            const OutDeriv& childJacobianVec = childParticle.val();
+        if(useDQ.getValue())
+            for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
+            {
+                unsigned int childIndex = childParticle.index();
+                const OutDeriv& childJacobianVec = childParticle.val();
 
-            inout[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
+                dqinout[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
+            }
+        else
+            for (typename Out::MatrixDeriv::ColConstIterator childParticle = childJacobian.begin(); childParticle != childJacobian.end(); ++childParticle)
+            {
+                unsigned int childIndex = childParticle.index();
+                const OutDeriv& childJacobianVec = childParticle.val();
 
-
-        }
+                inout[childIndex].addMultTranspose( parentJacobian, childJacobianVec );
+            }
     }
 }
 
@@ -611,6 +680,7 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames (MassVector& f_mass0, M
     VecInDeriv d(in.size()),m(in.size());
 
     defaulttype::LinearBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > map;
+    defaulttype::DualQuatBlendTypes<In,Vec3dTypes,GridMat,nbRef, 0 > dqmap;
 
     for(unsigned int i=0; i<out.size(); i++) // treat each sample
     {
@@ -627,7 +697,8 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames (MassVector& f_mass0, M
 
         for(unsigned int j=0; j<pts.size(); j++) // treat each voxel j of the sample
         {
-            map.init(pts[j],reps[j],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w[j],Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+            if(useDQ.getValue()) dqmap.init(pts[j],reps[j],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w[j],Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
+            else map.init(pts[j],reps[j],this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue(),w[j],Vec<nbRef,MaterialDeriv>(),Vec<nbRef,MaterialMat>());
 
             for(unsigned int k=0; k<nbRef && w[j][k]>0 ; k++) // treat each primitive influencing the voxel
             {
@@ -636,7 +707,8 @@ void FrameBlendingMapping<TIn, TOut>::LumpMassesToFrames (MassVector& f_mass0, M
                 {
                     d[findex][l]=1;
                     m[findex].clear();
-                    map.addMultTranspose( m , map.mult(d) );  // get the contribution of j to each column l of the mass = mass(j).J^T.J.[0...1...0]^T
+                    if(useDQ.getValue()) dqmap.addMultTranspose( m , dqmap.mult(d) );  // get the contribution of j to each column l of the mass = mass(j).J^T.J.[0...1...0]^T
+                    else map.addMultTranspose( m , map.mult(d) );  // get the contribution of j to each column l of the mass = mass(j).J^T.J.[0...1...0]^T
                     m[findex]*=masses[j];
                     for(unsigned int col=0; col<InVSize; col++)  massVector[findex].inertiaMatrix[col][l]+= m[findex][col];
                     d[reps[j][k]][l]=0;
@@ -948,8 +1020,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                         float color = xto[indexP][3]*(xto[indexP][ 7]*xto[indexP][11]-xto[indexP][10]*xto[indexP][ 8])
                                 -xto[indexP][6]*(xto[indexP][10]*xto[indexP][ 5]-xto[indexP][ 4]*xto[indexP][11])
                                 +xto[indexP][9]*(xto[indexP][ 4]*xto[indexP][ 8]-xto[indexP][ 7]*xto[indexP][ 5]);
-                        if (color<0) color=2*color/(color+1.);
-                        color*=1000 * this->showDetFScaleFactor.getValue();
+                        color=(color-1.)*100 * this->showDetFScaleFactor.getValue();
                         color+=120;
                         if (color<0) color=0;
                         if (color>240) color=240;
@@ -969,8 +1040,7 @@ void FrameBlendingMapping<TIn, TOut>::draw()
                     float color = xto[i][3]*(xto[7]*xto[11]-xto[10]*xto[8])
                             -xto[i][6]*(xto[10]*xto[5]-xto[4]*xto[11])
                             +xto[i][9]*(xto[4]*xto[8]-xto[7]*xto[5]);
-                    if (color<0) color=2*color/(color+1.);
-                    color*=1000 * this->showDetFScaleFactor.getValue();
+                    color=(color-1.)*100 * this->showDetFScaleFactor.getValue();
                     color+=120;
                     if (color<0) color=0;
                     if (color>240) color=240;

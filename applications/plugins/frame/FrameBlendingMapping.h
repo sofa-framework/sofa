@@ -108,6 +108,7 @@ public:
     // Conversion types
     static const unsigned int nbRef = GridMat::nbRef;
     typedef typename defaulttype::LinearBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::primitive_order > InOut;
+    typedef typename defaulttype::DualQuatBlendTypes<In,Out,GridMat,nbRef, defaulttype::OutDataTypesInfo<Out>::primitive_order > DQInOut;
 
 
 public:
@@ -134,6 +135,8 @@ protected:
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
 
     vector<InOut> inout;  ///< Data specific to the conversion between the types
+    vector<DQInOut> dqinout;  ///< Data specific to the conversion between the types
+    Data<bool> useDQ;  // use dual quat blending instead of linear blending
 
 
     helper::ParticleMask* maskFrom;
