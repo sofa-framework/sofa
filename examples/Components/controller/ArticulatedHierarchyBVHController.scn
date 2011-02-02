@@ -1,31 +1,31 @@
 <Node name="root"  gravity="0 -.98 0" dt="0.5" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<Object type="MasterContactSolver"/>
-	<Object type="CollisionPipeline" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-	<Object type="CollisionResponse" name="Response" response="FrictionContact"/>	
+	<MasterContactSolver/>
+	<CollisionPipeline verbose="0" draw="0"/>
+	<BruteForceDetection name="N2" />
+	<MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
+	<CollisionResponse name="Response" response="FrictionContact"/>	
 	<Node name="articulatedObject1">
-<!--		<Object type="ComplianceArticulatedSystemSolver"/> -->
-		<Object type="MechanicalObject" name="ArticulatedObject" template="Vec1d"/>
+<!--		<ComplianceArticulatedSystemSolver/> -->
+		<MechanicalObject name="ArticulatedObject" template="Vec1d"/>
 		<Node name="6D_DOFs1"> 
-			<Object type="MechanicalObject" name="6D_Dof" template="Rigid"/> 
-			<Object type="UniformMass" mass="0.5"/>
+			<MechanicalObject name="6D_Dof" template="Rigid"/> 
+			<UniformMass mass="0.5"/>
 
-			<Object type="ArticulatedSystemMapping" object1="ArticulatedObject" object2="6D_Dof"/>
+			<ArticulatedSystemMapping input1="@../ArticulatedObject" input2="" output="@6D_Dof"/>
 		</Node>
 	
-		<Object type="ArticulatedHierarchyContainer" filename="BehaviorModels/manWalking.bvh"/>
-		<Object type="ArticulatedHierarchyBVHController" />
+		<ArticulatedHierarchyContainer filename="BehaviorModels/manWalking.bvh"/>
+		<ArticulatedHierarchyBVHController />
 	</Node>
 	
 	<Node name="Floor">
-                <Object type="MeshLoader" name="meshLoader" filename="mesh/floor.obj"/>
-		<Object type="Mesh" />
-		<Object type="MechanicalObject" dy="-40.0" scale="2" />
-		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
-		<Object type="Line" name="Floor" simulated="0" moving="0" />
-		<Object type="Point" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" fileMesh="mesh/floor.obj" texturename="textures/floor.bmp" scale="2" dy="-40.0"/>
+        <MeshLoader name="meshLoader" filename="mesh/floor.obj"/>
+		<Mesh />
+		<MechanicalObject dy="-40.0" scale="2" />
+		<Triangle name="Floor" simulated="0" moving="0" />
+		<Line name="Floor" simulated="0" moving="0" />
+		<Point name="Floor" simulated="0" moving="0" />
+		<OglModel name="FloorV" fileMesh="mesh/floor.obj" texturename="textures/floor.bmp" scale="2" dy="-40.0"/>
 	</Node>	
 </Node>
 
