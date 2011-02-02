@@ -1274,7 +1274,7 @@ using namespace core;
 //////////////////////////////////////////////////////////////////////////////////
 
 // Register in the Factory
-int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
+int FrameBlendingMappingClass = core::RegisterObject("skin a model from a set of frames.")
 
 #ifndef SOFA_FLOAT
         .add< FrameBlendingMapping< Affine3dTypes, Vec3dTypes > >()

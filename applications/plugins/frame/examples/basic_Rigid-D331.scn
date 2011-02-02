@@ -1,8 +1,8 @@
-<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showWireFrame="1" showBehaviorModels="0" showCollisionModels="0">
+<Node name="Scene" gravity="0 0 0" dt="1" showVisualModels="1" showWireFrame="0" showBehaviorModels="0" showCollisionModels="0">
 	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
-	<Node name="Beam">
+	<Node name="BeamLinear">
 		<MechanicalObject template="Rigid" name="DOFs" useMask="0" rest_position="0 0 -1 0 0 0 1 0 0 1 0 0 0 1" position="0 0 -1 0 0 0 1    0 0 1  0 0 0 1"/>
 		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/>
 		<HookeMaterial3 template="Material3" />
@@ -16,21 +16,50 @@
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
      			<MechanicalObject  template="DeformationGradient331" name="PointSet"  useMask="0"  showObject="0" showObjectScale="0.05"/>
 
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
-			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient331&gt;"  name="PMapping" input="@../DOFs"  output="@PointSet"  />
+			<GreenLagrangeForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
-
 		<Node name="Collision">
 			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
     		  	<Mesh color="green" /> 
      		 	<MechanicalObject  name="PointSet"  />
 			<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="CMapping" input="@../DOFs"  output="@PointSet" />
 		</Node>
 		<Node name="Visu">
 			<OglModel name="Beam" fileMesh="mesh/beam.obj" normals="0"   color="0.5 .4 .15 1" />
-			<FrameBlendingMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="SMapping"  input="@../DOFs"  output="@Beam"/>
+			<FrameBlendingMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VMapping"  input="@../DOFs"  output="@Beam"/>
 		</Node>
 	</Node>
+	
+	<Node name="BeamDualQuat">
+		<MechanicalObject template="Rigid" name="DOFs" useMask="0" rest_position="0 0 -1 0 0 0 1 0 0 1 0 0 0 1" position="1 0 -1 0 0 0 1    1 0 1  0 0 0 1"/>
+		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/>
+		<HookeMaterial3 template="Material3" />
+
+		<FrameFixedConstraint template="Rigid" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
+
+		<Node name="Physics">
+<!--
+			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  position="0 0 0  1 0 0 0 1 0 0 0 1" />
+-->
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+     			<MechanicalObject  template="DeformationGradient331" name="PointSet"  useMask="0"  showObject="0" showObjectScale="0.05"/>
+
+			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient331&gt;"  name="PMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet"  />
+			<GreenLagrangeForceField template="DeformationGradient331"   printLog="0" />
+		</Node>
+		<Node name="Collision">
+			<MeshLoader name="MeshLoader" filename="mesh/beam.obj"/>
+    		  	<Mesh color="green" /> 
+     		 	<MechanicalObject  name="PointSet"  />
+			<Triangle />
+			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="CMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet" />
+		</Node>
+		<Node name="Visu">
+			<OglModel name="Beam" fileMesh="mesh/beam.obj" normals="0"   color="0.5 .4 1 1" />
+			<FrameBlendingMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VMappingDQ"  useDQ="1" input="@../DOFs"  output="@Beam"/>
+		</Node>
+	</Node>	
 </Node>
 
