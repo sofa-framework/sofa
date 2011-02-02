@@ -75,13 +75,13 @@ void MechanicalOperations::setDx(core::ConstMultiVecDerivId& v)
 
 void MechanicalOperations::setDf(core::MultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
     mparams.setDf(v);
 }
 
 void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
 {
-    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::force());
+    if (v.getDefaultId().isNull()) v.setDefaultId(core::VecDerivId::dforce());
     mparams.setDf(v);
 }
 
@@ -108,6 +108,7 @@ void MechanicalOperations::propagateX(core::MultiVecCoordId x)
     executeVisitor( MechanicalPropagateXVisitor(x, false, &mparams) //Don't ignore the masks
                   );
 }
+
 
 /// Propagate the given position through all mappings and reset the current force delta
 void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f)
@@ -312,6 +313,7 @@ void MechanicalOperations::solveConstraint(double dt, MultiVecId id, core::Const
 {
     mparams.setDt(dt);
 
+    ctx->serr<<"MechanicalOperations::solveConstraint"<<std::endl;
     helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
@@ -320,6 +322,7 @@ void MechanicalOperations::solveConstraint(double dt, MultiVecId id, core::Const
         ctx->sout << "No ConstraintSolver found."<<ctx->sendl;
         return;
     }
+    ctx->serr<<"MechanicalOperations::solveConstraint found solvers"<<std::endl;
     for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
     {
         (*it)->solveConstraint(dt, id,  order);

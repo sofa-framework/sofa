@@ -68,6 +68,7 @@ public:
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename In::Real InReal;
     typedef typename In::Deriv InDeriv;
     typedef typename In::DRot DRot;
     typedef typename In::VecCoord InVecCoord;
@@ -91,20 +92,20 @@ public:
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    Data<VecCoord> points;
-    VecCoord rotatedPoints;
+    Data<VecCoord> points;    ///< mapped points in local coordinates
+    VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> data;
     Data<unsigned int> index;
     sofa::core::objectmodel::DataFileName fileRigidMapping;
     Data<bool> useX0;
     Data<bool> indexFromEnd;
     /**
-     * Repartitions:
-     *  - no value specified : simple rigid mapping
-     *  - one value specified : uniform repartition mapping on the input dofs
-     *  - n values are specified : heterogen repartition mapping on the input dofs
-     */
-    Data<sofa::helper::vector<unsigned int> > repartition;
+    * pointsPerRigid:
+    *  - no value specified : simple rigid mapping, all points attached to the same frame (index=0)
+    *  - one value specified : same number of points for each frame
+    *  - n values are specified : heterogeneous distribution of points per frame
+    */
+    Data<sofa::helper::vector<unsigned int> > pointsPerFrame;
     Data<bool> globalToLocalCoords;
 
     helper::ParticleMask* maskFrom;
@@ -118,7 +119,6 @@ public:
 
     void init();
 
-    //void disable(); //useless now that points are saved in a Data
 
     void apply(Data<VecCoord>& out, const Data<InVecCoord>& in, const core::MechanicalParams *mparams);
 
@@ -127,6 +127,8 @@ public:
     void applyJT(Data<InVecDeriv>& out, const Data<VecDeriv>& in, const core::MechanicalParams *mparams);
 
     void applyJT(Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in, const core::ConstraintParams *cparams);
+
+    virtual void applyDJT(core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce, const core::MechanicalParams* mparams = core::MechanicalParams::defaultInstance() );
 
     const sofa::defaulttype::BaseMatrix* getJ();
 

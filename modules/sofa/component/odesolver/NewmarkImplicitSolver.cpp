@@ -64,7 +64,7 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult
     sofa::simulation::common::MechanicalOperations mop( this->getContext() );
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv f(&vop, core::VecDerivId::force() );
+//    MultiVecDeriv f(&vop, core::VecDerivId::force() );
     MultiVecDeriv b(&vop);
     MultiVecDeriv a(&vop);
     MultiVecDeriv aResult(&vop);

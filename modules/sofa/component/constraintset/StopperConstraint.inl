@@ -56,7 +56,7 @@ template<class DataTypes>
 void StopperConstraint<DataTypes>::buildConstraintMatrix(DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/, const core::ConstraintParams* /*cParams*/)
 {
     cid = cIndex;
-    assert(mstate);
+//	assert(mstate);
 
     MatrixDeriv& c = *c_d.beginEdit();
 

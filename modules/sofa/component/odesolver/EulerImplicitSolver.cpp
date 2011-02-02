@@ -55,8 +55,8 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 EulerImplicitSolver::EulerImplicitSolver()
-    : f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
-    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    : f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
     , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
@@ -91,6 +91,8 @@ void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, 
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
+
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SolverVectorAllocation");
 #endif
@@ -119,58 +121,48 @@ void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, 
 #endif
 
     double h = dt;
-    //const bool printLog = f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
     const bool firstOrder = f_firstOrder.getValue();
 
-    //mop.projectResponse(vel);          // initial velocities are projected to the constrained space
-
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
 
+    // compute the net forces at the beginning of the time step
+    mop.computeForce(f);
     if( verbose )
-        serr<<"EulerImplicitSolver start writing equation system "<<sendl;
-
-    // compute the right-hand term of the equation system
-    // accumulation through mappings is disabled as it will be done by addMBKv after all factors are computed
-    mop.computeForce(b, true, false);             // b = f0
+        serr<<"EulerImplicitSolver, initial f = "<< f <<sendl;
 
     sofa::helper::AdvancedTimer::stepNext ("ComputeForce", "ComputeRHTerm");
-
-    if (!firstOrder)
+    if( firstOrder )
+    {
+        b.eq(f);
+    }
+    else
     {
 #ifdef SOFA_SMP
-        mop.computeDfV(f);                // f = df/dx v
-        b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
-
+        mop.computeDfV(b);                // b = K v    , with K=df/dx
+        b.teq(h+f_rayleighStiffness.getValue());      // b = (h+rs) K v
+        b.peq(f);      // b = f0 + (h+rs) K v
 
         if (f_rayleighMass.getValue() != 0.0)
         {
-            //f.clear();
-            //mop.addMdx(f,vel);
-            //b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
-            //mop.addMdx(b,VecId(),-f_rayleighMass.getValue()); // no need to propagate vel as dx again
-
             mop.addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
-
         }
-        b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+        b.teq(h);                           // b = h(f0 + (h+rs) K v - rm M v)    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
 #else
         // new more powerful visitors
-        // b += (h+rs)df/dx v - rd M v
-        // values are not cleared so that contributions from computeForces are kept and accumulated through mappings once at the end
-        mop.addMBKv(b, (f_rayleighMass.getValue() == 0.0 ? 0.0 : -f_rayleighMass.getValue()), 0, h+f_rayleighStiffness.getValue(), false, true);
-
-        b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+        b.eq(f);
+        mop.addMBKv(b, -f_rayleighMass.getValue(), 0, h+f_rayleighStiffness.getValue()); // add Rayleigh damping force (rs K - rm M) v
+        b.teq(h);                           // b = h(f0 + (h+rs) K v - rm M v )
 #endif
     }
 
     if( verbose )
-        serr<<"EulerImplicitSolver, f0 = "<< b <<sendl;
+        serr<<"EulerImplicitSolver, b = "<< b <<sendl;
 
     mop.projectResponse(b);          // b is projected to the constrained space
 
     if( verbose )
-        serr<<"EulerImplicitSolver, projected f0 = "<< b <<sendl;
+        serr<<"EulerImplicitSolver, projected b = "<< b <<sendl;
 
     sofa::helper::AdvancedTimer::stepNext ("ComputeRHTerm", "MBKBuild");
 
@@ -279,8 +271,13 @@ void EulerImplicitSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, 
 
     if( verbose )
     {
+        mop.propagateX(newPos);
+        mop.propagateDx(newVel);
         serr<<"EulerImplicitSolver, final x = "<< newPos <<sendl;
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
+        mop.computeForce(f);
+        serr<<"EulerImplicitSolver, final f = "<< f <<sendl;
+
     }
 
 }
