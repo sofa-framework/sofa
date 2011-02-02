@@ -1288,8 +1288,8 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
         ForceMaskActivate(map->getMechTo() );
 
         //map->accumulateDf();
-        map->applyDJT(res, res, mparams);
         map->applyJT(res, res, mparams);
+        map->applyDJT(res, res, mparams);
         ForceMaskDeactivate( map->getMechTo() );
     }
 }

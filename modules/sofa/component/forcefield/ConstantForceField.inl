@@ -64,32 +64,33 @@ void ConstantForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoor
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
     _f1.resize(p1.getValue().size());
 
-    sout << "Points = " << points.getValue() << sendl;
+//        sout << "Points = " << points.getValue() << sendl;
     Deriv singleForce;
-    if (totalForce.getValue()[0] != 0.0 || totalForce.getValue()[1] != 0.0 || totalForce.getValue()[2] != 0.0)
+    if ( totalForce.getValue()*totalForce.getValue() > 0.0)
     {
         for (unsigned comp = 0; comp < totalForce.getValue().size(); comp++)
             singleForce[comp] = (totalForce.getValue()[comp])/(Real(points.getValue().size()));
         //std::cout << "Setting forces for each node to = " << singleForce << std::endl;
     }
-    else if (force.getValue()[0] != 0.0 || force.getValue()[1] != 0.0 || force.getValue()[2] != 0.0)
+    else if (force.getValue()*force.getValue() > 0.0)
     {
         singleForce = force.getValue();
         //std::cout << "Setting forces for each node to = " << singleForce << std::endl;
     }
 
     const VecIndex& indices = points.getValue();
-    sout << "indices = " << indices << sendl;
+//        sout << "indices = " << indices << sendl;
     const VecDeriv& f = forces.getValue();
     //const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
     const Deriv f_end = (f.empty()? singleForce : f[f.size()-1]);
     unsigned int i = 0;
 
+
     if (!indexFromEnd.getValue())
     {
         for (; i < f.size(); i++)
         {
-//                    sout<<"_f1[indices[i]] += f[i], "<< _f1[indices.empty() ? i : indices[i]] << " += " << f[i] << sendl;
+            sout<<"_f1[indices[i]] += f[i], "<< _f1[indices.empty() ? i : indices[i]] << " += " << f[i] << sendl;
             _f1[ indices.empty() ? i : indices[i] ] += f[i];  // if indices are not set, use the force indices
 
         }
@@ -115,7 +116,6 @@ void ConstantForceField<DataTypes>::addForce(DataVecDeriv& f1, const DataVecCoor
 template<class DataTypes>
 void ConstantForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /* mat */, SReal /* k */, unsigned int & /* offset */)
 {
-
 }
 
 template <class DataTypes>
@@ -188,12 +188,12 @@ void ConstantForceField<DataTypes>::draw()
     double aSC = arrowSizeCoef.getValue();
 
     Deriv singleForce;
-    if (totalForce.getValue()[0] != 0.0 || totalForce.getValue()[1] != 0.0 || totalForce.getValue()[2] != 0.0)
+    if (totalForce.getValue()*totalForce.getValue() > 0.0)
     {
         for (unsigned comp = 0; comp < totalForce.getValue().size(); comp++)
             singleForce[comp] = (totalForce.getValue()[comp])/(Real(points.getValue().size()));
     }
-    else if (force.getValue()[0] != 0.0 || force.getValue()[1] != 0.0 || force.getValue()[2] != 0.0)
+    else if (force.getValue() * force.getValue() > 0.0)
     {
         singleForce = force.getValue();
     }

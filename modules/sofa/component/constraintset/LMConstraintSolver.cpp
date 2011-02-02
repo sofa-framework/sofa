@@ -51,8 +51,8 @@ using linearsolver::FullMatrix;
 
 LMConstraintSolver::LMConstraintSolver()
     : constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration"))
-    , constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity"))
-    , constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position"))
+    , constraintVel( initData( &constraintVel, true, "constraintVel", "Constraint the velocity"))
+    , constraintPos( initData( &constraintPos, true, "constraintPos", "Constraint the position"))
     , numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints"))
     , maxError( initData( &maxError, 0.0000001, "maxError", "threshold for the residue of the Gauss-Seidel algorithm"))
     , graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") )

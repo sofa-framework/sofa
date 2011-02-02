@@ -61,22 +61,22 @@ void StaticSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::c
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( this->getContext() );
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    //MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
+    MultiVecDeriv force(&vop, core::VecDerivId::force() );
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
     //MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
-    MultiVecDeriv b(&vop);
+//    MultiVecDeriv b(&vop);
     MultiVecDeriv x(&vop);
 
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // compute the right-hand term of the equation system
-    mop.computeForce(b);             // b = f0
-    mop.projectResponse(b);         // b is projected to the constrained space
-    b.teq(-1);
+    mop.computeForce(force);             // b = f0
+    mop.projectResponse(force);         // b is projected to the constrained space
+//    b.teq(-1);
 
     if( f_printLog.getValue() )
-        serr<<"StaticSolver, f0 = "<< b <<sendl;
+        serr<<"StaticSolver, f0 = "<< force <<sendl;
     core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
     //matrix = MechanicalMatrix::K;
     matrix = MechanicalMatrix(massCoef.getValue(),dampingCoef.getValue(),stiffnessCoef.getValue());
@@ -84,16 +84,16 @@ void StaticSolver::solve(double dt, sofa::core::MultiVecCoordId xResult, sofa::c
     if( f_printLog.getValue() )
         serr<<"StaticSolver, matrix = "<< (MechanicalMatrix::K) << " = " << matrix <<sendl;
 
-    matrix.solve(x,b);
-    // x is the solution of the system
+    matrix.solve(x,force);
+    // x is the opposite solution of the system
 
     // apply the solution
     /*    serr<<"StaticSolver::solve, nb iter = "<<nb_iter<<sendl;
      serr<<"StaticSolver::solve, solution = "<<x<<sendl;*/
 
     if( f_printLog.getValue() )
-        serr<<"StaticSolver, solution = "<< x <<sendl;
-    pos2.eq( pos, x );
+        serr<<"StaticSolver, opposite solution = "<< x <<sendl;
+    pos2.eq( pos, x, -1 );
 
     mop.solveConstraint(dt,pos2,core::ConstraintParams::POS);
 

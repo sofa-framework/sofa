@@ -127,7 +127,7 @@ RigidMapping<TIn, TOut>::RigidMapping(core::State< In >* from, core::State< Out 
     , fileRigidMapping(initData(&fileRigidMapping, "fileRigidMapping", "Filename"))
     , useX0(initData(&useX0, false, "useX0", "Use x0 instead of local copy of initial positions (to support topo changes)"))
     , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
-    , repartition(initData(&repartition, "repartition", "number of dest dofs per entry dof"))
+    , pointsPerFrame(initData(&pointsPerFrame, "repartition", "number of dest dofs per entry dof"))
     , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
     , matrixJ()
     , updateJ(false)
@@ -160,10 +160,10 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 {
     int i = points.getValue().size();
     points.beginEdit()->push_back(c);
-    if (!repartition.getValue().empty())
+    if (!pointsPerFrame.getValue().empty())
     {
-        repartition.beginEdit()->push_back(indexFrom);
-        repartition.endEdit();
+        pointsPerFrame.beginEdit()->push_back(indexFrom);
+        pointsPerFrame.endEdit();
     }
     else if (!i)
     {
@@ -171,12 +171,12 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
     }
     else if ((int) index.getValue() != indexFrom)
     {
-        sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
+        sofa::helper::vector<unsigned int>& rep = *pointsPerFrame.beginEdit();
         rep.clear();
         rep.reserve(i + 1);
         rep.insert(rep.end(), index.getValue(), i);
         rep.push_back(indexFrom);
-        repartition.endEdit();
+        pointsPerFrame.endEdit();
     }
     return i;
 }
@@ -198,7 +198,7 @@ void RigidMapping<TIn, TOut>::init()
         {
             //test booleen fromWorldCoord
             const InVecCoord& xfrom = *this->fromModel->getX();
-            switch (repartition.getValue().size())
+            switch (pointsPerFrame.getValue().size())
             {
             case 0:
                 for (i = 0; i < x.size(); i++)
@@ -210,7 +210,7 @@ void RigidMapping<TIn, TOut>::init()
             case 1:
                 for (i = 0; i < xfrom.size(); i++)
                 {
-                    for (unsigned int j = 0; j < repartition.getValue()[0]; j++, cpt++)
+                    for (unsigned int j = 0; j < pointsPerFrame.getValue()[0]; j++, cpt++)
                     {
                         (*points.beginEdit())[cpt]
                             = xfrom[i].inverseRotate(x[cpt]
@@ -221,7 +221,7 @@ void RigidMapping<TIn, TOut>::init()
             default:
                 for (i = 0; i < xfrom.size(); i++)
                 {
-                    for (unsigned int j = 0; j < repartition.getValue()[i]; j++, cpt++)
+                    for (unsigned int j = 0; j < pointsPerFrame.getValue()[i]; j++, cpt++)
                     {
                         (*points.beginEdit())[cpt]
                             = xfrom[i].inverseRotate(x[cpt]
@@ -247,13 +247,13 @@ void RigidMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::disable()
 {
-	if (!this->points.getValue().empty() && this->toModel!=NULL)
-	{
-		VecCoord& x = *this->toModel->getX();
-		x.resize(points.getValue().size());
-		for (unsigned int i=0;i<points.getValue().size();i++)
-			x[i] = points.getValue()[i];
-	}
+if (!this->points.getValue().empty() && this->toModel!=NULL)
+{
+	VecCoord& x = *this->toModel->getX();
+	x.resize(points.getValue().size());
+	for (unsigned int i=0;i<points.getValue().size();i++)
+		x[i] = points.getValue()[i];
+}
 }
 */
 
@@ -263,24 +263,24 @@ void RigidMapping<TIn, TOut>::clear(int reserve)
     this->points.beginEdit()->clear();
     if (reserve)
         this->points.beginEdit()->reserve(reserve);
-    this->repartition.beginEdit()->clear();
-    this->repartition.endEdit();
+    this->pointsPerFrame.beginEdit()->clear();
+    this->pointsPerFrame.endEdit();
 }
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 {
-    vector<unsigned int>& rep = *this->repartition.beginEdit();
+    vector<unsigned int>& rep = *this->pointsPerFrame.beginEdit();
     rep.clear();
     rep.push_back(value);
-    this->repartition.endEdit();
+    this->pointsPerFrame.endEdit();
 }
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
         unsigned int> values)
 {
-    vector<unsigned int>& rep = *this->repartition.beginEdit();
+    vector<unsigned int>& rep = *this->pointsPerFrame.beginEdit();
     rep.clear();
     rep.reserve(values.size());
     //repartition.setValue(values);
@@ -290,7 +290,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
         rep.push_back(*it);
         it++;
     }
-    this->repartition.endEdit();
+    this->pointsPerFrame.endEdit();
 }
 
 template <class DataTypes>
@@ -334,7 +334,7 @@ void RigidMapping<TIn, TOut>::apply(Data<VecCoord>& dOut, const Data<InVecCoord>
     rotatedPoints.resize(pts.size());
     out.resize(pts.size());
 
-    unsigned repartitionCount = repartition.getValue().size();
+    unsigned repartitionCount = pointsPerFrame.getValue().size();
 
     if (repartitionCount > 1 && repartitionCount != in.size())
     {
@@ -367,7 +367,7 @@ void RigidMapping<TIn, TOut>::apply(Data<VecCoord>& dOut, const Data<InVecCoord>
     }
     else
     {
-        outputPerInput = repartition.getValue()[0];
+        outputPerInput = pointsPerFrame.getValue()[0];
     }
 
     Coord translation;
@@ -377,7 +377,7 @@ void RigidMapping<TIn, TOut>::apply(Data<VecCoord>& dOut, const Data<InVecCoord>
     {
         if (repartitionCount > 1)
         {
-            outputPerInput = repartition.getValue()[inIdx];
+            outputPerInput = pointsPerFrame.getValue()[inIdx];
         }
 
         translation = in[inIdx].getCenter();
@@ -404,7 +404,7 @@ void RigidMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDeriv
     out.resize(pts.size());
 
     bool isMaskInUse = maskTo->isInUse();
-    unsigned repartitionCount = repartition.getValue().size();
+    unsigned repartitionCount = pointsPerFrame.getValue().size();
 
     if (repartitionCount > 1 && repartitionCount != in.size())
     {
@@ -437,7 +437,7 @@ void RigidMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDeriv
     }
     else
     {
-        outputPerInput = repartition.getValue()[0];
+        outputPerInput = pointsPerFrame.getValue()[0];
     }
 
     typedef helper::ParticleMask ParticleMask;
@@ -448,7 +448,7 @@ void RigidMapping<TIn, TOut>::applyJ(Data<VecDeriv>& dOut, const Data<InVecDeriv
     {
         if (repartitionCount > 1)
         {
-            outputPerInput = repartition.getValue()[inIdx];
+            outputPerInput = pointsPerFrame.getValue()[inIdx];
         }
 
         for (unsigned iOutput = 0;
@@ -479,11 +479,11 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeri
     bool isMaskInUse = maskTo->isInUse();
     maskFrom->setInUse(isMaskInUse);
 
-    unsigned repartitionCount = repartition.getValue().size();
+    unsigned repartitionCount = pointsPerFrame.getValue().size();
 
     if (repartitionCount > 1 && repartitionCount != out.size())
     {
-        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        serr << "RigidMapping<TIn, TOut>::applyJT, Error : mapping dofs repartition is not correct" << sendl;
         return;
     }
 
@@ -512,7 +512,7 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeri
     }
     else
     {
-        inputPerOutput = repartition.getValue()[0];
+        inputPerOutput = pointsPerFrame.getValue()[0];
     }
 
     typedef helper::ParticleMask ParticleMask;
@@ -523,7 +523,7 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeri
     {
         if (repartitionCount > 1)
         {
-            inputPerOutput = repartition.getValue()[outIdx];
+            inputPerOutput = pointsPerFrame.getValue()[outIdx];
         }
 
         for (unsigned iInput = 0;
@@ -540,6 +540,9 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeri
             }
             getVCenter(out[outIdx]) += in[inIdx];
             getVOrientation(out[outIdx]) +=  cross(rotatedPoints[inIdx], in[inIdx]);
+            //            cerr<<"RigidMapping<TIn, TOut>::applyJT, in[inIdx] = "<< in[inIdx] << endl;
+            //            cerr<<"RigidMapping<TIn, TOut>::applyJT, getVCenter(out[outIdx]) = "<< getVCenter(out[outIdx]) << endl;
+            //            cerr<<"RigidMapping<TIn, TOut>::applyJT, getVOrientation(out[outIdx]) = "<< getVOrientation(out[outIdx]) << endl;
 
         }
         if (isMaskInUse)
@@ -548,6 +551,91 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InVecDeriv>& dOut, const Data<VecDeri
         }
     }
 }
+
+
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::applyDJT(core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId, const core::MechanicalParams* mparams )
+{
+    helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
+    helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel].write());
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
+    InReal kfactor = mparams->kFactor();
+
+    const VecCoord& pts = this->getPoints();
+
+    bool isMaskInUse = maskTo->isInUse();
+    maskFrom->setInUse(isMaskInUse);
+
+    unsigned repartitionCount = pointsPerFrame.getValue().size();
+
+    if (repartitionCount > 1 && repartitionCount != parentForces.size())
+    {
+        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        return;
+    }
+
+    unsigned parentIdxBegin;
+    unsigned parentIdxEnd;
+    unsigned inputPerOutput;
+
+    if (repartitionCount == 0)
+    {
+        parentIdxBegin = index.getValue();
+        if (indexFromEnd.getValue())
+        {
+            parentIdxBegin = parentForces.size() - 1 - parentIdxBegin;
+        }
+        parentIdxEnd = parentIdxBegin + 1;
+        inputPerOutput = pts.size();
+    }
+    else
+    {
+        parentIdxBegin = 0;
+        parentIdxEnd = parentForces.size();
+        inputPerOutput = pointsPerFrame.getValue()[0];
+    }
+
+
+    typedef helper::ParticleMask ParticleMask;
+    const ParticleMask::InternalStorage& indices = maskTo->getEntries();
+    ParticleMask::InternalStorage::const_iterator it = indices.begin();
+
+    for (unsigned parentIdx = parentIdxBegin, childIdx = 0; parentIdx < parentIdxEnd; ++parentIdx)
+    {
+        if (repartitionCount > 1)
+        {
+            inputPerOutput = pointsPerFrame.getValue()[parentIdx];
+        }
+
+        for (unsigned iInput = 0;
+                iInput < inputPerOutput && !(isMaskInUse && it == indices.end());
+                ++iInput, ++childIdx)
+        {
+            if (isMaskInUse)
+            {
+                if (childIdx != *it)
+                {
+                    continue;
+                }
+                ++it;
+            }
+            typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIdx]);
+            const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIdx]);
+            parentTorque -=  TIn::crosscross( childForces[childIdx], parentRotation, rotatedPoints[childIdx]) * kfactor;
+            cerr<<"RigidMapping<TIn, TOut>::applyJT, childForces[childIdx] = "<< childForces[childIdx] << endl;
+            cerr<<"RigidMapping<TIn, TOut>::applyJT, parentRotation = "<< parentRotation << endl;
+            cerr<<"RigidMapping<TIn, TOut>::applyJT, rotatedPoints[childIdx] = "<< rotatedPoints[childIdx] << endl;
+            cerr<<"RigidMapping<TIn, TOut>::applyJT,  kfactor = "<<  kfactor << endl;
+            cerr<<"RigidMapping<TIn, TOut>::applyJT, parentTorque = "<< parentTorque << endl;
+
+        }
+        if (isMaskInUse)
+        {
+            maskFrom->insertEntry(parentIdx);
+        }
+    }
+}
+
 
 // RigidMapping::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in ) //
 // this function propagate the constraint through the rigid mapping :
@@ -567,7 +655,7 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data<OutM
         sout << "J on input  DOFs = " << out << sendl;
     }
 
-    switch (repartition.getValue().size())
+    switch (pointsPerFrame.getValue().size())
     {
     case 0:
     {
@@ -608,7 +696,7 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data<OutM
     case 1:
     {
         const unsigned int numDofs = this->getFromModel()->getX()->size();
-        const unsigned int val = repartition.getValue()[0];
+        const unsigned int val = pointsPerFrame.getValue()[0];
 
         typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -669,7 +757,7 @@ void RigidMapping<TIn, TOut>::applyJT(Data<InMatrixDeriv>& dOut, const Data<OutM
                 DRot omega = DRot();
                 bool needToInsert = false;
 
-                for (unsigned int r = 0; r < repartition.getValue()[ito] && colIt
+                for (unsigned int r = 0; r < pointsPerFrame.getValue()[ito] && colIt
                         != colItEnd; r++, cpt++)
                 {
                     if (colIt.index() != cpt)
@@ -727,8 +815,8 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
             matrixJ->clear();
         }
 
-//        bool isMaskInUse = maskTo->isInUse();
-        unsigned repartitionCount = repartition.getValue().size();
+        //        bool isMaskInUse = maskTo->isInUse();
+        unsigned repartitionCount = pointsPerFrame.getValue().size();
 
         if (repartitionCount > 1 && repartitionCount != in.size())
         {
@@ -761,32 +849,32 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
         }
         else
         {
-            outputPerInput = repartition.getValue()[0];
+            outputPerInput = pointsPerFrame.getValue()[0];
         }
 
-//        typedef helper::ParticleMask ParticleMask;
-//        const ParticleMask::InternalStorage& indices = maskTo->getEntries();
-//        ParticleMask::InternalStorage::const_iterator it = indices.begin();
+        //        typedef helper::ParticleMask ParticleMask;
+        //        const ParticleMask::InternalStorage& indices = maskTo->getEntries();
+        //        ParticleMask::InternalStorage::const_iterator it = indices.begin();
 
         for (unsigned inIdx = inIdxBegin, outIdx = 0; inIdx < inIdxEnd; ++inIdx)
         {
             if (repartitionCount > 1)
             {
-                outputPerInput = repartition.getValue()[inIdx];
+                outputPerInput = pointsPerFrame.getValue()[inIdx];
             }
 
             for (unsigned iOutput = 0;
                     iOutput < outputPerInput; // iOutput < outputPerInput && !(isMaskInUse && it == indices.end());
                     ++iOutput, ++outIdx)
             {
-//                if (isMaskInUse)
-//                {
-//                    if (outIdx != *it)
-//                    {
-//                        continue;
-//                    }
-//                    ++it;
-//                }
+                //                if (isMaskInUse)
+                //                {
+                //                    if (outIdx != *it)
+                //                    {
+                //                        continue;
+                //                    }
+                //                    ++it;
+                //                }
                 setJMatrixBlock(outIdx, inIdx);
             }
         }

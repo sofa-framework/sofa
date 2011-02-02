@@ -628,6 +628,7 @@ public:
     typedef Vec<6,real> Deriv;
     typedef typename Coord::Vec3 Vec3;
     typedef typename Coord::Quat Quat;
+    typedef Vec<3,Real> AngularVector;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };
@@ -767,6 +768,13 @@ public:
     {
         return a.mult(b);
     }
+
+    /// double cross product: a * ( b * c )
+    static Vec3 crosscross ( const Vec3& a, const Vec3& b, const Vec3& c)
+    {
+        return cross( a, cross( b,c ));
+    }
+
 };
 
 typedef StdRigidTypes<3,double> Rigid3dTypes;
@@ -1296,6 +1304,7 @@ public:
 
     typedef Vec<3,real> Deriv;
     typedef RigidCoord<2,Real> Coord;
+    typedef Real AngularVector;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };
@@ -1393,6 +1402,18 @@ public:
         }
 
         return d;
+    }
+
+    /// specialized version of the double cross product: a * ( b * c ) for the variation of torque applied to the frame due to a small rotation with constant force.
+    static Real crosscross ( const Vec2& f, const Real& dtheta, const Vec2& OP)
+    {
+        return dtheta * dot( f,OP );
+    }
+
+    /// specialized version of the double cross product: a * ( b * c ) for point acceleration
+    static Vec2 crosscross ( const Real& omega, const Real& dtheta, const Vec2& OP)
+    {
+        return OP * omega * (-dtheta);
     }
 
 };
