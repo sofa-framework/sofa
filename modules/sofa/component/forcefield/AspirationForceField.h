@@ -86,7 +86,7 @@ public:
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_ASPIRATEFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_FORCEFIELD_API AspirationForceField<Vec3dTypes>;

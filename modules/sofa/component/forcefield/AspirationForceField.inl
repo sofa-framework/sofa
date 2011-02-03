@@ -50,8 +50,8 @@ template<class DataTypes>
 AspirationForceField<DataTypes>::AspirationForceField()
     : f_force(initData(&f_force, "force", "applied force to all points if forces attribute is not specified"))
     , f_scale(initData(&f_scale, "force_scale", "scale the applied force"))
-    , f_ray(initData(&f_ray, "ray", "total force for all points, will be distributed uniformly over points"))
     , f_arrowSizeCoef(initData(&f_arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , f_ray(initData(&f_ray, "ray", "total force for all points, will be distributed uniformly over points"))
     , f_positionRigid(initData(&f_positionRigid, "position", "Position's rigid coord"))
     , f_opposite_pressure(initData(&f_opposite_pressure,0.0, "opposite_pressure", "opposite_pressure"))
 
@@ -102,7 +102,7 @@ void AspirationForceField<DataTypes>::addDForce(DataVecDeriv& /* d_df */, const 
 };
 
 template<class DataTypes>
-void AspirationForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void AspirationForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix */*mat*/, SReal /*k*/, unsigned int &/*offset*/)
 {
 
 }
@@ -119,7 +119,7 @@ void AspirationForceField<DataTypes>::draw()
     Deriv force = f_force.getValue();
     Coord orientation = position.rotate(f_force.getValue());
 
-    double scale = f_scale.getValue();
+    //double scale = f_scale.getValue();
     double ray = f_ray.getValue();
 
     simulation::getSimulation()->DrawUtility().drawArrow(center,center+(orientation*ray), f_arrowSizeCoef.getValue(), defaulttype::Vec<4,float>(0.1f,0.4f,1.0f,1.0f));
